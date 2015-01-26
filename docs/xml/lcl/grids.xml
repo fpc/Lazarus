@@ -250,11 +250,11 @@
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TGridOption.goVertLine">
-        <short/>
+        <short>Show vertical lines</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TGridOption.goHorzLine">
-        <short/>
+        <short>Show horizontal lines</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TGridOption.goRangeSelect">
@@ -266,11 +266,11 @@
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TGridOption.goRowSizing">
-        <short/>
+        <short>Allow user to change row height</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TGridOption.goColSizing">
-        <short/>
+        <short>Allow user to change column width</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TGridOption.goRowMoving">
@@ -282,19 +282,24 @@
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TGridOption.goEditing">
-        <short/>
+        <short>Allow editing</short>
+      <seealso><link id="TGridOption.goAlwaysShowEditor"/>
+        </seealso>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TGridOption.goTabs">
-        <short/>
+        <short>Move with tab key inside grid</short>
+      <descr>If set, the tab key changes the active cell within the grid.
+If not set, the tab key changes the active control.</descr>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TGridOption.goRowSelect">
-        <short/>
+        <short>Select the whole row instead of only one cell</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TGridOption.goAlwaysShowEditor">
-        <short/>
+        <short>Always show editor</short>
+      <descr>Always show editor. If not set, the user has to enter the edit mode by pressing some character key or F2 key.</descr>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TGridOption.goThumbTracking">
@@ -302,19 +307,20 @@
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TGridOption.goColSpanning">
-        <short/>
+        <short>Enable cellextent calcs</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TGridOption.goRelaxedRowSelect">
-        <short/>
+        <short>User can see focused cell on goRowSelect</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TGridOption.goDblClickAutoSize">
-        <short/>
+        <short>Double clicking column's borders (on headers) resize colmn</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TGridOption.goSmoothScroll">
-        <short/>
+        <short>Switch scrolling mode</short>
+      <descr>Default is pixel scroll.</descr>
       </element>
       <!-- set type Visibility: default -->
       <element name="TGridOptions">
@@ -4228,9 +4234,9 @@ Application developers should use the <link id="TCustomGrid.SelectCell.OnSelectC
         <short>The set of options for saving information from the grid (design, attributes, content or position)</short>
         <descr>These options are used when saving grid information, but also when loading grid information.</descr>
         <seealso>
-	  <link id="TCustomGrid.LoadFromFile"/>
-	  <link id="TCustomGrid.SaveToFile"/>
-	</seealso>
+&#x9;  <link id="TCustomGrid.LoadFromFile"/>
+&#x9;  <link id="TCustomGrid.SaveToFile"/>
+&#x9;</seealso>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomGrid.SelectActive">
@@ -4561,9 +4567,9 @@ Application developers may use the OnSelection and OnBeforeSelection events to r
         <descr>Note that the SaveOptions property determines what information is loaded.</descr>
         <errors/>
         <seealso>
-	  <link id="TCustomGrid.SaveToFile"/>
-	  <link id="TCustomGrid.SaveOptions"/>
-	</seealso>
+&#x9;  <link id="TCustomGrid.SaveToFile"/>
+&#x9;  <link id="TCustomGrid.SaveOptions"/>
+&#x9;</seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomGrid.LoadFromFile.FileName">
@@ -4671,9 +4677,9 @@ Application developers may use the OnSelection and OnBeforeSelection events to r
         <descr>Note that the property SaveOptions determines what information is saved.</descr>
         <errors/>
         <seealso>
-	  <link id="TCustomGrid.LoadFromFile"/>
-	  <link id="TCustomGrid.SaveOptions"/>
-	</seealso>
+&#x9;  <link id="TCustomGrid.LoadFromFile"/>
+&#x9;  <link id="TCustomGrid.SaveOptions"/>
+&#x9;</seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomGrid.SaveToFile.FileName">
@@ -6037,19 +6043,23 @@ Segunda linea de texto</descr>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TGridOption.goFixedRowNumbering">
-        <short/>
+        <short>Show row numbers in first fixed column</short>
+      <descr>The displayed row numbering starts with 1.
+
+The row number is only displayed if no text has been assigned to the cell directly.</descr><seealso><link id="TCustomGrid.FixedCols"/>
+        </seealso>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TGridOption.goScrollKeepVisible">
-        <short/>
+        <short>Keeps focused cell visible while scrolling</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TGridOption.goHeaderHotTracking">
-        <short/>
+        <short>Header cells change look when mouse is over them</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TGridOption.goHeaderPushedLook">
-        <short/>
+        <short>Header cells looks pushed when clicked</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TGridDrawState.gdHot">
@@ -12969,6 +12979,30 @@ The range is defined based on optional <var>AUseSelection</var> parameter which 
       </element>
       <element name="TCustomGrid.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
       <element name="TStringGrid.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
+    <element name="TGridOption.goAutoAddRows"><short>Automatically add new rows</short><seealso><link id="TGridOption.goAutoAddRowsSkipContentCheck"/>
+        </seealso><descr>Does not add rows if the last cell is empty and <link id="TGridOption.goAutoAddRowsSkipContentCheck">goAutoAddRowsSkipContentCheck</link> is not set.</descr>
+      </element><element name="TGridOption.goRowHighlight"><short>Highlight the current Row</short>
+      </element><element name="TGridOption.goSelectionActive"><short>Setting grid.Selection moves also cell cursor</short><seealso><link id="TCustomGrid.Selection"/>
+        </seealso>
+      </element><element name="TGridOption.goFixedColSizing"><short>Allow to resize fixed columns</short><seealso><link id="TGridOption.goCol"/>
+        </seealso>
+      </element><element name="TGridOption.goDontScrollPartCell"><short>Clicking partially visible cells will not scroll</short>
+      </element><element name="TGridOption.goCellHints"><short>Show individual cell hints</short><seealso><link id="TControl.Hint"/><link id="TControl.ShowHint"/><link id="TCustomGrid.OnGetCellHint"/>
+        </seealso><descr>Requires the <link id="TControl.ShowHint">ShowHint</link> property to be set to <var>TRUE</var>.
+
+If set, the  <link id="TControl.Hint">Hint</link> propperty will be ignored. Instead the  <link id="TCustomGrid.OnGetCellHint">OnGetCellHint</link> event will be called for each cell.</descr>
+      </element><element name="TGridOption.goTruncCellHints"><short>Show cell hints if cell text is too long</short>
+      </element><element name="TGridOption.goCellEllipsis"><short>Show "..." if cell text is too long</short>
+      </element><element name="TGridOption.goAutoAddRowsSkipContentCheck"><short>Also add a row if last row is empty</short><seealso><link id="TGridOption.goAutoAddRows"/>
+        </seealso><descr><link id="TGridOption.goAutoAddRows">goAutoAddRows</link> must also be set. Otherwise this option does not take effect at all.</descr>
+      </element><element name="TCustomGrid.OnGetCellHint"><short>Get individual hint for each cell</short><descr>Only called if <link id="TGridOption.goCellHints"/>is set.</descr><seealso><link id="TGridOption.goCellHints"/><link id="TCustomGrid.Options"/>
+        </seealso>
+      </element><element name="TStringGrid.OnGetCellHint" link="#LCL.Grids.TCustomGrid.OnGetCellHint"/><element name="TGetCellHintEvent"><short>Event for cell hints</short>
+      </element><element name="TGetCellHintEvent.Sender"><short>The grid</short>
+      </element><element name="TGetCellHintEvent.ACol"><short>column index</short>
+      </element><element name="TGetCellHintEvent.ARow"><short>row index</short>
+      </element><element name="TGetCellHintEvent.HintText"><short>Hint text</short><descr>This text will be displayed as hint.</descr>
+      </element>
     </module>
     <!-- Grids -->
   </package>
