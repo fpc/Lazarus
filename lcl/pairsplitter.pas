@@ -129,6 +129,7 @@ type
     property Anchors;
     property BorderSpacing;
     property Constraints;
+    property Color;
     property Cursor;
     property Enabled;
     property OnMouseDown;
