@@ -367,6 +367,7 @@ begin
     if DebugBoss.GetFullFilename(AnUnitInfo, Filename, False) then begin
       debugln(DBG_LOCATION_INFO, ['JumpToUnitSource Filename=', Filename]);
       ok := false;
+      if ALine <= 0 then ALine := AnUnitInfo.SrcLine;
       if FilenameIsAbsolute(Filename) then
         ok := MainIDEInterface.DoJumpToSourcePosition(Filename, 0, ALine, 0,
                                              [jfAddJumpPoint, jfFocusEditor, jfMarkLine, jfMapLineFromDebug, jfSearchVirtualFullPath]

@@ -372,7 +372,10 @@ begin
         if Source = '' then // we do not have a source file => just show an adress
           Source := ':' + IntToHex(Entry.Address, 8);
         Item.SubItems[1] := Source;
-        Item.SubItems[2] := IntToStr(Entry.Line); // TODO: if editor is open, map line SrcEdit.DebugToSourceLine
+        if (Entry.Line = 0) and (Entry.UnitInfo <> nil) and (Entry.UnitInfo.SrcLine > 0) then
+          Item.SubItems[2] := '~'+IntToStr(Entry.UnitInfo.SrcLine)
+        else
+          Item.SubItems[2] := IntToStr(Entry.Line); // TODO: if editor is open, map line SrcEdit.DebugToSourceLine
         Item.SubItems[3] := GetFunction(Entry);
       end;
     end;
@@ -529,6 +532,7 @@ begin
       idx := FViewStart + Item.Index;
       if idx >= GetSelectedCallstack.CountLimited(idx+1) then Exit;
       Entry := GetSelectedCallstack.Entries[idx];
+      if Entry.Line <= 0 then exit;
       if not DebugBoss.GetFullFilename(Entry.UnitInfo, FileName, False) then
         Exit;
       BreakPoint := BreakPoints.Find(FileName, Entry.Line);

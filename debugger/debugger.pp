@@ -116,6 +116,7 @@ type
     FFunctionName: String;
     FLocationName, FLocationOwnerName, FLocationFullFile: String;
     FLocationType: TDebuggerLocationType;
+    FSrcLine: Integer;
     FUnitName: String;
     function GetFileName: String;
     function GetDbgFullName: String;
@@ -137,6 +138,7 @@ type
     procedure SaveDataToXMLConfig(const AConfig: TXMLConfig;
                                   const APath: string); virtual;
     property FileName: String read GetFileName;
+    property SrcLine: Integer read FSrcLine write FSrcLine;
     property DbgFullName: String read GetDbgFullName;
     property LocationType: TDebuggerLocationType read GetLocationType write SetLocationType;
     property LocationOwnerName: String read GetLocationOwnerName;
@@ -147,6 +149,7 @@ type
     property SrcClassName: String read FSrcClassName;
     property FunctionName: String read FFunctionName;
     property FunctionArgs: String read FFunctionArgs; // comma separated list of types. e.g. "integer, boolean"
+                                                      // functions have result type at end, after ",,"
   end;
 
   { TDebuggerUnitInfoList }
@@ -2193,7 +2196,8 @@ begin
       Result := Result and
                 (FLocationType = AnOther.FLocationType) and
                 (FLocationOwnerName = AnOther.FLocationOwnerName) and
-                (FLocationName = AnOther.FLocationName);
+                (FLocationName = AnOther.FLocationName) and
+                (FSrcLine = AnOther.FSrcLine);
   end;
 end;
 
@@ -2213,6 +2217,7 @@ begin
   else
     exclude(FFlags, dlfSearchByFunctionName);
   FFileName          := AConfig.GetValue(APath + 'File', '');
+  FSrcLine          := AConfig.GetValue(APath + 'SrcLine', 0);
   FLocationOwnerName := AConfig.GetValue(APath + 'UnitOwner', '');
   FLocationName      := AConfig.GetValue(APath + 'UnitFile',  '');
   FDbgFullName       := AConfig.GetValue(APath + 'DbgFile',  '');
@@ -2231,6 +2236,7 @@ begin
   WriteStr(s{%H-}, LocationType);
   AConfig.SetValue(APath + 'Type', s);
   AConfig.SetValue(APath + 'File', FileName);
+  AConfig.SetValue(APath + 'SrcLine', FSrcLine);
   AConfig.SetDeleteValue(APath + 'ByFunction',  dlfSearchByFunctionName in FFlags, False);
 
   AConfig.SetValue(APath + 'UnitOwner', LocationOwnerName);
