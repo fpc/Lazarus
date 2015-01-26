@@ -442,6 +442,9 @@ resourcestring
   dceColumnEditor = 'DBGrid Columns Editor';
   dceOkToDelete = 'This will delete all columns. Continue?';
 
+  // IDE Text Converter
+  itcsSearchAndReplace = 'Search and replace';
+
 implementation
 
 end.

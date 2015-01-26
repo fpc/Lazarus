@@ -22,7 +22,7 @@ interface
 
 uses
   Classes, SysUtils, TypInfo, LCLProc, Controls, Forms, FileUtil,
-  LazUTF8Classes, SrcEditorIntf, PropEdits;
+  LazUTF8Classes, SrcEditorIntf, PropEdits, ObjInspStrConsts;
   
 type
   TCustomTextConverterTool = class;
@@ -886,7 +886,7 @@ end;
 
 class function TCustomTextReplaceTool.ClassDescription: string;
 begin
-  Result:='Search and replace';
+  Result := itcsSearchAndReplace;
 end;
 
 { TTextConverterToolClasses }
