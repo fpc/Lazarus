@@ -188,7 +188,7 @@ type
     ttImplements,
     ttReintroduce,
     ttGeneric,
-
+    ttCVar,
     // used in asm
     ttOffset,
     ttPtr,
@@ -349,7 +349,7 @@ const
   ExportDirectives: TTokenTypeSet = [ttIndex, ttName];
 
   VariableDirectives: TTokenTypeSet = [ttAbsolute, ttDeprecated, ttLibrary, ttPlatform,
-                                       ttExperimental, ttUnimplemented];
+                                       ttExperimental, ttUnimplemented, ttCVar];
 
   ClassVisibility: TTokenTypeSet =
     [ttPrivate, ttProtected, ttPublic, ttPublished, ttAutomated];
@@ -376,7 +376,7 @@ const
     ttNear, ttReadOnly, ttDynamic, ttNoDefault, ttRegister,
     ttExport, ttOverride, ttOverload, ttResident, ttLocal,
     ttImplements, ttReintroduce,
-    ttLibrary, ttPlatform, ttStatic, ttFinal, ttVarArgs];    
+    ttLibrary, ttPlatform, ttStatic, ttFinal, ttVarArgs, ttCVar];    
 
   ProcedureWords: TTokenTypeSet = [ttProcedure, ttFunction, ttConstructor, ttDestructor, ttOperator];
 
@@ -680,6 +680,8 @@ begin
 
   AddKeyword('implements', wtReservedWordDirective, ttImplements);
   AddKeyword('reintroduce', wtReservedWordDirective, ttReintroduce);
+
+  AddKeyword('cvar', wtReservedWordDirective, ttCVar);
 
   // asm
   AddKeyword('offset', wtReservedWordDirective, ttOffset);
