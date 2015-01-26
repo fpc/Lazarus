@@ -2326,6 +2326,7 @@ function TIDEFPCParser.CheckForFileLineColMessage(p: PChar): boolean;
 { filename(line,column) Hint: message
   filename(line,column) Hint: (msgid) message
   filename(line) Hint: (msgid) message
+  file(3)name(line,column) Hint: (msgid) message
 }
 var
   FileStartPos: PChar;
@@ -2344,9 +2345,18 @@ var
 begin
   Result:=false;
   FileStartPos:=p;
-  while not (p^ in ['(',#0]) do inc(p);
-  if (p^<>'(') or (p=FileStartPos) or (p[-1]=' ') then exit;
-  FileEndPos:=p;
+  FileEndPos:=nil;
+  // search colon and last ( in front of colon
+  while true do begin
+    case p^ of
+    #0: exit;
+    '(': FileEndPos:=p;
+    ':': break;
+    end;
+    inc(p);
+  end;
+  if (FileEndPos=nil) or (FileEndPos-FileStartPos=0) or (FileEndPos[-1]=' ') then exit;
+  p:=FileEndPos;
   inc(p); // skip bracket
   LineStartPos:=p;
   if not ReadDecimal(p) then exit;
