@@ -2008,7 +2008,7 @@ type
     procedure CMVisibleChanged(var Message: TLMessage); message CM_VISIBLECHANGED;
     procedure CMHitTest(var Message: TCMHitTest); message CM_HITTEST;
   protected const
-    cDefSeparatorWidth = 10;
+    cDefSeparatorWidth = 8;
     cDefDividerWidth = 5;
   protected
     FToolBar: TToolBar;

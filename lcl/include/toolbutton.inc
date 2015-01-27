@@ -337,7 +337,11 @@ begin
     else
     if Style = tbsSeparator then
     begin
-      DrawSeparator(Details, ButtonRect);
+      if ThemeServices.ThemesEnabled then begin
+        Details:=ThemeServices.GetElementDetails(ttbSeparatorNormal);
+        ThemeServices.DrawElement(Canvas.Handle,Details,ClientRect)
+      end else
+        DrawSeparator(Details, ButtonRect);
       ButtonRect := Rect(0, 0, 0, 0); // nothing can be drawn on separator
     end;
 
