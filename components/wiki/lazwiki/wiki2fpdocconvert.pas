@@ -278,9 +278,29 @@ begin
   debugln(['TWiki2FPDocConverter.OnWikiToken ToDo: Token=',dbgs(Token.Token),' Range=',dbgs(Token.Range),' Class=',Token.ClassName,' ',W.PosToStr(W.CurrentPos)]);
 end;
 
+{   IsValidIdent returns true if the first character of Ident is in:
+    'A' to 'Z', 'a' to 'z' or '_' and the following characters are
+    on of: 'A' to 'Z', 'a' to 'z', '0'..'9' or '_'    }
+function IsValidNodeName(const Ident: string): boolean;
+var
+  p: PChar;
+begin
+  p:=PChar(Ident);
+  if not (p^ in ['A'..'Z', 'a'..'z', '_', '-']) then exit(false);
+  inc(p);
+  while true do begin
+    if p^ in ['A'..'Z', 'a'..'z', '0'..'9', '_', '-'] then
+      inc(p)
+    else if (p^=#0) and (p-PChar(Ident)=length(Ident)) then
+      exit(true)
+    else
+      exit(false);
+  end;
+end;
+
 procedure TWiki2FPDocConverter.SetRootName(AValue: string);
 begin
-  if (AValue='') or not IsValidIdent(AValue) then
+  if (AValue='') or not IsValidNodeName(AValue) then
     raise Exception.Create('invalid root name "'+AValue+'"');
   if FRootName=AValue then Exit;
   FRootName:=AValue;
