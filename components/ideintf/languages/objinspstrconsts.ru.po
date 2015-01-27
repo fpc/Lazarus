@@ -5,7 +5,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2015-01-21 01:06+0300\n"
+"PO-Revision-Date: 2015-01-28 01:03+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 
@@ -261,7 +261,7 @@ msgstr "Добавить"
 
 #: objinspstrconsts.itcssearchandreplace
 msgid "Search and replace"
-msgstr ""
+msgstr "Найти и заменить"
 
 #: objinspstrconsts.liisaddvalue
 msgid "Add value"
