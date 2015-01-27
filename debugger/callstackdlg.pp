@@ -369,13 +369,18 @@ begin
         Item.ImageIndex := GetImageIndex(Entry);
         Item.SubItems[0] := IntToStr(Entry.Index);
         Source := Entry.Source;
+        if (Source = '') and (Entry.UnitInfo <> nil) and (Entry.UnitInfo.LocationFullFile <> '') then
+          Source := Entry.UnitInfo.LocationFullFile;
         if Source = '' then // we do not have a source file => just show an adress
           Source := ':' + IntToHex(Entry.Address, 8);
         Item.SubItems[1] := Source;
         if (Entry.Line = 0) and (Entry.UnitInfo <> nil) and (Entry.UnitInfo.SrcLine > 0) then
           Item.SubItems[2] := '~'+IntToStr(Entry.UnitInfo.SrcLine)
         else
-          Item.SubItems[2] := IntToStr(Entry.Line); // TODO: if editor is open, map line SrcEdit.DebugToSourceLine
+        if Entry.Line > 0 then
+          Item.SubItems[2] := IntToStr(Entry.Line) // TODO: if editor is open, map line SrcEdit.DebugToSourceLine
+        else
+          Item.SubItems[2] := '-';
         Item.SubItems[3] := GetFunction(Entry);
       end;
     end;
