@@ -183,7 +183,7 @@ msgstr "A jelenlegi fájl bezárása"
 
 #: lazdemsg.shintfileexit
 msgid "Close doc editor"
-msgstr "Dokumentáció-szerkesztő bezárása"
+msgstr "Dokumentációszerkesztő bezárása"
 
 #: lazdemsg.shintfilenew
 msgctxt "lazdemsg.shintfilenew"

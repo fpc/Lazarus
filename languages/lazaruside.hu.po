@@ -62,11 +62,11 @@ msgstr "Helyi menü (tab)"
 
 #: lazarusidestrconsts.dlfmousesimplebuttondeclaration
 msgid "Jumps to implementation"
-msgstr "Ugrás a kivitelezéshez"
+msgstr "Ugrás a kidolgozáshoz"
 
 #: lazarusidestrconsts.dlfmousesimplebuttondeclarationblock
 msgid "Jumps to implementation/other block end"
-msgstr "Ugrás a kivitelezéshez/blokk másik végéhez"
+msgstr "Ugrás a kidolgozáshoz/blokk másik végéhez"
 
 #: lazarusidestrconsts.dlfmousesimplebuttonhistback
 msgid "History back"
@@ -557,7 +557,7 @@ msgstr "Mindig látható kurzor"
 
 #: lazarusidestrconsts.dlgambigfileact
 msgid "Ambiguous file action:"
-msgstr "Bizonytalan fájl művelet:"
+msgstr "Nem egyértelmű fájlművelet:"
 
 #: lazarusidestrconsts.dlgambigwarn
 msgid "Warn on compile"
@@ -1008,7 +1008,7 @@ msgstr "Meghosszabbítás, ha illeszkedik és a beszúrási jel a szöveg belsej
 
 #: lazarusidestrconsts.dlgcompilationandlinking
 msgid "Compilation and Linking"
-msgstr "Fordítás és összefűzés"
+msgstr "Fordítás és Összefűzés"
 
 #: lazarusidestrconsts.dlgcompilermessage
 msgid "Compiler messages"
@@ -1115,7 +1115,7 @@ msgstr "Dwarf2"
 
 #: lazarusidestrconsts.dlgcosymboltypedwarf2set
 msgid "Dwarf with sets"
-msgstr ""
+msgstr "Dwarf készletekkel"
 
 #: lazarusidestrconsts.dlgcosymboltypedwarf3
 msgid "Dwarf3 (beta)"
@@ -1179,7 +1179,7 @@ msgstr "Felhasználó által megadott kiterjesztés (.pp.xxx)"
 
 #: lazarusidestrconsts.dlgdebugoptionspatheditordlgcaption
 msgid "Path Editor"
-msgstr "Útvonal-szerkesztő"
+msgstr "Útvonalszerkesztő"
 
 #: lazarusidestrconsts.dlgdebugtype
 msgid "Debugger type and path"
@@ -1267,7 +1267,7 @@ msgstr "Try/Except"
 
 #: lazarusidestrconsts.dlgdivpasunitsectionname
 msgid "Unit sections"
-msgstr "Unit részek"
+msgstr "Unit szakaszok"
 
 #: lazarusidestrconsts.dlgdivpasusesname
 msgid "Uses clause"
@@ -1522,7 +1522,7 @@ msgstr "Külső GDB hibakereső szimbólum fájl használata"
 
 #: lazarusidestrconsts.dlgfileexts
 msgid "File extensions"
-msgstr "Fájl kiterjesztések"
+msgstr "Fájlkiterjesztések"
 
 #: lazarusidestrconsts.dlgfindtextatcursor
 msgid "Find text at cursor"
@@ -1530,11 +1530,11 @@ msgstr "Kurzornál lévő szöveg keresése"
 
 #: lazarusidestrconsts.dlgfolddiffchunk
 msgid "Chunk"
-msgstr "Fájlszelet"
+msgstr "Adatblokk"
 
 #: lazarusidestrconsts.dlgfolddiffchunksect
 msgid "Chunk section"
-msgstr "Fájlszelet szakasz"
+msgstr "Adatblokk szakasz"
 
 #: lazarusidestrconsts.dlgfoldhtmlasp
 msgid "ASP"
@@ -1650,7 +1650,7 @@ msgstr "Unit"
 
 #: lazarusidestrconsts.dlgfoldpasunitsection
 msgid "Unit section"
-msgstr "Unit rész"
+msgstr "Unit szakasz"
 
 #: lazarusidestrconsts.dlgfoldpasuserregion
 msgid "{%Region}"
@@ -1955,7 +1955,7 @@ msgstr "Osztály részek beszúrása"
 
 #: lazarusidestrconsts.dlginsertimplementation
 msgid "Implementation"
-msgstr "Kivitelezés"
+msgstr "Kidolgozás"
 
 #: lazarusidestrconsts.dlginsertinterface
 msgid "Interface"
@@ -1967,7 +1967,7 @@ msgstr "Metódusok beszúrása"
 
 #: lazarusidestrconsts.dlginsertsection
 msgid "Insert into Uses section of"
-msgstr "Beszúrás a Uses részbe ebben:"
+msgstr "Beszúrás a Uses szakaszba ebben:"
 
 #: lazarusidestrconsts.dlginsspaceafter
 msgid "Insert space after"
@@ -2422,7 +2422,7 @@ msgstr "-"
 #: lazarusidestrconsts.dlgmouseoptmodkeytrue
 msgctxt "lazarusidestrconsts.dlgmouseoptmodkeytrue"
 msgid "Y"
-msgstr "Y"
+msgstr "I"
 
 #: lazarusidestrconsts.dlgmouseoptmodshift
 msgctxt "lazarusidestrconsts.dlgmouseoptmodshift"
@@ -2432,7 +2432,7 @@ msgstr "Shift"
 #: lazarusidestrconsts.dlgmouseoptmovemousetrue
 msgctxt "lazarusidestrconsts.dlgmouseoptmovemousetrue"
 msgid "Y"
-msgstr "Y"
+msgstr "I"
 
 #: lazarusidestrconsts.dlgmouseoptnodeall
 msgctxt "lazarusidestrconsts.dlgmouseoptnodeall"
@@ -2471,9 +2471,8 @@ msgid "Selection"
 msgstr "Kijelölés"
 
 #: lazarusidestrconsts.dlgmouseoptopt2label
-#, fuzzy
 msgid "Opt"
-msgstr "Opt"
+msgstr "Paraméter"
 
 #: lazarusidestrconsts.dlgmouseoptotheract
 msgid "Other actions using the same button"
@@ -2547,7 +2546,7 @@ msgstr "Nincs kiemelés"
 
 #: lazarusidestrconsts.dlgnotebooktabpos
 msgid "Source notebook tabs position"
-msgstr "Forráskód-szerkesztő füleinek helye"
+msgstr "Forráskódszerkesztő füleinek helye"
 
 #: lazarusidestrconsts.dlgnotsplitlineafter
 msgid "Do not split line after"
@@ -2741,16 +2740,12 @@ msgid "UI Access (uiAccess)"
 msgstr "UI Access (uiAccess)"
 
 #: lazarusidestrconsts.dlgpouseappbundle
-#, fuzzy
-#| msgid "Use Application Bundle for running and debugging (Darwin only)"
 msgid "Use Application Bundle for running and debugging"
-msgstr "Alkalmazásköteg használata futtatáshoz és hibakereséshez (csak Darwin)"
+msgstr "Alkalmazásköteg használata futtatáshoz és hibakereséshez"
 
 #: lazarusidestrconsts.dlgpousemanifest
-#, fuzzy
-#| msgid "Use manifest file to enable themes (Windows only)"
 msgid "Use manifest file to enable themes"
-msgstr "Témák engedélyezése jegyzékfájl használatával (csak Windows)"
+msgstr "Témák engedélyezése jegyzékfájl használatával"
 
 #: lazarusidestrconsts.dlgpreferdoubleclickoversingleclick
 msgid "Prefer double-click over single-click"
@@ -2966,7 +2961,7 @@ msgstr "Elem alapértelmezettre állítása"
 
 #: lazarusidestrconsts.dlgsetpropertyvariable
 msgid "Set property Variable"
-msgstr ""
+msgstr "Tulajdonság-beállítás változója"
 
 #: lazarusidestrconsts.dlgshowallunits
 msgid "Show all units"
@@ -3103,7 +3098,7 @@ msgstr "Tippek a fő gyorsgombokhoz (megnyitás, mentés, ...)"
 #: lazarusidestrconsts.dlgsrcedit
 msgctxt "lazarusidestrconsts.dlgsrcedit"
 msgid "Source Editor"
-msgstr "Forráskód-szerkesztő"
+msgstr "Forráskódszerkesztő"
 
 #: lazarusidestrconsts.dlgsrorigin
 msgid "Origin"
@@ -3300,7 +3295,7 @@ msgstr "Fül előzmények használata fülek bezárásakor"
 
 #: lazarusidestrconsts.dlguseunitcaption
 msgid "Add unit to Uses section"
-msgstr "Unit hozzáadása a uses részhez"
+msgstr "Unit hozzáadása a uses szakaszhoz"
 
 #: lazarusidestrconsts.dlgvaluecolor
 msgctxt "lazarusidestrconsts.dlgvaluecolor"
@@ -3498,15 +3493,15 @@ msgstr "Hozzáadás csomaghoz"
 
 #: lazarusidestrconsts.lisa2pambiguousancestortype
 msgid "Ambiguous Ancestor Type"
-msgstr "Ellentmondásos ős típus"
+msgstr "Nem egyértelmű ős-típus"
 
 #: lazarusidestrconsts.lisa2pambiguousclassname
 msgid "Ambiguous Class Name"
-msgstr "Ellentmondásos osztály név"
+msgstr "Nem egyértelmű osztálynév"
 
 #: lazarusidestrconsts.lisa2pambiguousunitname
 msgid "Ambiguous Unit Name"
-msgstr "Ellentmondásos unit név"
+msgstr "Nem egyértelmű unit-név"
 
 #: lazarusidestrconsts.lisa2pancestortype
 msgid "Ancestor Type"
@@ -3523,7 +3518,7 @@ msgstr "Megszakadt függőségek"
 
 #: lazarusidestrconsts.lisa2pclassnamealreadyexists
 msgid "Class Name already exists"
-msgstr "Osztály név már létezik"
+msgstr "Az osztálynév már létezik"
 
 #: lazarusidestrconsts.lisa2pcreatenewcomp
 msgid "Create New Component"
@@ -3547,7 +3542,7 @@ msgstr "Létező fájl: \"%s\""
 
 #: lazarusidestrconsts.lisa2pfilealreadyexists
 msgid "File already exists"
-msgstr "Fájl már létezik"
+msgstr "A fájl már létezik"
 
 #: lazarusidestrconsts.lisa2pfilealreadyexistsinthepackage
 msgid "File \"%s\" already exists in the package."
@@ -3555,7 +3550,7 @@ msgstr "A(z) \"%s\" fájl már létezik a csomagban."
 
 #: lazarusidestrconsts.lisa2pfileisused
 msgid "File is used"
-msgstr "Fájl használatban"
+msgstr "A fájl használatban van"
 
 #: lazarusidestrconsts.lisa2pfilename2
 msgid "Filename"
@@ -3587,11 +3582,11 @@ msgstr "Érvénytelen fájlnév"
 
 #: lazarusidestrconsts.lisa2pinvalidunitname
 msgid "Invalid Unit Name"
-msgstr "Érvényelen unit név"
+msgstr "Érvényelen unit-név"
 
 #: lazarusidestrconsts.lisa2pisnotavalidunitname
 msgid "\"%s\" is not a valid unit name."
-msgstr "A(z) \"%s\" nem érvényes unit név."
+msgstr "A(z) \"%s\" nem érvényes unit-név."
 
 #: lazarusidestrconsts.lisa2pnewclassname
 msgid "New class name:"
@@ -3669,7 +3664,7 @@ msgstr "A(z)\"%s\" fájl már része a jelenlegi projektnek.%sRossz ötlet fájl
 
 #: lazarusidestrconsts.lisa2pthefilenameisambiguouspleasespecifiyafilename
 msgid "The filename \"%s\" is ambiguous, because the package has no default directory yet.%sPlease specify a filename with full path."
-msgstr "A(z) \"%s\" fájlnév ellentmondásos, mert a csomagnak még nincs alapértelmezett könyvtára.%sAdjon meg egy fájlnevet teljes elérési úttal!"
+msgstr "A(z) \"%s\" fájlnév nem egyértelmű, mert a csomagnak még nincs alapértelmezett könyvtára.%sAdjon meg egy fájlnevet teljes elérési úttal!"
 
 #: lazarusidestrconsts.lisa2pthemaximumversionisinvalidpleaseusetheformatmajor
 msgctxt "lazarusidestrconsts.lisa2pthemaximumversionisinvalidpleaseusetheformatmajor"
@@ -3700,39 +3695,39 @@ msgstr "A(z) \"%s\" csomagnév túl hosszú (legfeljebb 100 karakter lehet)."
 
 #: lazarusidestrconsts.lisa2ptheunitnamealreadyexistsinthepackage
 msgid "The unitname \"%s\" already exists in the package:%s%s"
-msgstr "A(z) \"%s\" unit név már létezik a csomagban: %s%s"
+msgstr "A(z) \"%s\" unit-név már létezik a csomagban: %s%s"
 
 #: lazarusidestrconsts.lisa2ptheunitnamealreadyexistsinthispackage
 msgid "The unitname \"%s\" already exists in this package."
-msgstr "A(z) \"%s\" unit név már létezik ebben a csomagban."
+msgstr "A(z) \"%s\" unit-név már létezik ebben a csomagban."
 
 #: lazarusidestrconsts.lisa2ptheunitnameandfilenamediffer
 msgid "The unit name \"%s\"%sand filename \"%s\" differ."
-msgstr "A(z) \"%s\" unit név%sés a(z) \"%s\" fájlnév különbözik."
+msgstr "A(z) \"%s\" unit-név%sés a(z) \"%s\" fájlnév különbözik."
 
 #: lazarusidestrconsts.lisa2ptheunitnamedoesnotcorrespondtothefilename
 msgid "The unit name \"%s\" does not correspond to the filename."
-msgstr "A(z) \"%s\" unit név nem megfelelő a fájlnévhez."
+msgstr "A(z) \"%s\" unit-név nem megfelelő a fájlnévhez."
 
 #: lazarusidestrconsts.lisa2ptheunitnameisthesameasanregisteredcomponent
 msgid "The unit name \"%s\" is the same as a registered component.%sUsing this can cause strange error messages."
-msgstr "A(z) \"%s\" unit neve megegyezik egy regisztrált komponens nevével.%sEnnek használata furcsa hibaüzeneteket okozhat."
+msgstr "A(z) \"%s\" unit-név megegyezik egy regisztrált komponens nevével.%sEnnek használata furcsa hibaüzeneteket okozhat."
 
 #: lazarusidestrconsts.lisa2punitfilename2
 msgid "Unit File Name:"
-msgstr "Unit fájl név:"
+msgstr "Unit fájlneve:"
 
 #: lazarusidestrconsts.lisa2punitname
 msgid "Unit Name:"
-msgstr "Unit név:"
+msgstr "Unit-név:"
 
 #: lazarusidestrconsts.lisa2punitnamealreadyexists
 msgid "Unitname already exists"
-msgstr "Unit név már létezik"
+msgstr "A unit-név már létezik"
 
 #: lazarusidestrconsts.lisa2punitnameinvalid
 msgid "Unit Name Invalid"
-msgstr "Unit név érvénytelen"
+msgstr "A unit-név érvénytelen"
 
 #: lazarusidestrconsts.lisabandonchanges
 msgid "Abandon changes?"
@@ -3985,7 +3980,7 @@ msgstr "A(z) %s csomag csak olvasható"
 
 #: lazarusidestrconsts.lisaf2punitname
 msgid "Unit name: "
-msgstr "Unit név:"
+msgstr "Unit-név:"
 
 #: lazarusidestrconsts.lisafilealreadyexistsreplaceit
 msgid "A file \"%s\" already exists.%sReplace it?"
@@ -4073,11 +4068,11 @@ msgstr "Egy makró már létezik ezzel a névvel."
 
 #: lazarusidestrconsts.lisambiguousfilefound
 msgid "Ambiguous file found"
-msgstr "Megtévesztő fájl található"
+msgstr "Megtévesztő fájl"
 
 #: lazarusidestrconsts.lisambiguousfilefoundthisfilecanbemistakenwithdelete
 msgid "Ambiguous file found: \"%s\"%sThis file can be mistaken with \"%s\"%sDelete the ambiguous file?"
-msgstr "Megtévesztő fájl található: \"%s\"%sEz a fájl összetéveszthető ezzel: \"%s\"%sTörli a megtévesztő fájlt?"
+msgstr "Megtévesztő fájl: \"%s\"%sEz a fájl összetéveszthető ezzel: \"%s\"%sTörli a megtévesztő fájlt?"
 
 #: lazarusidestrconsts.lisambiguousfilesfound
 msgid "Ambiguous files found"
@@ -4097,7 +4092,7 @@ msgstr "Alsó szél horgonyzása a testvér felső széléhez. A megtartott táv
 
 #: lazarusidestrconsts.lisanchoreditornocontrolselected
 msgid "Anchor Editor - no control selected"
-msgstr "Horgony-szerkesztő - nincs vezérlő kijelölve"
+msgstr "Horgonyszerkesztő - nincs vezérlő kijelölve"
 
 #: lazarusidestrconsts.lisanchorenabledhint
 msgid "Enabled = Include %s in Anchors"
@@ -4170,7 +4165,7 @@ msgstr "Keret-térköz a vezérlő körül. A másik négy térköz ehhez az ér
 
 #: lazarusidestrconsts.lisaskbeforereplacingeachfoundtext
 msgid "Ask before replacing each found text"
-msgstr "Rákérdez minden megtalált szöveg cseréje előtt"
+msgstr "Kérdés minden megtalált szöveg cseréje előtt"
 
 #: lazarusidestrconsts.lisaskbeforesavingprojectssession
 msgid "Ask before saving project's session"
@@ -4315,11 +4310,11 @@ msgstr "Futtatás parancs"
 
 #: lazarusidestrconsts.lisbfwhenthisfileisactiveinsourceeditor
 msgid "When this file is active in source editor"
-msgstr "Amikor ez a fájl aktív a forráskód-szerkesztőben"
+msgstr "Amikor ez a fájl aktív a forráskódszerkesztőben"
 
 #: lazarusidestrconsts.lisbfworkingdirectoryleaveemptyforfilepath
 msgid "Working directory (leave empty for file path)"
-msgstr "Munka könyvtár (maradjon üres a fájl útvonalához)"
+msgstr "Munkakönyvtár (maradjon üres a fájl útvonala esetén)"
 
 #: lazarusidestrconsts.lisboldnondefaultobjectinspector
 msgid "Bold non default values"
@@ -4672,11 +4667,11 @@ msgstr "Minden teszt sikerült."
 
 #: lazarusidestrconsts.lisccounabletocreatetestfile
 msgid "Unable to create Test File"
-msgstr "Teszt fájl létrehozása nem lehetséges"
+msgstr "A tesztfájl létrehozása nem lehetséges"
 
 #: lazarusidestrconsts.lisccounabletocreatetestpascalfile
 msgid "Unable to create Test Pascal file \"%s\"."
-msgstr "A(z) \"%s\" pascal teszt fájl létrehozása nem lehetséges."
+msgstr "A(z) \"%s\" pascal tesztfájl létrehozása nem lehetséges."
 
 #: lazarusidestrconsts.lisccounusualchars
 msgid "unusual characters"
@@ -4712,7 +4707,7 @@ msgstr "Üres blokkok"
 
 #: lazarusidestrconsts.lisceemptyclasssections
 msgid "Empty class sections"
-msgstr "Üres osztály részek"
+msgstr "Üres osztály szakaszok"
 
 #: lazarusidestrconsts.lisceemptygroup
 msgid "Empty constructs"
@@ -4836,7 +4831,7 @@ msgstr "Frissítés"
 
 #: lazarusidestrconsts.lisceowhenswitchingfile
 msgid "When switching file in source editor"
-msgstr "Másik fájl kiválasztásakor a forráskód-szerkesztőben"
+msgstr "Másik fájl kiválasztásakor a forráskódszerkesztőben"
 
 #: lazarusidestrconsts.lisceprocedures
 msgid "Procedures"
@@ -4862,7 +4857,7 @@ msgstr "Stílus"
 
 #: lazarusidestrconsts.liscesurrounding
 msgid "Surrounding"
-msgstr "Környező kód"
+msgstr "Környezet"
 
 #: lazarusidestrconsts.liscetodos
 msgid "ToDos"
@@ -4923,15 +4918,15 @@ msgstr "Betöltés folytatása"
 
 #: lazarusidestrconsts.liscfedonotknowhowtocopythisformeditingselection
 msgid "Do not know how to copy this form editing selection"
-msgstr "Nem tudom, hogyan kell másolni ezt a kijelölést az form-szerkesztőben"
+msgstr "Nem tudom, hogyan kell másolni ezt a kijelölést az Form-szerkesztőben"
 
 #: lazarusidestrconsts.liscfedonotknowhowtocutthisformeditingselection
 msgid "Do not know how to cut this form editing selection"
-msgstr "Nem tudom, hogyan kell kivágni ezt a kijelölést az form-szerkesztőben"
+msgstr "Nem tudom, hogyan kell kivágni ezt a kijelölést az Form-szerkesztőben"
 
 #: lazarusidestrconsts.liscfedonotknowhowtodeletethisformeditingselection
 msgid "Do not know how to delete this form editing selection"
-msgstr "Nem tudom, hogyan kell törölni ezt a kijelölést az form-szerkesztőben"
+msgstr "Nem tudom, hogyan kell törölni ezt a kijelölést az Form-szerkesztőben"
 
 #: lazarusidestrconsts.liscfeerrorcreatingcomponent
 msgid "Error creating component"
@@ -5003,7 +4998,7 @@ msgstr "TCustomFormEditor.RegisterDesignerMediator már regisztrálva van: %s"
 
 #: lazarusidestrconsts.liscfethecomponenteditorofclasshascreatedtheerror
 msgid "The component editor of class \"%s\"has created the error:%s\"%s\""
-msgstr "A(z) \"%s\" osztály komponens-szerkesztője ezt a hibát generálta:%s\"%s\""
+msgstr "A(z) \"%s\" osztály komponensszerkesztője a következő hibát okozta:%s\"%s\""
 
 #: lazarusidestrconsts.liscfethecomponentoftypefailedtosetitsownerto
 msgid "The component of type %s failed to set its owner to %s:%s"
@@ -5011,7 +5006,7 @@ msgstr "A(z) %s típusú komponens nem tudta beállítani saját szülőjeként 
 
 #: lazarusidestrconsts.liscfeunabletocleartheformeditingselection
 msgid "Unable to clear the form editing selection%s%s"
-msgstr "Nem lehet megszüntetni a kijelölést az form-szerkesztőben%s%s"
+msgstr "Nem lehet megszüntetni a kijelölést az Form-szerkesztőben%s%s"
 
 #: lazarusidestrconsts.lischange
 msgctxt "lazarusidestrconsts.lischange"
@@ -5091,11 +5086,11 @@ msgstr "Beállítások ellenőrzése"
 #: lazarusidestrconsts.lischecksearchpathpackagetryacleanrebuildcheckimpleme
 msgctxt "lazarusidestrconsts.lischecksearchpathpackagetryacleanrebuildcheckimpleme"
 msgid ". Check search path of package %s, try a clean rebuild, check implementation uses sections."
-msgstr ". Ellenőrizze a(z) %s csomag keresési útvonalát, próbáljon tiszta újraépítést, ellenőrizze a kivitelezés uses részét!"
+msgstr ". Ellenőrizze a(z) %s csomag keresési útvonalát, próbáljon tiszta újraépítést, ellenőrizze a kidolgozás uses szakaszát!"
 
 #: lazarusidestrconsts.lischeckthetargetoscpulclwidgettypemaybeyouhavetoreco
 msgid "%s Check the target (OS, CPU, LCL widget type). Maybe you have to recompile the package for this target or set another target for the project."
-msgstr "%s Ellenőrizze a célt (OS, CPU, LCL ablakelem-készlet)! Talán újra kell fordítani a csomagot ehhez a célhoz vagy másik célt választani a projekthez."
+msgstr "%s Ellenőrizze a célt (OS, CPU, LCL vezérlőkészlet típusa)! Talán újra kell fordítani a csomagot ehhez a célhoz vagy másik célt választani a projekthez."
 
 #: lazarusidestrconsts.lischooseadifferentname
 msgid "Choose a different name"
@@ -5343,11 +5338,11 @@ msgstr "Ablak elrejtése"
 
 #: lazarusidestrconsts.lisclosealltabsquestion
 msgid "Closing a Source Editor Window. Do you want close all files or hide the window?"
-msgstr "Forráskód-szerkesztő bezárása. Be akarja zárni az összes fájlt vagy elrejteni az ablakot?"
+msgstr "Forráskódszerkesztő bezárása. Be akarja zárni az összes fájlt vagy elrejteni az ablakot?"
 
 #: lazarusidestrconsts.lisclosealltabstitle
 msgid "Close Source Editor Window"
-msgstr "Forráskód-szerkesztő bezárása"
+msgstr "Forráskódszerkesztő bezárása"
 
 #: lazarusidestrconsts.liscmdlinelclinterfacespecificoptions
 msgid "LCL Interface specific options:"
@@ -5380,11 +5375,11 @@ msgstr "Lapok"
 
 #: lazarusidestrconsts.liscmprestoredefaults
 msgid "&Restore defaults"
-msgstr "Alapértelmezések visszaállítása"
+msgstr "Helyreállítás"
 
 #: lazarusidestrconsts.liscoambiguousadditionalcompilerconfigfile
 msgid "Ambiguous additional compiler config file"
-msgstr "Megtévesztő további fordító beállítási fájl"
+msgstr "Megtévesztő további fordítóbeállítási fájl"
 
 #: lazarusidestrconsts.liscocallon
 msgid "Call on:"
@@ -5598,7 +5593,7 @@ msgstr "Blokk"
 
 #: lazarusidestrconsts.liscodetoolsdefscodetoolsdefineseditor
 msgid "CodeTools Defines Editor"
-msgstr "CodeTools beállítás-szerkesztő"
+msgstr "CodeTools beállításszerkesztő"
 
 #: lazarusidestrconsts.liscodetoolsdefscompilerpath
 msgid "Compiler path"
@@ -6004,7 +5999,7 @@ msgstr "Minden unit összecsukása"
 
 #: lazarusidestrconsts.liscolreturns
 msgid "Returns"
-msgstr ""
+msgstr "Eredmény típusa"
 
 #: lazarusidestrconsts.liscolvisibility
 msgid "Visibility"
@@ -6066,11 +6061,11 @@ msgstr "A fordító üzenetek fájlja nem található:%s%s"
 
 #: lazarusidestrconsts.liscompilernotecodetoolsconfigfilenotfoundusingdefaults
 msgid "NOTE: codetools config file not found - using defaults"
-msgstr "MEGJEGYZÉS: CodeTools konfigurációs fájl nem található - alapértelmezett beállítások használata"
+msgstr "MEGJEGYZÉS: a CodeTools beállításfájl nem található - az alapértelmezések lesznek használva"
 
 #: lazarusidestrconsts.liscompilernoteloadingoldcodetoolsoptionsfile
 msgid "NOTE: loading old codetools options file: "
-msgstr "MEGJEGYZÉS: régi CodeTools beállítási fájl beolvasása:"
+msgstr "MEGJEGYZÉS: a régi CodeTools beállításfájl beolvasása:"
 
 #: lazarusidestrconsts.liscompilestage
 msgctxt "lazarusidestrconsts.liscompilestage"
@@ -6260,7 +6255,7 @@ msgstr "Megjegyzés hozzáadása csere után"
 
 #: lazarusidestrconsts.lisconvaddedunittousessection
 msgid "Added unit %s to uses section"
-msgstr "A(z) %s unit hozzá lett adva a uses részhez"
+msgstr "A(z) %s unit hozzá lett adva a uses szakaszhoz"
 
 #: lazarusidestrconsts.lisconvaddingflagforregister
 msgid "Adding flag for \"Register\" procedure in unit %s."
@@ -6377,7 +6372,7 @@ msgstr "* Használt unitok véglegesítése a fájlban: %s *"
 
 #: lazarusidestrconsts.lisconvdelphifoundallunitfiles
 msgid "Found all unit files"
-msgstr "Minden unit fájl megkeresése"
+msgstr "Minden unit-fájl megkeresése"
 
 #: lazarusidestrconsts.lisconvdelphifunc
 msgid "Delphi Function"
@@ -6405,11 +6400,11 @@ msgstr "A(z) %s unit kihagyva a projektből"
 
 #: lazarusidestrconsts.lisconvdelphiremovedunitinusessection
 msgid "Removed unit \"%s\" in uses section."
-msgstr "Eltávolított unit a uses részben: %s"
+msgstr "Eltávolított unit a uses szakaszban: %s"
 
 #: lazarusidestrconsts.lisconvdelphirepairingformfile
 msgid "* Repairing form file %s *"
-msgstr "* A form fájl rendbeszedése: %s *"
+msgstr "* A form-fájl rendbeszedése: %s *"
 
 #: lazarusidestrconsts.lisconvdelphirepairingformfiles
 msgid "*** Fixing used units and Repairing form files ***"
@@ -6418,7 +6413,7 @@ msgstr "*** Használt unit-ok véglegesítése és a form fájlok rendbeszedése
 #: lazarusidestrconsts.lisconvdelphireplacedunitinusessection
 msgctxt "lazarusidestrconsts.lisconvdelphireplacedunitinusessection"
 msgid "Replaced unit \"%s\" with \"%s\" in uses section."
-msgstr "A(z) \"%s\" unit a \"%s\" unit-ra lett cserélve a uses részben."
+msgstr "A(z) \"%s\" unit a \"%s\" unit-ra lett cserélve a uses szakaszban."
 
 #: lazarusidestrconsts.lisconvdelphithereisalreadyapackagewiththenamepleaseclosethispa
 msgid "There is already a package with the name \"%s\"%sPlease close this package first."
@@ -6426,7 +6421,7 @@ msgstr "Már létezik egy csomag ezzel a névvel: \"%s\"%sElőször zárja be ez
 
 #: lazarusidestrconsts.lisconvdelphiunitnameexistsinlcl
 msgid "Unitname exists in LCL"
-msgstr "A unit neve megtalálható az LCL-ben"
+msgstr "A unit-név megtalálható az LCL-ben"
 
 #: lazarusidestrconsts.lisconvdelphiunitstoreplacein
 msgid "Units to replace in %s"
@@ -6498,7 +6493,7 @@ msgstr "Feltételes fordítás használata a Delphi támogatásához"
 
 #: lazarusidestrconsts.lisconvfixedunitname
 msgid "Fixed unit name from %s to %s."
-msgstr "A unit neve javítva lett erről:  %s, erre: %s"
+msgstr "A unit-név javítva lett erről:  %s, erre: %s"
 
 #: lazarusidestrconsts.lisconvfuncreplacements
 msgid "Function Replacements"
@@ -6527,15 +6522,15 @@ msgstr "Szülő tároló"
 
 #: lazarusidestrconsts.lisconvproblemsfindingallunits
 msgid "Problems when trying to find all units from project file %s"
-msgstr "Gond van a(z) %s projektfájlban használt összes unit megkeresése közben"
+msgstr "Gondok a(z) %s projektfájlban használt összes unit megkeresése közben"
 
 #: lazarusidestrconsts.lisconvproblemsfixingincludefile
 msgid "Problems when fixing include files in file %s"
-msgstr "Gond van a(z) %s fájl include fájljainak rendbeszedése közben"
+msgstr "Gondok a(z) %s fájl beemelt fájljainak rendbeszedése közben"
 
 #: lazarusidestrconsts.lisconvproblemsrepairingformfile
 msgid "Problems when repairing form file %s"
-msgstr "Gond van a(z) %s form fájl rendbeszedése közben"
+msgstr "Gondok a(z) %s form-fájl rendbeszedése közben"
 
 #: lazarusidestrconsts.lisconvrepairingincludefiles
 msgid "Repairing include files : "
@@ -6583,7 +6578,7 @@ msgstr "Unit cserék"
 
 #: lazarusidestrconsts.lisconvunitreplhint
 msgid "Unit names in uses section of a source unit"
-msgstr "A unit-ok nevei a forrás unit uses részében"
+msgstr "Unit-nevek egy forrás unit uses szakaszában"
 
 #: lazarusidestrconsts.lisconvunitstoreplace
 msgid "Units to replace"
@@ -6636,7 +6631,7 @@ msgstr "Hiba másolása"
 
 #: lazarusidestrconsts.liscopyfilename
 msgid "Copy Filename %s"
-msgstr ""
+msgstr "Fájlnév másolása: %s"
 
 #: lazarusidestrconsts.liscopyfilenametoclipboard
 msgid "Copy File Name to Clipboard"
@@ -6847,7 +6842,7 @@ msgstr "Jelenlegi"
 
 #: lazarusidestrconsts.liscurrentlclwidgetset
 msgid "Current LCL widgetset: \"%s\""
-msgstr "Jelenlegi LCL ablakelem-készlet: \"%s\""
+msgstr "Jelenlegi LCL vezérlőkészlet: \"%s\""
 
 #: lazarusidestrconsts.liscurrentstate
 msgid "Current state: "
@@ -7229,7 +7224,7 @@ msgstr "Ablakok"
 
 #: lazarusidestrconsts.lisdebugunabletoloadfile
 msgid "Unable to load file"
-msgstr "Fájl betöltése nem lehetséges"
+msgstr "A fájl betöltése nem lehetséges"
 
 #: lazarusidestrconsts.lisdebugunabletoloadfile2
 msgid "Unable to load file \"%s\"."
@@ -7320,7 +7315,7 @@ msgstr "Törli a következőhöz beállított figyelési pontot: \"%s\"?"
 
 #: lazarusidestrconsts.lisdeletefilefailed
 msgid "Delete file failed"
-msgstr "Fájl törlés sikertelen"
+msgstr "A fájl törlése sikertelen"
 
 #: lazarusidestrconsts.lisdeletemacro
 msgid "Delete macro \"%s\"?"
@@ -7561,7 +7556,7 @@ msgstr "Kattintson az alábbi elemek egyikére, hogy lássa a különbségeket"
 
 #: lazarusidestrconsts.lisdiskdifferrorreadingfile
 msgid "Error reading file: %s"
-msgstr "Hiba a( fájl olvasása közben: %s"
+msgstr "Hiba a fájl olvasása közben: %s"
 
 #: lazarusidestrconsts.lisdiskdiffignorediskchanges
 msgid "Ignore disk changes"
@@ -7627,7 +7622,7 @@ msgstr "%s nem létezik: %s"
 
 #: lazarusidestrconsts.lisdonotchange
 msgid "Do not change"
-msgstr "Ne változtasson"
+msgstr "Ne változzon"
 
 #: lazarusidestrconsts.lisdonotclosetheproject
 msgid "Do not close the project"
@@ -7929,7 +7924,7 @@ msgstr "Metódusok eltávolítása"
 
 #: lazarusidestrconsts.lisemdsearchintheseclasssections
 msgid "Search in these class sections:"
-msgstr "Keresés ezekben az osztály részben:"
+msgstr "Keresés ezen osztályszakaszokban:"
 
 #: lazarusidestrconsts.lisemdunabletoshowemptymethodsofthecurrentclassbecause
 msgid "Unable to show empty methods of the current class, because%s%s"
@@ -8047,7 +8042,7 @@ msgstr "Hiba:"
 
 #: lazarusidestrconsts.liserrorcreatingfile
 msgid "Error creating file"
-msgstr "Hiba fájl létrehozás közben"
+msgstr "Hiba a fájl létrehozása közben"
 
 #: lazarusidestrconsts.liserrordeletingfile
 msgid "Error deleting file"
@@ -8066,10 +8061,8 @@ msgid "Error in the custom compiler options (Other):"
 msgstr "Hiba az egyéni fordítóbeállításokban (Egyéb):"
 
 #: lazarusidestrconsts.liserrorinthecustomlinkeroptionslinkingpassoptionstol
-#, fuzzy
-#| msgid "Error in the custom linker options (Linking / Pass options to linker):"
 msgid "Error in the custom linker options (Compilation and Linking / Pass options to linker):"
-msgstr "Hiba az egyéni összefűzési beállításokban (Összefűzés / Paraméterek átadása az összefűzőnek):"
+msgstr "Hiba az egyéni összefűzési beállításokban (Fordítás és Összefűzés / Paraméterek átadása az összefűzőnek):"
 
 #: lazarusidestrconsts.liserrorinthedebuggerpathaddition
 msgid "Error in the \"Debugger path addition\":"
@@ -8149,7 +8142,7 @@ msgstr "Hiba az XML fájl olvasása közben: \"%s\"%s%s"
 
 #: lazarusidestrconsts.liserrorrenamingfile
 msgid "Error renaming file"
-msgstr "Hiba fájl átnevezés közben"
+msgstr "Hiba a fájl átnevezése közben"
 
 #: lazarusidestrconsts.liserrors
 msgctxt "lazarusidestrconsts.liserrors"
@@ -8325,11 +8318,11 @@ msgstr "Kifejezés:"
 
 #: lazarusidestrconsts.lisextendincludefilesearchpathofpackagewith
 msgid "Extend include file search path of package \"%s\" with%s\"%s\"?"
-msgstr "Kibővíti a(z) \"%s\" csomag include fájl keresési útvonalát ezzel:%s\"%s\"?"
+msgstr "Kibővíti a(z) \"%s\" csomag beemelt fájlok keresési útvonalát ezzel:%s\"%s\"?"
 
 #: lazarusidestrconsts.lisextendincludefilessearchpathofprojectwith
 msgid "Extend include files search path of project with%s\"%s\"?"
-msgstr "Kibővíti a projekt include fájl keresési útvonalát ezzel:%s\"%s\"?"
+msgstr "Kibővíti a projekt beemelt fájlok keresési útvonalát ezzel:%s\"%s\"?"
 
 #: lazarusidestrconsts.lisextendincludepath
 msgid "Extend include path?"
@@ -8421,15 +8414,15 @@ msgstr "A(z) \"%s\"%s fájl nem tűnik szövegfájlnak.%sMindenképpen megnyitja
 
 #: lazarusidestrconsts.lisfileextensionofprograms
 msgid "File extension of programs"
-msgstr "Programok fájl kiterjesztése"
+msgstr "Programok fájlkiterjesztése"
 
 #: lazarusidestrconsts.lisfilefilter
 msgid "File filter"
-msgstr "Fájl szűrő"
+msgstr "Fájlszűrő"
 
 #: lazarusidestrconsts.lisfilefilters
 msgid "File Filters"
-msgstr "Fájl szűrők"
+msgstr "Fájlszűrők"
 
 #: lazarusidestrconsts.lisfilefiltersaddrow
 msgid "Add Row"
@@ -8445,7 +8438,7 @@ msgstr "Sor beszúrása"
 
 #: lazarusidestrconsts.lisfilefiltersmask
 msgid "File mask"
-msgstr "Fájl maszk"
+msgstr "Fájlmaszk"
 
 #: lazarusidestrconsts.lisfilefilterssetdefaults
 msgid "Set defaults"
@@ -8485,7 +8478,7 @@ msgstr "A(z) \"%s\" fájl virtuális."
 
 #: lazarusidestrconsts.lisfilelinkerror
 msgid "File link error"
-msgstr "Fájl összefűzési hiba"
+msgstr "Fájl csatolási hiba"
 
 #: lazarusidestrconsts.lisfilenameaddress
 msgid "Filename/Address"
@@ -8497,7 +8490,7 @@ msgstr "Fájlnév stílusa"
 
 #: lazarusidestrconsts.lisfilenotfound
 msgid "File not found"
-msgstr "Fájl nem található"
+msgstr "A fájl nem található"
 
 #: lazarusidestrconsts.lisfilenotfound2
 msgctxt "lazarusidestrconsts.lisfilenotfound2"
@@ -8538,7 +8531,7 @@ msgstr "A(z) %s fájl szintaxisa helytelen."
 
 #: lazarusidestrconsts.lisfileshasregisterprocedureinpackageusessection
 msgid "Files: %s, has Register procedure: %s, in package uses section: %s"
-msgstr "Fájlok: %s, melyeknek van Register eljárása: %s, a csomag uses részében: %s"
+msgstr "Fájlok: %s, melyeknek van Register eljárása: %s, a csomag uses szakaszában: %s"
 
 #: lazarusidestrconsts.lisfileshaverightencoding
 msgid "*** All found files already have the right encoding ***"
@@ -8550,7 +8543,7 @@ msgstr "ASCII vagy UTF-8 kódolású fájlok"
 
 #: lazarusidestrconsts.lisfilesisconvertedtotextformat
 msgid "File %s is converted to text format."
-msgstr "A(z) %s fájl szövegformátumúvá lett alakítva"
+msgstr "A(z) %s fájl szöveg formátumúvá lett alakítva"
 
 #: lazarusidestrconsts.lisfilesnotinasciinorutf8encoding
 msgid "Files not in ASCII nor UTF-8 encoding"
@@ -8634,7 +8627,7 @@ msgstr "&Könyvtárak"
 
 #: lazarusidestrconsts.lisfindfilefilemask
 msgid "Fi&le mask"
-msgstr "Fájl maszk"
+msgstr "Fáj&lmaszk"
 
 #: lazarusidestrconsts.lisfindfileincludesubdirectories
 msgid "Include &sub directories"
@@ -8698,7 +8691,7 @@ msgstr "Átnevezés erőltetése"
 
 #: lazarusidestrconsts.lisfordarwin
 msgid "For Darwin"
-msgstr ""
+msgstr "Darwin esetén"
 
 #: lazarusidestrconsts.lisforexampleshowattopthelocalvariablesthenthemembers
 msgid "For example show at top the local variables, then the members of current class, then of the ancestors, then the current unit, then of used units"
@@ -8714,7 +8707,7 @@ msgstr "Formátum hiba"
 
 #: lazarusidestrconsts.lisforwindows
 msgid "For Windows"
-msgstr ""
+msgstr "Windows esetén"
 
 #: lazarusidestrconsts.lisfoundversionexpected
 msgid "Found version %s, expected %s"
@@ -8787,7 +8780,7 @@ msgstr "FPDoc csomagnév. Alapértelmezett a projektfájl neve."
 
 #: lazarusidestrconsts.lisfpdocthereisasyntaxerrorinthefpdocelement
 msgid "There is a syntax error in the fpdoc element \"%s\":%s%s"
-msgstr "Szintaxis hiba van a(z) \"%s\" fpdoc elemben:%s%s"
+msgstr "Szintaxis hiba van a(z) \"%s\" FPDoc elemben:%s%s"
 
 #: lazarusidestrconsts.lisframe
 msgid "Frame"
@@ -9109,13 +9102,11 @@ msgid "ID"
 msgstr "ID"
 
 #: lazarusidestrconsts.lisidcadd
-#, fuzzy
 msgctxt "lazarusidestrconsts.lisidcadd"
 msgid "Add"
 msgstr "Hozzáadás"
 
 #: lazarusidestrconsts.lisidcopen
-#, fuzzy
 msgctxt "lazarusidestrconsts.lisidcopen"
 msgid "Open"
 msgstr "Megnyitás"
@@ -9150,7 +9141,7 @@ msgstr "Információk az IDE-ről"
 
 #: lazarusidestrconsts.lisideinfowarningunitnameinvalidpackage
 msgid "WARNING: unit name invalid %s, package=%s"
-msgstr "FIGYELMEZTETÉS: érvénytelen unit név: %s, csomag=%s"
+msgstr "FIGYELMEZTETÉS: érvénytelen unit-név: %s, csomag=%s"
 
 #: lazarusidestrconsts.lisidemacros
 msgid "IDE Macros"
@@ -9214,11 +9205,11 @@ msgstr "Fordító beállításainak exportálása"
 
 #: lazarusidestrconsts.lisiecoexportfileexists
 msgid "Export file exists"
-msgstr "Export fájl létezik"
+msgstr "Az exportálandó fájl létezik"
 
 #: lazarusidestrconsts.lisiecoexportfileexistsopenfileandreplaceonlycompileropti
 msgid "Export file \"%s\" exists.%sOpen file and replace only compiler options?%s(Other settings will be kept.)"
-msgstr "A(z) \"%s\" export fájl létezik.%sMegnyitja a fájlt és kicseréli csak a fordító beállításait?%s(A többi beállítás megmarad.)"
+msgstr "Az exportálandó \"%s\" fájl létezik.%sMegnyitja a fájlt és kicseréli csak a fordító beállításait?%s(A többi beállítás megmarad.)"
 
 #: lazarusidestrconsts.lisiecoimportcompileroptions
 msgid "Import Compiler Options"
@@ -9278,7 +9269,7 @@ msgstr "Kövesse a jelenlegi unit, projekt vagy csomag behúzását"
 
 #: lazarusidestrconsts.lisimplementationcommentforclass
 msgid "Implementation comment for class"
-msgstr "Kivitelezési megjegyzés az osztályhoz"
+msgstr "Kidolgozási megjegyzés az osztályhoz"
 
 #: lazarusidestrconsts.lisimport
 msgctxt "lazarusidestrconsts.lisimport"
@@ -9291,7 +9282,7 @@ msgstr "Fontos"
 
 #: lazarusidestrconsts.lisimportexport
 msgid "Import / Export"
-msgstr ""
+msgstr "Importálás / Exportálás"
 
 #: lazarusidestrconsts.lisimportfromfile
 msgid "Import from File"
@@ -9770,7 +9761,7 @@ msgstr "Projekt bezárása"
 
 #: lazarusidestrconsts.liskmcodetoolsdefineseditor
 msgid "CodeTools defines editor"
-msgstr "CodeTools beállítás-szerkesztő"
+msgstr "CodeTools beállításszerkesztő"
 
 #: lazarusidestrconsts.liskmcompileprojectprogram
 msgid "Compile project/program"
@@ -9890,43 +9881,43 @@ msgstr "Ugrás a 9. megjelöléshez"
 
 #: lazarusidestrconsts.liskmgotosourceeditor1
 msgid "Go to source editor 1"
-msgstr "Forráskód-szerkesztő 1. lap megnyitása"
+msgstr "Forráskódszerkesztő 1. lap megnyitása"
 
 #: lazarusidestrconsts.liskmgotosourceeditor10
 msgid "Go to source editor 10"
-msgstr "Forráskód-szerkesztő 10. lap megnyitása"
+msgstr "Forráskódszerkesztő 10. lap megnyitása"
 
 #: lazarusidestrconsts.liskmgotosourceeditor2
 msgid "Go to source editor 2"
-msgstr "Forráskód-szerkesztő 2. lap megnyitása"
+msgstr "Forráskódszerkesztő 2. lap megnyitása"
 
 #: lazarusidestrconsts.liskmgotosourceeditor3
 msgid "Go to source editor 3"
-msgstr "Forráskód-szerkesztő 3. lap megnyitása"
+msgstr "Forráskódszerkesztő 3. lap megnyitása"
 
 #: lazarusidestrconsts.liskmgotosourceeditor4
 msgid "Go to source editor 4"
-msgstr "Forráskód-szerkesztő 4. lap megnyitása"
+msgstr "Forráskódszerkesztő 4. lap megnyitása"
 
 #: lazarusidestrconsts.liskmgotosourceeditor5
 msgid "Go to source editor 5"
-msgstr "Forráskód-szerkesztő 5. lap megnyitása"
+msgstr "Forráskódszerkesztő 5. lap megnyitása"
 
 #: lazarusidestrconsts.liskmgotosourceeditor6
 msgid "Go to source editor 6"
-msgstr "Forráskód-szerkesztő 6. lap megnyitása"
+msgstr "Forráskódszerkesztő 6. lap megnyitása"
 
 #: lazarusidestrconsts.liskmgotosourceeditor7
 msgid "Go to source editor 7"
-msgstr "Forráskód-szerkesztő 7. lap megnyitása"
+msgstr "Forráskódszerkesztő 7. lap megnyitása"
 
 #: lazarusidestrconsts.liskmgotosourceeditor8
 msgid "Go to source editor 8"
-msgstr "Forráskód-szerkesztő 8. lap megnyitása"
+msgstr "Forráskódszerkesztő 8. lap megnyitása"
 
 #: lazarusidestrconsts.liskmgotosourceeditor9
 msgid "Go to source editor 9"
-msgstr "Forráskód-szerkesztő 9. lap megnyitása"
+msgstr "Forráskódszerkesztő 9. lap megnyitása"
 
 #: lazarusidestrconsts.liskminsertdateandtime
 msgid "Insert date and time"
@@ -9934,7 +9925,7 @@ msgstr "Dátum és idő beszúrása"
 
 #: lazarusidestrconsts.liskminsertusername
 msgid "Insert username"
-msgstr "Felhasználói név beszúrása"
+msgstr "Felhasználónév beszúrása"
 
 #: lazarusidestrconsts.liskminspect
 msgid "Inspect"
@@ -9979,7 +9970,7 @@ msgstr "Megjegyzés: Minden billentyű a kiválaszott séma szerint fog beállí
 
 #: lazarusidestrconsts.liskmopenpackagefile
 msgid "Open package file"
-msgstr "Csomag fájl megnyitása"
+msgstr "Csomagfájl megnyitása"
 
 #: lazarusidestrconsts.liskmpastecomponentsfromclipboard
 msgid "Paste Components from clipboard"
@@ -10179,7 +10170,7 @@ msgstr "Hibakereső kimenetének megjelenítése"
 
 #: lazarusidestrconsts.liskmtoggleviewdocumentationeditor
 msgid "Toggle view Documentation Editor"
-msgstr "Dokumentáció-szerkesztő megjelenítése"
+msgstr "Dokumentációszerkesztő megjelenítése"
 
 #: lazarusidestrconsts.liskmtoggleviewhistory
 msgctxt "lazarusidestrconsts.liskmtoggleviewhistory"
@@ -10217,7 +10208,7 @@ msgstr "Keresési eredmények megjelnítése"
 
 #: lazarusidestrconsts.liskmtoggleviewsourceeditor
 msgid "Toggle view Source Editor"
-msgstr "Forráskód-szerkesztő megjelenítése"
+msgstr "Forráskódszerkesztő megjelenítése"
 
 #: lazarusidestrconsts.liskmtoggleviewthreads
 msgctxt "lazarusidestrconsts.liskmtoggleviewthreads"
@@ -10382,7 +10373,7 @@ msgstr "Az összes profil által használható definíciók szerkesztése"
 #: lazarusidestrconsts.lislazbuilderrorwritingfile
 msgctxt "lazarusidestrconsts.lislazbuilderrorwritingfile"
 msgid "Error writing file"
-msgstr "Hiba fájl írás közben"
+msgstr "Hiba a fájl írása közben"
 
 #: lazarusidestrconsts.lislazbuildisnoninteractiveabortingnow
 msgid "%s%s%s%slazbuild is non interactive, aborting now."
@@ -10494,7 +10485,7 @@ msgstr "Lazarus változat (pl. 1.2.4)"
 
 #: lazarusidestrconsts.lislclwidgettype
 msgid "LCL widget type"
-msgstr "LCL ablakelemek típusa"
+msgstr "LCL vezérlőkészlet típusa"
 
 #: lazarusidestrconsts.lisldaddlinktoinherited
 msgid "Add link to inherited"
@@ -10506,7 +10497,7 @@ msgstr "Másolás öröklöttből"
 
 #: lazarusidestrconsts.lislddoesnothaveanyvalidfpdocpathunabletocreatethefpdo
 msgid "%s does not have any valid FPDoc path.%sUnable to create the fpdoc file for %s"
-msgstr "a(z) %s nem tartalmaz érvényes FPDoc útvonalat.%sNem lehet létrehozni az fpdoc fájlt ehhez: %s"
+msgstr "a(z) %s nem tartalmaz érvényes FPDoc útvonalat.%sNem lehet létrehozni az FPDoc fájlt ehhez: %s"
 
 #: lazarusidestrconsts.lisldmoveentriestoinherited
 msgid "Move entries to inherited"
@@ -10518,7 +10509,7 @@ msgstr "Nincs érvényes FPDoc útvonal"
 
 #: lazarusidestrconsts.lisldtheunitisnotownedbeanypackageorprojectpleaseaddthe
 msgid "The unit %s is not owned be any package or project.%sPlease add the unit to a package or project.%sUnable to create the fpdoc file."
-msgstr "A(z) %s unit nem része csomagnak vagy projektnek.%sAdja hozzá a unit-ot egy csomaghoz vagy projekthez!%sAz fpdoc fájl nem hozható létre."
+msgstr "A(z) %s unit nem része csomagnak vagy projektnek.%sAdja hozzá a unit-ot egy csomaghoz vagy projekthez!%sAz FPDoc fájl nem hozható létre."
 
 #: lazarusidestrconsts.lisleft
 msgctxt "lazarusidestrconsts.lisleft"
@@ -10715,7 +10706,7 @@ msgstr "A fő unit tartalmazza az Application.Title állományt"
 
 #: lazarusidestrconsts.lismainunithasusessectioncontainingallunitsofproject
 msgid "Main unit has Uses section containing all units of project"
-msgstr "A fő unit uses része tartalmazza a projekt összes unit-ját"
+msgstr "A fő unit uses szakasza tartalmazza a projekt összes unit-ját"
 
 #: lazarusidestrconsts.lismainunitispascalsource
 msgid "Main unit is Pascal source"
@@ -10739,7 +10730,7 @@ msgstr "ResourceString készítése"
 
 #: lazarusidestrconsts.lismakeresstrappendtosection
 msgid "Append to section"
-msgstr "Hozzáfűzés"
+msgstr "Hozzáfűzés a szakaszhoz"
 
 #: lazarusidestrconsts.lismakeresstrchooseanothername
 msgid "The resourcestring \"%s\" already exists.%sPlease choose another name.%sUse Ignore to add it anyway."
@@ -10776,19 +10767,19 @@ msgstr "Tartalomérzékeny beillesztés"
 
 #: lazarusidestrconsts.lismakeresstrinvalidresourcestringsect
 msgid "Invalid Resourcestring section"
-msgstr "Érvénytelen ResourceString rész"
+msgstr "Érvénytelen ResourceString szakasz"
 
 #: lazarusidestrconsts.lismakeresstrpleasechoosearesourcestring
 msgid "Please choose a resourcestring section from the list."
-msgstr "Válasszon egy ResourceString részt a listából!"
+msgstr "Válasszon egy ResourceString szakaszt a listából!"
 
 #: lazarusidestrconsts.lismakeresstrresourcestringalreadyexis
 msgid "Resourcestring already exists"
-msgstr "ResourceString már létezik"
+msgstr "A ResourceString már létezik"
 
 #: lazarusidestrconsts.lismakeresstrresourcestringsection
 msgid "Resourcestring section:"
-msgstr "ResourceString rész:"
+msgstr "ResourceString szakasz:"
 
 #: lazarusidestrconsts.lismakeresstrsourcepreview
 msgid "Source preview"
@@ -10804,7 +10795,7 @@ msgstr "Azonos értékű karakterláncok:"
 
 #: lazarusidestrconsts.lismanagesourceeditors
 msgid "Manage Source Editors ..."
-msgstr "Forráskód-szerkesztők kezelése ..."
+msgstr "Forráskódszerkesztők kezelése ..."
 
 #: lazarusidestrconsts.lismaximumparallelprocesses0meansdefault
 msgid "Maximum parallel processes, 0 means default (%s)"
@@ -10905,7 +10896,7 @@ msgstr "Projekt bezárása"
 
 #: lazarusidestrconsts.lismenucodetoolsdefineseditor
 msgid "CodeTools Defines Editor ..."
-msgstr "CodeTools beállítás-szerkesztő ..."
+msgstr "CodeTools beállításszerkesztő ..."
 
 #: lazarusidestrconsts.lismenucommentselection
 msgid "Comment Selection"
@@ -10986,7 +10977,7 @@ msgstr "Csomagok telepítése/eltávolítása ..."
 
 #: lazarusidestrconsts.lismenueditor
 msgid "Menu Editor ..."
-msgstr "Menü-szerkesztő ..."
+msgstr "Menüszerkesztő ..."
 
 #: lazarusidestrconsts.lismenueditorcreatesubmenu
 msgid "Create Submenu"
@@ -11018,7 +11009,7 @@ msgstr "Új elem beszúrása (előtte)"
 
 #: lazarusidestrconsts.lismenueditormenueditor
 msgid "Menu Editor"
-msgstr "Menü-szerkesztő"
+msgstr "Menüszerkesztő"
 
 #: lazarusidestrconsts.lismenueditormovedown
 msgid "Move Down (or right)"
@@ -11229,7 +11220,7 @@ msgstr "Ugrás ..."
 
 #: lazarusidestrconsts.lismenujumptoimplementation
 msgid "Jump to Implementation"
-msgstr "Ugrás a kivitelezéshez"
+msgstr "Ugrás a kidolgozáshoz"
 
 #: lazarusidestrconsts.lismenujumptonextbookmark
 msgid "Jump to Next Bookmark"
@@ -11312,7 +11303,7 @@ msgstr "Betöltött csomag megnyitása ..."
 
 #: lazarusidestrconsts.lismenuopenpackagefile
 msgid "Open Package File (.lpk) ..."
-msgstr "Csomag fájl (.lpk) megnyitása ..."
+msgstr "Csomagfájl (.lpk) megnyitása ..."
 
 #: lazarusidestrconsts.lismenuopenpackageofcurunit
 msgid "Open Package of Current Unit"
@@ -11609,7 +11600,7 @@ msgstr "Kijelölés nagybetűssé alakítása"
 #: lazarusidestrconsts.lismenuuseunit
 msgctxt "lazarusidestrconsts.lismenuuseunit"
 msgid "Add Unit to Uses Section ..."
-msgstr "Unit hozzáadása a uses részhez ..."
+msgstr "Unit hozzáadása a uses szakaszhoz ..."
 
 #: lazarusidestrconsts.lismenuview
 msgid "&View"
@@ -11617,7 +11608,7 @@ msgstr "&Nézet"
 
 #: lazarusidestrconsts.lismenuviewanchoreditor
 msgid "Anchor Editor"
-msgstr "Horgony-szerkesztő"
+msgstr "Horgonyszerkesztő"
 
 #: lazarusidestrconsts.lismenuviewassembler
 msgctxt "lazarusidestrconsts.lismenuviewassembler"
@@ -11716,7 +11707,7 @@ msgstr "Keresési eredmények"
 #: lazarusidestrconsts.lismenuviewsourceeditor
 msgctxt "lazarusidestrconsts.lismenuviewsourceeditor"
 msgid "Source Editor"
-msgstr "Forráskód-szerkesztő"
+msgstr "Forráskódszerkesztő"
 
 #: lazarusidestrconsts.lismenuviewtaborder
 msgid "Tab Order"
@@ -11767,7 +11758,7 @@ msgstr "Projektek"
 
 #: lazarusidestrconsts.lismessageseditor
 msgid "Messages Editor"
-msgstr "Üzenet-szerkesztő"
+msgstr "Üzenetszerkesztő"
 
 #: lazarusidestrconsts.lismessageswindow
 msgid "Messages Window"
@@ -11865,7 +11856,7 @@ msgstr "Egyéni beállítások hozzáadása:"
 
 #: lazarusidestrconsts.lismmappendarbitraryfpcoptionsego1ghtldflag
 msgid "Append arbitrary fpc options, e.g. -O1 -ghtl -dFlag"
-msgstr "Önkényes fpc beállítások hozzáadása, pl.  -O1 -ghtl -dFlag"
+msgstr "Önkényes FPC beállítások hozzáadása, pl.  -O1 -ghtl -dFlag"
 
 #: lazarusidestrconsts.lismmapplytoallpackages
 msgid "Apply to all packages."
@@ -12100,7 +12091,7 @@ msgstr "Mozgatás ide: "
 
 #: lazarusidestrconsts.lismovingtheseunitswillbreaktheirusessectionsseemessa
 msgid "Moving these units will break their uses sections. See Messages window for details."
-msgstr "Ezen unitok áthelyezése törést okoz a uses részükben. Lásd az Üzenetek ablakát a részletekért!"
+msgstr "Ezen unitok áthelyezése törést okoz a uses szakaszokban. Lásd az Üzenetek ablakát a részletekért!"
 
 #: lazarusidestrconsts.lisms
 msgid "(ms)"
@@ -12159,7 +12150,7 @@ msgstr "Új fájl létrehozása a szerkesztőben.%sVálasszon egy típust!"
 
 #: lazarusidestrconsts.lisnewdlgcreateanewemptytextfile
 msgid "Create a new empty text file."
-msgstr "Új üres szöveges fájl létrehozása."
+msgstr "Új üres szövegfájl létrehozása."
 
 #: lazarusidestrconsts.lisnewdlgcreateanewprojectchooseatype
 msgid "Create a new project.%sChoose a type."
@@ -12219,7 +12210,7 @@ msgstr "Újonnan rögzített makró. Nem kell menteni"
 
 #: lazarusidestrconsts.lisnewunitsareaddedtousessections
 msgid "New units are added to uses sections"
-msgstr "Új unit-ok lettek hozzáadva a uses részhez"
+msgstr "Új unit-ok lettek hozzáadva a uses szakaszhoz"
 
 #: lazarusidestrconsts.lisno
 msgid "No"
@@ -12295,7 +12286,7 @@ msgstr "A(z) \"%s\" programfájl nem található."
 
 #: lazarusidestrconsts.lisnoresourcestringsectionfound
 msgid "No ResourceString Section found"
-msgstr "ResourceString rész nem található"
+msgstr "ResourceString szakasz nem található"
 
 #: lazarusidestrconsts.lisnormallythefilterisaregularexpressioninsimplesynta
 msgid "Normally the filter is a regular expression. In simple syntax a . is a normal character, a * stands for anything, a ? stands for any character, and comma and semicolon separates alternatives. For example: Simple syntax *.pas;*.pp corresponds to ^(.*\\.pas|.*\\.pp)$"
@@ -12593,7 +12584,7 @@ msgstr "Projekt megnyitása újra"
 
 #: lazarusidestrconsts.lisopenprojectfile
 msgid "Open Project File"
-msgstr "Projekt fájl megnyitása"
+msgstr "Projektfájl megnyitása"
 
 #: lazarusidestrconsts.lisopensymlink
 msgid "Open symlink"
@@ -12665,7 +12656,7 @@ msgstr "%sa projekt operációs rendszer felülbírálása.pl. win32 linux. alap
 
 #: lazarusidestrconsts.lisoverridetheprojectwidgetseteggtkgtk2qtwin32carbond
 msgid "%soverride the project widgetset. e.g. gtk gtk2 qt win32 carbon. default: %s"
-msgstr "%sa projekt ablakelem-készletének felülbírálása. pl. gtk gtk2 qt win32 carbon. alapértelmezett: %s"
+msgstr "%sa projekt vezérlőkészletének felülbírálása. pl. gtk gtk2 qt win32 carbon. alapértelmezett: %s"
 
 #: lazarusidestrconsts.lisoverwritefile
 msgid "Overwrite file?"
@@ -13255,7 +13246,7 @@ msgstr "Érvénytelen unit fájlnév"
 
 #: lazarusidestrconsts.lispeinvalidunitname
 msgid "Invalid unitname"
-msgstr "Érvénytelen unit név"
+msgstr "Érvénytelen unit-név"
 
 #: lazarusidestrconsts.lispemissingfilesofpackage
 msgid "Missing files of package %s"
@@ -13263,7 +13254,7 @@ msgstr "A(z) %s csomag hiányzó fájljai"
 
 #: lazarusidestrconsts.lispenewfilenotinincludepath
 msgid "New file not in include path"
-msgstr "Az új fájl nincs az include útvonalon"
+msgstr "Nincs új fájl a beemelhető fájlok útvonalán"
 
 #: lazarusidestrconsts.lispenofilesmissingallfilesexist
 msgctxt "lazarusidestrconsts.lispenofilesmissingallfilesexist"
@@ -13304,7 +13295,7 @@ msgstr "A(z) \"%s\" fájl jelenleg nem szerepel a csomag include útvonalai köz
 
 #: lazarusidestrconsts.lispeunitname
 msgid "Unitname:"
-msgstr "Unit név:"
+msgstr "Unit-név:"
 
 #: lazarusidestrconsts.lispeuseallunitsindirectory
 msgid "Use all units in directory"
@@ -13430,7 +13421,7 @@ msgstr "Unit hozzáadása a csomag uses állományához. Ezt csak azoknál a uni
 
 #: lazarusidestrconsts.lispkgmangambiguousunitsfound
 msgid "Ambiguous units found"
-msgstr "Ellentmondásos unit-ok találhatók"
+msgstr "Megtévesztő unit-ok találhatók"
 
 #: lazarusidestrconsts.lispkgmangautomaticallyinstalledpackages
 msgid "Automatically installed packages"
@@ -13470,7 +13461,7 @@ msgstr "Függőség tulajdonos nélkül: %s"
 
 #: lazarusidestrconsts.lispkgmangerrorreadingfile
 msgid "Error reading file"
-msgstr "Hiba a fájl olvasás közben"
+msgstr "Hiba a fájl olvasása közben"
 
 #: lazarusidestrconsts.lispkgmangerrorreadingpackage
 msgid "Error Reading Package"
@@ -13532,11 +13523,11 @@ msgstr "érvénytelen fordító fűájlnév"
 
 #: lazarusidestrconsts.lispkgmanginvalidfileextension
 msgid "Invalid file extension"
-msgstr "Érvénytelen fájl kiterjesztés"
+msgstr "Érvénytelen fájlkiterjesztés"
 
 #: lazarusidestrconsts.lispkgmanginvalidpackagefileextension
 msgid "Invalid package file extension"
-msgstr "Érvénytelen csomag fájl kiterjesztés"
+msgstr "Érvénytelen csomagfájl-kiterjesztés"
 
 #: lazarusidestrconsts.lispkgmanginvalidpackagefilename
 msgid "Invalid package filename"
@@ -13677,7 +13668,7 @@ msgstr "A következő csomagok betöltése sikertelen:"
 
 #: lazarusidestrconsts.lispkgmangthefollowingunitswillbeaddedtotheusessectionof
 msgid "%sThe following units will be added to the uses section of%s%s:%s%s"
-msgstr "%sA következő unit-ok hozzá lesznek adva a(z) %s%s uses részhez:%s%s"
+msgstr "%sA következő unit-ok hozzá lesznek adva a(z) %s%s uses szakaszához:%s%s"
 
 #: lazarusidestrconsts.lispkgmangthepackagefailedtocompileremoveitfromtheinstallati
 msgid "The package \"%s\" failed to compile.%sRemove it from the installation list?"
@@ -13781,11 +13772,11 @@ msgstr "A(z) \"%s\" fájl törlése nem lehetséges"
 
 #: lazarusidestrconsts.lispkgmangunabletodeletefilename
 msgid "Unable to delete file"
-msgstr "Fájl törlése nem lehetséges"
+msgstr "A fájl törlése nem lehetséges"
 
 #: lazarusidestrconsts.lispkgmangunabletodeleteoldstatefileforpackage
 msgid "Unable to delete old state file \"%s\"%sfor package %s."
-msgstr "A(z) \"%s\" régi állapotfájl törlése nem lehetséges%sa(z) %s csomaghoz."
+msgstr "A(z) \"%s\" régi állapotfájl törlése,%samely a(z) %s csomaghoz tartozik, nem lehetséges."
 
 #: lazarusidestrconsts.lispkgmangunabletoloadpackage
 msgid "Unable to load package"
@@ -13869,7 +13860,7 @@ msgstr "Érvénytelen komponens osztály"
 
 #: lazarusidestrconsts.lispkgsysinvalidunitname
 msgid "Invalid Unitname: %s"
-msgstr "Érvénytelen unit név: %s"
+msgstr "Érvénytelen unit-név: %s"
 
 #: lazarusidestrconsts.lispkgsyslpkfilename
 msgid "%s%slpk file: \"%s\""
@@ -13909,11 +13900,11 @@ msgstr "Ez a csomag telepítve van, de az .lpk fájl nem található. Minden kom
 
 #: lazarusidestrconsts.lispkgsysunitname
 msgid "%s%sUnit Name: \"%s\""
-msgstr "%s%sUnit név: \"%s\""
+msgstr "%s%sUnit-név: \"%s\""
 
 #: lazarusidestrconsts.lispkgsysunitwasnotfoundinthelpkfileprobablythislpkfilewasn
 msgid "Unit \"%s\" was not found in the lpk file.%sProbably this lpk file was not used for building this IDE. Or the package misuses the procedure RegisterUnit."
-msgstr "A(z) \"%s\" unit nem található az lpk fájlban.%s Lehet, hogy ez az lp fájl nem volt használva ezen IDE építéséhez vagy a csomag helytelenül használja a RegisterUnit eljárást."
+msgstr "A(z) \"%s\" unit nem található az lpk fájlban.%s Lehet, hogy ez az lpk fájl nem volt használva ezen IDE építéséhez vagy a csomag helytelenül használja a RegisterUnit eljárást."
 
 #: lazarusidestrconsts.lispkgsysunitwasremovedfrompackagelpk
 msgctxt "lazarusidestrconsts.lispkgsysunitwasremovedfrompackagelpk"
@@ -13925,10 +13916,8 @@ msgid "The following dependencies are not needed, because of the automatic trans
 msgstr "A következő függőségekre nincs szükség, a csomagfüggőségek automatikus átvitele miatt."
 
 #: lazarusidestrconsts.lispkgtheprojectoverridestheoutputdirectoryofthefollowin
-#, fuzzy
-#| msgid "The project overrides the output directory of the following packages.%sSee Project / Compiler Options / Additions and Overrides%s%s"
 msgid "The project overrides the output directory of the following packages.%sSee Project / Project Options (compiler options section) / Additions and Overrides%s%s"
-msgstr "A projekt felülbírálja a következő csomagok kimeneti könyvtárát.%sLásd:  Projekt -> Projekt beállításai -> Kiegészítések és Felülbírálások%s%s"
+msgstr "A projekt felülbírálja a következő csomagok kimeneti könyvtárát.%sLásd:  Projekt / Projekt beállításai (fordító beállításai szakasz) / Kiegészítések és Felülbírálások%s%s"
 
 #: lazarusidestrconsts.lispkgthisfileisnotinanyloadedpackage
 msgid "This file is not in any loaded package."
@@ -13969,7 +13958,7 @@ msgstr "Felhasználói"
 
 #: lazarusidestrconsts.lispleasefixtheerrorinthemessagewindow
 msgid "Please fix the error shown in the message window, which is normally below the source editor."
-msgstr "Javítsa a hibát ami az üzenetablakban látható, ez alapértelmezetten a forráskód-szerkesztő alatt található!"
+msgstr "Javítsa a hibát ami az üzenetablakban látható, ez alapértelmezetten a forráskódszerkesztő alatt található!"
 
 #: lazarusidestrconsts.lispleaseopenaunitbeforerun
 msgid "Please open a unit before run."
@@ -14138,7 +14127,7 @@ msgstr "Érvénytelen csomagnév"
 
 #: lazarusidestrconsts.lisprojaddinvalidpascalunitname
 msgid "Invalid Pascal unit name"
-msgstr "Érvénytelen pascal unit név"
+msgstr "Érvénytelen pascal unit-név"
 
 #: lazarusidestrconsts.lisprojaddinvalidversion
 msgid "Invalid version"
@@ -14193,15 +14182,15 @@ msgstr "A projektnek már függősége a(z) \"%s\" csomag."
 
 #: lazarusidestrconsts.lisprojaddtheunitnamealreadyexistsintheproject
 msgid "The unit name \"%s\" already exists in the project%swith file: \"%s\"."
-msgstr "A(z) \"%s\" unit név már létezik a projektben%sa(z) \"%s\" fájllal."
+msgstr "A(z) \"%s\" unit-név már létezik a projektben%sa(z) \"%s\" fájllal."
 
 #: lazarusidestrconsts.lisprojaddtheunitnamealreadyexistsintheselection
 msgid "The unit name \"%s\" already exists in the selection%swith file: \"%s\"."
-msgstr "A(z) \"%s\" unit név már létezik a kijelölésben%sa(z) \"%s\" fájllal."
+msgstr "A(z) \"%s\" unit-név már létezik a kijelölésben%sa(z) \"%s\" fájllal."
 
 #: lazarusidestrconsts.lisprojaddtheunitnameisnotavalidpascalidentifier
 msgid "The unit name \"%s\" is not a valid Pascal identifier."
-msgstr "A(z) \"%s\" unit név nem érvényes pascal azonosító."
+msgstr "A(z) \"%s\" unit-név nem érvényes pascal azonosító."
 
 #: lazarusidestrconsts.lisprojaddtoproject
 msgctxt "lazarusidestrconsts.lisprojaddtoproject"
@@ -14210,7 +14199,7 @@ msgstr "Hozzáadás a projekthez"
 
 #: lazarusidestrconsts.lisprojaddunitnamealreadyexists
 msgid "Unit name already exists"
-msgstr "Unit név már létezik"
+msgstr "A unit-név már létezik"
 
 #: lazarusidestrconsts.lisproject
 msgid "Project %s"
@@ -14247,11 +14236,11 @@ msgstr "A cím a tálcán a projekt útvonalát is megjeleníti"
 
 #: lazarusidestrconsts.lisprojectfilename
 msgid "Project filename"
-msgstr "Projekt fájl neve"
+msgstr "Projektfájl neve"
 
 #: lazarusidestrconsts.lisprojectincpath
 msgid "Project Include Path"
-msgstr "Projekt include útvonala"
+msgstr "Projekt beemelhető fájljainak útvonala"
 
 #: lazarusidestrconsts.lisprojectinfofiledetected
 msgid "Project info file detected"
@@ -14356,7 +14345,7 @@ msgstr "Függőség törlésének megerősítése"
 
 #: lazarusidestrconsts.lisprojinspconfirmremovingfile
 msgid "Confirm removing file"
-msgstr "Fájl eltávolítás megerősítése"
+msgstr "Fájl eltávolításának megerősítése"
 
 #: lazarusidestrconsts.lisprojinspdeletedependencyfor
 msgid "Delete dependency for %s?"
@@ -14483,7 +14472,7 @@ msgstr "A unitnév akkor van használatban amikor az IDE kibővíti a uses rész
 #: lazarusidestrconsts.lispvuunitnameandfilenamedonotmatchexampleunit1pasanduni
 msgctxt "lazarusidestrconsts.lispvuunitnameandfilenamedonotmatchexampleunit1pasanduni"
 msgid "Unitname and Filename do not match.%sExample: unit1.pas and Unit1"
-msgstr "Unit név és fájlnév nem egyezik.%sHelyes példa: unit1.pas és Unit1"
+msgstr "A unit-név és a fájlnév nem egyezik.%sHelyes példa: unit1.pas és Unit1"
 
 #: lazarusidestrconsts.lispwconvertproject
 msgid "Convert &Delphi Project"
@@ -14682,7 +14671,7 @@ msgstr "Átnevezi a fájlt?"
 
 #: lazarusidestrconsts.lisrenamefilefailed
 msgid "Rename file failed"
-msgstr "Fájl átnevezése sikertelen"
+msgstr "A fájl átnevezése sikertelen"
 
 #: lazarusidestrconsts.lisrenameshowresult
 msgid "Show list of renamed Identifiers"
@@ -15106,7 +15095,7 @@ msgstr "Válasszon egy csomópontot"
 
 #: lazarusidestrconsts.lisselectanotherlclwidgetset
 msgid "Select another LCL widgetset (macro LCLWidgetType)"
-msgstr "Másik LCL ablakelem-készletet választása (makró: LCLWidgetType)"
+msgstr "Másik LCL vezérlőkészlet választása (makró: LCLWidgetType)"
 
 #: lazarusidestrconsts.lisselectdfmfiles
 msgid "Select Delphi form files (*.dfm)"
@@ -15284,7 +15273,7 @@ msgstr "Csomagok megjelenítése"
 
 #: lazarusidestrconsts.lisshowpositionofsourceeditor
 msgid "Show position of source editor"
-msgstr "A forráskód-szerkesztőbeli helyzetének megjelenítése"
+msgstr "Váltás a forráskódbeli helyére"
 
 #: lazarusidestrconsts.lisshowrecentlyusedidentifiersattop
 msgid "Show recently used identifiers at top"
@@ -15320,7 +15309,7 @@ msgstr "Unit-ok megjelenítése"
 
 #: lazarusidestrconsts.lisshowunitswithinitialization
 msgid "Show units with initialization/finalization sections"
-msgstr "Indító/befejező kódot tartalmazó unit-ok megjelenítése"
+msgstr "Indító/befejező szakaszt tartalmazó unit-ok megjelenítése"
 
 #: lazarusidestrconsts.lisshowunitswithinitializationhint
 msgid "These units may initialize global data used by the program/application. Remove with care."
@@ -15392,7 +15381,7 @@ msgstr "Sajnáljuk, ez a típus egyelőre nincs megvalósítva"
 
 #: lazarusidestrconsts.lissort
 msgid "Sort"
-msgstr ""
+msgstr "Rendezés"
 
 #: lazarusidestrconsts.lissortforscope
 msgid "Sort for scope"
@@ -15468,7 +15457,7 @@ msgstr "A(z) \"%s\" forrás könyvtár nem létezik."
 
 #: lazarusidestrconsts.lissourceeditorwindowmanager
 msgid "Source Editor Window Manager"
-msgstr "Forráskód-szerkesztő ablakainak kezelője"
+msgstr "Forráskódszerkesztő ablakainak kezelője"
 
 #: lazarusidestrconsts.lissourcemodified
 msgid "Source modified"
@@ -15755,7 +15744,7 @@ msgstr "A közzétéel utáni parancs érvénytelen:%s\"%s\""
 
 #: lazarusidestrconsts.listhecompilerfiledoesnotlookcorrect
 msgid "The compiler file \"%s\" does not look correct:%s%s"
-msgstr "A fordító fájl \"%s\" nem tűnik megfelelőnek:%s%s"
+msgstr "A fordítófájl \"%s\" nem tűnik megfelelőnek:%s%s"
 
 #: lazarusidestrconsts.listhecomponentcannotbedeletedbecauseitisnotownedby
 msgid "The component %s can not be deleted, because it is not owned by %s."
@@ -15763,11 +15752,11 @@ msgstr "A(z) %s komponens nem törölhető, mert nem a(z) %s birtokolja."
 
 #: lazarusidestrconsts.listhecomponenteditorofclasshascreatedtheerror
 msgid "The component editor of class \"%s\" has created the error:%s\"%s\""
-msgstr "A(z) \"%s\" osztály komponens-szerkesztője ezt a hibát generálta:%s\"%s\""
+msgstr "A(z) \"%s\" osztály komponensszerkesztője a következő hibát okozta:%s\"%s\""
 
 #: lazarusidestrconsts.listhecomponenteditorofclassinvokedwithverbhascreated
 msgid "The component editor of class \"%s\"%sinvoked with verb #%s \"%s\"%shas created the error:%s\"%s\""
-msgstr "A(z) \"%s\" osztály komponens-szerkesztője,%sami a #%s \"%s\" parancs által van meghívva,%sa következő hibát generálta:%s\"%s\""
+msgstr "A(z) \"%s\" osztály komponensszerkesztője,%sami a #%s \"%s\" paranccsal lett meghívva,%sa következő hibát okozta:%s\"%s\""
 
 #: lazarusidestrconsts.listhecomponentisinheritedfromtodeleteaninheritedcomp
 msgid "The component %s is inherited from %s.%sTo delete an inherited component open the ancestor and delete it there."
@@ -15815,7 +15804,7 @@ msgstr "A célkönyvtár nem létezik:%s\"%s\""
 
 #: lazarusidestrconsts.listhedestinationdirectorydoesnotexistpleasecheckthep
 msgid "The destination directory \"%s\" does not exist.%sPlease check the project target file name Menu > Project > Project Options."
-msgstr "A(z) \"%s\" célkönyvtár nem létezik.%sEllenőrizze a projekt célfájl nevét a menüben itt: Projekt -> Projekt beállításai!"
+msgstr "A(z) \"%s\" célkönyvtár nem létezik.%sEllenőrizze a projekt célfájljának nevét a menüben itt: Projekt -> Projekt beállításai!"
 
 #: lazarusidestrconsts.listhedirectorycontainsnoprojectincludefilesanymorere
 msgid "The directory \"%s\" contains no project include files any more. Remove this directory from the project's include search path?"
@@ -15855,7 +15844,7 @@ msgstr "A fájlindex szükséges az olyan műveletekhez mint a deklaráció kere
 
 #: lazarusidestrconsts.listhefileisasymlinkopeninstead
 msgid "The file \"%s\" is a symlink.%sOpen \"%s\" instead?"
-msgstr "A(z) \"%s\" fájl egy szimbolikus link.%sMegnyitja a(z) \"%s\"-t helyette?"
+msgstr "A(z) \"%s\" fájl egy szimbolikus hivatkozás.%sMegnyitja a(z) \"%s\"-t helyette?"
 
 #: lazarusidestrconsts.listhefileisnotalazarusprojectcreateanewprojectforthi
 msgid "The file \"%s\" is not a Lazarus project.%sCreate a new project for this \"%s\"?"
@@ -15899,7 +15888,7 @@ msgstr "Az FPC források könyvtára \"%s\" nem tűnik megfelelőnek:%s%s"
 
 #: lazarusidestrconsts.listhefreepascalcompilerexecutabletypicallyhasthename
 msgid "The Free Pascal compiler executable typically has the name \"%s\". You can also use the target specific compiler like \"%s\". Please give the full file path."
-msgstr "A Free Pascal fordító program neve általában \"%s\". Használható még célfüggő fordító is mint a(z) \"%s\". Meg kell adni a fájl teljes útvonalát."
+msgstr "A Free Pascal fordítóprogram neve általában \"%s\". Használható még célfüggő fordító is mint a(z) \"%s\". Meg kell adni a fájl teljes útvonalát."
 
 #: lazarusidestrconsts.listheidentifierisaunitpleaseusethefilesaveasfunction
 msgid "The identifier is a unit. Please use the File - Save as function to rename a unit."
@@ -15939,7 +15928,7 @@ msgstr "A \"make\" program neve általában \"%s\". Szükség van rá az IDE ép
 
 #: lazarusidestrconsts.listhenewincludefileisnotyetintheincludesearchpathadd
 msgid "The new include file is not yet in the include search path.%sAdd directory %s?"
-msgstr "Az új include fájl nem az include keresési útvonalon található.%sA(z) %s könyvtár hozzáadása?"
+msgstr "Az új beemelhető fájl nem az beemelhető fájlok keresési útvonalon található.%sA(z) %s könyvtár hozzáadása?"
 
 #: lazarusidestrconsts.listhenewunitisnotyetintheunitsearchpathadddirectory
 msgid "The new unit is not yet in the unit search path.%sAdd directory %s?"
@@ -16067,7 +16056,7 @@ msgstr "%sTovábbi megjegyzések találhatók ezen üzenethez:%s"
 
 #: lazarusidestrconsts.listherearenoconflictingkeys
 msgid "There are no conflicting keys."
-msgstr ""
+msgstr "Nincsenek ütköző billentyű beállítások."
 
 #: lazarusidestrconsts.listhereareotherfilesinthedirectorywiththesamename
 msgid "There are other files in the directory with the same name,%swhich only differ in case:%s%s%sDelete them?"
@@ -16199,7 +16188,7 @@ msgstr "A(z) \"%s\" unit fájlneve nem kisbetűs.%sA Free Pascal fordító nem k
 
 #: lazarusidestrconsts.listheunitispartofthefpcsourcesbutthecorrespondingfpd
 msgid "The unit %s is part of the FPC sources, but the corresponding fpdoc xml file was not found.%sEither you have not yet added the fpcdocs directory to the search path or the unit is not yet documented.%sThe fpdoc files for the FPC sources can be downloaded from: %s%sPlease add the directory in the fpdoc editor options.%sIn order to create a new file the directory must be writable."
-msgstr "A(z) %s unit az FPC forrásainak része, de a megfelelő fpdoc xml fájl nincs meg.%sVagy az fpcdocs könyvtár nem lett hozzáadva a keresési útvonalakhoz vagy a unit még nincs dokumentálva.%sAz FPC forrásainak fpdoc fájljai letölthetők innen: %s%sAdja meg a könyvtárat az fpdoc-szerkesztő beállításai között.%sÚj fájl létrehozásához a könyvtárnak írhatónak kell lennie."
+msgstr "A(z) %s unit az FPC forrásainak része, de a megfelelő FPDoc xml fájl nincs meg.%sVagy az fpcdocs könyvtár nem lett hozzáadva a keresési útvonalakhoz vagy a unit még nincs dokumentálva.%sAz FPC forrásainak FPDoc fájljai letölthetők innen: %s%sAdja meg a könyvtárat az FPDoc-szerkesztő beállításai között.%sÚj fájl létrehozásához a könyvtárnak írhatónak kell lennie."
 
 #: lazarusidestrconsts.listheunitisusedbyotherfilesupdatereferencesautomatic
 msgid "The unit %s is used by other files.%sUpdate references automatically?"
@@ -16223,7 +16212,7 @@ msgstr "Ez a komponens már tartalmaz egy osztályt %s névvel."
 
 #: lazarusidestrconsts.listhisfunctionneedsanopenlfmfileinthesourceeditor
 msgid "This function needs an open .lfm file in the source editor."
-msgstr "Ehhez a funkcióhoz szükség van egy megnyitott .lfm fájlra a forráskód-szerkesztőben."
+msgstr "Ehhez a funkcióhoz szükség van egy megnyitott .lfm fájlra a forráskódszerkesztőben."
 
 #: lazarusidestrconsts.listhishelpmessage
 msgid "this help message"
@@ -16313,27 +16302,27 @@ msgstr "Cím (üres = alapértelmezett)"
 
 #: lazarusidestrconsts.listmfunctionappendpathdelimiter
 msgid "Function: append path delimiter"
-msgstr "Funkció: útvonal elválasztó hozzáfűzése"
+msgstr "Művelet: útvonal-elválasztó hozzáfűzése"
 
 #: lazarusidestrconsts.listmfunctionchomppathdelimiter
 msgid "Function: remove trailing path delimiter"
-msgstr "Funkció: bevezető útvonal elválasztó törlése"
+msgstr "Művelet: bevezető útvonal-elválasztó törlése"
 
 #: lazarusidestrconsts.listmfunctionextractfileextension
 msgid "Function: extract file extension"
-msgstr "Funkció: fájl kiterjesztés kibontása"
+msgstr "Művelet: fájlkiterjesztés kibontása"
 
 #: lazarusidestrconsts.listmfunctionextractfilenameextension
 msgid "Function: extract file name+extension"
-msgstr "Funkció: fájlnév+kiterjesztés kibontása"
+msgstr "Művelet: fájlnév+kiterjesztés kibontása"
 
 #: lazarusidestrconsts.listmfunctionextractfilenameonly
 msgid "Function: extract file name only"
-msgstr "Funkció: csak a fájlnév kibontása"
+msgstr "Művelet: csak a fájlnév kibontása"
 
 #: lazarusidestrconsts.listmfunctionextractfilepath
 msgid "Function: extract file path"
-msgstr "Funkció: fájl elérési út kibontása"
+msgstr "Művelet: fájl elérési útjának kibontása"
 
 #: lazarusidestrconsts.listmunknownmacro
 msgid "(unknown macro: %s)"
@@ -16433,7 +16422,7 @@ msgstr "Minden unit"
 
 #: lazarusidestrconsts.lisudbydefaultonlytheprojectunitsandthesourceeditorunit
 msgid "By default only the project units and the source editor units are searched. Add here a list of directories separated by semicolon to search as well."
-msgstr "Alapértelmezés szerint csak a projekt és a forráskód-szerkesztő unitjai vannak átnézve. Itt lehet hozzáadni további átnézendő könyvtárakat, pontosvesszővel elválasztva."
+msgstr "Alapértelmezés szerint csak a projekt és a forráskódszerkesztő unit-jai vannak átnézve. Itt lehet hozzáadni további átnézendő könyvtárakat, pontosvesszővel elválasztva."
 
 #: lazarusidestrconsts.lisudcollapseallnodes
 msgid "Collapse all nodes"
@@ -16691,7 +16680,7 @@ msgstr "A fájl szövegadata nem alakítható át bináris adatfolyammá:%s\"%s\
 
 #: lazarusidestrconsts.lisunabletocopyfile
 msgid "Unable to copy file"
-msgstr "Fájl másolása nem lehetséges"
+msgstr "A fájl másolása nem lehetséges"
 
 #: lazarusidestrconsts.lisunabletocopyfileto
 msgid "Unable to copy file \"%s\"%sto \"%s\""
@@ -16707,7 +16696,7 @@ msgstr "A könyvtár nem hozható létre: \"%s\"."
 
 #: lazarusidestrconsts.lisunabletocreatefile
 msgid "Unable to create file"
-msgstr "Fájl létrehozása nem lehetséges"
+msgstr "A fájl létrehozása nem lehetséges"
 
 #: lazarusidestrconsts.lisunabletocreatefile2
 msgid "Unable to create file \"%s\""
@@ -16747,7 +16736,7 @@ msgstr "nem futtatható: %s"
 
 #: lazarusidestrconsts.lisunabletofindaresourcestringsectioninthisoranyofthe
 msgid "Unable to find a ResourceString section in this or any of the used units."
-msgstr "Nem található ResourceString rész ebben, vagy bármelyik használt unit-ban."
+msgstr "Nem található ResourceString szakasz ebben, vagy bármelyik használt unit-ban."
 
 #: lazarusidestrconsts.lisunabletofindavalidclassnamein
 msgid "Unable to find a valid classname in \"%s\""
@@ -16815,7 +16804,7 @@ msgstr "A(z) %s olvasása nem lehetséges"
 
 #: lazarusidestrconsts.lisunabletoreadfile
 msgid "Unable to read file"
-msgstr "Fájl olvasása nem lehetséges"
+msgstr "A fájl olvasása nem lehetséges"
 
 #: lazarusidestrconsts.lisunabletoreadfile2
 msgid "Unable to read file \"%s\"."
@@ -16852,7 +16841,7 @@ msgstr "A megtévesztő fájl nem nevezhető át erről: \"%s\"%serre: \"%s\""
 
 #: lazarusidestrconsts.lisunabletorenamefile
 msgid "Unable to rename file"
-msgstr "Fájl átnevezése nem lehetséges"
+msgstr "A fájl átnevezése nem lehetséges"
 
 #: lazarusidestrconsts.lisunabletorenamefileto
 msgid "Unable to rename file \"%s\" to \"%s\"!"
@@ -16970,7 +16959,7 @@ msgstr "A(z) \"%s\" unit megváltozott. Mentés?"
 
 #: lazarusidestrconsts.lisunitidentifierexists
 msgid "Unit identifier exists"
-msgstr "Unit azonosító létezik"
+msgstr "A unit-azonosító létezik"
 
 #: lazarusidestrconsts.lisunitinpackage
 msgid "%s unit %s in package %s"
@@ -16978,15 +16967,15 @@ msgstr "%s unit %s a(z) %s csomagban"
 
 #: lazarusidestrconsts.lisunitnamealreadyexistscap
 msgid "Unitname already in project"
-msgstr "Unit név már szerepel a projektben"
+msgstr "A unit-név már szerepel a projektben"
 
 #: lazarusidestrconsts.lisunitnamebeginswith
 msgid "Unit name begins with ..."
-msgstr "Unit név kezdete ..."
+msgstr "Unit-név kezdete ..."
 
 #: lazarusidestrconsts.lisunitnamecontains
 msgid "Unit name contains ..."
-msgstr "Unit név tartalmazza ..."
+msgstr "Unit-név tartalmazza ..."
 
 #: lazarusidestrconsts.lisunitnotfound
 msgid "unit %s not found"
@@ -17171,7 +17160,7 @@ msgstr "Használat >>"
 #: lazarusidestrconsts.lisuseunit
 msgctxt "lazarusidestrconsts.lisuseunit"
 msgid "Add Unit to Uses Section"
-msgstr "Unit hozzáadása a uses részhez"
+msgstr "Unit hozzáadása a uses szakaszhoz"
 
 #: lazarusidestrconsts.lisuseunitinunit
 msgid "Use unit %s in unit %s"
@@ -17259,7 +17248,7 @@ msgstr "Figyelmeztetés:"
 
 #: lazarusidestrconsts.liswarningambiguousfilefoundsourcefileis
 msgid "Warning: ambiguous file found: \"%s\". Source file is: \"%s\""
-msgstr "Figyelem: ellentmondásos fájl található: \"%s\". A forrás fájl: \"%s\""
+msgstr "Figyelem: megtévesztő fájl található: \"%s\". A forrás fájl: \"%s\""
 
 #: lazarusidestrconsts.liswarnings
 msgid ", Warnings: %s"
@@ -17344,7 +17333,7 @@ msgstr "Amikor engedélyezve van az aktuális beállítások a sablonba lesznek 
 
 #: lazarusidestrconsts.liswhenthesourceeditorcursormovesshowthecurrentnodein
 msgid "When the source editor cursor moves, show the current node in the code explorer"
-msgstr "Amikor a kurzor mozog a forráskód-szerkesztőben, az aktuális csomópont jelenjen meg a kódböngészőben"
+msgstr "Amikor a kurzor mozog a forráskódszerkesztőben, az aktuális csomópont jelenjen meg a Kódböngészőben"
 
 #: lazarusidestrconsts.liswindowmenuwithnamefordesignedform
 msgid "Window menu shows designed form's name instead of caption"
@@ -17474,7 +17463,7 @@ msgstr "<Minden>"
 #: lazarusidestrconsts.locwndsrceditor
 msgctxt "lazarusidestrconsts.locwndsrceditor"
 msgid "Source Editor"
-msgstr "Forráskód-szerkesztő"
+msgstr "Forráskódszerkesztő"
 
 #: lazarusidestrconsts.lrsplddeleteselected
 msgid "Delete selected"
@@ -17506,7 +17495,7 @@ msgstr "lpl fájlok ellenőrzése"
 
 #: lazarusidestrconsts.podaddpackageunittousessection
 msgid "Add package unit to uses section"
-msgstr "Csomag unit hozzáadása a uses részhez"
+msgstr "Csomag unit hozzáadása a uses szakaszhoz"
 
 #: lazarusidestrconsts.regdlgbinary
 msgctxt "lazarusidestrconsts.regdlgbinary"
@@ -17520,7 +17509,7 @@ msgstr "Decimális"
 
 #: lazarusidestrconsts.regdlgdisplaytypeforselectedregisters
 msgid "Display type for selected Registers"
-msgstr ""
+msgstr "A kiválasztott regiszterek megjelenítési módja"
 
 #: lazarusidestrconsts.regdlgformat
 msgid "Format"
@@ -17592,7 +17581,7 @@ msgstr "A lista sorainak szűrése egy karakterlánc alapján"
 
 #: lazarusidestrconsts.rsformdatafiledfm
 msgid "Form data file (*.dfm)|*.dfm"
-msgstr "Form adat fájl (*.dfm)|*.dfm"
+msgstr "Form adatfájl (*.dfm)|*.dfm"
 
 #: lazarusidestrconsts.rsfoundbutnotlistedhere
 msgid "Found, but not listed here: "
@@ -17894,7 +17883,7 @@ msgstr "Szöveg kijelölés parancsai"
 
 #: lazarusidestrconsts.srkmcatsrcnotebook
 msgid "Source Notebook commands"
-msgstr "Forráskód-szerkesztő parancsai"
+msgstr "Forráskódszerkesztő parancsai"
 
 #: lazarusidestrconsts.srkmcatsyncroedit
 msgid "Syncron Editing"
@@ -18295,7 +18284,7 @@ msgstr "%d. lapfülre ugrás"
 
 #: lazarusidestrconsts.srkmecgotoincludedirective
 msgid "Go to include directive of current include file"
-msgstr "Ugrás a jelenlegi include fájl include direktívájára"
+msgstr "Ugrás a jelenlegi beemelt fájl include direktívájára"
 
 #: lazarusidestrconsts.srkmecgotolinenumber
 msgid "Go to Line Number"
@@ -18422,9 +18411,8 @@ msgid "Insert current username"
 msgstr "Jelenlegi felhasználó nevének beszúrása"
 
 #: lazarusidestrconsts.srkmecinspect
-#, fuzzy
 msgid "inspect"
-msgstr "megvizsgálás"
+msgstr "vizsgálat"
 
 #: lazarusidestrconsts.srkmecinvertassignment
 msgctxt "lazarusidestrconsts.srkmecinvertassignment"
@@ -18976,7 +18964,7 @@ msgstr "Váltás a form és a unit között"
 
 #: lazarusidestrconsts.srkmectogglefpdoceditor
 msgid "View Documentation Editor"
-msgstr "Dokumentáció-szerkesztő megjelenítése"
+msgstr "Dokumentációszerkesztő megjelenítése"
 
 #: lazarusidestrconsts.srkmectoggleidespeedbtns
 msgctxt "lazarusidestrconsts.srkmectoggleidespeedbtns"
@@ -19021,7 +19009,7 @@ msgstr "Keresési eredmények megjelenítése"
 
 #: lazarusidestrconsts.srkmectogglesourceeditor
 msgid "View Source Editor"
-msgstr "Forráskód-szerkesztő megjelenítése"
+msgstr "Forráskódszerkesztő megjelenítése"
 
 #: lazarusidestrconsts.srkmectogglewatches
 msgid "View watches"
@@ -19050,7 +19038,7 @@ msgstr "Kurzor mozgatása felfelé"
 
 #: lazarusidestrconsts.srkmecviewanchoreditor
 msgid "View anchor editor"
-msgstr "Horgony-szerkesztő megjelenítése"
+msgstr "Horgonyszerkesztő megjelenítése"
 
 #: lazarusidestrconsts.srkmecviewcomponents
 msgid "View components"

@@ -147,9 +147,9 @@ msgstr "Eredmények az előzmények tetejére"
 
 #: debuggerstrconst.synfnewvalueisempty
 msgid "\"New value\" is empty."
-msgstr ""
+msgstr "Az \"Új érték\" üres."
 
 #: debuggerstrconst.synfthedebuggerwasnotabletomodifythevalue
 msgid "The debugger was not able to modify the value."
-msgstr ""
+msgstr "A hibakereső nem tudta megváltoztatni az értéket."
 

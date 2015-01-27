@@ -682,8 +682,6 @@ msgid "Help context %s not found in Database \"%s\"."
 msgstr "A(z) %s súgó témakör nem található a(z) \"%s\" adatbázisban."
 
 #: lclstrconsts.rshelphelpdatabasedidnotfoundaviewerforahelppageoftype
-#, fuzzy
-#| msgid "Help Database \"%s\" did not found a viewer for a help page of type %s"
 msgid "Help Database \"%s\" did not find a viewer for a help page of type %s"
 msgstr "A(z) \"%s\" súgó adatbázis nem talált megjelenítőt a(z) %s típusú súgó oldalhoz"
 
@@ -1035,9 +1033,8 @@ msgid "Portable PixMap"
 msgstr "Portable PixMap"
 
 #: lclstrconsts.rspostrecordhint
-#, fuzzy
 msgid "Post"
-msgstr "Elküldés"
+msgstr "Küldés"
 
 #: lclstrconsts.rspressoktoignoreandriskdatacorruptionpresscanceltok
 msgid "%s%sPress OK to ignore and risk data corruption.%sPress Cancel to kill the program."
@@ -1066,7 +1063,7 @@ msgstr "-dograb (csak X11 alatt), a hibakeresőben történő futtatás akaratla
 
 #: lclstrconsts.rsqtoptiongraphicsstyle
 msgid "-graphicssystem param, sets the backend to be used for on-screen widgets and QPixmaps. Available options are native, raster and opengl. OpenGL is still unstable."
-msgstr "-graphicssystem param, megadja a háttérfolyamatot az ablakelemek és a QPixmap-ok megjelenítéséhez. Elérhető lehetőségek: native, raster, opengl. Az OpenGL még nem stabil."
+msgstr "-graphicssystem param, megadja a háttérfolyamatot a vezérlőelemek és a QPixmap-ok megjelenítéséhez. Elérhető lehetőségek: native, raster, opengl. Az OpenGL még nem stabil."
 
 #: lclstrconsts.rsqtoptionnograb
 msgid "-nograb, tells Qt that it must never grab the mouse or the keyboard. Need QT_DEBUG."
@@ -1094,7 +1091,7 @@ msgstr "-sync (csak X11 alatt), szinkronmódba kapcsol a hibakereséshez."
 
 #: lclstrconsts.rsqtoptionwidgetcount
 msgid "-widgetcount, prints debug message at the end about number of widgets left undestroyed and maximum number of widgets existed at the same time."
-msgstr "-widgetcount, hibakeresési üzeneteket jelenít meg befejezéskor a megmaradt ablakelemek és az egy időben létezett legtöbb ablakelem számáról."
+msgstr "-widgetcount, hibakeresési üzeneteket jelenít meg befejezéskor a megmaradt vezérlőelemek és az egy időben létezett legtöbb vezérlőkelem számáról."
 
 #: lclstrconsts.rsqtoptionx11bgcolor
 msgid "-bg or -background color, sets the default background color and an application palette (light and dark shades are calculated)."
@@ -1130,7 +1127,7 @@ msgstr "-im, beállítja a beviteli mód kiszolgálóját (ugyanúgy mint az XMO
 
 #: lclstrconsts.rsqtoptionx11inputstyle
 msgid "-inputstyle, defines how the input is inserted into the given widget, e.g. onTheSpot makes the input appear directly in the widget, while overTheSpot makes the input appear in a box floating over the widget and is not inserted until the editing is done."
-msgstr "-inputstyle, meghatározza a bevitel beszúrásának módját az adott ablakelembe, pl.: onTheSpot hatására a bevitel közvetlenül az ablakelemben jelenik meg, az overTheSpot hatására pedig a bevitel egy lebegő dobozban jelenik meg az ablakelem fölött és csak a szerkesztés befejezésekor lesz beszúrva."
+msgstr "-inputstyle, meghatározza a bevitel beszúrásának módját az adott vezérlőelembe, pl.: onTheSpot hatására a bevitel közvetlenül a vezérlőelemben jelenik meg, az overTheSpot hatására pedig a bevitel egy lebegő dobozban jelenik meg a vezérlőelem fölött és csak a szerkesztés befejezésekor lesz beszúrva."
 
 #: lclstrconsts.rsqtoptionx11name
 msgid "-name name, sets the application name."
@@ -1494,4 +1491,3 @@ msgstr "Rossz vezérjel szimbólum: %s az elvárt, de %s található"
 #: lclstrconsts.sparwrongtokentype
 msgid "Wrong token type: %s expected but %s found"
 msgstr "Rossz vezérjel típus: %s az elvárt, de %s található"
-

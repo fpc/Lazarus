@@ -87,7 +87,7 @@ msgstr "  módosítva"
 
 #: lazutilsstrconsts.lrsnodeset
 msgid "node set"
-msgstr ""
+msgstr "csomópontkészlet"
 
 #: lazutilsstrconsts.lrsnumber
 msgid "number"

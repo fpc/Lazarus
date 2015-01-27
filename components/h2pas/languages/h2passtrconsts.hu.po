@@ -5,11 +5,11 @@ msgstr ""
 "PO-Revision-Date: \n"
 "Last-Translator: Péter Gábor <ptrg@freemail.hu>\n"
 "Language-Team: Magyar (Hungarian)\n"
+"Language: hu\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 1.5.4\n"
-"Language: hu\n"
 
 #: h2passtrconsts.h2padd
 msgid "&Add"
@@ -65,7 +65,7 @@ msgstr "Ezen .h fájlok hozzáadása a H2Pas projekthez?%s%s%s"
 
 #: h2passtrconsts.h2paddunitstousessection
 msgid "Add units to uses section"
-msgstr "Unit-ok hozzáadása a uses részhez"
+msgstr "Unit-ok hozzáadása a uses szakaszhoz"
 
 #: h2passtrconsts.h2pafterh2pas
 msgid "After h2pas"
@@ -257,7 +257,7 @@ msgstr "A fájl nem található: \"%s\""
 
 #: h2passtrconsts.h2pfindexplicittypesfailedreadingconstsection
 msgid "FindExplicitTypes FAILED reading const section"
-msgstr "FindExplicitTypes: SIKERTELEN a konstans rész olvasása"
+msgstr "FindExplicitTypes: SIKERTELEN a konstans szakasz olvasása"
 
 #: h2passtrconsts.h2pfindexplicittypesfailedreadingtypedefinition
 msgid "FindExplicitTypes FAILED reading type definition %s"
@@ -269,7 +269,7 @@ msgstr "FindExplicitTypes: SIKERTELEN a típusmeghatározás újraolvasása: %s"
 
 #: h2passtrconsts.h2pfixessectiontypeofaliasdefinitionsinpascalunitchec
 msgid "Fixes section type of alias definitions in pascal unit%sChecks all alias definitions of the form%sconst LeftSide = RightSide;%slooks up RightSide in the unit and if RightSide is a type or var, changes the section accordingly"
-msgstr "Típusálnevek definícióinak javítása a pascal unit-ban%sEllenőrzi az form-hoz tartozó álnevek definícióit%sconst BalOldal = JobbOldal;%smegkeresi a JobbOldal-t a unit-ban és ha a JobbOldal egy típus vagy változó akkor ennek megfelelően változtatja meg az adott részt"
+msgstr "Álnév definíciók szakasztípusának javítása a pascal unit-ban%sEllenőrzi az form-hoz tartozó álnevek definícióit%sconst BalOldal = JobbOldal;%smegkeresi a JobbOldal-t a unit-ban és ha a JobbOldal egy típus vagy változó akkor ennek megfelelően változtatja meg az adott szakaszt"
 
 #: h2passtrconsts.h2pfixforwarddefinitionsbyreordering
 msgid "Fix forward definitions by reordering"
@@ -413,11 +413,9 @@ msgstr "Legalább egy be nem olvasztott C fejlécfájlt engedélyezni kell."
 
 #: h2passtrconsts.h2pposth2pasasetofcommontoolstorunafterh2pasphreplace
 msgid "Post H2Pas - a set of common tools to run after h2pas%sphReplaceUnitFilenameWithUnitName - Replace \"unit filename;\" with \"unit name;\"%sphRemoveIncludeDirectives - Remove include directivesphRemoveSystemTypes - Remove type redefinitons like PLongint%sphFixH2PasMissingIFDEFsInUnit - add missing IFDEFs for function bodies%sphReduceCompilerDirectivesInUnit - removes unneeded directives%sphRemoveRedefinedPointerTypes - Remove redefined pointer types%sphRemoveEmptyTypeVarConstSections - Remove empty type/var/const sections%sphReplaceImplicitTypes - Search implicit types in parameters and add types for them%sphFixArrayOfParameterType - Replace \"array of )\" with \"array of const)\"%sphRemoveRedefinitionsInUnit - Removes redefinitions of types, variables, constants and resourcestrings%sphFixAliasDefinitionsInUnit - fix section type of alias definitions%sphReplaceConstFunctionsInUnit - replace simple assignment functions with constants%sphReplaceTypeCastFunctionsInUnit - replace simple type cast functions with types%sphFixForwardDefinitions - fix forward definitions by reordering%sphAddUnitsToUsesSection - add units to uses section%s"
-msgstr "H2Pas után - általános eszközök a H2Pas utáni futtatásra%sphReplaceUnitFilenameWithUnitName - A \"unit fájlnév;\" cseréje \"unit név;\" kifejezésre%sphRemoveIncludeDirectives - Include direktívák eltávolításaphRemoveSystemTypes - A PLongint szerű típus újradefiniálások eltávolítása%sphFixH2PasMissingIFDEFsInUnit - Hiányzó IFDEF-ek hozzáadása az eljárás testéhez%sphReduceCompilerDirectivesInUnit - szükségtelen direktívák eltávolítása%sphRemoveRedefinedPointerTypes - Újradefiniált mutató-típusok eltávolítása%sphRemoveEmptyTypeVarConstSections - Üres type/var/const részek eltávolítása%sphReplaceImplicitTypes - Közvetlen típusmeghatározások cseréje és típussá alakítása%sphFixArrayOfParameterType - Az \"array of )\" kifejezések cseréje erre: \"array of const)\"%sphRemoveRedefinitionsInUnit - A típus, változó, konstans és erőforrásszöveg újradefiniálások eltávolítása%sphFixAliasDefinitionsInUnit - A típusálnevek definícióinak javítása%sphReplaceConstFunctionsInUnit - Az egyszerű függvények cseréje konstansokra értékadásokban%sphReplaceTypeCastFunctionsInUnit - Az egyszerű függvények cseréje típuskényszerítésre%sphFixForwardDefinitions - Az előzetes definíciók javítása átrendezéssel%sphAddUnitsToUsesSection - Uni-ok hozzáadása a uses részhez%s"
+msgstr "H2Pas után - általános eszközök a H2Pas utáni futtatásra%sphReplaceUnitFilenameWithUnitName - A \"unit fájlnév;\" cseréje \"unit név;\" kifejezésre%sphRemoveIncludeDirectives - Include direktívák eltávolításaphRemoveSystemTypes - A PLongint szerű típus újradefiniálások eltávolítása%sphFixH2PasMissingIFDEFsInUnit - Hiányzó IFDEF-ek hozzáadása az eljárás testéhez%sphReduceCompilerDirectivesInUnit - szükségtelen direktívák eltávolítása%sphRemoveRedefinedPointerTypes - Újradefiniált mutató-típusok eltávolítása%sphRemoveEmptyTypeVarConstSections - Üres type/var/const szakaszok eltávolítása%sphReplaceImplicitTypes - Közvetlen típusmeghatározások cseréje és típussá alakítása%sphFixArrayOfParameterType - Az \"array of )\" kifejezések cseréje erre: \"array of const)\"%sphRemoveRedefinitionsInUnit - A típus, változó, konstans és erőforrásszöveg újradefiniálások eltávolítása%sphFixAliasDefinitionsInUnit - A típusálnevek definícióinak javítása%sphReplaceConstFunctionsInUnit - Az egyszerű függvények cseréje konstansokra értékadásokban%sphReplaceTypeCastFunctionsInUnit - Az egyszerű függvények cseréje típuskényszerítésre%sphFixForwardDefinitions - Az előzetes definíciók javítása átrendezéssel%sphAddUnitsToUsesSection - Uni-ok hozzáadása a uses szakaszhoz%s"
 
 #: h2passtrconsts.h2ppreh2pasasetofcommontoolstorunbeforeh2pasphremovec
-#, fuzzy
-#| msgid "Pre H2Pas - a set of common tools to run before h2pas%sphRemoveCPlusPlusExternCTool - Remove C++ 'extern \"C\"' lines%sphRemoveEmptyCMacrosTool - Remove empty C macros%sphReplaceEdgedBracketPairWithStar - Replace [] with *%sphReplace0PointerWithNULL - Replace macro values 0 pointer like (char *)0%sphConvertFunctionTypesToPointers - Convert function types to pointers%sphConvertEnumsToTypeDef - Convert anonymous enums to ypedef enums%sphCommentComplexCMacros - Comment macros too complex for hpas%sphCommentComplexCFunctions - Comment functions too complex for hpas%s"
 msgid "Pre H2Pas - a set of common tools to run before h2pas%sphRemoveCPlusPlusExternCTool - Remove C++ 'extern \"C\"' lines%sphRemoveEmptyCMacrosTool - Remove empty C macros%sphReplaceEdgedBracketPairWithStar - Replace [] with *%sphReplace0PointerWithNULL - Replace macro values 0 pointer like (char *)0%sphConvertFunctionTypesToPointers - Convert function types to pointers%sphConvertEnumsToTypeDef - Convert anonymous enums to typedef enums%sphCommentComplexCMacros - Comment macros too complex for h2pas%sphCommentComplexCFunctions - Comment functions too complex for h2pas%s"
 msgstr "H2Pas előtt - általános eszközök a H2Pas előtti futtatásra%sphRemoveCPlusPlusExternCTool - A C++ 'extern \"C\"' sorok eltávolítása%sphRemoveEmptyCMacrosTool - Üres C makrók eltávolítása%sphReplaceEdgedBracketPairWithStar - [] cseréje * jelre%sphReplace0PointerWithNULL - A 0 mutató értékű makrók, mint a (char *)0 cseréje%sphConvertFunctionTypesToPointers - A függvények típusainak átalakítása mutatókká%sphConvertEnumsToTypeDef - A névtelen felsorolások \"typedef\" felsorolásokká alakítása%sphCommentComplexCMacros - Megjegyzésbe a H2Pas számára túl bonyolult makrók%sphCommentComplexCFunctions - Megjegyzésbe a H2Pas számára túl bonyolult eljárások%s"
 
@@ -463,7 +461,7 @@ msgstr "Üres C makrók eltávolítása"
 
 #: h2passtrconsts.h2premoveemptytypevarconstsections
 msgid "Remove empty type/var/const sections"
-msgstr "Üres type/var/const részek eltávolítása"
+msgstr "Üres type/var/const szakaszok eltávolítása"
 
 #: h2passtrconsts.h2premoveredefinedpointertypes
 msgid "Remove redefined pointer types"
@@ -624,4 +622,3 @@ msgstr "Írási hiba"
 #: h2passtrconsts.h2pxhandlesys__trapofthepalmosheaderfiles
 msgid "-x  Handle SYS__TRAP of the PalmOS header files"
 msgstr "-x  A SYS__TRAP kezelése PalmOS fejlécfájlokban"
-
