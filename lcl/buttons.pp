@@ -271,6 +271,7 @@ type
     FFlat: Boolean;
     FMouseInControl: Boolean;
     function GetGlyph: TBitmap;
+	function IsGlyphStored: Boolean;
     procedure SetShowCaption(const AValue: boolean);
     procedure UpdateExclusive;
     function  GetTransparent: Boolean;
@@ -336,7 +337,7 @@ type
     property Color default clBtnFace;
     property Down: Boolean read FDown write SetDown default false;
     property Flat: Boolean read FFlat write SetFlat default false;
-    property Glyph: TBitmap read GetGlyph write SetGlyph;
+    property Glyph: TBitmap read GetGlyph write SetGlyph stored IsGlyphStored;
     property GroupIndex: Integer read FGroupIndex write SetGroupIndex default 0;
     property Layout: TButtonLayout read FLayout write SetLayout default blGlyphLeft;
     property Margin: integer read FMargin write SetMargin default -1;
