@@ -271,7 +271,7 @@ type
     FFlat: Boolean;
     FMouseInControl: Boolean;
     function GetGlyph: TBitmap;
-	function IsGlyphStored: Boolean;
+    function IsGlyphStored: Boolean;
     procedure SetShowCaption(const AValue: boolean);
     procedure UpdateExclusive;
     function  GetTransparent: Boolean;
