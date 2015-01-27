@@ -2326,7 +2326,7 @@ function TIDEFPCParser.CheckForFileLineColMessage(p: PChar): boolean;
 { filename(line,column) Hint: message
   filename(line,column) Hint: (msgid) message
   filename(line) Hint: (msgid) message
-  file(3)name(line,column) Hint: (msgid) message
+  B:\file(3)name(line,column) Hint: (msgid) message
 }
 var
   FileStartPos: PChar;
@@ -2351,7 +2351,9 @@ begin
     case p^ of
     #0: exit;
     '(': FileEndPos:=p;
-    ':': break;
+    ':':
+      if (DriveSeparator='') or (p-FileStartPos>1) then
+        break;
     end;
     inc(p);
   end;
