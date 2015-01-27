@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2013-09-04 23:26+0400\n"
+"PO-Revision-Date: 2015-01-28 01:17+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -227,7 +227,7 @@ msgstr "Математический режим"
 
 #: syneditstrconst.syns_attrmeasurementunitvalue
 msgid "Measurement unit"
-msgstr ""
+msgstr "Единица измерения"
 
 #: syneditstrconst.syns_attrmessage
 msgid "Message"
@@ -343,7 +343,7 @@ msgstr "Секция"
 
 #: syneditstrconst.syns_attrselectorvalue
 msgid "Selector"
-msgstr ""
+msgstr "Селектор"
 
 #: syneditstrconst.syns_attrspace
 msgid "Space"
