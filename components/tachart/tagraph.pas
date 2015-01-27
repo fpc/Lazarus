@@ -153,6 +153,9 @@ type
   TChartPaintEvent = procedure (
     ASender: TChart; const ARect: TRect;
     var ADoDefaultDrawing: Boolean) of object;
+  TChartDrawEvent = procedure (
+    ASender: TChart; ADrawer: IChartDrawer) of object;
+
 
   TChartRenderingParams = record
     FClipRect: TRect;
@@ -164,9 +167,6 @@ type
   { TChart }
 
   TChart = class(TCustomChart, ICoordTransformer)
-  public
-  type
-    TDrawEvent = procedure (ASender: TChart; ADrawer: IChartDrawer) of object;
   strict private // Property fields
     FAllowZoom: Boolean;
     FAntialiasingMode: TChartAntialiasingMode;
@@ -187,7 +187,7 @@ type
     FLogicalExtent: TDoubleRect;
     FMargins: TChartMargins;
     FMarginsExternal: TChartMargins;
-    FOnAfterDraw: TDrawEvent;
+    FOnAfterDraw: TChartDrawEvent;
     FOnAfterDrawBackground: TChartAfterDrawEvent;
     FOnAfterDrawBackWall: TChartAfterDrawEvent;
     FOnBeforeDrawBackground: TChartBeforeDrawEvent;
@@ -248,7 +248,7 @@ type
     procedure SetLogicalExtent(const AValue: TDoubleRect);
     procedure SetMargins(AValue: TChartMargins);
     procedure SetMarginsExternal(AValue: TChartMargins);
-    procedure SetOnAfterDraw(AValue: TDrawEvent);
+    procedure SetOnAfterDraw(AValue: TChartDrawEvent);
     procedure SetOnAfterDrawBackground(AValue: TChartAfterDrawEvent);
     procedure SetOnAfterDrawBackWall(AValue: TChartAfterDrawEvent);
     procedure SetOnBeforeDrawBackground(AValue: TChartBeforeDrawEvent);
@@ -391,7 +391,7 @@ type
     property Toolset: TBasicChartToolset read FToolset write SetToolset;
 
   published
-    property OnAfterDraw: TDrawEvent read FOnAfterDraw write SetOnAfterDraw;
+    property OnAfterDraw: TChartDrawEvent read FOnAfterDraw write SetOnAfterDraw;
     property OnAfterDrawBackground: TChartAfterDrawEvent
       read FOnAfterDrawBackground write SetOnAfterDrawBackground;
     property OnAfterDrawBackWall: TChartAfterDrawEvent
@@ -1534,7 +1534,7 @@ begin
     Series.List.ChangeNamePrefix(oldName, AValue);
 end;
 
-procedure TChart.SetOnAfterDraw(AValue: TDrawEvent);
+procedure TChart.SetOnAfterDraw(AValue: TChartDrawEvent);
 begin
   if TMethod(FOnAfterDraw) = TMethod(AValue) then exit;
   FOnAfterDraw := AValue;
