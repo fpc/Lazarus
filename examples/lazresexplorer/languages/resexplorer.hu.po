@@ -29,7 +29,7 @@ msgstr "Építés dátuma: "
 
 #: reconstsunit.scarbonwidgetset
 msgid "Carbon widget set"
-msgstr "Carbon elemkészlet"
+msgstr "Carbon vezérlőkészlet"
 
 #: reconstsunit.sexit
 msgid "Exit"
@@ -45,15 +45,15 @@ msgstr "FPC változat: "
 
 #: reconstsunit.sfpguiwidgetset
 msgid "FpGUI widget set"
-msgstr "FpGUI elemkészlet"
+msgstr "FpGUI vezérlőkészlet"
 
 #: reconstsunit.sgtk2widgetset
 msgid "GTK 2 widget set"
-msgstr "GTK 2 elemkészlet"
+msgstr "GTK 2 vezérlőkészlet"
 
 #: reconstsunit.sgtkwidgetset
 msgid "GTK widget set"
-msgstr "GTK elemkészlet"
+msgstr "GTK vezérlőkészlet"
 
 #: reconstsunit.shelp
 msgid "Help"
@@ -81,7 +81,7 @@ msgstr "Egyéb GUI"
 
 #: reconstsunit.sqtwidgetset
 msgid "QT widget set"
-msgstr "QT elemkészlet"
+msgstr "QT vezérlőkészlet"
 
 #: reconstsunit.sresourceexplorer
 msgid "Resource explorer"
@@ -109,9 +109,9 @@ msgstr "Cél OS: "
 
 #: reconstsunit.swin32_64widgetset
 msgid "Win32/Win64 widget set"
-msgstr "Win32/Win64 elemkészlet"
+msgstr "Win32/Win64 vezérlőkészlet"
 
 #: reconstsunit.swincewidgetset
 msgid "WinCE widget set"
-msgstr "WinCE elemkészlet"
+msgstr "WinCE vezérlőkészlet"
 

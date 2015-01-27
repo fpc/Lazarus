@@ -133,11 +133,11 @@ msgstr "OK"
 
 #: editortoolbar_str.rspackageeditor
 msgid "Package Editor"
-msgstr "Csomag-szerkesztő"
+msgstr "Csomagszerkesztő"
 
 #: editortoolbar_str.rspackageeditorfiles
 msgid "Package Editor Files"
-msgstr "Csomag-szerkesztő fájljai"
+msgstr "Csomagszerkesztő fájljai"
 
 #: editortoolbar_str.rsposition
 msgid "Position"
@@ -157,7 +157,7 @@ msgstr "Jobbra"
 
 #: editortoolbar_str.rssourceeditor
 msgid "Source Editor"
-msgstr "Forráskód-szerkesztő"
+msgstr "Forráskódszerkesztő"
 
 #: editortoolbar_str.rssourcetab
 msgid "Source Tab"

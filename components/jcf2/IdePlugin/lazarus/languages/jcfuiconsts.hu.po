@@ -53,7 +53,7 @@ msgstr "Konstansok"
 
 #: jcfuiconsts.lisaligninterfaceonly
 msgid "Interface Only"
-msgstr "Csak a felület rész"
+msgstr "Csak a felület szakasz"
 
 #: jcfuiconsts.lisalignmaxcolumn
 msgid "Max Column"
@@ -69,7 +69,7 @@ msgstr "Szórás max."
 
 #: jcfuiconsts.lisalignmaxvarianceinterface
 msgid "Max Variance Interface"
-msgstr "Szórás a felület részben max."
+msgstr "Szórás a felület szakaszban max."
 
 #: jcfuiconsts.lisalignmincolumn
 msgid "Min Column"
@@ -141,7 +141,7 @@ msgstr "Üres sorok"
 
 #: jcfuiconsts.lisblinprocedurevarsection
 msgid "In procedure var section"
-msgstr "Eljárásban a var részből"
+msgstr "Eljárás var szakaszában"
 
 #: jcfuiconsts.lisbllinesbeforeprocedure
 msgid "Lines before procedure"
@@ -328,7 +328,7 @@ msgstr "Új sor a fordító direktívái előtt:"
 
 #: jcfuiconsts.liscdusesclause
 msgid "Uses clause"
-msgstr "Uses rész"
+msgstr "Uses szakasz"
 
 #: jcfuiconsts.lisclarifyclarify
 msgid "Clarify"
@@ -605,7 +605,7 @@ msgstr "Szimbólumok feltételes fordításhoz:"
 
 #: jcfuiconsts.lisreturnsafteruses
 msgid "After uses"
-msgstr "Uses rész után"
+msgstr "Uses szakasz után"
 
 #: jcfuiconsts.lisreturnsconverttocarriagereturn
 msgid "Convert to Carriage Return (UNIX)"
@@ -650,7 +650,7 @@ msgstr "Maradjon ahogy van"
 
 #: jcfuiconsts.lisreturnsoneusesclauseitemperline
 msgid "One uses clause item per line"
-msgstr "Soronként egy elem a uses részben"
+msgstr "Soronként egy elem a uses szakaszban"
 
 #: jcfuiconsts.lisreturnsremovereturns
 msgid "Remove returns"
@@ -711,7 +711,7 @@ msgstr "Eljárások deklarációiban"
 
 #: jcfuiconsts.lisspacesingeneric
 msgid "In &generic"
-msgstr "Általánosító deklarációkban (generic)"
+msgstr "Általánosítható típusokban (generic)"
 
 #: jcfuiconsts.lisspacesinsertspacebeforebracket
 msgid "&Insert space before bracket"
@@ -845,19 +845,19 @@ msgstr "Legrövidebbtől a leghosszabbig"
 
 #: jcfuiconsts.listransformsortimplementationuses
 msgid "Sort i&mplementation uses"
-msgstr "A kidolgozás uses részének sorba rendezése"
+msgstr "A kidolgozás uses szakaszának sorba rendezése"
 
 #: jcfuiconsts.listransformsortinterfaceuses
 msgid "Sort i&nterface uses"
-msgstr "A felület uses részének sorba rendezése"
+msgstr "A felület uses szakaszának sorba rendezése"
 
 #: jcfuiconsts.listransformsortprogramuses
 msgid "Sort &program uses"
-msgstr "A program uses részének sorba rendezése"
+msgstr "A program uses szakaszának sorba rendezése"
 
 #: jcfuiconsts.listransformsortusesclauses
 msgid "Sort &uses clauses"
-msgstr "A uses részek sorba rendezése"
+msgstr "A uses szakaszok sorba rendezése"
 
 #: jcfuiconsts.listransformtransform
 msgid "Transform"
@@ -865,15 +865,15 @@ msgstr "Átalakítás"
 
 #: jcfuiconsts.listransformusessortorder
 msgid "Uses sort &order"
-msgstr "A uses rész rendezése"
+msgstr "A uses szakasz rendezése"
 
 #: jcfuiconsts.lisusesinsertintoimplementation
 msgid "Insert into Implementation"
-msgstr "Beszúrás a kidolgozás részbe"
+msgstr "Beszúrás a kidolgozás szakaszba"
 
 #: jcfuiconsts.lisusesinsertintointerface
 msgid "Insert into Interface"
-msgstr "Beszúrás a felület részbe"
+msgstr "Beszúrás a felület szakaszba"
 
 #: jcfuiconsts.lisusesremove
 msgid "Remove"

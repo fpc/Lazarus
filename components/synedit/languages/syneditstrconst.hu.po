@@ -49,7 +49,7 @@ msgstr "CDATA"
 
 #: syneditstrconst.syns_attrcdatasection
 msgid "CDATA Section"
-msgstr "CDATA rész"
+msgstr "CDATA szakasz"
 
 #: syneditstrconst.syns_attrcharacter
 msgid "Character"
@@ -57,19 +57,19 @@ msgstr "Karakter"
 
 #: syneditstrconst.syns_attrchunkmarker
 msgid "Diff Chunk Marker"
-msgstr "Diff - szakasz jelző"
+msgstr "Diff - adatblokk jelző"
 
 #: syneditstrconst.syns_attrchunkmixed
 msgid "Diff Chunk Line Counts"
-msgstr "Diff - szakasz sorainak száma"
+msgstr "Diff - adatblokk sorainak száma"
 
 #: syneditstrconst.syns_attrchunknew
 msgid "Diff Chunk New Line Count"
-msgstr "Diff - szakasz új sorainak száma"
+msgstr "Diff - adatblokk új sorainak száma"
 
 #: syneditstrconst.syns_attrchunkorig
 msgid "Diff Chunk Original Line Count"
-msgstr "Diff - szakasz eredeti sorainak száma"
+msgstr "Diff - adatblokk eredeti sorainak száma"
 
 #: syneditstrconst.syns_attrclass
 msgid "Class"
@@ -105,7 +105,7 @@ msgstr "DOCTYPE"
 
 #: syneditstrconst.syns_attrdoctypesection
 msgid "DOCTYPE Section"
-msgstr "DOCTYPE rész"
+msgstr "DOCTYPE szakasz"
 
 #: syneditstrconst.syns_attrdocumentation
 msgid "Documentation"
@@ -125,7 +125,7 @@ msgstr "Beágyazott szöveg"
 
 #: syneditstrconst.syns_attrentityreference
 msgid "Entity Reference"
-msgstr ""
+msgstr "Egyedhivatkozás"
 
 #: syneditstrconst.syns_attrescapeampersand
 msgid "Escape ampersand"
@@ -149,7 +149,7 @@ msgstr "Lebegőpontos"
 
 #: syneditstrconst.syns_attrform
 msgid "Form"
-msgstr ""
+msgstr "Form"
 
 #: syneditstrconst.syns_attrfunction
 msgid "Function"
@@ -177,7 +177,7 @@ msgstr "Érvénytelen karakter"
 
 #: syneditstrconst.syns_attrinclude
 msgid "Include"
-msgstr ""
+msgstr "Beemelés"
 
 #: syneditstrconst.syns_attrindirect
 msgid "Indirect"
@@ -281,7 +281,7 @@ msgstr "Védett szó (PL/SQL)"
 
 #: syneditstrconst.syns_attrpragma
 msgid "Pragma"
-msgstr ""
+msgstr "Irányelv"
 
 #: syneditstrconst.syns_attrpreprocessor
 msgid "Preprocessor"
@@ -297,7 +297,7 @@ msgstr "Feldolgozási utasítások"
 
 #: syneditstrconst.syns_attrqualifier
 msgid "Qualifier"
-msgstr ""
+msgstr "Leíró"
 
 #: syneditstrconst.syns_attrregister
 msgid "Register"
@@ -341,7 +341,7 @@ msgstr "Második védett szó"
 
 #: syneditstrconst.syns_attrsection
 msgid "Section"
-msgstr "Alfejezet"
+msgstr "Szakasz"
 
 #: syneditstrconst.syns_attrselectorvalue
 msgid "Selector"
@@ -377,7 +377,7 @@ msgstr "Jel"
 
 #: syneditstrconst.syns_attrsyntaxerror
 msgid "SyntaxError"
-msgstr ""
+msgstr "szintaktikai hiba"
 
 #: syneditstrconst.syns_attrsystem
 msgid "System functions and variables"
@@ -405,7 +405,7 @@ msgstr "Szöveg"
 
 #: syneditstrconst.syns_attrtextmathmode
 msgid "Text in Math Mode"
-msgstr ""
+msgstr "Szöveg matematikai módban"
 
 #: syneditstrconst.syns_attrunknownword
 msgid "Unknown word"

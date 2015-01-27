@@ -82,12 +82,12 @@ msgstr "Beviteli maszk"
 #: messagecomposer.smessagecomposercaption
 msgctxt "messagecomposer.smessagecomposercaption"
 msgid "Message Composer"
-msgstr "Üzenet-szerkesztő"
+msgstr "Üzenetszerkesztő"
 
 #: messagecomposer.smessagecomposermenucaption
 msgctxt "messagecomposer.smessagecomposermenucaption"
 msgid "Message Composer ..."
-msgstr "Üzenet-szerkesztő ..."
+msgstr "Üzenetszerkesztő ..."
 
 #: messagecomposer.smodalresult
 msgid "Modal result"

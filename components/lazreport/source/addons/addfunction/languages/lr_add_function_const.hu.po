@@ -1,15 +1,16 @@
+#
 msgid ""
 msgstr ""
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
 "Last-Translator: Péter Gábor <ptrg@freemail.hu>\n"
 "Language-Team: Magyar (Hungarian)\n"
-"X-Generator: Poedit 1.5.4\n"
 "Language: hu\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.5.4\n"
 
 #: lr_add_function_const.sdatecategory
 msgid "Date"
@@ -108,8 +109,6 @@ msgid "ISRANGENUM(<Number1>,<Number2>,<Number3>)/Returns True if <Number3> is be
 msgstr "ISRANGENUM(<Szám1>, <Szám2>, <Szám3>)/Igaz értéket ad vissza ha a <Szám3> a <Szám1> és a <Number2> közé esik."
 
 #: lr_add_function_const.sdescriptioniswordpresent
-#, fuzzy
-#| msgid "ISWORDPRESENT(<Word>,<String>,<Delimiters>)/Determines is word <Word> present in the string <String>.<Delimiters> is the list of word delimiters."
 msgid "ISWORDPRESENT(<Word>,<String>,<Delimiters>)/Determines if word <Word> is present in the string <String>.<Delimiters> is the list of word delimiters."
 msgstr "ISWORDPRESENT(<Szó>, <Karakterlánc>, <Elválasztó>)/Ellenőrzzi, hogy a <Szó> előfordul-e a <Karakterlánc>-ban. A szavakat az <Elválasztó> választja el."
 
@@ -216,4 +215,3 @@ msgstr "Egyéb"
 #: lr_add_function_const.sstringcategory
 msgid "String"
 msgstr "Karakterlánc"
-

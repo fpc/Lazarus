@@ -64,7 +64,7 @@ msgstr "Az aktív jelentés nyomtatása közvetlenül (vagyis előnézet nélkü
 
 #: maincalleditor.cerhintthumbnails
 msgid "This Action will Load and Preview a thumbnails Report"
-msgstr ""
+msgstr "Ez a művelet betölti és megjeleníti a jelentés bélyegképét"
 
 #: maincalleditor.cerindex
 msgctxt "maincalleditor.cerindex"
@@ -112,7 +112,6 @@ msgid "Print report"
 msgstr "Jelentés nyomtatása"
 
 #: maincalleditor.certhumbnails
-#, fuzzy
 msgctxt "maincalleditor.certhumbnails"
 msgid "Thumbnails"
 msgstr "Bélyegképek"
@@ -150,7 +149,7 @@ msgstr "Exportálás CSV fájlba"
 
 #: tfrmmain.accexporttodbg.caption
 msgid "Export Debug"
-msgstr ""
+msgstr "Hibakeresési információk exportálása"
 
 #: tfrmmain.accexporttohtml.caption
 msgid "Export to html"
@@ -181,7 +180,6 @@ msgid "Print Report"
 msgstr "Jelentés nyomtatása"
 
 #: tfrmmain.accthumbnails.caption
-#, fuzzy
 msgctxt "TFRMMAIN.ACCTHUMBNAILS.CAPTION"
 msgid "Thumbnails"
 msgstr "Bélyegképek"
