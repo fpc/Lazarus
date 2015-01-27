@@ -111,6 +111,7 @@ type
     procedure SavePage(Page: TW2FPDocPage);
     procedure SetPackageName(AValue: string);
     procedure SetRootName(AValue: string);
+    procedure SaveProject;
   public
     constructor Create; override;
     procedure Convert; override;
@@ -285,6 +286,52 @@ begin
   FRootName:=AValue;
 end;
 
+procedure TWiki2FPDocConverter.SaveProject;
+var
+  sl: TStringList;
+  Filename: String;
+  i: Integer;
+begin
+  Filename:=AppendPathDelim(OutputDir)+PackageName+'.xml';
+  sl:=TStringList.Create;
+  try
+    sl.Add('<?xml version="1.0" encoding="utf-8"?>');
+    sl.Add('<docproject>');
+    sl.Add('  <options>');
+    sl.Add('    <option name="auto-index" value="1"/>');
+    sl.Add('    <option name="auto-toc" value="1"/>');
+    sl.Add('    <option name="make-searchable" value="1"/>');
+    sl.Add('    <option name="css-file" value="fpdoc.css"/>');
+    sl.Add('    <option name="charset" value="UTF8"/>');
+    // chm
+    //sl.Add('    <option name="format" value="chm"/>');
+    //sl.Add('    <option name="chm-title" value="Lazarus IDE Help"/>');
+    // html
+    //sl.Add('    <option name="format" value="html"/>');
+
+    sl.Add('  </options>');
+    sl.Add('  <packages>');
+    // chm
+    //sl.Add('    <package name="'+PackageName+'" output="'+PackageName+'.chm"/>');
+    // html
+    sl.Add('    <package name="'+PackageName+'" output="."/>');
+    sl.Add('    <units>');
+    sl.Add('    </units>');
+    sl.Add('    <descriptions>');
+    for i:=0 to Count-1 do
+      sl.Add('      <description file="'+TW2FPDocPage(Pages[i]).WikiFilename+'"/>');
+    sl.Add('    </descriptions>');
+    sl.Add('  </packages>');
+    sl.Add('</docproject>');
+
+    sl.SaveToFile(Filename);
+    if not Quiet then
+      debugln(['fpdoc project file: ',Filename]);
+  finally
+    sl.Free;
+  end;
+end;
+
 procedure TWiki2FPDocConverter.ConvertPage(Page: TW2FPDocPage);
 var
   doc: TXMLDocument;
@@ -371,6 +418,7 @@ begin
   // save
   for i:=0 to Count-1 do
     SavePage(TW2FPDocPage(Pages[i]));
+  SaveProject;
 end;
 
 end.

@@ -60,7 +60,9 @@ type
     FCodeTags: TKeyWordFunctionList;
     FNoWarnBaseURLs: TStringToStringTree;
     FOnLog: TWikiOnLog;
+    FQuiet: boolean;
     FTitle: string;
+    FVerbose: boolean;
     FWarnMissingPageLinks: boolean;
     procedure SetTitle(AValue: string);
   protected
@@ -94,6 +96,8 @@ type
     property CodeTags: TKeyWordFunctionList read FCodeTags write FCodeTags;
     function CollectAllLangCodes(Delimiter: char = ','): string;
     procedure GetPageTranslations(DocumentName: string; out LangToPage: TStringToPointerTree);
+    property Verbose: boolean read FVerbose write FVerbose;
+    property Quiet: boolean read FQuiet write FQuiet;
   end;
 
 function WikiPageToFilename(DocumentName: string; IsInternalLink, AppendCaseID: boolean): string;
