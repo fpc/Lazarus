@@ -92,7 +92,7 @@
       <!-- object Visibility: default -->
       <element name="TCustomDbGrid">
         <short>
-          <var>TCustomDBGrid</var> - the Base class for <var>TDBGrid,</var> a data-aware component for displaying information from a database in the manner of a <var>Stringrid</var>
+          <var>TCustomDBGrid</var> - the Base class for <var>TDBGrid,</var> a data-aware component for displaying information from a database in the manner of a <var>StringGrid</var>
         </short>
         <seealso>
           <link id="#lcl.DBCtrls.HowToUseDataAwareControls">HowToUseDataAwareControls</link>
