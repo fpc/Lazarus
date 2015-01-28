@@ -225,6 +225,7 @@ begin
       case PNMHdr(LParam)^.code of
         NM_CLICK, NM_RCLICK:
         begin
+          if WindowsVersion = wv7 then Exit;
           // A listview doesn't get a WM_LBUTTONUP, WM_RBUTTONUP message,
           // because it keeps the message in its own event loop,
           // see msdn article about "Default List-View Message Processing"
