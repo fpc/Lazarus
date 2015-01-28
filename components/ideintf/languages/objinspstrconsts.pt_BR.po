@@ -1,4 +1,4 @@
-msgid ""
+﻿msgid ""
 msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1436,7 +1436,7 @@ msgstr "Aplicar"
 
 #: objinspstrconsts.sccssgedtcaption
 msgid "StringGrid Editor"
-msgstr "Editor \"StrinGrid\" ..."
+msgstr "Editor \"StringGrid\" ..."
 
 #: objinspstrconsts.sccssgedtclean
 msgid "Clean"
