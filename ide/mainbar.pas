@@ -41,7 +41,7 @@ uses
   Classes, SysUtils, LCLProc, Forms, Controls, Buttons, Menus,
   ComCtrls, ExtCtrls, Dialogs, LMessages,
   // IDEIntf
-  ProjectIntf, NewItemIntf, MenuIntf, LazIDEIntf,
+  ProjectIntf, NewItemIntf, MenuIntf, LazIDEIntf, LazFileCache,
   EnvironmentOpts, LazarusIDEStrConsts;
 
 type
@@ -403,6 +403,9 @@ implementation
 procedure TMainIDEBar.MainIDEBarDropFiles(Sender: TObject;
   const FileNames: array of String);
 begin
+  // the Drop event comes before the Application activate event
+  // => invalidate file state
+  InvalidateFileStateCache;
   LazarusIDE.DoDropFiles(Sender,FileNames);
 end;
 
