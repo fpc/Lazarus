@@ -223,6 +223,27 @@ begin
     WM_NOTIFY:
     begin
       case PNMHdr(LParam)^.code of
+        NM_CLICK, NM_RCLICK:
+        begin
+          if WindowsVersion = wv7 then Exit;
+          // A listview doesn't get a WM_LBUTTONUP, WM_RBUTTONUP message,
+          // because it keeps the message in its own event loop,
+          // see msdn article about "Default List-View Message Processing"
+          // therefore we take this notification and create a
+          // LM_LBUTTONUP, LM_RBUTTONUP message out of it
+          WinProcess := False;
+          if PNMHdr(LParam)^.code = NM_CLICK then
+            Msg := LM_LBUTTONUP
+          else
+            Msg := LM_RBUTTONUP;
+          Pos := GetClientCursorPos(PNMHdr(LParam)^.hwndFrom);
+          // to make correct event sequence in LCL we should postpone this message
+          // since we are here after call of CallDefaultWindowProc
+
+          // TODO: prevent getting more than one Up, Down message by LCL
+          PostMessage(PNMHdr(LParam)^.hwndFrom, Msg, 0, MakeLParam(Pos.x, Pos.y));
+          Result := True;
+        end;
         LVN_GETDISPINFOA, LVN_GETDISPINFOW:
           HandleListViewOwnerData(TCustomListViewAccess(AWinControl));
         NM_CUSTOMDRAW:
