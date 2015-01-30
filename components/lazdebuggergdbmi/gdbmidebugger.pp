@@ -567,34 +567,34 @@ type
   { TGDBMIInternalBreakPoint }
 
   TGDBMIInternalBreakPoint = class
+  private type
+    TClearOpt = (coClearIfSet, coKeepIfSet);
+    TInternalBreakLocation = (iblNamed, iblAddrOfNamed, iblCustomAddr, iblAddOffset);
+    TInternalBreakData = record
+      BreakGdbId: Integer;
+      BreakAddr: TDBGPtr;
+      BreakFunction: String;
+      //BreakFile: String;
+      //BreakLine: Integer;
+    end;
   private
+    FBreaks: array[TInternalBreakLocation] of TInternalBreakData;
+    (*  F...ID: -1 not set,  -2 blocked
+    *)
     FEnabled: Boolean;
-    FLineOffsFunction: string;
-    // -break-insert name
-    FNameBreakID: Integer;
-    FNameBreakAddr: TDBGPtr;
-    // -break-insert *addr
-    FAddrBreakID: Integer;
-    FAddrBreakAddr: TDBGPtr;
-    // -break-insert *custom
-    FCustomID: Integer;
-    FCustomAddr: TDBGPtr;
-    // -break-insert +x
-    FLineOffsID: Integer;
-    FLineOffsAddr: TDBGPtr;
-    FMainAddrFound: TDBGPtr;
-    FName: string;
+    FName: string;                 // The (function) name of the location "main" or "FPC_RAISE"
+    FMainAddrFound: TDBGPtr;       // The address found for this named location
     FUseForceFlag: Boolean;
-    procedure ClearName(ACmd: TGDBMIDebuggerCommand);
-    procedure ClearAddr(ACmd: TGDBMIDebuggerCommand); // Main-Addr
-    procedure ClearCustom(ACmd: TGDBMIDebuggerCommand);
-    procedure ClearLineOffs(ACmd: TGDBMIDebuggerCommand);
-    function  BreakSet(ACmd: TGDBMIDebuggerCommand; ALoc: String; out AId: integer;
-                       out AnAddr: TDBGPtr): Boolean;
-    function  BreakSet(ACmd: TGDBMIDebuggerCommand; ALoc: String; out AId: integer;
-                       out AnAddr: TDBGPtr; out AFuncName: string): Boolean;
+    procedure Clear(ACmd: TGDBMIDebuggerCommand; ALoc: TInternalBreakLocation;
+                    ABlock: Boolean = False);
+    function  BreakSet(ACmd: TGDBMIDebuggerCommand; ABreakLoc: String;
+                       ALoc: TInternalBreakLocation;
+                       AClearIfSet: TClearOpt): Boolean;
     function  GetInfoAddr(ACmd: TGDBMIDebuggerCommand): TDBGPtr;
-    procedure InternalSetAddr(ACmd: TGDBMIDebuggerCommand; AnAddr: TDBGPtr);
+    function  HasBreakAtAddr(AnAddr: TDBGPtr): Boolean;
+    function  HasBreakWithId(AnId: Integer): Boolean;
+    procedure InternalSetAddr(ACmd: TGDBMIDebuggerCommand; ALoc: TInternalBreakLocation;
+                              AnAddr: TDBGPtr);
   public
     constructor Create(AName: string);
     procedure SetBoth(ACmd: TGDBMIDebuggerCommand);
@@ -604,14 +604,17 @@ type
     procedure SetAtLineOffs(ACmd: TGDBMIDebuggerCommand; AnOffset: integer);
     procedure Clear(ACmd: TGDBMIDebuggerCommand);
     function  ClearId(ACmd: TGDBMIDebuggerCommand; AnId: Integer): Boolean;
+    // a blocked id can not be set, until after the next clear (clear all)
+    function  ClearAndBlockId(ACmd: TGDBMIDebuggerCommand; AnId: Integer): Boolean;
     function  MatchAddr(AnAddr: TDBGPtr): boolean;
     function  MatchId(AnId: Integer): boolean;
     function  IsBreakSet: boolean;
+    function  BreakSetCount: Integer;
     procedure EnableOrSetByAddr(ACmd: TGDBMIDebuggerCommand; SetNamedOnFail: Boolean = False);
     procedure Enable(ACmd: TGDBMIDebuggerCommand);
     procedure Disable(ACmd: TGDBMIDebuggerCommand);
     property  MainAddrFound: TDBGPtr read FMainAddrFound;
-    property  LineOffsFunction: string read FLineOffsFunction;
+//    property  LineOffsFunction: string read FBreaks[iblAddOffset].BreakFunction;
     property  UseForceFlag: Boolean read FUseForceFlag write FUseForceFlag;
     property  Enabled: Boolean read FEnabled;
   end;
@@ -4815,64 +4818,78 @@ function TGDBMIDebuggerCommandStartDebugging.DoExecute: Boolean;
     );
   var
     RunToMainState: TRunToMainState;
+    EntryPointNum: TDBGPtr;
 
-    procedure SetMainBrk;
-      function TrySetMainBrk(AType: TRunToMainType; ANextState: TRunToMainState): Boolean;
+    function SetMainBrk: boolean;
+      procedure MaybeAddMainBrk(AType: TRunToMainType; AnSkipIfCntGreater: Integer;
+        ACheckEntryPoinReloc: Boolean = false);
       begin
-        RunToMainState := ANextState;
+        //RunToMainState := ANextState;
+        // Check if the Entrypoint looks promising (if it looks like it matches the relocated address)
+        if ACheckEntryPoinReloc and not(EntryPointNum > $4000) then
+          exit;
+        // Check amount of already set breakpoints
+        if (AnSkipIfCntGreater >= 0) and (FTheDebugger.FMainAddrBreak.BreakSetCount > AnSkipIfCntGreater) then
+          exit;
         case AType of
           mtMain:     FTheDebugger.FMainAddrBreak.SetByName(Self);
           mtMainAddr: FTheDebugger.FMainAddrBreak.SetByAddr(Self);
           mtEntry:    FTheDebugger.FMainAddrBreak.SetAtCustomAddr(Self, StrToQWordDef(EntryPoint, 0));
           mtAddZero:  FTheDebugger.FMainAddrBreak.SetAtLineOffs(Self, 0);
         end;
-        Result := FTheDebugger.FMainAddrBreak.IsBreakSet;
       end;
+    var
+      bcnt: Integer;
     begin
-      case RunToMainState of
-        msMainAddr: begin
-            if TrySetMainBrk(mtMainAddr,  msTryZero) then exit;
-            if TrySetMainBrk(mtEntry,     msTryZero) then exit;
-            if TrySetMainBrk(mtAddZero,   msNone) then exit;
+      Result := False;
+      bcnt := FTheDebugger.FMainAddrBreak.BreakSetCount;
+      case DebuggerProperties.InternalStartBreak of
+        gdsbEntry:    begin
+            MaybeAddMainBrk(mtEntry,     -1, true);
+            if not FTheDebugger.FMainAddrBreak.IsBreakSet then begin
+              MaybeAddMainBrk(mtEntry,     -1, false);
+              MaybeAddMainBrk(mtAddZero,   -1);
+              // set only, if no other is set (e.g. 2nd attempt)
+              MaybeAddMainBrk(mtMainAddr,   0);
+              MaybeAddMainBrk(mtMain,       0);
+            end;
           end;
-        msMain: begin
-            if TrySetMainBrk(mtMain,      msTryZero) then exit;
-            if TrySetMainBrk(mtAddZero,   msNone) then exit;
+        gdsbMainAddr: begin
+            MaybeAddMainBrk(mtMainAddr,  -1);
+            // set only, if no other is set (e.g. 2nd attempt)
+            if not FTheDebugger.FMainAddrBreak.IsBreakSet then begin
+              MaybeAddMainBrk(mtEntry,      0, true);
+              MaybeAddMainBrk(mtAddZero,    1);
+              MaybeAddMainBrk(mtEntry,      0, false);
+              MaybeAddMainBrk(mtMain,       0);
+            end;
           end;
-        msAddZero: begin
-            if TrySetMainBrk(mtAddZero,   msTryEntryName) then exit;
-            if TrySetMainBrk(mtEntry,     msTryName) then exit;
+        gdsbMain:     begin
+            MaybeAddMainBrk(mtMain,      -1);
+            // set only, if no other is set (e.g. 2nd attempt)
+            MaybeAddMainBrk(mtAddZero,    0);
+            MaybeAddMainBrk(mtMainAddr,   0);
+            MaybeAddMainBrk(mtEntry,      0, false);
           end;
-        msEntryPoint: begin
-            if TrySetMainBrk(mtEntry,     msTryZero) then exit;
-            if TrySetMainBrk(mtAddZero,   msNone) then exit;
+        gdsbAddZero:  begin
+            MaybeAddMainBrk(mtAddZero,    -1);
+            // set only, if no other is set (e.g. 2nd attempt)
+            MaybeAddMainBrk(mtEntry,      0, true);
+            MaybeAddMainBrk(mtMain,       0);
+            MaybeAddMainBrk(mtEntry,      0, false);
+            MaybeAddMainBrk(mtMainAddr,   0);
           end;
-        msDefault: begin
-            (* Force mtMain before + 0: gdb 7.4 will pretend to have +0, but fail it later. *)
-            TrySetMainBrk(mtMain,      msNone); // include name
-            TrySetMainBrk(mtAddZero,   msNone); // always include +0
-            if TrySetMainBrk(mtEntry,     msTryNameZero) then exit;
-            if TrySetMainBrk(mtMainAddr,  msTryZero) then exit;
+        else begin // gdsbDefault
+            // SetByName: "main", this is the best aproach, unless any library also exports main.
+            MaybeAddMainBrk(mtMain,      -1);
+            MaybeAddMainBrk(mtEntry,     -1, true); // Previous versions used "+0" as 2nd in the list
+            MaybeAddMainBrk(mtAddZero,   -1);
+            MaybeAddMainBrk(mtMainAddr,   2); // set only, if less than 2 are set
+            // set only, if no other is set (e.g. 2nd attempt)
+            MaybeAddMainBrk(mtEntry,     0, false);
           end;
-        msTryNameZero: begin
-            if  (FTheDebugger.FMainAddrBreak.LineOffsFunction <> 'main')
-            then
-              TrySetMainBrk(mtAddZero,   msNone); // include +0, if not at main
-            if TrySetMainBrk(mtMain,      msTryZero) then exit;
-          end;
-        msTryZero: begin
-            if TrySetMainBrk(mtAddZero,   msNone) then exit;
-          end;
-        msTryEntryName: begin
-            if TrySetMainBrk(mtEntry,     msTryName) then exit;
-            if TrySetMainBrk(mtMain,      msNone) then exit;
-          end;
-        msTryName: begin
-            if TrySetMainBrk(mtMain,      msNone) then exit;
-          end;
-        msNone:
-          FTheDebugger.FMainAddrBreak.Clear(Self);
       end;
+      Result := bcnt < FTheDebugger.FMainAddrBreak.BreakSetCount; // added new breaks
     end;
 
   function ParseLogForPid(ALogTxt: String): Integer;
@@ -4894,10 +4911,11 @@ function TGDBMIDebuggerCommandStartDebugging.DoExecute: Boolean;
   var
     R: TGDBMIExecResult;
     Cmd, s, s2, rval: String;
-    i: integer;
+    i, j, LoopCnt: integer;
     List: TGDBMINameValueList;
     BrkErr: Boolean;
   begin
+    EntryPointNum := StrToQWordDef(EntryPoint, 0);
     TargetInfo^.TargetPID := 0;
     FDidKillNow := False;
     RunToMainState := msEntryPoint;
@@ -4915,13 +4933,16 @@ function TGDBMIDebuggerCommandStartDebugging.DoExecute: Boolean;
     rval := '';
     R.State := dsError;
     FTheDebugger.FMainAddrBreak.Clear(Self);
-    while true do begin
+    LoopCnt := 6; // max iterations
+    while (LoopCnt > 0) and not(DebuggerState = dsError) do begin
+      dec(LoopCnt);
       SetMainBrk;
       if not FTheDebugger.FMainAddrBreak.IsBreakSet
       then begin
         (* TODO:
            If no main break can be set, it may still be possible (desirable) to run
            the app, without debug-capacbilities
+           Or maybe even try to set all breakpoints.
         *)
         SetDebuggerErrorState(Format(gdbmiCommandStartMainBreakError, [LineEnding]),
                               ErrorStateInfo);
@@ -4969,15 +4990,20 @@ function TGDBMIDebuggerCommandStartDebugging.DoExecute: Boolean;
       if not BrkErr
       then break;
 
-      while BrkErr do begin
-        if FTheDebugger.FMainAddrBreak.ClearId(Self, i) then
-          BrkErr := ParseBreakInsertError(s, i)
-        else begin
-           FTheDebugger.FMainAddrBreak.Clear(Self);
-           BrkErr := False;
+      j := FTheDebugger.FMainAddrBreak.BreakSetCount;
+      while BrkErr and not(DebuggerState = dsError) do begin
+        if not FTheDebugger.FMainAddrBreak.ClearAndBlockId(Self, i)
+        then begin
+          DebugLn(DBG_WARNINGS, ['TGDBMIDebugger.RunToMain: An unknown breakpoint id was reported as failing: ', i]);
+          if not ExecuteCommand('-break-delete %d', [i], [cfCheckError]) // wil set error state if it fails
+          then break;
+          inc(j);
         end;
+        BrkErr := ParseBreakInsertError(s, i)
       end;
-
+      // Break, if no breakpoint was removed
+      if j = FTheDebugger.FMainAddrBreak.BreakSetCount
+      then break;
     end;
 
     if DebuggerState = dsError then
@@ -11400,79 +11426,56 @@ end;
 
 { TGDBMIInternalBreakPoint }
 
-procedure TGDBMIInternalBreakPoint.ClearName(ACmd: TGDBMIDebuggerCommand);
+procedure TGDBMIInternalBreakPoint.Clear(ACmd: TGDBMIDebuggerCommand;
+  ALoc: TInternalBreakLocation; ABlock: Boolean);
 begin
-  if FNameBreakID = -1 then exit;
-  ACmd.ExecuteCommand('-break-delete %d', [FNameBreakID], [cfCheckError]);
-  FNameBreakID := -1;
-  FNameBreakAddr := 0;
-  FEnabled := FEnabled and ((FNameBreakID >= 0) or (FAddrBreakID >= 0) or (FCustomID >= 0) or (FLineOffsID >= 0));
+  if FBreaks[ALoc].BreakGdbId < 0 then exit;
+  ACmd.ExecuteCommand('-break-delete %d', [FBreaks[ALoc].BreakGdbId], [cfCheckError]);
+  if ABlock then
+    FBreaks[ALoc].BreakGdbId := -2
+  else
+    FBreaks[ALoc].BreakGdbId := -1;
+  FBreaks[ALoc].BreakAddr := 0;
+  FEnabled := FEnabled and IsBreakSet;
+
+  if ALoc = iblAddrOfNamed then FMainAddrFound := 0;
+  if ALoc = iblAddOffset then FBreaks[iblAddOffset].BreakFunction := '';
 end;
 
-procedure TGDBMIInternalBreakPoint.ClearAddr(ACmd: TGDBMIDebuggerCommand);
-begin
-  if FAddrBreakID = -1 then exit;
-  ACmd.ExecuteCommand('-break-delete %d', [FAddrBreakID], [cfCheckError]);
-  FAddrBreakID := -1;
-  FAddrBreakAddr := 0;
-  FMainAddrFound := 0;
-  FEnabled := FEnabled and ((FNameBreakID >= 0) or (FAddrBreakID >= 0) or (FCustomID >= 0) or (FLineOffsID >= 0));
-end;
-
-procedure TGDBMIInternalBreakPoint.ClearCustom(ACmd: TGDBMIDebuggerCommand);
-begin
-  if FCustomID = -1 then exit;
-  ACmd.ExecuteCommand('-break-delete %d', [FCustomID], [cfCheckError]);
-  FCustomID := -1;
-  FCustomAddr := 0;
-  FEnabled := FEnabled and ((FNameBreakID >= 0) or (FAddrBreakID >= 0) or (FCustomID >= 0) or (FLineOffsID >= 0));
-end;
-
-procedure TGDBMIInternalBreakPoint.ClearLineOffs(ACmd: TGDBMIDebuggerCommand);
-begin
-  if FLineOffsID = -1 then exit;
-  ACmd.ExecuteCommand('-break-delete %d', [FLineOffsID], [cfCheckError]);
-  FLineOffsID := -1;
-  FLineOffsAddr := 0;
-  FLineOffsFunction := '';
-  FEnabled := FEnabled and ((FNameBreakID >= 0) or (FAddrBreakID >= 0) or (FCustomID >= 0) or (FLineOffsID >= 0));
-end;
-
-function TGDBMIInternalBreakPoint.BreakSet(ACmd: TGDBMIDebuggerCommand; ALoc: String; out
-  AId: integer; out AnAddr: TDBGPtr): Boolean;
-var
-  FuncName: string;
-begin
-  Result := BreakSet(ACmd, ALoc, AId, AnAddr, FuncName);
-end;
-
-function TGDBMIInternalBreakPoint.BreakSet(ACmd: TGDBMIDebuggerCommand; ALoc: String; out
-  AId: integer; out AnAddr: TDBGPtr; out AFuncName: string): Boolean;
+function TGDBMIInternalBreakPoint.BreakSet(ACmd: TGDBMIDebuggerCommand; ABreakLoc: String;
+  ALoc: TInternalBreakLocation; AClearIfSet: TClearOpt): Boolean;
 var
   R: TGDBMIExecResult;
   ResultList: TGDBMINameValueList;
 begin
-  AId := -1;
-  AnAddr := 0;
-  AFuncName := '';
+  Result := True; // true, if already set (dsError does not matter)
+  if ACmd.DebuggerState = dsError then exit;
+
+  if AClearIfSet = coClearIfSet then
+    Clear(ACmd, ALoc);                         // keeps blocked indicator
+  if FBreaks[ALoc].BreakGdbId <> -1 then exit; // not(set or blocked)
+
+  FBreaks[ALoc].BreakGdbId := -1;
+  FBreaks[ALoc].BreakAddr := 0;
+  FBreaks[ALoc].BreakFunction := '';
 
   if UseForceFlag and (dfForceBreakDetected in ACmd.FTheDebugger.FDebuggerFlags) then
   begin
-    if (not ACmd.ExecuteCommand('-break-insert -f %s', [ALoc], R)) or
+    if (not ACmd.ExecuteCommand('-break-insert -f %s', [ABreakLoc], R)) or
        (R.State = dsError)
     then
-      ACmd.ExecuteCommand('-break-insert %s', [ALoc], R);
+      ACmd.ExecuteCommand('-break-insert %s', [ABreakLoc], R);
   end
   else
-    ACmd.ExecuteCommand('-break-insert %s', [ALoc], R);
+    ACmd.ExecuteCommand('-break-insert %s', [ABreakLoc], R);
   Result := R.State <> dsError;
   if not Result then exit;
-  FEnabled := True;
+  FEnabled := True; // TODO: What if some bp are disabled?
 
   ResultList := TGDBMINameValueList.Create(R, ['bkpt']);
-  AId       := StrToIntDef(ResultList.Values['number'], -1);
-  AnAddr    := StrToQWordDef(ResultList.Values['addr'], 0);
-  AFuncName := ResultList.Values['func'];
+  FBreaks[ALoc].BreakGdbId    := StrToIntDef(ResultList.Values['number'], -1);
+  FBreaks[ALoc].BreakAddr     := StrToQWordDef(ResultList.Values['addr'], 0);
+  FBreaks[ALoc].BreakFunction := ResultList.Values['func'];
   ResultList.Free;
 end;
 
@@ -11484,6 +11487,7 @@ begin
   Result := FMainAddrFound;
   if Result <> 0 then
     exit;
+  if ACmd.DebuggerState = dsError then Exit;
   if (not ACmd.ExecuteCommand('info address ' + FName, R)) or
      (R.State = dsError)
   then exit;
@@ -11493,36 +11497,47 @@ begin
   FMainAddrFound := Result;
 end;
 
-procedure TGDBMIInternalBreakPoint.InternalSetAddr(ACmd: TGDBMIDebuggerCommand; AnAddr: TDBGPtr);
+function TGDBMIInternalBreakPoint.HasBreakAtAddr(AnAddr: TDBGPtr): Boolean;
+var
+  i: TInternalBreakLocation;
 begin
-  if (AnAddr <> FAddrBreakAddr) then
-    ClearAddr(ACmd);
+  Result := True;
+  for i := low(TInternalBreakLocation) to high(TInternalBreakLocation) do
+    if (FBreaks[i].BreakGdbId >= 0) and (FBreaks[i].BreakAddr = AnAddr) then
+      exit;
+  Result := False;
+end;
 
-  if (AnAddr = 0) or (AnAddr = FAddrBreakAddr) or
-     (AnAddr = FCustomAddr) or (AnAddr = FLineOffsAddr)
-  then exit;
+function TGDBMIInternalBreakPoint.HasBreakWithId(AnId: Integer): Boolean;
+var
+  i: TInternalBreakLocation;
+begin
+  Result := True;
+  for i := low(TInternalBreakLocation) to high(TInternalBreakLocation) do
+    if (FBreaks[i].BreakGdbId = AnId) then
+      exit;
+  Result := False;
+end;
 
-  if (FCustomID >= 0) and (AnAddr = FCustomAddr) then begin
-    FAddrBreakID := FCustomID;
-    FAddrBreakAddr := FCustomAddr;
-    FCustomID := -1;
-    FCustomAddr := 0;
-  end
-  else
-    BreakSet(ACmd, Format('*%u', [AnAddr]), FAddrBreakID, FAddrBreakAddr);
+procedure TGDBMIInternalBreakPoint.InternalSetAddr(ACmd: TGDBMIDebuggerCommand;
+  ALoc: TInternalBreakLocation; AnAddr: TDBGPtr);
+begin
+  if (AnAddr = 0) or HasBreakAtAddr(AnAddr) then // HasBreakAddr includes this BP being allready at AnAddr.
+    exit;
+
+  // Always ClearIfSet since the address changed
+  BreakSet(ACmd, Format('*%u', [AnAddr]), ALoc, coClearIfSet);
 end;
 
 constructor TGDBMIInternalBreakPoint.Create(AName: string);
+var
+  i: TInternalBreakLocation;
 begin
   FMainAddrFound := 0;
-  FNameBreakID := -1;
-  FNameBreakAddr := 0;
-  FAddrBreakID := -1;
-  FAddrBreakAddr := 0;
-  FCustomID := -1;
-  FCustomAddr := 0;
-  FLineOffsID := -1;
-  FLineOffsAddr := 0;
+  for i := low(TInternalBreakLocation) to high(TInternalBreakLocation) do begin
+    FBreaks[i].BreakGdbId := -1;
+    FBreaks[i].BreakAddr := 0;
+  end;
   FUseForceFlag := False;
   FName := AName;
   FEnabled := False;
@@ -11538,110 +11553,106 @@ end;
    Therefore during startup a named break point is used as fallback.
 *)
 procedure TGDBMIInternalBreakPoint.SetBoth(ACmd: TGDBMIDebuggerCommand);
-var
-  A: TDBGPtr;
 begin
-  if ACmd.DebuggerState = dsError then Exit;
+  if not BreakSet(ACmd, FName, iblNamed, coKeepIfSet) then exit;
 
-  // keep if already set
-  if FNameBreakID < 0 then
-    if not BreakSet(ACmd, FName, FNameBreakID, FNameBreakAddr) then exit;
-
+  if FBreaks[iblAddrOfNamed].BreakGdbId = -2 then exit;
   // Try to retrieve the address of the procedure
-  A := GetInfoAddr(ACmd);
-  if A = 0 then exit;
-  if (A <> FNameBreakAddr) then
-    InternalSetAddr(ACmd, A);
+  InternalSetAddr(ACmd, iblAddrOfNamed, GetInfoAddr(ACmd));
 end;
 
 procedure TGDBMIInternalBreakPoint.SetByName(ACmd: TGDBMIDebuggerCommand);
 begin
-  if FNameBreakID < 0 then
-    if not BreakSet(ACmd, FName, FNameBreakID, FNameBreakAddr) then exit;
+  BreakSet(ACmd, FName, iblNamed, coKeepIfSet);
   // keep others
 end;
 
 procedure TGDBMIInternalBreakPoint.SetByAddr(ACmd: TGDBMIDebuggerCommand; SetNamedOnFail: Boolean = False);
-var
-  A: TDBGPtr;
 begin
-  if ACmd.DebuggerState = dsError then Exit;
-  if FAddrBreakID >= 0 then exit; // already set
+  if FBreaks[iblAddrOfNamed].BreakGdbId <> -2 then
+    InternalSetAddr(ACmd, iblAddrOfNamed, GetInfoAddr(ACmd));
 
-  A := GetInfoAddr(ACmd);
-  InternalSetAddr(ACmd, A);
-
-  if (A <> 0) and (A = FAddrBreakAddr) then
-    ClearName(ACmd);
-
-  If SetNamedOnFail and (A = 0) and (FNameBreakID < 0) then
-    BreakSet(ACmd, FName, FNameBreakID, FNameBreakAddr);
+  // SetNamedOnFail includes if blocked
+  If SetNamedOnFail and (FBreaks[iblNamed].BreakGdbId < 0) then
+    BreakSet(ACmd, FName, iblNamed, coKeepIfSet);
 end;
 
 procedure TGDBMIInternalBreakPoint.SetAtCustomAddr(ACmd: TGDBMIDebuggerCommand; AnAddr: TDBGPtr);
 begin
-  if ACmd.DebuggerState = dsError then Exit;
-
-  ClearCustom(ACmd);
-  if (AnAddr <> 0) and
-     ((FAddrBreakID < 0) or (AnAddr <> FAddrBreakAddr)) and
-     ((FLineOffsID < 0) or (AnAddr <> FLineOffsAddr)) and
-     ((FNameBreakID < 0) or (AnAddr <> FNameBreakAddr))
-  then
-    BreakSet(ACmd, Format('*%u', [AnAddr]), FCustomID, FCustomAddr);
+  InternalSetAddr(ACmd, iblCustomAddr, AnAddr);
 end;
 
 procedure TGDBMIInternalBreakPoint.SetAtLineOffs(ACmd: TGDBMIDebuggerCommand; AnOffset: integer);
 begin
-  if ACmd.DebuggerState = dsError then Exit;
-  ClearLineOffs(ACmd);
-
+  // always clear, and set again
   if AnOffset < 0 then
-    BreakSet(ACmd, Format('%d', [AnOffset]), FLineOffsID, FLineOffsAddr, FLineOffsFunction)
+    BreakSet(ACmd, Format('%d', [AnOffset]), iblAddOffset, coClearIfSet)
   else
-    BreakSet(ACmd, Format('+%d', [AnOffset]), FLineOffsID, FLineOffsAddr, FLineOffsFunction);
+    BreakSet(ACmd, Format('+%d', [AnOffset]), iblAddOffset, coClearIfSet);
 end;
 
 procedure TGDBMIInternalBreakPoint.Clear(ACmd: TGDBMIDebuggerCommand);
+var
+  i: TInternalBreakLocation;
 begin
   if ACmd.DebuggerState = dsError then Exit;
-  ClearName(ACmd);
-  ClearAddr(ACmd);
-  ClearCustom(ACmd);
-  ClearLineOffs(ACmd);
+  for i := low(TInternalBreakLocation) to high(TInternalBreakLocation) do begin
+    Clear(ACmd, i);
+    FBreaks[i].BreakGdbId := -1; // unblock
+  end;
   FEnabled := False;
 end;
 
 function TGDBMIInternalBreakPoint.ClearId(ACmd: TGDBMIDebuggerCommand; AnId: Integer): Boolean;
+var
+  i: TInternalBreakLocation;
 begin
-  Result := (AnId > 0) and
-           ( (AnId = FNameBreakID)  or (AnId = FAddrBreakID) or
-             (AnId = FCustomID)  or (AnId = FLineOffsID) );
-  if not Result then exit;
+  Result := False;
+  for i := low(TInternalBreakLocation) to high(TInternalBreakLocation) do
+    if (AnId = FBreaks[i].BreakGdbId) then begin
+      Clear(ACmd, i);
+      Result := True;
+      break;
+    end;
+end;
 
-  if (AnId = FNameBreakID) then ClearName(ACmd);
-  if (AnId = FAddrBreakID) then ClearAddr(ACmd);
-  if (AnId = FCustomID)    then ClearCustom(ACmd);
-  if (AnId = FLineOffsID)  then ClearLineOffs(ACmd);
+function TGDBMIInternalBreakPoint.ClearAndBlockId(ACmd: TGDBMIDebuggerCommand;
+  AnId: Integer): Boolean;
+var
+  i: TInternalBreakLocation;
+begin
+  Result := False;
+  for i := low(TInternalBreakLocation) to high(TInternalBreakLocation) do
+    if (AnId = FBreaks[i].BreakGdbId) then begin
+      Clear(ACmd, i, True);
+      Result := True;
+      break;
+    end;
 end;
 
 function TGDBMIInternalBreakPoint.MatchAddr(AnAddr: TDBGPtr): boolean;
 begin
-  Result := (AnAddr <> 0) and
-           ( (AnAddr = FNameBreakAddr) or (AnAddr = FAddrBreakAddr) or
-             (AnAddr = FCustomAddr) or (AnAddr = FLineOffsAddr));
+  Result := (AnAddr <> 0) and HasBreakAtAddr(AnAddr);
 end;
 
 function TGDBMIInternalBreakPoint.MatchId(AnId: Integer): boolean;
 begin
-  Result := (AnId >= 0) and
-           ( (AnId = FNameBreakID) or (AnId = FAddrBreakID) or
-             (AnId = FCustomID) or (AnId = FLineOffsID));
+  Result := (AnId >= 0) and HasBreakWithId(AnId);
 end;
 
 function TGDBMIInternalBreakPoint.IsBreakSet: boolean;
 begin
-  Result := (FNameBreakID >= 0)  or (FAddrBreakID >= 0) or (FCustomID > 0) or (FLineOffsID > 0);
+  Result := BreakSetCount > 0;
+end;
+
+function TGDBMIInternalBreakPoint.BreakSetCount: Integer;
+var
+  i: TInternalBreakLocation;
+begin
+  Result := 0;
+  for i := low(TInternalBreakLocation) to high(TInternalBreakLocation) do
+    if (FBreaks[i].BreakGdbId >= 0) then
+      inc(Result);
 end;
 
 procedure TGDBMIInternalBreakPoint.EnableOrSetByAddr(ACmd: TGDBMIDebuggerCommand;
@@ -11656,35 +11667,26 @@ end;
 procedure TGDBMIInternalBreakPoint.Enable(ACmd: TGDBMIDebuggerCommand);
 var
   R: TGDBMIExecResult;
+  i: TInternalBreakLocation;
 begin
   if FEnabled then exit;
-  FEnabled := (FNameBreakID >= 0) or (FAddrBreakID >= 0) or (FCustomID >= 0) or (FLineOffsID >= 0);
-
-  if FNameBreakID >= 0 then
-    ACmd.ExecuteCommand('-break-enable %d', [FNameBreakID], R);
-  if FAddrBreakID >= 0 then
-    ACmd.ExecuteCommand('-break-enable %d', [FAddrBreakID], R);
-  if FCustomID >= 0 then
-    ACmd.ExecuteCommand('-break-enable %d', [FCustomID], R);
-  if FLineOffsID >= 0 then
-    ACmd.ExecuteCommand('-break-enable %d', [FLineOffsID], R);
+  for i := low(TInternalBreakLocation) to high(TInternalBreakLocation) do
+    if FBreaks[i].BreakGdbId >= 0 then begin
+      ACmd.ExecuteCommand('-break-enable %d', [FBreaks[i].BreakGdbId], R);
+      FEnabled := True;
+    end;
 end;
 
 procedure TGDBMIInternalBreakPoint.Disable(ACmd: TGDBMIDebuggerCommand);
 var
   R: TGDBMIExecResult;
+  i: TInternalBreakLocation;
 begin
   if not FEnabled then exit;
   FEnabled := False;
-
-  if FNameBreakID >= 0 then
-    ACmd.ExecuteCommand('-break-disable %d', [FNameBreakID], R);
-  if FAddrBreakID >= 0 then
-    ACmd.ExecuteCommand('-break-disable %d', [FAddrBreakID], R);
-  if FCustomID >= 0 then
-    ACmd.ExecuteCommand('-break-disable %d', [FCustomID], R);
-  if FLineOffsID >= 0 then
-    ACmd.ExecuteCommand('-break-disable %d', [FLineOffsID], R);
+  for i := low(TInternalBreakLocation) to high(TInternalBreakLocation) do
+    if FBreaks[i].BreakGdbId >= 0 then
+      ACmd.ExecuteCommand('-break-disable %d', [FBreaks[i].BreakGdbId], R);
 end;
 
 { TGDBMIDebuggerSimpleCommand }

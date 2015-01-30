@@ -5,7 +5,7 @@ unit TestException;
 interface
 
 uses
-  Classes, fpcunit, testutils, testregistry, TestGDBMIControl,
+  Classes, sysutils, fpcunit, testutils, testregistry, TestGDBMIControl,
   TestBase, GDBMIDebugger, LCLProc, DbgIntfDebuggerBase;
 
 type
@@ -14,6 +14,9 @@ type
 
   TTestExceptionOne = class(TGDBTestCase)
   private
+    FCurLine: Integer;
+    FCurFile: string;
+
     FGotExceptCount: Integer;
     FGotExceptClass: String;
     FGotExceptMsg: String;
@@ -25,12 +28,21 @@ type
                                   const AExceptionLocation: TDBGLocationRec;
                                   const AExceptionText: String;
                                   out AContinue: Boolean);
+  protected
+    procedure DoCurrent(Sender: TObject; const ALocation: TDBGLocationRec);
   published
     procedure TestException;
-  end; 
+    procedure TestExceptionStepOut;
+  end;
 
 
-
+const
+  (* Stepping out of the exception may currently stop one line before the "except statemet.
+     The lines below are the first line in the statement. (so 2 later)
+  *)
+  BREAK_LINE_EXCEPT_1 = 20;  // first except blog // may be 18 = at "except" keyword
+  BREAK_LINE_EXCEPT_2 = 31;  // 2nd except
+  BREAK_LINE_EXCEPT_END = 38; // line for break at end
 
 implementation
 
@@ -50,6 +62,12 @@ begin
   FGotExceptMsg   := AExceptionText;
   FGotExceptType  := AExceptionType;
   AContinue := False;
+end;
+
+procedure TTestExceptionOne.DoCurrent(Sender: TObject; const ALocation: TDBGLocationRec);
+begin
+  FCurFile := ALocation.SrcFile;
+  FCurLine := ALocation.SrcLine;
 end;
 
 procedure TTestExceptionOne.TestException;
@@ -214,6 +232,57 @@ begin
   end;
 
 
+
+  AssertTestErrors;
+end;
+
+procedure TTestExceptionOne.TestExceptionStepOut;
+var
+  TestExeName, TstName: string;
+  dbg: TGDBMIDebugger;
+begin
+  if SkipTest then exit;
+  if not TestControlForm.CheckListBox1.Checked[TestControlForm.CheckListBox1.Items.IndexOf('TTestExceptionOne')] then exit;
+  ClearTestErrors;
+
+  TestCompile(AppDir + 'ExceptPrgStep.pas', TestExeName, '', '');
+  try
+    FGotExceptCount := 0; TstName := 'STEP';
+    dbg := StartGDB(AppDir, TestExeName);
+    dbg.OnException      := @DoDebuggerException;
+    dbg.OnCurrent        := @DoCurrent;
+
+    with dbg.BreakPoints.Add('ExceptPrgStep.pas', BREAK_LINE_EXCEPT_END) do begin
+      InitialEnabled := True;
+      Enabled := True;
+    end;
+
+    dbg.Run;
+    TestEquals(TstName+' Got 1 exception', 1, FGotExceptCount);
+
+    dbg.StepOver;
+    TestTrue(TstName+' (Stepped) at break '+IntToStr(FCurLine),
+             (FCurLine <= BREAK_LINE_EXCEPT_1) and (FCurLine >= BREAK_LINE_EXCEPT_1 - 2));
+    TestEquals(TstName+' (Stepped) Still Got 1 exception', 1, FGotExceptCount);
+
+    dbg.Run;
+    TestEquals(TstName+' Got 2 exception', 2, FGotExceptCount);
+
+    dbg.StepOver;
+    TestTrue(TstName+' (Stepped 2) at break '+IntToStr(FCurLine),
+             (FCurLine <= BREAK_LINE_EXCEPT_2) and (FCurLine >= BREAK_LINE_EXCEPT_2 - 2));
+    TestEquals(TstName+' (Stepped 2) Still Got 2 exception', 2, FGotExceptCount);
+
+    dbg.Run; // run to break (tmp break cleared)
+    TestEquals(TstName+' at break', BREAK_LINE_EXCEPT_END, FCurLine);
+    TestEquals(TstName+' Still Got 2 exception', 2, FGotExceptCount);
+
+    dbg.Stop;
+  finally
+    dbg.Done;
+    CleanGdb;
+    dbg.Free;
+  end;
 
   AssertTestErrors;
 end;

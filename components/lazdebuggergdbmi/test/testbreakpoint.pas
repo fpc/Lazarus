@@ -34,9 +34,13 @@ type
   published
     // Due to a linker error breakpoints can point to invalid addresses
     procedure TestStartMethod;
+    procedure TestStartMethodBadLinker; // not called prog in front of MAIN // causes bad linker with dwarf
     procedure TestBadAddrBreakpoint;
     procedure TestInteruptWhilePaused;
   end;
+
+const
+  BREAK_LINE_BREAKPROG = 28;
 
 implementation
 
@@ -92,6 +96,57 @@ begin
 
       TestTrue(s+' not in error state 1', dbg.State <> dsError, 0, IgnoreRes);
 	  TestTrue(s+' at break', FCurLine = BREAK_LINE_FOOFUNC, 0, IgnoreRes);
+
+      TGDBMIDebuggerProperties(dbg.GetProperties).InternalStartBreak := gdsbDefault;
+    finally
+      dbg.Done;
+      CleanGdb;
+      dbg.Free;
+    end;
+  end;
+
+  AssertTestErrors;
+end;
+
+procedure TTestBreakPoint.TestStartMethodBadLinker;
+var
+  dbg: TGDBMIDebugger;
+  TestExeName, s: string;
+  i: TGDBMIDebuggerStartBreak;
+  IgnoreRes: String;
+begin
+  if SkipTest then exit;
+  if not TestControlForm.CheckListBox1.Checked[TestControlForm.CheckListBox1.Items.IndexOf('TTestBreakPoint')] then exit;
+  if not TestControlForm.CheckListBox1.Checked[TestControlForm.CheckListBox1.Items.IndexOf('  TTestBreakPoint.StartMethod')] then exit;
+
+  ClearTestErrors;
+  FBrkErr := nil;
+  TestCompile(AppDir + 'breakprog.pas', TestExeName);
+
+  for i := Low(TGDBMIDebuggerStartBreak) to high(TGDBMIDebuggerStartBreak) do begin
+    WriteStr(s, i);
+
+    try
+      dbg := StartGDB(AppDir, TestExeName);
+      dbg.OnCurrent  := @DoCurrent;
+      TGDBMIDebuggerProperties(dbg.GetProperties).InternalStartBreak := i;
+      with dbg.BreakPoints.Add('breakprog.pas', BREAK_LINE_BREAKPROG) do begin
+        InitialEnabled := True;
+        Enabled := True;
+      end;
+
+      dbg.Run;
+
+      IgnoreRes := '';
+      case DebuggerInfo.Version of
+        000000..070399: if (i =  gdsbAddZero) and
+                           (CompilerInfo.Version = 020604)
+                        then IgnoreRes:= 'gdb below 7.4 and fpc 2.6.4 does not work with gdsbAddZero';
+        070400..070499: if i =  gdsbAddZero then IgnoreRes:= 'gdb 7.4.x does not work with gdsbAddZero';
+      end;
+
+      TestTrue(s+' not in error state 1', dbg.State <> dsError, 0, IgnoreRes);
+	  TestTrue(s+' at break', FCurLine = BREAK_LINE_BREAKPROG, 0, IgnoreRes);
 
       TGDBMIDebuggerProperties(dbg.GetProperties).InternalStartBreak := gdsbDefault;
     finally
