@@ -6084,28 +6084,42 @@ Calling the <var>MoveTo</var>
       <element name="TCanvas.TextRect">
         <short>Writes <var>Text</var> string within a specified rectangle, according to predefined <var>Style</var>
         </short>
-        <descr>Writes <var>Text</var> string within a specified rectangle, according to predefined <var>Style</var><br/>
-The boundaries of the rectangle are specified in <var>ARect</var><br/><var>X, Y</var> specify the starting point for writing the <var>Text</var> within the rectangle <br/><var>TextStyle</var> determines whether the text is justified, centered, word-wrapped etc. If the <var>Style</var> argument is omitted, defaults are assumed</descr>
+        <descr>
+	  Writes <var>Text</var> string within a specified rectangle, according to predefined <var>Style</var><br/>
+          The boundaries of the rectangle are specified in <var>ARect</var><br/><var>X, Y</var> define the starting point for writing the <var>Text</var> within the rectangle.<br/>
+	  <var>TextStyle</var> determines whether the text is justified, centered, word-wrapped, clipped at the rectangle boundaries, etc. If the <var>Style</var> argument is omitted, defaults are assumed.<br/>
+	  <br/>
+	  <b>Note:</b>
+          The exact text position depends on the specified rectangle, the <var>TextStyle</var> of the canvas, and the <var>X, Y</var> coordinates:
+          <ul>
+            <li><var>TextStyle.Alignment = taLeftJustify</var>: Text begins at <var>X</var></li>
+            <li><var>TextStyle.Alignment = taCenter</var>: Text center is in the center of the rectangle (horizontally)</li>
+            <li><var>TextStyle.Alignment = taRightJustify</var>: Text ends at right edge of the rectangle</li>
+            <li><var>TextStyle.Layout = tlTop</var>: Top of the text is at <var>Y</var></li>
+            <li><var>TextStyle.Layout = tlCenter</var>: Text center is in the center of the rectangle (vertically)</li>
+            <li><var>TextStyle.Layout = tlBottom</var>: Text sits above the the bottom edge of the rectangle</li>
+          </ul>
+        </descr>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCanvas.TextRect.ARect">
-        <short/>
+        <short>Rectangle within which the specified text is drawn</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCanvas.TextRect.X">
-        <short/>
+        <short>Horizontal text start (respected only if TextStyle.Alignment = taLeftJustify)</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCanvas.TextRect.Y">
-        <short/>
+        <short>Vertical position of the top of the text (respected only if TextStyle.Layout = tlTop)</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCanvas.TextRect.Text">
-        <short/>
+        <short>Text to be drawn</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCanvas.TextRect.Style">
-        <short/>
+        <short>Optional parameter which determines whether the text is justified, word-wrapped, clipped, etc. If omitted, the current <var>TextStyle</var> of the canvas is used.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TCanvas.TextExtent">
