@@ -36,7 +36,7 @@ unit SynEditPointClasses;
 interface
 
 uses
-  Classes, SysUtils, Controls, LCLProc, LCLType, LCLIntf,
+  Classes, SysUtils, Controls, LCLProc, LCLType, LCLIntf, ExtCtrls, Graphics,
   {$IFDEF SYN_MBCSSUPPORT}
   Imm,
   {$ENDIF}
@@ -326,6 +326,58 @@ type
   TSynCaretType = (ctVerticalLine, ctHorizontalLine, ctHalfBlock, ctBlock, ctCostum);
   TSynCaretLockFlags = set of (sclfUpdateDisplay, sclfUpdateDisplayType);
 
+  { TSynEditScreenCaretPainter }
+
+  TSynEditScreenCaretPainter = class
+  private
+    function GetHandle: HWND;
+  protected
+    FHandleOwner: TWinControl;
+    procedure Init; virtual;
+    property Handle: HWND read GetHandle;
+  public
+    constructor Create(AHandleOwner: TWinControl);
+    function CreateCaret(w, h: Integer): Boolean; virtual; abstract;
+    function DestroyCaret: Boolean; virtual; abstract;
+    function HideCaret: Boolean; virtual; abstract;
+    function ShowCaret: Boolean; virtual; abstract;
+    function SetCaretPosEx(x, y: Integer): Boolean; virtual; abstract;
+  end;
+
+  { TSynEditScreenCaretPainterSystem }
+
+  TSynEditScreenCaretPainterSystem = class(TSynEditScreenCaretPainter)
+  public
+    function CreateCaret(w, h: Integer): Boolean; override;
+    function DestroyCaret: Boolean; override;
+    function HideCaret: Boolean; override;
+    function ShowCaret: Boolean; override;
+    function SetCaretPosEx(x, y: Integer): Boolean; override;
+  end;
+
+  { TSynEditScreenCaretPainterInternal }
+
+  TSynEditScreenCaretPainterInternal = class(TSynEditScreenCaretPainter)
+  private
+    FTimer: TTimer;
+    FLeft, FTop, FHeight, FWidth: Integer;
+    FIsDrawn: Boolean;
+    FShowing: Boolean;
+    FSavePen: TPen;
+
+    procedure DoTimer(Sender: TObject);
+    procedure Paint;
+  protected
+    procedure Init; override;
+  public
+    destructor Destroy; override;
+    function CreateCaret(w, h: Integer): Boolean; override;
+    function DestroyCaret: Boolean; override;
+    function HideCaret: Boolean; override;
+    function ShowCaret: Boolean; override;
+    function SetCaretPosEx(x, y: Integer): Boolean; override;
+  end;
+
   { TSynEditScreenCaret }
 
   TSynEditScreenCaret = class
@@ -342,6 +394,7 @@ type
     FOnExtraLineCharsChanged: TNotifyEvent;
     FVisible: Boolean;
     FHandleOwner: TWinControl;
+    FCaretPainter: TSynEditScreenCaretPainter;
     function GetHandle: HWND;
     function GetHandleAllocated: Boolean;
     procedure SetCharHeight(const AValue: Integer);
@@ -404,6 +457,88 @@ type
   end;
 
 implementation
+
+{ TSynEditScreenCaretPainterInternal }
+
+procedure TSynEditScreenCaretPainterInternal.DoTimer(Sender: TObject);
+begin
+  if not FTimer.Enabled and FShowing then exit;
+  Paint;
+end;
+
+procedure TSynEditScreenCaretPainterInternal.Paint;
+var
+  c: TCanvas;
+begin
+  FIsDrawn := not FIsDrawn;
+
+  c := TCustomControl(FHandleOwner).Canvas;
+  FSavePen.Assign(c.Pen);
+
+  c.MoveTo(FLeft, FTop);
+  c.Pen.Mode := pmNotXOR;
+  c.Pen.Style := psSolid;
+  c.Pen.Color := clBlack;
+  c.pen.EndCap := pecFlat;
+  c.pen.Width := FWidth;
+  c.LineTo(FLeft,FTop+FHeight);
+
+  c.Pen.Assign(FSavePen);
+end;
+
+procedure TSynEditScreenCaretPainterInternal.Init;
+begin
+  FTimer := TTimer.Create(nil);
+  FTimer.Enabled := False;
+  FTimer.Interval := 500;
+  FTimer.OnTimer := @DoTimer;
+
+  FSavePen := TPen.Create;
+  inherited Init;
+end;
+
+destructor TSynEditScreenCaretPainterInternal.Destroy;
+begin
+  FreeAndNil(FTimer);
+  FreeAndNil(FSavePen);
+  inherited Destroy;
+end;
+
+function TSynEditScreenCaretPainterInternal.CreateCaret(w, h: Integer): Boolean;
+begin
+  FWidth := w;
+  FHeight := h;
+end;
+
+function TSynEditScreenCaretPainterInternal.DestroyCaret: Boolean;
+begin
+  //
+end;
+
+function TSynEditScreenCaretPainterInternal.HideCaret: Boolean;
+begin
+  FShowing := False;
+  FTimer.Enabled := False;
+  if FIsDrawn then Paint;
+end;
+
+function TSynEditScreenCaretPainterInternal.ShowCaret: Boolean;
+begin
+  FShowing := True;
+  FTimer.Enabled := True;
+  if not FIsDrawn then Paint;
+end;
+
+function TSynEditScreenCaretPainterInternal.SetCaretPosEx(x, y: Integer): Boolean;
+var
+  s: Boolean;
+begin
+  s := FShowing;
+  HideCaret;
+  FLeft := x;
+  FTop := y;
+  if s then ShowCaret;
+end;
 
 { TSynEditBaseCaret }
 
@@ -2222,11 +2357,58 @@ begin
     StartLineBytePos := StartLineBytePos;
 end;
 
+{ TSynEditScreenCaretPainter }
+
+function TSynEditScreenCaretPainter.GetHandle: HWND;
+begin
+  Result := FHandleOwner.Handle;
+end;
+
+procedure TSynEditScreenCaretPainter.Init;
+begin
+  //
+end;
+
+constructor TSynEditScreenCaretPainter.Create(AHandleOwner: TWinControl);
+begin
+  inherited Create;
+  FHandleOwner := AHandleOwner;
+  Init;
+end;
+
+{ TSynEditScreenCaretPainterSystem }
+
+function TSynEditScreenCaretPainterSystem.CreateCaret(w, h: Integer): Boolean;
+begin
+  Result := LCLIntf.CreateCaret(Handle, 0, w, h);
+end;
+
+function TSynEditScreenCaretPainterSystem.DestroyCaret: Boolean;
+begin
+  Result := LCLIntf.DestroyCaret(Handle);
+end;
+
+function TSynEditScreenCaretPainterSystem.HideCaret: Boolean;
+begin
+  Result := LCLIntf.HideCaret(Handle);
+end;
+
+function TSynEditScreenCaretPainterSystem.ShowCaret: Boolean;
+begin
+  Result := LCLIntf.ShowCaret(Handle);
+end;
+
+function TSynEditScreenCaretPainterSystem.SetCaretPosEx(x, y: Integer): Boolean;
+begin
+  Result := LCLIntf.SetCaretPosEx(Handle, x, y);
+end;
+
 { TSynEditScreenCaret }
 
 constructor TSynEditScreenCaret.Create(AHandleOwner: TWinControl);
 begin
   inherited Create;
+  FCaretPainter := TSynEditScreenCaretPainterSystem.Create(AHandleOwner);
   FLockCount := -1;
   ResetCaretTypeSizes;
   FHandleOwner := AHandleOwner;
@@ -2243,6 +2425,7 @@ end;
 destructor TSynEditScreenCaret.Destroy;
 begin
   DestroyCaret;
+  FreeAndNil(FCaretPainter);
   inherited Destroy;
 end;
 
@@ -2257,7 +2440,7 @@ begin
     {$IFDeF SynCaretDebug}
     debugln(['SynEditCaret DestroyCaret for HandleOwner=',FHandleOwner, ' DebugShowCount=', FDebugShowCount, ' FVisible=', FVisible, ' FCurrentVisible=', FCurrentVisible]);
     {$ENDIF}
-    LCLIntf.DestroyCaret(Handle);
+    FCaretPainter.DestroyCaret;
   end;
   FCurrentCreated := False;
   FCurrentVisible := False;
@@ -2528,9 +2711,9 @@ begin
     FDebugShowCount := 0;
     {$ENDIF}
     //if FCurrentCreated  then
-    //  LCLIntf.DestroyCaret(Handle);
+    //  FCaretPainter.DestroyCaret(Handle);
     // // Create caret includes destroy
-    CreateCaret(Handle, 0, w, h);
+    FCaretPainter.CreateCaret(w, h);
     FCurrentCreated := True;
     FCurrentVisible := False;
     FCurrentClippedWidth := w;
@@ -2541,7 +2724,7 @@ begin
     {$IFDeF SynCaretDebug}
     debugln(['SynEditCaret SetPos for HandleOwner=',FHandleOwner, ' x=', x, ' y=',y]);
     {$ENDIF}
-    SetCaretPosEx(Handle, x, y);
+    FCaretPainter.SetCaretPosEx(x, y);
     FCurrentPosX := x;
     FCurrentPosY := y;
   end;
@@ -2550,7 +2733,7 @@ begin
     debugln(['SynEditCaret ShowCaret for HandleOwner=',FHandleOwner, ' FDebugShowCount=',FDebugShowCount, ' FVisible=', FVisible, ' FCurrentVisible=', FCurrentVisible]);
     inc(FDebugShowCount);
     {$ENDIF}
-    if LCLIntf.ShowCaret(Handle) then
+    if FCaretPainter.ShowCaret then
       FCurrentVisible := True
     else begin
       {$IFDeF SynCaretDebug}
@@ -2571,7 +2754,7 @@ begin
     debugln(['SynEditCaret HideCaret for HandleOwner=',FHandleOwner, ' FDebugShowCount=',FDebugShowCount, ' FVisible=', FVisible, ' FCurrentVisible=', FCurrentVisible]);
     dec(FDebugShowCount);
     {$ENDIF}
-    if LCLIntf.HideCaret(Handle) then
+    if FCaretPainter.HideCaret then
       FCurrentVisible := False
     else begin
       {$IFDeF SynCaretDebug}
