@@ -35,12 +35,14 @@ type
     // Due to a linker error breakpoints can point to invalid addresses
     procedure TestStartMethod;
     procedure TestStartMethodBadLinker; // not called prog in front of MAIN // causes bad linker with dwarf
+    procedure TestStartMethodStep;
     procedure TestBadAddrBreakpoint;
     procedure TestInteruptWhilePaused;
   end;
 
 const
   BREAK_LINE_BREAKPROG = 28;
+  BREAK_LINE_BREAKPROG_MAIN = 24; /// ..26
 
 implementation
 
@@ -159,6 +161,48 @@ begin
   AssertTestErrors;
 end;
 
+procedure TTestBreakPoint.TestStartMethodStep;
+var
+  dbg: TGDBMIDebugger;
+  TestExeName, s: string;
+  i: TGDBMIDebuggerStartBreak;
+  IgnoreRes: String;
+begin
+  if SkipTest then exit;
+  if not TestControlForm.CheckListBox1.Checked[TestControlForm.CheckListBox1.Items.IndexOf('TTestBreakPoint')] then exit;
+  if not TestControlForm.CheckListBox1.Checked[TestControlForm.CheckListBox1.Items.IndexOf('  TTestBreakPoint.StartMethod')] then exit;
+
+  ClearTestErrors;
+  FBrkErr := nil;
+  TestCompile(AppDir + 'breakprog.pas', TestExeName, '_callall', ' -dCALL_ALL ');
+
+  for i := Low(TGDBMIDebuggerStartBreak) to high(TGDBMIDebuggerStartBreak) do begin
+    WriteStr(s, i);
+
+    try
+      dbg := StartGDB(AppDir, TestExeName);
+      dbg.OnCurrent  := @DoCurrent;
+      TGDBMIDebuggerProperties(dbg.GetProperties).InternalStartBreak := i;
+
+      dbg.StepOver;
+
+      IgnoreRes := '';
+      if i =  gdsbAddZero then IgnoreRes:= 'launch with step does not work with gdsbAddZero';
+      TestTrue(s+' not in error state 1', dbg.State <> dsError, 0, IgnoreRes);
+	  TestTrue(s+' at break', (FCurLine >= BREAK_LINE_BREAKPROG_MAIN) AND (FCurLine <= BREAK_LINE_BREAKPROG_MAIN + 2),
+               0, IgnoreRes);
+
+      TGDBMIDebuggerProperties(dbg.GetProperties).InternalStartBreak := gdsbDefault;
+    finally
+      dbg.Done;
+      CleanGdb;
+      dbg.Free;
+    end;
+  end;
+
+  AssertTestErrors;
+end;
+
 function   TTestBreakPoint.DoGetFeedBack(Sender: TObject; const AText, AInfo: String;
   AType: TDBGFeedbackType; AButtons: TDBGFeedbackResults): TDBGFeedbackResult;
 begin
@@ -236,6 +280,20 @@ begin
   if SkipTest then exit;
   if not TestControlForm.CheckListBox1.Checked[TestControlForm.CheckListBox1.Items.IndexOf('TTestBreakPoint')] then exit;
   if not TestControlForm.CheckListBox1.Checked[TestControlForm.CheckListBox1.Items.IndexOf('  TTestBreakPoint.BadInterrupt')] then exit;
+
+  IgnoreRes := '';
+  case DebuggerInfo.Version of
+    0..069999: IgnoreRes:= 'all gdb 6.x may or may not fail';
+    070000: IgnoreRes:= 'gdb 7.0.0 may or may not fail';
+    // 7.0.50 seems to always pass
+    // 7.1.x seems to always pass
+    // 7.2.x seems to always pass
+    070300..070399: IgnoreRes:= 'gdb 7.3.x may or may not fail';
+    070400..070499: IgnoreRes:= 'gdb 7.4.x may or may not fail';
+    070500..070599: IgnoreRes:= 'gdb 7.5.x may or may not fail';
+    070600..070699: IgnoreRes:= 'gdb 7.6.x may or may not fail';
+    070700..070700: IgnoreRes:= 'gdb 7.7.0 may or may not fail';
+  end;
 
   (* Trigger a InterruptTarget while paused.
      Test if the app can continue, and reach it normal exit somehow (even if multiply interupts must be skipped)
@@ -454,17 +512,6 @@ begin
       dbg.Free;
     end;
   end;
-  IgnoreRes := '';
-  case DebuggerInfo.Version of
-    0..069999: IgnoreRes:= 'all gdb 6.x may or may not fail';
-    070000: IgnoreRes:= 'gdb 7.0.0 may or may not fail';
-    // 7.0.50 seems to always pass
-    // 7.1.x seems to always pass
-    // 7.2.x seems to always pass
-    070300..070399: IgnoreRes:= 'gdb 7.3.x may or may not fail';
-    070400..070499: IgnoreRes:= 'gdb 7.4.x may or may not fail';
-    070500..070599: IgnoreRes:= 'gdb 7.5.x may or may not fail';
-  end;
   TestEquals('Passed none-pause run', '', Err, 0, IgnoreRes);
 
 
@@ -523,7 +570,7 @@ begin
       if dbg.State <> dsStop
       then Err := Err + 'Never reached final stop';
     finally
-      TestEquals('Passed none-pause run with steps', '', Err);
+      TestEquals('Passed none-pause run with steps', '', Err, 0, IgnoreRes);
       dbg.Done;
       CleanGdb;
       dbg.Free;

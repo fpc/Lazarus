@@ -22,7 +22,7 @@ begin
 end;
 
 begin
-  //nodrv := StripFileDrive(s);
+  {$IFDEF CALL_ALL} StripFileDrive('11'); {$ENDIF}
   WriteLnIpc('drive="%s", dir="%s", path="%s", nodrv=%s.');
   CalcNextUpdTime(1);
   WriteLnIpc('Now = ');
