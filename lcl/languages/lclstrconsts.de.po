@@ -4,7 +4,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2014-10-04 18:15+0100\n"
+"PO-Revision-Date: 2015-01-27 16:19+0100\n"
 "Last-Translator: Swen Heinig <swen@heinig.email>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -685,7 +685,6 @@ msgid "Help context %s not found in Database \"%s\"."
 msgstr "Hilfekontext %s nicht in der Datenbank \"%s\" gefunden."
 
 #: lclstrconsts.rshelphelpdatabasedidnotfoundaviewerforahelppageoftype
-#, fuzzy
 #| msgid "Help Database \"%s\" did not found a viewer for a help page of type %s"
 msgid "Help Database \"%s\" did not find a viewer for a help page of type %s"
 msgstr "Die Hilfedatenbank \"%s\" fand keinen Betrachter für eine Hilfeseite des Typs %s"
@@ -759,7 +758,6 @@ msgid "Hot Light"
 msgstr "Kräftig hervorgehoben"
 
 #: lclstrconsts.rsicns
-#, fuzzy
 #| msgid "OSX Icon Resource"
 msgid "Mac OS X Icon"
 msgstr "OSX-Icon-Ressource"
@@ -1082,7 +1080,7 @@ msgstr "-reverse, setzt die Anwendungs-Layoutausrichtung auf Qt::RightToLeft."
 
 #: lclstrconsts.rsqtoptionsession
 msgid "-session session, restores the application from an earlier session."
-msgstr ""
+msgstr "-session session, stellt die Anwendung aus einer früheren Sitzung wieder her."
 
 #: lclstrconsts.rsqtoptionstyle
 msgid "-style style or -style=style, sets the application GUI style. Possible values are motif, windows, and platinum. If you compiled Qt with additional styles or have additional styles as plugins these will be available to the -style  command line option. NOTE: Not all styles are available on all platforms. If style param does not exist Qt will start an application with default common style (windows)."
@@ -1094,7 +1092,7 @@ msgstr ""
 
 #: lclstrconsts.rsqtoptionsync
 msgid "-sync (only under X11), switches to synchronous mode for debugging."
-msgstr ""
+msgstr "-sync (nur unter X11), wechselt zum synchronen Modus für das Debuggen."
 
 #: lclstrconsts.rsqtoptionwidgetcount
 msgid "-widgetcount, prints debug message at the end about number of widgets left undestroyed and maximum number of widgets existed at the same time."
@@ -1138,7 +1136,7 @@ msgstr ""
 
 #: lclstrconsts.rsqtoptionx11name
 msgid "-name name, sets the application name."
-msgstr ""
+msgstr "-name name, setzt den Anwendungsnamen."
 
 #: lclstrconsts.rsqtoptionx11ncols
 msgid "-ncols count, limits the number of colors allocated in the color cube on an 8-bit display, if the application is using the QApplication::ManyColor color specification. If count is 216 then a 6x6x6 color cube is used (i.e. 6 levels of red, 6 of green, and 6 of blue); for other values, a cube approximately proportional to a 2x3x1 cube is used."
