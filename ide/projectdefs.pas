@@ -315,6 +315,14 @@ type
     function CreateStartFiles({%H-}AProject: TLazProject): TModalResult; override;
   end;
 
+  TProjectUtf8ApplicationDescriptor = class(TProjectApplicationDescriptor)
+  public
+    constructor Create; override;
+    function GetLocalizedName: string; override;
+    function GetLocalizedDescription: string; override;
+    function InitProject(AProject: TLazProject): TModalResult; override;
+  end;
+
   { TProjectSimpleProgramDescriptor }
 
   TProjectSimpleProgramDescriptor = class(TProjectDescriptor)
@@ -1261,8 +1269,7 @@ begin
   Result := GetLocalizedName + LineEnding+LineEnding + lisApplicationProgramDescriptor;
 end;
 
-function TProjectApplicationDescriptor.InitProject(
-  AProject: TLazProject): TModalResult;
+function TProjectApplicationDescriptor.InitProject(AProject: TLazProject): TModalResult;
 var
   NewSource: String;
   MainFile: TLazProjectFile;
@@ -1310,6 +1317,33 @@ function TProjectApplicationDescriptor.CreateStartFiles(AProject: TLazProject
 begin
   Result:=LazarusIDE.DoNewEditorFile(FileDescriptorForm,'','',
                          [nfIsPartOfProject,nfOpenInEditor,nfCreateDefaultSrc]);
+end;
+
+{ TProjectUtf8ApplicationDescriptor }
+
+constructor TProjectUtf8ApplicationDescriptor.Create;
+begin
+  inherited Create;
+  Name:=ProjDescNameUtf8Application;
+end;
+
+function TProjectUtf8ApplicationDescriptor.GetLocalizedName: string;
+begin
+  Result:=dlgPOUtf8Application;
+end;
+
+function TProjectUtf8ApplicationDescriptor.GetLocalizedDescription: string;
+begin
+  Result := GetLocalizedName + LineEnding+LineEnding + lisUtf8ApplicationProgramDescriptor;
+end;
+
+function TProjectUtf8ApplicationDescriptor.InitProject(AProject: TLazProject): TModalResult;
+begin
+  Result := inherited InitProject(AProject);
+  Assert(AProject.LazCompilerOptions.CustomOptions='',
+         'TProjectUtf8ApplicationDescriptor.InitProject: CustomOptions<>''');
+  AProject.LazCompilerOptions.CustomOptions := '-dEnableUTF8RTL' + LineEnding
+                                             + '-FcUTF8' + LineEnding;
 end;
 
 { TProjectSimpleProgramDescriptor }

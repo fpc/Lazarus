@@ -32,6 +32,7 @@ const
 
   ProjDescGroupName = 'Project';
   ProjDescNameApplication = 'Application';
+  ProjDescNameUtf8Application = 'UTF-8 Application';
   ProjDescNameSimpleProgram = 'Simple Program';
   ProjDescNameProgram = 'Program';
   ProjDescNameConsoleApplication = 'Console application';
