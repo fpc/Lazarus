@@ -1341,23 +1341,25 @@ begin
 end;
 
 procedure TWindowProcHelper.UpdateDrawListItem(aMsg: UInt);
+var
+  PDrawIS: PDrawItemStruct;
 begin
-  if PDrawItemStruct(LParam)^.itemID <> dword(-1) then
+  PDrawIS := PDrawItemStruct(LParam);
+  if PDrawIS^.itemID <> dword(-1) then
   begin
     LMessage.Msg := aMsg;
     TLMDrawListItem(LMessage).DrawListItemStruct := @DrawListItemStruct;
     with DrawListItemStruct do
     begin
-      ItemID := PDrawItemStruct(LParam)^.itemID;
-      Area := PDrawItemStruct(LParam)^.rcItem;
-      ItemState := TOwnerDrawState(PDrawItemStruct(LParam)^.itemState);
-      DC := PDrawItemStruct(LParam)^._hDC;
+      ItemID := PDrawIS^.itemID;
+      Area := PDrawIS^.rcItem;
+      ItemState := TOwnerDrawState(PDrawIS^.itemState);
+      DC := PDrawIS^._hDC;
     end;
     if (aMsg = LM_DRAWLISTITEM) and (WindowInfo <> @DefaultWindowInfo) then
     begin
-      WindowInfo^.DrawItemIndex := PDrawItemStruct(LParam)^.itemID;
-      WindowInfo^.DrawItemSelected :=
-        (PDrawItemStruct(LParam)^.itemState and ODS_SELECTED) = ODS_SELECTED;
+      WindowInfo^.DrawItemIndex := PDrawIS^.itemID;
+      WindowInfo^.DrawItemSelected := (PDrawIS^.itemState and ODS_SELECTED) = ODS_SELECTED;
     end;
     WinProcess := false;
   end;
@@ -1377,25 +1379,25 @@ end;
 procedure TWindowProcHelper.DoMsgDrawItem;
 var
   menuItem: TObject;
+  PDrawIS: PDrawItemStruct;
 begin
-  if (WParam = 0) and (PDrawItemStruct(LParam)^.ctlType = ODT_MENU) then
+  PDrawIS := PDrawItemStruct(LParam);
+  if (WParam = 0) and (PDrawIS^.ctlType = ODT_MENU) then
   begin
-    menuItem := TObject(PDrawItemStruct(LParam)^.itemData);
+    menuItem := TObject(PDrawIS^.itemData);
     if menuItem is TMenuItem then
-      DrawMenuItem(TMenuItem(menuItem), PDrawItemStruct(LParam)^._hDC,
-         PDrawItemStruct(LParam)^.rcItem,
-         PDrawItemStruct(LParam)^.itemAction,
-         PDrawItemStruct(LParam)^.itemState);
+      DrawMenuItem(TMenuItem(menuItem),
+        PDrawIS^._hDC, PDrawIS^.rcItem, PDrawIS^.itemAction, PDrawIS^.itemState);
     UpdateDrawItems;
   end
   else
   begin
-    WindowInfo := GetWin32WindowInfo(PDrawItemStruct(LParam)^.hwndItem);
+    WindowInfo := GetWin32WindowInfo(PDrawIS^.hwndItem);
     if WindowInfo^.WinControl<>nil then
       lWinControl := WindowInfo^.WinControl;
     {$IFDEF MSG_DEBUG}
-    with PDrawItemStruct(LParam)^ do
-      debugln(format('Received WM_DRAWITEM type %d handle %x', [ctlType, integer(hwndItem)]));
+    debugln(format('Received WM_DRAWITEM type %d handle %x',
+                   [PDrawIS^.ctlType, integer(PDrawIS^.hwndItem)]));
     {$ENDIF}
 
     if (lWinControl<>nil) and
@@ -1409,7 +1411,7 @@ begin
     else
     if (lWinControl <> nil) and (lWinControl is TListView) and
       (TListView(lWinControl).ViewStyle = vsReport) and
-      (PDrawItemStruct(LParam)^.ctlType = ODT_LISTVIEW) and
+      (PDrawIS^.ctlType = ODT_LISTVIEW) and
       (TListView(lWinControl).OwnerDraw)
     then
       UpdateDrawListItem(CN_DRAWITEM)
