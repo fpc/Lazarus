@@ -20,7 +20,7 @@ msgstr "ABS(<Number>)/Gibt den absoluten Wert von <Number> zurück"
 
 #: lr_add_function_const.sdescriptionchr
 msgid "CHR(<Code>)/Returns symbol of ASCII code <Code>."
-msgstr ""
+msgstr "CHR(<Code>)/Gibt den ASCII-Code von <Code> zurück."
 
 #: lr_add_function_const.sdescriptioncomparestr
 msgid "COMPARESTR(<String1>,<String2>)/Compares two strings. Returns the position where begins the difference between the strings or 0 if strings are equivalent."
@@ -36,7 +36,7 @@ msgstr ""
 
 #: lr_add_function_const.sdescriptioncreatestr
 msgid "CREATESTR(<String>)/Adds quotes to the <String> string to use it in SQL clause."
-msgstr ""
+msgstr "CREATESTR(<String>)/Fügt Anführungszeichen zur <String> Zeichenkette hinzu zur Verwendung in SQL-Befehlen."
 
 #: lr_add_function_const.sdescriptiondatediff
 msgid "DATEDIFF(<Date1>,<Date2>,<var String>)/Returns the difference between two dates <Date1> and <Date2>. Result is in the string <String> in format \"days;months;years\"."
@@ -48,7 +48,7 @@ msgstr "DATETOSTR(<Date>)/Wandelt das Datum <Date> in eine Zeichenkette um und g
 
 #: lr_add_function_const.sdescriptiondayspermonth
 msgid "DAYSPERMONTH(<Year>,<Month>)/Returns days in the given month <Month> of the year <Year>."
-msgstr ""
+msgstr "DAYSPERMONTH(<Year>,<Month>)/Gibt die Anzahl der Tage im gegebenen Monat <Month> des Jahres <Year> zurück."
 
 #: lr_add_function_const.sdescriptiondelete
 msgid "DELETE(<String>,<DelFrom>,<DelCount>)/Deletes <DelCount> symbols starting at position <DelFrom> in the given string <String> and returns the result."
@@ -116,7 +116,7 @@ msgstr "LASTDAYOFPREVMONTH(<Date>)/Gibt das Datum des letzten Tages des vorherig
 
 #: lr_add_function_const.sdescriptionleftcopy
 msgid "LEFTCOPY(<String>,<Count>)/Copies number of symbols <Count> from the string <String> starting at the begin of the string."
-msgstr ""
+msgstr "LEFTCOPY(<String>,<Count>)/Kopiert die Anzahl Zeichen von <Count> aus der Zeichenkette <String>, beginnend am Anfang der Zeichenkette."
 
 #: lr_add_function_const.sdescriptionnpos
 msgid "NPOS(<SubStr>,<String>,<SubStrNo>)/Returns position of <SubStrNo>-th substring <SubStr> inclusion in the string <String>."
@@ -144,7 +144,7 @@ msgstr ""
 
 #: lr_add_function_const.sdescriptionrightcopy
 msgid "RIGHTCOPY(<String>,<Count>)/Copies number of symbols <Count> from the string <String> starting at the end of the string."
-msgstr ""
+msgstr "RIGHTCOPY(<String>,<Count>)/Kopiert die Anzahl Zeichen von <Count> aus der Zeichenkette <String>, beginnend am Ende der Zeichenkette."
 
 #: lr_add_function_const.sdescriptionstrtodatedef
 msgid "STRTODATEDEF(<String>,<DefDate>)/Converts <String> string to date. If conversion fails, returns default value <DefDate>."

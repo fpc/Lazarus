@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2015-01-11 23:20+0100\n"
+"PO-Revision-Date: 2015-01-27 16:27+0100\n"
 "Last-Translator: Swen Heinig <swen@heinig.email>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -158,7 +158,7 @@ msgstr "Dies wird alle Titel aus dem Dataset ersetzen. Fortfahren?"
 
 #: objinspstrconsts.fescalculated
 msgid "&Calculated"
-msgstr ""
+msgstr "Bere&chnet"
 
 #: objinspstrconsts.fescancelbtn
 msgctxt "objinspstrconsts.fescancelbtn"
@@ -260,7 +260,7 @@ msgstr "Hinzufügen"
 
 #: objinspstrconsts.itcssearchandreplace
 msgid "Search and replace"
-msgstr ""
+msgstr "Suchen und Ersetzen"
 
 #: objinspstrconsts.liisaddvalue
 msgid "Add value"
@@ -292,7 +292,7 @@ msgstr "Wert setzen"
 
 #: objinspstrconsts.lisunabletofindparserfortool
 msgid "Unable to find parser for tool \"%s\""
-msgstr ""
+msgstr "Kann keinen Parser für Werkzeug \"%s\" finden"
 
 #: objinspstrconsts.nbcesaddpage
 #| msgid "Add page"
@@ -411,11 +411,10 @@ msgid "&Add"
 msgstr "&Hinzufügen"
 
 #: objinspstrconsts.oiscancel
-#, fuzzy
 #| msgid "&Cancel"
 msgctxt "objinspstrconsts.oiscancel"
 msgid "Cancel"
-msgstr "&Abbrechen"
+msgstr "Abbrechen"
 
 #: objinspstrconsts.oiscategory
 msgid "Category"
@@ -620,7 +619,7 @@ msgstr "Methode"
 
 #: objinspstrconsts.oismixed
 msgid "(Mixed)"
-msgstr ""
+msgstr "(gemischt)"
 
 #: objinspstrconsts.oismovedown
 msgid "Move &Down"
@@ -787,7 +786,7 @@ msgstr "Auf Voreinstellung %s setzen"
 
 #: objinspstrconsts.oissettodefaulthint
 msgid "Set property value to Default"
-msgstr ""
+msgstr "Eigenschaftswert auf Vorgabe setzen"
 
 #: objinspstrconsts.oisshowcomponenttree
 msgid "Show Component Tree"
@@ -826,10 +825,9 @@ msgid "Strings Editor Dialog"
 msgstr "Zeichenketteneditor"
 
 #: objinspstrconsts.oistdactcolorselect1headline
-#, fuzzy
 #| msgid "Select &Color..."
 msgid "Select &Color ..."
-msgstr "Fa&rbauswahl"
+msgstr "Farbauswahl"
 
 #: objinspstrconsts.oistdactcolorselecthint
 msgid "Color Select"
@@ -1010,10 +1008,9 @@ msgid "Exit"
 msgstr "Beenden"
 
 #: objinspstrconsts.oistdactfileopenheadline
-#, fuzzy
 #| msgid "&Open..."
 msgid "&Open ..."
-msgstr "Ö&ffnen"
+msgstr "Öffnen"
 
 #: objinspstrconsts.oistdactfileopenhint
 msgctxt "objinspstrconsts.oistdactfileopenhint"
@@ -1043,10 +1040,9 @@ msgid "Save As"
 msgstr "Sichern als"
 
 #: objinspstrconsts.oistdactfonteditheadline
-#, fuzzy
 #| msgid "Select &Font..."
 msgid "Select &Font ..."
-msgstr "&Schriftauswahl"
+msgstr "Schri&ftauswahl"
 
 #: objinspstrconsts.oistdactfontedithint
 msgid "Font Select"

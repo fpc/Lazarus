@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2015-01-17 17:56+0100\n"
+"PO-Revision-Date: 2015-01-27 17:03+0100\n"
 "Last-Translator: Swen Heinig <swen@heinig.email>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -914,7 +914,6 @@ msgid "Linking"
 msgstr "Linken"
 
 #: lazarusidestrconsts.dlgcoloadsavehint
-#, fuzzy
 #| msgid "Load/Save"
 msgctxt "lazarusidestrconsts.dlgcoloadsavehint"
 msgid "Compiler options can be saved to an XML file."
@@ -1130,7 +1129,7 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgcotrashvariables
 msgid "Trash variables"
-msgstr ""
+msgstr "Trash-Variablen"
 
 #: lazarusidestrconsts.dlgcounitstyle
 msgid "Unit style"
@@ -1371,7 +1370,6 @@ msgid "New tab in existing window"
 msgstr "Neuer Reiter in vorhandenem Fenster"
 
 #: lazarusidestrconsts.dlgeditaccessdescignlockedoldedit
-#, fuzzy
 msgid "This option will use the longest unused editor for the file, even if it is locked and/or needs scrolling. The determination of the longest unused editor does not look at the order in which the windows were focused, even if this is set by the setting for \"same criteria order\". This option will always succeed, further options are never tested."
 msgstr "Diese Option wählt den am längsten freien Editor für die Datei und zwar selbst dann, wenn er gesperrt ist oder wenn gescrollt werden muß. Das bezieht sich auf den Editor und nicht auf das Fenster um den am längsten ungenutzten zu finden. Diese Option hat immer Erfolg, andere werden nicht mehr geprüft."
 
@@ -3378,13 +3376,11 @@ msgid "Mirror Vertical"
 msgstr "Senkrecht spiegeln"
 
 #: lazarusidestrconsts.fdmorderbackone
-#, fuzzy
 #| msgid "Back one"
 msgid "Back One"
 msgstr "Eine Stufe zurück"
 
 #: lazarusidestrconsts.fdmorderforwardone
-#, fuzzy
 #| msgid "Forward one"
 msgid "Forward One"
 msgstr "Einen weiter"
@@ -4180,7 +4176,6 @@ msgid "Ask before saving project's session"
 msgstr "Vor dem Speichern der Projekt-Sitzungsinformationen nachfragen"
 
 #: lazarusidestrconsts.lisaskforcomponentnameafterputtingitonform
-#, fuzzy
 #| msgid "Ask for component name after putting it on a designer form"
 msgid "Ask for component name after putting it on a designer form."
 msgstr "Nach dem Ablegen auf einem Designer-Fenster nach dem Komponentennamen fragen"
@@ -4511,7 +4506,6 @@ msgid "Cannot compile project"
 msgstr "Kann Projekt nicht kompilieren"
 
 #: lazarusidestrconsts.liscannotcopytoplevelcomponent
-#, fuzzy
 #| msgid "Can not copy top level component."
 msgid "Cannot copy top level component."
 msgstr "Kann die obere Komponente nicht kopieren"
@@ -5327,7 +5321,6 @@ msgid "Clone"
 msgstr ""
 
 #: lazarusidestrconsts.lisclose
-#, fuzzy
 #| msgid "&Close"
 msgctxt "lazarusidestrconsts.lisclose"
 msgid "Close"
@@ -5547,11 +5540,10 @@ msgid "Ignore next unnamed constants"
 msgstr "Nächste unbenannte Konstanten übergehen"
 
 #: lazarusidestrconsts.liscodetempladd
-#, fuzzy
 #| msgid "Add"
 msgctxt "lazarusidestrconsts.liscodetempladd"
 msgid "Add template"
-msgstr "Hinzufügen"
+msgstr "Vorlage hinzufügen"
 
 #: lazarusidestrconsts.liscodetempladdcodetemplate
 msgid "Add code template"
@@ -8077,7 +8069,6 @@ msgid "Error in the custom compiler options (Other):"
 msgstr "Fehler in den benutzerdefinierten Compilereinstellungen (Andere):"
 
 #: lazarusidestrconsts.liserrorinthecustomlinkeroptionslinkingpassoptionstol
-#, fuzzy
 #| msgid "Error in the custom linker options (Linking / Pass options to linker):"
 msgid "Error in the custom linker options (Compilation and Linking / Pass options to linker):"
 msgstr "Fehler in den benutzerdefinierten Linkereinstellungen (Linken / Einstellungen an Linker übergeben):"
@@ -9120,13 +9111,11 @@ msgid "ID"
 msgstr "ID"
 
 #: lazarusidestrconsts.lisidcadd
-#, fuzzy
 msgctxt "lazarusidestrconsts.lisidcadd"
 msgid "Add"
 msgstr "Hinzufügen"
 
 #: lazarusidestrconsts.lisidcopen
-#, fuzzy
 msgctxt "lazarusidestrconsts.lisidcopen"
 msgid "Open"
 msgstr "Öffnen"
@@ -9213,11 +9202,11 @@ msgstr "Aktueller Erstellmodus"
 
 #: lazarusidestrconsts.lisiecoerroropeningxml
 msgid "Error opening XML"
-msgstr ""
+msgstr "Fehler beim Öffnen von XML"
 
 #: lazarusidestrconsts.lisiecoerroropeningxmlfile
 msgid "Error opening XML file \"%s\":%s%s"
-msgstr ""
+msgstr "Fehler beim Öffnen der XML-Datei \"%s\":%s%s"
 
 #: lazarusidestrconsts.lisiecoexportcompileroptions
 msgid "Export Compiler Options"
@@ -9302,7 +9291,7 @@ msgstr "Wichtig"
 
 #: lazarusidestrconsts.lisimportexport
 msgid "Import / Export"
-msgstr ""
+msgstr "Import / Export"
 
 #: lazarusidestrconsts.lisimportfromfile
 msgid "Import from File"
@@ -9333,7 +9322,6 @@ msgid "Include all subdirectories"
 msgstr "Inklusive aller Unterverzeichnisse"
 
 #: lazarusidestrconsts.lisincludefilter
-#, fuzzy
 #| msgid "Include Filter"
 msgid "Include filter"
 msgstr "Maske"
@@ -10373,7 +10361,7 @@ msgstr "Löschung bestätigen"
 
 #: lazarusidestrconsts.lislazbuilddebugide
 msgid "Debug IDE"
-msgstr ""
+msgstr "IDE mit Debugger-Informationen"
 
 #: lazarusidestrconsts.lislazbuilddefines
 msgid "Defines"
@@ -11512,7 +11500,6 @@ msgid "S&ource"
 msgstr "Quelltext"
 
 #: lazarusidestrconsts.lismenustepinto
-#, fuzzy
 #| msgid "Step in&to"
 msgid "Step In&to"
 msgstr "Einen Schritt hinein"
@@ -11532,13 +11519,11 @@ msgid "Step Into Instruction"
 msgstr "Einzelschritt in die Anweisung hinein"
 
 #: lazarusidestrconsts.lismenustepout
-#, fuzzy
 #| msgid "Step o&ut"
 msgid "Step O&ut"
 msgstr "Hinausgehen"
 
 #: lazarusidestrconsts.lismenustepover
-#, fuzzy
 #| msgid "&Step over"
 msgid "&Step Over"
 msgstr "Einen Schritt weiter"
@@ -11911,7 +11896,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lismmdoesnothaveidemacro
 msgid "Does not have IDE Macro %s:=%s"
-msgstr ""
+msgstr "Besitzt kein IDE-Makro %s:=%s"
 
 #: lazarusidestrconsts.lismmdoesnotoverrideoutdirfu
 msgid "Does not override OutDir (-FU)"
@@ -12063,15 +12048,15 @@ msgstr "Mehr ..."
 
 #: lazarusidestrconsts.lismove
 msgid "Move"
-msgstr ""
+msgstr "Verschieben"
 
 #: lazarusidestrconsts.lismovefiles
 msgid "Move Files"
-msgstr ""
+msgstr "Dateien verschieben"
 
 #: lazarusidestrconsts.lismovefiles2
 msgid "Move files?"
-msgstr ""
+msgstr "Dateien verschieben?"
 
 #: lazarusidestrconsts.lismovefilesfromtothedirectoryof
 msgid "Move %s file(s) from %s to the directory%s%s%sof %s?"
@@ -12632,7 +12617,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisopenurl
 msgid "Open URL"
-msgstr ""
+msgstr "URL öffnen"
 
 #: lazarusidestrconsts.lisopenxml
 msgid "Open XML"
@@ -14096,7 +14081,6 @@ msgid "Private Method"
 msgstr "Private Methode"
 
 #: lazarusidestrconsts.lisprobablyyouneedtoinstallsomepackagesforbeforeconti
-#, fuzzy
 msgid "Probably you need to install some packages before continuing.%sWarning:%sThe project uses the following design time packages, which might be needed to open the form in the designer. If you continue, you might get errors about missing components and the form loading will probably create very unpleasant results.%sIt is recommended to cancel and install these packages first."
 msgstr "Möglicherweise müssen sie einige Packages installieren, um fortfahren zu können.%sWarnung:%sDas Projekt bezieht sich auf Packages, die Units mit Register-Prozeduren enthalten. Die Register-Prozedur dient normalerweise dazu, Komponenten in der IDE zu installieren. Aber die folgenden Units gehören zu Packages, die noch nicht in der IDE installiert sind. Wenn Sie versuchen, ein Form in der IDE zu öffnen, das solche Komponenten einbindet, werden Sie Fehlermeldungen wegen nicht gefundener Komponenten erhalten und der Ladeprozeß des Forms wird mit möglicherweise unschönen Ergebnissen enden.%sDas hat keinen Einfluß auf das Öffnen des Projekts oder beliebiger zugehörigen Quellen. Es bedeutet nur, daß es keine gute Idee ist, das Form für das Design zu öffnen bevor die bemängelten Packages installiert wurden."
 
@@ -14135,7 +14119,6 @@ msgid "Dependency already exists"
 msgstr "Abhängigkeit ist bereits vorhanden"
 
 #: lazarusidestrconsts.lisprojaddeditorfile
-#, fuzzy
 #| msgid "Add editor files"
 msgid "Add Editor Files"
 msgstr "Dateien hinzufügen"
@@ -14510,7 +14493,6 @@ msgid "&Open Project"
 msgstr "Projekt öffnen"
 
 #: lazarusidestrconsts.lispwopenrecentproject
-#, fuzzy
 #| msgid "Open Recent Project"
 msgctxt "lazarusidestrconsts.lispwopenrecentproject"
 msgid "Open &Recent Project"
@@ -14525,7 +14507,6 @@ msgid "QuickFix error"
 msgstr ""
 
 #: lazarusidestrconsts.lisquickfixes
-#, fuzzy
 msgid "Quick fixes"
 msgstr "Schnelle Fixes"
 
@@ -14947,7 +14928,6 @@ msgid "Unable to show abstract methods of the current class, because"
 msgstr "Kann die abstrakten Methoden der aktuellen Klasse nicht anzeigen, weil"
 
 #: lazarusidestrconsts.lissave
-#, fuzzy
 #| msgid "Save ..."
 msgctxt "lazarusidestrconsts.lissave"
 msgid "Save"
@@ -14963,7 +14943,6 @@ msgid "Save All Checked"
 msgstr ""
 
 #: lazarusidestrconsts.lissaveallmodified
-#, fuzzy
 #| msgid "save all modified files"
 msgid "Save all modified files"
 msgstr "Alles speichern"
@@ -15411,7 +15390,7 @@ msgstr "Entschuldigung, dieser Typ ist (noch) nicht implementiert"
 
 #: lazarusidestrconsts.lissort
 msgid "Sort"
-msgstr ""
+msgstr "Sortieren"
 
 #: lazarusidestrconsts.lissortforscope
 msgid "Sort for scope"
@@ -16777,7 +16756,6 @@ msgid "Unable to find file \"%s\"."
 msgstr "Datei \"%s\" kann nicht gefunden werden."
 
 #: lazarusidestrconsts.lisunabletofindfilechecksearchpathinprojectcompileroption
-#, fuzzy
 msgid "Unable to find file \"%s\".%sIf it belongs to your project, check search path in%sProject -> Compiler Options -> Search Paths -> Other Unit Files. If this file belongs to a package, check the appropriate package compiler options. If this file belongs to Lazarus, make sure compiling clean. If the file belongs to FPC then check fpc.cfg. If unsure, check Project -> CompilerOptions -> Test"
 msgstr "Kann die Datei \"%s\" nicht finden.%sFalls sie zum Projekt gehört, prüfen Sie den Suchpfad in der Startseite von%sProjekt->Compilereinstellungen ... unter Andere Unit-Dateien. Wenn die Datei zu einem Package gehört, müssen dessen Einstellungen geprüft werden. Falls die Datei zu Lazarus gehört, muß sichergestellt sein, daß die IDE sauber kompiliert ist. Gehört die Datei zu FPC muß die fpc.cfg überprüft werden. Bei Unklarheiten hilft der Button Test unter Projekt -> Compilereinstellungen ... -> Test"
 
@@ -17124,7 +17102,7 @@ msgstr "Verwende Entwicklungszeit-Packages"
 
 #: lazarusidestrconsts.lisusedforautocreatedforms
 msgid "Used for auto-created forms."
-msgstr ""
+msgstr "Verwendet für automatisch erzeugte Formulare"
 
 #: lazarusidestrconsts.lisuseexcludefilter
 msgid "Use exclude filter"
@@ -17579,7 +17557,6 @@ msgid "Increased every time the project is compiled."
 msgstr "Wird bei jeder Kompilierung des Projekts erhöht"
 
 #: lazarusidestrconsts.rsbuild
-#, fuzzy
 #| msgid "Build:"
 msgid "&Build:"
 msgstr "Neu kompilieren:"
@@ -19284,7 +19261,6 @@ msgid "Encoding"
 msgstr "Zeichenkodierung"
 
 #: lazarusidestrconsts.uemevaluatemodify
-#, fuzzy
 #| msgid "&Evaluate/Modify..."
 msgid "&Evaluate/Modify ..."
 msgstr "Üb&erprüfen/Ändern"
@@ -19307,7 +19283,6 @@ msgid "Highlighter"
 msgstr "Highlighter"
 
 #: lazarusidestrconsts.ueminspect
-#, fuzzy
 #| msgid "&Inspect..."
 msgctxt "lazarusidestrconsts.ueminspect"
 msgid "&Inspect ..."

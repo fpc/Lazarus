@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Last-Translator: Swen Heinig <swen@heinig.email>\n"
-"PO-Revision-Date: 2014-09-06 17:01+0100\n"
+"PO-Revision-Date: 2015-01-27 16:33+0100\n"
 "Project-Id-Version: lazreport\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -33,19 +33,19 @@ msgstr "Alle Dateien"
 
 #: lr_const.sargument1
 msgid "Argument 1"
-msgstr ""
+msgstr "Argument 1"
 
 #: lr_const.sargument2
 msgid "Argument 2"
-msgstr ""
+msgstr "Argument 2"
 
 #: lr_const.sargument3
 msgid "Argument 3"
-msgstr ""
+msgstr "Argument 3"
 
 #: lr_const.sarguments
 msgid "Arguments"
-msgstr ""
+msgstr "Argumente"
 
 #: lr_const.sautosize
 msgid "Auto size"
@@ -112,14 +112,12 @@ msgid "Cross footer"
 msgstr "Kreuz-Footer"
 
 #: lr_const.sband22
-#, fuzzy
 #| msgid "None"
 msgctxt "lr_const.sband22"
 msgid "Child"
-msgstr "Keiner"
+msgstr "Nachfolger"
 
 #: lr_const.sband23
-#, fuzzy
 #| msgid "None"
 msgctxt "lr_const.sband23"
 msgid "None"
@@ -604,7 +602,7 @@ msgstr "Es gibt bereits ein Objekt mit dem Namen \"%s\""
 
 #: lr_const.seditor
 msgid "Editor"
-msgstr ""
+msgstr "Editor"
 
 #: lr_const.seditorformbig
 msgid "&Big font"
@@ -1151,7 +1149,7 @@ msgstr "Obere Rahmenlinie"
 
 #: lr_const.sfrdesignerformunabletocreatetemplatedir
 msgid "Unable to create template directory"
-msgstr ""
+msgstr "Kann Vorlagenverzeichnis nicht anlegen"
 
 #: lr_const.sfrdesignerformunderline
 msgid "Underline"
@@ -1361,7 +1359,7 @@ msgstr "FR-Variablen"
 
 #: lr_const.sfunctioneditor
 msgid "Function editor"
-msgstr ""
+msgstr "Funktionseditor"
 
 #: lr_const.sfunctions
 msgid "Functions"
@@ -1562,7 +1560,7 @@ msgstr "Mathem."
 
 #: lr_const.smemoeditor
 msgid "Memo editor"
-msgstr ""
+msgstr "Memoeditor"
 
 #: lr_const.smm
 msgid "MM"
@@ -2264,7 +2262,7 @@ msgstr "&Ganze &Seite"
 
 #: lr_const.sprintchildifnotvisible
 msgid "Print child if not visible"
-msgstr ""
+msgstr "Nachfolger drucken wenn nicht sichtbar"
 
 #: lr_const.sprintererror
 #| msgid "Printer selected is not valid"
@@ -2419,7 +2417,7 @@ msgstr "Änderungen speichern"
 
 #: lr_const.sscripteditor
 msgid "Script editor"
-msgstr ""
+msgstr "Skripteditor"
 
 #: lr_const.sshape1
 msgctxt "lr_const.sshape1"
@@ -2538,7 +2536,7 @@ msgstr ""
 
 #: lr_const.susesyntaxhighlight
 msgid "Use syntax highlight"
-msgstr ""
+msgstr "Syntaxhervorhebung nutzen"
 
 #: lr_const.svar1
 msgid "Page#"
