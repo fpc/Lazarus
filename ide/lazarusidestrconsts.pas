@@ -2149,8 +2149,7 @@ resourcestring
   lisShowOnlyModified = 'Show only modified';
   lisUseCommentsInCustomOptions = 'Use comments in custom options';
   lisCustomOptions2 = 'Custom options';
-  lisCustomOptHint = 'These options are passed to the compiler after'
-    +' comments are deleted and macros are replaced.';
+  lisCustomOptHint = 'These options are passed to the compiler after macros are replaced.';
   dlgStopAfterNrErr = 'Stop after number of errors:';
 
   lisApplyConventions = 'Apply conventions';
@@ -5413,6 +5412,7 @@ resourcestring
   lisConditionals = 'Conditionals';
   lisDlgAllOptions = 'All options ...';
   lisDlgDefines = 'Defines ...';
+  lisSupportUTF8RTL = 'Support UTF-8 RTL';
   lisWithIncludes2 = ', with includes ';
   lisParsed = ', parsed ';
   lisCreatingFileIndexOfFPCSources =

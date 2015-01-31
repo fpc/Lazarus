@@ -42,6 +42,7 @@ type
   TCompilerOtherOptionsFrame = class(TAbstractIDEOptionsEditor)
     btnDefines: TBitBtn;
     btnAllOptions: TBitBtn;
+    btnSupportUTF8RTL: TBitBtn;
     grpCustomOptions: TGroupBox;
     grpConditionals: TGroupBox;
     CondStatusbar: TStatusBar;
@@ -50,6 +51,7 @@ type
     memoCustomOptions: TMemo;
     procedure btnAllOptionsClick(Sender: TObject);
     procedure btnDefinesClick(Sender: TObject);
+    procedure btnSupportUTF8RTLClick(Sender: TObject);
     procedure CondSynEditChange(Sender: TObject);
     procedure CondSynEditKeyPress(Sender: TObject; var Key: char);
     procedure CondSynEditProcessUserCommand(Sender: TObject;
@@ -166,6 +168,25 @@ begin
   finally
     EditForm.Free;
   end;
+end;
+
+procedure TCompilerOtherOptionsFrame.btnSupportUTF8RTLClick(Sender: TObject);
+var
+  Opts: String;
+
+  procedure AddUtf8Define(aDefine: String);
+  begin
+    if Pos(aDefine, Opts) = 0 then
+      memoCustomOptions.Lines.Add(aDefine);
+  end;
+
+begin
+  Opts := memoCustomOptions.Text;
+  // This makes FPC default string type UTF-8.
+  // Assign UTF-8 backends for Ansi...() functions etc.
+  AddUtf8Define('-dEnableUTF8RTL');
+  // For WideString/UnicodeString/UTF8String literals.
+  AddUtf8Define('-FcUTF8');
 end;
 
 // Events dealing with conditionals SynEdit :
@@ -703,6 +724,7 @@ begin
   grpConditionals.Caption := lisConditionals;
   btnAllOptions.Caption := lisDlgAllOptions;
   btnDefines.Caption := lisDlgDefines;
+  btnSupportUTF8RTL.Caption := lisSupportUTF8RTL;
 end;
 
 procedure TCompilerOtherOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
