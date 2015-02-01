@@ -5673,7 +5673,24 @@ begin
       end else
         Windows.SetCapture(QWidget_winID(TQtWidget(AHandle).Widget));
       {$ELSE}
-      TQtWidget(AHandle).grabMouse();
+      // do not lock with mousecapture inside scrollarea of form. issue #27384
+      {$IFDEF QTSCROLLABLEFORMS}
+      if (TQtWidget(AHandle) is TQtMainWindow) and (TQtWidget(AHandle).LCLObject.Parent = nil) then
+      begin
+        if Assigned(TQtMainWindow(AHandle).ScrollArea) then
+        begin
+          if QWidget_focusPolicy(TQtMainWindow(AHandle).ScrollArea.viewportWidget) > QtNoFocus then
+            TQtMainWindow(AHandle).ScrollArea.grabMouse;
+        end;
+      end else
+      {$ELSE}
+      if (TQtWidget(AHandle) is TQtMainWindow) and (TQtWidget(AHandle).LCLObject.Parent = nil) then
+      begin
+        if QWidget_focusPolicy(TQtMainWindow(AHandle).GetContainerWidget) > QtNoFocus then
+          TQtMainWindow(AHandle).grabMouse;
+      end else
+      {$ENDIF}
+        TQtWidget(AHandle).grabMouse();
       {$ENDIF}
     end;
     {$ifdef VerboseQtWinAPI}
