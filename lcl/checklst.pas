@@ -37,7 +37,6 @@ type
     FOnClickCheck : TNotifyEvent;
     FOnItemClick: TCheckListClicked;
     function GetChecked(const AIndex: Integer): Boolean;
-    function GetCount: integer;
     function GetHeader(AIndex: Integer): Boolean;
     function GetItemEnabled(AIndex: Integer): Boolean;
     function GetState(AIndex: Integer): TCheckBoxState;
@@ -75,7 +74,6 @@ type
     property Header[AIndex: Integer]: Boolean read GetHeader write SetHeader;
     property ItemEnabled[AIndex: Integer]: Boolean read GetItemEnabled write SetItemEnabled;
     property State[AIndex: Integer]: TCheckBoxState read GetState write SetState;
-    property Count: integer read GetCount;
     property OnClickCheck: TNotifyEvent read FOnClickCheck write FOnClickCheck;
     property OnItemClick: TCheckListClicked read FOnItemClick write FOnItemClick;
   end;
@@ -264,11 +262,6 @@ begin
     Result := TWSCustomCheckListBoxClass(WidgetSetClass).GetCheckWidth(Self)
   else
     Result := 0;
-end;
-
-function TCustomCheckListBox.GetCount: integer;
-begin
-  Result := Items.Count;
 end;
 
 function TCustomCheckListBox.GetItemEnabled(AIndex: Integer): Boolean;
