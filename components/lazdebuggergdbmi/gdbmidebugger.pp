@@ -8344,7 +8344,7 @@ begin
   end;
 
   R := GDBMIExecResultDefault;
-  Result := ExecuteCommandFull('-gdb-set var %s := %s', [AExpression, S], [cfscIgnoreError], @GDBModifyDone, 0, R)
+  Result := ExecuteCommandFull('-gdb-set var %s := %s', [UpperCase(AExpression), S], [cfscIgnoreError], @GDBModifyDone, 0, R)
         and (R.State <> dsError);
 
   FTypeRequestCache.Clear;
@@ -9204,7 +9204,7 @@ begin
   Result := False;
   if ABreakID = 0 then Exit;
 
-  Result := ExecuteCommand('-break-condition %d %s', [ABreakID, AnExpression], []);
+  Result := ExecuteCommand('-break-condition %d %s', [ABreakID, UpperCase(AnExpression)], []);
 end;
 
 { TGDBMIDebuggerCommandBreakInsert }
@@ -9247,7 +9247,7 @@ begin
     bpkData:
       begin
         if (FWatchData = '') then exit;
-        WatchExpr := WatchData;
+        WatchExpr := UpperCase(WatchData);
         if FWatchScope = wpsGlobal then begin
           Result := ExecuteCommand('ptype %s', [WatchExpr], R);
           Result := Result and (R.State <> dsError);
