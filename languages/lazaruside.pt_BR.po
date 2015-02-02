@@ -2771,6 +2771,10 @@ msgstr "Usar aplicação encartada para execução e depuração (somente Darwin
 msgid "Use manifest file to enable themes"
 msgstr "Usar arquivo de manifesto para ativar temas (somente windows)"
 
+#: lazarusidestrconsts.dlgpoutf8application
+msgid "UTF-8 Application"
+msgstr ""
+
 #: lazarusidestrconsts.dlgpreferdoubleclickoversingleclick
 msgid "Prefer double-click over single-click"
 msgstr ""
@@ -7000,8 +7004,8 @@ msgstr "Linha do cursor no editor atual"
 
 #: lazarusidestrconsts.liscustomopthint
 #, fuzzy
-#| msgid "These options are passed directly to the compiler. Macros are replaced, line breaks are replaced with single spaces.These options are passed to the compiler after comments are deleted and macros are replaced.These options are passed to the compiler after comments are deleted and macros are replaced."
-msgid "These options are passed to the compiler after comments are deleted and macros are replaced."
+#| msgid "These options are passed to the compiler after comments are deleted and macros are replaced."
+msgid "These options are passed to the compiler after macros are replaced."
 msgstr "Estas opções são passadas ao compilador após a exclusão de comentários e a substituição de macros."
 
 #: lazarusidestrconsts.liscustomoptions
@@ -15921,6 +15925,10 @@ msgstr ""
 msgid "Suggest default name of new file in lowercase"
 msgstr "Sugerir nome padrão do novo arquivo em minúsculas"
 
+#: lazarusidestrconsts.lissupportutf8rtl
+msgid "Support UTF-8 RTL"
+msgstr ""
+
 #: lazarusidestrconsts.lissuspiciousincludepath
 msgid "Suspicious include path"
 msgstr "Caminho inclusões suspeito"
@@ -17666,6 +17674,10 @@ msgstr "Adicionar unidade à seção \"uses\""
 #: lazarusidestrconsts.lisuseunitinunit
 msgid "Use unit %s in unit %s"
 msgstr "Usar unidade %s na unidade %s"
+
+#: lazarusidestrconsts.lisutf8applicationprogramdescriptor
+msgid "A graphical application for FPC 3.0 and higher using the cross-platform LCL library for its GUI and mapping FPC default String to UTF-8 encoding."
+msgstr ""
 
 #: lazarusidestrconsts.lisutf8withbom
 msgid "UTF-8 with BOM"

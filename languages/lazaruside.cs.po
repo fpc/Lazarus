@@ -2755,6 +2755,10 @@ msgstr "Použít aplikační balík pro spuštění a ladění (pouze Darwin)"
 msgid "Use manifest file to enable themes"
 msgstr "Použít soubor manifest k povolení grafických stylů (pouze Windows)"
 
+#: lazarusidestrconsts.dlgpoutf8application
+msgid "UTF-8 Application"
+msgstr ""
+
 #: lazarusidestrconsts.dlgpreferdoubleclickoversingleclick
 msgid "Prefer double-click over single-click"
 msgstr ""
@@ -6886,7 +6890,9 @@ msgid "Cursor row in current editor"
 msgstr "Řádek kurzoru v aktuálním editoru"
 
 #: lazarusidestrconsts.liscustomopthint
-msgid "These options are passed to the compiler after comments are deleted and macros are replaced."
+#, fuzzy
+#| msgid "These options are passed to the compiler after comments are deleted and macros are replaced."
+msgid "These options are passed to the compiler after macros are replaced."
 msgstr "Tyto volby jsou přímo předány překladači jakmile jsou Makra nahrazena a komentáře odstraněny."
 
 #: lazarusidestrconsts.liscustomoptions
@@ -15685,6 +15691,10 @@ msgstr ""
 msgid "Suggest default name of new file in lowercase"
 msgstr "Navrhnout přednastavené jméno nového souboru malými písmeny"
 
+#: lazarusidestrconsts.lissupportutf8rtl
+msgid "Support UTF-8 RTL"
+msgstr ""
+
 #: lazarusidestrconsts.lissuspiciousincludepath
 msgid "Suspicious include path"
 msgstr "Podezřelá cesta zahrnovaných"
@@ -17292,6 +17302,10 @@ msgstr "Přidat jednotku do sekce použitých jednotek"
 #: lazarusidestrconsts.lisuseunitinunit
 msgid "Use unit %s in unit %s"
 msgstr "Použít jednotku %s v jednotce %s"
+
+#: lazarusidestrconsts.lisutf8applicationprogramdescriptor
+msgid "A graphical application for FPC 3.0 and higher using the cross-platform LCL library for its GUI and mapping FPC default String to UTF-8 encoding."
+msgstr ""
 
 #: lazarusidestrconsts.lisutf8withbom
 msgid "UTF-8 with BOM"

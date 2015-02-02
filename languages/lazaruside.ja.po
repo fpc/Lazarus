@@ -2758,6 +2758,10 @@ msgstr "アプリケーションバンドルを実行およびデバッグに用
 msgid "Use manifest file to enable themes"
 msgstr "テーマを使用可能とするためマニフェストファイルを用いる（Windowsのみ）"
 
+#: lazarusidestrconsts.dlgpoutf8application
+msgid "UTF-8 Application"
+msgstr ""
+
 #: lazarusidestrconsts.dlgpreferdoubleclickoversingleclick
 msgid "Prefer double-click over single-click"
 msgstr ""
@@ -6965,7 +6969,9 @@ msgid "Cursor row in current editor"
 msgstr "カーソル"
 
 #: lazarusidestrconsts.liscustomopthint
-msgid "These options are passed to the compiler after comments are deleted and macros are replaced."
+#, fuzzy
+#| msgid "These options are passed to the compiler after comments are deleted and macros are replaced."
+msgid "These options are passed to the compiler after macros are replaced."
 msgstr "これらのオプションは、コメントは削除されマクロは置き換えられた後、コンパイラに送られます。"
 
 #: lazarusidestrconsts.liscustomoptions
@@ -15875,6 +15881,10 @@ msgstr ""
 msgid "Suggest default name of new file in lowercase"
 msgstr "新しいデフォルトファイル名を小文字で提案"
 
+#: lazarusidestrconsts.lissupportutf8rtl
+msgid "Support UTF-8 RTL"
+msgstr ""
+
 #: lazarusidestrconsts.lissuspiciousincludepath
 msgid "Suspicious include path"
 msgstr "疑わしいインクルードパス"
@@ -17602,6 +17612,10 @@ msgstr "Uses節にユニットを追加"
 #: lazarusidestrconsts.lisuseunitinunit
 msgid "Use unit %s in unit %s"
 msgstr "ユニット %s をユニット %s 内で使用"
+
+#: lazarusidestrconsts.lisutf8applicationprogramdescriptor
+msgid "A graphical application for FPC 3.0 and higher using the cross-platform LCL library for its GUI and mapping FPC default String to UTF-8 encoding."
+msgstr ""
 
 #: lazarusidestrconsts.lisutf8withbom
 msgid "UTF-8 with BOM"

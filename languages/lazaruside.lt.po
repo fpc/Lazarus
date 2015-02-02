@@ -2792,6 +2792,10 @@ msgstr "Startui ir derinimui naudoti programą-ryšulį (tik dėl Darwin)"
 msgid "Use manifest file to enable themes"
 msgstr "Naudoti manifest failą temų įgalinimui (tik dėl Windows)"
 
+#: lazarusidestrconsts.dlgpoutf8application
+msgid "UTF-8 Application"
+msgstr ""
+
 #: lazarusidestrconsts.dlgpreferdoubleclickoversingleclick
 msgid "Prefer double-click over single-click"
 msgstr ""
@@ -7036,8 +7040,8 @@ msgstr "Žymeklio eilutė veikiamojoje rengyklėje"
 
 #: lazarusidestrconsts.liscustomopthint
 #, fuzzy
-#| msgid "These options are passed directly to the compiler. Macros are replaced, line breaks are replaced with single spaces."
-msgid "These options are passed to the compiler after comments are deleted and macros are replaced."
+#| msgid "These options are passed to the compiler after comments are deleted and macros are replaced."
+msgid "These options are passed to the compiler after macros are replaced."
 msgstr "Šios parinktys tiesiogiai perduodamos kompiliatoriui. Makrokomandos pakeičiamos, eilučių lūžiai pakeičiami viengubais tarpais."
 
 #: lazarusidestrconsts.liscustomoptions
@@ -15999,6 +16003,10 @@ msgstr ""
 msgid "Suggest default name of new file in lowercase"
 msgstr "Naujo failo pavadinimą siūlyti mažosiomis raidėmis"
 
+#: lazarusidestrconsts.lissupportutf8rtl
+msgid "Support UTF-8 RTL"
+msgstr ""
+
 #: lazarusidestrconsts.lissuspiciousincludepath
 msgid "Suspicious include path"
 msgstr "Įtartinas įterpiamųjų kelias"
@@ -17755,6 +17763,10 @@ msgstr "Modulį pridėti į naudojamų sąrašą"
 #: lazarusidestrconsts.lisuseunitinunit
 msgid "Use unit %s in unit %s"
 msgstr "Modulį „%s“ naudoti modulyje „%s“"
+
+#: lazarusidestrconsts.lisutf8applicationprogramdescriptor
+msgid "A graphical application for FPC 3.0 and higher using the cross-platform LCL library for its GUI and mapping FPC default String to UTF-8 encoding."
+msgstr ""
 
 #: lazarusidestrconsts.lisutf8withbom
 msgid "UTF-8 with BOM"

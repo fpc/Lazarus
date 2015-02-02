@@ -2902,6 +2902,10 @@ msgstr "Use el envoltorio de la aplicación para ejecución y depuración (sólo
 msgid "Use manifest file to enable themes"
 msgstr "Usar el archivo de manifiesto para activar temas (sólo Windows)"
 
+#: lazarusidestrconsts.dlgpoutf8application
+msgid "UTF-8 Application"
+msgstr ""
+
 #: lazarusidestrconsts.dlgpreferdoubleclickoversingleclick
 msgid "Prefer double-click over single-click"
 msgstr ""
@@ -7276,8 +7280,8 @@ msgstr "Línea del cursor en el editor actual"
 
 #: lazarusidestrconsts.liscustomopthint
 #, fuzzy
-#| msgid "These options are passed directly to the compiler. Macros are replaced, line breaks are replaced with single spaces."
-msgid "These options are passed to the compiler after comments are deleted and macros are replaced."
+#| msgid "These options are passed to the compiler after comments are deleted and macros are replaced."
+msgid "These options are passed to the compiler after macros are replaced."
 msgstr "Estas opciones se pasan directamente al compilador. Las macros son reemplazadas, los saltos de línea se sustituyen por espacios."
 
 #: lazarusidestrconsts.liscustomoptions
@@ -16671,6 +16675,10 @@ msgstr ""
 msgid "Suggest default name of new file in lowercase"
 msgstr "Sugerir nombre predeterminado del nuevo archivo en minúsculas"
 
+#: lazarusidestrconsts.lissupportutf8rtl
+msgid "Support UTF-8 RTL"
+msgstr ""
+
 #: lazarusidestrconsts.lissuspiciousincludepath
 msgid "Suspicious include path"
 msgstr "Ruta de inclusión sospechosa"
@@ -18432,6 +18440,10 @@ msgstr "Añadir unidad a la sección uses"
 #: lazarusidestrconsts.lisuseunitinunit
 msgid "Use unit %s in unit %s"
 msgstr "Usar unidad %s en unidad %s"
+
+#: lazarusidestrconsts.lisutf8applicationprogramdescriptor
+msgid "A graphical application for FPC 3.0 and higher using the cross-platform LCL library for its GUI and mapping FPC default String to UTF-8 encoding."
+msgstr ""
 
 #: lazarusidestrconsts.lisutf8withbom
 msgid "UTF-8 with BOM"

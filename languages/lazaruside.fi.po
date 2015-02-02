@@ -2738,6 +2738,10 @@ msgstr "Käytä \"Application Bundle\" ajoon ja virheiden jäljitykseen"
 msgid "Use manifest file to enable themes"
 msgstr "Käytä manifest-tiedostoa teemoja varten"
 
+#: lazarusidestrconsts.dlgpoutf8application
+msgid "UTF-8 Application"
+msgstr ""
+
 #: lazarusidestrconsts.dlgpreferdoubleclickoversingleclick
 msgid "Prefer double-click over single-click"
 msgstr "Käytä mieluummin kaksois- kuin yhtä klikkausta"
@@ -6827,7 +6831,9 @@ msgid "Cursor row in current editor"
 msgstr "Kursorin rivi nykyisessä editorissa"
 
 #: lazarusidestrconsts.liscustomopthint
-msgid "These options are passed to the compiler after comments are deleted and macros are replaced."
+#, fuzzy
+#| msgid "These options are passed to the compiler after comments are deleted and macros are replaced."
+msgid "These options are passed to the compiler after macros are replaced."
 msgstr "Nämä asetukset viedään kääntäjälle, kun kommentit on poistettu ja makrot korvattu."
 
 #: lazarusidestrconsts.liscustomoptions
@@ -15477,6 +15483,10 @@ msgstr "Onnistuneesti tuotiin kääntäjän valinnat \"%s\"."
 msgid "Suggest default name of new file in lowercase"
 msgstr "Ehdota uuden tiedoston nimeen pieniä kirjaimia"
 
+#: lazarusidestrconsts.lissupportutf8rtl
+msgid "Support UTF-8 RTL"
+msgstr ""
+
 #: lazarusidestrconsts.lissuspiciousincludepath
 msgid "Suspicious include path"
 msgstr "Epäilyttävä include polku"
@@ -17047,6 +17057,10 @@ msgstr "Lisää käännösyksikkö uses-lauseeseen"
 #: lazarusidestrconsts.lisuseunitinunit
 msgid "Use unit %s in unit %s"
 msgstr "Käytä käännösyksikköä %s käännösyksikössä %s"
+
+#: lazarusidestrconsts.lisutf8applicationprogramdescriptor
+msgid "A graphical application for FPC 3.0 and higher using the cross-platform LCL library for its GUI and mapping FPC default String to UTF-8 encoding."
+msgstr ""
 
 #: lazarusidestrconsts.lisutf8withbom
 msgid "UTF-8 with BOM"

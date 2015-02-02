@@ -2839,6 +2839,10 @@ msgstr "Gunakan Bundel Aplikasi untuk menjalankan dan debugging (hanya darwin)"
 msgid "Use manifest file to enable themes"
 msgstr "Gunakan file manifest untuk menghidupkan tema (hany windows)"
 
+#: lazarusidestrconsts.dlgpoutf8application
+msgid "UTF-8 Application"
+msgstr ""
+
 #: lazarusidestrconsts.dlgpreferdoubleclickoversingleclick
 msgid "Prefer double-click over single-click"
 msgstr ""
@@ -7143,7 +7147,7 @@ msgid "Cursor row in current editor"
 msgstr "Baris kursor dalam editor saat ini"
 
 #: lazarusidestrconsts.liscustomopthint
-msgid "These options are passed to the compiler after comments are deleted and macros are replaced."
+msgid "These options are passed to the compiler after macros are replaced."
 msgstr ""
 
 #: lazarusidestrconsts.liscustomoptions
@@ -16354,6 +16358,10 @@ msgstr ""
 msgid "Suggest default name of new file in lowercase"
 msgstr ""
 
+#: lazarusidestrconsts.lissupportutf8rtl
+msgid "Support UTF-8 RTL"
+msgstr ""
+
 #: lazarusidestrconsts.lissuspiciousincludepath
 msgid "Suspicious include path"
 msgstr ""
@@ -18039,6 +18047,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisuseunitinunit
 msgid "Use unit %s in unit %s"
+msgstr ""
+
+#: lazarusidestrconsts.lisutf8applicationprogramdescriptor
+msgid "A graphical application for FPC 3.0 and higher using the cross-platform LCL library for its GUI and mapping FPC default String to UTF-8 encoding."
 msgstr ""
 
 #: lazarusidestrconsts.lisutf8withbom

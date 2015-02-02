@@ -2757,6 +2757,10 @@ msgstr "Usa Application Bundle per esecuzione e debug (solo Darwin)"
 msgid "Use manifest file to enable themes"
 msgstr "Usa il file manifest per abilitare i temi (solo Windows)"
 
+#: lazarusidestrconsts.dlgpoutf8application
+msgid "UTF-8 Application"
+msgstr ""
+
 #: lazarusidestrconsts.dlgpreferdoubleclickoversingleclick
 msgid "Prefer double-click over single-click"
 msgstr "Preferire doppio click al click singolo"
@@ -6864,7 +6868,9 @@ msgid "Cursor row in current editor"
 msgstr "Riga cursore nell'editor corrente"
 
 #: lazarusidestrconsts.liscustomopthint
-msgid "These options are passed to the compiler after comments are deleted and macros are replaced."
+#, fuzzy
+#| msgid "These options are passed to the compiler after comments are deleted and macros are replaced."
+msgid "These options are passed to the compiler after macros are replaced."
 msgstr "Queste opzioni sono passate al compilatore dopo aver eliminato i commenti ed espanso le macro."
 
 #: lazarusidestrconsts.liscustomoptions
@@ -15606,6 +15612,10 @@ msgstr "Importate con successo le opzioni compilatore da \"%s\""
 msgid "Suggest default name of new file in lowercase"
 msgstr "Suggerire il nome predefinito del nuovo file in minuscolo"
 
+#: lazarusidestrconsts.lissupportutf8rtl
+msgid "Support UTF-8 RTL"
+msgstr ""
+
 #: lazarusidestrconsts.lissuspiciousincludepath
 msgid "Suspicious include path"
 msgstr "Percorso di include sospetto"
@@ -17178,6 +17188,10 @@ msgstr "Aggiungi la unit alla sezione Uses"
 #: lazarusidestrconsts.lisuseunitinunit
 msgid "Use unit %s in unit %s"
 msgstr "Usa la unit %s nella unit %s"
+
+#: lazarusidestrconsts.lisutf8applicationprogramdescriptor
+msgid "A graphical application for FPC 3.0 and higher using the cross-platform LCL library for its GUI and mapping FPC default String to UTF-8 encoding."
+msgstr ""
 
 #: lazarusidestrconsts.lisutf8withbom
 msgid "UTF-8 with BOM"

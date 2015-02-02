@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2015-01-21 00:21+0300\n"
+"PO-Revision-Date: 2015-02-03 01:47+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -2745,6 +2745,10 @@ msgstr "Использовать Application Bundle для запуска и о�
 #: lazarusidestrconsts.dlgpousemanifest
 msgid "Use manifest file to enable themes"
 msgstr "Использовать файл manifest для включения поддержки тем"
+
+#: lazarusidestrconsts.dlgpoutf8application
+msgid "UTF-8 Application"
+msgstr "Приложение UTF-8"
 
 #: lazarusidestrconsts.dlgpreferdoubleclickoversingleclick
 msgid "Prefer double-click over single-click"
@@ -6853,8 +6857,8 @@ msgid "Cursor row in current editor"
 msgstr "Номер строки под курсором в текущем редакторе"
 
 #: lazarusidestrconsts.liscustomopthint
-msgid "These options are passed to the compiler after comments are deleted and macros are replaced."
-msgstr "Эти параметры передаются компилятору после удаления комментариев и замены макросов."
+msgid "These options are passed to the compiler after macros are replaced."
+msgstr "Эти параметры передаются компилятору после замены макросов."
 
 #: lazarusidestrconsts.liscustomoptions
 msgid "custom options"
@@ -15591,6 +15595,10 @@ msgstr "Импорт параметров компилятора из \"%s\" у�
 msgid "Suggest default name of new file in lowercase"
 msgstr "Предлагать имя нового файла по умолчанию в нижнем регистре"
 
+#: lazarusidestrconsts.lissupportutf8rtl
+msgid "Support UTF-8 RTL"
+msgstr "Поддержка RTL с UTF-8"
+
 #: lazarusidestrconsts.lissuspiciousincludepath
 msgid "Suspicious include path"
 msgstr "Подозрительный путь поиска включаемых файлов"
@@ -17163,6 +17171,10 @@ msgstr "Добавить модуль в выражение Uses"
 #: lazarusidestrconsts.lisuseunitinunit
 msgid "Use unit %s in unit %s"
 msgstr "Использовать модуль %s в модуле %s"
+
+#: lazarusidestrconsts.lisutf8applicationprogramdescriptor
+msgid "A graphical application for FPC 3.0 and higher using the cross-platform LCL library for its GUI and mapping FPC default String to UTF-8 encoding."
+msgstr "Графическое приложение на FPC 3.0 и выше, использующее кроссплатформенную библиотеку LCL для своего графического интерфейса пользователя и задающее для строк UTF-8 в качестве кодировки по умолчанию."
 
 #: lazarusidestrconsts.lisutf8withbom
 msgid "UTF-8 with BOM"

@@ -914,7 +914,6 @@ msgid "Linking"
 msgstr "Linken"
 
 #: lazarusidestrconsts.dlgcoloadsavehint
-#| msgid "Load/Save"
 msgctxt "lazarusidestrconsts.dlgcoloadsavehint"
 msgid "Compiler options can be saved to an XML file."
 msgstr "Laden/Speichern"
@@ -2749,6 +2748,10 @@ msgstr "Anwendungs-Bundle für Start und Debug verwenden"
 msgid "Use manifest file to enable themes"
 msgstr "Themen mit Manifest-Datei einschalten"
 
+#: lazarusidestrconsts.dlgpoutf8application
+msgid "UTF-8 Application"
+msgstr ""
+
 #: lazarusidestrconsts.dlgpreferdoubleclickoversingleclick
 msgid "Prefer double-click over single-click"
 msgstr "Doppelklick gegenüber Einfachklick bevorzugen"
@@ -3376,12 +3379,10 @@ msgid "Mirror Vertical"
 msgstr "Senkrecht spiegeln"
 
 #: lazarusidestrconsts.fdmorderbackone
-#| msgid "Back one"
 msgid "Back One"
 msgstr "Eine Stufe zurück"
 
 #: lazarusidestrconsts.fdmorderforwardone
-#| msgid "Forward one"
 msgid "Forward One"
 msgstr "Einen weiter"
 
@@ -4176,7 +4177,6 @@ msgid "Ask before saving project's session"
 msgstr "Vor dem Speichern der Projekt-Sitzungsinformationen nachfragen"
 
 #: lazarusidestrconsts.lisaskforcomponentnameafterputtingitonform
-#| msgid "Ask for component name after putting it on a designer form"
 msgid "Ask for component name after putting it on a designer form."
 msgstr "Nach dem Ablegen auf einem Designer-Fenster nach dem Komponentennamen fragen"
 
@@ -4506,7 +4506,6 @@ msgid "Cannot compile project"
 msgstr "Kann Projekt nicht kompilieren"
 
 #: lazarusidestrconsts.liscannotcopytoplevelcomponent
-#| msgid "Can not copy top level component."
 msgid "Cannot copy top level component."
 msgstr "Kann die obere Komponente nicht kopieren"
 
@@ -5321,7 +5320,6 @@ msgid "Clone"
 msgstr ""
 
 #: lazarusidestrconsts.lisclose
-#| msgid "&Close"
 msgctxt "lazarusidestrconsts.lisclose"
 msgid "Close"
 msgstr "S&chließen"
@@ -5540,7 +5538,6 @@ msgid "Ignore next unnamed constants"
 msgstr "Nächste unbenannte Konstanten übergehen"
 
 #: lazarusidestrconsts.liscodetempladd
-#| msgid "Add"
 msgctxt "lazarusidestrconsts.liscodetempladd"
 msgid "Add template"
 msgstr "Vorlage hinzufügen"
@@ -6865,7 +6862,9 @@ msgid "Cursor row in current editor"
 msgstr "Cursor-Zeile im aktuellem Editor"
 
 #: lazarusidestrconsts.liscustomopthint
-msgid "These options are passed to the compiler after comments are deleted and macros are replaced."
+#, fuzzy
+#| msgid "These options are passed to the compiler after comments are deleted and macros are replaced."
+msgid "These options are passed to the compiler after macros are replaced."
 msgstr "Diese Einstellungen werden direkt an den Compiler geleitet. Makros werden ersetzt und Zeilenumbrüche durch einzelne Leerzeichen ersetzt."
 
 #: lazarusidestrconsts.liscustomoptions
@@ -8069,7 +8068,6 @@ msgid "Error in the custom compiler options (Other):"
 msgstr "Fehler in den benutzerdefinierten Compilereinstellungen (Andere):"
 
 #: lazarusidestrconsts.liserrorinthecustomlinkeroptionslinkingpassoptionstol
-#| msgid "Error in the custom linker options (Linking / Pass options to linker):"
 msgid "Error in the custom linker options (Compilation and Linking / Pass options to linker):"
 msgstr "Fehler in den benutzerdefinierten Linkereinstellungen (Linken / Einstellungen an Linker übergeben):"
 
@@ -9322,7 +9320,6 @@ msgid "Include all subdirectories"
 msgstr "Inklusive aller Unterverzeichnisse"
 
 #: lazarusidestrconsts.lisincludefilter
-#| msgid "Include Filter"
 msgid "Include filter"
 msgstr "Maske"
 
@@ -11500,7 +11497,6 @@ msgid "S&ource"
 msgstr "Quelltext"
 
 #: lazarusidestrconsts.lismenustepinto
-#| msgid "Step in&to"
 msgid "Step In&to"
 msgstr "Einen Schritt hinein"
 
@@ -11519,12 +11515,10 @@ msgid "Step Into Instruction"
 msgstr "Einzelschritt in die Anweisung hinein"
 
 #: lazarusidestrconsts.lismenustepout
-#| msgid "Step o&ut"
 msgid "Step O&ut"
 msgstr "Hinausgehen"
 
 #: lazarusidestrconsts.lismenustepover
-#| msgid "&Step over"
 msgid "&Step Over"
 msgstr "Einen Schritt weiter"
 
@@ -14119,7 +14113,6 @@ msgid "Dependency already exists"
 msgstr "Abhängigkeit ist bereits vorhanden"
 
 #: lazarusidestrconsts.lisprojaddeditorfile
-#| msgid "Add editor files"
 msgid "Add Editor Files"
 msgstr "Dateien hinzufügen"
 
@@ -14493,7 +14486,6 @@ msgid "&Open Project"
 msgstr "Projekt öffnen"
 
 #: lazarusidestrconsts.lispwopenrecentproject
-#| msgid "Open Recent Project"
 msgctxt "lazarusidestrconsts.lispwopenrecentproject"
 msgid "Open &Recent Project"
 msgstr "Wieder öffnen"
@@ -14928,7 +14920,6 @@ msgid "Unable to show abstract methods of the current class, because"
 msgstr "Kann die abstrakten Methoden der aktuellen Klasse nicht anzeigen, weil"
 
 #: lazarusidestrconsts.lissave
-#| msgid "Save ..."
 msgctxt "lazarusidestrconsts.lissave"
 msgid "Save"
 msgstr "Speichern ..."
@@ -14943,7 +14934,6 @@ msgid "Save All Checked"
 msgstr ""
 
 #: lazarusidestrconsts.lissaveallmodified
-#| msgid "save all modified files"
 msgid "Save all modified files"
 msgstr "Alles speichern"
 
@@ -15601,6 +15591,10 @@ msgstr ""
 #: lazarusidestrconsts.lissuggestdefaultnameofnewfileinlowercase
 msgid "Suggest default name of new file in lowercase"
 msgstr "Neuen Dateinamen in Kleinbuchstaben vorschlagen"
+
+#: lazarusidestrconsts.lissupportutf8rtl
+msgid "Support UTF-8 RTL"
+msgstr ""
 
 #: lazarusidestrconsts.lissuspiciousincludepath
 msgid "Suspicious include path"
@@ -17175,6 +17169,10 @@ msgstr "Unit zum uses Abschnitt hinzufügen"
 msgid "Use unit %s in unit %s"
 msgstr "Verwende Unit %s in Unit %s"
 
+#: lazarusidestrconsts.lisutf8applicationprogramdescriptor
+msgid "A graphical application for FPC 3.0 and higher using the cross-platform LCL library for its GUI and mapping FPC default String to UTF-8 encoding."
+msgstr ""
+
 #: lazarusidestrconsts.lisutf8withbom
 msgid "UTF-8 with BOM"
 msgstr "UTF-8 mit BOM"
@@ -17557,7 +17555,6 @@ msgid "Increased every time the project is compiled."
 msgstr "Wird bei jeder Kompilierung des Projekts erhöht"
 
 #: lazarusidestrconsts.rsbuild
-#| msgid "Build:"
 msgid "&Build:"
 msgstr "Neu kompilieren:"
 
@@ -19261,7 +19258,6 @@ msgid "Encoding"
 msgstr "Zeichenkodierung"
 
 #: lazarusidestrconsts.uemevaluatemodify
-#| msgid "&Evaluate/Modify..."
 msgid "&Evaluate/Modify ..."
 msgstr "Üb&erprüfen/Ändern"
 
@@ -19283,7 +19279,6 @@ msgid "Highlighter"
 msgstr "Highlighter"
 
 #: lazarusidestrconsts.ueminspect
-#| msgid "&Inspect..."
 msgctxt "lazarusidestrconsts.ueminspect"
 msgid "&Inspect ..."
 msgstr "Prüfen..."
