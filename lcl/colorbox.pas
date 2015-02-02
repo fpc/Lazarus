@@ -839,7 +839,9 @@ begin
     begin
       if not (cbStandardColors in Style) and (Index < StandardColorsCount) then
         Exit;
-      if not (cbExtendedColors in Style) and (Index < StandardColorsCount + ExtendedColorCount) then
+      if not (cbExtendedColors in Style) and
+          (Index < StandardColorsCount + ExtendedColorCount) and
+          (Index >= StandardColorsCount) then
         Exit;
     end;
 
@@ -920,7 +922,6 @@ begin
   // we need to wait while we finish loading since we depend on style and OnGetColors event
   if (csLoading in ComponentState) then
     Exit;
-
   OldSelected := FSelected;
   with Items do
   begin
