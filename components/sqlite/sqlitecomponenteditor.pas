@@ -13,7 +13,7 @@ interface
 uses
   Classes, SysUtils, FileUtil, LResources, Forms, Controls, Dialogs, StdCtrls,
   Buttons, customsqliteds, ComponentEditors, LazarusPackageIntf, LazIdeIntf,
-  fieldseditor;
+  fieldseditor, sqlitecompstrings;
 
 type
 
@@ -44,6 +44,7 @@ type
     lblFilePath: TLabel;
     listFields: TListBox;
     DataSet: TCustomSqliteDataSet;
+    procedure FormCreate(Sender: TObject);
     procedure LoadCurrentFields;
     procedure FillComboValues;
     procedure SetComboValue(AObject: TObject);
@@ -98,7 +99,7 @@ begin
   case Index - FVerbOffset of
     0:
     begin
-      Result := 'Create/Edit Table'
+      Result := sCreateEditTable
     end;
     else
      Result := inherited GetVerb(Index);
@@ -119,12 +120,12 @@ begin
   ADataSet:=TCustomSqliteDataSet(GetComponent);
   if ADataSet.Filename = '' then
   begin
-    ShowMessage('FileName not set: it''s not possible to create/edit a table');
+    ShowMessage(sFileNameNotSetItSNotPossibleToCreateEditATable);
     exit;
   end;  
   if ADataSet.TableName = '' then
   begin
-    ShowMessage('TableName not set: it''s not possible to create/edit a table');
+    ShowMessage(sTableNameNotSetItSNotPossibleToCreateEditATable);
     exit;
   end;
     
@@ -181,6 +182,16 @@ begin
   end;
 end;
 
+procedure TSqliteTableEditorForm.FormCreate(Sender: TObject);
+begin
+  Label1.Caption := sFieldName;
+  Label2.Caption := sFieldType;
+  butCreate.Caption := sCreateTable;
+  butClose.Caption := sClose;
+  butAdd.Caption := sAdd;
+  butDelete.Caption := sDelete;
+end;
+
 procedure TSqliteTableEditorForm.FillComboValues;
 begin
   with comboFieldType.Items do
@@ -210,7 +221,7 @@ begin
   if AIndex <> -1 then
     comboFieldType.ItemIndex:=AIndex
   else
-    raise Exception.Create('TableEditor - FieldType not recognized');
+    raise Exception.Create(sTableEditorFieldTypeNotRecognized);
 end;
 
 procedure TSqliteTableEditorForm.SqliteTableEditorFormShow(Sender: TObject);
@@ -225,8 +236,8 @@ begin
     editFieldName.Enabled:=False;
     comboFieldType.Enabled:=False;
   end;
-  lblFilePath.Caption:='File Path: '+ExpandFileNameUTF8(DataSet.FileName);
-  label3.caption:='Table Name: '+ DataSet.TableName;
+  lblFilePath.Caption := Format(sFilePath, [ExpandFileNameUTF8(DataSet.FileName)]);
+  label3.caption := Format(sTableName, [DataSet.TableName]);
 end;
 
 procedure TSqliteTableEditorForm.butCancelClick(Sender: TObject);
@@ -265,19 +276,19 @@ var
 begin
   if listFields.Items.Count = 0 then
   begin;
-    ShowMessage('No fields added - Table will not be created');
+    ShowMessage(sNoFieldsAddedTableWillNotBeCreated);
     Exit;
   end;
   
   if StringListHasDuplicates(listFields.Items) then
   begin
-    ShowMessage('It''s not allowed fields with the same name');
+    ShowMessage(sItSNotAllowedFieldsWithTheSameName);
     Exit;
   end;
   
   if Dataset.TableExists then
   begin
-    if MessageDlg('A Table named "'+Dataset.TableName+'" already exists. Are you sure you want to replace this table?'#13#10'All data stored will be lost',
+    if MessageDlg(Format(sATableNamedAlreadyExistsAreYouSureYouWantToReplace, [Dataset.TableName, LineEnding]),
        mtWarning,[mbYes,MbNo],0) = mrNo then
       exit
     else
@@ -293,9 +304,9 @@ begin
   DataSet.CreateTable;
 
   if Dataset.TableExists then
-    ShowMessage('Table created successfully')
+    ShowMessage(sTableCreatedSuccessfully)
   else
-    ShowMessage('It was not possible to create the table');
+    ShowMessage(sItWasNotPossibleToCreateTheTable);
 end;
 
 procedure TSqliteTableEditorForm.comboFieldTypeChange(Sender: TObject);

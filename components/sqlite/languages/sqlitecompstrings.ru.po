@@ -1,0 +1,80 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: sqlitecompstrings.sadd
+msgid "Add"
+msgstr "Добавить"
+
+#: sqlitecompstrings.satablenamedalreadyexistsareyousureyouwanttoreplace
+msgid "A Table named \"%s\" already exists. Are you sure you want to replace this table?%sAll data stored will be lost."
+msgstr "Таблица с именем \"%s\" уже имеется. Вы уверены, что хотите заменить её?%sВсе данные будут утеряны."
+
+#: sqlitecompstrings.sclose
+msgid "Close"
+msgstr "Закрыть"
+
+#: sqlitecompstrings.screateedittable
+msgid "Create/Edit Table"
+msgstr "Создание/редактирование таблицы"
+
+#: sqlitecompstrings.screatetable
+msgid "Create Table"
+msgstr "Создать таблицу"
+
+#: sqlitecompstrings.sdelete
+msgid "Delete"
+msgstr "Удалить"
+
+#: sqlitecompstrings.sfieldname
+msgid "Field Name"
+msgstr "Имя поля"
+
+#: sqlitecompstrings.sfieldtype
+msgid "Field Type"
+msgstr "Тип поля"
+
+#: sqlitecompstrings.sfilenamenotsetitsnotpossibletocreateeditatable
+msgid "File name not set: it's not possible to create/edit a table."
+msgstr "Имя файла не задано: невозможно создать/редактировать таблицу."
+
+#: sqlitecompstrings.sfilepath
+msgid "File Path: %s"
+msgstr "Путь к файлу: %s"
+
+#: sqlitecompstrings.sitsnotallowedfieldswiththesamename
+msgid "Fields with identical names are not allowed."
+msgstr "Поля с одинаковыми именами не разрешаются."
+
+#: sqlitecompstrings.sitwasnotpossibletocreatethetable
+msgid "It was not possible to create the table."
+msgstr "Не удалось создать таблицу."
+
+#: sqlitecompstrings.snofieldsaddedtablewillnotbecreated
+#| msgid "No fields added - Table will not be created"
+msgid "No fields added. Table will not be created."
+msgstr "Не добавлены поля. Таблица не будет создана."
+
+#: sqlitecompstrings.stablecreatedsuccessfully
+msgid "Table created successfully."
+msgstr "Таблица успешно создана."
+
+#: sqlitecompstrings.stableeditorfieldtypenotrecognized
+msgid "Field type not recognized."
+msgstr "Тип поля не опознан."
+
+#: sqlitecompstrings.stablename
+msgid "Table Name: %s"
+msgstr "Имя таблицы: %s"
+
+#: sqlitecompstrings.stablenamenotsetitsnotpossibletocreateeditatable
+msgid "Table name not set: it's not possible to create/edit a table."
+msgstr "Имя таблицы не задано: невозможно создать/редактировать таблицу."
+
