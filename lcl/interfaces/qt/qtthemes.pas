@@ -286,6 +286,17 @@ begin
               opt := QStyleOptionComboBox_create();
               if Element.Features = Ord(QtRightToLeft) then
                 QStyleOption_setDirection(opt, QtRightToLeft);
+              if Details.State in [CBXS_DISABLED] then
+              begin
+                APalette := QPalette_create();
+                try
+                  QStyleOption_palette(opt, APalette);
+                  QPalette_setCurrentColorGroup(APalette, QPaletteDisabled);
+                  QStyleOption_setPalette(opt, APalette);
+                finally
+                  QPalette_destroy(APalette);
+                end;
+              end;
             end;
             QStyleCC_SpinBox:
             begin
