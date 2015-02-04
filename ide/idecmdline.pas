@@ -80,6 +80,8 @@ function ParamsAndCfgCount: Integer;
 function ParamsAndCfgStr(Idx: Integer): String;
 procedure ResetParamsAndCfg;
 
+var
+  ConsoleVerbosity: integer = 0; // 0=normal, -1=quiet, 1=verbose, 2=very verbose
 
 implementation
 

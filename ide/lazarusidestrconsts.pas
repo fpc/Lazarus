@@ -121,6 +121,8 @@ resourcestring
   lisRunButtonHint = 'Run';
   lisPause = 'Pause';
   lisStop = 'Stop';
+  lisBuilding = 'Building';
+  lisTheIDEIsStillBuilding = 'The IDE is still building.';
   lisLess = 'Less';
   lisMore = 'More';
   lisMoreSub = 'More >>';
@@ -3139,6 +3141,7 @@ resourcestring
   lisKMCleanUpAndBuild = 'Clean up and build';
   lisKMBuildManyModes = 'Build many modes';
   lisKMAbortBuilding = 'Abort building';
+  lisContinueBuilding = 'Continue building';
   lisKMRunProgram = 'Run program';
   lisKMPauseProgram = 'Pause program';
   lisKMViewProjectOptions = 'View project options';
@@ -5129,6 +5132,10 @@ resourcestring
     +'list of installed packages (combine with --build-ide to rebuild IDE).';
   lisBuildIDEWithPackages = 'build IDE with packages';
   lisShowVersionAndExit = 'show version and exit';
+  lisBeLessVerboseCanBeGivenMultipleTimes = 'be less verbose, can be given '
+    +'multiple times';
+  lisBeMoreVerboseCanBeGivenMultipleTimes = 'be more verbose, can be given '
+    +'multiple times';
   lisOverrideTheProjectOperatingSystemEGWin32LinuxDefau = '%soverride the '
     +'project operating system. e.g. win32 linux. default: %s';
   lisOverrideTheProjectWidgetsetEGGtkGtk2QtWin32CarbonD = '%soverride the '

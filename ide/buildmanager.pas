@@ -45,9 +45,9 @@ uses
   ProjectIntf, MacroIntf, IDEDialogs, IDEExternToolIntf,
   CompOptsIntf, LazIDEIntf, MacroDefIntf, IDEMsgIntf,
   // IDE
-  LazarusIDEStrConsts, DialogProcs, IDEProcs, CodeToolsOptions, InputHistory,
-  EditDefineTree, ProjectResources, MiscOptions, LazConf, EnvironmentOpts,
-  TransferMacros, CompilerOptions,
+  IDECmdLine, LazarusIDEStrConsts, DialogProcs, IDEProcs, CodeToolsOptions,
+  InputHistory, EditDefineTree, ProjectResources, MiscOptions, LazConf,
+  EnvironmentOpts, TransferMacros, CompilerOptions,
   ExtTools, etMakeMsgParser, etFPCMsgParser,
   Compiler, FPCSrcScan, PackageDefs, PackageSystem, Project, ProjectIcon,
   ModeMatrixOpts, BaseBuildManager, ApplicationBundle;

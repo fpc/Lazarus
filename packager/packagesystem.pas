@@ -58,9 +58,9 @@ uses
   // package registration
   LazarusPackageIntf,
   // IDE
-  LazarusIDEStrConsts, EnvironmentOpts, IDEProcs, LazConf, TransferMacros,
-  DialogProcs, IDETranslations, CompilerOptions, PackageLinks, PackageDefs,
-  ComponentReg, ProjectIntf;
+  LazarusIDEStrConsts, IDECmdLine, EnvironmentOpts, IDEProcs, LazConf,
+  TransferMacros, DialogProcs, IDETranslations, CompilerOptions, PackageLinks,
+  PackageDefs, ComponentReg, ProjectIntf;
   
 const
   MakefileCompileVersion = 2;

@@ -781,7 +781,7 @@ type
     function DoBuildProject(const AReason: TCompileReason;
                             Flags: TProjectBuildFlags): TModalResult; override;
     function UpdateProjectPOFile(AProject: TProject): TModalResult;
-    function DoAbortBuild: TModalResult;
+    function DoAbortBuild(Interactive: boolean): TModalResult;
     procedure DoCompile;
     procedure DoQuickCompile;
     function DoInitProjectRun: TModalResult; override;
@@ -1068,6 +1068,8 @@ begin
     AddHelp(['--help or -?             ', listhisHelpMessage]);
     AddHelp(['']);
     AddHelp(['-v or --version          ', lisShowVersionAndExit]);
+    AddHelp(['--quiet                  ', lisBeLessVerboseCanBeGivenMultipleTimes]);
+    AddHelp(['--verbose                ', lisBeMoreVerboseCanBeGivenMultipleTimes]);
     AddHelp(['']);
     AddHelp([ShowSetupDialogOptLong]);
     AddHelp([BreakString(space+lisShowSetupDialogForMostImportantSettings, 75, 22)]);
@@ -1973,9 +1975,11 @@ begin
   CanClose := False;
   SourceFileMgr.CheckingFilesOnDisk := True;
   try
+    if (ToolStatus = itExiting) then exit;
+
     // stop debugging/compiling/...
-    if (ToolStatus = itExiting)
-    or not DoResetToolStatus([rfInteractive, rfCloseOnDone]) then exit;
+    if DoAbortBuild(true)<>mrOk then exit;
+    if not DoResetToolStatus([rfInteractive, rfCloseOnDone]) then exit;
 
     // check foreign windows
     if not CloseQueryIDEWindows then exit;
@@ -3288,7 +3292,7 @@ begin
   ecBuild:                    DoBuildProject(crBuild, [pbfCleanCompile]);
   ecCleanUpAndBuild:          mnuCleanUpAndBuildProjectClicked(nil);
   ecQuickCompile:             DoQuickCompile;
-  ecAbortBuild:               DoAbortBuild;
+  ecAbortBuild:               DoAbortBuild(false);
   ecBuildFile:                DoBuildFile(false);
   ecRunFile:                  DoRunFile;
   ecJumpToPrevError:          DoJumpToNextError(false);
@@ -4319,7 +4323,7 @@ end;
 
 procedure TMainIDE.mnuAbortBuildProjectClicked(Sender: TObject);
 Begin
-  DoAbortBuild;
+  DoAbortBuild(false);
 end;
 
 procedure TMainIDE.mnuRunProjectClicked(Sender: TObject);
@@ -4673,7 +4677,8 @@ begin
   if (Index<0)
   or (Index>=ExternalUserTools.Count)
   then exit;
-  IDEMessagesWindow.Clear;
+  if ExternalTools.RunningCount=0 then
+    IDEMessagesWindow.Clear;
   DoRunExternalTool(Index,false);
 end;
 
@@ -5595,9 +5600,17 @@ var
 begin
   Result:=mrOk;
   CurResult:=DoCallModalFunctionHandler(lihtSavingAll);
-  if CurResult=mrAbort then exit(mrAbort);
+  if CurResult=mrAbort then begin
+    if ConsoleVerbosity>0 then
+      debugln(['TMainIDE.DoSaveAll DoCallModalFunctionHandler(lihtSavingAll) failed']);
+    exit(mrAbort);
+  end;
   if CurResult<>mrOk then Result:=mrCancel;
   CurResult:=DoSaveProject(Flags);
+  if CurResult<>mrOK then begin
+    if ConsoleVerbosity>0 then
+      debugln(['TMainIDE.DoSaveAll DoSaveProject failed']);
+  end;
   SaveEnvironment(true);
   SaveIncludeLinks;
   PkgBoss.SaveSettings;
@@ -5605,8 +5618,14 @@ begin
   if CurResult=mrAbort then exit(mrAbort);
   if CurResult<>mrOk then Result:=mrCancel;
   CurResult:=DoCallModalFunctionHandler(lihtSavedAll);
-  if CurResult=mrAbort then exit(mrAbort);
-  if CurResult<>mrOk then Result:=mrCancel;
+  if CurResult<>mrOK then begin
+    if ConsoleVerbosity>0 then
+      debugln(['TMainIDE.DoSaveAll DoCallModalFunctionHandler(lihtSavedAll) failed']);
+  end;
+  if CurResult=mrAbort then
+    Result:=mrAbort
+  else if CurResult<>mrOk then
+    Result:=mrCancel;
   UpdateSaveMenuItemsAndButtons(true);
 end;
 
@@ -6363,10 +6382,9 @@ begin
   if Project1=nil then exit(mrOk);
 
   Result:=mrCancel;
-  if not (ToolStatus in [itNone,itDebugger]) then begin
-    {$IFDEF VerboseSaveForBuild}
-    DebugLn('TMainIDE.DoSaveForBuild ToolStatus disallows it');
-    {$ENDIF}
+  if not (ToolStatus in [itNone,itDebugger,itBuilder]) then begin
+    if ConsoleVerbosity>0 then
+      DebugLn('TMainIDE.DoSaveForBuild ToolStatus forbids it: ',dbgs(ToolStatus));
     Result:=mrAbort;
     exit;
   end;
@@ -6376,10 +6394,6 @@ begin
   end;
 
   // save all files
-  {$IFDEF VerboseSaveForBuild}
-  DebugLn('TMainIDE.DoSaveForBuild Project1.IsVirtual=',dbgs(Project1.IsVirtual));
-  {$ENDIF}
-
   if not Project1.IsVirtual then
     Result:=DoSaveAll([sfCheckAmbiguousFiles])
   else
@@ -6387,13 +6401,15 @@ begin
   Project1.ProjResources.DoBeforeBuild(AReason, Project1.IsVirtual);
   Project1.UpdateExecutableType;
   if Result<>mrOk then begin
-    {$IFDEF VerboseSaveForBuild}
-    DebugLn('TMainIDE.DoSaveForBuild project saving failed');
-    {$ENDIF}
+    if ConsoleVerbosity>0 then
+      DebugLn('TMainIDE.DoSaveForBuild project saving failed');
     exit;
   end;
 
   Result:=PkgBoss.DoSaveAllPackages([]);
+  if Result<>mrOK then
+    if ConsoleVerbosity>0 then
+      debugln(['TMainIDE.DoSaveForBuild PkgBoss.DoSaveAllPackages failed']);
 end;
 
 function TMainIDE.DoSaveProjectToTestDirectory(Flags: TSaveFlags): TModalResult;
@@ -6451,6 +6467,7 @@ end;
 function TMainIDE.QuitIDE: boolean;
 begin
   Result:=true;
+
   if Project1=nil then
     EnvironmentOptions.LastSavedProjectFile:=RestoreProjectClosed;
   MainIDEBar.OnCloseQuery(Self, Result);
@@ -6511,6 +6528,11 @@ var
   IsComplete: Boolean;
   StartTime: TDateTime;
 begin
+  if DoAbortBuild(true)<>mrOK then begin
+    debugln(['TMainIDE.DoBuildProject DoAbortBuild failed']);
+    exit(mrCancel);
+  end;
+
   Result:=SourceFileMgr.PrepareForCompileWithMsg;
   if Result<>mrOk then begin
     debugln(['TMainIDE.DoBuildProject PrepareForCompile failed']);
@@ -6795,9 +6817,23 @@ begin
   Result:=mrOk;
 end;
 
-function TMainIDE.DoAbortBuild: TModalResult;
+function TMainIDE.DoAbortBuild(Interactive: boolean): TModalResult;
 begin
   Result:=mrOk;
+  if ExternalTools.RunningCount=0 then exit;
+  // IDE code is currently running a build process
+  // we cannot continue, while some IDE code is waiting for the processes
+  // => exit this event (no matter if the processes are stopped or not)
+  Result:=mrCancel;
+
+  if Interactive then
+  begin
+    if IDEQuestionDialog(lisBuilding, lisTheIDEIsStillBuilding,
+      mtConfirmation, [mrAbort, lisKMAbortBuilding, mrNo, lisContinueBuilding])
+      <> mrAbort
+    then
+      exit;
+  end;
   AbortBuild;
 end;
 
@@ -7143,6 +7179,7 @@ var
   CompiledUnitExt: String;
   FPCVersion, FPCRelease, FPCPatch: integer;
   PkgCompileFlags: TPkgCompileFlags;
+  OldToolStatus: TIDEToolStatus;
 begin
   if ToolStatus<>itNone then begin
     IDEMessageDialog(lisNotNow,lisYouCanNotBuildLazarusWhileDebuggingOrCompiling,
@@ -7150,6 +7187,8 @@ begin
     Result:=mrCancel;
     exit;
   end;
+
+  if DoAbortBuild(true)<>mrOK then exit;
 
   Result:=DoSaveAll([sfDoNotSaveVirtualFiles]);
   if Result<>mrOk then begin
@@ -7159,8 +7198,11 @@ begin
 
   if fBuilder=Nil then
     fBuilder:=TLazarusBuilder.Create;
-  IDEMessagesWindow.Clear;
+  if ExternalTools.RunningCount=0 then
+    IDEMessagesWindow.Clear;
   fBuilder.ProfileChanged:=false;
+  OldToolStatus:=ToolStatus;
+  ToolStatus:=itBuilder;
   with MiscellaneousOptions do
   try
     MainBuildBoss.SetBuildTargetIDE;
@@ -7182,9 +7224,9 @@ begin
     end;
 
     // compile auto install static packages
-    Result:=PkgBoss.DoCompileAutoInstallPackages(PkgCompileFlags,false);
+    Result:=PkgBoss.DoCompileAutoInstallPackages(PkgCompileFlags+[pcfDoNotSaveEditorFiles],false);
     if Result<>mrOk then begin
-      DebugLn('TMainIDE.DoBuildLazarus: Compile AutoInstall Packages failed.');
+      DebugLn('TMainIDE.DoBuildLazarusSub: Compile AutoInstall Packages failed.');
       exit;
     end;
 
@@ -7234,6 +7276,7 @@ begin
   finally
     MainBuildBoss.SetBuildTargetProject1(true);
     DoCheckFilesOnDisk;
+    ToolStatus:=OldToolStatus;
   end;
 end;
 
@@ -7322,7 +7365,8 @@ begin
   if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]) then exit;
   Result:=DoSaveProject([]);
   if Result<>mrOk then exit;
-  IDEMessagesWindow.Clear;
+  if ExternalTools.RunningCount=0 then
+    IDEMessagesWindow.Clear;
   DirectiveList:=TStringList.Create;
   OldToolStatus:=ToolStatus;
   ToolStatus:=itBuilder;
@@ -7691,7 +7735,7 @@ begin
   if MainBuildBoss.CompilerOnDiskChanged then
     MainBuildBoss.RescanCompilerDefines(false,false,false,false);
 
-  if IDEMessagesWindow<>nil then
+  if (IDEMessagesWindow<>nil) and (ExternalTools.RunningCount=0) then
     IDEMessagesWindow.Clear;
 end;
 

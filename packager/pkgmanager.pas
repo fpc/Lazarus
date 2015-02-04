@@ -57,8 +57,8 @@ uses
   IDEExternToolIntf,
   PropEdits, MacroIntf, LazIDEIntf, IDEMsgIntf,
   // IDE
-  LazarusIDEStrConsts, IDEProcs, ObjectLists, DialogProcs, IDECommands,
-  IDEOptionDefs, EnvironmentOpts, MiscOptions, InputHistory,
+  IDECmdLine, LazarusIDEStrConsts, IDEProcs, ObjectLists, DialogProcs,
+  IDECommands, IDEOptionDefs, EnvironmentOpts, MiscOptions, InputHistory,
   Project, ComponentReg, OldCustomCompDlg, PackageEditor, AddToPackageDlg,
   PackageDefs, PackageLinks, PackageSystem, OpenInstalledPkgDlg,
   PkgGraphExplorer, BrokenDependenciesDlg, CompilerOptions,
@@ -5866,13 +5866,21 @@ begin
     // check consistency
     Result:=CheckPackageGraphForCompilation(nil,Dependencies,
                             EnvironmentOptions.GetParsedLazarusDirectory,false);
-    if Result<>mrOk then exit;
+    if Result<>mrOk then begin
+      if ConsoleVerbosity>0 then
+        debugln(['TPkgManager.DoCompileAutoInstallPackages CheckPackageGraphForCompilation failed']);
+      exit;
+    end;
     //DebugLn(['TPkgManager.DoCompileAutoInstallPackages LCLUnitPath=',PackageGraph.LCLPackage.CompilerOptions.GetUnitPath(true)]);
 
     // save all open files
     if not (pcfDoNotSaveEditorFiles in Flags) then begin
       Result:=MainIDE.DoSaveForBuild(crCompile);
-      if Result<>mrOk then exit;
+      if Result<>mrOk then begin
+        if ConsoleVerbosity>0 then
+          debugln(['TPkgManager.DoCompileAutoInstallPackages MainIDE.DoSaveForBuild failed']);
+        exit;
+      end;
     end;
     
     // compile all auto install dependencies
@@ -5881,8 +5889,12 @@ begin
       CompilePolicy:=pupOnRebuildingAll;
     Result:=PackageGraph.CompileRequiredPackages(nil,Dependencies,false,
                                                  CompilePolicy);
-    if Result<>mrOk then exit;
-    
+    if Result<>mrOk then begin
+      if ConsoleVerbosity>0 then
+        debugln(['TPkgManager.DoCompileAutoInstallPackages PackageGraph.CompileRequiredPackages failed']);
+      exit;
+    end;
+
   finally
     if OnlyBase then
       FreeDependencyList(Dependencies,pdlRequires);

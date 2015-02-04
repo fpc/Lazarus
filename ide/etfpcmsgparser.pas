@@ -38,7 +38,7 @@ uses
   CompOptsIntf, MacroIntf,
   FileProcs, KeywordFuncLists, CodeToolsFPCMsgs, CodeToolsStructs, CodeCache,
   CodeToolManager, DirectoryCacher, BasicCodeTools, DefineTemplates, SourceLog,
-  LazarusIDEStrConsts, EnvironmentOpts, LazConf, TransferMacros,
+  IDECmdLine, LazarusIDEStrConsts, EnvironmentOpts, LazConf, TransferMacros,
   etMakeMsgParser;
 
 const

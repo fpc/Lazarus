@@ -44,7 +44,7 @@ uses
   IDEExternToolIntf, BaseIDEIntf, MacroIntf, IDEMsgIntf, IDEDialogs,
   CompOptsIntf, PackageIntf, LazIDEIntf,
   // IDE
-  TransferMacros, LazarusIDEStrConsts;
+  IDECmdLine, TransferMacros, LazarusIDEStrConsts;
 
 type
   TLMVToolState = (

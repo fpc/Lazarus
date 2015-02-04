@@ -440,9 +440,6 @@ type
     procedure SetAlternativeCompile(const Command: string; ScanFPCMsgs: boolean); virtual; abstract; // disable normal compile and call this instead
   end;
 
-var
-  ConsoleVerbosity: integer = 0; // 0=normal, -1=quiet, 1=verbose, 2=very verbose
-
 implementation
 
 { TLazBuildMacros }
