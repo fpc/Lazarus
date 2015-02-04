@@ -7239,15 +7239,15 @@ end;
 function TMainIDE.DoBuildLazarus(Flags: TBuildLazarusFlags): TModalResult;
 begin
   Result:=DoBuildLazarusSub(Flags);
-  with MiscellaneousOptions do
-    if (Result=mrOK) then begin
+  if (Result=mrOK) then begin
+    with MiscellaneousOptions do begin
       if BuildLazProfiles.RestartAfterBuild
       and (BuildLazProfiles.Current.TargetDirectory='')
       and MainBuildBoss.BuildTargetIDEIsDefault then
         mnuRestartClicked(nil);
-    end
-    else if Result=mrIgnore then
-      Result:=mrOK;
+    end;
+  end else if Result=mrIgnore then
+    Result:=mrOK;
 end;
 
 function TMainIDE.DoBuildAdvancedLazarus(ProfileNames: TStringList): TModalResult;
@@ -7313,6 +7313,7 @@ var
   Params: string;
   ExtTool: TIDEExternalToolOptions;
   Filename: String;
+  OldToolStatus: TIDEToolStatus;
 begin
   Result:=mrCancel;
   if ToolStatus<>itNone then exit;
@@ -7322,6 +7323,8 @@ begin
   if Result<>mrOk then exit;
   IDEMessagesWindow.Clear;
   DirectiveList:=TStringList.Create;
+  OldToolStatus:=ToolStatus;
+  ToolStatus:=itBuilder;
   try
     Result:=GetIDEDirectives(ActiveUnitInfo,DirectiveList);
     if Result<>mrOk then exit;
@@ -7380,6 +7383,7 @@ begin
       ExtTool.Free;
     end;
   finally
+    ToolStatus:=OldToolStatus;
     DirectiveList.Free;
   end;
 end;
