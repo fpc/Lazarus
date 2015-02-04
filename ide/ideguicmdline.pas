@@ -40,7 +40,7 @@ unit IDEGuiCmdLine;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, lazutf8classes, LazConf, LCLProc,
+  Classes, SysUtils, math, FileUtil, lazutf8classes, LazConf, LCLProc,
   LazarusIDEStrConsts, IDECmdLine;
 
 procedure ParseGuiCmdLineParams(var SkipAutoLoadingLastProject,
@@ -171,7 +171,11 @@ begin
     else if ParamIsOption(i, StartedByStartLazarusOpt) then
       StartedByStartLazarus := true
     else if ParamIsOption(i, EnableRemoteControlOpt) then
-      EnableRemoteControl := true;
+      EnableRemoteControl := true
+    else if ParamIsOption(i, '--verbose') then
+      ConsoleVerbosity:=Max(1,ConsoleVerbosity+1)
+    else if ParamIsOption(i, '--quiet') then
+      ConsoleVerbosity:=Min(0,ConsoleVerbosity-1);
   end;
 end;
 

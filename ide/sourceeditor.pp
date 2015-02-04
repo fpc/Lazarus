@@ -61,15 +61,16 @@ uses
   SrcEditorIntf, MenuIntf, LazIDEIntf, PackageIntf, IDEHelpIntf, IDEImagesIntf,
   IDEWindowIntf, ProjectIntf, MacroDefIntf,
   // IDE units
-  IDEDialogs, LazarusIDEStrConsts, IDECommands, CompOptsIntf, EditorOptions,
-  EnvironmentOpts, WordCompletion, FindReplaceDialog, IDEProcs, IDEOptionDefs,
-  IDEHelpManager, MacroPromptDlg, TransferMacros, CodeContextForm,
-  SrcEditHintFrm, etMessagesWnd, etSrcEditMarks, InputHistory,
+  IDECmdLine, IDEDialogs, LazarusIDEStrConsts, IDECommands, CompOptsIntf,
+  EditorOptions, EnvironmentOpts, WordCompletion, FindReplaceDialog, IDEProcs,
+  IDEOptionDefs, IDEHelpManager, MacroPromptDlg, TransferMacros,
+  CodeContextForm, SrcEditHintFrm, etMessagesWnd, etSrcEditMarks, InputHistory,
   CodeMacroPrompt, CodeTemplatesDlg, CodeToolsOptions,
   SortSelectionDlg, EncloseSelectionDlg, ConDef, InvertAssignTool,
   SourceEditProcs, SourceMarks, CharacterMapDlg, SearchFrm,
   FPDocHints, EditorMacroListViewer,
-  DbgIntfBaseTypes, DbgIntfDebuggerBase, BaseDebugManager, Debugger, MainIntf, GotoFrm;
+  DbgIntfBaseTypes, DbgIntfDebuggerBase, BaseDebugManager, Debugger, MainIntf,
+  GotoFrm;
 
 type
   TSourceNotebook = class;

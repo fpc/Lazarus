@@ -1591,8 +1591,8 @@ begin
   writeln('-d or --skip-dependencies ', UTF8ToConsole(lisDoNotCompileDependencies));
   writeln('--build-ide=<options>     ', UTF8ToConsole(lisBuildIDEWithPackages));
   writeln('-v or --version           ', UTF8ToConsole(lisShowVersionAndExit));
-  writeln('-q or --quiet             ', UTF8ToConsole('be less verbose, can be given multiple times'));
-  writeln('--verbose                 ', UTF8ToConsole('be more verbose, can be given multiple times'));
+  writeln('-q or --quiet             ', UTF8ToConsole(lisBeLessVerboseCanBeGivenMultipleTimes));
+  writeln('--verbose                 ', UTF8ToConsole(lisBeMoreVerboseCanBeGivenMultipleTimes));
   writeln('');
 
   writeln('--add-package');
