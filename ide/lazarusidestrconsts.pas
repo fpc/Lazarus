@@ -2328,7 +2328,6 @@ resourcestring
   dlgProjectOptions = 'Project Options';
   dlgProjectOptionsFor = 'Options for Project: %s';
   dlgPOApplication = 'Application';
-  dlgPOUtf8Application = 'UTF-8 Application';
   dlgPOFroms = 'Forms';
   dlgPOResources = 'Resources';
   rsResourceFileName = 'File name';
@@ -4650,8 +4649,6 @@ resourcestring
 
   lisApplicationProgramDescriptor = 'A graphical Free Pascal application using'
     +' the cross-platform LCL library for its GUI.';
-  lisUtf8ApplicationProgramDescriptor = 'A graphical application for FPC 3.0 and higher using'
-    +' the cross-platform LCL library for its GUI and mapping FPC default String to UTF-8 encoding.';
   lisSimpleProgramProgramDescriptor = 'A most simple Free Pascal command line program.';
   lisProgramProgramDescriptor = 'A Free Pascal command line program with some useful settings added.';
   lisConsoleApplicationProgramDescriptor = 'A Free Pascal command line program using'
