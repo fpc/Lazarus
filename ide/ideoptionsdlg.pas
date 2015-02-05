@@ -30,13 +30,12 @@ unit IDEOptionsDlg;
 interface
 
 uses
-  Classes, SysUtils,
-  LCLProc, LCLType, Controls, Forms, ComCtrls,
-  Buttons, ButtonPanel, ExtCtrls, EditBtn, StdCtrls, Dialogs, TreeFilterEdit,
+  Classes, SysUtils, LCLProc, LCLType, Controls, Forms, ComCtrls, Buttons,
+  ButtonPanel, ExtCtrls, EditBtn, StdCtrls, Dialogs, TreeFilterEdit,
   IDEWindowIntf, IDEOptionsIntf, IDECommands, IDEHelpIntf, ProjectIntf,
-  CompOptsIntf, IDEDialogs,
-  EnvironmentOpts, LazarusIDEStrConsts, EditorOptions,
-  BuildModesManager, project_save_options, Project, Compiler_ModeMatrix;
+  CompOptsIntf, IDEDialogs, EnvironmentOpts, LazarusIDEStrConsts, EditorOptions,
+  BuildModesManager, TransferMacros, project_save_options, Project,
+  ModeMatrixOpts, Compiler_ModeMatrix, Compiler_Other_Options;
 
 type
   TIDEOptsDlgAction = (
@@ -51,6 +50,7 @@ type
 
   TIDEOptionsDialog = class(TAbstractOptionsEditorDialog)
     BuildModeComboBox: TComboBox;
+    SupportUtf8RtlButton: TButton;
     UseBuildModeCheckBox: TCheckBox;
     BuildModeManageButton: TButton;
     BuildModeSelectPanel: TPanel;
@@ -61,6 +61,7 @@ type
     EditorsPanel: TScrollBox;
     FilterEdit: TTreeFilterEdit;
     SettingsPanel: TPanel;
+    procedure SupportUtf8RtlButtonClick(Sender: TObject);
     procedure UseBuildModeCheckBoxChange(Sender: TObject);
     procedure BuildModeComboBoxSelect(Sender: TObject);
     procedure BuildModeManageButtonClick(Sender: TObject);
@@ -97,6 +98,7 @@ type
     function AllBuildModes: boolean;
     procedure UpdateBuildModeButtons;
     procedure SetBuildModeVisibility(AVisibility: Boolean);
+    procedure UpdateUtf8RtlButtonState;
   public
     constructor Create(AOwner: TComponent); override;
     function ShowModal: Integer; override;
@@ -137,6 +139,7 @@ begin
   SettingsPanel.Constraints.MinHeight:=0;
   SetBuildModeVisibility(False);
   UseBuildModeCheckBox.Caption:=lisBuildModes;
+  SupportUtf8RtlButton.Caption := lisSupportUTF8RTL;
 
   IDEDialogLayoutList.ApplyLayout(Self, Width, Height);
   Caption := dlgIDEOptions;
@@ -218,6 +221,38 @@ procedure TIDEOptionsDialog.UseBuildModeCheckBoxChange(Sender: TObject);
 begin
   EnvironmentOptions.UseBuildModes:=(Sender as TCheckBox).Checked;
   UpdateBuildModeButtons;
+  UpdateUtf8RtlButtonState;
+end;
+
+procedure TIDEOptionsDialog.UpdateUtf8RtlButtonState;
+var
+  OtherOptions: TCompilerOtherOptionsFrame;
+  ModeMatrix: TCompOptModeMatrixFrame;
+  Dummy: Boolean;
+begin
+  OtherOptions:=TCompilerOtherOptionsFrame(FindEditor(TCompilerOtherOptionsFrame));
+  ModeMatrix:=TCompOptModeMatrixFrame(FindEditor(TCompOptModeMatrixFrame));
+  if Assigned(OtherOptions) and Assigned(ModeMatrix) then
+    SupportUtf8RtlButton.Enabled :=
+      not (OtherOptions.HasSupportForUtf8Rtl and ModeMatrix.HasSupportForUtf8Rtl);
+end;
+
+procedure TIDEOptionsDialog.SupportUtf8RtlButtonClick(Sender: TObject);
+var
+  OtherOptions: TCompilerOtherOptionsFrame;
+  ModeMatrix: TCompOptModeMatrixFrame;
+begin
+  OtherOptions:=TCompilerOtherOptionsFrame(FindEditor(TCompilerOtherOptionsFrame));
+  ModeMatrix:=TCompOptModeMatrixFrame(FindEditor(TCompOptModeMatrixFrame));
+  if Assigned(OtherOptions) and Assigned(ModeMatrix) then begin
+    // For WideString/UnicodeString/UTF8String literals.
+    OtherOptions.SupportUtf8Rtl;
+    // Make FPC default string UTF-8. Assign UTF-8 backends for Ansi...() functions etc.
+    ModeMatrix.SupportUtf8Rtl;
+    UpdateUtf8RtlButtonState;
+    ShowMessage('This build mode now has support for UTF-8 RTL.' + LineEnding
+      +' Flags are in pages "Other" and "Additions and Overrides".');
+  end;
 end;
 
 procedure TIDEOptionsDialog.BuildModeComboBoxSelect(Sender: TObject);
@@ -228,6 +263,7 @@ begin
   else begin
     Assert(BuildModeSelectPanel.Visible, 'BuildModeComboBoxSelect: BuildModeSelectPanel not Visible');
     SwitchBuildMode(BuildModeComboBox.Text);
+    UpdateUtf8RtlButtonState;
   end;
 end;
 
@@ -236,6 +272,7 @@ begin
   if ShowBuildModesDlg(Project1.SessionStorage in pssHasSeparateSession) <> mrOK then
     exit;
   UpdateBuildModeCombo(BuildModeComboBox);
+  UpdateUtf8RtlButtonState;
 end;
 
 procedure TIDEOptionsDialog.CategoryTreeCollapsed(Sender: TObject; Node: TTreeNode);
@@ -610,6 +647,7 @@ begin
   UseBuildModeCheckBox.Enabled := not ManyBuildModes;
   BuildModeComboBox.Visible := EnvironmentOptions.UseBuildModes;
   BuildModeManageButton.Visible := EnvironmentOptions.UseBuildModes;
+
   ModeMatrix:=TCompOptModeMatrixFrame(FindEditor(TCompOptModeMatrixFrame));
   if Assigned(ModeMatrix) then
     ModeMatrix.UpdateModes;
@@ -755,6 +793,7 @@ procedure TIDEOptionsDialog.UpdateBuildModeGUI;
 begin
   UpdateBuildModeCombo(BuildModeComboBox);
   UpdateBuildModeButtons;
+  UpdateUtf8RtlButtonState;
 end;
 
 end.

@@ -101,6 +101,7 @@ type
     fCaptionPatternMacroValue: string;
     procedure AddLCLWidgetTypeValues(ParentMenu: TPopupMenu; Mcr: TLazBuildMacro);
     procedure AddMacroValues(ParentMI: TMenuItem; Mcr: TLazBuildMacro);
+    function ActiveModeAsText: string;
     procedure DoWriteSettings;
     procedure FillMenus;
     procedure MoveRow(Direction: integer);
@@ -112,6 +113,8 @@ type
     procedure UpdateEnabledModesInGrid(Options: TBuildMatrixOptions;
                        StorageGroup: TGroupedMatrixGroup; var HasChanged: boolean);
     procedure UpdateGridStorageGroups;
+    function CheckAndUpdateUtf8RtlSupport(UpdateIt: Boolean;
+                                          out WasUpdated: Boolean): Boolean;
   protected
     procedure VisibleChanged; override;
   public
@@ -123,6 +126,8 @@ type
     procedure ReadSettings(AOptions: TAbstractIDEOptions); override;
     procedure WriteSettings(AOptions: TAbstractIDEOptions); override;
     procedure RestoreSettings(AOptions: TAbstractIDEOptions); override;
+    function HasSupportForUtf8Rtl: Boolean;
+    function SupportUtf8Rtl: Boolean;
     procedure UpdateModes(UpdateGrid: boolean = true);
     procedure UpdateActiveMode;
   public
@@ -159,6 +164,9 @@ var
   ModeMatrixFrame: TCompOptModeMatrixFrame = nil;
 
 implementation
+
+const
+  EnableUTF8RTL = '-dEnableUTF8RTL';
 
 function BuildMatrixOptionTypeCaption(Typ: TBuildMatrixOptionType): string;
 begin
@@ -727,26 +735,20 @@ begin
   Result:=AddMatrixTarget(Grid.Matrix,StorageGroup);
 end;
 
+function TCompOptModeMatrixFrame.ActiveModeAsText: string;
+begin
+  if EnvironmentOptions.UseBuildModes then
+    Result:=Grid.Modes[Grid.ActiveMode].Caption
+  else
+    Result:=LazProject.BuildModes[0].GetCaption;
+end;
+
 procedure TCompOptModeMatrixFrame.CreateNewOption(aTyp, aValue: string);
 var
   aRow: Integer;
   MatRow: TGroupedMatrixRow;
   Group: TGroupedMatrixGroup;
   NewRow: TGroupedMatrixValue;
-
-  procedure CreateOption;
-  var
-    Capt: String;
-  begin
-    if aTyp='' then
-      aTyp:=Grid.TypeColumn.PickList.Names[0];
-    if EnvironmentOptions.UseBuildModes then
-      Capt:=Grid.Modes[Grid.ActiveMode].Caption
-    else
-      Capt:=LazProject.BuildModes[0].GetCaption;
-    NewRow:=Grid.Matrix.AddValue(Group,Capt,aTyp,aValue,CreateBuildMatrixOptionGUID);
-  end;
-
 begin
   aRow:=Grid.Row;
   if aRow<Grid.FixedRows then aRow:=Grid.FixedRows;
@@ -754,6 +756,8 @@ begin
   Grid.MatrixChanging;
   try
     Grid.StoreUndo;
+    if aTyp='' then
+      aTyp:=Grid.TypeColumn.PickList.Names[0];
     MatRow:=Grid.Matrix[aRow-1];
     //debugln(['TCompOptModeMatrix.CreateNewOption ',DbgSName(MatRow),' ',MatRow.AsString]);
     if MatRow is TGroupedMatrixGroup then begin
@@ -768,11 +772,13 @@ begin
         end;
       end;
       // add option as first item of Group
-      CreateOption;
+      NewRow:=Grid.Matrix.AddValue(Group, ActiveModeAsText, aTyp, aValue,
+                                   CreateBuildMatrixOptionGUID);
     end else begin
       // add behind current value
       Group:=MatRow.Group;
-      CreateOption;
+      NewRow:=Grid.Matrix.AddValue(Group, ActiveModeAsText, aTyp, aValue,
+                                   CreateBuildMatrixOptionGUID);
       Group.Move(Group.Count-1,MatRow.GetGroupIndex+1);
     end;
     Grid.Matrix.RebuildRows;
@@ -870,10 +876,9 @@ end;
 
 procedure TCompOptModeMatrixFrame.UpdateGridStorageGroups;
 var
-  i: Integer;
+  i, j: Integer;
   MatRow: TGroupedMatrixRow;
   GroupRow: TGroupedMatrixGroup;
-  j: Integer;
 begin
   fGroupIDE:=nil;
   fGroupProject:=nil;
@@ -900,6 +905,71 @@ begin
   inherited VisibleChanged;
   if (not Visible) and (LazProject<>nil) then
     DoWriteSettings;
+end;
+
+function TCompOptModeMatrixFrame.CheckAndUpdateUtf8RtlSupport(UpdateIt: Boolean;
+  out WasUpdated: Boolean): Boolean;
+// Returns True if the support already was there.
+var
+  GrpIndex: Integer;
+  Target: TGroupedMatrixGroup;
+  i: Integer;
+  ValueRow: TGroupedMatrixValue;
+  AMode: String;
+begin
+  Result := False;
+  WasUpdated := False;
+  for GrpIndex:=0 to GroupProject.Count-1 do
+  begin
+    Target := TGroupedMatrixGroup(GroupProject[GrpIndex]);
+    if not (Target is TGroupedMatrixGroup) then
+      exit;
+    for i:=0 to Target.Count-1 do
+    begin
+      ValueRow := TGroupedMatrixValue(Target[i]);
+      if not (ValueRow is TGroupedMatrixValue) then
+        exit;
+      Result := (ValueRow.Typ = 'Custom') and (ValueRow.Value = EnableUTF8RTL);
+      if Result then
+      begin
+        AMode := ActiveModeAsText;
+        Result := (ValueRow.ModeList.IndexOf(AMode)>=0);
+        if (not Result) and UpdateIt then
+        begin
+          Grid.MatrixChanging;
+          try
+            ValueRow.ModeList.Add(AMode);
+          finally
+            Grid.MatrixChanged;
+          end;
+          WasUpdated := True;
+        end;
+        Exit;
+      end;
+    end;
+  end;
+end;
+
+function TCompOptModeMatrixFrame.HasSupportForUtf8Rtl: Boolean;
+var
+  Dummy: Boolean;
+begin
+  Result := CheckAndUpdateUtf8RtlSupport(False, Dummy);
+end;
+
+function TCompOptModeMatrixFrame.SupportUtf8Rtl: Boolean;
+// Add a compiler flag to make FPC default string UTF-8,
+//  assign UTF-8 backends for Ansi...() functions etc.
+// Returns true if the flag was really added and did not exist earlier.
+var
+  WasUpdated: Boolean;
+begin
+  Result := not CheckAndUpdateUtf8RtlSupport(True, WasUpdated);
+  if Result and not WasUpdated then
+  begin
+    CreateNewOption(BuildMatrixOptionTypeCaption(bmotCustom), EnableUTF8RTL);
+    UpdateModes;
+  end;
 end;
 
 procedure TCompOptModeMatrixFrame.UpdateModes(UpdateGrid: boolean);

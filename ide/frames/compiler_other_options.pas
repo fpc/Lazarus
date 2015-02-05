@@ -42,7 +42,6 @@ type
   TCompilerOtherOptionsFrame = class(TAbstractIDEOptionsEditor)
     btnDefines: TBitBtn;
     btnAllOptions: TBitBtn;
-    btnSupportUTF8RTL: TBitBtn;
     grpCustomOptions: TGroupBox;
     grpConditionals: TGroupBox;
     CondStatusbar: TStatusBar;
@@ -51,7 +50,6 @@ type
     memoCustomOptions: TMemo;
     procedure btnAllOptionsClick(Sender: TObject);
     procedure btnDefinesClick(Sender: TObject);
-    procedure btnSupportUTF8RTLClick(Sender: TObject);
     procedure CondSynEditChange(Sender: TObject);
     procedure CondSynEditKeyPress(Sender: TObject; var Key: char);
     procedure CondSynEditProcessUserCommand(Sender: TObject;
@@ -101,6 +99,8 @@ type
     procedure ReadSettings(AOptions: TAbstractIDEOptions); override;
     procedure WriteSettings(AOptions: TAbstractIDEOptions); override;
     class function SupportedOptionsClass: TAbstractIDEOptionsClass; override;
+    function HasSupportForUtf8Rtl: Boolean;
+    function SupportUtf8Rtl: Boolean;
     property StatusMessage: string read FStatusMessage write SetStatusMessage;
     property DefaultVariables: TCTCfgScriptVariables read FDefaultVariables;
     property CompletionValues: TStrings read FCompletionValues;
@@ -112,6 +112,9 @@ type
 implementation
 
 {$R *.lfm}
+
+const
+  FcUTF8 = '-FcUTF8';
 
 { TCompilerOtherOptionsFrame }
 
@@ -170,23 +173,18 @@ begin
   end;
 end;
 
-procedure TCompilerOtherOptionsFrame.btnSupportUTF8RTLClick(Sender: TObject);
-var
-  Opts: String;
-
-  procedure AddUtf8Define(aDefine: String);
-  begin
-    if Pos(aDefine, Opts) = 0 then
-      memoCustomOptions.Lines.Add(aDefine);
-  end;
-
+function TCompilerOtherOptionsFrame.HasSupportForUtf8Rtl: Boolean;
 begin
-  Opts := memoCustomOptions.Text;
-  // This makes FPC default string type UTF-8.
-  // Assign UTF-8 backends for Ansi...() functions etc.
-  AddUtf8Define('-dEnableUTF8RTL');
-  // For WideString/UnicodeString/UTF8String literals.
-  AddUtf8Define('-FcUTF8');
+  Result := Pos(FcUTF8, memoCustomOptions.Text) > 0;
+end;
+
+function TCompilerOtherOptionsFrame.SupportUtf8Rtl: Boolean;
+// Add a compiler flag for WideString/UnicodeString/UTF8String literals.
+// Returns true if the flag was really added and did not exist earlier.
+begin
+  Result := not HasSupportForUtf8Rtl;
+  if Result then
+    memoCustomOptions.Lines.Add(FcUTF8);
 end;
 
 // Events dealing with conditionals SynEdit :
@@ -724,7 +722,6 @@ begin
   grpConditionals.Caption := lisConditionals;
   btnAllOptions.Caption := lisDlgAllOptions;
   btnDefines.Caption := lisDlgDefines;
-  btnSupportUTF8RTL.Caption := lisSupportUTF8RTL;
 end;
 
 procedure TCompilerOtherOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
