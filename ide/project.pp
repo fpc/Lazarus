@@ -3007,7 +3007,7 @@ begin
       LoadFromSession;
     except
       IDEMessageDialog(lisCCOErrorCaption,
-        Format(lisUnableToReadTheProjectInfoFile, [LineEnding,ProjectInfoFile]),
+        Format(lisUnableToReadTheProjectInfoFile, [LineEnding,Filename]),
         mtError,[mbOk]);
       Result:=mrCancel;
       exit;
@@ -3957,8 +3957,7 @@ begin
   TProjectIcon(ProjResources[TProjectIcon]).LoadDefaultIcon;
 end;
 
-function TProject.GetShortFilename(const Filename: string; UseUp: boolean
-  ): string;
+function TProject.GetShortFilename(const Filename: string; UseUp: boolean): string;
 var
   BaseDir: String;
   CurPath: String;
@@ -4317,8 +4316,7 @@ begin
     Result:=true;
 end;
 
-procedure TProject.GetVirtualDefines(DefTree: TDefineTree;
-  DirDef: TDirectoryDefines);
+procedure TProject.GetVirtualDefines(DefTree: TDefineTree; DirDef: TDirectoryDefines);
   
   procedure ExtendPath(const AVariable, APath: string);
   var
@@ -4393,15 +4391,13 @@ begin
   fProjectInfoFileDate:=FileAgeCached(ProjectInfoFile);
 end;
 
-function TProject.FindDependencyByName(const PackageName: string
-  ): TPkgDependency;
+function TProject.FindDependencyByName(const PackageName: string): TPkgDependency;
 begin
   Result:=FindDependencyByNameInList(FFirstRequiredDependency,pdlRequires,
                                      PackageName);
 end;
 
-function TProject.FindRemovedDependencyByName(const PkgName: string
-  ): TPkgDependency;
+function TProject.FindRemovedDependencyByName(const PkgName: string): TPkgDependency;
 begin
   Result:=FindDependencyByNameInList(FFirstRemovedDependency,pdlRequires,PkgName);
 end;
