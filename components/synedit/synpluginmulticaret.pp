@@ -1064,7 +1064,7 @@ end;
 procedure TSynPluginMultiCaretMouseActions.ResetDefaults;
 begin
   Clear; // todo left button
-  AddCommand(emcPluginMultiCaretToggleCaret, False, mbXMiddle, ccAny, cdDown, [ssShift], [ssShift,ssCtrl.ssCtrl,ssAlt]);
+  AddCommand(emcPluginMultiCaretToggleCaret, False, mbXMiddle, ccAny, cdDown, [ssShift], [ssShift,ssCtrl,ssAlt]);
 end;
 
 { TSynPluginMultiCaret }
