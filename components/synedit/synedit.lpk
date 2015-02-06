@@ -1,8 +1,9 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <Package Version="4">
     <PathDelim Value="\"/>
     <Name Value="SynEdit"/>
+    <Type Value="RunAndDesignTime"/>
     <Author Value="Lazarus Team, SynEdit"/>
     <CompilerOptions>
       <Version Value="11"/>
@@ -17,10 +18,9 @@
           <ShowGenInfo Value="False"/>
         </Verbosity>
         <CompilerMessages>
-          <IgnoredMessages idx4055="True" idx5024="True"/>
+          <IgnoredMessages idx5024="True" idx4055="True"/>
         </CompilerMessages>
         <CustomOptions Value="$(IDEBuildOptions) -CR -dgc"/>
-        <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
     <Description Value="SynEdit is a line-based editing component with support for syntax-highlighting.
@@ -37,7 +37,7 @@ Alternatively, the contents of these files may be used under the terms of the GN
 If you wish to allow use of your version of these files only under the terms of the GPL and not to allow others to use your version of this file under the MPL, indicate your decision by deleting the provisions above and replace them with the notice and other provisions required by the GPL. If you do not delete the provisions above, a recipient may use your version of this file under either the MPL or the GPL.
 "/>
     <Version Major="1"/>
-    <Files Count="81">
+    <Files Count="82">
       <Item1>
         <Filename Value="synbeautifier.pas"/>
         <UnitName Value="SynBeautifier"/>
@@ -365,13 +365,16 @@ If you wish to allow use of your version of these files only under the terms of 
         <Filename Value="syneditmarkupifdef.pp"/>
         <UnitName Value="syneditmarkupifdef"/>
       </Item81>
+      <Item82>
+        <Filename Value="synpluginmulticaret.pp"/>
+        <UnitName Value="SynPluginMultiCaret"/>
+      </Item82>
     </Files>
     <LazDoc Paths="docs\xml"/>
     <i18n>
       <EnableI18N Value="True"/>
       <OutDir Value="languages"/>
     </i18n>
-    <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="1">
       <Item1>
         <PackageName Value="LCL"/>
