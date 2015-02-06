@@ -1232,6 +1232,9 @@ begin
       or kWindowLiveResizeAttribute;
   end;
 
+  // Makes the window look good in Retina displays
+  Attributes := Attributes or kWindowFrameworkScaledAttribute;
+
   if OSError(
     CreateNewWindow(NewWindowClass,
       Attributes, GetCarbonRect(0, 0, 0, 0), AWindow{%H-}),
