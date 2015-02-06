@@ -40,12 +40,6 @@
               </Win32>
             </Options>
           </Linking>
-          <Other>
-            <CompilerMessages>
-              <UseMsgFile Value="True"/>
-            </CompilerMessages>
-            <CompilerPath Value="$(CompPath)"/>
-          </Other>
         </CompilerOptions>
       </Item2>
     </BuildModes>
@@ -66,7 +60,6 @@
       <Unit0>
         <Filename Value="translation_demo.lpr"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="translation_demo"/>
       </Unit0>
       <Unit1>
         <Filename Value="main.pas"/>
@@ -82,7 +75,6 @@
         <ComponentName Value="LocalizedForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <UnitName Value="LocalizedForms"/>
       </Unit2>
       <Unit3>
         <Filename Value="unit2.pas"/>
@@ -90,12 +82,10 @@
         <ComponentName Value="Form2"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <UnitName Value="Unit2"/>
       </Unit3>
       <Unit4>
         <Filename Value="stringsunit.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="StringsUnit"/>
       </Unit4>
     </Units>
   </ProjectOptions>
@@ -119,12 +109,6 @@
         </Win32>
       </Options>
     </Linking>
-    <Other>
-      <CompilerMessages>
-        <UseMsgFile Value="True"/>
-      </CompilerMessages>
-      <CompilerPath Value="$(CompPath)"/>
-    </Other>
   </CompilerOptions>
   <Debugging>
     <Exceptions Count="3">
