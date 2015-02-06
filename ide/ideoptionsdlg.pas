@@ -228,7 +228,6 @@ procedure TIDEOptionsDialog.UpdateUtf8RtlButtonState;
 var
   OtherOptions: TCompilerOtherOptionsFrame;
   ModeMatrix: TCompOptModeMatrixFrame;
-  Dummy: Boolean;
 begin
   OtherOptions:=TCompilerOtherOptionsFrame(FindEditor(TCompilerOtherOptionsFrame));
   ModeMatrix:=TCompOptModeMatrixFrame(FindEditor(TCompOptModeMatrixFrame));
