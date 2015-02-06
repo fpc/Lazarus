@@ -36,7 +36,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  ButtonPanel, EditBtn, fpspreadsheet, LR_Class;
+  ButtonPanel, EditBtn, fpspreadsheet, fpsTypes, LR_Class;
 
 type
 
@@ -154,16 +154,16 @@ begin
         T.dx:=CalcColWidth(FWorksheet.GetColWidth(Col));
         T.dy:=DY;
 
-        T.Alignment:=sHAToA(Cell^.HorAlignment);
-        T.Layout:=sVAToL(Cell^.VertAlignment);
+        T.Alignment:=sHAToA(FWorksheet.ReadHorAlignment(Cell)); // Cell^.HorAlignment);
+        T.Layout:=sVAToL(FWorksheet.ReadVertAlignment(Cell)); // Cell^.VertAlignment);
 
-        T.Frames:=sBorderToBorders(Cell^.Border);
+        T.Frames:=sBorderToBorders(FWorksheet.ReadCellBorders(Cell)); //Cell^.Border);
 //        BorderStyles: TsCelLBorderStyles;
 {
         if Cell^.BackgroundColor < FWorkbook.GetPaletteSize then
           T.FillColor:=FWorkbook.GetPaletteColor(Cell^.BackgroundColor);
 }
-        Convert_sFont_to_Font(FWorkbook.GetFont(Cell^.FontIndex), T.Font);
+        Convert_sFont_to_Font(FWorksheet.ReadCellFont(Cell), T.Font); //Cell^.FontIndex), T.Font);
 
         T.MonitorFontChanges;
         T.Memo.Text:=FWorksheet.ReadAsUTF8Text(Cell);
