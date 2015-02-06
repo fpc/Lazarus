@@ -9,4 +9,8 @@
   {$DEFINE QTCOCOA}
   {$ENDIF}
   {$DEFINE QTSCROLLABLEFORMS}
+  {$IFDEF DARWIN}
+  {enable this define if you have problems when dialogs are shown behind application}
+  {.$DEFINE TQTMESSAGEBOXUSEPARENT}
+  {$ENDIF}
 {$ENDIF}

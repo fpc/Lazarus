@@ -18400,6 +18400,10 @@ begin
   LCLObject := nil;
   FKeysToEat := [];
   FHasPaint := False;
+  {$IFDEF TQTMESSAGEBOXUSEPARENT}
+  if AParent = nil then
+    AParent := QApplication_activeWindow;
+  {$ENDIF}
   Widget := CreateWidget(AParent);
 end;
 
@@ -18508,6 +18512,10 @@ begin
   {$IFDEF HASX11}
   if (QtWidgetSet.WindowManagerName = 'metacity') then
       X11Raise(QWidget_winID(Widget));
+  {$ENDIF}
+  {$IFDEF TQTMESSAGEBOXUSEPARENT}
+  QWidget_activateWindow(Widget);
+  QWidget_raise(Widget);
   {$ENDIF}
 
   repeat
