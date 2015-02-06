@@ -327,6 +327,11 @@ begin
   then h := FHighIndex
   else h := HighIdx;
 
+  if h < l then begin
+    Result := h;
+    exit;
+  end;
+
   Result := (l + h) div 2;
   while (h > l) do begin
     if (FCarets[Result].y > y) or ((FCarets[Result].y = y) and (FCarets[Result].x >= x)) then
@@ -541,7 +546,7 @@ begin
   if (FLowIndex > 0) and ((Result < Middle) or (FHighIndex = len))
   then begin
     // use space in front of list
-    if (Result = FHighIndex) and (FHighIndex = High(FCarets))   // moving all entries
+    if (Result > FHighIndex) and (FHighIndex = High(FCarets))   // moving all entries
     then i := max(FLowIndex div 2 - 1, 0)                       // Make some room at the end of the list
     else i := 0;
     if Result > FLowIndex then

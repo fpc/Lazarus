@@ -24,6 +24,7 @@ type
     procedure ReCreateEdit; reintroduce;
     procedure RunCmdSeq(cmds: Array of TSynEditorCommand; chars: array of String);
   published
+    procedure CaretList;
     procedure Edit;
     procedure ReplaceColSel;
     procedure TabKey;
@@ -57,6 +58,109 @@ begin
     end;
     SynEdit.CommandProcessor(cmds[i], a, nil);
   end;
+end;
+
+procedure TTestMultiCaret.CaretList;
+  procedure TestSequence(name: string; a: Array of Integer);
+  var
+    c: TSynPluginMultiCaretList;
+    i, j, k, n, m: Integer;
+  begin
+
+    c := TSynPluginMultiCaretList.Create;
+    for i := 0 to high(a) do begin
+      c.AddCaret(1,a[i]);
+      for j := 1 to c.Count-1 do
+        AssertTrue(Format(name+' Test %d %d', [i, j]), c.Caret[j].y > c.Caret[j-1].y);
+    end;
+
+    c.Clear;
+    for i := 0 to high(a) do begin
+      k := c.AddCaret(1,a[i]);
+      AssertEquals(Format(name+' Test %d %d', [i, j]),a[i], c.Caret[k].y);
+      for j := 1 to c.Count-1 do
+        AssertTrue(Format(name+' Test %d %d', [i, j]), c.Caret[j].y > c.Caret[j-1].y);
+    end;
+
+    c.Clear;
+    for i := 0 to high(a) do begin
+      c.AddCaret(1,a[i]);
+    end;
+    for j := 1 to c.Count-1 do
+      AssertTrue(Format(name+' Test %d %d', [i, j]), c.Caret[j].y > c.Caret[j-1].y);
+
+    c.Clear;
+    for i := high(a) downto 0 do begin
+      k := c.AddCaret(1,a[i]);
+      AssertEquals(Format(name+' Test %d %d', [i, j]),a[i], c.Caret[k].y);
+      for j := 1 to c.Count-1 do
+        AssertTrue(Format(name+' Test %d %d', [i, j]), c.Caret[j].y > c.Caret[j-1].y);
+    end;
+
+
+    for m := 0 to length(a)-1 do begin
+      for n := 0 to m do begin
+        c.Clear;
+        for i := 0 to m do begin
+          k := c.AddCaret(1,a[i]);
+          AssertEquals(Format(name+' Test %d %d', [i, j]),a[i], c.Caret[k].y);
+        end;
+        for j := 1 to c.Count-1 do
+          AssertTrue(Format(name+' Test %d %d', [i, j]), c.Caret[j].y > c.Caret[j-1].y);
+        k := c.Caret[n].y;
+        c.RemoveCaret(n);
+        for j := 1 to c.Count-1 do begin
+          AssertTrue(Format(name+' Test %d %d', [i, j]), c.Caret[j].y > c.Caret[j-1].y);
+          AssertTrue(Format(name+' Test %d %d', [i, j]), c.Caret[j].y <> k);
+        end;
+
+
+      end;
+    end;
+
+    c.Free;
+  end;
+  procedure TestSequenceEx(n: string; a: Array of Integer);
+  var
+    i, j: Integer;
+    b: Array of Integer;
+  begin
+    for i := 1 to length(a) do begin
+      TestSequence(n+IntToStr(i),a);
+      j := a[0];
+      if Length(a) > 1 then
+        move(a[1],a[0],(Length(a)-1)*SizeOf(a[0]));
+        a[high(a)] := j;
+    end;
+
+    SetLength(b, Length(a));
+    for i := 0 to length(a)-1 do
+      b[i] := a[high(a)-i];
+
+    for i := 1 to length(b) do begin
+      TestSequence(n+IntToStr(i),b);
+      j := b[0];
+      if Length(b) > 1 then
+        move(b[1],b[0],(Length(b)-1)*SizeOf(b[0]));
+        b[high(b)] := j;
+    end;
+  end;
+begin
+  TestSequence('XXX', [3,2,1,12,11,10,9,8,7,6,5,4]);
+  TestSequence('XXX', [4, 5, 6, 7, 8, 9, 10, 11, 12, 1, 2, 3]);
+
+  TestSequenceEx('1', [1,2]);
+  TestSequenceEx('1', [1,2,3,4,5,6,7,8,9,10,11,12]);
+  TestSequenceEx('1', [1,99,2,98,3,97,4,96,5,95,6,94]);
+  TestSequenceEx('1', [1,2,99,98,3,4,97,96,5,6,95,94,7,8,93,92,9,10]);
+  TestSequenceEx('1', [1,2,3,4,5,6,7,8,9,10,11,12,-1]);
+  TestSequenceEx('1', [1,2,3,4,5,6,7,8,9,10,-1]);
+  TestSequenceEx('1', [1,2,3,4,5,6,7,8,9,-1]);
+  TestSequenceEx('1', [1,2,3,4,5,6,7,8,-1]);
+  TestSequenceEx('1', [1,2,3,4,5,6,7,-1]);
+  TestSequenceEx('1', [1,2,3,4,5,6,-1]);
+  TestSequenceEx('1', [1,2,3,4,5,-1]);
+  TestSequenceEx('1', [1,2,3,4,-1]);
 end;
 
 procedure TTestMultiCaret.Edit;
