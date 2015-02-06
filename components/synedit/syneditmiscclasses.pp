@@ -89,12 +89,15 @@ type
     property WhiteChars: TSynIdentChars read FWhiteChars write SetWhiteChars;
   end;
 
+  TLazSynSurface = class;
+
   { TSynEditBase }
 
   TSynEditBase = class(TCustomControl)
   protected
     FWordBreaker: TSynWordBreaker;
     FBlockSelection: TSynEditSelection;
+    FScreenCaret: TSynEditScreenCaret;
     function GetMarkupMgr: TObject; virtual; abstract;
     function GetLines: TStrings; virtual; abstract;
     function GetCaretObj: TSynEditCaret; virtual; abstract;
@@ -102,6 +105,7 @@ type
     function GetViewedTextBuffer: TSynEditStrings; virtual; abstract;
     function GetFoldedTextBuffer: TObject; virtual; abstract;
     function GetTextBuffer: TSynEditStrings; virtual; abstract;
+    function GetPaintArea: TLazSynSurface; virtual; abstract; // TLazSynSurfaceManager
 
     property MarkupMgr: TObject read GetMarkupMgr;
     property FoldedTextBuffer: TObject read GetFoldedTextBuffer;                // TSynEditFoldedView
@@ -123,6 +127,8 @@ type
     function GetIsRedoing: Boolean;
     function GetIsUndoing: Boolean;
     function GetMarkupMgr: TObject;
+    function GetPaintArea: TLazSynSurface; // TLazSynSurfaceManager
+    function GetScreenCaret: TSynEditScreenCaret;
     function GetSelectionObj: TSynEditSelection;
     function GetTextBuffer: TSynEditStrings;
     function GetViewedTextBuffer: TSynEditStrings;
@@ -133,7 +139,9 @@ type
     property ViewedTextBuffer: TSynEditStrings read GetViewedTextBuffer;        // As viewed internally (with uncommited spaces / TODO: expanded tabs, folds). This may change, use with care
     property TextBuffer: TSynEditStrings read GetTextBuffer;                    // (TSynEditStringList)
     property CaretObj: TSynEditCaret read GetCaretObj;
+    property ScreenCaret: TSynEditScreenCaret read GetScreenCaret; // TODO: should not be exposed
     property SelectionObj: TSynEditSelection read GetSelectionObj;
+    property PaintArea: TLazSynSurface read GetPaintArea; // TLazSynSurfaceManager
     property MarkupMgr: TObject read GetMarkupMgr;
     property IsUndoing: Boolean read GetIsUndoing;
     property IsRedoing: Boolean read GetIsRedoing;
@@ -308,6 +316,7 @@ type
   TLazSynSurface = class
   private
     FBounds: TRect;
+    FBoundsChangeList: TMethodList;
     FDisplayView: TLazSynDisplayView;
     FOwner: TWinControl;
     function GetHandle: HWND;
@@ -319,7 +328,11 @@ type
     property  Handle: HWND read GetHandle;
   public
     constructor Create(AOwner: TWinControl);
+    destructor Destroy; override;
     procedure Assign(Src: TLazSynSurface); virtual;
+    procedure AddBoundsChangeHandler(AHandler: TNotifyEvent);
+    procedure RemoveBoundsChangeHandler(AHandler: TNotifyEvent);
+
     procedure Paint(ACanvas: TCanvas; AClip: TRect);
     procedure InvalidateLines(FirstTextLine, LastTextLine: TLineIdx); virtual;
     procedure SetBounds(ATop, ALeft, ABottom, ARight: Integer);
@@ -614,6 +627,16 @@ end;
 function TSynEditFriend.GetMarkupMgr: TObject;
 begin
   Result := FFriendEdit.MarkupMgr;
+end;
+
+function TSynEditFriend.GetPaintArea: TLazSynSurface;
+begin
+  Result := FFriendEdit.GetPaintArea;
+end;
+
+function TSynEditFriend.GetScreenCaret: TSynEditScreenCaret;
+begin
+  Result := FFriendEdit.FScreenCaret;
 end;
 
 function TSynEditFriend.GetSelectionObj: TSynEditSelection;
@@ -1239,12 +1262,29 @@ end;
 constructor TLazSynSurface.Create(AOwner: TWinControl);
 begin
   FOwner := AOwner;
+  FBoundsChangeList := TMethodList.Create;
+end;
+
+destructor TLazSynSurface.Destroy;
+begin
+  inherited Destroy;
+  FreeAndNil(FBoundsChangeList);
 end;
 
 procedure TLazSynSurface.Assign(Src: TLazSynSurface);
 begin
   // do not assign the bounds
   DisplayView := Src.DisplayView;
+end;
+
+procedure TLazSynSurface.AddBoundsChangeHandler(AHandler: TNotifyEvent);
+begin
+  FBoundsChangeList.Add(TMethod(AHandler));
+end;
+
+procedure TLazSynSurface.RemoveBoundsChangeHandler(AHandler: TNotifyEvent);
+begin
+  FBoundsChangeList.Remove(TMethod(AHandler));
 end;
 
 procedure TLazSynSurface.Paint(ACanvas: TCanvas; AClip: TRect);
@@ -1280,6 +1320,7 @@ begin
   FBounds.Right := ARight;
   FBounds.Bottom := ABottom;
   BoundsChanged;
+  FBoundsChangeList.CallNotifyEvents(Self);
 end;
 
 { TSynBookMarkOpt }

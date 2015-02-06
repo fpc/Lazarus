@@ -56,7 +56,7 @@ uses
   SynEditTextBuffer, SynEditFoldedView, SynTextDrawer, SynEditTextBase, LazSynEditText,
   SynPluginTemplateEdit, SynPluginSyncroEdit, LazSynTextArea, SynEditHighlighter,
   SynEditHighlighterFoldBase, SynHighlighterPas, SynEditMarkupHighAll, SynEditKeyCmds,
-  SynEditMarkupIfDef, SynEditMiscProcs,
+  SynEditMarkupIfDef, SynEditMiscProcs, SynPluginMultiCaret, SynEditPointClasses,
   etSrcEditMarks, LazarusIDEStrConsts;
 
 type
@@ -216,6 +216,7 @@ type
     FShowTopInfo: boolean;
     FSyncroEdit: TSynPluginSyncroEdit;
     FTemplateEdit: TSynPluginTemplateEdit;
+    FMultiCaret: TSynPluginMultiCaret;
     FMarkupForGutterMark: TSynEditMarkupGutterMark;
     FOnIfdefNodeStateRequest: TSynMarkupIfdefStateRequest;
     FMarkupIfDef: TSourceSynEditMarkupIfDef;
@@ -254,6 +255,7 @@ type
     property ViewedTextBuffer;
     property TemplateEdit: TSynPluginTemplateEdit read FTemplateEdit;
     property SyncroEdit: TSynPluginSyncroEdit read FSyncroEdit;
+    property MultiCaret: TSynPluginMultiCaret read FMultiCaret;
     //////
     property TopInfoMarkup: TSynSelectedColor read FTopInfoMarkup write SetTopInfoMarkup;
     property ShowTopInfo: boolean read FShowTopInfo write SetShowTopInfo;
@@ -1608,6 +1610,12 @@ begin
   FUserWordsList := TFPList.Create;
   FTemplateEdit:=TSynPluginTemplateEdit.Create(Self);
   FSyncroEdit := TSynPluginSyncroEdit.Create(Self);
+  {$IFDEF WithSynMultiCaret}
+  FMultiCaret := TSynPluginMultiCaret.Create(Self);
+  FMultiCaret.SetCaretTypeSize(ctVerticalLine, 2, 1024, -1, 0, [ccsRelativeHeight]);
+  FMultiCaret.SetCaretTypeSize(ctBlock, 1024, 1024, 0, 0, [ccsRelativeWidth, ccsRelativeHeight]);
+  FMultiCaret.Color := $606060;
+  {$ENDIF}
 
   FMarkupForGutterMark := TSynEditMarkupGutterMark.Create(Self, FWordBreaker);
   TSynEditMarkupManager(MarkupMgr).AddMarkUp(FMarkupForGutterMark);

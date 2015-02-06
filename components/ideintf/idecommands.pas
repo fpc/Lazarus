@@ -46,7 +46,7 @@ const
   }
   ecNone                    = 0;
   
-  ecFirstLazarus            = 1001;
+  ecFirstLazarus            = 1001;  // syneditkeycmds.ecUserFirst = 1001;
 
   // search
   ecFind                    = ecFirstLazarus + 1;

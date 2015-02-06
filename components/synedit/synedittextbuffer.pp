@@ -1231,6 +1231,7 @@ procedure TSynEditStringList.SetUpdateState(Updating: Boolean; Sender: TObject);
 begin
   if FIsInDecPaintLock then exit;
   if Updating then begin
+    SendNotification(senrBeforeIncPaintLock, Sender);
     SendNotification(senrIncPaintLock, Sender);       // DoIncPaintLock
     SendNotification(senrAfterIncPaintLock, Sender);
     FCachedNotify := False;
@@ -1245,6 +1246,7 @@ begin
     try
       SendNotification(senrBeforeDecPaintLock, Sender);
       SendNotification(senrDecPaintLock, Sender);       // DoDecPaintLock
+      SendNotification(senrAfterDecPaintLock, Sender);
     finally
       FIsInDecPaintLock := False;
     end;

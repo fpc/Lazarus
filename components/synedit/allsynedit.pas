@@ -26,7 +26,7 @@ uses
   SynPluginSyncronizedEditBase, SynPluginTemplateEdit, LazSynEditText, LazSynTextArea, 
   SynRegExpr, SynTextDrawer, SynEditMarkupGutterMark, SynHighlighterBat, SynHighlighterIni, 
   SynEditMarkupSpecialChar, SynEditTextDoubleWidthChars, SynEditTextSystemCharWidth, 
-  SynEditMarkupIfDef, LazarusPackageIntf;
+  SynEditMarkupIfDef, SynPluginMultiCaret, LazarusPackageIntf;
 
 implementation
 

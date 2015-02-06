@@ -91,11 +91,21 @@ type
 
   TSynStatusChange = (scCaretX, scCaretY,
     scLeftChar, scTopLine, scLinesInWindow, scCharsInWindow,
-    scInsertMode, scModified, scSelection, scReadOnly
+    scInsertMode, scModified, scSelection, scReadOnly,
+    scFocus,     // received or lost focus
+    scOptions    // some Options were changed (only triggered by some optinos)
    );
   TSynStatusChanges = set of TSynStatusChange;
   TStatusChangeEvent = procedure(Sender: TObject; Changes: TSynStatusChanges)
     of object;
+
+  TSynPaintEvent = (
+    peBeforePaint, peAfterPaint,
+    peBeforePaintCanvas, peAfterPaintCanvas,  // before the double buffer canvas is assigned
+    peBeforeScroll, peAfterScroll
+  );
+  TSynPaintEvents = set of TSynPaintEvent;
+  TSynPaintEventProc = procedure(Sender: TObject; Changes: TSynPaintEvents) of object;
 
   TSynVisibleSpecialChar = (vscSpace, vscTabAtFirst, vscTabAtLast);
   TSynVisibleSpecialChars = set of TSynVisibleSpecialChar;

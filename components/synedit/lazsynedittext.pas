@@ -63,8 +63,10 @@ type
                            senrDecOwnedPaintLock,
                            senrIncPaintLock,      // Actual PaintLock
                            senrDecPaintLock,
-                           senrAfterIncPaintLock, // For plugins, etc...
+                           senrBeforeIncPaintLock, // For plugins, etc...
+                           senrAfterIncPaintLock,
                            senrBeforeDecPaintLock,
+                           senrAfterDecPaintLock,
                            senrTextBufferChanging, // About to change
                            senrTextBufferChanged
                           );

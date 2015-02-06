@@ -103,6 +103,7 @@ type
     FCharWidth: integer;
     FLinesInWindow: Integer;
     fOnStatusChange: TStatusChangeEvent;
+    FTextSizeChangeList: TMethodList;
     FTextHeight: integer;
 
     FCanvas: TCanvas;
@@ -152,6 +153,8 @@ type
     function PixelsToRowColumn(Pixels: TPoint; aFlags: TSynCoordinateMappingFlags): TPoint; // ignores scmLimitToLines
 
     procedure FontChanged;
+    procedure AddTextSizeChangeHandler(AHandler: TNotifyEvent);
+    procedure RemoveTextSizeChangeHandler(AHandler: TNotifyEvent);
 
     // Settings controlled by SynEdit
     property Padding[Side: TLazSynBorderSide]: integer read GetPadding write SetPadding;
@@ -1215,6 +1218,7 @@ var
   i: TLazSynBorderSide;
 begin
   inherited Create(AOwner);
+  FTextSizeChangeList := TMethodList.Create;
   FTokenBreaker := TLazSynPaintTokenBreaker.Create;
   FTextDrawer := ATextDrawer;
   FTextDrawer.RegisterOnFontChangeHandler(@DoDrawerFontChanged);
@@ -1236,6 +1240,7 @@ begin
   FTextDrawer.UnRegisterOnFontChangeHandler(@DoDrawerFontChanged);
   FreeAndNil(FPaintLineColor);
   FreeAndNil(FPaintLineColor2);
+  FreeAndNil(FTextSizeChangeList);
   inherited Destroy;
 end;
 
@@ -1320,6 +1325,17 @@ begin
     if (Chg <> []) then
       fOnStatusChange(Self, Chg);
   end;
+  FTextSizeChangeList.CallNotifyEvents(Self);
+end;
+
+procedure TLazSynTextArea.AddTextSizeChangeHandler(AHandler: TNotifyEvent);
+begin
+  FTextSizeChangeList.Add(TMethod(AHandler));
+end;
+
+procedure TLazSynTextArea.RemoveTextSizeChangeHandler(AHandler: TNotifyEvent);
+begin
+  FTextSizeChangeList.Remove(TMethod(AHandler));
 end;
 
 procedure TLazSynTextArea.DoPaint(ACanvas: TCanvas; AClip: TRect);
