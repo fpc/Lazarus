@@ -13054,6 +13054,7 @@ var
   i : Integer;
 begin
   if (Hyper <> nil) then begin
+    Printer.Refresh;
     BeginPrint;
     Printer.BeginDoc;
     try
