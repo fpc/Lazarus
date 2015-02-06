@@ -2817,7 +2817,10 @@ var
           FExprEvaluatedAsText := FExprEvaluatedAsText + ', ';
         FExprEvaluatedAsText := FExprEvaluatedAsText + s;
 
-        FFields.Add(TDBGField.Create(IntToStr(FBoundLow + i), FArrayIndexValues[i], flPublic));
+        if FRepeatFirstIndex <> 0
+        then m := FRepeatFirstIndex
+        else m := FBoundLow;
+        FFields.Add(TDBGField.Create(IntToStr(m + i), FArrayIndexValues[i], flPublic));
       end;
       if Length(FArrayIndexValues) < FLen then
         FExprEvaluatedAsText := FExprEvaluatedAsText + ', ...';
@@ -2972,6 +2975,7 @@ var
     s: String;
     Idx: Int64;
     Error: word;
+    i: Integer;
   begin
     FProcessState := gtpsEvalExprRepeated;
 
@@ -2995,6 +2999,10 @@ var
         exit;
       end;
       FExprEvaluatedAsText := FRepeatCountEval.ExprEvaluatedAsText;
+      FFields.Free;
+      FFields := TDBGFields.Create;
+      for i := 0 to FRepeatCountEval.Fields.Count - 1 do
+        FFields.Add(FRepeatCountEval.Fields[i]);
       FHasExprEvaluatedAsText := True;
       FreeAndNil(FRepeatCountEval);
       Result := True;
