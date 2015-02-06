@@ -38,7 +38,7 @@ interface
 
 uses
   Classes, SysUtils,
-  Controls, Forms, SynRegExpr, FileProcs, Laz2_XMLCfg, LCLProc,
+  Controls, Forms, SynRegExpr, FileProcs, Laz2_XMLCfg, LazUTF8,
   CompOptsIntf, ProjectIntf, LazIDEIntf,
   ProjectResourcesIntf,
   frmCustomApplicationOptions, PublishModule, IDEProcs, LazarusIDEStrConsts;

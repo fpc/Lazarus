@@ -19,8 +19,9 @@ unit qtsystemtrayicon;
 interface
 {$i qtdefines.inc}
 
-uses Classes, Controls, ExtCtrls, Graphics, Forms, types, LCLType, qtobjects, qt4,
-  qtproc;
+uses
+  Classes, Controls, ExtCtrls, Graphics, Forms, types, LCLType, LazUTF8, LCLProc,
+  qtobjects, qt4, qtproc, qtint;
 
 type
   TSysTrayIconPaintData = record
@@ -67,7 +68,6 @@ type
   end;
 
 implementation
-uses qtint, LCLProc;
 
 { TQtSystemTrayIcon }
 

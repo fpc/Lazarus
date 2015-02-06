@@ -29,7 +29,7 @@ uses
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
   CommCtrl, Windows, Win32Extra,
-  Spin, Controls, StdCtrls, LCLType, LCLProc, LMessages,
+  Spin, Controls, StdCtrls, LCLType, LMessages, LazUTF8,
 ////////////////////////////////////////////////////
   WSSpin, WSLCLClasses, WSProc,
   Win32Int, Win32Proc, Win32WSStdCtrls, Win32WSControls;

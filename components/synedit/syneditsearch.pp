@@ -42,7 +42,8 @@ unit SynEditSearch;
 interface
 
 uses
-  Classes, LCLProc, SynRegExpr, SynEditMiscProcs, SynEditTypes;
+  Classes, SysUtils,
+  LCLIntf, LCLType, LCLProc, LazUTF8, SynRegExpr, SynEditMiscProcs, SynEditTypes;
 
 procedure MakeCompTable;
 
@@ -130,9 +131,6 @@ function AdjustPositionAfterReplace(const p, ReplaceStart, ReplaceEnd: TPoint;
   const AReplacement: string): TPoint;
 
 implementation
-
-uses
-  LCLIntf, LCLType, SysUtils;
 
 var
   CompTableSensitive: TByteArray256;

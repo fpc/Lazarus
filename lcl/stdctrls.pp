@@ -25,7 +25,7 @@ interface
 
 uses
   Classes, SysUtils, types, LCLStrConsts, LCLType, LCLProc, LMessages, Graphics,
-  ExtendedStrings, LCLIntf, ActnList, Controls, TextStrings,
+  ExtendedStrings, LCLIntf, ActnList, Controls, TextStrings, LazUTF8,
   Forms, Menus, LResources;
 
 type

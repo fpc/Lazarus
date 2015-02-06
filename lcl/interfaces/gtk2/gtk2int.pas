@@ -40,7 +40,7 @@ uses
   gdk2pixbuf, gtk2, gdk2, glib2, Pango,
   // LCL
   Maps, FileUtil, Dialogs, Controls, Forms, LCLStrConsts,
-  LMessages, LCLProc, LCLIntf, LCLType, DynHashArray, GraphType, GraphMath,
+  LMessages, LCLProc, LazUTF8, LCLIntf, LCLType, DynHashArray, GraphType, GraphMath,
   Graphics, Menus, Themes, WSLCLClasses,
 
   Buttons, StdCtrls, CheckLst,

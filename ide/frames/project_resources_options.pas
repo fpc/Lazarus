@@ -8,7 +8,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Graphics, Forms, Controls, ComCtrls, Dialogs,
-  LCLProc, LCLType,
+  LCLType, LazUTF8,
   IDEOptionsIntf, IDEImagesIntf, IDEDialogs, Project,
   ProjectUserResources, LCLStrConsts, ExtCtrls, StdCtrls, LazarusIDEStrConsts;
 

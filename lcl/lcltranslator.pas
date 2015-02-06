@@ -35,8 +35,8 @@ in directory where your program translation files are placed.
 interface
 
 uses
-  Classes, SysUtils, LResources, GetText, Controls, typinfo, FileUtil, LCLProc,
-  Translations, Forms;
+  Classes, SysUtils, LResources, GetText, Controls, typinfo, FileUtil,
+  Translations, Forms, LazUTF8;
 
 type
 
@@ -234,7 +234,7 @@ begin
     Lang := GetEnvironmentVariableUTF8('LANG');
 
   if Lang = '' then
-    LCLGetLanguageIDs(Lang, T);
+    LazGetLanguageIDs(Lang, T);
 
   Result := GetLocaleFileName(Lang, LCExt, Dir);
   if Result <> '' then

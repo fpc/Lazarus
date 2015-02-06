@@ -87,7 +87,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, FileUtil, StringHashList, AvgLvlTree,
-  LConvEncoding, LazUTF8Classes, jsonparser, fpjson;
+  LConvEncoding, LazUTF8, LazUTF8Classes, jsonparser, fpjson;
 
 type
   TStringsType = (

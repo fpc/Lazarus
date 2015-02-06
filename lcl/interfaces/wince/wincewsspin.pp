@@ -24,7 +24,7 @@ uses
   commctrl,
   Windows,
   // LCL
-  Spin, Controls, StdCtrls, LCLType, LCLProc,
+  Spin, Controls, StdCtrls, LCLType, LazUTF8,
   // Widgetset
   WSSpin, WSLCLClasses,  WinCEInt, WinCEProc,
   WinCEWSStdCtrls, WinCEWSControls;

@@ -45,8 +45,8 @@ uses
 {$IFDEF UNIX}
    Unix,BaseUnix,termio,
 {$ENDIF}
-  Classes, SysUtils, strutils, Controls, Maps, Variants, FileUtil, Dialogs,
-  BaseIDEIntf, LCLProc, LazClasses, LazLoggerBase, math,
+  Classes, SysUtils, strutils, math, Controls, Maps, Variants, FileUtil, Dialogs,
+  BaseIDEIntf, LCLProc, LazUTF8, LazClasses, LazLoggerBase,
   DebugUtils, GDBTypeInfo, GDBMIDebugInstructions, GDBMIMiscClasses,
   DbgIntfBaseTypes, DbgIntfDebuggerBase, GdbmiStringConstants,
   Forms;

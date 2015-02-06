@@ -25,8 +25,8 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs,
-  StdCtrls, LCLProc, CheckLst, Buttons, ExtCtrls, ComCtrls, Types,
-  LCLType, Translations,
+  StdCtrls, CheckLst, Buttons, ExtCtrls, ComCtrls, Types,
+  LCLType, LazUTF8, Translations,
   {$IFnDEF POCHECKERSTANDALONE}
   IDEIntf, MenuIntf,
   {$ENDIF}
@@ -741,6 +741,7 @@ begin
   end;
   FPoCheckerSettings.SaveConfig;
 end;
+
 function ListSortFunc(List: TStringList; Index1, Index2: Integer): Integer;
 begin
   Result := Utf8CompareText(List.Strings[Index1], List.Strings[Index2]);

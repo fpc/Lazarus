@@ -32,7 +32,7 @@ uses
   Windows, shlobj, ShellApi, ActiveX, SysUtils, Classes,
   CommDlg,
 // lcl
-  LCLProc, LCLType, Dialogs, Controls, Graphics, Forms, FileUtil, Themes, Masks,
+  LCLProc, LCLType, LazUTF8, Dialogs, Controls, Graphics, Forms, FileUtil, Themes, Masks,
 // ws
   WSDialogs, WSLCLClasses, Win32Extra, Win32Int, InterfaceBase,
   Win32Proc;

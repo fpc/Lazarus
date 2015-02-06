@@ -23,7 +23,8 @@ interface
 
 uses
   Windows, Win32Extra, Classes, SysUtils,
-  LMessages, LCLType, LCLProc, LCLMessageGlue,Controls, Forms, Menus, GraphType, IntfGraphics;
+  LMessages, LCLType, LCLProc, LCLMessageGlue, LazUTF8, Controls, Forms, Menus,
+  GraphType, IntfGraphics;
 
 const
   LV_DISP_INFO_COUNT = 2;  

@@ -27,8 +27,8 @@ uses
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-  Windows, Classes, Controls, CheckLst, StdCtrls, Themes, Graphics, LCLType, LCLProc,
-  LMessages, LCLMessageGlue,
+  Windows, Classes, Controls, CheckLst, StdCtrls, Themes, Graphics, LCLType,
+  LazUTF8, LMessages, LCLMessageGlue,
 ////////////////////////////////////////////////////
   WSCheckLst, WSLCLClasses, Win32Int, Win32Proc, Win32WSControls, Win32WSStdCtrls;
 

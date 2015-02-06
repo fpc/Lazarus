@@ -27,9 +27,11 @@ unit freditor;
 
 interface
 
-uses SysUtils, Classes, DOM, xmlread, xmlwrite, Forms, Controls, ExtCtrls,
-     StdCtrls, Dialogs, Menus, fpdeutil, Lazdemsg, Lazdeopts,
-     GraphType, ActnList, LResources, Buttons;
+uses
+  SysUtils, Classes, StrUtils,
+  Forms, Controls, ExtCtrls, Buttons, StdCtrls, Dialogs, Menus,
+  DOM, xmlread, xmlwrite, fpdeutil, Lazdemsg, Lazdeopts,
+  GraphType, ActnList, LResources, LazUTF8;
 
 Type
 
@@ -154,7 +156,7 @@ Type
 
 implementation
 
-uses frmexample, frmLink, StrUtils, LCLProc, FrmMain;
+uses frmexample, frmLink, FrmMain;
 
 Function JoinLinkText(lblShortDescr,T : String): String;
 begin

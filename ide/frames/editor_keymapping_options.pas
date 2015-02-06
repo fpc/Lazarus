@@ -26,7 +26,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, TreeFilterEdit, Forms, StdCtrls, ComCtrls,
-  Controls, Dialogs, LCLType, LCLProc, Menus, Buttons, Clipbrd, EditorOptions,
+  Controls, Dialogs, LCLType, LazUTF8, Menus, Buttons, Clipbrd, EditorOptions,
   LazarusIDEStrConsts, IDEOptionsIntf, IDEImagesIntf, editor_general_options,
   KeymapSchemeDlg, KeyMapping, IDECommands, KeyMapShortCutDlg, SrcEditorIntf,
   EditBtn, ExtCtrls;

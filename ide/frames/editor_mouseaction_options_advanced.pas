@@ -26,9 +26,9 @@ interface
 
 uses
   EditorOptions, LazarusIDEStrConsts, IDEOptionsIntf, sysutils, StdCtrls,
-  ExtCtrls, Classes, Controls, LCLProc, Grids, ComCtrls, Dialogs,
+  ExtCtrls, Classes, Controls, Grids, ComCtrls, Dialogs,
   SynEditMouseCmds, Laz2_XMLCfg, MouseActionDialog, math, KeyMapping,
-  IDEImagesIntf, IDEDialogs;
+  IDEImagesIntf, IDEDialogs, LazUTF8;
 
 type
 

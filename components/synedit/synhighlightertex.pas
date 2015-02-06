@@ -42,7 +42,7 @@ interface
 
 uses
   SysUtils, Classes,
-  LCLProc, LCLIntf, LCLType,
+  LCLIntf, LCLType, LazUTF8,
   Controls, Graphics,
   SynEditTypes, SynEditHighlighter;
 

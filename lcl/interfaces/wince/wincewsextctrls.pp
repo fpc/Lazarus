@@ -27,7 +27,7 @@ uses
   {$ifdef Win32}win32compat,{$endif}
   // LCL
   ExtCtrls, Classes, Controls, ImgList, Forms, LCLType, LCLIntf, LCLMessageGlue,
-  LCLProc,
+  LazUTF8,
   // widgetset
   WSControls, WSExtCtrls, WSLCLClasses, WinCEInt, WinCEProc, InterfaceBase,
   WinCEWSControls, WSProc;

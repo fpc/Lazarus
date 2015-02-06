@@ -39,7 +39,7 @@ uses
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-  LCLType, Controls, StdCtrls, Grids,
+  LCLType, Controls, StdCtrls, Grids, LazUTF8,
 ////////////////////////////////////////////////////
   WSLCLClasses, WSControls, WSFactory;
 
@@ -59,7 +59,7 @@ type
 
 implementation
 uses
-  LCLIntf, LCLProc;
+  LCLIntf;
 
 { TWSCustomGrid }
 

@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  Spin, Buttons, Grids, CheckLst, LCLProc,
+  Spin, Buttons, Grids, CheckLst, LazUTF8,
   Project, IDEOptionsIntf, LazarusIDEStrConsts, W32VersionInfo;
 
 type

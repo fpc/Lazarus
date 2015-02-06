@@ -44,7 +44,7 @@ uses
   Windows,
   // RTL, LCL
   Classes, ComCtrls, Controls, Buttons, Dialogs, DynHashArray,
-  ExtCtrls, Forms, GraphMath, GraphType, InterfaceBase, LCLIntf, LCLType,
+  ExtCtrls, Forms, GraphMath, GraphType, InterfaceBase, LCLIntf, LCLType, LazUTF8,
   LMessages, StdCtrls, SysUtils, Graphics, Menus,
   // Widgetset
   WinCEProc, WinCEExtra, WinExt, WinCEDef, Themes;

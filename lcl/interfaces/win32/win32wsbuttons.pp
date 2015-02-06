@@ -29,7 +29,7 @@ uses
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
   Windows, CommCtrl, Classes, Buttons, Graphics, GraphType, Controls,
-  LCLType, LCLProc, LCLMessageGlue, LMessages, Themes,
+  LCLType, LCLMessageGlue, LMessages, LazUTF8, Themes,
 ////////////////////////////////////////////////////
   WSProc, WSButtons, Win32WSControls, Win32WSImgList,
   UxTheme, Win32Themes;

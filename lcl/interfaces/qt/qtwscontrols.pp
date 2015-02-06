@@ -27,7 +27,7 @@ uses
   qt4,
   qtwidgets, qtobjects, qtproc, qtint,
   // LCL
-  SysUtils, Classes, Types, Controls, LCLType, LCLProc, Forms, Graphics,
+  SysUtils, Classes, Types, Controls, LCLType, LazUTF8, Forms, Graphics,
   // Widgetset
   InterfaceBase, WSProc, WSControls, WSLCLClasses;
 

@@ -27,8 +27,7 @@ uses
   qt4,
   qtwidgets, qtobjects, qtproc, QtWSControls,
   // LCL
-  LCLProc,
-  SysUtils, Classes, Controls, Graphics, Forms, ExtCtrls, LCLType,
+  SysUtils, Classes, Controls, Graphics, Forms, ExtCtrls, LCLType, LazUTF8,
   // Widgetset
   WSExtCtrls, WSLCLClasses;
 

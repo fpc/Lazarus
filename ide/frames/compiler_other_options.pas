@@ -29,7 +29,7 @@ interface
 
 uses
   Classes, SysUtils, math, AVL_Tree, LazLogger, Forms, Controls, Graphics,
-  Dialogs, StdCtrls, LCLProc, ComCtrls, LCLType, ExtCtrls, Buttons,
+  Dialogs, StdCtrls, ComCtrls, ExtCtrls, Buttons, LCLType, LazUTF8,
   CodeToolsCfgScript, KeywordFuncLists, LazarusIDEStrConsts,
   IDEOptionsIntf, CompOptsIntf, IDECommands, LazIDEIntf, Project, PackageDefs,
   CompilerOptions, Compiler, AllCompilerOptions, CustomDefines,

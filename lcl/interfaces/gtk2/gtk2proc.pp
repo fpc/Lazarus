@@ -43,7 +43,7 @@ uses
     {$endif}
   // Other units
   Math, // Math after gtk to get the correct Float type
-  LMessages, LCLProc, LCLIntf, LCLType, DynHashArray, Masks,
+  LMessages, LCLProc, LazUTF8, LCLIntf, LCLType, DynHashArray, Masks,
   GraphType, Graphics, LResources, Controls, Forms,
   Buttons, Menus, StdCtrls, ComCtrls, ExtCtrls, Dialogs, ExtDlgs,
   FileUtil, ImgList, Gtk2FontCache, Gtk2Globals, Gtk2Def, Gtk2Extra, {%H-}Gtk2Debug,

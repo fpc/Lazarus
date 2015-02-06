@@ -28,7 +28,7 @@ interface
 uses
   Classes, SysUtils, ExtCtrls, SynEditMarkup, SynEditTypes, SynEditSearch,
   SynEditMiscClasses, Controls, LCLProc, SynEditHighlighter, SynEditPointClasses,
-  SynEditMiscProcs, SynEditFoldedView, SynEditTextBase, LazClasses;
+  SynEditMiscProcs, SynEditFoldedView, SynEditTextBase, LazClasses, LazUTF8;
 
 type
 

@@ -30,7 +30,7 @@ interface
 
 uses
   SysUtils, Types, Classes, Math,
-  AvgLvlTree, LazUTF8Classes,
+  AvgLvlTree, LazUTF8, LazUTF8Classes,
   LCLStrConsts, LResources, LCLIntf, LCLType,
   FileUtil, LCLProc, LMessages, ImgList, ActnList, GraphType,
   Graphics, Menus, Controls, Forms, StdCtrls, ExtCtrls, ToolWin, Buttons,

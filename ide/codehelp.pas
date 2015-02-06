@@ -40,7 +40,7 @@ interface
 
 uses
   Classes, SysUtils, LazFileCache, LCLProc, Forms, Controls, FileUtil, Dialogs,
-  AvgLvlTree, LCLType,
+  AvgLvlTree, LCLType, LazUTF8,
   Laz2_DOM, Laz2_XMLRead, Laz2_XMLWrite,
   // codetools
   CodeAtom, CodeTree, CodeToolManager, FindDeclarationTool, BasicCodeTools,

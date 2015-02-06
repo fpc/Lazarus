@@ -38,7 +38,7 @@ uses
   // FPC
   Classes, SysUtils, Math, Types, maps,
   // LCL
-  InterfaceBase, LCLProc, LCLType, LMessages, LCLMessageGlue, LCLStrConsts,
+  InterfaceBase, LCLProc, LazUTF8, LCLType, LMessages, LCLMessageGlue, LCLStrConsts,
   Controls, ExtCtrls, Forms,
   Dialogs, StdCtrls, LCLIntf, GraphType, GraphUtil, Themes,
   // WS

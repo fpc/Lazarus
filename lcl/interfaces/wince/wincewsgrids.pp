@@ -24,7 +24,7 @@ uses
   // RTL, FCL
   Windows,
   // LCL
-  LCLType, LCLProc, Controls,
+  LCLType, LazUTF8, Controls,
   // Widgetset
   WSGrids, WinCEWSControls, WinCEInt;
 

@@ -26,7 +26,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, FileUtil, LCLStrConsts, Dialogs,
-  LazConfigStorage, HelpIntfs, Masks, LazFileUtils;
+  LazConfigStorage, HelpIntfs, Masks, LazFileUtils, LazUTF8;
 
 type
   { THelpQueryItem }

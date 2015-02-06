@@ -22,7 +22,7 @@ interface
 uses
   // LCL
   Graphics, GraphType, ImgList, Menus, Forms, LCLIntf, {keep before Windows }
-  Controls,  InterfaceBase, LCLProc,
+  Controls,  InterfaceBase, LCLProc, LazUTF8,
   // RTL, FCL
   Windows, Classes, SysUtils,
   commctrl,

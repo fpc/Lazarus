@@ -33,7 +33,7 @@ interface
 
 uses
   Classes, SysUtils, Math, FileUtil, DB,
-  LCLStrConsts, LCLIntf, LCLProc, LCLType, LMessages, LResources,
+  LazUTF8, LCLStrConsts, LCLIntf, LCLProc, LCLType, LMessages, LResources,
   Controls, StdCtrls, Graphics, Grids, Dialogs, Themes, Variants, Clipbrd;
 
 {$if FPC_FULLVERSION<20701}

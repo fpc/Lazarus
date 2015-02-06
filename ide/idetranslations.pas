@@ -32,7 +32,7 @@ unit IDETranslations;
 interface
 
 uses
-  Classes, SysUtils, GetText, LCLProc, Translations,
+  Classes, SysUtils, GetText, LazUTF8, Translations,
   IDEProcs, FileProcs, avl_tree,
   CodeToolManager, DirectoryCacher, CodeCache,
   LazarusIDEStrConsts;
@@ -512,7 +512,7 @@ end;
 
 initialization
   LazarusTranslations:=nil;
-  LCLGetLanguageIDs(SystemLanguageID1,SystemLanguageID2);
+  LazGetLanguageIDs(SystemLanguageID1,SystemLanguageID2);
 
 finalization
   FreeAndNil(LazarusTranslations);

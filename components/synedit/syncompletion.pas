@@ -44,10 +44,10 @@ unit SynCompletion;
 interface
 
 uses
-  LCLProc, LCLIntf, LCLType, LMessages, Classes, Graphics, Forms,
+  LCLProc, LCLIntf, LCLType, LazUTF8, LMessages, Classes, Graphics, Forms,
   Controls, StdCtrls, ExtCtrls, Menus, SysUtils, types,
   SynEditMiscProcs, SynEditKeyCmds, SynEdit, SynEditTypes, SynEditPlugins
-  {$IF FPC_FULLVERSION >= 20701}, character, LazUTF8{$ENDIF};
+  {$IF FPC_FULLVERSION >= 20701}, character{$ENDIF};
 
 type
   TSynBaseCompletionPaintItem =

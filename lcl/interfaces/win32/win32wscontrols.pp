@@ -32,7 +32,7 @@ uses
 ////////////////////////////////////////////////////
   WSControls, WSLCLClasses, SysUtils, Win32Proc, Win32Extra, WSProc,
   { LCL }
-  InterfaceBase, LCLType, LCLIntf, LCLProc, Themes, Forms;
+  InterfaceBase, LCLType, LCLIntf, LCLProc, LazUTF8, Themes, Forms;
 
 type
   { TWin32WSDragImageList }

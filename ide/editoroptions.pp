@@ -43,7 +43,7 @@ uses
   Classes, SysUtils, resource,
   // LCL
   Controls, ExtCtrls, Graphics, LCLProc, FileUtil, Laz2_XMLCfg, lazutf8classes,
-  LazClasses, LazFileUtils, LResources, Forms, Dialogs, ComCtrls, LCLType,
+  LazClasses, LazFileUtils, LResources, Forms, Dialogs, ComCtrls, LCLType, LazUTF8,
   // Synedit
   SynEdit, SynEditAutoComplete, SynEditKeyCmds, SynEditTypes,
   SynEditMiscClasses, SynBeautifier, SynEditTextTrimmer, SynEditMouseCmds,

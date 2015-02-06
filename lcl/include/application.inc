@@ -115,7 +115,7 @@ begin
   RegisterFindGlobalComponentProc(@FindApplicationComponent);
 
   {$ifndef wince}// remove ifdef when gettext is fixed
-  LCLGetLanguageIDs(LangDefault, LangFallback);
+  LazGetLanguageIDs(LangDefault, LangFallback);
   if LangDefault <> '' then
     FBidiMode := Direction(LangDefault)
   else

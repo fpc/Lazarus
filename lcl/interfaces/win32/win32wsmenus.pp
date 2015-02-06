@@ -32,7 +32,7 @@ uses
 ////////////////////////////////////////////////////
   WSMenus, WSLCLClasses, WSProc,
   Windows, Controls, Classes, SysUtils, Win32Int, Win32Proc, Win32WSImgList,
-  InterfaceBase, LCLProc, Themes, UxTheme, Win32Themes, Win32Extra,
+  InterfaceBase, LCLProc, LazUTF8, Themes, UxTheme, Win32Themes, Win32Extra,
   FileUtil;
 
 type

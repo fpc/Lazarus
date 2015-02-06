@@ -24,11 +24,10 @@ interface
 uses        
   // FCL
   CommCtrl, Windows, Classes, SysUtils, Math, Win32Extra,
-  ShellAPI,
   // LCL
   ComCtrls, LCLType, Controls, Graphics, Themes,
   ImgList, StdCtrls, Forms, LCLIntf,
-  LMessages, LCLProc, LCLMessageGlue, InterfaceBase,
+  LMessages, LazUTF8, LCLMessageGlue, InterfaceBase,
   // widgetset
   WSComCtrls, WSLCLClasses, WSControls, WSProc,
   // win32 widgetset

@@ -16,11 +16,11 @@ interface
 
 uses
   SysUtils, Classes, Graphics, Controls,
-  LR_DBRel, Forms, StdCtrls, ClipBrd, Menus,db,
+  LR_DBRel, Forms, StdCtrls, ClipBrd, Menus, db,
   {$IFDEF WIN32}
   Windows,
   {$ENDIF}
-  LCLType,LCLIntf,LCLProc,LConvEncoding;
+  LCLType, LCLIntf, LazUTF8, LConvEncoding;
 
 type
   TUTF8Item=packed record

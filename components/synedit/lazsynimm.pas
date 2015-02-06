@@ -7,7 +7,7 @@ unit LazSynIMM;
 interface
 
 uses
-  windows, imm, Classes, SysUtils, LazLoggerBase, LCLType, LCLProc, Controls,
+  windows, imm, Classes, SysUtils, Controls, LazLoggerBase, LCLType, LazUTF8,
   Graphics, SynEditMiscClasses, SynTextDrawer, SynEditPointClasses, SynEditMarkupSelection,
   SynEditMarkup, SynEditTypes, SynEditKeyCmds, LazSynEditText;
 

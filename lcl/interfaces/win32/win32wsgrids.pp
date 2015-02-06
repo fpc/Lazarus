@@ -29,7 +29,7 @@ uses
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-  Windows, LCLType, LCLProc, Controls, Win32Proc,
+  Windows, LCLType, LazUTF8, Controls, Win32Proc,
 ////////////////////////////////////////////////////
   WSGrids;
 

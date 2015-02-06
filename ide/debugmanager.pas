@@ -41,8 +41,8 @@ uses
   MemCheck,
   {$ENDIF}
   // LCL
-  Classes, SysUtils, Forms, Controls, Dialogs, ExtCtrls, FileUtil, LCLProc,
-  LCLType, LCLIntf, LazLoggerBase, Laz2_XMLCfg, LazFileCache,
+  Classes, SysUtils, Forms, Controls, Dialogs, ExtCtrls, FileUtil,
+  LCLType, LCLIntf, LazLoggerBase, Laz2_XMLCfg, LazFileCache, LazUTF8,
   // codetools
   CodeCache, CodeToolManager, PascalParserTool, CodeTree,
   // IDEIntf

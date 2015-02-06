@@ -46,7 +46,7 @@ uses
   LCLProc, LCLType, LResources, LCLIntf, FileUtil, Forms, ComCtrls, Dialogs,
   StdCtrls, Graphics, Translations, ClipBrd, types, Extctrls, Menus, HelpIntfs,
   LConvEncoding, Messages, LazLoggerBase, lazutf8classes, LazLogger, AvgLvlTree,
-  LazFileCache,
+  LazFileCache, LazUTF8,
   // codetools
   BasicCodeTools, CodeBeautifier, CodeToolManager, CodeCache, SourceLog,
   LinkScanner, CodeTree,

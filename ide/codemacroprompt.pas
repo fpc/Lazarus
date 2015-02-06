@@ -34,7 +34,7 @@ uses
   Classes, SysUtils, LCLProc, Forms, Controls, Graphics, Dialogs,
   BasicCodeTools, CodeToolManager,
   SynEditAutoComplete, SynPluginTemplateEdit, SynPluginSyncronizedEditBase, SynEdit,
-  MacroIntf, LazIDEIntf, SrcEditorIntf;
+  MacroIntf, LazIDEIntf, SrcEditorIntf, LazUTF8;
 
 type
   TCodeMacroPromptDlg = class(TForm)

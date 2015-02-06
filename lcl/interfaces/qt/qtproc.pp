@@ -29,7 +29,7 @@ uses
   InterfaceBase,
   qt4,
   GraphType,
-  LCLProc;
+  LazUTF8;
 
 const
   EVE_IO_READ  = 1;

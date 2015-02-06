@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, math, contnrs,
   Forms, Controls, StdCtrls, Buttons, ButtonPanel, EditBtn, ExtCtrls,
-  LCLProc, Compiler, LazarusIDEStrConsts;
+  LCLProc, LazUTF8, Compiler, LazarusIDEStrConsts;
 
 type
 

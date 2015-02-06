@@ -53,8 +53,8 @@ uses
   {$IFDEF IP_LAZARUS}
   //MemCheck,
   Types, contnrs,
-  LCLType, LCLPRoc, GraphType, LCLIntf, LResources, LMessages, LCLMemManager,
-  Translations, FileUtil, LConvEncoding,
+  LCLType, GraphType, LCLProc, LCLIntf, LResources, LMessages, LCLMemManager,
+  Translations, FileUtil, LConvEncoding, LazUTF8,
   IpHtmlTabList,
   {$ELSE}
   Windows,

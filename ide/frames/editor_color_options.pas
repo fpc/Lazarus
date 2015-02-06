@@ -26,7 +26,7 @@ interface
 
 uses
   Classes, Controls, math, types, typinfo, sysutils, Laz2_XMLCfg, LazFileUtils,
-  LCLProc, LCLType, LCLIntf, StdCtrls, ExtCtrls, Graphics, GraphUtil, ColorBox,
+  LCLProc, LCLType, LCLIntf, LazUTF8, StdCtrls, ExtCtrls, Graphics, GraphUtil, ColorBox,
   ComCtrls, Dialogs, Menus, Spin, maskedit, SynEdit, SynEditMiscClasses,
   SynGutterCodeFolding, SynGutterLineNumber, SynEditTypes, SynGutterChanges,
   SynEditMouseCmds, SynEditHighlighter, SynTextDrawer, SynColorAttribEditor,

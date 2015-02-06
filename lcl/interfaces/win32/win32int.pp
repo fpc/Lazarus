@@ -31,7 +31,7 @@ uses
   Windows, // keep as first
   ActiveX, Classes,
   Translations, ComCtrls, Controls, Buttons,
-  Forms, Dialogs, GraphMath, GraphType, InterfaceBase, LCLIntf,
+  Forms, Dialogs, GraphMath, GraphType, InterfaceBase, LCLIntf, LazUTF8,
   LCLType, LMessages, StdCtrls, SysUtils, Win32Def, Graphics, Menus, CommCtrl,
   MultiMon, Themes{, Win32Debug};
 

@@ -11,7 +11,7 @@ uses
   // rtl
   Classes, SysUtils,
   // lcl
-  Controls, Graphics, Themes, LCLProc, LCLType;
+  Controls, Graphics, Themes, LCLType, LazUTF8;
   
 type
 

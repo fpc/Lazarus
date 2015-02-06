@@ -38,9 +38,8 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, Buttons,
-  StdCtrls, LCLType, LCLProc, LCLUnicodeData, GraphType, Grids, ButtonPanel,
-  ComCtrls,
-  IDEHelpIntf,
+  StdCtrls, LCLType, LCLUnicodeData, GraphType, Grids, ButtonPanel, ComCtrls,
+  IDEHelpIntf, LazUTF8,
   LazarusIDEStrConsts, EditorOptions, EnvironmentOpts;
 
 type

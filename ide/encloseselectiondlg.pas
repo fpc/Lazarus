@@ -35,9 +35,9 @@ unit EncloseSelectionDlg;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, Forms, Controls, Graphics, Dialogs, Buttons,
+  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, Buttons,
   ExtCtrls, BasicCodeTools, CodeToolManager, SourceChanger,
-  LazarusIDEStrConsts, LazConf, IDEProcs, ButtonPanel;
+  LazarusIDEStrConsts, LazConf, LazUTF8, IDEProcs, ButtonPanel;
 
 type
   TEncloseSelectionType = (

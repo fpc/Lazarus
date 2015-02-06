@@ -319,46 +319,12 @@ function StringCase(const AString: String; const ACase: array of String; const A
 function ClassCase(const AClass: TClass; const ACase: array of TClass {; const ADescendant: Boolean = True}): Integer; overload;
 function ClassCase(const AClass: TClass; const ACase: array of TClass; const ADecendant: Boolean): Integer; overload;
 
-
-// UTF-8 Routines in LCLProc are provided only for backwards compatibility,
-// use the routines from LazUTF8 instead
-
 // MWE: define (missing) UTF16string similar to UTF8
 //      strictly spoken, a widestring <> utf16string
 // todo: use it in existing functions
 type
   UTF16String = type UnicodeString;
   PUTF16String = ^UTF16String;
-
-function UTF8CharacterLength(p: PChar): integer; inline;
-function UTF8Length(const s: string): PtrInt;
-function UTF8Length(p: PChar; ByteCount: PtrInt): PtrInt; inline;
-function UTF8CharacterToUnicode(p: PChar; out CharLen: integer): Cardinal; inline;
-function UnicodeToUTF8(u: cardinal; Buf: PChar): integer; inline;
-function UnicodeToUTF8SkipErrors(u: cardinal; Buf: PChar): integer; inline;
-function UnicodeToUTF8(u: cardinal): shortstring; inline;
-function UTF8ToDoubleByteString(const s: string): string; inline;
-function UTF8ToDoubleByte(UTF8Str: PChar; Len: PtrInt; DBStr: PByte): PtrInt; inline;
-function UTF8FindNearestCharStart(UTF8Str: PChar; Len: integer;
-                                  BytePos: integer): integer; inline;
-// find the n-th UTF8 character, ignoring BIDI
-function UTF8CharStart(UTF8Str: PChar; Len, CharIndex: PtrInt): PChar; inline;
-// find the byte index of the n-th UTF8 character, ignoring BIDI (byte len of substr)
-function UTF8CharToByteIndex(UTF8Str: PChar; Len, CharIndex: PtrInt): PtrInt; inline;
-procedure UTF8FixBroken(P: PChar); inline;
-function UTF8CharacterStrictLength(P: PChar): integer; inline;
-function UTF8CStringToUTF8String(SourceStart: PChar; SourceLen: PtrInt) : string; inline;
-function UTF8Pos(const SearchForText, SearchInText: string): PtrInt; inline;
-function UTF8Copy(const s: string; StartCharIndex, CharCount: PtrInt): string; inline;
-procedure UTF8Delete(var s: String; StartCharIndex, CharCount: PtrInt); inline;
-procedure UTF8Insert(const source: String; var s: string; StartCharIndex: PtrInt); inline;
-function UTF8LowerCase(const s: String): String;
-function UTF8UpperCase(const s: String): String;
-function FindInvalidUTF8Character(p: PChar; Count: PtrInt;
-                                  StopOnNonASCII: Boolean = true): PtrInt; inline;
-function ValidUTF8String(const s: String): String; inline;
-
-procedure AssignUTF8ListToAnsi(UTF8List, AnsiList: TStrings);
 
 // Felipe: Don't substitute with calls to lazutf16 because lazutf16 includes
 // some initialization code and tables, which are not necessary for the LCL
@@ -368,30 +334,61 @@ function UTF16Length(p: PWideChar; WordCount: PtrInt): PtrInt;
 function UTF16CharacterToUnicode(p: PWideChar; out CharLen: integer): Cardinal;
 function UnicodeToUTF16(u: cardinal): UTF16String;
 
+{$IFnDEF NoLazUTF8Wrappers}
+function UTF8CharacterLength(p: PChar): integer; inline; deprecated 'Use the function in LazUTF8 unit';
+function UTF8Length(const s: string): PtrInt; inline; deprecated 'Use the function in LazUTF8 unit';
+function UTF8Length(p: PChar; ByteCount: PtrInt): PtrInt; inline; deprecated 'Use the function in LazUTF8 unit';
+function UTF8CharacterToUnicode(p: PChar; out CharLen: integer): Cardinal; inline; deprecated 'Use the function in LazUTF8 unit';
+function UnicodeToUTF8(u: cardinal; Buf: PChar): integer; inline; deprecated 'Use the function in LazUTF8 unit';
+function UnicodeToUTF8SkipErrors(u: cardinal; Buf: PChar): integer; inline; deprecated 'Use the function in LazUTF8 unit';
+function UnicodeToUTF8(u: cardinal): shortstring; inline; deprecated 'Use the function in LazUTF8 unit';
+function UTF8ToDoubleByteString(const s: string): string; inline; deprecated 'Use the function in LazUTF8 unit';
+function UTF8ToDoubleByte(UTF8Str: PChar; Len: PtrInt; DBStr: PByte): PtrInt; inline; deprecated 'Use the function in LazUTF8 unit';
+function UTF8FindNearestCharStart(UTF8Str: PChar; Len: integer;
+                                  BytePos: integer): integer; inline; deprecated 'Use the function in LazUTF8 unit';
+// find the n-th UTF8 character, ignoring BIDI
+function UTF8CharStart(UTF8Str: PChar; Len, CharIndex: PtrInt): PChar; inline; deprecated 'Use the function in LazUTF8 unit';
+// find the byte index of the n-th UTF8 character, ignoring BIDI (byte len of substr)
+function UTF8CharToByteIndex(UTF8Str: PChar; Len, CharIndex: PtrInt): PtrInt; inline; deprecated 'Use the function in LazUTF8 unit';
+procedure UTF8FixBroken(P: PChar); inline; deprecated 'Use the function in LazUTF8 unit';
+function UTF8CharacterStrictLength(P: PChar): integer; inline; deprecated 'Use the function in LazUTF8 unit';
+function UTF8CStringToUTF8String(SourceStart: PChar; SourceLen: PtrInt) : string; inline; deprecated 'Use the function in LazUTF8 unit';
+function UTF8Pos(const SearchForText, SearchInText: string): PtrInt; inline; deprecated 'Use the function in LazUTF8 unit';
+function UTF8Copy(const s: string; StartCharIndex, CharCount: PtrInt): string; inline; deprecated 'Use the function in LazUTF8 unit';
+procedure UTF8Delete(var s: String; StartCharIndex, CharCount: PtrInt); inline; deprecated 'Use the function in LazUTF8 unit';
+procedure UTF8Insert(const source: String; var s: string; StartCharIndex: PtrInt); inline; deprecated 'Use the function in LazUTF8 unit';
+function UTF8LowerCase(const s: String): String; inline; deprecated 'Use the function in LazUTF8 unit';
+function UTF8UpperCase(const s: String): String; inline; deprecated 'Use the function in LazUTF8 unit';
+function FindInvalidUTF8Character(p: PChar; Count: PtrInt;
+                                  StopOnNonASCII: Boolean = true): PtrInt; inline; deprecated 'Use the function in LazUTF8 unit';
+function ValidUTF8String(const s: String): String; inline; deprecated 'Use the function in LazUTF8 unit';
+
+procedure AssignUTF8ListToAnsi(UTF8List, AnsiList: TStrings); inline; deprecated 'Use the function in LazUTF8 unit';
+
 //compare functions
 
-function UTF8CompareStr(const S1, S2: String): Integer;
-function UTF8CompareText(const S1, S2: String): Integer;
+function UTF8CompareStr(const S1, S2: String): Integer; inline; deprecated 'Use the function in LazUTF8 unit';
+function UTF8CompareText(const S1, S2: String): Integer; inline; deprecated 'Use the function in LazUTF8 unit';
 
 type
   TConvertResult = LazUTF8.TConvertResult;
-
   TConvertOption = LazUTF8.TConvertOption;
   TConvertOptions = LazUTF8.TConvertOptions;
 
 function ConvertUTF8ToUTF16(Dest: PWideChar; DestWideCharCount: SizeUInt;
   Src: PChar; SrcCharCount: SizeUInt; Options: TConvertOptions;
-  out ActualWideCharCount: SizeUInt): TConvertResult;
+  out ActualWideCharCount: SizeUInt): TConvertResult; inline; deprecated 'Use the function in LazUTF8 unit';
 
 function ConvertUTF16ToUTF8(Dest: PChar; DestCharCount: SizeUInt;
   Src: PWideChar; SrcWideCharCount: SizeUInt; Options: TConvertOptions;
-  out ActualCharCount: SizeUInt): TConvertResult;
+  out ActualCharCount: SizeUInt): TConvertResult; inline; deprecated 'Use the function in LazUTF8 unit';
 
-function UTF8ToUTF16(const S: AnsiString): UTF16String;
-function UTF16ToUTF8(const S: UTF16String): AnsiString;
+function UTF8ToUTF16(const S: AnsiString): UTF16String; inline; deprecated 'Use the function in LazUTF8 unit';
+function UTF16ToUTF8(const S: UTF16String): AnsiString; inline; deprecated 'Use the function in LazUTF8 unit';
 
 // locale
-procedure LCLGetLanguageIDs(var Lang, FallbackLang: String);
+procedure LCLGetLanguageIDs(var Lang, FallbackLang: String); inline; deprecated 'Use the function in LazUTF8 unit';
+{$ENDIF}
 
 // identifier
 function CreateFirstIdentifier(const Identifier: string): string;
@@ -2635,6 +2632,80 @@ begin
   Result := -1;
 end;
 
+function UTF16CharacterLength(p: PWideChar): integer;
+// returns length of UTF16 character in number of words
+// The endianess of the machine will be taken.
+begin
+  if p<>nil then begin
+    if (ord(p[0]) < $D800) or (ord(p[0]) > $DFFF) then
+      Result:=1
+    else
+      Result:=2;
+  end else begin
+    Result:=0;
+  end;
+end;
+
+function UTF16Length(const s: UTF16String): PtrInt;
+begin
+  Result:=UTF16Length(PWideChar(s),length(s));
+end;
+
+function UTF16Length(p: PWideChar; WordCount: PtrInt): PtrInt;
+var
+  CharLen: LongInt;
+begin
+  Result:=0;
+  while (WordCount>0) do begin
+    inc(Result);
+    CharLen:=UTF16CharacterLength(p);
+    inc(p,CharLen);
+    dec(WordCount,CharLen);
+  end;
+end;
+
+function UTF16CharacterToUnicode(p: PWideChar; out CharLen: integer): Cardinal;
+var
+  w1: cardinal;
+  w2: Cardinal;
+begin
+  if p<>nil then begin
+    w1:=ord(p[0]);
+    if (w1 < $D800) or (w1 > $DFFF) then begin
+      // is 1 word character
+      Result:=w1;
+      CharLen:=1;
+    end else begin
+      // could be 2 word character
+      w2:=ord(p[1]);
+      if (w2>=$DC00) then begin
+        // is 2 word character
+        Result:=(w1-$D800) shl 10 + (w2-$DC00) + $10000;
+        CharLen:=2;
+      end else begin
+        // invalid character
+        Result:=w1;
+        CharLen:=1;
+      end;
+    end;
+  end else begin
+    Result:=0;
+    CharLen:=0;
+  end;
+end;
+
+function UnicodeToUTF16(u: cardinal): UTF16String;
+begin
+  // u should be <= $10FFFF to fit into UTF-16
+
+  if u < $10000 then
+    // Note: codepoints $D800 - $DFFF are reserved
+    Result:=system.widechar(u)
+  else
+    Result:=system.widechar($D800+((u - $10000) shr 10))+system.widechar($DC00+((u - $10000) and $3ff));
+end;
+
+{$IFnDEF NoLazUTF8Wrappers}
 function UTF8CharacterLength(p: PChar): integer;
 begin
   Result := LazUTF8.UTF8CharacterLength(p);
@@ -2767,80 +2838,6 @@ begin
   LazUTF8.AssignUTF8ListToAnsi(UTF8List, AnsiList);
 end;
 
-function UTF16CharacterLength(p: PWideChar): integer;
-// returns length of UTF16 character in number of words
-// The endianess of the machine will be taken.
-begin
-  if p<>nil then begin
-    if (ord(p[0]) < $D800) or (ord(p[0]) > $DFFF) then
-      Result:=1
-    else
-      Result:=2;
-  end else begin
-    Result:=0;
-  end;
-end;
-
-function UTF16Length(const s: UTF16String): PtrInt;
-begin
-  Result:=UTF16Length(PWideChar(s),length(s));
-end;
-
-function UTF16Length(p: PWideChar; WordCount: PtrInt): PtrInt;
-var
-  CharLen: LongInt;
-begin
-  Result:=0;
-  while (WordCount>0) do begin
-    inc(Result);
-    CharLen:=UTF16CharacterLength(p);
-    inc(p,CharLen);
-    dec(WordCount,CharLen);
-  end;
-end;
-
-function UTF16CharacterToUnicode(p: PWideChar; out CharLen: integer): Cardinal;
-var
-  w1: cardinal;
-  w2: Cardinal;
-begin
-  if p<>nil then begin
-    w1:=ord(p[0]);
-    if (w1 < $D800) or (w1 > $DFFF) then begin
-      // is 1 word character
-      Result:=w1;
-      CharLen:=1;
-    end else begin
-      // could be 2 word character
-      w2:=ord(p[1]);
-      if (w2>=$DC00) then begin
-        // is 2 word character
-        Result:=(w1-$D800) shl 10 + (w2-$DC00) + $10000;
-        CharLen:=2;
-      end else begin
-        // invalid character
-        Result:=w1;
-        CharLen:=1;
-      end;
-    end;
-  end else begin
-    Result:=0;
-    CharLen:=0;
-  end;
-end;
-
-function UnicodeToUTF16(u: cardinal): UTF16String;
-begin
-  // u should be <= $10FFFF to fit into UTF-16
-
-  if u < $10000 then
-    // Note: codepoints $D800 - $DFFF are reserved
-    Result:=system.widechar(u)
-  else
-    Result:=system.widechar($D800+((u - $10000) shr 10))+system.widechar($DC00+((u - $10000) and $3ff));
-end;
-
-
 {------------------------------------------------------------------------------
   Name:    UTF8CompareStr
   Params: S1, S2 - UTF8 encoded strings
@@ -2955,6 +2952,7 @@ procedure LCLGetLanguageIDs(var Lang, FallbackLang: String);
 begin
   LazUTF8.LazGetLanguageIDs(Lang, FallbackLang);
 end;
+{$ENDIF}
 
 function CreateFirstIdentifier(const Identifier: string): string;
 // example: Ident59 becomes Ident1

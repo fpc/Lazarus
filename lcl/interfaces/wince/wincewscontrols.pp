@@ -25,8 +25,7 @@ uses
   Windows,
   commctrl,
   // RTL, LCL
-  Classes, LCLProc,
-  LCLType, Controls, Forms, Graphics,
+  Classes, LCLProc, LazUTF8, LCLType, Controls, Forms, Graphics,
   // Widgetset
   winceproc, WinCEInt, Sysutils, WSProc,
   WSLCLClasses, WSImgList, WSControls,

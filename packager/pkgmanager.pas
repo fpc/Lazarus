@@ -46,7 +46,7 @@ uses
   MemCheck,
   {$ENDIF}
   // FCL, LCL
-  TypInfo, math, Classes, SysUtils, LCLProc, Forms, Controls, Dialogs, Menus,
+  TypInfo, math, Classes, SysUtils, LCLProc, LazUTF8, Forms, Controls, Dialogs, Menus,
   contnrs, StringHashList, Translations, LResources, ComCtrls,
   // codetools
   CodeToolsConfig, CodeToolManager, CodeCache, CodeToolsStructs, BasicCodeTools,

@@ -37,7 +37,7 @@ unit SearchResultView;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, Forms, Controls, Graphics, ComCtrls, LCLType, LCLIntf,
+  Classes, SysUtils, LCLProc, Forms, Controls, Graphics, ComCtrls, LCLType, LCLIntf, LazUTF8,
   Menus, strutils, IDEOptionDefs, LazarusIDEStrConsts, EnvironmentOpts, InputHistory,
   IDEProcs, Project, MainIntf, Clipbrd, ActnList, IDECommands, TreeFilterEdit;
 

@@ -33,7 +33,7 @@ uses
   // Free Pascal
   Classes, SysUtils,
   // LCL
-  Forms, Controls, LCLType, LCLProc, ExtCtrls, StdCtrls, LazUtf8Classes,
+  Forms, Controls, LCLType, LazUTF8, ExtCtrls, StdCtrls, LazUtf8Classes,
   //Widgetset
   QtWidgets, qtproc;
 

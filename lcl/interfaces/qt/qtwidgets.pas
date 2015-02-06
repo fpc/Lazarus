@@ -28,7 +28,7 @@ uses
   // Free Pascal
   Classes, SysUtils, Types,
   // LCL
-  LCLType, LCLProc, LCLIntf, LMessages, Graphics, Forms, Controls,
+  LCLType, LCLProc, LazUTF8, LCLIntf, LMessages, Graphics, Forms, Controls,
   ComCtrls, ExtCtrls, StdCtrls, Menus, Dialogs, ImgList;
 
 type

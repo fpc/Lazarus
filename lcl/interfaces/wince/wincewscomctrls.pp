@@ -27,7 +27,7 @@ uses
   // LCL
   ComCtrls, LCLType, Controls, Graphics,
   ImgList, StdCtrls, Math, LCLIntf, ExtCtrls,
-  LCLProc, InterfaceBase, LMessages, LCLMessageGlue,
+  LazUTF8, InterfaceBase, LMessages, LCLMessageGlue,
   // widgetset
   WSComCtrls, WSLCLClasses, WSProc, WsControls,
   WinCEInt, WinCEProc, WinCEWSControls, WinCEExtra;

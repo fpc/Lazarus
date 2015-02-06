@@ -16,8 +16,8 @@ unit StringsPropEditDlg;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, Forms, Controls, Buttons, Dialogs, StdCtrls,
-  TextTools, ObjInspStrConsts, ExtCtrls, ButtonPanel;
+  Classes, SysUtils, Forms, Controls, Buttons, Dialogs, StdCtrls,
+  TextTools, ObjInspStrConsts, ExtCtrls, ButtonPanel, LazUTF8;
   
 type
 

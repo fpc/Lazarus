@@ -39,10 +39,10 @@ unit NewDialog;
 interface
 
 uses
-  Buttons, SysUtils, Classes, LCLProc, ComCtrls, Controls, Dialogs,
+  Buttons, SysUtils, Classes, ComCtrls, Controls, Dialogs,
   Forms, StdCtrls, ExtCtrls, FileProcs, ButtonPanel,
   IDEWindowIntf, IDEImagesIntf, NewItemIntf, PackageIntf, ProjectIntf,
-  LazIDEIntf, IDEHelpIntf, IDEDialogs,
+  LazIDEIntf, IDEHelpIntf, IDEDialogs, LazUTF8,
   InputHistory, LazarusIDEStrConsts, Project, MainIntf;
 
 type

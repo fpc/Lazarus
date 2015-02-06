@@ -14,7 +14,7 @@ uses
   {$endif}
   // compatibility
   // RTL, LCL
-  Classes, LMessages, LCLType, LCLProc, Controls, Forms, Menus,
+  Classes, LMessages, LCLType, LCLProc, LazUTF8, Controls, Forms, Menus,
   WinCEExtra, GraphType, LCLMessageGlue;
   
 type
