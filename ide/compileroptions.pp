@@ -44,7 +44,7 @@ interface
 uses
   typinfo, Classes, SysUtils, FileProcs, FileUtil, Laz2_XMLCfg, LazFileUtils,
   AvgLvlTree, Laz2_DOM, LazUTF8,
-  InterfaceBase, LCLProc, Forms, Controls, ExprEval,
+  InterfaceBase, Forms, Controls, LCLProc, ExprEval,
   DefineTemplates, CodeToolsCfgScript, CodeToolManager, KeywordFuncLists,
   BasicCodeTools,
   // IDEIntf
@@ -1932,7 +1932,7 @@ function TBaseCompilerOptions.CreateTargetFilename(
       aSrcOS:=GetDefaultSrcOSForTargetOS(CurTargetOS);
       if (CompareText(aSrcOS, 'unix') = 0)
       then begin
-        Result:=PathName+Prefix+UTF8LowerCase(FileName);
+        Result:=PathName+Prefix+LazUTF8.UTF8LowerCase(FileName);
       end else begin
         Result:=PathName+Prefix+FileName;
       end;
