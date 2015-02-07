@@ -138,7 +138,7 @@ begin
       	    day:=StrToInt(Copy(Value,7,2));
       	    hour:=StrToInt(Copy(Value,9,2));
       	    min:=StrToInt(Copy(Value,11,2));
-      	    TestDate:=EncodeDate(year,month,day)+EncodeTime(hour,min,0,0);
+      	    TestDate:=ComposeDateTime(EncodeDate(year,month,day),EncodeTime(hour,min,0,0));
       	  end
       	else
       	  Verbose(V_Error,'Error in date format, use YYYYMMDDhhmm');
