@@ -240,13 +240,19 @@ begin
   end;
 end;
 
+function CompareLinksForFilename(Data1, Data2: Pointer): integer;
+var
+  Link1: TPackageLink absolute Data1;
+  Link2: TPackageLink absolute Data2;
+begin
+  Result:=CompareFilenames(Link1.LPKFilename,Link2.LPKFilename);
+end;
+
 function CompareLinksForFilenameAndFileAge(Data1, Data2: Pointer): integer;
 var
-  Link1: TPackageLink;
-  Link2: TPackageLink;
+  Link1: TPackageLink absolute Data1;
+  Link2: TPackageLink absolute Data2;
 begin
-  Link1:=TPackageLink(Data1);
-  Link2:=TPackageLink(Data2);
   // first compare filenames
   Result:=CompareFilenames(Link1.LPKFilename,Link2.LPKFilename);
   if Result<>0 then exit;
@@ -552,6 +558,8 @@ var
   ItemPath: String;
   FileVersion: LongInt;
   LastUsedFormat: String;
+  OtherNode: TAvgLvlTreeNode;
+  OtherLink: TPackageLink;
 begin
   if fUpdateLock>0 then begin
     Include(FStates,plsUserLinksNeedUpdate);
@@ -618,11 +626,30 @@ begin
       then
         NewPkgLink.FLastUsed := 0;
 
-      if NewPkgLink.MakeSense then begin
-        FUserLinksSortID.Add(NewPkgLink);
-        FUserLinksSortFile.Add(NewPkgLink);
-      end else
+      if not NewPkgLink.MakeSense then begin
+        debugln(['Warning: TPackageLinks.UpdateUserLinks invalid link: ',NewPkgLink.IDAsString]);
         NewPkgLink.Release;
+        continue;
+      end;
+      OtherNode:=FUserLinksSortFile.FindKey(NewPkgLink,@CompareLinksForFilename);
+      if OtherNode<>nil then begin
+        // a link to the same file
+        OtherLink:=TPackageLink(OtherNode.Data);
+        debugln(['Warning: TPackageLinks.UpdateUserLinks two links for file: ',NewPkgLink.LPKFilename,' A=',OtherLink.IDAsString,' B=',NewPkgLink.IDAsString]);
+        if OtherLink.LastUsed<NewPkgLink.LastUsed then begin
+          debugln(['Warning: TPackageLinks.UpdateUserLinks removing older link ',OtherLink.IDAsString]);
+          FUserLinksSortID.Delete(OtherNode);
+          FUserLinksSortFile.Delete(OtherNode);
+          OtherLink.Release;
+        end else begin
+          debugln(['Warning: TPackageLinks.UpdateUserLinks ignoring older link ',NewPkgLink.IDAsString]);
+          NewPkgLink.Release;
+          continue;
+        end;
+      end;
+
+      FUserLinksSortID.Add(NewPkgLink);
+      FUserLinksSortFile.Add(NewPkgLink);
     end;
     XMLConfig.Modified:=false;
     XMLConfig.Free;
@@ -808,7 +835,8 @@ begin
       else begin
         // there are two packages fitting
         if ((Link.LastUsed>Result.LastUsed)
-            or (Link.Version.Compare(Result.Version)>0))
+            or ((Abs(Link.LastUsed-Result.LastUsed)<1/86400)
+                and (Link.Version.Compare(Result.Version)>0)))
         and FileExistsCached(Link.GetEffectiveFilename) then
           Result:=Link; // this one is better
       end;
@@ -826,26 +854,51 @@ function TPackageLinks.FindLinkWithDependencyInTree(LinkTree: TAvgLvlTree;
 var
   Link: TPackageLink;
   CurNode: TAvgLvlTreeNode;
+  {$IFDEF VerbosePkgLinkSameName}
+  Node1: TAvgLvlTreeNode;
+  {$ENDIF}
 begin
   Result:=nil;
   if (Dependency=nil) or (not Dependency.MakeSense) then begin
     DebugLn(['TPackageLinks.FindLinkWithDependencyInTree Dependency makes no sense']);
     exit;
   end;
+  if CompareText(Dependency.PackageName,'tstver')=0 then
+    debugln(['TPackageLinks.FindLinkWithDependencyInTree AAA1 ',Dependency.AsString(true)]);
   // if there are several fitting the description, use the last used
   // and highest version
   CurNode:=FindLeftMostNode(LinkTree,Dependency.PackageName);
+  {$IFDEF VerbosePkgLinkSameName}
+  if CompareText(Dependency.PackageName,'tstver')=0 then begin
+    Node1:=CurNode.Precessor;
+    if Node1<>nil then
+      debugln(['TPackageLinks.FindLinkWithDependencyInTree Precessor=',TPackageLink(Node1.Data).IDAsString]);
+    Node1:=CurNode.Successor;
+    if Node1<>nil then
+      debugln(['TPackageLinks.FindLinkWithDependencyInTree Successor=',TPackageLink(Node1.Data).IDAsString]);
+  end;
+  {$ENDIF}
+
   while CurNode<>nil do begin
     Link:=TPackageLink(CurNode.Data);
+    {$IFDEF VerbosePkgLinkSameName}
+    if CompareText(Dependency.PackageName,'tstver')=0 then
+      debugln(['TPackageLinks.FindLinkWithDependencyInTree Link=',Link.IDAsString]);
+    {$ENDIF}
     if Dependency.IsCompatible(Link.Version)
     and ((IgnoreFiles=nil) or (not IgnoreFiles.Contains(Link.GetEffectiveFilename)))
     then begin
       if Result=nil then
         Result:=Link
       else begin
+        {$IFDEF VerbosePkgLinkSameName}
+        if CompareText(Dependency.PackageName,'tstver')=0 then
+          debugln(['TPackageLinks.FindLinkWithDependencyInTree Link=',Link.IDAsString,' LastUsed=',DateTimeToStr(Link.LastUsed),' Result=',Result.IDAsString,' LastUsed=',DateTimeToStr(Result.LastUsed)]);
+        {$ENDIF}
         // there are two packages fitting
         if ((Link.LastUsed>Result.LastUsed)
-            or (Link.Version.Compare(Result.Version)>0))
+            or ((Abs(Link.LastUsed-Result.LastUsed)<1/86400)
+                and (Link.Version.Compare(Result.Version)>0)))
         and FileExistsCached(Link.GetEffectiveFilename) then
           Result:=Link; // this one is better
       end;
