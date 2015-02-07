@@ -229,8 +229,8 @@ begin
   begin
     Try
       if lTime^.tm_year=70 then Exit;
-      Dt:=EncodeDate(lTime^.tm_year+1900,lTime^.tm_mon+1,lTime^.tm_mday)+
-          EncodeTime(lTime^.tm_hour,lTime^.tm_min,lTime^.tm_sec,0);
+      Dt:=ComposeDateTime(EncodeDate(lTime^.tm_year+1900,lTime^.tm_mon+1,lTime^.tm_mday),
+            EncodeTime(lTime^.tm_hour,lTime^.tm_min,lTime^.tm_sec,0));
       Result:=DateTimeToStr(Dt);
     Except
     end;
