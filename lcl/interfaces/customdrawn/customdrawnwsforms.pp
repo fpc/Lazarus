@@ -35,7 +35,7 @@ uses
   lazutf8sysutils,
   // LCL
   Controls, LCLType, Forms, LCLProc, GraphType, IntfGraphics, lazcanvas,
-  lazregions, LCLIntf, Lmessages,
+  lazregions, LCLIntf, Lmessages, LazUTF8,
   customdrawncontrols,
   // Widgetset
   InterfaceBase, WSForms, WSProc, WSLCLClasses, LCLMessageGlue,

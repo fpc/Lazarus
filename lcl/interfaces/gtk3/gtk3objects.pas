@@ -21,7 +21,7 @@ unit gtk3objects;
 interface
 
 uses
-  Classes, SysUtils, Graphics, types, LCLType, LCLProc,
+  Classes, SysUtils, Graphics, types, LCLType, LCLProc, LazUTF8,
   LazGtk3, LazGdk3, LazGObject2, LazPango1, LazPangoCairo1, LazGdkPixbuf2,
   LazGLib2, LazCairo1, FPCanvas;
 
