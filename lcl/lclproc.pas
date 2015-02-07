@@ -729,9 +729,9 @@ function GetCompleteText(const sText: string; iSelStart: Integer;
     sTempText: string;
   begin
     Result := False;
-    sTempText := UTF8Copy(sCompareText, 1, iStart);
+    sTempText := LazUTF8.UTF8Copy(sCompareText, 1, iStart);
     if not bCaseSensitive then
-      sTempText := UTF8UpperCase(sTempText);
+      sTempText := LazUTF8.UTF8UpperCase(sTempText);
     if (sTempText = sPrefix) then
     begin
       ResultText := sCompareText;
@@ -748,9 +748,9 @@ begin
   if (sText = '') then Exit;//Everything is compatible with nothing, Exit.
   if (iSelStart = 0) then Exit;//Cursor at beginning
   if (slTextList.Count = 0) then Exit;//No text list to search for idtenticals, Exit.
-  sPrefixText := UTF8Copy(sText, 1, iSelStart);//Get text from beginning to cursor position.
+  sPrefixText := LazUTF8.UTF8Copy(sText, 1, iSelStart);//Get text from beginning to cursor position.
   if not bCaseSensitive then
-    sPrefixText := UTF8UpperCase(sPrefixText);
+    sPrefixText := LazUTF8.UTF8UpperCase(sPrefixText);
   if bSearchAscending then
   begin
     for i := 0 to slTextList.Count - 1 do
@@ -2713,7 +2713,7 @@ end;
 
 function UTF8Length(const s: string): PtrInt;
 begin
-  Result:=UTF8Length(PChar(s),length(s));
+  Result:=LazUTF8.UTF8Length(PChar(s),length(s));
 end;
 
 function UTF8Length(p: PChar; ByteCount: PtrInt): PtrInt;
@@ -2738,7 +2738,7 @@ end;
 
 function UnicodeToUTF8(u: cardinal): shortstring;
 begin
-  Result[0]:=chr(UnicodeToUTF8(u,@Result[1]));
+  Result[0]:=chr(LazUTF8.UnicodeToUTF8(u,@Result[1]));
 end;
 
 function UTF8ToDoubleByteString(const s: string): string;

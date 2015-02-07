@@ -33,7 +33,7 @@ interface
 
 uses
   Classes, SysUtils, Math, FileUtil, DB,
-  LazUTF8, LCLStrConsts, LCLIntf, LCLProc, LCLType, LMessages, LResources,
+  LazUTF8, LazLoggerBase, LCLStrConsts, LCLIntf, LCLType, LMessages, LResources,
   Controls, StdCtrls, Graphics, Grids, Dialogs, Themes, Variants, Clipbrd;
 
 {$if FPC_FULLVERSION<20701}
@@ -644,10 +644,10 @@ begin
   else begin
 
     aCharWidth := CalcCanvasCharWidth(Canvas);
-    if Field.DisplayWidth>UTF8Length(aTitle) then
+    if Field.DisplayWidth>LazUTF8.UTF8Length(aTitle) then
       result := aCharWidth * Field.DisplayWidth
     else
-      result := aCharWidth * UTF8Length(aTitle);
+      result := aCharWidth * LazUTF8.UTF8Length(aTitle);
 
     if HasTitle then begin
       UseTitleFont :=

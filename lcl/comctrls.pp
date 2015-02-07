@@ -32,9 +32,9 @@ uses
   SysUtils, Types, Classes, Math,
   AvgLvlTree, LazUTF8, LazUTF8Classes,
   LCLStrConsts, LResources, LCLIntf, LCLType,
-  FileUtil, LCLProc, LMessages, ImgList, ActnList, GraphType,
-  Graphics, Menus, Controls, Forms, StdCtrls, ExtCtrls, ToolWin, Buttons,
-  Themes, WSLCLClasses, LCLClasses;
+  FileUtil, LMessages, ImgList, ActnList, GraphType,
+  Themes, WSLCLClasses, LCLClasses, LCLProc,
+  Graphics, Menus, Controls, Forms, StdCtrls, ExtCtrls, ToolWin, Buttons;
 
 type
   THitTest = (htAbove, htBelow, htNowhere, htOnItem, htOnButton, htOnIcon,

@@ -5,8 +5,8 @@ unit ValEdit;
 interface
 
 uses
-  Classes, Controls, StdCtrls, SysUtils, Grids, LResources, Dialogs, LazUtf8, variants, LCLProc,
-  LCLType, ContNrs;
+  ContNrs, SysUtils, Classes, Variants,
+  LazUtf8, Controls, StdCtrls, Grids, LResources, Dialogs, LCLType;
 
 type
 
@@ -1367,7 +1367,7 @@ begin
     begin
       if (Index <> i) and (FStrings.Names[i] <> '') then
       begin
-        if (Utf8CompareText(FStrings.Names[i], NewValue) = 0) then
+        if (LazUTF8.Utf8CompareText(FStrings.Names[i], NewValue) = 0) then
         begin
           Result := False;
           ShowMessage(Format(rsVLEDuplicateKey,[NewValue, i + FixedRows]));
