@@ -64,7 +64,7 @@ type
     ScaleX, ScaleY, FontScale: Double;
     procedure SetLazClipRect(r: TRect);
     procedure DoLineTo(X1,Y1: Integer); override;
-    procedure DoMoveTo(x, y: integer); override;
+    procedure DoMoveTo({%H-}x, {%H-}y: integer); override;
 
     function CreateCairoHandle: HDC; virtual; abstract;
     procedure DestroyCairoHandle; virtual;
