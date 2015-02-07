@@ -44,7 +44,9 @@ uses
   PackageIntf, IDEProcs, EnvironmentOpts, PackageDefs, LazConf;
   
 const
-  PkgLinksFileVersion = 2;
+  PkgLinksFileVersion = 3;
+  { 3: changed "LastUsed" from day to seconds, so that last used lpk is loaded
+       after IDE restart }
 
 type
 
@@ -549,6 +551,7 @@ var
   NewPkgLink: TPackageLink;
   ItemPath: String;
   FileVersion: LongInt;
+  LastUsedFormat: String;
 begin
   if fUpdateLock>0 then begin
     Include(FStates,plsUserLinksNeedUpdate);
@@ -576,6 +579,10 @@ begin
     Path:='UserPkgLinks/';
     FileVersion:=XMLConfig.GetValue(Path+'Version',0);
     LinkCount:=XMLConfig.GetValue(Path+'Count',0);
+    if FileVersion<3 then
+      LastUsedFormat:=DateAsCfgStrFormat
+    else
+      LastUsedFormat:=DateTimeAsCfgStrFormat;
     for i:=1 to LinkCount do begin
       ItemPath:=Path+'Item'+IntToStr(i)+'/';
       NewPkgLink:=TPackageLink.Create;
@@ -607,7 +614,7 @@ begin
       NewPkgLink.NotFoundCount:=
                            XMLConfig.GetValue(ItemPath+'NotFoundCount/Value',0);
       if not CfgStrToDate(XMLConfig.GetValue(ItemPath+'LastUsed/Value',''),
-                            NewPkgLink.FLastUsed)
+                            NewPkgLink.FLastUsed,LastUsedFormat)
       then
         NewPkgLink.FLastUsed := 0;
 
@@ -738,7 +745,7 @@ begin
       XMLConfig.SetDeleteValue(ItemPath+'NotFoundCount/Value',
                                CurPkgLink.NotFoundCount,0);
       XMLConfig.SetDeleteValue(ItemPath+'LastUsed/Value',
-                               DateToCfgStr(CurPkgLink.LastUsed),'');
+                               DateToCfgStr(CurPkgLink.LastUsed,DateTimeAsCfgStrFormat),'');
 
       ANode:=FUserLinksSortID.FindSuccessor(ANode);
     end;
