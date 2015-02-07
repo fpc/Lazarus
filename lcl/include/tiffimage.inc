@@ -47,7 +47,7 @@ begin
   and TryStrToInt(Copy(S, 18, 2), SS)
   and TryEncodeDate(YY, MM, DD, D)
   and TryEncodeTime(HH, NN, SS, 0, T)
-  then FDateTime := D + T
+  then FDateTime := ComposeDateTime(D,T)
   else FDateTime := 0;
 
   FDocumentName := IFD.DocumentName;
