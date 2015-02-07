@@ -1278,14 +1278,30 @@ end;
 
 function TAvgLvlTree.FindLeftMostKey(Key: Pointer;
   OnCompareKeyWithData: TListSortCompare): TAvgLvlTreeNode;
+var
+  LeftNode: TAvgLvlTreeNode;
 begin
-  Result:=FindLeftMostSameKey(FindKey(Key,OnCompareKeyWithData));
+  Result:=FindKey(Key,OnCompareKeyWithData);
+  if Result=nil then exit;
+  repeat
+    LeftNode:=Result.Precessor;
+    if (LeftNode=nil) or (OnCompareKeyWithData(Key,LeftNode.Data)<>0) then break;
+    Result:=LeftNode;
+  until false;
 end;
 
 function TAvgLvlTree.FindRightMostKey(Key: Pointer;
   OnCompareKeyWithData: TListSortCompare): TAvgLvlTreeNode;
+var
+  RightNode: TAvgLvlTreeNode;
 begin
-  Result:=FindRightMostSameKey(FindKey(Key,OnCompareKeyWithData));
+  Result:=FindKey(Key,OnCompareKeyWithData);
+  if Result=nil then exit;
+  repeat
+    RightNode:=Result.Successor;
+    if (RightNode=nil) or (OnCompareKeyWithData(Key,RightNode.Data)<>0) then break;
+    Result:=RightNode;
+  until false;
 end;
 
 function TAvgLvlTree.FindLeftMostSameKey(ANode: TAvgLvlTreeNode): TAvgLvlTreeNode;
