@@ -2213,9 +2213,11 @@ end;
 procedure TPackageEditorForm.UpdateTitle(Immediately: boolean);
 var
   NewCaption: String;
+  s: string;
 begin
   if not CanUpdate(pefNeedUpdateTitle,Immediately) then exit;
-  NewCaption:=Format(lisPckEditPackage, [FLazPackage.Name]);
+  s:=FLazPackage.Name+' V'+FLazPackage.Version.AsString;
+  NewCaption:=Format(lisPckEditPackage, [s]);
   if LazPackage.Modified then
     NewCaption:=NewCaption+'*';
   Caption:=NewCaption;
