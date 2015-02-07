@@ -657,6 +657,30 @@ var
   i: Integer;
   Files: TStringList;
   NewNode: TTreeNode;
+
+   function HasSubDir(Const ADir: String): Boolean;
+   var
+     SR: TSearchRec;
+     FindRes: LongInt;
+   begin
+     Result:=False;
+     try
+       FindRes := FindFirstUTF8(AppendPathDelim(ADir) + AllFilesMask, faDirectory, SR);
+       while (FindRes = 0) do
+       begin
+         if ((SR.Attr and faDirectory <> 0) and (SR.Name <> '.') and
+            (SR.Name <> '..')) then
+         begin
+           Result := True;
+           Break;
+         end;
+         FindRes := FindNextUtf8(SR);
+       end;
+     finally
+       FindCloseUTF8(SR);
+     end; //try
+   end;
+
 begin
   Result := False;
   // avoids crashes in the IDE by not populating during design
@@ -670,7 +694,12 @@ begin
     for i := 0 to Files.Count - 1 do
     begin
       NewNode := Items.AddChildObject(ANode, Files.Strings[i], nil); //@Files.Strings[i]);
-      NewNode.HasChildren := Files.Objects[i] <> nil; // This marks if the node is a directory
+      // This marks if the node is a directory
+      if (fObjectTypes = [otFolders]) then
+        NewNode.HasChildren := ((Files.Objects[i] <> nil) and
+                               HasSubDir(AppendpathDelim(ANodePath)+Files[i]))
+      else
+        NewNode.HasChildren := (Files.Objects[i] <> nil);
     end;
   finally
     Files.Free;
