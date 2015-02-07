@@ -19,6 +19,11 @@
  ***************************************************************************
 
   Author: Mattias Gaertner
+
+  Abstract: Dialog to show all not needed package dependencies.
+    At the moment it shows dependencies that exists already through other
+    packages. For example using LCL automatically uses LazUtils, so LazUtils
+    will be shown as not needed.
 }
 unit CleanPkgDeps;
 
