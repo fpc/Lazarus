@@ -399,6 +399,8 @@ begin
   end;
   
   PkgStringGrid.AutoAdjustColumns;
+  if PkgStringGrid.SortColumn>=0 then
+    PkgStringGrid.SortColRow(true,PkgStringGrid.SortColumn);
   UpdateFacets;
 end;
 
