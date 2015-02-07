@@ -12,7 +12,7 @@ unit TestLConvEncoding;
 interface
 
 uses
-  Classes, SysUtils, fpcunit, LConvEncoding, LazLogger, testglobals, LCLProc;
+  Classes, SysUtils, fpcunit, LConvEncoding, LazLogger, testglobals, LazUTF8;
 
 type
 
