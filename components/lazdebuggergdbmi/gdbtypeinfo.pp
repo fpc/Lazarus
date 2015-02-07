@@ -1545,6 +1545,7 @@ end;
 
 function TGDBExpressionPartNumber.GetTextFixed(AOpts: TGDBExprTextOptions): String;
 begin
+  if AOpts=[] then ;
   Result := FTextStr;
 end;
 

@@ -5179,7 +5179,6 @@ var
   FileType, EntryPoint: String;
   List: TGDBMINameValueList;
   CanContinue: Boolean;
-  s, s2: String;
 begin
   Result := True;
   FSuccess := False;
