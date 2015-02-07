@@ -225,7 +225,7 @@ begin
                DT:=Now;
                H:=NextOKDay(DT);
                If (H<>0) then
-                 Result:=Date+H+EncodeTime(0,FCleaner.HourlyAt,0,0)
+                 Result:=ComposeDateTime(Date+H,EncodeTime(0,FCleaner.HourlyAt,0,0))
                else
                  begin // Still today
                  DecodeTime(DT,H,M,S,MS);
@@ -240,7 +240,7 @@ begin
                      end;
                    end;
                  DT:=EncodeTime(H,FCleaner.HourlyAt,0,0);
-                 Result:=Result+DT;
+                 Result:=ComposeDateTime(Result,DT);
                  end;
                end;
   end;
