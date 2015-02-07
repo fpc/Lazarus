@@ -1304,7 +1304,7 @@ function TWinCEWidgetSet.FrameRect(DC: HDC; const ARect: TRect;
   hBr: HBRUSH) : integer;
 begin
 //roozbeh....works for now!
-  Result := Integer(DrawFocusRect(DC,Arect));
+  Result := Integer(windows.DrawFocusRect(DC,Arect));
 end;
 
 {------------------------------------------------------------------------------
