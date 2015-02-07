@@ -9,6 +9,7 @@
    ./runtests --format=plain --suite=TestGuessIndentSize
    ./runtests --format=plain --suite=TestReindent
    ./runtests --format=plain --suite=TestSimpleFormat
+   ./runtests --format=plain --suite=TestDateToCfgStr
 }
 unit TestBasicCodetools;
 
@@ -33,6 +34,7 @@ type
     procedure TestGuessIndentSize;
     procedure TestReIndent;
     procedure TestSimpleFormat;
+    procedure TestDateToCfgStr;
   end;
 
 implementation
@@ -238,6 +240,34 @@ begin
   t('A%1B',['Foo','Bar'],'ABarB,Foo');
   t('A%1%0B',['Foo','Bar'],'ABarFooB');
   t('A%1:s%0:sB',['Foo','Bar'],'ABarFooB');
+end;
+
+procedure TTestBasicCodeTools.TestDateToCfgStr;
+
+  procedure t(const Date: TDateTime; const aFormat, Expected: string);
+  var
+    Actual: String;
+    ActualDate: TDateTime;
+  begin
+    Actual:=DateToCfgStr(Date,aFormat);
+    if Actual<>Expected then begin
+      writeln(dbgsDiff(Expected,Actual));
+      AssertEquals('DateToCfgStr failed: Format="'+aFormat+'"',Expected,Actual);
+      exit;
+    end;
+    if (not CfgStrToDate(Actual,ActualDate,aFormat)) then begin
+      AssertEquals('CfgStrToDate failed: Format="'+aFormat+'" Cfg="'+Actual+'"',false,true);
+      exit;
+    end;
+    if ActualDate<>Date then begin
+      AssertEquals('CfgStrToDate failed: Format="'+aFormat+'"',DateTimeToStr(ActualDate),DateTimeToStr(Date));
+    end;
+  end;
+
+begin
+  t(EncodeDate(1234,12,17),DateAsCfgStrFormat,'12341217');
+  t(EncodeDate(1234,1,2),DateAsCfgStrFormat,'12340102');
+  t(ComposeDateTime(EncodeDate(1234,1,2),EncodeTime(3,4,5,6)),DateTimeAsCfgStrFormat,'1234/01/02 03:04:05');
 end;
 
 initialization
