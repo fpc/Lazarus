@@ -1883,9 +1883,9 @@ begin
     'H','N','S','Z': NeedTime:=true;
     end;
   if NeedDate then
-    DecodeDate(Trunc(Date),Year,Month,Day);
+    DecodeDate(Date,Year,Month,Day);
   if NeedTime then
-    DecodeTime(Frac(Date),Hour,Minute,Second,MilliSecond);
+    DecodeTime(Date,Hour,Minute,Second,MilliSecond);
   p:=1;
   while p<=length(aFormat) do begin
     case aFormat[p] of
