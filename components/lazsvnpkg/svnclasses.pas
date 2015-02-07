@@ -261,7 +261,7 @@ begin
   n := StrToInt(Copy(ADateTime, 15, 2));
   s := StrToInt(Copy(ADateTime, 18, 2));
 
-  Result := EncodeDate(y,m,d) + EncodeTime(h,n,s,0);
+  Result := ComposeDateTime( EncodeDate(y,m,d), EncodeTime(h,n,s,0));
 end;
 
 function SortPathAscending(const Item1, Item2: TSVNStatusItem): Integer;
