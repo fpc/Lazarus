@@ -2646,7 +2646,7 @@ begin
   if (Hr > 24) or (Mn > 60) or (Sc > 60) then Exit;
 
   { tests passed, generate final result }
-  Result := EncodeDate(Yr, Mo, Dy) + EncodeTime(Hr, Mn, Sc, 0);
+  Result := ComposeDateTime(EncodeDate(Yr, Mo, Dy),EncodeTime(Hr, Mn, Sc, 0));
 end;
 
 
