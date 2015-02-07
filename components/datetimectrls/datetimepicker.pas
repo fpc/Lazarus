@@ -1341,7 +1341,7 @@ begin
         MiliSec := 0;
       end;
   end else
-    DecodeTime(FDateTime, Result.Hour, Result.Minute, Result.Second, Result.MiliSec);
+    DecodeTime(Frac(FDateTime), Result.Hour, Result.Minute, Result.Second, Result.MiliSec);
 end;
 
 function TCustomDateTimePicker.GetYYYYMMDD(const TodayIfNull: Boolean;
@@ -2729,7 +2729,7 @@ begin
       else
         FTextPart[FDayPos] := IntToStr(W[1]);
 
-      DecodeTime(FDateTime, WT[dtpHour], WT[dtpMinute], WT[dtpSecond], WT[dtpMiliSec]);
+      DecodeTime(Frac(FDateTime), WT[dtpHour], WT[dtpMinute], WT[dtpSecond], WT[dtpMiliSec]);
 
       if dtpAMPM in FEffectiveHideDateTimeParts then
         FTimeText[dtpAMPM] := ''
