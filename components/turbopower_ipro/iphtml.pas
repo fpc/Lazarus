@@ -13000,7 +13000,7 @@ begin
     // printer should have 2 colors, somebody else needs to clarify.
     BWPrinter := false;
     {$ELSE}
-    BWPrinter := GetDeviceCaps(Printer.Canvas.Handle, PLANES) = 1;
+    BWPrinter := GetDeviceCaps(Printer.Canvas.Handle, NUMCOLORS) = 2;
     {$ENDIF}
     {$IFDEF IP_LAZARUS}
     LogPixX := Printer.XDPI;
