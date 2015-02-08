@@ -4509,6 +4509,10 @@ docs/xml/lcl/xmlpropstorage.xml svneol=LF#text/xml eol=lf
 docs/xml/mkhtml.bat svneol=native#text/plain
 docs/xml/multi_makeskel.pl svneol=native#text/plain
 docs/xml/updateXML.bat svneol=native#text/plain
+examples/ReSizeImageDemo/project1.lpi svneol=native#text/plain
+examples/ReSizeImageDemo/project1.lpr svneol=native#text/pascal
+examples/ReSizeImageDemo/unit1.lfm svneol=native#text/plain
+examples/ReSizeImageDemo/unit1.pas svneol=native#text/pascal
 examples/SynEdit/Completion/README.txt svneol=native#text/plain
 examples/SynEdit/Completion/SynCompletionSample.ico -text
 examples/SynEdit/Completion/SynCompletionSample.lpi svneol=native#text/plain
