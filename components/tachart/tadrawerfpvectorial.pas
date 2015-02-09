@@ -14,7 +14,7 @@ unit TADrawerFPVectorial;
 interface
 
 uses
-  Classes, FPCanvas, FPImage, FPVectorial, TAChartUtils, TADrawUtils;
+  Graphics, Classes, FPCanvas, FPImage, FPVectorial, TAChartUtils, TADrawUtils;
 
 type
 
@@ -26,7 +26,7 @@ type
     FBrushColor: TFPColor;
     FBrushStyle: TFPBrushStyle;
     FCanvas: TvVectorialPage;
-    FFontSize: Integer;
+    FFont: TvFont;
     FPenColor: TFPColor;
     FPenStyle: TFPPenStyle;
     FPenWidth: Integer;
@@ -77,6 +77,20 @@ implementation
 uses
   Math, TAGeometry;
 
+function SVGGetFontOrientationFunc(AFont: TFPCustomFont): Integer;
+begin
+  if AFont is TFont then
+    Result := round(TFont(AFont).Orientation * 0.1)
+  else
+    Result := round(AFont.Orientation * 0.1);
+end;
+
+function SVGChartColorToFPColor(AChartColor: TChartColor): TFPColor;
+begin
+  Result := ChartColorToFPColor(ColorToRGB(AChartColor));
+end;
+
+
 { TFPVectorialDrawer }
 
 procedure TFPVectorialDrawer.AddLine(AX, AY: Integer);
@@ -122,6 +136,8 @@ constructor TFPVectorialDrawer.Create(ACanvas: TvVectorialPage);
 begin
   inherited Create;
   FCanvas := ACanvas;
+  FGetFontOrientationFunc := @SVGGetFontOrientationFunc;
+  FChartColorToFPColorFunc := @SVGChartColorToFPColor;
 end;
 
 procedure TFPVectorialDrawer.DrawingBegin(const ABoundingBox: TRect);
@@ -156,7 +172,7 @@ end;
 
 function TFPVectorialDrawer.GetFontAngle: Double;
 begin
-  Result := 0.0;
+  Result := FFont.Orientation;
 end;
 
 function TFPVectorialDrawer.InvertY(AY: Integer): Integer;
@@ -274,8 +290,18 @@ begin
 end;
 
 procedure TFPVectorialDrawer.SetFont(AFont: TFPCustomFont);
+var
+  angle: Integer;
 begin
-  FFontSize := IfThen(AFont.Size = 0, 10, AFont.Size);
+  angle := AFont.Orientation;
+  FFont.Name := AFont.Name;
+  FFont.Size := IfThen(AFont.Size = 0, 10, AFont.Size);
+  FFont.Color := AFont.FPColor;
+  FFont.Orientation := FGetFontOrientationFunc(AFont);
+  FFont.Bold := AFont.Bold;
+  FFont.Italic := AFont.Italic;
+  FFont.Underline := AFont.Underline;
+  FFont.Strikethrough := AFont.Strikethrough;
 end;
 
 procedure TFPVectorialDrawer.SetPen(APen: TFPCustomPen);
@@ -294,15 +320,20 @@ end;
 
 function TFPVectorialDrawer.SimpleTextExtent(const AText: String): TPoint;
 begin
-  Result.X := FFontSize * Length(AText) * 2 div 3;
-  Result.Y := FFontSize;
+  Result.X := FFont.Size * Length(AText) * 2 div 3;
+  Result.Y := FFont.Size;
 end;
 
 procedure TFPVectorialDrawer.SimpleTextOut(
   AX, AY: Integer; const AText: String);
+var
+  txt: TvText;
+  p: TPoint;
 begin
   // FPVectorial uses lower-left instead of upper-left corner as text start.
-  FCanvas.AddText(AX, InvertY(AY) - FFontSize, 0, AText);
+  p := RotatePoint(Point(0, -FFont.Size), DegToRad(FFont.Orientation)) + Point(AX, InvertY(AY));
+  txt := FCanvas.AddText(p.X, p.Y, 0, AText);
+  txt.Font := FFont;
 end;
 
 end.

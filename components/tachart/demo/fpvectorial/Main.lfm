@@ -7,7 +7,7 @@ object Form1: TForm1
   ClientHeight = 342
   ClientWidth = 422
   Position = poScreenCenter
-  LCLVersion = '1.3'
+  LCLVersion = '1.5'
   object Chart1: TChart
     Left = 0
     Height = 300
@@ -15,20 +15,71 @@ object Form1: TForm1
     Width = 422
     AxisList = <    
       item
+        Grid.Color = clSilver
+        Grid.Style = psDash
+        Marks.LabelFont.CharSet = ANSI_CHARSET
+        Marks.LabelFont.Height = -13
+        Marks.LabelFont.Name = 'Arial Narrow'
+        Marks.LabelFont.Pitch = fpVariable
+        Marks.LabelFont.Quality = fqDraft
         Minors = <>
+        Title.LabelFont.CharSet = ANSI_CHARSET
+        Title.LabelFont.Color = clRed
+        Title.LabelFont.Height = -19
+        Title.LabelFont.Name = 'Times New Roman'
         Title.LabelFont.Orientation = 900
+        Title.LabelFont.Pitch = fpVariable
+        Title.LabelFont.Quality = fqDraft
+        Title.LabelFont.Style = [fsItalic]
+        Title.Visible = True
+        Title.Caption = 'y axis'
       end    
       item
+        Grid.Color = clSilver
         Alignment = calBottom
+        Marks.LabelFont.CharSet = ANSI_CHARSET
+        Marks.LabelFont.Height = -13
+        Marks.LabelFont.Name = 'Arial Narrow'
+        Marks.LabelFont.Pitch = fpVariable
+        Marks.LabelFont.Quality = fqDraft
         Minors = <>
+        Title.LabelFont.CharSet = ANSI_CHARSET
+        Title.LabelFont.Color = clGreen
+        Title.LabelFont.Height = -19
+        Title.LabelFont.Name = 'Times New Roman'
+        Title.LabelFont.Pitch = fpVariable
+        Title.LabelFont.Quality = fqDraft
+        Title.LabelFont.Style = [fsItalic]
+        Title.Visible = True
+        Title.Caption = 'x axis'
       end>
+    BackColor = clWhite
+    Foot.Alignment = taLeftJustify
     Foot.Brush.Color = clBtnFace
-    Foot.Font.Color = clBlue
-    Title.Brush.Color = clBtnFace
-    Title.Font.Color = clBlue
-    Title.Text.Strings = (
-      'TAChart'
+    Foot.Brush.Style = bsClear
+    Foot.Font.CharSet = ANSI_CHARSET
+    Foot.Font.Color = clGray
+    Foot.Font.Height = -11
+    Foot.Font.Name = 'Courier New'
+    Foot.Font.Pitch = fpFixed
+    Foot.Font.Quality = fqDraft
+    Foot.Text.Strings = (
+      'printed by TAChart and fpvectorial'
     )
+    Foot.Visible = True
+    Title.Brush.Color = clBtnFace
+    Title.Brush.Style = bsClear
+    Title.Font.CharSet = ANSI_CHARSET
+    Title.Font.Color = clBlue
+    Title.Font.Height = -16
+    Title.Font.Name = 'Arial'
+    Title.Font.Pitch = fpVariable
+    Title.Font.Quality = fqDraft
+    Title.Font.Style = [fsBold, fsUnderline]
+    Title.Text.Strings = (
+      'Sample chart'
+    )
+    Title.Visible = True
     Align = alClient
     ParentColor = False
     object Chart1LineSeries1: TLineSeries
