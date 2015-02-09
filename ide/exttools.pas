@@ -42,7 +42,7 @@ uses
   LCLIntf, LCLProc, Forms, Dialogs, FileUtil, AvgLvlTree,
   // IDEIntf
   IDEExternToolIntf, BaseIDEIntf, MacroIntf, IDEMsgIntf, IDEDialogs,
-  CompOptsIntf, PackageIntf, LazIDEIntf,
+  PackageIntf, LazIDEIntf,
   // IDE
   IDECmdLine, TransferMacros, LazarusIDEStrConsts;
 
@@ -87,6 +87,7 @@ type
 
   TLazExtToolConsole = class(TComponent)
   private
+    FTerminating: boolean;
     fViews: TFPList; // list of TLazExtToolConsoleView
     function GetViews(Index: integer): TLazExtToolConsoleView;
   public
@@ -97,6 +98,7 @@ type
     function FindUnfinishedView: TLazExtToolConsoleView;
     property Views[Index: integer]: TLazExtToolConsoleView read GetViews;
     function Count: integer; inline;
+    property Terminating: boolean read FTerminating write FTerminating;
   end;
 
 var
@@ -301,6 +303,8 @@ end;
 procedure TLazExtToolConsoleView.OnNewOutput(Sender: TObject;
   FirstNewMsgLine: integer);
 begin
+  if (ExtToolConsole<>nil) and ExtToolConsole.Terminating then
+    exit;
   while fWrittenLineCount<Tool.WorkerOutput.Count do begin
     debugln(Tool.WorkerOutput[fWrittenLineCount]);
     inc(fWrittenLineCount);
@@ -1350,10 +1354,14 @@ var
   i: Integer;
 begin
   // terminate all current tools
+  if ExtToolConsole<>nil then
+    ExtToolConsole.Terminating:=true;
   for i:=Count-1 downto 0 do begin
     if i>=Count then continue;
     Terminate(Items[i] as TExternalTool);
   end;
+  if ExtToolConsole<>nil then
+    ExtToolConsole.Terminating:=false;
 end;
 
 procedure TExternalTools.Clear;
