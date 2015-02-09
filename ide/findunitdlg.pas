@@ -411,8 +411,9 @@ begin
   end else if MainOwner is TLazPackage then begin
     APackage:=TLazPackage(MainOwner);
     if CompareText(APackage.Name,PackageName)=0 then
-      Result:=true;
-    Result:=PackageGraph.FindDependencyRecursively(
+      Result:=true
+    else
+      Result:=PackageGraph.FindDependencyRecursively(
                              APackage.FirstRequiredDependency,PackageName)<>nil;
   end;
 end;
