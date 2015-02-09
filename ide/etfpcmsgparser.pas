@@ -1847,9 +1847,10 @@ begin
                                      ExtractFilePath(Filename),UsedByUnit,true);
     end;
     if NewFilename='' then begin
-      if Tool.Data is TIDEExternalToolData then
-        TheOwner:=ExternalToolList.GetIDEObject(TIDEExternalToolData(Tool.Data))
-      else if Tool.Data=nil then begin
+      TheOwner:=nil;
+      if Tool.Data is TIDEExternalToolData then begin
+        TheOwner:=ExternalToolList.GetIDEObject(TIDEExternalToolData(Tool.Data));
+      end else if Tool.Data=nil then begin
         debugln(['TIDEFPCParser.ImproveMsgUnitNotFound Tool.Data=nil, ProcDir=',Tool.Process.CurrentDirectory]);
       end;
       NewFilename:=LazarusIDE.FindUnitFile(UsedByUnit,TheOwner);
