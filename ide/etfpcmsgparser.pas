@@ -35,7 +35,7 @@ uses
   Classes, SysUtils, strutils, math,
   LazUTF8, LConvEncoding, LazFileUtils, FileUtil,
   IDEExternToolIntf, PackageIntf, LazIDEIntf, ProjectIntf, IDEUtils,
-  CompOptsIntf, MacroIntf,
+  MacroIntf,
   FileProcs, KeywordFuncLists, CodeToolsFPCMsgs, CodeToolsStructs, CodeCache,
   CodeToolManager, DirectoryCacher, BasicCodeTools, DefineTemplates, SourceLog,
   IDECmdLine, LazarusIDEStrConsts, EnvironmentOpts, LazConf, TransferMacros,

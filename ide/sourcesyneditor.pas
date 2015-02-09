@@ -56,7 +56,7 @@ uses
   SynEditTextBuffer, SynEditFoldedView, SynTextDrawer, SynEditTextBase, LazSynEditText,
   SynPluginTemplateEdit, SynPluginSyncroEdit, LazSynTextArea, SynEditHighlighter,
   SynEditHighlighterFoldBase, SynHighlighterPas, SynEditMarkupHighAll, SynEditKeyCmds,
-  SynEditMarkupIfDef, SynEditMiscProcs, SynPluginMultiCaret, SynEditPointClasses,
+  SynEditMarkupIfDef, SynEditMiscProcs, SynPluginMultiCaret,
   etSrcEditMarks, LazarusIDEStrConsts;
 
 type

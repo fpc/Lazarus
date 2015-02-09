@@ -287,7 +287,7 @@ var
   Cmd1, Cmd2: PtrInt;
   CmdRel: TKeyCommandRelation absolute Key;
 begin
-  Pointer(Cmd1):=aCommand;
+  {%H-}Pointer(Cmd1):=aCommand;
   Cmd2:=CmdRel.Command;
   Result:=Cmd1-Cmd2;
 end;
@@ -3398,7 +3398,7 @@ function TKeyCommandRelationList.FindByCommand(ACommand: word): TKeyCommandRelat
 var
   AVLNode: TAvgLvlTreeNode;
 begin
-  AVLNode:=fCmdRelCache.FindKey(Pointer(PtrUInt(ACommand)), @CompareCmdWithCmdRel);
+  AVLNode:=fCmdRelCache.FindKey({%H-}Pointer(PtrUInt(ACommand)), @CompareCmdWithCmdRel);
   if Assigned(AVLNode) then
     Result:=TKeyCommandRelation(AVLNode.Data)
   else
