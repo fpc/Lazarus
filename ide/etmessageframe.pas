@@ -3160,6 +3160,8 @@ begin
         s+='Desktop: '+Proc.Desktop+LineEnding;
       s+='Parameters:'+LineEnding;
       s+=Proc.Parameters.Text+LineEnding;
+      s+='Command Line:'+LineEnding;
+      s+=Proc.CommandLine+LineEnding;
       s+='ProcessID:'+LineEnding+IntToStr(Proc.ProcessID)+LineEnding+LineEnding;
       if Tool.Terminated then
         s+='Terminated'+LineEnding+LineEnding
