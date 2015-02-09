@@ -40,12 +40,16 @@ unit LCLIntf;
 {$mode objfpc}{$H+}
 {$inline on}
 
+{$IFDEF DARWIN}
+  {$modeswitch objectivec1}
+{$ENDIF}
+
 interface
 
 uses
   {$IFDEF Windows}Windows, ShellApi,{$ENDIF}
   {$IFDEF UNIX}Unix, {$ENDIF}
-  {$IFDEF Darwin}MacOSAll, {$ENDIF}
+  {$IFDEF Darwin}MacOSAll, CocoaAll,{$ENDIF}
   Types, Math, Classes, SysUtils, LCLType, LCLProc, GraphType, InterfaceBase,
   LResources, FileUtil, UTF8Process, Maps, LMessages, LazUTF8, lazutf8sysutils, LCLStrConsts;
 
