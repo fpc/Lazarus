@@ -187,6 +187,7 @@ var
   UsedByUnit: string;
   CodeBuf: TCodeBuffer;
   Dlg: TFindUnitDialog;
+  StartFilename: String;
 begin
   // get unitname
   if not IsApplicable(Msg,MissingUnit,UsedByUnit) then exit;
@@ -202,9 +203,10 @@ begin
     exit;
   end;
 
-  CodeBuf:=CodeToolBoss.LoadFile(Msg.GetFullFilename,true,false);
+  StartFilename:=Msg.GetFullFilename;
+  CodeBuf:=CodeToolBoss.LoadFile(StartFilename,true,false);
   if CodeBuf=nil then begin
-    debugln(['TQuickFixUnitNotFound_Search.QuickFix can not open file "',Msg.GetFullFilename,'"']);
+    debugln(['TQuickFixUnitNotFound_Search.QuickFix cannot open file "',StartFilename,'", Msg="',Msg.Line,'"']);
     exit;
   end;
 

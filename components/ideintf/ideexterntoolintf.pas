@@ -2188,14 +2188,18 @@ end;
 
 function TMessageLine.GetToolData: TIDEExternalToolData;
 var
-  View: TExtToolView;
+  Tool: TAbstractExternalTool;
 begin
   Result:=nil;
   if Lines=nil then exit;
-  View:=TExtToolView(Lines.Owner);
-  if not (View is TExtToolView) then exit;
-  if View.Tool=nil then exit;
-  Result:=TIDEExternalToolData(View.Tool.Data);
+  if Lines.Owner is TAbstractExternalTool then
+    Tool:=TAbstractExternalTool(Lines.Owner)
+  else if Lines.Owner is TExtToolView then begin
+    Tool:=TExtToolView(Lines.Owner).Tool;
+    if Tool=nil then exit;
+  end else
+    exit;
+  Result:=TIDEExternalToolData(Tool.Data);
   if not (Result is TIDEExternalToolData) then
     Result:=nil;
 end;

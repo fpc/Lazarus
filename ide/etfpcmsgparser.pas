@@ -1796,6 +1796,7 @@ var
   i: Integer;
   DepOwner: TObject;
   PkgFile: TLazPackageFile;
+  TheOwner: TObject;
 begin
   if MsgLine.Urgency<mluError then exit;
   if not IsMsgID(MsgLine,FPCMsgIDCantFindUnitUsedBy,fMsgItemCantFindUnitUsedBy)
@@ -1810,6 +1811,8 @@ begin
   etpspSynchronized: ;
   etpspAfterSync: exit;
   end;
+
+  // in main thread
 
   if not GetFPCMsgValues(MsgLine,MissingUnitName,UsedByUnit) then
     exit;
@@ -1844,7 +1847,12 @@ begin
                                      ExtractFilePath(Filename),UsedByUnit,true);
     end;
     if NewFilename='' then begin
-      NewFilename:=LazarusIDE.FindUnitFile(UsedByUnit);
+      if Tool.Data is TIDEExternalToolData then
+        TheOwner:=ExternalToolList.GetIDEObject(TIDEExternalToolData(Tool.Data))
+      else if Tool.Data=nil then begin
+        debugln(['TIDEFPCParser.ImproveMsgUnitNotFound Tool.Data=nil, ProcDir=',Tool.Process.CurrentDirectory]);
+      end;
+      NewFilename:=LazarusIDE.FindUnitFile(UsedByUnit,TheOwner);
       if NewFilename='' then begin
         {$IFDEF VerboseFPCMsgUnitNotFound}
         debugln(['TIDEFPCParser.ImproveMsgUnitNotFound unit not found: ',UsedByUnit]);
