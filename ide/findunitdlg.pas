@@ -48,25 +48,25 @@ uses
 type
   TFindUnitDialog = class;
 
-  { TQuickFixMissingUnit }
+  { TMissingUnit_QuickFix }
 
-  TQuickFixMissingUnit = class
+  TMissingUnit_QuickFix = class
   public
     Dlg: TFindUnitDialog;
     Caption: string;
     constructor Create(aDlg: TFindUnitDialog; aCaption: string);
   end;
 
-  { TQuickFixMissingUnitRemoveFromUses }
+  { TMissingUnit_QuickFix_RemoveFromUses }
 
-  TQuickFixMissingUnitRemoveFromUses = class(TQuickFixMissingUnit)
+  TMissingUnit_QuickFix_RemoveFromUses = class(TMissingUnit_QuickFix)
   public
     constructor Create(aDlg: TFindUnitDialog);
   end;
 
-  { TQuickFixMissingUnitAddRequirement }
+  { TMissingUnit_QuickFix_AddRequirement }
 
-  TQuickFixMissingUnitAddRequirement = class(TQuickFixMissingUnit)
+  TMissingUnit_QuickFix_AddRequirement = class(TMissingUnit_QuickFix)
   public
     PackageName: string;
     constructor Create(aDlg: TFindUnitDialog; aPackageName: string);
@@ -94,17 +94,17 @@ type
     FMissingUnitName: string;
     FSearchPackages: TStrings;
     FSearchPackagesIndex: integer;
-    fQuickFixes: TFPList;// list of TQuickFixMissingUnit
+    fQuickFixes: TFPList;// list of TMissingUnit_QuickFix
     fLastUpdateProgressBar: TDateTime;
     procedure InitSearchPackages;
     procedure OnIteratePkgLinks(APackage: TLazPackageID);
-    procedure AddQuickFix(Item: TQuickFixMissingUnit);
-    procedure AddRequirement(Item: TQuickFixMissingUnitAddRequirement);
-    procedure RemoveFromUsesSection(Item: TQuickFixMissingUnitRemoveFromUses);
+    procedure AddQuickFix(Item: TMissingUnit_QuickFix);
+    procedure AddRequirement(Item: TMissingUnit_QuickFix_AddRequirement);
+    procedure RemoveFromUsesSection(Item: TMissingUnit_QuickFix_RemoveFromUses);
     function MainOwnerHasRequirement(PackageName: string): boolean;
     procedure UpdateProgressBar;
     function CheckPackageOnDisk(PkgFilename: string): boolean;
-    function FindQuickFixAddRequirement(PkgName: string): TQuickFixMissingUnitAddRequirement;
+    function FindQuickFixAddRequirement(PkgName: string): TMissingUnit_QuickFix_AddRequirement;
   public
     procedure InitWithMsg(Line: string; aCode: TCodeBuffer;
                           aMissingUnitName: string);
@@ -249,18 +249,18 @@ end;
 procedure TFindUnitDialog.OkButtonClick(Sender: TObject);
 var
   i: LongInt;
-  Item: TQuickFixMissingUnit;
+  Item: TMissingUnit_QuickFix;
 begin
   i:=QuickFixRadioGroup.ItemIndex;
   if i<0 then begin
     OkButton.Enabled:=false;
     exit;
   end;
-  Item:=TQuickFixMissingUnit(fQuickFixes[i]);
-  if Item is TQuickFixMissingUnitRemoveFromUses then
-    RemoveFromUsesSection(TQuickFixMissingUnitRemoveFromUses(Item))
-  else if Item is TQuickFixMissingUnitAddRequirement then
-    AddRequirement(TQuickFixMissingUnitAddRequirement(Item));
+  Item:=TMissingUnit_QuickFix(fQuickFixes[i]);
+  if Item is TMissingUnit_QuickFix_RemoveFromUses then
+    RemoveFromUsesSection(TMissingUnit_QuickFix_RemoveFromUses(Item))
+  else if Item is TMissingUnit_QuickFix_AddRequirement then
+    AddRequirement(TMissingUnit_QuickFix_AddRequirement(Item));
 end;
 
 procedure TFindUnitDialog.OnIdle(Sender: TObject; var Done: Boolean);
@@ -289,7 +289,7 @@ begin
             // already in requirements
           end else if FindQuickFixAddRequirement(APackage.Name)=nil then begin
             // not yet in requirements -> add a quick fix
-            AddQuickFix(TQuickFixMissingUnitAddRequirement.Create(Self,APackage.Name));
+            AddQuickFix(TMissingUnit_QuickFix_AddRequirement.Create(Self,APackage.Name));
           end;
         end;
         break;
@@ -303,7 +303,7 @@ begin
 
     inc(FSearchPackagesIndex);
     if FSearchPackagesIndex>=FSearchPackages.Count then begin
-      AddQuickFix(TQuickFixMissingUnitRemoveFromUses.Create(Self));
+      AddQuickFix(TMissingUnit_QuickFix_RemoveFromUses.Create(Self));
     end;
 
     UpdateProgressBar;
@@ -357,7 +357,7 @@ begin
   end;
 end;
 
-procedure TFindUnitDialog.AddQuickFix(Item: TQuickFixMissingUnit);
+procedure TFindUnitDialog.AddQuickFix(Item: TMissingUnit_QuickFix);
 begin
   fQuickFixes.Add(Item);
   QuickFixRadioGroup.Items.Add(Item.Caption);
@@ -367,7 +367,7 @@ begin
 end;
 
 procedure TFindUnitDialog.AddRequirement(
-  Item: TQuickFixMissingUnitAddRequirement);
+  Item: TMissingUnit_QuickFix_AddRequirement);
 var
   AProject: TProject;
   APackage: TLazPackage;
@@ -388,7 +388,7 @@ begin
 end;
 
 procedure TFindUnitDialog.RemoveFromUsesSection(
-  Item: TQuickFixMissingUnitRemoveFromUses);
+  Item: TMissingUnit_QuickFix_RemoveFromUses);
 begin
   if not CodeToolBoss.RemoveUnitFromAllUsesSections(Code,MissingUnitName) then
   begin
@@ -410,6 +410,8 @@ begin
                              AProject.FirstRequiredDependency,PackageName)<>nil;
   end else if MainOwner is TLazPackage then begin
     APackage:=TLazPackage(MainOwner);
+    if CompareText(APackage.Name,PackageName)=0 then
+      Result:=true;
     Result:=PackageGraph.FindDependencyRecursively(
                              APackage.FirstRequiredDependency,PackageName)<>nil;
   end;
@@ -470,7 +472,7 @@ begin
       //DebugLn(['TFindUnitDialog.CheckPackageOnDisk ',UnitName]);
       if SysUtils.CompareText(AUnitName,MissingUnitName)=0 then begin
         Result:=true;
-        AddQuickFix(TQuickFixMissingUnitAddRequirement.Create(Self,PkgName));
+        AddQuickFix(TMissingUnit_QuickFix_AddRequirement.Create(Self,PkgName));
         exit;
       end;
     end;
@@ -480,15 +482,15 @@ begin
 end;
 
 function TFindUnitDialog.FindQuickFixAddRequirement(PkgName: string
-  ): TQuickFixMissingUnitAddRequirement;
+  ): TMissingUnit_QuickFix_AddRequirement;
 var
   i: Integer;
 begin
   Result:=nil;
   if fQuickFixes=nil then exit;
   for i:=0 to fQuickFixes.Count-1 do begin
-    if TObject(fQuickFixes[i]) is TQuickFixMissingUnitAddRequirement then begin
-      Result:=TQuickFixMissingUnitAddRequirement(fQuickFixes[i]);
+    if TObject(fQuickFixes[i]) is TMissingUnit_QuickFix_AddRequirement then begin
+      Result:=TMissingUnit_QuickFix_AddRequirement(fQuickFixes[i]);
       if SysUtils.CompareText(Result.PackageName,PkgName)=0 then exit;
     end;
   end;
@@ -584,26 +586,26 @@ begin
   InitSearchPackages;
 end;
 
-{ TQuickFixMissingUnit }
+{ TMissingUnit_QuickFix }
 
-constructor TQuickFixMissingUnit.Create(aDlg: TFindUnitDialog; aCaption: string);
+constructor TMissingUnit_QuickFix.Create(aDlg: TFindUnitDialog; aCaption: string);
 begin
   Dlg:=aDlg;;
   Caption:=aCaption;
 end;
 
-{ TQuickFixMissingUnitAddRequirement }
+{ TMissingUnit_QuickFix_AddRequirement }
 
-constructor TQuickFixMissingUnitAddRequirement.Create(aDlg: TFindUnitDialog;
+constructor TMissingUnit_QuickFix_AddRequirement.Create(aDlg: TFindUnitDialog;
   aPackageName: string);
 begin
   PackageName:=aPackageName;
   Caption:='Add package '+PackageName+' as requirement to '+aDlg.MainOwnerName;
 end;
 
-{ TQuickFixMissingUnitRemoveFromUses }
+{ TMissingUnit_QuickFix_RemoveFromUses }
 
-constructor TQuickFixMissingUnitRemoveFromUses.Create(aDlg: TFindUnitDialog);
+constructor TMissingUnit_QuickFix_RemoveFromUses.Create(aDlg: TFindUnitDialog);
 begin
   Caption:='Remove unit from uses clause';
 end;
