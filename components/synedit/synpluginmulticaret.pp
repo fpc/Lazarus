@@ -1212,7 +1212,6 @@ procedure TSynPluginMultiCaret.ProcessSynCommand(Sender: TObject; AfterProcessin
   end;
 
 var
-  c: Integer;
   ClipHelper: TSynClipboardStream;
 begin
   if (sfProcessingCmd in FStateFlags) or (CaretsCount = 0) then
@@ -1271,7 +1270,7 @@ begin
           // no indent for column mode, when multicaret
           Editor.BeginUpdate(True);
           try
-            c := AddCaret(Editor.LogicalCaretXY.x, Editor.CaretY, [cfMainCaret, cfNoneVisual, cfAddDuplicate]);
+            AddCaret(Editor.LogicalCaretXY.x, Editor.CaretY, [cfMainCaret, cfNoneVisual, cfAddDuplicate]);
             Editor.SelText := '';
             if Carets.MainCaretIndex >= 0 then begin
               Editor.LogicalCaretXY := Carets.Caret[Carets.MainCaretIndex];
