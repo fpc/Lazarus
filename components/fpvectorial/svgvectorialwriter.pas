@@ -46,10 +46,10 @@ const
 
   // 1 Inch = 25.4 milimiters
   // 90 inches per pixel = (1 / 90) * 25.4 = 0.2822
-  // FLOAT_MILIMETERS_PER_PIXEL = 0.3528; // DPI 72 = 1 / 72 inches per pixel
+  // FLOAT_MILLIMETERS_PER_PIXEL = 0.3528; // DPI 72 = 1 / 72 inches per pixel
 
-  FLOAT_MILIMETERS_PER_PIXEL = 0.2822; // DPI 90 = 1 / 90 inches per pixel
-  FLOAT_PIXELS_PER_MILIMETER = 3.5433; // DPI 90 = 1 / 90 inches per pixel
+  FLOAT_MILLIMETERS_PER_PIXEL = 0.2822; // DPI 90 = 1 / 90 inches per pixel
+  FLOAT_PIXELS_PER_MILLIMETER = 3.5433; // DPI 90 = 1 / 90 inches per pixel
 
 { TvSVGVectorialWriter }
 
@@ -67,7 +67,7 @@ end;
 {@@
   SVG Coordinate system measures things only in pixels, so that we have to
   hardcode a DPI value for the screen, which is usually 72.
-  FPVectorial uses only milimeters (mm).
+  FPVectorial uses only millimeters (mm).
 
   The initial point in FPVectorial is in the bottom-left corner of the document
   and it grows to the top and to the right. In SVG, on the other hand, the
@@ -196,8 +196,8 @@ procedure TvSVGVectorialWriter.ConvertFPVCoordinatesToSVGCoordinates(
   const AData: TvVectorialPage; const ASrcX, ASrcY: Double; var ADestX,
   ADestY: double);
 begin
-  ADestX := ASrcX / FLOAT_MILIMETERS_PER_PIXEL;
-  ADestY := (AData.Height - ASrcY) / FLOAT_MILIMETERS_PER_PIXEL;
+  ADestX := ASrcX / FLOAT_MILLIMETERS_PER_PIXEL;
+  ADestY := (AData.Height - ASrcY) / FLOAT_MILLIMETERS_PER_PIXEL;
 end;
 
 procedure TvSVGVectorialWriter.WriteToStrings(AStrings: TStrings;
@@ -241,19 +241,17 @@ end;
 
 procedure TvSVGVectorialWriter.WriteText(AStrings: TStrings; lText: TvText;
   AData: TvVectorialPage; ADoc: TvVectorialDocument);
+const
+  TEXT_ANCHORS: array[TvTextAnchor] of string = ('start', 'middle', 'end');
+  TEXT_DECO: array[0..3] of string = ('none', 'underline', 'line-through', 'line-through,underline');
 var
   i, j, FontSize: Integer;
-  TextStr, FontName, SVGFontFamily: string;
+  TextStr: String;
   PtX, PtY: double;
 begin
-  TextStr := '';
-
-  ConvertFPVCoordinatesToSVGCoordinates(
-      AData, lText.X, lText.Y, PtX, PtY);
-
+  ConvertFPVCoordinatesToSVGCoordinates(AData, lText.X, lText.Y, PtX, PtY);
   TextStr := lText.Value.Text;
-  FontSize:= ceil(lText.Font.Size / FLOAT_MILIMETERS_PER_PIXEL);
-  SVGFontFamily := 'Arial, sans-serif';//lText.FontName;
+  FontSize:= ceil(lText.Font.Size / FLOAT_MILLIMETERS_PER_PIXEL);
 
   AStrings.Add('  <text ');
   // Discussion about this offset in bugs 22091 and 26817
@@ -264,16 +262,36 @@ begin
   AStrings.Add('    x="' + FloatToStr(PtX, FPointSeparator) + '"');
   AStrings.Add('    y="' + FloatToStr(PtY, FPointSeparator) + '"');
   {$ENDIF}
-//    AStrings.Add('    font-size="' + IntToStr(FontSize) + '"'); Doesn't seam to work, we need to use the tspan
-  AStrings.Add('    font-family="' + SVGFontFamily + '">');
-  AStrings.Add('    <tspan ');
-  AStrings.Add('      style="font-size:' + IntToStr(FontSize) + '" ');
-// Does not support fill="none"
-  AStrings.Add('      fill="' +
-               '#' + FPColorToRGBHexString(lText.Font.Color) + '" ');
-  //    AStrings.Add('      id="tspan2828" ');
-  AStrings.Add('    >');
-  AStrings.Add(TextStr + '</tspan></text>');
+
+  if lText.TextAnchor <> vtaStart then AStrings.Add(
+        Format('    text-anchor="%s"', [TEXT_ANCHORS[lText.TextAnchor]]));
+
+  if lText.Font.Bold then
+  AStrings.Add('    font-weight="bold"');
+
+  if lText.Font.Italic then
+  AStrings.Add('    font-style="oblique"');
+
+  if lText.Font.Underline or lText.Font.Strikethrough then
+    AStrings.Add(
+        Format('    text-decoration="%s"', [TEXT_DECO[ord(lText.Font.UnderLine)+2*ord(lText.Font.StrikeThrough)]]));
+
+  if lText.Font.Orientation <> 0 then
+    AStrings.Add(
+        Format('    transform="rotate(%g,%g,%g)"', [-lText.Font.Orientation, PtX, PtY], FPointSeparator));
+
+  AStrings.Add(
+        Format('    font-family="%s"', [lText.Font.Name]));
+
+  AStrings.Add(
+        Format('    font-size="%d"', [FontSize]));
+
+  AStrings.Add(
+        Format('    fill="#%s"', [FPColorToRGBHexString(lText.Font.Color)]));
+
+  AStrings.Add('  >');
+  AStrings.Add(TextStr);
+  AStrings.Add('  </text>');
 end;
 
 procedure TvSVGVectorialWriter.WriteCircle(circle: TvCircle;
