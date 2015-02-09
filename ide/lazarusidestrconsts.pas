@@ -5861,6 +5861,11 @@ resourcestring
   lisCanTFindAValidPpu = 'Can''t find a valid %s.ppu';
   lisCannotFind = 'Cannot find %s';
   lisUsedBy = ' used by %s';
+  lisCleanUpPackage = 'Clean up package "%s".';
+  lisPpuInWrongDirectory = 'ppu in wrong directory=%s.';
+  lisPackageNeedsAnOutputDirectory = 'Package needs an output directory.';
+  lisMakeSureAllPpuFilesOfAPackageAreInItsOutputDirecto = 'Make sure all ppu '
+    +'files of a package are in its output directory.';
   lisCheckSearchPathPackageTryACleanRebuildCheckImpleme = '. Check search path of'
     +' package %s, try a clean rebuild, check implementation uses sections.';
   lisCheckIfPackageIsInTheDependencies = '. Check if package %s is in the '

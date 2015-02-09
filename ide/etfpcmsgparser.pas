@@ -27,7 +27,7 @@ unit etFPCMsgParser;
 
 {$mode objfpc}{$H+}
 
-{off $DEFINE VerboseFPCMsgUnitNotFound}
+{$DEFINE VerboseFPCMsgUnitNotFound}
 
 interface
 
@@ -1745,27 +1745,29 @@ procedure TIDEFPCParser.ImproveMsgUnitNotFound(aPhase: TExtToolParserSyncPhase;
     end;
   end;
 
-  procedure FindPackage(MissingUnitname: string; out PkgName: string;
-    OnlyInstalled: boolean; out PkgFile: TLazPackageFile);
+  procedure FindPackage(MissingUnitname: string; OnlyInstalled: boolean;
+    out Pkg: TIDEPackage; out PkgName: string; out PkgFile: TLazPackageFile);
   var
     i: Integer;
-    Pkg: TIDEPackage;
     j: Integer;
     aFile: TLazPackageFile;
+    CurPkg: TIDEPackage;
   begin
     PkgName:='';
     PkgFile:=nil;
+    Pkg:=nil;
     // search unit in packages
     for i:=0 to PackageEditingInterface.GetPackageCount-1 do begin
-      Pkg:=PackageEditingInterface.GetPackages(i);
-      if OnlyInstalled and (Pkg.AutoInstall=pitNope) then
+      CurPkg:=PackageEditingInterface.GetPackages(i);
+      if OnlyInstalled and (CurPkg.AutoInstall=pitNope) then
         continue;
-      if CompareTextCT(Pkg.Name,MissingUnitname)=0 then begin
-        PkgName:=Pkg.Name;
+      if CompareTextCT(CurPkg.Name,MissingUnitname)=0 then begin
+        PkgName:=CurPkg.Name;
+        Pkg:=CurPkg;
         break;
       end;
-      for j:=0 to Pkg.FileCount-1 do begin
-        aFile:=Pkg.Files[j];
+      for j:=0 to CurPkg.FileCount-1 do begin
+        aFile:=CurPkg.Files[j];
         if not (aFile.FileType in PkgFileRealUnitTypes) then
           continue;
         if CompareTextCT(ExtractFileNameOnly(aFile.Filename),MissingUnitname)<>0
@@ -1774,7 +1776,8 @@ procedure TIDEFPCParser.ImproveMsgUnitNotFound(aPhase: TExtToolParserSyncPhase;
         begin
           // a better file was found
           PkgFile:=aFile;
-          PkgName:=Pkg.Name;
+          PkgName:=CurPkg.Name;
+          Pkg:=CurPkg;
         end;
       end;
     end;
@@ -1788,15 +1791,17 @@ var
   CodeBuf: TCodeBuffer;
   Owners: TFPList;
   UsedByOwner: TObject;
+  UsedByPkg: TIDEPackage;
   PPUFilename: String;
-  PkgName: String;
   OnlyInstalled: Boolean;
   s: String;
   PPUFiles: TStringList; // Strings:PPUFilename, Objects:TIDEPackage
   i: Integer;
   DepOwner: TObject;
-  PkgFile: TLazPackageFile;
   TheOwner: TObject;
+  MissingPkg: TIDEPackage;
+  MissingPkgName: String;
+  MissingPkgFile: TLazPackageFile;
 begin
   if MsgLine.Urgency<mluError then exit;
   if not IsMsgID(MsgLine,FPCMsgIDCantFindUnitUsedBy,fMsgItemCantFindUnitUsedBy)
@@ -1851,7 +1856,9 @@ begin
       if Tool.Data is TIDEExternalToolData then begin
         TheOwner:=ExternalToolList.GetIDEObject(TIDEExternalToolData(Tool.Data));
       end else if Tool.Data=nil then begin
+        {$IFDEF VerboseFPCMsgUnitNotFound}
         debugln(['TIDEFPCParser.ImproveMsgUnitNotFound Tool.Data=nil, ProcDir=',Tool.Process.CurrentDirectory]);
+        {$ENDIF}
       end;
       NewFilename:=LazarusIDE.FindUnitFile(UsedByUnit,TheOwner);
       if NewFilename='' then begin
@@ -1882,11 +1889,15 @@ begin
   PPUFiles:=TStringList.Create;
   try
     UsedByOwner:=nil;
+    UsedByPkg:=nil;
     if CodeBuf<>nil then begin
       FixSourcePos(CodeBuf,MissingUnitname);
       Owners:=PackageEditingInterface.GetOwnersOfUnit(CodeBuf.Filename);
-      if (Owners<>nil) and (Owners.Count>0) then
+      if (Owners<>nil) and (Owners.Count>0) then begin
         UsedByOwner:=TObject(Owners[0]);
+        if UsedByOwner is TIDEPackage then
+          UsedByPkg:=TIDEPackage(UsedByOwner);
+      end;
     end;
 
     // if the ppu exists then improve the message
@@ -1897,14 +1908,20 @@ begin
       PPUFilename:=CodeToolBoss.DirectoryCachePool.FindCompiledUnitInCompletePath(
                         ExtractFilePath(CodeBuf.Filename),MissingUnitname);
       {$IFDEF VerboseFPCMsgUnitNotFound}
-      debugln(['TQuickFixUnitNotFoundPosition.Execute PPUFilename=',PPUFilename,' IsFileInIDESrcDir=',IsFileInIDESrcDir(CodeBuf.Filename)]);
+      debugln(['TIDEFPCParser.ImproveMsgUnitNotFound PPUFilename=',PPUFilename,' IsFileInIDESrcDir=',IsFileInIDESrcDir(CodeBuf.Filename)]);
       {$ENDIF}
       OnlyInstalled:=IsFileInIDESrcDir(CodeBuf.Filename);
       if OnlyInstalled then begin
         FindPPUInInstalledPkgs(MissingUnitname,PPUFiles);
       end else if UsedByOwner<>nil then
         FindPPUInModuleAndDeps(MissingUnitName,UsedByOwner,PPUFiles);
-      FindPackage(MissingUnitname,PkgName,OnlyInstalled,PkgFile);
+      {$IFDEF VerboseFPCMsgUnitNotFound}
+      debugln(['TIDEFPCParser.ImproveMsgUnitNotFound PPUFiles in PPU path=',PPUFiles.Count]);
+      {$ENDIF}
+      FindPackage(MissingUnitname,OnlyInstalled,MissingPkg,MissingPkgName,MissingPkgFile);
+      {$IFDEF VerboseFPCMsgUnitNotFound}
+      debugln(['TIDEFPCParser.ImproveMsgUnitNotFound MissingUnitPkg=',MissingPkgName]);
+      {$ENDIF}
       if PPUFiles.Count>0 then begin
         // there is a ppu file, but the compiler didn't like it
         // => change message
@@ -1923,34 +1940,48 @@ begin
           end;
         end;
       end else begin
-        // there is no ppu file in the unit path
+        // there is no ppu file in the ppu path (it might be in the source path)
+        {$IFDEF VerboseFPCMsgUnitNotFound}
+        debugln(['TIDEFPCParser.ImproveMsgUnitNotFound PPUFilename=',PPUFilename,' PPUFiles.Count=',PPUFiles.Count]);
+        {$ENDIF}
         s:=Format(lisCannotFindUnit, [MissingUnitname]);
         if UsedByUnit<>'' then
           s+=Format(lisUsedBy, [UsedByUnit]);
-        if (UsedByOwner is TIDEPackage)
-        and (CompareTextCT(TIDEPackage(UsedByOwner).Name,PkgName)=0) then
+        if PPUFilename<>'' then begin
+          // there is a ppu file in the source path
+          if (MissingPkg<>nil) and (MissingPkg.LazCompilerOptions.UnitOutputDirectory='')
+          then
+            s+='. '+lisPackageNeedsAnOutputDirectory
+          else
+            s+='. '+lisMakeSureAllPpuFilesOfAPackageAreInItsOutputDirecto;
+          s+=' '+Format(lisPpuInWrongDirectory, [PPUFilename]);
+          if MissingPkgName<>'' then
+            s+=' '+Format(lisCleanUpPackage, [MissingPkgName]);
+        end
+        else if (UsedByPkg<>nil)
+        and (CompareTextCT(UsedByPkg.Name,MissingPkgName)=0) then
         begin
           // two units of a package cannot find each other
           s+=Format(lisCheckSearchPathPackageTryACleanRebuildCheckImpleme, [
-            TIDEPackage(UsedByOwner).Name]);
-        end else if (PkgName<>'')
+            UsedByPkg.Name]);
+        end else if (MissingPkgName<>'')
         and (OnlyInstalled
           or ((UsedByOwner<>nil)
-             and PackageEditingInterface.IsOwnerDependingOnPkg(UsedByOwner,PkgName,DepOwner)))
+             and PackageEditingInterface.IsOwnerDependingOnPkg(UsedByOwner,MissingPkgName,DepOwner)))
         then begin
           // ppu file of an used package is missing
-          if (PkgFile<>nil) and (not PkgFile.InUses) then
-            s+=Format(lisEnableFlagUseUnitOfUnitInPackage, [MissingUnitName, PkgName])
+          if (MissingPkgFile<>nil) and (not MissingPkgFile.InUses) then
+            s+=Format(lisEnableFlagUseUnitOfUnitInPackage, [MissingUnitName, MissingPkgName])
           else
             s+=Format(lisCheckIfPackageCreatesPpuCheckNothingDeletesThisFil, [
-              PkgName, MissingUnitName]);
+              MissingPkgName, MissingUnitName]);
         end else begin
-          if PkgName<>'' then
-            s+=Format(lisCheckIfPackageIsInTheDependencies, [PkgName]);
+          if MissingPkgName<>'' then
+            s+=Format(lisCheckIfPackageIsInTheDependencies, [MissingPkgName]);
           if UsedByOwner is TLazProject then
             s+=lisOfTheProjectInspector
-          else if UsedByOwner is TIDEPackage then
-            s+=Format(lisOfPackage, [TIDEPackage(UsedByOwner).Name]);
+          else if UsedByPkg<>nil then
+            s+=Format(lisOfPackage, [UsedByPkg.Name]);
         end;
         s+='.';
       end;
