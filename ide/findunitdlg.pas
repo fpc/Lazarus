@@ -175,7 +175,7 @@ begin
   for i:=0 to Fixes.LineCount-1 do begin
     Msg:=Fixes.Lines[i];
     if not IsApplicable(Msg,MissingUnit,UsedByUnit) then continue;
-    Fixes.AddMenuItem(Self,Msg,'Search Unit "'+MissingUnit+'"');
+    Fixes.AddMenuItem(Self, Msg, Format(lisSearchUnit, [MissingUnit]));
     exit;
   end;
 end;
