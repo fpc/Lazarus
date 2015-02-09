@@ -35,6 +35,7 @@ const
 const
   IDEToolCompilePackage = 'Package';
   IDEToolCompileProject = 'Project';
+  IDEToolCompileIDE     = 'IDE';
 type
 
   { TIDEExternalToolData

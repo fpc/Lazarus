@@ -1386,6 +1386,8 @@ begin
     Result:=LazarusIDE.ActiveProject;
   end else if ToolData.Kind=IDEToolCompilePackage then begin
     Result:=PackageEditingInterface.FindPackageWithName(ToolData.ModuleName);
+  end else if ToolData.Kind=IDEToolCompileIDE then begin
+    Result:=LazarusIDE;
   end;
 end;
 

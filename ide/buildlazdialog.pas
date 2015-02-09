@@ -385,6 +385,9 @@ var
     Tool:=ExternalToolList.Add(CurTitle);
     Tool.Reference(Self,ClassName);
     try
+      Tool.Data:=TIDEExternalToolData.Create(IDEToolCompileIDE,'lazarus',
+        AppendPathDelim(EnvironmentOptions.GetParsedLazarusDirectory)+'lazarus.pp');
+      Tool.FreeData:=true;
       Tool.Process.Executable:=Executable;
       Tool.AddParsers(SubToolFPC);
       Tool.AddParsers(SubToolMake);
