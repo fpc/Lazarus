@@ -638,7 +638,7 @@ begin
         debugln(['Warning: TPackageLinks.UpdateUserLinks two links for file: ',NewPkgLink.LPKFilename,' A=',OtherLink.IDAsString,' B=',NewPkgLink.IDAsString]);
         if OtherLink.LastUsed<NewPkgLink.LastUsed then begin
           debugln(['Warning: TPackageLinks.UpdateUserLinks removing older link ',OtherLink.IDAsString]);
-          FUserLinksSortID.Delete(OtherNode);
+          FUserLinksSortID.RemovePointer(OtherLink);
           FUserLinksSortFile.Delete(OtherNode);
           OtherLink.Release;
         end else begin
