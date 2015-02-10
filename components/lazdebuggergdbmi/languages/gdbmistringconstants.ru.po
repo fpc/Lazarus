@@ -170,3 +170,7 @@ msgstr "Ответ: %sПродолжить?"
 msgid "Unexpected result:%sThe debugger will terminate"
 msgstr "Неожиданный результат:%sОтладчик прервёт работу."
 
+#: gdbmistringconstants.synffailedtoloadapplicationexecutable
+msgid "Failed to load application executable"
+msgstr ""
+
