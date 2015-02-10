@@ -807,8 +807,8 @@ type
     AdjacentFormula: TvFormula;
   public
     Top, Left, Width, Height: Double;
-    function CalculateHeight(ADest: TFPCustomCanvas): Double; // in milimeters
-    function CalculateWidth(ADest: TFPCustomCanvas): Double; // in milimeters
+    function CalculateHeight(ADest: TFPCustomCanvas): Double; // in millimeters
+    function CalculateWidth(ADest: TFPCustomCanvas): Double; // in millimeters
     function AsText: string;
     procedure PositionSubparts(ADest: TFPCustomCanvas; ABaseX, ABaseY: Double);
     procedure Render(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
@@ -843,8 +843,8 @@ type
     function  CalculateRPNFormulaValue: Double;
     procedure Clear; override;
     //
-    function CalculateHeight(ADest: TFPCustomCanvas): Double; virtual; // in milimeters
-    function CalculateWidth(ADest: TFPCustomCanvas): Double; virtual; // in milimeters
+    function CalculateHeight(ADest: TFPCustomCanvas): Double; virtual; // in millimeters
+    function CalculateWidth(ADest: TFPCustomCanvas): Double; virtual; // in millimeters
     procedure PositionSubparts(ADest: TFPCustomCanvas; ABaseX, ABaseY: Double); override;
     procedure CalculateBoundingBox(ADest: TFPCustomCanvas; var ALeft, ATop, ARight, ABottom: Double); override;
     procedure Render(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
@@ -856,8 +856,8 @@ type
 
   TvVerticalFormulaStack = class(TvFormula)
   public
-    function CalculateHeight(ADest: TFPCustomCanvas): Double; override; // in milimeters
-    function CalculateWidth(ADest: TFPCustomCanvas): Double; override; // in milimeters
+    function CalculateHeight(ADest: TFPCustomCanvas): Double; override; // in millimeters
+    function CalculateWidth(ADest: TFPCustomCanvas): Double; override; // in millimeters
     procedure PositionSubparts(ADest: TFPCustomCanvas; ABaseX, ABaseY: Double); override;
     procedure CalculateBoundingBox(ADest: TFPCustomCanvas; var ALeft, ATop, ARight, ABottom: Double); override;
     procedure Render(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
@@ -7038,6 +7038,8 @@ end;
 function TvVectorialDocument.AddPage: TvVectorialPage;
 begin
   Result := TvVectorialPage.Create(Self);
+  Result.Width := Width;
+  Result.Height := Height;
   FPages.Add(Result);
   if FCurrentPageIndex < 0 then FCurrentPageIndex := FPages.Count-1;
 end;
