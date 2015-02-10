@@ -560,10 +560,11 @@ begin
         IsValidDirectory := (DirInfo.Name <> '.') and (DirInfo.Name <> '..');
 
         IsHidden := (DirInfo.Attr and faHidden = faHidden);
-        {$IFDEF Unix}
-        if (DirInfo.Name<>'') and (DirInfo.Name[1]='.') then
-          IsHidden:=true;
-        {$ENDIF}
+        //LinuxToWinAttr already does this in FF/FN
+        //{$IFDEF Unix}
+        //if (DirInfo.Name<>'') and (DirInfo.Name[1]='.') then
+        //  IsHidden:=true;
+        //{$ENDIF}
 
         // First check if we show hidden files
         if IsHidden then AddFile := (otHidden in AObjectTypes)
@@ -676,10 +677,11 @@ var
             (SR.Name <> '..')) then
          begin
            IsHidden := ((Attr and faHidden) > 0);
-           {$IFDEF Unix}
-           if (SR.Name<>'') and (SR.Name[1]='.') then
-             IsHidden := True;
-           {$ENDIF}
+           //LinuxToWinAttr already does this in FF/FN
+           //{$IFDEF Unix}
+           //if (SR.Name<>'') and (SR.Name[1]='.') then
+           //  IsHidden := True;
+           //{$ENDIF}
            if not (IsHidden and (not ((otHidden in fObjectTypes)))) then
            begin
              Result := True;
