@@ -4374,6 +4374,14 @@ msgstr "começa"
 msgid "Behind related"
 msgstr "Relacionado anteriormente"
 
+#: lazarusidestrconsts.lisbelessverbosecanbegivenmultipletimes
+msgid "be less verbose, can be given multiple times"
+msgstr ""
+
+#: lazarusidestrconsts.lisbemoreverbosecanbegivenmultipletimes
+msgid "be more verbose, can be given multiple times"
+msgstr ""
+
 #: lazarusidestrconsts.lisbestviewedbyinstallingahtmlcontrolliketurbopowerip
 msgid "Best viewed by installing a HTML control like turbopoweriprodsgn"
 msgstr "Melhor visualizado instalando um controle HTML como \"turbopowerprodsgn\""
@@ -4515,6 +4523,10 @@ msgstr ""
 #: lazarusidestrconsts.lisbuildidewithpackages
 msgid "build IDE with packages"
 msgstr "construir IDE com pacotes"
+
+#: lazarusidestrconsts.lisbuilding
+msgid "Building"
+msgstr ""
 
 #: lazarusidestrconsts.lisbuildinglazarusfailed
 msgid "Building Lazarus failed"
@@ -6360,6 +6372,10 @@ msgstr "Continuar"
 #: lazarusidestrconsts.liscontinueanddonotaskagain
 msgid "Continue and do not ask again"
 msgstr "Continuar e não perguntar mais"
+
+#: lazarusidestrconsts.liscontinuebuilding
+msgid "Continue building"
+msgstr ""
 
 #: lazarusidestrconsts.liscontinuewithoutloadingform
 msgid "Continue without loading form"
@@ -16263,6 +16279,10 @@ msgstr "O diretório fonte FPC \"%s\" parece incorreto:%s%s"
 #: lazarusidestrconsts.listhefreepascalcompilerexecutabletypicallyhasthename
 msgid "The Free Pascal compiler executable typically has the name \"%s\". You can also use the target specific compiler like \"%s\". Please give the full file path."
 msgstr "O executável do compilador Free Pascal tipicamente tem o nome \"%s\". Você também pode usar um alvo específico do compilador como \"%s\". Favor informar o caminho completo do arquivo."
+
+#: lazarusidestrconsts.listheideisstillbuilding
+msgid "The IDE is still building."
+msgstr ""
 
 #: lazarusidestrconsts.listheidentifierisaunitpleaseusethefilesaveasfunction
 msgid "The identifier is a unit. Please use the File - Save as function to rename a unit."

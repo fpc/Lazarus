@@ -4397,6 +4397,14 @@ msgstr "prasideda"
 msgid "Behind related"
 msgstr "Už susijusio"
 
+#: lazarusidestrconsts.lisbelessverbosecanbegivenmultipletimes
+msgid "be less verbose, can be given multiple times"
+msgstr ""
+
+#: lazarusidestrconsts.lisbemoreverbosecanbegivenmultipletimes
+msgid "be more verbose, can be given multiple times"
+msgstr ""
+
 #: lazarusidestrconsts.lisbestviewedbyinstallingahtmlcontrolliketurbopowerip
 msgid "Best viewed by installing a HTML control like turbopoweriprodsgn"
 msgstr "Geriausiai pateikiamas įdiegus HTML valdiklį (pvz. „turbopoweriprodsgn“)"
@@ -4542,6 +4550,10 @@ msgstr ""
 #: lazarusidestrconsts.lisbuildidewithpackages
 msgid "build IDE with packages"
 msgstr "kartu su IKA daryti ir paketus"
+
+#: lazarusidestrconsts.lisbuilding
+msgid "Building"
+msgstr ""
 
 #: lazarusidestrconsts.lisbuildinglazarusfailed
 msgid "Building Lazarus failed"
@@ -6396,6 +6408,10 @@ msgstr "Tęsti"
 #: lazarusidestrconsts.liscontinueanddonotaskagain
 msgid "Continue and do not ask again"
 msgstr "Tęsti daugiau nebeklausiant"
+
+#: lazarusidestrconsts.liscontinuebuilding
+msgid "Continue building"
+msgstr ""
 
 #: lazarusidestrconsts.liscontinuewithoutloadingform
 msgid "Continue without loading form"
@@ -16345,6 +16361,10 @@ msgstr "FPC pirminio kodo aplankas „%s“ nepanašus į tinkamą:%s%s"
 #: lazarusidestrconsts.listhefreepascalcompilerexecutabletypicallyhasthename
 msgid "The Free Pascal compiler executable typically has the name \"%s\". You can also use the target specific compiler like \"%s\". Please give the full file path."
 msgstr "Įprasta Free Pascal kompiliatoriaus pavadinimas būna „%s“. Be to, galima naudoti kažkuriai paskirčiai skirtą kompiliatorių kaip kad „%s“. Būtina nurodyti pilną failo adresą."
+
+#: lazarusidestrconsts.listheideisstillbuilding
+msgid "The IDE is still building."
+msgstr ""
 
 #: lazarusidestrconsts.listheidentifierisaunitpleaseusethefilesaveasfunction
 msgid "The identifier is a unit. Please use the File - Save as function to rename a unit."

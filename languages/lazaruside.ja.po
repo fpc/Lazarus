@@ -4357,6 +4357,14 @@ msgstr "begins"
 msgid "Behind related"
 msgstr "関連するものの後に"
 
+#: lazarusidestrconsts.lisbelessverbosecanbegivenmultipletimes
+msgid "be less verbose, can be given multiple times"
+msgstr ""
+
+#: lazarusidestrconsts.lisbemoreverbosecanbegivenmultipletimes
+msgid "be more verbose, can be given multiple times"
+msgstr ""
+
 #: lazarusidestrconsts.lisbestviewedbyinstallingahtmlcontrolliketurbopowerip
 msgid "Best viewed by installing a HTML control like turbopoweriprodsgn"
 msgstr "turbopoweriprodsgnのようなHTMLコントロールをインストールすることによって最も良く見えます"
@@ -4498,6 +4506,10 @@ msgstr ""
 #: lazarusidestrconsts.lisbuildidewithpackages
 msgid "build IDE with packages"
 msgstr "パッケージ付きのIDEを構築"
+
+#: lazarusidestrconsts.lisbuilding
+msgid "Building"
+msgstr ""
 
 #: lazarusidestrconsts.lisbuildinglazarusfailed
 msgid "Building Lazarus failed"
@@ -6328,6 +6340,10 @@ msgstr "継続"
 #: lazarusidestrconsts.liscontinueanddonotaskagain
 msgid "Continue and do not ask again"
 msgstr "続行し、もう尋ねない"
+
+#: lazarusidestrconsts.liscontinuebuilding
+msgid "Continue building"
+msgstr ""
 
 #: lazarusidestrconsts.liscontinuewithoutloadingform
 msgid "Continue without loading form"
@@ -16213,6 +16229,10 @@ msgstr "FPCソースディレクトリ \"%s\" は正しくないようです:%s%
 #: lazarusidestrconsts.listhefreepascalcompilerexecutabletypicallyhasthename
 msgid "The Free Pascal compiler executable typically has the name \"%s\". You can also use the target specific compiler like \"%s\". Please give the full file path."
 msgstr "Free Pascalコンパイラ実行ファイルはふつう\"%s\"という名前を持っています。あなたは\"%s\"のような特定のコンパイラを用いることもできます。その完全なパスを与えてください。"
+
+#: lazarusidestrconsts.listheideisstillbuilding
+msgid "The IDE is still building."
+msgstr ""
 
 #: lazarusidestrconsts.listheidentifierisaunitpleaseusethefilesaveasfunction
 msgid "The identifier is a unit. Please use the File - Save as function to rename a unit."

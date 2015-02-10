@@ -4330,6 +4330,14 @@ msgstr ""
 msgid "Behind related"
 msgstr ""
 
+#: lazarusidestrconsts.lisbelessverbosecanbegivenmultipletimes
+msgid "be less verbose, can be given multiple times"
+msgstr ""
+
+#: lazarusidestrconsts.lisbemoreverbosecanbegivenmultipletimes
+msgid "be more verbose, can be given multiple times"
+msgstr ""
+
 #: lazarusidestrconsts.lisbestviewedbyinstallingahtmlcontrolliketurbopowerip
 msgid "Best viewed by installing a HTML control like turbopoweriprodsgn"
 msgstr ""
@@ -4478,6 +4486,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisbuildidewithpackages
 msgid "build IDE with packages"
+msgstr ""
+
+#: lazarusidestrconsts.lisbuilding
+msgid "Building"
 msgstr ""
 
 #: lazarusidestrconsts.lisbuildinglazarusfailed
@@ -6311,6 +6323,10 @@ msgstr "Devam et"
 
 #: lazarusidestrconsts.liscontinueanddonotaskagain
 msgid "Continue and do not ask again"
+msgstr ""
+
+#: lazarusidestrconsts.liscontinuebuilding
+msgid "Continue building"
 msgstr ""
 
 #: lazarusidestrconsts.liscontinuewithoutloadingform
@@ -16249,6 +16265,10 @@ msgstr ""
 
 #: lazarusidestrconsts.listhefreepascalcompilerexecutabletypicallyhasthename
 msgid "The Free Pascal compiler executable typically has the name \"%s\". You can also use the target specific compiler like \"%s\". Please give the full file path."
+msgstr ""
+
+#: lazarusidestrconsts.listheideisstillbuilding
+msgid "The IDE is still building."
 msgstr ""
 
 #: lazarusidestrconsts.listheidentifierisaunitpleaseusethefilesaveasfunction

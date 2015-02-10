@@ -4393,6 +4393,14 @@ msgstr "починається"
 msgid "Behind related"
 msgstr "Після пов'язаних"
 
+#: lazarusidestrconsts.lisbelessverbosecanbegivenmultipletimes
+msgid "be less verbose, can be given multiple times"
+msgstr ""
+
+#: lazarusidestrconsts.lisbemoreverbosecanbegivenmultipletimes
+msgid "be more verbose, can be given multiple times"
+msgstr ""
+
 #: lazarusidestrconsts.lisbestviewedbyinstallingahtmlcontrolliketurbopowerip
 msgid "Best viewed by installing a HTML control like turbopoweriprodsgn"
 msgstr "Переглядатиметься найкраще, якщо встановити елемент керування HTML, як напр. turbopoweriprodsgn"
@@ -4534,6 +4542,10 @@ msgstr ""
 #: lazarusidestrconsts.lisbuildidewithpackages
 msgid "build IDE with packages"
 msgstr "будувати IDE з пакунками"
+
+#: lazarusidestrconsts.lisbuilding
+msgid "Building"
+msgstr ""
 
 #: lazarusidestrconsts.lisbuildinglazarusfailed
 msgid "Building Lazarus failed"
@@ -6390,6 +6402,10 @@ msgstr "Продовжити"
 #: lazarusidestrconsts.liscontinueanddonotaskagain
 msgid "Continue and do not ask again"
 msgstr "Продовжити і не питати знов"
+
+#: lazarusidestrconsts.liscontinuebuilding
+msgid "Continue building"
+msgstr ""
 
 #: lazarusidestrconsts.liscontinuewithoutloadingform
 msgid "Continue without loading form"
@@ -16326,6 +16342,10 @@ msgstr "Джерельна тека FPC \"%s\" виглядає невірною
 #: lazarusidestrconsts.listhefreepascalcompilerexecutabletypicallyhasthename
 msgid "The Free Pascal compiler executable typically has the name \"%s\". You can also use the target specific compiler like \"%s\". Please give the full file path."
 msgstr "Виконуваний файл компілятора Free Pascal зазвичай має ім'я \"%s\". Ви також можете використовувати компілятор для певної платформи, наприклад, \"%s\". Задайте повний шлях до файлу."
+
+#: lazarusidestrconsts.listheideisstillbuilding
+msgid "The IDE is still building."
+msgstr ""
 
 #: lazarusidestrconsts.listheidentifierisaunitpleaseusethefilesaveasfunction
 msgid "The identifier is a unit. Please use the File - Save as function to rename a unit."

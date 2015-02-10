@@ -4293,6 +4293,14 @@ msgstr "commence"
 msgid "Behind related"
 msgstr "Derrière les méthodes"
 
+#: lazarusidestrconsts.lisbelessverbosecanbegivenmultipletimes
+msgid "be less verbose, can be given multiple times"
+msgstr ""
+
+#: lazarusidestrconsts.lisbemoreverbosecanbegivenmultipletimes
+msgid "be more verbose, can be given multiple times"
+msgstr ""
+
 #: lazarusidestrconsts.lisbestviewedbyinstallingahtmlcontrolliketurbopowerip
 msgid "Best viewed by installing a HTML control like turbopoweriprodsgn"
 msgstr "Meilleur affichage en installation un contrôleur HTML comme turbopoweriprodsgn"
@@ -4434,6 +4442,10 @@ msgstr "Construire l'EDI"
 #: lazarusidestrconsts.lisbuildidewithpackages
 msgid "build IDE with packages"
 msgstr "Créer l' IDE avec les paquets"
+
+#: lazarusidestrconsts.lisbuilding
+msgid "Building"
+msgstr ""
 
 #: lazarusidestrconsts.lisbuildinglazarusfailed
 msgid "Building Lazarus failed"
@@ -6246,6 +6258,10 @@ msgstr "Continuer"
 #: lazarusidestrconsts.liscontinueanddonotaskagain
 msgid "Continue and do not ask again"
 msgstr "Continuer et ne pas demander à nouveau"
+
+#: lazarusidestrconsts.liscontinuebuilding
+msgid "Continue building"
+msgstr ""
 
 #: lazarusidestrconsts.liscontinuewithoutloadingform
 msgid "Continue without loading form"
@@ -15881,6 +15897,10 @@ msgstr "Le répertoire \"\"%s\" ne semble pas correct:%s%s"
 #: lazarusidestrconsts.listhefreepascalcompilerexecutabletypicallyhasthename
 msgid "The Free Pascal compiler executable typically has the name \"%s\". You can also use the target specific compiler like \"%s\". Please give the full file path."
 msgstr "L'exécutable du compilateur Free Pascal a typiquement le nom \"%s\". Vous pouvez aussi utiliser le compilateur cible comme \"%s\". Indiquez le chemin complet."
+
+#: lazarusidestrconsts.listheideisstillbuilding
+msgid "The IDE is still building."
+msgstr ""
 
 #: lazarusidestrconsts.listheidentifierisaunitpleaseusethefilesaveasfunction
 msgid "The identifier is a unit. Please use the File - Save as function to rename a unit."

@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2015-01-21 00:21+0300\n"
+"PO-Revision-Date: 2015-02-11 01:18+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -4283,6 +4283,14 @@ msgstr "начинается"
 msgid "Behind related"
 msgstr "После связанных"
 
+#: lazarusidestrconsts.lisbelessverbosecanbegivenmultipletimes
+msgid "be less verbose, can be given multiple times"
+msgstr "выводить меньше подробностей, может задаваться несколько раз"
+
+#: lazarusidestrconsts.lisbemoreverbosecanbegivenmultipletimes
+msgid "be more verbose, can be given multiple times"
+msgstr "выводить больше подробностей, может задаваться несколько раз"
+
 #: lazarusidestrconsts.lisbestviewedbyinstallingahtmlcontrolliketurbopowerip
 msgid "Best viewed by installing a HTML control like turbopoweriprodsgn"
 msgstr "Отображается наилучшим образом при установленном компоненте HTML, например, turbopoweriprodsgn"
@@ -4424,6 +4432,10 @@ msgstr "Сборка IDE"
 #: lazarusidestrconsts.lisbuildidewithpackages
 msgid "build IDE with packages"
 msgstr "собрать IDE с пакетами"
+
+#: lazarusidestrconsts.lisbuilding
+msgid "Building"
+msgstr "Сборка"
 
 #: lazarusidestrconsts.lisbuildinglazarusfailed
 msgid "Building Lazarus failed"
@@ -6232,6 +6244,10 @@ msgstr "Продолжить"
 #: lazarusidestrconsts.liscontinueanddonotaskagain
 msgid "Continue and do not ask again"
 msgstr "Продолжить и больше не спрашивать"
+
+#: lazarusidestrconsts.liscontinuebuilding
+msgid "Continue building"
+msgstr "Продолжить сборку"
 
 #: lazarusidestrconsts.liscontinuewithoutloadingform
 msgid "Continue without loading form"
@@ -15887,6 +15903,10 @@ msgstr "Каталог исходного кода FPC \"%s\", вероятно,
 #: lazarusidestrconsts.listhefreepascalcompilerexecutabletypicallyhasthename
 msgid "The Free Pascal compiler executable typically has the name \"%s\". You can also use the target specific compiler like \"%s\". Please give the full file path."
 msgstr "Исполнимый файл компилятора Free Pascal обычно имеет имя \"%s\". Вы также можете использовать компилятор для определённой платформы, например, \"%s\". Задайте полный путь к файлу."
+
+#: lazarusidestrconsts.listheideisstillbuilding
+msgid "The IDE is still building."
+msgstr "IDE всё ещё ведёт сборку."
 
 #: lazarusidestrconsts.listheidentifierisaunitpleaseusethefilesaveasfunction
 msgid "The identifier is a unit. Please use the File - Save as function to rename a unit."
