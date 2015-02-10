@@ -1,41 +1,42 @@
 object SqliteTableEditorForm: TSqliteTableEditorForm
-  Left = 373
+  Left = 561
   Height = 269
-  Top = 244
-  Width = 290
+  Top = 231
+  Width = 363
   ActiveControl = butAdd
   Caption = 'Sqlite Table Editor'
   ClientHeight = 269
-  ClientWidth = 290
+  ClientWidth = 363
+  OnCreate = FormCreate
   OnShow = SqliteTableEditorFormShow
-  LCLVersion = '0.9.27'
+  LCLVersion = '1.5'
   object Label1: TLabel
-    Left = 147
-    Height = 14
+    Left = 215
+    Height = 13
     Top = 64
-    Width = 53
+    Width = 56
     Caption = 'Field Name'
     ParentColor = False
   end
   object Label2: TLabel
-    Left = 147
-    Height = 14
+    Left = 215
+    Height = 13
     Top = 120
-    Width = 50
+    Width = 49
     Caption = 'Field Type'
     ParentColor = False
   end
   object lblFilePath: TLabel
     Left = 8
-    Height = 14
+    Height = 13
     Top = 4
-    Width = 49
+    Width = 51
     Caption = 'lblFilePath'
     ParentColor = False
   end
   object Label3: TLabel
     Left = 8
-    Height = 14
+    Height = 13
     Top = 20
     Width = 32
     Caption = 'Label3'
@@ -45,13 +46,15 @@ object SqliteTableEditorForm: TSqliteTableEditorForm
     Left = 8
     Height = 192
     Top = 64
-    Width = 124
+    Width = 192
     ItemHeight = 0
     OnSelectionChange = listFieldsSelectionChange
+    ScrollWidth = 190
     TabOrder = 6
+    TopIndex = -1
   end
   object butCreate: TButton
-    Left = 147
+    Left = 215
     Height = 25
     Top = 192
     Width = 136
@@ -61,9 +64,9 @@ object SqliteTableEditorForm: TSqliteTableEditorForm
     TabStop = False
   end
   object butClose: TButton
-    Left = 147
+    Left = 215
     Height = 25
-    Top = 232
+    Top = 231
     Width = 136
     Caption = 'Close'
     OnClick = butCancelClick
@@ -71,7 +74,7 @@ object SqliteTableEditorForm: TSqliteTableEditorForm
     TabStop = False
   end
   object editFieldName: TEdit
-    Left = 147
+    Left = 215
     Height = 23
     Top = 80
     Width = 136
@@ -79,14 +82,12 @@ object SqliteTableEditorForm: TSqliteTableEditorForm
     TabOrder = 4
   end
   object comboFieldType: TComboBox
-    Left = 147
-    Height = 21
+    Left = 215
+    Height = 27
     Top = 136
     Width = 136
-    AutoComplete = False
     DropDownCount = 12
-    ItemHeight = 13
-    ItemWidth = 0
+    ItemHeight = 0
     OnChange = comboFieldTypeChange
     Style = csDropDownList
     TabOrder = 5
@@ -95,16 +96,16 @@ object SqliteTableEditorForm: TSqliteTableEditorForm
     Left = 8
     Height = 25
     Top = 40
-    Width = 64
+    Width = 97
     Caption = 'Add'
     OnClick = butAddClick
     TabOrder = 0
   end
   object butDelete: TButton
-    Left = 72
+    Left = 105
     Height = 25
     Top = 40
-    Width = 60
+    Width = 95
     Caption = 'Delete'
     OnClick = butDeleteClick
     TabOrder = 3

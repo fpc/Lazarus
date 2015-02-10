@@ -1,23 +1,27 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
-  <Package Version="3">
+  <Package Version="4">
     <Name Value="sqlitelaz"/>
+    <Type Value="RunAndDesignTime"/>
+    <AddToProjectUsesSection Value="True"/>
     <Author Value="Luiz Américo Pereira Câmara"/>
     <CompilerOptions>
-      <Version Value="8"/>
+      <Version Value="11"/>
       <SearchPaths>
         <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)/$(LCLWidgetType)"/>
       </SearchPaths>
-      <Other>
-        <CompilerPath Value="$(CompPath)"/>
-      </Other>
+      <Parsing>
+        <SyntaxOptions>
+          <UseAnsiStrings Value="False"/>
+        </SyntaxOptions>
+      </Parsing>
     </CompilerOptions>
     <Description Value="TSqliteDataset class package
 "/>
     <License Value="Modified LGPL
 "/>
     <Version Minor="4"/>
-    <Files Count="3">
+    <Files Count="4">
       <Item1>
         <Filename Value="registersqlite.pas"/>
         <HasRegisterProc Value="True"/>
@@ -25,8 +29,8 @@
       </Item1>
       <Item2>
         <Filename Value="sqliteds.pas"/>
-        <AddToUsesPkgSection Value="False"/>
         <Type Value="Virtual Unit"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="sqliteds"/>
       </Item2>
       <Item3>
@@ -34,8 +38,16 @@
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="SqliteComponentEditor"/>
       </Item3>
+      <Item4>
+        <Filename Value="sqlitecompstrings.pas"/>
+        <UnitName Value="sqlitecompstrings"/>
+      </Item4>
     </Files>
-    <Type Value="RunAndDesignTime"/>
+    <i18n>
+      <EnableI18N Value="True"/>
+      <OutDir Value="languages"/>
+      <EnableI18NForLFM Value="True"/>
+    </i18n>
     <RequiredPkgs Count="2">
       <Item1>
         <PackageName Value="LCL"/>
@@ -45,7 +57,7 @@
       </Item2>
     </RequiredPkgs>
     <UsageOptions>
-      <UnitPath Value="$(PkgOutDir)/"/>
+      <UnitPath Value="$(PkgOutDir)"/>
     </UsageOptions>
     <PublishOptions>
       <Version Value="2"/>
