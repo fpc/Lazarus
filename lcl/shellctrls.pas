@@ -662,17 +662,29 @@ var
    var
      SR: TSearchRec;
      FindRes: LongInt;
+     Attr: Longint;
+     IsHidden: Boolean;
    begin
      Result:=False;
      try
-       FindRes := FindFirstUTF8(AppendPathDelim(ADir) + AllFilesMask, faDirectory, SR);
+       Attr := faDirectory;
+       if (otHidden in fObjectTypes) then Attr := Attr or faHidden;
+       FindRes := FindFirstUTF8(AppendPathDelim(ADir) + AllFilesMask, Attr , SR);
        while (FindRes = 0) do
        begin
          if ((SR.Attr and faDirectory <> 0) and (SR.Name <> '.') and
             (SR.Name <> '..')) then
          begin
-           Result := True;
-           Break;
+           IsHidden := ((Attr and faHidden) > 0);
+           {$IFDEF Unix}
+           if (SR.Name<>'') and (SR.Name[1]='.') then
+             IsHidden := True;
+           {$ENDIF}
+           if not (IsHidden and (not ((otHidden in fObjectTypes)))) then
+           begin
+             Result := True;
+             Break;
+           end;
          end;
          FindRes := FindNextUtf8(SR);
        end;
@@ -695,7 +707,7 @@ begin
     begin
       NewNode := Items.AddChildObject(ANode, Files.Strings[i], nil); //@Files.Strings[i]);
       // This marks if the node is a directory
-      if (fObjectTypes = [otFolders]) then
+      if (fObjectTypes * [otNonFolders] = []) then
         NewNode.HasChildren := ((Files.Objects[i] <> nil) and
                                HasSubDir(AppendpathDelim(ANodePath)+Files[i]))
       else
