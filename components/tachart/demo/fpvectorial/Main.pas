@@ -34,30 +34,11 @@ implementation
 {$R *.lfm}
 
 uses
-  FPVectorial, SVGVectorialWriter, avisocncgcodewriter, TADrawerFPVectorial,
-  TADrawUtils, TADrawerCanvas;
+  FPVectorial,
+  TADrawerFPVectorial, TADrawUtils, TADrawerCanvas;
 
 procedure SaveAs(AChart: TChart; AFormat: TvVectorialFormat);
 const
-(*
-    vfUnknown,
-    { Multi-purpose document formats }
-    vfPDF, vfSVG, vfSVGZ, vfCorelDrawCDR, vfWindowsMetafileWMF, vfODG,
-    { CAD formats }
-    vfDXF,
-    { Geospatial formats }
-    vfLAS, vfLAZ,
-    { Printing formats }
-    vfPostScript, vfEncapsulatedPostScript,
-    { GCode formats }
-    vfGCodeAvisoCNCPrototipoV5, vfGCodeAvisoCNCPrototipoV6,
-    { Formula formats }
-    vfMathML,
-    { Text Document formats }
-    vfODT, vfDOCX, vfHTML,
-    { Raster Image formats }
-    vfRAW
-*)
   ext: array [TvVectorialFormat] of String = (
     '',  // vfUnknown
     'pdf', 'svg', 'svgz', 'cdr', 'wmf', 'odg',
@@ -71,20 +52,22 @@ const
 var
   d: TvVectorialDocument;
   v: IChartDrawer;
+  fn: String;
 begin
   d := TvVectorialDocument.Create;
-  d.AddPage;
-  d.Width := AChart.Width;
-  d.Height := AChart.Height;
-  v := TFPVectorialDrawer.Create(d.GetCurrentPageAsVectorial);
-  v.DoChartColorToFPColor := @ChartColorSysToFPColor;
-
-  with AChart do
-    Draw(v, Rect(0, Height, Width, Height*2));
-    // why is it necessary to add 1x Height to y?
-    // Otherwise the chart would not be on the page.
-
-  d.WriteToFile('test.' + ext[AFormat], AFormat);
+  try
+    d.Width := AChart.Width;
+    d.Height := AChart.Height;
+    d.AddPage;
+    v := TFPVectorialDrawer.Create(d.GetCurrentPageAsVectorial);
+    with AChart do
+      Draw(v, Rect(0, 0, Width, Height));
+    fn := 'test.' + ext[AFormat];
+    d.WriteToFile(fn, AFormat);
+    ShowMessage(Format('Chart saved as "%s"', [fn]));
+  finally
+    d.Free;
+  end;
 end;
 
 { TForm1 }
