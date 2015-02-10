@@ -52,7 +52,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ExtCtrls,
-  StdCtrls, DefaultTranslator, LocalizedForms;
+  StdCtrls, LCLTranslator, LocalizedForms;
 
 type
 
