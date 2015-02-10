@@ -2124,6 +2124,7 @@ const
   VERTRES       = 10;  { Vertical height in pixels                }
   BITSPIXEL     = 12;  { Number of bits per pixel                 }
   PLANES        = 14;  { Number of planes                         }
+  NUMCOLORS     = 24;  { Number of colors                         }
   LOGPIXELSX    = 88;  { Logical pixelsinch in X                  }
   LOGPIXELSY    = 90;  { Logical pixelsinch in Y                  }
   SIZEPALETTE   = 104; { Number of entries in physical palette    }
