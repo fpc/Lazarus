@@ -20,7 +20,6 @@ begin
     PrinterCanvas.Font.Height := 24;
     PrinterCanvas.TextOut(50, 150, 'abcdefghijklmnopqrstuvwxyzåäö');
     WriteLn('Written file ' + PrinterCanvas.OutputFileName);
-    ReadLn;
   finally
     PrinterCanvas.Free;
   end;
