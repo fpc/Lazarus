@@ -3945,7 +3945,8 @@ begin
   {$IFDEF HASX11}
   if (LCLObject is TCustomForm) and EqualRect(FrameRect, WindowRect) and
     (TCustomForm(LCLObject).BorderStyle <> bsNone) and
-    not (TCustomForm(LCLObject).FormStyle in [fsMDIChild,fsSplash]) then
+    (not (TCustomForm(LCLObject).FormStyle in [fsMDIChild,fsSplash]) or
+      (csDesigning in LCLObject.ComponentState)) then
   begin
     ACurrPos := getPos;
     // do not send garbage to LCL. This window isn't decorated yet by WM.
