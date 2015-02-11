@@ -143,3 +143,7 @@ msgstr "Válasz: %sFolytatás?"
 msgid "Unexpected result:%sThe debugger will terminate"
 msgstr "Váratlan eredmény:%sA hibakereső leállni"
 
+#: gdbmistringconstants.synffailedtoloadapplicationexecutable
+msgid "Failed to load application executable"
+msgstr ""
+

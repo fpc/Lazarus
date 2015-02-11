@@ -168,3 +168,7 @@ msgstr ""
 msgid "Unexpected result:%sThe debugger will terminate"
 msgstr ""
 
+#: gdbmistringconstants.synffailedtoloadapplicationexecutable
+msgid "Failed to load application executable"
+msgstr ""
+

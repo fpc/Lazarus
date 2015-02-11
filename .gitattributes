@@ -3291,6 +3291,7 @@ components/sqldb/sqldblaz.lpk svneol=native#text/pascal
 components/sqldb/sqldblaz.pas svneol=native#text/pascal
 components/sqldb/sqlstringspropertyeditordlg.lfm svneol=native#text/plain
 components/sqldb/sqlstringspropertyeditordlg.pas svneol=native#text/plain
+components/sqlite/languages/sqlitecompstrings.hu.po svneol=native#text/plain
 components/sqlite/languages/sqlitecompstrings.po svneol=native#text/plain
 components/sqlite/languages/sqlitecompstrings.ru.po svneol=native#text/plain
 components/sqlite/lib/README.txt svneol=native#text/plain
