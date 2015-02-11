@@ -10,6 +10,7 @@
    ./runtests --format=plain --suite=TestReindent
    ./runtests --format=plain --suite=TestSimpleFormat
    ./runtests --format=plain --suite=TestDateToCfgStr
+   ./runtests --format=plain --suite=TestFilenameIsMatching
 }
 unit TestBasicCodetools;
 
@@ -26,6 +27,7 @@ type
   TTestBasicCodeTools = class(TTestCase)
   protected
   published
+    // BasicCodeTools
     procedure TestFindLineEndOrCodeInFrontOfPosition;
     procedure TestHasTxtWord;
     procedure TestBasicFindCommentEnd;
@@ -34,7 +36,9 @@ type
     procedure TestGuessIndentSize;
     procedure TestReIndent;
     procedure TestSimpleFormat;
+    // FileProcs
     procedure TestDateToCfgStr;
+    procedure TestFilenameIsMatching;
   end;
 
 implementation
@@ -268,6 +272,25 @@ begin
   t(EncodeDate(1234,12,17),DateAsCfgStrFormat,'12341217');
   t(EncodeDate(1234,1,2),DateAsCfgStrFormat,'12340102');
   t(ComposeDateTime(EncodeDate(1234,1,2),EncodeTime(3,4,5,6)),DateTimeAsCfgStrFormat,'1234/01/02 03:04:05');
+end;
+
+procedure TTestBasicCodeTools.TestFilenameIsMatching;
+
+  procedure t(aMask,aFilename: string; aExactly,Expected: boolean);
+  var
+    Actual: Boolean;
+  begin
+    Actual:=FilenameIsMatching(aMask,aFilename,aExactly);
+    if Actual=Expected then exit;
+    AssertEquals('FilenameIsMatching failed: Mask="'+aMask+'" File="'+aFilename+'" Exactly='+dbgs(aExactly),Expected,Actual);
+  end;
+
+begin
+  t('/abc','/abc',true,true);
+  t('/abc','/abc',false,true);
+  t('/abc','/abc/p',true,false);
+  t('/abc','/abc/p',false,true);
+  // /abc, /abc/p, /abc/xyz/filename              but not /abcd
 end;
 
 initialization
