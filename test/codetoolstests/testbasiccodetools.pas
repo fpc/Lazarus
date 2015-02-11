@@ -331,6 +331,28 @@ begin
   t('/a{b,c,d}e','/ade',false,true);
   t('/a{b,c,d}e','/aze',true,false);
   t('/a{b,c,d}e','/aze',false,false);
+
+  // {*.pas,*.pp,*.p,*.inc,Makefile.fpc} matches math.pp
+  t('{*.pas,*.pp,*.p,*.inc,Makefile.fpc}','math.pp',true,true);
+
+  t('{*.pas}','Generics.Collections.pas',true,true);
+  t('{*.pas,*.pp}','Generics.Collections.pas',true,true);
+  t('{*.pas,*.pp,*.p}','Generics.Collections.pas',true,true);
+  t('{*.pas,*.pp,*.p,*.inc}','Generics.Collections.pas',true,true);
+  t('{*.pas,*.pp,*.p,*.inc,Makefile.fpc}','Generics.Collections.pas',true,true);
+
+  // *{.p{as,p,}}   matches a.pas unit1.pp b.p but not b.inc
+  t('*{.p{as,p,}}','a.pas',true,true);
+  t('*{.p{as,p,}}','unit1.pp',true,true);
+  t('*{.p{as,p,}}','b.p',true,true);
+  t('*{.p{as,p,}}','b.inc',true,false);
+
+  //  *.{p{as,p,},inc} matches a.pas unit1.pp b.p b.inc but not c.lfm
+  t('*.{p{as,p,},inc}','a.pas',true,true);
+  t('*.{p{as,p,},inc}','unit1.pp',true,true);
+  t('*.{p{as,p,},inc}','b.p',true,true);
+  t('*.{p{as,p,},inc}','b.inc',true,true);
+  t('*.{p{as,p,},inc}','c.lfm',true,false);
 end;
 
 initialization
