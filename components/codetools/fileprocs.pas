@@ -1568,7 +1568,7 @@ function FilenameIsMatching(const Mask, Filename: string;
                    but not /abc/x/z/www
     /abc/x*z/www   matches /abc/xz/www, /abc/xyz/www, /abc/xAAAz/www
                    but not /abc/x/z/www
-    /abc/x\*z/www  matches /abc/x*z/www, /abc/x*z/www/ttt
+    /abc/x#*z/www  matches /abc/x*z/www, /abc/x*z/www/ttt
 
     /a{b,c,d}e     matches /abe, /ace, /ade
 *)

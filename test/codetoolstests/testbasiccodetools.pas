@@ -286,11 +286,51 @@ procedure TTestBasicCodeTools.TestFilenameIsMatching;
   end;
 
 begin
+  //  /abc           matches /abc, /abc/p, /abc/xyz/filename
+  //                 but not /abcd
   t('/abc','/abc',true,true);
   t('/abc','/abc',false,true);
   t('/abc','/abc/p',true,false);
   t('/abc','/abc/p',false,true);
-  // /abc, /abc/p, /abc/xyz/filename              but not /abcd
+  t('/abc','/abc/xyz/filename',false,true);
+  t('/abc','/abc/xyz/filename',true,false);
+  t('/abc','/abcd',true,false);
+  t('/abc','/abcd',false,false);
+
+  //  /abc/x?z/www   matches /abc/xyz/www, /abc/xaz/www
+  //                 but not /abc/x/z/www
+  t('/abc/x?z/www','/abc/xyz/www',true,true);
+  t('/abc/x?z/www','/abc/xyz/www',false,true);
+  t('/abc/x?z/www','/abc/xaz/www',true,true);
+  t('/abc/x?z/www','/abc/x/z/www',true,false);
+  t('/abc/x?z/www','/abc/x/z/www',false,false);
+
+  //  /abc/x*z/www   matches /abc/xz/www, /abc/xyz/www, /abc/xAAAz/www
+  //                 but not /abc/x/z/www
+  t('/abc/x*z/www','/abc/xz/www',true,true);
+  t('/abc/x*z/www','/abc/xz/www',false,true);
+  t('/abc/x*z/www','/abc/xyz/www',true,true);
+  t('/abc/x*z/www','/abc/xyz/www',false,true);
+  t('/abc/x*z/www','/abc/xAAAz/www',true,true);
+  t('/abc/x*z/www','/abc/xAAAz/www',false,true);
+  t('/abc/x*z/www','/abc/x/z/www',true,false);
+  t('/abc/x*z/www','/abc/x/z/www',false,false);
+
+  //  /abc/x#*z/www  matches /abc/x*z/www, /abc/x*z/www/ttt
+  t('/abc/x#*z/www','/abc/x*z/www',true,true);
+  t('/abc/x#*z/www','/abc/x*z/www',false,true);
+  t('/abc/x#*z/www','/abc/x*z/www/ttt',true,false);
+  t('/abc/x#*z/www','/abc/x*z/www/ttt',false,true);
+
+  //  /a{b,c,d}e     matches /abe, /ace, /ade, but not /aze
+  t('/a{b,c,d}e','/abe',true,true);
+  t('/a{b,c,d}e','/abe',false,true);
+  t('/a{b,c,d}e','/ace',true,true);
+  t('/a{b,c,d}e','/ace',false,true);
+  t('/a{b,c,d}e','/ade',true,true);
+  t('/a{b,c,d}e','/ade',false,true);
+  t('/a{b,c,d}e','/aze',true,false);
+  t('/a{b,c,d}e','/aze',false,false);
 end;
 
 initialization
