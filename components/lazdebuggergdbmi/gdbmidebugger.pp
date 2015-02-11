@@ -5122,7 +5122,10 @@ begin
       Exit;
     end;
 
-    if not DoChangeFilename then exit;
+    if not DoChangeFilename then begin
+      SetDebuggerErrorState(synfFailedToLoadApplicationExecutable, FErrorMsg);
+      exit;
+    end;
     if not DoSetPascal then exit;
 
     DebugLn(['TGDBMIDebugger.StartDebugging WorkingDir="', FTheDebugger.WorkingDir,'"']);

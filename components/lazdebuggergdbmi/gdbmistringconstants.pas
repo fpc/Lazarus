@@ -78,6 +78,7 @@ resourcestring
     +'debugger will terminate';
   lisResponseContinue = 'Response: %sContinue ?';
   dlgGroupDebugger = 'Debugger';
+  synfFailedToLoadApplicationExecutable = 'Failed to load application executable';
 
 implementation
 
