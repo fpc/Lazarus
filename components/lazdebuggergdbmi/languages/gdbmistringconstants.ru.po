@@ -172,11 +172,11 @@ msgstr "Неожиданный результат:%sОтладчик прерв�
 
 #: gdbmistringconstants.synffailedtoinitializedebugger
 msgid "Failed to initialize debugger"
-msgstr ""
+msgstr "Не удалось инициализировать отладчик"
 
 #: gdbmistringconstants.synffailedtoinitializethedebuggersetpascalfailed
 msgid "Failed to initialize the debugger (set pascal failed)"
-msgstr ""
+msgstr "Не удалось инициализировать отладчик (ошибка перевода в режим Паскаля)"
 
 #: gdbmistringconstants.synffailedtoloadapplicationexecutable
 msgid "Failed to load application executable"
