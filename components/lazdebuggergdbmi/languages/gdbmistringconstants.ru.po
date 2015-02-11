@@ -170,6 +170,14 @@ msgstr "Ответ: %sПродолжить?"
 msgid "Unexpected result:%sThe debugger will terminate"
 msgstr "Неожиданный результат:%sОтладчик прервёт работу."
 
+#: gdbmistringconstants.synffailedtoinitializedebugger
+msgid "Failed to initialize debugger"
+msgstr ""
+
+#: gdbmistringconstants.synffailedtoinitializethedebuggersetpascalfailed
+msgid "Failed to initialize the debugger (set pascal failed)"
+msgstr ""
+
 #: gdbmistringconstants.synffailedtoloadapplicationexecutable
 msgid "Failed to load application executable"
 msgstr "Не удалось загрузить исполнимый файл приложения"
