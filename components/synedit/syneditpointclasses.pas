@@ -440,6 +440,7 @@ type
     TPainterStates = set of TPainterState;
   private
     FColor: TColor;
+    FForcePaintEvents: Boolean;
     FIsDrawn: Boolean;
     FSavePen: TPen;
     FOldX, FOldY, FOldW, FOldH: Integer;
@@ -449,6 +450,7 @@ type
     procedure DoTimer(Sender: TObject);
     procedure DoPaint(ACanvas: TCanvas; X, Y, H, W: Integer);
     procedure Paint;
+    procedure Invalidate;
     procedure AddAfterPaint(AStates: TPainterStates = []);
     procedure DoAfterPaint(Sender: TObject);
     procedure ExecAfterPaint;
@@ -471,6 +473,7 @@ type
     function ShowCaret: Boolean; override;
     function SetCaretPosEx(x, y: Integer): Boolean; override;
     property Color: TColor read FColor write SetColor;
+    property ForcePaintEvents: Boolean read FForcePaintEvents write FForcePaintEvents;
   end;
 
   // relative dimensions in percent from 0 to 1024 (=100%)
@@ -2694,6 +2697,11 @@ var
   l: Integer;
   am: TAntialiasingMode;
 begin
+  if ForcePaintEvents and (not FInPaint) then begin
+   Invalidate;
+   exit;
+  end;
+
   am := ACanvas.AntialiasingMode;
   FSavePen.Assign(ACanvas.Pen);
 
@@ -2729,6 +2737,17 @@ begin
 
   FIsDrawn := not FIsDrawn;
   DoPaint(CurrentCanvas, FLeft, FTop, FHeight, FWidth);
+end;
+
+procedure TSynEditScreenCaretPainterInternal.Invalidate;
+var
+  r: TRect;
+begin
+  r.Left := Left;
+  r.Top := Top;
+  r.Right := Left+Width+1;
+  r.Bottom := Top+Height+1;
+  InvalidateRect(Handle, @r, False);
 end;
 
 procedure TSynEditScreenCaretPainterInternal.AddAfterPaint(AStates: TPainterStates);
@@ -2799,6 +2818,11 @@ end;
 
 procedure TSynEditScreenCaretPainterInternal.Init;
 begin
+  {$IFDEF LCLCarbon}
+    FForcePaintEvents := True;
+  {$ELSE}
+    FForcePaintEvents := False;
+  {$ENDIF}
   FSavePen := TPen.Create;
   FColor := clBlack;
   FOldY := -1;
@@ -2856,11 +2880,7 @@ begin
   if (psCleanOld in FState) and not FCanPaint then begin
     if IsInRect(rcClip, FOldX, FOldY, FOldW, FOldH) <> irInside then begin
       debugln(['TSynEditScreenCaretPainterInternal.BeginPaint Invalidate for psCleanOld']);
-      r.Left := Left;
-      r.Top := Top;
-      r.Right := Left+Width+1;
-      r.Bottom := Top+Height+1;
-      InvalidateRect(Handle, @r, False);
+      Invalidate;
     end;
     Exclude(FState, psCleanOld);
   end;
@@ -2880,17 +2900,18 @@ begin
   assert(FInPaint, 'TSynEditScreenCaretPainterInternal.FinishPaint: FInPaint');
   assert(FCanPaint = (IsInRect(rcClip)= irInside), 'TSynEditScreenCaretPainterInternal.FinishPaint: FCanPaint = (IsInRect(rcClip)= irInside)');
   assert(FCanPaint = (IsInRect(FPaintClip)= irInside), 'TSynEditScreenCaretPainterInternal.FinishPaint: FCanPaint = (IsInRect(rcClip)= irInside)');
-  inherited FinishPaint(rcClip);
-  FCanPaint := True;
 
   // partly restore IF irPartInside;
   // Better recalc size to remainder outside cliprect
-  if (psCleanOld in FState) then
+  if (psCleanOld in FState) and (not ForcePaintEvents) then
     DoPaint(CurrentCanvas, FOldX, FOldY, FOldH, FOldW);
 
   // if changes where made, then FIsDrawn is alvays false
   if FIsDrawn then
     DoPaint(CurrentCanvas, FLeft, FTop, FHeight, FWidth); // restore any part that is in the cliprect
+
+  inherited FinishPaint(rcClip);
+  FCanPaint := True;
 end;
 
 destructor TSynEditScreenCaretPainterInternal.Destroy;
