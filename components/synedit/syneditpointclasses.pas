@@ -2821,7 +2821,11 @@ begin
   {$IFDEF LCLCarbon}
     FForcePaintEvents := True;
   {$ELSE}
+  {$IFDEF LCLQt}
+    FForcePaintEvents := True;
+  {$ELSE}
     FForcePaintEvents := False;
+  {$ENDIF}
   {$ENDIF}
   FSavePen := TPen.Create;
   FColor := clBlack;
