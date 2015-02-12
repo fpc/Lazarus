@@ -2546,8 +2546,16 @@ begin
             if ClassStr <> '' then Result += ClassStr + '.';
           end;
 
-          ReadNextAtom;
-          Result+=GetAtom+' ';
+          repeat
+            ReadNextAtom;
+            Result := Result + GetAtom;
+            ReadNextAtom;
+            if CurPos.Flag = cafPoint then
+              Result := Result + '.'
+            else
+              break;
+          until false;
+          Result := Result + ' ';
         end;
       end;
 
