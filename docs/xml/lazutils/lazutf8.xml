@@ -289,7 +289,7 @@ It returns 0 if the codepoint can not be represented as a 1 to 4 byte UTF-8 sequ
       </element>
       <!-- function Visibility: default -->
       <element name="UTF8CharacterStrictLength">
-        <short/>
+        <short>For a valid UTF-8 character it returns the length in bytes (1..4). Otherwise 0.</short>
         <descr/>
         <errors/>
         <seealso/>
