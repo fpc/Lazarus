@@ -115,7 +115,8 @@ end;
  ------------------------------------------------------------------------------}
 class function TCocoaWSMenu.CreateHandle(const AMenu: TMenu): HMENU;
 begin
-  Result:=HMENU(TCocoaMenu.alloc.init) ;
+  //WriteLn(':>[TCocoaWSMenu.CreateHandle]');
+  Result := HMENU(TCocoaMenu.alloc.initWithTitle(NSStringUtf8('')));
 end;
 
 { TCocoaWSMenuItem }
@@ -364,18 +365,25 @@ end;
 
   Popups menu in Cocoa interface
  ------------------------------------------------------------------------------}
-class procedure TCocoaWSPopupMenu.Popup(const APopupMenu: TPopupMenu; const X, Y: integer);
-var
-  w : NSWindow;
+class procedure TCocoaWSPopupMenu.Popup(const APopupMenu: TPopupMenu; const X,
+  Y: Integer);
+//var
+  //w : NSWindow;
 begin
-  // todo: there's no way to control X,Y coordinates of the Popup menu in the OSX
-  // prior to 10.6. Check the if there's the method and use it, if available
-  if Assigned(APopupMenu) and (APopupMenu.Handle<>0) then 
+  if Assigned(APopupMenu) and (APopupMenu.Handle<>0) then
   begin
-    w:=NSApp.keyWindow;
+    // old method which doesn't consider position but supports 10.0+ (useless since we target 10.6+)
+    {w:=NSApp.keyWindow;
     if Assigned(w) then
+    begin
       NSMenu.popUpContextMenu_withEvent_forView( TCocoaMenu(APopupMenu.Handle),
         NSApp.currentEvent, NSView(w.contentView));
+    end;}
+
+    // New method for 10.6+
+    TCocoaMenu(APopupMenu.Handle).popUpMenuPositioningItem_atLocation_inView(
+      nil, GetNSPoint(X, Y), nil);
+
     APopupMenu.Close; // notify LCL popup menu
   end;
 end;

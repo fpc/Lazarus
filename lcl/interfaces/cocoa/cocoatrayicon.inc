@@ -70,7 +70,15 @@ begin
     if image <> nil then statusitem.setImage(image);
   end;
 
-//  statusitem.setTitle('Menu');
+  // Show the menu
+
+  if (ATrayIcon.PopUpMenu <> nil) then
+  begin
+    ATrayIcon.PopUpMenu.HandleNeeded();
+    statusitem.setMenu(TCocoaMenu(ATrayIcon.PopUpMenu.Handle));
+  end;
+
+  //statusitem.setTitle('Menu');
   statusitem.setHighlightMode(True);
   statusitem.setEnabled(True);
 
