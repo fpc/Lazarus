@@ -1624,6 +1624,8 @@ function FilenameIsMatching(const Mask, Filename: string; MatchExactly: boolean
           // treat several PathDelim as one
           while MaskP^=PathDelim do inc(MaskP);
           while FileP^=PathDelim do inc(FileP);
+          if MaskP^=#0 then
+            exit((FileP^=#0) or not MatchExactly);
         end;
       '?':
         begin

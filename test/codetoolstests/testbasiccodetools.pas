@@ -282,7 +282,7 @@ procedure TTestBasicCodeTools.TestFilenameIsMatching;
   begin
     Actual:=FilenameIsMatching(aMask,aFilename,aExactly);
     if Actual=Expected then exit;
-    AssertEquals('FilenameIsMatching failed: Mask="'+aMask+'" File="'+aFilename+'" Exactly='+dbgs(aExactly),Expected,Actual);
+    AssertEquals('Mask="'+aMask+'" File="'+aFilename+'" Exactly='+dbgs(aExactly),Expected,Actual);
   end;
 
 begin
@@ -307,7 +307,9 @@ begin
   t('/abc/','/abc//',true,true);
   t('/abc/','/abc//',false,true);
   t('/abc/','/abc/.',true,false);
-  t('/abc/','/abc/.',false,false);
+  t('/abc/','/abc/.',false,true);
+  t('/abc/','/abc/d',true,false);
+  t('/abc/','/abc/d',false,true);
 
   //  /abc/x?z/www   matches /abc/xyz/www, /abc/xaz/www
   //                 but not /abc/x/z/www

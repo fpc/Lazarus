@@ -102,7 +102,6 @@
       <Unit4>
         <Filename Value="lcltests\testunicode.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="TestUnicode"/>
       </Unit4>
       <Unit5>
         <Filename Value="testunits.pas"/>
