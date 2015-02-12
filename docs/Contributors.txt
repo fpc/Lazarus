@@ -73,6 +73,7 @@ Flavio Etrusco
 Florian Koeberle
 Francisco Manuel
 Gerard Visent
+Gilles Vasseur - French translation
 Giuliano Colla
 Giulio Bernardi
 GongYu
