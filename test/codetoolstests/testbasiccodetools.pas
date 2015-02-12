@@ -286,16 +286,28 @@ procedure TTestBasicCodeTools.TestFilenameIsMatching;
   end;
 
 begin
-  //  /abc           matches /abc, /abc/p, /abc/xyz/filename
+  //  /abc           matches /abc, /abc/, /abc/p, /abc/xyz/filename
   //                 but not /abcd
   t('/abc','/abc',true,true);
   t('/abc','/abc',false,true);
+  t('/abc','/abc/',true,true);
+  t('/abc','/abc/',false,true);
   t('/abc','/abc/p',true,false);
   t('/abc','/abc/p',false,true);
   t('/abc','/abc/xyz/filename',false,true);
   t('/abc','/abc/xyz/filename',true,false);
   t('/abc','/abcd',true,false);
   t('/abc','/abcd',false,false);
+
+  //  /abc/            matches /abc, /abc/, /abc//, but not /abc/.
+  t('/abc/','/abc',true,true);
+  t('/abc/','/abc',false,true);
+  t('/abc/','/abc/',true,true);
+  t('/abc/','/abc/',false,true);
+  t('/abc/','/abc//',true,true);
+  t('/abc/','/abc//',false,true);
+  t('/abc/','/abc/.',true,false);
+  t('/abc/','/abc/.',false,false);
 
   //  /abc/x?z/www   matches /abc/xyz/www, /abc/xaz/www
   //                 but not /abc/x/z/www

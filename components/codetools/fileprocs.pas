@@ -1563,16 +1563,17 @@ function FilenameIsMatching(const Mask, Filename: string; MatchExactly: boolean
   just put the SpecialChar character in front of it (e.g. #*, #? #/).
 
   Examples:
-    /abc             matches /abc, /abc/p, /abc/xyz/filename
+    /abc             matches /abc, /abc/, /abc/p, /abc/xyz/filename
                      but not /abcd
+    /abc/            matches /abc, /abc/, /abc//, but not /abc/.
     /abc/x?z/www     matches /abc/xyz/www, /abc/xaz/www
                      but not /abc/x/z/www
     /abc/x*z/www     matches /abc/xz/www, /abc/xyz/www, /abc/xAAAz/www
                      but not /abc/x/z/www
     /abc/x#*z/www    matches /abc/x*z/www, /abc/x*z/www/ttt
     /a{b,c,d}e       matches /abe, /ace, /ade
-    *.p{as,p,}       matches a.pas unit1.pp b.p but not b.inc
-    *.{p{as,p,},inc} matches a.pas unit1.pp b.p b.inc but not c.lfm
+    *.p{as,p,}       matches a.pas, unit1.pp, b.p but not b.inc
+    *.{p{as,p,},inc} matches a.pas, unit1.pp, b.p, b.inc but not c.lfm
 *)
 {off $DEFINE VerboseFilenameIsMatching}
 
