@@ -316,7 +316,8 @@ begin
       CompOpts:=TIDEPackage(IDETool).LazCompilerOptions;
       if CompOpts.MessageFlags[Msg.MsgID]=cfvHide then exit;
       s:=Format(lisHideWithPackageOptionVm, [IntToStr(Msg.MsgID)]);
-    end;
+    end else
+      continue;
     Fixes.AddMenuItem(Self,Msg,s);
   end;
   inherited CreateMenuItems(Fixes);
