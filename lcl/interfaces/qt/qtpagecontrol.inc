@@ -171,6 +171,9 @@ begin
     QtTabWidget := TQtTabWidget.Create(AWinControl, AParams);
     QtTabWidget.setTabPosition(QTabWidgetTabPositionMap[TCustomTabControl(AWinControl).TabPosition]);
     QtTabWidget.setTabsClosable(nboShowCloseButtons in TCustomTabControl(AWinControl).Options);
+    {$IFDEF DARWIN}
+    QTabWidget_setElideMode(QTabWidgetH(QtTabWidget.Widget), QtElideNone);
+    {$ENDIF}
     QtTabWidget.AttachEvents;
     Result := TLCLIntfHandle(QtTabWidget);
   end;
