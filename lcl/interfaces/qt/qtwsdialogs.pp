@@ -27,7 +27,7 @@ uses
   qt4,
   qtobjects, qtwidgets, qtproc,
   // RTL + LCL
-  SysUtils, Classes, LCLType, LazUTF8, Dialogs, Controls, Forms, Graphics,
+  SysUtils, Classes, LCLType, LazUTF8, FileUtil, Dialogs, Controls, Forms, Graphics,
   // Widgetset
   WSDialogs, WSLCLClasses;
 
@@ -299,8 +299,10 @@ var
 begin
   ATitle := GetUtf8String(AFileDialog.Title);
   QtFileDialog.setWindowTitle(@ATitle);
-  if (AFileDialog.InitialDir = '') then
-    QtFileDialog.setDirectory(GetUtf8String(SysUtils.GetCurrentDir))
+
+  if (AFileDialog.InitialDir = '') or
+    not DirectoryExistsUTF8(AFileDialog.InitialDir) then
+      QtFileDialog.setDirectory(GetUtf8String(SysUtils.GetCurrentDir))
   else
     QtFileDialog.setDirectory(GetUtf8String(AFileDialog.InitialDir));
   QtFileDialog.setHistory(AFileDialog.HistoryList);
@@ -323,10 +325,15 @@ begin
   else
     QtFileDialog.setFileMode(QFileDialogAnyFile);
 
-  if AFileDialog.FileName <> '' then
+  if (AFileDialog.FileName <> '') and FileExistsUTF8(AFileDialog.FileName) and
+    not DirectoryExistsUTF8(AFileDialog.FileName) then
   begin
     ATitle := GetUTF8String(AFileDialog.FileName);
     QFileDialog_selectFile(QFileDialogH(QtFileDialog.Widget), @ATitle);
+    {$ifndef QT_NATIVE_DIALOGS}
+    if (AFileDialog is TOpenPictureDialog) then
+      TQtFilePreviewDialog(QtFileDialog).CurrentChangedEvent(@ATitle);
+    {$ENDIF}
   end;
   {$ifndef QT_NATIVE_DIALOGS}
   // set kbd shortcuts in case when we are not native dialog.
