@@ -2554,13 +2554,7 @@ begin
           // program without source name
           Result:='program '+ExtractFileNameOnly(MainFilename)+' ';
         end else begin
-          Result+=GetAtom+' ';
-
-          if Node.Desc = ctnProperty then begin // add class name
-            ClassStr := ExtractClassName(Node, False, True);
-            if ClassStr <> '' then Result += ClassStr + '.';
-          end;
-
+          Result+=GetAtom+' '; // keyword
           Result := Result + ReadIdentifierWithDots + ' ';
         end;
       end;
