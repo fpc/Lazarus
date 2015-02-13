@@ -296,15 +296,39 @@ class procedure TQtWSFileDialog.UpdateProperties(
   const AFileDialog: TFileDialog; QtFileDialog: TQtFileDialog);
 var
   ATitle: WideString;
+  {$ifndef QT_NATIVE_DIALOGS}
+  AInitDir: WideString;
+  {$ENDIF}
+  s: String;
 begin
   ATitle := GetUtf8String(AFileDialog.Title);
   QtFileDialog.setWindowTitle(@ATitle);
 
-  if (AFileDialog.InitialDir = '') or
-    not DirectoryExistsUTF8(AFileDialog.InitialDir) then
-      QtFileDialog.setDirectory(GetUtf8String(SysUtils.GetCurrentDir))
-  else
-    QtFileDialog.setDirectory(GetUtf8String(AFileDialog.InitialDir));
+  {$ifndef QT_NATIVE_DIALOGS}
+  s := AFileDialog.InitialDir;
+  if UTF8Pos('$HOME', S) > 0 then
+  begin
+    {$IFDEF MSWINDOWS}
+    AInitDir := GetEnvironmentVariableUTF8('HOMEDRIVE') +
+    GetEnvironmentVariableUTF8('HOMEPATH');
+    {$ELSE}
+    AInitDir := GetEnvironmentVariableUTF8('HOME');
+    {$ENDIF}
+    s := StringReplace(S,'$HOME', UTF8Encode(AInitDir),[rfReplaceAll]);
+  end else
+  if (S = '') then
+    S := GetCurrentDirUTF8;
+  if not DirectoryExistsUTF8(S) then
+    S := GetCurrentDirUTF8;
+  QtFileDialog.setDirectory(S);
+  {$else}
+  s := AFileDialog.InitialDir;
+  if S = '' then
+    S := GetCurrentDirUTF8;
+  if DirectoryExistsUTF8(S) then
+    QtFileDialog.setDirectory(S);
+  {$endif}
+
   QtFileDialog.setHistory(AFileDialog.HistoryList);
   QtFileDialog.setFilter(GetQtFilterString(AFileDialog, ATitle));
   QtFileDialog.setSelectedFilter(ATitle);
@@ -376,6 +400,7 @@ var
   Flags: Cardinal;
   {$endif}
   ActiveWin: HWND;
+  s: string;
 begin
   {------------------------------------------------------------------------------
     Initialization of variables
@@ -386,6 +411,22 @@ begin
   QtFileDialog := TQtFileDialog(FileDialog.Handle);
 
   UpdateProperties(FileDialog, QtFileDialog);
+
+  {$ifdef QT_NATIVE_DIALOGS}
+  sDir := '';
+  if UTF8Pos('$HOME', FileDialog.InitialDir) > 0 then
+  begin
+    sDir := FileDialog.InitialDir;
+    {$IFDEF MSWINDOWS}
+    saveFileName := GetEnvironmentVariableUTF8('HOMEDRIVE') +
+    GetEnvironmentVariableUTF8('HOMEPATH');
+    {$ELSE}
+    saveFileName := GetEnvironmentVariableUTF8('HOME');
+    {$ENDIF}
+    sDir := StringReplace(sDir,'$HOME', UTF8Encode(saveFileName),[rfReplaceAll]);
+    saveFileName := GetUTF8String(SDir) + PathDelim + ExtractFileName(FileDialog.Filename);
+  end;
+  {$endif}
 
   {------------------------------------------------------------------------------
     Code to call the dialog
@@ -405,7 +446,8 @@ begin
     {$ifdef QT_NATIVE_DIALOGS}
     selectedFilter:='';
     saveFilter := GetQtFilterString(TSaveDialog(ACommonDialog), selectedFilter);
-    sDir := FileDialog.InitialDir;
+    if sDir = '' then
+      sDir := FileDialog.InitialDir;
     if (SDir <> '') and (SDir[length(SDir)] <> PathDelim) then
       SDir := SDir + PathDelim;
     if (FileDialog.FileName <> '') and
@@ -433,7 +475,13 @@ begin
 
     if ReturnText <> '' then
     begin
+      {$ifdef MSWINDOWS}
+      s := UTF16ToUTF8(ReturnText);
+      s := StringReplace(s, '/','\', [rfReplaceAll]);
+      FileDialog.FileName := s;
+      {$else}
       FileDialog.FileName := UTF16ToUTF8(ReturnText);
+      {$endif}
       FileDialog.UserChoice := mrOK;
     end else
       FileDialog.UserChoice := mrCancel;
@@ -451,9 +499,17 @@ begin
       for i := 0 to QStringList_size(ReturnList) - 1 do
       begin
         QStringList_at(ReturnList, @ReturnText, i);
+        {$ifdef MSWINDOWS}
+        s := UTF16ToUTF8(ReturnText);
+        s := StringReplace(s, '/','\', [rfReplaceAll]);
+        FileDialog.Files.Add(s);
+        if i = 0 then
+          FileDialog.FileName := s;
+        {$else}
         FileDialog.Files.Add(UTF16ToUTF8(ReturnText));
         if i = 0 then
-          FileDialog.FileName := UTF16ToUTF8(ReturnText);
+           FileDialog.FileName := UTF16ToUTF8(ReturnText);
+        {$endif}
       end;
       ReturnText := FileDialog.Files.Text;
     finally
@@ -464,8 +520,8 @@ begin
   begin
     {$ifdef QT_NATIVE_DIALOGS}
     saveFilter := GetQtFilterString(TOpenDialog(ACommonDialog), selectedFilter);
-
-    sDir := FileDialog.InitialDir;
+    if sDir = '' then
+      sDir := FileDialog.InitialDir;
     if (SDir <> '') and (SDir[length(SDir)] <> PathDelim) then
       SDir := SDir + PathDelim;
     if (FileDialog.FileName <> '') and
@@ -494,9 +550,17 @@ begin
         for i := 0 to QStringList_size(ReturnList) - 1 do
         begin
           QStringList_at(ReturnList, @ReturnText, i);
+          {$ifdef MSWINDOWS}
+          s := UTF16ToUTF8(ReturnText);
+          s := StringReplace(s, '/','\', [rfReplaceAll]);
+          FileDialog.Files.Add(s);
+          if i = 0 then
+            FileDialog.FileName := s;
+          {$else}
           FileDialog.Files.Add(UTF16ToUTF8(ReturnText));
           if i = 0 then
             FileDialog.FileName := UTF16ToUTF8(ReturnText);
+          {$endif}
         end;
         {assign to ReturnText first filename}
         if QStringList_size(ReturnList) > 0 then
@@ -526,7 +590,13 @@ begin
 
     if ReturnText <> '' then
     begin
+      {$ifdef MSWINDOWS}
+      s := UTF16ToUTF8(ReturnText);
+      s := StringReplace(s, '/','\', [rfReplaceAll]);
+      FileDialog.FileName := s;
+      {$else}
       FileDialog.FileName := UTF16ToUTF8(ReturnText);
+      {$endif}
       FileDialog.UserChoice := mrOK;
     end else
       FileDialog.UserChoice := mrCancel;
@@ -539,9 +609,17 @@ begin
       for i := 0 to QStringList_size(ReturnList) - 1 do
       begin
         QStringList_at(ReturnList, @ReturnText, i);
+        {$ifdef MSWINDOWS}
+        s := UTF16ToUTF8(ReturnText);
+        s := StringReplace(s, '/','\', [rfReplaceAll]);
+        FileDialog.Files.Add(s);
+        if i = 0 then
+          FileDialog.FileName := s;
+        {$else}
         FileDialog.Files.Add(UTF16ToUTF8(ReturnText));
         if i = 0 then
           FileDialog.FileName := UTF16ToUTF8(ReturnText);
+        {$endif}
       end;
       ReturnText := FileDialog.Files.Text;
     finally
@@ -587,10 +665,32 @@ class procedure TQtWSSelectDirectoryDialog.UpdateProperties(
   const AFileDialog: TSelectDirectoryDialog; QtFileDialog: TQtFileDialog);
 var
   ATitle: WideString;
+  AInitDir: WideString;
+  s: String;
 begin
   ATitle := GetUtf8String(AFileDialog.Title);
   QtFileDialog.setWindowTitle(@ATitle);
-  QtFileDialog.setDirectory(GetUtf8String(AFileDialog.InitialDir));
+  {$ifndef QT_NATIVE_DIALOGS}
+  s := AFileDialog.InitialDir;
+  if UTF8Pos('$HOME', AFileDialog.InitialDir) > 0 then
+  begin
+    {$IFDEF MSWINDOWS}
+    AInitDir := GetEnvironmentVariableUTF8('HOMEDRIVE') +
+    GetEnvironmentVariableUTF8('HOMEPATH');
+    {$ELSE}
+    AInitDir := GetEnvironmentVariableUTF8('HOME');
+    {$ENDIF}
+    s := StringReplace(S,'$HOME', UTF8Encode(AInitDir),[rfReplaceAll]);
+  end;
+  if not DirectoryExistsUTF8(S) then
+    S := GetCurrentDirUTF8;
+  QtFileDialog.setDirectory(GetUTF8String(s));
+  {$else}
+  S := AFileDialog.InitialDir;
+  if not DirectoryExistsUTF8(S) then
+    S := GetCurrentDirUTF8;
+  QtFileDialog.setDirectory(S);
+  {$endif}
   QtFileDialog.setSizeGripEnabled(ofEnableSizing in TSelectDirectoryDialog(AFileDialog).Options);
 
   if ofViewDetail in TSelectDirectoryDialog(AFileDialog).Options then
@@ -643,6 +743,7 @@ var
   ReturnList: QStringListH;
   i: Integer;
   {$endif}
+  s: string;
 begin
   {------------------------------------------------------------------------------
     Initialization of variables
@@ -659,12 +760,32 @@ begin
    ------------------------------------------------------------------------------}
   {$ifdef QT_NATIVE_DIALOGS}
   saveTitle := GetUTF8String(FileDialog.Title);
-  saveFileName := GetUtf8String(FileDialog.InitialDir);
+  // saveFileName := GetUtf8String(FileDialog.InitialDir);
+  if UTF8Pos('$HOME', FileDialog.InitialDir) > 0 then
+  begin
+    s := FileDialog.InitialDir;
+    {$IFDEF MSWINDOWS}
+    saveFileName := GetEnvironmentVariableUTF8('HOMEDRIVE') +
+    GetEnvironmentVariableUTF8('HOMEPATH');
+    {$ELSE}
+    saveFileName := GetEnvironmentVariableUTF8('HOME');
+    {$ENDIF}
+    s := StringReplace(S,'$HOME', UTF8Encode(saveFileName),[rfReplaceAll]);
+    saveFileName := GetUTF8String(s);
+  end else
+    saveFileName := GetUtf8String(FileDialog.InitialDir);
+
   QFileDialog_getExistingDirectory(@ReturnText,
     QWidget_parentWidget(QtFileDialog.Widget), @SaveTitle, @saveFileName);
   if ReturnText <> '' then
   begin
+    {$ifdef MSWINDOWS}
+    s := UTF16ToUTF8(ReturnText);
+    s := StringReplace(s, '/','\', [rfReplaceAll]);
+    FileDialog.FileName := s;
+    {$else}
     FileDialog.FileName := UTF16ToUTF8(ReturnText);
+    {$endif}
     FileDialog.UserChoice := mrOK;
   end else
     FileDialog.UserChoice := mrCancel;
@@ -677,9 +798,17 @@ begin
     for i := 0 to QStringList_size(ReturnList) - 1 do
     begin
       QStringList_at(ReturnList, @ReturnText, i);
+      {$ifdef MSWINDOWS}
+      s := UTF16ToUTF8(ReturnText);
+      s := StringReplace(s, '/','\', [rfReplaceAll]);
+      FileDialog.Files.Add(s);
+      if i = 0 then
+        FileDialog.FileName := s;
+      {$else}
       FileDialog.Files.Add(UTF16ToUTF8(ReturnText));
       if i = 0 then
         FileDialog.FileName := UTF16ToUTF8(ReturnText);
+      {$endif}
     end;
     ReturnText := FileDialog.Files.Text;
   finally
