@@ -1682,7 +1682,7 @@ begin
         BackupFilename:=FileNameOnly+FileExt;
     end;
     if BackupInfo.SubDirectory<>'' then
-      BackupFilename:=SubDir+PathDelim+BackupFilename
+      BackupFilename:=AppendPathDelim(SubDir)+BackupFilename
     else
       BackupFilename:=FilePath+BackupFilename;
     // remove old backup file
@@ -1700,7 +1700,7 @@ begin
   end else begin
     // backup with counter
     if BackupInfo.SubDirectory<>'' then
-      BackupFilename:=SubDir+PathDelim+FileNameOnly+FileExt+';'
+      BackupFilename:=AppendPathDelim(SubDir)+FileNameOnly+FileExt+';'
     else
       BackupFilename:=Filename+';';
     if BackupInfo.MaxCounter<=0 then begin
