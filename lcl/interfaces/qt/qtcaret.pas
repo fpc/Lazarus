@@ -241,12 +241,16 @@ end;
 
 function GetQtCaretRespondToFocus: Boolean;
 begin
-  Result := GlobalCaret.RespondToFocus;
+  if Assigned(GlobalCaret) then
+    Result := GlobalCaret.RespondToFocus
+  else
+    Result := False;
 end;
 
 procedure SetQtCaretRespondToFocus(Value: Boolean);
 begin
-  GlobalCaret.RespondToFocus := Value;
+  if Assigned(GlobalCaret) then
+    GlobalCaret.RespondToFocus := Value;
 end;
 
 function DestroyCaret: Boolean;
