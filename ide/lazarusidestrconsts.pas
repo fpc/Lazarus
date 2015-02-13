@@ -2151,8 +2151,7 @@ resourcestring
   lisShowOnlyModified = 'Show only modified';
   lisUseCommentsInCustomOptions = 'Use comments in custom options';
   lisCustomOptions2 = 'Custom options';
-  lisCustomOptHint = 'These options are passed to the compiler after'
-    +' comments are deleted and macros are replaced.';
+  lisCustomOptHint = 'These options are passed to the compiler after macros are replaced.';
   dlgStopAfterNrErr = 'Stop after number of errors:';
 
   lisApplyConventions = 'Apply conventions';
@@ -5324,6 +5323,7 @@ resourcestring
   lisUseUnitInUnit = 'Use unit %s in unit %s';
   lisUseIdentifier = 'Use identifier';
   lisFindMissingUnit = 'Find missing unit';
+  lisSearchUnit = 'Search Unit "%s"';
   lisEmpty = 'Empty';
   lisNotAValidPascalIdentifier = 'Not a valid Pascal identifier';
   lisThereIsAlreadyAComponentWithThisName = 'There is already a component '
@@ -5420,6 +5420,7 @@ resourcestring
   lisConditionals = 'Conditionals';
   lisDlgAllOptions = 'All options ...';
   lisDlgDefines = 'Defines ...';
+  lisSupportUTF8RTL = 'Support UTF-8 RTL';
   lisWithIncludes2 = ', with includes ';
   lisParsed = ', parsed ';
   lisCreatingFileIndexOfFPCSources =
@@ -5860,6 +5861,11 @@ resourcestring
   lisCanTFindAValidPpu = 'Can''t find a valid %s.ppu';
   lisCannotFind = 'Cannot find %s';
   lisUsedBy = ' used by %s';
+  lisCleanUpPackage = 'Clean up package "%s".';
+  lisPpuInWrongDirectory = 'ppu in wrong directory=%s.';
+  lisPackageNeedsAnOutputDirectory = 'Package needs an output directory.';
+  lisMakeSureAllPpuFilesOfAPackageAreInItsOutputDirecto = 'Make sure all ppu '
+    +'files of a package are in its output directory.';
   lisCheckSearchPathPackageTryACleanRebuildCheckImpleme = '. Check search path of'
     +' package %s, try a clean rebuild, check implementation uses sections.';
   lisCheckIfPackageIsInTheDependencies = '. Check if package %s is in the '
