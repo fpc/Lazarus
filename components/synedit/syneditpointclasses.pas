@@ -2874,8 +2874,6 @@ begin
 end;
 
 procedure TSynEditScreenCaretPainterInternal.BeginPaint(rcClip: TRect);
-var
-  r: TRect;
 begin
   assert(not (FInPaint or FInScroll), 'TSynEditScreenCaretPainterInternal.BeginPaint: not (FInPaint or FInScroll)');
 

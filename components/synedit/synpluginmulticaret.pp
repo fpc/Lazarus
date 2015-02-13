@@ -215,8 +215,10 @@ type
 
 implementation
 
+{$IfDef SynMultiCaretDebug}
 var
   SynMCaretDebug: PLazLoggerLogGroup;
+{$EndIf}
 
 const
   EMPTY_LIST_LEN = 8;
@@ -278,9 +280,11 @@ begin
     exit;
   end;
 
+  {$IfDef SynMultiCaretDebug}
 if FCount = Length(FList) then debugln(SynMCaretDebug, ['TSynPluginMultiCaretVisualList.Add ', FCount + max(16, FCount div 16)]);
   if FCount = Length(FList) then
     SetLength(FList, FCount + max(16, FCount div 16));
+  {$EndIf}
 
   FList[FCount] := AScreenCaret;
   AScreenCaret.FListIndex := FCount;
@@ -498,7 +502,9 @@ begin
       exit;
     end;
     v := FCarets[RawIndex];
+    {$IfDef SynMultiCaretDebug}
 debugln(SynMCaretDebug, ['TSynPluginMultiCaretList.AdjustAfterChange ', NewIdx, ' ',RawIndex]);
+    {$EndIf}
     Move(FCarets[NewIdx], FCarets[NewIdx+1], (RawIndex-NewIdx) * SizeOf(FCarets[0]));
     FCarets[NewIdx] := v;
   end
@@ -518,7 +524,9 @@ debugln(SynMCaretDebug, ['TSynPluginMultiCaretList.AdjustAfterChange ', NewIdx, 
       exit;
     end;
     v := FCarets[RawIndex];
+    {$IfDef SynMultiCaretDebug}
 debugln(SynMCaretDebug, ['TSynPluginMultiCaretList.AdjustAfterChange ', NewIdx, ' ',RawIndex]);
+    {$EndIf}
     Move(FCarets[RawIndex+1], FCarets[RawIndex], (NewIdx-RawIndex) * SizeOf(FCarets[0]));
     FCarets[NewIdx] := v;
   end;
@@ -735,7 +743,9 @@ begin
        ((FCarets[i].y = FCarets[i-1].y) and (FCarets[i].x < FCarets[i-1].x))
     then begin
       // should not happen
+      {$IfDef SynMultiCaretDebug}
       debugln(SynMCaretDebug, ['TSynPluginMultiCaretList.FindAndRemoveMergedCarets BUBBLE SORTING']);
+      {$EndIf}
       i2 := i;
       c := FCarets[i2];
       repeat
