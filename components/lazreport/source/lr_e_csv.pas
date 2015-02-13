@@ -15,7 +15,7 @@ interface
 {$I lr_vers.inc}
 
 uses
-  Classes, SysUtils, LResources,
+  Classes, SysUtils, LResources, LazUTF8,
   Graphics,GraphType, Controls, Forms, Dialogs,LR_E_TXT,
   LCLType,LCLIntf,lr_utils,lr_class;
 
@@ -103,9 +103,9 @@ var
     end else
     begin
       if s = '' then
-        s := UTF8Quotedstr(aStr, QuoteChar)
+        s := LazUTF8.UTF8Quotedstr(aStr, QuoteChar)
       else
-        s := s + Separator + UTF8Quotedstr(aStr, QuoteChar);
+        s := s + Separator + LazUTF8.UTF8Quotedstr(aStr, QuoteChar);
     end;
   end;
 

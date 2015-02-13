@@ -15,10 +15,11 @@ interface
 {$I LR_Vers.inc}
 
 uses
-  SysUtils, Math, {$IFDEF UNIX}CLocale,{$ENDIF} Classes, MaskUtils, Controls, FileUtil,
-  Forms, Dialogs, Menus, Variants, DB, Graphics, Printers, osPrinters, LazUTF8,
-  DOM, XMLWrite, XMLRead, XMLConf, LCLType, LCLIntf, TypInfo, LCLProc, LR_View, LR_Pars,
-  LR_Intrp, LR_DSet, LR_DBSet, LR_DBRel, LR_Const, LMessages, DbCtrls, LazUtf8Classes;
+  SysUtils, Math, CLocale, Classes, MaskUtils, Controls, FileUtil, Forms,
+  Dialogs, Menus, Variants, DB, Graphics, Printers, osPrinters, LazUTF8, DOM,
+  XMLWrite, XMLRead, XMLConf, LCLType, LCLIntf, TypInfo, LR_View, LR_Pars,
+  LR_Intrp, LR_DSet, LR_DBSet, LR_DBRel, LR_Const, DbCtrls, LazUtf8Classes,
+  LazLoggerBase;
 
 const
 // object flags
@@ -3540,7 +3541,7 @@ var
   size, size1, maxwidth: Integer;
   b: TWordBreaks;
   WCanvas: TCanvas;
-  desc, aword: string;
+  aword: string;
 
   procedure OutLine(const str: String);
   var
@@ -3561,7 +3562,7 @@ var
   var
     i, cur, beg, last, len: Integer;
     WasBreak, CRLF, IsCR: Boolean;
-    ch: TUTF8char;
+    ch: char;
   begin
 
     CRLF := False;
@@ -3582,25 +3583,28 @@ var
     begin
 
       cur := 1;
-      Len := UTF8Desc(S, Desc);
+      Len := length(s);
 
       while cur <= Len do
       begin
-        Ch := UTF8Char(s, cur, Desc);
+        Ch := s[cur];
 
         // check for items with soft-breaks
         IsCR := Ch=#13;
         if IsCR then
         begin
           //handle composite newline
-          ch := UTF8Char(s, cur+1, desc);
-          //dont increase char index if next char is LF (#10)
-          if ch<>#10 then
-            Inc(Cur);
+          if (cur < length(s)) then
+          begin
+            ch := s[cur+1];
+            //dont increase char index if next char is LF (#10)
+            if s[cur+1]<>#10 then
+              Inc(Cur);
+          end;
         end;
         if Ch=#10 then
         begin
-          OutLine(UTF8Range(s, beg, cur - beg, Desc) + #1);
+          OutLine(copy(s, beg, cur - beg) + #1);
           //increase the char index since it's pointing to CR (#13)
           if IsCR then
             Inc(cur);
@@ -3611,7 +3615,7 @@ var
         end;
 
         if ch <> ' ' then
-        if WCanvas.TextWidth(UTF8Range(s, beg, cur - beg + 1, Desc)) > maxwidth then
+        if WCanvas.TextWidth(copy(s, beg, cur - beg + 1)) > maxwidth then
         begin
 
           WasBreak := False;
@@ -3620,17 +3624,16 @@ var
 
             // in case of breaking in the middle, get the full word
             i := cur;
-            while (i <= Len) and not UTF8CharIn(ch, [' ', '.', ',', '-']) do
+            while (i <= Len) and not (ch in [' ', '.', ',', '-']) do
             begin
               Inc(i);
-              if i<=len then
-                ch := UTF8Char(s, i, Desc);
+              ch := s[i];
             end;
 
             // find word's break points using some simple hyphenator algorithm
             // TODO: implement interface so users can use their own hyphenator
             //       algorithm
-            aWord := UTF8Range(s, last, i - last, Desc);
+            aWord := copy(s, last, i - last);
             if (FHyp<>nil) and (FHyp.Loaded) then
             begin
               try
@@ -3647,7 +3650,7 @@ var
             begin
               i := 1;
               while (i <= Length(b)) and
-                (WCanvas.TextWidth(UTF8Range(s, beg, last - beg + Ord(b[i]), Desc) + '-') <= maxwidth) do
+                (WCanvas.TextWidth(copy(s, beg, last - beg + Ord(b[i])) + '-') <= maxwidth) do
               begin
                 WasBreak := True;
                 cur := last + Ord(b[i]);  // cur now points to next char after breaking word
@@ -3671,26 +3674,26 @@ var
           if WasBreak then
           begin
             // if word has been broken, output the partial word plus an hyphen
-            OutLine(UTF8Range(s, beg, last - beg, Desc) + '-');
+            OutLine(copy(s, beg, last - beg) + '-');
           end else
           begin
             // output the portion of word that fits maxwidth
-            OutLine(UTF8Range(s, beg, last - beg, Desc));
+            OutLine(copy(s, beg, last - beg));
             // if space was found, advance to next no space char
-            while (UTF8Char(s, last, Desc) = ' ') and (last < Length(s)) do
+            while (s[last] = ' ') and (last < Length(s)) do
               Inc(last);
           end;
 
           beg := last;
         end;
 
-        if UTF8CharIn(Ch, [' ', '.', ',', '-']) then
+        if Ch in [' ', '.', ',', '-'] then
           last := cur;
         Inc(cur);
       end;
 
       if beg <> cur then
-        OutLine(UTF8Range(s, beg, cur - beg + 1, Desc) + #1);
+        OutLine(copy(s, beg, cur - beg + 1) + #1);
     end;
   end;
 
@@ -12154,7 +12157,7 @@ begin
          S1:=frParser.Calc(p1);
          val := Trim(S1);
        end;
-   21: val := UTF8UpperCase(frParser.Calc(p1)); //Add('UPPERCASE');         {21}
+   21: val := LazUTF8.UTF8UpperCase(frParser.Calc(p1)); //Add('UPPERCASE');         {21}
    22: val := YearOf(frParser.Calc(p1));                      //Add('YEAROF');            {22}
   end;
   
@@ -13013,7 +13016,7 @@ begin
     result := {%H-}inherited GetValue(APath, ADefault{%H-})
   else
   begin
-    result := UTF16ToUTF8(inherited GetValue(APath, ADefault));
+    result := LazUTF8.UTF16ToUTF8(inherited GetValue(APath, ADefault));
 {    WValue := inherited GetValue(UTF8Decode(APath), UTF8Decode(ADefault));
     Result := UTF8Encode(WValue);}
   end;
