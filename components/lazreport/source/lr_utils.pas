@@ -920,19 +920,10 @@ begin
 end;
 
 function UTF8Desc(S: string; var Desc: string): Integer;
-var
-    i,b: Integer;
 begin
-  i := 1;
-  Result := 0;
-  SetLength(Desc, Length(S));
-  while i<=Length(s) do begin
-    b := UTF8CharacterStrictLength(@S[i]);
-    inc(i,b);
-    inc(Result);
-    Desc[Result] := Char(b);
-  end;
-  Setlength(Desc, Result);
+  Desc:=S;
+  UTF8FixBroken(Desc);
+  Result:=length(Desc);
 end;
 
 function UTF8Char(S: string; index: Integer; Desc: string): TUTF8Char;
