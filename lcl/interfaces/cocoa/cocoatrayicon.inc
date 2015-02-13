@@ -1,69 +1,35 @@
 {%mainunit cocoawsextctrls.pas}
 
-(*type
-  TCocoaStatusItem = objcclass(NSStatusItem)
+type
+
+  { TCocoaStatusItemHandle }
+
+  TCocoaStatusItemHandle = objcclass(NSObject)
+  public
     { Fields }
-    bar: NSStatusBar;
-    image: NSImage;
-    menu: NSMenu;
+    statusitem: NSStatusItem;
+    TrayIcon: TCustomTrayIcon;
     { Methods }
-    //  procedure lclItemSelected(sender: id); message 'lclItemSelected:';
-  end;*)
+    procedure lclAction(sender: id); message 'lclAction:';
+    procedure lclSetTrayIcon(ATrayIcon: TCustomTrayIcon); message 'lclSetTrayIcon:';
+  end;
 
-{ TCocoaWSCustomTrayIcon }
+{ TCocoaStatusItemHandle }
 
-class function TCocoaWSCustomTrayIcon.Hide(const ATrayIcon: TCustomTrayIcon): Boolean;
-{var
-  statusitem: TCocoaStatusItem;
-  bar: NSStatusBar;}
+procedure TCocoaStatusItemHandle.lclAction(sender: id);
 begin
-{  bar := NSStatusBar.systemStatusBar();
-  statusitem := bar.statusItemWithLength(NSSquareStatusItemLength);
-  statusitem.bar := bar;
-  statusicon.callback:=TLCLCommonCallback.Create(box, AWinControl);
-  statusitem.retain();
-  statusitem.item.setImage(APrivateTrayIcon.image.Handle);
-  Result:=TLCLIntfHandle(box);
-//  APrivateTrayIcon := TPrivateCocoaCocoaTrayIcon(ATrayIcon.Handle);
-
-  if APrivateTrayIcon.item <> nil then
-  begin
-    APrivateTrayIcon.item.Free;
-    APrivateTrayIcon.item := nil;
-  end;}
-
-  Result := True;
+  if Assigned(TrayIcon.OnClick) then
+    TrayIcon.OnClick(TrayIcon);
 end;
 
-{
-}
-class function TCocoaWSCustomTrayIcon.Show(const ATrayIcon: TCustomTrayIcon): Boolean;
+procedure TCocoaStatusItemHandle.lclSetTrayIcon(ATrayIcon: TCustomTrayIcon);
 var
-  statusitem: NSStatusItem;
-  bar: NSStatusBar;
   image: NSImage;
-  {var
-    APrivateTrayIcon: TPrivateCocoaCocoaTrayIcon;
-    ASize: NSSize;
-    ACGRect: CGRect;
-    AcurrentContext: NSGraphicsContext;}
 begin
-  {$ifdef VerboseCocoaTrayIcon}
-    WriteLn(':>[TCocoaWSCustomTrayIcon.Show]');
-  {$endif VerboseCocoaTrayIcon}
+  TrayIcon := ATrayIcon;
 
-  Result := False;
+  // Shows the icon
 
-  { Creates the handle }
-  
-  bar := NSStatusBar.systemStatusBar();
-  statusitem := bar.statusItemWithLength(NSSquareStatusItemLength);
-//  statusitem.bar := bar;
-  //statusicon.callback:=TLCLCommonCallback.Create(box, AWinControl);
-
-  { Shows the icon }
-
-  statusitem.retain();
   if (ATrayIcon.icon <> nil) and (ATrayIcon.icon.Handle <> 0) then
   begin
     image := TCocoaBitmap(ATrayIcon.icon.Handle).image;
@@ -77,8 +43,53 @@ begin
     ATrayIcon.PopUpMenu.HandleNeeded();
     statusitem.setMenu(TCocoaMenu(ATrayIcon.PopUpMenu.Handle));
   end;
+end;
 
-  //statusitem.setTitle('Menu');
+{ TCocoaWSCustomTrayIcon }
+
+class function TCocoaWSCustomTrayIcon.Hide(const ATrayIcon: TCustomTrayIcon): Boolean;
+var
+  StatusItemHandle: TCocoaStatusItemHandle;
+  statusitem: NSStatusItem;
+begin
+  if ATrayIcon.Handle = 0 then Exit;
+  StatusItemHandle := TCocoaStatusItemHandle(ATrayIcon.Handle);
+  statusitem := StatusItemHandle.statusitem;
+  if statusitem = nil then Exit;
+
+  statusitem.release;
+
+  Result := True;
+end;
+
+class function TCocoaWSCustomTrayIcon.Show(const ATrayIcon: TCustomTrayIcon): Boolean;
+var
+  statusitem: NSStatusItem;
+  bar: NSStatusBar;
+  StatusItemHandle: TCocoaStatusItemHandle;
+begin
+  {$ifdef VerboseCocoaTrayIcon}
+    WriteLn(':>[TCocoaWSCustomTrayIcon.Show]');
+  {$endif VerboseCocoaTrayIcon}
+
+  Result := False;
+
+  { Creates the handle }
+  
+  bar := NSStatusBar.systemStatusBar();
+  statusitem := bar.statusItemWithLength(NSSquareStatusItemLength);
+  statusitem.retain();
+  StatusItemHandle := TCocoaStatusItemHandle.alloc.init();
+  StatusItemHandle.statusitem := statusitem;
+  ATrayIcon.Handle := HWND(StatusItemHandle);
+
+  // OnClick support
+  statusitem.setTarget(StatusItemHandle);
+  statusitem.setAction(objcselector('lclAction:'));
+
+  // set the main properties
+  StatusItemHandle.lclSetTrayIcon(ATrayIcon);
+
   statusitem.setHighlightMode(True);
   statusitem.setEnabled(True);
 
@@ -97,8 +108,13 @@ begin
 end;
 
 class procedure TCocoaWSCustomTrayIcon.InternalUpdate(const ATrayIcon: TCustomTrayIcon);
+var
+  StatusItemHandle: TCocoaStatusItemHandle;
 begin
+  if ATrayIcon.Handle = 0 then Exit;
+  StatusItemHandle := TCocoaStatusItemHandle(ATrayIcon.Handle);
 
+  StatusItemHandle.lclSetTrayIcon(ATrayIcon);
 end;
 
 class function TCocoaWSCustomTrayIcon.ShowBalloonHint(const ATrayIcon: TCustomTrayIcon): Boolean;

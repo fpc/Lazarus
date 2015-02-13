@@ -189,6 +189,7 @@ type
     class procedure SetState(const ACustomCheckBox: TCustomCheckBox; const NewState: TCheckBoxState); override;
     //
     class procedure GetPreferredSize(const AWinControl: TWinControl; var PreferredWidth, PreferredHeight: integer; {%H-}WithThemeSpace: Boolean); override;
+    class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
   end;
 
   { TCocoaWSToggleBox }
@@ -495,7 +496,13 @@ begin
   lButton.sizeToFit();
   PreferredWidth := round(lButton.bounds.size.width);
   PreferredHeight := round(lButton.bounds.size.height);
-  lButton.setBoundsSize(lOldSize);
+  //lButton.setBoundsSize(lOldSize); This causes problems in SetText
+end;
+
+class procedure TCocoaWSCustomCheckBox.SetText(const AWinControl: TWinControl;
+  const AText: String);
+begin
+  TCocoaWSButton.SetText(AWinControl, AText);
 end;
 
 { TCocoaWSRadioButton }
