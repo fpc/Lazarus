@@ -1664,17 +1664,9 @@ begin
   FileNameOnly:=ExtractFilenameOnly(Filename);
   if BackupInfo.SubDirectory<>'' then begin
     SubDir:=FilePath+BackupInfo.SubDirectory;
-    repeat
-      if not DirPathExists(SubDir) then begin
-        if not CreateDirUTF8(SubDir) then begin
-          Result:=IDEMessageDialog(lisCCOWarningCaption,
-                   Format(lisUnableToCreateBackupDirectory, [SubDir])
-                   ,mtWarning,[mbAbort,mbRetry,mbIgnore]);
-          if Result=mrAbort then exit;
-          if Result=mrIgnore then Result:=mrOk;
-        end;
-      end;
-    until Result<>mrRetry;
+    Result:=ForceDirectoryInteractive(SubDir,[mbRetry,mbIgnore]);
+    if Result=mrCancel then exit;
+    if Result=mrIgnore then Result:=mrOk;
   end;
   if BackupInfo.BackupType in
      [bakSymbolInFront,bakSymbolBehind,bakUserDefinedAddExt,bakSameName] then
@@ -1690,7 +1682,7 @@ begin
         BackupFilename:=FileNameOnly+FileExt;
     end;
     if BackupInfo.SubDirectory<>'' then
-      BackupFilename:=SubDir+PathDelim+BackupFilename
+      BackupFilename:=AppendPathDelim(SubDir)+BackupFilename
     else
       BackupFilename:=FilePath+BackupFilename;
     // remove old backup file
@@ -1708,7 +1700,7 @@ begin
   end else begin
     // backup with counter
     if BackupInfo.SubDirectory<>'' then
-      BackupFilename:=SubDir+PathDelim+FileNameOnly+FileExt+';'
+      BackupFilename:=AppendPathDelim(SubDir)+FileNameOnly+FileExt+';'
     else
       BackupFilename:=Filename+';';
     if BackupInfo.MaxCounter<=0 then begin
