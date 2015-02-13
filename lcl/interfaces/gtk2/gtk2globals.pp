@@ -72,7 +72,7 @@ const
      Window: nil; WindowPoint: (X: 0; Y: 0));
 
 var
-  LastLeft, LastMiddle, LastRight: TLastMouseClick;
+  LastLeft, LastMiddle, LastRight, LastXButton, LastX2Button: TLastMouseClick;
   
 var
   im_context: PGtkIMContext = nil;

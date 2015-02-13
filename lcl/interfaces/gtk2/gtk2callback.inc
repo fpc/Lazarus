@@ -2061,6 +2061,9 @@ var
         exit;
 
     MessI.Keys := MessI.Keys or BtnKey;
+
+    if BtnKey in [MK_XBUTTON1, MK_XBUTTON2] then
+      MessI.Keys := MessI.Keys or BtnKey shl 11;
     IsMultiClick := TestIfMultiClick;
 
     case gdk_event_get_type(Event) of
@@ -2134,6 +2137,7 @@ begin
   EventXY := Point(TruncToInt(Event^.X), TruncToInt(Event^.Y));
   ShiftState := GTKEventStateToShiftState(Event^.State);
 
+  writeln('gtk2 button down : ', event^.button);
   if ShiftState*[ssShift, ssCtrl, ssAlt, ssSuper] <> LastModifierKeys
   then begin
     LastModifierKeys := ShiftState*[ssShift, ssCtrl, ssAlt, ssSuper];
@@ -2176,6 +2180,12 @@ begin
       3: if not CheckMouseButtonDown(LastRight,
                 MK_RBUTTON, LM_RBUTTONDOWN,
                 LM_RBUTTONDBLCLK, LM_RBUTTONTRIPLECLK, LM_RBUTTONQUADCLK) then Exit;
+      8: if not CheckMouseButtonDown(LastXButton,
+                MK_XBUTTON1, LM_XBUTTONDOWN,
+                LM_XBUTTONDBLCLK, LM_XBUTTONTRIPLECLK, LM_XBUTTONQUADCLK) then Exit;
+      9: if not CheckMouseButtonDown(LastX2Button,
+                MK_XBUTTON2, LM_XBUTTONDOWN,
+                LM_XBUTTONDBLCLK, LM_XBUTTONTRIPLECLK, LM_XBUTTONQUADCLK) then Exit;
       else
         begin
           MessI.Msg := LM_NULL;
@@ -2192,7 +2202,8 @@ begin
 
     {always send LM_SETFOCUS first}
     if ((MessI.Msg = LM_LBUTTONDOWN) or (MessI.Msg = LM_RBUTTONDOWN) or
-      (MessI.Msg = LM_MBUTTONDOWN) or (MessI.Msg = LM_LBUTTONDBLCLK)) and
+      (MessI.Msg = LM_MBUTTONDOWN) or (MessI.Msg = LM_LBUTTONDBLCLK) or
+      (MessI.Msg = LM_XBUTTONDOWN)) and
       not AWinControl.Focused and AWinControl.CanFocus and
       not (csDesigning in AWinControl.ComponentState) and (AWinControl is TCustomEdit) then
     begin
@@ -2301,6 +2312,8 @@ begin
     1: if not CheckMouseButtonUp(LastLeft, LM_LBUTTONUP) then Exit;
     2: if not CheckMouseButtonUp(LastMiddle, LM_MBUTTONUP) then Exit;
     3: if not CheckMouseButtonUp(LastRight, LM_RBUTTONUP) then exit;
+    8: if not CheckMouseButtonUp(LastXButton, LM_XBUTTONUP) then exit;
+    9: if not CheckMouseButtonUp(LastX2Button, LM_XBUTTONUP) then exit;
   else
     begin
       MessI.Msg := LM_NULL;
@@ -2326,6 +2339,8 @@ begin
     // send the message directly to the LCL
     // (Posting the message via queue
     //  has the risk of getting out of sync with the gtk)
+    if event^.button in [8,9] then
+      MessI.Keys := MessI.Keys or ((event^.button - 7) shl 16);
     MessI.Result := 0;
     NotifyApplicationUserInput(AWinControl, MessI.Msg);
     DeliverMessage(AWinControl, MessI);
