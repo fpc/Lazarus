@@ -15,7 +15,8 @@ interface
 {$I LR_Vers.inc}
 
 uses
-  SysUtils, Math, CLocale, Classes, MaskUtils, Controls, FileUtil, Forms,
+  SysUtils, Math, {$IFDEF UNIX}CLocale,{$ENDIF}
+  Classes, MaskUtils, Controls, FileUtil, Forms,
   Dialogs, Menus, Variants, DB, Graphics, Printers, osPrinters, LazUTF8, DOM,
   XMLWrite, XMLRead, XMLConf, LCLType, LCLIntf, TypInfo, LR_View, LR_Pars,
   LR_Intrp, LR_DSet, LR_DBSet, LR_DBRel, LR_Const, DbCtrls, LazUtf8Classes,
