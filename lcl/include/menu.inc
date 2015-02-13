@@ -271,12 +271,13 @@ end;
 {------------------------------------------------------------------------------
   Function: TMenu.GetHandle
   Params:   none
-  Returns:  String containing output from the function.
+  Returns:  Handle of the menu
 
-  Description of the function for the class.
+  The handle will be created if not already allocated.
  ------------------------------------------------------------------------------}
 function TMenu.GetHandle: HMenu;
 begin
+  HandleNeeded();
   Result := FItems.Handle;
 end;
 
