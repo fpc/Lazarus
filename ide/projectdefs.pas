@@ -1291,7 +1291,7 @@ begin
     +'  { you can add units after this };'+LineEnding
     +LineEnding
     +'begin'+LineEnding
-    +'  RequireDerivedFormResource := True;'+LineEnding
+    +'  RequireDerivedFormResource:=True;'+LineEnding
     +'  Application.Initialize;'+LineEnding
     +'  Application.Run;'+LineEnding
     +'end.'+LineEnding
