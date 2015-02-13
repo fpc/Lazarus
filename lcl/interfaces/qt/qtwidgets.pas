@@ -3074,8 +3074,15 @@ begin
   if (QKeyEvent_key(QKeyEventH(Event)) = QtKey_Enter) and (length(Text) = 1) then
     Text := #13;
 
+  ScanCode := QKeyEvent_nativeVirtualKey(QKeyEventH(Event));
+  {$IFDEF VerboseQtKeys}
+  // ScanCode := QKeyEvent_key(QKeyEventH(Event));
+  writeln('!!!**** NATIVEVIRTUALKEY=',ScanCode,' lenText=',length(Text),' Modifiers ',Modifiers,' AKEYCODE=',AKeyCode);
+  {$ENDIF}
+
   // set groupswitch for Shift+Option.
-  if (length(Text) = 1) and (Modifiers = QtAltModifier or QtShiftModifier) then
+  if (length(Text) = 1) and
+    ((Modifiers = QtAltModifier or QtShiftModifier) or ((Modifiers = QtAltModifier) and (ScanCode > 0))) then
   begin
     ScanCode := QKeyEvent_key(QKeyEventH(Event));
     // Arrow keys are reserved by macOSX keyboard commands
@@ -3093,7 +3100,7 @@ begin
   {$ENDIF}
 
   {$IFDEF VerboseQtKeys}
-  writeln('> TQtWidget.SlotKey dump begin event=',EventTypeToStr(Event));
+  writeln('> TQtWidget.SlotKey dump begin event=',EventTypeToStr(Event),' IsSysKey ',IsSysKey);
 
   S := '';
   if Modifiers and QtShiftModifier <> 0 then
