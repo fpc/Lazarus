@@ -7044,9 +7044,9 @@ begin
   Result := False;
   if not IsValidGDIObject(RGN) then
     exit;
-  if (PGdiObject(RGN)^.GDIBitmapObject <> nil) or
-    (PGdiObject(RGN)^.GDIPixbufObject <> nil) or
-    (PGdiObject(RGN)^.GDIPixmapObject.Image <> nil) then
+  if ({%H-}PGdiObject(RGN)^.GDIBitmapObject <> nil) or
+    ({%H-}PGdiObject(RGN)^.GDIPixbufObject <> nil) or
+    ({%H-}PGdiObject(RGN)^.GDIPixmapObject.Image <> nil) then
   begin
     // issue #27080
     Result := False;
