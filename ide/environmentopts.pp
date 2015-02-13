@@ -606,10 +606,10 @@ type
                                               write FDebuggerShowStopMessage;
     property DebuggerResetAfterRun: boolean read FDebuggerResetAfterRun
                                               write FDebuggerResetAfterRun;
-    property ShowCompileDialog: boolean read  FShowCompileDialog
-                                        write FShowCompileDialog;
-    property AutoCloseCompileDialog: boolean read  FAutoCloseCompileDialog
-                                             write FAutoCloseCompileDialog;
+    // ShowCompileDialog and AutoCloseCompileDialog are currently not used.
+    // But maybe someone will implement them again. Keep them till 1.4.2
+    property ShowCompileDialog: boolean read  FShowCompileDialog write FShowCompileDialog;
+    property AutoCloseCompileDialog: boolean read  FAutoCloseCompileDialog write FAutoCloseCompileDialog;
     property TestBuildDirectory: string read GetTestBuildDirectory
                                         write SetTestBuildDirectory;
     property TestBuildDirHistory: TStringList read FTestBuildDirHistory;
