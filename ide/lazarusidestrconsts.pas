@@ -2720,8 +2720,8 @@ resourcestring
   srkmecWordRight             = 'Move cursor word right';
   srkmecWordEndLeft           = 'Move cursor word-end left';
   srkmecWordEndRight          = 'Move cursor word-end right';
-  srkmecHalfWordLeft          = 'Move cursor half-word left';
-  srkmecHalfWordRight         = 'Move cursor half-word right';
+  srkmecHalfWordLeft          = 'Move cursor part-word left (e.g. CamelCase)';
+  srkmecHalfWordRight         = 'Move cursor part-word right (e.g. CamelCase)';
   srkmecLineStart             = 'Move cursor to line start';
   srkmecLineEnd               = 'Move cursor to line end';
   srkmecPageUp                = 'Move cursor up one page';
@@ -2746,8 +2746,8 @@ resourcestring
   srkmecSelWordRight          = 'Select Word Right';
   srkmecSelWordEndLeft           = 'Select word-end left';
   srkmecSelWordEndRight          = 'Select word-end right';
-  srkmecSelHalfWordLeft          = 'Select half-word left';
-  srkmecSelHalfWordRight         = 'Select half-word right';
+  srkmecSelHalfWordLeft          = 'Select part-word left (e.g. CamelCase)';
+  srkmecSelHalfWordRight         = 'Select part-word right (e.g. CamelCase)';
   srkmecSelLineStart          = 'Select Line Start';
   srkmecSelLineEnd            = 'Select Line End';
   srkmecSelPageUp             = 'Select Page Up';
