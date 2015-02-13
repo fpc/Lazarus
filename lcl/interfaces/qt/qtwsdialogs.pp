@@ -62,6 +62,7 @@ type
 
   TQtWSOpenDialog = class(TWSOpenDialog)
   published
+    class function CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
   end;
 
   { TQtWSSaveDialog }
@@ -104,7 +105,7 @@ type
 
 
 implementation
-uses qtint;
+uses ExtDlgs, qtint;
 {$ifndef QT_NATIVE_DIALOGS}
 const
   QtDialogCodeToModalResultMap: array[QDialogDialogCode] of TModalResult =
@@ -546,6 +547,31 @@ begin
     if QtWidgetSet.IsValidHandle(ActiveWin) then
       QtWidgetSet.SetActiveWindow(ActiveWin);
   end;
+end;
+
+{ TQtWSOpenDialog }
+
+class function TQtWSOpenDialog.CreateHandle(const ACommonDialog: TCommonDialog
+  ): THandle;
+var
+  FileDialog: TQtFilePreviewDialog;
+begin
+  if (ACommonDialog is TPreviewFileDialog) then
+  begin
+    FileDialog := TQtFilePreviewDialog.Create(ACommonDialog, TQtWSCommonDialog.GetDialogParent(ACommonDialog));
+    {$ifdef darwin}
+    QWidget_setWindowFlags(FileDialog.Widget, QtDialog or QtWindowSystemMenuHint or QtCustomizeWindowHint);
+    {$endif}
+    {. $note WE MUST USE NON NATIVE DIALOGS HERE, OTHERWISE NO SIGNALS #16532.}
+    QFileDialog_setOption(QFileDialogH(FileDialog.Widget),
+      QFileDialogDontUseNativeDialog, True);
+
+    FileDialog.initializePreview(TPreviewFileDialog(ACommonDialog).PreviewFileControl);
+    FileDialog.AttachEvents;
+
+    Result := THandle(FileDialog);
+  end else
+    Result := TQtWSFileDialog.CreateHandle(ACommonDialog);
 end;
 
 { TQtWSSelectDirectoryDialog }
