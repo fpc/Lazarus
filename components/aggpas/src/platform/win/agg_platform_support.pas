@@ -373,7 +373,7 @@ type
   // It's perfect if they can be called anytime.
    procedure caption_(cap : shortstring );
 
-  // These 3 menthods handle working with images. The image
+  // These 3 methods handle working with images. The image
   // formats are the simplest ones, such as .BMP in Windows or
   // .ppm in Linux. In the applications the names of the files
   // should not have any file extensions. Method load_img() can

@@ -409,7 +409,7 @@ begin
 end;
 
 { CONSTRUCT }
-constructor font_cache_manager.Construct;
+constructor font_cache_manager.Construct(engine : font_engine_ptr; max_fonts : unsigned);
 begin
  m_fonts.Construct(max_fonts );
 

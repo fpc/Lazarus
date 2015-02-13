@@ -38,7 +38,6 @@ uses
 
 { TYPES DEFINITION }
 type
-
  agg_types = (
 
   int8_type ,
@@ -150,15 +149,7 @@ type
  p32 = record
    case integer of
     1 : (ptr : pointer );
-
-   {$IFDEF CPU64 }
-    2 : (int : system.int64 );
-
-   {$ELSE }
-    2 : (int : integer );
-
-   {$ENDIF }
-
+    2 : (int : ptrcomp );
   end;
 
  double_ptr_ptr = ^double_ptr;
@@ -366,11 +357,11 @@ type
  procedure NoP;
 
 { These implementations have changed to use FPC's Sar*() functions, so should
-  now support all platforms with ASM code. At a later date these functions
-  could be removed completely. }
- function  shr_int8 (i ,shift : int8 ) : int8;
- function  shr_int16(i ,shift : int16 ) : int16;
- function  shr_int32(i ,shift : int ) : int;
+  now support all platforms without the need for ASM code. At a later date these
+  functions could be removed completely. }
+ function  shr_int8 (i ,shift : int8 ) : int8; inline;
+ function  shr_int16(i ,shift : int16 ) : int16; inline;
+ function  shr_int32(i ,shift : int ) : int; inline;
 
 IMPLEMENTATION
 { UNIT IMPLEMENTATION }
@@ -457,7 +448,7 @@ begin
 end;
 
 { NORMALIZE }
-function rect.normalize;
+function rect.normalize: rect_ptr;
 var
  t : int;
 
@@ -483,7 +474,7 @@ begin
 end;
 
 { CLIP }
-function rect.clip;
+function rect.clip(r: rect_ptr): boolean;
 begin
  if x2 > r.x2 then
   x2:=r.x2;
@@ -502,7 +493,7 @@ begin
 end;
 
 { IS_VALID }
-function rect.is_valid;
+function rect.is_valid: boolean;
 begin
  result:=(x1 <= x2 ) and (y1 <= y2 );
 
@@ -1149,6 +1140,7 @@ var
  fr : integer;
 
  get : shortstring;
+ flg : char;
  dth ,
  prc ,
  err : integer;
@@ -1253,6 +1245,7 @@ begin
  fr:=trunc(system.frac(val ) );
  sc:=_string;
 
+ flg:=#0;
  dth:=1;
  prc:=0;
  prf:=#0;
@@ -1281,7 +1274,10 @@ begin
     _flags :
      case src^ of
       '-' ,'+' ,'0' ,' ' ,'#' :
-             ;
+       begin
+         flg:=src^;
+         if flg=#0 then ; // ToDo
+       end;
 
       '1'..'9' :
        begin

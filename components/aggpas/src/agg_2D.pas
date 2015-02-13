@@ -3,30 +3,18 @@
 // Based on Anti-Grain Geometry
 // Copyright (C) 2005 Maxim Shemanarev (http://www.antigrain.com)
 //
-// Agg2D - Version 1.0 Release Milano 3 (AggPas 2.3 RM3)
+// Agg2D - Version 1.0 Release Milano 3 (AggPas 2.4 RM3)
 // Pascal Port By: Milan Marusinec alias Milano
 //                 milan@marusinec.sk
 //                 http://www.aggpas.org
-// Copyright (c) 2007
+// Copyright (c) 2007 - 2008
 //
 // Permission to copy, use, modify, sell and distribute this software
 // is granted provided this copyright notice appears in all copies.
 // This software is provided "as is" without express or implied
 // warranty, and with no claim as to its suitability for any purpose.
 //
-//----------------------------------------------------------------------------
-// Contact: mcseem@antigrain.com
-//          mcseemagg@yahoo.com
-//          http://www.antigrain.com
-//
-// [Pascal Port History] -----------------------------------------------------
-//
-// 22.08.2007-Milano: Unit port establishment
-// 23.08.2007-Milano: Porting
-// 11.09.2007-Milano: -"-
-// 13.09.2007-Milano: -"-, Finished OK
-//
-{ agg_2D.pas }
+
 unit
  agg_2D ;
 
@@ -73,12 +61,10 @@ uses
 
 {$IFDEF AGG2D_USE_FREETYPE }
  agg_font_freetype ,
-
 {$ENDIF }
 {$IFDEF AGG2D_USE_WINFONTS}
  agg_font_win32_tt ,
  Windows ,
-
 {$ENDIF }
 
  Math ;
@@ -150,11 +136,9 @@ type
 
 {$IFDEF AGG2D_USE_FREETYPE }
  FontEngine = font_engine_freetype_int32;
-
 {$ENDIF }
 {$IFDEF AGG2D_USE_WINFONTS}
  FontEngine = font_engine_win32_tt_int32;
-
 {$ENDIF }
 
  Gradient  = (Solid ,Linear ,Radial );
@@ -341,6 +325,8 @@ type
 
    procedure clearAll(c : Color ); overload;
    procedure clearAll(r ,g ,b : unsigned; a : unsigned = 255 ); overload;
+   procedure FillAll(c: Color); overload;
+   procedure FillAll(r, g, b: byte; a: byte = 255); overload;
 
    procedure clearClipBox(c : Color ); overload;
    procedure clearClipBox(r ,g ,b : unsigned; a : unsigned = 255 ); overload;
@@ -440,7 +426,7 @@ type
               rxTop ,ryTop : double ); overload;
 
    procedure ellipse(cx ,cy ,rx ,ry : double );
-             
+
    procedure arc (cx ,cy ,rx ,ry ,start ,sweep : double );
    procedure star(cx ,cy ,r1 ,r2 ,startAngle : double; numRays : int );
 
@@ -678,24 +664,24 @@ end;
 { PREMULTIPLY }
 procedure Image.premultiply;
 //var
-// pixf : pixel_formats;
+ //pixf : pixel_formats;
 
 begin
 { pixfmt_rgba32(pixf ,@renBuf );
 
- pixf.premultiply; {!}
+ pixf.premultiply; }
 
 end;
 
 { DEMULTIPLY }
 procedure Image.demultiply;
 //var
-// pixf : pixel_formats;
+ //pixf : pixel_formats;
 
 begin
 { pixfmt_rgba32(pixf ,@renBuf );
 
- pixf.demultiply; {!}
+ pixf.demultiply; }
 
 end;
 
@@ -812,19 +798,14 @@ begin
 
 {$IFDEF AGG2D_USE_FREETYPE }
  m_fontEngine.Construct;
-
 {$ENDIF }
 {$IFDEF AGG2D_USE_WINFONTS}
-
  m_fontDC:=GetDC(0 );
-
  m_fontEngine.Construct(m_fontDC );
-
 {$ENDIF }
 {$IFNDEF AGG2D_NO_FONT}
  m_fontCacheManager.Construct(@m_fontEngine );
 {$ENDIF}
-
 
  lineCap (m_lineCap );
  lineJoin(m_lineJoin );
@@ -856,7 +837,6 @@ begin
 {$ENDIF}
 {$IFDEF AGG2D_USE_WINFONTS }
  ReleaseDC(0 ,m_fontDC );
-
 {$ENDIF }
 
 end;
@@ -952,6 +932,22 @@ begin
  clr.Construct(r ,g ,b ,a );
  clearAll     (clr );
 
+end;
+
+procedure Agg2D.FillAll(c: Color);
+var
+  clr: aggclr;
+begin
+  clr.Construct  (c );
+  m_renBase.fill(@clr );
+end;
+
+procedure Agg2D.FillAll(r, g, b: byte; a: byte);
+var
+  clr: Color;
+begin
+  clr.Construct(r, g, b, a);
+  FillAll(clr);
 end;
 
 { CLEARCLIPBOX }
@@ -2112,6 +2108,7 @@ procedure Agg2D.font(
 var
  b : int;
 {$ENDIF}
+
 begin
  m_textAngle    :=angle;
  m_fontHeight   :=height;
@@ -2129,10 +2126,8 @@ begin
   m_fontEngine.height_(height )
  else
   m_fontEngine.height_(worldToScreen(height ) );
-
 {$ENDIF }
 {$IFDEF AGG2D_USE_WINFONTS}
-
  m_fontEngine.hinting_(m_textHints );
 
  if bold then
@@ -2144,7 +2139,6 @@ begin
   m_fontEngine.create_font_(PChar(fileName ) ,glyph_ren_outline ,height ,0.0 ,b ,italic )
  else
   m_fontEngine.create_font_(PChar(fileName ) ,glyph_ren_agg_gray8 ,worldToScreen(height) ,0.0 ,b ,italic );
-
 {$ENDIF }
 
 end;
@@ -3312,10 +3306,8 @@ function Agg2DUsesFreeType : boolean;
 begin
 {$IFDEF AGG2D_USE_FREETYPE }
  result:=true;
-
 {$ELSE }
  result:=false;
-
 {$ENDIF }
 
 end;
@@ -3324,14 +3316,10 @@ function Agg2DUsesWin32TrueType: boolean;
 begin
 {$IFDEF AGG2D_USE_WINFONTS }
  result:=true;
-
 {$ELSE }
  result:=false;
-
 {$ENDIF }
 end;
 
-END.
-
-{!}
+end.
 

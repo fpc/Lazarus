@@ -47,6 +47,11 @@ begin
   end;
   {$IFDEF LCLGtk2}
   HasFont:=true;
+  FontFilename:=SetDirSeparators('../../verdana.ttf');
+  if not FileExistsUTF8(FontFilename) then begin
+    ShowMessage('file not found: '+FontFilename+' CurDir='+GetCurrentDirUTF8);
+    HasFont:=false;
+  end;
   {$ELSE}
   HasFont:=false;
   {$ENDIF}
@@ -54,8 +59,6 @@ begin
   // paint to agg canvas
   with AggLCLCanvas do begin
     if HasFont then begin
-      FontFilename:=SetDirSeparators('../../verdana.ttf');
-      if not FileExistsUTF8(FontFilename) then raise Exception.Create('file not found: '+FontFilename+' CurDir='+GetCurrentDirUTF8);
       Font.LoadFromFile(FontFilename);
       Font.Size:=10;
       Font.Color:=clBlack;
@@ -86,12 +89,14 @@ begin
     Pie(220,10,240,30, 230,5, 220,30);
     RadialPie(245,10,265,30, 1000,2000);
 
-    s:='Font.Size='+IntToStr(Font.Size);
-    GetTextSize(s,TxtW,TxtH);
-    TxtX:=10;
-    TxtY:=40;
-    FillRect(TxtX,TxtY,TxtX+TxtW,TxtY+TxtH);
-    TextOut(TxtX,TxtY,s);
+    if HasFont then begin
+      s:='Font.Size='+IntToStr(Font.Size);
+      GetTextSize(s,TxtW,TxtH);
+      TxtX:=10;
+      TxtY:=40;
+      FillRect(TxtX,TxtY,TxtX+TxtW,TxtY+TxtH);
+      TextOut(TxtX,TxtY,s);
+    end;
 
     RoundRect(10,80,30,100,15,15);
     Polyline([Point(35,80),Point(45,80),Point(55,80),Point(55,90),

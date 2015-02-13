@@ -62,7 +62,7 @@ type
   end;
 
 { row_ptr_cache_ptr = ^row_ptr_cache;
- row_ptr_cache = object(rendering_buffer ){!}
+ row_ptr_cache = object(rendering_buffer )}
 
  rendering_buffer_ptr = ^rendering_buffer;
  rendering_buffer = object
@@ -210,7 +210,7 @@ begin
 end;
 
 { _BUF }
-function rendering_buffer._buf;
+function rendering_buffer._buf: int8u_ptr;
 begin
  result:=m_buf;
 
