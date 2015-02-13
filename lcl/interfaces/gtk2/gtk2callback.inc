@@ -2137,7 +2137,6 @@ begin
   EventXY := Point(TruncToInt(Event^.X), TruncToInt(Event^.Y));
   ShiftState := GTKEventStateToShiftState(Event^.State);
 
-  writeln('gtk2 button down : ', event^.button);
   if ShiftState*[ssShift, ssCtrl, ssAlt, ssSuper] <> LastModifierKeys
   then begin
     LastModifierKeys := ShiftState*[ssShift, ssCtrl, ssAlt, ssSuper];
