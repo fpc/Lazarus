@@ -39,8 +39,8 @@ uses
   {$IFDEF Windows}
   Windows,
   {$ENDIF}
-  Classes, SysUtils, LazUtilities, LazUTF8, LazDbgLog, LazFileCache,
-  LazFileUtils, LazUTF8Classes, LazLogger, AVL_Tree, CodeToolsStrConsts;
+  Classes, SysUtils, LazUtilities, LazDbgLog, LazLogger, LazUTF8, LazFileCache,
+  LazFileUtils, LazUTF8Classes, AVL_Tree, CodeToolsStrConsts;
 
 type
   TFPCStreamSeekType = int64;

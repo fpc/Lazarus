@@ -6,6 +6,7 @@
      ./runtests --format=plain --suite=TestUTF8Trim
      ./runtests --format=plain --suite=TestUTF8Pos
      ./runtests --format=plain --suite=TestFindInvalidUTF8
+     ./runtests --format=plain --suite=TestUTF8QuotedStr
 }
 unit TestLazUTF8;
 
@@ -26,6 +27,7 @@ type
     procedure TestUTF8Trim;
     procedure TestUTF8Pos;
     procedure TestFindInvalidUTF8;
+    procedure TestUTF8QuotedStr;
   end;
 
 implementation
@@ -101,6 +103,24 @@ begin
   t(#$e0#$9f#$bf,0,'invalid: $7ff encoded as 3 byte');
   t(#$f0#$80#$80#$80,0,'invalid: 0 encoded as 4 byte');
   t(#$f0#$8f#$bf#$bf,0,'invalid: $ffff encoded as 4 byte');
+end;
+
+procedure TTestLazUTF8.TestUTF8QuotedStr;
+
+  procedure t(const S, Quote, Expected: string);
+  var
+    Actual: String;
+  begin
+    Actual:=UTF8QuotedStr(S,Quote);
+    AssertEquals('S="'+S+'" Quote="'+Quote+'"',Expected,Actual);
+  end;
+
+begin
+  t('','=','==');
+  t('','AB','ABAB');
+  t('A','A','AAAA');
+  t('bAb','A','AbAAbA');
+  t('cABc','AB','ABcABABcAB');
 end;
 
 initialization
