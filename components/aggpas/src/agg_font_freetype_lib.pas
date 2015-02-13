@@ -31,80 +31,138 @@ INTERFACE
 
 {$I agg_mode.inc }
 
+{$packrecords c}
+
 uses
  agg_basics ;
 
-{ GLOBAL VARIABLES & CONSTANTS }
 type
- FT_Encoding = array[0..3 ] of char;
+  FT_Encoding = array[0..3] of char;
 
 const
-{$IFDEF AGG_WINDOWS }
- ft_lib = 'freetype.dll';
+{$IFDEF WINDOWS }
+  ft_lib = 'freetype.dll';
 {$ENDIF }
 
-{$IFDEF AGG_LINUX }
- ft_lib = 'freetype.so';
+// Linux, FreeBSD etc.
+{$if defined(UNIX) and not defined(darwin)}
+  ft_lib = 'freetype';
 {$ENDIF }
 
-{$IFDEF AGG_MACOSX }
- ft_lib = 'libfreetype';
+// Mac OS X
+{$ifdef darwin}
+  ft_lib = 'libfreetype';
 {$ENDIF }
 
  FT_CURVE_TAG_ON    = 1;
  FT_CURVE_TAG_CONIC = 0;
  FT_CURVE_TAG_CUBIC = 2;
 
- FT_FACE_FLAG_SCALABLE = 1 shl 0;
- FT_FACE_FLAG_KERNING  = 1 shl 6;
+  FT_FACE_FLAG_SCALABLE = 1 shl 0;
+  FT_FACE_FLAG_FIXED_SIZES = 1 shl 1;
+  FT_FACE_FLAG_FIXED_WIDTH = 1 shl 2;
+  FT_FACE_FLAG_SFNT = 1 shl 3;
+  FT_FACE_FLAG_HORIZONTAL = 1 shl 4;
+  FT_FACE_FLAG_VERTICAL = 1 shl 5;
+  FT_FACE_FLAG_KERNING = 1 shl 6;
+  FT_FACE_FLAG_FAST_GLYPHS = 1 shl 7;
+  FT_FACE_FLAG_MULTIPLE_MASTERS = 1 shl 8;
+  FT_FACE_FLAG_GLYPH_NAMES = 1 shl 9;
+  FT_FACE_FLAG_EXTERNAL_STREAM = 1 shl 10;
 
- FT_ENCODING_NONE : FT_Encoding = (#0 ,#0 ,#0 ,#0 );
+  FT_STYLE_FLAG_ITALIC = 1 shl 0;
+  FT_STYLE_FLAG_BOLD = 1 shl 1;
 
- FT_LOAD_DEFAULT        = $0000;
- FT_LOAD_NO_HINTING     = $0002;
- FT_LOAD_FORCE_AUTOHINT = $0020;
+  FT_LOAD_DEFAULT =          $0000;
+  FT_LOAD_NO_SCALE =         $0001;
+  FT_LOAD_NO_HINTING =       $0002;
+  FT_LOAD_RENDER =           $0004;
+  FT_LOAD_NO_BITMAP =        $0008;
+  FT_LOAD_VERTICAL_LAYOUT =  $0010;
+  FT_LOAD_FORCE_AUTOHINT =   $0020;
+  FT_LOAD_CROP_BITMAP =      $0040;
+  FT_LOAD_PEDANTIC =         $0080;
+  FT_LOAD_IGNORE_GLOBAL_ADVANCE_WIDTH = $0200;
+  FT_LOAD_NO_RECURSE =       $0400;
+  FT_LOAD_IGNORE_TRANSFORM = $0800;
+  FT_LOAD_MONOCHROME =       $1000;
+  FT_LOAD_LINEAR_DESIGN =    $2000;
 
- FT_RENDER_MODE_NORMAL = 0;
- FT_RENDER_MODE_LIGHT  = FT_RENDER_MODE_NORMAL + 1;
- FT_RENDER_MODE_MONO   = FT_RENDER_MODE_LIGHT + 1;
- FT_RENDER_MODE_LCD    = FT_RENDER_MODE_MONO + 1;
- FT_RENDER_MODE_LCD_V  = FT_RENDER_MODE_LCD + 1;
- FT_RENDER_MODE_MAX    = FT_RENDER_MODE_LCD_V + 1;
+  ft_glyph_format_none      = $00000000;
+  ft_glyph_format_composite = $636F6D70; //comp 099 111 109 112
+  ft_glyph_format_bitmap    = $62697473; //bits 098 105 116 115
+  ft_glyph_format_outline   = $6F75746C; //outl 111 117 116 108
+  ft_glyph_format_plotter   = $706C6F74; //plot 112 108 111 116
 
- FT_KERNING_DEFAULT  = 0;
- FT_KERNING_UNFITTED = 1;
- FT_KERNING_UNSCALED = 2;
+  FT_ENCODING_NONE : FT_Encoding = (#0 ,#0 ,#0 ,#0 );
+  FT_ENCODING_MS_SYMBOL : FT_Encoding = 'symb';
+  FT_ENCODING_UNICODE : FT_Encoding = 'unic';
+  FT_ENCODING_MS_SJIS : FT_Encoding = 'sjis';
+  FT_ENCODING_MS_GB2312 : FT_Encoding = 'gb  ';
+  FT_ENCODING_MS_BIG5 : FT_Encoding = 'big5';
+  FT_ENCODING_MS_WANSUNG : FT_Encoding = 'wans';
+  FT_ENCODING_MS_JOHAB : FT_Encoding = 'joha';
+  FT_ENCODING_ADOBE_STANDARD : FT_Encoding = 'ADOB';
+  FT_ENCODING_ADOBE_EXPERT : FT_Encoding = 'ADBE';
+  FT_ENCODING_ADOBE_CUSTOM : FT_Encoding = 'ADBC';
+  FT_ENCODING_ADOBE_LATIN_1 : FT_Encoding = 'lat1';
+  FT_ENCODING_OLD_LATIN_2 : FT_Encoding = 'lat2';
+  FT_ENCODING_APPLE_ROMAN : FT_Encoding = 'armn';
 
- FT_STYLE_FLAG_ITALIC = 1 shl 0;
- FT_STYLE_FLAG_BOLD   = 1 shl 1;
+  ft_glyph_bbox_unscaled  = 0; //* return unscaled font units           */
+  ft_glyph_bbox_subpixels = 0; //* return unfitted 26.6 coordinates     */
+  ft_glyph_bbox_gridfit   = 1; //* return grid-fitted 26.6 coordinates  */
+  ft_glyph_bbox_truncate  = 2; //* return coordinates in integer pixels */
+  ft_glyph_bbox_pixels    = 3; //* return grid-fitted pixel coordinates */
+
+  FT_KERNING_DEFAULT  = 0;
+  FT_KERNING_UNFITTED = 1;
+  FT_KERNING_UNSCALED = 2;
+
 
 { TYPES DEFINITION }
 type
- FT_Byte    = byte;
- FT_Short   = smallint;
- FT_UShort  = word;
- FT_Int     = longint;
- FT_UInt    = longword;
- FT_Int32   = longint;
- FT_Long    = longint;
- FT_ULong   = longword;
- FT_Fixed   = longint;
- FT_Pos     = longint;
- FT_Error   = longint;
- FT_F26Dot6 = longint;
 
- FT_Byte_ptr  = ^FT_Byte;
- FT_Short_ptr = ^FT_Short;
+  FT_Bool = boolean;
+  FT_FWord = smallint;
+  FT_UFWord = word;
+  FT_Char = char;
+  FT_Byte = byte;
+  FT_String = char;
+  FT_Short = smallint;
+  FT_UShort = word;
+  FT_Int = longint;
+  FT_UInt = longword;
+  FT_Int32   = longint;
+  {$if defined(cpu64) and not(defined(win64) and defined(cpux86_64))}
+  FT_Long = int64;
+  FT_ULong = qword;
+  FT_Pos = int64;
+  {$ELSE}
+  FT_Long = longint;
+  FT_ULong = longword;
+  FT_Pos = longint;
+  {$ENDIF}
+  FT_F2Dot14 = smallint;
+  FT_F26Dot6 = longint;
+  FT_Fixed = FT_Long;
+  FT_Error = longint;
+  FT_Pointer = pointer;
 
- FT_Render_Mode = FT_Int;
+  FT_Byte_ptr  = ^FT_Byte;
+  FT_Short_ptr = ^FT_Short;
+
+  FT_Render_Mode = (FT_RENDER_MODE_NORMAL, FT_RENDER_MODE_LIGHT,
+      FT_RENDER_MODE_MONO, FT_RENDER_MODE_LCD, FT_RENDER_MODE_LCD_V,
+      FT_RENDER_MODE_MAX);
 
  FT_Library_ptr_ptr = ^FT_Library_ptr;
  FT_Library_ptr = ^FT_Library;
- FT_Library = packed record
+ FT_Library =  record
   end;
 
  FT_Subglyph_ptr = ^FT_Subglyph; 
- FT_Subglyph = packed record  // TODO
+ FT_Subglyph =  record  // TODO
   end;
 
  FT_Bitmap_Size = record
@@ -121,14 +179,14 @@ type
 
  FT_Generic_Finalizer = procedure(AnObject : pointer ); cdecl;
 
- FT_Generic = packed record
+ FT_Generic =  record
   data      : pointer;
   finalizer : FT_Generic_Finalizer;
 
  end;
 
  FT_BBox_ptr = ^FT_BBox;
- FT_BBox = packed record
+ FT_BBox =  record
   xMin ,
   yMin ,
   xMax ,
@@ -137,14 +195,14 @@ type
  end;
 
  FT_Vector_ptr = ^FT_Vector;
- FT_Vector = packed record
+ FT_Vector =  record
   x ,
   y : FT_Pos;
 
  end;
 
  FT_Bitmap_ptr = ^FT_Bitmap;
- FT_Bitmap = packed record
+ FT_Bitmap =  record
   rows   ,
   width  ,
   pitch  : FT_Int;
@@ -160,7 +218,7 @@ type
  end;
 
  FT_Outline_ptr = ^FT_Outline;
- FT_Outline = packed record
+ FT_Outline =  record
   n_contours ,
   n_points   : FT_Short;
 
@@ -172,7 +230,7 @@ type
 
  end;
 
- FT_Glyph_Metrics = packed record
+ FT_Glyph_Metrics =  record
   width  ,
   height ,
 
@@ -189,7 +247,7 @@ type
  FT_Face_ptr = ^FT_Face;
 
  FT_GlyphSlot_ptr = ^FT_GlyphSlot;
- FT_GlyphSlot = packed record
+ FT_GlyphSlot =  record
   alibrary : FT_Library_ptr;
 
   face  : FT_Face_ptr;
@@ -242,7 +300,7 @@ type
 
  end;
 
- FT_Face = packed record
+ FT_Face =  record
   num_faces   ,
   face_index  ,
   face_flags  ,
@@ -277,7 +335,7 @@ type
 
  end;
 
- FT_Charmap = packed record
+ FT_Charmap =  record
   face     : FT_Face_ptr;
   encoding : FT_Encoding;
 
@@ -291,7 +349,7 @@ type
  function  FT_IS_SCALABLE(face : FT_Face_ptr ) : boolean;
  function  FT_HAS_KERNING(face : FT_Face_ptr ) : boolean;
 
- function  FT_Init_FreeType(alibrary : FT_Library_ptr ) : FT_Error; cdecl; external ft_lib name 'FT_Init_FreeType';
+ function  FT_Init_FreeType(var alibrary : FT_Library_ptr ) : FT_Error; cdecl; external ft_lib name 'FT_Init_FreeType';
 
  function  FT_Done_FreeType(alibrary : FT_Library_ptr ) : FT_Error; cdecl; external ft_lib name 'FT_Done_FreeType';
 
@@ -351,16 +409,14 @@ end;
 { FT_IS_SCALABLE }
 function FT_IS_SCALABLE(face : FT_Face_ptr ) : boolean;
 begin
- result:=boolean(face.face_flags and FT_FACE_FLAG_SCALABLE );
-
+  Result := (face.face_flags and FT_FACE_FLAG_SCALABLE) = 1;
 end;
 
 { FT_HAS_KERNING }
 function FT_HAS_KERNING(face : FT_Face_ptr ) : boolean;
 begin
- result:=boolean(face.face_flags and FT_FACE_FLAG_KERNING );
-
+  Result := (face.face_flags and FT_FACE_FLAG_KERNING) = 1;
 end;
 
-END.
+end.
 

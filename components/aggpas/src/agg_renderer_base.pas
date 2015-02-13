@@ -79,6 +79,7 @@ type
    function  bounding_ymax : int; virtual;
 
    procedure clear(c : aggclr_ptr );
+   procedure fill(const c: aggclr_ptr);
 
    procedure copy_pixel (x ,y : int; c : aggclr_ptr ); virtual;
    procedure blend_pixel(x ,y : int; c : aggclr_ptr; cover : int8u ); virtual;
@@ -127,7 +128,7 @@ type
               dy : int = 0;
               cover : int8u = cover_full );
 
-  end;
+ end;
 
 { GLOBAL PROCEDURES }
 
@@ -135,7 +136,7 @@ type
 IMPLEMENTATION
 { UNIT IMPLEMENTATION }
 { CONSTRUCT }
-constructor renderer_base.Construct;
+constructor renderer_base.Construct(ren_: pixel_formats_ptr);
 var
  w ,h : int;
 
@@ -159,28 +160,28 @@ begin
 end;
 
 { REN }
-function renderer_base.ren;
+function renderer_base.ren: pixel_formats_ptr;
 begin
  result:=m_ren;
  
 end;
 
 { WIDTH }
-function renderer_base.width;
+function renderer_base.width: unsigned;
 begin
  result:=m_ren._width;
 
 end;
 
 { HEIGHT }
-function renderer_base.height;
+function renderer_base.height: unsigned;
 begin
  result:=m_ren._height;
 
 end;
 
 { CLIP_BOX_NAKED }
-procedure renderer_base.clip_box_naked;
+procedure renderer_base.clip_box_naked(x1, y1, x2, y2: int);
 begin
  m_clip_box.x1:=x1;
  m_clip_box.y1:=y1;
@@ -190,7 +191,7 @@ begin
 end;
 
 { INBOX }
-function renderer_base.inbox;
+function renderer_base.inbox(x, y: int): boolean;
 begin
  result:=
   (x >= m_clip_box.x1 ) and
@@ -201,7 +202,7 @@ begin
 end;
 
 { CLIP_BOX_ }
-function renderer_base.clip_box_;
+function renderer_base.clip_box_(x1, y1, x2, y2: int): boolean;
 var
  cb ,
  rc : rect;
@@ -232,7 +233,7 @@ begin
 end;
 
 { RESET_CLIPPING }
-procedure renderer_base.reset_clipping;
+procedure renderer_base.reset_clipping(visibility: boolean);
 begin
  if visibility then
   begin
@@ -259,84 +260,84 @@ begin
 end;
 
 { NEXT_CLIP_BOX }
-function renderer_base.next_clip_box;
+function renderer_base.next_clip_box: boolean;
 begin
  result:=false;
 
 end;
 
 { _CLIP_BOX }
-function renderer_base._clip_box;
+function renderer_base._clip_box: rect_ptr;
 begin
  result:=@m_clip_box;
 
 end;
 
 { _XMIN }
-function renderer_base._xmin;
+function renderer_base._xmin: int;
 begin
  result:=m_clip_box.x1;
 
 end;
 
 { _YMIN }
-function renderer_base._ymin;
+function renderer_base._ymin: int;
 begin
  result:=m_clip_box.y1;
 
 end;
 
 { _XMAX }
-function renderer_base._xmax;
+function renderer_base._xmax: int;
 begin
  result:=m_clip_box.x2;
 
 end;
 
 { _YMAX }
-function renderer_base._ymax;
+function renderer_base._ymax: int;
 begin
  result:=m_clip_box.y2;
 
 end;
 
 { BOUNDING_CLIP_BOX }
-function renderer_base.bounding_clip_box;
+function renderer_base.bounding_clip_box: rect_ptr;
 begin
  result:=@m_clip_box;
 
 end;
 
 { BOUNDING_XMIN }
-function renderer_base.bounding_xmin;
+function renderer_base.bounding_xmin: int;
 begin
  result:=m_clip_box.x1;
 
 end;
 
 { BOUNDING_YMIN }
-function renderer_base.bounding_ymin;
+function renderer_base.bounding_ymin: int;
 begin
  result:=m_clip_box.y1;
 
 end;
 
 { BOUNDING_XMAX }
-function renderer_base.bounding_xmax;
+function renderer_base.bounding_xmax: int;
 begin
  result:=m_clip_box.x2;
 
 end;
 
 { BOUNDING_YMAX }
-function renderer_base.bounding_ymax;
+function renderer_base.bounding_ymax: int;
 begin
  result:=m_clip_box.y2;
 
 end;
 
 { CLEAR }
-procedure renderer_base.clear;
+procedure renderer_base.clear(c: aggclr_ptr);
 var
  y : unsigned;
 
@@ -348,8 +349,19 @@ begin
 
 end;
 
+procedure renderer_base.fill(const c: aggclr_ptr);
+var
+  y: unsigned;
+begin
+  if (width > 0) and (height > 0) then
+  begin
+    for y:=0 to height - 1 do
+      m_ren.blend_hline(m_ren, 0, y, width, c, cover_mask);
+  end;
+end;
+
 { COPY_PIXEL }
-procedure renderer_base.copy_pixel;
+procedure renderer_base.copy_pixel(x, y: int; c: aggclr_ptr);
 begin
  if inbox(x ,y ) then
   m_ren.copy_pixel(m_ren ,x ,y ,c );
@@ -357,7 +369,7 @@ begin
 end;
 
 { BLEND_PIXEL }
-procedure renderer_base.blend_pixel;
+procedure renderer_base.blend_pixel(x, y: int; c: aggclr_ptr; cover: int8u);
 begin
  if inbox(x ,y ) then
   m_ren.blend_pixel(m_ren ,x ,y ,c ,cover );
@@ -365,7 +377,7 @@ begin
 end;
 
 { PIXEL }
-function renderer_base.pixel;
+function renderer_base.pixel(x, y: int): aggclr;
 begin
  if inbox(x ,y ) then
   result:=m_ren.pixel(m_ren ,x ,y )
@@ -375,7 +387,7 @@ begin
 end;
 
 { COPY_HLINE }
-procedure renderer_base.copy_hline;
+procedure renderer_base.copy_hline(x1, y, x2: int; c: aggclr_ptr);
 var
  t : int;
 
@@ -411,7 +423,7 @@ begin
 end;
 
 { COPY_VLINE }
-procedure renderer_base.copy_vline;
+procedure renderer_base.copy_vline(x, y1, y2: int; c: aggclr_ptr);
 var
  t : int;
 
@@ -447,7 +459,7 @@ begin
 end;
 
 { BLEND_HLINE }
-procedure renderer_base.blend_hline;
+procedure renderer_base.blend_hline(x1, y, x2: int; c: aggclr_ptr; cover: int8u);
 var
  t : int;
 
@@ -483,7 +495,7 @@ begin
 end;
 
 { BLEND_VLINE }
-procedure renderer_base.blend_vline;
+procedure renderer_base.blend_vline(x, y1, y2: int; c: aggclr_ptr; cover: int8u);
 var
  t : int;
 
@@ -519,7 +531,7 @@ begin
 end;
 
 { COPY_BAR }
-procedure renderer_base.copy_bar;
+procedure renderer_base.copy_bar(x1, y1, x2, y2: int; c: aggclr_ptr);
 var
  y  : int;
  rc : rect;
@@ -545,7 +557,7 @@ begin
 end;
 
 { BLEND_BAR }
-procedure renderer_base.blend_bar;
+procedure renderer_base.blend_bar(x1, y1, x2, y2: int; c: aggclr_ptr; cover: int8u);
 var
  rc : rect;
  y  : int;
@@ -570,13 +582,15 @@ begin
 
 end;
 
-{ SPAN {not_implemented}
-function renderer_base.span;
+{ SPAN - not_implemented}
+{$NOTE renderer_base.span not implemented yet}
+function renderer_base.span(x, y: int; len: unsigned): pointer;
 begin
 end;
 
 { BLEND_SOLID_HSPAN }
-procedure renderer_base.blend_solid_hspan;
+procedure renderer_base.blend_solid_hspan(x, y, len: int; c: aggclr_ptr;
+covers: int8u_ptr);
 begin
  if y > _ymax then
   exit;
@@ -611,7 +625,8 @@ begin
 end;
 
 { BLEND_SOLID_VSPAN }
-procedure renderer_base.blend_solid_vspan;
+procedure renderer_base.blend_solid_vspan(x, y, len: int; c: aggclr_ptr;
+covers: int8u_ptr);
 begin
  if x > _xmax then
   exit;
@@ -646,7 +661,7 @@ begin
 end;
 
 { COPY_COLOR_HSPAN }
-procedure renderer_base.copy_color_hspan;
+procedure renderer_base.copy_color_hspan(x, y, len: int; colors: aggclr_ptr);
 var
  d : int;
 
@@ -686,7 +701,8 @@ begin
 end;
 
 { BLEND_COLOR_HSPAN }
-procedure renderer_base.blend_color_hspan;
+procedure renderer_base.blend_color_hspan(x, y, len: int; colors: aggclr_ptr;
+covers: int8u_ptr; cover: int8u);
 var
  d : int;
 
@@ -729,7 +745,8 @@ begin
 end;
 
 { BLEND_COLOR_VSPAN }
-procedure renderer_base.blend_color_vspan;
+procedure renderer_base.blend_color_vspan(x, y, len: int; colors: aggclr_ptr;
+covers: int8u_ptr; cover: int8u);
 var
  d : int;
 
@@ -771,27 +788,29 @@ begin
 
 end;
 
-{ COPY_COLOR_HSPAN_NO_CLIP {not_implemented}
-procedure renderer_base.copy_color_hspan_no_clip;
+{ COPY_COLOR_HSPAN_NO_CLIP - not_implemented}
+procedure renderer_base.copy_color_hspan_no_clip(x, y, len: int; colors: aggclr_ptr);
 begin
 end;
 
 { BLEND_COLOR_HSPAN_NO_CLIP }
-procedure renderer_base.blend_color_hspan_no_clip;
+procedure renderer_base.blend_color_hspan_no_clip(x, y, len: int; colors: aggclr_ptr;
+covers: int8u_ptr; cover: int8u);
 begin
  m_ren.blend_color_hspan(m_ren ,x ,y ,len ,colors ,covers ,cover );
 
 end;
 
 { BLEND_COLOR_VSPAN_NO_CLIP }
-procedure renderer_base.blend_color_vspan_no_clip;
+procedure renderer_base.blend_color_vspan_no_clip(x, y, len: int; colors: aggclr_ptr;
+covers: int8u_ptr; cover: int8u);
 begin
  m_ren.blend_color_vspan(m_ren ,x ,y ,len ,colors ,covers ,cover );
 
 end;
 
 { CLIP_RECT_AREA }
-function renderer_base.clip_rect_area;
+function renderer_base.clip_rect_area(dst, src: rect_ptr; wsrc, hsrc: int): rect;
 var
  rc ,cb : rect;
 
@@ -857,7 +876,8 @@ begin
 end;
 
 { COPY_FROM }
-procedure renderer_base.copy_from;
+procedure renderer_base.copy_from(src: rendering_buffer_ptr; rect_src_ptr: rect_ptr;
+dx: int; dy: int);
 var
  rsrc ,rdst ,rc : rect;
 
@@ -908,7 +928,8 @@ begin
 end;
 
 { BLEND_FROM }
-procedure renderer_base.blend_from;
+procedure renderer_base.blend_from(src: pixel_formats_ptr; rect_src_ptr: rect_ptr;
+dx: int; dy: int; cover: int8u);
 var
  rsrc ,rdst ,rc : rect;
 

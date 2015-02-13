@@ -238,36 +238,36 @@ begin
 
 end;
 
-{ WIDHT_ }
-procedure vcgen_stroke.width_;
+{ WIDTH_ }
+procedure vcgen_stroke.width_(w : double );
 begin
  m_width:=w * 0.5;
 
 end;
 
 { MITER_LIMIT_ }
-procedure vcgen_stroke.miter_limit_;
+procedure vcgen_stroke.miter_limit_(ml : double );
 begin
  m_miter_limit:=ml;
 
 end;
 
 { MITER_LIMIT_THETA_ }
-procedure vcgen_stroke.miter_limit_theta_;
+procedure vcgen_stroke.miter_limit_theta_(t : double );
 begin
  m_miter_limit:=1.0 / Sin(t * 0.5 );
 
 end;
 
 { INNER_MITER_LIMIT_ }
-procedure vcgen_stroke.inner_miter_limit_;
+procedure vcgen_stroke.inner_miter_limit_(ml : double );
 begin
  m_inner_miter_limit:=ml;
 
 end;
 
 { APPROXIMATION_SCALE_ }
-procedure vcgen_stroke.approximation_scale_;
+procedure vcgen_stroke.approximation_scale_(as_ : double );
 begin
  m_approx_scale:=as_;
 
@@ -326,7 +326,7 @@ begin
 end;
 
 { ADD_VERTEX }
-procedure vcgen_stroke.add_vertex;
+procedure vcgen_stroke.add_vertex(x ,y : double; cmd : unsigned );
 var
  vd : vertex_dist;
 
@@ -365,7 +365,7 @@ begin
 end;
 
 { REWIND }
-procedure vcgen_stroke.rewind;
+procedure vcgen_stroke.rewind(path_id : unsigned );
 begin
  if m_status = initial then
   begin
@@ -386,7 +386,7 @@ begin
 end;
 
 { VERTEX }
-function vcgen_stroke.vertex;
+function vcgen_stroke.vertex(x ,y : double_ptr ) : unsigned;
 var
  c : point_type_ptr;
 

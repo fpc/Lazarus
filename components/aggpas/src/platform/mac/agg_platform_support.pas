@@ -92,10 +92,10 @@ type
 // Possible formats of the rendering buffer. Initially I thought that it's
 // reasonable to create the buffer and the rendering functions in
 // accordance with the native pixel format of the system because it
-// would have no overhead for pixel format conersion.
+// would have no overhead for pixel format conversion.
 // But eventually I came to a conclusion that having a possibility to
 // convert pixel formats on demand is a good idea. First, it was X11 where
-// there lots of different formats and visuals and it would be great to
+// there are lots of different formats and visuals and it would be great to
 // render everything in, say, RGB-24 and display it automatically without
 // any additional efforts. The second reason is to have a possibility to
 // debug renderers for different pixel formats and colorspaces having only

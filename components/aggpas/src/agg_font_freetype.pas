@@ -23,7 +23,7 @@
 // 17.09.2007-Milano: Porting & Finished OK
 // 16.09.2007-Milano: Unit port establishment
 //
-{ agg_font_freetype.pas }
+
 unit
  agg_font_freetype ;
 
@@ -54,7 +54,7 @@ uses
 type
  face_name_ptr = ^face_name;
  face_name = record
-   name : char_ptr; //PChar;
+   name : PChar;
    size : unsigned;
 
   end;
@@ -834,7 +834,7 @@ begin
  m_curves16.approximation_scale_(4.0 );
  m_curves32.approximation_scale_(4.0 );
 
- m_last_error:=FT_Init_FreeType(@m_library );
+ m_last_error:=FT_Init_FreeType(m_library );
 
  if m_last_error = 0 then
   m_library_initialized:=true;
@@ -906,13 +906,13 @@ begin
    idx:=find_face(font_name );
 
    if idx >= 0 then
-    begin
+   begin
      m_cur_face:=FT_Face_ptr_ptr(ptrcomp(m_faces ) + idx * sizeof(FT_Face_ptr ) )^;
      m_name    :=PChar(face_name_ptr(ptrcomp(m_face_names ) + idx * sizeof(face_name ) ).name );
 
-    end
+   end
    else
-    begin
+   begin
      if m_num_faces >= m_max_faces then
       begin
        agg_freemem (pointer(m_face_names.name ) ,m_face_names.size );
@@ -977,7 +977,7 @@ begin
 
       end;
 
-    end;
+   end;
 
    if m_last_error = 0 then
     begin
@@ -1238,7 +1238,7 @@ begin
  m_glyph_index:=FT_Get_Char_Index(m_cur_face ,glyph_code );
 
  if m_hinting then
-  m_last_error:=FT_Load_Glyph(m_cur_face ,m_glyph_index ,FT_LOAD_DEFAULT{} {FT_LOAD_FORCE_AUTOHINT{} )
+  m_last_error:=FT_Load_Glyph(m_cur_face ,m_glyph_index ,FT_LOAD_DEFAULT {FT_LOAD_FORCE_AUTOHINT} )
  else
   m_last_error:=FT_Load_Glyph(m_cur_face ,m_glyph_index ,FT_LOAD_NO_HINTING );
 
@@ -1727,5 +1727,5 @@ begin
 
 end;
 
-END.
+end.
 

@@ -1352,21 +1352,21 @@ begin
 end;
 
 { FILLING_RULE }
-procedure rasterizer_scanline_aa.filling_rule;
+procedure rasterizer_scanline_aa.filling_rule(filling_rule_: filling_rule_e);
 begin
  m_filling_rule:=filling_rule_;
 
 end;
 
 { AUTO_CLOSE }
-procedure rasterizer_scanline_aa.auto_close;
+procedure rasterizer_scanline_aa.auto_close(flag: boolean);
 begin
  m_auto_close:=flag;
 
 end;
 
 { CLIP_BOX }
-procedure rasterizer_scanline_aa.clip_box;
+procedure rasterizer_scanline_aa.clip_box(x1, y1, x2, y2: double);
 begin
  reset;
 
@@ -1382,7 +1382,7 @@ begin
 end;
 
 { GAMMA }
-procedure rasterizer_scanline_aa.gamma;
+procedure rasterizer_scanline_aa.gamma(gamma_function: vertex_source_ptr);
 var
  i : int;
 
@@ -1395,14 +1395,14 @@ begin
 end;
 
 { APPLY_GAMMA }
-function rasterizer_scanline_aa.apply_gamma;
+function rasterizer_scanline_aa.apply_gamma(cover: unsigned): unsigned;
 begin
  result:=m_gamma[cover ]; 
 
 end;
 
 { MOVE_TO_NO_CLIP }
-procedure rasterizer_scanline_aa.move_to_no_clip;
+procedure rasterizer_scanline_aa.move_to_no_clip(x, y: int);
 begin
  if (m_status = status_line_to ) and
     m_auto_close then
@@ -1418,7 +1418,7 @@ begin
 end;
 
 { LINE_TO_NO_CLIP }
-procedure rasterizer_scanline_aa.line_to_no_clip;
+procedure rasterizer_scanline_aa.line_to_no_clip(x, y: int);
 begin
 if m_status <> status_initial then
  begin
@@ -1455,7 +1455,7 @@ begin
 end;
 
 { CLIP_SEGMENT }
-procedure rasterizer_scanline_aa.clip_segment;
+procedure rasterizer_scanline_aa.clip_segment(x, y: int);
 var
  flags ,n : unsigned;
 
@@ -1502,21 +1502,21 @@ begin
 end;
 
 { MOVE_TO_D }
-procedure rasterizer_scanline_aa.move_to_d;
+procedure rasterizer_scanline_aa.move_to_d(x, y: double);
 begin
  move_to(poly_coord(x ) ,poly_coord(y ) );
 
 end;
 
 { LINE_TO_D }
-procedure rasterizer_scanline_aa.line_to_d;
+procedure rasterizer_scanline_aa.line_to_d(x, y: double);
 begin
  line_to(poly_coord(x ) ,poly_coord(y ) );
 
 end;
 
 { MOVE_TO }
-procedure rasterizer_scanline_aa.move_to;
+procedure rasterizer_scanline_aa.move_to(x, y: int);
 begin
  if m_clipping then
   begin
@@ -1545,7 +1545,7 @@ begin
 end;
 
 { LINE_TO }
-procedure rasterizer_scanline_aa.line_to;
+procedure rasterizer_scanline_aa.line_to(x, y: int);
 begin
  if m_clipping then
   clip_segment(x ,y )
@@ -1562,7 +1562,7 @@ begin
 end;
 
 { REWIND_SCANLINES }
-function rasterizer_scanline_aa.rewind_scanlines;
+function rasterizer_scanline_aa.rewind_scanlines: boolean;
 begin
  if m_auto_close then
   close_polygon;
@@ -1583,7 +1583,7 @@ begin
 end;
 
 { SWEEP_SCANLINE }
-function rasterizer_scanline_aa.sweep_scanline;
+function rasterizer_scanline_aa.sweep_scanline(sl: scanline_ptr): boolean;
 var
  x     ,
  area  ,
@@ -1678,7 +1678,7 @@ begin
 end;
 
 { NAVIGATE_SCANLINE }
-function rasterizer_scanline_aa.navigate_scanline;
+function rasterizer_scanline_aa.navigate_scanline(y: int): boolean;
 begin
  if m_auto_close then
   close_polygon;
@@ -1701,7 +1701,7 @@ begin
 end;
 
 { HIT_TEST }
-function rasterizer_scanline_aa.hit_test;
+function rasterizer_scanline_aa.hit_test(tx, ty: int): boolean;
 var
  sl : scanline_hit_test;
 
@@ -1722,35 +1722,35 @@ begin
 end;
 
 { _MIN_X }
-function rasterizer_scanline_aa._min_x;
+function rasterizer_scanline_aa._min_x: int;
 begin
  result:=m_outline._min_x;
 
 end;
 
 { _MIN_Y }
-function rasterizer_scanline_aa._min_y;
+function rasterizer_scanline_aa._min_y: int;
 begin
  result:=m_outline._min_y;
 
 end;
 
 { _MAX_X }
-function rasterizer_scanline_aa._max_x;
+function rasterizer_scanline_aa._max_x: int;
 begin
  result:=m_outline._max_x;
 
 end;
 
 { _MAX_Y }
-function rasterizer_scanline_aa._max_y;
+function rasterizer_scanline_aa._max_y: int;
 begin
  result:=m_outline._max_y;
 
 end;
 
 { CALCULATE_ALPHA }
-function rasterizer_scanline_aa.calculate_alpha;
+function rasterizer_scanline_aa.calculate_alpha(area: int): unsigned;
 var
  cover : system.integer;
 
@@ -1779,7 +1779,7 @@ begin
 end;
 
 { ADD_PATH }
-procedure rasterizer_scanline_aa.add_path;
+procedure rasterizer_scanline_aa.add_path(vs: vertex_source_ptr; path_id: unsigned);
 var
  cmd  : unsigned;
  x ,y : double;
@@ -1800,7 +1800,7 @@ begin
 end;
 
 { ADD_VERTEX }
-procedure rasterizer_scanline_aa.add_vertex;
+procedure rasterizer_scanline_aa.add_vertex(x, y: double; cmd: unsigned);
 begin
  if is_close(cmd ) then
   close_polygon

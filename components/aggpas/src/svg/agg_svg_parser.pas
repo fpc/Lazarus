@@ -706,7 +706,7 @@ begin
      '%s at line ' ,
      unsigned(
       XML_ErrorString(
-       XML_GetErrorCode(p ) ) ) );
+       int(XML_GetErrorCode(p ) ) ) ) );
 
     sprintf(
      @msg[StrLen(msg ) ] ,
