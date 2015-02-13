@@ -349,11 +349,12 @@ begin
   else
     QtFileDialog.setFileMode(QFileDialogAnyFile);
 
-  if (AFileDialog.FileName <> '') and FileExistsUTF8(AFileDialog.FileName) and
+  if (AFileDialog.FileName <> '') and
     not DirectoryExistsUTF8(AFileDialog.FileName) then
   begin
     ATitle := GetUTF8String(AFileDialog.FileName);
-    QFileDialog_selectFile(QFileDialogH(QtFileDialog.Widget), @ATitle);
+    if (AFileDialog is TSaveDialog) or FileExistsUTF8(AFileDialog.FileName) then
+      QFileDialog_selectFile(QFileDialogH(QtFileDialog.Widget), @ATitle);
     {$ifndef QT_NATIVE_DIALOGS}
     if (AFileDialog is TOpenPictureDialog) then
       TQtFilePreviewDialog(QtFileDialog).CurrentChangedEvent(@ATitle);
