@@ -30,7 +30,7 @@ uses
   cthreads,
   {$ENDIF}
   Classes, SysUtils, LazFileUtils, laz2_XMLRead, laz2_DOM, laz2_XMLWrite,
-  LazUTF8, LazLogger, CodeToolsStructs, CustApp, AVL_Tree,
+  LazLogger, LazUTF8, CodeToolsStructs, CustApp, AVL_Tree,
   {$IF FPC_FULLVERSION<20701}
   myfphttpclient,
   {$ELSE}

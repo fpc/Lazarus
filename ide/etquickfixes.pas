@@ -24,6 +24,7 @@
     Standard Quick Fixes - tools to help fixing (compiler) messages.
 
   ToDo:
+    - cant find unit: duplicate include file, e.g. control.inc
     - TQuickFixIdentifierNotFoundAddLocal: extend with add private/public
     - local var not used: remove declaration and all assignments
     - There is no method in an ancestor class to be overriden:
@@ -53,7 +54,7 @@ interface
 
 uses
   Classes, SysUtils,
-  LazLogger, AvgLvlTree, LazFileUtils,
+  LazLogger, AvgLvlTree, LazFileUtils, LazUTF8,
   Menus, Dialogs, Controls,
   CodeToolManager, CodeCache, CodeTree, CodeAtom, BasicCodeTools,
   KeywordFuncLists,

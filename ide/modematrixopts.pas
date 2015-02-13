@@ -26,7 +26,7 @@ unit ModeMatrixOpts;
 interface
 
 uses
-  Classes, SysUtils, contnrs, LazConfigStorage, Laz2_XMLCfg, LazLogger,
+  Classes, SysUtils, contnrs, LazConfigStorage, Laz2_XMLCfg, LazLogger, LazUTF8,
   FileProcs, KeywordFuncLists, CodeToolsCfgScript, LazarusIDEStrConsts;
 
 const

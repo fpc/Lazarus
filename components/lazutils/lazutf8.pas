@@ -95,16 +95,17 @@ function UTF8LowerString(const s: string): string;
 function UTF8UpperCase(const AInStr: string; ALanguage: string=''): string;
 function UTF8UpperString(const s: string): string;
 function FindInvalidUTF8Character(p: PChar; Count: PtrInt;
-                                  StopOnNonASCII: Boolean = true): PtrInt;
+                                  StopOnNonUTF8: Boolean = true): PtrInt;
 function ValidUTF8String(const s: String): String;
-function Utf8StringOfChar(AUtf8Char: String; N: Integer): String;
-function Utf8AddChar(AUtf8Char: String; const S: String; N: Integer): String;
-function Utf8AddCharR(AUtf8Char: String; const S: String; N: Integer): String;
+function UTF8StringOfChar(AUtf8Char: String; N: Integer): String;
+function UTF8AddChar(AUtf8Char: String; const S: String; N: Integer): String;
+function UTF8AddCharR(AUtf8Char: String; const S: String; N: Integer): String;
 function UTF8PadLeft(const S: String; const N: Integer; const AUtf8Char: String = #32): String;
 function UTF8PadRight(const S: String; const N: Integer; const AUtf8Char: String = #32): String;
 function UTF8PadCenter(const S: String; const N: Integer; const AUtf8Char: String = #32): String;
-function Utf8LeftStr(const AText: String; const ACount: Integer): String;
-function Utf8RightStr(const AText: String; const ACount: Integer): String;
+function UTF8LeftStr(const AText: String; const ACount: Integer): String;
+function UTF8RightStr(const AText: String; const ACount: Integer): String;
+function UTF8QuotedStr(const S, Quote: string): string;
 //Utf8 version of MidStr is just Utf8Copy with same parameters, so it is not implemented here
 
 type
@@ -157,6 +158,9 @@ procedure LazGetShortLanguageID(var Lang: String);
 
 var
   FPUpChars: array[char] of char;
+
+procedure ReplaceSubstring(var s: string; StartPos, Count: SizeInt;
+                           const Insertion: string);
 
 implementation
 
@@ -2482,7 +2486,7 @@ end;
 
 
 function FindInvalidUTF8Character(p: PChar; Count: PtrInt;
-  StopOnNonASCII: Boolean): PtrInt;
+  StopOnNonUTF8: Boolean): PtrInt;
 // return -1 if ok
 var
   CharLen: Integer;
@@ -2493,12 +2497,12 @@ begin
     while Result<Count do begin
       c:=p^;
       if ord(c)<%10000000 then begin
-        // regular single byte ASCII character (#0 is a character, this is pascal ;)
+        // regular single byte ASCII character (#0 is a character, this is Pascal ;)
         CharLen:=1;
       end else if ord(c)<=%11000001 then begin
         // single byte character, between valid UTF-8 encodings
         // %11000000 and %11000001 map 2 byte to #0..#128, which is invalid and used for XSS attacks
-        if StopOnNonASCII or (ord(c)>=192) then
+        if StopOnNonUTF8 or (ord(c)>=192) then
           exit;
         CharLen:=1;
       end else if ord(c)<=%11011111 then begin
@@ -2533,7 +2537,7 @@ begin
           exit; // missing following bytes
       end
       else begin
-        if StopOnNonASCII then
+        if StopOnNonUTF8 then
           exit;
         CharLen:=1;
       end;
@@ -2698,8 +2702,31 @@ begin
   Result := Utf8Copy(AText,l-j+1,j);
 end;
 
-
-
+function UTF8QuotedStr(const S, Quote: string): string;
+// replace all Quote in S with double Quote and enclose the result in Quote.
+var
+  QuoteC: Char;
+  p, QuoteP, CopyPos: PChar;
+  QuoteLen: SizeInt;
+begin
+  Result:=Quote;
+  p:=PChar(S);
+  CopyPos:=p;
+  QuoteC:=Quote[1];
+  QuoteP:=PChar(Quote);
+  QuoteLen:=length(Quote);
+  repeat
+    if (p^=#0) and (p-PChar(S)=length(S)) then
+      break;
+    if (p^=QuoteC) and CompareMem(p,QuoteP,QuoteLen) then begin
+      inc(p,QuoteLen);
+      Result+=copy(S,CopyPos-PChar(S)+1,p-CopyPos)+Quote;
+      CopyPos:=p;
+    end else
+      inc(p);
+  until false;
+  Result+=copy(S,CopyPos-PChar(S)+1,p-CopyPos)+Quote;
+end;
 
 function UTF8Trim(const s: string; Flags: TUTF8TrimFlags): string;
 var
@@ -3378,6 +3405,56 @@ begin
 
   // Simply making sure its length is at most 2 should be enough for most languages
   if Length(Lang) > 2 then Lang := Lang[1] + Lang[2];
+end;
+
+procedure ReplaceSubstring(var s: string; StartPos, Count: SizeInt;
+  const Insertion: string);
+var
+  MaxCount: SizeInt;
+  InsertionLen: SizeInt;
+  SLen: SizeInt;
+  RestLen: SizeInt;
+  p: PByte;
+begin
+  SLen:=length(s);
+  if StartPos>SLen then begin
+    s:=s+Insertion;
+    exit;
+  end;
+  if StartPos<1 then StartPos:=1;
+  if Count<0 then Count:=0;
+  MaxCount:=SLen-StartPos+1;
+  if Count>MaxCount then
+    Count:=MaxCount;
+  InsertionLen:=length(Insertion);
+  if (Count=0) and (InsertionLen=0) then
+    exit; // nothing to do
+  if (Count=InsertionLen) then begin
+    if CompareMem(PByte(s)+StartPos-1,Pointer(Insertion),Count) then
+      // already the same content
+      exit;
+    UniqueString(s);
+  end else begin
+    RestLen:=SLen-StartPos-Count+1;
+    if InsertionLen<Count then begin
+      // shorten
+      if RestLen>0 then begin
+        UniqueString(s);
+        p:=PByte(s)+StartPos-1;
+        System.Move((p+Count)^,(p+InsertionLen)^,RestLen);
+      end;
+      Setlength(s,SLen-Count+InsertionLen);
+    end else begin
+      // longen
+      Setlength(s,SLen-Count+InsertionLen);
+      if RestLen>0 then begin
+        p:=PByte(s)+StartPos-1;
+        System.Move((p+Count)^,(p+InsertionLen)^,RestLen);
+      end;
+    end;
+  end;
+  if InsertionLen>0 then
+    System.Move(PByte(Insertion)^,(PByte(s)+StartPos-1)^,InsertionLen);
 end;
 
 procedure InitFPUpchars;

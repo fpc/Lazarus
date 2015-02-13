@@ -444,8 +444,10 @@ Returns 0 if not found.
       </element>
       <!-- function Visibility: default -->
       <element name="FindInvalidUTF8Character">
-        <short/>
-        <descr/>
+        <short>Returns -1 if ok, otherwise byte index of invalid UTF8 codepoint</short>
+        <descr>It always stops on irregular codepoints. For example Codepoint 0 is normally encoded as #0, but it can also be encoded as #192#0. Because most software does not check this, it can be exploited and is a security risk.
+
+If StopOnNonUTF8 is false it will ignore undefined codes. For example #128. By default it stops on such codes.</descr>
         <errors/>
         <seealso/>
       </element>
