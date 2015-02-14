@@ -1714,7 +1714,7 @@ type
     {$ifndef QT_NATIVE_DIALOGS}
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
     {$endif}
-    procedure CurrentChangedEvent(path: PWideString); cdecl;
+    procedure CurrentChangedEvent(path: PWideString); cdecl; virtual;
     procedure FilterSelectedEvent(filter: PWideString); cdecl;
     procedure DirectoryEnteredEvent(directory: PWideString); cdecl;
   public
@@ -1734,6 +1734,25 @@ type
     {$ifndef QT_NATIVE_DIALOGS}
     procedure setShortcuts(const AIsOpenDialog: Boolean);
     {$endif}
+  end;
+
+  { TQtFilePreviewDialog }
+
+  TQtFilePreviewDialog = class(TQtFileDialog)
+  private
+    {$ifndef QT_NATIVE_DIALOGS}
+    FTextWidget: QLabelH;
+    FPreviewWidget: QLabelH;
+    {$ENDIF}
+  protected
+    function CreateWidget(parent: QWidgetH; f: QtWindowFlags):QWidgetH; override;
+  public
+    {$ifndef QT_NATIVE_DIALOGS}
+    procedure initializePreview(const APreviewControl: TWinControl);
+    procedure CurrentChangedEvent(path: PWideString); cdecl; override;
+    property PreviewWidget: QLabelH read FPreviewWidget;
+    property TextWidget: QLabelH read FTextWidget;
+    {$ENDIF}
   end;
 
   { TQtMessageBox }
@@ -3055,8 +3074,15 @@ begin
   if (QKeyEvent_key(QKeyEventH(Event)) = QtKey_Enter) and (length(Text) = 1) then
     Text := #13;
 
+  ScanCode := QKeyEvent_nativeVirtualKey(QKeyEventH(Event));
+  {$IFDEF VerboseQtKeys}
+  // ScanCode := QKeyEvent_key(QKeyEventH(Event));
+  writeln('!!!**** NATIVEVIRTUALKEY=',ScanCode,' lenText=',length(Text),' Modifiers ',Modifiers,' AKEYCODE=',AKeyCode);
+  {$ENDIF}
+
   // set groupswitch for Shift+Option.
-  if (length(Text) = 1) and (Modifiers = QtAltModifier or QtShiftModifier) then
+  if (length(Text) = 1) and
+    ((Modifiers = QtAltModifier or QtShiftModifier) or ((Modifiers = QtAltModifier) and (ScanCode > 0))) then
   begin
     ScanCode := QKeyEvent_key(QKeyEventH(Event));
     // Arrow keys are reserved by macOSX keyboard commands
@@ -3074,7 +3100,7 @@ begin
   {$ENDIF}
 
   {$IFDEF VerboseQtKeys}
-  writeln('> TQtWidget.SlotKey dump begin event=',EventTypeToStr(Event));
+  writeln('> TQtWidget.SlotKey dump begin event=',EventTypeToStr(Event),' IsSysKey ',IsSysKey);
 
   S := '';
   if Modifiers and QtShiftModifier <> 0 then
@@ -18061,6 +18087,111 @@ procedure TQtFileDialog.getFilters(const retval: QStringListH);
 begin
   QFileDialog_nameFilters(QFileDialogH(Widget), retval);
 end;
+
+{ TQtFilePreviewDialog }
+
+function TQtFilePreviewDialog.CreateWidget(parent: QWidgetH; f: QtWindowFlags
+  ): QWidgetH;
+begin
+  FPreviewWidget := nil;
+  FTextWidget := nil;
+  Result := inherited CreateWidget(parent, f);
+end;
+
+{$ifndef QT_NATIVE_DIALOGS}
+
+procedure TQtFilePreviewDialog.initializePreview(
+  const APreviewControl: TWinControl);
+var
+  ALayout: QGridLayoutH;
+  ATitle: WideString;
+  W, H: Integer;
+begin
+  ALayout := QGridLayoutH(QWidget_layout(Widget));
+  ATitle := 'No image';
+  FTextWidget := QLabel_create(PWideString(@ATitle), Widget);
+  QFrame_setFrameShape(FTextWidget, QFrameStyledPanel);
+  QLabel_setWordWrap(FTextWidget, True);
+  QLabel_setScaledContents(FTextWidget, True);
+  QLabel_setAlignment(FTextWidget, QtAlignCenter);
+  ATitle := '';
+  FPreviewWidget := QLabel_create(PWideString(@ATitle), Widget);
+  QLabel_setAlignment(FPreviewWidget, QtAlignCenter);
+
+  W := QWidget_width(Widget) div 5;
+  H := W;
+
+  APreviewControl.Width := W;
+  APreviewControl.Height := H;
+
+  QWidget_setGeometry(FTextWidget, 0, 0, W, 32);
+  QWidget_setMaximumHeight(FTextWidget, 32);
+  QWidget_setMaximumWidth(FTextWidget, W);
+  QWidget_setMinimumWidth(FTextWidget, W);
+
+  QWidget_setGeometry(FPreviewWidget, 0, 0, W, H);
+  QWidget_setMaximumHeight(FPreviewWidget, H);
+  QWidget_setMaximumWidth(FPreviewWidget, W);
+  QLabel_setScaledContents(FPreviewWidget, True);
+  (*
+  do not use layout, Qt asserts with message that another layout already exists.
+  ABox := QVBoxLayout_create(Widget);
+  QBoxLayout_addWidget(ABox, FTextWidget, 0, QtAlignTop);
+  // QBoxLayout_addWidget();
+  QBoxLayout_addWidget(ABox, FPreviewWidget, 0, QtAlignCenter);
+  QBoxLayout_addStretch(ABox);
+  *)
+  QGridLayout_addWidget(ALayout, FTextWidget, 1, 3, 3, 1, QtAlignTop);
+  QGridLayout_addWidget(ALayout, FPreviewWidget, 1, 3, 3, 1, QtAlignCenter);
+  QGridLayout_columnStretch(ALayout, 3);
+end;
+
+procedure TQtFilePreviewDialog.CurrentChangedEvent(path: PWideString); cdecl;
+var
+  APixmap: QPixmapH;
+  ATitle: WideString;
+  ASize: TSize;
+  ANewPixmap: QPixmapH;
+begin
+  if Assigned(FPreviewWidget) then
+  begin
+    APixmap := QPixmap_create(path);
+    if QPixmap_isNull(APixmap) then
+    begin
+      ATitle := 'Not an image';
+      QLabel_setText(FTextWidget, @ATitle);
+      ATitle := ' ';
+      QLabel_setText(FPreviewWidget, @ATitle);
+      QWidget_setToolTip(FTextWidget, @ATitle);
+      QWidget_setToolTip(FPreviewWidget, @ATitle);
+      QPixmap_destroy(APixmap);
+    end else
+    begin
+      QPixmap_size(APixmap, @ASize);
+      if path <> nil then
+        ATitle := '' // ExtractFileName(path^)
+      else
+        ATitle := 'error file';
+      if path <> nil then
+        ATitle := Format('%d x %d x %d',[ASize.cx, ASize.cy, QPixmap_depth(APixmap)]);
+      QLabel_setText(FTextWidget, @ATitle);
+      ATitle := ExtractFileName(path^);
+      QWidget_setToolTip(FTextWidget, @ATitle);
+      ATitle := ATitle + LineEnding + Format('w %d x h %d x %d',[ASize.cx, ASize.cy, QPixmap_depth(APixmap)]);
+      QWidget_setToolTip(FPreviewWidget, @ATitle);
+      ANewPixmap := QPixmap_create;
+      // QPixmap_scaled(APixmap, ANewPixmap,
+      //  128, 128, QtKeepAspectRatio, QtSmoothTransformation);
+      QLabel_setPixmap(FPreviewWidget, APixmap);
+      QPixmap_destroy(APixmap);
+      QPixmap_destroy(ANewPixmap);
+    end;
+
+  end;
+  TOpenDialog(FDialog).FileName := UTF16ToUTF8(path^);
+  TOpenDialog(FDialog).DoSelectionChange;
+end;
+{$ENDIF}
 
 { TQtGraphicView }
 

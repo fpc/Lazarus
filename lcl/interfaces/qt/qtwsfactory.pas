@@ -233,7 +233,8 @@ end;
 
 function RegisterOpenDialog: Boolean; alias : 'WSRegisterOpenDialog';
 begin
-  Result := False;
+  RegisterWSComponent(TOpenDialog, TQtWSOpenDialog);
+  Result := True;
 end;
 
 function RegisterSaveDialog: Boolean; alias : 'WSRegisterSaveDialog';
