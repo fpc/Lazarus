@@ -30,11 +30,19 @@ interface
 
 
 {$IFDEF UNIX}
-  {$IFDEF LCLCarbon}
-    {$IFNDEF NativePrint}
-      {$I cupsprinters_h.inc}
-    {$ELSE}
-      {$I carbonprinters_h.inc}
+  {$IFDEF DARWIN}
+    {$IFDEF LCLCarbon}
+      {$IFNDEF NativePrint}
+        {$I cupsprinters_h.inc}
+      {$ELSE}
+        {$I carbonprinters_h.inc}
+      {$ENDIF}
+    {$ENDIF}
+    {$IFDEF LCLCocoa}
+      {$I cocoaprinters_h.inc}
+    {$ENDIF}
+    {$IFDEF LCLQt}
+      {$I qtprinters_h.inc}
     {$ENDIF}
   {$ELSE}
     {$IFDEF LCLQt}
@@ -56,11 +64,19 @@ interface
 implementation
 
 {$IFDEF UNIX}
-  {$IFDEF LCLCarbon}
-    {$IFNDEF NativePrint}
-      {$I cupsprinters.inc}
-    {$ELSE}
-      {$I carbonprinters.inc}
+  {$IFDEF DARWIN}
+    {$IFDEF LCLCarbon}
+      {$IFNDEF NativePrint}
+        {$I cupsprinters.inc}
+      {$ELSE}
+        {$I carbonprinters.inc}
+      {$ENDIF}
+    {$ENDIF}
+    {$IFDEF LCLCocoa}
+      {$I cocoaprinters.inc}
+    {$ENDIF}
+    {$IFDEF LCLQt}
+      {$I qtprinters.inc}
     {$ENDIF}
   {$ELSE}
     {$IFDEF LCLQt}
