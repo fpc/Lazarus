@@ -1992,7 +1992,8 @@ class procedure TQtWSCustomListView.SetImageList(const ALV: TCustomListView;
 begin
   if not WSCheckHandleAllocated(ALV, 'SetImageList') then
     Exit;
-  RecreateWnd(ALV);
+  if not ALV.OwnerData then
+    RecreateWnd(ALV);
 end;
 
 class procedure TQtWSCustomListView.SetItemsCount(const ALV: TCustomListView;
