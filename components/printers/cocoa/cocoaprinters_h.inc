@@ -1,7 +1,14 @@
 {%MainUnit ../osprinters.pas}
+
+//{$modeswitch objectivec1}
+
 uses
-  MacOSAll, CocoaAll,
-  Classes, SysUtils, Printers, LCLType;
+  // fpc
+  MacOSAll, CocoaAll, Classes, SysUtils,
+  // lcl-widgetset
+  CocoaUtils,
+  // lcl
+  Printers, LCLType;
 
 type
   { TCocoaPrinterContext }
@@ -16,7 +23,7 @@ type
 
   { TCocoaPrinter }
 
-  TCocoaPrinter = class(TPrinter)
+  TCocoaPrinter = class(Printers.TPrinter)
   private
     FPrintSession: PMPrintSession;
     FPrintSettings: PMPrintSettings;
@@ -24,11 +31,8 @@ type
     FBeginDocumentStatus: OSStatus;
     FNewPageStatus: OSStatus;
     FPrinterContext: TCocoaPrinterContext;
-    FPrinterArray: CFArrayRef;
-    FPaperArray: CFArrayRef;
     FDefaultPrinter: String;
     
-    procedure CreatePrintSession;
     procedure CreatePrintSettings;
     function GetCurrentPrinterName: String;
     
@@ -41,10 +45,6 @@ type
     procedure EndPage;
     
     procedure FindDefaultPrinter;
-    procedure BeginEnumPrinters(Lst: TStrings);
-    procedure EndEnumPrinters;
-    procedure BeginEnumPapers(Lst: TStrings);
-    procedure EndEnumPapers;
     function  GetOutputResolution: PMResolution;
 
   protected
@@ -84,11 +84,11 @@ type
     constructor Create; override;
     function Write(const {%H-}Buffer; {%H-}Count:Integer; var {%H-}Written: Integer): Boolean; override;
     // Warning not portable functions here
-    property CurrentPrinterName: String read GetCurrentPrinterName;
+    {property CurrentPrinterName: String read GetCurrentPrinterName;
     property PrintSession: PMPrintSession read FPrintSession;
     property PrintSettings: PMPrintSettings read FPrintSettings;
     property PageFormat: PMPageFormat read FPageFormat;
     // Warning it is a not portable property
-    property Handle: TCocoaPrinterContext read FPrinterContext;
+    property Handle: TCocoaPrinterContext read FPrinterContext;}
   end;
 

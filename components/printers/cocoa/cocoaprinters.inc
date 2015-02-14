@@ -2,8 +2,11 @@
 {**************************************************************
 Implementation for carbonprinter
 ***************************************************************}
-Uses InterfaceBase, LCLIntf, LCLProc;
+uses InterfaceBase, LCLIntf, LCLProc;
 
+const
+  CleanPMRect: PMRect = (top: 0; left: 0; bottom: 0; right: 0);
+  CleanPMOrientation: PMOrientation = 0;
 
 { TCocoaPrinterContext }
 
@@ -42,12 +45,6 @@ begin
 end;    }
 
 { TCocoaPrinter }
-
-procedure TCocoaPrinter.CreatePrintSession;
-begin
-  //if OSError(PMCreateSession(FPrintSession), Self, 'GetPrintSession', 'PMCreateSession') then
-    //raise EPrinter.Create('Error initializing printing for Carbon: Unable to create print session!');
-end;
 
 procedure TCocoaPrinter.CreatePrintSettings;
 const
@@ -106,8 +103,8 @@ end;
 function TCocoaPrinter.ValidatePageFormat: Boolean;
 begin
   Result := False;
-  //OSError(PMSessionValidatePageFormat(PrintSession, PageFormat, @Result),
-    //Self, 'ValidatePageFormat', 'PMSessionValidatePageFormat');
+  {OSError(PMSessionValidatePageFormat(PrintSession, PageFormat, @Result),
+    Self, 'ValidatePageFormat', 'PMSessionValidatePageFormat');}
 end;
 
 function TCocoaPrinter.ValidatePrintSettings: Boolean;
@@ -193,79 +190,13 @@ begin
   CFRelease(pa);    }
 end;
 
-procedure TCocoaPrinter.BeginEnumPrinters(Lst: TStrings);
-{var
-  P: PMPrinter;
-  I, C: CFIndex;
-  NewPrinterName: String;  }
-begin
-  {FPrinterArray := nil;
-  if OSError(PMServerCreatePrinterList(kPMServerLocal, FPrinterArray),
-    Self, 'DoEnumPrinters', 'PMServerCreatePrinterList') then Exit;
-
-  C := CFArrayGetCount(FPrinterArray);
-  for I := 0 to C - 1 do
-  begin
-    P := CFArrayGetValueAtIndex(FPrinterArray, I);
-    NewPrinterName := CFStringToStr(PMPrinterGetName(P));
-
-    //DebugLn(DbgS(I) + ' ' + PrinterName);
-    if NewPrinterName = FDefaultPrinter then
-      Lst.InsertObject(0, NewPrinterName, TObject(I))
-    else
-      Lst.AddObject(NewPrinterName, TObject(I));
-  end;   }
-end;
-
-procedure TCocoaPrinter.EndEnumPrinters;
-begin
-  if FPrinterArray<>nil then
-    CFRelease(FPrinterArray);
-end;
-
-procedure TCocoaPrinter.BeginEnumPapers(Lst: TStrings);
-var
-  {P: PMPaper;   }
-  I, C: CFIndex;
-  CFString: CFStringRef;
-  PaperName: String;
-const
-  SName = 'DoEnumPapers';
-begin
-  {FPaperArray := nil;
-  if OSError(PMPrinterGetPaperList(GetCurrentPrinter, FPaperArray),
-    Self, SName, 'PMPrinterGetPaperList') then Exit;
-  FPaperArray := CFRetain(FPaperArray);
-
-  C := CFArrayGetCount(FPaperArray);
-  for I := 0 to C - 1 do
-  begin
-    P := CFArrayGetValueAtIndex(FPaperArray, I);
-    CFString:=nil;
-    if OSError(PMPaperGetName(P, CFString), Self, SName, 'PMPaperGetName') then Continue;
-    PaperName := CFStringToStr(CFString);
-    //MacOSX 10.4 returns wrong paper name in case of US Letter.
-    //In system we can choose US Letter, but here it returns Letter.Issue #17698
-    if PaperName = 'Letter' then
-      PaperName := 'US Letter'
-    else
-    if PaperName = 'Legal' then
-      PaperName := 'US Legal';
-    Lst.Add(PaperName);
-  end;                 }
-end;
-
-procedure TCocoaPrinter.EndEnumPapers;
-begin
-  if FPaperArray<>nil then
-    CFRelease(FPaperArray);
-end;
-
 constructor TCocoaPrinter.Create;
 begin
   inherited Create;
 
-  CreatePrintSession;
+  if PMCreateSession(FPrintSession) <> noErr then
+    raise EPrinter.Create('Error initializing printing for Cocoa: Unable to create Carbon print session!');
+
   CreatePrintSettings;
   FPageFormat := CreatePageFormat('');
   FPrinterContext := TCocoaPrinterContext.Create;
@@ -281,8 +212,8 @@ begin
   FPrinterContext.Free;
   
   {if FPrintSettings <> nil then PMRelease(PMObject(FPrintSettings));
-  if FPageFormat <> nil then PMRelease(PMObject(FPageFormat));
-  if FPrintSession <> nil then PMRelease(PMObject(FPrintSession)); }
+  if FPageFormat <> nil then PMRelease(PMObject(FPageFormat));}
+  if FPrintSession <> nil then PMRelease(PMObject(FPrintSession));
   
   inherited DoDestroy;
 end;
@@ -398,9 +329,33 @@ end;
 
 //Enum all defined printers. First printer it's default
 procedure TCocoaPrinter.DoEnumPrinters(Lst: TStrings);
+var
+  I, PrinterCount: CFIndex;
+  NewPrinterNSName: NSString;
+  NewPrinterName: String;
+  FPrinterArray: NSArray;
+  //NewPrinter: NSPrinter;
 begin
-  BeginEnumPrinters(Lst);
-  EndEnumPrinters;
+  {FPrinterArray := NSPrinter.printerNames();
+  FPrinterArray.retain;
+  if FPrinterArray = nil then Exit;
+
+  for I := 0 to FPrinterArray.count - 1 do
+  begin
+    NewPrinterNSName := NSString(FPrinterArray.objectAtIndex(i));
+    NewPrinterName := NSStringToString(NewPrinterNSName);
+
+    // Felipe: This could be used for appending the printer to the TStrings, but what for?
+    // also it would be hard to release the NSPrinter later
+    //NewPrinter := NSPrinter.printerWithName(NewPrinterNSName);
+    //NewPrinter.retain;
+
+    //DebugLn(DbgS(I) + ' ' + PrinterName);
+    if NewPrinterName = FDefaultPrinter then
+      Lst.InsertObject(0, NewPrinterName, nil{TObject(NewPrinter)})
+    else
+      Lst.AddObject(NewPrinterName, nil{TObject(NewPrinter)});
+  end;}
 end;
 
 procedure TCocoaPrinter.DoResetPrintersList;
@@ -408,10 +363,36 @@ begin
   inherited DoResetPrintersList;
 end;
 
+// Cocoa doesn't support this =( We need to use Carbon here
+// http://lists.apple.com/archives/cocoa-dev/2005/Nov/msg01227.html
 procedure TCocoaPrinter.DoEnumPapers(Lst: TStrings);
+var
+  P: PMPaper;
+  FPaperArray: CFArrayRef;
+  I, C: CFIndex;
+  CFString: CFStringRef;
+  PaperName: String;
+  CarbonCurrentPrinter: PMPrinter;
 begin
-  BeginEnumPapers(Lst);
-  EndEnumPapers;
+  FPaperArray := nil;
+
+  if PMSessionGetCurrentPrinter(FPrintSession, CarbonCurrentPrinter) <> noErr then Exit;
+
+  if PMPrinterGetPaperList(CarbonCurrentPrinter, FPaperArray) <> noErr then Exit;
+  FPaperArray := CFRetain(FPaperArray);
+
+  C := CFArrayGetCount(FPaperArray);
+  for I := 0 to C - 1 do
+  begin
+    P := CFArrayGetValueAtIndex(FPaperArray, I);
+    CFString:=nil;
+    if PMPaperGetName(P, CFString) <> noErr then Continue;
+    PaperName := CFStringToStr(CFString);
+    Lst.Add(PaperName);
+  end;
+
+  if FPaperArray<>nil then
+    CFRelease(FPaperArray);
 end;
 
 function TCocoaPrinter.DoGetPaperName: string;
@@ -560,12 +541,12 @@ begin
 end;
 
 function TCocoaPrinter.DoGetOrientation: TPrinterOrientation;
-{var
-  O: PMOrientation;  }
+var
+  O: PMOrientation;
 begin
-  {Result := inherited DoGetOrientation;
-  O:=CleanPMOrientation;
-  if OSError(PMGetOrientation(PageFormat, O), Self, 'DoGetOrientation', 'PMGetOrientation') then Exit;
+  Result := inherited DoGetOrientation;
+  {O:=CleanPMOrientation;
+  if PMGetOrientation(PageFormat, O) <> noErr then Exit;
   
   case O of
     kPMPortrait: Result := poPortrait;
@@ -576,20 +557,20 @@ begin
 end;
 
 procedure TCocoaPrinter.DoSetOrientation(AValue: TPrinterOrientation);
-{var
-  O: PMOrientation;  }
+var
+  O: PMOrientation;
 begin
-  {inherited DoSetOrientation(aValue);
+  inherited DoSetOrientation(aValue);
 
-  case AValue of
+  {case AValue of
     poPortrait: O := kPMPortrait;
     poLandscape: O := kPMLandscape;
     poReversePortrait: O := kPMReversePortrait;
     poReverseLandscape: O := kPMReverseLandscape;
   end;
   
-  OSError(PMSetOrientation(PageFormat, O, kPMUnlocked), Self, 'DoSetOrientation', 'PMSetOrientation');
-  ValidatePageFormat; }
+  PMSetOrientation(PageFormat, O, kPMUnlocked);
+  ValidatePageFormat;     }
 end;
 
 function TCocoaPrinter.GetPrinterType: TPrinterType;

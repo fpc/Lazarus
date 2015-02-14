@@ -66,12 +66,13 @@ function ColorToNSColor(const Color: TColorRef): NSColor; inline;
 
 procedure ShortcutToKeyEquivalent(const AShortCut: TShortcut; out Key: string; out shiftKeyMask: NSUInteger);
 
+const
+  DEFAULT_CFSTRING_ENCODING = kCFStringEncodingUTF8;
+
+function CFStringToStr(AString: CFStringRef; Encoding: CFStringEncoding = DEFAULT_CFSTRING_ENCODING): String;
 function CFStringToString(AString: CFStringRef): String;
 
 implementation
-
-const
-  DEFAULT_CFSTRING_ENCODING = kCFStringEncodingUTF8;
 
 procedure ColorToRGBFloat(cl: TColorRef; var r,g,b: Single); inline;
 begin
