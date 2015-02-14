@@ -40,7 +40,7 @@ interface
 
 uses
   Classes, SysUtils, Laz2_XMLCfg, FileProcs, CodeToolManager, CodeToolsStructs,
-  LCLProc, FileUtil, AvgLvlTree, lazutf8classes, LazFileUtils, MacroIntf,
+  LCLProc, Forms, FileUtil, AvgLvlTree, lazutf8classes, LazFileUtils, MacroIntf,
   PackageIntf, IDEProcs, EnvironmentOpts, PackageDefs, LazConf, IDECmdLine;
   
 const
@@ -132,6 +132,7 @@ type
     FDependencyOwnerGetPkgFilename: TDependencyOwnerGetPkgFilename;
     FGlobalLinks: TAvgLvlTree; // tree of global TPackageLink sorted for ID
     FChangeStamp: integer;
+    FQueueSaveUserLinks: boolean;
     FSavedChangeStamp: integer;
     FUserLinksSortID: TAvgLvlTree; // tree of user TPackageLink sorted for ID
     FUserLinksSortFile: TAvgLvlTree; // tree of user TPackageLink sorted for
@@ -150,6 +151,8 @@ type
     procedure IteratePackagesInTree(MustExist: boolean; LinkTree: TAvgLvlTree;
       Event: TIteratePackagesEvent);
     procedure SetModified(const AValue: boolean);
+    procedure SetQueueSaveUserLinks(AValue: boolean);
+    procedure OnAsyncSaveUserLinks(Data: PtrInt);
   public
     UserLinkLoadTime: longint;
     UserLinkLoadTimeValid: boolean;
@@ -166,7 +169,7 @@ type
     procedure BeginUpdate;
     procedure EndUpdate;
     function IsUpdating: boolean;
-    procedure SaveUserLinks;
+    procedure SaveUserLinks(Immediately: boolean = false);
     function NeedSaveUserLinks(const ConfigFilename: string): boolean;
     procedure WriteLinkTree(LinkTree: TAvgLvlTree);
     function FindLinkWithPkgName(const PkgName: string;
@@ -189,6 +192,7 @@ type
     property DependencyOwnerGetPkgFilename: TDependencyOwnerGetPkgFilename
                                            read FDependencyOwnerGetPkgFilename
                                            write FDependencyOwnerGetPkgFilename;
+    property QueueSaveUserLinks: boolean read FQueueSaveUserLinks write SetQueueSaveUserLinks;
   end;
   
 var
@@ -329,6 +333,11 @@ end;
 
 { TPackageLinks }
 
+procedure TPackageLinks.OnAsyncSaveUserLinks(Data: PtrInt);
+begin
+  SaveUserLinks(true);
+end;
+
 function TPackageLinks.FindLeftMostNode(LinkTree: TAvgLvlTree;
   const PkgName: string): TAvgLvlTreeNode;
 // find left most link with PkgName
@@ -351,14 +360,15 @@ end;
 destructor TPackageLinks.Destroy;
 begin
   Clear;
-  FGlobalLinks.Free;
-  FUserLinksSortID.Free;
-  FUserLinksSortFile.Free;
+  FreeAndNil(FGlobalLinks);
+  FreeAndNil(FUserLinksSortID);
+  FreeAndNil(FUserLinksSortFile);
   inherited Destroy;
 end;
 
 procedure TPackageLinks.Clear;
 begin
+  QueueSaveUserLinks:=false;
   ClearGlobalLinks;
   FUserLinksSortID.FreeAndClear;
   FUserLinksSortFile.Clear;
@@ -716,7 +726,7 @@ begin
   Result:=fUpdateLock>0;
 end;
 
-procedure TPackageLinks.SaveUserLinks;
+procedure TPackageLinks.SaveUserLinks(Immediately: boolean);
 var
   ConfigFilename: String;
   Path: String;
@@ -728,11 +738,21 @@ var
   LazSrcDir: String;
   AFilename: String;
 begin
+  //debugln(['TPackageLinks.SaveUserLinks ']);
+  if (FUserLinksSortFile=nil) or (FUserLinksSortFile.Count=0) then exit;
   ConfigFilename:=GetUserLinkFile;
   
   // check if file needs saving
   if not NeedSaveUserLinks(ConfigFilename) then exit;
-  //DebugLn(['TPackageLinks.SaveUserLinks saving ... ',ConfigFilename,' Modified=',Modified,' UserLinkLoadTimeValid=',UserLinkLoadTimeValid,' ',FileAgeUTF8(ConfigFilename)=UserLinkLoadTime]);
+  if ConsoleVerbosity>1 then
+    DebugLn(['TPackageLinks.SaveUserLinks saving ... ',ConfigFilename,' Modified=',Modified,' UserLinkLoadTimeValid=',UserLinkLoadTimeValid,' ',FileAgeUTF8(ConfigFilename)=UserLinkLoadTime,' Immediately=',Immediately]);
+
+  if Immediately then begin
+    QueueSaveUserLinks:=false;
+  end else begin
+    QueueSaveUserLinks:=true;
+    exit;
+  end;
 
   LazSrcDir:=EnvironmentOptions.GetParsedLazarusDirectory;
 
@@ -951,6 +971,17 @@ begin
     IncreaseChangeStamp;
 end;
 
+procedure TPackageLinks.SetQueueSaveUserLinks(AValue: boolean);
+begin
+  if FQueueSaveUserLinks=AValue then Exit;
+  FQueueSaveUserLinks:=AValue;
+  if Application=nil then exit;
+  if FQueueSaveUserLinks then
+    Application.QueueAsyncCall(@OnAsyncSaveUserLinks,0)
+  else
+    Application.RemoveAsyncCalls(Self);
+end;
+
 function TPackageLinks.FindLinkWithPkgName(const PkgName: string;
   IgnoreFiles: TFilenameToStringTree; FirstUserLinks: boolean): TPackageLink;
 begin
@@ -1016,6 +1047,7 @@ begin
       and (OldLink.GetEffectiveFilename=APackage.Filename) then begin
         Result:=OldLink;
         Result.LastUsed:=Now;
+        IncreaseChangeStamp;
         exit;
       end;
       RemoveUserLinks(APackage);
