@@ -57,6 +57,7 @@ type
     { Setters and getters }
     function GetPath: string;
     procedure SetFileSortType(const AValue: TFileSortType);
+    procedure SetObjectTypes(AValue: TObjectTypes);
     procedure SetPath(AValue: string);
     procedure SetRoot(const AValue: string);
     procedure SetShellListView(const Value: TCustomShellListView);
@@ -84,7 +85,7 @@ type
     procedure Refresh(ANode: TTreeNode); overload;
 
     { Properties }
-    property ObjectTypes: TObjectTypes read FObjectTypes write FObjectTypes;
+    property ObjectTypes: TObjectTypes read FObjectTypes write SetObjectTypes;
     property ShellListView: TCustomShellListView read FShellListView write SetShellListView;
     property FileSortType: TFileSortType read FFileSortType write SetFileSortType;
     property Root: string read FRoot write SetRoot;
@@ -451,6 +452,28 @@ begin
         // CurrPath may have been removed in the mean time by another process, just ignore
         on E: EInvalidPath do ;//
       end;
+    end;
+  finally
+    EndUpdate;
+  end;
+end;
+
+procedure TCustomShellTreeView.SetObjectTypes(AValue: TObjectTypes);
+var
+  CurrPath: String;
+begin
+  if FObjectTypes = AValue then Exit;
+  FObjectTypes := AValue;
+  if (csLoading in ComponentState) then Exit;
+  CurrPath := GetPath;
+  try
+    BeginUpdate;
+    Refresh(nil);
+    try
+       SetPath(CurrPath);
+    except
+      // CurrPath may have been removed in the mean time by another process, just ignore
+      on E: EInvalidPath do ;//
     end;
   finally
     EndUpdate;
