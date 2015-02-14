@@ -27,7 +27,7 @@ begin
   try
     // Read the file
     VecDoc.ReadFromFile('bezier_1.svg');
-    Vec := VecDoc.GetPage(0);
+    Vec := VecDoc.GetPageAsVectorial(0);
 
     // Now add 10 to the Y coordinate of all elements
     for i := 0 to Vec.GetEntitiesCount() - 1 do

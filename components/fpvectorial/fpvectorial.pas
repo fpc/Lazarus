@@ -1105,6 +1105,8 @@ type
     function AddCell : TvTableCell;
     function GetCellCount: Integer;
     function GetCell(AIndex: Integer) : TvTableCell;
+    //
+    function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; override;
   end;
 
   (*
@@ -1147,6 +1149,10 @@ type
     function GetRow(AIndex: Integer) : TvTableRow;
 
     function AddColWidth(AValue : Double) : Integer;
+    //
+    procedure Render(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
+      ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
+    function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; override;
   end;
 
   { TvEmbeddedVectorialDoc }
@@ -1693,6 +1699,41 @@ begin
   ColWidths[High(ColWidths)] := AValue;
 end;
 
+procedure TvTable.Render(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo;
+  ADestX: Integer; ADestY: Integer; AMulX: Double; AMulY: Double);
+begin
+  // First calculate the column widths
+
+
+  // Now calculate the row heights
+
+
+  // Now draw the table
+end;
+
+function TvTable.GenerateDebugTree(ADestRoutine: TvDebugAddItemProc;
+  APageItem: Pointer): Pointer;
+var
+  i: Integer;
+  lCurRow: TvTableRow;
+begin
+  {ColWidths: array of Double;       // Can be left empty for simple tables
+                                    // MUST be fully defined for merging cells
+  ColWidthsUnits : TvUnits;         // Cannot mix ColWidth Units.
+  Borders : TvTableBorders;         // Defaults: single/black/inside and out
+  PreferredWidth : TvDimension;     // Optional. Units mm.
+  CellSpacing : Double;             // Units mm. Gap between Cells.}
+  //FExtraDebugStr := Format(' RotationAngle(degrees)=%f', [BackgroundColor]);
+  Result := inherited GenerateDebugTree(ADestRoutine, APageItem);
+
+  // Add rows
+  for i := 0 to GetRowCount()-1 do
+  begin
+    lCurRow := GetRow(i);
+    lCurRow.GenerateDebugTree(ADestRoutine, Result);
+  end;
+end;
+
 { TvEmbeddedVectorialDoc }
 
 constructor TvEmbeddedVectorialDoc.create(APage: TvPage);
@@ -1986,6 +2027,23 @@ end;
 function TvTableRow.GetCell(AIndex: Integer): TvTableCell;
 begin
   Result := TvTableCell(Cells[AIndex]);
+end;
+
+function TvTableRow.GenerateDebugTree(ADestRoutine: TvDebugAddItemProc;
+  APageItem: Pointer): Pointer;
+var
+  i: Integer;
+  lCurCell: TvTableCell;
+begin
+  FExtraDebugStr := Format(' Height=%f CellSpacing=%f', [Height, CellSpacing]);
+  Result := inherited GenerateDebugTree(ADestRoutine, APageItem);
+
+  // Add cells
+  for i := 0 to GetCellCount()-1 do
+  begin
+    lCurCell := GetCell(i);
+    lCurCell.GenerateDebugTree(ADestRoutine, Result);
+  end;
 end;
 
 { T2DEllipticalArcSegment }
