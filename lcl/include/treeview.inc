@@ -4700,6 +4700,9 @@ var
     Points: PPoint;
     Details: TThemedElementDetails;
     R: TRect;
+    PrevColor: TColor;
+  const
+    cShiftHorzArrow = 2; //paint horz arrow N pixels upper than MidY
   begin
     with Canvas do
     begin
@@ -4733,7 +4736,8 @@ var
             LineTo(MidX, R.Bottom - 2);
 	  end;
         end;
-      tvestArrow:
+      tvestArrow,
+      tvestArrowFill:
         begin
           // draw an arrow. down for collapse and right for expand
           R := Rect(ALeft, ATop, ARight, ABottom);
@@ -4741,9 +4745,9 @@ var
           if CollapseSign then
           begin
             // draw an arrow down
-            Points[0] := Point(R.Left, MidY);
-            Points[1] := Point(R.Right - 1, MidY);
-            Points[2] := Point(MidX, R.Bottom - 1);
+            Points[0] := Point(R.Left, MidY - cShiftHorzArrow);
+            Points[1] := Point(R.Right - 1, MidY - cShiftHorzArrow);
+            Points[2] := Point(MidX, R.Bottom - 1 - cShiftHorzArrow);
           end else
           begin
             // draw an arrow right
@@ -4751,7 +4755,18 @@ var
             Points[1] := Point(R.Right - 2, MidY);
             Points[2] := Point(MidX - 1, R.Bottom - 1);
           end;
+
+          if ExpandSignType = tvestArrowFill then
+          begin
+            PrevColor := Brush.Color;
+            Brush.Color := ExpandSignColor;
+          end;
           Polygon(Points, 3, False);
+          if ExpandSignType = tvestArrowFill then
+          begin
+            Brush.Color := PrevColor;
+          end;
+
           FreeMem(Points);
         end;
       end;

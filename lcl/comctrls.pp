@@ -3144,7 +3144,8 @@ type
   TTreeViewExpandSignType = (
     tvestTheme,      // use themed sign
     tvestPlusMinus,  // use +/- sign
-    tvestArrow       // use arrow
+    tvestArrow,      // use blank arrow
+    tvestArrowFill   // use filled arrow
   );
 
   TTreeViewInsertMarkType = (
