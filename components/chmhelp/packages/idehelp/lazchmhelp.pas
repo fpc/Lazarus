@@ -54,7 +54,7 @@ type
     fHelpConnection: TLHelpConnection;
     fCHMSearchPath: String;
     fHelpExeParams: String;
-    function DBFindViewer({%H-}HelpDB: THelpDatabase; {%H-}const MimeType: string;
+    function DBFindViewer({%H-}HelpDB: THelpDatabase; {%H-}const {%H-}MimeType: string;
       var {%H-}ErrMsg: string; out Viewer: THelpViewer): TShowHelpResult;
     function GetHelpLabel: String;
     // Shows all chm files in the given search path. Requires help viewer to be running already
@@ -108,7 +108,7 @@ procedure Register;
 
 implementation
 
-uses Process, MacroIntf, InterfaceBase, Forms, Dialogs, HelpFPDoc, IDEMsgIntf;
+uses Process, MacroIntf, InterfaceBase, Forms, Dialogs, HelpFPDoc;
 
 const
   // Part of help name. Stored/retrieved in Lazarus options CHMHelp/Name.
