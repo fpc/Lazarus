@@ -1,6 +1,7 @@
 {%MainUnit ../osprinters.pas}
 
-//{$modeswitch objectivec1}
+{$modeswitch objectivec1}
+{$H+}
 
 uses
   // fpc

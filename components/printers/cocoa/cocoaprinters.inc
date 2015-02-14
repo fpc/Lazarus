@@ -336,7 +336,7 @@ var
   FPrinterArray: NSArray;
   //NewPrinter: NSPrinter;
 begin
-  {FPrinterArray := NSPrinter.printerNames();
+  FPrinterArray := NSPrinter.printerNames();
   FPrinterArray.retain;
   if FPrinterArray = nil then Exit;
 
@@ -355,7 +355,7 @@ begin
       Lst.InsertObject(0, NewPrinterName, nil{TObject(NewPrinter)})
     else
       Lst.AddObject(NewPrinterName, nil{TObject(NewPrinter)});
-  end;}
+  end;
 end;
 
 procedure TCocoaPrinter.DoResetPrintersList;
