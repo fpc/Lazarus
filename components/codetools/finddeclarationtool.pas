@@ -2356,6 +2356,21 @@ end;
 
 function TFindDeclarationTool.GetSmartHint(Node: TCodeTreeNode;
   XYPos: TCodeXYPosition; WithPosition: boolean): string;
+
+  function ReadIdentifierWithDots: String;
+  begin
+    Result := '';
+    repeat
+      ReadNextAtom;
+      Result := Result + GetAtom;
+      ReadNextAtom;
+      if CurPos.Flag = cafPoint then
+        Result := Result + '.'
+      else
+        break;
+    until false;
+  end;
+
 var
   IdentNode, TypeNode, ANode: TCodeTreeNode;
   ClassStr: String;
@@ -2539,15 +2554,8 @@ begin
           // program without source name
           Result:='program '+ExtractFileNameOnly(MainFilename)+' ';
         end else begin
-          Result+=GetAtom+' ';
-
-          if Node.Desc = ctnProperty then begin // add class name
-            ClassStr := ExtractClassName(Node, False, True);
-            if ClassStr <> '' then Result += ClassStr + '.';
-          end;
-
-          ReadNextAtom;
-          Result+=GetAtom+' ';
+          Result+=GetAtom+' '; // keyword
+          Result := Result + ReadIdentifierWithDots + ' ';
         end;
       end;
 
@@ -2556,8 +2564,7 @@ begin
         // hint for unit in "uses" section
         Result += 'unit ';
         MoveCursorToNodeStart(Node);
-        ReadNextAtom;
-        Result+=GetAtom;
+        Result := Result + ReadIdentifierWithDots;
       end
 
     else
