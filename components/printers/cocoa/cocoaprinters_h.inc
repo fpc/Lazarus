@@ -28,8 +28,7 @@ type
   TCocoaPrinter = class(Printers.TPrinter)
   private
     FDefaultPrinter: String;
-    FPrintView: NSView;
-    FPrintViewRect: NSRect;
+    FPrintView: TCocoaPrinterView;
     FPrintOp: NSPrintOperation;
     FPrintInfo: NSPrintInfo;
 
@@ -87,12 +86,12 @@ type
   public
     constructor Create; override;
     function Write(const {%H-}Buffer; {%H-}Count:Integer; var {%H-}Written: Integer): Boolean; override;
-    // Warning not portable functions here
-    {property CurrentPrinterName: String read GetCurrentPrinterName;
-    property PrintSession: PMPrintSession read FPrintSession;
-    property PrintSettings: PMPrintSettings read FPrintSettings;
-    property PageFormat: PMPageFormat read FPageFormat;
-    // Warning it is a not portable property
-    property Handle: TCocoaPrinterContext read FPrinterContext;}
+    // Warning not portable properties here
+    //property CurrentPrinterName: String read GetCurrentPrinterName;
+    property PrintSession: PMPrintSession read GetPrintSession;
+    property PrintSettings: PMPrintSettings read GetPrintSettings;
+    property PageFormat: PMPageFormat read GetPageFormat;
+    property PrintOperation: NSPrintOperation read FPrintOp;
+    property PrintInfo: NSPrintInfo read FPrintInfo;
   end;
 

@@ -176,6 +176,8 @@ begin
 end;
 
 constructor TCocoaPrinter.Create;
+var
+  FPrintViewRect: NSRect;
 begin
   inherited Create;
 

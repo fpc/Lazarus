@@ -13,7 +13,11 @@
 ------------------------------------------------------------------------------}
 unit PrintersDlgs;
 
-{$mode objfpc}{$H+}
+{$mode objfpc}
+{$IFDEF LCLCocoa}
+  {$modeswitch objectivec1}
+{$ENDIF}
+{$H+}
 
 interface
 

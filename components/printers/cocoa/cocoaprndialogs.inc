@@ -40,27 +40,24 @@ end;
 { TPrintDialog }
 
 function TPrintDialog.Execute: Boolean;
-{var
-  CarbonPrinter: TCarbonPrinter;
+var
+  CocoaPrinter: TCocoaPrinter;
   DialogSettings: PMPrintSettings;
   V: UInt32;
   B: Boolean;
-  PMin, PMax, PFrom, PTo: Integer; }
+  PMin, PMax, PFrom, PTo: Integer;
 begin
- { Result := False;
+  Result := False;
   // TODO: Options, Title
 
   if not Assigned(Printer) then Exit;
 
-  CarbonPrinter := Printer as TCarbonPrinter;
+  CocoaPrinter := Printer as TCocoaPrinter;
   //DebugLn('TPrintDialog.Execute ' + CarbonPrinter.CurrentPrinterName);
 
-  DialogSettings:=nil;
-  if OSError(PMCreatePrintSettings(DialogSettings),
-    Self, SExecute, 'PMCreatePrintSettings') then Exit;
-  try
-    if OSError(PMCopyPrintSettings(CarbonPrinter.PrintSettings, DialogSettings),
-      Self, SExecute, 'PMCopyPrintSettings') then Exit;
+  //if PMCreatePrintSettings(DialogSettings) <> noErr then Exit;
+  //try
+    {if PMCopyPrintSettings(CocoaPrinter.PrintSettings, DialogSettings) <> noErr then Exit;
 
     OSError(PMSetCollate(DialogSettings, Collate), Self, SExecute, 'PMSetCollate');
     OSError(PMSetCopies(DialogSettings, Copies, False), Self, SExecute, 'PMSetCopies');
@@ -79,9 +76,12 @@ begin
     end;
     
     if OSError(PMSessionPrintDialog(CarbonPrinter.PrintSession, DialogSettings, CarbonPrinter.PageFormat, Result),
-      Self, SExecute, 'PMSessionPrintDialog') then Exit;
+      Self, SExecute, 'PMSessionPrintDialog') then Exit;}
 
-    if Result then
+    //CocoaPrinter.PrintView.setBounds();
+    CocoaPrinter.PrintOperation.runOperation();
+
+    {if Result then
     begin
       B := Collate;
       OSError(PMGetCollate(DialogSettings, B), Self, SExecute, 'PMGetCollate');
@@ -110,8 +110,8 @@ begin
         Self, SExecute, 'PMCopyPrintSettings') then Exit;
         
       CarbonPrinter.UpdatePrinter;
-    end;
-  finally
+    end;   }
+  {finally
     PMRelease(PMObject(DialogSettings));
   end;   }
 end;
