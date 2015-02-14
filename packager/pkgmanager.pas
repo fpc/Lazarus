@@ -215,7 +215,7 @@ type
     procedure ConnectSourceNotebookEvents; override;
     procedure SetupMainBarShortCuts; override;
     procedure SetRecentPackagesMenu; override;
-    procedure AddFileToRecentPackages(const Filename: string);
+    procedure AddToMenuRecentPackages(const Filename: string; Save: boolean);
     procedure SaveSettings; override;
     procedure UpdateVisibleComponentPalette; override;
     procedure ProcessCommand(Command: word; var Handled: boolean); override;
@@ -3035,7 +3035,8 @@ begin
      EnvironmentOptions.RecentPackageFiles,@MainIDEitmOpenRecentPackageClicked);
 end;
 
-procedure TPkgManager.AddFileToRecentPackages(const Filename: string);
+procedure TPkgManager.AddToMenuRecentPackages(const Filename: string;
+  Save: boolean);
 begin
   AddToRecentList(Filename,EnvironmentOptions.RecentPackageFiles,
                   EnvironmentOptions.MaxRecentPackageFiles,rltFile);
@@ -3297,6 +3298,7 @@ begin
 
   // save package file links
   //DebugLn(['TPkgManager.AddPackageToGraph ',APackage.Name]);
+  PkgLinks.AddUserLink(APackage);
   PkgLinks.SaveUserLinks;
 
   Result:=mrOk;
@@ -3515,6 +3517,7 @@ var
   AFilename: String;
 begin
   AFilename:=APackage.Filename;
+  //debugln(['TPkgManager.DoOpenPackage ',AFilename]);
   
   // revert: if possible and wanted
   if (pofRevert in Flags) and (FileExistsCached(AFilename)) then begin
@@ -3530,9 +3533,7 @@ begin
   if (pofAddToRecent in Flags) then begin
     AFilename:=APackage.Filename;
     if FileExistsCached(AFilename) then begin
-      AddToRecentList(AFilename,EnvironmentOptions.RecentPackageFiles,
-                      EnvironmentOptions.MaxRecentPackageFiles,rltFile);
-      SetRecentPackagesMenu;
+      AddToMenuRecentPackages(AFilename,false);
     end;
   end;
 
@@ -3612,9 +3613,7 @@ begin
 
   // add to recent packages
   if pofAddToRecent in Flags then begin
-    AddToRecentList(AFilename,EnvironmentOptions.RecentPackageFiles,
-                    EnvironmentOptions.MaxRecentPackageFiles,rltFile);
-    SetRecentPackagesMenu;
+    AddToMenuRecentPackages(AFilename,false);
   end;
 
   OpenEditor:=not (pofDoNotOpenEditor in Flags);
@@ -3793,7 +3792,7 @@ begin
   APackage.Modified:=false;
   // add to recent
   if (psfSaveAs in Flags) then begin
-    AddFileToRecentPackages(APackage.Filename);
+    AddToMenuRecentPackages(APackage.Filename,false);
   end;
 
   if APackage.Editor<>nil then
