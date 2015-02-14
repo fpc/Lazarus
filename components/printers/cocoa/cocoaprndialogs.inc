@@ -42,10 +42,13 @@ end;
 function TPrintDialog.Execute: Boolean;
 var
   CocoaPrinter: TCocoaPrinter;
-  DialogSettings: PMPrintSettings;
+  PrintPanel: NSPrintPanel;
+  PrintPanelInfo: NSPrintInfo;
+  PrintSettings: PMPrintSettings;
   V: UInt32;
   B: Boolean;
   PMin, PMax, PFrom, PTo: Integer;
+  lDialogResult: NSInteger;
 begin
   Result := False;
   // TODO: Options, Title
@@ -55,43 +58,45 @@ begin
   CocoaPrinter := Printer as TCocoaPrinter;
   //DebugLn('TPrintDialog.Execute ' + CarbonPrinter.CurrentPrinterName);
 
-  //if PMCreatePrintSettings(DialogSettings) <> noErr then Exit;
-  //try
-    {if PMCopyPrintSettings(CocoaPrinter.PrintSettings, DialogSettings) <> noErr then Exit;
+  // Create the panel and the info object
+  PrintPanel := NSPrintPanel.printPanel();
+  PrintPanelInfo := NSPrintInfo.alloc.initWithDictionary(NSDictionary.dictionary());
+  try
+    // Set all properties
+    PrintSettings := PrintPanelInfo.PMPrintSettings();
 
-    OSError(PMSetCollate(DialogSettings, Collate), Self, SExecute, 'PMSetCollate');
-    OSError(PMSetCopies(DialogSettings, Copies, False), Self, SExecute, 'PMSetCopies');
-    
+    PMSetCollate(PrintSettings, Collate);
+    PMSetCopies(PrintSettings, Copies, False);
+
     PMin := MinPage;
     PMax := Max(PMin, MaxPage);
     PFrom := Min(Max(FromPage, PMin), PMax);
     PTo := Max(PFrom, Min(ToPage, PMax));
 
-    OSError(PMSetPageRange(DialogSettings, PMin, PMax),
-        Self, SExecute, 'PMSetPageRange');
+    PMSetPageRange(PrintSettings, PMin, PMax);
     if PrintRange <> prAllPages then
     begin
-      OSError(PMSetFirstPage(DialogSettings, PFrom, False), Self, SExecute, 'PMSetFirstPage');
-      OSError(PMSetLastPage(DialogSettings, PTo, False), Self, SExecute, 'PMSetLastPage');
+      PMSetFirstPage(PrintSettings, PFrom, False);
+      PMSetLastPage(PrintSettings, PTo, False);
     end;
-    
-    if OSError(PMSessionPrintDialog(CarbonPrinter.PrintSession, DialogSettings, CarbonPrinter.PageFormat, Result),
-      Self, SExecute, 'PMSessionPrintDialog') then Exit;}
 
-    //CocoaPrinter.PrintView.setBounds();
-    CocoaPrinter.PrintOperation.runOperation();
+    // Run the dialog
+    PrintPanelInfo.updateFromPMPrintSettings();
+    lDialogResult := PrintPanel.runModalWithPrintInfo(PrintPanelInfo);
 
-    {if Result then
+    if lDialogResult = NSOKButton then // NSCancelButton for Cancel
     begin
+      PrintSettings := PrintPanelInfo.PMPrintSettings();
+
       B := Collate;
-      OSError(PMGetCollate(DialogSettings, B), Self, SExecute, 'PMGetCollate');
+      PMGetCollate(PrintSettings, B);
       Collate := B;
-      
+
       V := Copies;
-      OSError(PMGetCopies(DialogSettings, V), Self, SExecute, 'PMGetCopies');
+      PMGetCopies(PrintSettings, V);
       Copies := V;
-      
-      OSError(PMGetLastPage(DialogSettings, V), Self, SExecute, 'PMGetLastPage');
+
+      PMGetLastPage(PrintSettings, V);
       if V > $FFFF then
       begin
         PrintRange := prAllPages;
@@ -102,17 +107,14 @@ begin
       begin
         PrintRange := prSelection;
         ToPage := V;
-        OSError(PMGetFirstPage(DialogSettings, V), Self, SExecute, 'PMGetFirstPage');
+        PMGetFirstPage(PrintSettings, V);
         FromPage := V;
       end;
-    
-      if OSError(PMCopyPrintSettings(DialogSettings, CarbonPrinter.PrintSettings),
-        Self, SExecute, 'PMCopyPrintSettings') then Exit;
-        
-      CarbonPrinter.UpdatePrinter;
-    end;   }
-  {finally
-    PMRelease(PMObject(DialogSettings));
-  end;   }
+
+      PMCopyPrintSettings(PrintSettings, CocoaPrinter.PrintSettings);
+      CocoaPrinter.PrintInfo.updateFromPMPrintSettings();
+    end;
+  finally
+  end;
 end;
 

@@ -315,7 +315,8 @@ begin
   inherited DoEndDoc(aAborded);
 
   EndPage;
-  //PMSessionEndDocument(GetPrintSession());
+  FPrintOp.setShowsPrintPanel(False);
+  FPrintOp.runOperation();
 end;
 
 procedure TCocoaPrinter.DoAbort;
