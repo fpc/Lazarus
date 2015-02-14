@@ -5437,6 +5437,10 @@ msgstr "Išvalyti ir daryti"
 msgid "Clean up and build project"
 msgstr "Išvalyti ir daryti projektą"
 
+#: lazarusidestrconsts.liscleanuppackage
+msgid "Clean up package \"%s\"."
+msgstr ""
+
 #: lazarusidestrconsts.liscleanupunitpath
 msgid "Clean up unit path?"
 msgstr "Apvalyti modulių kelią?"
@@ -7052,8 +7056,8 @@ msgstr "Žymeklio eilutė veikiamojoje rengyklėje"
 
 #: lazarusidestrconsts.liscustomopthint
 #, fuzzy
-#| msgid "These options are passed directly to the compiler. Macros are replaced, line breaks are replaced with single spaces."
-msgid "These options are passed to the compiler after comments are deleted and macros are replaced."
+#| msgid "These options are passed to the compiler after comments are deleted and macros are replaced."
+msgid "These options are passed to the compiler after macros are replaced."
 msgstr "Šios parinktys tiesiogiai perduodamos kompiliatoriui. Makrokomandos pakeičiamos, eilučių lūžiai pakeičiami viengubais tarpais."
 
 #: lazarusidestrconsts.liscustomoptions
@@ -11054,6 +11058,10 @@ msgstr "Teksto konstanta pirminiame kode"
 msgid "Strings with same value:"
 msgstr "Eilutės su tokia pat verte:"
 
+#: lazarusidestrconsts.lismakesureallppufilesofapackageareinitsoutputdirecto
+msgid "Make sure all ppu files of a package are in its output directory."
+msgstr ""
+
 #: lazarusidestrconsts.lismanagesourceeditors
 msgid "Manage Source Editors ..."
 msgstr ""
@@ -12952,6 +12960,10 @@ msgstr "Paketo pavadinimas prasideda…"
 msgid "Package name contains ..."
 msgstr "Paketo pavadinime yra…"
 
+#: lazarusidestrconsts.lispackageneedsanoutputdirectory
+msgid "Package needs an output directory."
+msgstr ""
+
 #: lazarusidestrconsts.lispackageneedsinstallation
 msgid "Package needs installation"
 msgstr "Paketą reikia įdiegti"
@@ -14416,6 +14428,10 @@ msgstr ""
 msgid "%s (position outside of source)"
 msgstr ""
 
+#: lazarusidestrconsts.lisppuinwrongdirectory
+msgid "ppu in wrong directory=%s."
+msgstr ""
+
 #: lazarusidestrconsts.lisprecedingword
 msgid "Preceding word"
 msgstr "Pirmesnis žodis"
@@ -15479,6 +15495,10 @@ msgstr ""
 msgid "Search paths"
 msgstr "Paieškos keliai"
 
+#: lazarusidestrconsts.lissearchunit
+msgid "Search Unit \"%s\""
+msgstr ""
+
 #: lazarusidestrconsts.lissecondaryconfigdirectorywherelazarussearchesfor
 msgid "secondary config directory, where Lazarus searches for config template files. Default is "
 msgstr "Antrinis aplankas nustatymų failams, kuriame Lazarus ieškos nustatymų šablonų failų. Numatytasis yra "
@@ -16014,6 +16034,10 @@ msgstr ""
 #: lazarusidestrconsts.lissuggestdefaultnameofnewfileinlowercase
 msgid "Suggest default name of new file in lowercase"
 msgstr "Naujo failo pavadinimą siūlyti mažosiomis raidėmis"
+
+#: lazarusidestrconsts.lissupportutf8rtl
+msgid "Support UTF-8 RTL"
+msgstr ""
 
 #: lazarusidestrconsts.lissuspiciousincludepath
 msgid "Suspicious include path"

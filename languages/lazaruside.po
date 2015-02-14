@@ -5290,6 +5290,10 @@ msgstr ""
 msgid "Clean up and build project"
 msgstr ""
 
+#: lazarusidestrconsts.liscleanuppackage
+msgid "Clean up package \"%s\"."
+msgstr ""
+
 #: lazarusidestrconsts.liscleanupunitpath
 msgid "Clean up unit path?"
 msgstr ""
@@ -6866,7 +6870,7 @@ msgid "Cursor row in current editor"
 msgstr ""
 
 #: lazarusidestrconsts.liscustomopthint
-msgid "These options are passed to the compiler after comments are deleted and macros are replaced."
+msgid "These options are passed to the compiler after macros are replaced."
 msgstr ""
 
 #: lazarusidestrconsts.liscustomoptions
@@ -10784,6 +10788,10 @@ msgstr ""
 msgid "Strings with same value:"
 msgstr ""
 
+#: lazarusidestrconsts.lismakesureallppufilesofapackageareinitsoutputdirecto
+msgid "Make sure all ppu files of a package are in its output directory."
+msgstr ""
+
 #: lazarusidestrconsts.lismanagesourceeditors
 msgid "Manage Source Editors ..."
 msgstr ""
@@ -12666,6 +12674,10 @@ msgstr ""
 msgid "Package name contains ..."
 msgstr ""
 
+#: lazarusidestrconsts.lispackageneedsanoutputdirectory
+msgid "Package needs an output directory."
+msgstr ""
+
 #: lazarusidestrconsts.lispackageneedsinstallation
 msgid "Package needs installation"
 msgstr ""
@@ -14018,6 +14030,10 @@ msgstr ""
 msgid "%s (position outside of source)"
 msgstr ""
 
+#: lazarusidestrconsts.lisppuinwrongdirectory
+msgid "ppu in wrong directory=%s."
+msgstr ""
+
 #: lazarusidestrconsts.lisprecedingword
 msgid "Preceding word"
 msgstr ""
@@ -15041,6 +15057,10 @@ msgstr ""
 msgid "Search paths"
 msgstr ""
 
+#: lazarusidestrconsts.lissearchunit
+msgid "Search Unit \"%s\""
+msgstr ""
+
 #: lazarusidestrconsts.lissecondaryconfigdirectorywherelazarussearchesfor
 msgid "secondary config directory, where Lazarus searches for config template files. Default is "
 msgstr ""
@@ -15563,6 +15583,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lissuggestdefaultnameofnewfileinlowercase
 msgid "Suggest default name of new file in lowercase"
+msgstr ""
+
+#: lazarusidestrconsts.lissupportutf8rtl
+msgid "Support UTF-8 RTL"
 msgstr ""
 
 #: lazarusidestrconsts.lissuspiciousincludepath

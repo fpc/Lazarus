@@ -5298,6 +5298,10 @@ msgstr "Aufräumen und Kompilieren"
 msgid "Clean up and build project"
 msgstr "Aufräumen und Projekt kompilieren"
 
+#: lazarusidestrconsts.liscleanuppackage
+msgid "Clean up package \"%s\"."
+msgstr ""
+
 #: lazarusidestrconsts.liscleanupunitpath
 msgid "Clean up unit path?"
 msgstr "Unit-Pfad aufräumen?"
@@ -6874,7 +6878,9 @@ msgid "Cursor row in current editor"
 msgstr "Cursor-Zeile im aktuellem Editor"
 
 #: lazarusidestrconsts.liscustomopthint
-msgid "These options are passed to the compiler after comments are deleted and macros are replaced."
+#, fuzzy
+#| msgid "These options are passed to the compiler after comments are deleted and macros are replaced."
+msgid "These options are passed to the compiler after macros are replaced."
 msgstr "Diese Einstellungen werden direkt an den Compiler geleitet. Makros werden ersetzt und Zeilenumbrüche durch einzelne Leerzeichen ersetzt."
 
 #: lazarusidestrconsts.liscustomoptions
@@ -10810,6 +10816,10 @@ msgstr "Stringkonstanten im Quelltext"
 msgid "Strings with same value:"
 msgstr "Strings mit gleichen Werten:"
 
+#: lazarusidestrconsts.lismakesureallppufilesofapackageareinitsoutputdirecto
+msgid "Make sure all ppu files of a package are in its output directory."
+msgstr ""
+
 #: lazarusidestrconsts.lismanagesourceeditors
 msgid "Manage Source Editors ..."
 msgstr "Quelltexteditoren verwalten ..."
@@ -12703,6 +12713,10 @@ msgstr "Name des Packages beginnt mit ..."
 msgid "Package name contains ..."
 msgstr "Name des Packages enthält ..."
 
+#: lazarusidestrconsts.lispackageneedsanoutputdirectory
+msgid "Package needs an output directory."
+msgstr ""
+
 #: lazarusidestrconsts.lispackageneedsinstallation
 msgid "Package needs installation"
 msgstr "Package benötigt eine Installation"
@@ -14055,6 +14069,10 @@ msgstr ""
 msgid "%s (position outside of source)"
 msgstr ""
 
+#: lazarusidestrconsts.lisppuinwrongdirectory
+msgid "ppu in wrong directory=%s."
+msgstr ""
+
 #: lazarusidestrconsts.lisprecedingword
 msgid "Preceding word"
 msgstr "Vorheriges Wort"
@@ -15078,6 +15096,10 @@ msgstr ""
 msgid "Search paths"
 msgstr "Suchpfade"
 
+#: lazarusidestrconsts.lissearchunit
+msgid "Search Unit \"%s\""
+msgstr ""
+
 #: lazarusidestrconsts.lissecondaryconfigdirectorywherelazarussearchesfor
 msgid "secondary config directory, where Lazarus searches for config template files. Default is "
 msgstr "sekundäres Konfigurationsverzeichnis in dem Lazarus nach Vorlagendateien sucht. Voreinstellung ist"
@@ -15601,6 +15623,10 @@ msgstr ""
 #: lazarusidestrconsts.lissuggestdefaultnameofnewfileinlowercase
 msgid "Suggest default name of new file in lowercase"
 msgstr "Neuen Dateinamen in Kleinbuchstaben vorschlagen"
+
+#: lazarusidestrconsts.lissupportutf8rtl
+msgid "Support UTF-8 RTL"
+msgstr ""
 
 #: lazarusidestrconsts.lissuspiciousincludepath
 msgid "Suspicious include path"

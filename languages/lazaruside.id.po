@@ -5543,6 +5543,10 @@ msgstr ""
 msgid "Clean up and build project"
 msgstr ""
 
+#: lazarusidestrconsts.liscleanuppackage
+msgid "Clean up package \"%s\"."
+msgstr ""
+
 #: lazarusidestrconsts.liscleanupunitpath
 msgid "Clean up unit path?"
 msgstr "bersihkan path unit?"
@@ -7159,7 +7163,7 @@ msgid "Cursor row in current editor"
 msgstr "Baris kursor dalam editor saat ini"
 
 #: lazarusidestrconsts.liscustomopthint
-msgid "These options are passed to the compiler after comments are deleted and macros are replaced."
+msgid "These options are passed to the compiler after macros are replaced."
 msgstr ""
 
 #: lazarusidestrconsts.liscustomoptions
@@ -11185,6 +11189,10 @@ msgstr "Konstan String dalam sumber"
 msgid "Strings with same value:"
 msgstr "String dengan nilai sama:"
 
+#: lazarusidestrconsts.lismakesureallppufilesofapackageareinitsoutputdirecto
+msgid "Make sure all ppu files of a package are in its output directory."
+msgstr ""
+
 #: lazarusidestrconsts.lismanagesourceeditors
 msgid "Manage Source Editors ..."
 msgstr ""
@@ -13278,6 +13286,10 @@ msgstr "Nama paket dimulai dengan ..."
 msgid "Package name contains ..."
 msgstr "Nama paket berisi ..."
 
+#: lazarusidestrconsts.lispackageneedsanoutputdirectory
+msgid "Package needs an output directory."
+msgstr ""
+
 #: lazarusidestrconsts.lispackageneedsinstallation
 msgid "Package needs installation"
 msgstr "Paket perlu diinstalasi"
@@ -14762,6 +14774,10 @@ msgstr ""
 msgid "%s (position outside of source)"
 msgstr ""
 
+#: lazarusidestrconsts.lisppuinwrongdirectory
+msgid "ppu in wrong directory=%s."
+msgstr ""
+
 #: lazarusidestrconsts.lisprecedingword
 msgid "Preceding word"
 msgstr ""
@@ -15839,6 +15855,10 @@ msgstr ""
 msgid "Search paths"
 msgstr ""
 
+#: lazarusidestrconsts.lissearchunit
+msgid "Search Unit \"%s\""
+msgstr ""
+
 #: lazarusidestrconsts.lissecondaryconfigdirectorywherelazarussearchesfor
 msgid "secondary config directory, where Lazarus searches for config template files. Default is "
 msgstr "direktori konfig kedua, dimana Lazarus mencari file template konfig. Default adalah"
@@ -16368,6 +16388,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lissuggestdefaultnameofnewfileinlowercase
 msgid "Suggest default name of new file in lowercase"
+msgstr ""
+
+#: lazarusidestrconsts.lissupportutf8rtl
+msgid "Support UTF-8 RTL"
 msgstr ""
 
 #: lazarusidestrconsts.lissuspiciousincludepath

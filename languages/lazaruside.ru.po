@@ -5296,6 +5296,10 @@ msgstr "Очистить и собрать"
 msgid "Clean up and build project"
 msgstr "Очистка и сборка проекта"
 
+#: lazarusidestrconsts.liscleanuppackage
+msgid "Clean up package \"%s\"."
+msgstr "Удалите пакет \"%s\"."
+
 #: lazarusidestrconsts.liscleanupunitpath
 msgid "Clean up unit path?"
 msgstr "Очистить пути к модулям?"
@@ -6869,8 +6873,8 @@ msgid "Cursor row in current editor"
 msgstr "Номер строки под курсором в текущем редакторе"
 
 #: lazarusidestrconsts.liscustomopthint
-msgid "These options are passed to the compiler after comments are deleted and macros are replaced."
-msgstr "Эти параметры передаются компилятору после удаления комментариев и замены макросов."
+msgid "These options are passed to the compiler after macros are replaced."
+msgstr "Эти параметры передаются компилятору после замены макросов."
 
 #: lazarusidestrconsts.liscustomoptions
 msgid "custom options"
@@ -10806,6 +10810,10 @@ msgstr "Строковая константа в исходном коде"
 msgid "Strings with same value:"
 msgstr "Строки с тем же значением:"
 
+#: lazarusidestrconsts.lismakesureallppufilesofapackageareinitsoutputdirecto
+msgid "Make sure all ppu files of a package are in its output directory."
+msgstr "Убедитесь, что все файлы PPU пакета находятся в его каталоге вывода."
+
 #: lazarusidestrconsts.lismanagesourceeditors
 msgid "Manage Source Editors ..."
 msgstr "Управление редакторами исходного кода ..."
@@ -12708,6 +12716,10 @@ msgstr "Имя пакета начинается с ..."
 msgid "Package name contains ..."
 msgstr "Имя пакета содержит ..."
 
+#: lazarusidestrconsts.lispackageneedsanoutputdirectory
+msgid "Package needs an output directory."
+msgstr "Пакету требуется каталог вывода."
+
 #: lazarusidestrconsts.lispackageneedsinstallation
 msgid "Package needs installation"
 msgstr "Пакет требует установки"
@@ -14060,6 +14072,10 @@ msgstr "Файл .lpi является главным хранилищем св�
 msgid "%s (position outside of source)"
 msgstr "%s (положение вне границ исходного кода)"
 
+#: lazarusidestrconsts.lisppuinwrongdirectory
+msgid "ppu in wrong directory=%s."
+msgstr "PPU в неверном каталоге=%s."
+
 #: lazarusidestrconsts.lisprecedingword
 msgid "Preceding word"
 msgstr "Предыдущее слово"
@@ -15083,6 +15099,10 @@ msgstr "Просмотр родительского каталога"
 msgid "Search paths"
 msgstr "Пути поиска"
 
+#: lazarusidestrconsts.lissearchunit
+msgid "Search Unit \"%s\""
+msgstr "Найти модуль \"%s\""
+
 #: lazarusidestrconsts.lissecondaryconfigdirectorywherelazarussearchesfor
 msgid "secondary config directory, where Lazarus searches for config template files. Default is "
 msgstr "вторичный каталог настройки, где Lazarus ищет шаблоны файлов настройки. По умолчанию - "
@@ -15606,6 +15626,10 @@ msgstr "Импорт параметров компилятора из \"%s\" у�
 #: lazarusidestrconsts.lissuggestdefaultnameofnewfileinlowercase
 msgid "Suggest default name of new file in lowercase"
 msgstr "Предлагать имя нового файла по умолчанию в нижнем регистре"
+
+#: lazarusidestrconsts.lissupportutf8rtl
+msgid "Support UTF-8 RTL"
+msgstr "Поддержка RTL с UTF-8"
 
 #: lazarusidestrconsts.lissuspiciousincludepath
 msgid "Suspicious include path"
