@@ -18791,11 +18791,15 @@ msgid "Guess Misplaced $IFDEF"
 msgstr "不適切に置かれた$IFDEFを推察"
 
 #: lazarusidestrconsts.srkmechalfwordleft
-msgid "Move cursor half-word left"
+#, fuzzy
+#| msgid "Move cursor half-word left"
+msgid "Move cursor part-word left (e.g. CamelCase)"
 msgstr "カーソルを左側の単語の中程まで移動"
 
 #: lazarusidestrconsts.srkmechalfwordright
-msgid "Move cursor half-word right"
+#, fuzzy
+#| msgid "Move cursor half-word right"
+msgid "Move cursor part-word right (e.g. CamelCase)"
 msgstr "カーソルを右側の単語の中程まで移動"
 
 #: lazarusidestrconsts.srkmecimestr
@@ -19138,11 +19142,15 @@ msgid "Select Goto XY"
 msgstr " Goto XYを選択"
 
 #: lazarusidestrconsts.srkmecselhalfwordleft
-msgid "Select half-word left"
+#, fuzzy
+#| msgid "Select half-word left"
+msgid "Select part-word left (e.g. CamelCase)"
 msgstr "左側の単語の中程まで選択"
 
 #: lazarusidestrconsts.srkmecselhalfwordright
-msgid "Select half-word right"
+#, fuzzy
+#| msgid "Select half-word right"
+msgid "Select part-word right (e.g. CamelCase)"
 msgstr "右側の単語の中程選択"
 
 #: lazarusidestrconsts.srkmecselleft

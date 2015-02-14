@@ -18231,11 +18231,15 @@ msgid "Guess Misplaced $IFDEF"
 msgstr "Arvaa väärin sijoitettu $IFDEF"
 
 #: lazarusidestrconsts.srkmechalfwordleft
-msgid "Move cursor half-word left"
+#, fuzzy
+#| msgid "Move cursor half-word left"
+msgid "Move cursor part-word left (e.g. CamelCase)"
 msgstr "Siirrä kursori puoli sanaa vasemmalle"
 
 #: lazarusidestrconsts.srkmechalfwordright
-msgid "Move cursor half-word right"
+#, fuzzy
+#| msgid "Move cursor half-word right"
+msgid "Move cursor part-word right (e.g. CamelCase)"
 msgstr "Siirrä kursori puoli sanaa oikealle"
 
 #: lazarusidestrconsts.srkmecimestr
@@ -18577,11 +18581,15 @@ msgid "Select Goto XY"
 msgstr "Valitse Goto XY"
 
 #: lazarusidestrconsts.srkmecselhalfwordleft
-msgid "Select half-word left"
+#, fuzzy
+#| msgid "Select half-word left"
+msgid "Select part-word left (e.g. CamelCase)"
 msgstr "Valitse puoli sanaa vasemmalle"
 
 #: lazarusidestrconsts.srkmecselhalfwordright
-msgid "Select half-word right"
+#, fuzzy
+#| msgid "Select half-word right"
+msgid "Select part-word right (e.g. CamelCase)"
 msgstr "Valitse puoli sanaa oikealle"
 
 #: lazarusidestrconsts.srkmecselleft

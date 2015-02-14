@@ -19676,11 +19676,15 @@ msgid "Guess Misplaced $IFDEF"
 msgstr "Buscar $IFDEF Fuera de Lugar"
 
 #: lazarusidestrconsts.srkmechalfwordleft
-msgid "Move cursor half-word left"
+#, fuzzy
+#| msgid "Move cursor half-word left"
+msgid "Move cursor part-word left (e.g. CamelCase)"
 msgstr "Mover cursor mitad palabra izquierda"
 
 #: lazarusidestrconsts.srkmechalfwordright
-msgid "Move cursor half-word right"
+#, fuzzy
+#| msgid "Move cursor half-word right"
+msgid "Move cursor part-word right (e.g. CamelCase)"
 msgstr "Mover cursor mitad palabra derecha"
 
 #: lazarusidestrconsts.srkmecimestr
@@ -20039,11 +20043,15 @@ msgid "Select Goto XY"
 msgstr "Seleccionar ir a XY"
 
 #: lazarusidestrconsts.srkmecselhalfwordleft
-msgid "Select half-word left"
+#, fuzzy
+#| msgid "Select half-word left"
+msgid "Select part-word left (e.g. CamelCase)"
 msgstr "Seleccionar mitad de palabra izquierda"
 
 #: lazarusidestrconsts.srkmecselhalfwordright
-msgid "Select half-word right"
+#, fuzzy
+#| msgid "Select half-word right"
+msgid "Select part-word right (e.g. CamelCase)"
 msgstr "Seleccionar mitad de palabra derecha"
 
 #: lazarusidestrconsts.srkmecselleft

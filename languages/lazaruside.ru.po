@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2015-02-11 01:18+0300\n"
+"PO-Revision-Date: 2015-02-14 02:58+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -18345,12 +18345,12 @@ msgid "Guess Misplaced $IFDEF"
 msgstr "Исправить отсутствие $IFDEF"
 
 #: lazarusidestrconsts.srkmechalfwordleft
-msgid "Move cursor half-word left"
-msgstr "Переместить курсор влево на полслова"
+msgid "Move cursor part-word left (e.g. CamelCase)"
+msgstr "Переместить курсор влево на часть слова (например, смешанный регистр)"
 
 #: lazarusidestrconsts.srkmechalfwordright
-msgid "Move cursor half-word right"
-msgstr "Переместить курсор вправо на полслова"
+msgid "Move cursor part-word right (e.g. CamelCase)"
+msgstr "Переместить курсор вправо на часть слова (например, смешанный регистр)"
 
 #: lazarusidestrconsts.srkmecimestr
 msgid "Ime Str"
@@ -18692,12 +18692,12 @@ msgid "Select Goto XY"
 msgstr "Выделить до координаты XY"
 
 #: lazarusidestrconsts.srkmecselhalfwordleft
-msgid "Select half-word left"
-msgstr "Выделить полслова слева"
+msgid "Select part-word left (e.g. CamelCase)"
+msgstr "Выделить часть слова слева (например, смешанный регистр)"
 
 #: lazarusidestrconsts.srkmecselhalfwordright
-msgid "Select half-word right"
-msgstr "Выделить полслова справа"
+msgid "Select part-word right (e.g. CamelCase)"
+msgstr "Выделить часть слова справа (например, смешанный регистр)"
 
 #: lazarusidestrconsts.srkmecselleft
 msgid "Select Left"

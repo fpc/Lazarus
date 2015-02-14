@@ -18921,11 +18921,15 @@ msgid "Guess Misplaced $IFDEF"
 msgstr "Передбачити зміщене $IFDEF"
 
 #: lazarusidestrconsts.srkmechalfwordleft
-msgid "Move cursor half-word left"
+#, fuzzy
+#| msgid "Move cursor half-word left"
+msgid "Move cursor part-word left (e.g. CamelCase)"
 msgstr "Пересунути курсор на півслова вліво"
 
 #: lazarusidestrconsts.srkmechalfwordright
-msgid "Move cursor half-word right"
+#, fuzzy
+#| msgid "Move cursor half-word right"
+msgid "Move cursor part-word right (e.g. CamelCase)"
 msgstr "Пересунути курсор на півслова вправо"
 
 #: lazarusidestrconsts.srkmecimestr
@@ -19268,11 +19272,15 @@ msgid "Select Goto XY"
 msgstr "Виділити перехід за коорд."
 
 #: lazarusidestrconsts.srkmecselhalfwordleft
-msgid "Select half-word left"
+#, fuzzy
+#| msgid "Select half-word left"
+msgid "Select part-word left (e.g. CamelCase)"
 msgstr "Вибрати півслова вліво"
 
 #: lazarusidestrconsts.srkmecselhalfwordright
-msgid "Select half-word right"
+#, fuzzy
+#| msgid "Select half-word right"
+msgid "Select part-word right (e.g. CamelCase)"
 msgstr "Вибрати півслова вправо"
 
 #: lazarusidestrconsts.srkmecselleft

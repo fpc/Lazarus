@@ -18949,11 +18949,15 @@ msgid "Guess Misplaced $IFDEF"
 msgstr "Nuspėti nevietoj esančius „$IFDEF“"
 
 #: lazarusidestrconsts.srkmechalfwordleft
-msgid "Move cursor half-word left"
+#, fuzzy
+#| msgid "Move cursor half-word left"
+msgid "Move cursor part-word left (e.g. CamelCase)"
 msgstr "Perkelti žymeklį puse žodžio kairiau"
 
 #: lazarusidestrconsts.srkmechalfwordright
-msgid "Move cursor half-word right"
+#, fuzzy
+#| msgid "Move cursor half-word right"
+msgid "Move cursor part-word right (e.g. CamelCase)"
 msgstr "Perkelti žymeklį puse žodžio dešiniau"
 
 #: lazarusidestrconsts.srkmecimestr
@@ -19296,11 +19300,15 @@ msgid "Select Goto XY"
 msgstr "Žymėti ir eiti į XY"
 
 #: lazarusidestrconsts.srkmecselhalfwordleft
-msgid "Select half-word left"
+#, fuzzy
+#| msgid "Select half-word left"
+msgid "Select part-word left (e.g. CamelCase)"
 msgstr "Žymėti puse žodžio kairiau"
 
 #: lazarusidestrconsts.srkmecselhalfwordright
-msgid "Select half-word right"
+#, fuzzy
+#| msgid "Select half-word right"
+msgid "Select part-word right (e.g. CamelCase)"
 msgstr "Pažymėti puse žodžio dešinėje"
 
 #: lazarusidestrconsts.srkmecselleft
