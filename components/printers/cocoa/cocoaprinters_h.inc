@@ -12,31 +12,32 @@ uses
   Printers, LCLType;
 
 type
-  { TCocoaPrinterContext }
+  { TCocoaPrinterView }
   
-  TCocoaPrinterContext = class(TObject)
-  {protected
-    function GetSize: TPoint; override;
+  TCocoaPrinterView = objcclass(NSView)
   public
-    procedure Release;
-    procedure Reset; override; }
+    Image: NSImage;
+    Size: NSSize;
+    function initWithFrame(frameRect: NSRect): id; override;
+    procedure dealloc(); override;
+    procedure drawRect(dirtyRect: NSRect); override;
   end;
 
   { TCocoaPrinter }
 
   TCocoaPrinter = class(Printers.TPrinter)
   private
-    FPrintSession: PMPrintSession;
-    FPrintSettings: PMPrintSettings;
-    FPageFormat: PMPageFormat;
-    FBeginDocumentStatus: OSStatus;
-    FNewPageStatus: OSStatus;
-    FPrinterContext: TCocoaPrinterContext;
     FDefaultPrinter: String;
-    
-    procedure CreatePrintSettings;
-    function GetCurrentPrinterName: String;
-    
+    FPrintView: NSView;
+    FPrintViewRect: NSRect;
+    FPrintOp: NSPrintOperation;
+    FPrintInfo: NSPrintInfo;
+
+    function GetCurrentCarbonPrinter: PMPrinter;
+    function GetPrintSession: PMPrintSession;
+    function GetPrintSettings: PMPrintSettings;
+    function GetPageFormat: PMPageFormat;
+
     function CreatePageFormat(APaper: String): PMPageFormat;
     
     function ValidatePageFormat: Boolean;
@@ -48,6 +49,8 @@ type
     procedure FindDefaultPrinter;
     function  GetOutputResolution: PMResolution;
 
+    function DoDoGetPaperName(APageFormat: PMPageFormat): string;
+
   protected
     procedure DoBeginDoc; override;
     procedure DoNewPage; override;
@@ -58,7 +61,7 @@ type
     procedure DoResetPrintersList; override;
 
     procedure DoEnumPapers(Lst : TStrings); override;
-    function DoGetPaperName: string; override;
+    function DoGetPaperName(): string; override;
     function DoGetDefaultPaperName: string; override;
     procedure DoSetPaperName(aName : string); override;
     function DoGetPaperRect(aName : string; Var aPaperRc : TPaperRect) : Integer; override;
@@ -72,13 +75,13 @@ type
 
     function GetXDPI: Integer; override;
     function GetYDPI: Integer; override;
-    function GetPrinterType: TPrinterType;override;
-    function DoGetPrinterState: TPrinterState;override;
-    function GetCanPrint: Boolean;override;
-    function GetCanRenderCopies : Boolean;override;
+    function GetPrinterType: TPrinterType; override;
+    function DoGetPrinterState: TPrinterState; override;
+    function GetCanPrint: Boolean; override;
+    function GetCanRenderCopies : Boolean; override;
     procedure RawModeChanging; override;
     procedure DoDestroy; override;
-  public
+  private
     procedure Validate;
     procedure UpdatePrinter;
   public
