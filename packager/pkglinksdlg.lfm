@@ -9,7 +9,7 @@ object PackageLinksDialog: TPackageLinksDialog
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   Position = poScreenCenter
-  LCLVersion = '1.1'
+  LCLVersion = '1.5'
   object ScopeGroupBox: TGroupBox
     Left = 0
     Height = 144
@@ -156,14 +156,16 @@ object PackageLinksDialog: TPackageLinksDialog
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Control = BtnPanel
       AnchorSideBottom.Side = asrBottom
-      Left = 592
+      Left = 591
       Height = 28
       Top = 7
-      Width = 60
+      Width = 61
       Anchors = [akRight, akBottom]
       AutoSize = True
       BorderSpacing.Around = 6
+      Cancel = True
       Caption = '&Close'
+      Default = True
       Kind = bkClose
       ModalResult = 1
       TabOrder = 0
