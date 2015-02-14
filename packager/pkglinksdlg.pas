@@ -371,6 +371,7 @@ begin
   PkgStringGrid.Columns[3].Title.Caption:=lisGroup;
   PkgStringGrid.Columns[4].Title.Caption:=lisOIPState;
   PkgStringGrid.Columns[5].Title.Caption:=lisA2PFilename2;
+  PkgStringGrid.Columns[6].Title.Caption:='Last opened';
 
   i:=1;
   Node:=FLinks.FindLowest;
@@ -394,6 +395,7 @@ begin
       s:=lrsPLDInvalid;
     PkgStringGrid.Cells[4,i]:=s;
     PkgStringGrid.Cells[5,i]:=Link.EffectiveFilename;
+    PkgStringGrid.Cells[6,i]:=DateTimeToStr(Link.LastUsed);
 
     inc(i);
   end;
@@ -504,6 +506,7 @@ begin
       LastCheck:=Link.LastCheck;
       LPKFileDateValid:=Link.LPKFileDateValid;
       LPKFileDate:=Link.LPKFileDate;
+      LastUsed:=Link.LastUsed;
     end;
   end else
     inherited Assign(Source);

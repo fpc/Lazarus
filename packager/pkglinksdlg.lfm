@@ -108,7 +108,7 @@ object PackageLinksDialog: TPackageLinksDialog
     Width = 659
     Align = alTop
     Anchors = [akTop, akLeft, akRight, akBottom]
-    ColCount = 6
+    ColCount = 7
     ColumnClickSorts = True
     Columns = <    
       item
@@ -134,6 +134,9 @@ object PackageLinksDialog: TPackageLinksDialog
       item
         ReadOnly = True
         Title.Caption = 'Filename'
+      end    
+      item
+        Title.Caption = 'Last Opened'
       end>
     FixedCols = 0
     Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goColSizing, goEditing, goTabs, goColSpanning, goDblClickAutoSize, goSmoothScroll]
