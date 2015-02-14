@@ -2419,24 +2419,226 @@ begin
     Result:=Def;
 end;
 
+// Tries to parse string when DateOrder = doNone when string maybe contains
+// literal day or monthnames. For example when ShortDateFormat = 'dd-mmm-yyy'
+// Returns NullDate upon failure.
+function ParseDateNoPredefinedOrder(SDate: String; FS: TFormatSettings): TDateTime;
+var
+  Fmt: String;
+  DPos, MPos, YPos: SizeInt;
+  DStr, MStr, YStr: String;
+  LD, LM, LY: LongInt;
+  DD, MM, YY: Word;
+const
+  Digits = ['0'..'9'];
+
+  procedure GetPositions(out DPos, MPos, YPos: SizeInt);
+  begin
+    DStr := '';
+    MStr := '';
+    YStr := '';
+    DPos := Pos('D', Fmt);
+    MPos := Pos('M', Fmt);
+    YPos := Pos('Y', Fmt);
+    if (YPos = 0) or (MPos = 0) or (DPos = 0) then Exit;
+    if (YPos > DPos) then YPos := 3 else YPos := 1;
+    if (DPos < MPos) then
+    begin
+      if (YPos = 3) then
+      begin
+        DPos := 1;
+        MPos := 2;
+      end
+      else
+      begin
+        DPos := 2;
+        MPos := 3;
+      end;
+    end
+    else
+    begin
+      if (YPos = 3) then
+      begin
+        DPos := 2;
+        MPos := 1;
+      end
+      else
+      begin
+        DPos := 3;
+        MPos := 2;
+      end;
+    end;
+  end;
+
+  procedure ReplaceLiterals;
+  var
+    i, P: Integer;
+    Sub: String;
+  begin
+    if (Pos('MMMM',Fmt) > 0) then
+    begin //long monthnames
+      //writeln('Literal monthnames');
+      for i := 1 to 12 do
+      begin
+        Sub := FS.LongMonthNames[i];
+        P := Pos(Sub, SDate);
+        if (P > 0) then
+        begin
+          Delete(SDate, P, Length(Sub));
+          Insert(IntToStr(i), SDate, P);
+          Break;
+        end;
+      end;
+    end
+    else
+    begin
+      if (Pos('MMM',Fmt) > 0) then
+      begin //short monthnames
+        for i := 1 to 12 do
+        begin
+          Sub := FS.ShortMonthNames[i];
+          P := Pos(Sub, SDate);
+          if (P > 0) then
+          begin
+            Delete(SDate, P, Length(Sub));
+            Insert(IntToStr(i), SDate, P);
+            Break;
+          end;
+        end;
+      end;
+    end;
+
+    if (Pos('DDDD',Fmt) > 0) then
+    begin  //long daynames
+      //writeln('Literal daynames');
+      for i := 1 to 7 do
+      begin
+        Sub := FS.LongDayNames[i];
+        P := Pos(Sub, SDate);
+        if (P > 0) then
+        begin
+          Delete(SDate, P, Length(Sub));
+          Break;
+        end;
+      end;
+    end
+    else
+    begin
+      if (Pos('DDD',Fmt) > 0) then
+      begin //short daynames
+        for i := 1 to 7 do
+        begin
+          Sub := FS.ShortDayNames[i];
+          P := Pos(Sub, SDate);
+          if (P > 0) then
+          begin
+            Delete(SDate, P, Length(Sub));
+            Break;
+          end;
+        end;
+      end;
+    end;
+    SDate := Trim(SDate);
+    //writeln('ReplaceLiterals -> ',SDate);
+  end;
+
+  procedure Split(out DStr, MStr, YStr: String);
+  var
+    i, P: Integer;
+    Sep: Set of Char;
+    Sub: String;
+  begin
+    DStr := '';
+    MStr := '';
+    YStr := '';
+    Sep := [];
+    for i :=  1 to Length(Fmt) do
+      if not (Fmt[i] in Digits) then Sep := Sep + [Fmt[i]];
+    //get fist part
+    P := 1;
+    while (P <= Length(SDate)) and (SDate[P] in Digits) do Inc(P);
+    Sub := Copy(SDate, 1, P-1);
+    Delete(SDate, 1, P);
+    if (DPos = 1) then DStr := Sub else if (MPos = 1) then MStr := Sub else YStr := Sub;
+    //get second part
+    if (SDate = '') then Exit;
+    while (Length(SDate) > 0) and (SDate[1] in Sep) do Delete(SDate, 1, 1);
+    if (SDate = '') then Exit;
+    P := 1;
+    while (P <= Length(SDate)) and (SDate[P] in Digits) do Inc(P);
+    Sub := Copy(SDate, 1, P-1);
+    Delete(SDate, 1, P);
+    if (DPos = 2) then DStr := Sub else if (MPos = 2) then MStr := Sub else YStr := Sub;
+    //get thirdpart
+    if (SDate = '') then Exit;
+    while (Length(SDate) > 0) and (SDate[1] in Sep) do Delete(SDate, 1, 1);
+    if (SDate = '') then Exit;
+    Sub := SDate;
+    if (DPos = 3) then DStr := Sub else if (MPos = 3) then MStr := Sub else YStr := Sub;
+  end;
+
+  procedure AdjustYear(var YY: Word);
+  var
+    CY, CM, CD: Word;
+  begin
+    DecodeDate(Date, CY, CM, CD);
+    LY := CY Mod 100;
+    CY := CY - LY;
+    if ((YY - LY) <= 50) then
+      YY := CY + YY
+    else
+      YY := CY + YY - 100;
+  end;
+
+begin
+  Result := NullDate;  //assume failure
+  if (Length(SDate) < 5) then Exit; //y-m-d is minimum we support
+  Fmt := UpperCase(FS.ShortDateFormat); //only care about y,m,d so this will do
+  GetPositions(DPos, MPos, YPos);
+  ReplaceLiterals;
+  if (not (SDate[1] in Digits)) or (not (SDate[Length(SDate)] in Digits)) then Exit;
+  Split(Dstr, MStr, YStr);
+  if not TryStrToInt(DStr, LD) or
+     not TryStrToInt(Mstr, LM) or
+     not TryStrToInt(YStr, LY) then Exit;
+  DD := LD;
+  MM := LM;
+  YY := LY;
+  if (YY < 100) and (Pos('YYYY', UpperCase(Fmt)) = 0) then
+  begin
+    AdjustYear(YY);
+  end;
+  if not TryEncodeDate(YY, MM, DD, Result) then
+    Result := NullDate;
+end;
+
 function TDateEdit.GetDate: TDateTime;
 var
   ADate: string;
+  Def: TDateTime;
 begin
   if FDefaultToday then
-    Result := SysUtils.Date
+    Def := SysUtils.Date
   else
-    Result := NullDate;
+    Def := NullDate;
   ADate := Trim(Text);
   if ADate <> '' then
   begin
     if Assigned(FOnCustomDate) then
       FOnCustomDate(Self, ADate);
     if (DateOrder = doNone) then
-      Result := StrToDateDef(ADate, Result)
+    begin
+      if not TryStrToDate(ADate, Result) then
+      begin
+        Result := ParseDateNoPredefinedOrder(ADate, DefaultFormatSettings);
+        if (Result = NullDate) then Result := Def;
+      end;
+    end
     else
       Result := ParseDate(ADate,DateOrder,Result)
-  end;
+  end
+  else
+    Result := Def;
 end;
 
 procedure TDateEdit.SetDate(Value: TDateTime);
