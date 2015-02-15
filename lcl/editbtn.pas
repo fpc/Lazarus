@@ -754,7 +754,6 @@ type
     procedure SetDateMask; virtual;
   public
     constructor Create(AOwner: TComponent); override;
-    procedure DateFormatChanged; virtual;
     function GetDateFormat: string;
     property AutoSelected;
     property Date: TDateTime read GetDate write SetDate;
@@ -2308,13 +2307,8 @@ begin
   FDisplaySettings := [dsShowHeadings, dsShowDayNames];
   OKCaption := 'OK';
   CancelCaption := 'Cancel';
-  DateFormatChanged;
 end;
 
-procedure TDateEdit.DateFormatChanged;
-begin
-  FDateFormat := DefaultFormatSettings.ShortDateFormat;
-end;
 
 function TDateEdit.GetDateFormat: string;
 begin
@@ -2654,7 +2648,7 @@ begin
     Text := ''
   else
   begin
-    if (FDateFormat = '') then
+    if (FDateOrder = doNone) or (FDateFormat = '') then
       Text := DateToStr(Value)
     else
       Text := FormatDateTime(FDateFormat, Value)
