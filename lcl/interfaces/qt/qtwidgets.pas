@@ -1898,7 +1898,7 @@ const
   );
 
   QtCheckStateRole = Ord(QtUserRole) + 1;
-
+  QtListViewOwnerDataRole = Ord(QtUserRole) + 2;
 implementation
 
 uses
@@ -13548,12 +13548,13 @@ var
   RowHeight: Integer;
   item: QTreeWidgetItemH;
   itemChild: QTreeWidgetItemH;
-  v: QVariantH;
-  WStr: WideString;
+  v,v2: QVariantH;
+  WStr, TempStr: WideString;
   ASelected: Boolean;
   ImgList: TCustomImageList;
   AImageIndex: TImageIndex;
   Bmp: TBitmap;
+  AOk: Boolean;
 begin
   {do not set items during design time}
   if csDesigning in LCLObject.ComponentState then
@@ -13577,7 +13578,6 @@ begin
       exit;
 
     i := 0;
-
     while (i < (VHeight + RowHeight)) do
     begin
       item := QTreeWidget_itemAt(QTreeWidgetH(Widget), 0, i + 1);
@@ -13595,7 +13595,17 @@ begin
 
         v := QVariant_create(PWideString(@WStr));
         try
-          QTreeWidgetItem_setData(item, 0, Ord(QtDisplayRole), v);
+          v2 := QVariant_create;
+          try
+            TempStr := '';
+            QTreeWidgetItem_data(item, v2, 0, Ord(QtDisplayRole));
+            if not QVariant_isNull(v2) then
+              QVariant_toString(v2, @TempStr);
+            if TempStr <> WStr then
+              QTreeWidgetItem_setData(item, 0, Ord(QtDisplayRole), v);
+          finally
+            QVariant_destroy(v2);
+          end;
 
           // set imageindex, part of comment in issue #27233
           ImgList := TCustomListViewHack(LCLObject).SmallImages;
@@ -13608,13 +13618,37 @@ begin
               Bmp := TBitmap.Create;
               try
                 ImgList.GetBitmap(AImageIndex, Bmp);
-                QTreeWidgetItem_setIcon(item, 0, TQtImage(Bmp.Handle).AsIcon);
+                v2 := QVariant_create;
+                QTreeWidgetItem_data(item, v2, 0, QtListViewOwnerDataRole);
+                if not QVariant_isNull(v2) then
+                begin
+                  AOk := True;
+                  if QVariant_toInt(v2, @AOk) <> AImageIndex then
+                  begin
+                    v2 := QVariant_create(AImageIndex);
+                    QTreeWidgetItem_setData(item, 0, QtListViewOwnerDataRole, v2);
+                    QVariant_destroy(v2);
+                    QTreeWidgetItem_setIcon(item, 0, TQtImage(Bmp.Handle).AsIcon)
+                  end;
+                  // else we are imageIndex and that''s fine.
+                end else
+                begin
+                  v2 := QVariant_create(AImageIndex);
+                  QTreeWidgetItem_setData(item, 0, QtListViewOwnerDataRole, v2);
+                  QVariant_destroy(v2);
+                  QTreeWidgetItem_setIcon(item, 0, TQtImage(Bmp.Handle).AsIcon);
+                end;
               finally
                 Bmp.Free;
               end;
             end else
             if (AImageIndex < 0) then
+            begin
+              v2 := QVariant_create;
+              QTreeWidgetItem_setData(item, 0, QtListViewOwnerDataRole, v2);
+              QVariant_destroy(v2);
               QTreeWidgetItem_setIcon(item, 0, nil);
+            end;
           end;
 
           // set alignment, issue #27233
@@ -13640,8 +13674,18 @@ begin
             begin
               WStr := GetUTF8String(TCustomListViewHack(LCLObject).Items[TopItem].SubItems[j]);
               v := QVariant_create(PWideString(@WStr));
-              QTreeWidgetItem_setData(itemChild, j, Ord(QtDisplayRole), v);
-              QVariant_destroy(v);
+              v2 := QVariant_create;
+              try
+                TempStr := '';
+                QTreeWidgetItem_data(itemChild, v2, j, Ord(QtDisplayRole));
+                if not QVariant_isNull(v2) then
+                  QVariant_toString(v2, @TempStr);
+                if TempStr <> WStr then
+                  QTreeWidgetItem_setData(itemChild, j, Ord(QtDisplayRole), v);
+              finally
+                QVariant_destroy(v2);
+                QVariant_destroy(v);
+              end;
             end;
           end;
         end else
