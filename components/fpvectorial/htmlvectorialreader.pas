@@ -229,7 +229,7 @@ begin
       CurCellPara.Style := ADoc.StyleHeading4;
       CurCellPara.AddText(GetTextContentFromNode(lCurNode));
     end;
-    'tr':
+    'td':
     begin
       CurCell := CurRow.AddCell();
       CurCellPara := CurCell.AddParagraph();
