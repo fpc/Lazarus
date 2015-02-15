@@ -783,7 +783,8 @@ begin
     for i := 0 to Files.Count - 1 do
     begin
       NewNode := Items.AddChildObject(ANode, Files.Strings[i], nil); //@Files.Strings[i]);
-      // This marks if the node is a directory
+      // This marks if the node is a directory (not wether or not there are files in the folder!)
+      // We need this info (is it a folder?) elsewhere.
       if (fObjectTypes * [otNonFolders] = []) then
         NewNode.HasChildren := ((Files.Objects[i] <> nil) and
                                HasSubDir(AppendpathDelim(ANodePath)+Files[i]))
@@ -852,10 +853,29 @@ end;
 {$endif}
 
 procedure TCustomShellTreeView.DoSelectionChanged;
+var
+  ANode: TTreeNode;
+  IsDirectory: Boolean;
 begin
   inherited DoSelectionChanged;
-  if Assigned(FShellListView) then
-    FShellListView.Root := GetPathFromNode(Selected);
+  ANode := Selected;
+  if Assigned(FShellListView) and Assigned(ANode) then
+  begin
+    IsDirectory := (not (otFolders in FObjectTypes)) or ANode.HasChildren;
+    if IsDirectory then
+    begin
+      //Note: the folder may have been deleted in the mean time
+      //an exception will be raise by the next line in that case
+      FShellListView.Root := GetPathFromNode(ANode)
+    end
+    else
+    begin
+      if Assigned(Anode.Parent) then
+        FShellListView.Root := GetPathFromNode(ANode.Parent)
+      else
+        FShellListView.Root := '';
+    end;
+  end;
 end;
 
 function TCustomShellTreeView.GetPathFromNode(ANode: TTreeNode): string;
