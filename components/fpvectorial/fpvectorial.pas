@@ -1140,6 +1140,7 @@ type
     PreferredWidth : TvDimension;     // Optional. Units mm.
     CellSpacing : Double;             // Units mm. Gap between Cells.
     BackgroundColor : TFPColor;       // Optional.
+    Caption: string;                  // Its a first row without border
 
     constructor create(APage : TvPage); override;
     destructor destroy; override;
@@ -1717,13 +1718,7 @@ var
   i: Integer;
   lCurRow: TvTableRow;
 begin
-  {ColWidths: array of Double;       // Can be left empty for simple tables
-                                    // MUST be fully defined for merging cells
-  ColWidthsUnits : TvUnits;         // Cannot mix ColWidth Units.
-  Borders : TvTableBorders;         // Defaults: single/black/inside and out
-  PreferredWidth : TvDimension;     // Optional. Units mm.
-  CellSpacing : Double;             // Units mm. Gap between Cells.}
-  //FExtraDebugStr := Format(' RotationAngle(degrees)=%f', [BackgroundColor]);
+  FExtraDebugStr := Format(' Caption=%s', [Caption]);
   Result := inherited GenerateDebugTree(ADestRoutine, APageItem);
 
   // Add rows
@@ -2653,13 +2648,13 @@ var
   lStr: string;
   lCurPathSeg: TPathSegment;
 begin
-  lStr := Format('[%s] Name=%s X=%f Y=%f Pen.Color=%s Pen.Style=%s Brush.Color=%s Brush.Style=%s',
+  lStr := Format('[%s] Name=%s X=%f Y=%f Pen.Color=%s Pen.Style=%s Brush.Color=%s Brush.Style=%s %s',
     [Self.ClassName, Self.Name, X, Y,
     GenerateDebugStrForFPColor(Pen.Color),
     GetEnumName(TypeInfo(TFPPenStyle), integer(Pen.Style)),
     GenerateDebugStrForFPColor(Brush.Color),
-    GetEnumName(TypeInfo(TFPBrushStyle), integer(Brush.Style))
-    ]);
+    GetEnumName(TypeInfo(TFPBrushStyle), integer(Brush.Style)),
+    FExtraDebugStr]);
   Result := ADestRoutine(lStr, APageItem);
 end;
 

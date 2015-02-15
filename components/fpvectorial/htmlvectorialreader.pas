@@ -28,11 +28,15 @@ type
   private
     FPointSeparator, FCommaSeparator: TFormatSettings;
     //
+    function GetTextContentFromNode(ANode: TDOMNode): string;
+    //
     function ReadEntityFromNode(ANode: TDOMNode; AData: TvTextPageSequence; ADoc: TvVectorialDocument): TvEntity;
     function ReadHeaderFromNode(ANode: TDOMNode; AData: TvTextPageSequence; ADoc: TvVectorialDocument): TvEntity;
     function ReadParagraphFromNode(ANode: TDOMNode; AData: TvTextPageSequence; ADoc: TvVectorialDocument): TvEntity;
     function ReadSVGFromNode(ANode: TDOMNode; AData: TvTextPageSequence; ADoc: TvVectorialDocument): TvEntity;
     function ReadMathFromNode(ANode: TDOMNode; AData: TvTextPageSequence; ADoc: TvVectorialDocument): TvEntity;
+    function ReadTableFromNode(ANode: TDOMNode; AData: TvTextPageSequence; ADoc: TvVectorialDocument): TvEntity;
+    function ReadTableRowNode(ATable: TvTable; ANode: TDOMNode; AData: TvTextPageSequence; ADoc: TvVectorialDocument): TvEntity;
   public
     { General reading methods }
     constructor Create; override;
@@ -57,6 +61,18 @@ const
 
 { TvHTMLVectorialReader }
 
+function TvHTMLVectorialReader.GetTextContentFromNode(ANode: TDOMNode): string;
+var
+  i: Integer;
+begin
+  Result := '';
+  for i := 0 to ANode.ChildNodes.Count-1 do
+  begin
+    if ANode.ChildNodes.Item[i] is TDOMText then
+      Result := ANode.ChildNodes.Item[i].NodeValue;
+  end;
+end;
+
 function TvHTMLVectorialReader.ReadEntityFromNode(ANode: TDOMNode;
   AData: TvTextPageSequence; ADoc: TvVectorialDocument): TvEntity;
 var
@@ -69,6 +85,8 @@ begin
     'p': Result := ReadParagraphFromNode(ANode, AData, ADoc);
     'svg': Result := ReadSVGFromNode(ANode, AData, ADoc);
     'math': Result := ReadMathFromNode(ANode, AData, ADoc);
+    'table': Result := ReadTableFromNode(ANode, AData, ADoc);
+    'br': Result := AData.AddParagraph().AddText(LineEnding);
   end;
 end;
 
@@ -147,6 +165,79 @@ begin
     CurSVG.Document.ReadFromXML(lDoc, vfMathML);
   finally
     lDoc.Free;
+  end;
+end;
+
+function TvHTMLVectorialReader.ReadTableFromNode(ANode: TDOMNode;
+  AData: TvTextPageSequence; ADoc: TvVectorialDocument): TvEntity;
+var
+  CurTable: TvTable;
+  lCurNode, lCurSubnode: TDOMNode;
+  lNodeName, lNodeValue: DOMString;
+begin
+  Result := nil;
+  CurTable := AData.AddTable();
+
+  lCurNode := ANode.FirstChild;
+  while Assigned(lCurNode) do
+  begin
+    lNodeName := lCurNode.NodeName;
+    lNodeValue := lCurNode.NodeValue;
+    case lNodeName of
+    'caption':
+    begin
+      CurTable.Caption := GetTextContentFromNode(lCurNode);
+    end;
+    'tbody':
+    begin
+      lCurSubnode := lCurNode.FirstChild;
+      while Assigned(lCurSubnode) do
+      begin
+        ReadTableRowNode(CurTable, lCurSubnode, AData, ADoc);
+
+        lCurSubnode := lCurSubnode.NextSibling;
+      end;
+    end;
+    end;
+
+    lCurNode := lCurNode.NextSibling;
+  end;
+end;
+
+function TvHTMLVectorialReader.ReadTableRowNode(ATable: TvTable; ANode: TDOMNode;
+  AData: TvTextPageSequence; ADoc: TvVectorialDocument): TvEntity;
+var
+  lCurNode, lCurSubnode: TDOMNode;
+  lNodeName, lNodeValue: DOMString;
+  CurRow: TvTableRow;
+  CurCell: TvTableCell;
+  CurCellPara: TvParagraph;
+begin
+  Result := nil;
+  CurRow := ATable.AddRow();
+
+  lCurNode := ANode.FirstChild;
+  while Assigned(lCurNode) do
+  begin
+    lNodeName := lCurNode.NodeName;
+    lNodeValue := lCurNode.NodeValue;
+    case lNodeName of
+    'th':
+    begin
+      CurCell := CurRow.AddCell();
+      CurCellPara := CurCell.AddParagraph();
+      CurCellPara.Style := ADoc.StyleHeading4;
+      CurCellPara.AddText(GetTextContentFromNode(lCurNode));
+    end;
+    'tr':
+    begin
+      CurCell := CurRow.AddCell();
+      CurCellPara := CurCell.AddParagraph();
+      CurCellPara.AddText(GetTextContentFromNode(lCurNode));
+    end;
+    end;
+
+    lCurNode := lCurNode.NextSibling;
   end;
 end;
 
