@@ -2373,7 +2373,7 @@ begin
   if (not DirectInput) and not FUpdatingDate then
   begin
     //force a valid date and set FDate
-    debugln('TDateEdit.SetText: DirectInput = False');
+    //debugln('TDateEdit.SetText: DirectInput = False');
     if FDefaultToday then
       FDate := TextToDate(AValue, SysUtils.Date)
     else
