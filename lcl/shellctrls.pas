@@ -579,6 +579,7 @@ var
   MaskStrings: TStringList;
   FileTree: TAvgLvlTree;
   ShortFilename: AnsiString;
+  j: Integer;
   {$if defined(windows) and not defined(wince)}
   ErrMode : LongWord;
   {$endif}
@@ -605,6 +606,7 @@ begin
     if AFileSortType=fstNone then Files:=nil
     else Files:=TList.Create;
 
+    j:=0;
     for i := 0 to MaskStrings.Count - 1 do
     begin
       if MaskStrings.IndexOf(MaskStrings[i]) < i then Continue; // From patch from bug 17761: TShellListView Mask: duplicated items if mask is " *.ext;*.ext "
@@ -614,7 +616,13 @@ begin
 
       while FindResult = 0 do
       begin
-        Application.ProcessMessages;
+        inc(j);
+        if j=100 then
+        begin
+          Application.ProcessMessages;
+          j:=0;
+        end;
+
         ShortFilename := DirInfo.Name;
 
         IsDirectory := (DirInfo.Attr and FaDirectory = FaDirectory);
