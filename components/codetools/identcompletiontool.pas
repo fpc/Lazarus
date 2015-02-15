@@ -393,7 +393,7 @@ type
       const FoundContext: TFindContext): TIdentifierFoundResult;
     procedure AddCollectionContext(Tool: TFindDeclarationTool;
       Node: TCodeTreeNode);
-    function IsInCompilerDirective(CursorPos: TCodeXYPosition): boolean;
+    function CheckCursorInCompilerDirective(CursorPos: TCodeXYPosition): boolean;
     procedure AddCompilerDirectiveMacros(Directive: string);
   public
     function GatherAvailableUnitNames(const CursorPos: TCodeXYPosition;
@@ -2076,7 +2076,7 @@ begin
   //DebugLn('TIdentCompletionTool.AddCollectionContext ',Node.DescAsString,' ',ExtractNode(Node,[]));
 end;
 
-function TIdentCompletionTool.IsInCompilerDirective(CursorPos: TCodeXYPosition
+function TIdentCompletionTool.CheckCursorInCompilerDirective(CursorPos: TCodeXYPosition
   ): boolean;
 var
   Line: String;
@@ -2107,6 +2107,7 @@ begin
       or ((CursorPos.X>=InnerStart) and (InnerStart<=length(Line))
           and (CursorPos.X<=InnerStart+GetIdentLen(@Line[InnerStart])))
       then begin
+        // at start of directive
         AddKeyWord('Align');
         AddKeyWord('AlignAssertions');
         AddKeyWord('AsmMode');
@@ -2189,6 +2190,7 @@ begin
         AddKeyWord('WritableConst');
         AddKeyWord('ZeroBasedStrings');
       end else if InnerStart<=length(Line) then begin
+        // in parameter of directive
         Directive:=lowercase(GetIdentifier(@Line[InnerStart]));
         if (Directive='ifdef')
         or (Directive='ifndef')
@@ -2244,6 +2246,28 @@ begin
           AddKeyWord('FPCTargetCPU');
           AddKeyWord('FPCVersion');
           AddKeyWord('Time');
+        end else if (Directive='codepage') then begin
+          // see fpcsrc/compiler/widestr.pas
+          AddKeyWord('UTF8');
+          AddKeyWord('cp1250');
+          AddKeyWord('cp1251');
+          AddKeyWord('cp1252');
+          AddKeyWord('cp1253');
+          AddKeyWord('cp1254');
+          AddKeyWord('cp1255');
+          AddKeyWord('cp1256');
+          AddKeyWord('cp1257');
+          AddKeyWord('cp1258');
+          AddKeyWord('cp437');
+          AddKeyWord('cp646');
+          AddKeyWord('cp850');
+          AddKeyWord('cp852');
+          AddKeyWord('cp856');
+          AddKeyWord('cp866');
+          AddKeyWord('cp874');
+          AddKeyWord('cp8859_1');
+          AddKeyWord('cp8859_2');
+          AddKeyWord('cp8859_5');
         end;
       end;
       exit;
@@ -2430,7 +2454,7 @@ begin
   try
     InitCollectIdentifiers(CursorPos,IdentifierList);
     IdentStartXY:=FindIdentifierStartPos(CursorPos);
-    if IsInCompilerDirective(IdentStartXY) then exit(true);
+    if CheckCursorInCompilerDirective(IdentStartXY) then exit(true);
 
     ParseSourceTillCollectionStart(IdentStartXY,CleanCursorPos,CursorNode,
                                    IdentStartPos,IdentEndPos);
