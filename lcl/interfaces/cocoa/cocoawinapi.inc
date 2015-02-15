@@ -340,16 +340,8 @@ begin
   case AMimeType of
   'text/plain':
   begin
-    if SandboxingOn then
-    begin
-      lDataType := ccdtNonStandard;
-      lClassClass := TClipboardString.ClassClass;
-    end
-    else
-    begin
-      lNSStr := NSPasteboardTypeString;
-      lDataType := ccdtText;
-    end;
+    lNSStr := NSPasteboardTypeString;
+    lDataType := ccdtText;
   end;
   {'image/bmp', 'image/xpm', 'image/delphi.bitmap':
   begin
