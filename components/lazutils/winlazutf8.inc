@@ -482,8 +482,10 @@ begin
 end;
 
 procedure FinalizeLazUTF8;
+{$IFDEF EnableUTF8RTL}
 var
   p: PPChar;
+{$ENDIF}
 begin
   {$IFDEF EnableUTF8RTL}
   // restore argv and free memory
