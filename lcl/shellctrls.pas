@@ -20,7 +20,7 @@ unit ShellCtrls;
 interface
 
 uses
-  Classes, SysUtils, Forms, Graphics, LCLType,
+  Classes, SysUtils, Forms, Graphics, LCLType, AvgLvlTree,
   ComCtrls, FileUtil, LazUtf8;
 
 {$if defined(Windows) or defined(darwin)}
@@ -552,6 +552,11 @@ begin
 
 end;
 
+function STVCompareFiles(f1, f2: Pointer): integer;
+begin
+  Result:=CompareFilenames(AnsiString(f1),AnsiString(f2));
+end;
+
 { Helper routine.
   Finds all files/directories directly inside a directory.
   Does not recurse inside subdirectories.
@@ -572,6 +577,8 @@ var
   FileItem: TFileItem;
   i: Integer;
   MaskStrings: TStringList;
+  FileTree: TAvgLvlTree;
+  ShortFilename: AnsiString;
   {$if defined(windows) and not defined(wince)}
   ErrMode : LongWord;
   {$endif}
@@ -590,6 +597,7 @@ begin
   // The string list implements support for multiple masks separated
   // by semi-comma ";"
   MaskStrings := TStringList.Create;
+  FileTree:=TAvgLvlTree.Create(@STVCompareFiles);
   try
     MaskStrings.Delimiter := ';';
     MaskStrings.DelimitedText := MaskStr;
@@ -607,10 +615,11 @@ begin
       while FindResult = 0 do
       begin
         Application.ProcessMessages;
+        ShortFilename := DirInfo.Name;
 
         IsDirectory := (DirInfo.Attr and FaDirectory = FaDirectory);
 
-        IsValidDirectory := (DirInfo.Name <> '.') and (DirInfo.Name <> '..');
+        IsValidDirectory := (ShortFilename <> '.') and (ShortFilename <> '..');
 
         IsHidden := (DirInfo.Attr and faHidden = faHidden);
         //LinuxToWinAttr already does this in FF/FN
@@ -636,8 +645,12 @@ begin
             // Mark if it is a directory (ObjectData <> nil)
             if IsDirectory then ObjectData := AResult
             else ObjectData := nil;
-            if AResult.IndexOf(DirInfo.Name) < 0 then // From patch from bug 17761: TShellListView Mask: duplicated items if mask is " *.ext;*.ext "
-              AResult.AddObject(DirInfo.Name, ObjectData)
+            if FileTree.Find(Pointer(ShortFilename))=nil then
+            begin
+              // From patch from bug 17761: TShellListView Mask: duplicated items if mask is " *.ext;*.ext "
+              FileTree.Add(Pointer(ShortFilename));
+              AResult.AddObject(ShortFilename, ObjectData);
+            end;
           end else
             Files.Add ( TFileItem.Create(DirInfo));
         end;
@@ -648,6 +661,7 @@ begin
       FindCloseUTF8(DirInfo);
     end;
   finally
+    FileTree.Free;
     MaskStrings.Free;
   end;
 
