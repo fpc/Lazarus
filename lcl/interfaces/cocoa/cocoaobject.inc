@@ -493,11 +493,11 @@ end;
 
 { TClipboardData }
 
-constructor TClipboardData.Create(AMimeType: string; ACocoaFormat: NSString; AIsText: Boolean);
+constructor TClipboardData.Create(AMimeType: string; ACocoaFormat: NSString; ADataType: TCocoaClipboardDataType);
 begin
   MimeType := AMimeType;
   CocoaFormat := ACocoaFormat;
-  IsText := AIsText;
+  DataType := ADataType;
 end;
 
 {------------------------------------------------------------------------------

@@ -153,7 +153,8 @@ begin
   lFormat := GetClipboardDataForFormat(FormatID);
   if lFormat = nil then Exit;
 
-  if lFormat.IsText then
+  case lFormat.DataType of
+  ccdtText:
   begin
     lNSStr := pasteboard.stringForType(lFormat.CocoaFormat);
     if lNSStr = nil then Exit;
@@ -162,14 +163,19 @@ begin
     {$IFDEF VerboseClipboard}
       DebugLn('TCocoaWidgetSet.ClipboardGetData IsText Result=' + lStr);
     {$ENDIF}
-  end
-  else
+  end;
+  ccdtCocoaStandard:
   begin
     lNSData := pasteboard.dataForType(lFormat.CocoaFormat);
     if lNSData = nil then Exit;
     lNSbytes := lNSData.bytes;
     for i := 0 to lNSData.length-1 do
       Stream.WriteByte(lNSbytes[i]);
+  end;
+  ccdtNonStandard:
+  begin
+
+  end;
   end;
 
   Result := True;
@@ -248,7 +254,7 @@ var
   i: Integer;
   lCurData: TClipboardData;
   lNSStr: NSString = nil;
-  lIsText: Boolean;
+  lDataType: TCocoaClipboardDataType;
 begin
   Result := 0;
 
@@ -269,13 +275,13 @@ begin
 
   // if none was found, we need to register it
 
-  lIsText := False;
+  lDataType := ccdtNonStandard;
   // See PredefinedClipboardMimeTypes for the most common mime-types
   case AMimeType of
   'text/plain':
   begin
     lNSStr := NSPasteboardTypeString;
-    lIsText := True;
+    lDataType := ccdtText;
   end;
   {'image/bmp', 'image/xpm', 'image/delphi.bitmap':
   begin
@@ -288,7 +294,7 @@ begin
 
   if lNSStr <> nil then
   begin
-    lCurData := TClipboardData.Create(AMimeType, NSPasteboardTypeString, True);
+    lCurData := TClipboardData.Create(AMimeType, lNSStr, lDataType);
     ClipboardFormats.Add(lCurData);
     Result := TClipboardFormat(lCurData);
   end;

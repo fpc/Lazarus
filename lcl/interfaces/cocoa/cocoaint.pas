@@ -49,12 +49,14 @@ type
     class function initWithFunc(afunc: TWSTimerProc): TCocoaTimerObject; message 'initWithFunc:';
   end;
 
+  TCocoaClipboardDataType = (ccdtText, ccdtCocoaStandard, ccdtNonStandard);
+
   TClipboardData = class(TObject) // TClipboardFormat is a reference to a TClipboardData
   public
     MimeType: string;
     CocoaFormat: NSString;
-    IsText: Boolean;
-    constructor Create(AMimeType: string; ACocoaFormat: NSString; AIsText: Boolean);
+    DataType: TCocoaClipboardDataType;
+    constructor Create(AMimeType: string; ACocoaFormat: NSString; ADataType: TCocoaClipboardDataType);
   end;
 
 
