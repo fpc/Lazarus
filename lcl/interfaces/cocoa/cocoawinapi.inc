@@ -133,10 +133,15 @@ var
   pasteboard: NSPasteboard;
   lFormat: TClipboardData;
   lNSStr: NSString;
+  // for text
   lStr: String;
+  // for standard
   lNSData: NSData;
   lNSbytes: PByte;
   i: Integer;
+  // for non-standard
+  lClassArray, lArray: NSArray;
+  lDict: NSDictionary;
 begin
   Result := False;
   {$IFDEF VerboseClipboard}
@@ -174,7 +179,9 @@ begin
   end;
   ccdtNonStandard:
   begin
-
+    lDict := NSDictionary.dictionary();
+    lClassArray := NSArray.arrayWithObjects_count(@lFormat.ClassClass, 1);
+    lArray := pasteboard.readObjectsForClasses_options(lClassArray, lDict);
   end;
   end;
 
@@ -255,6 +262,7 @@ var
   lCurData: TClipboardData;
   lNSStr: NSString = nil;
   lDataType: TCocoaClipboardDataType;
+  lClassClass: Pobjc_class = nil;
 begin
   Result := 0;
 
@@ -280,8 +288,16 @@ begin
   case AMimeType of
   'text/plain':
   begin
-    lNSStr := NSPasteboardTypeString;
-    lDataType := ccdtText;
+    if SandboxingOn then
+    begin
+      lDataType := ccdtNonStandard;
+      lClassClass := TClipboardString.ClassClass;
+    end
+    else
+    begin
+      lNSStr := NSPasteboardTypeString;
+      lDataType := ccdtText;
+    end;
   end;
   {'image/bmp', 'image/xpm', 'image/delphi.bitmap':
   begin
@@ -294,7 +310,7 @@ begin
 
   if lNSStr <> nil then
   begin
-    lCurData := TClipboardData.Create(AMimeType, lNSStr, lDataType);
+    lCurData := TClipboardData.Create(AMimeType, lNSStr, lDataType, lClassClass);
     ClipboardFormats.Add(lCurData);
     Result := TClipboardFormat(lCurData);
   end;

@@ -25,6 +25,8 @@
   Initialize Carbon Widget Set
  ------------------------------------------------------------------------------}
 procedure TCocoaWidgetSet.AppInit(var ScreenInfo: TScreenInfo);
+var
+  lDict: NSDictionary;
 begin
   {$IFDEF VerboseObject}
     DebugLn('TCocoaWidgetSet.AppInit');
@@ -34,6 +36,10 @@ begin
   FNsApp := NSApplication.sharedApplication;
 
   InitClipboard();
+
+  // Sandboxing
+  lDict := NSProcessInfo.processInfo.environment;
+  SandboxingOn := lDict.valueForKey(NSStr('APP_SANDBOX_CONTAINER_ID')) <> nil;
 end;
 
 {------------------------------------------------------------------------------
@@ -493,11 +499,12 @@ end;
 
 { TClipboardData }
 
-constructor TClipboardData.Create(AMimeType: string; ACocoaFormat: NSString; ADataType: TCocoaClipboardDataType);
+constructor TClipboardData.Create(AMimeType: string; ACocoaFormat: NSString; ADataType: TCocoaClipboardDataType; AClassClass: Pobjc_class);
 begin
   MimeType := AMimeType;
   CocoaFormat := ACocoaFormat;
   DataType := ADataType;
+  ClassClass := AClassClass;
 end;
 
 {------------------------------------------------------------------------------

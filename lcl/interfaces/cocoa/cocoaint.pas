@@ -54,11 +54,14 @@ type
   TClipboardData = class(TObject) // TClipboardFormat is a reference to a TClipboardData
   public
     MimeType: string;
-    CocoaFormat: NSString;
+    CocoaFormat: NSString;  // utilized for ccdtCocoaStandard
+    ClassClass: Pobjc_class; // utilized only for ccdtNonStandard
     DataType: TCocoaClipboardDataType;
-    constructor Create(AMimeType: string; ACocoaFormat: NSString; ADataType: TCocoaClipboardDataType);
+    constructor Create(AMimeType: string; ACocoaFormat: NSString; ADataType: TCocoaClipboardDataType; AClassClass: Pobjc_class);
   end;
 
+  TClipboardString = objcclass(NSString)
+  end;
 
   { TCocoaWidgetSet }
 
@@ -84,6 +87,9 @@ type
     FStockFixedFont: HFONT;
 
     FSysColorBrushes: array[0..MAX_SYS_COLORS] of HBrush;
+
+    // Sandboxing
+    SandboxingOn: Boolean;
 
     // Clipboard
     PrimarySelection: NSPasteboard;
