@@ -4704,17 +4704,24 @@ var
   const
     cShiftHorzArrow = 2; //paint horz arrow N pixels upper than MidY
   begin
+    HalfSize := FExpandSignSize shr 1;
+    if ((FExpandSignSize and 1) = 0) then
+      Dec(HalfSize);
+    ALeft := MidX - HalfSize;
+    ATop := MidY - HalfSize;
+    ARight := ALeft + FExpandSignSize;
+    ABottom := ATop + FExpandSignSize;
+
+    if Assigned(FOnCustomDrawArrow) then
+    begin
+      FOnCustomDrawArrow(Self, Rect(ALeft, ATop, ARight, ABottom), CollapseSign);
+      Exit
+    end;
+
     with Canvas do
     begin
       Pen.Color := FExpandSignColor;
       Pen.Style := psSolid;
-      HalfSize := FExpandSignSize shr 1;
-      if ((FExpandSignSize and 1) = 0) then
-        dec(HalfSize);
-      ALeft := MidX - HalfSize;
-      ATop := MidY - HalfSize;
-      ARight := ALeft + FExpandSignSize;
-      ABottom := ATop + FExpandSignSize;
       case ExpandSignType of
       tvestTheme:
         begin

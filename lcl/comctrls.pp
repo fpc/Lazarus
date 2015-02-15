@@ -2742,6 +2742,8 @@ type
                                  var DefaultDraw: Boolean) of object;
   TTVCustomDrawItemEvent = procedure(Sender: TCustomTreeView; Node: TTreeNode;
                    State: TCustomDrawState; var DefaultDraw: Boolean) of object;
+  TTVCustomDrawArrowEvent = procedure(Sender: TCustomTreeView;
+                   const ARect: TRect; ACollapsed: Boolean) of object;
   TTVAdvancedCustomDrawEvent = procedure(Sender: TCustomTreeView;
                                     const ARect: TRect; Stage: TCustomDrawStage;
                                     var DefaultDraw: Boolean) of object;
@@ -3192,6 +3194,7 @@ type
     FOnCustomCreateItem: TTVCustomCreateNodeEvent;
     FOnCustomDraw: TTVCustomDrawEvent;
     FOnCustomDrawItem: TTVCustomDrawItemEvent;
+    FOnCustomDrawArrow: TTVCustomDrawArrowEvent;
     FOnDeletion: TTVExpandedEvent;
     FOnEditing: TTVEditingEvent;
     FOnEditingEnd: TTVEditingEndEvent;
@@ -3388,8 +3391,8 @@ type
     property OnCreateNodeClass: TTVCreateNodeClassEvent read FOnCreateNodeClass write FOnCreateNodeClass;
     property OnCustomCreateItem: TTVCustomCreateNodeEvent read FOnCustomCreateItem write FOnCustomCreateItem;
     property OnCustomDraw: TTVCustomDrawEvent read FOnCustomDraw write FOnCustomDraw;
-    property OnCustomDrawItem: TTVCustomDrawItemEvent
-      read FOnCustomDrawItem write FOnCustomDrawItem;
+    property OnCustomDrawItem: TTVCustomDrawItemEvent read FOnCustomDrawItem write FOnCustomDrawItem;
+    property OnCustomDrawArrow: TTVCustomDrawArrowEvent read FOnCustomDrawArrow write FOnCustomDrawArrow;
     property OnDeletion: TTVExpandedEvent read FOnDeletion write FOnDeletion;
     property OnEdited: TTVEditedEvent read FOnEdited write FOnEdited;
     property OnEditing: TTVEditingEvent read FOnEditing write FOnEditing;
@@ -3550,6 +3553,7 @@ type
     property OnCustomCreateItem;
     property OnCustomDraw;
     property OnCustomDrawItem;
+    property OnCustomDrawArrow;
     property OnDblClick;
     property OnDeletion;
     property OnDragDrop;
