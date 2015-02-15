@@ -3,7 +3,6 @@ object IDEOptionsDialog: TIDEOptionsDialog
   Height = 500
   Top = 202
   Width = 800
-  ActiveControl = FilterEdit
   BorderIcons = [biSystemMenu]
   Caption = 'IDEOptionsDialog'
   ClientHeight = 500
@@ -19,8 +18,8 @@ object IDEOptionsDialog: TIDEOptionsDialog
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = Owner
     Left = 6
-    Height = 38
-    Top = 456
+    Height = 36
+    Top = 458
     Width = 788
     BorderSpacing.Left = 6
     BorderSpacing.Right = 6
@@ -40,7 +39,7 @@ object IDEOptionsDialog: TIDEOptionsDialog
   end
   object CatTVSplitter: TSplitter
     Left = 255
-    Height = 456
+    Height = 458
     Top = 0
     Width = 4
   end
@@ -48,12 +47,12 @@ object IDEOptionsDialog: TIDEOptionsDialog
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
     Left = 0
-    Height = 456
+    Height = 458
     Top = 0
     Width = 255
     Align = alLeft
     BevelOuter = bvNone
-    ClientHeight = 456
+    ClientHeight = 458
     ClientWidth = 255
     Constraints.MinWidth = 150
     TabOrder = 2
@@ -65,12 +64,12 @@ object IDEOptionsDialog: TIDEOptionsDialog
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Control = SettingsPanel
       Left = 6
-      Height = 396
-      Top = 40
+      Height = 401
+      Top = 37
       Width = 249
       Anchors = [akTop, akLeft, akRight, akBottom]
       BorderSpacing.Top = 6
-      DefaultItemHeight = 22
+      DefaultItemHeight = 18
       ReadOnly = True
       TabOrder = 0
       OnChange = CategoryTreeChange
@@ -84,7 +83,7 @@ object IDEOptionsDialog: TIDEOptionsDialog
       AnchorSideTop.Control = CategoryPanel
       AnchorSideRight.Side = asrBottom
       Left = 6
-      Height = 28
+      Height = 25
       Top = 6
       Width = 249
       OnFilterItem = FilterEditFilterItem
@@ -102,7 +101,7 @@ object IDEOptionsDialog: TIDEOptionsDialog
     object SettingsPanel: TPanel
       Left = 0
       Height = 20
-      Top = 436
+      Top = 438
       Width = 255
       Align = alBottom
       AutoSize = True
@@ -131,12 +130,12 @@ object IDEOptionsDialog: TIDEOptionsDialog
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = UseBuildModeCheckBox
       AnchorSideTop.Side = asrCenter
-      Left = 126
-      Height = 28
+      Left = 112
+      Height = 29
       Top = 5
       Width = 154
       BorderSpacing.Left = 7
-      ItemHeight = 20
+      ItemHeight = 0
       OnSelect = BuildModeComboBoxSelect
       Style = csDropDownList
       TabOrder = 0
@@ -146,7 +145,7 @@ object IDEOptionsDialog: TIDEOptionsDialog
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = BuildModeComboBox
       AnchorSideTop.Side = asrCenter
-      Left = 291
+      Left = 277
       Height = 25
       Top = 7
       Width = 25
@@ -160,7 +159,7 @@ object IDEOptionsDialog: TIDEOptionsDialog
       Left = 12
       Height = 24
       Top = 7
-      Width = 107
+      Width = 93
       BorderSpacing.Left = 6
       Caption = 'Build modes'
       OnChange = UseBuildModeCheckBoxChange
@@ -168,19 +167,19 @@ object IDEOptionsDialog: TIDEOptionsDialog
       ShowHint = True
       TabOrder = 2
     end
-    object SupportUtf8RtlButton: TButton
+    object SetUtf8InRtlButton: TButton
       AnchorSideLeft.Control = BuildModeManageButton
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = BuildModeManageButton
       AnchorSideTop.Side = asrCenter
-      Left = 331
-      Height = 30
-      Top = 4
-      Width = 150
+      Left = 317
+      Height = 27
+      Top = 6
+      Width = 102
       AutoSize = True
       BorderSpacing.Left = 15
-      Caption = 'Support UTF-8 RTL'
-      OnClick = SupportUtf8RtlButtonClick
+      Caption = 'Set UTF-8 in RTL'
+      OnClick = SetUtf8InRtlButtonClick
       TabOrder = 3
     end
   end
@@ -193,7 +192,7 @@ object IDEOptionsDialog: TIDEOptionsDialog
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = ButtonPanel
     Left = 259
-    Height = 416
+    Height = 418
     Top = 40
     Width = 535
     HorzScrollBar.Page = 1

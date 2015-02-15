@@ -50,7 +50,7 @@ type
 
   TIDEOptionsDialog = class(TAbstractOptionsEditorDialog)
     BuildModeComboBox: TComboBox;
-    SupportUtf8RtlButton: TButton;
+    SetUtf8InRtlButton: TButton;
     UseBuildModeCheckBox: TCheckBox;
     BuildModeManageButton: TButton;
     BuildModeSelectPanel: TPanel;
@@ -61,7 +61,7 @@ type
     EditorsPanel: TScrollBox;
     FilterEdit: TTreeFilterEdit;
     SettingsPanel: TPanel;
-    procedure SupportUtf8RtlButtonClick(Sender: TObject);
+    procedure SetUtf8InRtlButtonClick(Sender: TObject);
     procedure UseBuildModeCheckBoxChange(Sender: TObject);
     procedure BuildModeComboBoxSelect(Sender: TObject);
     procedure BuildModeManageButtonClick(Sender: TObject);
@@ -139,7 +139,7 @@ begin
   SettingsPanel.Constraints.MinHeight:=0;
   SetBuildModeVisibility(False);
   UseBuildModeCheckBox.Caption:=lisBuildModes;
-  SupportUtf8RtlButton.Caption := lisSupportUTF8RTL;
+  SetUtf8InRtlButton.Caption := lisSetUTF8InRTL;
 
   IDEDialogLayoutList.ApplyLayout(Self, Width, Height);
   Caption := dlgIDEOptions;
@@ -232,11 +232,11 @@ begin
   OtherOptions:=TCompilerOtherOptionsFrame(FindEditor(TCompilerOtherOptionsFrame));
   ModeMatrix:=TCompOptModeMatrixFrame(FindEditor(TCompOptModeMatrixFrame));
   if Assigned(OtherOptions) and Assigned(ModeMatrix) then
-    SupportUtf8RtlButton.Enabled :=
+    SetUtf8InRtlButton.Enabled :=
       not (OtherOptions.HasSupportForUtf8Rtl and ModeMatrix.HasSupportForUtf8Rtl);
 end;
 
-procedure TIDEOptionsDialog.SupportUtf8RtlButtonClick(Sender: TObject);
+procedure TIDEOptionsDialog.SetUtf8InRtlButtonClick(Sender: TObject);
 var
   OtherOptions: TCompilerOtherOptionsFrame;
   ModeMatrix: TCompOptModeMatrixFrame;
@@ -249,15 +249,15 @@ begin
     // Make FPC default string UTF-8. Assign UTF-8 backends for Ansi...() functions etc.
     ModeMatrix.SupportUtf8Rtl;
     UpdateUtf8RtlButtonState;
-    ShowMessage('This build mode now has support for UTF-8 RTL.' + LineEnding
-      +' Flags are in pages "Other" and "Additions and Overrides".');
+    ShowMessage(Format(lisThisBuildModeNowSetsUTF8InTheRTLFlagsAreInPagesOth, [
+      LineEnding]));
   end;
 end;
 
 procedure TIDEOptionsDialog.BuildModeComboBoxSelect(Sender: TObject);
 begin
   if AllBuildModes then begin
-    ShowMessage('This will allow changing all build modes at once. Not implemented yet.');
+    ShowMessage(lisThisWillAllowChangingAllBuildModesAtOnceNotImpleme);
   end
   else begin
     Assert(BuildModeSelectPanel.Visible, 'BuildModeComboBoxSelect: BuildModeSelectPanel not Visible');

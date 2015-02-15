@@ -242,6 +242,11 @@ resourcestring
   lisMenuTools = '&Tools';
   lisMenuWindow = '&Window';
   lisMenuHelp = '&Help';
+  lisThisBuildModeNowSetsUTF8InTheRTLFlagsAreInPagesOth = 'This build mode now'
+    +' sets UTF-8 in the RTL.%s Flags are in pages "Other" and "Additions and '
+    +'Overrides".';
+  lisThisWillAllowChangingAllBuildModesAtOnceNotImpleme = 'This will allow '
+    +'changing all build modes at once. Not implemented yet.';
   
   lisMenuNewUnit = 'New Unit';
   lisMenuNewForm = 'New Form';
@@ -5420,7 +5425,6 @@ resourcestring
   lisConditionals = 'Conditionals';
   lisDlgAllOptions = 'All options ...';
   lisDlgDefines = 'Defines ...';
-  lisSupportUTF8RTL = 'Support UTF-8 RTL';
   lisWithIncludes2 = ', with includes ';
   lisParsed = ', parsed ';
   lisCreatingFileIndexOfFPCSources =
@@ -5431,6 +5435,7 @@ resourcestring
     +'not-found errors. This can take a minute.';
   lisActive = 'Active';
   lisBuildModes = 'Build modes';
+  lisSetUTF8InRTL = 'Set UTF-8 in RTL';
   lisInSession = 'In session';
   lisTheDefaultModeMustBeStoredInProject =
     'The default mode must be stored in project, not in session.';
