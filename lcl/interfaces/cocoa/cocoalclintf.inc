@@ -144,6 +144,26 @@ begin
   Result := DC = HDC(TCarbonDesignWindow(WindowHandle).GetDesignContext);
 end;
  *)
+
+procedure TCocoaWidgetSet.InitClipboard;
+begin
+  PrimarySelection := NSPasteboard.pasteboardWithUniqueName();
+  SecondarySelection := NSPasteboard.pasteboardWithUniqueName();
+  ClipboardFormats := TFPObjectList.Create(True);
+end;
+
+procedure TCocoaWidgetSet.FreeClipboard;
+begin
+  PrimarySelection.releaseGlobally();
+  SecondarySelection.releaseGlobally();
+  ClipboardFormats.Free;
+end;
+
+function TCocoaWidgetSet.GetClipboardDataForFormat(AFormat: TClipboardFormat): TClipboardData;
+begin
+  Result := TClipboardData(AFormat);
+end;
+
 {------------------------------------------------------------------------------
   Method:  PromptUser
   Params:  DialogCaption - Dialog caption
@@ -154,11 +174,10 @@ end;
            DefaultIndex  - Index of default button
            EscapeResult  - Result value of escape
   Returns: The result value of pushed button
-  
+
   Shows modal dialog with the specified caption, message and buttons and prompts
   user to push one.
  ------------------------------------------------------------------------------}
-
 function TCocoaWidgetSet.PromptUser(const DialogCaption : string;
                                      const DialogMessage : string;
                                            DialogType    : LongInt;

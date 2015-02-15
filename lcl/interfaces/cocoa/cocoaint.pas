@@ -26,7 +26,7 @@ interface
 
 uses
   // rtl+ftl
-  Types, Classes, SysUtils, Math,
+  Types, Classes, SysUtils, Math, contnrs,
   // carbon bindings
   MacOSAll,
   // interfacebase
@@ -47,6 +47,14 @@ type
     func: TWSTimerProc;
     procedure timerEvent; message 'timerEvent';
     class function initWithFunc(afunc: TWSTimerProc): TCocoaTimerObject; message 'initWithFunc:';
+  end;
+
+  TClipboardData = class(TObject) // TClipboardFormat is a reference to a TClipboardData
+  public
+    MimeType: string;
+    CocoaFormat: NSString;
+    IsText: Boolean;
+    constructor Create(AMimeType: string; ACocoaFormat: NSString; AIsText: Boolean);
   end;
 
 
@@ -74,6 +82,15 @@ type
     FStockFixedFont: HFONT;
 
     FSysColorBrushes: array[0..MAX_SYS_COLORS] of HBrush;
+
+    // Clipboard
+    PrimarySelection: NSPasteboard;
+    SecondarySelection: NSPasteboard;
+    ClipboardFormats: TFPObjectList; // of TClipboardData
+
+    procedure InitClipboard();
+    procedure FreeClipboard();
+    function GetClipboardDataForFormat(AFormat: TClipboardFormat): TClipboardData;
 
     function PromptUser(const DialogCaption, DialogMessage: String;
       DialogType: longint; Buttons: PLongint; ButtonCount, DefaultIndex,

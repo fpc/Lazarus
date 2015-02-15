@@ -30,10 +30,10 @@ begin
     DebugLn('TCocoaWidgetSet.AppInit');
   {$ENDIF}
 
-
   { Creates the application NSApp object }
   FNsApp := NSApplication.sharedApplication;
 
+  InitClipboard();
 end;
 
 {------------------------------------------------------------------------------
@@ -131,6 +131,8 @@ begin
   DefaultBrush.Free;
 
   FreeSysColorBrushes;
+
+  FreeClipboard();
 
   // The CocoaCaret is based WidgetSet timer.
   // The GlobalCaret is freed in finalization section, which is called
@@ -487,6 +489,15 @@ class function TCocoaTimerObject.initWithFunc(afunc: TWSTimerProc): TCocoaTimerO
 begin
   Result:=alloc;
   Result.func:=afunc;
+end;
+
+{ TClipboardData }
+
+constructor TClipboardData.Create(AMimeType: string; ACocoaFormat: NSString; AIsText: Boolean);
+begin
+  MimeType := AMimeType;
+  CocoaFormat := ACocoaFormat;
+  IsText := AIsText;
 end;
 
 {------------------------------------------------------------------------------
