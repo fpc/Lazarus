@@ -161,7 +161,6 @@ type
     procedure SetButtonWidth(AValue: Integer);
     procedure SetCaretPos(AValue: TPoint);
     procedure SetCharCase(AValue: TEditCharCase);
-    procedure SetDirectInput(AValue: Boolean);
     procedure SetEchoMode(AValue: TEchoMode);
     procedure SetEditMask(AValue: String);
     procedure SetEditText(AValue: string);
@@ -182,12 +181,14 @@ type
     procedure SetSelText(AValue: String);
     procedure SetSpacing(const Value: integer);
     procedure SetTabStop(AValue: Boolean);
-    procedure SetText(AValue: TCaption);
   protected
     class function GetControlClassDefaultSize: TSize; override;
     function CalcButtonVisible: Boolean; virtual;
     function GetDefaultGlyph: TBitmap; virtual;
     function GetDefaultGlyphName: String; virtual;
+    procedure SetDirectInput(AValue: Boolean); virtual;
+    procedure SetText(AValue: TCaption); virtual;
+
     function GetEditPopupMenu: TPopupMenu;
 
     procedure CalculatePreferredSize(var PreferredWidth,
@@ -741,16 +742,22 @@ type
     FOKCaption: TCaption;
     FCancelCaption: TCaption;
     FDateFormat: string;
+    FDate: TDateTime;
+    FUpdatingDate: Boolean;
+    function TextToDate(AText: String; ADefault: TDateTime): TDateTime;
     function GetDate: TDateTime;
     procedure SetDate(Value: TDateTime);
     procedure CalendarPopupReturnDate(Sender: TObject; const ADate: TDateTime);
     procedure CalendarPopupShowHide(Sender: TObject);
     procedure SetDateOrder(const AValue: TDateOrder);
+    function DateToText(Value: TDateTime): String;
   protected
     function GetDefaultGlyph: TBitmap; override;
     function GetDefaultGlyphName: String; override;
     procedure ButtonClick; override;
     procedure EditDblClick; override;
+    procedure SetDirectInput(AValue: Boolean); override;
+    procedure SetText(AValue: TCaption); override;
     procedure SetDateMask; virtual;
   public
     constructor Create(AOwner: TComponent); override;
@@ -2303,6 +2310,8 @@ end;
 constructor TDateEdit.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  FDate := NullDate;
+  FUpdatingDate := False;
   FDefaultToday := False;
   FDisplaySettings := [dsShowHeadings, dsShowDayNames];
   OKCaption := 'OK';
@@ -2347,6 +2356,31 @@ begin
   inherited EditDblClick;
   if not ReadOnly then
     ButtonClick;
+end;
+
+procedure TDateEdit.SetDirectInput(AValue: Boolean);
+var
+  Def: TDateTime;
+begin
+  inherited SetDirectInput(AValue);
+  //Synchronize FDate and force valid text
+  FDate := TextToDate(Text, NullDate);
+  SetDate(FDate);
+end;
+
+procedure TDateEdit.SetText(AValue: TCaption);
+begin
+  if (not DirectInput) and not FUpdatingDate then
+  begin
+    //force a valid date and set FDate
+    debugln('TDateEdit.SetText: DirectInput = False');
+    if FDefaultToday then
+      FDate := TextToDate(AValue, SysUtils.Date)
+    else
+      FDate := TextToDate(AValue, NullDate);
+    AValue := DateToText(FDate);
+  end;
+  inherited SetText(AValue);
 end;
 
 procedure TDateEdit.SetDateMask;
@@ -2606,30 +2640,38 @@ begin
     Result := NullDate;
 end;
 
+function TDateEdit.TextToDate(AText: String; ADefault: TDateTime): TDateTime;
+begin
+  if Assigned(FOnCustomDate) then
+    FOnCustomDate(Self, AText);
+  if (DateOrder = doNone) then
+  begin
+    if not TryStrToDate(AText, Result) then
+    begin
+      Result := ParseDateNoPredefinedOrder(AText, DefaultFormatSettings);
+      if (Result = NullDate) then Result := ADefault;
+    end;
+  end
+  else
+    Result := ParseDate(AText,DateOrder,ADefault)
+end;
+
 function TDateEdit.GetDate: TDateTime;
 var
   ADate: string;
   Def: TDateTime;
 begin
-  if FDefaultToday then
+  //debugln(['TDateEdit.GetDate: FDate = ',DateToStr(FDate)]);
+  if (FDate = NullDate) and FDefaultToday then
     Def := SysUtils.Date
   else
-    Def := NullDate;
+    Def := FDate;
   ADate := Trim(Text);
-  if ADate <> '' then
+  //if not DirectInput then FDate matches the Text, so no need to parse it
+  if (ADate <> '') and DirectInput then
   begin
-    if Assigned(FOnCustomDate) then
-      FOnCustomDate(Self, ADate);
-    if (DateOrder = doNone) then
-    begin
-      if not TryStrToDate(ADate, Result) then
-      begin
-        Result := ParseDateNoPredefinedOrder(ADate, DefaultFormatSettings);
-        if (Result = NullDate) then Result := Def;
-      end;
-    end
-    else
-      Result := ParseDate(ADate,DateOrder,Result)
+    Result := TextToDate(ADate, Def);
+    FDate := Result;
   end
   else
     Result := Def;
@@ -2637,21 +2679,19 @@ end;
 
 procedure TDateEdit.SetDate(Value: TDateTime);
 begin
-  if {not IsValidDate(Value) or }(Value = NullDate) then
-  begin
-    if DefaultToday then
-      Value := SysUtils.Date
-    else
-      Value := NullDate;
-  end;
-  if Value = NullDate then
-    Text := ''
-  else
-  begin
-    if (FDateOrder = doNone) or (FDateFormat = '') then
-      Text := DateToStr(Value)
-    else
-      Text := FormatDateTime(FDateFormat, Value)
+  FUpdatingDate := True;
+  try
+    if {not IsValidDate(Value) or }(Value = NullDate) then
+    begin
+      if DefaultToday then
+        Value := SysUtils.Date
+      else
+        Value := NullDate;
+    end;
+    FDate := Value;
+    Text := DateToText(FDate);
+  finally
+    FUpdatingDate := False;
   end;
 end;
 
@@ -2684,6 +2724,19 @@ begin
   if FDateOrder=AValue then exit;
   FDateOrder:=AValue;
   SetDateMask;
+end;
+
+function TDateEdit.DateToText(Value: TDateTime): String;
+begin
+  if Value = NullDate then
+    Result := ''
+  else
+  begin
+    if (FDateOrder = doNone) or (FDateFormat = '') then
+      Result := DateToStr(Value)
+    else
+      Result := FormatDateTime(FDateFormat, Value)
+  end;
 end;
 
 { TCalcEdit }
