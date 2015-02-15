@@ -240,6 +240,16 @@ end;
 function TCocoaWidgetSet.ClipboardGetOwnerShip(ClipboardType: TClipboardType;
   OnRequestProc: TClipboardRequestEvent; FormatCount: integer;
   Formats: PClipboardFormat): boolean;
+var
+  pasteboard: NSPasteboard;
+  i: Integer;
+  lCurFormat: TClipboardData;
+  DataStream: TMemoryStream;
+  FormatToOwn: NSString;
+  FormatToOwnArray: NSArray;
+  // text format
+  lText: string;
+  lNSText: NSString;
 begin
   Result := False;
   {$IFDEF VerboseClipboard}
@@ -247,7 +257,49 @@ begin
       ClipboardTypeName[ClipboardType] + ' FormatCount: ' + DbgS(FormatCount));
   {$ENDIF}
 
+  case ClipboardType of
+  ctPrimarySelection:   pasteboard := PrimarySelection;
+  ctSecondarySelection: pasteboard := SecondarySelection;
+  ctClipboard:          pasteboard := NSPasteboard.generalPasteboard;
+  end;
 
+  DataStream := TMemoryStream.Create;
+  try
+    for i := 0 to FormatCount-1 do
+    begin
+      lCurFormat := TClipboardData(Formats[i]);
+      if lCurFormat = nil then Continue;
+      DataStream.Position := 0;
+      DataStream.Size := 0;
+      OnRequestProc(Formats[i], DataStream);
+
+      case lCurFormat.DataType of
+      ccdtText:
+      begin
+        FormatToOwn := lCurFormat.CocoaFormat;
+        FormatToOwnArray := NSArray.arrayWithObjects_count(@FormatToOwn, 1);
+
+        DataStream.Position := 0;
+        SetLength(lText, DataStream.Size);
+        DataStream.Read(lText[1], DataStream.Size);
+        lNSText := NSStringUtf8(lText);
+
+        pasteboard.declareTypes_owner(FormatToOwnArray, nil);
+        pasteboard.setString_forType(lNSText, lCurFormat.CocoaFormat);
+      end;
+      ccdtCocoaStandard:
+      begin
+      end;
+      ccdtNonStandard:
+      begin
+      end;
+      end;
+    end;
+  finally
+    DataStream.Free;
+  end;
+
+  Result := True;
 end;
 
 {------------------------------------------------------------------------------
