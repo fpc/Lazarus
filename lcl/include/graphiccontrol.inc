@@ -113,7 +113,7 @@ begin
   if not Visible then exit;
   if Parent <> nil then begin
     // execute only if the cursor is actually over the control
-    Pt := Parent.ScreenToClient(Mouse.CursorPos);
+    Pt := Parent.ScreenToControl(Mouse.CursorPos);
     Ct := Parent.ControlAtPos(Pt, True);
     if (Self = Ct) then
       SetTempCursor(FCursor);
