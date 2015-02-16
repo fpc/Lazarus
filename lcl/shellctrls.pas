@@ -170,12 +170,15 @@ type
 
   { TCustomShellListView }
 
+  TCSLVFileAddedEvent = procedure(Sender: TObject; Item: TListItem) of object;
+
   TCustomShellListView = class(TCustomListView)
   private
     FMask: string;
     FObjectTypes: TObjectTypes;
     FRoot: string;
     FShellTreeView: TCustomShellTreeView;
+    FOnFileAdded: TCSLVFileAddedEvent;
     { Setters and getters }
     procedure SetMask(const AValue: string);
     procedure SetShellTreeView(const Value: TCustomShellTreeView);
@@ -184,6 +187,7 @@ type
     { Methods specific to Lazarus }
     procedure PopulateWithRoot();
     procedure Resize; override;
+    property OnFileAdded: TCSLVFileAddedEvent read FOnFileAdded write FOnFileAdded;
   public
     { Basic methods }
     constructor Create(AOwner: TComponent); override;
@@ -282,6 +286,7 @@ type
     property OnSelectItem;
     property OnStartDrag;
     property OnUTF8KeyPress;
+    property OnFileAdded;
     { TCustomShellListView properties }
     property ObjectTypes;
     property Root;
@@ -1220,6 +1225,7 @@ begin
         NewItem.SubItems.Add(IntToStr(CurFileSize div (1024 * 1024)) + ' MB');
       // Third column - Type
       NewItem.SubItems.Add(ExtractFileExt(CurFileName));
+      if Assigned(FOnFileAdded) then FOnFileAdded(Self,NewItem);
     end;
     Sort;
   finally
