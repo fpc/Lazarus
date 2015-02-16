@@ -379,6 +379,7 @@ type
     procedure InvertRectangle(X1, Y1, X2, Y2: Integer);
     procedure MoveTo(X, Y: Integer);
     procedure LineTo(X, Y: Integer);
+    function GetPixel(X,Y:integer): TColor; virtual;
     procedure SetPixel(X,Y:integer; AColor:TColor); virtual;
     procedure Polygon(const Points: array of TPoint; NumPts: Integer; Winding: boolean);
     procedure Polyline(const Points: array of TPoint; NumPts: Integer);
@@ -435,6 +436,7 @@ type
   public
     constructor Create; reintroduce;
     destructor Destroy; override;
+    function GetPixel(X,Y:integer): TColor; override;
     property Bitmap: TCocoaBitmap read FBitmap write SetBitmap;
   end;
 
@@ -1262,40 +1264,6 @@ begin
     Result := crt_Error;
 end;
 
-procedure TCocoaBitmapContext.SetBitmap(const AValue: TCocoaBitmap);
-var pool:NSAutoReleasePool;
-begin
-  if Assigned(ctx) then
-  begin
-    ctx.release;
-    ctx := nil;
-  end;
-
-  if FBitmap <> nil then
-  begin
-    FBitmap := AValue;
-    pool:=NSAutoreleasePool.alloc.init;
-    ctx := NSGraphicsContext.graphicsContextWithBitmapImageRep(Bitmap.ImageRep);
-    ctx.retain; // extend live beyond NSAutoreleasePool
-    InitDraw(Bitmap.Width, Bitmap.Height);
-    pool.release;
-  end;
-end;
-
-constructor TCocoaBitmapContext.Create;
-begin
-  inherited Create(nil);
-  FBitmap := DefaultBitmap;
-end;
-
-destructor TCocoaBitmapContext.Destroy;
-begin
-  if Assigned(ctx) then
-    ctx.release;
-  inherited Destroy;
-end;
-
-
 function TCocoaContext.GetTextColor: TColor;
 begin
   Result := FText.ForegroundColor;
@@ -1648,32 +1616,35 @@ begin
   FPenPos.y := Y;
 end;
 
+function TCocoaContext.GetPixel(X,Y:integer): TColor;
+begin
+  Result := 0;
+end;
 
 procedure TCocoaContext.SetPixel(X,Y:integer; AColor:TColor);
- var
-    cg: CGContextRef;
-    fillbrush: TCocoaBrush;
-    r:CGRect;
-
+var
+  cg: CGContextRef;
+  fillbrush: TCocoaBrush;
+  r:CGRect;
 begin
-    cg := CGContext;
-    if not Assigned(cg) then Exit;
+  cg := CGContext;
+  if not Assigned(cg) then Exit;
 
-    fillbrush:=TCocoaBrush.Create(ColorToNSColor(ColorRef(AColor)));
-    fillbrush.Apply(self);
+  fillbrush:=TCocoaBrush.Create(ColorToNSColor(ColorRef(AColor)));
+  fillbrush.Apply(self);
 
-    r.origin.x:=x;
-    r.origin.y:=y;
-    r.size.height:=1;
-    r.size.width:=1;
+  r.origin.x:=x;
+  r.origin.y:=y;
+  r.size.height:=1;
+  r.size.width:=1;
 
-    CGContextFillRect(cg,r);
+  CGContextFillRect(cg,r);
 
-    fillbrush.Free;
+  fillbrush.Free;
 
-      //restore the brush
-    if Assigned(FBrush) then
-       FBrush.Apply(Self);
+    //restore the brush
+  if Assigned(FBrush) then
+     FBrush.Apply(Self);
 end;
 
 procedure CGContextAddLCLPoints(cg: CGContextRef; const Points: array of TPoint;NumPts:Integer);
@@ -2098,6 +2069,58 @@ begin
   InflateRect(ARect, -AOutSet, -AOutSet);
   HIThemeDrawFocusRect(RectToCGRect(ARect), True, CGContext, kHIThemeOrientationNormal);
   {$ENDIF}
+end;
+
+{ TCocoaBitmapContext }
+
+procedure TCocoaBitmapContext.SetBitmap(const AValue: TCocoaBitmap);
+var pool:NSAutoReleasePool;
+begin
+  if Assigned(ctx) then
+  begin
+    ctx.release;
+    ctx := nil;
+  end;
+
+  if FBitmap <> nil then
+  begin
+    FBitmap := AValue;
+    pool:=NSAutoreleasePool.alloc.init;
+    ctx := NSGraphicsContext.graphicsContextWithBitmapImageRep(Bitmap.ImageRep);
+    ctx.retain; // extend live beyond NSAutoreleasePool
+    InitDraw(Bitmap.Width, Bitmap.Height);
+    pool.release;
+  end;
+end;
+
+constructor TCocoaBitmapContext.Create;
+begin
+  inherited Create(nil);
+  FBitmap := DefaultBitmap;
+end;
+
+destructor TCocoaBitmapContext.Destroy;
+begin
+  if Assigned(ctx) then
+    ctx.release;
+  inherited Destroy;
+end;
+
+function TCocoaBitmapContext.GetPixel(X,Y:integer): TColor;
+var
+  cg: CGContextRef;
+  color: NSColor;
+  R,G, B: Byte;
+begin
+  Result := 0;
+  cg := CGContext;
+  if not Assigned(cg) then Exit;
+
+  color := FBitmap.Imagerep.colorAtX_Y(X, Y);
+  R := Round(color.redComponent * $FF);
+  G := Round(color.greenComponent * $FF);
+  B := Round(color.blueComponent * $FF);
+  Result := Graphics.RGBToColor(R, G, B);
 end;
 
 { TCocoaRegion }
