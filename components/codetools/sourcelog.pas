@@ -255,7 +255,7 @@ begin
         end;
       end;
     else
-      inc(p);
+      inc(Src);
     end;
   until false;
   SetLength(Result,NewLength);
