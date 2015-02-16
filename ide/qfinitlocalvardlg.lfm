@@ -1,0 +1,55 @@
+object QFInitLocalVarDialog: TQFInitLocalVarDialog
+  Left = 314
+  Height = 240
+  Top = 251
+  Width = 320
+  Caption = 'QFInitLocalVarDialog'
+  ClientHeight = 240
+  ClientWidth = 320
+  OnCreate = FormCreate
+  LCLVersion = '1.5'
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 36
+    Top = 198
+    Width = 308
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
+    TabOrder = 0
+    ShowButtons = [pbOK, pbCancel]
+  end
+  object WhereRadioGroup: TRadioGroup
+    Left = 6
+    Height = 74
+    Top = 6
+    Width = 308
+    Align = alTop
+    AutoFill = True
+    BorderSpacing.Around = 6
+    Caption = 'WhereRadioGroup'
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+    ChildSizing.EnlargeVertical = crsHomogenousChildResize
+    ChildSizing.ShrinkHorizontal = crsScaleChilds
+    ChildSizing.ShrinkVertical = crsScaleChilds
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 1
+    TabOrder = 1
+  end
+  object ValueGroupBox: TGroupBox
+    Left = 6
+    Height = 106
+    Top = 86
+    Width = 308
+    Align = alClient
+    BorderSpacing.Around = 6
+    Caption = 'ValueGroupBox'
+    TabOrder = 2
+  end
+end
