@@ -499,12 +499,11 @@ end;
 
 { TClipboardData }
 
-constructor TClipboardData.Create(AMimeType: string; ACocoaFormat: NSString; ADataType: TCocoaClipboardDataType; AClassClass: Pobjc_class);
+constructor TClipboardData.Create(AMimeType: string; ACocoaFormat: NSString; ADataType: TCocoaClipboardDataType);
 begin
   MimeType := AMimeType;
   CocoaFormat := ACocoaFormat;
   DataType := ADataType;
-  ClassClass := AClassClass;
 end;
 
 {------------------------------------------------------------------------------

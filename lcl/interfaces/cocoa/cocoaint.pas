@@ -54,13 +54,9 @@ type
   TClipboardData = class(TObject) // TClipboardFormat is a reference to a TClipboardData
   public
     MimeType: string;
-    CocoaFormat: NSString;  // utilized for ccdtCocoaStandard
-    ClassClass: Pobjc_class; // utilized only for ccdtNonStandard
+    CocoaFormat: NSString;  // utilized for ccdtCocoaStandard and ccdtNonStandard
     DataType: TCocoaClipboardDataType;
-    constructor Create(AMimeType: string; ACocoaFormat: NSString; ADataType: TCocoaClipboardDataType; AClassClass: Pobjc_class);
-  end;
-
-  TClipboardString = objcclass(NSString)
+    constructor Create(AMimeType: string; ACocoaFormat: NSString; ADataType: TCocoaClipboardDataType);
   end;
 
   { TCocoaWidgetSet }

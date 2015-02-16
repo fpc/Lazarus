@@ -139,9 +139,6 @@ var
   lNSData: NSData;
   lNSbytes: PByte;
   i: Integer;
-  // for non-standard
-  lClassArray, lArray: NSArray;
-  lDict: NSDictionary;
 begin
   Result := False;
   {$IFDEF VerboseClipboard}
@@ -169,19 +166,13 @@ begin
       DebugLn('TCocoaWidgetSet.ClipboardGetData IsText Result=' + lStr);
     {$ENDIF}
   end;
-  ccdtCocoaStandard:
+  ccdtCocoaStandard, ccdtNonStandard:
   begin
     lNSData := pasteboard.dataForType(lFormat.CocoaFormat);
     if lNSData = nil then Exit;
     lNSbytes := lNSData.bytes;
     for i := 0 to lNSData.length-1 do
       Stream.WriteByte(lNSbytes[i]);
-  end;
-  ccdtNonStandard:
-  begin
-    lDict := NSDictionary.dictionary();
-    lClassArray := NSArray.arrayWithObjects_count(@lFormat.ClassClass, 1);
-    lArray := pasteboard.readObjectsForClasses_options(lClassArray, lDict);
   end;
   end;
 
@@ -250,10 +241,12 @@ var
   // text format
   lText: string;
   lNSText: NSString;
+  // non-text
+  lNSData: NSData;
 begin
   Result := False;
   {$IFDEF VerboseClipboard}
-    DebugLn('TCocoaWidgetSet.ClipboardGetOwnerShip ClipboardType' +
+    DebugLn('TCocoaWidgetSet.ClipboardGetOwnerShip ClipboardType=' +
       ClipboardTypeName[ClipboardType] + ' FormatCount: ' + DbgS(FormatCount));
   {$ENDIF}
 
@@ -287,11 +280,17 @@ begin
         pasteboard.declareTypes_owner(FormatToOwnArray, nil);
         pasteboard.setString_forType(lNSText, lCurFormat.CocoaFormat);
       end;
-      ccdtCocoaStandard:
+      ccdtCocoaStandard, ccdtNonStandard:
       begin
-      end;
-      ccdtNonStandard:
-      begin
+        FormatToOwn := lCurFormat.CocoaFormat;
+        FormatToOwnArray := NSArray.arrayWithObjects_count(@FormatToOwn, 1);
+
+        DataStream.Position := 0;
+        lNSData := NSData.dataWithBytes_length(DataStream.Memory, DataStream.Size);
+
+        pasteboard.declareTypes_owner(FormatToOwnArray, nil);
+        pasteboard.setData_forType(lNSData, lCurFormat.CocoaFormat);
+        //lNSData.release; // this causes a crash
       end;
       end;
     end;
@@ -314,7 +313,6 @@ var
   lCurData: TClipboardData;
   lNSStr: NSString = nil;
   lDataType: TCocoaClipboardDataType;
-  lClassClass: Pobjc_class = nil;
 begin
   Result := 0;
 
@@ -343,18 +341,19 @@ begin
     lNSStr := NSPasteboardTypeString;
     lDataType := ccdtText;
   end;
-  {'image/bmp', 'image/xpm', 'image/delphi.bitmap':
-  begin
-  end;}
   'image/png':
   begin
     lNSStr := NSPasteboardTypePNG;
+    lDataType := ccdtCocoaStandard;
   end;
+  else
+    lNSStr := NSStringUtf8(AMimeType);
+    lDataType := ccdtNonStandard;
   end;
 
   if lNSStr <> nil then
   begin
-    lCurData := TClipboardData.Create(AMimeType, lNSStr, lDataType, lClassClass);
+    lCurData := TClipboardData.Create(AMimeType, lNSStr, lDataType);
     ClipboardFormats.Add(lCurData);
     Result := TClipboardFormat(lCurData);
   end;
