@@ -32,8 +32,11 @@ unit QFInitLocalVarDlg;
 interface
 
 uses
-  Classes, SysUtils, contnrs, FileUtil, CodeToolManager, CodeCache, LazIDEIntf,
-  Forms, Controls, Graphics, Dialogs, ButtonPanel, ExtCtrls, StdCtrls;
+  Classes, SysUtils, Math, contnrs, LazLogger,
+  Forms, Controls, Graphics, Dialogs, ButtonPanel, ExtCtrls, StdCtrls,
+  CodeToolManager, CodeCache, StdCodeTools,
+  LazIDEIntf, IDEDialogs,
+  LazarusIDEStrConsts;
 
 type
 
@@ -41,11 +44,16 @@ type
 
   TQFInitLocalVarDialog = class(TForm)
     ButtonPanel1: TButtonPanel;
-    ValueGroupBox: TGroupBox;
+    Panel1: TPanel;
+    ValueRadioGroup: TRadioGroup;
     WhereRadioGroup: TRadioGroup;
+    procedure ButtonPanel1OKButtonClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
   private
   public
+    Statements: TStrings;
+    InsertPositions: TObjectList;
+    procedure Init(TheStatements: TStrings; TheInsertPositions: TObjectList);
   end;
 
 function QuickFixLocalVarNotInitialized(Code: TCodeBuffer; X, Y: integer;
@@ -58,19 +66,42 @@ function QuickFixLocalVarNotInitialized(Code: TCodeBuffer; X, Y: integer;
 var
   Statements: TStrings;
   InsertPositions: TObjectList;
+  Dlg: TQFInitLocalVarDialog;
 begin
   Result:=false;
-  if not CodeToolBoss.GetPossibleInitsForVariable(Code,X,Y,Statements,
-    InsertPositions)
-  then begin
-    if CodeToolBoss.ErrorCode<>nil then
-      LazarusIDE.DoJumpToCodeToolBossError
-    else
-      ShowMessage('CodeToolBoss.GetPossibleInitsForVariable failed at '+Code.Filename+'('+IntToStr(Y)+','+IntToStr(X)+')');
-    exit;
-  end;
+  Statements:=nil;
+  InsertPositions:=nil;
+  try
+    if not CodeToolBoss.GetPossibleInitsForVariable(Code,X,Y,Statements,
+      InsertPositions)
+    then begin
+      if CodeToolBoss.ErrorCode<>nil then
+        LazarusIDE.DoJumpToCodeToolBossError
+      else
+        ShowMessage('CodeToolBoss.GetPossibleInitsForVariable failed at '+Code.Filename+'('+IntToStr(Y)+','+IntToStr(X)+')');
+      exit;
+    end;
 
-  ShowMessage('QuickFixLocalVarNotInitialized not yet implemented');
+    Dlg:=TQFInitLocalVarDialog.Create(nil);
+    try
+      Dlg.Init(Statements,InsertPositions);
+      case Dlg.ShowModal of
+      mrOk: Result:=true;
+      mrAbort:
+        if CodeToolBoss.ErrorCode<>nil then
+          LazarusIDE.DoJumpToCodeToolBossError
+        else
+          IDEMessageDialog('Error','Unable to insert the code',mtError,[mbOk]);
+      else
+        // user cancel
+      end;
+    finally
+      Dlg.Free;
+    end;
+  finally
+    Statements.Free;
+    InsertPositions.Free;
+  end;
 end;
 
 {$R *.lfm}
@@ -79,8 +110,59 @@ end;
 
 procedure TQFInitLocalVarDialog.FormCreate(Sender: TObject);
 begin
-  Caption:='Initialize local variable';
-  WhereRadioGroup.AutoSize:=true;
+  Caption:=lisInitializeLocalVariable;
+  ButtonPanel1.OKButton.OnClick:=@ButtonPanel1OKButtonClick;
+end;
+
+procedure TQFInitLocalVarDialog.ButtonPanel1OKButtonClick(Sender: TObject);
+begin
+  if CodeToolBoss.InsertStatements(
+    TInsertStatementPosDescription(InsertPositions[Max(0,WhereRadioGroup.ItemIndex)]),
+    Statements[Max(0,ValueRadioGroup.ItemIndex)])
+  then begin
+    ModalResult:=mrOk;
+  end else begin
+    ModalResult:=mrAbort;
+  end;
+end;
+
+procedure TQFInitLocalVarDialog.Init(TheStatements: TStrings;
+  TheInsertPositions: TObjectList);
+var
+  i: Integer;
+  InsertPos: TInsertStatementPosDescription;
+  sl: TStringList;
+  s: String;
+  CodeXY: TCodeXYPosition;
+begin
+  Statements:=TheStatements;
+  InsertPositions:=TheInsertPositions;
+  sl:=TStringList.Create;
+  try
+    // show possible insert positions
+    for i:=0 to InsertPositions.Count-1 do begin
+      InsertPos:=TInsertStatementPosDescription(InsertPositions[i]);
+      CodeXY:=InsertPos.CodeXYPos;
+      s:=ExtractFileName(CodeXY.Code.Filename)
+         +'('+IntToStr(CodeXY.Y)+','+IntToStr(CodeXY.X)+') '
+         +InsertPos.Description;
+      sl.Add(s);
+    end;
+    WhereRadioGroup.Items.Assign(sl);
+    WhereRadioGroup.ItemIndex:=0;
+    WhereRadioGroup.AutoSize:=true;
+    WhereRadioGroup.Caption:='Insert where:';
+
+    // show possible statements
+    sl.Clear;
+    for s in Statements do
+      sl.Add(DbgStr(s));
+    ValueRadioGroup.Items.Assign(sl);
+    ValueRadioGroup.ItemIndex:=0;
+    ValueRadioGroup.Caption:='Insert what:';
+  finally
+    sl.Free;
+  end;
 end;
 
 end.

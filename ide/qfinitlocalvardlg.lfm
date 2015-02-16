@@ -1,18 +1,18 @@
 object QFInitLocalVarDialog: TQFInitLocalVarDialog
   Left = 314
-  Height = 240
+  Height = 225
   Top = 251
-  Width = 320
+  Width = 564
   Caption = 'QFInitLocalVarDialog'
-  ClientHeight = 240
-  ClientWidth = 320
+  ClientHeight = 225
+  ClientWidth = 564
   OnCreate = FormCreate
   LCLVersion = '1.5'
   object ButtonPanel1: TButtonPanel
     Left = 6
     Height = 36
-    Top = 198
-    Width = 308
+    Top = 183
+    Width = 552
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
     HelpButton.Name = 'HelpButton'
@@ -24,32 +24,53 @@ object QFInitLocalVarDialog: TQFInitLocalVarDialog
     TabOrder = 0
     ShowButtons = [pbOK, pbCancel]
   end
-  object WhereRadioGroup: TRadioGroup
-    Left = 6
-    Height = 74
-    Top = 6
-    Width = 308
-    Align = alTop
-    AutoFill = True
-    BorderSpacing.Around = 6
-    Caption = 'WhereRadioGroup'
-    ChildSizing.LeftRightSpacing = 6
-    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+  object Panel1: TPanel
+    Left = 0
+    Height = 177
+    Top = 0
+    Width = 564
+    Align = alClient
+    BevelOuter = bvNone
+    ChildSizing.EnlargeHorizontal = crsScaleChilds
     ChildSizing.EnlargeVertical = crsHomogenousChildResize
-    ChildSizing.ShrinkHorizontal = crsScaleChilds
-    ChildSizing.ShrinkVertical = crsScaleChilds
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 1
+    ClientHeight = 177
+    ClientWidth = 564
     TabOrder = 1
-  end
-  object ValueGroupBox: TGroupBox
-    Left = 6
-    Height = 106
-    Top = 86
-    Width = 308
-    Align = alClient
-    BorderSpacing.Around = 6
-    Caption = 'ValueGroupBox'
-    TabOrder = 2
+    object WhereRadioGroup: TRadioGroup
+      Left = 6
+      Height = 78
+      Top = 6
+      Width = 548
+      AutoFill = True
+      BorderSpacing.Around = 6
+      Caption = 'WhereRadioGroup'
+      ChildSizing.LeftRightSpacing = 6
+      ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+      ChildSizing.EnlargeVertical = crsHomogenousChildResize
+      ChildSizing.ShrinkHorizontal = crsScaleChilds
+      ChildSizing.ShrinkVertical = crsScaleChilds
+      ChildSizing.Layout = cclLeftToRightThenTopToBottom
+      ChildSizing.ControlsPerLine = 1
+      TabOrder = 0
+    end
+    object ValueRadioGroup: TRadioGroup
+      Left = 6
+      Height = 77
+      Top = 90
+      Width = 548
+      AutoFill = True
+      BorderSpacing.Around = 6
+      Caption = 'ValueRadioGroup'
+      ChildSizing.LeftRightSpacing = 6
+      ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+      ChildSizing.EnlargeVertical = crsHomogenousChildResize
+      ChildSizing.ShrinkHorizontal = crsScaleChilds
+      ChildSizing.ShrinkVertical = crsScaleChilds
+      ChildSizing.Layout = cclLeftToRightThenTopToBottom
+      ChildSizing.ControlsPerLine = 1
+      TabOrder = 1
+    end
   end
 end

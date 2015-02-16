@@ -5904,6 +5904,7 @@ resourcestring
   lisPageNameAlreadyExists = 'Page name "%s" already exists. Not added.';
   lisJumpToProcedure = 'Jump to procedure %s';
   lisFindDeclarationOf = 'Find Declaration of %s';
+  lisInitializeLocalVariable = 'Initialize Local Variable';
 implementation
 
 end.
