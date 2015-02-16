@@ -222,6 +222,13 @@ type
     function RemoveIdentifierDefinition(const CursorPos: TCodeXYPosition;
           SourceChangeCache: TSourceChangeCache): boolean;
 
+    function InsertStatements(const CursorPos: TCodeXYPosition;
+          Statements: string; FrontGap, AfterGap: TGapTyp;
+          SourceChangeCache: TSourceChangeCache): boolean;
+    function InsertStatements(CleanPos: integer;
+          Statements: string; FrontGap, AfterGap: TGapTyp;
+          SourceChangeCache: TSourceChangeCache): boolean;
+
     // blocks (e.g. begin..end)
     function FindBlockCounterPart(const CursorPos: TCodeXYPosition;
           out NewPos: TCodeXYPosition; out NewTopLine: integer): boolean;
@@ -4957,6 +4964,45 @@ begin
     then exit;
     Result:=SourceChangeCache.Apply;
   end;
+end;
+
+function TStandardCodeTool.InsertStatements(const CursorPos: TCodeXYPosition;
+  Statements: string; FrontGap, AfterGap: TGapTyp;
+  SourceChangeCache: TSourceChangeCache): boolean;
+var
+  CleanCursorPos: integer;
+begin
+  BeginParsingAndGetCleanPos(lsrEnd,CursorPos,CleanCursorPos);
+  Result:=InsertStatements(CleanCursorPos,Statements,FrontGap,AfterGap,
+    SourceChangeCache);
+  Result:=SourceChangeCache.Apply;
+end;
+
+function TStandardCodeTool.InsertStatements(CleanPos: integer;
+  Statements: string; FrontGap, AfterGap: TGapTyp;
+  SourceChangeCache: TSourceChangeCache): boolean;
+{
+  ToDo: check for "uses" in Statements and extend uses section
+        e.g. "uses unit1, unit2 in 'filename'; statements
+  ToDo: check for single statement (e.g. for .. do | dosome;) and add begin/end
+
+ }
+var
+  Node: TCodeTreeNode;
+begin
+  Node:=FindDeepestNodeAtPos(CleanPos,true);
+  if not (Node.Desc in AllPascalStatements) then begin
+    MoveCursorToCleanPos(CleanPos);
+    RaiseException('invalid position for insertion');
+  end;
+  if Node.Desc=ctnBeginBlock then
+    Node:=BuildSubTreeAndFindDeepestNodeAtPos(Node,CleanPos,true);
+
+  // ToDo: check for CleanPos
+
+
+  SourceChangeCache.MainScanner:=Scanner;
+  Result:=SourceChangeCache.Replace(FrontGap,AfterGap,CleanPos,CleanPos,Statements);
 end;
 
 function TStandardCodeTool.FindBlockCounterPart(
