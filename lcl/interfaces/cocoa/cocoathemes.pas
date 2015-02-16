@@ -338,6 +338,7 @@ var
   LabelRect: HIRect;
   b: TCocoaBrush;
   lColor: NSColor;
+  lPoints: array of TPoint;
 begin
   case Details.Part of
     TVP_TREEITEM:
@@ -356,6 +357,10 @@ begin
     end;
     TVP_GLYPH, TVP_HOTGLYPH:
     begin
+      // HIThemeDrawButton exists only in 32-bits and there is no Cocoa alternative =(
+      {$define CocoaUseHITheme}
+      {$ifdef CocoaUseHITheme}
+      {$ifdef CPU386}
       ButtonDrawInfo.version := 0;
       ButtonDrawInfo.State := GetDrawState(Details);
       ButtonDrawInfo.kind := kThemeDisclosureTriangle;
@@ -370,12 +375,34 @@ begin
       LabelRect.origin.x := LabelRect.origin.x - 2;
       LabelRect.origin.y := LabelRect.origin.y - 1;
 
-      {$ifdef i386}
       HIThemeDrawButton(LabelRect, ButtonDrawInfo, DC.CGContext(),
         kHIThemeOrientationNormal, @LabelRect);
-      {$endif}
 
       Result := CGRectToRect(LabelRect);
+      {$endif}
+      {$else}
+      SetLength(lPoints, 3);
+
+      // face right
+      if Details.State = GLPS_CLOSED then
+      begin
+        lPoints[0] := Types.Point(R.Left, R.Top);
+        lPoints[1] := Types.Point(R.Left, R.Bottom);
+        lPoints[2] := Types.Point(R.Right, (R.Top + R.Bottom) div 2);
+      end
+      // face down
+      else
+      begin
+        lPoints[0] := Types.Point(R.Left, R.Top);
+        lPoints[1] := Types.Point(R.Right, R.Top);
+        lPoints[2] := Types.Point((R.Left + R.Right) div 2, R.Bottom);
+      end;
+
+      DC.Brush.SetColor(Graphics.RGBToColor(0, 0, 0), True);
+      DC.Polygon(lPoints, 3, False);
+
+      Result := R;
+      {$endif}
     end;
   end;
 end;
