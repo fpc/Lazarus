@@ -31,8 +31,9 @@ uses
   Windows, // keep as first
   ActiveX, Classes,
   Translations, ComCtrls, Controls, Buttons,
-  Forms, Dialogs, GraphMath, GraphType, InterfaceBase, LCLIntf, LazUTF8,
-  LCLType, LMessages, StdCtrls, SysUtils, Win32Def, Graphics, Menus, CommCtrl,
+  LCLIntf, LclProc, LazUTF8, LCLType, LMessages,
+  Forms, Dialogs, GraphMath, GraphType, InterfaceBase,
+  StdCtrls, SysUtils, Win32Def, Graphics, Menus, CommCtrl,
   MultiMon, Themes{, Win32Debug};
 
 const
@@ -252,7 +253,7 @@ uses
   Win32WSDialogs,
   Win32Themes,
 ////////////////////////////////////////////////////
-  Win32Extra, LclProc, LCLMessageGlue;
+  Win32Extra, LCLMessageGlue;
 
 type
   PProcessEvent = ^TProcessEvent;

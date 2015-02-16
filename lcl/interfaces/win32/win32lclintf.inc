@@ -267,7 +267,7 @@ var
   Msg: TLMessage;
   PMethod: ^TLCLWndMethod;
 begin
-  FillChar(Msg, SizeOf(Msg), #0);
+  FillChar(Msg{%H-}, SizeOf(Msg), #0);
   
   Msg.msg := uMsg;
   Msg.wParam := wParam;
@@ -276,7 +276,7 @@ begin
   {------------------------------------------------------------------------------
     Here we get the callback WndMethod associated with this window
    ------------------------------------------------------------------------------}
-  PMethod := Pointer(Widgetset.GetWindowLong(ahwnd, GWL_USERDATA));
+  PMethod := {%H-}Pointer(Widgetset.GetWindowLong(ahwnd, GWL_USERDATA));
 
   if Assigned(PMethod) then PMethod^(Msg);
    
@@ -311,10 +311,10 @@ begin
     Getmem(PMethod, SizeOf(TMethod));
     PMethod^ := Method;
 
-    Self.SetWindowLong(Result, GWL_USERDATA, PtrInt(PMethod));
+    Self.SetWindowLong(Result, GWL_USERDATA, {%H-}PtrInt(PMethod));
   end;
   
-  Self.SetWindowLong(Result, GWL_WNDPROC, PtrInt(@CallbackAllocateHWnd))
+  Self.SetWindowLong(Result, GWL_WNDPROC, {%H-}PtrInt(@CallbackAllocateHWnd))
 end;
 
 function TWin32WidgetSet.AskUser(const DialogCaption, DialogMessage: string;
@@ -328,7 +328,7 @@ var
 begin
   if (WindowsVersion >= wvVista) and ThemeServices.ThemesEnabled then
   begin
-    FillChar(TaskConfig, SizeOf(TaskConfig), 0);
+    FillChar(TaskConfig{%H-}, SizeOf(TaskConfig), 0);
     TaskConfig.cbSize := SizeOf(TaskConfig);
     // if we skip hwndParent our form will be a root window - with the taskbar item and icon
     // this is unwanted
@@ -410,7 +410,7 @@ procedure TWin32WidgetSet.DeallocateHWnd(Wnd: HWND);
 var
   PMethod: ^TLCLWndMethod;
 begin
-  PMethod := Pointer(Self.GetWindowLong(Wnd, GWL_USERDATA));
+  PMethod := {%H-}Pointer(Self.GetWindowLong(Wnd, GWL_USERDATA));
 
   if Wnd <> 0 then Windows.DestroyWindow(Wnd);
 
@@ -620,17 +620,17 @@ var
 begin
   WindowInfo := GetWin32WindowInfo(WindowHandle);
   OverlayWindow := WindowInfo^.Overlay;
-  if OverlayWindow = HWND(nil) then
+  if OverlayWindow = {%H-}HWND(nil) then
   begin
     // create 'overlay' window
     Windows.GetClientRect(WindowHandle, @ARect);
     OverlayWindow := Windows.CreateWindowEx(WS_EX_TRANSPARENT,
         @ClsName, '', WS_CHILD or WS_VISIBLE,
         ARect.Left, ARect.Top, ARect.Right, ARect.Bottom,
-        WindowHandle, HMENU(nil), HInstance, nil);
+        WindowHandle, {%H-}HMENU(nil), HInstance, nil);
     OverlayWindowInfo := AllocWindowInfo(OverlayWindow);
-    OverlayWindowInfo^.DefWndProc := Windows.WNDPROC(SetWindowLong(
-        OverlayWindow, GWL_WNDPROC, PtrInt(@OverlayWindowProc)));
+    OverlayWindowInfo^.DefWndProc := {%H-}Windows.WNDPROC(SetWindowLong(
+        OverlayWindow, GWL_WNDPROC, {%H-}PtrInt(@OverlayWindowProc)));
     OverlayWindowInfo^.WinControl := WindowInfo^.WinControl;
     WindowInfo^.Overlay := OverlayWindow;
   end;
@@ -807,7 +807,7 @@ var
     // align to DWord
     Align := DstLineSize and 3;
     if Align > 0
-    then Inc(DstLineSize, 4 - Align);
+    then Inc(DstLineSize, PtrUInt(4 - Align));
 
     SrcLinePtr := ARawImage.Data;
     SrcLineSize := ADesc.BytesPerLine;
