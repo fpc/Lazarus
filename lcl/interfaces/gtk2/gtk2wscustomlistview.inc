@@ -396,6 +396,13 @@ var
   ImageIndex: Integer;
   ColumnIndex: Integer;
   APath: PGtkTreePath;
+  ImageList: TCustomImageList;
+  Bmp: TBitmap;
+  GDIObj: PGDIObject;
+  ABitmap: PGdkBitmap;
+  pixbuf: PGdkPixbuf;
+  pixmap: PGdkPixmap;
+  AWidth, AHeight: gint;
 begin
   PGtkCellRendererPixbuf(cell)^.pixbuf := nil;
   Widgets := PTVWidgets(WidgetInfo^.UserData);
@@ -405,9 +412,14 @@ begin
   if ListColumn = nil then
     Exit;
   ColumnIndex := ListColumn.Index;
+  ImageList := nil;
   Images := Widgets^.Images;
-  if Images = nil then
+  if TCustomListView(WidgetInfo^.LCLObject).OwnerData then
+    ImageList := TLVHack(WidgetInfo^.LCLObject).SmallImages;
+  if (Images = nil) and (ImageList = nil) then
+  begin
     Exit;
+  end;
   ImageIndex := -1;
 
   if (ListItem = nil) and TCustomListView(WidgetInfo^.LCLObject).OwnerData then
@@ -426,6 +438,41 @@ begin
     if ColumnIndex -1 <= ListItem.SubItems.Count-1 then
       ImageIndex := ListItem.SubItemImages[ColumnIndex-1];
 
+  if (ImageList <> nil) and
+    (ImageIndex > -1) and (ImageIndex <= ImageList.Count-1) then
+  begin
+    Bmp := TBitmap.create;
+    try
+      pixbuf := nil;
+      ImageList.GetBitmap(ImageIndex, Bmp);
+      GDIObj := {%H-}PGDIObject(Bmp.Handle);
+      case GDIObj^.GDIBitmapType of
+        gbBitmap:
+          begin
+            ABitmap := GDIObj^.GDIBitmapObject;
+            gdk_drawable_get_size(ABitmap, @AWidth, @AHeight);
+            pixbuf := CreatePixbufFromDrawable(ABitmap, nil, False, 0, 0, 0, 0, AWidth, AHeight);
+          end;
+        gbPixmap:
+          begin
+            pixmap := GDIObj^.GDIPixmapObject.Image;
+            if pixmap <> nil then
+            begin
+              gdk_drawable_get_size(pixmap, @AWidth, @AHeight);
+              ABitmap := CreateGdkMaskBitmap(Bmp.Handle, 0);
+              pixbuf := CreatePixbufFromImageAndMask(pixmap, 0, 0, AWidth, AHeight, nil, ABitmap);
+            end;
+          end;
+        gbPixbuf:
+          begin
+            pixbuf := gdk_pixbuf_copy(GDIObj^.GDIPixbufObject);
+          end;
+      end;
+      PGtkCellRendererPixbuf(cell)^.pixbuf :=pixbuf;
+    finally
+      Bmp.Free;
+    end;
+  end else
   if (ImageIndex > -1) and (ImageIndex <= Images.Count-1) then
     PGtkCellRendererPixbuf(cell)^.pixbuf := PGdkPixbuf(Images.Items[ImageIndex])
   else
