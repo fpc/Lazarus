@@ -11,6 +11,7 @@
    ./runtests --format=plain --suite=TestSimpleFormat
    ./runtests --format=plain --suite=TestDateToCfgStr
    ./runtests --format=plain --suite=TestFilenameIsMatching
+   ./runtests --format=plain --suite=TestChangeLineEndings
 }
 unit TestBasicCodetools;
 
@@ -19,7 +20,7 @@ unit TestBasicCodetools;
 interface
 
 uses
-  fpcunit, Classes, SysUtils, testglobals, FileProcs, BasicCodeTools;
+  fpcunit, Classes, SysUtils, testglobals, FileProcs, BasicCodeTools, SourceLog;
 
 type
   { TTestBasicCodeTools }
@@ -39,6 +40,8 @@ type
     // FileProcs
     procedure TestDateToCfgStr;
     procedure TestFilenameIsMatching;
+    // SourceLog
+    procedure TestChangeLineEndings;
   end;
 
 implementation
@@ -367,6 +370,28 @@ begin
   t('*.{p{as,p,},inc}','b.p',true,true);
   t('*.{p{as,p,},inc}','b.inc',true,true);
   t('*.{p{as,p,},inc}','c.lfm',true,false);
+end;
+
+procedure TTestBasicCodeTools.TestChangeLineEndings;
+
+  procedure t(s, NewLineEnding, Expected: string);
+  var
+    Actual: string;
+  begin
+    Actual:=ChangeLineEndings(s,NewLineEnding);
+    if Actual=Expected then exit;
+    AssertEquals('s="'+DbgStr(s)+'" NewLineEnding="'+DbgStr(NewLineEnding)+'"',DbgStr(Expected),DbgStr(Actual));
+  end;
+
+begin
+  t('','','');
+  t('A',#10,'A');
+  t('A'#10,#10,'A'#10);
+  t(#10'A',#10,#10'A');
+  t('A'#13,#13,'A'#13);
+  t(#13'A',#13,#13'A');
+  t('A'#13#10,#10,'A'#10);
+  t(#13#10'A',#10,#10'A');
 end;
 
 initialization
