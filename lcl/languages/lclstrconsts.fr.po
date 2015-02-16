@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"Last-Translator: Laurent Jacques <wile64@gmail.com>\n"
+"Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
 "PO-Revision-Date: 2008-09-04 11:40+0100\n"
 "Language-Team: Laurent Jacques <wile64@gmail.com>\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -29,7 +29,7 @@ msgstr "Impossible de trouver un navigateur de HTML. "
 
 #: lclstrconsts.hhshelpnohtmlbrowserfoundpleasedefineone
 msgid "No HTML Browser found.%sPlease define one in Tools -> Options -> Help -> Help Options"
-msgstr "Aucun navigateur HTML n'a été trouvé.%sDéfinissez-en un dans Outils > Options > AideTools -> Options -> Help -> Options de l'aide"
+msgstr "Aucun navigateur HTML n'a été trouvé.%sDéfinissez-en un dans Outils -> Options -> Aide -> Options de l'aide"
 
 #: lclstrconsts.hhshelpthehelpdatabasewasunabletofindfile
 msgid "The help database \"%s\" was unable to find file \"%s\"."
@@ -255,7 +255,7 @@ msgstr "Haut"
 #: lclstrconsts.lislclresourcesnotfound
 msgctxt "lclstrconsts.lislclresourcesnotfound"
 msgid "Resource %s not found"
-msgstr "Ressource %s non trouvée"
+msgstr "Ressource %s introuvable"
 
 #: lclstrconsts.rs3ddkshadowcolorcaption
 msgid "3D Dark Shadow"
@@ -438,7 +438,7 @@ msgstr "ERREUR dans LCL : "
 
 #: lclstrconsts.rserroroccurredinataddressframe
 msgid "Error occurred in %s at %sAddress %s%s Frame %s"
-msgstr "Une erreur s'est produite dans %s  %s à l'adresse %s%s page %s"
+msgstr "Une erreur s'est produite dans %s à %sl'adresse %s%s page %s"
 
 #: lclstrconsts.rserrorwhilesavingbitmap
 msgid "Error while saving bitmap."
@@ -659,7 +659,7 @@ msgstr "--sync                Appeler XSynchronize(display, True) après que la 
 
 #: lclstrconsts.rshelpalreadyregistered
 msgid "%s: Already registered"
-msgstr "%s : Déjà enregistré"
+msgstr "%s : déjà enregistré"
 
 #: lclstrconsts.rshelpcontextnotfound
 msgid "A help database was found for this topic, but this topic was not found"
@@ -725,7 +725,7 @@ msgstr "Aucune aide disponible pour ce sujet"
 
 #: lclstrconsts.rshelpnotregistered
 msgid "%s: Not registered"
-msgstr "%s : Non enregistré"
+msgstr "%s : non enregistré"
 
 #: lclstrconsts.rshelpselectorerror
 msgid "Help Selector Error"
@@ -828,7 +828,7 @@ msgstr "Date incorrecte : %s"
 
 #: lclstrconsts.rsinvaliddaterangehint
 msgid "Invalid Date: %s. Must be between %s and %s"
-msgstr "Date invalide : %s. Doit être entre %s et %s "
+msgstr "Date incorrecte : %s. Doit être entre %s et %s "
 
 #: lclstrconsts.rsinvalidformobjectstream
 msgid "invalid Form object stream"
@@ -1065,87 +1065,87 @@ msgstr "-dograb (seulement sous X11), l'exécution avec un débogueur peut provo
 
 #: lclstrconsts.rsqtoptiongraphicsstyle
 msgid "-graphicssystem param, sets the backend to be used for on-screen widgets and QPixmaps. Available options are native, raster and opengl. OpenGL is still unstable."
-msgstr ""
+msgstr "-graphicssystem param détermine l'arrière-plan à utiliser pour les objets graphiques et les QPixmaps. Les options possibles sont 'native', 'raster' et 'opengl'. OpenGL est encore instable."
 
 #: lclstrconsts.rsqtoptionnograb
 msgid "-nograb, tells Qt that it must never grab the mouse or the keyboard. Need QT_DEBUG."
-msgstr ""
+msgstr "-nograb dit à Qt qu'il ne doit jamais s'emparer de la souris ou du clavier. Besoin de QT_DEBUG."
 
 #: lclstrconsts.rsqtoptionreverse
 msgid "-reverse, sets the application's layout direction to Qt::RightToLeft."
-msgstr ""
+msgstr "-reverse fixe la direction de mise en page à Qt::RightToLeft."
 
 #: lclstrconsts.rsqtoptionsession
 msgid "-session session, restores the application from an earlier session."
-msgstr ""
+msgstr "-session session rétablit l'application à partir d'une session plus ancienne."
 
 #: lclstrconsts.rsqtoptionstyle
 msgid "-style style or -style=style, sets the application GUI style. Possible values are motif, windows, and platinum. If you compiled Qt with additional styles or have additional styles as plugins these will be available to the -style  command line option. NOTE: Not all styles are available on all platforms. If style param does not exist Qt will start an application with default common style (windows)."
-msgstr ""
+msgstr "-style style ou -style=style détremine le style GUI. Les valeurs possibles sont 'motif', 'windows' et 'platinum'. Si vous avez compilé Qt avec d'autres styles ou si vous disposez d'autres style en tant que plugins, ces styles seront disponibles grâce à l'option de commande en ligne -style. N.B. : Tous les styles ne sont pas disponibles sur toutes les plates-formes. Si le style en paramètre fourni n'existe pas, Qt démarrera l'application avec le style par défaut ('windows')."
 
 #: lclstrconsts.rsqtoptionstylesheet
 msgid "-stylesheet stylesheet or -stylesheet=stylesheet, sets the application Style Sheet. The value must be a path to a file that contains the Style Sheet. Note: Relative URLs in the Style Sheet file are relative to the Style Sheet file's path."
-msgstr ""
+msgstr "-stylesheet stylesheet ou -stylesheet=stylesheet détremine la feuille de style de l'application. La valeur associée doit être le chemin vers un fichier qui contient la feuille de style. N.B. : Les URLs relatives dans la feuille de style sont relatives au chemin du fichier de la feuille de style."
 
 #: lclstrconsts.rsqtoptionsync
 msgid "-sync (only under X11), switches to synchronous mode for debugging."
-msgstr ""
+msgstr "-sync (seulement avec X11), bascule en mode synchronisé pour le débogage."
 
 #: lclstrconsts.rsqtoptionwidgetcount
 msgid "-widgetcount, prints debug message at the end about number of widgets left undestroyed and maximum number of widgets existed at the same time."
-msgstr ""
+msgstr "-widgetcount écrit un message de débogage indiquant le nombre d'objets graphiques non détruits et le nombre maximum d'objets graphiques qui ont pu exister au même moment."
 
 #: lclstrconsts.rsqtoptionx11bgcolor
 msgid "-bg or -background color, sets the default background color and an application palette (light and dark shades are calculated)."
-msgstr ""
+msgstr "-bg or -background color détermine la couleur par défaut du fond et une palette pour l'application (la lumière et les ombres sont calculées)."
 
 #: lclstrconsts.rsqtoptionx11btncolor
 msgid "-btn or -button color, sets the default button color."
-msgstr ""
+msgstr "-btn or -button color détermine la couleur par défaut des boutons."
 
 #: lclstrconsts.rsqtoptionx11cmap
 msgid "-cmap, causes the application to install a private color map on an 8-bit display."
-msgstr ""
+msgstr "-cmap fait que l'application installera une table de correspondance des couleurs particulières pour un écran 8 bits."
 
 #: lclstrconsts.rsqtoptionx11display
 msgid "-display display, sets the X display (default is $DISPLAY)."
-msgstr ""
+msgstr "-display display détremine l'affichage pour X (par défaut $DISPLAY)."
 
 #: lclstrconsts.rsqtoptionx11fgcolor
 msgid "-fg or -foreground color, sets the default foreground color."
-msgstr ""
+msgstr "-fg or -foreground color détermine la couleur d'avant-plan."
 
 #: lclstrconsts.rsqtoptionx11font
 msgid "-fn or -font font, defines the application font. The font should be specified using an X logical font description."
-msgstr ""
+msgstr "-fn or -font font définit la police de caractères de l'application. Cette police doit être spécifiée en utilisant une description de police logique pour X."
 
 #: lclstrconsts.rsqtoptionx11geometry
 msgid "-geometry geometry, sets the client geometry of the first window that is shown."
-msgstr "-geometry geometry, définit la géométrie de client de la première fenêtre qui s'affiche."
+msgstr "-geometry geometry définit la géométrie de client de la première fenêtre qui s'affiche."
 
 #: lclstrconsts.rsqtoptionx11im
 msgid "-im, sets the input method server (equivalent to setting the XMODIFIERS environment variable)."
-msgstr "-im, définit le serveur de méthode d'entrée (équivalent à définir la variable d'environnement XMODIFIERS)"
+msgstr "-im définit le serveur de méthode d'entrée (équivalent à définir la variable d'environnement XMODIFIERS)"
 
 #: lclstrconsts.rsqtoptionx11inputstyle
 msgid "-inputstyle, defines how the input is inserted into the given widget, e.g. onTheSpot makes the input appear directly in the widget, while overTheSpot makes the input appear in a box floating over the widget and is not inserted until the editing is done."
-msgstr "-inputstyle, définit la façon dont l'entrée est insérée dans le widget donné, par exemple OnTheSpot fait  apparaître l'entrée directement dans le widget, tandis que OverTheSpot fait apparaître l'entrée dans une fenêtre flottant sur le widget et n'est pas inséré jusqu’à ce que l’édition soit terminée."
+msgstr "-inputstyle définit la façon dont l'entrée est insérée dans l'objet graphique donné, par exemple OnTheSpot fait apparaître l'entrée directement dans l'objet graphique, tandis que OverTheSpot fait apparaître l'entrée dans une fenêtre flottant sur l'objet graphique et n'est pas inséré jusqu’à ce que l’édition soit terminée."
 
 #: lclstrconsts.rsqtoptionx11name
 msgid "-name name, sets the application name."
-msgstr "-name nom, définit le nom de l'application."
+msgstr "-name nom définit le nom de l'application."
 
 #: lclstrconsts.rsqtoptionx11ncols
 msgid "-ncols count, limits the number of colors allocated in the color cube on an 8-bit display, if the application is using the QApplication::ManyColor color specification. If count is 216 then a 6x6x6 color cube is used (i.e. 6 levels of red, 6 of green, and 6 of blue); for other values, a cube approximately proportional to a 2x3x1 cube is used."
-msgstr ""
+msgstr "-ncols count limite le nombre de couleurs allouées pour le cube de couleurs d'un écran 8bits, si l'application utilise la spécification de couleur QApplication::ManyColor. Si 'count' vaut 216 alors le cube de couleurs a 6x6x6 est utilisé (c'est-à-dire 6 niveaux de rouge, 6 de vert et 6 de bleu). Pour les autres valeurs, un cube approximativement proportionnel à un cube 2x3x1 est utilisé."
 
 #: lclstrconsts.rsqtoptionx11title
 msgid "-title title, sets the application title."
-msgstr "-title title, définit le titre de l'application."
+msgstr "-title title définit le titre de l'application."
 
 #: lclstrconsts.rsqtoptionx11visual
 msgid "-visual TrueColor, forces the application to use a TrueColor visual on an 8-bit display."
-msgstr "-visual TrueColor, force l'application à utiliser un TrueColor sur un écran 8 bits."
+msgstr "-visual TrueColor force l'application à utiliser un TrueColor sur un écran 8 bits."
 
 #: lclstrconsts.rsrasterimageendupdate
 msgid "Endupdate while no update in progress"
