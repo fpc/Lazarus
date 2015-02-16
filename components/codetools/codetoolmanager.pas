@@ -564,6 +564,9 @@ type
           out ExistingDefinition: TFindContext; // next existing definition
           out ListOfPFindContext: TFPList; // possible classes
           out NewExprType: TExpressionType; out NewType: string): boolean; // false = not at an identifier or syntax error
+    function GetPossibleInitsForVariable(Code: TCodeBuffer; X,Y: integer;
+          out Statements: TStrings; out InsertPositions: TObjectList // e.g. [use unit1, unit2;]i:=0;
+          ): boolean;
     function DeclareVariableNearBy(Code: TCodeBuffer; X,Y: integer;
           const VariableName, NewType, NewUnitName: string;
           Visibility: TCodeTreeNodeDesc;
@@ -4191,6 +4194,28 @@ begin
   end;
 end;
 
+function TCodeToolManager.GetPossibleInitsForVariable(Code: TCodeBuffer; X,
+  Y: integer; out Statements: TStrings; out InsertPositions: TObjectList
+  ): boolean;
+var
+  CursorPos: TCodeXYPosition;
+begin
+  {$IFDEF CTDEBUG}
+  DebugLn(['TCodeToolManager.GetPossibleInitsForVariable A ',Code.Filename,' X=',X,' Y=',Y]);
+  {$ENDIF}
+  Result:=false;
+  if not InitCurCodeTool(Code) then exit;
+  CursorPos.Code:=Code;
+  CursorPos.X:=X;
+  CursorPos.Y:=Y;
+  try
+    Result:=FCurCodeTool.GetPossibleInitsForVariable(CursorPos,Statements,
+      InsertPositions,SourceChangeCache);
+  except
+    on e: Exception do Result:=HandleException(e);
+  end;
+end;
+
 function TCodeToolManager.DeclareVariableNearBy(Code: TCodeBuffer; X,
   Y: integer; const VariableName, NewType, NewUnitName: string;
   Visibility: TCodeTreeNodeDesc; LvlPosCode: TCodeBuffer; LvlPosX: integer;
@@ -5801,7 +5826,7 @@ begin
     FCurCodeTool.JumpCentered:=NewValue;
 end;
 
-procedure TCodeToolManager.SetSetPropertyVariablename(aValue: string);
+procedure TCodeToolManager.SetSetPropertyVariablename(AValue: string);
 begin
   if FSetPropertyVariablename=aValue then Exit;
   FSetPropertyVariablename:=aValue;

@@ -1538,6 +1538,7 @@ function ParseFPCVerbose(List: TStrings; const WorkDir: string; out
     SymbolName, SymbolValue, UpLine, NewPath: string;
     i, len, CurPos: integer;
     Filename: String;
+    p: SizeInt;
   begin
     //DebugLn(['ProcessOutputLine ',Line]);
     Line:=SysToUtf8(Line);
@@ -1556,9 +1557,29 @@ function ParseFPCVerbose(List: TStrings; const WorkDir: string; out
     end;
 
     UpLine:=UpperCaseStr(Line);
-    //DebugLn(['ProcessOutputLine ',Line]);
 
     case UpLine[CurPos] of
+    'C':
+      if StrLComp(@UpLine[CurPos], 'CONFIGFILE SEARCH: ', 19) = 0 then
+      begin
+        // skip keywords
+        Inc(CurPos, 19);
+        Filename:=ExpFile(SetDirSeparators(copy(Line,CurPos,length(Line))));
+        ConfigFiles.Add('-'+Filename);
+      end else if StrLComp(@UpLine[CurPos], 'COMPILER: ', 10) = 0 then begin
+        // skip keywords
+        Inc(CurPos, 10);
+        RealCompilerFilename:=ExpFile(copy(Line,CurPos,length(Line)));
+      end;
+    'E':
+      if StrLComp(@UpLine[CurPos], 'ERROR: ', 7) = 0 then begin
+        inc(CurPos,7);
+        if RealCompilerFilename='' then begin
+          p:=Pos(' returned an error exitcode',Line);
+          if p>0 then
+            RealCompilerFilename:=copy(Line,CurPos,p-CurPos);
+        end;
+      end;
     'M':
       if StrLComp(@UpLine[CurPos], 'MACRO ', 6) = 0 then begin
         // skip keyword macro
@@ -1590,6 +1611,17 @@ function ParseFPCVerbose(List: TStrings; const WorkDir: string; out
           DefineSymbol(SymbolName, SymbolValue);
         end;
       end;
+    'R':
+      if StrLComp(@UpLine[CurPos], 'READING OPTIONS FROM FILE ', 26) = 0 then
+      begin
+        // skip keywords
+        Inc(CurPos, 26);
+        Filename:=ExpFile(SetDirSeparators(copy(Line,CurPos,length(Line))));
+        if (ConfigFiles.Count>0)
+        and (ConfigFiles[ConfigFiles.Count-1]='-'+Filename) then
+          ConfigFiles.Delete(ConfigFiles.Count-1);
+        ConfigFiles.Add('+'+Filename);
+      end;
     'U':
       if (StrLComp(@UpLine[CurPos], 'USING UNIT PATH: ', 17) = 0) then begin
         Inc(CurPos, 17);
@@ -1601,29 +1633,6 @@ function ParseFPCVerbose(List: TStrings; const WorkDir: string; out
         DebugLn('Using unit path: "',NewPath,'"');
         {$ENDIF}
         UnitPaths.Add(NewPath);
-      end;
-    'C':
-      if StrLComp(@UpLine[CurPos], 'CONFIGFILE SEARCH: ', 19) = 0 then
-      begin
-        // skip keywords
-        Inc(CurPos, 19);
-        Filename:=ExpFile(SetDirSeparators(copy(Line,CurPos,length(Line))));
-        ConfigFiles.Add('-'+Filename);
-      end else if StrLComp(@UpLine[CurPos], 'COMPILER: ', 10) = 0 then begin
-        // skip keywords
-        Inc(CurPos, 10);
-        RealCompilerFilename:=ExpFile(copy(Line,CurPos,length(Line)));
-      end;
-    'R':
-      if StrLComp(@UpLine[CurPos], 'READING OPTIONS FROM FILE ', 26) = 0 then
-      begin
-        // skip keywords
-        Inc(CurPos, 26);
-        Filename:=ExpFile(SetDirSeparators(copy(Line,CurPos,length(Line))));
-        if (ConfigFiles.Count>0)
-        and (ConfigFiles[ConfigFiles.Count-1]='-'+Filename) then
-          ConfigFiles.Delete(ConfigFiles.Count-1);
-        ConfigFiles.Add('+'+Filename);
       end;
     end;
   end;
@@ -5971,7 +5980,7 @@ begin
     DefaultSrcOS2:=GetDefaultSrcOS2ForTargetOS(DefaultTargetOS);
 
     if (FPCSrcDir='') or (not DirPathExists(FPCSrcDir)) then begin
-      DebugLn(['TDefinePool.CreateFPCSrcTemplate FPCSrcDir does not exist: FPCSrcDir="',FPCSrcDir,'"']);
+      DebugLn(['TDefinePool.CreateFPCSrcTemplate FPCSrcDir does not exist: FPCSrcDir="',FPCSrcDir,'" (env FPCDIR)']);
       exit;
     end;
     // try to find for every reachable ppu file the unit file in the FPC sources

@@ -8,7 +8,8 @@
       </Flags>
       <SessionStorage Value="InProjectDir"/>
       <MainUnit Value="0"/>
-      <Title Value="finddeclaration"/>
+      <Title Value="removeemptymethods"/>
+      <ResourceType Value="res"/>
     </General>
     <BuildModes Count="1">
       <Item1 Name="default" Default="True"/>
@@ -33,12 +34,10 @@
       <Unit0>
         <Filename Value="removeemptymethods.lpr"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="RemoveEmptyMethods"/>
       </Unit0>
       <Unit1>
         <Filename Value="scanexamples/emptymethods1.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="EmptyMethods1"/>
       </Unit1>
       <Unit2>
         <Filename Value="README.txt"/>
@@ -56,8 +55,5 @@
         <UseAnsiStrings Value="False"/>
       </SyntaxOptions>
     </Parsing>
-    <Other>
-      <CompilerPath Value="$(CompPath)"/>
-    </Other>
   </CompilerOptions>
 </CONFIG>

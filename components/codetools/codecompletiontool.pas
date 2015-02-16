@@ -76,6 +76,7 @@ interface
 {off $DEFINE VerboseCompleteLocalVarAssign}
 {off $DEFINE VerboseCompleteEventAssign}
 {off $DEFINE EnableCodeCompleteTemplates}
+{$DEFINE VerboseGetPossibleInitsForVariable}
 
 uses
   {$IFDEF MEM_CHECK}
@@ -84,7 +85,8 @@ uses
   Classes, SysUtils, FileProcs, CodeToolsStrConsts, CodeTree, CodeAtom,
   CodeCache, CustomCodeTool, PascalParserTool, MethodJumpTool,
   FindDeclarationTool, KeywordFuncLists, CodeToolsStructs, BasicCodeTools,
-  LinkScanner, SourceChanger, CodeGraph, AVL_Tree, CodeCompletionTemplater;
+  LinkScanner, SourceChanger, CodeGraph, AVL_Tree, contnrs,
+  CodeCompletionTemplater;
 
 type
   TNewClassPart = (ncpPrivateProcs, ncpPrivateVars,
@@ -115,6 +117,14 @@ const
   );
 
 type
+  TInsertStatementPosDescription = class
+  public
+    InsertPos: integer;
+    CodeXYPos: TCodeXYPosition;
+    FrontGap, AfterGap: TGapTyp;
+    Description: string;
+  end;
+
   TCodeCompletionCodeTool = class;
 
   { TCodeCompletionCodeTool }
@@ -313,7 +323,7 @@ type
                               const Attr: TProcHeadAttributes;
                               out RemovedProcHeads: TStrings): boolean;
 
-    // assign/init records/classes
+    // assign records/classes
     function FindAssignMethod(CursorPos: TCodeXYPosition;
         out ClassNode: TCodeTreeNode;
         out AssignDeclNode: TCodeTreeNode;
@@ -328,6 +338,13 @@ type
         SourceChanger: TSourceChangeCache;
         out NewPos: TCodeXYPosition; out NewTopLine: integer;
         LocalVarName: string = '' // default aSource
+        ): boolean;
+
+    // local variables
+    function GetPossibleInitsForVariable(CursorPos: TCodeXYPosition;
+        out Statements: TStrings;
+        out InsertPositions: TObjectList; // list of TInsertStatementPosDescription
+        SourceChangeCache: TSourceChangeCache = nil // needed for Beautifier
         ): boolean;
 
     // guess type of an undeclared identifier
@@ -5982,6 +5999,156 @@ begin
   AddClassInsertion(CleanDef,Def,ProcName,ncpPublicProcs,nil,ProcBody);
   Result:=ApplyChangesAndJumpToFirstNewProc(ClassNode.StartPos,1,true,
                    NewPos,NewTopLine);
+end;
+
+function TCodeCompletionCodeTool.GetPossibleInitsForVariable(
+  CursorPos: TCodeXYPosition; out Statements: TStrings; out
+  InsertPositions: TObjectList; SourceChangeCache: TSourceChangeCache): boolean;
+var
+  Identifier: PChar;
+
+  procedure AddStatement(aStatement: string);
+  begin
+    if SourceChangeCache<>nil then begin
+      SourceChangeCache.MainScanner:=Scanner;
+      SourceChangeCache.BeautifyCodeOptions.BeautifyStatement(aStatement,0);
+    end;
+    {$IFDEF VerboseGetPossibleInitsForVariable}
+    debugln(['TCodeCompletionCodeTool.GetPossibleInitsForVariable.AddStatement "',aStatement,'"']);
+    {$ENDIF}
+    Statements.Add(aStatement);
+  end;
+
+  procedure AddAssignment(const aValue: string);
+  begin
+    AddStatement(GetIdentifier(Identifier)+':='+aValue+';');
+  end;
+
+var
+  CleanCursorPos: integer;
+  CursorNode: TCodeTreeNode;
+  IdentAtom: TAtomPosition;
+  Params: TFindDeclarationParams;
+  VarTool: TFindDeclarationTool;
+  VarNode: TCodeTreeNode;
+  ExprType: TExpressionType;
+  BeginNode: TCodeTreeNode;
+  InsertPosDesc: TInsertStatementPosDescription;
+begin
+  {$IFDEF VerboseGetPossibleInitsForVariable}
+  debugln(['TCodeCompletionCodeTool.GetPossibleInitsForVariable ',dbgs(CursorPos)]);
+  {$ENDIF}
+  Result:=false;
+  Statements:=TStringList.Create;
+  InsertPositions:=TObjectList.create(true);
+  BuildTreeAndGetCleanPos(CursorPos, CleanCursorPos);
+
+  // find variable name
+  GetIdentStartEndAtPosition(Src,CleanCursorPos,
+    IdentAtom.StartPos,IdentAtom.EndPos);
+  {$IFDEF VerboseGetPossibleInitsForVariable}
+  debugln('TCodeCompletionCodeTool.GetPossibleInitsForLocalVar IdentAtom="',dbgstr(Src,IdentAtom.StartPos,IdentAtom.EndPos-IdentAtom.StartPos),'"');
+  {$ENDIF}
+  if IdentAtom.StartPos=IdentAtom.EndPos then exit;
+
+  // find context
+  CursorNode:=FindDeepestNodeAtPos(CleanCursorPos,true);
+
+  // find declaration of identifier
+  Identifier:=@Src[IdentAtom.StartPos];
+  Params:=TFindDeclarationParams.Create;
+  try
+    Params.ContextNode:=CursorNode;
+    Params.SetIdentifier(Self,Identifier,nil);
+    Params.Flags:=[fdfSearchInParentNodes,fdfSearchInAncestors,
+                   fdfTopLvlResolving,fdfFindVariable];
+    Result:=FindIdentifierInContext(Params);
+    VarTool:=Params.NewCodeTool;
+    VarNode:=Params.NewNode;
+    if (not Result) or (VarNode=nil) then begin
+      {$IFDEF VerboseGetPossibleInitsForVariable}
+      debugln(['TCodeCompletionCodeTool.GetPossibleInitsForVariable FindIdentifierInContext Result=',Result,' VarTool=',VarTool<>nil,' VarNode=',VarNode<>nil]);
+      {$ENDIF}
+      MoveCursorToAtomPos(IdentAtom);
+      RaiseException('failed to resolve identifier "'+Identifier+'"');
+    end;
+  finally
+    Params.Free;
+  end;
+
+  // resolve type
+  Params:=TFindDeclarationParams.Create;
+  try
+    ExprType:=VarTool.ConvertNodeToExpressionType(VarNode,Params);
+    {$IFDEF VerboseGetPossibleInitsForVariable}
+    DebugLn('TCodeCompletionCodeTool.GetPossibleInitsForVariable ConvertNodeToExpressionType',
+      ' Expr=',ExprTypeToString(ExprType));
+    {$ENDIF}
+  finally
+    Params.Free;
+  end;
+
+  case ExprType.Desc of
+  // ToDo: sets, ranges, records, objects, pointer, class, class of, interface
+  //xtContext: ;
+  xtChar,
+  xtWideChar: begin AddAssignment('#0'); AddAssignment(''' '''); end;
+  xtReal,
+  xtSingle,
+  xtDouble,
+  xtExtended,
+  xtCExtended: begin AddAssignment('0.0'); AddAssignment('1.0'); end;
+  xtCurrency: AddAssignment('0.00');
+  xtComp,
+  xtInt64,
+  xtCardinal,
+  xtQWord: AddAssignment('0');
+  xtBoolean,
+  xtByteBool,
+  xtWordBool,
+  xtLongBool,
+  xtQWordBool: begin AddAssignment('False'); AddAssignment('True'); end;
+  xtString,
+  xtAnsiString,
+  xtShortString,
+  xtWideString,
+  xtUnicodeString: AddAssignment('''''');
+  xtPChar: begin AddAssignment('nil'); AddAssignment('#0'); end;
+  xtPointer: AddAssignment('nil');
+  xtLongint,
+  xtLongWord,
+  xtWord,
+  xtSmallInt,
+  xtShortInt,
+  xtByte: AddAssignment('0');
+  xtVariant: begin AddAssignment('0'); AddAssignment(''''''); end;
+  end;
+  if Statements.Count=0 then begin
+    MoveCursorToAtomPos(IdentAtom);
+    RaiseException('auto initialize not yet implemented for identifier "'+Identifier+'" of type "'+ExprTypeToString(ExprType)+'"');
+  end;
+
+  // find possible insert positions
+  BeginNode:=CursorNode.GetNodeOfType(ctnBeginBlock);
+  if BeginNode<>nil then begin
+    InsertPosDesc:=TInsertStatementPosDescription.Create;
+    InsertPosDesc.InsertPos:=BeginNode.StartPos+length('begin');
+    CleanPosToCaret(InsertPosDesc.InsertPos,InsertPosDesc.CodeXYPos);
+    InsertPosDesc.FrontGap:=gtNewLine;
+    InsertPosDesc.AfterGap:=gtNewLine;
+    InsertPosDesc.Description:='After BEGIN keyword';
+    if (BeginNode.Parent<>nil) then begin
+      if BeginNode.Parent.Desc=ctnProcedure then
+        InsertPosDesc.Description+=' of '
+          +ExtractProcHead(BeginNode.Parent,[phpWithStart,phpAddClassName,phpWithoutParamList]);
+    end;
+    InsertPositions.Add(InsertPosDesc);
+  end;
+
+  if InsertPositions.Count=0 then begin
+    MoveCursorToAtomPos(IdentAtom);
+    RaiseException('auto initialize not yet implemented for this context (Node='+CursorNode.DescAsString+')');
+  end;
 end;
 
 function TCodeCompletionCodeTool.GuessTypeOfIdentifier(
