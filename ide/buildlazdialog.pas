@@ -44,7 +44,11 @@ unit BuildLazDialog;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, Forms, Controls, LCLType, StdCtrls, ExtCtrls,
+  Classes, SysUtils,
+  {$IFDEF Windows}
+  Windows,
+  {$ENDIF}
+  LCLProc, Forms, Controls, LCLType, StdCtrls, ExtCtrls,
   Buttons, FileUtil, LazUTF8, LazLogger, lazutf8classes, LazFileCache, Dialogs,
   InterfaceBase, CheckLst, Menus, ComCtrls, DividerBevel, DefineTemplates,
   CodeToolManager,
@@ -783,6 +787,13 @@ begin
   DefaultTargetFilename:='lazarus'+GetExecutableExt(fTargetOS);
   if CreateRelativePath(fTargetFilename,fTargetDir) <> DefaultTargetFilename then
     AppendExtraOption('-o'+fTargetFilename);
+
+  {$IFDEF Windows}
+  if (fProfile.TargetPlatform=lpWin32)
+  and (Win32MajorVersion <=4)
+  and (Win32Platform = VER_PLATFORM_WIN32_WINDOWS) then
+    AppendExtraOption('-dWIN9XPLATFORM');
+  {$ENDIF}
 
   // add package options for IDE
   //DebugLn(['CreateIDEMakeOptions blfUseMakeIDECfg=',blfUseMakeIDECfg in FLags,' ExtraOptions="',fExtraOptions,'" ',fPackageOptions]);
