@@ -86,7 +86,7 @@ uses
   CodeCache, CustomCodeTool, PascalParserTool, MethodJumpTool,
   FindDeclarationTool, KeywordFuncLists, CodeToolsStructs, BasicCodeTools,
   LinkScanner, SourceChanger, CodeGraph, AVL_Tree, contnrs,
-  CodeCompletionTemplater;
+  CodeCompletionTemplater, StdCodeTools;
 
 type
   TNewClassPart = (ncpPrivateProcs, ncpPrivateVars,
@@ -117,14 +117,6 @@ const
   );
 
 type
-  TInsertStatementPosDescription = class
-  public
-    InsertPos: integer;
-    CodeXYPos: TCodeXYPosition;
-    FrontGap, AfterGap: TGapTyp;
-    Description: string;
-  end;
-
   TCodeCompletionCodeTool = class;
 
   { TCodeCompletionCodeTool }
@@ -6134,6 +6126,11 @@ begin
     InsertPosDesc:=TInsertStatementPosDescription.Create;
     InsertPosDesc.InsertPos:=BeginNode.StartPos+length('begin');
     CleanPosToCaret(InsertPosDesc.InsertPos,InsertPosDesc.CodeXYPos);
+    InsertPosDesc.Indent:=GetLineIndent(Src,BeginNode.StartPos);
+    if SourceChangeCache<>nil then
+      inc(InsertPosDesc.Indent,SourceChangeCache.BeautifyCodeOptions.Indent)
+    else
+      inc(InsertPosDesc.Indent,2);
     InsertPosDesc.FrontGap:=gtNewLine;
     InsertPosDesc.AfterGap:=gtNewLine;
     InsertPosDesc.Description:='After BEGIN keyword';

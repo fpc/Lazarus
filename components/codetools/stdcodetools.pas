@@ -57,6 +57,15 @@ uses
   CustomCodeTool, CodeToolsStructs, LazFileUtils;
 
 type
+  TInsertStatementPosDescription = class
+  public
+    InsertPos: integer;
+    Indent: integer;
+    CodeXYPos: TCodeXYPosition;
+    FrontGap, AfterGap: TGapTyp;
+    Description: string;
+  end;
+
   TUsesSection = (usMain, usImplementation);
 
   TOnFindDefinePropertyForContext = procedure(Sender: TObject;
@@ -222,11 +231,10 @@ type
     function RemoveIdentifierDefinition(const CursorPos: TCodeXYPosition;
           SourceChangeCache: TSourceChangeCache): boolean;
 
-    function InsertStatements(const CursorPos: TCodeXYPosition;
-          Statements: string; FrontGap, AfterGap: TGapTyp;
-          SourceChangeCache: TSourceChangeCache): boolean;
+    function InsertStatements(InsertPos: TInsertStatementPosDescription;
+          Statements: string; SourceChangeCache: TSourceChangeCache): boolean;
     function InsertStatements(CleanPos: integer;
-          Statements: string; FrontGap, AfterGap: TGapTyp;
+          Statements: string; Indent: integer; FrontGap, AfterGap: TGapTyp;
           SourceChangeCache: TSourceChangeCache): boolean;
 
     // blocks (e.g. begin..end)
@@ -4966,20 +4974,20 @@ begin
   end;
 end;
 
-function TStandardCodeTool.InsertStatements(const CursorPos: TCodeXYPosition;
-  Statements: string; FrontGap, AfterGap: TGapTyp;
+function TStandardCodeTool.InsertStatements(
+  InsertPos: TInsertStatementPosDescription; Statements: string;
   SourceChangeCache: TSourceChangeCache): boolean;
 var
   CleanCursorPos: integer;
 begin
-  BeginParsingAndGetCleanPos(lsrEnd,CursorPos,CleanCursorPos);
-  Result:=InsertStatements(CleanCursorPos,Statements,FrontGap,AfterGap,
-    SourceChangeCache);
+  BeginParsingAndGetCleanPos(lsrEnd,InsertPos.CodeXYPos,CleanCursorPos);
+  Result:=InsertStatements(CleanCursorPos,Statements,InsertPos.Indent,
+    InsertPos.FrontGap,InsertPos.AfterGap,SourceChangeCache);
   Result:=SourceChangeCache.Apply;
 end;
 
 function TStandardCodeTool.InsertStatements(CleanPos: integer;
-  Statements: string; FrontGap, AfterGap: TGapTyp;
+  Statements: string; Indent: integer; FrontGap, AfterGap: TGapTyp;
   SourceChangeCache: TSourceChangeCache): boolean;
 {
   ToDo: check for "uses" in Statements and extend uses section
@@ -4989,19 +4997,31 @@ function TStandardCodeTool.InsertStatements(CleanPos: integer;
  }
 var
   Node: TCodeTreeNode;
+  SameArea: TAtomPosition;
+  BeautifyFlags: TBeautifyCodeFlags;
 begin
   Node:=FindDeepestNodeAtPos(CleanPos,true);
   if not (Node.Desc in AllPascalStatements) then begin
     MoveCursorToCleanPos(CleanPos);
-    RaiseException('invalid position for insertion');
+    RaiseException('invalid position for insertion of statements');
   end;
   if Node.Desc=ctnBeginBlock then
     Node:=BuildSubTreeAndFindDeepestNodeAtPos(Node,CleanPos,true);
 
-  // ToDo: check for CleanPos
-
+  GetCleanPosInfo(Node.StartPos,CleanPos,false,SameArea);
+  if (SameArea.StartPos>SrcLen) or (not IsSpaceChar[Src[SameArea.StartPos]])
+  then begin
+    MoveCursorToCleanPos(CleanPos);
+    RaiseException('invalid position for insertion of statements');
+  end;
 
   SourceChangeCache.MainScanner:=Scanner;
+  BeautifyFlags:=[bcfIndentExistingLineBreaks];
+  if FrontGap in [gtNone,gtSpace] then
+    include(BeautifyFlags,bcfDoNotIndentFirstLine);
+  Statements:=SourceChangeCache.BeautifyCodeOptions.BeautifyStatement(
+    Statements,Indent,BeautifyFlags);
+
   Result:=SourceChangeCache.Replace(FrontGap,AfterGap,CleanPos,CleanPos,Statements);
 end;
 

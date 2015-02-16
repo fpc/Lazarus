@@ -200,9 +200,6 @@ type
     procedure BeginParsingAndGetCleanPos(
         Range: TLinkScannerRange; CursorPos: TCodeXYPosition;
         out CleanCursorPos: integer);
-    procedure BeginParsingAndGetCleanPosOLD(
-        OnlyInterfaceNeeded: boolean; CursorPos: TCodeXYPosition;
-        out CleanCursorPos: integer);
 
     function StringIsKeyWord(const Word: string): boolean;
     
@@ -2008,19 +2005,6 @@ begin
   end;
 end;
 
-procedure TCustomCodeTool.BeginParsingAndGetCleanPosOLD(
-  OnlyInterfaceNeeded: boolean; CursorPos: TCodeXYPosition;
-  out CleanCursorPos: integer);
-var
-  Range: TLinkScannerRange;
-begin
-  if OnlyInterfaceNeeded then
-    Range:=lsrImplementationStart
-  else
-    Range:=lsrEnd;
-  BeginParsingAndGetCleanPos(Range,CursorPos,CleanCursorPos);
-end;
-
 function TCustomCodeTool.IgnoreErrorAfterPositionIsInFrontOfLastErrMessage: boolean;
 var
   IgnoreErrorAfterCleanPos: integer;
@@ -2754,7 +2738,7 @@ procedure TCustomCodeTool.GetCleanPosInfo(CodePosInFront, CleanPos: integer;
   ResolveComments: if CleanPos is in a comment, parse again in the comment (not recursive)
   SameArea: area around CleanPos, either an atom, comment, directive or space
             if CleanPos<CodePosInFront then CleanAtomPosition
-            if CleanPos>SrcLen then CurPos.StartPos>SrcLen
+            if CleanPos>SrcLen then SameArea.StartPos>SrcLen
 }
 var
   ANode: TCodeTreeNode;

@@ -528,18 +528,14 @@ type
           SectionCode: TCodeBuffer; SectionX, SectionY: integer;
           const NewIdentifier, NewValue: string;
           InsertPolicy: TResourcestringInsertPolicy): boolean;
-    procedure ImproveStringConstantStart(const ACode: string;
-                                         var StartPos: integer);
-    procedure ImproveStringConstantEnd(const ACode: string;
-                                       var EndPos: integer);
 
     // expressions
     function GetStringConstBounds(Code: TCodeBuffer; X,Y: integer;
           var StartCode: TCodeBuffer; var StartX, StartY: integer;
           var EndCode: TCodeBuffer; var EndX, EndY: integer;
           ResolveComments: boolean): boolean;
-    function ReplaceCode(Code: TCodeBuffer; StartX, StartY: integer;
-          EndX, EndY: integer; const NewCode: string): boolean;
+    procedure ImproveStringConstantStart(const ACode: string; var StartPos: integer);
+    procedure ImproveStringConstantEnd(const ACode: string; var EndPos: integer);
     function ExtractOperand(Code: TCodeBuffer; X,Y: integer;
           out Operand: string; WithPostTokens, WithAsOperator,
           WithoutTrailingPoints: boolean): boolean;
@@ -574,6 +570,8 @@ type
           ): boolean;
     function DeclareVariableAt(Code: TCodeBuffer; X,Y: integer;
           const VariableName, NewType, NewUnitName: string): boolean;
+
+    // simplifications
     function FindRedefinitions(Code: TCodeBuffer;
           out TreeOfCodeTreeNodeExt: TAVLTree; WithEnums: boolean): boolean;
     function RemoveRedefinitions(Code: TCodeBuffer;
@@ -607,11 +605,16 @@ type
                                 out AllRemoved: boolean;
                                 const Attr: TProcHeadAttributes;
                                 out RemovedProcHeads: TStrings): boolean;
-    function FindUnusedUnits(Code: TCodeBuffer; Units: TStrings): boolean;
 
     // custom class completion
     function InitClassCompletion(Code: TCodeBuffer;
                 const AClassName: string; out CodeTool: TCodeTool): boolean;
+
+    // insert/replace
+    function ReplaceCode(Code: TCodeBuffer; StartX, StartY: integer;
+          EndX, EndY: integer; const NewCode: string): boolean;
+    function InsertStatements(InsertPos: TInsertStatementPosDescription;
+          const Statements: string): boolean;
 
     // extract proc (creates a new procedure from code in selection)
     function CheckExtractProc(Code: TCodeBuffer;
@@ -689,6 +692,7 @@ type
     function FindUnitSource(Code: TCodeBuffer;
                        const AnUnitName, AnUnitInFilename: string): TCodeBuffer;
     function CreateUsesGraph: TUsesGraph;
+    function FindUnusedUnits(Code: TCodeBuffer; Units: TStrings): boolean;
 
     // resources
     property OnFindDefinePropertyForContext: TOnFindDefinePropertyForContext
@@ -3021,6 +3025,21 @@ begin
   try
     Result:=FCurCodeTool.ReplaceCode(StartCursorPos,EndCursorPos,NewCode,
                                      SourceChangeCache);
+  except
+    on e: Exception do HandleException(e);
+  end;
+end;
+
+function TCodeToolManager.InsertStatements(
+  InsertPos: TInsertStatementPosDescription; const Statements: string): boolean;
+begin
+  Result:=false;
+  {$IFDEF CTDEBUG}
+  DebugLn('TCodeToolManager.InsertStatements A ',Code.Filename,' Line=',Y,',Col=',X);
+  {$ENDIF}
+  if not InitCurCodeTool(InsertPos.CodeXYPos.Code) then exit;
+  try
+    Result:=FCurCodeTool.InsertStatements(InsertPos,Statements,SourceChangeCache);
   except
     on e: Exception do HandleException(e);
   end;

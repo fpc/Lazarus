@@ -30,7 +30,8 @@ program initvariable;
 
 uses
   Classes, SysUtils, contnrs, CodeCache, CodeToolManager, DefineTemplates,
-  FileProcs, CodeToolsConfig, CodeToolsStructs, CodeCompletionTool, initvars1;
+  FileProcs, CodeToolsConfig, CodeToolsStructs, CodeCompletionTool,
+  StdCodeTools, initvars1;
 
 const
   ConfigFilename = 'codetools.config';
@@ -87,6 +88,16 @@ begin
           writeln(CodeXYPos.Code.Filename,'(',CodeXYPos.Y,',',CodeXYPos.X,'): ',Description);
         end;
       end;
+
+      // insert the first statement at the first position
+      InsertPosDesc:=TInsertStatementPosDescription(InsertPositions[0]);
+      if not CodeToolBoss.InsertStatements(InsertPosDesc,Statements[0]) then begin
+        writeln('CodeToolBoss.InsertStatements failed');
+        exit;
+      end;
+      writeln('New source (not saved to disk):');
+      writeln(Code.Source);
+
     finally
       Statements.Free;
       InsertPositions.Free;
