@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2015-02-11 00:41+0300\n"
+"PO-Revision-Date: 2015-02-17 02:36+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -1489,4 +1489,58 @@ msgstr "Неверный символ лексемы: ожидался %s, но 
 #: lclstrconsts.sparwrongtokentype
 msgid "Wrong token type: %s expected but %s found"
 msgstr "Неверный тип лексемы: ожидался %s, но найден %s"
+
+#: lclstrconsts.sshellctrlsbytes
+msgid "%s bytes"
+msgstr "%s байт"
+
+#: lclstrconsts.sshellctrlsinvalidpath
+msgctxt "lclstrconsts.sshellctrlsinvalidpath"
+msgid ""
+"Invalid pathname:\n"
+"\"%s\"\n"
+msgstr ""
+"Некорректный путь:\n"
+"\"%s\"\n"
+
+#: lclstrconsts.sshellctrlsinvalidpathrelative
+msgid ""
+"Invalid relative pathname:\n"
+"\"%s\"\n"
+"in relation to rootpath:\n"
+"\"%s\"\n"
+msgstr ""
+"Некорректный путь:\n"
+"\"%s\"\n"
+"относительно корневого:\n"
+"\"%s\"\n"
+
+#: lclstrconsts.sshellctrlsinvalidroot
+msgctxt "lclstrconsts.sshellctrlsinvalidroot"
+msgid ""
+"Invalid pathname:\n"
+"\"%s\"\n"
+msgstr ""
+"Некорректный путь:\n"
+"\"%s\"\n"
+
+#: lclstrconsts.sshellctrlskb
+msgid "%s kB"
+msgstr "%s кБ"
+
+#: lclstrconsts.sshellctrlsmb
+msgid "%s MB"
+msgstr "%s МБ"
+
+#: lclstrconsts.sshellctrlsname
+msgid "Name"
+msgstr "Имя"
+
+#: lclstrconsts.sshellctrlssize
+msgid "Size"
+msgstr "Размер"
+
+#: lclstrconsts.sshellctrlstype
+msgid "Type"
+msgstr "Тип"
 

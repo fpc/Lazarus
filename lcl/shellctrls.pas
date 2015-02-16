@@ -21,7 +21,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Graphics, LCLType, AvgLvlTree,
-  ComCtrls, FileUtil, LazUtf8;
+  ComCtrls, FileUtil, LazUtf8, LCLStrConsts;
 
 {$if defined(Windows) or defined(darwin)}
 {$define CaseInsensitiveFilenames}
@@ -295,13 +295,6 @@ type
 
   EInvalidPath = class(Exception);
 
-const
-  //ToDo: make it a resource string
-  SShellCtrlsInvalidRoot         = 'Invalid pathname:'#13'"%s"';
-  SShellCtrlsInvalidPath         = 'Invalid pathname:'#13'"%s"';
-  SShellCtrlsInvalidPathRelative = 'Invalid relative pathname:'#13'"%s"'#13
-                                    +'in relation to rootpath:'#13'"%s"';
-
 function DbgS(OT: TObjectTypes): String; overload;
 
 procedure Register;
@@ -407,7 +400,7 @@ begin
   if not (csDesigning in ComponentState)
      and (AValue <> '')
      and not DirectoryExistsUtf8(ExpandFilenameUtf8(AValue)) then
-     Raise Exception.CreateFmt(SShellCtrlsInvalidRoot,[ExpandFileNameUtf8(AValue)]);
+     Raise Exception.CreateFmt(sShellCtrlsInvalidRoot,[ExpandFileNameUtf8(AValue)]);
   if (AValue = '') then
     FRoot := GetBasePath
   else
@@ -1002,7 +995,7 @@ begin
     else
     begin
       if not DirectoryExistsUtf8(ExpandFileNameUtf8(AValue)) then
-        Raise EInvalidPath.CreateFmt(SShellCtrlsInvalidPath,[ExpandFileNameUtf8(FQRootPath + AValue)]);
+        Raise EInvalidPath.CreateFmt(sShellCtrlsInvalidPath,[ExpandFileNameUtf8(FQRootPath + AValue)]);
       //Directory Exists
       //Make it fully qualified
       AValue := ExpandFileNameUtf8(AValue);
@@ -1012,7 +1005,7 @@ begin
   begin
     //AValue is an absoulte path to begin with
     if not DirectoryExistsUtf8(AValue) then
-      Raise EInvalidPath.CreateFmt(SShellCtrlsInvalidPath,[AValue]);
+      Raise EInvalidPath.CreateFmt(sShellCtrlsInvalidPath,[AValue]);
   end;
 
   //AValue now is a fully qualified path and it exists
@@ -1025,7 +1018,7 @@ begin
   begin
     // CreateRelativePath retruns a string beginning with ..
     // so AValue is not a subdirectory of FRoot
-    Raise EInvalidPath.CreateFmt(SShellCtrlsInvalidPathRelative,[AValue, FQRootPath]);
+    Raise EInvalidPath.CreateFmt(sShellCtrlsInvalidPathRelative,[AValue, FQRootPath]);
   end;
 
   //writeln('RelPath = ',RelPath);
@@ -1156,7 +1149,7 @@ begin
     if not (csDesigning in ComponentState)
        and (Value <> '')
        and not DirectoryExistsUtf8(ExpandFilenameUtf8(Value)) then
-       Raise Exception.CreateFmt(SShellCtrlsInvalidRoot,[Value]);
+       Raise Exception.CreateFmt(sShellCtrlsInvalidRoot,[Value]);
     FRoot := Value;
     Clear;
     Items.Clear;
@@ -1175,9 +1168,9 @@ begin
   Self.Columns.Add;
   Self.Columns.Add;
   Self.Columns.Add;
-  Self.Column[0].Caption := 'Name';
-  Self.Column[1].Caption := 'Size';
-  Self.Column[2].Caption := 'Type';
+  Self.Column[0].Caption := sShellCtrlsName;
+  Self.Column[1].Caption := sShellCtrlsSize;
+  Self.Column[2].Caption := sShellCtrlsType;
   // Initial sizes, necessary under Windows CE
   Resize;
 end;
@@ -1218,11 +1211,11 @@ begin
       CurFileSize := FileSize(CurFilePath); // in Bytes
       NewItem.Data := Pointer(PtrInt(CurFileSize));
       if CurFileSize < 1024 then
-        NewItem.SubItems.Add(IntToStr(CurFileSize) + ' bytes')
+        NewItem.SubItems.Add(Format(sShellCtrlsBytes, [IntToStr(CurFileSize)]))
       else if CurFileSize < 1024 * 1024 then
-        NewItem.SubItems.Add(IntToStr(CurFileSize div 1024) + ' kB')
+        NewItem.SubItems.Add(Format(sShellCtrlsKB, [IntToStr(CurFileSize div 1024)]))
       else
-        NewItem.SubItems.Add(IntToStr(CurFileSize div (1024 * 1024)) + ' MB');
+        NewItem.SubItems.Add(Format(sShellCtrlsMB, [IntToStr(CurFileSize div (1024 * 1024))]));
       // Third column - Type
       NewItem.SubItems.Add(ExtractFileExt(CurFileName));
       if Assigned(FOnFileAdded) then FOnFileAdded(Self,NewItem);
