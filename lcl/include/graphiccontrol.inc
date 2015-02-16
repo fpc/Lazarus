@@ -105,5 +105,20 @@ begin
     TControlCanvas(Canvas).FreeHandle;
 end;
 
+procedure TGraphicControl.CMCursorChanged(var Message: TLMessage);
+var
+  Pt: TPoint;
+  Ct: TControl;
+begin
+  if not Visible then exit;
+  if Parent <> nil then begin
+    // execute only if the cursor is actually over the control
+    Pt := Parent.ScreenToClient(Mouse.CursorPos);
+    Ct := Parent.ControlAtPos(Pt, True);
+    if (Self = Ct) then
+      SetTempCursor(FCursor);
+  end;
+end;
+
 // included by controls.pp
 

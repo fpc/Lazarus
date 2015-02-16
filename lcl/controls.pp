@@ -2222,6 +2222,7 @@ type
     procedure DoOnChangeBounds; override;
     procedure DoOnParentHandleDestruction; override;
     property OnPaint: TNotifyEvent read FOnPaint write FOnPaint;
+    procedure CMCursorChanged(var Message: TLMessage); message CM_CURSORCHANGED;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
