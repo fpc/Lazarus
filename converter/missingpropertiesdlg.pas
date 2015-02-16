@@ -268,7 +268,7 @@ begin
   SetLength(InS, aInStream.Size);
   aInStream.Read(InS[1],length(InS));
   i := 1;
-  while i < Length(InS) do begin
+  while i <= Length(InS) do begin
     if InS[i] in ['''', '#'] then
       OutS:=OutS+CollectString(InS, i)
     else begin
