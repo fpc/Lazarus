@@ -793,8 +793,7 @@ begin
 
   {$IFDEF Windows}
   if (fProfile.TargetPlatform=lpWin32)
-  and (Win32MajorVersion=4)
-  and (Win32Platform = VER_PLATFORM_WIN32_NT) then
+  and (Win32Platform = VER_PLATFORM_WIN32_WINDOWS) then
     AppendExtraOption('-dWIN9XPLATFORM');
   {$ENDIF}
 
