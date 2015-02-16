@@ -323,7 +323,8 @@ end;
 
 function RegisterCustomStaticText: Boolean; alias : 'WSRegisterCustomStaticText';
 begin
-  Result := False;
+  RegisterWSComponent(TCustomStaticText, TCocoaWSCustomStaticText);
+  Result := True;
 end;
 
 function RegisterCustomLabel: Boolean; alias : 'WSRegisterCustomLabel';

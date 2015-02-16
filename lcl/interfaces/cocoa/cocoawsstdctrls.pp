@@ -219,7 +219,7 @@ type
   private
   protected
   public
-//    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
 //    class procedure SetAlignment(const ACustomStaticText: TCustomStaticText; const NewAlignment: TAlignment); override;
   end;
 
@@ -514,6 +514,21 @@ var
 begin
   btn := AllocButton(AWinControl, TLCLRadioButtonCallback, AParams, 0, NSRadioButton);
   Result := TLCLIntfHandle(btn);
+end;
+
+{ TCocoaWSCustomStaticText }
+
+class function TCocoaWSCustomStaticText.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): TLCLIntfHandle;
+var
+  field: NSTextField;
+begin
+  field := NSTextField(AllocTextField(AWinControl, AParams));
+  field.setBezeled(False);
+  field.setDrawsBackground(False);
+  field.setEditable(False);
+  field.setSelectable(False);
+  Result:=TLCLIntfHandle(field);
 end;
 
 { TCocoaWSCustomEdit }
