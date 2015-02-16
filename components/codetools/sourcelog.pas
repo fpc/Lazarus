@@ -226,11 +226,9 @@ end;
 function ChangeLineEndings(const s, NewLineEnding: string): string;
 var
   NewLength: Integer;
-  p, StartPos: Integer;
-  Src: PChar;
-  Dest: PChar;
+  p: Integer;
+  Src, Dest, StartPos, EndPos: PChar;
   EndLen: Integer;
-  EndPos: PChar;
 begin
   if s='' then begin
     Result:=s;
@@ -238,16 +236,28 @@ begin
   end;
   EndLen:=length(NewLineEnding);
   NewLength:=length(s);
-  p:=1;
-  while p<length(s) do begin
-    if s[p] in [#10,#13] then begin
-      StartPos:=p;
+  Src:=PChar(s);
+  repeat
+    case Src^ of
+    #0:
+      if Src-PChar(s)=length(s) then
+        break
+      else
+        inc(Src);
+    #10,#13:
+      begin
+        if (Src[1] in [#10,#13]) and (Src^<>Src[1]) then begin
+          inc(Src,2);
+          inc(NewLength,EndLen-2);
+        end else begin
+          inc(Src);
+          inc(NewLength,EndLen-1);
+        end;
+      end;
+    else
       inc(p);
-      if (s[p] in [#10,#13]) and (s[p]<>s[p-1]) then inc(p);
-      inc(NewLength,EndLen-(p-StartPos));
-    end else
-      inc(p);
-  end;
+    end;
+  until false;
   SetLength(Result,NewLength);
   Src:=PChar(s);
   Dest:=PChar(Result);
