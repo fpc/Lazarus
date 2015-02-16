@@ -203,16 +203,15 @@ begin
     if (AForm.ShowInTaskBar in [stDefault, stNever])
        {$ifdef HASX11}
        {QtTool have not minimize button !}
-       and (not (AForm.BorderStyle in [bsSizeToolWin, bsToolWindow]) or
-          (csDesigning in AForm.ComponentState))
+       and (not (AForm.BorderStyle in [bsSizeToolWin, bsToolWindow]) and
+          not (csDesigning in AForm.ComponentState))
        {$endif} then
       QtMainWindow.setShowInTaskBar(False);
     if Assigned(AForm.PopupParent) then
       PopupParent := TQtWidget(AForm.PopupParent.Handle).Widget
     else
       PopupParent := nil;
-    if not (csDesigning in AForm.ComponentState) then
-      QtMainWindow.setPopupParent(AForm.PopupMode, PopupParent);
+    QtMainWindow.setPopupParent(AForm.PopupMode, PopupParent);
   end;
 
   {$IFDEF HASX11}
