@@ -6405,23 +6405,41 @@ procedure GetGTKDefaultWidgetSize(AWinControl: TWinControl;
 var
   Widget: PGtkWidget;
   Requisition: TGtkRequisition;
+  FixedWidget: PGtkWidget;
 begin
   Widget := {%H-}PGtkWidget(AWinControl.Handle);
+  //if AWinControl.Name='OtherInfoGroupBox' then
+  //  DebugLn(['GetGTKDefaultWidgetSize ',GetWidgetDebugReport(Widget)]);
+
   // set size to default
-  //DebugLn(['GetGTKDefaultWidgetSize ',GetWidgetDebugReport(Widget)]);
   gtk_widget_set_size_request(Widget, -1, -1);
   // ask default size
   gtk_widget_size_request(Widget,@Requisition);
   PreferredWidth:=Requisition.width;
   PreferredHeight:=Requisition.height;
-  {DebugLn(['GetGTKDefaultWidgetSize Allocation=',Widget^.allocation.x,',',Widget^.allocation.y,',',Widget^.allocation.width,',',Widget^.allocation.height,
-   ' requisition=',Widget^.requisition.width,',',Widget^.requisition.height,
-   ' PreferredWidth=',PreferredWidth,' PreferredHeight=',PreferredHeight,
-   ' WithThemeSpace=',WithThemeSpace]);}
+
+  {if AWinControl.Name='OtherInfoGroupBox' then
+    DebugLn(['GetGTKDefaultWidgetSize Allocation=',Widget^.allocation.x,',',Widget^.allocation.y,',',Widget^.allocation.width,',',Widget^.allocation.height,
+     ' requisition=',Widget^.requisition.width,',',Widget^.requisition.height,
+     ' PreferredWidth=',PreferredWidth,' PreferredHeight=',PreferredHeight,
+     ' WithThemeSpace=',WithThemeSpace]); }
+
+  if GtkWidgetIsA(Widget,GTK_TYPE_EVENT_BOX) then begin
+    FixedWidget:=PGtkWidget(GetFixedWidget(Widget));
+    if FixedWidget<>nil then begin
+      {if AWinControl.Name='OtherInfoGroupBox' then
+        debugln(['GetGTKDefaultWidgetSize Fixed ',
+         ' allocation=',FixedWidget^.allocation.x,',',FixedWidget^.allocation.y,',',FixedWidget^.allocation.width,',',FixedWidget^.allocation.height,
+         ' requisition=',FixedWidget^.requisition.width,',',FixedWidget^.requisition.height]);}
+      dec(PreferredWidth,Max(0,FixedWidget^.requisition.width));
+      dec(PreferredHeight,Max(0,FixedWidget^.requisition.height));
+    end;
+  end;
 
   // restore size
   gtk_widget_set_size_request(Widget, AWinControl.Width, AWinControl.Height);
-  //debugln('GetGTKDefaultSize PreferredWidth=',dbgs(PreferredWidth),' PreferredHeight=',dbgs(PreferredHeight));
+  //if AWinControl.Name='OtherInfoGroupBox' then
+  //  debugln('GetGTKDefaultSize PreferredWidth=',dbgs(PreferredWidth),' PreferredHeight=',dbgs(PreferredHeight));
 end;
 
 procedure SendSizeNotificationToLCL(aWidget: PGtkWidget);
