@@ -9409,6 +9409,10 @@ msgstr "Parametri ereditati"
 msgid "Inherited project component"
 msgstr "Componenti del progetto ereditati"
 
+#: lazarusidestrconsts.lisinitializelocalvariable
+msgid "Initialize Local Variable"
+msgstr ""
+
 #: lazarusidestrconsts.lisinordertocreateacleancopyoftheprojectpackageallfil
 msgid "In order to create a clean copy of the project/package, all files in the following directory will be deleted and all its content will be lost.%sDelete all files in \"%s\"?"
 msgstr "Per poter creare una copia pulita del progetto/pacchetto, tutti i file nella seguente cartella saranno cancellati e il loro contenuto sarà perso.%sCancella tutti i file in \"%s\"?"
@@ -9417,6 +9421,10 @@ msgstr "Per poter creare una copia pulita del progetto/pacchetto, tutti i file n
 msgctxt "lazarusidestrconsts.lisinsert"
 msgid "Insert"
 msgstr "Inserisci"
+
+#: lazarusidestrconsts.lisinsertassignment
+msgid "Insert Assignment %s := ..."
+msgstr ""
 
 #: lazarusidestrconsts.lisinsertdate
 msgid "insert date"
@@ -15245,6 +15253,10 @@ msgstr "Attiva questo per tradurre i messaggi del compilatore in un'altra lingua
 msgid "(Set up default indentation)"
 msgstr "(imposta indentazione predefinita)"
 
+#: lazarusidestrconsts.lissetutf8inrtl
+msgid "Set UTF-8 in RTL"
+msgstr ""
+
 #: lazarusidestrconsts.lisshort
 msgid "Short:"
 msgstr "Breve:"
@@ -15643,10 +15655,6 @@ msgstr "Importate con successo le opzioni compilatore da \"%s\""
 #: lazarusidestrconsts.lissuggestdefaultnameofnewfileinlowercase
 msgid "Suggest default name of new file in lowercase"
 msgstr "Suggerire il nome predefinito del nuovo file in minuscolo"
-
-#: lazarusidestrconsts.lissupportutf8rtl
-msgid "Support UTF-8 RTL"
-msgstr ""
 
 #: lazarusidestrconsts.lissuspiciousincludepath
 msgid "Suspicious include path"
@@ -16265,6 +16273,10 @@ msgstr "Il percorso di ricerca unit di \"%s\" contiene la cartella dei sorgenti 
 msgid "The working directory \"%s\" does not exist.%sPlease check the working directory in Menu > Run > Run parameters."
 msgstr "La cartella di lavoro \"%s\" non esiste.%sControllate la cartella di lavoro in Menu -> Esegui -> Comandi di esecuzione."
 
+#: lazarusidestrconsts.listhisbuildmodenowsetsutf8inthertlflagsareinpagesoth
+msgid "This build mode now sets UTF-8 in the RTL.%s Flags are in pages \"Other\" and \"Additions and Overrides\"."
+msgstr ""
+
 #: lazarusidestrconsts.listhiscomponentalreadycontainsaclasswiththename
 msgid "This component already contains a class with the name %s."
 msgstr "Questo componente contiene già una classe con nome %s."
@@ -16300,6 +16312,10 @@ msgstr "Questo gruppo di opzioni per costruire Lazarus non è supportato da ques
 #: lazarusidestrconsts.listhisstatementcannotbeextractedpleaseselectsomecode
 msgid "This statement can not be extracted.%sPlease select some code to extract a new procedure/method."
 msgstr "Questo comando non può essere estratto.%sSelezionare del codice per estrarre una nuova procedura/metodo."
+
+#: lazarusidestrconsts.listhiswillallowchangingallbuildmodesatoncenotimpleme
+msgid "This will allow changing all build modes at once. Not implemented yet."
+msgstr ""
 
 #: lazarusidestrconsts.listhiswillcreateacirculardependency
 msgid "This will create a circular dependency."

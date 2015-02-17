@@ -9786,6 +9786,10 @@ msgstr ""
 msgid "Inherited project component"
 msgstr ""
 
+#: lazarusidestrconsts.lisinitializelocalvariable
+msgid "Initialize Local Variable"
+msgstr ""
+
 #: lazarusidestrconsts.lisinordertocreateacleancopyoftheprojectpackageallfil
 #, fuzzy,badformat
 #| msgid "In order to create a clean copy of the project/package, all files in the following directory will be deleted and all its content will be lost.%s%sDelete all files in %s%s%s?"
@@ -9796,6 +9800,10 @@ msgstr "Pred vytvorením čistej kópie projektu/balíčka, budú zmazané všet
 msgctxt "lazarusidestrconsts.lisinsert"
 msgid "Insert"
 msgstr "Vložiť"
+
+#: lazarusidestrconsts.lisinsertassignment
+msgid "Insert Assignment %s := ..."
+msgstr ""
 
 #: lazarusidestrconsts.lisinsertdate
 msgid "insert date"
@@ -16086,6 +16094,10 @@ msgstr ""
 msgid "(Set up default indentation)"
 msgstr ""
 
+#: lazarusidestrconsts.lissetutf8inrtl
+msgid "Set UTF-8 in RTL"
+msgstr ""
+
 #: lazarusidestrconsts.lisshort
 msgid "Short:"
 msgstr "Krátky:"
@@ -16494,10 +16506,6 @@ msgstr ""
 
 #: lazarusidestrconsts.lissuggestdefaultnameofnewfileinlowercase
 msgid "Suggest default name of new file in lowercase"
-msgstr ""
-
-#: lazarusidestrconsts.lissupportutf8rtl
-msgid "Support UTF-8 RTL"
 msgstr ""
 
 #: lazarusidestrconsts.lissuspiciousincludepath
@@ -17198,6 +17206,10 @@ msgstr "Cesta hľadania jednotiek %s%s%s obsahuje zdrojový adresár %s%s%s bal�
 msgid "The working directory \"%s\" does not exist.%sPlease check the working directory in Menu > Run > Run parameters."
 msgstr "Pracovný adresár %s%s%s neexistuje.%sProsím skontrolujte pracovný adresár v Spustiť > Parametre spustenia."
 
+#: lazarusidestrconsts.listhisbuildmodenowsetsutf8inthertlflagsareinpagesoth
+msgid "This build mode now sets UTF-8 in the RTL.%s Flags are in pages \"Other\" and \"Additions and Overrides\"."
+msgstr ""
+
 #: lazarusidestrconsts.listhiscomponentalreadycontainsaclasswiththename
 msgid "This component already contains a class with the name %s."
 msgstr ""
@@ -17235,6 +17247,10 @@ msgstr ""
 #: lazarusidestrconsts.listhisstatementcannotbeextractedpleaseselectsomecode
 msgid "This statement can not be extracted.%sPlease select some code to extract a new procedure/method."
 msgstr "Tento príkaz nemôže byť vytiahnutý.%sProsím vyberte nejaký kód pre vytiahnutie procedúry/metódy."
+
+#: lazarusidestrconsts.listhiswillallowchangingallbuildmodesatoncenotimpleme
+msgid "This will allow changing all build modes at once. Not implemented yet."
+msgstr ""
 
 #: lazarusidestrconsts.listhiswillcreateacirculardependency
 msgid "This will create a circular dependency."

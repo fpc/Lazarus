@@ -9944,6 +9944,10 @@ msgstr ""
 msgid "Inherited project component"
 msgstr "רכיב מורש של הפרוייקט"
 
+#: lazarusidestrconsts.lisinitializelocalvariable
+msgid "Initialize Local Variable"
+msgstr ""
+
 #: lazarusidestrconsts.lisinordertocreateacleancopyoftheprojectpackageallfil
 #, fuzzy
 #| msgid "In order to create a clean copy of the project/package, all files in the following directory will be deleted and all its content will be lost.%s%sDelete all files in %s%s%s?"
@@ -9954,6 +9958,10 @@ msgstr "כדי ליצור העתק נקי של הפרוייקט/חבילה, כל
 msgctxt "lazarusidestrconsts.lisinsert"
 msgid "Insert"
 msgstr "הכנס"
+
+#: lazarusidestrconsts.lisinsertassignment
+msgid "Insert Assignment %s := ..."
+msgstr ""
 
 #: lazarusidestrconsts.lisinsertdate
 msgid "insert date"
@@ -16355,6 +16363,10 @@ msgstr ""
 msgid "(Set up default indentation)"
 msgstr "(קבע זיהוי ברירת מחדל)"
 
+#: lazarusidestrconsts.lissetutf8inrtl
+msgid "Set UTF-8 in RTL"
+msgstr ""
+
 #: lazarusidestrconsts.lisshort
 msgid "Short:"
 msgstr "קצר:"
@@ -16769,10 +16781,6 @@ msgstr ""
 
 #: lazarusidestrconsts.lissuggestdefaultnameofnewfileinlowercase
 msgid "Suggest default name of new file in lowercase"
-msgstr ""
-
-#: lazarusidestrconsts.lissupportutf8rtl
-msgid "Support UTF-8 RTL"
 msgstr ""
 
 #: lazarusidestrconsts.lissuspiciousincludepath
@@ -17508,6 +17516,10 @@ msgstr "נתיב חיפוש היחידות של %s%s%s מכיל את תיקיי�
 msgid "The working directory \"%s\" does not exist.%sPlease check the working directory in Menu > Run > Run parameters."
 msgstr "תיקיית העבודה %s%s%s לא קיימת. בדוק את תיקיית העבודה ב Menu > Run > Run parameters."
 
+#: lazarusidestrconsts.listhisbuildmodenowsetsutf8inthertlflagsareinpagesoth
+msgid "This build mode now sets UTF-8 in the RTL.%s Flags are in pages \"Other\" and \"Additions and Overrides\"."
+msgstr ""
+
 #: lazarusidestrconsts.listhiscomponentalreadycontainsaclasswiththename
 msgid "This component already contains a class with the name %s."
 msgstr ""
@@ -17548,6 +17560,10 @@ msgstr "סט זה של אפשרויות הבניה של לזארוס לא נתמ
 #, fuzzy,badformat
 msgid "This statement can not be extracted.%sPlease select some code to extract a new procedure/method."
 msgstr "אי אפשר לחלץ משפט זה. בחר קוד אחר לחילוץ פרוצדורה/מתודה חדשה."
+
+#: lazarusidestrconsts.listhiswillallowchangingallbuildmodesatoncenotimpleme
+msgid "This will allow changing all build modes at once. Not implemented yet."
+msgstr ""
 
 #: lazarusidestrconsts.listhiswillcreateacirculardependency
 msgid "This will create a circular dependency."

@@ -9810,6 +9810,10 @@ msgstr ""
 msgid "Inherited project component"
 msgstr ""
 
+#: lazarusidestrconsts.lisinitializelocalvariable
+msgid "Initialize Local Variable"
+msgstr ""
+
 #: lazarusidestrconsts.lisinordertocreateacleancopyoftheprojectpackageallfil
 msgid "In order to create a clean copy of the project/package, all files in the following directory will be deleted and all its content will be lost.%sDelete all files in \"%s\"?"
 msgstr ""
@@ -9818,6 +9822,10 @@ msgstr ""
 msgctxt "lazarusidestrconsts.lisinsert"
 msgid "Insert"
 msgstr "插入"
+
+#: lazarusidestrconsts.lisinsertassignment
+msgid "Insert Assignment %s := ..."
+msgstr ""
 
 #: lazarusidestrconsts.lisinsertdate
 msgid "insert date"
@@ -16112,6 +16120,10 @@ msgstr ""
 msgid "(Set up default indentation)"
 msgstr ""
 
+#: lazarusidestrconsts.lissetutf8inrtl
+msgid "Set UTF-8 in RTL"
+msgstr ""
+
 #: lazarusidestrconsts.lisshort
 msgid "Short:"
 msgstr "快捷键:"
@@ -16520,10 +16532,6 @@ msgstr ""
 
 #: lazarusidestrconsts.lissuggestdefaultnameofnewfileinlowercase
 msgid "Suggest default name of new file in lowercase"
-msgstr ""
-
-#: lazarusidestrconsts.lissupportutf8rtl
-msgid "Support UTF-8 RTL"
 msgstr ""
 
 #: lazarusidestrconsts.lissuspiciousincludepath
@@ -17214,6 +17222,10 @@ msgstr "单元搜索路径%s%s%s包含在包%s的源目录%s中"
 msgid "The working directory \"%s\" does not exist.%sPlease check the working directory in Menu > Run > Run parameters."
 msgstr "工作目录%s%s%s不存在.%s请通过菜单 运行>带参数运行 检查工作目录."
 
+#: lazarusidestrconsts.listhisbuildmodenowsetsutf8inthertlflagsareinpagesoth
+msgid "This build mode now sets UTF-8 in the RTL.%s Flags are in pages \"Other\" and \"Additions and Overrides\"."
+msgstr ""
+
 #: lazarusidestrconsts.listhiscomponentalreadycontainsaclasswiththename
 msgid "This component already contains a class with the name %s."
 msgstr ""
@@ -17251,6 +17263,10 @@ msgstr ""
 #: lazarusidestrconsts.listhisstatementcannotbeextractedpleaseselectsomecode
 msgid "This statement can not be extracted.%sPlease select some code to extract a new procedure/method."
 msgstr "语句无法分析.%s请选择一段代码用来分析 procedure/method."
+
+#: lazarusidestrconsts.listhiswillallowchangingallbuildmodesatoncenotimpleme
+msgid "This will allow changing all build modes at once. Not implemented yet."
+msgstr ""
 
 #: lazarusidestrconsts.listhiswillcreateacirculardependency
 msgid "This will create a circular dependency."

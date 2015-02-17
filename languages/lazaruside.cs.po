@@ -9449,6 +9449,10 @@ msgstr "Zděděné parametry"
 msgid "Inherited project component"
 msgstr "Zděděné komponenty projektu"
 
+#: lazarusidestrconsts.lisinitializelocalvariable
+msgid "Initialize Local Variable"
+msgstr ""
+
 #: lazarusidestrconsts.lisinordertocreateacleancopyoftheprojectpackageallfil
 #, fuzzy
 msgid "In order to create a clean copy of the project/package, all files in the following directory will be deleted and all its content will be lost.%sDelete all files in \"%s\"?"
@@ -9458,6 +9462,10 @@ msgstr "Před vytvořením čisté kopie projektu/balíčku budou smazané všec
 msgctxt "lazarusidestrconsts.lisinsert"
 msgid "Insert"
 msgstr "Vložit"
+
+#: lazarusidestrconsts.lisinsertassignment
+msgid "Insert Assignment %s := ..."
+msgstr ""
 
 #: lazarusidestrconsts.lisinsertdate
 msgid "insert date"
@@ -15319,6 +15327,10 @@ msgstr "Toto nastavte k překládání zpráv překladače do jiného jazyka (mi
 msgid "(Set up default indentation)"
 msgstr "(Nastavení výchozího odsazování)"
 
+#: lazarusidestrconsts.lissetutf8inrtl
+msgid "Set UTF-8 in RTL"
+msgstr ""
+
 #: lazarusidestrconsts.lisshort
 msgid "Short:"
 msgstr "Krátky:"
@@ -15722,10 +15734,6 @@ msgstr ""
 #: lazarusidestrconsts.lissuggestdefaultnameofnewfileinlowercase
 msgid "Suggest default name of new file in lowercase"
 msgstr "Navrhnout přednastavené jméno nového souboru malými písmeny"
-
-#: lazarusidestrconsts.lissupportutf8rtl
-msgid "Support UTF-8 RTL"
-msgstr ""
 
 #: lazarusidestrconsts.lissuspiciousincludepath
 msgid "Suspicious include path"
@@ -16372,6 +16380,10 @@ msgstr "Cesta hledání jednotek \"%s\" obsahuje zdrojový adresář \"%s\" bal�
 msgid "The working directory \"%s\" does not exist.%sPlease check the working directory in Menu > Run > Run parameters."
 msgstr "Pracovní adresář \"%s\" neexistuje.%sProsím, zkontrolujte pracovní adresář v Spustit -> Parametry spuštění."
 
+#: lazarusidestrconsts.listhisbuildmodenowsetsutf8inthertlflagsareinpagesoth
+msgid "This build mode now sets UTF-8 in the RTL.%s Flags are in pages \"Other\" and \"Additions and Overrides\"."
+msgstr ""
+
 #: lazarusidestrconsts.listhiscomponentalreadycontainsaclasswiththename
 msgid "This component already contains a class with the name %s."
 msgstr "Tato komponenta už obsahuje třídu s názvem %s."
@@ -16408,6 +16420,10 @@ msgstr "Tato kombinace voleb sestavení Lazarusu není podporována touto instal
 #: lazarusidestrconsts.listhisstatementcannotbeextractedpleaseselectsomecode
 msgid "This statement can not be extracted.%sPlease select some code to extract a new procedure/method."
 msgstr "Tento příkaz nelze vyjmout.%sProsím, vyberte nějaký kód pro vyjmutí procedury/metody."
+
+#: lazarusidestrconsts.listhiswillallowchangingallbuildmodesatoncenotimpleme
+msgid "This will allow changing all build modes at once. Not implemented yet."
+msgstr ""
 
 #: lazarusidestrconsts.listhiswillcreateacirculardependency
 msgid "This will create a circular dependency."

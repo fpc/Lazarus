@@ -9623,6 +9623,10 @@ msgstr ""
 msgid "Inherited project component"
 msgstr "Успадкований компонент проекту"
 
+#: lazarusidestrconsts.lisinitializelocalvariable
+msgid "Initialize Local Variable"
+msgstr ""
+
 #: lazarusidestrconsts.lisinordertocreateacleancopyoftheprojectpackageallfil
 #, fuzzy,badformat
 #| msgid "In order to create a clean copy of the project/package, all files in the following directory will be deleted and all its content will be lost.%s%sDelete all files in %s%s%s?"
@@ -9633,6 +9637,10 @@ msgstr "Для того, щоб створити чисту копію прое�
 msgctxt "lazarusidestrconsts.lisinsert"
 msgid "Insert"
 msgstr "Вставити"
+
+#: lazarusidestrconsts.lisinsertassignment
+msgid "Insert Assignment %s := ..."
+msgstr ""
 
 #: lazarusidestrconsts.lisinsertdate
 msgid "insert date"
@@ -15609,6 +15617,10 @@ msgstr ""
 msgid "(Set up default indentation)"
 msgstr "(Налаштувати відступи за замовчуванням)"
 
+#: lazarusidestrconsts.lissetutf8inrtl
+msgid "Set UTF-8 in RTL"
+msgstr ""
+
 #: lazarusidestrconsts.lisshort
 msgid "Short:"
 msgstr "Коротко:"
@@ -16017,10 +16029,6 @@ msgstr ""
 #: lazarusidestrconsts.lissuggestdefaultnameofnewfileinlowercase
 msgid "Suggest default name of new file in lowercase"
 msgstr "Запропонувати типове ім'я нового файлу в нижньому регістрі"
-
-#: lazarusidestrconsts.lissupportutf8rtl
-msgid "Support UTF-8 RTL"
-msgstr ""
 
 #: lazarusidestrconsts.lissuspiciousincludepath
 msgid "Suspicious include path"
@@ -16739,6 +16747,10 @@ msgstr "Шлях пошуку модулів %s%s%s містить теку по
 msgid "The working directory \"%s\" does not exist.%sPlease check the working directory in Menu > Run > Run parameters."
 msgstr "Робоча тека %s%s% не існує.s%Перевірте робочу теку в Меню > Запуск > Параметри запуску."
 
+#: lazarusidestrconsts.listhisbuildmodenowsetsutf8inthertlflagsareinpagesoth
+msgid "This build mode now sets UTF-8 in the RTL.%s Flags are in pages \"Other\" and \"Additions and Overrides\"."
+msgstr ""
+
 #: lazarusidestrconsts.listhiscomponentalreadycontainsaclasswiththename
 msgid "This component already contains a class with the name %s."
 msgstr ""
@@ -16778,6 +16790,10 @@ msgstr "Цей набір параметрів для збирання Lazarus �
 #: lazarusidestrconsts.listhisstatementcannotbeextractedpleaseselectsomecode
 msgid "This statement can not be extracted.%sPlease select some code to extract a new procedure/method."
 msgstr "Цей вираз не може бути витягнутий.%sВиберіть будь-який код, щоб витягти нову процедуру/метод."
+
+#: lazarusidestrconsts.listhiswillallowchangingallbuildmodesatoncenotimpleme
+msgid "This will allow changing all build modes at once. Not implemented yet."
+msgstr ""
 
 #: lazarusidestrconsts.listhiswillcreateacirculardependency
 msgid "This will create a circular dependency."

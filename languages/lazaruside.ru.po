@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2015-02-14 02:58+0300\n"
+"PO-Revision-Date: 2015-02-18 01:34+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -9392,6 +9392,10 @@ msgstr "Унаследованные параметры"
 msgid "Inherited project component"
 msgstr "Унаследованный от компонента проекта"
 
+#: lazarusidestrconsts.lisinitializelocalvariable
+msgid "Initialize Local Variable"
+msgstr "Инициализация локальной переменной"
+
 #: lazarusidestrconsts.lisinordertocreateacleancopyoftheprojectpackageallfil
 msgid "In order to create a clean copy of the project/package, all files in the following directory will be deleted and all its content will be lost.%sDelete all files in \"%s\"?"
 msgstr "При создании очищенной копии проекта/пакета все файлы в следующем каталоге будут удалены, и всё их содержимое будет утеряно.%sУдалить все файлы в \"%s\"?"
@@ -9400,6 +9404,10 @@ msgstr "При создании очищенной копии проекта/п�
 msgctxt "lazarusidestrconsts.lisinsert"
 msgid "Insert"
 msgstr "Вставить"
+
+#: lazarusidestrconsts.lisinsertassignment
+msgid "Insert Assignment %s := ..."
+msgstr "Вставить присваивание %s := ..."
 
 #: lazarusidestrconsts.lisinsertdate
 msgid "insert date"
@@ -15228,6 +15236,10 @@ msgstr "Задайте это значение для перевода сооб�
 msgid "(Set up default indentation)"
 msgstr "(Настроить отступ по умолчанию)"
 
+#: lazarusidestrconsts.lissetutf8inrtl
+msgid "Set UTF-8 in RTL"
+msgstr "Задать UTF-8 в RTL"
+
 #: lazarusidestrconsts.lisshort
 msgid "Short:"
 msgstr "Краткое:"
@@ -15626,10 +15638,6 @@ msgstr "Импорт параметров компилятора из \"%s\" у�
 #: lazarusidestrconsts.lissuggestdefaultnameofnewfileinlowercase
 msgid "Suggest default name of new file in lowercase"
 msgstr "Предлагать имя нового файла по умолчанию в нижнем регистре"
-
-#: lazarusidestrconsts.lissupportutf8rtl
-msgid "Support UTF-8 RTL"
-msgstr "Поддержка RTL с UTF-8"
 
 #: lazarusidestrconsts.lissuspiciousincludepath
 msgid "Suspicious include path"
@@ -16248,6 +16256,10 @@ msgstr "Путь поиска модулей \"%s\" содержит катал�
 msgid "The working directory \"%s\" does not exist.%sPlease check the working directory in Menu > Run > Run parameters."
 msgstr "Рабочий каталог \"%s\" не существует.%sПроверьте его в меню Запуск -> Параметры запуска."
 
+#: lazarusidestrconsts.listhisbuildmodenowsetsutf8inthertlflagsareinpagesoth
+msgid "This build mode now sets UTF-8 in the RTL.%s Flags are in pages \"Other\" and \"Additions and Overrides\"."
+msgstr "Этот режим сборки теперь задаёт использование UTF-8 в RTL.%sФлаги находятся на страницах \"Другие\" и \"Дополнения и перекрытия\"."
+
 #: lazarusidestrconsts.listhiscomponentalreadycontainsaclasswiththename
 msgid "This component already contains a class with the name %s."
 msgstr "Этот компонент уже содержит класс с именем %s."
@@ -16283,6 +16295,10 @@ msgstr "Этот набор параметров сборки Lazarus не по�
 #: lazarusidestrconsts.listhisstatementcannotbeextractedpleaseselectsomecode
 msgid "This statement can not be extracted.%sPlease select some code to extract a new procedure/method."
 msgstr "Это выражение не может быть извлечено.%sВыберите какой-то код, чтобы извлечь новую процедуру/метод."
+
+#: lazarusidestrconsts.listhiswillallowchangingallbuildmodesatoncenotimpleme
+msgid "This will allow changing all build modes at once. Not implemented yet."
+msgstr "Действие позволит вносить изменения во все режимы сборки сразу. Ещё не реализовано."
 
 #: lazarusidestrconsts.listhiswillcreateacirculardependency
 msgid "This will create a circular dependency."
@@ -18459,7 +18475,7 @@ msgstr "просмотреть"
 #: lazarusidestrconsts.srkmecinvertassignment
 msgctxt "lazarusidestrconsts.srkmecinvertassignment"
 msgid "Invert Assignment"
-msgstr "Инвертировать присвоение"
+msgstr "Инвертировать присваивание"
 
 #: lazarusidestrconsts.srkmecleft
 msgid "Move cursor left"
@@ -19320,7 +19336,7 @@ msgstr "&Просмотреть ..."
 #: lazarusidestrconsts.ueminvertassignment
 msgctxt "lazarusidestrconsts.ueminvertassignment"
 msgid "Invert Assignment"
-msgstr "Инвертировать присвоение"
+msgstr "Инвертировать присваивание"
 
 #: lazarusidestrconsts.uemlineending
 msgid "Line Ending"

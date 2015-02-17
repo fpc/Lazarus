@@ -9398,6 +9398,10 @@ msgstr "Örökölt paraméterek"
 msgid "Inherited project component"
 msgstr "Örökölt projekt komponens"
 
+#: lazarusidestrconsts.lisinitializelocalvariable
+msgid "Initialize Local Variable"
+msgstr ""
+
 #: lazarusidestrconsts.lisinordertocreateacleancopyoftheprojectpackageallfil
 msgid "In order to create a clean copy of the project/package, all files in the following directory will be deleted and all its content will be lost.%sDelete all files in \"%s\"?"
 msgstr "Azért, hogy egy tiszta másolat jöhessen létre a projektből/csomagból, a következő könyvtár minden eleme törölve lesz és annak teljes tartalma el fog veszni.%sTörli az összes fájlt a(z) \"%s\" könyvtárból?"
@@ -9406,6 +9410,10 @@ msgstr "Azért, hogy egy tiszta másolat jöhessen létre a projektből/csomagb�
 msgctxt "lazarusidestrconsts.lisinsert"
 msgid "Insert"
 msgstr "Beszúrás"
+
+#: lazarusidestrconsts.lisinsertassignment
+msgid "Insert Assignment %s := ..."
+msgstr ""
 
 #: lazarusidestrconsts.lisinsertdate
 msgid "insert date"
@@ -15232,6 +15240,10 @@ msgstr "Állítsa be ezt a fordító üzeneteinek más nyelvre történő leford
 msgid "(Set up default indentation)"
 msgstr "(Alapértelmezett behúzás beállítása)"
 
+#: lazarusidestrconsts.lissetutf8inrtl
+msgid "Set UTF-8 in RTL"
+msgstr ""
+
 #: lazarusidestrconsts.lisshort
 msgid "Short:"
 msgstr "Rövidítés:"
@@ -15630,10 +15642,6 @@ msgstr "Fordítóbeállítások sikeresen importálva innen: \"%s\""
 #: lazarusidestrconsts.lissuggestdefaultnameofnewfileinlowercase
 msgid "Suggest default name of new file in lowercase"
 msgstr "Az új fájl alapértelmezett nevét kisbetűvel ajánlja fel"
-
-#: lazarusidestrconsts.lissupportutf8rtl
-msgid "Support UTF-8 RTL"
-msgstr ""
 
 #: lazarusidestrconsts.lissuspiciousincludepath
 msgid "Suspicious include path"
@@ -16252,6 +16260,10 @@ msgstr "A(z) \"%s\" unit keresési útvonala tartalmazza a(z) \"%s\" könyvtára
 msgid "The working directory \"%s\" does not exist.%sPlease check the working directory in Menu > Run > Run parameters."
 msgstr "A(z) \"%s\" munkakönyvtár nem létezik.%sEllenőrizze a munkakönyvtárat a menüben itt: Futtatás -> Futtatási paraméterek!"
 
+#: lazarusidestrconsts.listhisbuildmodenowsetsutf8inthertlflagsareinpagesoth
+msgid "This build mode now sets UTF-8 in the RTL.%s Flags are in pages \"Other\" and \"Additions and Overrides\"."
+msgstr ""
+
 #: lazarusidestrconsts.listhiscomponentalreadycontainsaclasswiththename
 msgid "This component already contains a class with the name %s."
 msgstr "Ez a komponens már tartalmaz egy osztályt %s névvel."
@@ -16287,6 +16299,10 @@ msgstr "A Lazarus építésének ezen beállításai nincsenek támogatva e tele
 #: lazarusidestrconsts.listhisstatementcannotbeextractedpleaseselectsomecode
 msgid "This statement can not be extracted.%sPlease select some code to extract a new procedure/method."
 msgstr "Ez állomány nem helyezhető át.%sJelöljön ki kódot, amit új eljárásba/metódusba helyezhet!"
+
+#: lazarusidestrconsts.listhiswillallowchangingallbuildmodesatoncenotimpleme
+msgid "This will allow changing all build modes at once. Not implemented yet."
+msgstr ""
 
 #: lazarusidestrconsts.listhiswillcreateacirculardependency
 msgid "This will create a circular dependency."

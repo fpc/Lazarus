@@ -9585,6 +9585,10 @@ msgstr "Parâmetros herdados"
 msgid "Inherited project component"
 msgstr "Componente projeto herdado"
 
+#: lazarusidestrconsts.lisinitializelocalvariable
+msgid "Initialize Local Variable"
+msgstr ""
+
 #: lazarusidestrconsts.lisinordertocreateacleancopyoftheprojectpackageallfil
 #, fuzzy,badformat
 #| msgid "In order to create a clean copy of the project/package, all files in the following directory will be deleted and all its content will be lost.%s%sDelete all files in %s%s%s?"
@@ -9595,6 +9599,10 @@ msgstr "Com o propósito de criar uma cópia \"limpa\" do projeto/pacote, todos 
 msgctxt "lazarusidestrconsts.lisinsert"
 msgid "Insert"
 msgstr "Inserir"
+
+#: lazarusidestrconsts.lisinsertassignment
+msgid "Insert Assignment %s := ..."
+msgstr ""
 
 #: lazarusidestrconsts.lisinsertdate
 msgid "insert date"
@@ -15548,6 +15556,10 @@ msgstr ""
 msgid "(Set up default indentation)"
 msgstr "(Configurar identação padrão)"
 
+#: lazarusidestrconsts.lissetutf8inrtl
+msgid "Set UTF-8 in RTL"
+msgstr ""
+
 #: lazarusidestrconsts.lisshort
 msgid "Short:"
 msgstr "Curto:"
@@ -15956,10 +15968,6 @@ msgstr ""
 #: lazarusidestrconsts.lissuggestdefaultnameofnewfileinlowercase
 msgid "Suggest default name of new file in lowercase"
 msgstr "Sugerir nome padrão do novo arquivo em minúsculas"
-
-#: lazarusidestrconsts.lissupportutf8rtl
-msgid "Support UTF-8 RTL"
-msgstr ""
 
 #: lazarusidestrconsts.lissuspiciousincludepath
 msgid "Suspicious include path"
@@ -16680,6 +16688,10 @@ msgstr "O caminho de busca unidade de %s%s%s contém o diretório fonte %s%s%s d
 msgid "The working directory \"%s\" does not exist.%sPlease check the working directory in Menu > Run > Run parameters."
 msgstr "O diretório de trabalho %s%s%s não existe.%sFavor verificar no Menu -> Executar -> Parâmetros de Execução."
 
+#: lazarusidestrconsts.listhisbuildmodenowsetsutf8inthertlflagsareinpagesoth
+msgid "This build mode now sets UTF-8 in the RTL.%s Flags are in pages \"Other\" and \"Additions and Overrides\"."
+msgstr ""
+
 #: lazarusidestrconsts.listhiscomponentalreadycontainsaclasswiththename
 msgid "This component already contains a class with the name %s."
 msgstr ""
@@ -16719,6 +16731,10 @@ msgstr "Este conjunto de opções para contrução do Lazarus não é suportado 
 #: lazarusidestrconsts.listhisstatementcannotbeextractedpleaseselectsomecode
 msgid "This statement can not be extracted.%sPlease select some code to extract a new procedure/method."
 msgstr "Esta declaração não pode ser extraída.%sFavor selecionar algum código para extrair um novo procedimento/método."
+
+#: lazarusidestrconsts.listhiswillallowchangingallbuildmodesatoncenotimpleme
+msgid "This will allow changing all build modes at once. Not implemented yet."
+msgstr ""
 
 #: lazarusidestrconsts.listhiswillcreateacirculardependency
 msgid "This will create a circular dependency."

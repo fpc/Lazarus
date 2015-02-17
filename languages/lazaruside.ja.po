@@ -9547,6 +9547,10 @@ msgstr "継承された引数"
 msgid "Inherited project component"
 msgstr "継承されたプロジェクトコンポーネント"
 
+#: lazarusidestrconsts.lisinitializelocalvariable
+msgid "Initialize Local Variable"
+msgstr ""
+
 #: lazarusidestrconsts.lisinordertocreateacleancopyoftheprojectpackageallfil
 #, fuzzy,badformat
 #| msgid "In order to create a clean copy of the project/package, all files in the following directory will be deleted and all its content will be lost.%s%sDelete all files in %s%s%s?"
@@ -9557,6 +9561,10 @@ msgstr "プロジェクトもしくはパッケージのクリーンコピーを
 msgctxt "lazarusidestrconsts.lisinsert"
 msgid "Insert"
 msgstr "挿入"
+
+#: lazarusidestrconsts.lisinsertassignment
+msgid "Insert Assignment %s := ..."
+msgstr ""
 
 #: lazarusidestrconsts.lisinsertdate
 msgid "insert date"
@@ -15504,6 +15512,10 @@ msgstr ""
 msgid "(Set up default indentation)"
 msgstr "（既定のインデント合わせを設定）"
 
+#: lazarusidestrconsts.lissetutf8inrtl
+msgid "Set UTF-8 in RTL"
+msgstr ""
+
 #: lazarusidestrconsts.lisshort
 msgid "Short:"
 msgstr "Short:"
@@ -15912,10 +15924,6 @@ msgstr ""
 #: lazarusidestrconsts.lissuggestdefaultnameofnewfileinlowercase
 msgid "Suggest default name of new file in lowercase"
 msgstr "新しいデフォルトファイル名を小文字で提案"
-
-#: lazarusidestrconsts.lissupportutf8rtl
-msgid "Support UTF-8 RTL"
-msgstr ""
 
 #: lazarusidestrconsts.lissuspiciousincludepath
 msgid "Suspicious include path"
@@ -16622,6 +16630,10 @@ msgstr "%s%s%sのユニット検索パスはパッケージ %sのソースディ
 msgid "The working directory \"%s\" does not exist.%sPlease check the working directory in Menu > Run > Run parameters."
 msgstr "作業ディレクトリ %s%s%s が存在しません。%sメニュー>実行>実行パラメータで作業ディレクトリをチェックしてください。"
 
+#: lazarusidestrconsts.listhisbuildmodenowsetsutf8inthertlflagsareinpagesoth
+msgid "This build mode now sets UTF-8 in the RTL.%s Flags are in pages \"Other\" and \"Additions and Overrides\"."
+msgstr ""
+
 #: lazarusidestrconsts.listhiscomponentalreadycontainsaclasswiththename
 msgid "This component already contains a class with the name %s."
 msgstr "このコンポーネントは既に %s という名前のクラスを含んでいます。"
@@ -16659,6 +16671,10 @@ msgstr "このLazarus構築オプションセットは、このインストー�
 #: lazarusidestrconsts.listhisstatementcannotbeextractedpleaseselectsomecode
 msgid "This statement can not be extracted.%sPlease select some code to extract a new procedure/method."
 msgstr "この文は抽出できません。%s新しい手続き/メソッドを抽出するためにコードの一部を選択してください。"
+
+#: lazarusidestrconsts.listhiswillallowchangingallbuildmodesatoncenotimpleme
+msgid "This will allow changing all build modes at once. Not implemented yet."
+msgstr ""
 
 #: lazarusidestrconsts.listhiswillcreateacirculardependency
 msgid "This will create a circular dependency."
