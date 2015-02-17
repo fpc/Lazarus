@@ -299,6 +299,18 @@ resourceString
   rsSize = '  size ';
   rsModified = '  modified ';
 
+  // ShellCtrls
+  sShellCtrlsName = 'Name';
+  sShellCtrlsSize = 'Size';
+  sShellCtrlsType = 'Type';
+  sShellCtrlsMB = '%s MB';
+  sShellCtrlsKB = '%s kB';
+  sShellCtrlsBytes = '%s bytes';
+  sShellCtrlsInvalidRoot = 'Invalid pathname:'#13'"%s"';
+  sShellCtrlsInvalidPath = 'Invalid pathname:'#13'"%s"';
+  sShellCtrlsInvalidPathRelative = 'Invalid relative pathname:'#13'"%s"'#13
+    +'in relation to rootpath:'#13'"%s"';
+
   // I'm not sure if in all languages the Dialog texts for a button
   // have the same meaning as a key
   // So every VK gets its own constant

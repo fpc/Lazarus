@@ -21,7 +21,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Graphics, LCLType, AvgLvlTree,
-  ComCtrls, FileUtil, LazUtf8;
+  ComCtrls, FileUtil, LazUtf8, LCLStrConsts;
 
 {$if defined(Windows) or defined(darwin)}
 {$define CaseInsensitiveFilenames}
@@ -290,13 +290,6 @@ type
 
   EInvalidPath = class(Exception);
 
-const
-  //ToDo: make it a resource string
-  SShellCtrlsInvalidRoot         = 'Invalid pathname:'#13'"%s"';
-  SShellCtrlsInvalidPath         = 'Invalid pathname:'#13'"%s"';
-  SShellCtrlsInvalidPathRelative = 'Invalid relative pathname:'#13'"%s"'#13
-                                    +'in relation to rootpath:'#13'"%s"';
-
 function DbgS(OT: TObjectTypes): String; overload;
 
 procedure Register;
@@ -402,7 +395,7 @@ begin
   if not (csDesigning in ComponentState)
      and (AValue <> '')
      and not DirectoryExistsUtf8(ExpandFilenameUtf8(AValue)) then
-     Raise Exception.CreateFmt(SShellCtrlsInvalidRoot,[ExpandFileNameUtf8(AValue)]);
+     Raise Exception.CreateFmt(sShellCtrlsInvalidRoot,[ExpandFileNameUtf8(AValue)]);
   if (AValue = '') then
     FRoot := GetBasePath
   else
@@ -783,7 +776,8 @@ begin
     for i := 0 to Files.Count - 1 do
     begin
       NewNode := Items.AddChildObject(ANode, Files.Strings[i], nil); //@Files.Strings[i]);
-      // This marks if the node is a directory
+      // This marks if the node is a directory (not wether or not there are files in the folder!)
+      // We need this info (is it a folder?) elsewhere.
       if (fObjectTypes * [otNonFolders] = []) then
         NewNode.HasChildren := ((Files.Objects[i] <> nil) and
                                HasSubDir(AppendpathDelim(ANodePath)+Files[i]))
@@ -852,10 +846,29 @@ end;
 {$endif}
 
 procedure TCustomShellTreeView.DoSelectionChanged;
+var
+  ANode: TTreeNode;
+  IsDirectory: Boolean;
 begin
   inherited DoSelectionChanged;
-  if Assigned(FShellListView) then
-    FShellListView.Root := GetPathFromNode(Selected);
+  ANode := Selected;
+  if Assigned(FShellListView) and Assigned(ANode) then
+  begin
+    IsDirectory := (not (otFolders in FObjectTypes)) or ANode.HasChildren;
+    if IsDirectory then
+    begin
+      //Note: the folder may have been deleted in the mean time
+      //an exception will be raise by the next line in that case
+      FShellListView.Root := GetPathFromNode(ANode)
+    end
+    else
+    begin
+      if Assigned(Anode.Parent) then
+        FShellListView.Root := GetPathFromNode(ANode.Parent)
+      else
+        FShellListView.Root := '';
+    end;
+  end;
 end;
 
 function TCustomShellTreeView.GetPathFromNode(ANode: TTreeNode): string;
@@ -977,7 +990,7 @@ begin
     else
     begin
       if not DirectoryExistsUtf8(ExpandFileNameUtf8(AValue)) then
-        Raise EInvalidPath.CreateFmt(SShellCtrlsInvalidPath,[ExpandFileNameUtf8(FQRootPath + AValue)]);
+        Raise EInvalidPath.CreateFmt(sShellCtrlsInvalidPath,[ExpandFileNameUtf8(FQRootPath + AValue)]);
       //Directory Exists
       //Make it fully qualified
       AValue := ExpandFileNameUtf8(AValue);
@@ -987,7 +1000,7 @@ begin
   begin
     //AValue is an absoulte path to begin with
     if not DirectoryExistsUtf8(AValue) then
-      Raise EInvalidPath.CreateFmt(SShellCtrlsInvalidPath,[AValue]);
+      Raise EInvalidPath.CreateFmt(sShellCtrlsInvalidPath,[AValue]);
   end;
 
   //AValue now is a fully qualified path and it exists
@@ -1000,7 +1013,7 @@ begin
   begin
     // CreateRelativePath retruns a string beginning with ..
     // so AValue is not a subdirectory of FRoot
-    Raise EInvalidPath.CreateFmt(SShellCtrlsInvalidPathRelative,[AValue, FQRootPath]);
+    Raise EInvalidPath.CreateFmt(sShellCtrlsInvalidPathRelative,[AValue, FQRootPath]);
   end;
 
   //writeln('RelPath = ',RelPath);
@@ -1131,7 +1144,7 @@ begin
     if not (csDesigning in ComponentState)
        and (Value <> '')
        and not DirectoryExistsUtf8(ExpandFilenameUtf8(Value)) then
-       Raise Exception.CreateFmt(SShellCtrlsInvalidRoot,[Value]);
+       Raise Exception.CreateFmt(sShellCtrlsInvalidRoot,[Value]);
     FRoot := Value;
     Clear;
     Items.Clear;
@@ -1150,9 +1163,9 @@ begin
   Self.Columns.Add;
   Self.Columns.Add;
   Self.Columns.Add;
-  Self.Column[0].Caption := 'Name';
-  Self.Column[1].Caption := 'Size';
-  Self.Column[2].Caption := 'Type';
+  Self.Column[0].Caption := sShellCtrlsName;
+  Self.Column[1].Caption := sShellCtrlsSize;
+  Self.Column[2].Caption := sShellCtrlsType;
   // Initial sizes, necessary under Windows CE
   Resize;
 end;
@@ -1193,11 +1206,11 @@ begin
       CurFileSize := FileSize(CurFilePath); // in Bytes
       NewItem.Data := Pointer(PtrInt(CurFileSize));
       if CurFileSize < 1024 then
-        NewItem.SubItems.Add(IntToStr(CurFileSize) + ' bytes')
+        NewItem.SubItems.Add(Format(sShellCtrlsBytes, [IntToStr(CurFileSize)]))
       else if CurFileSize < 1024 * 1024 then
-        NewItem.SubItems.Add(IntToStr(CurFileSize div 1024) + ' kB')
+        NewItem.SubItems.Add(Format(sShellCtrlsKB, [IntToStr(CurFileSize div 1024)]))
       else
-        NewItem.SubItems.Add(IntToStr(CurFileSize div (1024 * 1024)) + ' MB');
+        NewItem.SubItems.Add(Format(sShellCtrlsMB, [IntToStr(CurFileSize div (1024 * 1024))]));
       // Third column - Type
       NewItem.SubItems.Add(ExtractFileExt(CurFileName));
     end;
