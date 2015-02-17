@@ -4605,7 +4605,7 @@ begin
       XMLConfig.GetValue('EditorOptions/Display/ExtraLineSpacing', 1);
     fDisableAntialiasing :=
       XMLConfig.GetValue('EditorOptions/Display/DisableAntialiasing',
-                         FileVersion<7);
+                         (FileVersion>0) and (FileVersion<7));
     FDoNotWarnForFont :=
       XMLConfig.GetValue('EditorOptions/Display/DoNotWarnForFont', '');
 
