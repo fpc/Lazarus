@@ -1687,9 +1687,10 @@ var
   CurRow: TvTableRow;
   CurCell: TvTableCell;
   lLeft, lTop, lRight, lBottom, lWidth: Double;
-  col, row: Integer;
+  col, row, i: Integer;
   //DebugStr: string;
   OriginalColWidthsInMM: array of Double;
+  CurRowTableWidth: Double;
 begin
   SetLength(ColWidthsInMM, GetRowCount());
 
@@ -1707,6 +1708,7 @@ begin
   for row := 0 to GetRowCount()-1 do
   begin
     CurRow := GetRow(row);
+    CurRowTableWidth := 0;
 
     for col := 0 to CurRow.GetCellCount()-1 do
     begin
@@ -1715,16 +1717,25 @@ begin
 
       // skip cells with span since they are complex
       // skip columns with width pre-set
-      if (OriginalColWidthsInMM[col] > 0) or (CurCell.SpannedCols > 0) then
+      if (OriginalColWidthsInMM[col] > 0) then
       begin
-        TableWidth := TableWidth + ColWidthsInMM[col];
+        CurRowTableWidth := CurRowTableWidth + ColWidthsInMM[col];
+        Continue;
+      end;
+      if (CurCell.SpannedCols > 1) then
+      begin
+        CurRowTableWidth := CurRowTableWidth + ColWidthsInMM[col];
+        for i := 0 to CurCell.SpannedCols-1 do
+          CurRowTableWidth := CurRowTableWidth + ColWidthsInMM[col+i];
         Continue;
       end;
 
       lWidth := CurCell.CalculateMaxNeededWidth(ADest);
       ColWidthsInMM[col] := Max(ColWidthsInMM[col], lWidth);
-      TableWidth := TableWidth + ColWidthsInMM[col];
+      CurRowTableWidth := CurRowTableWidth + ColWidthsInMM[col];
     end;
+
+    TableWidth := Max(TableWidth, CurRowTableWidth);
   end;
 
   // If it goes over the page width, recalculate with equal sizes (in the future do better)
@@ -1819,7 +1830,7 @@ begin
     for col := 0 to CurRow.GetCellCount()-1 do
     begin
       CurCell := CurRow.GetCell(col);
-      CurRowColCount := CurRowColCount + CurCell.SpannedCols + 1;
+      CurRowColCount := CurRowColCount + CurCell.SpannedCols;
     end;
 
     Result := Max(Result, CurRowColCount);
@@ -7384,7 +7395,8 @@ begin
   lTextBody.Alignment := vsaJustifed;
   lTextBody.MarginTop := 0;
   lTextBody.MarginBottom := 2.12;
-  lTextBody.SetElements := [spbfFontSize, spbfFontName, spbfAlignment, sseMarginTop, sseMarginBottom];
+  lTextBody.SetElements := [spbfFontSize, spbfFontName, spbfAlignment,
+    sseMarginTop, sseMarginBottom, spbfBrushStyle];
   StyleTextBody := lTextBody;
 
   // Headings

@@ -211,7 +211,7 @@ begin
   end;
 
   // the caption spans all columns
-  Caption_Cell.SpannedCols := CurTable.GetColCount()-1;
+  Caption_Cell.SpannedCols := CurTable.GetColCount();
 end;
 
 function TvHTMLVectorialReader.ReadTableRowNode(ATable: TvTable; ANode: TDOMNode;
