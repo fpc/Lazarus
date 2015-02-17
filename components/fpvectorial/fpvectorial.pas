@@ -1018,6 +1018,7 @@ type
   TvRichText = class(TvEntityWithSubEntities)
   public
     Width, Height: Double;
+    SpacingLeft, SpacingRight, SpacingTop, SpacingBottom: Double; // space around each side
     AutoExpand: TvRichTextAutoExpand;
     constructor Create(APage: TvPage); override;
     destructor Destroy; override;
@@ -1028,8 +1029,8 @@ type
     function AddEmbeddedVectorialDoc: TvEmbeddedVectorialDoc;
     function AddRasterImage: TvRasterImage;
     // Functions for rendering and calculating sizes
-    function CalculateCellHeight_ForWidth(ADest: TFPCustomCanvas; AWidth: Double): Double;
-    //
+    function CalculateCellHeight_ForWidth(ADest: TFPCustomCanvas; AWidth: Double): Double; virtual;
+    function CalculateMaxNeededWidth(ADest: TFPCustomCanvas): Double; virtual;
     function TryToSelect(APos: TPoint; var ASubpart: Cardinal): TvFindEntityResult; override;
     procedure Render(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
@@ -1078,12 +1079,12 @@ type
     // added to TvRichText if odt supports paragraph
     // borders, in which case we can refactor a little and
     // rename TvTableBorders
-    Borders : TvTableBorders;                  // Defaults to be ignored (tbtDefault)
-    PreferredWidth : TvDimension;              // Optional
-    VerticalAlignment : TvVerticalAlignment;   // Defaults to vaTop
-    BackgroundColor : TFPColor;                // Optional
-    SpannedCols : Integer;                     // For merging horiz cells.  Default 1.
-                                               // See diagram above TvTable Class
+    Borders: TvTableBorders;                  // Defaults to be ignored (tbtDefault)
+    PreferredWidth: TvDimension;              // Optional
+    VerticalAlignment: TvVerticalAlignment;   // Defaults to vaTop
+    BackgroundColor: TFPColor;                // Optional
+    SpannedCols: Integer;                     // For merging horiz cells.  Default 1.
+                                              // See diagram above TvTable Class
 
     constructor Create(APage: TvPage); override;
   end;
@@ -1092,22 +1093,26 @@ type
 
   TvTableRow = Class(TvNamedEntity)
   private
-    Cells : TFPList;
+    Cells: TFPList; // of TvTableCell
   Public
-    Height : Double;                // Units mm.  Use 0 for default height
-    CellSpacing : Double;           // Units mm.  Gap between Cells.
+    Table: TvTable;                // Link to the parent table
+    Height: Double;                // Units mm.  Use 0 for default height
+    CellSpacing : Double;          // Units mm.  Gap between Cells.
 
-    Header : Boolean;               // Repeat row across pages
-    AllowSplitAcrossPage : Boolean; // Can this Row split across multiple pages?
-    BackgroundColor : TFPColor;     // Optional
+    Header: Boolean;               // Repeat row across pages
+    AllowSplitAcrossPage : Boolean;// Can this Row split across multiple pages?
+    BackgroundColor : TFPColor;    // Optional
 
     constructor create(APage : TvPage); override;
     destructor destroy; override;
 
-    function AddCell : TvTableCell;
+    function AddCell: TvTableCell;
     function GetCellCount: Integer;
-    function GetCell(AIndex: Integer) : TvTableCell;
+    function GetCell(AIndex: Integer): TvTableCell;
     //
+    procedure CalculateBoundingBox(ADest: TFPCustomCanvas; var ALeft, ATop, ARight, ABottom: Double); override;
+    procedure Render(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
+      ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
     function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; override;
   end;
 
@@ -1666,6 +1671,11 @@ begin
   Borders.InsideHoriz.LineType:=tbtDefault;
   Borders.InsideVert.LineType:=tbtDefault;
 
+  SpacingLeft := 2;
+  SpacingRight := 2;
+  SpacingTop := 2;
+  SpacingBottom := 2;
+
   SpannedCols := 1;
 end;
 
@@ -1676,8 +1686,10 @@ procedure TvTable.CalculateColWidths(ADest: TFPCustomCanvas);
 var
   CurRow: TvTableRow;
   CurCell: TvTableCell;
-  lLeft, lTop, lRight, lBottom: Double;
+  lLeft, lTop, lRight, lBottom, lWidth: Double;
   col, row: Integer;
+  //DebugStr: string;
+  OriginalColWidthsInMM: array of Double;
 begin
   SetLength(ColWidthsInMM, GetRowCount());
 
@@ -1690,6 +1702,7 @@ begin
   end;
 
   // Process initial value for non-predefined widths
+  OriginalColWidthsInMM := Copy(ColWidthsInMM, 0, Length(ColWidthsInMM));
   TableWidth := 0;
   for row := 0 to GetRowCount()-1 do
   begin
@@ -1698,15 +1711,16 @@ begin
     for col := 0 to CurRow.GetCellCount()-1 do
     begin
       CurCell := CurRow.GetCell(col);
+      //DebugStr := ((CurCell.GetFirstEntity() as TvParagraph).GetFirstEntity() as TvText).Value.Text;
 
-      if ColWidthsInMM[col] > 0 then
+      if OriginalColWidthsInMM[col] > 0 then
       begin
         TableWidth := TableWidth + ColWidthsInMM[col];
         Continue;
       end;
 
-      CurRow.CalculateBoundingBox(ADest, lLeft, lTop, lRight, lBottom);
-      ColWidthsInMM[col] := Max(ColWidthsInMM[col], lRight);
+      lWidth := CurCell.CalculateMaxNeededWidth(ADest);
+      ColWidthsInMM[col] := Max(ColWidthsInMM[col], lWidth);
       TableWidth := TableWidth + ColWidthsInMM[col];
     end;
   end;
@@ -1769,6 +1783,7 @@ end;
 function TvTable.AddRow: TvTableRow;
 begin
   Result := TvTableRow.create(FPage);
+  Result.Table := Self;
   Rows.Add(result);
 end;
 
@@ -2138,6 +2153,42 @@ end;
 function TvTableRow.GetCell(AIndex: Integer): TvTableCell;
 begin
   Result := TvTableCell(Cells[AIndex]);
+end;
+
+procedure TvTableRow.CalculateBoundingBox(ADest: TFPCustomCanvas; var ALeft, ATop, ARight, ABottom: Double);
+begin
+  ALeft := X;
+  ATop := Y;
+  ARight := X + FPage.Width;
+  ABottom := Y + Height;
+end;
+
+procedure TvTableRow.Render(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
+  ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0);
+
+  function CoordToCanvasX(ACoord: Double): Integer;
+  begin
+    Result := Round(ADestX + AmulX * ACoord);
+  end;
+
+  function CoordToCanvasY(ACoord: Double): Integer;
+  begin
+    Result := Round(ADestY + AmulY * ACoord);
+  end;
+
+var
+  CurCell: TvTableCell;
+  i: Integer;
+  CurX: Double = 0.0;
+begin
+  for i := 0 to GetCellCount()-1 do
+  begin
+    CurCell := GetCell(i);
+    CurCell.X := CurX;
+    CurCell.Render(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMulY);
+    if (Table <> nil) and (Length(Table.ColWidthsInMM) > i) then
+      CurX := CurX + Table.ColWidthsInMM[i];
+  end;
 end;
 
 function TvTableRow.GenerateDebugTree(ADestRoutine: TvDebugAddItemProc;
@@ -5688,6 +5739,17 @@ end;
 
 procedure TvParagraph.Render(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo;
   ADestX: Integer; ADestY: Integer; AMulX: Double; AMulY: Double);
+
+  function CoordToCanvasX(ACoord: Double): Integer;
+  begin
+    Result := Round(ADestX + AmulX * ACoord);
+  end;
+
+  function CoordToCanvasY(ACoord: Double): Integer;
+  begin
+    Result := Round(ADestY + AmulY * ACoord);
+  end;
+
 var
   lCurWidth: Double = 0.0;
   lLeft, lTop, lRight, lBottom: Double;
@@ -5722,7 +5784,7 @@ begin
 
       OldTextX := lText.X;
       OldTextY := lText.Y;
-      lText.X := lText.X + X + lCurWidth;
+      lText.X := CoordToCanvasX(lText.X + X + lCurWidth);
       lText.Y := lText.Y + Y;
       lText.Render_Use_NextText_X := not lFirstText;
       if lText.Render_Use_NextText_X then
@@ -5863,6 +5925,36 @@ begin
     end;
     lEntity := GetNextEntity();
   end;
+
+  Result := Result + SpacingTop + SpacingBottom;
+end;
+
+function TvRichText.CalculateMaxNeededWidth(ADest: TFPCustomCanvas): Double;
+var
+  lLeft, lTop, lRight, lBottom: Double;
+  lEntity: TvEntity;
+  lParagraph: TvParagraph absolute lEntity;
+begin
+  Result := 0;
+
+  // if the width is not yet known, calculate it
+  if Width <= 0 then
+  begin
+    lEntity := GetFirstEntity();
+    while lEntity <> nil do
+    begin
+      if lEntity is TvParagraph then
+      begin
+        lParagraph.X := X;
+        lParagraph.Y := Y + Result;
+        lParagraph.CalculateBoundingBox(ADest, lLeft, lTop, lRight, lBottom);
+        Result := Max(Result, (lRight - lLeft));
+      end;
+      lEntity := GetNextEntity();
+    end;
+  end;
+
+  Result := Result + SpacingLeft + SpacingRight;
 end;
 
 function TvRichText.TryToSelect(APos: TPoint; var ASubpart: Cardinal): TvFindEntityResult;

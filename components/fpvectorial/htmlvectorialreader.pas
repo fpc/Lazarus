@@ -226,7 +226,7 @@ begin
     begin
       CurCell := CurRow.AddCell();
       CurCellPara := CurCell.AddParagraph();
-      CurCellPara.Style := ADoc.StyleHeading4;
+      CurCellPara.Style := ADoc.StyleTextSpanBold;
       CurCellPara.AddText(GetTextContentFromNode(lCurNode));
     end;
     'td':
