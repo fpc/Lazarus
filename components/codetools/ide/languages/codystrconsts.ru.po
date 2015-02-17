@@ -139,7 +139,7 @@ msgstr "секция published"
 
 #: codystrconsts.crscamselectmemberstoassign
 msgid "Select members to assign:"
-msgstr "Выбор элементов для присвоения:"
+msgstr "Выбор элементов для присваивания:"
 
 #: codystrconsts.crscamthereisnoinheritedmethod
 msgid "There is no inherited method."
