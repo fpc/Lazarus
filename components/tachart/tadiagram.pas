@@ -349,12 +349,12 @@ end;
 
 procedure TDiaCenterElement.Changed(ASender: TDiaObject);
 var
-  tl, tr, bl, br: TDiaPoint;
+  tl, tr, bl{, br}: TDiaPoint;
 begin
   tl := DiaPoint(dbsLeft, dbsTop);
   tr := DiaPoint(dbsRight, dbsTop);
   bl := DiaPoint(dbsLeft, dbsBottom);
-  br := DiaPoint(dbsRight, dbsBottom);
+  // br := DiaPoint(dbsRight, dbsBottom);  // Commenting to silence the compilation note on unused variable...
   if Left.Defined and Top.Defined then
     FActualPos := XY(Left.Calc(tl, tr), Top.Calc(tl, bl));
   inherited;
@@ -824,7 +824,7 @@ end;
 function TDiaElement.IsPointInside(
   const APoint: TDoublePoint; AUnits: TDiaUnits): Boolean;
 begin
-  Unused(APoint);
+  Unused(APoint, AUnits);
   Result := false;
 end;
 
