@@ -7195,8 +7195,10 @@ begin
     exit;
 
   DisableAutoSizing;
+  IncUpdateLock;
   try
     DestWin.DisableAutoSizing;
+    DestWin.IncUpdateLock;
     try
       Edit := FindSourceEditorWithPageIndex(OldPageIndex);
       DestWin.NoteBookInsertPage(NewPageIndex, Edit.PageName);
@@ -7217,9 +7219,11 @@ begin
       DestWin.NotebookPageChanged(nil); // make sure page SynEdit willl be visible
     finally
       DestWin.EnableAutoSizing;
+      DestWin.DecUpdateLock;
     end;
   finally
     EnableAutoSizing;
+    DecUpdateLock
   end;
 
   if (PageCount = 0) and (Parent=nil) and not FIsClosing then
