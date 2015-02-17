@@ -4693,8 +4693,7 @@ begin
     Result := Result + [paHasDefaultValue];
 end;
 
-function TModalResultPropertyEditor.OrdValueToVisualValue(OrdValue: longint
-  ): string;
+function TModalResultPropertyEditor.OrdValueToVisualValue(OrdValue: longint): string;
 var
   CurValue: Longint;
 begin
@@ -4939,7 +4938,12 @@ var
   I: Integer;
 begin
   Proc(oisNone);
-  for I := 1 to High(ShortCuts) do Proc(ShortCutToText(ShortCuts[I]));
+  {$IFDEF Darwin}
+    for I := 1 to High(ShortCuts) do Proc(ShortCutToText(ShortCuts[I]));
+  {$ELSE}
+    for I := 1 to 26 do Proc(ShortCutToText(ShortCuts[I]));
+    for I := 53 to High(ShortCuts) do Proc(ShortCutToText(ShortCuts[I]));
+  {$ENDIF}
 end;
 
 procedure TShortCutPropertyEditor.SetValue(const Value: string);
