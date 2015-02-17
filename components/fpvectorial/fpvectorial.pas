@@ -1151,7 +1151,7 @@ type
     constructor create(APage : TvPage); override;
     destructor destroy; override;
 
-    function AddRow : TvTableRow;
+    function AddRow: TvTableRow;
     function GetRowCount : Integer;
     function GetRow(AIndex: Integer) : TvTableRow;
     //
@@ -1706,7 +1706,7 @@ begin
       end;
 
       CurRow.CalculateBoundingBox(ADest, lLeft, lTop, lRight, lBottom);
-      ColWidthsInMM[col] := lRight;
+      ColWidthsInMM[col] := Max(ColWidthsInMM[col], lRight);
       TableWidth := TableWidth + ColWidthsInMM[col];
     end;
   end;
@@ -1817,7 +1817,7 @@ begin
   for row := 0 to GetRowCount()-1 do
   begin
     CurRow := GetRow(row);
-    CurRow.Render(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMulY);
+    CurRow.Render(ADest, ARenderInfo, ADestX, CoordToCanvasY(CurHeight), AMulX, AMulY);
     CurHeight := CurHeight + CurRow.Height;
   end;
 end;
@@ -1830,6 +1830,12 @@ var
 begin
   FExtraDebugStr := Format(' Caption=%s', [Caption]);
   Result := inherited GenerateDebugTree(ADestRoutine, APageItem);
+
+  // data which goes into a separate item
+  FExtraDebugStr := 'ColWidthsInMM=';
+  for i := 0 to Length(ColWidthsInMM)-1 do
+    FExtraDebugStr := FExtraDebugStr + Format('[%d]=%f ', [i, ColWidthsInMM[i]]);
+  ADestRoutine(FExtraDebugStr, Result);
 
   // Add rows
   for i := 0 to GetRowCount()-1 do
@@ -3664,7 +3670,7 @@ var
 begin
   lStr := Format('[%s] Name=%s X=%f Y=%f Text="%s" [.Font=>] Color=%s Size=%d Name=%s Orientation=%f Bold=%s Italic=%s Underline=%s StrikeThrough=%s TextAnchor=%s',
     [
-    Self.ClassName, Name, X, Y, Value.Text,
+    Self.ClassName, Name, X, Y, Trim(Value.Text),
     GenerateDebugStrForFPColor(Font.Color),
     Font.Size, Font.Name, Font.Orientation,
     BoolToStr(Font.Bold),
