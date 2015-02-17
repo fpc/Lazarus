@@ -42,7 +42,14 @@ end;
 
 function TScrollingWinControl.GetLogicalClientRect: TRect;
 begin
-  Result := ClientRect;
+  if AutoScroll then begin
+    { The logical ClientRect is used by the child control layout algorithm.
+      And the visibility of scrollbars depend on the size of the child controls.
+      Prevent circular dependencies:
+      Use total ClientRect (no visible scrollbars). }
+    Result := Rect(0,0,VertScrollBar.ClientSizeWithoutBar,HorzScrollBar.ClientSizeWithoutBar);
+  end else
+    Result := ClientRect;
   {if (FHorzScrollBar.Range>Result.Right)
   or (FVertScrollBar.Range>Result.Bottom) then
     DebugLn(['TScrollingWinControl.GetLogicalClientRect Client=',ClientWidth,'x',ClientHeight,' Ranges=',FHorzScrollBar.Range,'x',FVertScrollBar.Range]);}
@@ -52,6 +59,32 @@ begin
   if Assigned(FVertScrollBar) and FVertScrollBar.Visible
   and (FVertScrollBar.Range > Result.Bottom) then
     Result.Bottom := FVertScrollBar.Range;
+end;
+
+procedure TScrollingWinControl.DoOnResize;
+begin
+  inherited DoOnResize;
+
+  if AutoScroll then
+  begin
+    if (HorzScrollBar = nil) or (VertScrollBar = nil) then Exit;
+    if HorzScrollBar.Visible or VertScrollBar.Visible then
+      UpdateScrollBars;
+  end;
+  //debugln(['TScrollingWinControl.DoOnResize ',DbgSName(Self),' ',dbgs(BoundsRect),' ',dbgs(ClientRect),' ',dbgs(GetLogicalClientRect)]);
+end;
+
+procedure TScrollingWinControl.GetPreferredSizeClientFrame(out aWidth,
+  aHeight: integer);
+begin
+  if AutoScroll and (VertScrollBar<>nil) then
+    aWidth:=Width-VertScrollBar.ClientSizeWithoutBar
+  else
+    aWidth:=Width-ClientWidth;
+  if AutoScroll and (HorzScrollBar<>nil) then
+    aHeight:=Height-HorzScrollBar.ClientSizeWithoutBar
+  else
+    aHeight:=Height-ClientHeight;
 end;
 
 procedure TScrollingWinControl.AlignControls(AControl: TControl; var ARect: TRect);
@@ -74,6 +107,20 @@ end;
 
 procedure TScrollingWinControl.CalculateAutoRanges;
 
+  {procedure trav(aControl: TControl; Prefix: string);
+  var
+    w: integer;
+    h: integer;
+    i: Integer;
+  begin
+    if not aControl.IsVisible then exit;
+    aControl.GetPreferredSize(w,h,true,true);
+    debugln([Prefix,'W ',DbgSName(aControl),' ',dbgs(aControl.BoundsRect),' Pref=',w,'x',h]);
+    if aControl is TWinControl then
+      for i:=0 to TWinControl(aControl).ControlCount-1 do
+        trav(TWinControl(aControl).Controls[i],Prefix+'  ');
+  end;}
+
   procedure GetPreferredClientRect(out PreferredWidth, PreferredHeight: integer);
   var
     CurClientRect: TRect;
@@ -81,13 +128,16 @@ procedure TScrollingWinControl.CalculateAutoRanges;
     PreferredWidth:=0;
     PreferredHeight:=0;
     GetPreferredSize(PreferredWidth,PreferredHeight,true,false);
-    //DebugLn(['GetPreferredClientRect ',DbgSName(FControl),' PrefSize=',PreferredWidth,'x',PreferredHeight]);
+    {$IFDEF VerboseScrollingWinControl}
+    DebugLn(['GetPreferredClientRect ',DbgSName(Self),' ClientRect=',dbgs(ClientRect),' PrefSize=',PreferredWidth,'x',PreferredHeight]);
+    //trav(Self,'  ');
+    {$ENDIF}
     CurClientRect := ClientRect;
     if PreferredWidth>0 then
       PreferredWidth:=Max(0,PreferredWidth-(Width-CurClientRect.Right));
     if PreferredHeight>0 then
       PreferredHeight:=Max(0,PreferredHeight-(Height-CurClientRect.Bottom));
-    //DebugLn(['GetPreferredClientRect ',DbgSName(FControl),' PrefClient=',PreferredWidth,'x',PreferredHeight,' Client=',dbgs(CurClientRect),' Size=',dbgs(FControl.BoundsRect)]);
+    //DebugLn(['GetPreferredClientRect ',DbgSName(Self),' PrefClient=',PreferredWidth,'x',PreferredHeight,' Client=',dbgs(CurClientRect),' Size=',dbgs(FControl.BoundsRect)]);
   end;
 
 var
@@ -95,21 +145,11 @@ var
   PreferredHeight: Integer;
 begin
   GetPreferredClientRect(PreferredWidth,PreferredHeight);
-  //DebugLn(['TScrollingWinControl.CalculateAutoRanges ',DbgSName(Self),' AutoSize=',AutoSize,' Bounds=',dbgs(BoundsRect),' Client=',dbgs(ClientRect),' pref=',PreferredWidth,'x',PreferredHeight]);
+  {$IFDEF VerboseScrollingWinControl}
+  DebugLn(['TScrollingWinControl.CalculateAutoRanges ',DbgSName(Self),' AutoSize=',AutoSize,' Bounds=',dbgs(BoundsRect),' Client=',dbgs(ClientRect),' LogClientRect=',dbgs(GetLogicalClientRect),' pref=',PreferredWidth,'x',PreferredHeight]);
+  {$ENDIF}
   HorzScrollBar.InternalSetRange(PreferredWidth);
   VertScrollBar.InternalSetRange(PreferredHeight);
-end;
-
-procedure TScrollingWinControl.DoOnResize;
-begin
-  inherited DoOnResize;
-
-  if AutoScroll then
-  begin
-    if (HorzScrollBar = nil) or (VertScrollBar = nil) then Exit;
-    if HorzScrollBar.Visible or VertScrollBar.Visible then
-      UpdateScrollBars;
-  end;
 end;
 
 class function TScrollingWinControl.GetControlClassDefaultSize: TSize;

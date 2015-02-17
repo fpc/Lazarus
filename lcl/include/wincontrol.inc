@@ -1024,7 +1024,7 @@ procedure TAutoSizeCtrlData.ComputePreferredClientArea(
         if (not UseCurrentWidth) or (not UseCurrentHeight) then
           Child.GetPreferredSize(CurPreferredWidth,CurPreferredHeight,true,true);
 
-        //if Child.Name='ToolTipBevel' then debugln(['InitPreferredSizes ',DbgSName(Child),' Bounds=',dbgs(Child.BoundsRect),' Anchors=',dbgs(Child.Anchors),' CurAnchors=',dbgs(CurAnchors),' UseW=',UseCurrentWidth,' UseH=',UseCurrentHeight,' Pref=',CurPreferredWidth,'x',CurPreferredHeight]);
+        //if Child.Name='OtherInfoGroupBox' then debugln(['InitPreferredSizes ',DbgSName(Child),' Bounds=',dbgs(Child.BoundsRect),' Anchors=',dbgs(Child.Anchors),' CurAnchors=',dbgs(CurAnchors),' UseW=',UseCurrentWidth,' UseH=',UseCurrentHeight,' Pref=',CurPreferredWidth,'x',CurPreferredHeight]);
         if UseCurrentWidth then
           NewWidth:=Child.Width
         else if (CurPreferredWidth>0)
@@ -1153,7 +1153,7 @@ begin
   until ComputePositions;
   
   {$IFDEF VerboseAutoSizeCtrlData}
-  //if WinControl.ClassName='TBreakPropertyDlg' then
+  if WinControl.ClassName='TProjectVersionInfoOptionsFrame' then
     WriteDebugReport('Positions completed','');
   {$ENDIF}
   
@@ -1216,6 +1216,7 @@ begin
   end;
 
   {$IFDEF VerboseAutoSizeCtrlData}
+  //if WinControl.ClassName='TProjectVersionInfoOptionsFrame' then
   DebugLn(['TAutoSizeCtrlData.ComputePreferredClientArea END ',DbgSName(Control),' PreferredClientWidth/height=',PreferredClientWidth,',',PreferredClientHeight]);
   {$ENDIF}
 end;
@@ -7966,32 +7967,40 @@ end;
  ------------------------------------------------------------------------------}
 procedure TWinControl.CalculatePreferredSize(var PreferredWidth,
   PreferredHeight: integer; WithThemeSpace: Boolean);
+
+  {procedure trav(aControl: TControl; Prefix: string);
+  var
+    w: integer;
+    h: integer;
+    i: Integer;
+  begin
+    if not aControl.IsVisible then exit;
+    if aControl<>Self then begin
+      aControl.GetPreferredSize(w,h,true,true);
+      debugln([Prefix,'W ',DbgSName(aControl),' ',dbgs(aControl.BoundsRect),' Pref=',w,'x',h]);
+    end;
+    if aControl is TWinControl then
+      for i:=0 to TWinControl(aControl).ControlCount-1 do
+        trav(TWinControl(aControl).Controls[i],Prefix+'  ');
+  end;}
+
 var
   Layout: TAutoSizeCtrlData;
   NewClientWidth: Integer;
   NewClientHeight: Integer;
   CurClientRect: TRect;
-  NewWidth: Integer;
-  NewHeight: Integer;
   NewMoveLeft, NewMoveRight: integer;
-  AdjustedClientRect: TRect;
+  FrameWidth: integer;
+  FrameHeight: integer;
 begin
   inherited CalculatePreferredSize(PreferredWidth,PreferredHeight,WithThemeSpace);
   
   if HandleAllocated then begin
     TWSWinControlClass(WidgetSetClass).GetPreferredSize(Self,
                                PreferredWidth, PreferredHeight, WithThemeSpace);
-    //DebugLn(['TWinControl.CalculatePreferredSize WidgetSet ',DbgSName(Self),' Preferred=',PreferredWidth,'x',PreferredHeight]);
+    //if (Name='OtherInfoGroupBox') or (Name='ProjectVersionInfoOptionsFrame') then
+    //  debugln(['TWinControl.CalculatePreferredSize Widget ',DbgSName(Self),' ',DbgSName(WidgetSetClass),' ',PreferredWidth,'x',PreferredHeight]);
   end;
-
-  // check AdjustClientRect
-  CurClientRect:=Rect(0,0,1000,1000);
-  AdjustedClientRect:=CurClientRect;
-  AdjustClientRect(AdjustedClientRect);
-  PreferredWidth:=Max(PreferredWidth,
-           AdjustedClientRect.Left+CurClientRect.Right-AdjustedClientRect.Right);
-  PreferredHeight:=Max(PreferredHeight,
-          AdjustedClientRect.Top+CurClientRect.Bottom-AdjustedClientRect.Bottom);
 
   if ControlCount>0 then begin
     // Beware: ControlCount>0 does not mean that there are visible children
@@ -8002,33 +8011,33 @@ begin
       Layout:=TAutoSizeCtrlData.Create(Self);
       Layout.ComputePreferredClientArea(false,false,NewMoveLeft,NewMoveRight,
                                         NewClientWidth,NewClientHeight);
+      //if (Name='OtherInfoGroupBox') or (Name='ProjectVersionInfoOptionsFrame') then
+      //  debugln(['TWinControl.CalculatePreferredSize NewClientWidth=',NewClientWidth,' NewClientHeight=',NewClientHeight]);
       if (NewMoveLeft<>0) or (NewMoveRight<>0) then ;
     finally
       Layout.Free;
     end;
 
-    NewWidth:=0;
-    NewHeight:=0;
-    // add the control border around the client area
-    CurClientRect := GetClientRect;
-    if (NewClientWidth>0)
-    or ((NewClientWidth=0) and (csAutoSize0x0 in ControlStyle)) then
-      NewWidth:=Width-CurClientRect.Right+NewClientWidth;
-    if (NewClientHeight>0)
-    or ((NewClientHeight=0) and (csAutoSize0x0 in ControlStyle)) then
-      NewHeight:=Height-CurClientRect.Bottom+NewClientHeight;
     {$IF defined(VerboseAutoSize) or defined(VerboseAllAutoSize)}
+    //if (Name='OtherInfoGroupBox') or (Name='ProjectVersionInfoOptionsFrame') then
     debugln(['TWinControl.CalculatePreferredSize ',DbgSName(Self),
       ' HandleAllocated=',HandleAllocated,
       ' Cur=',Width,'x',Height,
-      ' Client=',CurClientRect.Right,'x',CurClientRect.Bottom,
-      ' NewWidth=',NewWidth,' NewHeight=',NewHeight,
+      ' Client=',ClientWidth,'x',ClientHeight,
       ' NewClientWidth=',NewClientWidth,' NewClientHeight=',NewClientHeight,
-      ' IntfPref+AdjustClientRect=',PreferredWidth,'x',PreferredHeight]);
+      ' IntfPref+Child+AdjustClientRect=',PreferredWidth,'x',PreferredHeight]);
+    //if (Name='EditorsPanel') then trav(Self,'  ');
     {$ENDIF}
-    PreferredWidth:=Max(PreferredWidth,NewWidth);
-    PreferredHeight:=Max(PreferredHeight,NewHeight);
+    PreferredWidth:=Max(PreferredWidth,NewClientWidth);
+    PreferredHeight:=Max(PreferredHeight,NewClientHeight);
   end;
+
+  // add clientarea frame
+  GetPreferredSizeClientFrame(FrameWidth,FrameHeight);
+  PreferredWidth+=Max(0,FrameWidth);
+  PreferredHeight+=Max(0,FrameHeight);
+
+  // add borderspacing
   if (PreferredWidth>0)
   or ((PreferredWidth=0) and (csAutoSize0x0 in ControlStyle)) then
     inc(PreferredWidth,BorderSpacing.InnerBorder*2);
@@ -8036,10 +8045,18 @@ begin
   or ((PreferredHeight=0) and (csAutoSize0x0 in ControlStyle)) then
     inc(PreferredHeight,BorderSpacing.InnerBorder*2);
   {$IFDEF VerboseAutoSize}
+  //if (Name='OtherInfoGroupBox') or (Name='ProjectVersionInfoOptionsFrame') then
   debugln('TWinControl.CalculatePreferredSize ',DbgSName(Self),
     ' HandleAllocated=',dbgs(HandleAllocated),
+    ' ClientFrame=',FrameWidth,'x',FrameHeight,
     ' Preferred=',dbgs(PreferredWidth),'x',dbgs(PreferredHeight));
   {$ENDIF}
+end;
+
+procedure TWinControl.GetPreferredSizeClientFrame(out aWidth, aHeight: integer);
+begin
+  aWidth:=Width-ClientWidth;
+  aHeight:=Height-ClientHeight;
 end;
 
 {------------------------------------------------------------------------------
