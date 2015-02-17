@@ -334,7 +334,7 @@ begin
   FRange := NewRange;
   {$IFDEF VerboseScrollingWinControl}
   //if DebugCondition then
-    DebugLn(['TControlScrollBar.SetRange ',dbgs(Kind),' ',Self,' FRange=',FRange]);
+    DebugLn(['TControlScrollBar.InternalSetRange ',dbgs(Kind),' ',Self,' FRange=',FRange]);
   {$ENDIF}
   ControlUpdateScrollBars;
 end;
@@ -444,7 +444,7 @@ function TControlScrollBar.ClientSizeWithoutBar: integer;
 begin
   Result:=ClientSize;
   if IsScrollBarVisible then
-    inc(Result, GetSize+GetSystemMetrics(SM_SWSCROLLBARSPACING));
+    Result := Min(FControl.Width, Result+GetSize+GetSystemMetrics(SM_SWSCROLLBARSPACING));
 end;
 
 function TControlScrollBar.GetHorzScrollBar: TControlScrollBar;
