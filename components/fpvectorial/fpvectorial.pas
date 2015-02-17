@@ -402,6 +402,7 @@ type
     procedure CalculateBoundingBox(ADest: TFPCustomCanvas; var ALeft, ATop, ARight, ABottom: Double); virtual;
     procedure ExpandBoundingBox(ADest: TFPCustomCanvas; var ALeft, ATop, ARight, ABottom: Double); // helper to help CalculateBoundingBox
     procedure CalcEntityCanvasMinMaxXY(var ARenderInfo: TvRenderInfo; APointX, APointY: Integer); virtual;
+    procedure MergeRenderInfo(var AFrom, ATo: TvRenderInfo);
     {@@ ASubpart is only valid if this routine returns vfrSubpartFound }
     function TryToSelect(APos: TPoint; var ASubpart: Cardinal): TvFindEntityResult; virtual;
     procedure Move(ADeltaX, ADeltaY: Double); virtual;
@@ -1109,6 +1110,7 @@ type
     function AddCell: TvTableCell;
     function GetCellCount: Integer;
     function GetCell(AIndex: Integer): TvTableCell;
+    function CalculateMaxCellSpacing_Y(): Double;
     //
     procedure CalculateBoundingBox(ADest: TFPCustomCanvas; var ALeft, ATop, ARight, ABottom: Double); override;
     procedure Render(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
@@ -1164,6 +1166,7 @@ type
     //
     procedure Render(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
+    function GetEntityFeatures: TvEntityFeatures; override;
     function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; override;
   end;
 
@@ -1766,7 +1769,7 @@ begin
       CurRow.Height := Max(CurRow.Height, lCellHeight);
     end;
 
-    CurRow.Height := CurRow.Height + 5;
+    CurRow.Height := CurRow.Height + CurRow.CalculateMaxCellSpacing_Y();
   end;
 end;
 
@@ -1850,11 +1853,20 @@ procedure TvTable.Render(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo;
     Result := Round(ADestY + AmulY * ACoord);
   end;
 
+  function DeltaToCanvasY(ACoord: Double): Integer;
+  begin
+    Result := Round(AmulY * ACoord);
+  end;
+
 var
   row, col: Integer;
   CurRow: TvTableRow;
-  CurHeight: Double;
+  CurY: Integer;
+  lEntityRenderInfo: TvRenderInfo;
 begin
+  ARenderInfo.EntityCanvasMinXY := Point(-1, -1);
+  ARenderInfo.EntityCanvasMaxXY := Point(-1, -1);
+
   // First calculate the column widths and heights
   CalculateColWidths(ADest);
 
@@ -1862,13 +1874,19 @@ begin
   CalculateRowHeights(ADest);
 
   // Now draw the table
-  CurHeight := 0;
+  CurY := CoordToCanvasY(Y);
   for row := 0 to GetRowCount()-1 do
   begin
     CurRow := GetRow(row);
-    CurRow.Render(ADest, ARenderInfo, ADestX, CoordToCanvasY(CurHeight), AMulX, AMulY);
-    CurHeight := CurHeight + CurRow.Height;
+    CurRow.Render(ADest, lEntityRenderInfo, ADestX, CurY, AMulX, AMulY);
+    MergeRenderInfo(lEntityRenderInfo, ARenderInfo);
+    CurY := ARenderInfo.EntityCanvasMaxXY.Y + DeltaToCanvasY(CurRow.Height);
   end;
+end;
+
+function TvTable.GetEntityFeatures: TvEntityFeatures;
+begin
+  Result.DrawsUpwards := False;
 end;
 
 function TvTable.GenerateDebugTree(ADestRoutine: TvDebugAddItemProc;
@@ -2188,6 +2206,19 @@ begin
   Result := TvTableCell(Cells[AIndex]);
 end;
 
+function TvTableRow.CalculateMaxCellSpacing_Y(): Double;
+Var
+  i : Integer;
+  CurCell: TvTableCell;
+begin
+  Result := 0;
+  for i := 0 to GetCellCount()-1 do
+  begin
+    CurCell := GetCell(i);
+    Result := Max(Result, CurCell.SpacingBottom+CurCell.SpacingTop);
+  end;
+end;
+
 procedure TvTableRow.CalculateBoundingBox(ADest: TFPCustomCanvas; var ALeft, ATop, ARight, ABottom: Double);
 begin
   ALeft := X;
@@ -2213,14 +2244,20 @@ var
   CurCell: TvTableCell;
   i: Integer;
   CurX: Double = 0.0;
+  lEntityRenderInfo: TvRenderInfo;
 begin
+  ARenderInfo.EntityCanvasMinXY := Point(-1, -1);
+  ARenderInfo.EntityCanvasMaxXY := Point(-1, -1);
+
   for i := 0 to GetCellCount()-1 do
   begin
     CurCell := GetCell(i);
     CurCell.X := CurX;
-    CurCell.Render(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMulY);
+    CurCell.Render(ADest, lEntityRenderInfo, ADestX, ADestY, AMulX, AMulY);
     if (Table <> nil) and (Length(Table.ColWidthsInMM) > i) then
       CurX := CurX + Table.ColWidthsInMM[i];
+
+    MergeRenderInfo(lEntityRenderInfo, ARenderInfo);
   end;
 end;
 
@@ -2665,6 +2702,12 @@ begin
   else ARenderInfo.EntityCanvasMaxXY.X := Max(ARenderInfo.EntityCanvasMaxXY.X, APointX);
   if ARenderInfo.EntityCanvasMaxXY.Y < 0 then ARenderInfo.EntityCanvasMaxXY.Y := APointY
   else ARenderInfo.EntityCanvasMaxXY.Y := Max(ARenderInfo.EntityCanvasMaxXY.Y, APointY);
+end;
+
+procedure TvEntity.MergeRenderInfo(var AFrom, ATo: TvRenderInfo);
+begin
+  CalcEntityCanvasMinMaxXY(ATo, AFrom.EntityCanvasMinXY.X, AFrom.EntityCanvasMinXY.Y);
+  CalcEntityCanvasMinMaxXY(ATo, AFrom.EntityCanvasMaxXY.X, AFrom.EntityCanvasMaxXY.Y);
 end;
 
 function TvEntity.TryToSelect(APos: TPoint; var ASubpart: Cardinal): TvFindEntityResult;
@@ -5793,7 +5836,11 @@ var
   lPrevText: TvText = nil;
   lFirstText: Boolean = True;
   lResetOldStyle: Boolean = False;
+  lEntityRenderInfo: TvRenderInfo;
 begin
+  ARenderInfo.EntityCanvasMinXY := Point(-1, -1);
+  ARenderInfo.EntityCanvasMaxXY := Point(-1, -1);
+
   // Don't call inherited Render(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMulY);
   lEntity := GetFirstEntity();
   while lEntity <> nil do
@@ -5823,7 +5870,7 @@ begin
       if lText.Render_Use_NextText_X then
         lText.Render_NextText_X := lPrevText.Render_NextText_X;
 
-      lText.Render(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMuly);
+      lText.Render(ADest, lEntityRenderInfo, ADestX, ADestY, AMulX, AMuly);
       lText.CalculateBoundingBox(ADest, lLeft, lTop, lRight, lBottom);
       lCurWidth := lCurWidth + Abs(lRight - lLeft);
       lFirstText := False;
@@ -5834,6 +5881,9 @@ begin
       if lResetOldStyle then
         TvText(lEntity).Style := nil;
     end;
+
+    MergeRenderInfo(lEntityRenderInfo, ARenderInfo);
+
     lEntity := GetNextEntity();
   end;
 end;
@@ -6002,7 +6052,10 @@ var
   lLeft, lTop, lRight, lBottom: Double;
   lEntity: TvEntity;
   lParagraph: TvParagraph absolute lEntity;
+  lEntityRenderInfo: TvRenderInfo;
 begin
+  ARenderInfo.EntityCanvasMinXY := Point(-1, -1);
+  ARenderInfo.EntityCanvasMaxXY := Point(-1, -1);
   // Don't call inherited Render(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMulY);
   lEntity := GetFirstEntity();
   while lEntity <> nil do
@@ -6011,11 +6064,12 @@ begin
     begin
       lParagraph.X := X;
       lParagraph.Y := Y + lCurHeight;
-      lParagraph.Render(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMuly);
+      lParagraph.Render(ADest, lEntityRenderInfo, ADestX, ADestY, AMulX, AMuly);
       lParagraph.CalculateBoundingBox(ADest, lLeft, lTop, lRight, lBottom);
       lCurHeight := lCurHeight + (lBottom - lTop);
     end;
     lEntity := GetNextEntity();
+    MergeRenderInfo(lEntityRenderInfo, ARenderInfo);
   end;
 end;
 
@@ -6954,7 +7008,7 @@ begin
     // Store the old position in X/Y but don't use it, we use this to debug out the position
     CurEntity.X := ADestX;
     CurEntity.Y := CurY;
-    CurY := RenderInfo.EntityCanvasMaxXY.Y;
+    CurY := CurY + Abs(RenderInfo.EntityCanvasMaxXY.Y - RenderInfo.EntityCanvasMinXY.Y)
   end;
 
   {$ifdef FPVECTORIAL_TOCANVAS_DEBUG}
