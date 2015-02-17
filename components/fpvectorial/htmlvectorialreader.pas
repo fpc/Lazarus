@@ -174,6 +174,9 @@ var
   CurTable: TvTable;
   lCurNode, lCurSubnode: TDOMNode;
   lNodeName, lNodeValue: DOMString;
+  CurRow: TvTableRow;
+  Caption_Cell: TvTableCell;
+  CurCellPara: TvParagraph;
 begin
   Result := nil;
   CurTable := AData.AddTable();
@@ -186,7 +189,11 @@ begin
     case lNodeName of
     'caption':
     begin
-      CurTable.Caption := GetTextContentFromNode(lCurNode);
+      CurRow := CurTable.AddRow();
+      Caption_Cell := CurRow.AddCell();
+      CurCellPara := Caption_Cell.AddParagraph();
+      CurCellPara.Style := ADoc.StyleTextBodyCentralized;
+      CurCellPara.AddText(GetTextContentFromNode(lCurNode));
     end;
     'tbody':
     begin
@@ -202,6 +209,9 @@ begin
 
     lCurNode := lCurNode.NextSibling;
   end;
+
+  // the caption spans all columns
+  Caption_Cell.SpannedCols := CurTable.GetColCount()-1;
 end;
 
 function TvHTMLVectorialReader.ReadTableRowNode(ATable: TvTable; ANode: TDOMNode;

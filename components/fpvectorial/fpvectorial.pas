@@ -1151,7 +1151,6 @@ type
     PreferredWidth : TvDimension;     // Optional. Units mm.
     CellSpacing : Double;             // Units mm. Gap between Cells.
     BackgroundColor : TFPColor;       // Optional.
-    Caption: string;                  // Its a first row without border
 
     constructor create(APage : TvPage); override;
     destructor destroy; override;
@@ -1161,6 +1160,7 @@ type
     function GetRow(AIndex: Integer) : TvTableRow;
     //
     function AddColWidth(AValue : Double) : Integer;
+    function GetColCount(): Integer;
     //
     procedure Render(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
@@ -1713,7 +1713,9 @@ begin
       CurCell := CurRow.GetCell(col);
       //DebugStr := ((CurCell.GetFirstEntity() as TvParagraph).GetFirstEntity() as TvText).Value.Text;
 
-      if OriginalColWidthsInMM[col] > 0 then
+      // skip cells with span since they are complex
+      // skip columns with width pre-set
+      if (OriginalColWidthsInMM[col] > 0) or (CurCell.SpannedCols > 0) then
       begin
         TableWidth := TableWidth + ColWidthsInMM[col];
         Continue;
@@ -1803,6 +1805,27 @@ begin
   ColWidths[High(ColWidths)] := AValue;
 end;
 
+function TvTable.GetColCount(): Integer;
+var
+  row, col, CurRowColCount: Integer;
+  CurRow: TvTableRow;
+  CurCell: TvTableCell;
+begin
+  Result := 0;
+  for row := 0 to GetRowCount()-1 do
+  begin
+    CurRow := GetRow(row);
+    CurRowColCount := 0;
+    for col := 0 to CurRow.GetCellCount()-1 do
+    begin
+      CurCell := CurRow.GetCell(col);
+      CurRowColCount := CurRowColCount + CurCell.SpannedCols + 1;
+    end;
+
+    Result := Max(Result, CurRowColCount);
+  end;
+end;
+
 procedure TvTable.Render(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo;
   ADestX: Integer; ADestY: Integer; AMulX: Double; AMulY: Double);
 
@@ -1843,7 +1866,6 @@ var
   i: Integer;
   lCurRow: TvTableRow;
 begin
-  FExtraDebugStr := Format(' Caption=%s', [Caption]);
   Result := inherited GenerateDebugTree(ADestRoutine, APageItem);
 
   // data which goes into a separate item
