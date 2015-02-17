@@ -446,7 +446,7 @@ var
   PackageGraph: TLazPackageGraph = nil;
 
 function ExtractFPCParamsForBuildAll(const CompParams: string): string;
-function ExtractSearchPathsFromFPCParams(const CompParams: string;
+function ExtractMakefileCompiledParams(const CompParams: string;
   CreateReduced: boolean = false;
   BaseDir: string = ''; MakeRelative: boolean = false): TStringList;
 function RemoveFPCVerbosityParams(const CompParams: string): string;
@@ -507,7 +507,7 @@ begin
   Result:=UTF8Trim(Result,[]);
 end;
 
-function ExtractSearchPathsFromFPCParams(const CompParams: string;
+function ExtractMakefileCompiledParams(const CompParams: string;
   CreateReduced: boolean; BaseDir: string; MakeRelative: boolean): TStringList;
 var
   AllPaths: TStringList;
@@ -545,7 +545,7 @@ begin
           Path:=copy(CompParams,StartPos+3,EndPos-StartPos-3);
           if (Path<>'') and (Path[1] in ['''','"']) then
             Path:=AnsiDequotedStr(Path,Path[1]);
-          case Reduced[StartPos+2] of
+          case CompParams[StartPos+2] of
           'u': begin AddSearchPath('UnitPath'); continue; end;
           'U': begin AllPaths.Values['UnitOutputDir']:=Path; continue; end;
           'i': begin AddSearchPath('IncPath'); continue; end;
@@ -562,6 +562,15 @@ begin
       'B':
         // build clean
         continue;
+      'C':
+        if (StartPos+2<=length(CompParams)) and (CompParams[StartPos+2]='g')
+        and TargetNeedsFPCOptionCG(GetCompiledTargetOS,GetCompiledTargetCPU)
+        then begin
+          // the -Cg parameter is added automatically on Linux, but not in the
+          // Makefile.compiled, because that is platform independent.
+          // -> ignore
+          continue;
+        end;
       end;
     end;
     if Reduced<>'' then
@@ -3348,8 +3357,9 @@ begin
     CurPaths:=nil;
     LastPaths:=nil;
     try
-      CurPaths:=ExtractSearchPathsFromFPCParams(CompilerParams,true);
-      LastPaths:=ExtractSearchPathsFromFPCParams(LastParams,true);
+      CurPaths:=ExtractMakefileCompiledParams(CompilerParams,true);
+      LastPaths:=ExtractMakefileCompiledParams(LastParams,true);
+
       //debugln(['TLazPackageGraph.CheckIfCurPkgOutDirNeedsCompile CompilerParams="',CompilerParams,'" UnitPaths="',CurPaths.Values['UnitPath'],'"']);
       // compare custom options
       OldValue:=LastPaths.Values['Reduced'];
