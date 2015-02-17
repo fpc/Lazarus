@@ -533,39 +533,40 @@ var
 
 begin
   Result:=TStringList.Create;
-  Reduced:=CompParams;
+  Reduced:='';
   AllPaths:=Result;
   EndPos:=1;
-  while ReadNextFPCParameter(Reduced,EndPos,StartPos) do begin
-    if (Reduced[StartPos]='-') and (StartPos<length(Reduced)) then begin
-      case Reduced[StartPos+1] of
+  while ReadNextFPCParameter(CompParams,EndPos,StartPos) do begin
+    if (CompParams[StartPos]='-') and (StartPos<length(CompParams)) then begin
+      case CompParams[StartPos+1] of
       'F':
         // search paths
-        if StartPos<length(Reduced)-1 then begin
-          Path:=copy(Reduced,StartPos+3,EndPos-StartPos-3);
+        if StartPos<length(CompParams)-1 then begin
+          Path:=copy(CompParams,StartPos+3,EndPos-StartPos-3);
           if (Path<>'') and (Path[1] in ['''','"']) then
             Path:=AnsiDequotedStr(Path,Path[1]);
           case Reduced[StartPos+2] of
-          'u': AddSearchPath('UnitPath');
-          'U': AllPaths.Values['UnitOutputDir']:=Path;
-          'i': AddSearchPath('IncPath');
-          'o': AddSearchPath('ObjectPath');
-          'l': AddSearchPath('LibPath');
-          else continue;
+          'u': begin AddSearchPath('UnitPath'); continue; end;
+          'U': begin AllPaths.Values['UnitOutputDir']:=Path; continue; end;
+          'i': begin AddSearchPath('IncPath'); continue; end;
+          'o': begin AddSearchPath('ObjectPath'); continue; end;
+          'l': begin AddSearchPath('LibPath'); continue; end;
           end;
-          DeleteOption;
         end;
       'v':
         // verbosity
-        DeleteOption;
+        continue;
       'i','l':
         // information
-        DeleteOption;
+        continue;
       'B':
         // build clean
-        DeleteOption;
+        continue;
       end;
     end;
+    if Reduced<>'' then
+      Reduced+=' ';
+    Reduced+=copy(CompParams,StartPos,EndPos-StartPos);
   end;
   if BaseDir<>'' then begin
     for i:=0 to AllPaths.Count-1 do begin
@@ -2970,8 +2971,6 @@ begin
             stats^.CompilerFilename:=StringReplace(stats^.CompilerFilename,'%(','$(',[rfReplaceAll]);
             stats^.Params:=StringReplace(stats^.Params,'%(','$(',[rfReplaceAll]);
           end;
-        end;
-        if stats^.ViaMakefile then begin
           ForcePathDelims(stats^.CompilerFilename);
           ForcePathDelims(stats^.Params);
         end;
