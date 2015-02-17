@@ -647,6 +647,7 @@ function ParseString(Options: TParsedCompilerOptions;
                      const UnparsedValue: string;
                      PlatformIndependent: boolean): string;
 function GetMakefileMacroValue(const MacroName: string): string;
+function TargetNeedsFPCOptionCG(TargetOS, TargetCPU: string): boolean;
 
 procedure GatherInheritedOptions(AddOptionsList: TFPList;
   Parsed: TCompilerOptionsParseType;
@@ -712,6 +713,13 @@ begin
     Result:='%(LCL_PLATFORM)'
   else
     Result:='';
+end;
+
+function TargetNeedsFPCOptionCG(TargetOS, TargetCPU: string): boolean;
+begin
+  Result:= (TargetCPU='x86_64')
+    and ((TargetOS='linux') or (TargetOS='freebsd') or (TargetOS='netbsd')
+      or (TargetOS='openbsd') or (TargetOS='solaris'));
 end;
 
 procedure GatherInheritedOptions(AddOptionsList: TFPList;
@@ -2812,10 +2820,7 @@ begin
   if RelocatableUnit and (CurSrcOS='win') then
     switches := switches + ' -WR';
   if (not (ccloNoMacroParams in Flags))
-  and (CurTargetCPU='x86_64')
-  and ((CurTargetOS='linux') or (CurTargetOS='freebsd') or (CurTargetOS='netbsd')
-    or (CurTargetOS='openbsd') or (CurTargetOS='solaris'))
-  then
+  and TargetNeedsFPCOptionCG(CurTargetOS,CurTargetCPU) then
     switches := switches + ' -Cg'; // see bug 17412
 
   { Checks }
