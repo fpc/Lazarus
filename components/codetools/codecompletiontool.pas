@@ -6099,6 +6099,11 @@ begin
             Node:=Node.NextBrother;
           end;
         end;
+      ctnSetType:
+        begin
+          // set of
+          AddAssignment('[]');
+        end;
       end;
     end;
   xtChar,
@@ -6135,7 +6140,7 @@ begin
   end;
   if Statements.Count=0 then begin
     MoveCursorToAtomPos(IdentAtom);
-    RaiseException('auto initialize not yet implemented for identifier "'+Identifier+'" of type "'+ExprTypeToString(ExprType)+'"');
+    RaiseException('auto initialize not yet implemented for identifier "'+GetIdentifier(Identifier)+'" of type "'+ExprTypeToString(ExprType)+'"');
   end;
 
   // find possible insert positions

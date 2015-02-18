@@ -22,7 +22,7 @@ begin
 end;
 
 procedure TestLots({%H-}s: string; {%H-}c: char; {%H-}p: pointer;
-  {%H-}SignalState: TSignalState);
+  {%H-}SignalState: TSignalState; {%H-}ShiftState: TShiftState);
 begin
 
 end;
@@ -33,8 +33,9 @@ var
   c: char;
   p: Pointer;
   SignalState: TSignalState;
+  ShiftState: TShiftState;
 begin
-  TestLots(s,c,p,SignalState);
+  TestLots(s,c,p,SignalState,ShiftState);
 end;
 
 end.
