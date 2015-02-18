@@ -2754,6 +2754,7 @@ Var
   TimerInfo: PWin32TimerInfo;
   n: Integer;
 begin
+  if Assigned(Application) and Application.Terminated then exit;
   n := FTimerData.Count;
   while (n>0) do begin
     dec(n);
