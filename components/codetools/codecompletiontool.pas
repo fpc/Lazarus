@@ -6085,7 +6085,7 @@ begin
   case ExprType.Desc of
   xtContext:
     begin
-      // ToDo: sets, ranges, records, objects, pointer, class, class of, interface
+      // ToDo: ranges, records, objects, pointer, class, class of, interface
       Node:=ExprType.Context.Node;
       Tool:=ExprType.Context.Tool;
       case Node.Desc of
@@ -6130,6 +6130,11 @@ begin
   xtUnicodeString: AddAssignment('''''');
   xtPChar: begin AddAssignment('nil'); AddAssignment('#0'); end;
   xtPointer: AddAssignment('nil');
+  xtConstOrdInteger: AddAssignment('0');
+  xtConstString: AddAssignment('''''');
+  xtConstReal: AddAssignment('0.0');
+  xtConstSet: AddAssignment('[]');
+  xtConstBoolean: begin AddAssignment('False'); AddAssignment('True'); end;
   xtLongint,
   xtLongWord,
   xtWord,
