@@ -238,7 +238,7 @@ Type
 
 
 var
-  CompareFunc: function(const Item1, Item2: String): Integer;
+  CompareFunc: function(const Item1, Item2: String): PtrInt;
   SourceRoot, DestRoot, CmpDest, CmpSource: String;
   CmpDestLen, CmpSourceLen, DestCount, SourceCount, i,
   SharedFolders, LevelsBack, LevelsUp: Integer;
