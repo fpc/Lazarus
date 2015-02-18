@@ -6100,10 +6100,14 @@ begin
           end;
         end;
       ctnSetType:
-        begin
-          // set of
-          AddAssignment('[]');
-        end;
+        // set of
+        AddAssignment('[]');
+      ctnProcedureType:
+        // address of proc
+        AddAssignment('nil');
+      ctnClass,ctnClassInterface,ctnDispinterface,
+      ctnObjCClass,ctnObjCCategory,ctnObjCProtocol,ctnCPPClass:
+        AddAssignment('nil');
       end;
     end;
   xtChar,

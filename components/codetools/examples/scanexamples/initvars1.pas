@@ -23,7 +23,7 @@ end;
 
 procedure TestLots({%H-}s: string; {%H-}c: char; {%H-}p: pointer;
   {%H-}SignalState: TSignalState; {%H-}ShiftState: TShiftState;
-  {%H-}HelpCtx: THelpContext);
+  {%H-}HelpCtx: THelpContext; {%H-}Event: TNotifyEvent; {%H-}E: EStreamError);
 begin
 
 end;
@@ -36,8 +36,10 @@ var
   SignalState: TSignalState;
   ShiftState: TShiftState;
   HelpCtx: THelpContext;
+  Event: TNotifyEvent;
+  E: EStreamError;
 begin
-  TestLots(s,c,p,SignalState,ShiftState,HelpCtx);
+  TestLots(s,c,p,SignalState,ShiftState,HelpCtx,Event,E);
 end;
 
 end.
