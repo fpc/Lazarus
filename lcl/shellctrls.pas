@@ -965,6 +965,61 @@ var
     end
     else Result := ANode.Text;
   end;
+
+  function Exists(Fn: String): Boolean;
+  //Fn should be fully qualified
+  var
+    Attr: LongInt;
+    Dirs: TStringList;
+    i: Integer;
+  begin
+    Result := False;
+    Attr := FileGetAttrUtf8(Fn);
+    //writeln('TCustomShellTreeView.SetPath.Exists: Attr = ', Attr);
+    if (Attr = -1) then Exit;
+    if not (otNonFolders in FObjectTypes) then
+      Result := ((Attr and faDirectory) > 0)
+    else
+      Result := True;
+    if Result and (not (otHidden in FObjectTypes)) then
+    begin
+      Result := ((Attr and faHidden) = 0);
+      if Result then
+      begin
+        //it also is not allowed that any folder above is hidden
+        Fn := ChompPathDelim(Fn);
+        Fn := ExtractFileDir(Fn);
+        Dirs := TStringList.Create;
+        try
+          Dirs.StrictDelimiter := True;
+          Dirs.Delimiter := PathDelim;
+          Dirs.DelimitedText := Fn;
+          Fn := '';
+          for i := 0 to Dirs.Count - 1 do
+          begin
+            if (i = 0) then
+              Fn := Dirs.Strings[i]
+            else
+              Fn := Fn + PathDelim + Dirs.Strings[i];
+            {$if defined(windows) and not defined(wince)}
+            if (Length(Fn) = 2) and (Fn[2] = ':') then Continue;
+            {$endif}
+            Attr := FileGetAttrUtf8(Fn);
+            if (Attr <> -1) and ((Attr and faHidden) > 0) then
+            begin
+              Result := False;
+              //writeln('TCustomShellTreeView.SetPath.Exists: a subdir is hiddden: Result := False');
+              Break;
+            end;
+          end;
+        finally
+          Dirs.Free;
+        end;
+      end;
+    end;
+    //writeln('TCustomShellTreeView.SetPath.Exists: Result = ',Result);
+  end;
+
 begin
   RelPath := '';
 
@@ -987,16 +1042,17 @@ begin
 
   if not FileNameIsAbsolute(AValue) then
   begin
-    if DirectoryExistsUtf8(FQRootPath + AValue) then
+    if Exists(FQRootPath + AValue) then
     begin
       //Expand it, since it may be in the form of ../../foo
       AValue := ExpandFileNameUtf8(FQRootPath + AValue);
     end
     else
     begin
-      if not DirectoryExistsUtf8(ExpandFileNameUtf8(AValue)) then
+      //don't expand Avalue yet, we may need it in error message
+      if not Exists(ExpandFileNameUtf8(AValue)) then
         Raise EInvalidPath.CreateFmt(sShellCtrlsInvalidPath,[ExpandFileNameUtf8(FQRootPath + AValue)]);
-      //Directory Exists
+      //Directory (or file) exists
       //Make it fully qualified
       AValue := ExpandFileNameUtf8(AValue);
     end;
@@ -1004,7 +1060,8 @@ begin
   else
   begin
     //AValue is an absoulte path to begin with
-    if not DirectoryExistsUtf8(AValue) then
+    //if not DirectoryExistsUtf8(AValue) then
+    if not Exists(AValue) then
       Raise EInvalidPath.CreateFmt(sShellCtrlsInvalidPath,[AValue]);
   end;
 
