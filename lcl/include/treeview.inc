@@ -4704,8 +4704,8 @@ var
   const
     cShiftHorzArrow = 2; //paint horz arrow N pixels upper than MidY
   begin
-    HalfSize := FExpandSignSize shr 1;
-    if ((FExpandSignSize and 1) = 0) then
+    HalfSize := FExpandSignSize div 2;
+    if not Odd(FExpandSignSize) then
       Dec(HalfSize);
     ALeft := MidX - HalfSize;
     ATop := MidY - HalfSize;
@@ -4714,7 +4714,7 @@ var
 
     if Assigned(FOnCustomDrawArrow) then
     begin
-      FOnCustomDrawArrow(Self, Rect(ALeft, ATop, ARight, ABottom), CollapseSign);
+      FOnCustomDrawArrow(Self, Rect(ALeft, ATop, ARight, ABottom), not CollapseSign);
       Exit
     end;
 
