@@ -124,11 +124,11 @@ procedure AssignUTF8ListToAnsi(UTF8List, AnsiList: TStrings);
 
 //compare functions
 
-function UTF8CompareStr(const S1, S2: string): Integer; inline;
-function UTF8CompareStrP(S1, S2: PChar): Integer;
-function UTF8CompareStr(S1: PChar; Count1: SizeInt; S2: PChar; Count2: SizeInt): Integer;
-function UTF8CompareText(const S1, S2: string): Integer;
-function UTF8CompareStrCollated(const S1, S2: string): Integer;
+function UTF8CompareStr(const S1, S2: string): PtrInt; inline;
+function UTF8CompareStrP(S1, S2: PChar): PtrInt;
+function UTF8CompareStr(S1: PChar; Count1: SizeInt; S2: PChar; Count2: SizeInt): PtrInt;
+function UTF8CompareText(const S1, S2: string): PtrInt;
+function UTF8CompareStrCollated(const S1, S2: string): PtrInt;
 function CompareStrListUTF8LowerCase(List: TStringList; Index1, Index2: Integer): Integer;
 
 type
@@ -2855,19 +2855,19 @@ end;
   Returns: < 0 if S1 < S2, 0 if S1 = S2, > 0 if S2 > S1.
   Compare 2 UTF8 encoded strings, case sensitive.
  ------------------------------------------------------------------------------}
-function UTF8CompareStr(const S1, S2: string): Integer;
+function UTF8CompareStr(const S1, S2: string): PtrInt;
 begin
   Result := UTF8CompareStr(PChar(Pointer(S1)),length(S1),
                             PChar(Pointer(S2)),length(S2));
 end;
 
-function UTF8CompareStrP(S1, S2: PChar): Integer;
+function UTF8CompareStrP(S1, S2: PChar): PtrInt;
 begin
   Result:=UTF8CompareStr(S1,StrLen(S1),S2,StrLen(S2));
 end;
 
 function UTF8CompareStr(S1: PChar; Count1: SizeInt; S2: PChar; Count2: SizeInt
-  ): Integer;
+  ): PtrInt;
 var
   Count: SizeInt;
 begin
@@ -2894,7 +2894,7 @@ end;
   Note: Use this function instead of AnsiCompareText.
   This function guarantees proper collation on all supported platforms.
  ------------------------------------------------------------------------------}
-function UTF8CompareText(const S1, S2: string): Integer;
+function UTF8CompareText(const S1, S2: string): PtrInt;
 var
   S1Lower, S2Lower: string;
 begin
@@ -2903,7 +2903,7 @@ begin
   Result := UTF8CompareStr(S1Lower, S2Lower);
 end;
 
-function UTF8CompareStrCollated(const S1, S2: string): Integer;
+function UTF8CompareStrCollated(const S1, S2: string): PtrInt;
 begin
   {$IFDEF MSWINDOWS}
     Result := AnsiCompareStr(UTF8ToSys(S1), UTF8ToSys(S2));
