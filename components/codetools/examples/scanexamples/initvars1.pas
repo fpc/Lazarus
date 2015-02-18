@@ -21,7 +21,8 @@ begin
   TestInteger(i);
 end;
 
-procedure TestLots({%H-}s: string; {%H-}c: char; {%H-}p: pointer);
+procedure TestLots({%H-}s: string; {%H-}c: char; {%H-}p: pointer;
+  {%H-}SignalState: TSignalState);
 begin
 
 end;
@@ -31,8 +32,9 @@ var
   s: string;
   c: char;
   p: Pointer;
+  SignalState: TSignalState;
 begin
-  TestLots(s,c,p);
+  TestLots(s,c,p,SignalState);
 end;
 
 end.

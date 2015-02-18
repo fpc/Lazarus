@@ -6026,6 +6026,8 @@ var
   ExprType: TExpressionType;
   BeginNode: TCodeTreeNode;
   InsertPosDesc: TInsertStatementPosDescription;
+  Node: TCodeTreeNode;
+  Tool: TFindDeclarationTool;
 begin
   {$IFDEF VerboseGetPossibleInitsForVariable}
   debugln(['TCodeCompletionCodeTool.GetPossibleInitsForVariable ',dbgs(CursorPos)]);
@@ -6081,8 +6083,24 @@ begin
   end;
 
   case ExprType.Desc of
-  // ToDo: sets, ranges, records, objects, pointer, class, class of, interface
-  //xtContext: ;
+  xtContext:
+    begin
+      // ToDo: sets, ranges, records, objects, pointer, class, class of, interface
+      Node:=ExprType.Context.Node;
+      Tool:=ExprType.Context.Tool;
+      case Node.Desc of
+      ctnEnumerationType:
+        begin
+          // enumeration: add first 10 enums
+          Node:=Node.FirstChild;
+          while (Node<>nil) and (Statements.Count<10) do begin
+            if Node.Desc=ctnEnumIdentifier then
+              AddAssignment(GetIdentifier(@Tool.Src[Node.StartPos]));
+            Node:=Node.NextBrother;
+          end;
+        end;
+      end;
+    end;
   xtChar,
   xtWideChar: begin AddAssignment('#0'); AddAssignment(''' '''); end;
   xtReal,
