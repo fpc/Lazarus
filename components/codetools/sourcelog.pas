@@ -227,7 +227,7 @@ function ChangeLineEndings(const s, NewLineEnding: string): string;
 var
   NewLength: Integer;
   p: Integer;
-  Src, Dest, StartPos, EndPos: PChar;
+  Src, Dest, EndPos: PChar;
   EndLen: Integer;
 begin
   if s='' then begin
