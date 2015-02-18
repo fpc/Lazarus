@@ -876,6 +876,8 @@ type
     procedure CalcFocusRect(var ARect: TRect; adjust: boolean = true);
     function  CalcMaxTopLeft: TPoint;
     procedure CalcScrollbarsRange;
+    procedure CalculatePreferredSize(var PreferredWidth,
+      PreferredHeight: integer; WithThemeSpace: Boolean); override;
     function  CanEditShow: Boolean; virtual;
     function  CanGridAcceptKey(Key: Word; Shift: TShiftState): Boolean; virtual;
     procedure CellClick(const aCol,aRow: Integer; const Button:TMouseButton); virtual;
@@ -7373,6 +7375,13 @@ begin
     DebugLn('HRange=',dbgs(HsbRange),' Visible=',dbgs(HSbVisible));
     {$endif}
   end;
+end;
+
+procedure TCustomGrid.CalculatePreferredSize(var PreferredWidth,
+  PreferredHeight: integer; WithThemeSpace: Boolean);
+begin
+  PreferredWidth:=0;
+  PreferredHeight:=0;
 end;
 
 function TCustomGrid.CalcMaxTopLeft: TPoint;
