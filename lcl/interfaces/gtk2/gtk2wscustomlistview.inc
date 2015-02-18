@@ -23,6 +23,38 @@ begin
   Result := (gtk_major_version = 2) and (gtk_minor_version < 10);
 end;
 
+procedure Gtk2_PixBufFromBitmap(const BitImage:TBitmap; out pixbuf:PGdkPixbuf);
+var
+GDIObj: PGDIObject;
+bitmap:PGdkBitmap;
+Width, Height:gint;
+pixmap: PGdkPixmap;
+begin
+GDIObj := {%H-}PGDIObject(BitImage.Handle);
+  case GDIObj^.GDIBitmapType of
+    gbBitmap:
+      begin
+        bitmap := GDIObj^.GDIBitmapObject;
+        gdk_drawable_get_size(bitmap, @Width, @Height);
+        pixbuf := CreatePixbufFromDrawable(bitmap, nil, False, 0, 0, 0, 0, Width, Height);
+      end;
+    gbPixmap:
+      begin
+        pixmap := GDIObj^.GDIPixmapObject.Image;
+        if pixmap <> nil then
+        begin
+          gdk_drawable_get_size(pixmap, @Width, @Height);
+          bitmap := CreateGdkMaskBitmap(BitImage.Handle, 0);
+          pixbuf := CreatePixbufFromImageAndMask(pixmap, 0, 0, Width, Height, nil, Bitmap);
+        end;
+      end;
+    gbPixbuf:
+      begin
+        pixbuf := gdk_pixbuf_copy(GDIObj^.GDIPixbufObject);
+      end;
+  end;
+end;
+
 procedure Gtk2_ItemCheckedChanged(renderer: PGtkCellRendererToggle; PathStr: Pgchar; WidgetInfo: PWidgetInfo);cdecl;
 var
   LV: TLVHack;
@@ -398,11 +430,7 @@ var
   APath: PGtkTreePath;
   ImageList: TCustomImageList;
   Bmp: TBitmap;
-  GDIObj: PGDIObject;
-  ABitmap: PGdkBitmap;
   pixbuf: PGdkPixbuf;
-  pixmap: PGdkPixmap;
-  AWidth, AHeight: gint;
 begin
   PGtkCellRendererPixbuf(cell)^.pixbuf := nil;
   Widgets := PTVWidgets(WidgetInfo^.UserData);
@@ -445,29 +473,7 @@ begin
     try
       pixbuf := nil;
       ImageList.GetBitmap(ImageIndex, Bmp);
-      GDIObj := {%H-}PGDIObject(Bmp.Handle);
-      case GDIObj^.GDIBitmapType of
-        gbBitmap:
-          begin
-            ABitmap := GDIObj^.GDIBitmapObject;
-            gdk_drawable_get_size(ABitmap, @AWidth, @AHeight);
-            pixbuf := CreatePixbufFromDrawable(ABitmap, nil, False, 0, 0, 0, 0, AWidth, AHeight);
-          end;
-        gbPixmap:
-          begin
-            pixmap := GDIObj^.GDIPixmapObject.Image;
-            if pixmap <> nil then
-            begin
-              gdk_drawable_get_size(pixmap, @AWidth, @AHeight);
-              ABitmap := CreateGdkMaskBitmap(Bmp.Handle, 0);
-              pixbuf := CreatePixbufFromImageAndMask(pixmap, 0, 0, AWidth, AHeight, nil, ABitmap);
-            end;
-          end;
-        gbPixbuf:
-          begin
-            pixbuf := gdk_pixbuf_copy(GDIObj^.GDIPixbufObject);
-          end;
-      end;
+      Gtk2_PixBufFromBitmap(Bmp,pixbuf);
       PGtkCellRendererPixbuf(cell)^.pixbuf :=pixbuf;
     finally
       Bmp.Free;
@@ -1385,13 +1391,8 @@ var
   Widgets: PTVWidgets;
   Path: PGtkTreePath;
   ItemRect: TGdkRectangle;
-
   BitImage: TBitmap;
-  GDIObj: PGDIObject;
   pixbuf: PGDKPixBuf;
-  pixmap: PGdkDrawable;
-  bitmap: PGdkBitmap;
-  Width, Height: integer;
   i: Integer;
   ImgList: TImageList;
 
@@ -1445,29 +1446,7 @@ begin
             BitImage := TBitmap.Create;
             try
               ImgList.GetBitmap(AImageIndex, BitImage);
-              GDIObj := {%H-}PGDIObject(BitImage.Handle);
-              case GDIObj^.GDIBitmapType of
-                gbBitmap:
-                  begin
-                    bitmap := GDIObj^.GDIBitmapObject;
-                    gdk_drawable_get_size(bitmap, @Width, @Height);
-                    pixbuf := CreatePixbufFromDrawable(bitmap, nil, False, 0, 0, 0, 0, Width, Height);
-                  end;
-                gbPixmap:
-                  begin
-                    pixmap := GDIObj^.GDIPixmapObject.Image;
-                    if pixmap <> nil then
-                    begin
-                      gdk_drawable_get_size(pixmap, @Width, @Height);
-                      bitmap := CreateGdkMaskBitmap(BitImage.Handle, 0);
-                      pixbuf := CreatePixbufFromImageAndMask(pixmap, 0, 0, Width, Height, nil, Bitmap);
-                    end;
-                  end;
-                gbPixbuf:
-                  begin
-                    pixbuf := gdk_pixbuf_copy(GDIObj^.GDIPixbufObject);
-                  end;
-              end;
+              Gtk2_PixBufFromBitmap(BitImage,pixbuf);
               Widgets^.Images.Items[AImageIndex] := pixbuf;
               if GTK_IS_TREE_VIEW(MainView) then
                 gtk_tree_view_column_queue_resize(gtk_tree_view_get_column(PGtkTreeView(MainView), ASubIndex));
@@ -2178,11 +2157,7 @@ class procedure TGtk2WSCustomListView.SetImageList(const ALV: TCustomListView;
 var
   Widgets: PTVWidgets;
   BitImage: TBitmap;
-  GDIObj: PGDIObject;
   pixbuf: PGDKPixBuf;
-  pixmap: PGdkDrawable;
-  bitmap: PGdkBitmap;
-  Width, Height: integer;
   i: Integer;
   APGList: PGList;
   pixrenderer: PGtkCellRenderer;
@@ -2221,29 +2196,7 @@ begin
       BitImage := TBitmap.Create;
       try
         AValue.GetBitmap(i, BitImage);
-        GDIObj := {%H-}PGDIObject(BitImage.Handle);
-        case GDIObj^.GDIBitmapType of
-          gbBitmap:
-            begin
-              bitmap := GDIObj^.GDIBitmapObject;
-              gdk_drawable_get_size(bitmap, @Width, @Height);
-              pixbuf := CreatePixbufFromDrawable(bitmap, nil, False, 0, 0, 0, 0, Width, Height);
-            end;
-          gbPixmap:
-            begin
-              pixmap := GDIObj^.GDIPixmapObject.Image;
-              if pixmap <> nil then
-              begin
-                gdk_drawable_get_size(pixmap, @Width, @Height);
-                bitmap := CreateGdkMaskBitmap(BitImage.Handle, 0);
-                pixbuf := CreatePixbufFromImageAndMask(pixmap, 0, 0, Width, Height, nil, Bitmap);
-              end;
-            end;
-          gbPixbuf:
-            begin
-              pixbuf := gdk_pixbuf_copy(GDIObj^.GDIPixbufObject);
-            end;
-        end;
+        Gtk2_PixBufFromBitmap(BitImage, pixbuf);
         if GTK_IS_TREE_VIEW(Widgets^.MainView) and (TLVHack(ALV).Columns.Count > 0) and
           not TLVHack(ALV).OwnerDraw then
         begin
