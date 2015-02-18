@@ -354,8 +354,36 @@ begin
   if (GetLocaleInfoA(aLocaleID, aLCType, Buf, sizeof(buf)) > 0)
   and (ord(Buf[0])<128) then
     Result := Buf[0]
-  else
+  else begin
     Result := Def;
+    case Buf[0] of
+    #$C2:
+      case Buf[1] of
+      #$A0: Result:=' '; // non breakable space
+      #$B7: Result:='.'; // middle stop
+      end;
+    #$CB:
+      if Buf[1]=#$99 then Result:=''''; // dot above, italian handwriting
+    #$D9:
+      case Buf[1] of
+      #$AB: Result:=','; // arabic decimal separator, persian thousand separator
+      #$AC: Result:=''''; // arabic thousand separator
+      end;
+    #$E2:
+      case Buf[1] of
+      #$80:
+        case Buf[2] of
+        #$82, // long space
+        #$83, // long space
+        #$89, // thin space
+        #$AF: // narrow non breakable space
+          Result := ' ';
+        #$94: Result := '-'; // persian decimal mark
+        end;
+      #$8E: if Buf[2]=#$96 then Result := ''''; // codepoint 9110 decimal separator
+      end;
+    end;
+  end;
 end;
 
 procedure GetFormatSettingsUTF8(LCID: Integer; var aFormatSettings: TFormatSettings);
