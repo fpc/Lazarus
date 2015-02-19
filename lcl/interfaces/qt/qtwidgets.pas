@@ -11954,8 +11954,7 @@ begin
             // trigger selectionChanged() here
             // Multiselection needs special handling to get proper
             // order of OnSelectItem.
-
-            if getSelectionMode > QAbstractItemViewSingleSelection then
+            if (getSelectionMode > QAbstractItemViewSingleSelection) or FOwnerData then
             begin
               Modifiers := QInputEvent_modifiers(QInputEventH(Event));
               SlotMouse(Sender, Event);
