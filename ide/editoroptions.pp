@@ -603,7 +603,7 @@ const
     );
 
 const
-  EditorOptsFormatVersion = 10;
+  EditorOptsFormatVersion = 11;
   { * Changes in Version 6:
        - ColorSchemes now have a Global settings part.
          Language specific changes must save UseSchemeGlobals=False (Default is true)
@@ -618,6 +618,8 @@ const
          set sfeBottom
     * Changes in Version 10:
          eoTabIndent was added to SynEditDefaultOptions
+    * Changes in Version 11:
+         Default for GutterLeft set to moglUpClickAndSelect (was moGLDownClick)
   }
   EditorMouseOptsFormatVersion = 1;
   { * Changes in Version 6:
@@ -860,7 +862,7 @@ type
     procedure Assign(Src: TEditorMouseOptions); reintroduce;
     function  IsPresetEqualToMouseActions: Boolean;
     function  CalcCustomSavedActions: Boolean;
-    procedure LoadFromXml(aXMLConfig: TRttiXMLConfig; aPath: String; aOldPath: String = '');
+    procedure LoadFromXml(aXMLConfig: TRttiXMLConfig; aPath: String; aOldPath: String; FileVersion: Integer);
     procedure SaveToXml(aXMLConfig: TRttiXMLConfig; aPath: String);
     procedure ImportFromXml(aXMLConfig: TRttiXMLConfig; aPath: String);
     procedure ExportToXml(aXMLConfig: TRttiXMLConfig; aPath: String);
@@ -885,7 +887,7 @@ type
     property GutterActionsLines: TSynEditMouseActions read FGutterActionsLines;
   published
     property GutterLeft: TMouseOptGutterLeftType read FGutterLeft write FGutterLeft
-             default moGLDownClick;
+             default moglUpClickAndSelect;
     property TextDrag: Boolean read FTextDrag write FTextDrag
              default True;
     property TextRightMoveCaret: Boolean read FTextRightMoveCaret  write FTextRightMoveCaret
@@ -3244,7 +3246,7 @@ end;
 procedure TEditorMouseOptions.Reset;
 begin
   FCustomSavedActions  := False;
-  FGutterLeft          := moGLDownClick;
+  FGutterLeft          := moglUpClickAndSelect;
   // left multi
   FTextDoubleLeftClick       := mbaSelectWords;
   FTextTripleLeftClick       := mbaSelectSetLineSmart;
@@ -3785,8 +3787,8 @@ begin
   FCustomSavedActions := Result;
 end;
 
-procedure TEditorMouseOptions.LoadFromXml(aXMLConfig: TRttiXMLConfig;
-  aPath: String; aOldPath: String = '');
+procedure TEditorMouseOptions.LoadFromXml(aXMLConfig: TRttiXMLConfig; aPath: String;
+  aOldPath: String; FileVersion: Integer);
 
   Procedure LoadMouseAct(Path: String; MActions: TSynEditMouseActions);
   var
@@ -3826,6 +3828,8 @@ var
   TextDoubleSelLine: Boolean;
 begin
   Reset;
+  if (FileVersion > 0) and (FileVersion < 11) then
+    FGutterLeft := moGLDownClick;
   AltColumnMode := False;
   TextDoubleSelLine := False;
   if aOldPath <> '' then begin
@@ -4682,7 +4686,7 @@ begin
       'EditorOptions/CodeFolding/UseCodeFolding', True);
 
     FUserMouseSettings.LoadFromXml(XMLConfig, 'EditorOptions/Mouse/',
-                                  'EditorOptions/General/Editor/');
+                                  'EditorOptions/General/Editor/', FileVersion);
 
     FMultiWinEditAccessOrder.LoadFromXMLConfig(XMLConfig, 'EditorOptions/MultiWin/');
     UserColorSchemeGroup.LoadFromXml(XMLConfig, 'EditorOptions/Color/',
