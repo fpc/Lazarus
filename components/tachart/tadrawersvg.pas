@@ -401,8 +401,6 @@ begin
 end;
 
 procedure TSVGDrawer.SetFont(AFont: TFPCustomFont);
-var
-  i: Integer;
 begin
   with FFont do begin
     Name := AFont.Name;
