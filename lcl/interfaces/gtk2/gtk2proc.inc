@@ -6424,7 +6424,9 @@ begin
      ' PreferredWidth=',PreferredWidth,' PreferredHeight=',PreferredHeight,
      ' WithThemeSpace=',WithThemeSpace]); }
 
-  if GtkWidgetIsA(Widget,GTK_TYPE_EVENT_BOX) then begin
+  if GtkWidgetIsA(Widget,GTK_TYPE_EVENT_BOX)
+  and (AWinControl.ControlCount>0) then begin
+    // ignore client area (child controls)
     FixedWidget:=PGtkWidget(GetFixedWidget(Widget));
     if FixedWidget<>nil then begin
       {if AWinControl.Name='OtherInfoGroupBox' then
