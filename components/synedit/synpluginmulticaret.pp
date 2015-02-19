@@ -281,10 +281,10 @@ begin
   end;
 
   {$IfDef SynMultiCaretDebug}
-if FCount = Length(FList) then debugln(SynMCaretDebug, ['TSynPluginMultiCaretVisualList.Add ', FCount + max(16, FCount div 16)]);
+  if FCount = Length(FList) then debugln(SynMCaretDebug, ['TSynPluginMultiCaretVisualList.Add ', FCount + max(16, FCount div 16)]);
+  {$EndIf}
   if FCount = Length(FList) then
     SetLength(FList, FCount + max(16, FCount div 16));
-  {$EndIf}
 
   FList[FCount] := AScreenCaret;
   AScreenCaret.FListIndex := FCount;
