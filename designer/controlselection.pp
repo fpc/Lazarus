@@ -1346,10 +1346,10 @@ begin
           and (not ComponentBoundsDesignable(TComponent(Item.Persistent))) then
             continue;
           OldLeftTop:=Items[i].OldFormRelativeLeftTop;
-          NewLeft:=FLeft + (((OldLeftTop.X-FOldLeft) * FWidth) div FOldWidth);
-          NewTop:=FTop + (((OldLeftTop.Y-FOldTop) * FHeight) div FOldHeight);
-          NewWidth:=(Item.OldWidth*FWidth) div FOldWidth;
-          NewHeight:=(Item.OldHeight*FHeight) div FOldHeight;
+          NewLeft:=FLeft + round((single(OldLeftTop.X-FOldLeft) * single(FWidth))/single(FOldWidth));
+          NewTop:=FTop + round((single(OldLeftTop.Y-FOldTop) * single(FHeight))/single(FOldHeight));
+          NewWidth:=round(single(Item.OldWidth*FWidth)/single(FOldWidth));
+          NewHeight:=round(single(Item.OldHeight*FHeight)/single(FOldHeight));
           if NewWidth<0 then begin
             NewWidth:=-NewWidth;
             dec(NewLeft,NewWidth);
