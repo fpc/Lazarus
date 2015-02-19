@@ -94,7 +94,9 @@ type
   TGDBMIDebuggerFlags = set of (
     dfImplicidTypes,     // Debugger supports implicit types (^Type)
     dfForceBreak,        // Debugger supports insertion of not yet known brekpoints
-    dfForceBreakDetected
+    dfForceBreakDetected,
+    dfSetBreakFailed,
+    dfSetBreakPending
   );
 
   // Target info
@@ -125,6 +127,7 @@ type
 
   TGDBMIDebuggerPropertiesBase = class(TDebuggerProperties)
   private
+    FDisableForcedBreakpoint: Boolean;
     FDisableLoadSymbolsForLibraries: Boolean;
     FEncodeCurrentDirPath: TGDBMIDebuggerFilenameEncoding;
     FEncodeExeFileName: TGDBMIDebuggerFilenameEncoding;
@@ -137,6 +140,7 @@ type
     FTimeoutForEval: Integer;
     FUseAsyncCommandMode: Boolean;
     FUseNoneMiRunCommands: TGDBMIUseNoneMiRunCmdsState;
+    FWarnOnSetBreakpointError: Boolean;
     FWarnOnInternalError: Boolean;
     FWarnOnTimeOut: Boolean;
     procedure SetMaxDisplayLengthForString(AValue: Integer);
@@ -165,6 +169,10 @@ type
              read FUseNoneMiRunCommands write FUseNoneMiRunCommands default gdnmFallback;
     property DisableLoadSymbolsForLibraries: Boolean read FDisableLoadSymbolsForLibraries
              write FDisableLoadSymbolsForLibraries default False;
+    property DisableForcedBreakpoint: Boolean read FDisableForcedBreakpoint
+             write FDisableForcedBreakpoint default False;
+    property WarnOnSetBreakpointError: Boolean read FWarnOnSetBreakpointError
+             write FWarnOnSetBreakpointError default True;
   end;
 
   TGDBMIDebuggerProperties = class(TGDBMIDebuggerPropertiesBase)
@@ -2377,6 +2385,9 @@ var
   R: TGDBMIExecResult;
   List: TGDBMINameValueList;
 begin
+  if DebuggerProperties.DisableForcedBreakpoint then
+    exit;
+
   if not (dfForceBreakDetected in FTheDebugger.FDebuggerFlags) then begin
     // detect if we can insert a not yet known break
     ExecuteCommand('-break-insert -f foo', R);
@@ -5179,9 +5190,11 @@ var
   FileType, EntryPoint: String;
   List: TGDBMINameValueList;
   CanContinue: Boolean;
+  StateStopped: Boolean;
 begin
   Result := True;
   FSuccess := False;
+  StateStopped := False;
 
   try
     if not (DebuggerState in [dsStop])
@@ -5288,6 +5301,8 @@ begin
 
     DebugLn(DBG_VERBOSE, '[Debugger] Target PID: %u', [TargetInfo^.TargetPID]);
 
+    Exclude(FTheDebugger.FDebuggerFlags, dfSetBreakFailed);
+    Exclude(FTheDebugger.FDebuggerFlags, dfSetBreakPending);
     // they may still exist from prev run, addr will be checked
     // TODO: defered setting of below beakpoint / e.g. if debugging a library
 {$IFdef WITH_GDB_FORCE_EXCEPTBREAK}
@@ -5299,9 +5314,16 @@ begin
     FTheDebugger.FBreakErrorBreak.SetByAddr(Self);
     FTheDebugger.FRunErrorBreak.SetByAddr(Self);
 {$ENDIF}
+    if not (FTheDebugger.FExceptionBreak.IsBreakSet and
+            FTheDebugger.FBreakErrorBreak.IsBreakSet and
+            FTheDebugger.FRunErrorBreak.IsBreakSet)
+    then
+      Include(FTheDebugger.FDebuggerFlags, dfSetBreakFailed);
 
     SetDebuggerState(dsInit); // triggers all breakpoints to be set.
+    FTheDebugger.RunQueue;  // run all the breakpoints
     Application.ProcessMessages; // workaround, allow source-editor to queue line info request (Async call)
+
     if FTheDebugger.FBreakAtMain <> nil
     then begin
       CanContinue := False;
@@ -5309,6 +5331,16 @@ begin
     end
     else CanContinue := True;
 
+    if FTheDebugger.DebuggerFlags * [dfSetBreakFailed, dfSetBreakPending] <> [] then begin
+      if FTheDebugger.OnFeedback
+         (self, Format(synfTheDebuggerWasUnableToSetAllBreakpointsDuringIniti,
+              [LineEnding]), '', ftWarning, [frOk, frStop]) = frStop
+      then begin
+        StateStopped := True;
+        SetDebuggerState(dsStop);
+        exit;
+      end;
+    end;
 
     if StoppedAtEntryPoint and CanContinue and (FContinueCommand = nil) then begin
       // try to step to pascal code
@@ -5350,7 +5382,7 @@ begin
     then ProcessFrame;
   finally
     ReleaseRefAndNil(FContinueCommand);
-    if not (DebuggerState in [dsInit, dsRun, dsPause]) then
+    if not(StateStopped or (DebuggerState in [dsInit, dsRun, dsPause])) then
       SetDebuggerErrorState(synfFailedToInitializeDebugger);
   end;
 
@@ -7357,6 +7389,8 @@ begin
   FUseAsyncCommandMode := False;
   FDisableLoadSymbolsForLibraries := False;
   FUseNoneMiRunCommands := gdnmFallback;
+  FDisableForcedBreakpoint := False;
+  FWarnOnSetBreakpointError := True;
   inherited;
 end;
 
@@ -7376,6 +7410,8 @@ begin
   FUseAsyncCommandMode := TGDBMIDebuggerPropertiesBase(Source).FUseAsyncCommandMode;
   FDisableLoadSymbolsForLibraries := TGDBMIDebuggerPropertiesBase(Source).FDisableLoadSymbolsForLibraries;
   FUseNoneMiRunCommands := TGDBMIDebuggerPropertiesBase(Source).FUseNoneMiRunCommands;
+  FDisableForcedBreakpoint := TGDBMIDebuggerPropertiesBase(Source).FDisableForcedBreakpoint;
+  FWarnOnSetBreakpointError := TGDBMIDebuggerPropertiesBase(Source).FWarnOnSetBreakpointError;
 end;
 
 
@@ -8694,6 +8730,8 @@ var
   env: TStringList;
 begin
   Exclude(FDebuggerFlags, dfForceBreakDetected);
+  Exclude(FDebuggerFlags, dfSetBreakFailed);
+  Exclude(FDebuggerFlags, dfSetBreakPending);
   LockRelease;
   try
     FPauseWaitState := pwsNone;
@@ -9279,7 +9317,15 @@ begin
   ResultList := TGDBMINameValueList.Create(R);
   case FKind of
     bpkSource, bpkAddress:
-      ResultList.SetPath('bkpt');
+      begin
+        ResultList.SetPath('bkpt');
+        if (not Result) or (r.State = dsError) then
+          Include(FTheDebugger.FDebuggerFlags, dfSetBreakFailed);
+        if (ResultList.IndexOf('pending') >= 0) or
+           (pos('pend', lowercase(ResultList.Values['addr'])) > 0)
+        then
+          Include(FTheDebugger.FDebuggerFlags, dfSetBreakPending);
+      end;
     bpkData:
       case FWatchKind of
         wpkWrite: begin
@@ -11546,7 +11592,7 @@ begin
   FBreaks[ALoc].BreakAddr := 0;
   FBreaks[ALoc].BreakFunction := '';
 
-  if UseForceFlag and (dfForceBreakDetected in ACmd.FTheDebugger.FDebuggerFlags) then
+  if UseForceFlag and (dfForceBreak in ACmd.FTheDebugger.FDebuggerFlags) then
   begin
     if (not ACmd.ExecuteCommand('-break-insert -f %s', [ABreakLoc], R)) or
        (R.State = dsError)
