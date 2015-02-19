@@ -606,12 +606,13 @@ begin
   FIsTControl:=FPersistent is TControl;
   FIsTWinControl:=FPersistent is TWinControl;
   FDesignerForm:=GetDesignerForm(FPersistent);
+  GetIsNonVisualComponent;
   FIsVisible:=FIsTComponent
               and (not ComponentIsInvisible(TComponent(APersistent)));
 end;
 
 function TSelectedControl.GetIsNonVisualComponent: boolean;
-//recalculate because FIsNonVisualCOmponent doesn't work properly for Non LCL
+//recalculate because FIsNonVisualComponent doesn't work properly for Non LCL
 begin
   FIsNonVisualComponent:=FIsTComponent and (not FIsTControl);
   if (Owner.Mediator<>nil) and FIsTComponent then
@@ -634,10 +635,12 @@ begin
     FCachedHeight:=AHeight;
   end else if FIsNonVisualComponent then begin
     if (Left<>ALeft) or (Top<>ATop) then begin
+      //debugln(['TSelectedControl.SetBounds Old=',Left,',',Top,' New=',ALeft,',',ATop]);
       InvalidateNonVisualPersistent;
       Left:=ALeft;
       Top:=ATop;
       InvalidateNonVisualPersistent;
+      //debugln(['TSelectedControl.SetBounds Now=',Left,',',Top,' Expected=',ALeft,',',ATop]);
     end;
   end else if (Owner.Mediator<>nil) and FIsTComponent then begin
     FCachedLeft:=ALeft;
@@ -1359,8 +1362,9 @@ begin
           if NewHeight<1 then NewHeight:=1;
           Item.SetFormRelativeBounds(NewLeft,NewTop,NewWidth,NewHeight);
           {$IFDEF VerboseDesigner}
-          DebugLn('  i=',Dbgs(i),' ',DbgSName(Item.Persistent),
-          ' ',DbgS(Item.Left,Item.Top,Item.Width,Item.Height));
+          DebugLn(['  i=',i,' ',DbgSName(Item.Persistent),
+          ' Expected=',NewLeft,',',NewTop,',',NewWidth,'x',NewHeight,
+          ' Actual=',Item.Left,',',Item.Top,',',Item.Width,'x',Item.Height]);
           {$ENDIF}
         end;
         InvalidateGuideLinesCache;
@@ -1380,7 +1384,7 @@ begin
   if FControls.Count>=1 then begin
     Items[0].GetFormRelativeBounds(FRealLeft,FRealTop,FRealWidth,FRealHeight,
                                    true);
-    //DebugLn(['TControlSelection.UpdateRealBounds ',FRealLeft,',',FRealTop]);
+    //DebugLn(['TControlSelection.UpdateRealBounds ',FRealLeft,',',FRealTop,',',FRealWidth,'x',FRealHeight]);
     for i:=1 to FControls.Count-1 do begin
       Items[i].GetFormRelativeBounds(
                     NextRealLeft,NextRealTop,NextRealWidth,NextRealHeight,true);
