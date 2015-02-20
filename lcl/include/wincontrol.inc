@@ -7968,7 +7968,8 @@ end;
 procedure TWinControl.CalculatePreferredSize(var PreferredWidth,
   PreferredHeight: integer; WithThemeSpace: Boolean);
 
-  {procedure trav(aControl: TControl; Prefix: string);
+  {$IFDEF VerboseCalculatePreferredSize}
+  procedure trav(aControl: TControl; Prefix: string);
   var
     w: integer;
     h: integer;
@@ -7982,7 +7983,13 @@ procedure TWinControl.CalculatePreferredSize(var PreferredWidth,
     if aControl is TWinControl then
       for i:=0 to TWinControl(aControl).ControlCount-1 do
         trav(TWinControl(aControl).Controls[i],Prefix+'  ');
-  end;}
+  end;
+
+  function IsVerbose: boolean;
+  begin
+    Result:=(ClassName='TShowCompilerOptionsDlg') or (Name='CmdLineMemo');
+  end;
+  {$ENDIF}
 
 var
   Layout: TAutoSizeCtrlData;
@@ -7998,8 +8005,9 @@ begin
   if HandleAllocated then begin
     TWSWinControlClass(WidgetSetClass).GetPreferredSize(Self,
                                PreferredWidth, PreferredHeight, WithThemeSpace);
-    //if (Name='OtherInfoGroupBox') or (Name='ProjectVersionInfoOptionsFrame') then
-    //  debugln(['TWinControl.CalculatePreferredSize Widget ',DbgSName(Self),' ',DbgSName(WidgetSetClass),' ',PreferredWidth,'x',PreferredHeight]);
+    {$IFDEF VerboseCalculatePreferredSize}
+    if IsVerbose then debugln(['TWinControl.CalculatePreferredSize Widget ',DbgSName(Self),' ',DbgSName(WidgetSetClass),' Pref=',PreferredWidth,'x',PreferredHeight]);
+    {$ENDIF}
   end;
 
   if ControlCount>0 then begin
@@ -8018,15 +8026,18 @@ begin
       Layout.Free;
     end;
 
-    {$IF defined(VerboseAutoSize) or defined(VerboseAllAutoSize)}
+    {$IF defined(VerboseAutoSize) or defined(VerboseAllAutoSize) or defined(VerboseCalculatePreferredSize)}
+    {$IFDEF VerboseCalculatePreferredSize}
+    if IsVerbose then
+      trav(Self,'  ');
+    if IsVerbose then
+    {$ENDIF}
     //if (Name='OtherInfoGroupBox') or (Name='ProjectVersionInfoOptionsFrame') then
     debugln(['TWinControl.CalculatePreferredSize ',DbgSName(Self),
       ' HandleAllocated=',HandleAllocated,
       ' Cur=',Width,'x',Height,
       ' Client=',ClientWidth,'x',ClientHeight,
-      ' NewClientWidth=',NewClientWidth,' NewClientHeight=',NewClientHeight,
-      ' IntfPref+Child+AdjustClientRect=',PreferredWidth,'x',PreferredHeight]);
-    //if (Name='EditorsPanel') then trav(Self,'  ');
+      ' PrefClient=',NewClientWidth,'x',NewClientHeight]);
     {$ENDIF}
     PreferredWidth:=Max(PreferredWidth,NewClientWidth);
     PreferredHeight:=Max(PreferredHeight,NewClientHeight);
@@ -8044,12 +8055,14 @@ begin
   if (PreferredHeight>0)
   or ((PreferredHeight=0) and (csAutoSize0x0 in ControlStyle)) then
     inc(PreferredHeight,BorderSpacing.InnerBorder*2);
-  {$IFDEF VerboseAutoSize}
-  //if (Name='OtherInfoGroupBox') or (Name='ProjectVersionInfoOptionsFrame') then
-  debugln('TWinControl.CalculatePreferredSize ',DbgSName(Self),
+  {$IF defined(VerboseAutoSize) or defined(VerboseCalculatePreferredSize)}
+  {$IFDEF VerboseCalculatePreferredSize}
+  if IsVerbose then
+  {$ENDIF}
+  debugln(['TWinControl.CalculatePreferredSize ',DbgSName(Self),
     ' HandleAllocated=',dbgs(HandleAllocated),
     ' ClientFrame=',FrameWidth,'x',FrameHeight,
-    ' Preferred=',dbgs(PreferredWidth),'x',dbgs(PreferredHeight));
+    ' Preferred=',dbgs(PreferredWidth),'x',dbgs(PreferredHeight)]);
   {$ENDIF}
 end;
 
