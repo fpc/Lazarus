@@ -1692,23 +1692,18 @@ begin
   CurItem:=TIDEMenuCommand(Sender);
   for CurPFT:=Low(TPkgFileType) to High(TPkgFileType) do begin
     if CurItem.Caption=GetPkgFileTypeLocalizedName(CurPFT) then begin
-      BeginUpdate;
-      try
-        for i:=0 to ItemsTreeView.SelectionCount-1 do begin
-          TVNode:=ItemsTreeView.Selections[i];
-          if not GetNodeDataItem(TVNode,NodeData,Item) then continue;
-          if not (Item is TPkgFile) then continue;
-          CurFile:=TPkgFile(Item);
-          if CurFile.FileType=CurPFT then continue;
-          if (not FilenameIsPascalUnit(CurFile.Filename))
-          and (CurPFT in PkgFileUnitTypes) then
-            continue;
-          CurFile.FileType:=CurPFT;
-          if not NodeData.Removed then
-            LazPackage.Modified:=true;
-        end;
-      finally
-        EndUpdate;
+      for i:=0 to ItemsTreeView.SelectionCount-1 do begin
+        TVNode:=ItemsTreeView.Selections[i];
+        if not GetNodeDataItem(TVNode,NodeData,Item) then continue;
+        if not (Item is TPkgFile) then continue;
+        CurFile:=TPkgFile(Item);
+        if CurFile.FileType=CurPFT then continue;
+        if (not FilenameIsPascalUnit(CurFile.Filename))
+        and (CurPFT in PkgFileUnitTypes) then
+          continue;
+        CurFile.FileType:=CurPFT;
+        if not NodeData.Removed then
+          LazPackage.ModifySilently;
       end;
       exit;
     end;
