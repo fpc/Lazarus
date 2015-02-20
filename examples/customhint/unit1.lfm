@@ -1,0 +1,58 @@
+object Form1: TForm1
+  Left = 408
+  Height = 246
+  Top = 286
+  Width = 443
+  Caption = 'Form1'
+  ClientHeight = 246
+  ClientWidth = 443
+  OnCreate = FormCreate
+  LCLVersion = '1.5'
+  object Button1: TButton
+    Left = 30
+    Height = 27
+    Top = 30
+    Width = 260
+    AutoSize = True
+    Caption = 'Hover mouse over this button to see the hint'
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 0
+  end
+  object HideTimeoutTrackBar: TTrackBar
+    Left = 30
+    Height = 44
+    Top = 90
+    Width = 170
+    Max = 4000
+    PageSize = 1
+    Position = 500
+    TabOrder = 1
+  end
+  object HideTimeoutLabel: TLabel
+    Left = 220
+    Height = 15
+    Top = 104
+    Width = 102
+    Caption = 'HideTimeout in ms'
+    ParentColor = False
+  end
+  object ReshowTimeoutLabel: TLabel
+    Left = 220
+    Height = 15
+    Top = 166
+    Width = 120
+    Caption = 'ReshowTimeout in ms'
+    ParentColor = False
+  end
+  object ReshowTimeoutTrackBar: TTrackBar
+    Left = 30
+    Height = 44
+    Top = 150
+    Width = 170
+    Max = 2000
+    PageSize = 1
+    Position = 1000
+    TabOrder = 2
+  end
+end

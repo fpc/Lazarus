@@ -4702,6 +4702,12 @@ examples/cursors/project1.lpi svneol=native#text/plain
 examples/cursors/project1.lpr svneol=native#text/pascal
 examples/cursors/unit1.lfm svneol=native#text/plain
 examples/cursors/unit1.pas svneol=native#text/pascal
+examples/customhint/CustomHint1.ico -text svneol=unset#image/ico
+examples/customhint/CustomHint1.lpi svneol=native#text/plain
+examples/customhint/CustomHint1.lpr svneol=native#text/plain
+examples/customhint/CustomHint1.res -text
+examples/customhint/unit1.lfm svneol=native#text/plain
+examples/customhint/unit1.pas svneol=native#text/plain
 examples/database/dblookup/data/lookerup.dbf -text
 examples/database/dblookup/data/lookerup.mbf -text
 examples/database/dblookup/data/months.dbf -text
