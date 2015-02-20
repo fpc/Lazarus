@@ -1747,7 +1747,7 @@ end;
 
 {------------------------------------------------------------------------------
   Method:  TCarbonControl.GetPreferredSize
-  Returns: The preffered size of control for autosizing or (0, 0)
+  Returns: The prefered size of control for autosizing or (0, 0)
  ------------------------------------------------------------------------------}
 function TCarbonControl.GetPreferredSize: TPoint;
 var
@@ -1757,12 +1757,17 @@ begin
   Result.X := 0;
   Result.Y := 0;
     
-  R := GetCarbonRect(0, 0, 0, 0);
-  
-  if OSError(GetBestControlRect(ControlRef(Widget), R, S{%H-}), Self,
-    'GetPreferredSize', 'GetBestControlRect') then Exit;
+  if (LCLObject is TWinControl) and (TWinControl(LCLObject).ControlCount>0) then
+  begin
 
-  Result.X := R.right - R.left;
-  Result.Y := R.bottom - R.top;
+  end else begin
+    R := GetCarbonRect(0, 0, 0, 0);
+
+    if OSError(GetBestControlRect(ControlRef(Widget), R, S{%H-}), Self,
+      'GetPreferredSize', 'GetBestControlRect') then Exit;
+
+    Result.X := R.right - R.left;
+    Result.Y := R.bottom - R.top;
+  end;
 end;
 

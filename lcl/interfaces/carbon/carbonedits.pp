@@ -186,6 +186,7 @@ type
     procedure SetScrollBars(const AValue: TScrollStyle);
   protected
     function GetFrame({%H-}Index: Integer): ControlRef; override;
+    function GetPreferredSize: TPoint; override;
     procedure CreateWidget(const AParams: TCreateParams); override;
     procedure DestroyWidget; override;
     procedure GetLineOffset(AIndex: Integer; out AStart, AEnd: TXNOffset);
@@ -1526,6 +1527,11 @@ begin
   Result:=FBorder;
 end;
 
+function TCarbonMemo.GetPreferredSize: TPoint;
+begin
+  Result.X:=0;
+  Result.Y:=0;
+end;
 
 {------------------------------------------------------------------------------
   Method:  TCarbonMemo.CreateWidget
