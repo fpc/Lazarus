@@ -1417,7 +1417,7 @@ type
     procedure HideHint;
     procedure HintMouseMessage(Control : TControl; var AMessage: TLMessage);
     procedure Initialize; override;
-    function MessageBox(Text, Caption: PChar; Flags: Longint): Integer;
+    function MessageBox(Text, Caption: PChar; Flags: Longint = MB_OK): Integer;
     procedure Minimize;
     procedure ModalStarted;
     procedure ModalFinished;
