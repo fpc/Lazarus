@@ -1366,6 +1366,7 @@ type
     FImages: array[TListViewImageList] of TCustomImageList;
     FImageChangeLinks: array[TListViewImageList] of TChangeLink;
     FFlags: TListViewFlags;
+    FShowEditorQueued: boolean;
     FSortDirection: TSortDirection;
 
     FViewStyle: TViewStyle;
@@ -1432,11 +1433,13 @@ type
     procedure SetProperty(const ALvpOrd: Integer; const AIsSet: Boolean);
     procedure SetScrollBars(const AValue: TScrollStyle);
     procedure SetSelection(const AValue: TListItem);
+    procedure SetShowEditorQueued(AValue: boolean);
     procedure SetSortColumn(const AValue: Integer);
     procedure SetSortDirection(const AValue: TSortDirection);
     procedure SetSortType(const AValue: TSortType);
     procedure SetViewOrigin(AValue: TPoint);
     procedure SetViewStyle(const Avalue: TViewStyle);
+    procedure QueuedShowEditor(Data: PtrInt);
     procedure UpdateScrollbars;
     procedure CNNotify(var AMessage: TLMNotify); message CN_NOTIFY;
     procedure CNDrawItem(var Message: TLMDrawListItem); message CN_DRAWITEM;
@@ -1448,6 +1451,7 @@ type
     procedure ShowEditor;
     procedure WMHScroll(var message : TLMHScroll); message LM_HSCROLL;
     procedure WMVScroll(var message : TLMVScroll); message LM_VSCROLL;
+    property ShowEditorQueued: boolean read FShowEditorQueued write SetShowEditorQueued;
   protected
     //called by TListItems
     procedure ItemDeleted(const AItem: TListItem);

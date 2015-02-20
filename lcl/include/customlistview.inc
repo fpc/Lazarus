@@ -777,11 +777,17 @@ begin
     FOnDataStateChange(Self, AStartIndex, AEndIndex, AOldState, ANewState);
 end;
 
+procedure TCustomListView.QueuedShowEditor(Data: PtrInt);
+begin
+  fShowEditorQueued:=false;
+  ShowEditor;
+end;
+
 procedure TCustomListView.DblClick;
 begin
   inherited DblClick;
   if not ReadOnly and Assigned(FEditor) then
-    ShowEditor;
+    ShowEditorQueued:=true;
 end;
 
 procedure TCustomListView.KeyDown(var Key: Word; Shift: TShiftState);
@@ -1090,6 +1096,7 @@ end;
 
 procedure TCustomListView.FinalizeWnd;
 begin
+  ShowEditorQueued:=false;
   // store origin
   FViewOriginCache := TWSCustomListViewClass(WidgetSetClass).GetViewOrigin(Self);
   if not OwnerData then
@@ -1574,6 +1581,16 @@ begin
       TWSCustomListViewClass(WidgetSetClass).ItemSetState(Self, FSelected.Index,
           FSelected, lisSelected, True);
   end;
+end;
+
+procedure TCustomListView.SetShowEditorQueued(AValue: boolean);
+begin
+  if FShowEditorQueued=AValue then Exit;
+  FShowEditorQueued:=AValue;
+  if ShowEditorQueued then
+    Application.QueueAsyncCall(@QueuedShowEditor,0)
+  else
+    Application.RemoveAsyncCalls(Self);
 end;
 
 procedure TCustomListView.SetOwnerData(const AValue: Boolean);
