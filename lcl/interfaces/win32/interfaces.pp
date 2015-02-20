@@ -24,7 +24,7 @@ interface
 
 uses
   {$IFDEF EnableUTF8RTL}
-  FPCAdds, LazUTF8,
+  LazUTF8,
   {$ENDIF}
   InterfaceBase;
 

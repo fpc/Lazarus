@@ -25,9 +25,12 @@ unit LazUTF8;
 interface
 
 uses
-{$ifdef windows}
+  {$IFDEF EnableUTF8RTL}
+  FPCAdds,
+  {$ENDIF}
+  {$ifdef windows}
   Windows,
-{$endif}
+  {$endif}
   Classes, SysUtils; 
 
 // AnsiToUTF8 and UTF8ToAnsi need a widestring manager under Linux, BSD, MacOSX
