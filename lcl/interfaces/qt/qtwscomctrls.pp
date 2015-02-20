@@ -1607,16 +1607,33 @@ begin
     if ACode in [drIcon] then
     begin
       AIcon := QIcon_create();
-      QTreeWidgetItem_icon(TWI, AIcon, 0);
-      if not QIcon_isNull(AIcon) then
-      begin
-        Size.cx := 0;
-        Size.cy := 0;
-        QIcon_actualSize(AIcon, @Size, @Size);
-        Result.Right := Result.Left + Size.cx;
-        Result.Bottom := Result.Top + Size.cy;
+      try
+        QTreeWidgetItem_icon(TWI, AIcon, 0);
+        if not QIcon_isNull(AIcon) then
+        begin
+          Size.cx := 0;
+          Size.cy := 0;
+          QIcon_actualSize(AIcon, @Size, @Size);
+          if (Size.cx = 0) or (Size.cy = 0) then
+          begin
+            if Assigned(TCustomListViewHack(ALV).SmallImages) then
+              Result.Right := Result.Left + TCustomListViewHack(ALV).SmallImages.Width;
+          end else
+          begin
+            Result.Right := Result.Left + Size.cx;
+            Result.Bottom := Result.Top + Size.cy;
+          end;
+        end else
+        begin
+          if QtTreeWidget.OwnerData then
+          begin
+            if Assigned(TCustomListViewHack(ALV).SmallImages) then
+              Result.Right := Result.Left + TCustomListViewHack(ALV).SmallImages.Width;
+          end;
+        end;
+      finally
+        QIcon_destroy(AIcon);
       end;
-      QIcon_destroy(AIcon);
     end;
   end;
 end;
