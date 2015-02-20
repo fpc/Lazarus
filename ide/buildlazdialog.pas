@@ -174,8 +174,9 @@ type
     // Methods used by MakeLazarus :
     procedure ApplyCleanOnce;
     function CheckDirectoryWritable(Dir: string): boolean;
-    procedure CleanLazarusSrcDir(Dir: string; Recursive: boolean = true);
-    procedure CleanAll;
+    procedure CleanDir(Dir: string; Recursive: boolean = true);
+    procedure CleanLazarusSrcDir;
+    procedure CleanLazarusFallbackOutDir;
     procedure CheckRevisionInc;
     procedure RestoreBackup;
     // Methods used by SaveIDEMakeOptions :
@@ -268,7 +269,7 @@ begin
     mtError,[mbCancel]);
 end;
 
-procedure TLazarusBuilder.CleanLazarusSrcDir(Dir: string; Recursive: boolean = true);
+procedure TLazarusBuilder.CleanDir(Dir: string; Recursive: boolean = true);
 var
   FileInfo: TSearchRec;
   Ext: String;
@@ -278,14 +279,14 @@ begin
   if FindFirstUTF8(Dir+AllFilesMask,faAnyFile,FileInfo)=0 then begin
     repeat
       if (FileInfo.Name='') or (FileInfo.Name='.') or (FileInfo.Name='..')
-      or (FileInfo.Name='.svn') or (FileInfo.Name='.git')
+      or (FileInfo.Name[1]='.')
       then
         continue;
       Filename:=Dir+FileInfo.Name;
       if faDirectory and FileInfo.Attr>0 then
       begin
         if Recursive then
-          CleanLazarusSrcDir(Filename)
+          CleanDir(Filename)
       end
       else begin
         Ext:=LowerCase(ExtractFileExt(FileInfo.Name));
@@ -299,33 +300,38 @@ begin
   FindCloseUTF8(FileInfo);
 end;
 
-procedure TLazarusBuilder.CleanAll;
+procedure TLazarusBuilder.CleanLazarusSrcDir;
 var
   s: String;
 begin
   // clean all lazarus source directories
   // Note: Some installations put the fpc units into the lazarus directory
   //       => clean only the known directories
-  CleanLazarusSrcDir(fWorkingDir,false);
-  CleanLazarusSrcDir(fWorkingDir+PathDelim+'examples');
-  CleanLazarusSrcDir(fWorkingDir+PathDelim+'components');
-  CleanLazarusSrcDir(fWorkingDir+PathDelim+'units');
-  CleanLazarusSrcDir(fWorkingDir+PathDelim+'ide');
-  CleanLazarusSrcDir(fWorkingDir+PathDelim+'packager');
-  CleanLazarusSrcDir(fWorkingDir+PathDelim+'lcl');
-  CleanLazarusSrcDir(fWorkingDir+PathDelim+'ideintf');
-  CleanLazarusSrcDir(fWorkingDir+PathDelim+'tools');
-  CleanLazarusSrcDir(fWorkingDir+PathDelim+'test');
+  CleanDir(fWorkingDir,false);
+  CleanDir(fWorkingDir+PathDelim+'examples');
+  CleanDir(fWorkingDir+PathDelim+'components');
+  CleanDir(fWorkingDir+PathDelim+'units');
+  CleanDir(fWorkingDir+PathDelim+'ide');
+  CleanDir(fWorkingDir+PathDelim+'packager');
+  CleanDir(fWorkingDir+PathDelim+'lcl');
+  CleanDir(fWorkingDir+PathDelim+'ideintf');
+  CleanDir(fWorkingDir+PathDelim+'tools');
+  CleanDir(fWorkingDir+PathDelim+'test');
 
   // clean config directory
-  CleanLazarusSrcDir(GetPrimaryConfigPath+PathDelim+'units');
+  CleanDir(GetPrimaryConfigPath+PathDelim+'units');
 
   // clean custom target directory
   if fProfile.TargetDirectory<>'' then begin
     s:=fProfile.GetParsedTargetDirectory(fMacros);
     if (s<>'') and DirPathExists(s) then
-      CleanLazarusSrcDir(s);
+      CleanDir(s);
   end;
+end;
+
+procedure TLazarusBuilder.CleanLazarusFallbackOutDir;
+begin
+
 end;
 
 procedure TLazarusBuilder.CheckRevisionInc;
@@ -458,7 +464,7 @@ begin
       if not CheckDirectoryWritable(fWorkingDir) then exit(mrCancel);
 
       if (IdeBuildMode=bmCleanAllBuild) and (not (blfOnlyIDE in Flags)) then
-        CleanAll;
+        CleanLazarusSrcDir;
 
       // call make to clean up
       if (IdeBuildMode=bmCleanBuild) or (blfOnlyIDE in Flags) then
@@ -763,7 +769,7 @@ begin
 
   // create apple bundle if needed
   //debugln(['CreateIDEMakeOptions NewTargetDirectory=',fTargetDir]);
-  if (fProfile.TargetPlatform in [lpCarbon,lpCocoa])
+  if (compareText(fProfile.TargetOS,'darwin')=0)
   and fOutputDirRedirected and DirectoryIsWritableCached(fTargetDir) then
   begin
     Result:=CreateAppleBundle;
