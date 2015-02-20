@@ -35,7 +35,8 @@ uses
   IDEWindowIntf, IDEOptionsIntf, IDECommands, IDEHelpIntf, ProjectIntf,
   CompOptsIntf, IDEDialogs, EnvironmentOpts, LazarusIDEStrConsts, EditorOptions,
   BuildModesManager, TransferMacros, project_save_options, Project,
-  ModeMatrixOpts, Compiler_ModeMatrix, Compiler_Other_Options;
+  ModeMatrixOpts, PackageDefs, PackageSystem, Compiler_ModeMatrix,
+  Compiler_Other_Options;
 
 type
   TIDEOptsDlgAction = (
@@ -127,6 +128,26 @@ implementation
 
 uses
   IDEContextHelpEdit;
+
+const
+  LazUtilsPkg = 'LazUtils';
+
+function HasLazUtilsDependency: Boolean;
+begin
+  Result := Assigned(Project1.FindDependencyByName('LCL'))
+         or Assigned(Project1.FindDependencyByName(LazUtilsPkg));
+end;
+
+procedure AddLazUtilsDependency;
+var
+  Dep: TPkgDependency;
+begin
+  if HasLazUtilsDependency then Exit;
+  Project1.AddPackageDependency(LazUtilsPkg);
+  Dep:=Project1.FindDependencyByName(LazUtilsPkg);
+  if Assigned(Dep) then
+    PackageGraph.OpenDependency(Dep,false);
+end;
 
 { TIDEOptionsDialog }
 
@@ -232,8 +253,9 @@ begin
   OtherOptions:=TCompilerOtherOptionsFrame(FindEditor(TCompilerOtherOptionsFrame));
   ModeMatrix:=TCompOptModeMatrixFrame(FindEditor(TCompOptModeMatrixFrame));
   if Assigned(OtherOptions) and Assigned(ModeMatrix) then
-    SetUtf8InRtlButton.Enabled :=
-      not (OtherOptions.HasSupportForUtf8Rtl and ModeMatrix.HasSupportForUtf8Rtl);
+    SetUtf8InRtlButton.Enabled := not (OtherOptions.HasSupportForUtf8Rtl
+                                     and ModeMatrix.HasSupportForUtf8Rtl
+                                     and HasLazUtilsDependency);
 end;
 
 procedure TIDEOptionsDialog.SetUtf8InRtlButtonClick(Sender: TObject);
@@ -248,6 +270,9 @@ begin
     OtherOptions.SupportUtf8Rtl;
     // Make FPC default string UTF-8. Assign UTF-8 backends for Ansi...() functions etc.
     ModeMatrix.SupportUtf8Rtl;
+    // Add dependency for LazUtils if the project does not have it yet.
+    AddLazUtilsDependency;
+    // Update GUI state and show message.
     UpdateUtf8RtlButtonState;
     ShowMessage(Format(lisThisBuildModeNowSetsUTF8InTheRTLFlagsAreInPagesOth, [
       LineEnding]));
