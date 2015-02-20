@@ -220,6 +220,8 @@ begin
   FActivating := True;
   try
     Assert(ControlCount = 0, 'THintWindow.ActivateRendered: ControlCount > 0');
+    if Caption<>AHint then
+      Invalidate;
     Caption := AHint;
     ActivateSub(Visible and (Caption <> AHint));
   finally

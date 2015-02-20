@@ -13426,8 +13426,8 @@ While CanFocus checks all control parents it does not check whether a form contr
       </element>
       <!-- variable Visibility: default -->
       <element name="THintInfo.ReshowTimeout">
-        <short/>
-        <descr/>
+        <short>If set to a value &gt;0 call after value milliseconds OnShowHint again</short>
+        <descr>Use this update the hint text while it is showing.</descr>
         <seealso/>
       </element>
       <!-- variable Visibility: default -->

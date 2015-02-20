@@ -213,7 +213,7 @@ begin
           //if a hint is visible immediately query the app to show a new hint...
           if FHintTimerType = ahttHideHint then
             ShowHintWindow(Info);
-          //...if there's no hint window visible at this point than schedule a new query
+          //...if there's no hint window visible at this point then schedule a new query
           if (FHintTimerType = ahttNone) or (FHintWindow = nil) or not FHintWindow.Visible then
             StartHintTimer(HintPause, ahttShowHint);
         end;
@@ -864,7 +864,10 @@ begin
     FHintWindow.ActivateHint(HintWinRect, HintInfo.HintStr);
     FHintRect := HintInfo.CursorRect;
     // start hide timer
-    StartHintTimer(HintInfo.HideTimeout,ahttHideHint);
+    if HintInfo.ReshowTimeout>0 then
+      StartHintTimer(HintInfo.ReshowTimeout,ahttReshowHint)
+    else
+      StartHintTimer(HintInfo.HideTimeout,ahttHideHint);
   end
   else
     HideHint;
@@ -912,7 +915,7 @@ begin
   {$endif}
   StopHintTimer;
   case FHintTimerType of
-    ahttShowHint:
+    ahttShowHint,ahttReshowHint:
       begin
         if not GetCursorPos(CursorPos) then
           HideHint
