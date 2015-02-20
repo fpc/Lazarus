@@ -176,7 +176,6 @@ type
     function CheckDirectoryWritable(Dir: string): boolean;
     procedure CleanDir(Dir: string; Recursive: boolean = true);
     procedure CleanLazarusSrcDir;
-    procedure CleanLazarusFallbackOutDir;
     procedure CheckRevisionInc;
     procedure RestoreBackup;
     // Methods used by SaveIDEMakeOptions :
@@ -329,11 +328,6 @@ begin
   end;
 end;
 
-procedure TLazarusBuilder.CleanLazarusFallbackOutDir;
-begin
-
-end;
-
 procedure TLazarusBuilder.CheckRevisionInc;
 var
   RevisionIncFile: String;
@@ -458,21 +452,40 @@ begin
     if Profile.TargetCPU<>'' then
       CmdLineParams+=' CPU_TARGET='+Profile.FPCTargetCPU+' CPU_SOURCE='+Profile.FPCTargetCPU;
 
+    // append extra Profile
+    fExtraOptions:='';
+    Result:=CreateIDEMakeOptions(Flags);
+    if Result<>mrOk then exit;
+
     fWorkingDir:=EnvironmentOptions.GetParsedLazarusDirectory;
+
     // clean up
     if (IdeBuildMode<>bmBuild) and (not (blfDontClean in Flags)) then begin
-      if not CheckDirectoryWritable(fWorkingDir) then exit(mrCancel);
 
+      if not fOutputDirRedirected then begin
+        // clean up Lazarus sources
+        if not CheckDirectoryWritable(fWorkingDir) then exit(mrCancel);
+
+        if (IdeBuildMode=bmCleanAllBuild) and (not (blfOnlyIDE in Flags)) then
+          CleanLazarusSrcDir;
+
+        // call make to clean up
+        if (IdeBuildMode=bmCleanBuild) or (blfOnlyIDE in Flags) then
+          Cmd:='cleanide'
+        else
+          Cmd:='cleanlaz';
+        Result:=Run(lisCleanLazarusSource);
+        if Result<>mrOk then exit;
+      end;
+
+      // when cleaning, always clean up fallback output directory too
       if (IdeBuildMode=bmCleanAllBuild) and (not (blfOnlyIDE in Flags)) then
-        CleanLazarusSrcDir;
-
-      // call make to clean up
-      if (IdeBuildMode=bmCleanBuild) or (blfOnlyIDE in Flags) then
-        Cmd:='cleanide'
-      else
-        Cmd:='cleanlaz';
-      Result:=Run(lisCleanLazarusSource);
-      if Result<>mrOk then exit;
+      begin
+        // clean up fallback package output directories
+        CleanDir(AppendPathDelim(GetPrimaryConfigPath)+'lib');
+      end;
+      // clean up fallback IDE output directory
+      CleanDir(AppendPathDelim(GetPrimaryConfigPath)+'units');
 
       ApplyCleanOnce;
     end;
@@ -485,10 +498,6 @@ begin
         Cmd:='idepkg'
       else
         Cmd:='cleanide ide';
-      // append extra Profile
-      fExtraOptions:='';
-      Result:=CreateIDEMakeOptions(Flags);
-      if Result<>mrOk then exit;
 
       if (not fOutputDirRedirected) and (not CheckDirectoryWritable(fWorkingDir)) then
         exit(mrCancel);
@@ -1091,7 +1100,7 @@ begin
     bmCleanBuild: CleanCommonRadioButton.Checked:=true;
     bmCleanAllBuild: CleanAllRadioButton.Checked:=true;
     end;
-    CleanCommonCheckBox.Checked := AProfile.IdeBuildMode=bmCleanBuild;
+    CleanCommonCheckBox.Checked := AProfile.IdeBuildMode=bmCleanAllBuild;
     CleanOnceCheckBox.Checked:=AProfile.CleanOnce;
     OptionsMemo.Lines.Assign(AProfile.OptionsLines);
     for i:=0 to DefinesListBox.Items.Count-1 do
@@ -1351,14 +1360,14 @@ end;
 
 procedure TConfigureBuildLazarusDlg.CleanRadioButtonClick(Sender: TObject);
 begin
-  CleanCommonCheckBox.Checked:=CleanCommonRadioButton.Checked;
+  CleanCommonCheckBox.Checked:=CleanAllRadioButton.Checked;
   DebugLn(['TConfigureBuildLazarusDlg.CleanRadioButtonClick: set CleanCommonCheckBox to ', CleanCommonRadioButton.Checked]);
 end;
 
 procedure TConfigureBuildLazarusDlg.CleanCommonCheckBoxClick(Sender: TObject);
 begin
   if CleanCommonCheckBox.Checked then
-    CleanCommonRadioButton.Checked:=True
+    CleanAllRadioButton.Checked:=True
   else
     CleanAutoRadioButton.Checked:=True;
   DebugLn(['TConfigureBuildLazarusDlg.CleanCommonCheckBoxClick: set CleanCommonRadioButton to ', CleanCommonCheckBox.Checked]);
