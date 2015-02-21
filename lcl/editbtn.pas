@@ -741,9 +741,11 @@ type
     FOnCustomDate: TCustomDateEvent;
     FOKCaption: TCaption;
     FCancelCaption: TCaption;
-    FDateFormat: string;
+    FFixedDateFormat: string; //used when DateOrder <> doNone
+    FFreeDateFormat: String;  //used when DateOrder = doNone
     FDate: TDateTime;
     FUpdatingDate: Boolean;
+    procedure SetFreeDateFormat(AValue: String);
     function TextToDate(AText: String; ADefault: TDateTime): TDateTime;
     function GetDate: TDateTime;
     procedure SetDate(Value: TDateTime);
@@ -775,6 +777,7 @@ type
     property ReadOnly;
     property DefaultToday: Boolean read FDefaultToday write FDefaultToday default False;
     Property DateOrder : TDateOrder Read FDateOrder Write SetDateOrder;
+    property DateFormat: String read FFreeDateFormat write SetFreeDateFormat;
     property ButtonOnlyWhenFocused;
     property ButtonCaption;
     property ButtonCursor;
@@ -2321,7 +2324,7 @@ end;
 
 function TDateEdit.GetDateFormat: string;
 begin
-  Result := FDateFormat;
+  Result := FFixedDateFormat;
 end;
 
 function TDateEdit.GetDefaultGlyph: TBitmap;
@@ -2393,21 +2396,21 @@ begin
     doNone :
        begin
        S:=''; // no mask
-       FDateFormat:='';
+       FFixedDateFormat:='';
        end;
     doDMY,
     doMDY  :
       begin
       S:='99/99/9999;1;_';
       if DateOrder=doMDY then
-        FDateFormat:='mm/dd/yyyy'
+        FFixedDateFormat:='mm/dd/yyyy'
       else
-        FDateFormat:='dd/mm/yyyy';
+        FFixedDateFormat:='dd/mm/yyyy';
       end;
     doYMD  :
       begin
       S:='9999/99/99;1;_';
-      FDateFormat:='yyyy/mm/dd';
+      FFixedDateFormat:='yyyy/mm/dd';
       end;
   end;
   D:=GetDate;
@@ -2641,19 +2644,39 @@ begin
 end;
 
 function TDateEdit.TextToDate(AText: String; ADefault: TDateTime): TDateTime;
+var
+  FS: TFormatSettings;
 begin
   if Assigned(FOnCustomDate) then
     FOnCustomDate(Self, AText);
   if (DateOrder = doNone) then
   begin
-    if not TryStrToDate(AText, Result) then
+    FS := DefaultFormatSettings;
+    if (FFreeDateFormat <> '') then
+      FS.ShortDateFormat := FFreeDateFormat;
+    if not TryStrToDate(AText, Result, FS) then
     begin
-      Result := ParseDateNoPredefinedOrder(AText, DefaultFormatSettings);
+      Result := ParseDateNoPredefinedOrder(AText, FS);
       if (Result = NullDate) then Result := ADefault;
     end;
   end
   else
     Result := ParseDate(AText,DateOrder,ADefault)
+end;
+
+procedure TDateEdit.SetFreeDateFormat(AValue: String);
+var
+  D: TDateTime;
+begin
+  if FFreeDateFormat = AValue then Exit;
+  if (Text <> '') and (FDateOrder = doNone) and (not (csDesigning in ComponentState)) then
+  begin
+    D := GetDate;
+    FFreeDateFormat := AValue;
+    SetDate(D); //will update the text
+  end
+  else
+    FFreeDateFormat := AValue;
 end;
 
 function TDateEdit.GetDate: TDateTime;
@@ -2727,15 +2750,22 @@ begin
 end;
 
 function TDateEdit.DateToText(Value: TDateTime): String;
+var
+  FS: TFormatSettings;
 begin
   if Value = NullDate then
     Result := ''
   else
   begin
-    if (FDateOrder = doNone) or (FDateFormat = '') then
-      Result := DateToStr(Value)
+    if (FDateOrder = doNone) or (FFixedDateFormat = '') then
+    begin
+      FS := DefaultFormatSettings;
+      if (FFreeDateFormat <> '') then
+        FS.ShortDateFormat := FFreeDateFormat;
+      Result := DateToStr(Value, FS)
+    end
     else
-      Result := FormatDateTime(FDateFormat, Value)
+      Result := FormatDateTime(FFixedDateFormat, Value)
   end;
 end;
 
