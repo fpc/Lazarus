@@ -7260,9 +7260,20 @@ begin
 
   Msg.SizeType := Msg.SizeType or Size_SourceIsInterface;
 
-  Msg.Width := Word(getWidth);
-  Msg.Height := Word(getHeight);
-  
+  {Mdichild sends size of minimized title, and that's bad, after restore client
+   rect is mismatched and provokes OnResize events.We are sending
+   to the LCL Width and Height of LCLObject so resize event won't trigger.
+   issue #27518}
+  if IsMDIChild and Assigned(LCLObject) and
+    (getWindowState and QtWindowMinimized <> 0) then
+  begin
+    Msg.Width := Word(LCLObject.Width);
+    Msg.Height := Word(LCLObject.Height);
+  end else
+  begin
+    Msg.Width := Word(getWidth);
+    Msg.Height := Word(getHeight);
+  end;
   DeliverMessage(Msg);
 end;
 
