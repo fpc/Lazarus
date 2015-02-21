@@ -2107,6 +2107,7 @@ begin
       or ((CursorPos.X>=InnerStart) and (InnerStart<=length(Line))
           and (CursorPos.X<=InnerStart+GetIdentLen(@Line[InnerStart])))
       then begin
+        // see fpc/compiler/scandir.pas
         AddKeyWord('Align');
         AddKeyWord('AlignAssertions');
         AddKeyWord('AsmMode');
@@ -2186,7 +2187,7 @@ begin
         AddKeyWord('Wait');
         AddKeyWord('Warning');
         AddKeyWord('Warnings');
-        AddKeyWord('WritableConst');
+        AddKeyWord('WriteableConst'); // unusual spelling in fpc
         AddKeyWord('ZeroBasedStrings');
       end else if InnerStart<=length(Line) then begin
         Directive:=lowercase(GetIdentifier(@Line[InnerStart]));
