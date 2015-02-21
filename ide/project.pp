@@ -3136,7 +3136,7 @@ begin
                            ProjectSessionStorageNames[SessionStorage],
                            ProjectSessionStorageNames[DefaultProjectSessionStorage]);
   // general properties
-  FXMLConfig.SetValue(Path+'General/MainUnit/Value', MainUnitID); // always write a value to support opening by older IDEs (<=0.9.28). This can be changed in a few released.
+  FXMLConfig.SetValue(Path+'General/MainUnit/Value', MainUnitID); // always write a value to support opening by older IDEs (<=0.9.28). This can be changed in a few releases.
   FXMLConfig.SetDeleteValue(Path+'General/AutoCreateForms/Value',
                            AutoCreateForms,true);
   FXMLConfig.SetDeleteValue(Path+'General/Title/Value', Title,'');

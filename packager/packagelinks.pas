@@ -154,7 +154,7 @@ type
       Event: TIteratePackagesEvent);
     procedure SetModified(const AValue: boolean);
     procedure SetQueueSaveUserLinks(AValue: boolean);
-    procedure OnAsyncSaveUserLinks(Data: PtrInt);
+    procedure OnAsyncSaveUserLinks({%H-}Data: PtrInt);
   public
     UserLinkLoadTime: longint;
     UserLinkLoadTimeValid: boolean;
