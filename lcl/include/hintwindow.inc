@@ -202,15 +202,13 @@ begin
   Result.CY := 25;
 end;
 
-procedure THintWindow.ActivateSub(InvalidateNeeded: Boolean);
+procedure THintWindow.ActivateSub;
 begin
   SetBounds(FHintRect.Left, FHintRect.Top,
             FHintRect.Right - FHintRect.Left, FHintRect.Bottom - FHintRect.Top);
   Visible := True;
   FAutoHideTimer.Enabled := False;
   FAutoHideTimer.Enabled := FAutoHide;
-  if InvalidateNeeded then
-    Invalidate;
 end;
 
 procedure THintWindow.ActivateHint(const AHint: String);
@@ -223,7 +221,7 @@ begin
     if Caption<>AHint then
       Invalidate;
     Caption := AHint;
-    ActivateSub(Visible and (Caption <> AHint));
+    ActivateSub;
   finally
     FActivating := False;
   end;
@@ -356,7 +354,8 @@ begin
   FActivating := True;
   try
     Assert(ControlCount > 0, 'THintWindowRendered.ActivateRendered: ControlCount = 0');
-    ActivateSub(True);
+    ActivateSub;
+    Invalidate;
   finally
     FActivating := False;
   end;

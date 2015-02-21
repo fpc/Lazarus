@@ -853,7 +853,7 @@ type
   protected
     class procedure WSRegisterClass; override;
     procedure WMNCHitTest(var Message: TLMessage); message LM_NCHITTEST;
-    procedure ActivateSub(InvalidateNeeded: Boolean);
+    procedure ActivateSub;
     procedure DoShowWindow; override;
     procedure UpdateRegion;
     procedure SetColor(Value: TColor); override;
