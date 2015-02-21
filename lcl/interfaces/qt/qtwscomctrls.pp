@@ -1579,6 +1579,9 @@ var
   TWI: QTreeWidgetItemH;
   Size: TSize;
   AIcon: QIconH;
+  IconRect: TRect;
+  i: Integer;
+  APixelMetric: Integer;
 begin
   if not WSCheckHandleAllocated(ALV, 'ItemDisplayRect') then
     Exit;
@@ -1595,21 +1598,31 @@ begin
     if (QTreeWidgetItem_columnCount(TWI) > 1) and (ASubItem >= 0) then
     begin
       Result := QtTreeWidget.visualItemRect(TWI);
-      Result.Left := QTreeView_columnViewportPosition(QTreeWidgeth(QtTreeWidget.Widget), ASubItem);
+      Result.Left := QTreeView_columnViewportPosition(QTreeWidgetH(QtTreeWidget.Widget), ASubItem);
       Result.Right := QtTreeWidget.ColWidth[ASubItem] + Result.Left;
     end else
     begin
       Result := QtTreeWidget.visualItemRect(TWI);
     end;
-    if ACode in [drLabel, drSelectBounds] then
-      Result.Right := Result.Left + QtTreeWidget.ColWidth[ASubItem]
-    else
-    if ACode in [drIcon] then
+
+    if ACode = drBounds then
     begin
+      QWidget_rect(QtTreeWidget.viewportWidget, @IconRect);
+      for i := ASubItem + 1 to QtTreeWidget.ColCount - 1 do
+        Result.Right += QtTreeWidget.ColWidth[i];
+      if Result.Right > IconRect.Right - IconRect.Left then
+        Result.Right := IconRect.Right - IconRect.Left;
+      exit;
+    end else
+    begin
+      IconRect := Result;
+      // always get icon size
       AIcon := QIcon_create();
       try
-        QTreeWidgetItem_icon(TWI, AIcon, 0);
-        if not QIcon_isNull(AIcon) then
+        QTreeWidgetItem_icon(TWI, AIcon, ASubItem);
+        if QIcon_isNull(AIcon) then
+          IconRect := Rect(Result.Left, Result.Top, Result.Left, Result.Top)
+        else
         begin
           Size.cx := 0;
           Size.cy := 0;
@@ -1617,24 +1630,35 @@ begin
           if (Size.cx = 0) or (Size.cy = 0) then
           begin
             if Assigned(TCustomListViewHack(ALV).SmallImages) then
-              Result.Right := Result.Left + TCustomListViewHack(ALV).SmallImages.Width;
+              IconRect.Right := IconRect.Left + TCustomListViewHack(ALV).SmallImages.Width;
           end else
           begin
-            Result.Right := Result.Left + Size.cx;
-            Result.Bottom := Result.Top + Size.cy;
-          end;
-        end else
-        begin
-          if QtTreeWidget.OwnerData then
-          begin
-            if Assigned(TCustomListViewHack(ALV).SmallImages) then
-              Result.Right := Result.Left + TCustomListViewHack(ALV).SmallImages.Width;
+            IconRect.Right := IconRect.Left + Size.cx;
+            IconRect.Bottom := IconRect.Top + Size.cy;
           end;
         end;
       finally
         QIcon_destroy(AIcon);
       end;
     end;
+
+    APixelMetric := QStyle_pixelMetric(QApplication_style(), QStylePM_FocusFrameHMargin, nil, QtTreeWidget.Widget);
+    IconRect.Left += APixelMetric;
+    IconRect.Right += APixelMetric;
+
+    if ACode = drLabel then
+    begin
+      inc(Result.Left, APixelMetric + (IconRect.Right - IconRect.Left));
+      if (IconRect.Right - IconRect.Left > 0) then
+        Result.Left += APixelMetric;
+    end else
+    if ACode = drSelectBounds then
+    begin
+      Result.Left += APixelMetric;
+      Result.Right := Result.Left + (QtTreeWidget.ColWidth[ASubItem] - APixelMetric);
+    end else
+    if ACode in [drIcon] then
+      Result := IconRect;
   end;
 end;
 
