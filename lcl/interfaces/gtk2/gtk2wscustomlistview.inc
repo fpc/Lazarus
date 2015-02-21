@@ -1105,7 +1105,7 @@ class function TGtk2WSCustomListView.ItemDisplayRect(const ALV: TCustomListView;
   ACode: TDisplayCode): TRect;
 var
   Widgets: PTVWidgets;
-  ItemRect: TGdkRectangle;
+  ItemRect, IconRect: TGdkRectangle;
   Column: PGtkTreeViewColumn;
   Path: PGtkTreePath;
   X, Y, L, T, W, H: GInt;
@@ -1140,16 +1140,26 @@ begin
           inc(ItemRect.y, H);
         end;
 
-        if (ACode = drIcon) and not TLVHack(ALV).OwnerDraw then
+        if (ACode in [drIcon, drLabel]) and not TLVHack(ALV).OwnerDraw then
         begin
+          IconRect := ItemRect;
           APGList := gtk_tree_view_column_get_cell_renderers(gtk_tree_view_get_column(PGtkTreeView(MainView), 0));
           pixrenderer := PGtkCellRenderer(g_list_last(APGList)^.prev^.data);
           gtk_cell_renderer_get_fixed_size(pixrenderer, @AWidth, @AHeight);
           if AWidth > 0 then
-            ItemRect.Width := AWidth - 2;
+            IconRect.Width := AWidth - 2;
           if AHeight > 0 then
-            ItemRect.Height := AHeight - 2;
+            IconRect.Height := AHeight - 2;
           g_list_free(APGList);
+          if ACode = drIcon then
+            ItemRect := IconRect
+          else
+          begin
+            ItemRect.x += IconRect.width + IconRect.x + 2;
+            ItemRect.y += 2; // offset
+            ItemRect.Width -= IconRect.Width + 2;
+            ItemRect.height -= 2; // offset
+          end;
         end;
 
       end
