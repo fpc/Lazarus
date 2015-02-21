@@ -916,7 +916,7 @@ end;
 
 function TSynHighlighterAttributes.GetFrameEdgesStored: boolean;
 begin
-  Result := FrameEdges = FFrameEdgesDefault;
+  Result := FrameEdges <> FFrameEdgesDefault;
 end;
 
 function TSynHighlighterAttributes.GetFrameStyleStored: boolean;
