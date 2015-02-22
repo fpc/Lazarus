@@ -1591,6 +1591,49 @@ begin
     QtListWidget := TQtListWidget(ALV.Handle);
     LWI := QtListWidget.getItem(AIndex);
     Result := QtListWidget.getVisualItemRect(LWI);
+    if TCustomListViewHack(ALV).ViewStyle = vsList then
+    begin
+      if ACode in [drBounds, drSelectBounds] then
+        exit;
+      APixelMetric := QStyle_pixelMetric(QApplication_style(), QStylePM_FocusFrameHMargin, nil, QtListWidget.Widget);
+      IconRect := Result;
+      // always get icon size
+      AIcon := QIcon_create();
+      try
+        QListWidgetItem_icon(LWI, AIcon);
+        if QIcon_isNull(AIcon) then
+          IconRect := Rect(Result.Left, Result.Top, Result.Left, Result.Top)
+        else
+        begin
+          Size.cx := 0;
+          Size.cy := 0;
+          QIcon_actualSize(AIcon, @Size, @Size);
+          if (Size.cx = 0) or (Size.cy = 0) then
+          begin
+            if Assigned(TCustomListViewHack(ALV).SmallImages) then
+              IconRect.Right := IconRect.Left + TCustomListViewHack(ALV).SmallImages.Width;
+          end else
+          begin
+            IconRect.Right := IconRect.Left + Size.cx;
+            IconRect.Bottom := IconRect.Top + Size.cy;
+          end;
+        end;
+      finally
+        QIcon_destroy(AIcon);
+      end;
+
+      IconRect.Left += APixelMetric;
+      IconRect.Right += APixelMetric;
+
+      if ACode = drLabel then
+      begin
+        inc(Result.Left, APixelMetric + (IconRect.Right - IconRect.Left));
+        if (IconRect.Right - IconRect.Left > 0) then
+          Result.Left += APixelMetric;
+      end else
+      if ACode in [drIcon] then
+        Result := IconRect;
+    end;
   end else
   begin
     QtTreeWidget := TQtTreeWidget(ALV.Handle);
