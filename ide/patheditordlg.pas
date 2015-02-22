@@ -266,10 +266,13 @@ begin
   UpdateButtons;
 end;
 
-procedure TPathEditorDialog.DirectoryEditAcceptDirectory(Sender: TObject;
-  var Value: String);
+procedure TPathEditorDialog.DirectoryEditAcceptDirectory(Sender: TObject; var Value: String);
 begin
   DirectoryEdit.Text := BaseRelative(Value);
+  {$IFDEF LCLCarbon}
+  // Not auto-called on Mac. ToDo: fix it in the component instead of here.
+  DirectoryEdit.OnChange(nil);
+  {$ENDIF}
 end;
 
 procedure TPathEditorDialog.DeleteInvalidPathsButtonClick(Sender: TObject);

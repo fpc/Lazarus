@@ -166,7 +166,7 @@ end;
 
 procedure TProjectIcon.WriteToProjectFile(AConfig: TObject; Path: String);
 begin
-  TXMLConfig(AConfig).SetDeleteValue(Path+'General/Icon/Value', BoolToStr(IsEmpty), BoolToStr(true));
+  TXMLConfig(AConfig).SetDeleteValue(Path+'General/Icon/Value', BoolToStr(IsEmpty), BoolToStr(false));
 end;
 
 procedure TProjectIcon.ReadFromProjectFile(AConfig: TObject; Path: String);
