@@ -184,6 +184,8 @@ type
                        PkgLink: TPackageLink; ShowAbort: boolean): TModalResult;
     function DeleteAmbiguousFiles(const Filename: string): TModalResult;
     procedure AddMessage(TheUrgency: TMessageLineUrgency; const Msg, Filename: string);
+    function CheckAmbiguousInterPkgFiles(IDEObject: TObject;
+      PkgList: TFPList): TModalResult;
     function OutputDirectoryIsWritable(APackage: TLazPackage; Directory: string;
                                        Verbose: boolean): boolean;
     function GetPackageCompilerParams(APackage: TLazPackage): string;
@@ -828,6 +830,114 @@ begin
     IDEMessagesWindow.AddCustomMessage(TheUrgency,Msg,Filename)
   else
     DebugLn(['TLazPackageGraph.AddMessage ',MessageLineUrgencyNames[TheUrgency],' Msg="',Msg,'" Filename="',Filename,'"']);
+end;
+
+function TLazPackageGraph.CheckAmbiguousInterPkgFiles(IDEObject: TObject;
+  PkgList: TFPList): TModalResult;
+{ Scan all source and output directories (Note: they are already cached, because
+  this method is called after the checks if a compile is needed).
+  Report strange ppu files and duplicate file names.
+
+  IDEObject can be a TProject, TLazPackage or TLazPackageGraph(building IDE)
+  PkgList is list of TLazPackage
+}
+type
+  TOwnerInfo = record
+    Owner: TObject;
+    HasOptionUr: boolean;
+    CompOptions: TBaseCompilerOptions;
+    SrcDirs: string; // unitpath without inherited
+    IncDirs: string; // incpath without inherited and without SrcDirs
+    UnitOutDir: string;
+  end;
+  POwnerInfo = ^TOwnerInfo;
+var
+  OwnerInfos: array of TOwnerInfo;
+  TargetOS: String;
+  TargetCPU: String;
+  LCLWidgetType: String;
+  FilenameToOwner: TFilenameToPointerTree;
+  ShortFilenameToFileNode: TFilenameToPointerTree;
+  UnitnameToFileNode: TFilenameToPointerTree;
+
+  procedure InitOwnerInfo(OwnerInfo: POwnerInfo; TheOwner: TObject);
+  var
+    LazDir: String;
+    CustomOptions: String;
+    p: Integer;
+  begin
+    FillByte(OwnerInfo^,SizeOf(TOwnerInfo),0);
+    OwnerInfo^.Owner:=TheOwner;
+    if TheOwner is TLazPackage then
+      OwnerInfo^.CompOptions:=TLazPackage(TheOwner).LazCompilerOptions as TBaseCompilerOptions
+    else if TheOwner is TLazProject then
+      OwnerInfo^.CompOptions:=TLazProject(TheOwner).LazCompilerOptions as TBaseCompilerOptions
+    else if TheOwner=Self then begin
+      // building IDE
+      LazDir:=AppendPathDelim(EnvironmentOptions.GetParsedLazarusDirectory);
+      OwnerInfo^.SrcDirs:=LazDir+'ide'
+        +';'+LazDir+'debugger'
+        +';'+LazDir+'packager'
+        +';'+LazDir+'designer'
+        +';'+LazDir+'converter';
+      OwnerInfo^.IncDirs:=OwnerInfo^.SrcDirs
+        +';'+LazDir+'ide'+PathDelim+'include'+PathDelim+TargetOS
+        +';'+LazDir+'ide'+PathDelim+'include'+PathDelim+GetDefaultSrcOSForTargetOS(TargetOS);
+      OwnerInfo^.UnitOutDir:=LazDir+'units'+PathDelim+TargetCPU+'-'+TargetOS+PathDelim+LCLWidgetType;
+    end;
+    if OwnerInfo^.CompOptions<>nil then begin
+      OwnerInfo^.SrcDirs:=OwnerInfo^.CompOptions.GetPath(
+                                    pcosUnitPath,icoNone,false,coptParsed,true);
+      OwnerInfo^.IncDirs:=OwnerInfo^.CompOptions.GetPath(
+                                 pcosIncludePath,icoNone,false,coptParsed,true);
+      OwnerInfo^.UnitOutDir:=OwnerInfo^.CompOptions.GetUnitOutputDirectory(false);
+      CustomOptions:=OwnerInfo^.CompOptions.ParsedOpts.GetParsedValue(pcosCustomOptions);
+      p:=1;
+      OwnerInfo^.HasOptionUr:=FindNextFPCParameter(CustomOptions,'-Ur',p)>0;
+    end;
+    OwnerInfo^.IncDirs:=RemoveSearchPaths(OwnerInfo^.IncDirs,OwnerInfo^.SrcDirs);
+  end;
+
+  procedure CollectFiles(OwnerInfo: POwnerInfo);
+  begin
+    // ToDo: find all unit and include files in src, inc and out dirs
+  end;
+
+var
+  i: Integer;
+begin
+  Result:=mrOk;
+  if (PkgList=nil) or (PkgList.Count=0) then exit;
+  FilenameToOwner:=TFilenameToPointerTree.Create(false);
+  ShortFilenameToFileNode:=TFilenameToPointerTree.Create(true);
+  UnitnameToFileNode:=TFilenameToPointerTree.Create(true);
+  try
+    // get target OS, CPU and LCLWidgetType
+    TargetOS:='$(TargetOS)';
+    GlobalMacroList.SubstituteStr(TargetOS);
+    if TargetOS='' then TargetOS:=GetCompiledTargetOS;
+    TargetCPU:='$(TargetCPU)';
+    GlobalMacroList.SubstituteStr(TargetCPU);
+    if TargetCPU='' then TargetCPU:=GetCompiledTargetCPU;
+    LCLWidgetType:='$(LCLWidgetType)';
+    GlobalMacroList.SubstituteStr(LCLWidgetType);
+    if LCLWidgetType='' then LCLWidgetType:=LCLPlatformDirNames[GetDefaultLCLWidgetType];
+
+    // get search paths
+    SetLength(OwnerInfos,PkgList.Count+1);
+    InitOwnerInfo(@OwnerInfos[0],IDEObject);
+    for i:=1 to PkgList.Count do
+      InitOwnerInfo(@OwnerInfos[i],TObject(PkgList[i-1]));
+
+    // collect files
+    for i:=0 to length(OwnerInfos)-1 do
+      CollectFiles(@OwnerInfos[i]);
+  finally
+    UnitnameToFileNode.Free;
+    ShortFilenameToFileNode.Free;
+    FilenameToOwner.Tree.FreeAndClear;
+    FilenameToOwner.Free;
+  end;
 end;
 
 function TLazPackageGraph.OutputDirectoryIsWritable(APackage: TLazPackage;
@@ -3642,6 +3752,9 @@ begin
           BuildItems.Remove(BuildItem);
         end;
       end;
+
+      Result:=CheckAmbiguousInterPkgFiles(FirstDependency.Owner,PkgList);
+      if Result<>mrOk then exit;
 
       // add tool dependencies
       for i:=0 to BuildItems.Count-1 do begin
