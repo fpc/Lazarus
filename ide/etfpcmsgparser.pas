@@ -27,7 +27,7 @@ unit etFPCMsgParser;
 
 {$mode objfpc}{$H+}
 
-{$DEFINE VerboseFPCMsgUnitNotFound}
+{ $DEFINE VerboseFPCMsgUnitNotFound}
 
 interface
 
