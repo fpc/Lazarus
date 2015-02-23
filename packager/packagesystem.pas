@@ -3587,9 +3587,6 @@ var
   CurPkg: TLazPackage;
   BuildItem: TLazPkgGraphBuildItem;
   j: Integer;
-  {$IFDEF DisableGroupCompile}
-  Tool: TAbstractExternalTool;
-  {$ENDIF}
   aDependency: TPkgDependency;
   RequiredBuildItem: TLazPkgGraphBuildItem;
   Tool1: TAbstractExternalTool;
@@ -3632,13 +3629,9 @@ begin
       BuildItems:=TObjectList.Create(true);
       for i:=0 to PkgList.Count-1 do begin
         CurPkg:=TLazPackage(PkgList[i]);
-        {$IFDEF DisableGroupCompile}
-        BuildItem:=nil;
-        {$ELSE}
         BuildItem:=TLazPkgGraphBuildItem.Create(nil);
         BuildItem.LazPackage:=CurPkg;
         BuildItems.Add(BuildItem);
-        {$ENDIF}
         Result:=CompilePackage(CurPkg,Flags,false,BuildItem);
         if Result<>mrOk then exit;
 
@@ -3695,27 +3688,12 @@ begin
       if ToolGroup=nil then exit(mrOk);
 
       // execute
-      {$IFDEF DisableGroupCompile}
-      for i:=0 to BuildItems.Count-1 do begin
-        BuildItem:=TLazPkgGraphBuildItem(BuildItems[i]);
-        for j:=0 to BuildItem.Count-1 do begin
-          Tool:=BuildItem[j];
-          if Tool.Terminated then continue;
-          debugln(['TLazPackageGraph.CompileRequiredPackages ',Tool.Title]);
-          Tool.Execute;
-          Tool.WaitForExit;
-          if Tool.ErrorMessage<>'' then
-            exit(mrCancel);
-        end;
-      end;
-      {$ELSE}
       ToolGroup.Execute;
       ToolGroup.WaitForExit;
       if ToolGroup.ErrorMessage<>'' then begin
         debugln(['TLazPackageGraph.CompileRequiredPackages ERROR="',ToolGroup.ErrorMessage,'"']);
         exit(mrCancel);
       end;
-      {$ENDIF}
     finally
       FreeAndNil(ToolGroup);
       FreeAndNil(BuildItems);
