@@ -411,7 +411,7 @@ type
     property ShowWarn: Boolean read fShowWarn write SetShowWarn; // -vw
     property ShowNotes: Boolean read fShowNotes write SetShowNotes; // -vn
     property ShowHints: Boolean read fShowHints write SetShowHints; // -vh
-    property ShowGenInfo: Boolean read fShowGenInfo write SetShowGenInfo; // -vi
+    property ShowGenInfo: Boolean read fShowGenInfo write SetShowGenInfo; deprecated; // -vi, always needed to resolve filenames in fpc messages without path
     property ShowLineNum: Boolean read fShowLineNum write SetShowLineNum; // -vl
     property ShowAll: Boolean read fShowAll write SetShowAll; // -va
     property ShowDebugInfo: Boolean read fShowDebugInfo write SetShowDebugInfo; // -vd

@@ -50,7 +50,7 @@ begin
     Items.Add(dlgShowUsedFiles + ' (-vu)');
     Items.Add(dlgShowHint + ' (-vh)');
     Items.Add(dlgShowTriedFiles + ' (-vt)');
-    Items.Add(dlgShowGeneralInfo + ' (-vi)');
+    //Items.Add(dlgShowGeneralInfo + ' (-vi)'); always passed, see compileroptions.pp
     Items.Add(dlgShowCompilingLineNumbers + ' (-vl)');
     Items.Add(dlgShowCompiledProcedures + ' (-vp)');
     Items.Add(dlgShowConditionals + ' (-vc)');
@@ -80,7 +80,6 @@ begin
     Checked[i] := ShowUsedFiles; i+=1;
     Checked[i] := ShowHints; i+=1;
     Checked[i] := ShowTriedFiles; i+=1;
-    Checked[i] := ShowGenInfo; i+=1;
     Checked[i] := ShowLineNum; i+=1;
     Checked[i] := ShowCompProc; i+=1;
     Checked[i] := ShowCond; i+=1;
@@ -109,8 +108,6 @@ begin
     ShowUsedFiles := Checked[i]; i+=1;
     ShowHints := Checked[i]; i+=1;
     ShowTriedFiles := Checked[i]; i+=1;
-    ShowGenInfo := Checked[i]; i+=1;
-    ShowLineNum := Checked[i]; i+=1;
     ShowCompProc := Checked[i]; i+=1;
     ShowCond := Checked[i]; i+=1;
     ShowAll := Checked[i]; i+=1;
