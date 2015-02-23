@@ -34,7 +34,7 @@ const
   // Version 2.1: ipcname string constant part may only contain A..Z, a..z, _
 type
   TRequestType = (rtFile, rtUrl, rtContext, rtMisc {window handling etc});
-  TMiscRequests = (mrShow, mrVersion, mrClose);
+  TMiscRequests = (mrShow, mrVersion, mrClose, mrBeginUpdate, mrEndUpdate);
 
   TLHelpResponse = (srError, srNoAnswer, srUnknown, srSuccess, srInvalidFile, srInvalidURL, srInvalidContext);
 
@@ -85,6 +85,10 @@ type
     function OpenContext(HelpFileName: String; Context: THelpContext): TLHelpResponse;
     // Opens HelpFileName by sending a TContextRequest
     function OpenFile(HelpFileName: String): TLHelpResponse;
+    // Send BeginUpdate through miscCommand
+    function BeginUpdate: TLHelpResponse;
+    // Send EndUpdate through miscCommand
+    function EndUpdate: TLHelpResponse;
     // Requests to run command on viewer by sending a TMiscrequest
     function RunMiscCommand(CommandID: TMiscRequests): TLHelpResponse;
     // Calling code can set this to process e.g. GUI handling while waiting for help to show
@@ -240,7 +244,10 @@ begin
     for X := 0 to 40 do
     begin
       // use fServerOut.ServerRunning here instead of Self.ServerRunning to avoid a race condition
-      if not fServerOut.ServerRunning then Sleep(200);
+      if not fServerOut.ServerRunning then
+        Sleep(200)
+      else
+        break;
     end;
   end;
   if fServerOut.ServerRunning then
@@ -331,6 +338,16 @@ begin
   finally
     Stream.Free;
   end;
+end;
+
+function TLHelpConnection.BeginUpdate: TLHelpResponse;
+begin
+  Result := RunMiscCommand(mrBeginUpdate);
+end;
+
+function TLHelpConnection.EndUpdate: TLHelpResponse;
+begin
+  Result := RunMiscCommand(mrEndUpdate);
 end;
 
 function TLHelpConnection.RunMiscCommand(CommandID: TMiscRequests): TLHelpResponse;

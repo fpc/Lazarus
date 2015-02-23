@@ -33,6 +33,7 @@ type
 
   TChmContentProvider = class(TFileContentProvider)
   private
+    fUpdateURI: String;
     fTabsControl: TPageControl;
       fContentsTab: TTabSheet;
        fContentsPanel: TPanel;
@@ -64,6 +65,8 @@ type
 
     function  MakeURI(AUrl: String; AChm: TChmReader): String;
 
+    procedure BeginUpdate; override;
+    procedure EndUpdate; override;
     procedure AddHistory(URL: String);
     procedure DoOpenChm(AFile: String; ACloseCurrent: Boolean = True);
     procedure DoCloseChm;
@@ -247,6 +250,26 @@ begin
   Result := ChmURI(AUrl, fChms.FileName[ChmIndex]);
 end;
 
+procedure TChmContentProvider.BeginUpdate;
+begin
+  inherited BeginUpdate;
+  fContentsTree.BeginUpdate;
+  fIndexView.BeginUpdate;
+end;
+
+procedure TChmContentProvider.EndUpdate;
+begin
+  inherited EndUpdate;
+  fContentsTree.EndUpdate;
+  fIndexView.EndUpdate;
+  if not IsUpdating then
+  begin
+    if fUpdateURI <> '' then
+      DoLoadUri(fUpdateURI);
+    fUpdateURI:='';
+  end;
+end;
+
 procedure TChmContentProvider.AddHistory(URL: String);
 begin
   if fHistoryIndex < fHistory.Count then
@@ -361,15 +384,25 @@ begin
     Uri := NewUrl;
   end;
 
-  fIsUsingHistory := True;
-  fHtml.OpenURL(Uri);
-  TIpChmDataProvider(fHtml.DataProvider).CurrentPath := ExtractFileDir(URI)+'/';
+  if not IsUpdating then
+  begin
 
-  AddHistory(Uri);
-  EndTime := Now;
+    fIsUsingHistory := True;
+    fHtml.OpenURL(Uri);
+    TIpChmDataProvider(fHtml.DataProvider).CurrentPath := ExtractFileDir(URI)+'/';
 
-  Time := INtToStr(DateTimeToTimeStamp(EndTime).Time - DateTimeToTimeStamp(StartTime).Time);
-  fStatusBar.SimpleText :='Loaded: '+Uri+' in '+ Time+'ms';
+    AddHistory(Uri);
+    EndTime := Now;
+
+    Time := INtToStr(DateTimeToTimeStamp(EndTime).Time - DateTimeToTimeStamp(StartTime).Time);
+    fStatusBar.SimpleText :='Loaded: '+Uri+' in '+ Time+'ms';
+
+  end
+  else
+  begin
+    // We are updating. Save this to load at end of update. or if there is already a request overwrite it so only the last is loaded
+    fUpdateURI:= Uri;
+  end;
 end;
 
 

@@ -82,10 +82,12 @@
       <Unit1>
         <Filename Value="chmdataprovider.pas"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="ChmDataProvider"/>
       </Unit1>
       <Unit2>
         <Filename Value="chmspecialparser.pas"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="ChmSpecialParser"/>
       </Unit2>
       <Unit3>
         <Filename Value="chmpopup.pas"/>
@@ -108,6 +110,7 @@
       <Unit6>
         <Filename Value="basecontentprovider.pas"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="BaseContentProvider"/>
       </Unit6>
       <Unit7>
         <Filename Value="chmcontentprovider.pas"/>

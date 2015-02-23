@@ -66,7 +66,7 @@ type
     // Sets label/ID used for simpleipc communications
     procedure SetHelpLabel(AValue: String);
     // Check for lhelp executable, if not present, build if possible
-    function CheckBuildLHelp: Integer; // modal result
+    function CheckBuildLHelp(AForce: Boolean = False): Integer; // modal result
     // Get full path of lazbuild executable
     function GetLazBuildEXE(out ALazBuild: String): Boolean;
     function PassTheBuck(Node: THelpNode; var ErrMsg: string): TShowHelpResult;
@@ -200,10 +200,11 @@ begin
     for i := 0 to SearchPaths.Count-1 do
     begin
       // Note: FindAllFiles has a SearchPath parameter that is a *single* directory,
-      SearchFiles := FindAllFiles(SearchPaths[i]);
+      SearchFiles := FindAllFiles(SearchPaths[i], '*.chm;*.CHM;*.Chm');
       CHMFiles.AddStrings(SearchFiles);
       SearchFiles.Free;
     end;
+    fHelpConnection.BeginUpdate;
     for i := 0 to CHMFiles.Count-1 do
     begin
       if UpperCase(ExtractFileExt(CHMFiles[i]))='.CHM' then
@@ -215,7 +216,9 @@ begin
         //Application.ProcessMessages;
       end;
     end;
+
   finally
+    fHelpConnection.EndUpdate;
     CHMFiles.Free;
     SearchPaths.Free;
   end;
@@ -307,7 +310,7 @@ begin
   end;
 end;
 
-function TChmHelpViewer.CheckBuildLHelp: Integer;
+function TChmHelpViewer.CheckBuildLHelp(AForce: Boolean): Integer;
 var
   Lazbuild: String;
   LHelpProject: String;
@@ -318,7 +321,7 @@ var
 begin
   Result := mrCancel;
 
-  if FileExistsUTF8(GetHelpExe) then
+  if FileExistsUTF8(GetHelpExe) and not AForce then
     Exit(mrOK);
 
   if not GetLazBuildEXE(Lazbuild) then
@@ -549,13 +552,33 @@ begin
     // This will allow cross-chm (LCL, FCL etc) searching and browsing in lhelp.
     if not(WasRunning) then
     begin
+      if fHelpConnection.BeginUpdate = srError then
+      begin
+        // existing lhelp doesn't understand mrBeginUpdate and needs to be rebuilt
+        //close lhelp
+        if fHelpConnection.RunMiscCommand(LHelpControl.mrClose) <> srError then
+        begin
+          // force rebuild of lhelp
+          // this may not succede but the old lhelp will be restarted anyway and
+          // just return error codes for unknown messages.
+          CheckBuildLHelp(True);
+          // start it again
+          fHelpConnection.StartHelpServer(HelpLabel, GetHelpExe, true);
+          // now run begin update
+          fHelpConnection.BeginUpdate; // it inc's a value so calling it more than once doesn't hurt
+        end;
+      end;
+
       OpenAllCHMsInSearchPath(SearchPath);
       // Instruct viewer to show its GUI
       Response:=fHelpConnection.RunMiscCommand(mrShow);
       if Response<>srSuccess then
         debugln('Help viewer gave error response to mrShow command. Response was: ord: '+inttostr(ord(Response)));
+      fHelpConnection.EndUpdate;
     end;
+    fHelpConnection.BeginUpdate;
     Response := fHelpConnection.OpenURL(FileName, Url);
+    fHelpConnection.EndUpdate;
   end
   else
   begin

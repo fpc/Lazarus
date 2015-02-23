@@ -18,10 +18,12 @@ type
     fParent: TWinControl;
     FTitle: String;
     FConfig: TXMLConfig;
+    FUpdateCount: Integer;
   protected
     fImageList: TImageList;
     function GetTitle: String; virtual;
     procedure SetTitle(const AValue: String); virtual;
+    function IsUpdating: Boolean;
   public
     function CanGoBack: Boolean; virtual; abstract;
     function CanGoForward: Boolean; virtual; abstract;
@@ -30,6 +32,8 @@ type
     procedure GoHome; virtual; abstract;
     procedure GoBack; virtual; abstract;
     procedure GoForward; virtual; abstract;
+    procedure BeginUpdate; virtual;
+    procedure EndUpdate; virtual;
     procedure LoadPreferences(ACfg: TXMLConfig); virtual;
     procedure SavePreferences({%H-}ACfg: TXMLConfig); virtual;
     class function GetProperContentProvider(const AURL: String): TBaseContentProviderClass; virtual; abstract;
@@ -96,6 +100,23 @@ begin
   FTitle := AValue;
   if Assigned(FOnTitleChange) then
     FOnTitleChange(Self);
+end;
+
+function TBaseContentProvider.IsUpdating: Boolean;
+begin
+  Result := FUpdateCount <> 0;
+end;
+
+procedure TBaseContentProvider.BeginUpdate;
+begin
+  Inc(FUpdateCount);
+end;
+
+procedure TBaseContentProvider.EndUpdate;
+begin
+  Dec(FUpdateCount);
+  if FUpdateCount < 0 then
+    FUpdateCount:=0;
 end;
 
 procedure TBaseContentProvider.LoadPreferences(ACfg: TXMLConfig);
