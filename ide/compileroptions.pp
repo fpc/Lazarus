@@ -1644,7 +1644,7 @@ begin
   ShowWarn := aXMLConfig.GetValue(p+'Verbosity/ShowWarn/Value', true);
   ShowNotes := aXMLConfig.GetValue(p+'Verbosity/ShowNotes/Value', true);
   ShowHints := aXMLConfig.GetValue(p+'Verbosity/ShowHints/Value', true);
-  ShowGenInfo := aXMLConfig.GetValue(p+'Verbosity/ShowGenInfo/Value', true);
+  ShowGenInfo {%H-}:= aXMLConfig.GetValue(p+'Verbosity/ShowGenInfo/Value', true);
   ShowLineNum := aXMLConfig.GetValue(p+'Verbosity/ShoLineNum/Value', false);
   ShowAll := aXMLConfig.GetValue(p+'Verbosity/ShowAll/Value', false);
   ShowDebugInfo := aXMLConfig.GetValue(p+'Verbosity/ShowDebugInfo/Value', false);
@@ -1827,7 +1827,7 @@ begin
   aXMLConfig.SetDeleteValue(p+'Verbosity/ShowWarn/Value', ShowWarn,true);
   aXMLConfig.SetDeleteValue(p+'Verbosity/ShowNotes/Value', ShowNotes,true);
   aXMLConfig.SetDeleteValue(p+'Verbosity/ShowHints/Value', ShowHints,true);
-  aXMLConfig.SetDeleteValue(p+'Verbosity/ShowGenInfo/Value', ShowGenInfo,true);
+  aXMLConfig.SetDeleteValue(p+'Verbosity/ShowGenInfo/Value', ShowGenInfo{%H-},true);
   aXMLConfig.SetDeleteValue(p+'Verbosity/ShoLineNum/Value', ShowLineNum,false);
   aXMLConfig.SetDeleteValue(p+'Verbosity/ShowAll/Value', ShowAll,false);
   aXMLConfig.SetDeleteValue(p+'Verbosity/ShowDebugInfo/Value', ShowDebugInfo,false);
@@ -2969,7 +2969,7 @@ begin
   EnableDisableVerbosityFlag(ShowWarn,'w');
   EnableDisableVerbosityFlag(ShowNotes,'n');
   EnableDisableVerbosityFlag(ShowHints,'h');
-  EnableDisableVerbosityFlag(ShowGenInfo,'i');
+  tempsw := tempsw + 'i'; // always pass -vi, needed to resolve filenames in fpc messages without path
   if ShowLineNum then
     tempsw := tempsw + 'l';
   if ShowDebugInfo then
@@ -2987,7 +2987,7 @@ begin
 
   if ShowAll or (ccloAddVerboseAll in Flags) then
     tempsw := 'a';
-  tempsw := tempsw + 'bq'; // full file names and message ids
+  tempsw := tempsw + 'bq'; // b = full file names, q = message ids
 
   if (tempsw <> '') then begin
     tempsw := '-v' + tempsw;
