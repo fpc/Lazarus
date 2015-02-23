@@ -407,7 +407,7 @@ type
     property UseExternalDbgSyms: Boolean read FUseExternalDbgSyms write SetUseExternalDbgSyms; // -Xg
 
     // messages:
-    property ShowErrors: Boolean read fShowErrors write SetShowErrors; // -ve
+    property ShowErrors: Boolean read fShowErrors write SetShowErrors; deprecated; // -ve, you cannot ignore errors
     property ShowWarn: Boolean read fShowWarn write SetShowWarn; // -vw
     property ShowNotes: Boolean read fShowNotes write SetShowNotes; // -vn
     property ShowHints: Boolean read fShowHints write SetShowHints; // -vh

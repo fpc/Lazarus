@@ -42,7 +42,6 @@ begin
     Caption := dlgVerbosity;
     AutoSize := True;
 
-    Items.Add(dlgCOShowErr + ' (-ve)');
     Items.Add(dlgShowWarnings + ' (-vw)');
     Items.Add(dlgShowNotes + ' (-vn)');
     Items.Add(dlgShowHint + ' (-vh)');
@@ -72,7 +71,6 @@ begin
   i:=0;
   with AOptions as TBaseCompilerOptions, grpVerbosity do
   begin
-    Checked[i] := ShowErrors;  i+=1;
     Checked[i] := ShowWarn; i+=1;
     Checked[i] := ShowNotes; i+=1;
     Checked[i] := ShowHints; i+=1;
@@ -100,7 +98,6 @@ begin
   i:=0;
   with AOptions as TBaseCompilerOptions, grpVerbosity do
   begin
-    ShowErrors := Checked[i]; i+=1;
     ShowWarn := Checked[i]; i+=1;
     ShowNotes := Checked[i]; i+=1;
     ShowHints := Checked[i]; i+=1;

@@ -1640,11 +1640,11 @@ begin
 
   { Messages }
   p:=Path+'Other/';
-  ShowErrors := aXMLConfig.GetValue(p+'Verbosity/ShowErrors/Value', true);
+  fShowErrors := aXMLConfig.GetValue(p+'Verbosity/ShowErrors/Value', true);
   ShowWarn := aXMLConfig.GetValue(p+'Verbosity/ShowWarn/Value', true);
   ShowNotes := aXMLConfig.GetValue(p+'Verbosity/ShowNotes/Value', true);
   ShowHints := aXMLConfig.GetValue(p+'Verbosity/ShowHints/Value', true);
-  ShowGenInfo {%H-}:= aXMLConfig.GetValue(p+'Verbosity/ShowGenInfo/Value', true);
+  fShowGenInfo := aXMLConfig.GetValue(p+'Verbosity/ShowGenInfo/Value', true);
   ShowLineNum := aXMLConfig.GetValue(p+'Verbosity/ShoLineNum/Value', false);
   ShowAll := aXMLConfig.GetValue(p+'Verbosity/ShowAll/Value', false);
   ShowDebugInfo := aXMLConfig.GetValue(p+'Verbosity/ShowDebugInfo/Value', false);
@@ -1823,11 +1823,11 @@ begin
 
   { Messages }
   p:=Path+'Other/';
-  aXMLConfig.SetDeleteValue(p+'Verbosity/ShowErrors/Value', ShowErrors,true);
+  aXMLConfig.SetDeleteValue(p+'Verbosity/ShowErrors/Value', fShowErrors,true);
   aXMLConfig.SetDeleteValue(p+'Verbosity/ShowWarn/Value', ShowWarn,true);
   aXMLConfig.SetDeleteValue(p+'Verbosity/ShowNotes/Value', ShowNotes,true);
   aXMLConfig.SetDeleteValue(p+'Verbosity/ShowHints/Value', ShowHints,true);
-  aXMLConfig.SetDeleteValue(p+'Verbosity/ShowGenInfo/Value', ShowGenInfo{%H-},true);
+  aXMLConfig.SetDeleteValue(p+'Verbosity/ShowGenInfo/Value', fShowGenInfo,true);
   aXMLConfig.SetDeleteValue(p+'Verbosity/ShoLineNum/Value', ShowLineNum,false);
   aXMLConfig.SetDeleteValue(p+'Verbosity/ShowAll/Value', ShowAll,false);
   aXMLConfig.SetDeleteValue(p+'Verbosity/ShowDebugInfo/Value', ShowDebugInfo,false);
@@ -2965,11 +2965,11 @@ begin
   tempsw := '';
   // the default fpc.cfg normally contains -viwn, if the user does not want
   // to see warning pass -vw-
-  EnableDisableVerbosityFlag(ShowErrors,'e');
+  tempsw := tempsw + 'e'; // always pass -ve, you cannot ignore errors
   EnableDisableVerbosityFlag(ShowWarn,'w');
   EnableDisableVerbosityFlag(ShowNotes,'n');
   EnableDisableVerbosityFlag(ShowHints,'h');
-  tempsw := tempsw + 'i'; // always pass -vi, needed to resolve filenames in fpc messages without path
+  tempsw := tempsw + 'i'; // always pass -vi, (e.g. (3104) Compiling) needed to resolve filenames in fpc messages without path
   if ShowLineNum then
     tempsw := tempsw + 'l';
   if ShowDebugInfo then
