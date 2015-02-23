@@ -176,7 +176,8 @@ type
           cpu_avr,                      { 12 }
           cpu_mipsel,                   { 13 }
           cpu_jvm,                      { 14 }
-          cpu_i8086                     { 15 }
+          cpu_i8086,                    { 15 }
+          cpu_aarch64                   { 16 }
     );
 
 const
@@ -196,7 +197,8 @@ const
      'avr',
      'mipsel',
      'jvm',
-     'i8086'
+     'i8086',
+     'a64'
      );
 
 // from ppu.pas
@@ -220,7 +222,8 @@ const
     { 12 } 16 {'avr'},
     { 13 } 32 {'mipsel'},
     { 14 } 32 {'jvm'},
-    { 15 } 16 {'i8086'}
+    { 15 } 16 {'i8086'},
+    { 16 } 64 {'aarch64'}
     );
   CpuAluBitSize : array[tsystemcpu] of longint =
     (
@@ -239,7 +242,8 @@ const
     { 12 }  8 {'avr'},
     { 13 } 32 {'mipsel'},
     { 14 } 64 {'jvm'},
-    { 15 } 16 {'i8086'}
+    { 15 } 16 {'i8086'},
+    { 16 } 64 {'aarch64'}
     );
 
 type
@@ -787,78 +791,97 @@ type
        { taken from systems.pas }
        ttarget =
        (
-        target_none,               { 0 }
-        obsolete_target_i386_GO32V1,{ 1 }
-        target_i386_GO32V2,        { 2 }
-        target_i386_linux,         { 3 }
-        target_i386_OS2,           { 4 }
-        target_i386_Win32,         { 5 }
-        target_i386_freebsd,       { 6 }
-        target_m68k_Amiga,         { 7 }
-        target_m68k_Atari,         { 8 }
-        target_m68k_Mac,           { 9 }
-        target_m68k_linux,         { 10 }
-        target_m68k_PalmOS,        { 11 }
-        target_alpha_linux,        { 12 }
-        target_powerpc_linux,      { 13 }
-        target_powerpc_macos,      { 14 }
-        target_i386_solaris,       { 15 }
-        target_i386_beos,          { 16 }
-        target_i386_netbsd,        { 17 }
-        target_m68k_netbsd,        { 18 }
-        target_i386_Netware,       { 19 }
-        target_i386_qnx,           { 20 }
-        target_i386_wdosx,         { 21 }
-        target_sparc_solaris,      { 22 }
-        target_sparc_linux,        { 23 }
-        target_i386_openbsd,       { 24 }
-        target_m68k_openbsd,       { 25 }
-        target_x86_64_linux,       { 26 }
-        target_powerpc_darwin,     { 27 }
-        target_i386_emx,           { 28 }
-        target_powerpc_netbsd,     { 29 }
-        target_powerpc_openbsd,    { 30 }
-        target_arm_linux,          { 31 }
-        target_i386_watcom,        { 32 }
-        target_powerpc_MorphOS,    { 33 }
-        target_x86_64_freebsd,     { 34 }
-        target_i386_netwlibc,      { 35 }
-        target_powerpc_Amiga,      { 36 }
-        target_x86_64_win64,       { 37 }
-        target_arm_wince,          { 38 }
-        target_ia64_win64,         { 39 }
-        target_i386_wince,         { 40 }
-        target_x86_6432_linux,     { 41 }
-        target_arm_gba,            { 42 }
-        target_powerpc64_linux,    { 43 }
-        target_i386_darwin,        { 44 }
-        target_arm_palmos,         { 45 }
-        target_powerpc64_darwin,   { 46 }
-        target_arm_nds,            { 47 }
-        target_i386_embedded,      { 48 }
-        target_m68k_embedded,      { 49 }
-        target_alpha_embedded,     { 50 }
-        target_powerpc_embedded,   { 51 }
-        target_sparc_embedded,     { 52 }
-        target_vm_embedded,        { 53 }
-        target_iA64_embedded,      { 54 }
-        target_x86_64_embedded,    { 55 }
-        target_mips_embedded,      { 56 }
-        target_arm_embedded,       { 57 }
-        target_powerpc64_embedded, { 58 }
-        target_i386_symbian,       { 59 }
-        target_arm_symbian,        { 60 }
-        target_x86_64_darwin,      { 61 }
-        target_avr_embedded,       { 62 }
-        target_i386_haiku,         { 63 }
-        target_arm_darwin,         { 64 }
-        target_x86_64_solaris,     { 65 }
-        target_mips_linux,         { 66 }
-        target_mipsel_linux,       { 67 }
-        target_i386_nativent,      { 68 }
-        target_i386_iphonesim      { 69 }
-       );
+        system_none,               { 0 }
+        obsolete_system_i386_GO32V1,{ 1 }
+        system_i386_GO32V2,        { 2 }
+        system_i386_linux,         { 3 }
+        system_i386_OS2,           { 4 }
+        system_i386_Win32,         { 5 }
+        system_i386_freebsd,       { 6 }
+        system_m68k_Amiga,         { 7 }
+        system_m68k_Atari,         { 8 }
+        system_m68k_Mac,           { 9 }
+        system_m68k_linux,         { 10 }
+        system_m68k_PalmOS,        { 11 }
+        system_alpha_linux,        { 12 }
+        system_powerpc_linux,      { 13 }
+        system_powerpc_macos,      { 14 }
+        system_i386_solaris,       { 15 }
+        system_i386_beos,          { 16 }
+        system_i386_netbsd,        { 17 }
+        system_m68k_netbsd,        { 18 }
+        system_i386_Netware,       { 19 }
+        system_i386_qnx,           { 20 }
+        system_i386_wdosx,         { 21 }
+        system_sparc_solaris,      { 22 }
+        system_sparc_linux,        { 23 }
+        system_i386_openbsd,       { 24 }
+        system_m68k_openbsd,       { 25 }
+        system_x86_64_linux,       { 26 }
+        system_powerpc_darwin,     { 27 }
+        system_i386_emx,           { 28 }
+        system_powerpc_netbsd,     { 29 }
+        system_powerpc_openbsd,    { 30 }
+        system_arm_linux,          { 31 }
+        system_i386_watcom,        { 32 }
+        system_powerpc_MorphOS,    { 33 }
+        system_x86_64_freebsd,     { 34 }
+        system_i386_netwlibc,      { 35 }
+        system_powerpc_Amiga,      { 36 }
+        system_x86_64_win64,       { 37 }
+        system_arm_wince,          { 38 }
+        system_ia64_win64,         { 39 }
+        system_i386_wince,         { 40 }
+        system_x86_6432_linux,     { 41 }
+        system_arm_gba,            { 42 }
+        system_powerpc64_linux,    { 43 }
+        system_i386_darwin,        { 44 }
+        system_arm_palmos,         { 45 }
+        system_powerpc64_darwin,   { 46 }
+        system_arm_nds,            { 47 }
+        system_i386_embedded,      { 48 }
+        system_m68k_embedded,      { 49 }
+        system_alpha_embedded,     { 50 }
+        system_powerpc_embedded,   { 51 }
+        system_sparc_embedded,     { 52 }
+        system_vm_embedded,        { 53 }
+        system_iA64_embedded,      { 54 }
+        system_x86_64_embedded,    { 55 }
+        system_mips_embedded,      { 56 }
+        system_arm_embedded,       { 57 }
+        system_powerpc64_embedded, { 58 }
+        system_i386_symbian,       { 59 }
+        system_arm_symbian,        { 60 }
+        system_x86_64_darwin,      { 61 }
+        system_avr_embedded,       { 62 }
+        system_i386_haiku,         { 63 }
+        system_arm_darwin,         { 64 }
+        system_x86_64_solaris,     { 65 }
+        system_mips_linux,         { 66 }
+        system_mipsel_linux,       { 67 }
+        system_i386_nativent,      { 68 }
+        system_i386_iphonesim,     { 69 }
+        system_powerpc_wii,        { 70 }
+        system_x86_64_openbsd,     { 71 }
+        system_x86_64_netbsd,      { 72 }
+        system_powerpc_aix,        { 73 }
+        system_powerpc64_aix,      { 74 }
+        system_jvm_java32,         { 75 }
+        system_jvm_android32,      { 76 }
+        system_arm_android,        { 77 }
+        system_i386_android,       { 78 }
+        system_i8086_msdos,        { 79 }
+        system_mipsel_android,     { 80 }
+        system_mipseb_embedded,    { 81 }
+        system_mipsel_embedded,    { 82 }
+        system_i386_aros,          { 83 }
+        system_x86_64_aros,        { 84 }
+        system_x86_64_dragonfly,   { 85 }
+        system_aarch64_darwin,     { 85 }
+        system_x86_64_iphonesim    { 86 }
+      );
 const
+  // taken form ppudump.pp
   Targets : array[ttarget] of string[18]=(
   { 0 }   'none',
   { 1 }   'GO32V1 (obsolete)',
@@ -929,7 +952,25 @@ const
   { 66 }  'Linux-MIPS',
   { 67 }  'Linux-MIPSel',
   { 68 }  'NativeNT-i386',
-  { 69 }  'iPhoneSim-i386'
+  { 69 }  'iPhoneSim-i386',
+  { 70 }  'Wii-powerpc',
+  { 71 }  'OpenBSD-x86-64',
+  { 72 }  'NetBSD-x86-64',
+  { 73 }  'AIX-powerpc',
+  { 74 }  'AIX-powerpc64',
+  { 75 }  'Java-JVM',
+  { 76 }  'Android-JVM',
+  { 77 }  'Android-arm',
+  { 78 }  'Android-i386',
+  { 79 }  'MSDOS-i8086',
+  { 80 }  'Android-MIPSel',
+  { 81 }  'Embedded-mipseb',
+  { 82 }  'Embedded-mipsel',
+  { 83 }  'AROS-i386',
+  { 84 }  'AROS-x86-64',
+  { 85 }  'DragonFly-x86-64',
+  { 85 }  'Darwin-AArch64',
+  { 86 }  'iPhoneSim-x86-64'
   );
 begin
   if w<=ord(high(ttarget)) then

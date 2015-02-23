@@ -1022,13 +1022,13 @@ begin
   with TargetCPUComboBox do begin
     with Items do begin
       Add(''); //('+rsiwpDefault+')');
+      Add('a64');
       Add('arm');
       Add('i386');
       Add('m68k');
       Add('powerpc');
       Add('sparc');
       Add('x86_64');
-      Add('i8086');
     end;
     ItemIndex:=0;
   end;
