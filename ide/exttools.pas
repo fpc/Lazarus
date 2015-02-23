@@ -1630,8 +1630,13 @@ begin
       StdErrLine:='';
       LastUpdate:=GetTickCount64;
       while (Tool<>nil) and (Tool.Stage=etsRunning) do begin
-        HasOutput:=ReadInputPipe(Tool.Process.Output,OutputLine)
-                or ReadInputPipe(Tool.Process.Stderr,StdErrLine);
+        if Tool.ReadStdOutBeforeErr then begin
+          HasOutput:=ReadInputPipe(Tool.Process.Output,OutputLine)
+                  or ReadInputPipe(Tool.Process.Stderr,StdErrLine);
+        end else begin
+          HasOutput:=ReadInputPipe(Tool.Process.Stderr,StdErrLine)
+                  or ReadInputPipe(Tool.Process.Output,OutputLine);
+        end;
         if (not HasOutput) then begin
           // no more pending output
           if not Tool.Process.Running then break;

@@ -447,6 +447,7 @@ type
     FFreeData: boolean;
     FGroup: TExternalToolGroup;
     FHint: string;
+    FReadStdOutBeforeErr: boolean;
     FResolveMacrosOnExecute: boolean;
     FThread: TThread;
     FWorkerDirectory: string;
@@ -530,6 +531,7 @@ type
     property Terminated: boolean read FTerminated;
     property ExitStatus: integer read FExitStatus write FExitStatus;
     property ErrorMessage: string read FErrorMessage write FErrorMessage; // error executing tool
+    property ReadStdOutBeforeErr: boolean read FReadStdOutBeforeErr write FReadStdOutBeforeErr;
 
     // output
     property WorkerOutput: TStrings read FWorkerOutput; // the raw output
