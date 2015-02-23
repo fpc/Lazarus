@@ -10,7 +10,7 @@ object CompilerVerbosityOptionsFrame: TCompilerVerbosityOptionsFrame
   DesignTop = 187
   object grpVerbosity: TCheckGroup
     Left = 0
-    Height = 476
+    Height = 478
     Top = 0
     Width = 697
     Align = alClient
@@ -23,14 +23,13 @@ object CompilerVerbosityOptionsFrame: TCompilerVerbosityOptionsFrame
     ChildSizing.ShrinkHorizontal = crsScaleChilds
     ChildSizing.ShrinkVertical = crsScaleChilds
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
-    ChildSizing.ControlsPerLine = 2
-    Columns = 2
+    ChildSizing.ControlsPerLine = 1
     TabOrder = 0
   end
   object grpErrorCnt: TGroupBox
     Left = 0
-    Height = 56
-    Top = 482
+    Height = 54
+    Top = 484
     Width = 697
     Align = alBottom
     AutoSize = True
