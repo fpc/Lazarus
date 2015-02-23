@@ -1484,6 +1484,7 @@ For example:
 
   Mac OS X linker example:
   ld: framework not found Cocoas
+  Note: this comes in stderr, so it might be some lines after corresponding stdout
 
   Multiline Mac OS X linker example:
   Undefined symbols:
@@ -1504,10 +1505,8 @@ var
   i: Integer;
   MsgLine: TMessageLine;
 begin
-  // find message "Linking ..."
+  // add all skipped lines in front of the linking error
   i:=Tool.WorkerMessages.Count-1;
-  while (i>=0) and (Tool.WorkerMessages[i].MsgID<>FPCMsgIDLinking) do
-    dec(i);
   if i<0 then exit;
   MsgLine:=Tool.WorkerMessages[i];
   for i:=MsgLine.OutputIndex+1 to fOutputIndex-1 do begin
