@@ -3161,7 +3161,7 @@ begin
       s+='Parameters:'+LineEnding;
       s+=Proc.Parameters.Text+LineEnding;
       s+='Command Line:'+LineEnding;
-      s+=Tool.Process.Executable+' '+Tool.CmdLineParams+LineEnding;
+      s+=Tool.Process.Executable+' '+Tool.CmdLineParams+LineEnding+LineEnding;
       s+='ProcessID:'+LineEnding+IntToStr(Proc.ProcessID)+LineEnding+LineEnding;
       if Tool.Terminated then
         s+='Terminated'+LineEnding+LineEnding
@@ -3187,8 +3187,8 @@ begin
       Name:='Memo';
       Lines.Text:=s;
       Align:=alClient;
-      WordWrap:=false;
-      ScrollBars:=ssBoth;
+      WordWrap:=true; // carbon requires this and it is a good idea in general
+      ScrollBars:=ssVertical;
       ReadOnly:=true;
       Parent:=Form;
     end;
