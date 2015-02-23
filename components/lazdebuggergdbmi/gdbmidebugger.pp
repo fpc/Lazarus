@@ -122,6 +122,9 @@ type
   TGDBMIUseNoneMiRunCmdsState = (
     gdnmNever, gdnmAlways, gdnmFallback
   );
+  TGDBMIWarnOnSetBreakpointError = (
+    gdbwNone, gdbwAll, gdbwUserBreakPoint, gdbwExceptionsAndRunError
+  );
 
   { TGDBMIDebuggerPropertiesBase }
 
@@ -140,7 +143,7 @@ type
     FTimeoutForEval: Integer;
     FUseAsyncCommandMode: Boolean;
     FUseNoneMiRunCommands: TGDBMIUseNoneMiRunCmdsState;
-    FWarnOnSetBreakpointError: Boolean;
+    FWarnOnSetBreakpointError: TGDBMIWarnOnSetBreakpointError;
     FWarnOnInternalError: Boolean;
     FWarnOnTimeOut: Boolean;
     procedure SetMaxDisplayLengthForString(AValue: Integer);
@@ -171,8 +174,8 @@ type
              write FDisableLoadSymbolsForLibraries default False;
     property DisableForcedBreakpoint: Boolean read FDisableForcedBreakpoint
              write FDisableForcedBreakpoint default False;
-    property WarnOnSetBreakpointError: Boolean read FWarnOnSetBreakpointError
-             write FWarnOnSetBreakpointError default True;
+    property WarnOnSetBreakpointError: TGDBMIWarnOnSetBreakpointError read FWarnOnSetBreakpointError
+             write FWarnOnSetBreakpointError default gdbwAll;
   end;
 
   TGDBMIDebuggerProperties = class(TGDBMIDebuggerPropertiesBase)
@@ -191,6 +194,8 @@ type
     property UseAsyncCommandMode;
     property UseNoneMiRunCommands;
     property DisableLoadSymbolsForLibraries;
+    property DisableForcedBreakpoint;
+    property WarnOnSetBreakpointError;
   end;
 
   TGDBMIDebugger = class;
@@ -5314,9 +5319,10 @@ begin
     FTheDebugger.FBreakErrorBreak.SetByAddr(Self);
     FTheDebugger.FRunErrorBreak.SetByAddr(Self);
 {$ENDIF}
-    if not (FTheDebugger.FExceptionBreak.IsBreakSet and
+    if (not (FTheDebugger.FExceptionBreak.IsBreakSet and
             FTheDebugger.FBreakErrorBreak.IsBreakSet and
-            FTheDebugger.FRunErrorBreak.IsBreakSet)
+            FTheDebugger.FRunErrorBreak.IsBreakSet)) and
+       (DebuggerProperties.WarnOnSetBreakpointError in [gdbwAll, gdbwExceptionsAndRunError])
     then
       Include(FTheDebugger.FDebuggerFlags, dfSetBreakFailed);
 
@@ -7390,7 +7396,7 @@ begin
   FDisableLoadSymbolsForLibraries := False;
   FUseNoneMiRunCommands := gdnmFallback;
   FDisableForcedBreakpoint := False;
-  FWarnOnSetBreakpointError := True;
+  FWarnOnSetBreakpointError := gdbwAll;
   inherited;
 end;
 
@@ -9319,10 +9325,13 @@ begin
     bpkSource, bpkAddress:
       begin
         ResultList.SetPath('bkpt');
-        if (not Result) or (r.State = dsError) then
+        if (not Result) or (r.State = dsError) and
+           (DebuggerProperties.WarnOnSetBreakpointError in [gdbwAll, gdbwUserBreakPoint])
+        then
           Include(FTheDebugger.FDebuggerFlags, dfSetBreakFailed);
-        if (ResultList.IndexOf('pending') >= 0) or
-           (pos('pend', lowercase(ResultList.Values['addr'])) > 0)
+        if ((ResultList.IndexOf('pending') >= 0) or
+            (pos('pend', lowercase(ResultList.Values['addr'])) > 0)) and
+           (DebuggerProperties.WarnOnSetBreakpointError in [gdbwAll, gdbwUserBreakPoint])
         then
           Include(FTheDebugger.FDebuggerFlags, dfSetBreakPending);
       end;
