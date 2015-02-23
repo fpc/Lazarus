@@ -19,7 +19,7 @@
  ***************************************************************************
 
   Author: Marius
-  Modified by Juha Manninen
+  Modified by Juha Manninen, Balazs Szekely
 
   Abstract:
     A dialog to quickly find components and to add the found component
@@ -33,7 +33,7 @@ interface
 
 uses
   Classes, SysUtils, LCLType, Forms, Controls, Graphics, StdCtrls, ExtCtrls,
-  ComCtrls, ButtonPanel, LazarusIDEStrConsts, ComponentReg,
+  ComCtrls, ButtonPanel, Menus, LazarusIDEStrConsts, ComponentReg,
   PackageDefs, IDEImagesIntf, TreeFilterEdit, fgl;
 
 type
@@ -43,23 +43,34 @@ type
   { TComponentListForm }
 
   TComponentListForm = class(TForm)
+    imPalette: TImageList;
     ListTree: TTreeView;
     ButtonPanel: TButtonPanel;
+    MenuItem1: TMenuItem;
+    miCollapse: TMenuItem;
+    miCollapseAll: TMenuItem;
+    miExpand: TMenuItem;
+    miExpandAll: TMenuItem;
     OKButton: TPanelBitBtn;
     LabelSearch: TLabel;
     PageControl: TPageControl;
     FilterPanel: TPanel;
-    Panel5: TPanel;
+    PalletteTree: TTreeView;
+    pnPaletteTree: TPanel;
     Panel6: TPanel;
     Panel7: TPanel;
+    pmPalette: TPopupMenu;
+    TabSheetPaletteTree: TTabSheet;
     TabSheetInheritance: TTabSheet;
     TabSheetList: TTabSheet;
-    TabSheetPaletteTree: TTabSheet;
     InheritanceTree: TTreeView;
-    PalletteTree: TTreeView;
     TreeFilterEd: TTreeFilterEdit;
     procedure FormActivate(Sender: TObject);
     procedure FormShow(Sender: TObject);
+    procedure miCollapseAllClick(Sender: TObject);
+    procedure miCollapseClick(Sender: TObject);
+    procedure miExpandAllClick(Sender: TObject);
+    procedure miExpandClick(Sender: TObject);
     procedure OKButtonClick(Sender: TObject);
     procedure ComponentsDblClick(Sender: TObject);
     procedure ComponentsClick(Sender: TObject);
@@ -113,7 +124,7 @@ begin
 
   ListTree.Images:=IDEImages.Images_24;
   InheritanceTree.Images:=ListTree.Images;
-  PalletteTree.Images:=ListTree.Images;
+  PalletteTree.Images:= imPalette;
   PrevPageIndex := -1;
   PageControl.ActivePage := TabSheetList;
   if Assigned(IDEComponentPalette) then
@@ -253,7 +264,9 @@ var
   Comps: TStringList;
   Comp: TRegisteredComponent;
   ParentNode: TTreeNode;
+  ANode: TTreeNode;
   i, j: Integer;
+  CurIcon: TCustomBitmap;
 begin
   if [csDestroying,csLoading]*ComponentState<>[] then exit;
   Screen.Cursor := crHourGlass;
@@ -281,7 +294,15 @@ begin
         // Flat list item
         ListTree.Items.AddChildObject(Nil, Comps[j], Comp);
         // Palette layout item
-        PalletteTree.Items.AddChildObject(ParentNode, Comps[j], Comp);
+        ANode := PalletteTree.Items.AddChildObject(ParentNode, Comps[j], Comp);
+        CurIcon := nil;
+        if (Comp is TPkgComponent) then
+          CurIcon := TPkgComponent(Comp).Icon;
+        if CurIcon <> nil then
+        begin
+          ANode.ImageIndex := imPalette.Add(CurIcon, nil);
+          ANode.SelectedIndex := ANode.ImageIndex;
+        end;
         // Component inheritence item
         DoComponentInheritence(Comp);
       end;
@@ -430,6 +451,40 @@ begin
     FKeepSelected := True;
     Close;
   end;
+end;
+
+procedure TComponentListForm.miCollapseAllClick(Sender: TObject);
+begin
+  PalletteTree.FullCollapse;
+end;
+
+procedure TComponentListForm.miCollapseClick(Sender: TObject);
+var
+  Node: TTreeNode;
+begin
+  Node := PalletteTree.Selected;
+  if Node = nil then
+    Exit;
+  if Node.Level > 0 then
+    Node := Node.Parent;
+  Node.Collapse(True);
+end;
+
+procedure TComponentListForm.miExpandAllClick(Sender: TObject);
+begin
+  PalletteTree.FullExpand;
+end;
+
+procedure TComponentListForm.miExpandClick(Sender: TObject);
+var
+  Node: TTreeNode;
+begin
+  Node := PalletteTree.Selected;
+  if Node = nil then
+    Exit;
+  if Node.Level > 0 then
+    Node := Node.Parent;
+  Node.Expand(True);
 end;
 
 end.
