@@ -55,7 +55,6 @@ begin
     Items.Add(dlgShowCompiledProcedures + ' (-vp)');
     Items.Add(dlgShowEverything + ' (-va)');
     Items.Add(dlgWriteFPCLogo + ' (-l)');
-    Items.Add(dlgShowSummary + ' ' + dlgPOIconDescNone);
     Items.Add(dlgHintsUnused + ' ' + dlgPOIconDescNone);
     Items.Add(dlgHintsParameterSenderNotUsed + ' ' + dlgPOIconDescNone);
   end;
@@ -83,7 +82,6 @@ begin
     Checked[i] := ShowCompProc; i+=1;
     Checked[i] := ShowAll; i+=1;
     Checked[i] := WriteFPCLogo; i+=1;
-    Checked[i] := ShowSummary; i+=1;
     Checked[i] := ShowHintsForUnusedUnitsInMainSrc; i+=1;
     Checked[i] := ShowHintsForSenderNotUsed; i+=1;
 
@@ -110,9 +108,8 @@ begin
     ShowCompProc := Checked[i]; i+=1;
     ShowAll := Checked[i]; i+=1;
     WriteFPCLogo := Checked[i]; i+=1;
-    ShowHintsForSenderNotUsed := Checked[i]; i+=1;
     ShowHintsForUnusedUnitsInMainSrc := Checked[i]; i+=1;
-    ShowSummary := Checked[i]; i+=1;
+    ShowHintsForSenderNotUsed := Checked[i]; i+=1;
 
     StopAfterErrCount := StrToIntDef(edtErrorCnt.Text, 1);
   end;

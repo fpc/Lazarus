@@ -420,7 +420,7 @@ type
     property ShowCompProc: Boolean read fShowCompProc write SetShowCompProc; // -vp
     property ShowCond: Boolean read fShowCond write SetShowCond; // -vc
     property ShowExecInfo: Boolean read fShowExecInfo write SetShowExecInfo; // -vx
-    property ShowSummary: Boolean read FShowSummary write SetShowSummary;
+    property ShowSummary: Boolean read FShowSummary write SetShowSummary; deprecated; // summary is now always shown (in the header)
     property ShowHintsForUnusedUnitsInMainSrc: Boolean
       read fShowHintsForUnusedUnitsInMainSrc write SetShowHintsForUnusedUnitsInMainSrc;
     property ShowHintsForSenderNotUsed: Boolean
