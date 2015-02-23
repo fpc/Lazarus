@@ -1640,11 +1640,11 @@ begin
 
   { Messages }
   p:=Path+'Other/';
-  ShowErrors := aXMLConfig.GetValue(p+'Verbosity/ShowErrors/Value', true);
+  fShowErrors := aXMLConfig.GetValue(p+'Verbosity/ShowErrors/Value', true);
   ShowWarn := aXMLConfig.GetValue(p+'Verbosity/ShowWarn/Value', true);
   ShowNotes := aXMLConfig.GetValue(p+'Verbosity/ShowNotes/Value', true);
   ShowHints := aXMLConfig.GetValue(p+'Verbosity/ShowHints/Value', true);
-  ShowGenInfo {%H-}:= aXMLConfig.GetValue(p+'Verbosity/ShowGenInfo/Value', true);
+  fShowGenInfo := aXMLConfig.GetValue(p+'Verbosity/ShowGenInfo/Value', true);
   ShowLineNum := aXMLConfig.GetValue(p+'Verbosity/ShoLineNum/Value', false);
   ShowAll := aXMLConfig.GetValue(p+'Verbosity/ShowAll/Value', false);
   ShowDebugInfo := aXMLConfig.GetValue(p+'Verbosity/ShowDebugInfo/Value', false);
@@ -1653,7 +1653,7 @@ begin
   ShowCompProc := aXMLConfig.GetValue(p+'Verbosity/ShowCompProc/Value', false);
   ShowCond := aXMLConfig.GetValue(p+'Verbosity/ShowCond/Value', false);
   ShowExecInfo := aXMLConfig.GetValue(p+'Verbosity/ShowExecInfo/Value', false);
-  ShowSummary := aXMLConfig.GetValue(p+'Verbosity/ShowSummary/Value', false);
+  fShowSummary := aXMLConfig.GetValue(p+'Verbosity/ShowSummary/Value', false);
   ShowHintsForUnusedUnitsInMainSrc := aXMLConfig.GetValue(p+'Verbosity/ShowHintsForUnusedUnitsInMainSrc/Value', false);
   ShowHintsForSenderNotUsed := aXMLConfig.GetValue(p+'Verbosity/ShowHintsForSenderNotUsed/Value', false);
   WriteFPCLogo := aXMLConfig.GetValue(p+'WriteFPCLogo/Value', true);
@@ -1823,11 +1823,11 @@ begin
 
   { Messages }
   p:=Path+'Other/';
-  aXMLConfig.SetDeleteValue(p+'Verbosity/ShowErrors/Value', ShowErrors,true);
+  aXMLConfig.SetDeleteValue(p+'Verbosity/ShowErrors/Value', fShowErrors,true);
   aXMLConfig.SetDeleteValue(p+'Verbosity/ShowWarn/Value', ShowWarn,true);
   aXMLConfig.SetDeleteValue(p+'Verbosity/ShowNotes/Value', ShowNotes,true);
   aXMLConfig.SetDeleteValue(p+'Verbosity/ShowHints/Value', ShowHints,true);
-  aXMLConfig.SetDeleteValue(p+'Verbosity/ShowGenInfo/Value', ShowGenInfo{%H-},true);
+  aXMLConfig.SetDeleteValue(p+'Verbosity/ShowGenInfo/Value', fShowGenInfo,true);
   aXMLConfig.SetDeleteValue(p+'Verbosity/ShoLineNum/Value', ShowLineNum,false);
   aXMLConfig.SetDeleteValue(p+'Verbosity/ShowAll/Value', ShowAll,false);
   aXMLConfig.SetDeleteValue(p+'Verbosity/ShowDebugInfo/Value', ShowDebugInfo,false);
@@ -1836,7 +1836,7 @@ begin
   aXMLConfig.SetDeleteValue(p+'Verbosity/ShowCompProc/Value', ShowCompProc,false);
   aXMLConfig.SetDeleteValue(p+'Verbosity/ShowCond/Value', ShowCond,false);
   aXMLConfig.SetDeleteValue(p+'Verbosity/ShowExecInfo/Value', ShowExecInfo,false);
-  aXMLConfig.SetDeleteValue(p+'Verbosity/ShowSummary/Value', ShowSummary,false);
+  aXMLConfig.SetDeleteValue(p+'Verbosity/ShowSummary/Value', fShowSummary,false);
   aXMLConfig.SetDeleteValue(p+'Verbosity/ShowHintsForUnusedUnitsInMainSrc/Value', ShowHintsForUnusedUnitsInMainSrc,false);
   aXMLConfig.SetDeleteValue(p+'Verbosity/ShowHintsForSenderNotUsed/Value', ShowHintsForSenderNotUsed,false);
   aXMLConfig.SetDeleteValue(p+'WriteFPCLogo/Value', WriteFPCLogo,true);
@@ -2965,11 +2965,11 @@ begin
   tempsw := '';
   // the default fpc.cfg normally contains -viwn, if the user does not want
   // to see warning pass -vw-
-  EnableDisableVerbosityFlag(ShowErrors,'e');
+  tempsw := tempsw + 'e'; // always pass -ve, you cannot ignore errors
   EnableDisableVerbosityFlag(ShowWarn,'w');
   EnableDisableVerbosityFlag(ShowNotes,'n');
   EnableDisableVerbosityFlag(ShowHints,'h');
-  tempsw := tempsw + 'i'; // always pass -vi, needed to resolve filenames in fpc messages without path
+  tempsw := tempsw + 'i'; // always pass -vi, (e.g. (3104) Compiling) needed to resolve filenames in fpc messages without path
   if ShowLineNum then
     tempsw := tempsw + 'l';
   if ShowDebugInfo then

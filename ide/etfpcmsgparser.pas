@@ -42,6 +42,7 @@ uses
   etMakeMsgParser;
 
 const
+  FPCMsgIDCompiling = 3104;
   FPCMsgIDLogo = 11023;
   FPCMsgIDCantFindUnitUsedBy = 10022;
   FPCMsgIDLinking = 9015;
@@ -1141,8 +1142,6 @@ begin
 end;
 
 function TIDEFPCParser.CheckForCompilingState(p: PChar): boolean;
-const
-  FPCMsgIDCompiling = 3104;
 var
   OldP: PChar;
   AFilename: string;

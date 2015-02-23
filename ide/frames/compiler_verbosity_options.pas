@@ -42,7 +42,6 @@ begin
     Caption := dlgVerbosity;
     AutoSize := True;
 
-    Items.Add(dlgCOShowErr + ' (-ve)');
     Items.Add(dlgShowWarnings + ' (-vw)');
     Items.Add(dlgShowNotes + ' (-vn)');
     Items.Add(dlgShowHint + ' (-vh)');
@@ -56,7 +55,6 @@ begin
     Items.Add(dlgShowCompiledProcedures + ' (-vp)');
     Items.Add(dlgShowEverything + ' (-va)');
     Items.Add(dlgWriteFPCLogo + ' (-l)');
-    Items.Add(dlgShowSummary + ' ' + dlgPOIconDescNone);
     Items.Add(dlgHintsUnused + ' ' + dlgPOIconDescNone);
     Items.Add(dlgHintsParameterSenderNotUsed + ' ' + dlgPOIconDescNone);
   end;
@@ -72,7 +70,6 @@ begin
   i:=0;
   with AOptions as TBaseCompilerOptions, grpVerbosity do
   begin
-    Checked[i] := ShowErrors;  i+=1;
     Checked[i] := ShowWarn; i+=1;
     Checked[i] := ShowNotes; i+=1;
     Checked[i] := ShowHints; i+=1;
@@ -85,7 +82,6 @@ begin
     Checked[i] := ShowCompProc; i+=1;
     Checked[i] := ShowAll; i+=1;
     Checked[i] := WriteFPCLogo; i+=1;
-    Checked[i] := ShowSummary; i+=1;
     Checked[i] := ShowHintsForUnusedUnitsInMainSrc; i+=1;
     Checked[i] := ShowHintsForSenderNotUsed; i+=1;
 
@@ -100,7 +96,6 @@ begin
   i:=0;
   with AOptions as TBaseCompilerOptions, grpVerbosity do
   begin
-    ShowErrors := Checked[i]; i+=1;
     ShowWarn := Checked[i]; i+=1;
     ShowNotes := Checked[i]; i+=1;
     ShowHints := Checked[i]; i+=1;
@@ -113,9 +108,8 @@ begin
     ShowCompProc := Checked[i]; i+=1;
     ShowAll := Checked[i]; i+=1;
     WriteFPCLogo := Checked[i]; i+=1;
-    ShowHintsForSenderNotUsed := Checked[i]; i+=1;
     ShowHintsForUnusedUnitsInMainSrc := Checked[i]; i+=1;
-    ShowSummary := Checked[i]; i+=1;
+    ShowHintsForSenderNotUsed := Checked[i]; i+=1;
 
     StopAfterErrCount := StrToIntDef(edtErrorCnt.Text, 1);
   end;
