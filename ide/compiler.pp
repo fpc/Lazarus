@@ -151,16 +151,19 @@ type
   // A set of options. A combination of chars or numbers following the option char.
   TCompilerOptSet = class(TCompilerOptGroup)
   private
+    fCommonIndent: integer; // Common indentation for this group fixed during parse.
     function SetNumberOpt(aValue: string): Boolean;
     function SetBooleanOpt(aValue: string): Boolean;
   protected
     procedure AddOptions(aDescr: string; aIndent: integer);
     procedure ParseEditKind; override;
   public
-    constructor Create(aOwnerReader: TCompilerOptReader; aOwnerGroup: TCompilerOptGroup);
+    constructor Create(aOwnerReader: TCompilerOptReader;
+      aOwnerGroup: TCompilerOptGroup; aCommonIndent: integer);
     destructor Destroy; override;
     function CollectSelectedOptions(aUseComments: Boolean): string;
     procedure SelectOptions(aOptStr: string);
+    property CommonIndent: integer read fCommonIndent write fCommonIndent;
   end;
 
   { TCompilerOptReader }
@@ -465,12 +468,12 @@ begin
   fIndentation := aIndent;
   // Separate the actual option and description from each other
   if aDescr[1] <> '-' then
-    raise Exception.Create('Option description does not start with "-"');
+    raise Exception.CreateFmt('Option "%s" does not start with "-"', [aDescr]);
   i := 1;
-  while (i < Length(aDescr)) and (aDescr[i] <> ' ') do
+  while (i <= Length(aDescr)) and (aDescr[i] <> ' ') do
     Inc(i);
   fOption := Copy(aDescr, 1, i-1);
-  while (i < Length(aDescr)) and (aDescr[i] = ' ') do
+  while (i <= Length(aDescr)) and (aDescr[i] = ' ') do
     Inc(i);
   fDescription := Copy(aDescr, i, Length(aDescr));
   i := Length(fOption);
@@ -752,9 +755,11 @@ end;
 
 { TCompilerOptSet }
 
-constructor TCompilerOptSet.Create(aOwnerReader: TCompilerOptReader; aOwnerGroup: TCompilerOptGroup);
+constructor TCompilerOptSet.Create(aOwnerReader: TCompilerOptReader;
+  aOwnerGroup: TCompilerOptGroup; aCommonIndent: integer);
 begin
   inherited Create(aOwnerReader, aOwnerGroup);
+  fCommonIndent := aCommonIndent;
 end;
 
 destructor TCompilerOptSet.Destroy;
@@ -1112,8 +1117,8 @@ function TCompilerOptReader.ParseH(aLines: TStringList): TModalResult;
 const
   OptSetId = 'a combination of';
 var
-  i, ThisInd, NextInd: Integer;
-  ThisLine, NextLine: String;
+  i, ThisInd, NextInd, OptSetInd: Integer;
+  ThisLine: String;
   Opt: TCompilerOpt;
   LastGroup, SubGroup: TCompilerOptGroup;
   GroupItems: TStrings;
@@ -1126,6 +1131,12 @@ begin
     ThisLine := StringReplace(aLines[i],'-Agas-darwinAssemble','-Agas-darwin Assemble',[]);
     ThisInd := CalcIndentation(ThisLine);
     ThisLine := Trim(ThisLine);
+    if LastGroup is TCompilerOptSet then
+    begin                  // Fix strangely split line indents in options groups.
+      OptSetInd := TCompilerOptSet(LastGroup).CommonIndent;
+      if (ThisLine[1] <> '-') and (ThisInd > OptSetInd) then
+        ThisInd := OptSetInd;
+    end;
     // Top header line for compiler version, check only once.
     if (fFpcVersion = '') and ReadVersion(ThisLine) then Continue;
     if ThisInd < 2 then Continue;
@@ -1133,23 +1144,18 @@ begin
     or (ThisLine[1] = '@')
     or (Pos('-? ', ThisLine) > 0)
     or (Pos('-h ', ThisLine) > 0) then Continue;
-    if i < aLines.Count-1 then begin
-      NextLine := aLines[i+1];
-      NextInd := CalcIndentation(aLines[i+1]);
-    end
-    else begin
-      NextLine := '';
+    if i < aLines.Count-1 then
+      NextInd := CalcIndentation(aLines[i+1])
+    else
       NextInd := -1;
-    end;
     if NextInd > ThisInd then
     begin
-      if (LastGroup is TCompilerOptSet)
-      and ((Pos('  v : ', NextLine) > 0) or (NextInd > 30)) then
-        // A hack to deal with split lined in the help output.
-        NextInd := ThisInd
+      if LastGroup is TCompilerOptSet then
+        NextInd := TCompilerOptSet(LastGroup).CommonIndent
       else begin
         if Pos(OptSetId, ThisLine) > 0 then       // Header for sets
-          LastGroup := TCompilerOptSet.Create(Self, LastGroup)
+          // Hard-code indent to NextInd, for strangely split lines later in help output.
+          LastGroup := TCompilerOptSet.Create(Self, LastGroup, NextInd)
         else                                      // Group header for options
           LastGroup := TCompilerOptGroup.Create(Self, LastGroup);
         LastGroup.ParseOption(ThisLine, ThisInd);
@@ -1158,7 +1164,7 @@ begin
     if NextInd <= ThisInd then
     begin
       // This is an option
-      if (LastGroup is TCompilerOptSet) then      // Add it to a set (may add many)
+      if LastGroup is TCompilerOptSet then      // Add it to a set (may add many)
         TCompilerOptSet(LastGroup).AddOptions(ThisLine, ThisInd)
       else begin
         if IsGroup(ThisLine, GroupItems) then
