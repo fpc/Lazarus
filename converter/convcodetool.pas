@@ -308,26 +308,29 @@ var
   s: string;
 begin
   Result:=false;
-  if fCTLink.CodeTool=nil then exit;
-  CleanPos:=1;
-  // find $R directive
-  with fCTLink.CodeTool do begin
-    if Scanner=nil then exit;
+  with fCTLink do begin
+    if CodeTool=nil then exit;
+    CleanPos:=1;
+    // find $R directive
+    if CodeTool.Scanner=nil then exit;
     repeat
-      CleanPos:=FindNextCompilerDirectiveWithName(Src, CleanPos, 'R',
-                                                  Scanner.NestedComments, ParamPos);
-      if (CleanPos<1) or (CleanPos>SrcLen) or (ParamPos>SrcLen-6) then break;
+      CleanPos:=FindNextCompilerDirectiveWithName(Code.Source, CleanPos, 'R',
+                                      CodeTool.Scanner.NestedComments, ParamPos);
+      if (CleanPos<1) or (CleanPos>CodeTool.SrcLen)
+                      or (ParamPos>CodeTool.SrcLen-6) then break;
       NewKey:='';
-      if (Src[CleanPos]='{') and
-         (Src[ParamPos]='*') and (Src[ParamPos+1]='.') and (Src[ParamPos+5]='}')
-      then begin
-        Key:=copy(Src,ParamPos+2,3);
+      if (Code.Source[CleanPos]='{')
+      and (Code.Source[ParamPos]='*')
+      and (Code.Source[ParamPos+1]='.')
+      and (Code.Source[ParamPos+5]='}') then
+      begin
+        Key:=copy(Code.Source, ParamPos+2, 3);
         LowKey:=LowerCase(Key);
         // Form file resource rename or lowercase:
         if (LowKey='dfm') or (LowKey='xfm') then begin
-          if Assigned(fCTLink.Settings) and fCTLink.Settings.SupportDelphi then begin
+          if Assigned(Settings) and Settings.SupportDelphi then begin
             // Use the same dfm file. Lowercase existing key.
-            if fCTLink.Settings.SameDfmFile then begin
+            if Settings.SameDfmFile then begin
               if Key<>LowKey then
                 NewKey:=LowKey;
             end
@@ -338,7 +341,8 @@ begin
                  '{$ELSE}'+LineEnding+
                  '  {$R *.lfm}'+LineEnding+
                  '{$ENDIF}';
-              if not fCTLink.SrcCache.Replace(gtNone,gtNone,CleanPos,ParamPos+6,s) then exit;
+              if not SrcCache.ReplaceEx(gtNone, gtNone, CleanPos, ParamPos+5,
+                                        Code, CleanPos, ParamPos+6, s) then exit;
             end;
           end
           else       // Change .dfm to .lfm.
@@ -351,15 +355,18 @@ begin
               if Key='RES' then
                 NewKey:=LowKey;
             raDelete:        // Make it a comment by adding a dot (.)
-              if not fCTLink.SrcCache.Replace(gtNone,gtNone,CleanPos,CleanPos+1,'{.') then exit;
+              if not SrcCache.ReplaceEx(gtNone, gtNone, CleanPos, CleanPos+1,
+                                        Code, CleanPos, CleanPos+1, '{.') then exit;
           end;
         end;
         // Change a single resource name.
         if NewKey<>'' then
-          if not fCTLink.SrcCache.Replace(gtNone,gtNone,ParamPos+2,ParamPos+5,NewKey) then exit;
+          if not SrcCache.ReplaceEx(gtNone, gtNone, ParamPos+2, ParamPos+5,
+                                    Code, ParamPos+2, ParamPos+5, NewKey) then exit;
       end;
-      CleanPos:=FindCommentEnd(Src, CleanPos, Scanner.NestedComments);
+      CleanPos:=FindCommentEnd(Code.Source, CleanPos, CodeTool.Scanner.NestedComments);
     until false;
+    //SrcCache.Apply;
   end;
   Result:=true;
 end;
