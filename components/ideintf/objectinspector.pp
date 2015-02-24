@@ -969,6 +969,7 @@ begin
     Enabled:=false;
     AutoSize:=true;    // SetBounds does not work for CheckBox, AutoSize does.
     Parent:=Self;
+    Top := -30;
     OnMouseDown := @ValueControlMouseDown;
     OnMouseMove := @ValueControlMouseMove;
     OnExit:=@ValueCheckBoxExit;
@@ -1642,7 +1643,8 @@ begin
     ValueCheckBox.State:=cbGrayed
   else if NewValue='(True)' then
     ValueCheckBox.State:=cbChecked
-  else
+  // Note: this condition can be removed when the right propedit is used always.
+  else if NewValue='(False)' then
     ValueCheckBox.State:=cbUnchecked;
 end;
 
