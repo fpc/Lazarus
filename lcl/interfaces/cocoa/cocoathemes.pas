@@ -336,7 +336,10 @@ function TCocoaThemeServices.DrawTreeviewElement(DC: TCocoaContext;
 var
   ButtonDrawInfo: HIThemeButtonDrawInfo;
   LabelRect: HIRect;
-  b: TCocoaBrush;
+  lBrush: TCocoaBrush;
+  lOldBrush: HBRUSH;
+  lPen: TCocoaPen;
+  lOldPen: HGDIOBJ;
   lColor: NSColor;
   lPoints: array of TPoint;
 begin
@@ -351,14 +354,14 @@ begin
         TREIS_SELECTEDNOTFOCUS: lColor := ColorToNSColor(ColorToRGB(clBtnFace));
         TREIS_HOTSELECTED: lColor := ColorToNSColor(ColorToRGB(clHighlight));
       end;
-      b := TCocoaBrush.Create(lColor, False);
-      DC.Rectangle(R.Left, R.Top, R.Right, R.Bottom, True, b);
-      b.Free;
+      lBrush := TCocoaBrush.Create(lColor, False);
+      DC.Rectangle(R.Left, R.Top, R.Right, R.Bottom, True, lBrush);
+      lBrush.Free;
     end;
     TVP_GLYPH, TVP_HOTGLYPH:
     begin
       // HIThemeDrawButton exists only in 32-bits and there is no Cocoa alternative =(
-      {$define CocoaUseHITheme}
+      {.$define CocoaUseHITheme}
       {$ifdef CocoaUseHITheme}
       {$ifdef CPU386}
       ButtonDrawInfo.version := 0;
@@ -386,20 +389,34 @@ begin
       // face right
       if Details.State = GLPS_CLOSED then
       begin
-        lPoints[0] := Types.Point(R.Left, R.Top);
-        lPoints[1] := Types.Point(R.Left, R.Bottom);
-        lPoints[2] := Types.Point(R.Right, (R.Top + R.Bottom) div 2);
+        lPoints[0] := Types.Point(R.Left+1, R.Top);
+        lPoints[1] := Types.Point(R.Left+1, R.Bottom-2);
+        lPoints[2] := Types.Point(R.Right-1, (R.Top + R.Bottom-2) div 2);
       end
       // face down
       else
       begin
         lPoints[0] := Types.Point(R.Left, R.Top);
-        lPoints[1] := Types.Point(R.Right, R.Top);
-        lPoints[2] := Types.Point((R.Left + R.Right) div 2, R.Bottom);
+        lPoints[1] := Types.Point(R.Right-2, R.Top);
+        lPoints[2] := Types.Point((R.Left + R.Right-2) div 2, R.Bottom-2);
       end;
 
-      DC.Brush.SetColor(Graphics.RGBToColor(0, 0, 0), True);
-      DC.Polygon(lPoints, 3, False);
+      // select the appropriate brush & pen
+      lColor := ColorToNSColor(Graphics.RGBToColor(121, 121, 121));
+      lBrush := TCocoaBrush.Create(lColor, False);
+      lOldBrush := LCLIntf.SelectObject(HDC(DC), HGDIOBJ(lBrush));
+
+      lPen := TCocoaPen.Create(Graphics.RGBToColor(121, 121, 121), False);
+      lOldPen := LCLIntf.SelectObject(HDC(DC), HGDIOBJ(lPen));
+
+      // Draw the triangle
+      DC.Polygon(lPoints, 3, True);
+
+      // restore the old brush and pen
+      LCLIntf.SelectObject(HDC(DC), lOldBrush);
+      LCLIntf.SelectObject(HDC(DC), lOldPen);
+      lBrush.Free;
+      lPen.Free;
 
       Result := R;
       {$endif}

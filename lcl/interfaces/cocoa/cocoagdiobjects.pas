@@ -165,6 +165,7 @@ type
     constructor Create(const ALogPen: TLogPen; const AGlobal: Boolean = False);
     constructor Create(dwPenStyle, dwWidth: DWord; const lplb: TLogBrush; dwStyleCount: DWord; lpStyle: PDWord);
     constructor Create(const ABrush: TCocoaBrush; const AGlobal: Boolean = False);
+    constructor Create(const AColor: TColor; AGlobal: Boolean);
     procedure Apply(ADC: TCocoaContext; UseROP2: Boolean = True);
 
     property Width: Integer read FWidth;
@@ -2586,6 +2587,15 @@ end;
 constructor TCocoaPen.Create(const ABrush: TCocoaBrush; const AGlobal: Boolean);
 begin
   inherited Create(ABrush.ColorRef, True, AGlobal);
+  FStyle := PS_SOLID;
+  FWidth := 1;
+  FIsExtPen := False;
+  Dashes := nil;
+end;
+
+constructor TCocoaPen.Create(const AColor: TColor; AGlobal: Boolean);
+begin
+  inherited Create(AColor, True, AGlobal);
   FStyle := PS_SOLID;
   FWidth := 1;
   FIsExtPen := False;
