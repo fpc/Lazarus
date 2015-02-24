@@ -622,7 +622,8 @@ type
 
   TCocoaTabPageView = objcclass(TCocoaCustomControl)
   public
-    tabview: TCocoaTabControl;
+    tabView: TCocoaTabControl;
+    tabPage: TCocoaTabPage;
   end;
 
   { TListView }

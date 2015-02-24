@@ -41,6 +41,8 @@ type
   { TCocoaWSCustomPage }
 
   TCocoaWSCustomPage = class(TWSCustomPage)
+  public
+    class function  GetCocoaTabPageFromHandle(AHandle: HWND): TCocoaTabPage;
   published
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class procedure UpdateProperties(const ACustomPage: TCustomPage); override;
@@ -254,6 +256,14 @@ end;
 
 { TCocoaWSCustomPage }
 
+class function  TCocoaWSCustomPage.GetCocoaTabPageFromHandle(AHandle: HWND): TCocoaTabPage;
+var
+  lHandle: TCocoaTabPageView;
+begin
+  lHandle := TCocoaTabPageView(AHandle);
+  Result := lHandle.tabPage;
+end;
+
 class function TCocoaWSCustomPage.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
 var
   lControl: TCocoaTabPage;
@@ -272,16 +282,23 @@ begin
     SetProperties(TCustomPage(AWinControl), lControl);
 
     // Set a special view for the page
+    // based on http://stackoverflow.com/questions/14892218/adding-a-nstextview-subview-to-nstabviewitem
     tabview := TCocoaTabControl(AWinControl.Parent.Handle);
-    tv := TCocoaTabPageView.alloc.initWithFrame(
-      tabview.contentRect);
+    tv := TCocoaTabPageView.alloc.initWithFrame(NSZeroRect);
+    tv.setAutoresizingMask(NSViewWidthSizable or NSViewHeightSizable);
     {tv.setHasVerticalScroller(True);
     tv.setHasHorizontalScroller(True);
     tv.setAutohidesScrollers(True);
     tv.setBorderType(NSNoBorder);}
-    tv.tabview := tabview;
+    tv.tabView := tabview;
+    tv.tabPage := lControl;
     tv.callback := TLCLCommonCallback.Create(tv, AWinControl);
-    lControl.setView(tv);
+
+    // view.addSubview works better than setView, no idea why
+    lControl.view.setAutoresizesSubviews(True);
+    lControl.view.addSubview(tv);
+
+    Result := TLCLIntfHandle(tv);
   end;
 end;
 
@@ -339,7 +356,7 @@ begin
   lTabControl := TCocoaTabControl(ATabControl.Handle);
   AChild.HandleNeeded();
   if not Assigned(AChild) or not AChild.HandleAllocated then Exit;
-  lTabPage := TCocoaTabPage(AChild.Handle);
+  lTabPage := TCocoaWSCustomPage.GetCocoaTabPageFromHandle(AChild.Handle);
 
   lTabControl.insertTabViewItem_atIndex(lTabPage, AIndex);
   {$IFDEF COCOA_DEBUG_TABCONTROL}
@@ -356,7 +373,7 @@ begin
   lTabControl := TCocoaTabControl(ATabControl.Handle);
   AChild.HandleNeeded();
   if not Assigned(AChild) or not AChild.HandleAllocated then Exit;
-  lTabPage := TCocoaTabPage(AChild.Handle);
+  lTabPage := TCocoaWSCustomPage.GetCocoaTabPageFromHandle(AChild.Handle);
 
   lTabControl.removeTabViewItem(lTabPage);
   lTabControl.insertTabViewItem_atIndex(lTabPage, NewIndex);
