@@ -103,6 +103,8 @@ type
                                 var Filename: string) of object;
   TPkgDeleteAmbiguousFiles = function(const Filename: string): TModalResult of object;
   TOnBeforeCompilePackages = function(aPkgList: TFPList): TModalResult of object;
+  TOnCheckInterPkgFiles = function(IDEObject: TObject; PkgList: TFPList;
+    out FilesChanged: boolean): boolean of object;
 
   { TLazPkgGraphBuildItem }
 
@@ -160,6 +162,7 @@ type
     FOnBeforeCompilePackages: TOnBeforeCompilePackages;
     FOnBeginUpdate: TNotifyEvent;
     FOnChangePackageName: TPkgChangeNameEvent;
+    FOnCheckInterPkgFiles: TOnCheckInterPkgFiles;
     FOnDeleteAmbiguousFiles: TPkgDeleteAmbiguousFiles;
     FOnDeletePackage: TPkgDeleteEvent;
     FOnDependencyModified: TDependencyModifiedEvent;
@@ -184,8 +187,6 @@ type
                        PkgLink: TPackageLink; ShowAbort: boolean): TModalResult;
     function DeleteAmbiguousFiles(const Filename: string): TModalResult;
     procedure AddMessage(TheUrgency: TMessageLineUrgency; const Msg, Filename: string);
-    function CheckAmbiguousInterPkgFiles(IDEObject: TObject;
-      PkgList: TFPList): TModalResult;
     function OutputDirectoryIsWritable(APackage: TLazPackage; Directory: string;
                                        Verbose: boolean): boolean;
     function GetPackageCompilerParams(APackage: TLazPackage): string;
@@ -405,7 +406,10 @@ type
     property QuietRegistration: boolean read FQuietRegistration
                                         write FQuietRegistration;
     property ErrorMsg: string read FErrorMsg write FErrorMsg;
+    property Packages[Index: integer]: TLazPackage read GetPackages; default; // see Count for the number
+    property UpdateLock: integer read FUpdateLock;
 
+    // base packages
     property FCLPackage: TLazPackage read FFCLPackage;
     property LCLBasePackage: TLazPackage read FLCLBasePackage;
     property LCLPackage: TLazPackage read FLCLPackage;
@@ -419,10 +423,13 @@ type
     property LazarusBasePackages: TFPList read FLazarusBasePackages;
     property DefaultPackage: TLazPackage read FDefaultPackage;// fall back package for buggy/obsoleted stuff
 
+    // events
     property OnAddPackage: TPkgAddedEvent read FOnAddPackage write FOnAddPackage;
     property OnBeginUpdate: TNotifyEvent read FOnBeginUpdate write FOnBeginUpdate;
     property OnChangePackageName: TPkgChangeNameEvent read FOnChangePackageName
                                                      write FOnChangePackageName;
+    property OnCheckInterPkgFiles: TOnCheckInterPkgFiles
+                         read FOnCheckInterPkgFiles write FOnCheckInterPkgFiles;
     property OnDependencyModified: TDependencyModifiedEvent
                          read FOnDependencyModified write FOnDependencyModified;
     property OnDeletePackage: TPkgDeleteEvent read FOnDeletePackage
@@ -436,12 +443,12 @@ type
                                                write FOnUninstallPackage;
     property OnBeforeCompilePackages: TOnBeforeCompilePackages read
                         FOnBeforeCompilePackages write FOnBeforeCompilePackages;
-    property Packages[Index: integer]: TLazPackage read GetPackages; default; // see Count for the number
+
+    // set during calling Register procedures
     property RegistrationFile: TPkgFile read FRegistrationFile;
     property RegistrationPackage: TLazPackage read FRegistrationPackage
                                               write SetRegistrationPackage;
     property RegistrationUnitName: string read FRegistrationUnitName;
-    property UpdateLock: integer read FUpdateLock;
   end;
   
 var
@@ -692,6 +699,9 @@ var
   i: Integer;
   Tool: TAbstractExternalTool;
 begin
+  {$IFDEF EnableCheckInterPkgFiles}
+  debugln(['TLazPkgGraphBuildItem.Clear ',LazPackage.IDAsString]);
+  {$ENDIF}
   for i:=Count-1 downto 0 do begin
     Tool:=Tools[i];
     if Tool.Data is TLazPkgGraphExtToolData then
@@ -830,388 +840,6 @@ begin
     IDEMessagesWindow.AddCustomMessage(TheUrgency,Msg,Filename)
   else
     DebugLn(['TLazPackageGraph.AddMessage ',MessageLineUrgencyNames[TheUrgency],' Msg="',Msg,'" Filename="',Filename,'"']);
-end;
-
-type
-  TPGInterPkgOwnerInfo = class
-  public
-    Name: string;
-    Owner: TObject;
-    HasOptionUr: boolean;
-    CompOptions: TBaseCompilerOptions;
-    SrcDirs: string; // unitpath without inherited
-    IncDirs: string; // incpath without inherited and without SrcDirs
-    UnitOutDir: string; // can be empty -> if empty FPC creates ppu in SrcDirs
-  end;
-
-  { TPGInterPkgFile }
-
-  TPGInterPkgFile = class
-  public
-    FullFilename: string;
-    ShortFilename: string;
-    AnUnitName: string;
-    OwnerInfo: TPGInterPkgOwnerInfo;
-    constructor Create(TheFullFilename, TheUnitName: string; Owner: TPGInterPkgOwnerInfo);
-  end;
-
-function ComparePGInterPkgFullFilenames(File1, File2: Pointer): integer;
-var
-  F1: TPGInterPkgFile absolute File1;
-  F2: TPGInterPkgFile absolute File2;
-begin
-  Result:=CompareFilenames(F1.FullFilename,F2.FullFilename);
-end;
-
-function ComparePGInterPkgUnitnames(File1, File2: Pointer): integer;
-var
-  F1: TPGInterPkgFile absolute File1;
-  F2: TPGInterPkgFile absolute File2;
-begin
-  Result:=CompareDottedIdentifiers(PChar(Pointer(F1.AnUnitName)),PChar(Pointer(F2.AnUnitName)));
-end;
-
-function ComparePGInterPkgShortFilename(File1, File2: Pointer): integer;
-var
-  F1: TPGInterPkgFile absolute File1;
-  F2: TPGInterPkgFile absolute File2;
-begin
-  Result:=CompareFilenames(F1.ShortFilename,F2.ShortFilename);
-end;
-
-{ TPGInterPkgFile }
-
-constructor TPGInterPkgFile.Create(TheFullFilename, TheUnitName: string;
-  Owner: TPGInterPkgOwnerInfo);
-begin
-  FullFilename:=TheFullFilename;
-  ShortFilename:=ExtractFileName(FullFilename);
-  AnUnitName:=TheUnitName;
-  OwnerInfo:=Owner;
-end;
-
-function TLazPackageGraph.CheckAmbiguousInterPkgFiles(IDEObject: TObject;
-  PkgList: TFPList): TModalResult;
-{ Scan all source and output directories (Note: they are already cached, because
-  this method is called after the checks if a compile is needed).
-  Report strange ppu files and duplicate file names.
-
-  IDEObject can be a TProject, TLazPackage or TLazPackageGraph(building IDE)
-  PkgList is list of TLazPackage
-}
-var
-  OwnerInfos: TObjectList; // list of TPGInterPkgOwnerInfo
-  TargetOS: String;
-  TargetCPU: String;
-  LCLWidgetType: String;
-  FullFiles: TAVLTree; // tree of TPGInterPkgFile sorted for FullFilename
-  Units: TAVLTree; // tree of TPGInterPkgFile sorted for AnUnitName
-  ShortFiles: TAVLTree; // tree of TPGInterPkgFile sorted for ShortFilename
-
-  procedure AddOwnerInfo(TheOwner: TObject);
-  var
-    LazDir: String;
-    CustomOptions: String;
-    p: Integer;
-    OwnerInfo: TPGInterPkgOwnerInfo;
-  begin
-    OwnerInfo:=TPGInterPkgOwnerInfo.Create;
-    OwnerInfos.Add(OwnerInfo);
-    OwnerInfo.Owner:=TheOwner;
-    if TheOwner is TLazPackage then
-    begin
-      OwnerInfo.Name:=TLazPackage(TheOwner).IDAsString;
-      OwnerInfo.CompOptions:=TLazPackage(TheOwner).LazCompilerOptions as TBaseCompilerOptions;
-    end else if TheOwner is TLazProject then
-    begin
-      OwnerInfo.Name:=TLazProject(TheOwner).GetTitleOrName;
-      OwnerInfo.CompOptions:=TLazProject(TheOwner).LazCompilerOptions as TBaseCompilerOptions;
-    end
-    else if TheOwner=Self then begin
-      // building IDE
-      OwnerInfo.Name:='#IDE';
-      LazDir:=AppendPathDelim(EnvironmentOptions.GetParsedLazarusDirectory);
-      OwnerInfo.SrcDirs:=LazDir+'ide'
-        +';'+LazDir+'debugger'
-        +';'+LazDir+'packager'
-        +';'+LazDir+'designer'
-        +';'+LazDir+'converter';
-      OwnerInfo.IncDirs:=OwnerInfo.SrcDirs
-        +';'+LazDir+'ide'+PathDelim+'include'+PathDelim+TargetOS
-        +';'+LazDir+'ide'+PathDelim+'include'+PathDelim+GetDefaultSrcOSForTargetOS(TargetOS);
-      OwnerInfo.UnitOutDir:=LazDir+'units'+PathDelim+TargetCPU+'-'+TargetOS+PathDelim+LCLWidgetType;
-    end;
-    if OwnerInfo.CompOptions<>nil then begin
-      OwnerInfo.SrcDirs:=OwnerInfo.CompOptions.GetPath(
-                                    pcosUnitPath,icoNone,false,coptParsed,true);
-      OwnerInfo.IncDirs:=OwnerInfo.CompOptions.GetPath(
-                                 pcosIncludePath,icoNone,false,coptParsed,true);
-      if OwnerInfo.CompOptions.UnitOutputDirectory<>'' then
-        OwnerInfo.UnitOutDir:=OwnerInfo.CompOptions.GetUnitOutputDirectory(false);
-      CustomOptions:=OwnerInfo.CompOptions.ParsedOpts.GetParsedValue(pcosCustomOptions);
-      p:=1;
-      OwnerInfo.HasOptionUr:=FindNextFPCParameter(CustomOptions,'-Ur',p)>0;
-    end;
-    OwnerInfo.IncDirs:=TrimSearchPath(RemoveSearchPaths(OwnerInfo.IncDirs,OwnerInfo.SrcDirs),'');
-    OwnerInfo.UnitOutDir:=TrimFilename(OwnerInfo.UnitOutDir);
-    OwnerInfo.SrcDirs:=TrimSearchPath(OwnerInfo.SrcDirs,'');
-  end;
-
-  procedure CollectFilesInDir(OwnerInfo: TPGInterPkgOwnerInfo; Dir: string;
-    var SearchedDirs: string; IsIncDir: boolean);
-  var
-    Files: TStrings;
-    aFilename: String;
-    Ext: String;
-    AnUnitName: String;
-    NewFile: TPGInterPkgFile;
-  begin
-    if Dir='' then exit;
-    if not FilenameIsAbsolute(Dir) then
-    begin
-      debugln(['Inconsistency: CollectFilesInDir dir no absolute: "',Dir,'" Owner=',OwnerInfo.Name]);
-      exit;
-    end;
-    if SearchDirectoryInSearchPath(SearchedDirs,Dir)>0 then exit;
-    SearchedDirs+=';'+Dir;
-    Files:=nil;
-    try
-      CodeToolBoss.DirectoryCachePool.GetListing(Dir,Files,false);
-      for aFilename in Files do
-      begin
-        if (aFilename='') or (aFilename='.') or (aFilename='..') then continue;
-        Ext:=LowerCase(ExtractFileExt(aFilename));
-        AnUnitName:='';
-        case Ext of
-        '.ppu','.o','.pas','.pp','.p':
-          if IsIncDir then
-          begin
-            AnUnitName:=ExtractFilename(aFilename);
-            if not IsDottedIdentifier(AnUnitName) then continue;
-          end;
-        '.inc': ;
-        else
-          continue;
-        end;
-        NewFile:=TPGInterPkgFile.Create(AppendPathDelim(Dir)+aFilename,
-                                        AnUnitName,OwnerInfo);
-        FullFiles.Add(NewFile);
-        ShortFiles.Add(NewFile);
-        if AnUnitName<>'' then
-          Units.Add(NewFile);
-      end;
-    finally
-      Files.Free;
-    end;
-  end;
-
-  procedure CollectFilesOfOwner(OwnerInfo: TPGInterPkgOwnerInfo);
-  var
-    SearchedDirs: String;
-    SearchPath: String;
-    p: Integer;
-    Dir: String;
-  begin
-    // find all unit and include FullFiles in src, inc and out dirs
-    SearchedDirs:='';
-    CollectFilesInDir(OwnerInfo,OwnerInfo.UnitOutDir,SearchedDirs,false);
-    SearchPath:=OwnerInfo.SrcDirs;
-    p:=1;
-    repeat
-      Dir:=GetNextDirectoryInSearchPath(SearchPath,p);
-      if Dir='' then break;
-      CollectFilesInDir(OwnerInfo,Dir,SearchedDirs,false);
-    until false;
-    SearchPath:=OwnerInfo.IncDirs;
-    p:=1;
-    repeat
-      Dir:=GetNextDirectoryInSearchPath(SearchPath,p);
-      if Dir='' then break;
-      CollectFilesInDir(OwnerInfo,Dir,SearchedDirs,true);
-    until false;
-  end;
-
-  procedure RemoveSecondaryFiles;
-  // remove each .o file if there is an .ppu file, so that there is only one
-  // warning per ppu file
-  var
-    Node: TAVLTreeNode;
-    ONode: TAVLTreeNode;
-    OFile: TPGInterPkgFile;
-    PPUFileName: String;
-    SearchFile: TPGInterPkgFile;
-    PPUNode: TAVLTreeNode;
-  begin
-    Node:=Units.FindLowest;
-    while Node<>nil do begin
-      // for each .o file
-      ONode:=Node;
-      Node:=Units.FindSuccessor(Node);
-      OFile:=TPGInterPkgFile(ONode.Data);
-      if CompareFileExt(OFile.ShortFilename,'o')<>0 then continue;
-      // search corresponding .ppu
-      PPUFileName:=ChangeFileExt(OFile.FullFilename,'.ppu');
-      SearchFile:=TPGInterPkgFile.Create(PPUFileName,'',nil);
-      PPUNode:=FullFiles.Find(SearchFile);
-      SearchFile.Free;
-      if PPUNode=nil then continue;
-      // remove .o file
-      Units.RemovePointer(OFile);
-      ShortFiles.RemovePointer(OFile);
-      FullFiles.Delete(ONode);
-    end;
-  end;
-
-  function OwnerHasDependency(Owner1, Owner2: TPGInterPkgOwnerInfo): boolean;
-  // returns true if Owner1 depends on Owner2
-  begin
-    if Owner1=Owner2 then exit(true);
-    if Owner1.Owner is TLazPackage then
-    begin
-      if Owner2.Owner is TLazPackage then
-      begin
-        Result:=FindDependencyRecursively(
-          TLazPackage(Owner1.Owner).FirstRequiredDependency,
-          TLazPackage(Owner2.Owner))<>nil;
-      end else begin
-        // Owner1 is package, Owner2 is project/IDE => not possible
-        Result:=false;
-      end;
-    end else begin
-      // Owner1 is project or IDE => true
-      Result:=true;
-    end;
-  end;
-
-  procedure CheckPPUFilesInWrongDirs;
-  { Check if a ppu/o of pkg A has a unit (source or ppu) in another package B
-    Unless A uses B and B has -Ur or A has -Ur and B uses A
-    => IDE: delete+retry or ignore or cancel
-    => lazbuild: warn }
-  var
-    CurNode: TAVLTreeNode;
-    CurFile: TPGInterPkgFile;
-    Ext: String;
-    FirstNodeSameUnitname: TAVLTreeNode;
-    OtherNode: TAVLTreeNode;
-    OtherFile: TPGInterPkgFile;
-    SrcFileNode: TAVLTreeNode;
-    SrcFile: TPGInterPkgFile;
-  begin
-    CurNode:=Units.FindLowest;
-    FirstNodeSameUnitname:=nil;
-    while CurNode<>nil do begin
-      CurFile:=TPGInterPkgFile(CurNode.Data);
-      if (FirstNodeSameUnitname=nil)
-      or (ComparePGInterPkgUnitnames(CurFile,FirstNodeSameUnitname)<>0) then
-        FirstNodeSameUnitname:=CurNode;
-      CurNode:=Units.FindSuccessor(CurNode);
-      Ext:=lowercase(ExtractFileExt(CurFile.ShortFilename));
-      if (Ext<>'.ppu') and (Ext<>'.o') then continue;
-      // check units with same name
-      OtherNode:=FirstNodeSameUnitname;
-      while (OtherNode<>nil) do begin
-        OtherFile:=TPGInterPkgFile(OtherNode.Data);
-        if (ComparePGInterPkgUnitnames(CurFile,OtherFile)<>0) then break;
-        // other unit with same name found
-        OtherNode:=Units.FindSuccessor(OtherNode);
-        if OtherFile.OwnerInfo=CurFile.OwnerInfo then continue;
-        // ppu in one package, unit with same name in another package
-        debugln(['CheckPPUFilesInWrongDirs duplicate units found: file1="',CurFile.FullFilename,'"(',CurFile.OwnerInfo.Name,') file2="',OtherFile.FullFilename,'"(',OtherFile.OwnerInfo.Name,')']);
-        if CurFile.OwnerInfo.HasOptionUr
-        and OtherFile.OwnerInfo.HasOptionUr then
-          continue;
-        if CurFile.OwnerInfo.HasOptionUr
-        and OwnerHasDependency(OtherFile.OwnerInfo,CurFile.OwnerInfo) then
-          continue;
-        if OtherFile.OwnerInfo.HasOptionUr
-        and OwnerHasDependency(CurFile.OwnerInfo,OtherFile.OwnerInfo) then
-          continue;
-        // check if this package has a source for this ppu
-        SrcFileNode:=FirstNodeSameUnitname;
-        SrcFile:=nil;
-        while SrcFileNode<>nil do begin
-          SrcFile:=TPGInterPkgFile(SrcFileNode.Data);
-          if (ComparePGInterPkgUnitnames(CurFile,SrcFile)<>0) then
-          begin
-            SrcFileNode:=nil;
-            break;
-          end;
-          SrcFileNode:=Units.FindSuccessor(SrcFileNode);
-          if SrcFile.OwnerInfo<>CurFile.OwnerInfo then continue;
-          if FilenameIsPascalUnit(SrcFile.ShortFilename) then
-            break;
-        end;
-        if SrcFileNode<>nil then
-        begin
-          // ppu with src in one package, duplicate unit in another package
-          // Note: This could be right if the other package does not use the src file
-          // Otherwise: duplicate name (-Ur has been checked)
-          // ToDo: => warn
-          debugln(['CheckPPUFilesInWrongDirs duplicate units found: file1="',CurFile.FullFilename,'"(',CurFile.OwnerInfo.Name,',source=',SrcFile.ShortFilename,') file2="',OtherFile.FullFilename,'"(',OtherFile.OwnerInfo.Name,')']);
-
-        end else begin
-          // ppu with no src in one package, duplicate unit in another package
-          // (-Ur has been checked)
-          // => highly unlikely that this is right
-          // ToDo: => warn
-          debugln(['CheckPPUFilesInWrongDirs duplicate units found: file1="',CurFile.FullFilename,'"(',CurFile.OwnerInfo.Name,',no source) file2="',OtherFile.FullFilename,'"(',OtherFile.OwnerInfo.Name,')']);
-
-        end;
-      end;
-    end;
-  end;
-
-  procedure CheckDuplicateSrcFiles;
-  { Check if a src file in pkg A with the same short name exist in another package B
-    Unless A uses B and B has -Ur or A has -Ur and B uses A
-    => IDE: ignore or cancel
-    => lazbuild: warn }
-  begin
-
-  end;
-
-var
-  i: Integer;
-begin
-  Result:=mrOk;
-  if (PkgList=nil) or (PkgList.Count=0) then exit;
-  OwnerInfos:=TObjectList.create(true);
-  FullFiles:=TAVLTree.Create(@ComparePGInterPkgFullFilenames);
-  Units:=TAVLTree.Create(@ComparePGInterPkgUnitnames);
-  ShortFiles:=TAVLTree.Create(@ComparePGInterPkgShortFilename);
-  try
-    // get target OS, CPU and LCLWidgetType
-    TargetOS:='$(TargetOS)';
-    GlobalMacroList.SubstituteStr(TargetOS);
-    if TargetOS='' then TargetOS:=GetCompiledTargetOS;
-    TargetCPU:='$(TargetCPU)';
-    GlobalMacroList.SubstituteStr(TargetCPU);
-    if TargetCPU='' then TargetCPU:=GetCompiledTargetCPU;
-    LCLWidgetType:='$(LCLWidgetType)';
-    GlobalMacroList.SubstituteStr(LCLWidgetType);
-    if LCLWidgetType='' then LCLWidgetType:=LCLPlatformDirNames[GetDefaultLCLWidgetType];
-
-    // get search paths
-    AddOwnerInfo(IDEObject);
-    for i:=0 to PkgList.Count-1 do
-      AddOwnerInfo(TObject(PkgList[i]));
-
-    // collect FullFiles
-    for i:=0 to OwnerInfos.Count-1 do
-      CollectFilesOfOwner(TPGInterPkgOwnerInfo(OwnerInfos[i]));
-    RemoveSecondaryFiles;
-
-    // checks
-    CheckPPUFilesInWrongDirs;
-    CheckDuplicateSrcFiles;
-  finally
-    Units.Free;
-    ShortFiles.Free;
-    FullFiles.FreeAndClear;
-    FullFiles.Free;
-    OwnerInfos.Free;
-  end;
 end;
 
 function TLazPackageGraph.OutputDirectoryIsWritable(APackage: TLazPackage;
@@ -3980,6 +3608,7 @@ var
   Tool1: TAbstractExternalTool;
   Tool2: TAbstractExternalTool;
   ToolGroup: TExternalToolGroup;
+  FilesChanged: boolean;
 begin
   {$IFDEF VerbosePkgCompile}
   debugln('TLazPackageGraph.CompileRequiredPackages A MinPolicy=',dbgs(Policy),' SkipDesignTimePackages=',SkipDesignTimePackages);
@@ -4014,30 +3643,34 @@ begin
         Include(Flags,pcfOnlyIfNeeded)
       else
         Include(Flags,pcfCleanCompile);
-      BuildItems:=TObjectList.Create(true);
-      for i:=0 to PkgList.Count-1 do begin
-        CurPkg:=TLazPackage(PkgList[i]);
-        BuildItem:=TLazPkgGraphBuildItem.Create(nil);
-        BuildItem.LazPackage:=CurPkg;
-        BuildItems.Add(BuildItem);
-        Result:=CompilePackage(CurPkg,Flags,false,BuildItem);
-        if Result<>mrOk then exit;
+      repeat
+        BuildItems:=TObjectList.Create(true);
+        for i:=0 to PkgList.Count-1 do begin
+          CurPkg:=TLazPackage(PkgList[i]);
+          BuildItem:=TLazPkgGraphBuildItem.Create(nil);
+          BuildItem.LazPackage:=CurPkg;
+          BuildItems.Add(BuildItem);
+          Result:=CompilePackage(CurPkg,Flags,false,BuildItem);
+          if Result<>mrOk then exit;
 
-        if (BuildItem<>nil) and (not (lpfNeedGroupCompile in CurPkg.Flags))
-        then begin
-          // package is up-to-date
-          //debugln(['TLazPackageGraph.CompileRequiredPackages no build needed: pkg=',CurPkg.Name]);
-          BuildItems.Remove(BuildItem);
+          if (BuildItem<>nil) and (not (lpfNeedGroupCompile in CurPkg.Flags))
+          then begin
+            // package is up-to-date
+            //debugln(['TLazPackageGraph.CompileRequiredPackages no build needed: pkg=',CurPkg.Name]);
+            BuildItems.Remove(BuildItem);
+          end;
         end;
-      end;
 
-      if FirstDependency<>nil then
-      begin
-        {$IFDEF EnableCheckAmbiguousInterPkgFiles}
-        Result:=CheckAmbiguousInterPkgFiles(FirstDependency.Owner,PkgList);
-        if Result<>mrOk then exit;
-        {$ENDIF}
-      end;
+        if FirstDependency<>nil then
+        begin
+          {$IFDEF EnableCheckInterPkgFiles}
+          if not OnCheckInterPkgFiles(FirstDependency.Owner,PkgList,FilesChanged)
+          then exit(mrCancel);
+          if FilesChanged then
+            FreeAndNil(BuildItems);
+          {$ENDIF}
+        end;
+      until BuildItems<>nil;
 
       // add tool dependencies
       for i:=0 to BuildItems.Count-1 do begin
@@ -4280,7 +3913,7 @@ begin
             EffectiveCompilerParams:='-B';
         end;
 
-        PkgCompileTool:=ExternalToolList.Add(Format(lisPkgMangCompilingPackage, [APackage.IDAsString]));
+        PkgCompileTool:=ExternalToolList.Add(Format(lisPkgMangCompilePackage, [APackage.IDAsString]));
         ExtToolData:=TLazPkgGraphExtToolData.Create(IDEToolCompilePackage,
           APackage.Name,APackage.Filename);
         PkgCompileTool.Data:=ExtToolData;

@@ -17,7 +17,6 @@
       <XPManifest>
         <DpiAware Value="True"/>
       </XPManifest>
-      <Icon Value="0"/>
     </General>
     <LazDoc Paths="docs/xml/ide"/>
     <VersionInfo>
@@ -66,7 +65,7 @@
         <PackageName Value="SynEdit"/>
       </Item7>
     </RequiredPackages>
-    <Units Count="241">
+    <Units Count="242">
       <Unit0>
         <Filename Value="lazarus.pp"/>
         <IsPartOfProject Value="True"/>
@@ -774,6 +773,7 @@
       <Unit123>
         <Filename Value="lazarusidestrconsts.pas"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="LazarusIDEStrConsts"/>
       </Unit123>
       <Unit124>
         <Filename Value="codetemplatesdlg.pas"/>
@@ -1320,6 +1320,11 @@
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="QFInitLocalVarDlg"/>
       </Unit240>
+      <Unit241>
+        <Filename Value="../packager/interpkgconflictfiles.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="InterPkgConflictFiles"/>
+      </Unit241>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
@@ -1329,7 +1334,7 @@
     </Target>
     <SearchPaths>
       <IncludeFiles Value="include"/>
-      <OtherUnitFiles Value="frames;../converter;../debugger;../debugger/frames;../packager;../designer;../packager/frames;../ide"/>
+      <OtherUnitFiles Value="frames;../converter;../debugger;../debugger/frames;../packager;../designer;../packager/frames;../ide;../packager;../packager;../packager;../packager"/>
       <UnitOutputDirectory Value="$(LazarusDir)/units/$(TargetCPU)-$(TargetOS)/$(LCLWidgetType)"/>
     </SearchPaths>
     <Linking>

@@ -23,7 +23,8 @@
  Abstract:
    Dialog used by the quick fix "Insert Assignment var := ..." for messages
    Hint/Warning: (5036) Local variable "$1" does not seem to be initialized
-   Dialog shows
+   Dialog shows a list of possible statements and a list of possible insert
+   positions.
 }
 unit QFInitLocalVarDlg;
 

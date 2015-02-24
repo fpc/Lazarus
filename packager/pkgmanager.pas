@@ -65,7 +65,7 @@ uses
   IDETranslations, TransferMacros, BuildLazDialog, NewDialog, FindInFilesDlg,
   IDEDialogs, UnitResources, ProjectInspector, ComponentPalette, SourceEditor,
   AddFileToAPackageDlg, LazarusPackageIntf, PublishProjectDlg, PkgLinksDlg,
-  InstallPkgSetDlg, ConfirmPkgListDlg, NewPkgComponentDlg,
+  InterPkgConflictFiles, InstallPkgSetDlg, ConfirmPkgListDlg, NewPkgComponentDlg,
   // bosses
   BaseBuildManager, BasePkgManager, MainBar, MainIntf, MainBase, ModeMatrixOpts;
 
@@ -116,6 +116,8 @@ type
     procedure OnPackageEditorGetUnitRegisterInfo(Sender: TObject;
                               const AFilename: string; var TheUnitName: string;
                               var HasRegisterProc: boolean);
+    function PackageGraphCheckInterPkgFiles(IDEObject: TObject;
+                          PkgList: TFPList; out FilesChanged: boolean): boolean;
 
     // package graph
     function PackageGraphExplorerOpenPackage(Sender: TObject;
@@ -926,6 +928,12 @@ procedure TPkgManager.OnPackageEditorGetUnitRegisterInfo(Sender: TObject;
   const AFilename: string; var TheUnitName: string; var HasRegisterProc: boolean);
 begin
   DoGetUnitRegisterInfo(AFilename,TheUnitName,HasRegisterProc,true);
+end;
+
+function TPkgManager.PackageGraphCheckInterPkgFiles(IDEObject: TObject;
+  PkgList: TFPList; out FilesChanged: boolean): boolean;
+begin
+  Result:=CheckInterPkgFiles(IDEObject,PkgList,FilesChanged);
 end;
 
 function TPkgManager.OnPackageEditorOpenPackage(Sender: TObject;
@@ -2925,6 +2933,7 @@ begin
   PackageGraph.OnBeforeCompilePackages:=@DoBeforeCompilePackages;
   PackageGraph.OnBeginUpdate:=@PackageGraphBeginUpdate;
   PackageGraph.OnChangePackageName:=@PackageGraphChangePackageName;
+  PackageGraph.OnCheckInterPkgFiles:=@PackageGraphCheckInterPkgFiles;
   PackageGraph.OnDeleteAmbiguousFiles:=@BuildBoss.DeleteAmbiguousFiles;
   PackageGraph.OnDeletePackage:=@PackageGraphDeletePackage;
   PackageGraph.OnDependencyModified:=@PackageGraphDependencyModified;

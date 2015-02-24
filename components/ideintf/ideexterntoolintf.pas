@@ -1151,6 +1151,9 @@ destructor TAbstractExternalTool.Destroy;
 var
   h: TExternalToolHandler;
 begin
+  {$IFDEF EnableCheckInterPkgFiles}
+  debugln(['TAbstractExternalTool.Destroy ',Title]);
+  {$ENDIF}
   EnterCriticalSection;
   try
     if FreeData then FreeAndNil(FData);

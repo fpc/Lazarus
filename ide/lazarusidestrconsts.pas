@@ -4105,7 +4105,7 @@ resourcestring
     +'target directory for Lazarus:'
     +'%s"%s".'
     +'%sThis directory is needed for the new changed Lazarus IDE with your custom packages.';
-  lisPkgMangCompilingPackage = 'Compiling package %s';
+  lisPkgMangCompilePackage = 'Compile package %s';
   lisPkgMangErrorUpdatingPoFilesFailedForPackage = 'Error: updating po files '
     +'failed for package %s';
   lisIDEInfoErrorRunningCompileAfterToolFailedForPackage = 'Error: running ''co'
