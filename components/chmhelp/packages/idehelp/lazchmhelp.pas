@@ -318,11 +318,32 @@ var
   WS: String;
   PCP: String;
   Tool: TIDEExternalToolOptions;
+  OrigFile: String;
+  TmpFile: String = '';
+  ExistingFile: Boolean;
 begin
   Result := mrCancel;
 
-  if FileExistsUTF8(GetHelpExe) and not AForce then
+  ExistingFile := FileExistsUTF8(GetHelpExe);
+
+  if ExistingFile and not AForce then
     Exit(mrOK);
+
+  if ExistingFile then
+  begin
+    OrigFile:=StringReplace(GetHelpEXE, PathDelim+PathDelim, PathDelim, [rfReplaceAll]);
+    TmpFile:=ChangeFileExt(OrigFile, '.tmp');
+    //debugln(['TChmHelpViewer.CheckBuildLHelp forced rebuilding of lhelp']);
+    if FileExistsUTF8(TmpFile) then
+      DeleteFileUTF8(TmpFile);
+    if not RenameFile(OrigFile, TmpFile) then
+    begin
+      debugln(['TChmHelpViewer.CheckBuildLHelp no permission to modify lhelp executable']);
+      // we don't have permission to move or rebuild lhelp so exit
+      // Exit with mrYes anyway since lhelp is still present, just an older version
+      Exit(mrYes);
+    end;
+  end;
 
   if not GetLazBuildEXE(Lazbuild) then
   begin
@@ -356,7 +377,19 @@ begin
     Tool.Scanners.Add(SubToolFPC);
     Tool.Scanners.Add(SubToolMake);
     if RunExternalTool(Tool) then
+    begin
       Result:=mrOk;
+      if (TmpFile <> '') and FileExistsUTF8(TmpFile)  then
+        DeleteFileUTF8(TmpFile);
+    end
+    else
+    begin
+      debugln(['TChmHelpViewer.CheckBuildLHelp failed building of lhelp. Trying to use old version']);
+      // compile failed
+      // try to copy back the old lhelp if it existed
+      if (TmpFile <> '') and FileExistsUTF8(TmpFile) and RenameFile(TmpFile, OrigFile) then
+        Result := mrOK;
+    end;
   finally
     Tool.Free;
   end;
@@ -559,13 +592,16 @@ begin
         if fHelpConnection.RunMiscCommand(LHelpControl.mrClose) <> srError then
         begin
           // force rebuild of lhelp
-          // this may not succede but the old lhelp will be restarted anyway and
+          // this may not succeed but the old lhelp will be restarted anyway and
           // just return error codes for unknown messages.
-          CheckBuildLHelp(True);
-          // start it again
-          fHelpConnection.StartHelpServer(HelpLabel, GetHelpExe, true);
-          // now run begin update
-          fHelpConnection.BeginUpdate; // it inc's a value so calling it more than once doesn't hurt
+          if CheckBuildLHelp(True) = mrOK then
+          begin
+            // start it again
+            Debugln(['TChmHelpViewer.ShowNode restarting lhelp to use updated protocols']);
+            fHelpConnection.StartHelpServer(HelpLabel, GetHelpExe, true);
+            // now run begin update
+            fHelpConnection.BeginUpdate; // it inc's a value so calling it more than once doesn't hurt
+          end;
         end;
       end;
 
@@ -574,11 +610,12 @@ begin
       Response:=fHelpConnection.RunMiscCommand(mrShow);
       if Response<>srSuccess then
         debugln('Help viewer gave error response to mrShow command. Response was: ord: '+inttostr(ord(Response)));
-      fHelpConnection.EndUpdate;
     end;
     fHelpConnection.BeginUpdate;
     Response := fHelpConnection.OpenURL(FileName, Url);
     fHelpConnection.EndUpdate;
+    if not WasRunning then
+      fHelpConnection.EndUpdate;
   end
   else
   begin
