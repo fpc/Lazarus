@@ -832,6 +832,34 @@ begin
     DebugLn(['TLazPackageGraph.AddMessage ',MessageLineUrgencyNames[TheUrgency],' Msg="',Msg,'" Filename="',Filename,'"']);
 end;
 
+type
+  TPGInterPkgOwnerInfo = record
+    Name: string;
+    Owner: TObject;
+    HasOptionUr: boolean;
+    CompOptions: TBaseCompilerOptions;
+    SrcDirs: string; // unitpath without inherited
+    IncDirs: string; // incpath without inherited and without SrcDirs
+    UnitOutDir: string; // can be empty -> if empty FPC creates ppu in SrcDirs
+  end;
+  POwnerInfo = ^TPGInterPkgOwnerInfo;
+
+  TPGInterPkgFile = class
+  public
+    FullFilename: string;
+    ShortFilename: string;
+    AnUnitName: string;
+    Owner: TPGInterPkgOwnerInfo;
+  end;
+
+function ComparePGInterPkgFullFilenames(File1, File2: Pointer): integer;
+var
+  F1: TPGInterPkgFile absolute File1;
+  F2: TPGInterPkgFile absolute File2;
+begin
+  Result:=CompareFilenames(F1.FullFilename,F2.FullFilename);
+end;
+
 function TLazPackageGraph.CheckAmbiguousInterPkgFiles(IDEObject: TObject;
   PkgList: TFPList): TModalResult;
 { Scan all source and output directories (Note: they are already cached, because
@@ -840,25 +868,16 @@ function TLazPackageGraph.CheckAmbiguousInterPkgFiles(IDEObject: TObject;
 
   IDEObject can be a TProject, TLazPackage or TLazPackageGraph(building IDE)
   PkgList is list of TLazPackage
+
+  Check the following:
+
 }
-type
-  TOwnerInfo = record
-    Owner: TObject;
-    HasOptionUr: boolean;
-    CompOptions: TBaseCompilerOptions;
-    SrcDirs: string; // unitpath without inherited
-    IncDirs: string; // incpath without inherited and without SrcDirs
-    UnitOutDir: string;
-  end;
-  POwnerInfo = ^TOwnerInfo;
 var
-  OwnerInfos: array of TOwnerInfo;
+  OwnerInfos: array of TPGInterPkgOwnerInfo;
   TargetOS: String;
   TargetCPU: String;
   LCLWidgetType: String;
-  FilenameToOwner: TFilenameToPointerTree;
-  ShortFilenameToFileNode: TFilenameToPointerTree;
-  UnitnameToFileNode: TFilenameToPointerTree;
+  Files: TAVLTree;
 
   procedure InitOwnerInfo(OwnerInfo: POwnerInfo; TheOwner: TObject);
   var
@@ -866,14 +885,20 @@ var
     CustomOptions: String;
     p: Integer;
   begin
-    FillByte(OwnerInfo^,SizeOf(TOwnerInfo),0);
+    FillByte(OwnerInfo^,SizeOf(TPGInterPkgOwnerInfo),0);
     OwnerInfo^.Owner:=TheOwner;
     if TheOwner is TLazPackage then
-      OwnerInfo^.CompOptions:=TLazPackage(TheOwner).LazCompilerOptions as TBaseCompilerOptions
-    else if TheOwner is TLazProject then
-      OwnerInfo^.CompOptions:=TLazProject(TheOwner).LazCompilerOptions as TBaseCompilerOptions
+    begin
+      OwnerInfo^.Name:=TLazPackage(TheOwner).IDAsString;
+      OwnerInfo^.CompOptions:=TLazPackage(TheOwner).LazCompilerOptions as TBaseCompilerOptions;
+    end else if TheOwner is TLazProject then
+    begin
+      OwnerInfo^.Name:=TLazProject(TheOwner).GetTitleOrName;
+      OwnerInfo^.CompOptions:=TLazProject(TheOwner).LazCompilerOptions as TBaseCompilerOptions;
+    end
     else if TheOwner=Self then begin
       // building IDE
+      OwnerInfo^.Name:='#IDE';
       LazDir:=AppendPathDelim(EnvironmentOptions.GetParsedLazarusDirectory);
       OwnerInfo^.SrcDirs:=LazDir+'ide'
         +';'+LazDir+'debugger'
@@ -890,17 +915,61 @@ var
                                     pcosUnitPath,icoNone,false,coptParsed,true);
       OwnerInfo^.IncDirs:=OwnerInfo^.CompOptions.GetPath(
                                  pcosIncludePath,icoNone,false,coptParsed,true);
-      OwnerInfo^.UnitOutDir:=OwnerInfo^.CompOptions.GetUnitOutputDirectory(false);
+      if OwnerInfo^.CompOptions.UnitOutputDirectory<>'' then
+        OwnerInfo^.UnitOutDir:=OwnerInfo^.CompOptions.GetUnitOutputDirectory(false);
       CustomOptions:=OwnerInfo^.CompOptions.ParsedOpts.GetParsedValue(pcosCustomOptions);
       p:=1;
       OwnerInfo^.HasOptionUr:=FindNextFPCParameter(CustomOptions,'-Ur',p)>0;
     end;
-    OwnerInfo^.IncDirs:=RemoveSearchPaths(OwnerInfo^.IncDirs,OwnerInfo^.SrcDirs);
+    OwnerInfo^.IncDirs:=TrimSearchPath(RemoveSearchPaths(OwnerInfo^.IncDirs,OwnerInfo^.SrcDirs),'');
+    OwnerInfo^.UnitOutDir:=TrimFilename(OwnerInfo^.UnitOutDir);
+    OwnerInfo^.SrcDirs:=TrimSearchPath(OwnerInfo^.SrcDirs,'');
   end;
 
-  procedure CollectFiles(OwnerInfo: POwnerInfo);
+  procedure CollectFilesInDir(OwnerInfo: POwnerInfo; Dir: string;
+    var SearchedDirs: string);
+  var
+    Files: TStrings;
+    aFilename: String;
+    Ext: String;
   begin
-    // ToDo: find all unit and include files in src, inc and out dirs
+    if Dir='' then exit;
+    if not FilenameIsAbsolute(Dir) then
+    begin
+      debugln(['Inconsistency: CollectFilesInDir dir no absolute: "',Dir,'" Owner=',OwnerInfo^.Name]);
+      exit;
+    end;
+    if SearchDirectoryInSearchPath(SearchedDirs,Dir)>0 then exit;
+    Files:=nil;
+    try
+      CodeToolBoss.DirectoryCachePool.GetListing(Dir,Files,false);
+      for aFilename in Files do
+      begin
+        if (aFilename='') or (aFilename='.') or (aFilename='..') then continue;
+        Ext:=LowerCase(ExtractFileExt(aFilename));
+        if Ext='.ppu' then ;
+      end;
+    finally
+      Files.Free;
+    end;
+  end;
+
+  procedure CollectFilesOfOwner(OwnerInfo: POwnerInfo);
+  var
+    SearchedDirs: String;
+    SearchPath: String;
+    p: Integer;
+    Dir: String;
+  begin
+    // find all unit and include files in src, inc and out dirs
+    SearchedDirs:='';
+    SearchPath:=OwnerInfo^.SrcDirs+';'+OwnerInfo^.IncDirs+';'+OwnerInfo^.UnitOutDir;
+    p:=1;
+    repeat
+      Dir:=GetNextDirectoryInSearchPath(SearchPath,p);
+      if Dir='' then break;
+      CollectFilesInDir(OwnerInfo,Dir,SearchedDirs);
+    until false;
   end;
 
 var
@@ -908,9 +977,7 @@ var
 begin
   Result:=mrOk;
   if (PkgList=nil) or (PkgList.Count=0) then exit;
-  FilenameToOwner:=TFilenameToPointerTree.Create(false);
-  ShortFilenameToFileNode:=TFilenameToPointerTree.Create(true);
-  UnitnameToFileNode:=TFilenameToPointerTree.Create(true);
+  Files:=TAVLTree.Create(@ComparePGInterPkgFullFilenames);
   try
     // get target OS, CPU and LCLWidgetType
     TargetOS:='$(TargetOS)';
@@ -931,12 +998,10 @@ begin
 
     // collect files
     for i:=0 to length(OwnerInfos)-1 do
-      CollectFiles(@OwnerInfos[i]);
+      CollectFilesOfOwner(@OwnerInfos[i]);
   finally
-    UnitnameToFileNode.Free;
-    ShortFilenameToFileNode.Free;
-    FilenameToOwner.Tree.FreeAndClear;
-    FilenameToOwner.Free;
+    Files.FreeAndClear;
+    Files.Free;
   end;
 end;
 
@@ -3753,8 +3818,11 @@ begin
         end;
       end;
 
-      Result:=CheckAmbiguousInterPkgFiles(FirstDependency.Owner,PkgList);
-      if Result<>mrOk then exit;
+      if FirstDependency<>nil then
+      begin
+        Result:=CheckAmbiguousInterPkgFiles(FirstDependency.Owner,PkgList);
+        if Result<>mrOk then exit;
+      end;
 
       // add tool dependencies
       for i:=0 to BuildItems.Count-1 do begin
