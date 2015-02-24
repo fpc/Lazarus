@@ -3820,8 +3820,10 @@ begin
 
       if FirstDependency<>nil then
       begin
+        {$IFDEF EnableCheckAmbiguousInterPkgFiles}
         Result:=CheckAmbiguousInterPkgFiles(FirstDependency.Owner,PkgList);
         if Result<>mrOk then exit;
+        {$ENDIF}
       end;
 
       // add tool dependencies
