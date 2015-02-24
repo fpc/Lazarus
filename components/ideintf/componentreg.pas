@@ -182,6 +182,8 @@ type
     FUpdateLock: integer;
     fChanged: boolean;
     fChangeStamp: integer;
+    // Used to find names that differ in character case only.
+    fOrigPageHelper: TStringList;
     procedure AddHandler(HandlerType: TComponentPaletteHandlerType;
                          const AMethod: TMethod; AsLast: boolean = false);
     procedure RemoveHandler(HandlerType: TComponentPaletteHandlerType;
@@ -588,6 +590,8 @@ begin
   fPages:=TBaseComponentPageList.Create;
   fComps:=TRegisteredComponentList.Create;
   fOrigPagePriorities:=TPagePriorityList.Create;
+  fOrigPageHelper:=TStringList.Create; // Note: CaseSensitive = False
+  fOrigPageHelper.Sorted:=True;
 end;
 
 destructor TBaseComponentPalette.Destroy;
@@ -595,6 +599,7 @@ var
   HandlerType: TComponentPaletteHandlerType;
 begin
   Clear;
+  FreeAndNil(fOrigPageHelper);
   FreeAndNil(fOrigPagePriorities);
   FreeAndNil(fComps);
   FreeAndNil(fPages);
@@ -614,6 +619,7 @@ begin
     fComps[i].RealPage:=nil;
   fComps.Clear;
   fOrigPagePriorities.Clear;
+  fOrigPageHelper.Clear;
 end;
 
 procedure TBaseComponentPalette.AddHandler(HandlerType: TComponentPaletteHandlerType;
@@ -780,15 +786,24 @@ begin
   fComps.Insert(InsertIndex,NewComponent);
   OnPageAddedComponent(NewComponent);
 
-  // Store a list of page names and their priorities.
-  if (NewComponent.OrigPageName <> '')
-  and (fOrigPagePriorities.IndexOf(NewComponent.OrigPageName) = -1) then
-  begin
+  if NewComponent.FOrigPageName = '' then Exit;
+
+  // See if page was added with different char case. Use the first version always.
+  if fOrigPageHelper.Find(NewComponent.FOrigPageName, InsertIndex) then begin
+    NewComponent.FOrigPageName := fOrigPageHelper[InsertIndex]; // Possibly different case
+    Assert(fOrigPagePriorities.IndexOf(NewComponent.FOrigPageName) >= 0,
+           'TBaseComponentPalette.AddComponent: FOrigPageName not found!');
+  end
+  else begin
+    fOrigPageHelper.Add(NewComponent.FOrigPageName);
+    Assert(fOrigPagePriorities.IndexOf(NewComponent.FOrigPageName) = -1,
+           'TBaseComponentPalette.AddComponent: FOrigPageName exists but it should not!');
+    // Store a list of page names and their priorities.
     InsertIndex:=0;
     while (InsertIndex<fOrigPagePriorities.Count)
     and (ComparePriority(NewPriority, fOrigPagePriorities.Data[InsertIndex])<=0) do
       inc(InsertIndex);
-    fOrigPagePriorities.InsertKeyData(InsertIndex, NewComponent.OrigPageName, NewPriority);
+    fOrigPagePriorities.InsertKeyData(InsertIndex, NewComponent.FOrigPageName, NewPriority);
   end;
 end;
 
