@@ -22,6 +22,7 @@
 unit LazChmHelp;
 
 {$mode objfpc}{$H+}
+{ $DEFINE CHMLOADTIMES}
 
 interface
 
@@ -167,6 +168,9 @@ var
   SearchPaths: TStringList; // SearchPath split to a StringList
   SearchFiles: TStringList; // Files found in SearchPath
   i: integer;
+  {$IFDEF CHMLOADTIMES}
+  StartTime: TDateTime;
+  {$ENDIF}
 begin
   { Alternative:
     Open registered chm help files (no online html help etc)
@@ -197,6 +201,9 @@ begin
     SearchPaths.Delimiter:=';';
     SearchPaths.StrictDelimiter:=false;
     SearchPaths.DelimitedText:=SearchPath;
+    {$IFDEF CHMLOADTIMES}
+    StartTime := Now;
+    {$ENDIF}
     for i := 0 to SearchPaths.Count-1 do
     begin
       // Note: FindAllFiles has a SearchPath parameter that is a *single* directory,
@@ -204,6 +211,11 @@ begin
       CHMFiles.AddStrings(SearchFiles);
       SearchFiles.Free;
     end;
+    {$IFDEF CHMLOADTIMES}
+    DebugLn(['CHMLOADTIMES: ',Format('Searching files in %s took %d ms',[SearchPath,DateTimeToTimeStamp(Now-StartTime).Time])]);
+    StartTime := Now;
+    {$ENDIF}
+
     fHelpConnection.BeginUpdate;
     for i := 0 to CHMFiles.Count-1 do
     begin
@@ -216,6 +228,11 @@ begin
         //Application.ProcessMessages;
       end;
     end;
+    {$IFDEF CHMLOADTIMES}
+    DebugLn(['CHMLOADTIMES: ',Format('Loading chm files took %d ms',[DateTimeToTimeStamp(Now-StartTime).Time])]);
+
+    {$ENDIF}
+
 
   finally
     fHelpConnection.EndUpdate;
@@ -538,6 +555,10 @@ var
   FoundFileName: String;
   LHelpPath: String;
   WasRunning: boolean;
+  {$IFDEF CHMLOADTIMES}
+  TotalTime: TDateTime;
+  StartTime: TDateTime;
+  {$ENDIF}
 begin
   if Pos('file://', Node.URL) = 1 then
   begin
@@ -580,7 +601,14 @@ begin
     // Start server and tell it to hide
     // No use setting cursor to hourglass as that may take as long as the
     // waitforresponse timeout.
+    {$IFDEF CHMLOADTIMES}
+    TotalTime:=Now;
+    StartTime:=Now;
+    {$ENDIF}
     fHelpConnection.StartHelpServer(HelpLabel, GetHelpExe, true);
+    {$IFDEF CHMLOADTIMES}
+    DebugLn(['CHMLOADTIMES: ',Format('Starting LHelp took %d ms',[DateTimeToTimeStamp(Now-StartTime).Time])]);
+    {$ENDIF}
     // If the server is not already running, open all chm files after it has started
     // This will allow cross-chm (LCL, FCL etc) searching and browsing in lhelp.
     if not(WasRunning) then
@@ -604,8 +632,13 @@ begin
           end;
         end;
       end;
-
+      {$IFDEF CHMLOADTIMES}
+      StartTime := Now;
+      {$ENDIF}
       OpenAllCHMsInSearchPath(SearchPath);
+      {$IFDEF CHMLOADTIMES}
+      DebugLn(['CHMLOADTIMES: ',Format('Searching and Loading files took %d ms',[DateTimeToTimeStamp(Now-StartTime).Time])]);
+      {$ENDIF}
       // Instruct viewer to show its GUI
       Response:=fHelpConnection.RunMiscCommand(mrShow);
       if Response<>srSuccess then
@@ -616,6 +649,9 @@ begin
     fHelpConnection.EndUpdate;
     if not WasRunning then
       fHelpConnection.EndUpdate;
+    {$IFDEF CHMLOADTIMES}
+    DebugLn(['CHMLOADTIMES: ',Format('Total start time was %d ms',[DateTimeToTimeStamp(Now-TotalTime).Time])]);
+    {$ENDIF}
   end
   else
   begin

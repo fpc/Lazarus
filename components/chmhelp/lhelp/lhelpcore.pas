@@ -551,7 +551,7 @@ begin
       begin
         Url := 'file://'+FileReq.FileName;
         Res := OpenURL(URL);
-        debugln('got rtfile, filename '+filereq.filename);
+        //debugln('got rtfile, filename '+filereq.filename);
       end;
       rtUrl:
       begin
@@ -568,7 +568,7 @@ begin
           Url := UrlReq.Url;
           Res := OpenURL(Url);
         end;
-        debugln('got rturl, filename '+urlreq.filerequest.filename+', url '+urlreq.url);
+        //debugln('got rturl, filename '+urlreq.filerequest.filename+', url '+urlreq.url);
       end;
       rtContext:
       begin
@@ -577,7 +577,7 @@ begin
         Stream.Read(ConReq, SizeOf(ConReq));
         Url := 'file://'+FileReq.FileName;
         Res := OpenURL(Url, ConReq.HelpContext);
-        debugln('got rtcontext, filename '+filereq.filename+', context '+inttostr(ConReq.HelpContext));
+        //debugln('got rtcontext, filename '+filereq.filename+', context '+inttostr(ConReq.HelpContext));
       end;
       rtMisc:
       begin
@@ -589,7 +589,7 @@ begin
           begin
             MustClose:=true;
             Res:= ord(srSuccess);
-            debugln('got rtmisc/mrClose');
+            //debugln('got rtmisc/mrClose');
           end;
           mrShow:
           begin
@@ -598,7 +598,7 @@ begin
               WindowState := wsNormal;
             RefreshState;
             Res := ord(srSuccess);
-            debugln('got rtmisc/mrShow');
+            //debugln('got rtmisc/mrShow');
           end;
           mrVersion:
           begin
@@ -608,7 +608,7 @@ begin
               Res := ord(srSuccess)
             else
               Res := ord(srError); //version not supported
-            debugln('got rtmisc/');
+            //debugln('got rtmisc/');
           end;
           mrBeginUpdate:
           begin
@@ -635,7 +635,7 @@ begin
     // Unfortunately, the delay time is guesswork=>Sleep(80)?
     SendResponse(Res); //send response again in case first wasn't picked up
     // Keep after SendResponse to avoid timing issues (e.g. writing to log file):
-    debugln('Just sent TLHelpResponse code: '+inttostr(Res));
+    //debugln('Just sent TLHelpResponse code: '+inttostr(Res));
 
     if MustClose then
     begin
