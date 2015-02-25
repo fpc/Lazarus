@@ -302,7 +302,7 @@ begin
   if (Key = VK_SPACE) and (Shift=[]) then
   begin
     //Delphi (7) sets ItemIndex to 0 in this case and fires OnClick
-    if (ItemIndex < 0) and (Items.Count >= 0) then
+    if (ItemIndex < 0) and (Items.Count > 0) then
     begin
       ItemIndex := 0;
       Click;
