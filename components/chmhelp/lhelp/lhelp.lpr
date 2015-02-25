@@ -22,6 +22,9 @@ program lhelp;
 {$mode objfpc}{$H+}
 
 uses
+  {$IFDEF UNIX}
+  cthreads,
+  {$ENDIF}
   Interfaces, // this includes the LCL widgetset
   SysUtils, Classes, Controls, Dialogs, Forms,
   SimpleIPC, TurboPowerIPro, chmpopup, lhelpcontrolpkg, lhelpcore;

@@ -109,6 +109,7 @@ type
     fConfig: TXMLConfig;
     fHasShowed: Boolean;
     fHide: boolean; //If yes, start with content hidden. Otherwise start normally
+    fUpdateCount: Integer;
     // Keep track of whether size/position preferences were loaded and applied to form
     fLayoutApplied: boolean;
     // Applies layout (size/position/fullscreen) preferences once in lhelp lifetime
@@ -145,6 +146,10 @@ type
     procedure ShowError(AError: String);
     // Set keyup handler for control (and any child controls)
     procedure SetKeyUp(AControl: TControl);
+    // BeginUpdate tells each content provider to possibly stop some events
+    procedure BeginUpdate;
+    // EndUpdate tells each content provider to resume normal behavior
+    procedure EndUpdate;
   public
     { public declarations }
   end;
@@ -534,7 +539,7 @@ var
   Res: LongWord;
   Url: String='';
 begin
-  if fInputIPC.PeekMessage(5, True) then
+  while fInputIPC.PeekMessage(5, True) do
   begin
     Stream := fInputIPC.MsgData;
     Stream.Position := 0;
@@ -604,6 +609,16 @@ begin
             else
               Res := ord(srError); //version not supported
             debugln('got rtmisc/');
+          end;
+          mrBeginUpdate:
+          begin
+            BeginUpdate;
+            Res := ord(srSuccess);
+          end;
+          mrEndUpdate:
+          begin
+            EndUpdate;
+            Res := ord(srSuccess);
           end
           else {Unknown request}
             Res := ord(srUnknown);
@@ -834,6 +849,9 @@ begin
    fPage.ContentProvider.LoadPreferences(fConfig);
  end;
 
+ if fUpdateCount > 0 then
+   fPage.ContentProvider.BeginUpdate;
+
  if fPage.ContentProvider.LoadURL(AURL, AContext) then
  begin
    PageControl.ActivePage := fPage;
@@ -927,6 +945,42 @@ begin
   for i := 0 to WCont.ControlCount-1 do
     SetKeyUp(WCont.Controls[i]);
   WCont.OnKeyUp:=@FormKeyUp;
+end;
+
+procedure THelpForm.BeginUpdate;
+var
+  Tab: TContentTab;
+  i: Integer;
+begin
+  Inc(fUpdateCount);
+  if fUpdateCount = 1 then
+  begin
+    for i := 0 to PageControl.PageCount-1 do
+    begin
+      Tab := TContentTab(PageControl.Pages[I]);
+      Tab.ContentProvider.BeginUpdate;
+    end;
+  end;
+
+end;
+
+procedure THelpForm.EndUpdate;
+var
+  Tab: TContentTab;
+  i: Integer;
+begin
+  Dec(fUpdateCount);
+  if fUpdateCount < 0 then
+   fUpdateCount:=0;
+
+  if fUpdateCount = 0 then
+  begin
+    for i := 0 to PageControl.PageCount-1 do
+    begin
+      Tab := TContentTab(PageControl.Pages[I]);
+      Tab.ContentProvider.EndUpdate;
+    end;
+  end;
 end;
 
 { TContentTab }
