@@ -16,6 +16,7 @@ msgid "Debugger"
 msgstr ""
 
 #: gdbmistringconstants.gdbmibreakpointerroronruncommand
+#, fuzzy,badformat
 msgctxt "gdbmistringconstants.gdbmibreakpointerroronruncommand"
 msgid "The debugger encountered an error when trying to run/step the application:%0:s%0:s%1:s%0:s%0:sPress \"Ok\" to remove the breakpoints and continue debugging (paused), and correct the problem, or choose an alternative run command.%0:sPress \"Stop\" to end the debug session."
 msgstr "Derintuvei vykdant programą ar darant joje žingsnį įvyko klaida:%0:s%0:s%1:s%0:s%0:sPaspaudus „Tinka“ bus pašalinti stabdos taškai ir tęsiamas derinimas (pristabdytas), tai leis pašalinti problemą arba pasirinkti alternatyvią vykdymo komandą.0:sPaspaudus „Stabdyti“ derinimo seansas bus baigtas."
@@ -41,6 +42,7 @@ msgid "The debugger was unable to initialize itself.%0:sThe application did run 
 msgstr "Derintuvei nepavyko savęs inicializuoti.%0:sPrograma startavo (ir baigė darbą) dar prieš derintuvei dedant stabdos taškus.%0:sTikėtina to priežastis – nėra derinimo informacijos."
 
 #: gdbmistringconstants.gdbmierroronruncommand
+#, fuzzy,badformat
 msgctxt "gdbmistringconstants.gdbmierroronruncommand"
 msgid "The debugger encountered an error when trying to run/step the application:%0:s%0:s%1:s%0:s%0:sPress \"Ok\" to continue debugging (paused), and correct the problem, or choose an alternative run command.%0:sPress \"Stop\" to end the debug session."
 msgstr "Derintuvei vykdant programą ar darant joje žingsnį įvyko klaida:%0:s%0:s%1:s%0:s%0:sPaspaudus „Tinka“ bus tęsiamas derinimas (pristabdytas), tai leis pašalinti problemą arba pasirinkti alternatyvią vykdymo komandą.0:sPaspaudus „Stabdyti“ derinimo seansas bus baigtas."
@@ -184,6 +186,6 @@ msgid "Failed to load application executable"
 msgstr ""
 
 #: gdbmistringconstants.synfthedebuggerwasunabletosetallbreakpointsduringiniti
-msgid "The debugger was unable to set all breakpoints during initialization.%0:sYou may with to check if all sources were compiled with debug-info%0:sPress OK to ignore this and continue."
+msgid "The debugger was unable to set all breakpoints during initialization.%0:sYou may wish to check if all sources were compiled with debug-info.%0:sPress OK to ignore this and continue."
 msgstr ""
 

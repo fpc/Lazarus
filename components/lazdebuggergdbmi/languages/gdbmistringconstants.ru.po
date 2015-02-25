@@ -158,7 +158,6 @@ msgid "The debugger reached an unexpected %1:s%0:s%0:sPress \"Ok\" to continue d
 msgstr "Отладчик достиг не ожидавшейся точки останова %1:s(%0:s)%0:sНажмите \"ОК\" для продолжения отладки (приостановлена).%0:sНажмите \"Остановить\", чтобы закончить отладку."
 
 #: gdbmistringconstants.lisnewthegnudebuggerthroughsshallowstoremotedebugviaassh
-#| msgid "The GNU debugger through SSH allows to remote debug via a SSH connection. See docs/RemoteDebugging.txt for details. The path must contain the SSH client. Use SSH_Startup_Options for the hostname and optional username. USE Remote_GDB_Exe for the filename of GDB on the remote computer."
 msgid "The GNU debugger through SSH allows to remote debug via a SSH connection. See docs/RemoteDebugging.txt for details. The path must contain the SSH client. Use SSH_Startup_Options for the hostname and optional username. Use Remote_GDB_Exe for the filename of GDB on the remote computer."
 msgstr "Отладчик GNU через SSH позволяет проводить удалённую отладку через соединение SSH. Обратитесь к файлу docs/RemoteDebugging.txt за подробностями. Клиент SSH должен присутствовать в пути. Используйте SSH_Startup_Options для задания имени удалённой машины и, при необходимости, имени пользователя. Параметром Remote_GDB_Exe задаётся имя файла GDB на удалённой машине."
 
@@ -183,6 +182,6 @@ msgid "Failed to load application executable"
 msgstr "Не удалось загрузить исполнимый файл приложения"
 
 #: gdbmistringconstants.synfthedebuggerwasunabletosetallbreakpointsduringiniti
-msgid "The debugger was unable to set all breakpoints during initialization.%0:sYou may with to check if all sources were compiled with debug-info%0:sPress OK to ignore this and continue."
-msgstr ""
+msgid "The debugger was unable to set all breakpoints during initialization.%0:sYou may wish to check if all sources were compiled with debug-info.%0:sPress OK to ignore this and continue."
+msgstr "Отладчику не удалось установить все точки останова при инициализации.%0:sСледует проверить, что все файлы исходного кода были откомпилированы с отладочной информацией.%0:sНажмите OK, чтобы игнорировать и продолжить."
 
