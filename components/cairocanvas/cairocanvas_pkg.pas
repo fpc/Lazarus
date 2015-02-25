@@ -7,7 +7,7 @@ unit cairocanvas_pkg;
 interface
 
 uses
-  CairoCanvasAll;
+  CairoCanvas, CairoPrinter, CairoCanvasAll;
 
 implementation
 
