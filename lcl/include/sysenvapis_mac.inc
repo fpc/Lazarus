@@ -3,15 +3,17 @@
 // Open a given URL with the default browser
 function OpenURL(AURL: String): Boolean;
 var
-  url: CFURLRef;
+  url: NSURL;
+  ws: NSWorkspace;
 begin
+  Result := False;
   if AURL = '' then
     Exit(False);
-  url := CFURLCreateWithBytes(nil, @AURL[1], Length(AURL), kCFStringEncodingUTF8, nil);
+  url := NSURL.URLWithString(NSStr(@AURL[1]));
   if not Assigned(url) then
     Exit(False);
-  Result := LSOpenCFURLRef(url, nil) = 0;
-  CFRelease(url);
+  ws := NSWorkspace.sharedWorkspace;
+  Result := ws.openURL(url);
 end;
 
 // Open a document with the default application associated with it in the system
