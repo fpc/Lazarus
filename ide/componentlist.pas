@@ -19,7 +19,7 @@
  ***************************************************************************
 
   Author: Marius
-  Modified by Juha Manninen
+  Modified by Juha Manninen, Balazs Szekely
 
   Abstract:
     A dialog to quickly find components and to add the found component
@@ -33,41 +33,47 @@ interface
 
 uses
   Classes, SysUtils, LCLType, Forms, Controls, Graphics, StdCtrls, ExtCtrls,
-  ComCtrls, ButtonPanel, LazarusIDEStrConsts, ComponentReg,
-  PackageDefs, IDEImagesIntf, TreeFilterEdit, fgl;
+  ComCtrls, ButtonPanel, Menus, LazarusIDEStrConsts, ComponentReg, PackageDefs,
+  IDEImagesIntf, TreeFilterEdit, FormEditingIntf;
 
 type
-
-  TRegisteredCompList = specialize TFPGList<TRegisteredComponent>;
 
   { TComponentListForm }
 
   TComponentListForm = class(TForm)
+    imListPalette: TImageList;
+    imInheritance: TImageList;
     ListTree: TTreeView;
     ButtonPanel: TButtonPanel;
+    miCollapse: TMenuItem;
+    miCollapseAll: TMenuItem;
+    miExpand: TMenuItem;
+    miExpandAll: TMenuItem;
     OKButton: TPanelBitBtn;
     LabelSearch: TLabel;
     PageControl: TPageControl;
     FilterPanel: TPanel;
-    Panel5: TPanel;
+    PalletteTree: TTreeView;
+    InheritanceTree: TTreeView;
+    pnPaletteTree: TPanel;
     Panel6: TPanel;
     Panel7: TPanel;
+    pmCollapseExpand: TPopupMenu;
+    TabSheetPaletteTree: TTabSheet;
     TabSheetInheritance: TTabSheet;
     TabSheetList: TTabSheet;
-    TabSheetPaletteTree: TTabSheet;
-    InheritanceTree: TTreeView;
-    PalletteTree: TTreeView;
     TreeFilterEd: TTreeFilterEdit;
     procedure FormActivate(Sender: TObject);
     procedure FormShow(Sender: TObject);
+    procedure miCollapseAllClick(Sender: TObject);
+    procedure miCollapseClick(Sender: TObject);
+    procedure miExpandAllClick(Sender: TObject);
+    procedure miExpandClick(Sender: TObject);
     procedure OKButtonClick(Sender: TObject);
     procedure ComponentsDblClick(Sender: TObject);
     procedure ComponentsClick(Sender: TObject);
-    //procedure ComponentsListboxDrawItem(Control: TWinControl; Index: Integer;
-    //  ARect: TRect; State: TOwnerDrawState);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
-    procedure TreeCustomDrawItem(Sender: TCustomTreeView;
-      Node: TTreeNode; State: TCustomDrawState; var DefaultDraw: Boolean);
+    procedure pmCollapseExpandPopup(Sender: TObject);
     procedure TreeFilterEdAfterFilter(Sender: TObject);
     procedure PageControlChange(Sender: TObject);
     procedure TreeKeyPress(Sender: TObject; var Key: char);
@@ -111,9 +117,14 @@ begin
   TabSheetInheritance.Caption := lisCmpLstInheritance;
   ButtonPanel.OKButton.Caption := lisUseAndClose;
 
-  ListTree.Images:=IDEImages.Images_24;
-  InheritanceTree.Images:=ListTree.Images;
-  PalletteTree.Images:=ListTree.Images;
+  imListPalette.Width  := ComponentPaletteImageWidth;
+  imListPalette.Height := ComponentPaletteImageHeight;
+  imInheritance.Width  := ComponentPaletteImageWidth;
+  imInheritance.Height := ComponentPaletteImageHeight;
+
+  ListTree.Images := imListPalette;
+  PalletteTree.Images := imListPalette;
+  InheritanceTree.Images := imInheritance;
   PrevPageIndex := -1;
   PageControl.ActivePage := TabSheetList;
   if Assigned(IDEComponentPalette) then
@@ -211,6 +222,7 @@ var
   Node: TTreeNode;
   ClssName: string;
   i, Ind: Integer;
+  CurIcon: TCustomBitmap;
 begin
   PalList := TStringList.Create;
   try
@@ -237,7 +249,17 @@ begin
         if ClssName <> Comp.ComponentClass.ClassName then
           Node := InheritanceTree.Items.AddChild(Node, ClssName)
         else
+        begin
           Node := InheritanceTree.Items.AddChildObject(Node, ClssName, Comp);
+          CurIcon := nil;
+          if (Comp is TPkgComponent) then
+          CurIcon := TPkgComponent(Comp).Icon;
+          if CurIcon <> nil then
+          begin
+            Node.ImageIndex := imInheritance.Add(CurIcon, nil);
+            Node.SelectedIndex := Node.ImageIndex;
+          end;
+        end;
         FClassList.AddObject(ClssName, Node);
       end;
     end;
@@ -253,7 +275,10 @@ var
   Comps: TStringList;
   Comp: TRegisteredComponent;
   ParentNode: TTreeNode;
+  AListNode: TTreeNode;
+  APaletteNode: TTreeNode;
   i, j: Integer;
+  CurIcon: TCustomBitmap;
 begin
   if [csDestroying,csLoading]*ComponentState<>[] then exit;
   Screen.Cursor := crHourGlass;
@@ -268,6 +293,8 @@ begin
     FClassList.Sorted := true;
     FClassList.CaseSensitive := false;
     FClassList.Duplicates := dupIgnore;
+ //   ParentInheritence := InheritanceTree.Items.Add(nil, 'TComponent');
+//    FClassList.AddObject('TComponent', ParentInheritence);
     // Iterate all pages
     for i := 0 to IDEComponentPalette.Pages.Count-1 do
     begin
@@ -279,9 +306,19 @@ begin
       for j := 0 to Comps.Count-1 do begin
         Comp := Comps.Objects[j] as TRegisteredComponent;
         // Flat list item
-        ListTree.Items.AddChildObject(Nil, Comps[j], Comp);
+        AListNode := ListTree.Items.AddChildObject(Nil, Comps[j], Comp);
         // Palette layout item
-        PalletteTree.Items.AddChildObject(ParentNode, Comps[j], Comp);
+        APaletteNode := PalletteTree.Items.AddChildObject(ParentNode, Comps[j], Comp);
+        CurIcon := nil;
+        if (Comp is TPkgComponent) then
+          CurIcon := TPkgComponent(Comp).Icon;
+        if CurIcon <> nil then
+        begin
+          AListNode.ImageIndex := imListPalette.Add(CurIcon, nil);
+          AListNode.SelectedIndex := AListNode.ImageIndex;
+          APaletteNode.ImageIndex := AListNode.ImageIndex;
+          APaletteNode.SelectedIndex := AListNode.ImageIndex;
+        end;
         // Component inheritence item
         DoComponentInheritence(Comp);
       end;
@@ -296,53 +333,6 @@ begin
     PalletteTree.EndUpdate;
     ListTree.EndUpdate;
     Screen.Cursor := crDefault;
-  end;
-end;
-
-procedure TComponentListForm.TreeCustomDrawItem(Sender: TCustomTreeView;
-  Node: TTreeNode; State: TCustomDrawState; var DefaultDraw: Boolean);
-var
-  Comp: TRegisteredComponent;
-  ARect: TRect;
-  CurIcon: TCustomBitmap;
-  Indent, IconWidth, IconHeight, NodeTextHeight: Integer;
-begin
-  DefaultDraw := False;
-  Indent := (Sender as TTreeView).Indent;
-  Comp := TRegisteredComponent(Node.Data);
-  with Sender.Canvas do
-  begin
-    if cdsSelected in State then
-    begin
-      Brush.Color := clHighlight;   //Brush.Style := ...
-      Font.Color := clHighlightText;
-    end
-    else begin
-      Brush.Color := clDefault;
-      Font.Color := clDefault;
-    end;
-    ARect := Node.DisplayRect(False);
-    FillRect(ARect);
-    //Brush.Style := bsClear;     //don't paint over the background bitmap.
-    ARect.Left := ARect.Left + (Node.Level * Indent);
-    // ARect.Left now points to the left of the image, or text if no image
-    CurIcon := nil;
-    if Comp is TPkgComponent then
-      CurIcon := TPkgComponent(Comp).Icon;
-    if CurIcon<>nil then
-    begin
-      IconWidth := CurIcon.Width;
-      IconHeight := CurIcon.Height;
-      ARect.Left := ARect.Left + Indent;
-      //ARect.Left is now the leftmost portion of the image.
-      Draw(ARect.Left+(25-IconWidth) div 2,
-           ARect.Top+(ARect.Bottom-ARect.Top-IconHeight) div 2, CurIcon);
-      ARect.Left := ARect.Left + IconWidth + 2;
-    end;
-    NodeTextHeight := TextHeight(Node.Text);
-    Inc(ARect.Top, (ARect.Bottom - ARect.Top - NodeTextHeight) div 2);
-    //Now we are finally in a position to draw the text.
-    TextOut(ARect.Left, ARect.Top, Node.Text);
   end;
 end;
 
@@ -431,6 +421,58 @@ begin
     Close;
   end;
 end;
+
+procedure TComponentListForm.miCollapseAllClick(Sender: TObject);
+begin
+  TreeFilterEd.FilteredTreeview.FullCollapse;
+end;
+
+procedure TComponentListForm.miCollapseClick(Sender: TObject);
+var
+  Node: TTreeNode;
+begin
+  Node := TreeFilterEd.FilteredTreeview.Selected;
+  if Node = nil then
+    Exit;
+  if (Node.Level > 0) and (Node.HasChildren = False) then
+    Node := Node.Parent;
+  Node.Collapse(True);
+end;
+
+procedure TComponentListForm.miExpandAllClick(Sender: TObject);
+begin
+  TreeFilterEd.FilteredTreeview.FullExpand;
+end;
+
+procedure TComponentListForm.miExpandClick(Sender: TObject);
+var
+  Node: TTreeNode;
+begin
+  Node := TreeFilterEd.FilteredTreeview.Selected;
+  if Node = nil then
+    Exit;
+  if (Node.Level > 0) and (Node.HasChildren = False) then
+    Node := Node.Parent;
+  Node.Expand(True);
+end;
+
+procedure TComponentListForm.pmCollapseExpandPopup(Sender: TObject);
+var
+  Node: TTreeNode;
+begin
+  Node := TreeFilterEd.FilteredTreeview.Selected;
+  if Node = nil then
+  begin
+    miExpand.Enabled := False;
+    miCollapse.Enabled := False;
+  end
+  else
+  begin
+    miExpand.Enabled := (Node.HasChildren) and (not Node.Expanded);
+    miCollapse.Enabled := (Node.HasChildren) and (Node.Expanded);
+  end;
+end;
+
 
 end.
 

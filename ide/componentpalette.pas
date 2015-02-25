@@ -280,6 +280,7 @@ begin
   begin
     PgName := FComponentPages[PageI];
     DstComps := TStringList.Create;
+    DstComps.CaseSensitive := True;
     FComponentPages.Objects[PageI] := DstComps;
     i := fOptions.ComponentPages.IndexOf(PgName);
     if i >= 0 then                      // Add components reordered by user.
@@ -934,6 +935,7 @@ begin
                   Format('CacheComponentPages: %s already cached.', [PgName]));
     // Add a cache StringList for this page name.
     sl := TStringList.Create;
+    sl.CaseSensitive := True;
     fOrigComponentPageCache.AddObject(PgName, sl);
     // Find all components for this page and add them to cache.
     for CompI := 0 to fComps.Count-1 do begin
@@ -1020,9 +1022,11 @@ begin
   fComponentCache:=TAVLTree.Create(@CompareRegisteredComponents);
   fOrigComponentPageCache:=TStringList.Create;
   fOrigComponentPageCache.OwnsObjects:=True;
+  fOrigComponentPageCache.CaseSensitive:=True;
   fOrigComponentPageCache.Sorted:=True;
   fUserComponentPageCache:=TStringList.Create;
   fUserComponentPageCache.OwnsObjects:=True;
+  fUserComponentPageCache.CaseSensitive:=True;
   fUserComponentPageCache.Sorted:=True;
   OnComponentIsInvisible:=@CheckComponentDesignerVisible;
 end;
@@ -1101,6 +1105,7 @@ begin
              [PgName, Pg.PageName]));
     // New cache page
     UserComps := TStringList.Create;
+    UserComps.CaseSensitive := True;
     fUserComponentPageCache.AddObject(PgName, UserComps);
     // Associate components belonging to this page
     aVisibleCompCnt := 0;
