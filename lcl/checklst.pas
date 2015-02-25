@@ -299,12 +299,23 @@ procedure TCustomCheckListBox.KeyDown(var Key: Word; Shift: TShiftState);
 var
   Index: Integer;
 begin
-  if (Key = VK_SPACE) and (Shift=[]) and (ItemIndex >= 0) and ItemEnabled[ItemIndex] then
+  if (Key = VK_SPACE) and (Shift=[]) then
   begin
-    Index := ItemIndex;
-    Checked[Index] := not Checked[Index];
-    ItemClick(Index);
-    Key := VK_UNKNOWN;
+    //Delphi (7) sets ItemIndex to 0 in this case and fires OnClick
+    if (ItemIndex < 0) and (Items.Count >= 0) then
+    begin
+      ItemIndex := 0;
+      Click;
+    end;
+    if (ItemIndex >= 0) and ItemEnabled[ItemIndex] then
+    begin
+      Index := ItemIndex;
+      Checked[Index] := not Checked[Index];
+      ClickCheck;
+      //ToDo: does Delphi fire OnItemClick and in the same order?
+      ItemClick(Index);
+      Key := VK_UNKNOWN;
+    end;
   end else
     inherited KeyDown(Key,Shift);
 end;
