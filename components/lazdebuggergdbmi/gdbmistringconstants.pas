@@ -84,7 +84,7 @@ resourcestring
   synfFailedToInitializeDebugger = 'Failed to initialize debugger';
   synfTheDebuggerWasUnableToSetAllBreakpointsDuringIniti = 'The debugger was unable to set '
     + 'all breakpoints during initialization.%0:s'
-    + 'You may with to check if all sources were compiled with debug-info%0:s'
+    + 'You may wish to check if all sources were compiled with debug-info.%0:s'
     + 'Press OK to ignore this and continue.';
 
 implementation
