@@ -7260,9 +7260,20 @@ begin
 
   Msg.SizeType := Msg.SizeType or Size_SourceIsInterface;
 
-  Msg.Width := Word(getWidth);
-  Msg.Height := Word(getHeight);
-  
+  {Mdichild sends size of minimized title, and that's bad, after restore client
+   rect is mismatched and provokes OnResize events.We are sending
+   to the LCL Width and Height of LCLObject so resize event won't trigger.
+   issue #27518}
+  if IsMDIChild and Assigned(LCLObject) and
+    (getWindowState and QtWindowMinimized <> 0) then
+  begin
+    Msg.Width := Word(LCLObject.Width);
+    Msg.Height := Word(LCLObject.Height);
+  end else
+  begin
+    Msg.Width := Word(getWidth);
+    Msg.Height := Word(getHeight);
+  end;
   DeliverMessage(Msg);
 end;
 
@@ -11520,6 +11531,11 @@ var
   WStr: WideString;
   DataStr: WideString;
   ASelected: Boolean;
+  ImgList: TCustomImageList;
+  AImageIndex: TImageIndex;
+  Bmp: TBitmap;
+  v2: QVariantH;
+  AOk: Boolean;
 begin
 
   {do not set items during design time}
@@ -11555,9 +11571,47 @@ begin
         if (TopItem < 0) or (TopItem > TCustomListViewHack(LCLObject).Items.Count - 1) then
           break;
 
-        if (TCustomListViewHack(LCLObject).Items[TopItem].ImageIndex <> -1) then
+        ImgList := TCustomListViewHack(LCLObject).SmallImages;
+        if Assigned(ImgList) then
         begin
-          // TODO: paint icons and reduce paint overhead by checking icon
+          AImageIndex := TCustomListViewHack(LCLObject).Items[TopItem].ImageIndex;
+          if (ImgList.Count > 0) and
+            ((AImageIndex >= 0) and (AImageIndex < ImgList.Count)) then
+          begin
+            Bmp := TBitmap.Create;
+            try
+              ImgList.GetBitmap(AImageIndex, Bmp);
+              v2 := QVariant_create;
+              QListWidgetItem_data(item, v2, QtListViewOwnerDataRole);
+              if not QVariant_isNull(v2) then
+              begin
+                AOk := True;
+                if QVariant_toInt(v2, @AOk) <> AImageIndex then
+                begin
+                  v2 := QVariant_create(AImageIndex);
+                  QListWidgetItem_setData(item, QtListViewOwnerDataRole, v2);
+                  QVariant_destroy(v2);
+                  QListWidgetItem_setIcon(item, TQtImage(Bmp.Handle).AsIcon)
+                end;
+                // else we are imageIndex and that''s fine.
+              end else
+              begin
+                v2 := QVariant_create(AImageIndex);
+                QListWidgetItem_setData(item, QtListViewOwnerDataRole, v2);
+                QVariant_destroy(v2);
+                QListWidgetItem_setIcon(item, TQtImage(Bmp.Handle).AsIcon);
+              end;
+            finally
+              Bmp.Free;
+            end;
+          end else
+          if (AImageIndex < 0) then
+          begin
+            v2 := QVariant_create;
+            QListWidgetItem_setData(item, QtListViewOwnerDataRole, v2);
+            QVariant_destroy(v2);
+            QListWidgetItem_setIcon(item, nil);
+          end;
         end;
 
         WStr := GetUTF8String(TCustomListViewHack(LCLObject).Items[TopItem].Caption);
@@ -11571,7 +11625,7 @@ begin
           DataStr := '';
         QVariant_destroy(v);
 
-        ASelected := TCustomListViewHack(LCLObject).Items[TopItem].Selected;
+        // ASelected := not TCustomListViewHack(LCLObject).Items[TopItem].Selected;
 
         if (DataStr <> WStr) then
         begin
@@ -11582,8 +11636,9 @@ begin
             QVariant_destroy(v);
           end;
         end;
-        if QListWidgetItem_isSelected(Item) <> ASelected then
-          QListWidgetItem_setSelected(Item, ASelected);
+
+        // if (QListWidgetItem_isSelected(Item) <> ASelected) then
+        //  QListWidgetItem_setSelected(Item, ASelected);
 
       end else
         break;
@@ -11836,6 +11891,8 @@ begin
       begin
         HasPaint := True;
         QPaintEvent_rect(QPaintEventH(Event), @R);
+        if FOwnerData then
+          OwnerDataNeeded(R);
         DC := TQtDeviceContext.Create(QWidgetH(Sender), True);
         try
           TCustomListViewAccess(LCLObject).Canvas.handle := HDC(DC);
@@ -11908,8 +11965,7 @@ begin
             // trigger selectionChanged() here
             // Multiselection needs special handling to get proper
             // order of OnSelectItem.
-
-            if getSelectionMode > QAbstractItemViewSingleSelection then
+            if (getSelectionMode > QAbstractItemViewSingleSelection) or FOwnerData then
             begin
               Modifiers := QInputEvent_modifiers(QInputEventH(Event));
               SlotMouse(Sender, Event);
