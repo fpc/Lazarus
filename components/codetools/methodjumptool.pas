@@ -379,8 +379,8 @@ begin
                                                     GetNodeOfType(ctnProcedure);
     if (CursorNode=nil) then exit;
     // search corresponding proc node
-    Result:=FindBestProcNode(CursorNode,[phpAddClassName,phpInUpperCase],
-                             TypeSectionNode,[phpIgnoreForwards,phpInUpperCase],
+    Result:=FindBestProcNode(CursorNode,[phpAddClassName,phpInUpperCase,phpWithStart],
+                             TypeSectionNode,[phpIgnoreForwards,phpInUpperCase,phpWithStart],
                              false);
     {$IFDEF CTDEBUG}
     DebugLn('TMethodJumpingCodeTool.FindJumpPoint F FindBestProcNode=',dbgs(Result));
@@ -558,8 +558,8 @@ begin
           RaiseException('method "'+ProcName+'" has no declaration');
         end;
         // search method with same name and param list
-        Result:=FindBestProcNode(ProcNode,[phpWithoutClassName,phpInUpperCase],
-                                 StartNode,[phpInUpperCase],false);
+        Result:=FindBestProcNode(ProcNode,[phpWithoutClassName,phpInUpperCase,phpWithStart],
+                                 StartNode,[phpInUpperCase,phpWithStart],false);
         {$IFDEF CTDEBUG}
         DebugLn('TMethodJumpingCodeTool.FindJumpPoint 4E FindBestProcNode=',dbgs(Result));
         {$ENDIF}
