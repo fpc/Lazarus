@@ -146,8 +146,7 @@ type
     property GutterColor: TColor read FGutterColor write FGutterColor;
     property GutterEdgeColor: TColor read FGutterEdgeColor write FGutterEdgeColor;
 
-    property ShowHints: boolean read FShowHints
-                                write FShowHints;
+    property ShowHints: boolean read FShowHints write FShowHints;
     property AutoShow: boolean read FAutoShow write FAutoShow;
     property CheckboxForBoolean: boolean read FCheckboxForBoolean write FCheckboxForBoolean;
     property BoldNonDefaultValues: boolean read FBoldNonDefaultValues write FBoldNonDefaultValues;
@@ -353,6 +352,7 @@ type
     procedure SetSelection(const ASelection:TPersistentSelectionList);
     procedure SetPropertyEditorHook(NewPropertyEditorHook:TPropertyEditorHook);
     procedure UpdateSelectionNotifications;
+    procedure HookGetCheckboxForBoolean(var Value: Boolean);
 
     procedure AddPropertyEditor(PropEditor: TPropertyEditor);
     procedure AddStringToComboBox(const s: string);
@@ -493,17 +493,14 @@ type
     property RowCount: integer read GetRowCount;
     property Rows[Index: integer]: TOIPropertyGridRow read GetRow;
     property RowSpacing: integer read FRowSpacing write SetRowSpacing;
-    property Selection: TPersistentSelectionList read FSelection
-                                                 write SetSelection;
+    property Selection: TPersistentSelectionList read FSelection write SetSelection;
     property ShowGutter: Boolean read FShowGutter write SetShowGutter default True;
-    property CheckboxForBoolean: Boolean read FCheckboxForBoolean
-                                        write FCheckboxForBoolean;
+    property CheckboxForBoolean: Boolean read FCheckboxForBoolean write FCheckboxForBoolean;
     property PreferredSplitterX: integer read FPreferredSplitterX
                                          write FPreferredSplitterX default 100;
     property SplitterX: integer read FSplitterX write SetSplitterX default 100;
     property TopY: integer read FTopY write SetTopY default 0;
-    property Favorites: TOIFavoriteProperties read FFavorites
-                                                write SetFavorites;
+    property Favorites: TOIFavoriteProperties read FFavorites write SetFavorites;
     property Filter : TTypeKinds read FFilter write SetFilter;
   end;
 
@@ -722,7 +719,6 @@ type
     procedure SetAvailComboBoxText;
     procedure HookGetSelection(const ASelection: TPersistentSelectionList);
     procedure HookSetSelection(const ASelection: TPersistentSelectionList);
-    procedure HookGetCheckboxForBoolean(var Value: Boolean);
     procedure DestroyNoteBook;
     procedure CreateNoteBook;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
@@ -761,11 +757,10 @@ type
     property InfoBoxHeight: integer read GetInfoBoxHeight write SetInfoBoxHeight;
     property OnAddAvailPersistent: TOnAddAvailablePersistent
                  read FOnAddAvailablePersistent write FOnAddAvailablePersistent;
-    property OnAddToFavorites: TNotifyEvent read FOnAddToFavorites
-                                             write FOnAddToFavorites;
+    property OnAddToFavorites: TNotifyEvent read FOnAddToFavorites write FOnAddToFavorites;
     property OnAutoShow: TNotifyEvent read FOnAutoShow write FOnAutoShow;
-    property OnFindDeclarationOfProperty: TNotifyEvent
-           read FOnFindDeclarationOfProperty write FOnFindDeclarationOfProperty;
+    property OnFindDeclarationOfProperty: TNotifyEvent read FOnFindDeclarationOfProperty
+                                                      write FOnFindDeclarationOfProperty;
     property OnModified: TNotifyEvent read FOnModified write FOnModified;
     property OnOIKeyDown: TKeyEvent read FOnOIKeyDown write FOnOIKeyDown;
     property OnPropertyHint: TOIPropertyHint read FOnPropertyHint write FOnPropertyHint;
@@ -789,10 +784,7 @@ type
     property RestrictedProps: TOIRestrictedProperties read FRestricted write SetRestricted;
     property Selection: TPersistentSelectionList read FSelection write SetSelection;
     property AutoShow: Boolean read FAutoShow write FAutoShow;
-    property CheckboxForBoolean: Boolean read FCheckboxForBoolean
-                                        write FCheckboxForBoolean;
-    property ShowComponentTree: Boolean read FShowComponentTree
-                                        write SetShowComponentTree;
+    property ShowComponentTree: Boolean read FShowComponentTree write SetShowComponentTree;
     property ShowFavorites: Boolean read FShowFavorites write SetShowFavorites;
     property ShowInfoBox: Boolean read FShowInfoBox write SetShowInfoBox;
     property ShowRestricted: Boolean read FShowRestricted write SetShowRestricted;
@@ -866,7 +858,7 @@ begin
 
   FSelection:=TPersistentSelectionList.Create;
   FNotificationComponents:=TFPList.Create;
-  FPropertyEditorHook:=APropertyEditorHook;
+  PropertyEditorHook:=APropertyEditorHook;  // Through property setter.
   FFilter:=TypeFilter;
   FItemIndex:=-1;
   FStates:=[];
@@ -1237,6 +1229,7 @@ procedure TOICustomPropertyGrid.SetPropertyEditorHook(
 begin
   if FPropertyEditorHook=NewPropertyEditorHook then exit;
   FPropertyEditorHook:=NewPropertyEditorHook;
+  FPropertyEditorHook.AddHandlerGetCheckboxForBoolean(@HookGetCheckboxForBoolean);
   IncreaseChangeStep;
   SetSelection(FSelection);
 end;
@@ -1263,6 +1256,11 @@ begin
     end;
   end;
   //DebugLn(['TOICustomPropertyGrid.UpdateSelectionNotifications FNotificationComponents=',FNotificationComponents.Count,' FSelection=',FSelection.Count]);
+end;
+
+procedure TOICustomPropertyGrid.HookGetCheckboxForBoolean(var Value: Boolean);
+begin
+  Value := FCheckboxForBoolean;
 end;
 
 function TOICustomPropertyGrid.PropertyPath(Index:integer):string;
@@ -3798,7 +3796,7 @@ begin
 
   FShowHints := AnObjInspector.PropertyGrid.ShowHint;
   FAutoShow := AnObjInspector.AutoShow;
-  FCheckboxForBoolean := AnObjInspector.CheckboxForBoolean;
+  FCheckboxForBoolean := AnObjInspector.FCheckboxForBoolean;
   FBoldNonDefaultValues := fsBold in AnObjInspector.PropertyGrid.ValueFont.Style;
   FDrawGridLines := AnObjInspector.PropertyGrid.DrawHorzGridLines;
   FShowGutter := AnObjInspector.PropertyGrid.ShowGutter;
@@ -3828,7 +3826,7 @@ begin
   end;
   AnObjInspector.DefaultItemHeight := DefaultItemHeight;
   AnObjInspector.AutoShow := AutoShow;
-  AnObjInspector.CheckboxForBoolean := FCheckboxForBoolean;
+  AnObjInspector.FCheckboxForBoolean := FCheckboxForBoolean;
   AnObjInspector.ShowComponentTree := ShowComponentTree;
   AnObjInspector.ShowInfoBox := ShowInfoBox;
   AnObjInspector.ComponentPanelHeight := ComponentTreeHeight;
@@ -4066,10 +4064,8 @@ begin
   FPropertyEditorHook:=NewValue;
   if FPropertyEditorHook<>nil then begin
     FPropertyEditorHook.AddHandlerChangeLookupRoot(@HookLookupRootChange);
-    FPropertyEditorHook.AddHandlerRefreshPropertyValues(
-                                                @HookRefreshPropertyValues);
+    FPropertyEditorHook.AddHandlerRefreshPropertyValues(@HookRefreshPropertyValues);
     FPropertyEditorHook.AddHandlerSetSelection(@HookSetSelection);
-    FPropertyEditorHook.AddHandlerGetCheckboxForBoolean(@HookGetCheckboxForBoolean);
     Selection := nil;
     for Page:=Low(TObjectInspectorPage) to High(TObjectInspectorPage) do
       if GridControl[Page]<>nil then
@@ -4684,11 +4680,6 @@ end;
 procedure TObjectInspectorDlg.HookSetSelection(const ASelection: TPersistentSelectionList);
 begin
   Selection := ASelection;
-end;
-
-procedure TObjectInspectorDlg.HookGetCheckboxForBoolean(var Value: Boolean);
-begin
-  Value := fCheckboxForBoolean;
 end;
 
 procedure TObjectInspectorDlg.SetShowComponentTree(const AValue: boolean);

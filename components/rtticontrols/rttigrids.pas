@@ -44,6 +44,7 @@ type
     property BackgroundColor;
     property BorderSpacing;
     property BorderStyle;
+    property CheckboxForBoolean;
     property Constraints;
     property DefaultItemHeight;
     property DefaultValueFont;
