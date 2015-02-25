@@ -13470,9 +13470,9 @@ msgstr "Abhängigkeit nicht erfüllt"
 msgid "Circular dependencies found"
 msgstr "Zirkuläre Abhängigkeiten gefunden"
 
-#: lazarusidestrconsts.lispkgmangcompilingpackage
-msgid "Compiling package %s"
-msgstr "Kompiliere Package %s"
+#: lazarusidestrconsts.lispkgmangcompilepackage
+msgid "Compile package %s"
+msgstr ""
 
 #: lazarusidestrconsts.lispkgmangdeletefailed
 msgid "Delete failed"

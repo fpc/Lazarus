@@ -13376,9 +13376,9 @@ msgstr "Rikkinäinen riippuvuus"
 msgid "Circular dependencies found"
 msgstr "Kehäriippuvuus löydetty"
 
-#: lazarusidestrconsts.lispkgmangcompilingpackage
-msgid "Compiling package %s"
-msgstr "Käännetään pakettia %s"
+#: lazarusidestrconsts.lispkgmangcompilepackage
+msgid "Compile package %s"
+msgstr ""
 
 #: lazarusidestrconsts.lispkgmangdeletefailed
 msgid "Delete failed"

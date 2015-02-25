@@ -13737,9 +13737,9 @@ msgstr "Sugadinta priklausomybė"
 msgid "Circular dependencies found"
 msgstr "Aptiktas priklausomybių ratas"
 
-#: lazarusidestrconsts.lispkgmangcompilingpackage
-msgid "Compiling package %s"
-msgstr "Kompiliuojamas paketas „%s“"
+#: lazarusidestrconsts.lispkgmangcompilepackage
+msgid "Compile package %s"
+msgstr ""
 
 #: lazarusidestrconsts.lispkgmangdeletefailed
 msgid "Delete failed"

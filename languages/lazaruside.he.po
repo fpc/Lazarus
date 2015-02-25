@@ -14416,9 +14416,9 @@ msgstr "תלות שבורה"
 msgid "Circular dependencies found"
 msgstr ""
 
-#: lazarusidestrconsts.lispkgmangcompilingpackage
-msgid "Compiling package %s"
-msgstr "מהדר חבילה  %s"
+#: lazarusidestrconsts.lispkgmangcompilepackage
+msgid "Compile package %s"
+msgstr ""
 
 #: lazarusidestrconsts.lispkgmangdeletefailed
 msgid "Delete failed"

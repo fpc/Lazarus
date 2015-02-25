@@ -13637,9 +13637,9 @@ msgstr "壊れた依存性"
 msgid "Circular dependencies found"
 msgstr "循環参照が見つかりました"
 
-#: lazarusidestrconsts.lispkgmangcompilingpackage
-msgid "Compiling package %s"
-msgstr "パッケージ%sをコンパイル中"
+#: lazarusidestrconsts.lispkgmangcompilepackage
+msgid "Compile package %s"
+msgstr ""
 
 #: lazarusidestrconsts.lispkgmangdeletefailed
 msgid "Delete failed"

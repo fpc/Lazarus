@@ -14368,9 +14368,9 @@ msgstr "Dependencia rota"
 msgid "Circular dependencies found"
 msgstr "Dependencia circular encontrada"
 
-#: lazarusidestrconsts.lispkgmangcompilingpackage
-msgid "Compiling package %s"
-msgstr "Compilando paquete %s"
+#: lazarusidestrconsts.lispkgmangcompilepackage
+msgid "Compile package %s"
+msgstr ""
 
 #: lazarusidestrconsts.lispkgmangdeletefailed
 msgid "Delete failed"

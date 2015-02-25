@@ -14203,8 +14203,8 @@ msgstr "取消依赖关系"
 msgid "Circular dependencies found"
 msgstr ""
 
-#: lazarusidestrconsts.lispkgmangcompilingpackage
-msgid "Compiling package %s"
+#: lazarusidestrconsts.lispkgmangcompilepackage
+msgid "Compile package %s"
 msgstr ""
 
 #: lazarusidestrconsts.lispkgmangdeletefailed

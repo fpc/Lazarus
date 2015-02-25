@@ -13724,9 +13724,9 @@ msgstr "Залежність порушена"
 msgid "Circular dependencies found"
 msgstr "Знайдені кругові залежності"
 
-#: lazarusidestrconsts.lispkgmangcompilingpackage
-msgid "Compiling package %s"
-msgstr "Компілювання пакунку %s"
+#: lazarusidestrconsts.lispkgmangcompilepackage
+msgid "Compile package %s"
+msgstr ""
 
 #: lazarusidestrconsts.lispkgmangdeletefailed
 msgid "Delete failed"

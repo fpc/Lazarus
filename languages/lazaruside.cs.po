@@ -13530,9 +13530,9 @@ msgstr "Porušená závislost"
 msgid "Circular dependencies found"
 msgstr "Nalezeny kruhové závislosti"
 
-#: lazarusidestrconsts.lispkgmangcompilingpackage
-msgid "Compiling package %s"
-msgstr "Překládání balíčku %s"
+#: lazarusidestrconsts.lispkgmangcompilepackage
+msgid "Compile package %s"
+msgstr ""
 
 #: lazarusidestrconsts.lispkgmangdeletefailed
 msgid "Delete failed"

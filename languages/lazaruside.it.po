@@ -13488,9 +13488,9 @@ msgstr "Dipendenza errata"
 msgid "Circular dependencies found"
 msgstr "Trovate dipendenze circolari"
 
-#: lazarusidestrconsts.lispkgmangcompilingpackage
-msgid "Compiling package %s"
-msgstr "Compilazione del pacchetto %s"
+#: lazarusidestrconsts.lispkgmangcompilepackage
+msgid "Compile package %s"
+msgstr ""
 
 #: lazarusidestrconsts.lispkgmangdeletefailed
 msgid "Delete failed"

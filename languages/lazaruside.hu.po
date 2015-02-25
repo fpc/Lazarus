@@ -13477,9 +13477,9 @@ msgstr "Megszakadt függőség"
 msgid "Circular dependencies found"
 msgstr "Körkörös függőség észlelve"
 
-#: lazarusidestrconsts.lispkgmangcompilingpackage
-msgid "Compiling package %s"
-msgstr "Csomag fordítása: %s"
+#: lazarusidestrconsts.lispkgmangcompilepackage
+msgid "Compile package %s"
+msgstr ""
 
 #: lazarusidestrconsts.lispkgmangdeletefailed
 msgid "Delete failed"
