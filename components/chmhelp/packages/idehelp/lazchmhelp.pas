@@ -207,7 +207,7 @@ begin
     for i := 0 to SearchPaths.Count-1 do
     begin
       // Note: FindAllFiles has a SearchPath parameter that is a *single* directory,
-      SearchFiles := FindAllFiles(SearchPaths[i], '*.chm;*.CHM;*.Chm');
+      SearchFiles := FindAllFiles(SearchPaths[i], '*.chm;*.CHM;*.Chm', False);
       CHMFiles.AddStrings(SearchFiles);
       SearchFiles.Free;
     end;
