@@ -2331,8 +2331,6 @@ type
     cDefWidth = 180;
     cDivider: SmallInt = 2;
     cGrabIndent: SmallInt = 2;
-    cHorSpacing = 5;
-    cVertSpacing = 3;
   protected
     FControlLeft: Integer;
     FControlTop: Integer;
@@ -2405,11 +2403,13 @@ type
     FFixedOrder: Boolean;
     FGrabStyle: TGrabStyle;
     FGrabWidth: Integer;
+    FHorizontalSpacing: Integer;
     FImages: TCustomImageList;
     FImageChangeLink: TChangeLink;
+    FOnChange: TNotifyEvent;
     FShowText: Boolean;
     FVertical: Boolean;
-    FOnChange: TNotifyEvent;
+    FVerticalSpacing: Integer;
     function GetAlign: TAlign;
     function RowEndHelper(ALeft, AVisibleIdx: Integer): Boolean;
     procedure SetBandBorderStyle(AValue: TBorderStyle);
@@ -2417,12 +2417,16 @@ type
     procedure SetBitmap(AValue: TBitmap);
     procedure SetGrabStyle(AValue: TGrabStyle);
     procedure SetGrabWidth(AValue: Integer);
+    procedure SetHorizontalSpacing(AValue: Integer);
     procedure SetImages(AValue: TCustomImageList);
     procedure SetShowText(AValue: Boolean);
     procedure SetVertical(AValue: Boolean);
+    procedure SetVerticalSpacing(AValue: Integer);
   protected const
     cDefGrabStyle = gsDouble;
     cDefGrabWidth = 10;
+    cDefHorSpacing = 5;
+    cDefVertSpacing = 3;
     cNewRowBelow: SmallInt = -1;
     cNewRowAbove: SmallInt = -2;
   protected
@@ -2479,9 +2483,11 @@ type
     property FixedOrder: Boolean read FFixedOrder write FFixedOrder default False;
     property GrabStyle: TGrabStyle read FGrabStyle write SetGrabStyle default cDefGrabStyle;
     property GrabWidth: Integer read FGrabWidth write SetGrabWidth default cDefGrabWidth;
+    property HorizontalSpacing: Integer read FHorizontalSpacing write SetHorizontalSpacing default cDefHorSpacing;
     property Images: TCustomImageList read FImages write SetImages;
     property ShowText: Boolean read FShowText write SetShowText default True;
     property Vertical: Boolean read FVertical write SetVertical default False;
+    property VerticalSpacing: Integer read FVerticalSpacing write SetVerticalSpacing default cDefVertSpacing;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
   end;
 
@@ -2512,6 +2518,7 @@ type
     property Font;
     property GrabStyle;
     property GrabWidth;
+    property HorizontalSpacing;
     property Images;
     property ParentColor;
     property ParentFont;
@@ -2521,6 +2528,7 @@ type
     property ShowHint;
     property ShowText;
     property Vertical;
+    property VerticalSpacing;
     property Visible;
     property OnChange;
     property OnClick;
