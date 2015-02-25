@@ -31,7 +31,7 @@ unit InterPkgConflictFiles;
 interface
 
 uses
-  Classes, SysUtils, contnrs, AVL_Tree, InterfaceBase,
+  Classes, SysUtils, contnrs, AVL_Tree, InterfaceBase, Forms, ComCtrls,
   FileProcs, LazFileUtils, BasicCodeTools, DefineTemplates, CodeToolManager,
   // IDEIntf
   ProjectIntf, CompOptsIntf,
@@ -68,15 +68,34 @@ type
     constructor Create(TheFullFilename, TheUnitName: string; Owner: TPGInterPkgOwnerInfo);
   end;
 
-  { TPGIPAmbiguousCompiledFile }
+  { TPGIPAmbiguousFile }
 
-  TPGIPAmbiguousCompiledFile = class
+  TPGIPAmbiguousFile = class
   public
-    Filename: string; // e.g. the .ppu or .o file
-    SrcFilename: string; // the corresponding .pas/.pp file, if it exists
+    Filename: string;
     OwnerInfo: TPGInterPkgOwnerInfo;
     ConflictFilename: string;
     ConflictOwner: TPGInterPkgOwnerInfo;
+  end;
+
+  { TPGIPAmbiguousCompiledFile }
+
+  TPGIPAmbiguousCompiledFile = class(TPGIPAmbiguousFile)
+  public
+    SrcFilename: string; // the corresponding .pas/.pp file, if it exists
+    ConflictSrcFilename: string; // the corresponding .pas/.pp file, if it exists
+  end;
+
+  { TPGIPConflictsDialog }
+
+  TPGIPConflictsDialog = class(TForm)
+    ConflictsTreeView: TTreeView;
+  private
+    procedure Fill;
+  public
+    SrcFiles: TObjectList; // list of TPGIPAmbiguousFile
+    CompiledFiles: TObjectList; // list of TPGIPAmbiguousCompiledFile
+    procedure Init;
   end;
 
 function ComparePGInterPkgFullFilenames(File1, File2: Pointer): integer;
@@ -101,6 +120,64 @@ var
   F2: TPGInterPkgFile absolute File2;
 begin
   Result:=CompareFilenames(F1.ShortFilename,F2.ShortFilename);
+end;
+
+procedure TPGIPConflictsDialog.Fill;
+begin
+
+end;
+
+procedure TPGIPConflictsDialog.Init;
+
+  function AddChild(ParentNode: TTreeNode; Caption: string): TTreeNode;
+  begin
+    Result:=ConflictsTreeView.Items.AddChild(ParentNode,Caption);
+  end;
+
+var
+  MainNode: TTreeNode;
+  i: Integer;
+  CurFile: TPGIPAmbiguousCompiledFile;
+  ItemNode: TTreeNode;
+  s: String;
+begin
+  ConflictsTreeView.Items.Clear;
+  if CompiledFiles.Count>0 then
+  begin
+    MainNode:=ConflictsTreeView.Items.Add(nil,'Conflicting compiled files');
+    for i:=0 to CompiledFiles.Count-1 do
+    begin
+      CurFile:=TPGIPAmbiguousCompiledFile(CompiledFiles[i]);
+      ItemNode:=AddChild(MainNode,ExtractFilename(CurFile.Filename));
+      // file owner
+      if CurFile.OwnerInfo.Owner is TLazPackage then
+        s:='Package: '+CurFile.OwnerInfo.Name
+      else
+        s:=CurFile.OwnerInfo.Name;
+      AddChild(ItemNode,s);
+      // file path and src
+      AddChild(ItemNode,'File: '+CurFile.Filename);
+      if CurFile.SrcFilename='' then
+        s:='No source found'
+      else
+        s:='Src: '+CurFile.SrcFilename;
+      AddChild(ItemNode,s);
+
+      // conflict file owner
+      if CurFile.ConflictOwner.Owner is TLazPackage then
+        s:='Conflict Package: '+CurFile.ConflictOwner.Name
+      else
+        s:=CurFile.ConflictOwner.Name;
+      AddChild(ItemNode,s);
+      // conflict file path
+      AddChild(ItemNode,'Conflict File: '+CurFile.ConflictFilename);
+      if CurFile.ConflictSrcFilename='' then
+        s:='No source found'
+      else
+        s:='Src: '+CurFile.ConflictSrcFilename;
+      AddChild(ItemNode,s);
+    end;
+  end;
 end;
 
 { TPGInterPkgFile }
@@ -132,6 +209,7 @@ var
   Units: TAVLTree; // tree of TPGInterPkgFile sorted for AnUnitName
   ShortFiles: TAVLTree; // tree of TPGInterPkgFile sorted for ShortFilename
   AmbiguousCompiledFiles: TObjectList; // list of TPGIPAmbiguousCompiledFile
+  AmbiguousSrcFiles: TObjectList; // list of TPGIPAmbiguousFile
 
   procedure AddOwnerInfo(TheOwner: TObject);
   var
@@ -308,6 +386,21 @@ var
     end;
   end;
 
+  function OptionUrAllowsDuplicate(File1, File2: TPGInterPkgFile): boolean;
+  begin
+    Result:=true;
+    if File1.OwnerInfo.HasOptionUr
+    and File2.OwnerInfo.HasOptionUr then
+      exit;
+    if File1.OwnerInfo.HasOptionUr
+    and OwnerHasDependency(File2.OwnerInfo,File1.OwnerInfo) then
+      exit;
+    if File2.OwnerInfo.HasOptionUr
+    and OwnerHasDependency(File1.OwnerInfo,File2.OwnerInfo) then
+      exit;
+    Result:=false;
+  end;
+
   procedure CheckPPUFilesInWrongDirs;
   { Check if a ppu/o of pkg A has a unit (source or ppu) in another package B
     Unless A uses B and B has -Ur or A has -Ur and B uses A
@@ -322,7 +415,7 @@ var
     OtherFile: TPGInterPkgFile;
     SrcFileNode: TAVLTreeNode;
     SrcFile: TPGInterPkgFile;
-    AmbiguousCompiledFile: TPGIPAmbiguousCompiledFile;
+    AmbiguousFile: TPGIPAmbiguousCompiledFile;
   begin
     CurNode:=Units.FindLowest;
     FirstNodeSameUnitname:=nil;
@@ -335,8 +428,11 @@ var
       Ext:=lowercase(ExtractFileExt(CurFile.ShortFilename));
       if (Ext<>'.ppu') and (Ext<>'.o') then continue;
       // check units with same name
+
+      // ToDo: only one report per ppu
+
       OtherNode:=FirstNodeSameUnitname;
-      while (OtherNode<>nil) do begin
+      while OtherNode<>nil do begin
         OtherFile:=TPGInterPkgFile(OtherNode.Data);
         if (ComparePGInterPkgUnitnames(CurFile,OtherFile)<>0) then break;
         // other unit with same name found
@@ -344,15 +440,7 @@ var
         if OtherFile.OwnerInfo=CurFile.OwnerInfo then continue;
         // ppu in one package, unit with same name in another package
         debugln(['CheckPPUFilesInWrongDirs duplicate units found: file1="',CurFile.FullFilename,'"(',CurFile.OwnerInfo.Name,') file2="',OtherFile.FullFilename,'"(',OtherFile.OwnerInfo.Name,')']);
-        if CurFile.OwnerInfo.HasOptionUr
-        and OtherFile.OwnerInfo.HasOptionUr then
-          continue;
-        if CurFile.OwnerInfo.HasOptionUr
-        and OwnerHasDependency(OtherFile.OwnerInfo,CurFile.OwnerInfo) then
-          continue;
-        if OtherFile.OwnerInfo.HasOptionUr
-        and OwnerHasDependency(CurFile.OwnerInfo,OtherFile.OwnerInfo) then
-          continue;
+        if OptionUrAllowsDuplicate(CurFile,OtherFile) then continue;
         // check if this package has a source for this ppu
         SrcFileNode:=FirstNodeSameUnitname;
         SrcFile:=nil;
@@ -368,36 +456,69 @@ var
           if FilenameIsPascalUnit(SrcFile.ShortFilename) then
             break; // yes, there is a unit source
         end;
-        AmbiguousCompiledFile:=TPGIPAmbiguousCompiledFile.Create;
-        AmbiguousCompiledFile.Filename:=CurFile.FullFilename;
-        AmbiguousCompiledFile.OwnerInfo:=CurFile.OwnerInfo;
-        AmbiguousCompiledFile.ConflictFilename:=OtherFile.FullFilename;
-        AmbiguousCompiledFile.ConflictOwner:=OtherFile.OwnerInfo;
+        AmbiguousFile:=TPGIPAmbiguousCompiledFile.Create;
+        AmbiguousFile.Filename:=CurFile.FullFilename;
+        AmbiguousFile.OwnerInfo:=CurFile.OwnerInfo;
+        AmbiguousFile.ConflictFilename:=OtherFile.FullFilename;
+        AmbiguousFile.ConflictOwner:=OtherFile.OwnerInfo;
         if SrcFileNode<>nil then
         begin
           // ppu with src in one package, duplicate unit in another package
           // Note: This could be right if the other package does not use the src file
           // Otherwise: duplicate name (-Ur has been checked)
           debugln(['CheckPPUFilesInWrongDirs duplicate units found: file1="',CurFile.FullFilename,'"(',CurFile.OwnerInfo.Name,',source=',SrcFile.ShortFilename,') file2="',OtherFile.FullFilename,'"(',OtherFile.OwnerInfo.Name,')']);
-          AmbiguousCompiledFile.SrcFilename:=SrcFile.FullFilename;
+          AmbiguousFile.SrcFilename:=SrcFile.FullFilename;
         end else begin
           // ppu with no src in one package, duplicate unit in another package
           // (-Ur has been checked)
           // => highly unlikely that this is right
           debugln(['CheckPPUFilesInWrongDirs duplicate units found: file1="',CurFile.FullFilename,'"(',CurFile.OwnerInfo.Name,',no source) file2="',OtherFile.FullFilename,'"(',OtherFile.OwnerInfo.Name,')']);
         end;
-        AmbiguousCompiledFiles.Add(AmbiguousCompiledFile);
+        AmbiguousCompiledFiles.Add(AmbiguousFile);
       end;
     end;
   end;
 
   procedure CheckDuplicateSrcFiles;
-  { Check if a src file in pkg A with the same short name exist in another package B
+  { Check if a src file in pkg A exists in another package B
     Unless A uses B and B has -Ur or A has -Ur and B uses A
     => IDE: ignore or cancel
     => lazbuild: warn }
+  var
+    CurNode: TAVLTreeNode;
+    CurFile: TPGInterPkgFile;
+    FirstNodeSameShortName: TAVLTreeNode;
+    OtherNode: TAVLTreeNode;
+    OtherFile: TPGInterPkgFile;
+    AmbiguousFile: TPGIPAmbiguousFile;
   begin
-
+    CurNode:=ShortFiles.FindLowest;
+    FirstNodeSameShortName:=nil;
+    while CurNode<>nil do begin
+      CurFile:=TPGInterPkgFile(CurNode.Data);
+      if (FirstNodeSameShortName=nil)
+      or (ComparePGInterPkgShortFilename(CurFile,FirstNodeSameShortName)<>0) then
+        FirstNodeSameShortName:=CurNode;
+      CurNode:=Units.FindSuccessor(CurNode);
+      // check files with same short name
+      OtherNode:=FirstNodeSameShortName;
+      while OtherNode<>nil do begin
+        OtherFile:=TPGInterPkgFile(OtherNode.Data);
+        if (ComparePGInterPkgShortFilename(CurFile,OtherFile)<>0) then break;
+        // other file with same short name found
+        OtherNode:=Units.FindSuccessor(OtherNode);
+        if OtherFile.OwnerInfo=CurFile.OwnerInfo then continue;
+        // two files with same short name in different packages
+        if OptionUrAllowsDuplicate(CurFile,OtherFile) then continue;
+        debugln(['CheckDuplicateSrcFiles duplicate file found: file1="',CurFile.FullFilename,'"(',CurFile.OwnerInfo.Name,') file2="',OtherFile.FullFilename,'"(',OtherFile.OwnerInfo.Name,')']);
+        AmbiguousFile:=TPGIPAmbiguousFile.Create;
+        AmbiguousFile.Filename:=CurFile.FullFilename;
+        AmbiguousFile.OwnerInfo:=CurFile.OwnerInfo;
+        AmbiguousFile.ConflictFilename:=OtherFile.FullFilename;
+        AmbiguousFile.ConflictOwner:=OtherFile.OwnerInfo;
+        AmbiguousSrcFiles.Add(AmbiguousFile);
+      end;
+    end;
   end;
 
 var
@@ -411,6 +532,7 @@ begin
   Units:=TAVLTree.Create(@ComparePGInterPkgUnitnames);
   ShortFiles:=TAVLTree.Create(@ComparePGInterPkgShortFilename);
   AmbiguousCompiledFiles:=TObjectList.create(true);
+  AmbiguousSrcFiles:=TObjectList.create(true);
   try
     // get target OS, CPU and LCLWidgetType
     TargetOS:='$(TargetOS)';
@@ -436,8 +558,13 @@ begin
     // checks
     CheckPPUFilesInWrongDirs;
     CheckDuplicateSrcFiles;
+    if (AmbiguousSrcFiles.Count=0)
+    and (AmbiguousCompiledFiles.Count=0) then exit;
+
+
   finally
     AmbiguousCompiledFiles.Free;
+    AmbiguousSrcFiles.Free;
     Units.Free;
     ShortFiles.Free;
     FullFiles.FreeAndClear;

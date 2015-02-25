@@ -17,6 +17,7 @@
       <XPManifest>
         <DpiAware Value="True"/>
       </XPManifest>
+      <Icon Value="-1"/>
     </General>
     <LazDoc Paths="docs/xml/ide"/>
     <VersionInfo>
@@ -773,7 +774,6 @@
       <Unit123>
         <Filename Value="lazarusidestrconsts.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="LazarusIDEStrConsts"/>
       </Unit123>
       <Unit124>
         <Filename Value="codetemplatesdlg.pas"/>
@@ -826,7 +826,6 @@
         <Filename Value="abstractsmethodsdlg.pas"/>
         <IsPartOfProject Value="True"/>
         <HasResources Value="True"/>
-        <UnitName Value="AbstractsMethodsDlg"/>
       </Unit135>
       <Unit136>
         <Filename Value="projectuserresources.pas"/>
@@ -1334,7 +1333,7 @@
     </Target>
     <SearchPaths>
       <IncludeFiles Value="include"/>
-      <OtherUnitFiles Value="frames;../converter;../debugger;../debugger/frames;../packager;../designer;../packager/frames;../ide;../packager;../packager;../packager;../packager"/>
+      <OtherUnitFiles Value="frames;../converter;../debugger;../debugger/frames;../packager;../designer;../packager/frames;../ide"/>
       <UnitOutputDirectory Value="$(LazarusDir)/units/$(TargetCPU)-$(TargetOS)/$(LCLWidgetType)"/>
     </SearchPaths>
     <Linking>
