@@ -7411,6 +7411,7 @@ packager/globallinks/weblaz-1.lpl svneol=native#text/plain
 packager/globallinks/xmlresource-1.lpl svneol=native#text/plain
 packager/installpkgsetdlg.lfm svneol=native#text/plain
 packager/installpkgsetdlg.pas svneol=native#text/pascal
+packager/interpkgconflictfiles.lfm svneol=native#text/plain
 packager/interpkgconflictfiles.pas svneol=native#text/plain
 packager/lpkcache.pas svneol=native#text/plain
 packager/missingpkgfilesdlg.lfm svneol=native#text/plain

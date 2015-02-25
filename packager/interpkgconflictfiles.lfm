@@ -1,0 +1,42 @@
+object PGIPConflictsDialog: TPGIPConflictsDialog
+  Left = 347
+  Height = 424
+  Top = 221
+  Width = 469
+  ClientHeight = 424
+  ClientWidth = 469
+  Position = poScreenCenter
+  LCLVersion = '1.5'
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 36
+    Top = 382
+    Width = 457
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
+    TabOrder = 0
+    ShowButtons = [pbOK, pbCancel]
+  end
+  object ConflictsTreeView: TTreeView
+    Left = 6
+    Height = 370
+    Top = 6
+    Width = 457
+    Align = alClient
+    BorderSpacing.Around = 6
+    DefaultItemHeight = 18
+    ReadOnly = True
+    TabOrder = 1
+    Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
+  end
+  object IDEDialogLayoutStorage1: TIDEDialogLayoutStorage
+    left = 161
+    top = 104
+  end
+end
