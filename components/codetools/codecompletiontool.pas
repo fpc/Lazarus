@@ -8335,7 +8335,7 @@ var
   ANode: TCodeTreeNode;
 begin
   Result:=GatherProcNodes(ClassNode.FirstChild,
-             [phpInUpperCase,phpAddClassName],ExtractClassName(ClassNode,true));
+             [phpInUpperCase,phpAddClassName,phpWithStart],ExtractClassName(ClassNode,true));
   if RemoveAbstracts then begin
     AnAVLNode:=Result.FindLowest;
     while AnAVLNode<>nil do begin
@@ -8359,7 +8359,7 @@ var
 begin
   TypeSectionNode:=ClassNode.GetTopMostNodeOfType(ctnTypeSection);
   Result:=GatherProcNodes(TypeSectionNode,
-                      [phpInUpperCase,phpIgnoreForwards,phpOnlyWithClassname],
+                      [phpInUpperCase,phpIgnoreForwards,phpOnlyWithClassname,phpWithStart],
                        ExtractClassName(ClassNode,true));
 end;
 
@@ -8904,7 +8904,7 @@ begin
     FCodeCompleteClassNode:=FindClassNode(CursorNode,CurClassName,true,false);
     if CodeCompleteClassNode=nil then
       RaiseException('oops, I lost your class');
-    ProcNode:=FindProcNode(CursorNode,FJumpToProcName,[phpInUpperCase,phpIgnoreForwards]);
+    ProcNode:=FindProcNode(CursorNode,FJumpToProcName,[phpInUpperCase,phpIgnoreForwards,phpWithStart]);
     if ProcNode=nil then begin
       debugln(['TCodeCompletionCodeTool.ApplyChangesAndJumpToFirstNewProc Proc="',FJumpToProcName,'"']);
       RaiseException(ctsNewProcBodyNotFound);
