@@ -495,6 +495,16 @@ var
         // other unit with same name found
         OtherNode:=OtherNode.Successor;
         if OtherFile.OwnerInfo=aPPUFile.OwnerInfo then continue;
+
+        if CompareFilenames(aPPUFile.FullFilename,OtherFile.FullFilename)=0 then
+        begin
+          // two packages share directories
+          // it would would require a lenghty codetools check to find out
+          // if this is right or wrong
+          // => skip
+          continue;
+        end;
+
         // ppu in one package, unit with same name in another package
         if OptionUrAllowsDuplicate(aPPUFile,OtherFile) then continue;
         //debugln(['CheckPPUFilesInWrongDirs duplicate units found: file1="',aPPUFile.FullFilename,'"(',aPPUFile.OwnerInfo.Name,') file2="',OtherFile.FullFilename,'"(',OtherFile.OwnerInfo.Name,')']);
@@ -557,6 +567,16 @@ var
       while OtherNode<>nil do begin
         OtherFile:=TPGInterPkgFile(OtherNode.Data);
         if (ComparePGInterPkgShortFilename(CurFile,OtherFile)<>0) then break;
+
+        if CompareFilenames(CurFile.FullFilename,OtherFile.FullFilename)=0 then
+        begin
+          // two packages share directories
+          // it would would require a lenghty codetools check to find out
+          // if this is right or wrong
+          // => skip
+          continue;
+        end;
+
         // other file with same short name found
         OtherNode:=OtherNode.Successor;
         if OtherFile.OwnerInfo=CurFile.OwnerInfo then continue;
