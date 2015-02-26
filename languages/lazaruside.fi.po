@@ -6847,10 +6847,8 @@ msgid "Cursor row in current editor"
 msgstr "Kursorin rivi nykyisessä editorissa"
 
 #: lazarusidestrconsts.liscustomopthint
-#, fuzzy
-#| msgid "These options are passed to the compiler after comments are deleted and macros are replaced."
 msgid "These options are passed to the compiler after macros are replaced."
-msgstr "Nämä asetukset viedään kääntäjälle, kun kommentit on poistettu ja makrot korvattu."
+msgstr "Nämä asetukset viedään kääntäjälle, kun makrot on korvattu."
 
 #: lazarusidestrconsts.liscustomoptions
 msgid "custom options"
@@ -18247,16 +18245,12 @@ msgid "Guess Misplaced $IFDEF"
 msgstr "Arvaa väärin sijoitettu $IFDEF"
 
 #: lazarusidestrconsts.srkmechalfwordleft
-#, fuzzy
-#| msgid "Move cursor half-word left"
 msgid "Move cursor part-word left (e.g. CamelCase)"
-msgstr "Siirrä kursori puoli sanaa vasemmalle"
+msgstr "Siirrä kursori osa sanasta vasemmalle (esim. CamelCase)"
 
 #: lazarusidestrconsts.srkmechalfwordright
-#, fuzzy
-#| msgid "Move cursor half-word right"
 msgid "Move cursor part-word right (e.g. CamelCase)"
-msgstr "Siirrä kursori puoli sanaa oikealle"
+msgstr "Siirrä kursori osa sanasta oikealle (esim. CamelCase)"
 
 #: lazarusidestrconsts.srkmecimestr
 msgid "Ime Str"
@@ -18597,16 +18591,12 @@ msgid "Select Goto XY"
 msgstr "Valitse Goto XY"
 
 #: lazarusidestrconsts.srkmecselhalfwordleft
-#, fuzzy
-#| msgid "Select half-word left"
 msgid "Select part-word left (e.g. CamelCase)"
-msgstr "Valitse puoli sanaa vasemmalle"
+msgstr "Valitse osa sanasta vasemmalle (esim. CamelCase)"
 
 #: lazarusidestrconsts.srkmecselhalfwordright
-#, fuzzy
-#| msgid "Select half-word right"
 msgid "Select part-word right (e.g. CamelCase)"
-msgstr "Valitse puoli sanaa oikealle"
+msgstr "Valitse osa sanasta oikealle (esim. CamelCase)"
 
 #: lazarusidestrconsts.srkmecselleft
 msgid "Select Left"
