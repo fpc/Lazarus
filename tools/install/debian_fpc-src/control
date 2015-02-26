@@ -3,7 +3,8 @@ Version: FPCVERSION
 Section: devel
 Priority: optional
 Maintainer: Mattias Gaertner <mattias@cvs.freepascal.org>
-Architecture: ARCH 
+Architecture: ARCH
+Replaces: fpc-source
 Installed-Size: DEBSIZE
 Description: Free Pascal Sources
  The Free Pascal Compiler is a Turbo Pascal 7.0 and Delphi compatible 
