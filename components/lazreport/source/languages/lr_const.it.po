@@ -106,13 +106,11 @@ msgid "Cross footer"
 msgstr "Pedice incrodiato"
 
 #: lr_const.sband22
-#| msgid "None"
 msgctxt "lr_const.sband22"
 msgid "Child"
 msgstr "Figlio"
 
 #: lr_const.sband23
-#| msgid "None"
 msgctxt "lr_const.sband23"
 msgid "None"
 msgstr "Nessuno"

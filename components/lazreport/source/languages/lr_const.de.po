@@ -112,13 +112,11 @@ msgid "Cross footer"
 msgstr "Kreuz-Footer"
 
 #: lr_const.sband22
-#| msgid "None"
 msgctxt "lr_const.sband22"
 msgid "Child"
 msgstr "Nachfolger"
 
 #: lr_const.sband23
-#| msgid "None"
 msgctxt "lr_const.sband23"
 msgid "None"
 msgstr "Keiner"
@@ -311,7 +309,6 @@ msgid "COPY(<String>, <Position>, <Length>)/Returns <Length> characters from <St
 msgstr "COPY(<String>, <Position>, <Length>)/gibt <Length> Zeichen von <String> ab <Position>."
 
 #: lr_const.sdescriptioncount
-#| msgid "COUNT(<BandName>)/Returns count of data-rows given in the <BandName>. COUNT(<BandName>)/Returns count of data rows given in the <BandName>. "
 msgid "COUNT(<BandName>)/Returns count of data rows given in the <BandName>. "
 msgstr "COUNT(<BandName>)/Liefert die Zahl der Datenreihen des angegebenen <BandName>. "
 
@@ -344,7 +341,6 @@ msgid "INC(<Value>)/Increment <Value>."
 msgstr "INC(<Wert>)/Verringert <Wert>."
 
 #: lr_const.sdescriptioninput
-#| msgid "INPUT(<Caption> [,Default])/Shows dialog window with headstring <Caption> and edit box. If [Default] parameter is set, puts this string in edit box. After user clicks OK, returns input string.INPUT(<Caption> [,Default])/Shows dialog window with title <Caption> and edit box. If [Default] parameter is set, puts this string in edit box. After user clicks OK, returns input string."
 msgid "INPUT(<Caption> [,Default])/Shows dialog window with title <Caption> and edit box. If [Default] parameter is set, puts this string in edit box. After user clicks OK, returns input string."
 msgstr "INPUT(<Caption> [,Default])/Zeigt ein Dialogfenster mit der Überschrift <Caption> und einem Eingabefeld. Ist der Parameter [Default] gesetzt, wird dieser String im Eingabefeld eingesetzt. Drückt der Anwender OK, wird der Text im Eingabefeld zurückgeliefert."
 
@@ -533,7 +529,6 @@ msgid "Report:"
 msgstr "Report:"
 
 #: lr_const.sdocautor
-#| msgid "Autor"
 msgid "Author"
 msgstr "Autor"
 
@@ -558,7 +553,6 @@ msgid "Comments"
 msgstr "Kommentare"
 
 #: lr_const.sdocoptformkeywords
-#| msgid "Keys words"
 msgid "Keywords"
 msgstr "Schlüsselworte"
 
@@ -652,7 +646,6 @@ msgid "Error"
 msgstr "Fehler"
 
 #: lr_const.serroroccured
-#| msgid "An error occured during calculating"
 msgid "An error occurred during calculation"
 msgstr "Bei der Berechnung trat ein Fehler auf"
 
@@ -682,7 +675,6 @@ msgid "&Variable"
 msgstr "&Variable"
 
 #: lr_const.sevformvars
-#| msgid "Va&riables..."
 msgid "Va&riables ..."
 msgstr "Va&riablen ..."
 
@@ -772,7 +764,6 @@ msgid "Variable format"
 msgstr "Variablenformat"
 
 #: lr_const.sfont
-#| msgid "Font..."
 msgid "Font ..."
 msgstr "Schrift ..."
 
@@ -1168,7 +1159,6 @@ msgid "Width align"
 msgstr "Blocksatz"
 
 #: lr_const.sfrdesignerform_about
-#| msgid "&About..."
 msgid "&About ..."
 msgstr "Über ..."
 
@@ -1209,7 +1199,6 @@ msgid "&Delete"
 msgstr "&Löschen"
 
 #: lr_const.sfrdesignerform_edit
-#| msgid "&Edit..."
 msgctxt "lr_const.sfrdesignerform_edit"
 msgid "&Edit ..."
 msgstr "B&earbeiten ..."
@@ -1219,7 +1208,6 @@ msgid "&Edit"
 msgstr "&Bearbeiten"
 
 #: lr_const.sfrdesignerform_editp
-#| msgid "&Edit..."
 msgctxt "lr_const.sfrdesignerform_editp"
 msgid "&Edit ..."
 msgstr "B&earbeiten ..."
@@ -1253,7 +1241,6 @@ msgid "Modified"
 msgstr "Geändert"
 
 #: lr_const.sfrdesignerform_new
-#| msgid "&New..."
 msgid "&New ..."
 msgstr "&Neu ..."
 
@@ -1262,12 +1249,10 @@ msgid "&Objects"
 msgstr "&Objekte"
 
 #: lr_const.sfrdesignerform_open
-#| msgid "&Open..."
 msgid "&Open ..."
 msgstr "Öffnen ..."
 
 #: lr_const.sfrdesignerform_opts
-#| msgid "&Options..."
 msgid "&Options ..."
 msgstr "&Optionen ..."
 
@@ -1276,7 +1261,6 @@ msgid "&Paste"
 msgstr "&Einfügen"
 
 #: lr_const.sfrdesignerform_pgopt
-#| msgid "&Page options..."
 msgid "&Page options ..."
 msgstr "Seiteno&ptionen ..."
 
@@ -1297,7 +1281,6 @@ msgid "&Remove page"
 msgstr "&Seite löschen"
 
 #: lr_const.sfrdesignerform_rptopt
-#| msgid "&Report options..."
 msgid "&Report options ..."
 msgstr "&Reportoptionen ..."
 
@@ -1306,7 +1289,6 @@ msgid "&Save"
 msgstr "&Speichern"
 
 #: lr_const.sfrdesignerform_saveas
-#| msgid "Save &as..."
 msgid "Save &as ..."
 msgstr "Speichern &unter"
 
@@ -1345,7 +1327,6 @@ msgid "&Undo"
 msgstr "&Zurücknehmen"
 
 #: lr_const.sfrdesignerform_var
-#| msgid "Variables &list..."
 msgid "Variables &list ..."
 msgstr "Variablen-&Liste..."
 
@@ -1374,7 +1355,6 @@ msgid "&Clear"
 msgstr "&Löschen"
 
 #: lr_const.sgeditorformload
-#| msgid "&Load..."
 msgid "&Load ..."
 msgstr "&Laden ..."
 
@@ -1414,12 +1394,10 @@ msgid "&Bold"
 msgstr "&Fett"
 
 #: lr_const.shilightformcolor
-#| msgid "C&olor..."
 msgid "C&olor ..."
 msgstr "F&arbe ..."
 
 #: lr_const.shilightformcolor2
-#| msgid "Co&lor..."
 msgid "Co&lor ..."
 msgstr "Far&be"
 
@@ -1514,7 +1492,6 @@ msgid "&Vertical"
 msgstr "&Vertikal"
 
 #: lr_const.sinsroundrect
-#| msgid "Insert an RoundRect with shadow area"
 msgid "Insert a RoundRect with shadow area"
 msgstr "Schattierten RoundRect einfügen"
 
@@ -1600,7 +1577,6 @@ msgid "On last page"
 msgstr "Auf letzter Seite"
 
 #: lr_const.sother
-#| msgid "Other..."
 msgid "Other ..."
 msgstr "Sonstige ..."
 
@@ -2265,7 +2241,6 @@ msgid "Print child if not visible"
 msgstr "Nachfolger drucken wenn nicht sichtbar"
 
 #: lr_const.sprintererror
-#| msgid "Printer selected is not valid"
 msgid "Selected printer is not valid"
 msgstr "Gewählter Drucker ist ungültig"
 
@@ -2328,12 +2303,10 @@ msgid "Report file"
 msgstr "Reportdatei"
 
 #: lr_const.sreportcreatedate
-#| msgid "Report create date"
 msgid "Report creation date"
 msgstr "Erstelldatum"
 
 #: lr_const.sreportlastmodifydate
-#| msgid "Report last modify date"
 msgid "Report last modification date"
 msgstr "Datum der letzten Änderung"
 
@@ -2342,7 +2315,6 @@ msgid "Error while loading report"
 msgstr "Fehler beim Laden des Reports"
 
 #: lr_const.sreportpreparing
-#| msgid "Report preparing"
 msgid "Preparing report"
 msgstr "Report-Vorbereitung"
 
@@ -2379,7 +2351,6 @@ msgid "Gradient"
 msgstr ""
 
 #: lr_const.sroundrectformhint
-#| msgid "Click here to define the shadow color or gradian colors"
 msgid "Click here to define the shadow color or gradient colors"
 msgstr "Klicken Sie hier, um die Schattenfarbe oder die Farben für den Verlauf festzulegen"
 
@@ -2585,7 +2556,6 @@ msgid "&Categories and variables"
 msgstr "&Kategorien und Variablen"
 
 #: lr_const.svarformat
-#| msgid "Variable format..."
 msgid "Variable format ..."
 msgstr "Variablenformat ..."
 

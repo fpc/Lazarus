@@ -680,7 +680,6 @@ msgid "&Variable"
 msgstr "&Variável"
 
 #: lr_const.sevformvars
-#| msgid "Va&riables..."
 msgid "Va&riables ..."
 msgstr "Va&riáveis ..."
 
@@ -770,7 +769,6 @@ msgid "Variable format"
 msgstr "Formato variável"
 
 #: lr_const.sfont
-#| msgid "Font..."
 msgid "Font ..."
 msgstr "Fonte ..."
 
@@ -1166,7 +1164,6 @@ msgid "Width align"
 msgstr "Justificar"
 
 #: lr_const.sfrdesignerform_about
-#| msgid "&About..."
 msgid "&About ..."
 msgstr "&Sobre ..."
 
@@ -1207,7 +1204,6 @@ msgid "&Delete"
 msgstr "&Apagar"
 
 #: lr_const.sfrdesignerform_edit
-#| msgid "&Edit..."
 msgctxt "lr_const.sfrdesignerform_edit"
 msgid "&Edit ..."
 msgstr "&Editar ..."
@@ -1217,7 +1213,6 @@ msgid "&Edit"
 msgstr "&Editar"
 
 #: lr_const.sfrdesignerform_editp
-#| msgid "&Edit..."
 msgctxt "lr_const.sfrdesignerform_editp"
 msgid "&Edit ..."
 msgstr "&Editar ..."
@@ -1251,7 +1246,6 @@ msgid "Modified"
 msgstr "Modificado"
 
 #: lr_const.sfrdesignerform_new
-#| msgid "&New..."
 msgid "&New ..."
 msgstr "&Novo ..."
 
@@ -1260,12 +1254,10 @@ msgid "&Objects"
 msgstr "&Objetos"
 
 #: lr_const.sfrdesignerform_open
-#| msgid "&Open..."
 msgid "&Open ..."
 msgstr "&Abrir ..."
 
 #: lr_const.sfrdesignerform_opts
-#| msgid "&Options..."
 msgid "&Options ..."
 msgstr "&Opções ..."
 
@@ -1274,7 +1266,6 @@ msgid "&Paste"
 msgstr "&Colar"
 
 #: lr_const.sfrdesignerform_pgopt
-#| msgid "&Page options..."
 msgid "&Page options ..."
 msgstr "Opções &página ..."
 
@@ -1295,7 +1286,6 @@ msgid "&Remove page"
 msgstr "&Remover página"
 
 #: lr_const.sfrdesignerform_rptopt
-#| msgid "&Report options..."
 msgid "&Report options ..."
 msgstr "Opções &Relatório ..."
 
@@ -1304,7 +1294,6 @@ msgid "&Save"
 msgstr "&Salvar"
 
 #: lr_const.sfrdesignerform_saveas
-#| msgid "Save &as..."
 msgid "Save &as ..."
 msgstr "Salvar &como ..."
 
@@ -1343,7 +1332,6 @@ msgid "&Undo"
 msgstr "&Desfazer"
 
 #: lr_const.sfrdesignerform_var
-#| msgid "Variables &list..."
 msgid "Variables &list ..."
 msgstr "&Lista variáveis ..."
 
@@ -1372,7 +1360,6 @@ msgid "&Clear"
 msgstr "&Limpar"
 
 #: lr_const.sgeditorformload
-#| msgid "&Load..."
 msgid "&Load ..."
 msgstr "&Carregar ..."
 
@@ -1412,12 +1399,10 @@ msgid "&Bold"
 msgstr "&Negrito"
 
 #: lr_const.shilightformcolor
-#| msgid "C&olor..."
 msgid "C&olor ..."
 msgstr "C&or ..."
 
 #: lr_const.shilightformcolor2
-#| msgid "Co&lor..."
 msgid "Co&lor ..."
 msgstr "C&or ..."
 
@@ -1599,7 +1584,6 @@ msgid "On last page"
 msgstr "Na última página"
 
 #: lr_const.sother
-#| msgid "Other..."
 msgid "Other ..."
 msgstr "Outros ..."
 
@@ -2589,7 +2573,6 @@ msgid "&Categories and variables"
 msgstr "&Categorias e variáveis"
 
 #: lr_const.svarformat
-#| msgid "Variable format..."
 msgid "Variable format ..."
 msgstr "Formato variável ..."
 
