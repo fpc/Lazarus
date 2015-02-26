@@ -136,7 +136,6 @@ type
   TMessagesCtrl = class(TCustomControl)
   private
     FActiveFilter: TLMsgViewFilter;
-    FAutoScrollToNewMessage: boolean;
     FBackgroundColor: TColor;
     FFilenameStyle: TMsgWndFileNameStyle;
     FHeaderBackground: array[TLMVToolState] of TColor;
@@ -204,7 +203,7 @@ type
     fLastSearchStartLine: integer;
     fLastLoSearchText: string; // lower case search text
     procedure FetchNewMessages;
-    procedure FetchNewMessages(View: TLMsgWndView);
+    function FetchNewMessages(View: TLMsgWndView): boolean; // true if new lines
     procedure Notification(AComponent: TComponent; Operation: TOperation);
       override;
     procedure Paint; override;
@@ -276,8 +275,6 @@ type
     function ScrollLeftMax: integer;
     function ScrollTopMax: integer;
     procedure StoreSelectedAsSearchStart;
-    property AutoScrollToNewMessage: boolean read FAutoScrollToNewMessage
-      write FAutoScrollToNewMessage; // activated when user scrolled to bottom, not an option
 
     // file
     function OpenSelection: boolean;
@@ -1050,19 +1047,15 @@ begin
 end;
 
 procedure TMessagesCtrl.FetchNewMessages;
+// called when new messages are available from the worker threads
+// calls Views to fetch and filter new messages
+// scrolls to new message
 var
   i: Integer;
-  LastLineWasVisible: Boolean;
 begin
   if csDestroying in ComponentState then exit;
   BeginUpdate;
   try
-    for i:=0 to ViewCount-1 do begin
-      LastLineWasVisible:=IsLastLineVisible(Views[i]);
-      //debugln(['TMessagesCtrl.FetchNewMessages ScrollTop=',ScrollTop,' ScrollTopMax=',ScrollTopMax,' Last=',View.GetShownLineCount(false,true),' LineTop=',GetLineTop(View,View.GetShownLineCount(false,true),true),' IsLastLineVisible=',LastLineWasVisible]);
-      if LastLineWasVisible and (not Views[i].Running) then
-        AutoScrollToNewMessage:=true; // this view stopped running -> let other views take over the focus
-    end;
     for i:=0 to ViewCount-1 do
       FetchNewMessages(Views[i]);
   finally
@@ -1071,28 +1064,46 @@ begin
   UpdateScrollBar(true);
 end;
 
-procedure TMessagesCtrl.FetchNewMessages(View: TLMsgWndView);
+function TMessagesCtrl.FetchNewMessages(View: TLMsgWndView): boolean;
 var
   OldLineCount: Integer;
-  LastLineWasVisible: Boolean;
+  i: Integer;
+  OtherView: TLMsgWndView;
+  MaxY: Integer;
+  y: Integer;
 begin
+  Result:=false;
   if csDestroying in ComponentState then exit;
   if IndexOfView(View)<0 then exit;
 
-  LastLineWasVisible:=IsLastLineVisible(View);
   OldLineCount:=View.Lines.Count;
   if not View.ApplyPending then
     exit; // no new lines
+  Result:=true;
   CreateSourceMarks(View,OldLineCount);
   UpdateScrollBar(true);
   Invalidate;
 
-  if LastLineWasVisible or AutoScrollToNewMessage then begin
-    // scroll to last line
-    AutoScrollToNewMessage:=false; // avoid switching back and forth between two running Views
-    ScrollToLine(View,View.GetShownLineCount(false,true),true);
-    //debugln(['TMessagesCtrl.FetchNewMessages END ScrollTop=',ScrollTop,' ScrollTopMax=',ScrollTopMax,' Last=',View.GetShownLineCount(false,true),' LineTop=',GetLineTop(View,View.GetShownLineCount(false,true),true),' IsLastLineVisible=',IsLastLineVisible(View)]);
+  // auto scroll
+  if (SelectedView<>nil)
+  and (SelectedLine<SelectedView.Lines.Count) then
+    exit; // user has selected a non progress line -> do not auto scroll
+
+  for i:=0 to ViewCount-1 do
+  begin
+    OtherView:=Views[i];
+    if OtherView=View then break;
+    if OtherView.Running then begin
+      // there is still a prior View running
+      // -> keep the last line of the other View visible
+      MaxY:=GetLineTop(OtherView,OtherView.GetShownLineCount(true,true),false);
+      y:=GetLineTop(View,View.GetShownLineCount(false,true),false);
+      ScrollTop:=Min(MaxY,y);
+      exit;
+    end;
   end;
+  // scroll to last line
+  ScrollToLine(View,View.GetShownLineCount(false,true),true);
 end;
 
 procedure TMessagesCtrl.MsgUpdateTimerTimer(Sender: TObject);
