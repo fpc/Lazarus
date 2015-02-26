@@ -541,6 +541,7 @@ type
     function GetAttributes: TPropertyAttributes; override;
     function GetName: shortstring; override;
     function GetValue: ansistring; override;
+    function GetVerbCount: Integer; override;
     function GetVisualValue: ansistring; override;
     procedure GetValues(Proc: TGetStrProc); override;
     procedure SetValue(const NewValue: ansistring); override;
@@ -559,6 +560,7 @@ type
     function GetAttributes: TPropertyAttributes; override;
     function GetEditLimit: Integer; override;
     procedure GetProperties(Proc: TGetPropEditProc); override;
+    procedure SetValue(const NewValue: ansistring); override;
     function OrdValueToVisualValue(OrdValue: longint): string; override;
   end;
 
@@ -2809,7 +2811,7 @@ begin
     with FPropList^[I] do
       Changed := Changed or (GetOrdProp(Instance, PropInfo) <> NewValue);
   if Changed then begin
-    for I:=0 to FPropCount-1 do
+    for I := 0 to FPropCount - 1 do
       with FPropList^[I] do SetOrdProp(Instance, PropInfo, NewValue);
     Modified;
   end;
@@ -3518,6 +3520,11 @@ begin
     Result := '(' + Result + ')';
 end;
 
+function TSetElementPropertyEditor.GetVerbCount: Integer;
+begin
+  Result:=0;
+end;
+
 function TSetElementPropertyEditor.GetVisualValue: ansistring;
 begin
   Result := inherited GetVisualValue;
@@ -3594,6 +3601,20 @@ begin
   with GetTypeData(GetTypeData(GetPropType)^.CompType)^ do
     for I := MinValue to MaxValue do
       Proc(TSetElementPropertyEditor.Create(Self, I));
+end;
+
+procedure TSetPropertyEditor.SetValue(const NewValue: ansistring);
+var
+  S: TIntegerSet;
+  TypeInfo: PTypeInfo;
+  I: Integer;
+begin
+  S := [];
+  TypeInfo := GetTypeData(GetPropType)^.CompType;
+  for I := 0 to SizeOf(Integer) * 8 - 1 do
+    if Pos(GetEnumName(TypeInfo, I), NewValue) > 0 then
+      Include(S, I);
+  SetOrdValue(Integer(S));
 end;
 
 function TSetPropertyEditor.OrdValueToVisualValue(OrdValue: longint): string;
