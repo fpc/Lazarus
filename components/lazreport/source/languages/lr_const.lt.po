@@ -681,7 +681,6 @@ msgid "&Variable"
 msgstr "&Kintamasis"
 
 #: lr_const.sevformvars
-#| msgid "Va&riables..."
 msgid "Va&riables ..."
 msgstr "&Kintamieji…"
 
@@ -771,7 +770,6 @@ msgid "Variable format"
 msgstr "Kintamojo formatas"
 
 #: lr_const.sfont
-#| msgid "Font..."
 msgid "Font ..."
 msgstr "Šriftas…"
 
@@ -1167,7 +1165,6 @@ msgid "Width align"
 msgstr "Pločio lygiuotė"
 
 #: lr_const.sfrdesignerform_about
-#| msgid "&About..."
 msgid "&About ..."
 msgstr "&Apie…"
 
@@ -1208,7 +1205,6 @@ msgid "&Delete"
 msgstr "Paša&linti"
 
 #: lr_const.sfrdesignerform_edit
-#| msgid "&Edit..."
 msgctxt "lr_const.sfrdesignerform_edit"
 msgid "&Edit ..."
 msgstr "K&eisti…"
@@ -1218,7 +1214,6 @@ msgid "&Edit"
 msgstr "K&eisti"
 
 #: lr_const.sfrdesignerform_editp
-#| msgid "&Edit..."
 msgctxt "lr_const.sfrdesignerform_editp"
 msgid "&Edit ..."
 msgstr "K&eisti…"
@@ -1252,7 +1247,6 @@ msgid "Modified"
 msgstr "Pakeista"
 
 #: lr_const.sfrdesignerform_new
-#| msgid "&New..."
 msgid "&New ..."
 msgstr "&Naujas…"
 
@@ -1261,12 +1255,10 @@ msgid "&Objects"
 msgstr "&Objektai"
 
 #: lr_const.sfrdesignerform_open
-#| msgid "&Open..."
 msgid "&Open ..."
 msgstr "&Atverti…"
 
 #: lr_const.sfrdesignerform_opts
-#| msgid "&Options..."
 msgid "&Options ..."
 msgstr "&Parinktys…"
 
@@ -1275,7 +1267,6 @@ msgid "&Paste"
 msgstr "Į&dėti"
 
 #: lr_const.sfrdesignerform_pgopt
-#| msgid "&Page options..."
 msgid "&Page options ..."
 msgstr "&Lapo parinktys…"
 
@@ -1296,7 +1287,6 @@ msgid "&Remove page"
 msgstr "&Pašalinti lapą"
 
 #: lr_const.sfrdesignerform_rptopt
-#| msgid "&Report options..."
 msgid "&Report options ..."
 msgstr "&Pranešimo parinktys…"
 
@@ -1305,7 +1295,6 @@ msgid "&Save"
 msgstr "Į&rašyti"
 
 #: lr_const.sfrdesignerform_saveas
-#| msgid "Save &as..."
 msgid "Save &as ..."
 msgstr "Įrašyti &taip…"
 
@@ -1344,7 +1333,6 @@ msgid "&Undo"
 msgstr "&Grąžinti"
 
 #: lr_const.sfrdesignerform_var
-#| msgid "Variables &list..."
 msgid "Variables &list ..."
 msgstr "Kintamųjų &sąrašas…"
 
@@ -1373,7 +1361,6 @@ msgid "&Clear"
 msgstr "Iš&valyti"
 
 #: lr_const.sgeditorformload
-#| msgid "&Load..."
 msgid "&Load ..."
 msgstr "Į&kelti…"
 
@@ -1413,12 +1400,10 @@ msgid "&Bold"
 msgstr "&Pusjuodis"
 
 #: lr_const.shilightformcolor
-#| msgid "C&olor..."
 msgid "C&olor ..."
 msgstr "&Spalva…"
 
 #: lr_const.shilightformcolor2
-#| msgid "Co&lor..."
 msgid "Co&lor ..."
 msgstr "&Spalva…"
 
@@ -1600,7 +1585,6 @@ msgid "On last page"
 msgstr "Paskutiniame lape"
 
 #: lr_const.sother
-#| msgid "Other..."
 msgid "Other ..."
 msgstr "Kita…"
 
@@ -2590,7 +2574,6 @@ msgid "&Categories and variables"
 msgstr "&Kategorijos ir kintamieji"
 
 #: lr_const.svarformat
-#| msgid "Variable format..."
 msgid "Variable format ..."
 msgstr "Kintamojo formatas…"
 

@@ -682,7 +682,6 @@ msgid "&Variable"
 msgstr "&Змінна"
 
 #: lr_const.sevformvars
-#| msgid "Va&riables..."
 msgid "Va&riables ..."
 msgstr "З&мінні ..."
 
@@ -772,7 +771,6 @@ msgid "Variable format"
 msgstr "Формат змінної"
 
 #: lr_const.sfont
-#| msgid "Font..."
 msgid "Font ..."
 msgstr "Шрифт ..."
 
@@ -1168,7 +1166,6 @@ msgid "Width align"
 msgstr "Вирівнювання по ширині"
 
 #: lr_const.sfrdesignerform_about
-#| msgid "&About..."
 msgid "&About ..."
 msgstr "&Про програму ..."
 
@@ -1209,7 +1206,6 @@ msgid "&Delete"
 msgstr "Ви&далити"
 
 #: lr_const.sfrdesignerform_edit
-#| msgid "&Edit..."
 msgctxt "lr_const.sfrdesignerform_edit"
 msgid "&Edit ..."
 msgstr "&Редагувати ..."
@@ -1219,7 +1215,6 @@ msgid "&Edit"
 msgstr "&Редагувати"
 
 #: lr_const.sfrdesignerform_editp
-#| msgid "&Edit..."
 msgctxt "lr_const.sfrdesignerform_editp"
 msgid "&Edit ..."
 msgstr "&Редагувати ..."
@@ -1253,7 +1248,6 @@ msgid "Modified"
 msgstr ""
 
 #: lr_const.sfrdesignerform_new
-#| msgid "&New..."
 msgid "&New ..."
 msgstr "&Створити ..."
 
@@ -1262,12 +1256,10 @@ msgid "&Objects"
 msgstr "&Об'єкти"
 
 #: lr_const.sfrdesignerform_open
-#| msgid "&Open..."
 msgid "&Open ..."
 msgstr "В&ідкрити ..."
 
 #: lr_const.sfrdesignerform_opts
-#| msgid "&Options..."
 msgid "&Options ..."
 msgstr "&Параметри ..."
 
@@ -1276,7 +1268,6 @@ msgid "&Paste"
 msgstr "Вс&тавити"
 
 #: lr_const.sfrdesignerform_pgopt
-#| msgid "&Page options..."
 msgid "&Page options ..."
 msgstr "Параметри с&торінки ..."
 
@@ -1297,7 +1288,6 @@ msgid "&Remove page"
 msgstr "Ви&далити сторінку"
 
 #: lr_const.sfrdesignerform_rptopt
-#| msgid "&Report options..."
 msgid "&Report options ..."
 msgstr "Параметри &звіту ..."
 
@@ -1306,7 +1296,6 @@ msgid "&Save"
 msgstr "&Зберегти"
 
 #: lr_const.sfrdesignerform_saveas
-#| msgid "Save &as..."
 msgid "Save &as ..."
 msgstr "Зберегти &як ..."
 
@@ -1345,7 +1334,6 @@ msgid "&Undo"
 msgstr "&Повернути"
 
 #: lr_const.sfrdesignerform_var
-#| msgid "Variables &list..."
 msgid "Variables &list ..."
 msgstr "Список &змінних ..."
 
@@ -1374,7 +1362,6 @@ msgid "&Clear"
 msgstr "&Очистити"
 
 #: lr_const.sgeditorformload
-#| msgid "&Load..."
 msgid "&Load ..."
 msgstr "&Завантажити ..."
 
@@ -1414,12 +1401,10 @@ msgid "&Bold"
 msgstr "&Жирний"
 
 #: lr_const.shilightformcolor
-#| msgid "C&olor..."
 msgid "C&olor ..."
 msgstr "К&олір ..."
 
 #: lr_const.shilightformcolor2
-#| msgid "Co&lor..."
 msgid "Co&lor ..."
 msgstr "Ко&лір ..."
 
@@ -1601,7 +1586,6 @@ msgid "On last page"
 msgstr "На останній сторінці"
 
 #: lr_const.sother
-#| msgid "Other..."
 msgid "Other ..."
 msgstr "Інші ..."
 
@@ -2587,7 +2571,6 @@ msgid "&Categories and variables"
 msgstr "&Категорії та змінні"
 
 #: lr_const.svarformat
-#| msgid "Variable format..."
 msgid "Variable format ..."
 msgstr "Формат змінної ..."
 

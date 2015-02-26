@@ -8,9 +8,9 @@ msgstr ""
 "PO-Revision-Date: \n"
 "Last-Translator: Bogusław Brandys <brandys@o2.pl>\n"
 "Language-Team: \n"
-"X-Poedit-Language: Polish\n"
-"X-Poedit-Country: POLAND\n"
 "X-Poedit-SourceCharset: utf-8\n"
+"Language: pl_PL\n"
+"X-Generator: Poedit 1.7.4\n"
 
 #: lr_const.saboutformcapt
 msgid "About FastReport"
@@ -183,7 +183,7 @@ msgstr "&Kod"
 #: lr_const.sbarcodeformdbfld
 msgctxt "lr_const.sbarcodeformdbfld"
 msgid "Insert DB field"
-msgstr "Wstaw pole tabeli"
+msgstr "Wstaw pole z tabeli"
 
 #: lr_const.sbarcodeformopts
 msgctxt "lr_const.sbarcodeformopts"
@@ -255,7 +255,7 @@ msgstr "0"
 
 #: lr_const.sclassobjectnotfound
 msgid "Class Object \"%s\" not found"
-msgstr "Obiekt klasy \"%s\" nie został znaleziony"
+msgstr "Nie znaleziono obiektu klasy \"%s\""
 
 #: lr_const.sconfirm
 msgid "Confirm"
@@ -291,7 +291,7 @@ msgstr "Data i czas"
 
 #: lr_const.sdbfield
 msgid "DB field"
-msgstr ""
+msgstr "Pole z tabeli"
 
 #: lr_const.sdefaultprinter
 msgid "Default printer"
@@ -303,11 +303,9 @@ msgstr "AVG(<Wyrażenie> [,NazwaBandy [,1]])/Oblicza średnią z <Wyrażenie>  d
 
 #: lr_const.sdescriptioncopy
 msgid "COPY(<String>, <Position>, <Length>)/Returns <Length> characters from <String> starting at <Position>."
-msgstr ""
+msgstr "COPY(<Tekst>, <Pozycja>, <Ilość>)/Zwraca <Ilość> znaków z <Tekst> zaczynając od <Pozycja>."
 
 #: lr_const.sdescriptioncount
-#, fuzzy
-#| msgid "COUNT(<BandName>)/Returns count of data-rows given in the <BandName>. "
 msgid "COUNT(<BandName>)/Returns count of data rows given in the <BandName>. "
 msgstr "COUNT(<NazwaBandy>)/Zwraca ilość wierszy z bazy danych dla danej <NazwaBandy>. "
 
@@ -317,7 +315,7 @@ msgstr "DAYOF(<Data>)/Zwraca numer dnia (1..31) z podanej daty w <Data>."
 
 #: lr_const.sdescriptiondec
 msgid "DEC(<Value>)/Decrement <Value>."
-msgstr ""
+msgstr "DEC(<Wartość>)/Pomniejsza <Wartość> o 1."
 
 #: lr_const.sdescriptionformatdatetime
 msgid "FORMATDATETIME(<Fmt>, <DateTime>)/Converts a <DateTime> value to a string using mask in <Fmt>."
@@ -325,115 +323,115 @@ msgstr "FORMATDATETIME(<Fmt>, <DataCzas>)/Konwertuje wartość <DataCzas> na ci�
 
 #: lr_const.sdescriptionformatfloat
 msgid "FORMATFLOAT(<Fmt>, <Numeric>)/Converts a <Numeric> value to a string using mask in <Fmt>."
-msgstr ""
+msgstr "FORMATFLOAT(<Fmt>, <Liczba>)/Konwertuje wartość <Liczba> na tekst używając maski <Fmt>."
 
 #: lr_const.sdescriptionformattext
 msgid "FORMATTEXT(<Mask>, <String>)/Applies <Mask> to given <String> and returns formatted string."
-msgstr ""
+msgstr "FORMATTEXT(<Maska>, <Tekst>)/Formatuje zawartość tekstu <Tekst> używając do tego celu wpisanej maski <Maska>."
 
 #: lr_const.sdescriptionfrac
 msgid "FRAC(<Value>)/Returns the fractional part of floating point <Value>."
-msgstr ""
+msgstr "FRAC(<Wartość>)/Zwraca wartość ułamkową z liczby zmiennoprzecinkowej (<Wartość>)."
 
 #: lr_const.sdescriptioninc
 msgid "INC(<Value>)/Increment <Value>."
-msgstr ""
+msgstr "INC(<Wartość>)/Zwiększa <Wartość> o 1."
 
 #: lr_const.sdescriptioninput
 msgid "INPUT(<Caption> [,Default])/Shows dialog window with title <Caption> and edit box. If [Default] parameter is set, puts this string in edit box. After user clicks OK, returns input string."
-msgstr ""
+msgstr "INPUT(<Tytuł> [,Domyślna])/Pokazuje okno dioalogowe z tytułem <Tytuł> i polem edycyjnym. Jeżeli jest ustawiony parametr [Domyślna], to jego wartość jest wstawiona do pola edycyjnego. Po kliknięciu OK zwraca tekst wejściowy."
 
 #: lr_const.sdescriptionint
 msgid "INT(<Value>)/Returns the integer part of floating point <Value>."
-msgstr ""
+msgstr "INT(<Wartość>)/Zwraca wartość całkowitą z liczby zmiennoprzecinkowej (<Wartość>)."
 
 #: lr_const.sdescriptionlength
 msgid "LENGTH(<String>)/Returns length of <String>."
-msgstr ""
+msgstr "LENGTH(<Tekst>)/Zwraca długość <Tekst>."
 
 #: lr_const.sdescriptionlowercase
 msgid "LOWERCASE(<String>)/Converts <String> symbols to lower case."
-msgstr ""
+msgstr "LOWERCASE(<Tekst>)/Zamienia <Tekst> na małe litery."
 
 #: lr_const.sdescriptionmax
 msgid "MAX(<Expression> [,BandName [,1]])/Calculates the maximum of <Expression> for [BandName] row given. If [1] parameter is used, calculates maximum for non-visible rows too."
-msgstr ""
+msgstr "MAX(<Wyrażenie> [,NazwaBandy [,1]])/Pobiera maksymalną wartość <Wyrażenie> dla wierszy z [NazwaBandy]. Jeżeli jest użyty parametr [1], bierze pod uwagę też niewidoczne wiersze."
 
 #: lr_const.sdescriptionmaxnum
 msgid "MAXNUM(<Value1>, <Value2>)/Returns max of given values."
-msgstr ""
+msgstr "MAXNUM(<Wartość1>, <Wartość2>)/Zwraca większą wartość z podanych."
 
 #: lr_const.sdescriptionmessagebox
 msgid "MESSAGEBOX(<Text>, <Title>, <Buttons>)/Shows standard dialog window with title, text and buttons."
-msgstr ""
+msgstr "MESSAGEBOX(<Zawartość>, <Tytuł>, <Przyciski>)/Pokazuje okno dialogowe z tytułem, zawartością i przyciskami."
 
 #: lr_const.sdescriptionmin
 msgid "MIN(<Expression> [,BandName [,1]])/Calculates the minimum of <Expression> for [BandName] row given. If [1] parameter is used, calculates minimum for non-visible rows too."
-msgstr ""
+msgstr "MIN(<Wyrażenie> [,NazwaBandy [,1]])/Pobiera minimalną wartość <Wyrażenie> dla wierszy z [NazwaBandy]. Jeżeli jest użyty parametr [1], bierze pod uwagę też niewidoczne wiersze."
 
 #: lr_const.sdescriptionminnum
 msgid "MINNUM(<Value1>, <Value2>)/Returns min of given values."
-msgstr ""
+msgstr "MINNUM(<Wartość1>, <Wartość2>)/Zwraca mniejszą wartość z podanych."
 
 #: lr_const.sdescriptionmonthof
 msgid "MONTHOF(<Date>)/Returns month number (1..12) of given <Date>."
-msgstr ""
+msgstr "MONTHOF(<Data>)/Zwraca numer miesiąca (1..12) z <Data>."
 
 #: lr_const.sdescriptionnamecase
 msgid "NAMECASE(<String>)/Converts <String> symbols to lower case, and first symbol is in upper case."
-msgstr ""
+msgstr "NAMECASE(<Tekst>)/Zamienia pierwszą literę tekstu <Tekst> na dużą, a resztę na male litery."
 
 #: lr_const.sdescriptionnewcolumn
 msgid "NEWCOLUMN/Create new column on page for current report."
-msgstr ""
+msgstr "NEWCOLUMN/Utwórz nową kolumnę w bieżącym raporcie."
 
 #: lr_const.sdescriptionnewpage
 msgid "NEWPAGE/Create new page for current report."
-msgstr ""
+msgstr "NEWPAGE/Utwórz nową stronę w bieżącym raporcie."
 
 #: lr_const.sdescriptionpos
 msgid "POS(<SubString>, <String>)/Returns position of substring in given string."
-msgstr ""
+msgstr "POS(<Znaki>, <Tekst>)/Wyszukuje ciąg zanków <Znaki> w tekście <Tekst> i zwraca jego pozycję."
 
 #: lr_const.sdescriptionround
 msgid "ROUND(<Value>)/Rounds the floating point <Value> to nearest integer number."
-msgstr ""
+msgstr "ROUND(<Wartość>)/Zaokrągla liczbę zmiennoprzecinkową (<Wartość>) do najbliższej liczby całkowitej."
 
 #: lr_const.sdescriptionshowband
 msgid "SHOWBAND(<BandName>)/Show <BandName> in report."
-msgstr ""
+msgstr "SHOWBAND(<NazwaBandy>)/Pokaż <NazwaBandy> na raporcie."
 
 #: lr_const.sdescriptionstopreport
 msgid "STOPREPORT/Terminate report creation."
-msgstr ""
+msgstr "STOPREPORT/Przerywa tworzenie raportu."
 
 #: lr_const.sdescriptionstr
 msgid "STR(<Value>)/Converts the given (numeric) <Value> in string."
-msgstr ""
+msgstr "STR(<Wartość>)/Przekształca <Wartość> (liczbę) na tekst."
 
 #: lr_const.sdescriptionstrtodate
 msgid "STRTODATE(<String>)/Converts <String> to date."
-msgstr ""
+msgstr "STRTODATE(<Tekst>)/Konwertuje <Tekst> jako datę."
 
 #: lr_const.sdescriptionstrtotime
 msgid "STRTOTIME(<String>)/Converts <String> to time."
-msgstr ""
+msgstr "STRTOTIME(<Tekst>)/Konwertuje <Tekst> jako czas."
 
 #: lr_const.sdescriptionsum
 msgid "SUM(<Expression> [,BandName [,1]])/Calculates the sum of <Expression> for [BandName] row given. If [1] parameter is used, calculates sum for non-visible rows too."
-msgstr ""
+msgstr "SUM(<Wyrażenie> [,NazwaBandy [,1]])/Zlicza sumę wartości <Wyrażenie> dla wierszy z [NazwaBandy]. Jeżeli jest użyty parametr [1], sumuje też niewidoczne wiersze."
 
 #: lr_const.sdescriptiontrim
 msgid "TRIM(<String>)/Trims all heading and trailing spaces in <String> and returns resulting string."
-msgstr ""
+msgstr "TRIM(<Tekst>)/Zwraca <Tekst> z wyciętymi początkowymi i końcowymi spacjami."
 
 #: lr_const.sdescriptionuppercase
 msgid "UPPERCASE(<String>)/Converts <String> symbols to upper case."
-msgstr ""
+msgstr "UPPERCASE(<Tekst>)/Zamienia <Tekst> na duże litery."
 
 #: lr_const.sdescriptionyearof
 msgid "YEAROF(<Date>)/Returns year of given <Date>."
-msgstr ""
+msgstr "YEAROF(<Data>)/Zwraca rok z <Data>."
 
 #: lr_const.sdesignreport
 msgid "Design report"
@@ -528,8 +526,6 @@ msgid "Report:"
 msgstr "Raport:"
 
 #: lr_const.sdocautor
-#, fuzzy
-#| msgid "Autor"
 msgid "Author"
 msgstr "Autor"
 
@@ -554,8 +550,6 @@ msgid "Comments"
 msgstr "Komentarze"
 
 #: lr_const.sdocoptformkeywords
-#, fuzzy
-#| msgid "Keys words"
 msgid "Keywords"
 msgstr "Słowa kluczowe"
 
@@ -595,11 +589,11 @@ msgstr "Wersja"
 
 #: lr_const.sduplicatedobjectname
 msgid "An object named \"%s\" already exists"
-msgstr ""
+msgstr "Obiekt o nazwie \"%s\" już istnieje"
 
 #: lr_const.seditor
 msgid "Editor"
-msgstr ""
+msgstr "Edytor"
 
 #: lr_const.seditorformbig
 msgid "&Big font"
@@ -620,7 +614,7 @@ msgstr "&Format"
 
 #: lr_const.seditorformfunction
 msgid "Function"
-msgstr ""
+msgstr "Funkcja"
 
 #: lr_const.seditorformmemo
 msgctxt "lr_const.seditorformmemo"
@@ -649,8 +643,6 @@ msgid "Error"
 msgstr "Błąd"
 
 #: lr_const.serroroccured
-#, fuzzy
-#| msgid "An error occured during calculating"
 msgid "An error occurred during calculation"
 msgstr "Wystąpił błąd podczas kalkulacji"
 
@@ -680,14 +672,12 @@ msgid "&Variable"
 msgstr "&Zmienna"
 
 #: lr_const.sevformvars
-#, fuzzy
-#| msgid "Va&riables..."
 msgid "Va&riables ..."
 msgstr "Zmie&nne..."
 
 #: lr_const.sexportfilterindexerror
 msgid "Export filter index out of range"
-msgstr ""
+msgstr "Indeks filtru eksportu poza zakresem"
 
 #: lr_const.sfieldsformaviabledb
 msgid "&Available DB's"
@@ -700,7 +690,7 @@ msgstr "Wstaw pole z tabeli"
 
 #: lr_const.sfilenotfound
 msgid "File not found"
-msgstr ""
+msgstr "Nie znaleziono pliku"
 
 #: lr_const.sfilter
 msgid "Filter properties"
@@ -730,7 +720,7 @@ msgstr "&Pierwsza strona"
 
 #: lr_const.sfindtextnotfound
 msgid "Search text not found."
-msgstr ""
+msgstr "Nie znaleziono szukanego tekstu"
 
 #: lr_const.sfindtextoptions
 msgctxt "lr_const.sfindtextoptions"
@@ -771,10 +761,8 @@ msgid "Variable format"
 msgstr "Format zmiennej"
 
 #: lr_const.sfont
-#, fuzzy
-#| msgid "Font..."
 msgid "Font ..."
-msgstr "Font..."
+msgstr "Czcionka..."
 
 #: lr_const.sformat11
 msgctxt "lr_const.sformat11"
@@ -850,7 +838,7 @@ msgstr ""
 
 #: lr_const.sformat52
 msgid "No;Yes"
-msgstr ""
+msgstr "Nie;Tak"
 
 #: lr_const.sformat53
 msgid "_;x"
@@ -858,7 +846,7 @@ msgstr ""
 
 #: lr_const.sformat54
 msgid "False;True"
-msgstr ""
+msgstr "Fałsz;Prawda"
 
 #: lr_const.sformat55
 msgctxt "lr_const.sformat55"
@@ -875,11 +863,11 @@ msgstr "Wymuś nową stronę"
 
 #: lr_const.sfrdesignerdatainsp
 msgid "Data inspector"
-msgstr ""
+msgstr "Inspektor danych"
 
 #: lr_const.sfrdesignerexists
 msgid "You already have one TfrDesigner component"
-msgstr ""
+msgstr "Już dodałeś jeden komponent TfrDesigner"
 
 #: lr_const.sfrdesignerformaddpg
 msgctxt "lr_const.sfrdesignerformaddpg"
@@ -1112,7 +1100,7 @@ msgstr "Zaznacz wszystko"
 
 #: lr_const.sfrdesignerformselectsameclass
 msgid "Select same class objects"
-msgstr ""
+msgstr "Zaznacz tą samą klasę obiektów"
 
 #: lr_const.sfrdesignerformselobj
 msgid "Select object"
@@ -1149,7 +1137,7 @@ msgstr "Górna linia obramowania"
 
 #: lr_const.sfrdesignerformunabletocreatetemplatedir
 msgid "Unable to create template directory"
-msgstr ""
+msgstr "Nie można utworzyć katalogu szablonów"
 
 #: lr_const.sfrdesignerformunderline
 msgid "Underline"
@@ -1168,8 +1156,6 @@ msgid "Width align"
 msgstr ""
 
 #: lr_const.sfrdesignerform_about
-#, fuzzy
-#| msgid "&About..."
 msgid "&About ..."
 msgstr "&O..."
 
@@ -1187,7 +1173,7 @@ msgstr "Przenieś do t&yłu"
 
 #: lr_const.sfrdesignerform_beforeprintscript
 msgid "&Before print script ..."
-msgstr ""
+msgstr "Skrypt przed drukowaniem"
 
 #: lr_const.sfrdesignerform_bring
 msgid "Bring to &front"
@@ -1202,16 +1188,15 @@ msgid "C&ut"
 msgstr "W&ytnij"
 
 #: lr_const.sfrdesignerform_datainsp
+#, fuzzy,badformat
 msgid "&Data inspector"
-msgstr ""
+msgstr "Inspektor %danych"
 
 #: lr_const.sfrdesignerform_delete
 msgid "&Delete"
 msgstr "&Skasuj"
 
 #: lr_const.sfrdesignerform_edit
-#, fuzzy
-#| msgid "&Edit..."
 msgctxt "lr_const.sfrdesignerform_edit"
 msgid "&Edit ..."
 msgstr "&Edytuj..."
@@ -1221,8 +1206,6 @@ msgid "&Edit"
 msgstr "&Edytuj"
 
 #: lr_const.sfrdesignerform_editp
-#, fuzzy
-#| msgid "&Edit..."
 msgctxt "lr_const.sfrdesignerform_editp"
 msgid "&Edit ..."
 msgstr "&Edytuj..."
@@ -1253,11 +1236,9 @@ msgstr "Styl linii"
 
 #: lr_const.sfrdesignerform_modified
 msgid "Modified"
-msgstr ""
+msgstr "Zmodyfikowano"
 
 #: lr_const.sfrdesignerform_new
-#, fuzzy
-#| msgid "&New..."
 msgid "&New ..."
 msgstr "&Nowy..."
 
@@ -1266,14 +1247,10 @@ msgid "&Objects"
 msgstr "&Obiekty"
 
 #: lr_const.sfrdesignerform_open
-#, fuzzy
-#| msgid "&Open..."
 msgid "&Open ..."
 msgstr "&Otwórz..."
 
 #: lr_const.sfrdesignerform_opts
-#, fuzzy
-#| msgid "&Options..."
 msgid "&Options ..."
 msgstr "&Opcje..."
 
@@ -1282,8 +1259,6 @@ msgid "&Paste"
 msgstr "&Wklej"
 
 #: lr_const.sfrdesignerform_pgopt
-#, fuzzy
-#| msgid "&Page options..."
 msgid "&Page options ..."
 msgstr "Opcje &strony..."
 
@@ -1304,8 +1279,6 @@ msgid "&Remove page"
 msgstr "&Usuń stronę"
 
 #: lr_const.sfrdesignerform_rptopt
-#, fuzzy
-#| msgid "&Report options..."
 msgid "&Report options ..."
 msgstr "Opcje r&aportu..."
 
@@ -1314,8 +1287,6 @@ msgid "&Save"
 msgstr "&Zapisz"
 
 #: lr_const.sfrdesignerform_saveas
-#, fuzzy
-#| msgid "Save &as..."
 msgid "Save &as ..."
 msgstr "Za&pisz jako..."
 
@@ -1354,10 +1325,8 @@ msgid "&Undo"
 msgstr "&Cofnij"
 
 #: lr_const.sfrdesignerform_var
-#, fuzzy
-#| msgid "Variables &list..."
 msgid "Variables &list ..."
-msgstr "List zmi&ennych..."
+msgstr "Lista zmi&ennych..."
 
 #: lr_const.sfrom
 msgid "from"
@@ -1369,11 +1338,11 @@ msgstr "Zmienne FR"
 
 #: lr_const.sfunctioneditor
 msgid "Function editor"
-msgstr ""
+msgstr "Edytor funkcji"
 
 #: lr_const.sfunctions
 msgid "Functions"
-msgstr ""
+msgstr "Funkcje"
 
 #: lr_const.sgeditorformcapt
 msgid "Picture"
@@ -1384,8 +1353,6 @@ msgid "&Clear"
 msgstr "&Wyszyść"
 
 #: lr_const.sgeditorformload
-#, fuzzy
-#| msgid "&Load..."
 msgid "&Load ..."
 msgstr "&Załaduj..."
 
@@ -1401,7 +1368,7 @@ msgstr "&Zmieść"
 #: lr_const.sgroupeditorformadddbfield
 msgctxt "lr_const.sgroupeditorformadddbfield"
 msgid "Insert DB field"
-msgstr "Wstaw pole tabeli"
+msgstr "Wstaw pole z tabeli"
 
 #: lr_const.sgroupeditorformcapt
 msgid "Group"
@@ -1414,7 +1381,7 @@ msgstr "Warunek"
 
 #: lr_const.shidezerovalues
 msgid "Hide zero values"
-msgstr ""
+msgstr "Ukryj wartości zerowe"
 
 #: lr_const.shilightformback
 msgid "Background"
@@ -1425,14 +1392,10 @@ msgid "&Bold"
 msgstr "W&ytłuszczenie"
 
 #: lr_const.shilightformcolor
-#, fuzzy
-#| msgid "C&olor..."
 msgid "C&olor ..."
 msgstr "K&olor..."
 
 #: lr_const.shilightformcolor2
-#, fuzzy
-#| msgid "Co&lor..."
 msgid "Co&lor ..."
 msgstr "Ko&lor..."
 
@@ -1488,11 +1451,11 @@ msgstr "Wstaw pole wyboru"
 
 #: lr_const.sinsert
 msgid "Insert"
-msgstr ""
+msgstr "Dodaj"
 
 #: lr_const.sinsertexpression
 msgid "Insert Expression"
-msgstr ""
+msgstr "Dodaj wyrażenie"
 
 #: lr_const.sinsertfields
 msgid "Insert DB fields"
@@ -1527,10 +1490,8 @@ msgid "&Vertical"
 msgstr "&Pionowo"
 
 #: lr_const.sinsroundrect
-#, fuzzy
-#| msgid "Insert an RoundRect with shadow area"
 msgid "Insert a RoundRect with shadow area"
-msgstr "Wstaw pole o kształcie kwadratu z cieniem"
+msgstr "Wstaw pole o kształcie zaokrąglonego kwadratu z cieniem"
 
 #: lr_const.sinsshape
 msgid "Insert Shape object"
@@ -1542,19 +1503,19 @@ msgstr ""
 
 #: lr_const.sinvalidfrfreport
 msgid "Invalid binary report"
-msgstr ""
+msgstr "Nieprawidłowa zawartość raportu"
 
 #: lr_const.sinvalidfrfversion
 msgid "Invalid report version"
-msgstr ""
+msgstr "Nieprawidłowa wersja raportu"
 
 #: lr_const.sinvalidlrfreport
 msgid "Invalid report format"
-msgstr ""
+msgstr "Nieprawidłowy format raportu"
 
 #: lr_const.sinvalidvariablename
 msgid "\"%s\" is not a valid variable name."
-msgstr ""
+msgstr "\"%s\" nie jest prawidłową wersją zmiennej"
 
 #: lr_const.skeepaspectratio
 msgid "Keep aspect ratio"
@@ -1566,7 +1527,7 @@ msgstr "Formularz LazReport"
 
 #: lr_const.slaztemplatefile
 msgid "LazReport template"
-msgstr ""
+msgstr "Szablon LazReport"
 
 #: lr_const.smathcategory
 msgid "Math"
@@ -1574,7 +1535,7 @@ msgstr ""
 
 #: lr_const.smemoeditor
 msgid "Memo editor"
-msgstr ""
+msgstr "Edytor pola tekstowego"
 
 #: lr_const.smm
 msgid "MM"
@@ -1582,11 +1543,11 @@ msgstr "MM"
 
 #: lr_const.snewtemplate
 msgid "New template"
-msgstr ""
+msgstr "Nowy szablon"
 
 #: lr_const.sno
 msgid "No"
-msgstr ""
+msgstr "Nie"
 
 #: lr_const.snotassigned
 msgctxt "lr_const.snotassigned"
@@ -1599,11 +1560,11 @@ msgstr "Inspektor obiektów"
 
 #: lr_const.sobjectnotfound
 msgid "Object \"%s\" not found"
-msgstr ""
+msgstr "Nie znaleziono obiektu \"%s\""
 
 #: lr_const.sok
 msgid "Ok"
-msgstr ""
+msgstr "OK"
 
 #: lr_const.sonfirstpage
 msgid "On first page"
@@ -1614,8 +1575,6 @@ msgid "On last page"
 msgstr "Na ostatniej stronie"
 
 #: lr_const.sother
-#, fuzzy
-#| msgid "Other..."
 msgid "Other ..."
 msgstr "Inne..."
 
@@ -2280,8 +2239,6 @@ msgid "Print child if not visible"
 msgstr ""
 
 #: lr_const.sprintererror
-#, fuzzy
-#| msgid "Printer selected is not valid"
 msgid "Selected printer is not valid"
 msgstr "Wybrana drukarka jest nieprawidłowa"
 
@@ -2345,19 +2302,17 @@ msgstr "Plik zapisanego raportu"
 
 #: lr_const.sreportcreatedate
 msgid "Report creation date"
-msgstr ""
+msgstr "Data utworzenia raportu"
 
 #: lr_const.sreportlastmodifydate
 msgid "Report last modification date"
-msgstr ""
+msgstr "Data ostatniej modyfikacji raportu"
 
 #: lr_const.sreportloadingerror
 msgid "Error while loading report"
-msgstr ""
+msgstr "Błąd podczas ładowania raportu"
 
 #: lr_const.sreportpreparing
-#, fuzzy
-#| msgid "Report preparing"
 msgid "Preparing report"
 msgstr "Przygotowanie raportu"
 
@@ -2394,8 +2349,6 @@ msgid "Gradient"
 msgstr ""
 
 #: lr_const.sroundrectformhint
-#, fuzzy
-#| msgid "Click here to define the shadow color or gradian colors"
 msgid "Click here to define the shadow color or gradient colors"
 msgstr "Kliknij tutaj aby zdefiniować kolor cienia lub gradient kolorów"
 
@@ -2421,7 +2374,7 @@ msgstr "Zmienne..."
 
 #: lr_const.sroundrectsqrcorners
 msgid "Squared corners"
-msgstr ""
+msgstr "Zaokrąglone rogi"
 
 #: lr_const.srtffile
 msgid "Rich Text file"
@@ -2433,7 +2386,7 @@ msgstr "Zapisać zmiany"
 
 #: lr_const.sscripteditor
 msgid "Script editor"
-msgstr ""
+msgstr "Edytor skryptu"
 
 #: lr_const.sshape1
 msgctxt "lr_const.sshape1"
@@ -2479,7 +2432,7 @@ msgstr "Rozciągnięcie"
 
 #: lr_const.sstringcategory
 msgid "String"
-msgstr ""
+msgstr "Tekst"
 
 #: lr_const.ssubreportonpage
 msgid "SubReport on page"
@@ -2487,11 +2440,11 @@ msgstr "SubRaport na stronie"
 
 #: lr_const.stemplemptydesc
 msgid "New report based on empty template"
-msgstr ""
+msgstr "Utwórz pusty raport"
 
 #: lr_const.stemplemtpyrp
 msgid "Empty template"
-msgstr ""
+msgstr "Pusty szablon"
 
 #: lr_const.stemplfile
 msgid "FastReport template"
@@ -2536,7 +2489,7 @@ msgstr "Przeźroczysty"
 
 #: lr_const.sunabletoreadversion
 msgid "Unable to read report version"
-msgstr ""
+msgstr "Nie można pobrać wersji raportu"
 
 #: lr_const.suntitled
 msgid "Untitled"
@@ -2544,23 +2497,23 @@ msgstr "Bez tytułu"
 
 #: lr_const.susefixedfontsettings
 msgid "Use fixed font settings"
-msgstr ""
+msgstr "Użyj stałej czcionki"
 
 #: lr_const.susememofontsettings
 msgid "Use Memo font settings"
-msgstr ""
+msgstr "Użyj czcionki pola tekstowego"
 
 #: lr_const.susesyntaxhighlight
 msgid "Use syntax highlight"
-msgstr ""
+msgstr "Podświetlaj składnie"
 
 #: lr_const.svar1
 msgid "Page#"
-msgstr ""
+msgstr "Strona#"
 
 #: lr_const.svar2
 msgid "Expression"
-msgstr ""
+msgstr "Wyrażenie"
 
 #: lr_const.svar3
 msgctxt "lr_const.svar3"
@@ -2574,7 +2527,7 @@ msgstr "Godzina"
 
 #: lr_const.svar5
 msgid "Line#"
-msgstr ""
+msgstr "Wiersz#"
 
 #: lr_const.svar6
 msgid "Line through#"
@@ -2582,15 +2535,15 @@ msgstr ""
 
 #: lr_const.svar7
 msgid "Column#"
-msgstr ""
+msgstr "Kolumna#"
 
 #: lr_const.svar8
 msgid "Current line#"
-msgstr ""
+msgstr "Bieżący wiersz#"
 
 #: lr_const.svar9
 msgid "TotalPages"
-msgstr ""
+msgstr "LiczbaStron"
 
 #: lr_const.svaredformcapt
 msgid "Variables list"
@@ -2601,8 +2554,6 @@ msgid "&Categories and variables"
 msgstr "&Kategorie i zmienne"
 
 #: lr_const.svarformat
-#, fuzzy
-#| msgid "Variable format..."
 msgid "Variable format ..."
 msgstr "Format zmiennej..."
 
@@ -2616,7 +2567,7 @@ msgstr "&Kategoria:"
 
 #: lr_const.svariable
 msgid "Variable"
-msgstr ""
+msgstr "Zmienna"
 
 #: lr_const.svbandeditorformbnd
 msgid "Bands"
@@ -2650,5 +2601,5 @@ msgstr "Zawijanie tekstu"
 
 #: lr_const.syes
 msgid "Yes"
-msgstr ""
+msgstr "Tak"
 
