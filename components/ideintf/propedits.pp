@@ -289,6 +289,9 @@ type
     FPropCount: Integer;
     FPropList: PInstPropList;
     function GetPrivateDirectory: ansistring;
+  protected
+    // Draw Checkbox for Boolean and Set element editors.
+    function DrawCheckbox(ACanvas: TCanvas; const ARect: TRect; IsTrue: Boolean): TRect;
   public
     constructor Create(Hook:TPropertyEditorHook; APropCount:Integer); virtual;
     destructor Destroy; override;
@@ -538,9 +541,12 @@ type
     function GetAttributes: TPropertyAttributes; override;
     function GetName: shortstring; override;
     function GetValue: ansistring; override;
+    function GetVisualValue: ansistring; override;
     procedure GetValues(Proc: TGetStrProc); override;
     procedure SetValue(const NewValue: ansistring); override;
     function IsNotDefaultValue: boolean; override;
+    procedure PropDrawValue(ACanvas: TCanvas; const ARect: TRect;
+                            AState: TPropEditDrawState); override;
    end;
 
 { TSetPropertyEditor
@@ -2358,6 +2364,40 @@ begin
   Result:=True;
 end;
 
+function TPropertyEditor.DrawCheckbox(ACanvas: TCanvas; const ARect: TRect;
+  IsTrue: Boolean): TRect;
+// Draws a Checkbox using theme services for editing booleans.
+// Returns the output rectangle adjusted for new text location.
+var
+  Details: TThemedElementDetails;
+  Check: TThemedButton;
+  Sz: TSize;
+  TopMargin: Integer;
+  VisVal: String;
+begin
+  VisVal := GetVisualValue;
+  // Draw the box using theme services.
+  if (VisVal = '') or (VisVal = oisMixed) then
+    Check := tbCheckBoxMixedNormal
+  else if IsTrue then
+    Check := tbCheckBoxCheckedNormal
+  else
+    Check := tbCheckBoxUncheckedNormal;
+  Details := ThemeServices.GetElementDetails(Check);
+  Sz := ThemeServices.GetDetailSize(Details);
+  TopMargin := (ARect.Bottom - ARect.Top - Sz.cy) div 2;
+  Result := ARect;
+  Inc(Result.Top, TopMargin);
+  // Left varies by widgetset and theme etc. Real Checkbox itself has a left margin.
+  Inc(Result.Left, 2);                // ToDo: How to find out the real margin?
+  Result.Right := Result.Left + Sz.cx;
+  Result.Bottom := Result.Top + Sz.cy;
+  ThemeServices.DrawElement(ACanvas.Handle, Details, Result, nil);
+  // Text will be written after the box.
+  Result := ARect;
+  Inc(Result.Left, Sz.cx + 4);
+end;
+
 function TPropertyEditor.GetAttributes: TPropertyAttributes;
 begin
   Result:=[paMultiSelect,paRevertable];
@@ -2548,8 +2588,7 @@ begin
     Result:=GetSetProp(Instance,PropInfo,Brackets);
 end;
 
-function TPropertyEditor.GetSetValueAt(Index: Integer; Brackets: boolean
-  ): AnsiString;
+function TPropertyEditor.GetSetValueAt(Index: Integer; Brackets: boolean): AnsiString;
 begin
   with FPropList^[Index] do
     Result:=GetSetProp(Instance,PropInfo,Brackets);
@@ -3264,38 +3303,13 @@ end;
 procedure TBoolPropertyEditor.PropDrawValue(ACanvas: TCanvas; const ARect: TRect;
                                             AState: TPropEditDrawState);
 var
-  BRect: TRect;
-  Details: TThemedElementDetails;
-  Check: TThemedButton;
-  Sz: TSize;
-  TopMargin: Integer;
-  VisVal: String;
+  TxtRect: TRect;
 begin
-  BRect := ARect;
   if FPropertyHook.GetCheckboxForBoolean then
-  begin
-    VisVal := GetVisualValue;
-    // Draw the box using theme services.
-    if (VisVal = '') or (VisVal = oisMixed) then
-      Check := tbCheckBoxMixedNormal
-    else if GetOrdValue <> 0 then
-      Check := tbCheckBoxCheckedNormal
-    else
-      Check := tbCheckBoxUncheckedNormal;
-    Details := ThemeServices.GetElementDetails(Check);
-    Sz := ThemeServices.GetDetailSize(Details);
-    TopMargin := (ARect.Bottom - ARect.Top - Sz.cy) div 2;
-    Inc(BRect.Top, TopMargin);
-    // Left varies by widgetset and theme etc. Real Checkbox itself has a left margin.
-    Inc(BRect.Left, 2);                // ToDo: How to find out the real margin?
-    BRect.Right := BRect.Left + Sz.cx;
-    BRect.Bottom := BRect.Top + Sz.cy;
-    ThemeServices.DrawElement(ACanvas.Handle, Details, BRect, nil);
-    // Write text after the box
-    BRect := ARect;
-    Inc(BRect.Left, Sz.cx + 4);
-  end;
-  inherited PropDrawValue(ACanvas, BRect, AState);
+    TxtRect := DrawCheckbox(ACanvas, ARect, GetOrdValue<>0)
+  else
+    TxtRect := ARect;
+  inherited PropDrawValue(ACanvas, TxtRect, AState);
 end;
 
 { TInt64PropertyEditor }
@@ -3500,6 +3514,15 @@ var
 begin
   Integer(S) := GetOrdValue;
   Result := BooleanIdents[FElement in S];
+  if FPropertyHook.GetCheckboxForBoolean then
+    Result := '(' + Result + ')';
+end;
+
+function TSetElementPropertyEditor.GetVisualValue: ansistring;
+begin
+  Result := inherited GetVisualValue;
+  if Result = '' then
+    Result := oisMixed;
 end;
 
 procedure TSetElementPropertyEditor.GetValues(Proc: TGetStrProc);
@@ -3513,7 +3536,8 @@ var
   S: TIntegerSet;
 begin
   Integer(S) := GetOrdValue;
-  if CompareText(NewValue, 'True') = 0 then
+  if (CompareText(NewValue, 'True') = 0)
+  or (CompareText(NewValue, '(True)') = 0) then
     Include(S, FElement)
   else
     Exclude(S, FElement);
@@ -3531,6 +3555,22 @@ begin
     Integer(S2) := GetDefaultOrdValue;
     Result := (FElement in S1) <> (FElement in S2);
   end;
+end;
+
+procedure TSetElementPropertyEditor.PropDrawValue(ACanvas: TCanvas; const ARect: TRect;
+                                                  AState: TPropEditDrawState);
+var
+  S: TIntegerSet;
+  TxtRect: TRect;
+begin
+  if FPropertyHook.GetCheckboxForBoolean then
+  begin
+    Integer(S) := GetOrdValue;
+    TxtRect := DrawCheckbox(ACanvas, ARect, FElement in S);
+  end
+  else
+    TxtRect := ARect;
+  inherited PropDrawValue(ACanvas, TxtRect, AState);
 end;
 
 { TSetPropertyEditor }

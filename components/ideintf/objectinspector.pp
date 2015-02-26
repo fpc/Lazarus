@@ -1694,7 +1694,8 @@ begin
       //DebugLn(['TOICustomPropertyGrid.SetItemIndex FCurrentButton.BoundsRect=',dbgs(FCurrentButton.BoundsRect)]);
     end;
     NewValue:=NewRow.Editor.GetVisualValue;
-    if (NewRow.Editor is TBoolPropertyEditor) and FCheckboxForBoolean then
+    if ((NewRow.Editor is TBoolPropertyEditor) or (NewRow.Editor is TSetElementPropertyEditor))
+    and FCheckboxForBoolean then
     begin
       FCurrentEdit:=ValueCheckBox;
       ValueCheckBox.Enabled:=not NewRow.IsReadOnly;
