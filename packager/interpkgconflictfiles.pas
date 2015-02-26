@@ -23,6 +23,13 @@
   Abstract:
     Called after checking what packages need compile.
     Check source files and compiled files for name conflicts between packages.
+
+  ToDo:
+    - Show conflicting sources.
+    - allow to delete ppu files
+    - save ignore
+    - ignore
+    - lazbuild: no form, just warn
 }
 unit InterPkgConflictFiles;
 
@@ -152,22 +159,20 @@ begin
     for i:=0 to CompiledFiles.Count-1 do
     begin
       CurFile:=TPGIPAmbiguousCompiledFile(CompiledFiles[i]);
-      ItemNode:=AddChild(MainNode,ExtractFilename(CurFile.Filename));
+      s:=ExtractFilename(CurFile.Filename);
       // file owner
       if CurFile.OwnerInfo.Owner is TLazPackage then
-        s:='Package: '+CurFile.OwnerInfo.Name
+        s+=' of package '+CurFile.OwnerInfo.Name
       else
-        s:=CurFile.OwnerInfo.Name;
-      AddChild(ItemNode,s);
+        s+=' of '+CurFile.OwnerInfo.Name;
+      ItemNode:=AddChild(MainNode,s);
       // file path and src
       AddChild(ItemNode,'File: '+CurFile.Filename);
-      if not FilenameIsPascalSource(CurFile.Filename) then begin
-        if CurFile.SrcFilename='' then
-          s:='No source found'
-        else
-          s:='Src: '+CurFile.SrcFilename;
-        AddChild(ItemNode,s);
-      end;
+      if CurFile.SrcFilename='' then
+        s:='No source found'
+      else
+        s:='Source file: '+CurFile.SrcFilename;
+      AddChild(ItemNode,s);
 
       // conflict file owner
       if CurFile.ConflictOwner.Owner is TLazPackage then
@@ -181,7 +186,7 @@ begin
         if CurFile.ConflictSrcFilename='' then
           s:='No source found'
         else
-          s:='Src: '+CurFile.ConflictSrcFilename;
+          s:='Source file: '+CurFile.ConflictSrcFilename;
         AddChild(ItemNode,s);
       end;
     end;
@@ -436,7 +441,8 @@ var
       begin
         while Node<>nil do begin
           Result:=TPGInterPkgFile(Node.Data);
-          if ComparePGInterPkgShortFilename(Result,aPPUFile)<>0 then break;
+          if CompareFilenames(ExtractFileNameOnly(Result.ShortFilename),
+            ExtractFileNameOnly(aPPUFile.ShortFilename))<>0 then break;
           if (aPPUFile.OwnerInfo=Result.OwnerInfo)
           and FilenameIsPascalSource(Result.ShortFilename) then exit;
           if Left then
@@ -451,7 +457,6 @@ var
       StartNode: TAvgLvlTreeNode;
     begin
       StartNode:=ShortFiles.FindPointer(aPPUFile);
-      debugln(['FindUnitSource ',aPPUFile.ShortFilename,' StartNode=',StartNode<>nil]);
       Result:=FindSrc(StartNode,true);
       if Result<>nil then exit;
       Result:=FindSrc(StartNode,false);
