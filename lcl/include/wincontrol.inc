@@ -7987,7 +7987,7 @@ procedure TWinControl.CalculatePreferredSize(var PreferredWidth,
 
   function IsVerbose: boolean;
   begin
-    Result:=(ClassName='TShowCompilerOptionsDlg') or (Name='CmdLineMemo');
+    Result:=(Name='Edit1');
   end;
   {$ENDIF}
 
@@ -8026,6 +8026,9 @@ begin
       Layout.Free;
     end;
 
+    // add clientarea frame
+    GetPreferredSizeClientFrame(FrameWidth,FrameHeight);
+
     {$IF defined(VerboseAutoSize) or defined(VerboseAllAutoSize) or defined(VerboseCalculatePreferredSize)}
     {$IFDEF VerboseCalculatePreferredSize}
     if IsVerbose then
@@ -8039,14 +8042,11 @@ begin
       ' Client=',ClientWidth,'x',ClientHeight,
       ' PrefClient=',NewClientWidth,'x',NewClientHeight]);
     {$ENDIF}
-    PreferredWidth:=Max(PreferredWidth,NewClientWidth);
-    PreferredHeight:=Max(PreferredHeight,NewClientHeight);
+    if NewClientWidth>0 then
+      PreferredWidth:=Max(PreferredWidth,NewClientWidth+FrameWidth);
+    if NewClientHeight>0 then
+      PreferredHeight:=Max(PreferredHeight,NewClientHeight+FrameHeight);
   end;
-
-  // add clientarea frame
-  GetPreferredSizeClientFrame(FrameWidth,FrameHeight);
-  PreferredWidth+=Max(0,FrameWidth);
-  PreferredHeight+=Max(0,FrameHeight);
 
   // add borderspacing
   if (PreferredWidth>0)
