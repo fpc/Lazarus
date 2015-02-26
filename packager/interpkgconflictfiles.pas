@@ -25,11 +25,10 @@
     Check source files and compiled files for name conflicts between packages.
 
   ToDo:
-    - Show conflicting sources.
+    - lazbuild: no form, just warn
     - allow to delete ppu files
     - save ignore
     - ignore
-    - lazbuild: no form, just warn
 }
 unit InterPkgConflictFiles;
 
@@ -45,7 +44,7 @@ uses
   ProjectIntf, CompOptsIntf, IDEWindowIntf,
   // IDE
   LazarusIDEStrConsts, CompilerOptions, EnvironmentOpts, IDEProcs,
-  TransferMacros, LazConf, PackageDefs, PackageSystem;
+  TransferMacros, LazConf, IDECmdLine, PackageDefs, PackageSystem;
 
 type
   TPGInterPkgOwnerInfo = class
@@ -79,6 +78,7 @@ type
     OwnerInfo: TPGInterPkgOwnerInfo;
     ConflictFilename: string;
     ConflictOwner: TPGInterPkgOwnerInfo;
+    procedure Switch; virtual;
   end;
 
   { TPGIPAmbiguousCompiledFile }
@@ -87,6 +87,7 @@ type
   public
     SrcFilename: string; // the corresponding .pas/.pp file, if it exists
     ConflictSrcFilename: string; // the corresponding .pas/.pp file, if it exists
+    procedure Switch; override;
   end;
 
   { TPGIPConflictsDialog }
@@ -132,6 +133,27 @@ var
   F2: TPGInterPkgFile absolute File2;
 begin
   Result:=CompareFilenames(F1.ShortFilename,F2.ShortFilename);
+end;
+
+{ TPGIPAmbiguousCompiledFile }
+
+procedure TPGIPAmbiguousCompiledFile.Switch;
+var
+  s: String;
+begin
+  inherited Switch;
+  s:=SrcFilename; SrcFilename:=ConflictSrcFilename; ConflictSrcFilename:=s;
+end;
+
+{ TPGIPAmbiguousFile }
+
+procedure TPGIPAmbiguousFile.Switch;
+var
+  s: String;
+  o: TPGInterPkgOwnerInfo;
+begin
+  s:=Filename; Filename:=ConflictFilename; ConflictFilename:=s;
+  o:=OwnerInfo; OwnerInfo:=ConflictOwner; ConflictOwner:=o;
 end;
 
 procedure TPGIPConflictsDialog.Init(TheSrcFiles, TheCompiledFiles: TObjectList);
@@ -472,6 +494,7 @@ var
     SrcFile: TPGInterPkgFile;
     AmbiguousFile: TPGIPAmbiguousCompiledFile;
     OtherSrcFile: TPGInterPkgFile;
+    IsBackward: Boolean;
   begin
     CurNode:=Units.FindLowest;
     FirstNodeSameUnitname:=nil;
@@ -486,15 +509,19 @@ var
       // check units with same name
       SrcFile:=nil;
 
-      // ToDo: only one report per ppu
-
       OtherNode:=FirstNodeSameUnitname;
+      IsBackward:=true;
       while OtherNode<>nil do begin
         OtherFile:=TPGInterPkgFile(OtherNode.Data);
+        if aPPUFile=OtherFile then
+          IsBackward:=false;
         if (ComparePGInterPkgUnitnames(aPPUFile,OtherFile)<>0) then break;
         // other unit with same name found
         OtherNode:=OtherNode.Successor;
         if OtherFile.OwnerInfo=aPPUFile.OwnerInfo then continue;
+        if (not FilenameIsPascalSource(OtherFile.ShortFilename))
+        and IsBackward then
+          continue; // report ppu/ppu conflicts only once
 
         if CompareFilenames(aPPUFile.FullFilename,OtherFile.FullFilename)=0 then
         begin
@@ -521,20 +548,24 @@ var
         AmbiguousFile.ConflictFilename:=OtherFile.FullFilename;
         AmbiguousFile.ConflictOwner:=OtherFile.OwnerInfo;
         if SrcFile<>nil then
-        begin
-          // ppu with src in one package, duplicate unit in another package
-          // Note: This could be right if the other package does not use the src file
-          // Otherwise: duplicate name (-Ur has been checked)
-          debugln(['Warning: CheckPPUFilesInWrongDirs duplicate units found: file1="',aPPUFile.FullFilename,'"(',aPPUFile.OwnerInfo.Name,',source=',SrcFile.ShortFilename,') file2="',OtherFile.FullFilename,'"(',OtherFile.OwnerInfo.Name,')']);
           AmbiguousFile.SrcFilename:=SrcFile.FullFilename;
-        end else begin
-          // ppu with no src in one package, duplicate unit in another package
-          // (-Ur has been checked)
-          // => highly unlikely that this is right
-          debugln(['Warning: CheckPPUFilesInWrongDirs duplicate units found: file1="',aPPUFile.FullFilename,'"(',aPPUFile.OwnerInfo.Name,',no source) file2="',OtherFile.FullFilename,'"(',OtherFile.OwnerInfo.Name,')']);
-        end;
         if OtherSrcFile<>nil then
           AmbiguousFile.ConflictSrcFilename:=OtherSrcFile.FullFilename;
+        if (SrcFile<>nil) and (OtherSrcFile=nil) then
+          AmbiguousFile.Switch;
+
+        if ConsoleVerbosity>=0 then
+        begin
+          DbgOut('Warning: CheckPPUFilesInWrongDirs duplicate units found:');
+          DbgOut(' file1="',AmbiguousFile.Filename,'"(',AmbiguousFile.OwnerInfo.Name);
+          if AmbiguousFile.SrcFilename<>'' then
+            DbgOut(',source=',AmbiguousFile.SrcFilename);
+          DbgOut(') file2="',AmbiguousFile.ConflictFilename,'"(',AmbiguousFile.ConflictOwner.Name);
+          if AmbiguousFile.ConflictSrcFilename<>'' then
+            DbgOut(',source=',AmbiguousFile.ConflictSrcFilename);
+          debugln(')');
+        end;
+
         AmbiguousCompiledFiles.Add(AmbiguousFile);
       end;
     end;
@@ -566,7 +597,10 @@ var
       OtherNode:=FirstNodeSameShortName;
       while OtherNode<>nil do begin
         OtherFile:=TPGInterPkgFile(OtherNode.Data);
+        OtherNode:=OtherNode.Successor;
         if (ComparePGInterPkgShortFilename(CurFile,OtherFile)<>0) then break;
+        // other file with same short name found
+        if OtherFile.OwnerInfo=CurFile.OwnerInfo then continue;
 
         if CompareFilenames(CurFile.FullFilename,OtherFile.FullFilename)=0 then
         begin
@@ -577,12 +611,12 @@ var
           continue;
         end;
 
-        // other file with same short name found
-        OtherNode:=OtherNode.Successor;
-        if OtherFile.OwnerInfo=CurFile.OwnerInfo then continue;
         // two files with same short name in different packages
         if OptionUrAllowsDuplicate(CurFile,OtherFile) then continue;
-        debugln(['CheckDuplicateSrcFiles duplicate file found: file1="',CurFile.FullFilename,'"(',CurFile.OwnerInfo.Name,') file2="',OtherFile.FullFilename,'"(',OtherFile.OwnerInfo.Name,')']);
+        if ConsoleVerbosity>=0 then
+        begin
+          debugln(['Warning: CheckDuplicateSrcFiles duplicate file found: file1="',CurFile.FullFilename,'"(',CurFile.OwnerInfo.Name,') file2="',OtherFile.FullFilename,'"(',OtherFile.OwnerInfo.Name,')']);
+        end;
         AmbiguousFile:=TPGIPAmbiguousFile.Create;
         AmbiguousFile.Filename:=CurFile.FullFilename;
         AmbiguousFile.OwnerInfo:=CurFile.OwnerInfo;

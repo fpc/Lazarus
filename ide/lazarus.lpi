@@ -1322,6 +1322,7 @@
       <Unit241>
         <Filename Value="../packager/interpkgconflictfiles.pas"/>
         <IsPartOfProject Value="True"/>
+        <HasResources Value="True"/>
         <UnitName Value="InterPkgConflictFiles"/>
       </Unit241>
     </Units>
@@ -1333,7 +1334,7 @@
     </Target>
     <SearchPaths>
       <IncludeFiles Value="include"/>
-      <OtherUnitFiles Value="frames;../converter;../debugger;../debugger/frames;../packager;../designer;../packager/frames;../ide"/>
+      <OtherUnitFiles Value="frames;../converter;../debugger;../debugger/frames;../packager;../designer;../packager/frames;../ide;../packager"/>
       <UnitOutputDirectory Value="$(LazarusDir)/units/$(TargetCPU)-$(TargetOS)/$(LCLWidgetType)"/>
     </SearchPaths>
     <Linking>
