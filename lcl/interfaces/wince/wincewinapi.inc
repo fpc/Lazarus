@@ -1302,9 +1302,24 @@ end;
 
 function TWinCEWidgetSet.FrameRect(DC: HDC; const ARect: TRect;
   hBr: HBRUSH) : integer;
+var
+  res: Boolean;
+  OldBrush: HBRUSH;
 begin
-//roozbeh....works for now!
-  Result := Integer(windows.DrawFocusRect(DC,Arect));
+  res := True;
+  if (ARect.Top <= ARect.Bottom) and (ARect.Left <= ARect.Right) then
+  begin
+    OldBrush := Windows.SelectObject(DC, hBr);
+    res := res and FillRect(DC, Rect(ARect.Left, ARect.Top, ARect.Right, ARect.Top+1), hBr);
+    res := res and FillRect(DC, Rect(ARect.Left, ARect.Bottom-1, ARect.Right, ARect.Bottom), hBr);
+    res := res and FillRect(DC, Rect(ARect.Right-1, ARect.Top, ARect.Right, ARect.Bottom), hBr);
+    res := res and FillRect(DC, Rect(ARect.Left, ARect.Top, ARect.Left+1, ARect.Bottom), hBr);
+    Windows.SelectObject(DC, OldBrush);
+  end;
+  if res then
+    Result := 1
+  else
+    Result := 0;
 end;
 
 {------------------------------------------------------------------------------
