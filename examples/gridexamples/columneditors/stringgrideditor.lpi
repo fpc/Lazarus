@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <ProjectOptions>
     <Version Value="9"/>
@@ -37,7 +37,6 @@
       <Unit0>
         <Filename Value="stringgrideditor.lpr"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="stringgrideditor"/>
       </Unit0>
       <Unit1>
         <Filename Value="main.pas"/>
@@ -94,7 +93,6 @@
         <ShowGenInfo Value="False"/>
       </Verbosity>
       <WriteFPCLogo Value="False"/>
-      <CompilerPath Value="$(CompPath)"/>
     </Other>
   </CompilerOptions>
 </CONFIG>
