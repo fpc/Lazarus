@@ -1,7 +1,7 @@
 object Form1: TForm1
-  Left = 435
+  Left = 434
   Height = 224
-  Top = 198
+  Top = 172
   Width = 608
   HorzScrollBar.Page = 399
   VertScrollBar.Page = 299
@@ -10,7 +10,7 @@ object Form1: TForm1
   ClientHeight = 224
   ClientWidth = 608
   OnCreate = FormCreate
-  LCLVersion = '1.1'
+  LCLVersion = '1.4.0.1'
   object StringGrid1: TStringGrid
     Left = 16
     Height = 136
@@ -79,11 +79,14 @@ object Form1: TForm1
     )
   end
   object Edit1: TEdit
-    Left = 429
-    Height = 21
+    AnchorSideRight.Side = asrBottom
+    Left = 474
+    Height = 27
     Hint = 'Change ''None'' text'
     Top = 192
-    Width = 80
+    Width = 120
+    Anchors = [akTop]
+    AutoSize = False
     OnChange = Edit1Change
     ParentShowHint = False
     ShowHint = True
@@ -91,34 +94,39 @@ object Form1: TForm1
   end
   object Label1: TLabel
     Left = 16
-    Height = 26
+    Height = 34
     Top = 8
-    Width = 501
-    Caption = 'The stringgrid below shows the following button types:'#13#10'Auto, Auto with Editmask,   Button,   ButtonColumn,   CheckBox,   Ellipsis,          None,           and Picklist.'
+    Width = 580
+    Caption = 'The stringgrid below shows the following button types:'#13#10'Auto, Auto with Editmask, Button, ButtonColumn, CheckBox, Ellipsis, None, and Picklist.'
     ParentColor = False
     WordWrap = True
   end
   object Label2: TLabel
-    Left = 296
-    Height = 13
-    Top = 199
-    Width = 116
+    AnchorSideRight.Control = Edit1
+    Left = 307
+    Height = 17
+    Top = 198
+    Width = 160
+    Anchors = [akTop]
+    AutoSize = False
     Caption = 'Change text in this box:'
     ParentColor = False
   end
   object Label3: TLabel
     Left = 16
-    Height = 13
+    Height = 17
     Top = 198
-    Width = 64
+    Width = 91
+    AutoSize = False
     Caption = 'SetEdit text: '
     ParentColor = False
   end
   object Label4: TLabel
-    Left = 88
-    Height = 13
+    Left = 112
+    Height = 17
     Top = 198
-    Width = 101
+    Width = 140
+    AutoSize = False
     Caption = 'Auto && EditMask text'
     ParentColor = False
   end
