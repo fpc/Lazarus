@@ -1124,8 +1124,8 @@ begin
     EnableRemoteControl, ShowSplashScreen, ShowSetupDialog);
 
   DebugLn('TMainIDE.ParseCmdLineOptions:');
-  Debugln('  PrimaryConfigPath="',UTF8ToConsole(GetPrimaryConfigPath),'"');
-  Debugln('  SecondaryConfigPath="',UTF8ToConsole(GetSecondaryConfigPath),'"');
+  Debugln('  PrimaryConfigPath="',GetPrimaryConfigPath,'"');
+  Debugln('  SecondaryConfigPath="',GetSecondaryConfigPath,'"');
 end;
 
 procedure TMainIDE.LoadGlobalOptions;
