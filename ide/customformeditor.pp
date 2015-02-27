@@ -1435,7 +1435,7 @@ begin
         on E: Exception do begin
           s:=Format(lisCFEErrorDestroyingMediatorOfUnit,
                     [Mediator.ClassName, AUnitName, LineEnding, E.Message]);
-          DebugLn(['TCustomFormEditor.CreateComponent ',UTF8ToConsole(s)]);
+          DebugLn(['TCustomFormEditor.CreateComponent ',s]);
           DumpExceptionBackTrace;
           IDEMessageDialog(lisCFEErrorDestroyingMediator, s, mtError, [mbCancel]);
         end;
@@ -1450,7 +1450,7 @@ begin
           on E: Exception do begin
             s:=Format(lisCFEErrorDestroyingComponentOfTypeOfUnit,
                       [TypeClass.ClassName, AUnitName, LineEnding, E.Message]);
-            DebugLn(['TCustomFormEditor.CreateComponent ',UTF8ToConsole(s)]);
+            DebugLn(['TCustomFormEditor.CreateComponent ',s]);
             DumpExceptionBackTrace;
             IDEMessageDialog(lisCFEErrorDestroyingComponent, s, mtError, [mbCancel]);
           end;
