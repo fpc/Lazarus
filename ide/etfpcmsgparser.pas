@@ -2524,6 +2524,7 @@ var
   p: PChar;
 begin
   if Line='' then exit;
+  Line:=LazUTF8.SysToUTF8(Line);
   p:=PChar(Line);
   fOutputIndex:=OutputIndex;
   fMsgID:=0;
