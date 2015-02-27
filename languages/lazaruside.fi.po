@@ -6847,10 +6847,8 @@ msgid "Cursor row in current editor"
 msgstr "Kursorin rivi nykyisessä editorissa"
 
 #: lazarusidestrconsts.liscustomopthint
-#, fuzzy
-#| msgid "These options are passed to the compiler after comments are deleted and macros are replaced."
 msgid "These options are passed to the compiler after macros are replaced."
-msgstr "Nämä asetukset viedään kääntäjälle, kun kommentit on poistettu ja makrot korvattu."
+msgstr "Nämä asetukset viedään kääntäjälle, kun makrot on korvattu."
 
 #: lazarusidestrconsts.liscustomoptions
 msgid "custom options"

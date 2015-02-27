@@ -680,8 +680,6 @@ msgid "Help context %s not found in Database \"%s\"."
 msgstr "Ohjeen viittausta %s ei löydy tietokannasta \"%s\"."
 
 #: lclstrconsts.rshelphelpdatabasedidnotfoundaviewerforahelppageoftype
-#, fuzzy
-#| msgid "Help Database \"%s\" did not found a viewer for a help page of type %s"
 msgid "Help Database \"%s\" did not find a viewer for a help page of type %s"
 msgstr "Ohjetietokanta \"%s\" ei löytänyt katseluohjelmaa %s tyyppiselle ohjesivulle"
 
@@ -1278,10 +1276,8 @@ msgid " WARNING: There are %d TimerInfo structures left, I'll free them"
 msgstr "VAROITUS: On jäänyt %d TimerInfo tietuetta! Ne vapautetaan"
 
 #: lclstrconsts.rswarningunremovedpaintmessages
-#, fuzzy
-#| msgid " WARNING: There are %d unremoved LM_PAINT/LM_GtkPAINT message links left."
 msgid " WARNING: There are %s unremoved LM_PAINT/LM_GtkPAINT message links left."
-msgstr "VAROITUS: On jäänyt %d LM_PAINT/LM_GtkPAINT viestiä poistamatta."
+msgstr "VAROITUS: On jäänyt %s LM_PAINT/LM_GtkPAINT viestiä poistamatta."
 
 #: lclstrconsts.rswhitecolorcaption
 msgid "White"
