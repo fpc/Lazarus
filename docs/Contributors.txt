@@ -19,6 +19,7 @@ Arnold Bosch
 Attila Tamás - Hungarian translation
 August Klein
 Babak Mahmoudabadi
+Balazs Szekely
 Bald Zhang
 Bart Broersma
 Benito van der Zander
