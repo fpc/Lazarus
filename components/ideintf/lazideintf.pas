@@ -149,6 +149,10 @@ type
       // Global options should be prependended, project options should be appended.
     ): boolean of object;
 
+  TGetFPCFrontEndPath = function(Sender: TObject;
+    var Path: string // this path is prepended to fpc.
+    ): boolean of object;
+
   TLazarusIDEHandlerType = (
     lihtSavingAll, // called before IDE saves everything
     lihtSavedAll,  // called after IDE saved everything
@@ -160,7 +164,8 @@ type
     lihtProjectDependenciesCompiling, // called before IDE compiles dependencies of project
     lihtProjectDependenciesCompiled, // called after IDE compiled dependencies of project
     lihtQuickSyntaxCheck,  // called when quick syntax check is clicked (menu item or shortcut)
-    lihtGetFPCFrontEndParams // called when the IDE gets the parameters of the 'fpc' front end tool
+    lihtGetFPCFrontEndParams, // called when the IDE gets the parameters of the 'fpc' front end tool
+    lihtGetFPCFrontEndPath // called when the IDE gets the path of the 'fpc' front end tool
     );
     
   { TLazIDEInterface }
@@ -356,6 +361,11 @@ type
     procedure RemoveHandlerGetFPCFrontEndParams(
                                           const Handler: TGetFPCFrontEndParams);
     function CallHandlerGetFPCFrontEndParams(Sender: TObject; var Params: string): boolean;
+    procedure AddHandlerGetFPCFrontEndPath(
+                 const Handler: TGetFPCFrontEndPath; AsLast: boolean = false);
+    procedure RemoveHandlerGetFPCFrontEndPath(
+                                          const Handler: TGetFPCFrontEndPath);
+    function CallHandlerGetFPCFrontEndPath(Sender: TObject; var Path: string): boolean;
   end;
   
 var
@@ -666,6 +676,32 @@ begin
   while FLazarusIDEHandlers[lihtGetFPCFrontEndParams].NextDownIndex(i) do
   begin
     if not TGetFPCFrontEndParams(FLazarusIDEHandlers[lihtGetFPCFrontEndParams][i])(Self,Params)
+    then exit(false);
+  end;
+  Result:=true;
+end;
+
+procedure TLazIDEInterface.AddHandlerGetFPCFrontEndPath(
+  const Handler: TGetFPCFrontEndPath; AsLast: boolean);
+begin
+  AddHandler(lihtGetFPCFrontEndPath,TMethod(Handler),AsLast);
+end;
+
+procedure TLazIDEInterface.RemoveHandlerGetFPCFrontEndPath(
+  const Handler: TGetFPCFrontEndPath);
+begin
+  RemoveHandler(lihtGetFPCFrontEndPath,TMethod(Handler));
+end;
+
+function TLazIDEInterface.CallHandlerGetFPCFrontEndPath(Sender: TObject;
+  var Path: string): boolean;
+var
+  i: longint;
+begin
+  i:=FLazarusIDEHandlers[lihtGetFPCFrontEndPath].Count;
+  while FLazarusIDEHandlers[lihtGetFPCFrontEndPath].NextDownIndex(i) do
+  begin
+    if not TGetFPCFrontEndPath(FLazarusIDEHandlers[lihtGetFPCFrontEndPath][i])(Self,Path)
     then exit(false);
   end;
   Result:=true;
