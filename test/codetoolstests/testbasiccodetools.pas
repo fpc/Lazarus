@@ -10,6 +10,8 @@
    ./runtests --format=plain --suite=TestReindent
    ./runtests --format=plain --suite=TestSimpleFormat
    ./runtests --format=plain --suite=TestDateToCfgStr
+   ./runtests --format=plain --suite=TestFilenameIsMatching
+   ./runtests --format=plain --suite=TestChangeLineEndings
 }
 unit TestBasicCodetools;
 
@@ -18,7 +20,7 @@ unit TestBasicCodetools;
 interface
 
 uses
-  fpcunit, Classes, SysUtils, testglobals, FileProcs, BasicCodeTools;
+  fpcunit, Classes, SysUtils, testglobals, FileProcs, BasicCodeTools, SourceLog;
 
 type
   { TTestBasicCodeTools }
@@ -26,6 +28,7 @@ type
   TTestBasicCodeTools = class(TTestCase)
   protected
   published
+    // BasicCodeTools
     procedure TestFindLineEndOrCodeInFrontOfPosition;
     procedure TestHasTxtWord;
     procedure TestBasicFindCommentEnd;
@@ -34,7 +37,11 @@ type
     procedure TestGuessIndentSize;
     procedure TestReIndent;
     procedure TestSimpleFormat;
+    // FileProcs
     procedure TestDateToCfgStr;
+    procedure TestFilenameIsMatching;
+    // SourceLog
+    procedure TestChangeLineEndings;
   end;
 
 implementation
@@ -268,6 +275,125 @@ begin
   t(EncodeDate(1234,12,17),DateAsCfgStrFormat,'12341217');
   t(EncodeDate(1234,1,2),DateAsCfgStrFormat,'12340102');
   t(ComposeDateTime(EncodeDate(1234,1,2),EncodeTime(3,4,5,6)),DateTimeAsCfgStrFormat,'1234/01/02 03:04:05');
+end;
+
+procedure TTestBasicCodeTools.TestFilenameIsMatching;
+
+  procedure t(aMask,aFilename: string; aExactly,Expected: boolean);
+  var
+    Actual: Boolean;
+  begin
+    DoDirSeparators(aMask);
+    DoDirSeparators(aFilename);
+    Actual:=FilenameIsMatching(aMask,aFilename,aExactly);
+    if Actual=Expected then exit;
+    AssertEquals('Mask="'+aMask+'" File="'+aFilename+'" Exactly='+dbgs(aExactly),Expected,Actual);
+  end;
+
+begin
+  //  /abc           matches /abc, /abc/, /abc/p, /abc/xyz/filename
+  //                 but not /abcd
+  t('/abc','/abc',true,true);
+  t('/abc','/abc',false,true);
+  t('/abc','/abc/',true,true);
+  t('/abc','/abc/',false,true);
+  t('/abc','/abc/p',true,false);
+  t('/abc','/abc/p',false,true);
+  t('/abc','/abc/xyz/filename',false,true);
+  t('/abc','/abc/xyz/filename',true,false);
+  t('/abc','/abcd',true,false);
+  t('/abc','/abcd',false,false);
+
+  //  /abc/            matches /abc, /abc/, /abc//, but not /abc/.
+  t('/abc/','/abc',true,true);
+  t('/abc/','/abc',false,true);
+  t('/abc/','/abc/',true,true);
+  t('/abc/','/abc/',false,true);
+  t('/abc/','/abc//',true,true);
+  t('/abc/','/abc//',false,true);
+  t('/abc/','/abc/.',true,false);
+  t('/abc/','/abc/.',false,true);
+  t('/abc/','/abc/d',true,false);
+  t('/abc/','/abc/d',false,true);
+
+  //  /abc/x?z/www   matches /abc/xyz/www, /abc/xaz/www
+  //                 but not /abc/x/z/www
+  t('/abc/x?z/www','/abc/xyz/www',true,true);
+  t('/abc/x?z/www','/abc/xyz/www',false,true);
+  t('/abc/x?z/www','/abc/xaz/www',true,true);
+  t('/abc/x?z/www','/abc/x/z/www',true,false);
+  t('/abc/x?z/www','/abc/x/z/www',false,false);
+
+  //  /abc/x*z/www   matches /abc/xz/www, /abc/xyz/www, /abc/xAAAz/www
+  //                 but not /abc/x/z/www
+  t('/abc/x*z/www','/abc/xz/www',true,true);
+  t('/abc/x*z/www','/abc/xz/www',false,true);
+  t('/abc/x*z/www','/abc/xyz/www',true,true);
+  t('/abc/x*z/www','/abc/xyz/www',false,true);
+  t('/abc/x*z/www','/abc/xAAAz/www',true,true);
+  t('/abc/x*z/www','/abc/xAAAz/www',false,true);
+  t('/abc/x*z/www','/abc/x/z/www',true,false);
+  t('/abc/x*z/www','/abc/x/z/www',false,false);
+
+  //  /abc/x#*z/www  matches /abc/x*z/www, /abc/x*z/www/ttt
+  t('/abc/x#*z/www','/abc/x*z/www',true,true);
+  t('/abc/x#*z/www','/abc/x*z/www',false,true);
+  t('/abc/x#*z/www','/abc/x*z/www/ttt',true,false);
+  t('/abc/x#*z/www','/abc/x*z/www/ttt',false,true);
+
+  //  /a{b,c,d}e     matches /abe, /ace, /ade, but not /aze
+  t('/a{b,c,d}e','/abe',true,true);
+  t('/a{b,c,d}e','/abe',false,true);
+  t('/a{b,c,d}e','/ace',true,true);
+  t('/a{b,c,d}e','/ace',false,true);
+  t('/a{b,c,d}e','/ade',true,true);
+  t('/a{b,c,d}e','/ade',false,true);
+  t('/a{b,c,d}e','/aze',true,false);
+  t('/a{b,c,d}e','/aze',false,false);
+
+  // {*.pas,*.pp,*.p,*.inc,Makefile.fpc} matches math.pp
+  t('{*.pas,*.pp,*.p,*.inc,Makefile.fpc}','math.pp',true,true);
+
+  t('{*.pas}','Generics.Collections.pas',true,true);
+  t('{*.pas,*.pp}','Generics.Collections.pas',true,true);
+  t('{*.pas,*.pp,*.p}','Generics.Collections.pas',true,true);
+  t('{*.pas,*.pp,*.p,*.inc}','Generics.Collections.pas',true,true);
+  t('{*.pas,*.pp,*.p,*.inc,Makefile.fpc}','Generics.Collections.pas',true,true);
+
+  // *{.p{as,p,}}   matches a.pas unit1.pp b.p but not b.inc
+  t('*{.p{as,p,}}','a.pas',true,true);
+  t('*{.p{as,p,}}','unit1.pp',true,true);
+  t('*{.p{as,p,}}','b.p',true,true);
+  t('*{.p{as,p,}}','b.inc',true,false);
+
+  //  *.{p{as,p,},inc} matches a.pas unit1.pp b.p b.inc but not c.lfm
+  t('*.{p{as,p,},inc}','a.pas',true,true);
+  t('*.{p{as,p,},inc}','unit1.pp',true,true);
+  t('*.{p{as,p,},inc}','b.p',true,true);
+  t('*.{p{as,p,},inc}','b.inc',true,true);
+  t('*.{p{as,p,},inc}','c.lfm',true,false);
+end;
+
+procedure TTestBasicCodeTools.TestChangeLineEndings;
+
+  procedure t(s, NewLineEnding, Expected: string);
+  var
+    Actual: string;
+  begin
+    Actual:=ChangeLineEndings(s,NewLineEnding);
+    if Actual=Expected then exit;
+    AssertEquals('s="'+DbgStr(s)+'" NewLineEnding="'+DbgStr(NewLineEnding)+'"',DbgStr(Expected),DbgStr(Actual));
+  end;
+
+begin
+  t('','','');
+  t('A',#10,'A');
+  t('A'#10,#10,'A'#10);
+  t(#10'A',#10,#10'A');
+  t('A'#13,#13,'A'#13);
+  t(#13'A',#13,#13'A');
+  t('A'#13#10,#10,'A'#10);
+  t(#13#10'A',#10,#10'A');
 end;
 
 initialization
