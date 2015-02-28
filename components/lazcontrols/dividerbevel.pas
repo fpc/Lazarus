@@ -65,6 +65,9 @@ type
              default 10;
     property Color;
     property Constraints;
+    property DragCursor;
+    property DragKind;
+    property DragMode;
     property Font;
     property Hint;
     property LeftIndent: Integer read FLeftIndent write SetLeftIndent default 60;
@@ -82,12 +85,16 @@ type
     property OnClick;
     property OnContextPopup;
     property OnDblClick;
+    property OnDragDrop;
+    property OnDragOver;
+    property OnEndDrag;
     property OnMouseDown;
     property OnMouseEnter;
     property OnMouseLeave;
     property OnMouseMove;
     property OnMouseUp;
     property OnResize;
+    property OnStartDrag;
 end;
 
 procedure Register;
