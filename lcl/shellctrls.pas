@@ -859,7 +859,7 @@ begin
   ANode := Selected;
   if Assigned(FShellListView) and Assigned(ANode) then
   begin
-    IsDirectory := (not (otFolders in FObjectTypes)) or ANode.HasChildren;
+    IsDirectory := (not (otNonFolders in FObjectTypes)) or ANode.HasChildren;
     if IsDirectory then
     begin
       //Note: the folder may have been deleted in the mean time
