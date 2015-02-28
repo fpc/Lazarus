@@ -204,10 +204,11 @@ type
     TranslationFilename: string; // e.g. /path/to/fpcsrc/compiler/msg/errord.msg
     TranslationFile: TFPCMsgFilePoolItem;
     InstantFPCCache: string; // with trailing pathdelim
+    FPC_FullVersion: cardinal;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Init; override; // called after macros resolved, before starting thread (main thread)
-    procedure InitReading; override; // called if process started, before first line (worker thread)
+    procedure InitReading; override; // called when process started, before first line (worker thread)
     procedure Done; override; // called after process stopped (worker thread)
     procedure ReadLine(Line: string; OutputIndex: integer; var Handled: boolean); override;
     procedure AddMsgLine(MsgLine: TMessageLine); override;
@@ -1066,8 +1067,16 @@ var
   p: PChar;
   aTargetOS: String;
   aTargetCPU: String;
+  FPCVersion: integer;
+  FPCRelease: integer;
+  FPCPatch: integer;
 begin
   inherited Init;
+
+  // get FPC version
+  CodeToolBoss.GetFPCVersionForDirectory(Tool.WorkerDirectory, FPCVersion,
+    FPCRelease, FPCPatch);
+  FPC_FullVersion:=FPCVersion*10000+FPCRelease*100+FPCPatch;
 
   if FPCMsgFilePool<>nil then begin
     aTargetOS:='';
@@ -2255,6 +2264,7 @@ begin
   FFilesToIgnoreUnitNotUsed:=TStringList.Create;
   HideHintsSenderNotUsed:=true;
   HideHintsUnitNotUsedInMainSource:=true;
+  FPC_FullVersion:=GetCompiledFPCVersion;
 end;
 
 function TIDEFPCParser.FileExists(const Filename: string; aSynchronized: boolean
@@ -2524,7 +2534,10 @@ var
   p: PChar;
 begin
   if Line='' then exit;
-  Line:=LazUTF8.SysToUTF8(Line);
+  if FPC_FullVersion>=20701 then
+    Line:=LazUTF8.ConsoleToUTF8(Line)
+  else
+    Line:=LazUTF8.SysToUTF8(Line);
   p:=PChar(Line);
   fOutputIndex:=OutputIndex;
   fMsgID:=0;
