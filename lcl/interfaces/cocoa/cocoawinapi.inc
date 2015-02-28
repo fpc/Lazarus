@@ -1693,21 +1693,23 @@ end;
 
 function TCocoaWidgetSet.GetDC(hWnd: HWND): HDC;
 var
-  ctx: TCocoaContext;
+  ctx: TCocoaContext = nil;
+  lCallback: ICommonCallback;
 begin
   if hWnd = 0 then
     Result := HDC(ScreenContext)
   else
   begin
-    ctx := NSObject(hWnd).lclGetCallback.GetContext;
+    lCallback := NSObject(hWnd).lclGetCallback;
+    if lCallback <> nil then
+      ctx := lCallback.GetContext;
 
     if ctx = nil then
     begin
       ctx := TCocoaContext.Create(DefaultContext.ctx);
-      with DefaultContext.size do
-        ctx.InitDraw(cx, cy);
+      ctx.InitDraw(DefaultContext.size.cx, DefaultContext.size.cy);
     end;
-    Result := HDC(ctx)
+    Result := HDC(ctx);
   end;
 
   {$IFDEF VerboseWinAPI}
