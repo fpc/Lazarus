@@ -891,6 +891,8 @@ end;
 
 procedure TQtWidgetSet.SetRubberBandRect(const ARubberBand: HWND; const ARect: TRect);
 begin
+  if ARubberBand = 0 then
+    exit;
   QRubberBand_setGeometry(QRubberBandH(ARubberBand), @ARect);
 end;
 
