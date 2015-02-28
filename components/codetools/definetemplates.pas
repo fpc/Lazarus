@@ -971,6 +971,7 @@ function GetDefaultSrcOS2ForTargetOS(const TargetOS: string): string;
 function GetDefaultSrcCPUForTargetCPU(const TargetCPU: string): string;
 procedure SplitLazarusCPUOSWidgetCombo(const Combination: string;
   var CPU, OS, WidgetSet: string);
+function GetCompiledFPCVersion: integer;
 function GetCompiledTargetOS: string;
 function GetCompiledTargetCPU: string;
 function GetDefaultCompilerFilename(const TargetCPU: string = ''; Cross: boolean = false): string;
@@ -1013,6 +1014,7 @@ function RunFPCInfo(const CompilerFilename: string;
                    InfoTypes: TFPCInfoTypes; const Options: string =''): string;
 function ExtractFPCFrontEndParameters(const CmdLineParams: string;
   const Kinds: TFPCFrontEndParams = AllFPCFrontEndParams): string;
+function FPCVersionToNumber(const FPCVersionString: string): integer;
 function SplitFPCVersion(const FPCVersionString: string;
                         out FPCVersion, FPCRelease, FPCPatch: integer): boolean;
 function ParseFPCVerbose(List: TStrings; // fpc -va output
@@ -1469,6 +1471,16 @@ begin
   Add('T',ParamT);
   Add('P',ParamP);
   Add('V',ParamV);
+end;
+
+function FPCVersionToNumber(const FPCVersionString: string): integer;
+var
+  FPCVersion, FPCRelease, FPCPatch: integer;
+begin
+  if SplitFPCVersion(FPCVersionString,FPCVersion,FPCRelease,FPCPatch) then
+    Result:=FPCVersion*10000+FPCRelease*100+FPCPatch
+  else
+    Result:=0;
 end;
 
 function SplitFPCVersion(const FPCVersionString: string; out FPCVersion,
@@ -2784,6 +2796,11 @@ begin
   while (EndPos<=length(Combination)) and (Combination[EndPos]<>'-') do
     inc(EndPos);
   WidgetSet:=copy(Combination,StartPos,EndPos-StartPos);
+end;
+
+function GetCompiledFPCVersion: integer;
+begin
+  Result:=FPCVersionToNumber({$I %FPCVERSION%});
 end;
 
 function GetCompiledTargetOS: string;
@@ -7976,21 +7993,13 @@ begin
 end;
 
 function TFPCTargetConfigCache.GetFPC_FULLVERSION: integer;
-var
-  v: String;
-  FPCVersion: integer;
-  FPCRelease: integer;
-  FPCPatch: integer;
 begin
   if Defines<>nil then
     Result:=StrToIntDef(Defines['FPC_FULLVERSION'],0)
   else
     Result:=0;
-  if Result=0 then begin
-    v:={$I %FPCVERSION%};
-    SplitFPCVersion(v,FPCVersion,FPCRelease,FPCPatch);
-    Result:=(FPCVersion*100+FPCRelease)*100+FPCPatch;
-  end;
+  if Result=0 then
+    Result:=GetCompiledFPCVersion;
 end;
 
 function TFPCTargetConfigCache.IndexOfUsedCfgFile: integer;
