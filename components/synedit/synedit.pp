@@ -187,7 +187,7 @@ type
     sfAfterLoadFromFileNeeded,
     // Mouse-states
     sfLeftGutterClick, sfRightGutterClick,
-    sfDblClicked, sfTripleClicked, sfQuadClicked,
+    sfInClick, sfDblClicked, sfTripleClicked, sfQuadClicked,
     sfWaitForDragging, sfIsDragging, sfWaitForMouseSelecting, sfMouseSelecting, sfMouseDoneSelecting,
     sfIgnoreUpClick,
     sfSelChanged
@@ -3389,6 +3389,8 @@ begin
                                 sfWaitForDragging, sfIgnoreUpClick
                                ];
 
+  Include(fStateFlags, sfInClick);
+
   if ssQuad in Shift then begin
     CType := ccQuad;
     Include(fStateFlags, sfQuadClicked);
@@ -3650,22 +3652,21 @@ begin
   fScrollTimer.Enabled := False;
   inherited MouseUp(Button, Shift, X, Y);
   MouseCapture := False;
+  if not (sfInClick in fStateFlags) then
+    exit;
 
   if sfQuadClicked in fStateFlags then begin
     CType := ccQuad;
-    Include(fStateFlags, sfQuadClicked);
   end
   else if sfTripleClicked in fStateFlags then begin
     CType := ccTriple;
-    Include(fStateFlags, sfTripleClicked);
   end
   else if sfDblClicked in fStateFlags then begin
     CType := ccDouble;
-    Include(fStateFlags, sfDblClicked);
   end
   else
     CType := ccSingle;
-  fStateFlags:=fStateFlags - [sfDblClicked,sfTripleClicked,sfQuadClicked];
+  fStateFlags:=fStateFlags - [sfInClick, sfDblClicked,sfTripleClicked,sfQuadClicked];
 
   if sfWaitForDragging in fStateFlags then
   begin
@@ -4721,6 +4722,7 @@ procedure TCustomSynEdit.WMKillFocus(var Msg: TWMKillFocus);
 begin
   if fCaret = nil then exit; // This SynEdit is in Destroy
   Exclude(FStateFlags, sfHideCursor);
+  Exclude(fStateFlags, sfInClick);
   {$IFDEF VerboseFocus}
   DebugLn(['[TCustomSynEdit.WMKillFocus] A ',DbgSName(Self), ' time=', dbgs(Now*86640)]);
   {$ENDIF}
