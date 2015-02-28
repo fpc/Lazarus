@@ -574,7 +574,10 @@ begin
   begin
     DottedBitmap := CreateBitmap(8, 8, 1, 1, @LineBitsDotted);
     if DottedBitmap <> 0 then
+    begin
       FDottedBrush := CreatePatternBrush(DottedBitmap);
+      DeleteObject(DottedBitmap);
+    end;
   end;
   Result := FDottedBrush;
 end;
