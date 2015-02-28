@@ -16,7 +16,8 @@ uses
   CocoaWSStdCtrls,
   CocoaWSComCtrls,
   CocoaWSDialogs,
-  CocoaWSSpin;
+  CocoaWSSpin,
+  CocoaWSCheckLst;
 
 // imglist
 function RegisterCustomImageList: Boolean;
@@ -453,7 +454,8 @@ end;
 // CheckLst
 function RegisterCustomCheckListBox: Boolean; alias : 'WSRegisterCustomCheckListBox';
 begin
-  Result := False;
+  RegisterWSComponent(TCustomCheckListBox, TCocoaWSCustomCheckListBox);
+  Result := True;
 end;
 
 // Forms

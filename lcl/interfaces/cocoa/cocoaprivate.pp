@@ -593,6 +593,18 @@ type
     function lclIsHandle: Boolean; override;
   end;
 
+  { TCocoaCheckListBox }
+
+  TCocoaCheckListBox = objcclass(TCocoaListBox)
+  public
+    function tableView_objectValueForTableColumn_row(tableView: NSTableView;
+      objectValueForTableColumn: NSTableColumn; row: NSInteger):id;
+      override;
+    function tableView_dataCellForTableColumn_row(tableView: NSTableView;
+      tableColumn: NSTableColumn; row: NSInteger): NSCell;
+      message 'tableView:dataCellForTableColumn:row:';
+  end;
+
   { TCocoaTabPage }
 
   TCocoaTabPage = objcclass(NSTabViewItem)
@@ -2558,6 +2570,36 @@ procedure TCocoaListBox.keyUp(event: NSEvent);
 begin
   if not Assigned(callback) or not callback.KeyEvent(event) then
     inherited keyUp(event);
+end;
+
+{ TCocoaCheckListBox }
+
+function TCocoaCheckListBox.tableView_objectValueForTableColumn_row(tableView: NSTableView;
+  objectValueForTableColumn: NSTableColumn; row: NSInteger):id;
+begin
+  if not Assigned(list) then
+    Exit(nil);
+
+  if row>=list.count then
+    Exit(nil);
+
+  resultNS.release;
+  resultNS := NSStringUtf8(list[row]);
+  Result:= ResultNS;
+end;
+
+function TCocoaCheckListBox.tableView_dataCellForTableColumn_row(tableView: NSTableView;
+  tableColumn: NSTableColumn; row: NSInteger): NSCell;
+var
+  lNSString: NSString;
+begin
+  Result := NSButtonCell.alloc.init.autorelease;
+  Result.setAllowsMixedState(False);
+  NSButtonCell(Result).setButtonType(NSSwitchButton);
+
+  lNSString := NSStringUtf8(list[row]);
+  NSButtonCell(Result).setTitle(lNSString);
+  lNSString.release;
 end;
 
 { TCocoaTabPage }
