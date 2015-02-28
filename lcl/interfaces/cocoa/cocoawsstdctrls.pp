@@ -228,6 +228,8 @@ function AllocButton(const ATarget: TWinControl; const ACallBackClass: TLCLButto
 function AllocTextField(ATarget: TWinControl; const AParams: TCreateParams): TCocoaTextField;
 function AllocSecureTextField(ATarget: TWinControl; const AParams: TCreateParams): TCocoaSecureTextField;
 
+function GetListBox(AWinControl: TWinControl): TCocoaListBox;
+
 implementation
 
 const

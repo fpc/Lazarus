@@ -42,7 +42,6 @@ type
     class procedure SetState(const ACheckListBox: TCustomCheckListBox; const AIndex: integer; const AState: TCheckBoxState); override;
   end;
 
-
 implementation
 
 { TCocoaWSCustomCheckListBox }
@@ -73,7 +72,7 @@ begin
   list.setHeaderView(nil);
   list.setDataSource(list);
   list.setDelegate(list);
-
+  list.AllowMixedState := TCustomCheckListBox(AWinControl).AllowGrayed;
 
   scroll := EmbedInScrollView(list);
   if not Assigned(scroll) then
@@ -92,21 +91,19 @@ end;
   Method:  TCocoaWSCustomCheckListBox.GetState
   Params:  ACustomCheckListBox - LCL custom check list box
            AIndex              - Item index
-  Returns: If the specified item in check list box in Carbon interface is
+  Returns: If the specified item in check list box in Cocoa interface is
            checked, grayed or unchecked
  ------------------------------------------------------------------------------}
 class function TCocoaWSCustomCheckListBox.GetState(
-  const ACheckListBox: TCustomCheckListBox; const AIndex: integer
-  ): TCheckBoxState;
+  const ACheckListBox: TCustomCheckListBox; const AIndex: integer): TCheckBoxState;
+var
+  lListBox: TCocoaCheckListBox;
 begin
   Result := cbUnchecked;
-  {if not CheckHandle(ACheckListBox, Self, 'GetState') then Exit;
+  lListBox := TCocoaCheckListBox(GetListBox(ACheckListBox));
+  if lListBox = nil then Exit;
 
-  // TODO: grayed state
-  if TCarbonCheckListBox(ACheckListBox.Handle).GetItemChecked(AIndex) then
-    Result := cbChecked
-  else
-    Result := cbUnchecked;}
+  Result := lListBox.GetState(AIndex);
 end;
 
 {------------------------------------------------------------------------------
@@ -116,16 +113,18 @@ end;
            AChecked            - New checked value
 
   Changes checked value of item with the specified index of check list box in
-  Carbon interface
+  Cocoa interface
  ------------------------------------------------------------------------------}
 class procedure TCocoaWSCustomCheckListBox.SetState(
   const ACheckListBox: TCustomCheckListBox; const AIndex: integer;
   const AState: TCheckBoxState);
+var
+  lListBox: TCocoaCheckListBox;
 begin
-  {if not CheckHandle(ACheckListBox, Self, 'SetState') then Exit;
-  
-  // TODO: grayed state
-  TCarbonCheckListBox(ACheckListBox.Handle).SetItemChecked(AIndex, AState <> cbUnchecked);}
+  lListBox := TCocoaCheckListBox(GetListBox(ACheckListBox));
+  if lListBox = nil then Exit;
+
+  lListBox.SetState(AIndex, AState);
 end;
 
 end.

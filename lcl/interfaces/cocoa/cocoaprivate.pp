@@ -33,7 +33,7 @@ uses
   MacOSAll, CocoaAll, CocoaUtils, CocoaGDIObjects,
   // LCL
   LMessages, LCLMessageGlue, ExtCtrls, Graphics,
-  LCLType, LCLProc, Controls, ComCtrls, Spin;
+  LCLType, LCLProc, Controls, ComCtrls, Spin, StdCtrls;
 
 const
   SPINEDIT_DEFAULT_STEPPER_WIDTH = 15;
@@ -551,7 +551,7 @@ type
 
   { TCocoaListBox }
 
-  TCocoaListBox = objcclass(NSTableView, NSTableViewDelegateProtocol, NSTableViewDataSourceProtocol )
+  TCocoaListBox = objcclass(NSTableView, NSTableViewDelegateProtocol, NSTableViewDataSourceProtocol)
   public
     callback: IListBoxCallback;
     resultNS: NSString;
@@ -597,9 +597,22 @@ type
 
   TCocoaCheckListBox = objcclass(TCocoaListBox)
   public
+    // LCL functions
+    AllowMixedState: Boolean;
+    class function LCLCheckStateToCocoa(ALCLState: TCheckBoxState): NSInteger; message 'LCLCheckStateToCocoa:';
+    class function CocoaCheckStateToLCL(ACocoaState: NSInteger): TCheckBoxState; message 'CocoaCheckStateToLCL:';
+    function CheckListBoxGetNextState(ACurrent: TCheckBoxState): TCheckBoxState; message 'CheckListBoxGetNextState:';
+    function GetCocoaState(const AIndex: integer): NSInteger; message 'GetCocoaState:';
+    procedure SetCocoaState(const AIndex: integer; AState: NSInteger); message 'SetCocoaState:AState:';
+    function GetState(const AIndex: integer): TCheckBoxState; message 'GetState:';
+    procedure SetState(const AIndex: integer; AState: TCheckBoxState); message 'SetState:AState:';
+    // Cocoa functions
     function tableView_objectValueForTableColumn_row(tableView: NSTableView;
       objectValueForTableColumn: NSTableColumn; row: NSInteger):id;
       override;
+    procedure tableView_setObjectValue_forTableColumn_row(tableView: NSTableView;
+      object_: id; tableColumn: NSTableColumn; row: NSInteger);
+      message 'tableView:setObjectValue:forTableColumn:row:';
     function tableView_dataCellForTableColumn_row(tableView: NSTableView;
       tableColumn: NSTableColumn; row: NSInteger): NSCell;
       message 'tableView:dataCellForTableColumn:row:';
@@ -2471,21 +2484,24 @@ end;
 
 function TCocoaListBox.tableView_shouldEditTableColumn_row(tableView: NSTableView; tableColumn: NSTableColumn; row: NSInteger): Boolean;
 begin
-result:=false;  // disable cell editing by default
+  Result := False;  // disable cell editing by default
 end;
 
 function TCocoaListBox.tableView_objectValueForTableColumn_row(tableView: NSTableView;
   objectValueForTableColumn: NSTableColumn; row: NSInteger):id;
 begin
+  //WriteLn('TCocoaListBox.tableView_objectValueForTableColumn_row');
   if not Assigned(list) then
     Result:=nil
-  else begin
-    if row>=list.count then Result:=nil
+  else
+  begin
+    if row>=list.count then
+      Result := nil
     else
     begin
       resultNS.release;
       resultNS := NSStringUtf8(list[row]);
-      Result:= ResultNS;
+      Result := ResultNS;
     end;
   end;
 end;
@@ -2505,8 +2521,8 @@ end;
 
 procedure TCocoaListBox.tableViewSelectionDidChange(notification: NSNotification);
 begin
-   if Assigned(callback) then
-      callback.SelectionChanged;
+  if Assigned(callback) then
+    callback.SelectionChanged;
 end;
 
 procedure TCocoaListBox.mouseDown(event: NSEvent);
@@ -2574,18 +2590,84 @@ end;
 
 { TCocoaCheckListBox }
 
+class function TCocoaCheckListBox.LCLCheckStateToCocoa(ALCLState: TCheckBoxState): NSInteger;
+begin
+  case ALCLState of
+  cbChecked: Result := NSOnState;
+  cbGrayed:  Result := NSMixedState;
+  else // cbUnchecked
+    Result := NSOffState;
+  end;
+end;
+
+class function TCocoaCheckListBox.CocoaCheckStateToLCL(ACocoaState: NSInteger): TCheckBoxState;
+begin
+  case ACocoaState of
+  NSOnState:    Result := cbChecked;
+  NSMixedState: Result := cbGrayed;
+  else // NSOffState
+    Result := cbUnchecked;
+  end;
+end;
+
+function TCocoaCheckListBox.CheckListBoxGetNextState(ACurrent: TCheckBoxState): TCheckBoxState;
+begin
+  case ACurrent of
+  cbChecked: Result := cbUnchecked;
+  cbGrayed:  Result := cbChecked;
+  else // cbUnchecked
+    if AllowMixedState then
+      Result := cbGrayed
+    else
+      Result := cbChecked;
+  end;
+end;
+
+function TCocoaCheckListBox.GetCocoaState(const AIndex: integer): NSInteger;
+begin
+  Result := NSInteger(list.Objects[AIndex]);
+end;
+
+procedure TCocoaCheckListBox.SetCocoaState(const AIndex: integer; AState: NSInteger);
+begin
+  list.Objects[AIndex] := TObject(AState);
+end;
+
+function TCocoaCheckListBox.GetState(const AIndex: integer): TCheckBoxState;
+var
+  lInt: NSInteger;
+begin
+  lInt := GetCocoaState(AIndex);
+  Result := CocoaCheckStateToLCL(lInt);
+end;
+
+procedure TCocoaCheckListBox.SetState(const AIndex: integer; AState: TCheckBoxState);
+begin
+  SetCocoaState(AIndex, LCLCheckStateToCocoa(AState));
+end;
+
 function TCocoaCheckListBox.tableView_objectValueForTableColumn_row(tableView: NSTableView;
   objectValueForTableColumn: NSTableColumn; row: NSInteger):id;
+var
+  lInt: NSInteger;
 begin
+  //WriteLn('[TCocoaCheckListBox.tableView_objectValueForTableColumn_row] row='+IntToStr(row));
   if not Assigned(list) then
     Exit(nil);
 
   if row>=list.count then
     Exit(nil);
 
-  resultNS.release;
-  resultNS := NSStringUtf8(list[row]);
-  Result:= ResultNS;
+  // Returns if the state is checked or unchecked
+  lInt := GetCocoaState(row);
+  Result := NSNumber.numberWithInteger(lInt);
+end;
+
+procedure TCocoaCheckListBox.tableView_setObjectValue_forTableColumn_row(tableView: NSTableView;
+  object_: id; tableColumn: NSTableColumn; row: NSInteger);
+begin
+  //WriteLn('[TCocoaCheckListBox.tableView_setObjectValue_forTableColumn_row] row='+IntToStr(row));
+  SetState(row, CheckListBoxGetNextState(GetState(row)));
 end;
 
 function TCocoaCheckListBox.tableView_dataCellForTableColumn_row(tableView: NSTableView;
@@ -2594,7 +2676,7 @@ var
   lNSString: NSString;
 begin
   Result := NSButtonCell.alloc.init.autorelease;
-  Result.setAllowsMixedState(False);
+  Result.setAllowsMixedState(True);
   NSButtonCell(Result).setButtonType(NSSwitchButton);
 
   lNSString := NSStringUtf8(list[row]);
