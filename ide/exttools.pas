@@ -140,6 +140,8 @@ type
     procedure SyncAutoFree({%H-}aData: PtrInt); // (main thread)
   protected
     procedure DoExecute; override; // (main thread)
+    procedure DoStart; // (main thread)
+    procedure CreateView; // (main thread)
     function GetExecuteAfter(Index: integer): TAbstractExternalTool; override;
     function GetExecuteBefore(Index: integer): TAbstractExternalTool; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation);
@@ -186,7 +188,7 @@ type
     function IndexOf(Tool: TAbstractExternalTool): integer; override;
     property MaxProcessCount: integer read FMaxProcessCount write FMaxProcessCount;
     procedure Work;
-    function FindNextToolToExec: TExternalTool;
+    function FindNextToolToStart: TExternalTool;
     procedure Terminate(Tool: TExternalTool);
     procedure TerminateAll; override;
     procedure Clear; override;
@@ -649,6 +651,7 @@ procedure TExternalTool.DoExecute;
     finally
       LeaveCriticalSection;
     end;
+    CreateView;
     NotifyHandlerStopped;
 
     Result:=true;
@@ -656,34 +659,20 @@ procedure TExternalTool.DoExecute;
 
 var
   ExeFile: String;
-  View: TExtToolView;
   i: Integer;
   aParser: TExtToolParser;
 begin
   if Terminated then exit;
 
-  // set Stage to etsStarting
+  // set Stage to etsInitializing
   EnterCriticalSection;
   try
-    if Stage<>etsWaitingForStart then
-      raise Exception.Create('TExternalTool.Execute: already started');
-    FStage:=etsStarting;
+    if Stage<>etsInit then
+      raise Exception.Create('TExternalTool.Execute: already initialized');
+    FStage:=etsInitializing;
   finally
     LeaveCriticalSection;
   end;
-
-  View:=nil;
-  if ExtToolConsole<>nil then begin
-    // in console mode (lazbuild) all output goes unparsed to console
-    ClearParsers;
-    View:=ExtToolConsole.CreateView(Self);
-  end else if (ViewCount=0) and (ParserCount>0) then begin
-    // this tool generates parsed output => auto create view
-    if IDEMessagesWindow<>nil then
-      View:=IDEMessagesWindow.CreateView(Title);
-  end;
-  if View<>nil then
-    AddView(View);
 
   // resolve macros
   if ResolveMacrosOnExecute then
@@ -758,6 +747,31 @@ begin
     end;
   end;
 
+  // set Stage to etsWaitingForStart
+  EnterCriticalSection;
+  try
+    if Stage<>etsInitializing then
+      raise Exception.Create('TExternalTool.Execute: bug in initialization');
+    FStage:=etsWaitingForStart;
+  finally
+    LeaveCriticalSection;
+  end;
+end;
+
+procedure TExternalTool.DoStart;
+begin
+  // set Stage to etsStarting
+  EnterCriticalSection;
+  try
+    if Stage<>etsWaitingForStart then
+      raise Exception.Create('TExternalTool.Execute: already started');
+    FStage:=etsStarting;
+  finally
+    LeaveCriticalSection;
+  end;
+
+  CreateView;
+
   // mark running
   if Tools<>nil then
     TExternalTools(Tools).AddRunningTool(Self);
@@ -773,6 +787,25 @@ begin
     debugln(Process.Parameters.Text);
   end;
   Thread.Start;
+end;
+
+procedure TExternalTool.CreateView;
+var
+  View: TExtToolView;
+begin
+  if ViewCount>0 then exit;
+  View:=nil;
+  if ExtToolConsole<>nil then begin
+    // in console mode (lazbuild) all output goes unparsed to console
+    ClearParsers;
+    View:=ExtToolConsole.CreateView(Self);
+  end else if (ViewCount=0) and (ParserCount>0) then begin
+    // this tool generates parsed output => auto create view
+    if IDEMessagesWindow<>nil then
+      View:=IDEMessagesWindow.CreateView(Title);
+  end;
+  if View<>nil then
+    AddView(View);
 end;
 
 function TExternalTool.ExecuteBeforeCount: integer;
@@ -952,14 +985,16 @@ end;
 
 procedure TExternalTool.Execute;
 begin
-  if Stage=etsInit then
-    fStage:=etsWaitingForStart;
-  if FStage<>etsWaitingForStart then
+  if Stage<>etsInit then
     raise Exception.Create('TExternalTool.Execute "'+Title+'" already started');
+  DoExecute;
+  if Stage<>etsWaitingForStart then
+    exit;
+
   if Tools<>nil then
     TExternalTools(Tools).Work
   else
-    DoExecute;
+    DoStart;
 end;
 
 procedure TExternalTool.Terminate;
@@ -1317,13 +1352,13 @@ var
   Tool: TExternalTool;
 begin
   while RunningCount<MaxProcessCount do begin
-    Tool:=FindNextToolToExec;
+    Tool:=FindNextToolToStart;
     if Tool=nil then exit;
-    Tool.DoExecute;
+    Tool.DoStart;
   end;
 end;
 
-function TExternalTools.FindNextToolToExec: TExternalTool;
+function TExternalTools.FindNextToolToStart: TExternalTool;
 var
   Tool: TExternalTool;
   CurLoad: Int64;

@@ -411,13 +411,14 @@ type
   TExtToolViewClass = class of TExtToolView;
 
   TExternalToolStage = (
-    etsInit,
+    etsInit,            // just created, set your parameters, then call Execute
+    etsInitializing,    // set in Execute, during resolving macros
     etsWaitingForStart, // waiting for a process slot
-    etsStarting,      // creating the process
-    etsRunning,
-    etsWaitingForStop,
-    etsStopped,
-    etsDestroying
+    etsStarting,        // creating the thread and process
+    etsRunning,         // process started
+    etsWaitingForStop,  // waiting for process to stop
+    etsStopped,         // process has stopped
+    etsDestroying       // during destructor
     );
   TExternalToolStages = set of TExternalToolStage;
 
