@@ -283,6 +283,8 @@ procedure TTestBasicCodeTools.TestFilenameIsMatching;
   var
     Actual: Boolean;
   begin
+    DoDirSeparators(aMask);
+    DoDirSeparators(aFilename);
     Actual:=FilenameIsMatching(aMask,aFilename,aExactly);
     if Actual=Expected then exit;
     AssertEquals('Mask="'+aMask+'" File="'+aFilename+'" Exactly='+dbgs(aExactly),Expected,Actual);
