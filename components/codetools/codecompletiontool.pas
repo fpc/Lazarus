@@ -6028,6 +6028,8 @@ var
   InsertPosDesc: TInsertStatementPosDescription;
   Node: TCodeTreeNode;
   Tool: TFindDeclarationTool;
+  aContext: TFindContext;
+  FuncNode: TCodeTreeNode;
 begin
   {$IFDEF VerboseGetPossibleInitsForVariable}
   debugln(['TCodeCompletionCodeTool.GetPossibleInitsForVariable ',dbgs(CursorPos)]);
@@ -6049,30 +6051,49 @@ begin
   CursorNode:=FindDeepestNodeAtPos(CleanCursorPos,true);
 
   // find declaration of identifier
+  VarTool:=nil;
+  VarNode:=nil;
   Identifier:=@Src[IdentAtom.StartPos];
-  Params:=TFindDeclarationParams.Create;
-  try
-    Params.ContextNode:=CursorNode;
-    Params.SetIdentifier(Self,Identifier,nil);
-    Params.Flags:=[fdfSearchInParentNodes,fdfSearchInAncestors,
-                   fdfTopLvlResolving,fdfFindVariable];
-    Result:=FindIdentifierInContext(Params);
-    VarTool:=Params.NewCodeTool;
-    VarNode:=Params.NewNode;
-    if (not Result) or (VarNode=nil) then begin
+  if (cmsResult in FLastCompilerModeSwitches)
+  and (CompareIdentifiers(Identifier,'Result')=0) then begin
+    FuncNode:=CursorNode;
+    while not NodeIsFunction(FuncNode) do
+      FuncNode:=FuncNode.Parent;
+    VarTool:=Self;
+    VarNode:=FuncNode;
+    Result:=true;
+  end;
+  if VarNode=nil then begin
+    Params:=TFindDeclarationParams.Create;
+    try
+      Params.ContextNode:=CursorNode;
+      Params.SetIdentifier(Self,Identifier,nil);
+      Params.Flags:=[fdfSearchInParentNodes,fdfSearchInAncestors,
+                     fdfTopLvlResolving,fdfFindVariable];
+      Result:=FindIdentifierInContext(Params);
+      VarTool:=Params.NewCodeTool;
+      VarNode:=Params.NewNode;
+      if (not Result) or (VarNode=nil) then begin
+        {$IFDEF VerboseGetPossibleInitsForVariable}
+        debugln(['TCodeCompletionCodeTool.GetPossibleInitsForVariable FindIdentifierInContext Result=',Result,' VarTool=',VarTool<>nil,' VarNode=',VarNode<>nil]);
+        {$ENDIF}
+        MoveCursorToAtomPos(IdentAtom);
+        RaiseException('failed to resolve identifier "'+Identifier+'"');
+      end;
       {$IFDEF VerboseGetPossibleInitsForVariable}
-      debugln(['TCodeCompletionCodeTool.GetPossibleInitsForVariable FindIdentifierInContext Result=',Result,' VarTool=',VarTool<>nil,' VarNode=',VarNode<>nil]);
+      debugln(['TCodeCompletionCodeTool.GetPossibleInitsForVariable FindIdentifierInContext VarTool=',ExtractFilename(VarTool.MainFilename),' VarNode=',VarNode.DescAsString]);
       {$ENDIF}
-      MoveCursorToAtomPos(IdentAtom);
-      RaiseException('failed to resolve identifier "'+Identifier+'"');
+    finally
+      Params.Free;
     end;
-  finally
-    Params.Free;
   end;
 
   // resolve type
   Params:=TFindDeclarationParams.Create;
   try
+    Params.Flags:=fdfDefaultForExpressions;
+    if VarNode.Desc in [ctnProcedure,ctnProcedureHead] then
+      Params.Flags:=Params.Flags+[fdfFunctionResult];
     ExprType:=VarTool.ConvertNodeToExpressionType(VarNode,Params);
     {$IFDEF VerboseGetPossibleInitsForVariable}
     DebugLn('TCodeCompletionCodeTool.GetPossibleInitsForVariable ConvertNodeToExpressionType',
@@ -6102,14 +6123,25 @@ begin
       ctnSetType:
         // set of
         AddAssignment('[]');
-      ctnProcedureType:
-        // address of proc
-        AddAssignment('nil');
       ctnClass,ctnClassInterface,ctnDispinterface,
       ctnObjCClass,ctnObjCCategory,ctnObjCProtocol,ctnCPPClass:
         AddAssignment('nil');
       ctnPointerType:
         AddAssignment('nil');
+      ctnProcedureType:
+        // address of proc
+        AddAssignment('nil');
+      ctnProcedureHead:
+        if Tool.NodeIsFunction(Node) then begin
+          Params:=TFindDeclarationParams.Create;
+          try
+            aContext:=Tool.FindBaseTypeOfNode(Params,Node);
+            Tool:=aContext.Tool;
+            Node:=aContext.Node;
+          finally
+            Params.Free;
+          end;
+        end;
       end;
     end;
   xtChar,

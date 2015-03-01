@@ -44,5 +44,11 @@ begin
   TestLots(s,c,p,SignalState,ShiftState,HelpCtx,Event,E,pc);
 end;
 
+function Func1: integer;
+begin
+  TestInteger(Func1);
+  TestInteger(Result);
+end;
+
 end.
 
