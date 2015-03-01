@@ -260,16 +260,35 @@ end;
 
 function TQuickFixLocalVarNotInitialized_AddAssignment.IsApplicable(
   Msg: TMessageLine; out Identifier: string): boolean;
+
+  function IsMsgId(MsgID: integer): boolean;
+  var
+    Dummy: string;
+  begin
+    Result:=TIDEFPCParser.MsgLineIsId(Msg,MsgID,Identifier,Dummy);
+  end;
+
 var
   Tool: TCodeTool;
   CleanPos: integer;
   Node: TCodeTreeNode;
-  Dummy: string;
   Code: TCodeBuffer;
 begin
   Result:=false;
   // Check: Local variable "$1" does not seem to be initialized
-  if not TIDEFPCParser.MsgLineIsId(Msg,5036,Identifier,Dummy) then
+  if not IsMsgId(5036) // W_Local variable "$1" does not seem to be initialized
+  or not IsMsgId(5037) // W_Variable "$1" does not seem to be initialized
+  or not IsMsgId(5057) // H_Local variable "$1" does not seem to be initialized
+  or not IsMsgId(5058) // H_Variable "$1" does not seem to be initialized
+  or not IsMsgId(5059) // W_Function result variable does not seem to initialized
+  or not IsMsgId(5060) // H_Function result variable does not seem to be initialized
+  or not IsMsgId(5089) // W_Local variable "$1" of a managed type does not seem to be initialized
+  or not IsMsgId(5090) // W_Variable "$1" of a managed type does not seem to be initialized
+  or not IsMsgId(5091) // H_Local variable "$1" of a managed type does not seem to be initialized
+  or not IsMsgId(5092) // H_Variable "$1" of a managed type does not seem to be initialized
+  or not IsMsgId(5093) // W_function result variable of a managed type does not seem to initialized
+  or not IsMsgId(5094) // H_Function result variable of a managed type does not seem to be initialized
+  then
     exit;
   if not Msg.HasSourcePosition or not IsValidIdent(Identifier) then exit;
 

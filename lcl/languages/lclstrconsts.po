@@ -1523,12 +1523,6 @@ msgstr ""
 msgid "Name"
 msgstr ""
 
-#: lclstrconsts.sshellctrlsselecteditemdoesnotexists
-msgid ""
-"The selected item does not exist on disk:\n"
-"\"%s\"\n"
-msgstr ""
-
 #: lclstrconsts.sshellctrlssize
 msgid "Size"
 msgstr ""
