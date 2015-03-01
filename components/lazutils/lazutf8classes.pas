@@ -15,8 +15,8 @@ type
   private
     FFileName: utf8string;
   public
-    constructor Create(const AFileName: utf8string; Mode: Word);
-    constructor Create(const AFileName: utf8string; Mode: Word; Rights: Cardinal);
+    constructor Create(const AFileName: string; Mode: Word);
+    constructor Create(const AFileName: string; Mode: Word; Rights: Cardinal);
     destructor Destroy; override;
     property FileName: utf8string Read FFilename;
   end;
@@ -117,12 +117,12 @@ begin
   end;
 end;
 
-constructor TFileStreamUTF8.Create(const AFileName: utf8string; Mode: Word);
+constructor TFileStreamUTF8.Create(const AFileName: string; Mode: Word);
 begin
   Create(AFileName,Mode,438);
 end;
 
-constructor TFileStreamUTF8.Create(const AFileName: utf8string; Mode: Word; Rights: Cardinal);
+constructor TFileStreamUTF8.Create(const AFileName: string; Mode: Word; Rights: Cardinal);
 var
   lHandle: THandle;
 begin
