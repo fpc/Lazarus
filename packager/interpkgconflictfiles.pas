@@ -25,7 +25,6 @@
     Check source files and compiled files for name conflicts between packages.
 
   ToDo:
-    - lazbuild: no form, just warn
     - allow to delete ppu files
     - save ignore
     - ignore
@@ -41,7 +40,7 @@ uses
   Controls, ButtonPanel, FileProcs, LazFileUtils, AvgLvlTree, BasicCodeTools,
   DefineTemplates, CodeToolManager,
   // IDEIntf
-  ProjectIntf, CompOptsIntf, IDEWindowIntf,
+  ProjectIntf, CompOptsIntf, IDEWindowIntf, LazIDEIntf,
   // IDE
   LazarusIDEStrConsts, CompilerOptions, EnvironmentOpts, IDEProcs,
   TransferMacros, LazConf, IDECmdLine, PackageDefs, PackageSystem;
@@ -674,10 +673,13 @@ begin
     and (AmbiguousCompiledFiles.Count=0) then exit;
 
     // show warnings
-    Dlg:=TPGIPConflictsDialog.Create(nil);
-    Dlg.Init(AmbiguousSrcFiles,AmbiguousCompiledFiles);
-    if Dlg.ShowModal<>mrOK then exit(false);
-    FilesChanged:=Dlg.FilesChanged;
+    if LazarusIDE<>nil then begin
+      // IDE
+      Dlg:=TPGIPConflictsDialog.Create(nil);
+      Dlg.Init(AmbiguousSrcFiles,AmbiguousCompiledFiles);
+      if Dlg.ShowModal<>mrOK then exit(false);
+      FilesChanged:=Dlg.FilesChanged;
+    end;
   finally
     AmbiguousCompiledFiles.Free;
     AmbiguousSrcFiles.Free;
