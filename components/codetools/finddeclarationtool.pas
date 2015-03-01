@@ -7301,7 +7301,9 @@ var
           // RESULT has a special meaning in a function
           // -> check if in a function
           if fdfExtractOperand in Params.Flags then Params.AddOperandPart('Result');
-          ProcNode:=StartNode.GetNodeOfType(ctnProcedure);
+          ProcNode:=StartNode;
+          while not NodeIsFunction(ProcNode) do
+            ProcNode:=ProcNode.Parent;
           if (ProcNode<>nil) then begin
             if IsEnd and (fdfFindVariable in StartFlags) then begin
               BuildSubTreeForProcHead(ProcNode);
