@@ -120,6 +120,16 @@ end;
 constructor TFileStreamUTF8.Create(const AFileName: string; Mode: Word);
 begin
   Create(AFileName,Mode,438);
+  { Rights 438 is the default in the FCL TFileStream
+    Under Unix:
+      438 = $1B6 =
+        6 = owner can read/write
+        B = group can read/write, set group id
+        1 = others can read
+      Note: the real rights are "Rights and not umask", so "set group id" is
+            usually not set.
+    Under Windows Rights is not used.
+  }
 end;
 
 constructor TFileStreamUTF8.Create(const AFileName: string; Mode: Word; Rights: Cardinal);
