@@ -590,7 +590,10 @@ begin
 
     if Assigned(OnMoved) then OnMoved(Self);
     if ResizeStyle in [rsLine, rsPattern] then
+    begin
       DestroyRubberBand(FSplitterWindow);
+      FSplitterWindow := 0;
+    end;
   end;
 end;
 
