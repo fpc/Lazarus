@@ -14,10 +14,12 @@
     <Files Count="3">
       <Item1>
         <Filename Value="cairocanvas.pas"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="CairoCanvas"/>
       </Item1>
       <Item2>
         <Filename Value="cairoprinter.pas"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="CairoPrinter"/>
       </Item2>
       <Item3>
