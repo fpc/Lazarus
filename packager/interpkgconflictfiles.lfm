@@ -5,6 +5,8 @@ object PGIPConflictsDialog: TPGIPConflictsDialog
   Width = 469
   ClientHeight = 424
   ClientWidth = 469
+  OnClose = FormClose
+  OnCreate = FormCreate
   Position = poScreenCenter
   LCLVersion = '1.5'
   object ButtonPanel1: TButtonPanel
@@ -33,10 +35,16 @@ object PGIPConflictsDialog: TPGIPConflictsDialog
     DefaultItemHeight = 18
     ReadOnly = True
     TabOrder = 1
+    OnAdvancedCustomDrawItem = ConflictsTreeViewAdvancedCustomDrawItem
+    OnMouseDown = ConflictsTreeViewMouseDown
     Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
   end
   object IDEDialogLayoutStorage1: TIDEDialogLayoutStorage
     left = 161
+    top = 104
+  end
+  object ImageList1: TImageList
+    left = 290
     top = 104
   end
 end

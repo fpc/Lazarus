@@ -41,9 +41,9 @@ uses
   KeywordFuncLists, BasicCodeTools, StdCtrls, Buttons, FileUtil, ExtCtrls,
   ComCtrls, EditBtn, LCLType, ImgList, AvgLvlTree, Laz2_XMLCfg, LazUTF8,
   LazFileUtils, TreeFilterEdit, PackageIntf, IDEImagesIntf, IDEHelpIntf,
-  IDEDialogs, LazarusIDEStrConsts, EnvironmentOpts, InputHistory, LazConf,
-  IDEProcs, PackageDefs, PackageSystem, PackageLinks, IDEContextHelpEdit,
-  LPKCache;
+  IDEDialogs, IDEWindowIntf, LazarusIDEStrConsts, EnvironmentOpts, InputHistory,
+  LazConf, IDEProcs, PackageDefs, PackageSystem, PackageLinks,
+  IDEContextHelpEdit, LPKCache;
 
 type
   TOnCheckInstallPackageList =
@@ -75,6 +75,7 @@ type
     procedure AddToInstallButtonClick(Sender: TObject);
     function FilterEditGetImageIndex(Str: String; Data: TObject;
       var AIsEnabled: Boolean): Integer;
+    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure InstallTreeViewKeyPress(Sender: TObject; var Key: char);
     procedure LPKParsingTimerTimer(Sender: TObject);
     procedure OnAllLPKParsed(Sender: TObject);
@@ -185,6 +186,8 @@ end;
 
 procedure TInstallPkgSetDialog.InstallPkgSetDialogCreate(Sender: TObject);
 begin
+  IDEDialogLayoutList.ApplyLayout(Self,Width,Height);
+
   InstallTreeView.Images := IDEImages.Images_16;
   AvailableTreeView.Images := IDEImages.Images_16;
   ImgIndexPackage := IDEImages.LoadImage(16, 'item_package');
@@ -317,6 +320,12 @@ function TInstallPkgSetDialog.FilterEditGetImageIndex(Str: String;
   Data: TObject; var AIsEnabled: Boolean): Integer;
 begin
   Result:=0;
+end;
+
+procedure TInstallPkgSetDialog.FormClose(Sender: TObject;
+  var CloseAction: TCloseAction);
+begin
+  IDEDialogLayoutList.SaveLayout(Self);
 end;
 
 procedure TInstallPkgSetDialog.InstallTreeViewKeyPress(Sender: TObject; var Key: char);

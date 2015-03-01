@@ -343,7 +343,7 @@ end;
 
 destructor TAddFileToAPackageDialog.Destroy;
 begin
-  fPackages.Free;
+  FreeAndNil(fPackages);
   inherited Destroy;
 end;
 

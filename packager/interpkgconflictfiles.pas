@@ -25,9 +25,10 @@
     Check source files and compiled files for name conflicts between packages.
 
   ToDo:
-    - allow to delete ppu files
-    - save ignore
+    - don't check when building clean
+    - save ignore date for ?
     - ignore
+    - clear ignore date on clean build
 }
 unit InterPkgConflictFiles;
 
@@ -36,14 +37,14 @@ unit InterPkgConflictFiles;
 interface
 
 uses
-  Classes, SysUtils, contnrs, InterfaceBase, Forms, ComCtrls,
-  Controls, ButtonPanel, FileProcs, LazFileUtils, AvgLvlTree, BasicCodeTools,
-  DefineTemplates, CodeToolManager,
+  Classes, SysUtils, types, math, contnrs, InterfaceBase, Forms, ComCtrls,
+  Controls, ButtonPanel, Themes, Graphics, StdCtrls, Buttons, FileProcs,
+  LazFileUtils, AvgLvlTree, BasicCodeTools, DefineTemplates, CodeToolManager,
   // IDEIntf
-  ProjectIntf, CompOptsIntf, IDEWindowIntf, LazIDEIntf,
+  ProjectIntf, CompOptsIntf, IDEWindowIntf, LazIDEIntf, IDEImagesIntf,
   // IDE
-  LazarusIDEStrConsts, CompilerOptions, EnvironmentOpts, IDEProcs,
-  TransferMacros, LazConf, IDECmdLine, PackageDefs, PackageSystem;
+  LazarusIDEStrConsts, CompilerOptions, EnvironmentOpts, IDEProcs, DialogProcs,
+  TransferMacros, LazConf, IDECmdLine, PackageDefs, PackageSystem, InputHistory;
 
 type
   TPGInterPkgOwnerInfo = class
@@ -95,6 +96,23 @@ type
     ButtonPanel1: TButtonPanel;
     ConflictsTreeView: TTreeView;
     IDEDialogLayoutStorage1: TIDEDialogLayoutStorage;
+    ImageList1: TImageList;
+    procedure ConflictsTreeViewAdvancedCustomDrawItem(Sender: TCustomTreeView;
+      Node: TTreeNode; State: TCustomDrawState; Stage: TCustomDrawStage;
+      var PaintImages, DefaultDraw: Boolean);
+    procedure ConflictsTreeViewMouseDown(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
+    procedure DeleteSelectedFilesButtonClick(Sender: TObject);
+    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
+    procedure FormCreate(Sender: TObject);
+    procedure OkButtonClick(Sender: TObject);
+  private
+    DeleteSelectedFilesButton: TButton;
+    FImgIndexChecked: integer;
+    FImgIndexUnchecked: integer;
+    procedure UpdateButtons;
+    procedure IgnoreConflicts;
+    procedure IgnoreConflict(AmbFile: TPGIPAmbiguousFile);
   public
     SrcFiles: TObjectList; // list of TPGIPAmbiguousFile
     CompiledFiles: TObjectList; // list of TPGIPAmbiguousCompiledFile
@@ -155,6 +173,244 @@ begin
   o:=OwnerInfo; OwnerInfo:=ConflictOwner; ConflictOwner:=o;
 end;
 
+{ TPGIPConflictsDialog }
+
+procedure TPGIPConflictsDialog.ConflictsTreeViewAdvancedCustomDrawItem(
+  Sender: TCustomTreeView; Node: TTreeNode; State: TCustomDrawState;
+  Stage: TCustomDrawStage; var PaintImages, DefaultDraw: Boolean);
+var
+  Detail: TThemedButton;
+  Details: TThemedElementDetails;
+  aSize: TSize;
+  NodeRect: Classes.TRect;
+  r: TRect;
+begin
+  if Stage<>cdPostPaint then exit;
+  if TObject(Node.Data) is TPGIPAmbiguousFile then begin
+    if Node.ImageIndex=FImgIndexChecked then
+      Detail := tbCheckBoxCheckedNormal
+    else
+      Detail := tbCheckBoxUncheckedNormal;
+    Details := ThemeServices.GetElementDetails(Detail);
+    aSize := ThemeServices.GetDetailSize(Details);
+    NodeRect:=Node.DisplayRect(false);
+    r:=Bounds(Node.DisplayIconLeft+(ImageList1.Width-aSize.cx) div 2,
+       NodeRect.Top+(NodeRect.Bottom-NodeRect.Top-aSize.cy) div 2,
+       aSize.cx,aSize.cy);
+    ThemeServices.DrawElement(ConflictsTreeView.Canvas.Handle,Details,r);
+  end;
+end;
+
+procedure TPGIPConflictsDialog.ConflictsTreeViewMouseDown(Sender: TObject;
+  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+var
+  Node: TTreeNode;
+begin
+  Node:=ConflictsTreeView.GetNodeAt(X,Y);
+  if Node=nil then exit;
+  if TObject(Node.Data) is TPGIPAmbiguousFile then begin
+    if (X>=Node.DisplayIconLeft) and (X<Node.DisplayTextLeft) then begin
+      if Node.ImageIndex=FImgIndexChecked then
+        Node.ImageIndex:=FImgIndexUnchecked
+      else
+        Node.ImageIndex:=FImgIndexChecked;
+      Node.SelectedIndex:=Node.ImageIndex;
+      UpdateButtons;
+    end;
+  end;
+end;
+
+procedure TPGIPConflictsDialog.DeleteSelectedFilesButtonClick(Sender: TObject);
+
+  function DeleteFileGroup(aFilename: string): boolean;
+  begin
+    {$IFDEF VerboseCheckInterPkgFiles}
+    debugln(['DeleteFileGroup ',aFilename]);
+    {$ENDIF}
+    if DeleteFileInteractive(aFilename)<>mrOk then exit(false);
+    if FilenameIsPascalUnit(aFilename) then
+    begin
+      DeleteFileUTF8(ChangeFileExt(aFilename,'.ppu'));
+      DeleteFileUTF8(ChangeFileExt(aFilename,'.o'));
+      DeleteFileUTF8(ChangeFileExt(aFilename,'.rst'));
+      DeleteFileUTF8(ChangeFileExt(aFilename,'.rsj'));
+      DeleteFileUTF8(ChangeFileExt(aFilename,'.lfm'));
+      DeleteFileUTF8(ChangeFileExt(aFilename,'.dfm'));
+      DeleteFileUTF8(ChangeFileExt(aFilename,'.xfm'));
+    end else if (CompareFileExt(aFilename,'ppu')=0)
+    or (CompareFileExt(aFilename,'o')=0) then begin
+      DeleteFileUTF8(ChangeFileExt(aFilename,'.ppu'));
+      DeleteFileUTF8(ChangeFileExt(aFilename,'.o'));
+      DeleteFileUTF8(ChangeFileExt(aFilename,'.rst'));
+      DeleteFileUTF8(ChangeFileExt(aFilename,'.rsj'));
+      if FileExistsCached(ChangeFileExt(aFilename,'.pas'))
+      or FileExistsCached(ChangeFileExt(aFilename,'.pp'))
+      or FileExistsCached(ChangeFileExt(aFilename,'.p')) then begin
+        // delete only compiled file
+      end else begin
+        // no source in this directory => delete copied lfm file
+        DeleteFileUTF8(ChangeFileExt(aFilename,'.lfm'));
+        DeleteFileUTF8(ChangeFileExt(aFilename,'.dfm'));
+        DeleteFileUTF8(ChangeFileExt(aFilename,'.xfm'));
+      end;
+    end;
+    Result:=true;
+  end;
+
+var
+  Node: TTreeNode;
+  AmbFile: TPGIPAmbiguousFile;
+  LastAmbFile: TPGIPAmbiguousFile;
+  NextNode: TTreeNode;
+  DeleteFile1: Boolean;
+  DeleteFile2: Boolean;
+begin
+  ConflictsTreeView.Items.BeginUpdate;
+  try
+    Node:=ConflictsTreeView.Items.GetFirstNode;
+    LastAmbFile:=nil;
+    while Node<>nil do
+    begin
+      NextNode:=Node.GetNext;
+      if TObject(Node.Data) is TPGIPAmbiguousFile then
+      begin
+        AmbFile:=TPGIPAmbiguousFile(Node.Data);
+        {$IFDEF VerboseCheckInterPkgFiles}
+        debugln(['TPGIPConflictsDialog.DeleteSelectedFilesButtonClick ',Node.Text,' File=',AmbFile.Filename]);
+        {$ENDIF}
+        if AmbFile<>LastAmbFile then
+        begin
+          DeleteFile1:=Node.ImageIndex=FImgIndexChecked;
+          DeleteFile2:=false;
+        end else begin
+          DeleteFile2:=Node.ImageIndex=FImgIndexChecked;
+          {$IFDEF VerboseCheckInterPkgFiles}
+          debugln(['TPGIPConflictsDialog.DeleteSelectedFilesButtonClick Delete 1=',DeleteFile1,' 2=',DeleteFile2]);
+          {$ENDIF}
+          if DeleteFile1 then
+            if not DeleteFileGroup(AmbFile.Filename) then exit;
+          if DeleteFile2 then
+            if not DeleteFileGroup(AmbFile.ConflictFilename) then exit;
+          if not FileExistsUTF8(AmbFile.Filename)
+          or not FileExistsUTF8(AmbFile.ConflictFilename) then begin
+            // conflict does not exist anymore
+            FilesChanged:=true;
+            Node:=Node.Parent;
+            NextNode:=Node.GetNextSkipChildren;
+            Node.Delete;
+          end;
+        end;
+        LastAmbFile:=AmbFile;
+      end;
+      Node:=NextNode;
+    end;
+  finally
+    ConflictsTreeView.Items.EndUpdate;
+    UpdateButtons;
+  end;
+end;
+
+procedure TPGIPConflictsDialog.FormClose(Sender: TObject;
+  var CloseAction: TCloseAction);
+begin
+  IDEDialogLayoutList.SaveLayout(Self);
+end;
+
+procedure TPGIPConflictsDialog.FormCreate(Sender: TObject);
+var
+  Details: TThemedElementDetails;
+  aSize: TSize;
+  Img: TBitmap;
+begin
+  IDEDialogLayoutList.ApplyLayout(Self,Width,Height);
+
+  DeleteSelectedFilesButton:=TButton.Create(Self);
+  with DeleteSelectedFilesButton do
+  begin
+    Name:='DeleteSelectedFilesButton';
+    Caption:='Delete selected files';
+    Align:=alLeft;
+    AutoSize:=true;
+    OnClick:=@DeleteSelectedFilesButtonClick;
+    Parent:=ButtonPanel1;
+  end;
+
+  ButtonPanel1.OKButton.Kind:=bkIgnore;
+  ButtonPanel1.OKButton.Caption:='Ignore';
+  ButtonPanel1.OKButton.OnClick:=@OkButtonClick;
+
+  Details := ThemeServices.GetElementDetails(tbCheckBoxCheckedNormal);
+  aSize := ThemeServices.GetDetailSize(Details);
+  ImageList1.Width:=Max(16,aSize.cx);
+  ImageList1.Height:=Max(16,aSize.cy);
+  // add empty images
+  Img:=TBitmap.Create;
+  Img.TransparentMode:=tmFixed;
+  Img.TransparentColor:=0;
+  Img.Transparent:=true;
+  Img.SetSize(ImageList1.Width,ImageList1.Height);
+  FImgIndexChecked:=ImageList1.Add(Img,nil);
+  FImgIndexUnchecked:=ImageList1.Add(Img,nil);
+  Img.Free;
+end;
+
+procedure TPGIPConflictsDialog.OkButtonClick(Sender: TObject);
+begin
+  IgnoreConflicts;
+end;
+
+procedure TPGIPConflictsDialog.UpdateButtons;
+var
+  Node: TTreeNode;
+  DeleteCount: Integer;
+  ConflictCount: Integer;
+begin
+  DeleteCount:=0;
+  ConflictCount:=0;
+  Node:=ConflictsTreeView.Items.GetFirstNode;
+  while Node<>nil do begin
+    if TObject(Node.Data) is TPGIPAmbiguousFile then
+    begin
+      inc(ConflictCount);
+      if Node.ImageIndex=FImgIndexChecked then
+        inc(DeleteCount);
+    end;
+    Node:=Node.GetNext;
+  end;
+  DeleteSelectedFilesButton.Enabled:=DeleteCount>0;
+  if ConflictCount=0 then
+    IgnoreConflicts;
+end;
+
+procedure TPGIPConflictsDialog.IgnoreConflicts;
+var
+  Node: TTreeNode;
+  AmbFile: TPGIPAmbiguousFile;
+  LastAmbFile: TPGIPAmbiguousFile;
+begin
+  Node:=ConflictsTreeView.Items.GetFirstNode;
+  LastAmbFile:=nil;
+  while Node<>nil do begin
+    if TObject(Node.Data) is TPGIPAmbiguousFile then
+    begin
+      AmbFile:=TPGIPAmbiguousFile(Node.Data);
+      if AmbFile<>LastAmbFile then begin
+        IgnoreConflict(AmbFile);
+      end;
+      LastAmbFile:=AmbFile;
+    end;
+    Node:=Node.GetNext;
+  end;
+
+  ModalResult:=mrOk;
+end;
+
+procedure TPGIPConflictsDialog.IgnoreConflict(AmbFile: TPGIPAmbiguousFile);
+begin
+
+  //InputHistories.Ignores.Add(Identifier);
+end;
+
 procedure TPGIPConflictsDialog.Init(TheSrcFiles, TheCompiledFiles: TObjectList);
 
   function AddChild(ParentNode: TTreeNode; Caption: string): TTreeNode;
@@ -165,56 +421,79 @@ procedure TPGIPConflictsDialog.Init(TheSrcFiles, TheCompiledFiles: TObjectList);
 var
   MainNode: TTreeNode;
   i: Integer;
-  CurFile: TPGIPAmbiguousCompiledFile;
+  AmbFile: TPGIPAmbiguousCompiledFile;
   ItemNode: TTreeNode;
   s: String;
+  ConflictNode: TTreeNode;
 begin
   SrcFiles:=TheSrcFiles;
   CompiledFiles:=TheCompiledFiles;
 
   ConflictsTreeView.Items.BeginUpdate;
   ConflictsTreeView.Items.Clear;
+  ConflictsTreeView.Images:=ImageList1;
   if CompiledFiles.Count>0 then
   begin
     MainNode:=ConflictsTreeView.Items.Add(nil,'Conflicting compiled files');
     for i:=0 to CompiledFiles.Count-1 do
     begin
-      CurFile:=TPGIPAmbiguousCompiledFile(CompiledFiles[i]);
-      s:=ExtractFilename(CurFile.Filename);
-      // file owner
-      if CurFile.OwnerInfo.Owner is TLazPackage then
-        s+=' of package '+CurFile.OwnerInfo.Name
-      else
-        s+=' of '+CurFile.OwnerInfo.Name;
-      ItemNode:=AddChild(MainNode,s);
-      // file path and src
-      AddChild(ItemNode,'File: '+CurFile.Filename);
-      if CurFile.SrcFilename='' then
-        s:='No source found'
-      else
-        s:='Source file: '+CurFile.SrcFilename;
-      AddChild(ItemNode,s);
-
-      // conflict file owner
-      if CurFile.ConflictOwner.Owner is TLazPackage then
-        s:='Conflict Package: '+CurFile.ConflictOwner.Name
-      else
-        s:=CurFile.ConflictOwner.Name;
-      AddChild(ItemNode,s);
-      // conflict file path
-      AddChild(ItemNode,'Conflict File: '+CurFile.ConflictFilename);
-      if not FilenameIsPascalSource(CurFile.ConflictFilename) then begin
-        if CurFile.ConflictSrcFilename='' then
-          s:='No source found'
+      AmbFile:=TPGIPAmbiguousCompiledFile(CompiledFiles[i]);
+      s:=ExtractFilename(AmbFile.Filename);
+      ConflictNode:=AddChild(MainNode,s);
+      begin
+        // first file
+        s:=ExtractFilename(AmbFile.Filename);
+        if AmbFile.OwnerInfo.Owner is TLazPackage then
+          s+=' of package '+AmbFile.OwnerInfo.Name
         else
-          s:='Source file: '+CurFile.ConflictSrcFilename;
-        AddChild(ItemNode,s);
+          s+=' of '+AmbFile.OwnerInfo.Name;
+        ItemNode:=AddChild(ConflictNode,s);
+        ItemNode.ImageIndex:=FImgIndexChecked; // default: delete
+        ItemNode.Data:=AmbFile;
+        begin
+          // file path and src
+          AddChild(ItemNode,'File: '+AmbFile.Filename);
+          if not FilenameIsPascalSource(AmbFile.Filename) then begin
+            if AmbFile.SrcFilename='' then
+              s:='No source found'
+            else
+              s:='Source file: '+AmbFile.SrcFilename;
+            AddChild(ItemNode,s);
+          end;
+        end;
+        ItemNode.SelectedIndex:=ItemNode.ImageIndex;
+
+        // conflict file owner
+        s:=ExtractFilename(AmbFile.ConflictFilename);
+        if AmbFile.ConflictOwner.Owner is TLazPackage then
+          s+=' of package '+AmbFile.ConflictOwner.Name
+        else
+          s+=' of '+AmbFile.ConflictOwner.Name;
+        ItemNode:=AddChild(ConflictNode,s);
+        ItemNode.ImageIndex:=FImgIndexUnchecked; // default: keep
+        ItemNode.Data:=AmbFile;
+        begin
+          // file path
+          AddChild(ItemNode,'File: '+AmbFile.ConflictFilename);
+          if not FilenameIsPascalSource(AmbFile.ConflictFilename) then begin
+            if AmbFile.ConflictSrcFilename='' then begin
+              s:='No source found';
+              ItemNode.ImageIndex:=FImgIndexChecked; // default: delete
+            end
+            else
+              s:='Source file: '+AmbFile.ConflictSrcFilename;
+            AddChild(ItemNode,s);
+          end;
+        end;
+        ItemNode.SelectedIndex:=ItemNode.ImageIndex;
       end;
     end;
     MainNode.Expand(true);
   end;
 
   ConflictsTreeView.Items.EndUpdate;
+
+  UpdateButtons;
 end;
 
 { TPGInterPkgFile }
