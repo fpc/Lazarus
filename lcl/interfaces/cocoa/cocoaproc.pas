@@ -67,7 +67,6 @@ function FontStyleToQDStyle(const AStyle: TFontStyles): MacOSAll.Style;
 function QDStyleToFontStyle(QDStyle: Integer): TFontStyles;}
 
 procedure FillStandardDescription(out Desc: TRawImageDescription);
-function GetHiThemeMetric(Metric: ThemeMetric; DefaultValue: Integer = 0): Integer;
 
 {
 function CreateCustomHIView(const ARect: HIRect; ControlStyle: TControlStyle = []): HIViewRef;
@@ -618,23 +617,6 @@ begin
   Desc.MaskBitsPerPixel := 1;
   Desc.MaskLineEnd := rileByteBoundary;
   Desc.MaskShift := 0;
-end;
-
-{------------------------------------------------------------------------------
-  Name:    GetHiThemeMetric
-  Params:  Metric       - Theme metric
-           DefaultValue
-  Returns: Theme metric value or default value if fails
- ------------------------------------------------------------------------------}
-function GetHiThemeMetric(Metric: ThemeMetric; DefaultValue: Integer): Integer;
-begin
-  {$IFDEF NoCarbon}
-  // ToDo
-  Result := DefaultValue;;
-  {$ELSE}
-  if GetThemeMetric(Metric, Result) <> noErr then
-    Result := DefaultValue;
-  {$ENDIF}
 end;
 
 function GetCurrentEventTime: double;

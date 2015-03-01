@@ -11,6 +11,9 @@ uses
   MacOSAll, // for CGContextRef
   LCLtype, LCLProc, Graphics, Controls,
   CocoaAll, CocoaProc, CocoaUtils,
+  {$ifndef CocoaUseHITheme}
+  customdrawndrawers, customdrawn_mac,
+  {$endif}
   SysUtils, Classes, Contnrs, Types, Math;
 
 type
@@ -1819,12 +1822,18 @@ end;
 
 procedure TCocoaContext.Frame3d(var ARect: TRect; const FrameWidth: integer; const Style: TBevelCut);
 var
+  {$ifdef CocoaUseHITheme}
   I, D: Integer;
   DrawInfo: HIThemeGroupBoxDrawInfo;
+  {$else}
+  lCanvas: TCanvas;
+  lDrawer: TCDDrawer;
+  {$endif}
 begin
+  {$ifdef CocoaUseHITheme}
   if Style = bvRaised then
   begin
-    D := GetHiThemeMetric(kThemeMetricPrimaryGroupBoxContentInset);
+    GetThemeMetric(kThemeMetricPrimaryGroupBoxContentInset, D);
 
     // draw frame as group box
     DrawInfo.version := 0;
@@ -1833,14 +1842,22 @@ begin
 
     for I := 1 to FrameWidth do
     begin
-      {$IFDEF NoCarbon}
-      // ToDo
-      {$ELSE}
       HIThemeDrawGroupBox(RectToCGRect(ARect), DrawInfo, CGContext, kHIThemeOrientationNormal);
-      {$ENDIF}
       InflateRect(ARect, -D, -D);
     end;
   end;
+  {$else}
+  lCanvas := TCanvas.Create;
+  try
+    lDrawer := GetDrawer(dsMacOSX);
+    lCanvas.Handle := HDC(Self);
+    lDrawer.DrawFrame3D(lCanvas, Types.Point(ARect.Left, ARect.Top),
+      Types.Size(ARect), FrameWidth, Style);
+  finally
+    lCanvas.Handle := 0;
+    lCanvas.Free;
+  end;
+  {$endif}
 end;
 
 procedure TCocoaContext.FrameRect(const ARect: TRect; const ABrush: TCocoaBrush);
@@ -2059,17 +2076,30 @@ end;
 
 procedure TCocoaContext.DrawFocusRect(ARect: TRect);
 var
+  {$ifdef CocoaUseHITheme}
   AOutSet: SInt32;
+  {$else}
+  lCanvas: TCanvas;
+  lDrawer: TCDDrawer;
+  {$endif}
 begin
-  {$IFDEF NoCarbon}
-  // ToDo
-  {$ELSE}
+  {$ifdef CocoaUseHITheme}
   // LCL thinks that focus cannot be drawn outside focus rects, but carbon do that
   // => correct rect
   GetThemeMetric(kThemeMetricFocusRectOutset, AOutSet);
   InflateRect(ARect, -AOutSet, -AOutSet);
   HIThemeDrawFocusRect(RectToCGRect(ARect), True, CGContext, kHIThemeOrientationNormal);
-  {$ENDIF}
+  {$else}
+  lCanvas := TCanvas.Create;
+  try
+    lDrawer := GetDrawer(dsMacOSX);
+    lCanvas.Handle := HDC(Self);
+    lDrawer.DrawFocusRect(lCanvas, Types.Point(ARect.Left, ARect.Top), Types.Size(ARect));
+  finally
+    lCanvas.Handle := 0;
+    lCanvas.Free;
+  end;
+  {$endif}
 end;
 
 { TCocoaBitmapContext }

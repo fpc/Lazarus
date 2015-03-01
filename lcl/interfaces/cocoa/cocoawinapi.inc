@@ -1824,35 +1824,15 @@ begin
     VK_CAPITAL:
       Result := ToggleMap[(Modifiers and NSAlphaShiftKeyMask) <> 0];
     VK_LBUTTON:
-      {$IFDEF NoCarbon}
-      Result:=DownMap[false]; // ToDo
-      {$ELSE}
-      Result := DownMap[(GetCurrentEventButtonState and $01) <> 0];
-      {$ENDIF}
+      Result := DownMap[(NSEvent.pressedMouseButtons() and $1) <> 0];
     VK_RBUTTON:
-      {$IFDEF NoCarbon}
-      Result:=DownMap[false]; // ToDo
-      {$ELSE}
-      Result := DownMap[(GetCurrentEventButtonState and $02) <> 0];
-      {$ENDIF}
+      Result := DownMap[(NSEvent.pressedMouseButtons() and $2) <> 0];
     VK_MBUTTON:
-      {$IFDEF NoCarbon}
-      Result:=DownMap[false]; // ToDo
-      {$ELSE}
-      Result := DownMap[(GetCurrentEventButtonState and $03) <> 0];
-      {$ENDIF}
+      Result := DownMap[(NSEvent.pressedMouseButtons() and $3) <> 0];
     VK_XBUTTON1:
-      {$IFDEF NoCarbon}
-      Result:=DownMap[false]; // ToDo
-      {$ELSE}
-      Result := DownMap[(GetCurrentEventButtonState and $04) <> 0];
-      {$ENDIF}
+      Result := DownMap[(NSEvent.pressedMouseButtons() and $4) <> 0];
     VK_XBUTTON2:
-      {$IFDEF NoCarbon}
-      Result:=DownMap[false]; // ToDo
-      {$ELSE}
-      Result := DownMap[(GetCurrentEventButtonState and $05) <> 0];
-      {$ENDIF}
+      Result := DownMap[(NSEvent.pressedMouseButtons() and $5) <> 0];
     else
       Result := 0;
   end;
@@ -2199,7 +2179,7 @@ begin
     SM_CYHSCROLL,
     SM_CXVSCROLL,
     SM_CYVSCROLL:
-      Result := GetHiThemeMetric(kThemeMetricScrollBarWidth);
+      Result := Round(NSScroller.scrollerWidthForControlSize(NSRegularControlSize));
     SM_CXSCREEN,
     SM_CXVIRTUALSCREEN: Result := Round(NSScreen.mainScreen.frame.size.width);
     SM_CYSCREEN,
@@ -2219,10 +2199,8 @@ begin
           Result := 64 else}
           Result := 16;
       end;
-    SM_CXHTHUMB:
-      Result := GetHiThemeMetric(kThemeMetricScrollBarMinThumbWidth);
-    SM_CYVTHUMB:
-      Result := GetHiThemeMetric(kThemeMetricScrollBarMinThumbHeight);
+    SM_CXHTHUMB, SM_CYVTHUMB:
+      Result := Round(NSScroller.scrollerWidthForControlSize(NSRegularControlSize));
     SM_SWSCROLLBARSPACING:
       Result := 0;
   else

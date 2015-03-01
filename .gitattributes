@@ -6262,6 +6262,7 @@ lcl/controls.pp svneol=native#text/pascal
 lcl/cursors.res -text
 lcl/customdrawn_android.pas svneol=native#text/plain
 lcl/customdrawn_common.pas svneol=native#text/pascal
+lcl/customdrawn_mac.pas svneol=native#text/plain
 lcl/customdrawn_winxp.pas svneol=native#text/plain
 lcl/customdrawncontrols.pas svneol=native#text/pascal
 lcl/customdrawndrawers.pas svneol=native#text/pascal
