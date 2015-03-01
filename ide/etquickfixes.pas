@@ -275,22 +275,25 @@ var
   Code: TCodeBuffer;
 begin
   Result:=false;
+  if not Msg.HasSourcePosition then exit;
+
   // Check: Local variable "$1" does not seem to be initialized
-  if not IsMsgId(5036) // W_Local variable "$1" does not seem to be initialized
-  or not IsMsgId(5037) // W_Variable "$1" does not seem to be initialized
-  or not IsMsgId(5057) // H_Local variable "$1" does not seem to be initialized
-  or not IsMsgId(5058) // H_Variable "$1" does not seem to be initialized
-  or not IsMsgId(5059) // W_Function result variable does not seem to initialized
-  or not IsMsgId(5060) // H_Function result variable does not seem to be initialized
-  or not IsMsgId(5089) // W_Local variable "$1" of a managed type does not seem to be initialized
-  or not IsMsgId(5090) // W_Variable "$1" of a managed type does not seem to be initialized
-  or not IsMsgId(5091) // H_Local variable "$1" of a managed type does not seem to be initialized
-  or not IsMsgId(5092) // H_Variable "$1" of a managed type does not seem to be initialized
-  or not IsMsgId(5093) // W_function result variable of a managed type does not seem to initialized
-  or not IsMsgId(5094) // H_Function result variable of a managed type does not seem to be initialized
-  then
+  if IsMsgId(5036) // W_Local variable "$1" does not seem to be initialized
+  or IsMsgId(5037) // W_Variable "$1" does not seem to be initialized
+  or IsMsgId(5057) // H_Local variable "$1" does not seem to be initialized
+  or IsMsgId(5058) // H_Variable "$1" does not seem to be initialized
+  or IsMsgId(5059) // W_Function result variable does not seem to initialized
+  or IsMsgId(5060) // H_Function result variable does not seem to be initialized
+  or IsMsgId(5089) // W_Local variable "$1" of a managed type does not seem to be initialized
+  or IsMsgId(5090) // W_Variable "$1" of a managed type does not seem to be initialized
+  or IsMsgId(5091) // H_Local variable "$1" of a managed type does not seem to be initialized
+  or IsMsgId(5092) // H_Variable "$1" of a managed type does not seem to be initialized
+  or IsMsgId(5093) // W_function result variable of a managed type does not seem to initialized
+  or IsMsgId(5094) // H_Function result variable of a managed type does not seem to be initialized
+  then begin
+    if not IsValidIdent(Identifier) then exit;
+  end else
     exit;
-  if not Msg.HasSourcePosition or not IsValidIdent(Identifier) then exit;
 
   // check if message position is at end of identifier
   if not GetMsgIdentifierInSource(Msg,Identifier,Code,Tool,CleanPos,Node) then exit;

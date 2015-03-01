@@ -699,7 +699,7 @@ var
   i: Integer;
   Tool: TAbstractExternalTool;
 begin
-  {$IFDEF EnableCheckInterPkgFiles}
+  {$IFDEF VerboseCheckInterPkgFiles}
   debugln(['TLazPkgGraphBuildItem.Clear ',LazPackage.IDAsString]);
   {$ENDIF}
   for i:=Count-1 downto 0 do begin

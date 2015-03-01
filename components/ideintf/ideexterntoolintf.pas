@@ -1152,7 +1152,7 @@ destructor TAbstractExternalTool.Destroy;
 var
   h: TExternalToolHandler;
 begin
-  {$IFDEF EnableCheckInterPkgFiles}
+  {$IFDEF VerboseCheckInterPkgFiles}
   debugln(['TAbstractExternalTool.Destroy ',Title]);
   {$ENDIF}
   EnterCriticalSection;
