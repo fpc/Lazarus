@@ -1374,6 +1374,8 @@ end;
 
 procedure TGtk2WidgetSet.SetRubberBandRect(const ARubberBand: HWND; const ARect: TRect);
 begin
+  if ARubberBand = 0 then
+    exit;
   with ARect do
     gdk_window_move_resize({%H-}PGtkWidget(ARubberBand)^.window, Left,
       Top, Right - Left, Bottom - Top);
