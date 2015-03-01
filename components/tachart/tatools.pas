@@ -398,6 +398,7 @@ type
     FAffectedSeries: TPublishedIntegerSet;
     FDistanceMode: TChartDistanceMode;
     FGrabRadius: Integer;
+    FMouseInsideOnly: Boolean;
     function GetAffectedSeries: String; inline;
     function GetIsSeriesAffected(AIndex: Integer): Boolean; inline;
     procedure SetAffectedSeries(AValue: String); inline;
@@ -407,6 +408,8 @@ type
     FPointIndex: Integer;
     FSeries: TBasicChartSeries;
     procedure FindNearestPoint(APoint: TPoint);
+    property MouseInsideOnly: Boolean
+      read FMouseInsideOnly write FMouseInsideOnly default false;
   public
     constructor Create(AOwner: TComponent); override;
   public
@@ -504,11 +507,12 @@ type
     property OnHintLocation: TChartToolHintLocationEvent
       read FOnHintLocation write FOnHintLocation;
     property OnHintPosition: TChartToolHintPositionEvent
-      read FOnHintPosition write FOnHintPosition; //deprecated;
+      read FOnHintPosition write FOnHintPosition;
     property UseApplicationHint: Boolean
       read FUseApplicationHint write SetUseApplicationHint default false;
     property UseDefaultHintText: Boolean
       read FUseDefaultHintText write FUseDefaultHintText default true;
+    property MouseInsideOnly;
   end;
 
   { TDataPointDrawTool }
@@ -534,6 +538,7 @@ type
     property DrawingMode;
     property GrabRadius default 20;
     property OnDraw: TChartDataPointDrawEvent read FOnDraw write FOnDraw;
+    property MouseInsideOnly;
   end;
 
   TChartCrosshairShape = (ccsNone, ccsVertical, ccsHorizontal, ccsCross);
@@ -1570,9 +1575,19 @@ procedure TDataPointTool.FindNearestPoint(APoint: TPoint);
   function InBoundaryBox(ASeries: TCustomChartSeries): Boolean;
   var
     r, gr: TDoubleRect;
+    p: TDoublePoint;
+    ext: TDoubleRect;
   begin
     r := ASeries.GetGraphBounds;
-    if not RectIntersectsRect(r, FChart.CurrentExtent) then exit(false);
+    ext := FChart.CurrentExtent;
+    if not RectIntersectsRect(r, ext) then exit(false);
+
+    if FMouseInsideOnly then begin
+      p := FChart.ImageToGraph(APoint);
+      if not (SafeInRange(p.x, ext.a.x, ext.b.x) and SafeInRange(p.y, ext.a.y, ext.b.y)) then
+        exit(false);
+    end;
+
     case DistanceMode of
       cdmOnlyX: begin
         gr.a := DoublePoint(FChart.XImageToGraph(APoint.X - GrabRadius), NegInfinity);
