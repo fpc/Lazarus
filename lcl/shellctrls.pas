@@ -859,7 +859,10 @@ begin
   ANode := Selected;
   if Assigned(FShellListView) and Assigned(ANode) then
   begin
-    IsDirectory := (not (otNonFolders in FObjectTypes)) or ANode.HasChildren;
+    //You cannot rely on HasChildren here, because it can become FALSE when user
+    //clicks the expand sign and folder is empty
+    //Issue 0027571
+    IsDirectory := DirectoryExistsUtf8(ChompPathDelim(GetPathFromNode(ANode)));
     if IsDirectory then
     begin
       //Note: the folder may have been deleted in the mean time
