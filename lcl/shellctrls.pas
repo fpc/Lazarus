@@ -853,7 +853,8 @@ end;
 procedure TCustomShellTreeView.DoSelectionChanged;
 var
   ANode: TTreeNode;
-  IsDirectory: Boolean;
+  IsDirectory, MustBeDirectory: Boolean;
+  CurrentNodePath: String;
 begin
   inherited DoSelectionChanged;
   ANode := Selected;
@@ -862,7 +863,9 @@ begin
     //You cannot rely on HasChildren here, because it can become FALSE when user
     //clicks the expand sign and folder is empty
     //Issue 0027571
-    IsDirectory := DirectoryExistsUtf8(ChompPathDelim(GetPathFromNode(ANode)));
+    MustBeDirectory := not (otNonFolders in FObjectTypes);
+    CurrentNodePath := ChompPathDelim(GetPathFromNode(ANode));
+    IsDirectory := MustBeDirectory or DirectoryExistsUtf8(CurrentNodePath);
     if IsDirectory then
     begin
       //Note: the folder may have been deleted in the mean time
@@ -871,6 +874,9 @@ begin
     end
     else
     begin
+      //At this point we cannot tell if item used to be a folder or a file
+      if not FileExistsUtf8(CurrentNodePath) then
+        Raise Exception.CreateFmt(sShellCtrlsSelectedItemDoesNotExists,[CurrentNodePath]);
       if Assigned(Anode.Parent) then
         FShellListView.Root := GetPathFromNode(ANode.Parent)
       else

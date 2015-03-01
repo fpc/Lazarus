@@ -307,6 +307,7 @@ resourceString
   sShellCtrlsKB = '%s kB';
   sShellCtrlsBytes = '%s bytes';
   sShellCtrlsInvalidRoot = 'Invalid pathname:'#13'"%s"';
+  sShellCtrlsSelectedItemDoesNotExists = 'The selected item does not exist on disk:'#13'"%s"';
   sShellCtrlsInvalidPath = 'Invalid pathname:'#13'"%s"';
   sShellCtrlsInvalidPathRelative = 'Invalid relative pathname:'#13'"%s"'#13
     +'in relation to rootpath:'#13'"%s"';
