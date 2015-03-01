@@ -17,7 +17,6 @@ type
   public
     constructor Create(const AFileName: string; Mode: Word);
     constructor Create(const AFileName: string; Mode: Word; Rights: Cardinal);
-    destructor Destroy; override;
     property FileName: string Read FFilename;
   end;
 
@@ -147,11 +146,6 @@ begin
   end
   else
     THandleStream(Self).Create(lHandle);
-end;
-
-destructor TFileStreamUTF8.Destroy;
-begin
-  FileClose(Handle);
 end;
 
 function TStringListUTF8.DoCompareText(const s1, s2: string): PtrInt;
