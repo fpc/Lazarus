@@ -169,7 +169,10 @@ var
 
 function GetMsgCodetoolPos(Msg: TMessageLine; out Code: TCodeBuffer;
   out Tool: TCodeTool; out CleanPos: integer; out Node: TCodeTreeNode): boolean;
-function GetMsgIdentifierInSource(Msg: TMessageLine; const Identifier: string;
+function GetMsgSrcPosOfIdentifier(Msg: TMessageLine; out Identifier: string;
+  out Code: TCodeBuffer; out Tool: TCodeTool; out CleanPos: integer;
+  out Node: TCodeTreeNode): boolean;
+function GetMsgSrcPosOfThisIdentifier(Msg: TMessageLine; const Identifier: string;
   out Code: TCodeBuffer; out Tool: TCodeTool; out CleanPos: integer;
   out Node: TCodeTreeNode): boolean;
 
@@ -234,9 +237,9 @@ begin
   Result:=Node<>nil;
 end;
 
-function GetMsgIdentifierInSource(Msg: TMessageLine; const Identifier: string;
-  out Code: TCodeBuffer; out Tool: TCodeTool; out CleanPos: integer;
-  out Node: TCodeTreeNode): boolean;
+function GetMsgSrcPosOfIdentifier(Msg: TMessageLine; out Identifier: string;
+  out Code: TCodeBuffer; out Tool: TCodeTool; out CleanPos: integer; out
+  Node: TCodeTreeNode): boolean;
 begin
   Result:=false;
   Code:=nil;
@@ -251,23 +254,25 @@ begin
     Tool.ReadPriorAtom
   else
     Tool.ReadNextAtom;
-  if not Tool.AtomIs(Identifier) then exit;
+  Identifier:=Tool.GetAtom;
   CleanPos:=Tool.CurPos.StartPos;
-  Result:=true;
+  Result:=(Identifier<>'') and IsValidIdent(Identifier);
+end;
+
+function GetMsgSrcPosOfThisIdentifier(Msg: TMessageLine; const Identifier: string;
+  out Code: TCodeBuffer; out Tool: TCodeTool; out CleanPos: integer;
+  out Node: TCodeTreeNode): boolean;
+var
+  CurIdentifier: string;
+begin
+  Result:=GetMsgSrcPosOfIdentifier(Msg,CurIdentifier,Code,Tool,CleanPos,Node)
+     and (CompareIdentifiers(PChar(CurIdentifier),PChar(Identifier))=0);
 end;
 
 { TQuickFixLocalVarNotInitialized_AddAssignment }
 
 function TQuickFixLocalVarNotInitialized_AddAssignment.IsApplicable(
   Msg: TMessageLine; out Identifier: string): boolean;
-
-  function IsMsgId(MsgID: integer): boolean;
-  var
-    Dummy: string;
-  begin
-    Result:=TIDEFPCParser.MsgLineIsId(Msg,MsgID,Identifier,Dummy);
-  end;
-
 var
   Tool: TCodeTool;
   CleanPos: integer;
@@ -275,28 +280,38 @@ var
   Code: TCodeBuffer;
 begin
   Result:=false;
-  if not Msg.HasSourcePosition then exit;
+  if (Msg=nil) or (Msg.SubTool<>SubToolFPC) or (Msg.MsgID<1)
+  or (not Msg.HasSourcePosition) then exit;
 
   // Check: Local variable "$1" does not seem to be initialized
-  if IsMsgId(5036) // W_Local variable "$1" does not seem to be initialized
-  or IsMsgId(5037) // W_Variable "$1" does not seem to be initialized
-  or IsMsgId(5057) // H_Local variable "$1" does not seem to be initialized
-  or IsMsgId(5058) // H_Variable "$1" does not seem to be initialized
-  or IsMsgId(5059) // W_Function result variable does not seem to initialized
-  or IsMsgId(5060) // H_Function result variable does not seem to be initialized
-  or IsMsgId(5089) // W_Local variable "$1" of a managed type does not seem to be initialized
-  or IsMsgId(5090) // W_Variable "$1" of a managed type does not seem to be initialized
-  or IsMsgId(5091) // H_Local variable "$1" of a managed type does not seem to be initialized
-  or IsMsgId(5092) // H_Variable "$1" of a managed type does not seem to be initialized
-  or IsMsgId(5093) // W_function result variable of a managed type does not seem to initialized
-  or IsMsgId(5094) // H_Function result variable of a managed type does not seem to be initialized
-  then begin
-    if not IsValidIdent(Identifier) then exit;
-  end else
+  case Msg.MsgID of
+  5036, // W_Local variable "$1" does not seem to be initialized
+  5037, // W_Variable "$1" does not seem to be initialized
+  5057, // H_Local variable "$1" does not seem to be initialized
+  5058, // H_Variable "$1" does not seem to be initialized
+  5089, // W_Local variable "$1" of a managed type does not seem to be initialized
+  5090, // W_Variable "$1" of a managed type does not seem to be initialized
+  5091, // H_Local variable "$1" of a managed type does not seem to be initialized
+  5092: // H_Variable "$1" of a managed type does not seem to be initialized
+    begin
+      Identifier:=TIDEFPCParser.GetFPCMsgValue1(Msg);
+      // check if message position is at end of identifier
+      if not GetMsgSrcPosOfThisIdentifier(Msg,Identifier,Code,Tool,CleanPos,Node)
+      then exit;
+    end;
+  5059, // W_Function result variable does not seem to initialized
+  5060, // H_Function result variable does not seem to be initialized
+  5093, // W_function result variable of a managed type does not seem to initialized
+  5094: // H_Function result variable of a managed type does not seem to be initialized
+    begin
+      if not GetMsgSrcPosOfIdentifier(Msg,Identifier,Code,Tool,CleanPos,Node)
+      then exit;
+    end;
+  else
     exit;
+  end;
+  if not IsValidIdent(Identifier) then exit;
 
-  // check if message position is at end of identifier
-  if not GetMsgIdentifierInSource(Msg,Identifier,Code,Tool,CleanPos,Node) then exit;
   // check if identifier is in statement and start of expression
   if not (Node.Desc in AllPascalStatements) then exit;
   if (Tool.CurPos.Flag in [cafPoint,cafRoundBracketClose,cafEdgedBracketClose,
@@ -496,7 +511,7 @@ begin
   if not Msg.HasSourcePosition or not IsValidIdent(Identifier) then exit;
 
   // check if message position is at end of identifier
-  if not GetMsgIdentifierInSource(Msg,Identifier,Code,Tool,CleanPos,Node) then exit;
+  if not GetMsgSrcPosOfThisIdentifier(Msg,Identifier,Code,Tool,CleanPos,Node) then exit;
 
   // check if identifier is a var definition
   if not (Node.Desc in [ctnVarDefinition]) then exit;
@@ -734,7 +749,7 @@ begin
   if not Msg.HasSourcePosition or not IsValidIdent(Identifier) then exit;
 
   // check if message position is at identifier
-  if not GetMsgIdentifierInSource(Msg,Identifier,Code,Tool,CleanPos,Node) then exit;
+  if not GetMsgSrcPosOfThisIdentifier(Msg,Identifier,Code,Tool,CleanPos,Node) then exit;
 
   // check if identifier is expression start in statement
   if not (Node.Desc in AllPascalStatements) then exit;
