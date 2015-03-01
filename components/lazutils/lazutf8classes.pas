@@ -13,12 +13,12 @@ type
 
   TFileStreamUTF8 = class(TFileStream)
   private
-    FFileName: utf8string;
+    FFileName: string;
   public
     constructor Create(const AFileName: string; Mode: Word);
     constructor Create(const AFileName: string; Mode: Word; Rights: Cardinal);
     destructor Destroy; override;
-    property FileName: utf8string Read FFilename;
+    property FileName: string Read FFilename;
   end;
 
   { TStringListUTF8 }
