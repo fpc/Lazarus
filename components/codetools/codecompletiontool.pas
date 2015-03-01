@@ -6108,6 +6108,8 @@ begin
       ctnClass,ctnClassInterface,ctnDispinterface,
       ctnObjCClass,ctnObjCCategory,ctnObjCProtocol,ctnCPPClass:
         AddAssignment('nil');
+      ctnPointerType:
+        AddAssignment('nil');
       end;
     end;
   xtChar,
