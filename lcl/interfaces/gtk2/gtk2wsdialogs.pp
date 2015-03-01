@@ -1163,11 +1163,12 @@ begin
   // show palette
   gtk_color_selection_set_has_palette(colorSel, True);
 
-  // replace palette. it is stored in 'gtk-color-palette' settings
+  // replace palette. it is stored in 'gtk-color-palette' settings.
   // 1. get original palette => we will know colors and replace only part of it
   settings := gtk_widget_get_settings(PGtkWidget(colorSel));
   new_palette := nil;
   g_object_get(settings, PaletteSetting, [@new_palette, nil]);
+  colors:=nil;
   gtk_color_selection_palette_from_string(new_palette, colors, @colors_len);
   g_free(new_palette);
 
