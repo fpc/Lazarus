@@ -122,12 +122,8 @@ begin
   Create(AFileName,Mode,438);
   { Rights 438 is the default in the FCL TFileStream
     Under Unix:
-      438 = $1B6 =
-        6 = owner can read/write
-        B = group can read/write, set group id
-        1 = others can read
-      Note: the real rights are "Rights and not umask", so "set group id" is
-            usually not set.
+      438 = &666 = owner/group/others can read/write
+      Note: the real rights are "Rights and not umask"
     Under Windows Rights is not used.
   }
 end;
