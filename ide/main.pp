@@ -9333,7 +9333,8 @@ begin
       'Codetools');
     Msg.Flags:=Msg.Flags+[mlfLeftToken];
   end else
-    MessagesView.AddCustomMessage(mluError,CodeToolBoss.ErrorMessage,'Codetools');
+    Msg:=MessagesView.AddCustomMessage(mluError,CodeToolBoss.ErrorMessage,'Codetools');
+  MessagesView.SelectMsgLine(Msg);
 
   // jump to error in source editor
   if CodeToolBoss.ErrorCode<>nil then begin
