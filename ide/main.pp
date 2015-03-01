@@ -5052,17 +5052,33 @@ begin
     AProject.DefineTemplates.AllChanged;
   end;
   if Restore then
+  begin
     AProject.RestoreBuildModes;
+    AProject.RestoreSession;
+  end;
+
   IncreaseCompilerParseStamp;
   MainBuildBoss.SetBuildTargetProject1(false);
-  if (not Restore) and AProject.UseAsDefault then
+
+  if not Restore then
   begin
-    aFilename:=AppendPathDelim(GetPrimaryConfigPath)+DefaultProjectOptionsFilename;
-    AProject.WriteProject([pwfSkipSeparateSessionInfo,pwfIgnoreModified],
-      aFilename,EnvironmentOptions.BuildMatrixOptions);
+    if AProject.UseAsDefault then
+    begin
+      // save as default
+      aFilename:=AppendPathDelim(GetPrimaryConfigPath)+DefaultProjectOptionsFilename;
+      AProject.WriteProject([pwfSkipSeparateSessionInfo,pwfIgnoreModified],
+        aFilename,EnvironmentOptions.BuildMatrixOptions);
+    end;
+
+    Project1.UpdateAllSyntaxHighlighter;
+    SourceEditorManager.BeginGlobalUpdate;
+    try
+      UpdateHighlighters(True);
+      SourceEditorManager.ReloadEditorOptions;
+    finally
+      SourceEditorManager.EndGlobalUpdate;
+    end;
   end;
-  if Restore then
-    AProject.RestoreSession;
 end;
 
 procedure TMainIDE.ComponentPaletteClassSelected(Sender: TObject);

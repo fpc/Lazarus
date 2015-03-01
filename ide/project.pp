@@ -1978,6 +1978,7 @@ procedure TUnitInfo.UpdateDefaultHighlighter(aDefaultHighlighter: TLazSyntaxHigh
 var
   i: Integer;
 begin
+  //debugln(['TUnitInfo.UpdateDefaultHighlighter ',Filename,' ',ord(aDefaultHighlighter)]);
   if not FCustomDefaultHighlighter then
     DefaultSyntaxHighlighter := aDefaultHighlighter
   else
