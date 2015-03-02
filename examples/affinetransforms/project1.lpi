@@ -52,7 +52,6 @@
     <PathDelim Value="\"/>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir)"/>
-      <OtherUnitFiles Value="D:\Data\Delphi\KComponents\source\"/>
     </SearchPaths>
     <Parsing>
       <SyntaxOptions>

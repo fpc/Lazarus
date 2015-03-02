@@ -54,9 +54,6 @@
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="5"/>
-    <SearchPaths>
-      <OtherUnitFiles Value="/home/michael/fpc/packages/base/pxlib/;/home/michael/fpc/packages/fcl-db/src/paradox/"/>
-    </SearchPaths>
     <CodeGeneration>
       <Generate Value="Faster"/>
     </CodeGeneration>
