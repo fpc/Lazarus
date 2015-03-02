@@ -12782,10 +12782,6 @@ msgstr "Zwischenablage einfügen"
 msgid "Paste from clipboard"
 msgstr "Aus Zwischenablage einfügen"
 
-#: lazarusidestrconsts.lispastelcolors
-msgid "Pastel Colors"
-msgstr ""
-
 #: lazarusidestrconsts.lispath
 msgid "Path"
 msgstr "Pfad"

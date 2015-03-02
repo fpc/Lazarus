@@ -12801,10 +12801,6 @@ msgstr "incolla dagli appunti"
 msgid "Paste from clipboard"
 msgstr "Incolla dagli Appunti "
 
-#: lazarusidestrconsts.lispastelcolors
-msgid "Pastel Colors"
-msgstr ""
-
 #: lazarusidestrconsts.lispath
 msgid "Path"
 msgstr "Percorso"

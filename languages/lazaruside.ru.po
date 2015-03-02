@@ -12785,10 +12785,6 @@ msgstr "Вставить из буфера обмена"
 msgid "Paste from clipboard"
 msgstr "Вставить из буфера обмена"
 
-#: lazarusidestrconsts.lispastelcolors
-msgid "Pastel Colors"
-msgstr "Пастельные цвета"
-
 #: lazarusidestrconsts.lispath
 msgid "Path"
 msgstr "Путь"

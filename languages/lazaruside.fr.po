@@ -12773,10 +12773,6 @@ msgstr "Coller le contenu du presse-papiers"
 msgid "Paste from clipboard"
 msgstr ""
 
-#: lazarusidestrconsts.lispastelcolors
-msgid "Pastel Colors"
-msgstr ""
-
 #: lazarusidestrconsts.lispath
 msgid "Path"
 msgstr "Chemin"

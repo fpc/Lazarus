@@ -12789,10 +12789,6 @@ msgstr "vágólap beillesztése"
 msgid "Paste from clipboard"
 msgstr "Beillesztés a vágólapról"
 
-#: lazarusidestrconsts.lispastelcolors
-msgid "Pastel Colors"
-msgstr ""
-
 #: lazarusidestrconsts.lispath
 msgid "Path"
 msgstr "Útvonal"

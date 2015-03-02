@@ -12689,10 +12689,6 @@ msgstr "liitä leikepöytä"
 msgid "Paste from clipboard"
 msgstr "Liitä leikepöydältä"
 
-#: lazarusidestrconsts.lispastelcolors
-msgid "Pastel Colors"
-msgstr ""
-
 #: lazarusidestrconsts.lispath
 msgid "Path"
 msgstr "Polku"

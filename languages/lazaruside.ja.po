@@ -12931,10 +12931,6 @@ msgstr "クリップボードを貼り付け"
 msgid "Paste from clipboard"
 msgstr ""
 
-#: lazarusidestrconsts.lispastelcolors
-msgid "Pastel Colors"
-msgstr ""
-
 #: lazarusidestrconsts.lispath
 msgid "Path"
 msgstr "Path"

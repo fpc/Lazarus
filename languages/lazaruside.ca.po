@@ -13236,10 +13236,6 @@ msgstr ""
 msgid "Paste from clipboard"
 msgstr ""
 
-#: lazarusidestrconsts.lispastelcolors
-msgid "Pastel Colors"
-msgstr ""
-
 #: lazarusidestrconsts.lispath
 msgid "Path"
 msgstr ""
