@@ -53,9 +53,6 @@
   <CompilerOptions>
     <Version Value="8"/>
     <PathDelim Value="\"/>
-    <SearchPaths>
-      <SrcPath Value="\Users\felipe\Programas\lazarus-ccr\bindings\objc\;\Users\felipe\Programas\lazarus-ccr\bindings\pascocoa\applicationservices\coregraphics\;\Users\felipe\Programas\lazarus-ccr\bindings\pascocoa\appkit\;\Users\felipe\Programas\lazarus-ccr\bindings\pascocoa\foundation\"/>
-    </SearchPaths>
     <Linking>
       <Options>
         <LinkerOptions Value="-framework Cocoa -lobjc"/>

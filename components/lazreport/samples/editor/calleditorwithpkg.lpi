@@ -26,7 +26,7 @@
           </Target>
           <SearchPaths>
             <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
-            <SrcPath Value="$(LazarusDir)/lcl;$(LazarusDir)/lcl/interfaces/$(LCLWidgetType)"/>
+            
           </SearchPaths>
           <CompileReasons Run="False"/>
         </CompilerOptions>
@@ -98,7 +98,7 @@
     </Target>
     <SearchPaths>
       <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
-      <SrcPath Value="$(LazarusDir)/lcl;$(LazarusDir)/lcl/interfaces/$(LCLWidgetType)"/>
+      
     </SearchPaths>
     <CompileReasons Run="False"/>
   </CompilerOptions>
