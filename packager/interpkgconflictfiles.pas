@@ -25,10 +25,26 @@
     Check source files and compiled files for name conflicts between packages.
 
   ToDo:
-    - don't check when building clean
-    - save ignore date for ?
-    - ignore
-    - clear ignore date on clean build
+    - project compiler option verbosity: check duplicate files
+    - save date ignore
+    - use date ignore
+    - clear ignore on
+      - clean build
+      - error cant find include file
+    unit_f_cant_find_ppu=10022_F_Can't find unit $1 used by $2
+    unit_u_ppu_invalid_header=10007_U_PPU Invalid Header (no PPU at the begin)
+    unit_f_cant_compile_unit=10021_F_Can't compile unit $1, no sources available
+    unit_f_cant_find_ppu=10022_F_Can't find unit $1 used by $2
+    unit_w_unit_name_error=10023_W_Unit $1 was not found but $2 exists
+    unit_f_unit_name_error=10024_F_Unit $1 searched but $2 found
+    unit_u_recompile_crc_change=10028_U_Recompiling $1, checksum changed for $2
+    unit_u_recompile_source_found_alone=10029_U_Recompiling $1, source found only
+    unit_u_recompile_staticlib_is_older=10030_U_Recompiling unit, static lib is older than ppufile
+    unit_u_recompile_sharedlib_is_older=10031_U_Recompiling unit, shared lib is older than ppufile
+    unit_u_recompile_obj_and_asm_older=10032_U_Recompiling unit, obj and asm are older than ppufile
+    unit_u_recompile_obj_older_than_asm=10033_U_Recompiling unit, obj is older than asm
+    unit_w_cant_compile_unit_with_changed_incfile=10040_W_Can't recompile unit $1, but found modifed include files
+    unit_u_source_modified=10041_U_File $1 is newer than the one used for creating PPU file $2
 }
 unit InterPkgConflictFiles;
 
