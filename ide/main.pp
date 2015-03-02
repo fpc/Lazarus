@@ -12715,11 +12715,12 @@ begin
   begin
     CurFocusControl:=FindOwnerControl(GetFocus);
     while (CurFocusControl<>nil) and (CurFocusControl<>MainIDEBar)
-    and not (CurFocusControl is TSourceNotebook) do
+    and not (CurFocusControl is TCustomForm) do
       CurFocusControl:=CurFocusControl.Parent;
   end;
-  if Assigned(CurFocusControl) then
-  begin    // MainIDEBar or SourceNotebook has focus -> find active source editor
+  if (CurFocusControl is TSourceNotebook) or (CurFocusControl=MainIDEBar) then
+  begin
+    // MainIDEBar or SourceNotebook has focus -> find active source editor
     GetCurrentUnit(ActiveSourceEditor,ActiveUnitInfo);
     if Assigned(ActiveSourceEditor) then begin
       ActiveSourceEditor.DoEditorExecuteCommand(EditorCommand); // pass the command
