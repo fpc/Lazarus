@@ -53,7 +53,7 @@
     <Version Value="11"/>
     <PathDelim Value="\"/>
     <SearchPaths>
-      <SrcPath Value="$(LazarusDir)\lcl;$(LazarusDir)\lcl\interfaces\$(LCLWidgetType)"/>
+      
     </SearchPaths>
     <Parsing>
       <SyntaxOptions>
