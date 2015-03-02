@@ -39,8 +39,8 @@ uses
   Classes, SysUtils, SimpleIPC, Laz2_XMLCfg,
   FileUtil, Forms, Controls, Dialogs,
   Buttons, LCLProc, ComCtrls, ExtCtrls, Menus, LCLType, LCLIntf, StdCtrls,
-  BaseContentProvider, ChmContentProvider
-  {$IFDEF USE_LNET}, HTTPContentProvider{$ENDIF},
+  BaseContentProvider, ChmContentProvider, lhelpstrconsts, DefaultTranslator,
+  {$IFDEF USE_LNET}, HTTPContentProvider{$ENDIF}
   lazlogger;
 
 type
@@ -198,7 +198,7 @@ var
 begin
   f := TForm.Create(Application);
   try
-    f.Caption := 'About';
+    f.Caption := slhelp_About;
     f.BorderStyle := bsDialog;
     f.Position := poMainFormCenter;
     f.Constraints.MinWidth := 150;
@@ -207,13 +207,10 @@ begin
     l.Parent := f;;
     l.Align := alTop;
     l.BorderSpacing.Around := 6;
-    l.Caption := 'LHelp (CHM file viewer)' + LineEnding +
-      'Version ' + VERSION_STAMP + LineEnding +
-      LineEnding +
-      'Copyright (C) Andrew Haines, ' + LineEnding +
-      'Lazarus contributors';
+    l.Caption := Format(slhelp_LHelpCHMFileViewerVersionCopyrightCAndrewHainesLaz, [LineEnding, VERSION_STAMP, LineEnding +
+      LineEnding, LineEnding]);
     l.AutoSize := True;
-    l.WordWrap := True;
+    //l.WordWrap := True; {don't wrap author's name}
     b := TButton.Create(f);
     b.Parent := f;
     b.BorderSpacing.Around := 6;
@@ -222,7 +219,7 @@ begin
     b.AnchorSide[akTop].Side := asrBottom;
     b.AnchorSide[akLeft].Control := f;
     b.AnchorSide[akLeft].Side := asrCenter;
-    b.Caption := 'Ok';
+    b.Caption := slhelp_Ok;
     b.ModalResult := mrOk;
     f.AutoSize := False;
     f.AutoSize := True;
@@ -300,8 +297,8 @@ begin
   URLSAllowed := Trim(URLSAllowed);
 
   fRes:='';
-  if InputQuery('Please enter a URL',
-    'Supported URL type(s): (' +URLSAllowed+ ')', fRes) then
+  if InputQuery(slhelp_PleaseEnterAURL,
+    Format(slhelp_SupportedURLTypeS, [URLSAllowed]), fRes) then
   begin
     if OpenURL(fRes) = ord(srSuccess) then
       AddRecentFile(fRes);
@@ -320,6 +317,17 @@ end;
 
 procedure THelpForm.FormCreate(Sender: TObject);
 begin
+  FileMenuItem.Caption := slhelp_File;
+  FileMenuOpenItem.Caption := slhelp_Open;
+  FileMenuOpenRecentItem.Caption := slhelp_OpenRecent;
+  FileMenuOpenURLItem.Caption := slhelp_OpenURL;
+  FileMenuCloseItem.Caption := slhelp_CloseAll;
+  FileMenuExitItem.Caption := slhelp_EXit;
+  ViewMenuItem.Caption := slhelp_View;
+  ViewMenuContents.Caption := slhelp_ShowContents;
+  HelpMenuItem.Caption := slhelp_Help;
+  AboutItem.Caption := slhelp_About2;
+
   fContext := -1;
   // Safe default:
   fHide := false;
@@ -503,7 +511,7 @@ procedure THelpForm.ContentTitleChange(sender: TObject);
 begin
   if ActivePage = nil then
     Exit;
-  Caption := 'LHelp - ' + ActivePage.fContentProvider.Title;
+  Caption := Format(slhelp_LHelp2, [ActivePage.fContentProvider.Title]);
 end;
 
 procedure THelpForm.OpenRecentItemClick(Sender: TObject);
@@ -809,7 +817,7 @@ begin
  
  if fContentProvider = nil then
  begin
-   ShowError('Cannot handle this type of content. "' + fURLPrefix + '" for url:'+LineEnding+AURL);
+   ShowError(Format(slhelp_CannotHandleThisTypeOfContentForUrl, [fURLPrefix, LineEnding, AURL]));
    Result := Ord(srInvalidURL);
    Exit;
  end;
@@ -817,7 +825,7 @@ begin
  
  if fRealContentProvider = nil then
  begin
-   ShowError('Cannot handle this type of subcontent. "' + fURLPrefix + '" for url:'+LineEnding+AURL);
+   ShowError(Format(slhelp_CannotHandleThisTypeOfSubcontentForUrl, [fURLPrefix, LineEnding, AURL]));
    Result := Ord(srInvalidURL);
    Exit;
  end;
@@ -925,9 +933,9 @@ begin
   ViewMenuContents.Enabled := en;
 
   if en and not (csDestroying in ActivePage.ComponentState) then
-    Caption := 'LHelp - ' + ActivePage.fContentProvider.Title
+    Caption := Format(slhelp_LHelp2, [ActivePage.fContentProvider.Title])
   else
-    Caption := 'LHelp';
+    Caption := slhelp_LHelp;
 end;
 
 procedure THelpForm.ShowError(AError: String);

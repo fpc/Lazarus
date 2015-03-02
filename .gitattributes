@@ -661,6 +661,9 @@ components/chmhelp/lhelp/images/lhelp32.png -text
 components/chmhelp/lhelp/images/table_close.png -text
 components/chmhelp/lhelp/images/table_item.png -text
 components/chmhelp/lhelp/images/table_open.png -text
+components/chmhelp/lhelp/languages/lhelp.hu.po svneol=native#text/plain
+components/chmhelp/lhelp/languages/lhelp.po svneol=native#text/plain
+components/chmhelp/lhelp/languages/lhelp.ru.po svneol=native#text/plain
 components/chmhelp/lhelp/lhelp.app/Contents/Info.plist svneol=native#text/plain
 components/chmhelp/lhelp/lhelp.app/Contents/MacOS/lhelp -text svneol=unset#application/octet-stream
 components/chmhelp/lhelp/lhelp.app/Contents/PkgInfo svneol=native#text/plain
@@ -670,6 +673,7 @@ components/chmhelp/lhelp/lhelp.lpr svneol=native#text/plain
 components/chmhelp/lhelp/lhelp.res -text
 components/chmhelp/lhelp/lhelpcore.lfm svneol=native#text/plain
 components/chmhelp/lhelp/lhelpcore.pas svneol=native#text/plain
+components/chmhelp/lhelp/lhelpstrconsts.pas svneol=native#text/pascal
 components/chmhelp/lhelp/lnethttpdataprovider.pas svneol=native#text/plain
 components/chmhelp/packages/help/Makefile svneol=native#text/plain
 components/chmhelp/packages/help/Makefile.compiled svneol=native#text/plain

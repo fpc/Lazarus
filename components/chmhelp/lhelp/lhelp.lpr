@@ -27,7 +27,7 @@ uses
   {$ENDIF}
   Interfaces, // this includes the LCL widgetset
   SysUtils, Classes, Controls, Dialogs, Forms,
-  SimpleIPC, TurboPowerIPro, chmpopup, lhelpcontrolpkg, lhelpcore;
+  SimpleIPC, TurboPowerIPro, chmpopup, lhelpcontrolpkg, lhelpcore, lhelpstrconsts;
 
 var
   X: Integer;
@@ -42,16 +42,14 @@ begin
     if LowerCase(ParamStr(X)) = '--help' then 
     begin
       S := TStringList.Create;
-      S.Add('  LHelp options:');
+      S.Add(slhelp_LHelpOptions);
       S.Add('');
-      S.Add('    Usage: lhelp [[filename] [--context id] [--hide] [--ipcname lhelp-myapp]]');
+      S.Add(slhelp_UsageLhelpFilenameContextIdHideIpcnameLhelpMyapp);
       S.Add('');
-      S.Add('    --help     :  Show this information');
-      S.Add('    --hide     :  Start hidden but accept communications via IPC');
-      S.Add('    --context  :  Show the help information related');
-      S.Add('                  to this context');
-      S.Add('    --ipcname  :  The name of the IPC server to listen on for');
-      S.Add('                  programs who wish to control the viewer');
+      S.Add(slhelp_HelpShowThisInformation);
+      S.Add(slhelp_HideStartHiddenButAcceptCommunicationsViaIPC);
+      S.Add(slhelp_ContextShowTheHelpInformationRelatedToThisContext);
+      S.Add(Format(slhelp_IpcnameTheNameOfTheIPCServerToListenOnForProgramsW, [LineEnding]));
 
       if TextRec(Output).Mode = fmClosed then
         MessageDlg(S.Text, mtInformation, [mbOk], 0)

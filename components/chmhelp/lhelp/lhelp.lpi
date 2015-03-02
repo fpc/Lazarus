@@ -11,6 +11,10 @@
       <MainUnit Value="0"/>
       <UseXPManifest Value="True"/>
     </General>
+    <i18n>
+      <EnableI18N Value="True" LFM="False"/>
+      <OutDir Value="languages"/>
+    </i18n>
     <BuildModes Count="2">
       <Item1 Name="default" Default="True"/>
       <Item2 Name="debug">
@@ -73,7 +77,7 @@
         <PackageName Value="LCL"/>
       </Item3>
     </RequiredPackages>
-    <Units Count="9">
+    <Units Count="10">
       <Unit0>
         <Filename Value="lhelp.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -86,7 +90,6 @@
       <Unit2>
         <Filename Value="chmspecialparser.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="ChmSpecialParser"/>
       </Unit2>
       <Unit3>
         <Filename Value="chmpopup.pas"/>
@@ -100,7 +103,6 @@
         <ComponentName Value="HelpForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <UnitName Value="lhelpcore"/>
       </Unit4>
       <Unit5>
         <Filename Value="lnethttpdataprovider.pas"/>
@@ -109,17 +111,20 @@
       <Unit6>
         <Filename Value="basecontentprovider.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="BaseContentProvider"/>
       </Unit6>
       <Unit7>
         <Filename Value="chmcontentprovider.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="chmcontentprovider"/>
       </Unit7>
       <Unit8>
         <Filename Value="httpcontentprovider.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit8>
+      <Unit9>
+        <Filename Value="lhelpstrconsts.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="lhelpstrconsts"/>
+      </Unit9>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
