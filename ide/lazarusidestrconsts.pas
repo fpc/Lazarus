@@ -3566,7 +3566,7 @@ resourcestring
   lisUIDbytes = '%s bytes';
   lisUIDName = 'Name:';
   lisUIDType = 'Type:';
-  lisUIDinProject = 'in Project:';
+  lisUIDinProject = 'In project:';
   lisUIDIncludedBy = 'Included by:';
   lisUIDSize = 'Size:';
   lisUIDLines = 'Lines:';
