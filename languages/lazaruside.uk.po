@@ -13016,6 +13016,10 @@ msgstr "вставити буфер обміну"
 msgid "Paste from clipboard"
 msgstr ""
 
+#: lazarusidestrconsts.lispastelcolors
+msgid "Pastel Colors"
+msgstr ""
+
 #: lazarusidestrconsts.lispath
 msgid "Path"
 msgstr "Шлях"
@@ -17128,7 +17132,9 @@ msgid "Included by:"
 msgstr "Доданий:"
 
 #: lazarusidestrconsts.lisuidinproject
-msgid "in Project:"
+#, fuzzy
+#| msgid "in Project:"
+msgid "In project:"
 msgstr "в проекті:"
 
 #: lazarusidestrconsts.lisuidlines

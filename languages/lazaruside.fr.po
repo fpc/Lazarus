@@ -12773,6 +12773,10 @@ msgstr "Coller le contenu du presse-papiers"
 msgid "Paste from clipboard"
 msgstr ""
 
+#: lazarusidestrconsts.lispastelcolors
+msgid "Pastel Colors"
+msgstr ""
+
 #: lazarusidestrconsts.lispath
 msgid "Path"
 msgstr "Chemin"
@@ -16621,7 +16625,9 @@ msgid "Included by:"
 msgstr "Inclus par :"
 
 #: lazarusidestrconsts.lisuidinproject
-msgid "in Project:"
+#, fuzzy
+#| msgid "in Project:"
+msgid "In project:"
 msgstr "dans le projet :"
 
 #: lazarusidestrconsts.lisuidlines
