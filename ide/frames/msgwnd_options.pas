@@ -42,6 +42,7 @@ type
   TMsgWndOptionsFrame = class(TAbstractIDEOptionsEditor)
     MWAlwaysDrawFocusedCheckBox: TCheckBox;
     MWFocusCheckBox: TCheckBox;
+    MWSetPastelColorsButton: TButton;
     MWShowIconsCheckBox: TCheckBox;
     MWMaxProcsLabel: TLabel;
     MWMaxProcsSpinEdit: TSpinEdit;
@@ -60,6 +61,7 @@ type
     procedure MWColorListBoxSelectionChange(Sender: TObject; User: boolean);
     procedure MWSetDefaultColorsButtonClick(Sender: TObject);
     procedure MWSetEditorColorsButtonClick(Sender: TObject);
+    procedure MWSetPastelColorsButtonClick(Sender: TObject);
   private
     fReady: boolean;
     FDialog: TAbstractOptionsEditorDialog;
@@ -135,6 +137,16 @@ begin
   MWColorBox.Selected := MWColorListBox.Selected;
 end;
 
+procedure TMsgWndOptionsFrame.MWSetPastelColorsButtonClick(Sender: TObject);
+begin
+  MWColorListBox.Colors[ord(mwBackground)]:=clWindow;
+  MWColorListBox.Colors[ord(mwRunning)]   :=TColor($00CBF3FF); // harmonic pastel yellow
+  MWColorListBox.Colors[ord(mwSuccess)]   :=TColor($00BEEFC3); // harmonic pastel green
+  MWColorListBox.Colors[ord(mwFailed)]    :=TColor($00CCCBFF); // harmonic pastel rose
+  MWColorListBox.Colors[ord(mwAutoHeader)]:=TColor($00EEC3BD); // harmonic pastel blue
+  MWColorBox.Selected := MWColorListBox.Selected;
+end;
+
 function TMsgWndOptionsFrame.GeneralPage: TEditorGeneralOptionsFrame;
 begin
   Result:=nil;
@@ -150,6 +162,7 @@ begin
   MWColorsGroupBox.Caption:=dlgColors;
   MWSpeedSetColorsGroupBox.Caption:=lisSetAllColors;
   MWSetDefaultColorsButton.Caption:=lisLazarusDefault;
+  MWSetPastelColorsButton.Caption:=lisPastelColors;
   MWSetEditorColorsButton.Caption:=lisEditorColors;
   MWShowIconsCheckBox.Caption:=dlgShowMessagesIcons;
   MWShowIconsCheckBox.Hint:=dlgAnIconForErrorWarningHintIsShown;

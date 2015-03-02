@@ -1273,6 +1273,7 @@ resourcestring
     +'focused, even if the Messages window has no focus. Use this if your '
     +'theme has a hardly visible unfocused drawing.';
   lisEditorColors = 'Editor Colors';
+  lisPastelColors = 'Pastel Colors';
 
   dlgMainMenu = 'Main Menu';
   dlgSrcEdit = 'Source Editor';
