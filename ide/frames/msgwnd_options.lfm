@@ -49,7 +49,7 @@ object MsgWndOptionsFrame: TMsgWndOptionsFrame
       Height = 29
       Top = 120
       Width = 303
-      Style = [cbStandardColors, cbExtendedColors, cbSystemColors, cbCustomColor, cbPrettyNames]
+      Style = [cbStandardColors, cbExtendedColors, cbSystemColors, cbIncludeNone, cbIncludeDefault, cbCustomColor, cbPrettyNames, cbCustomColors]
       Anchors = [akLeft, akRight, akBottom]
       BorderSpacing.Around = 6
       ItemHeight = 20

@@ -154,6 +154,7 @@ type
     FSelectedLine: integer;
     FSelectedView: TLMsgWndView;
     FSourceMarks: TETMarks;
+    FTextColor: TColor;
     fUpdateLock: integer;
     FUpdateTimer: TTimer;
     fSomeViewsRunning: boolean;
@@ -183,6 +184,7 @@ type
     procedure SetSelectedLine(AValue: integer);
     procedure SetSelectedView(AValue: TLMsgWndView);
     procedure SetSourceMarks(AValue: TETMarks);
+    procedure SetTextColor(AValue: TColor);
     procedure SetUrgencyStyles(Urgency: TMessageLineUrgency;
       AValue: TMsgCtrlUrgencyStyle);
     procedure SetAutoHeaderBackground(AValue: TColor);
@@ -299,6 +301,7 @@ type
     property SelectedView: TLMsgWndView read FSelectedView write SetSelectedView;
     property ShowHint default true;
     property SourceMarks: TETMarks read FSourceMarks write SetSourceMarks;
+    property TextColor: TColor read FTextColor write SetTextColor default MsgWndDefTextColor;
     property UrgencyStyles[Urgency: TMessageLineUrgency]: TMsgCtrlUrgencyStyle read GetUrgencyStyles write SetUrgencyStyles;
   end;
 
@@ -1233,6 +1236,13 @@ begin
     FreeNotification(SourceMarks);
 end;
 
+procedure TMessagesCtrl.SetTextColor(AValue: TColor);
+begin
+  if FTextColor=AValue then Exit;
+  FTextColor:=AValue;
+  Invalidate;
+end;
+
 procedure TMessagesCtrl.SetUrgencyStyles(Urgency: TMessageLineUrgency;
   AValue: TMsgCtrlUrgencyStyle);
 begin
@@ -1511,6 +1521,7 @@ var
   IsSelected: Boolean;
   FirstLineIsNotSelectedMessage: Boolean;
   SecondLineIsNotSelectedMessage: Boolean;
+  col: TColor;
 begin
   if Focused then
     Include(FStates,mcsFocused)
@@ -1546,7 +1557,7 @@ begin
       Canvas.Line(NodeRect.Left,NodeRect.Top,NodeRect.Right,NodeRect.Top);
       Canvas.Pen.Style:=psSolid;
       DrawText(NodeRect,GetHeaderText(View),
-        (fSelectedView=View) and (FSelectedLine=-1),clDefault);
+        (fSelectedView=View) and (FSelectedLine=-1),TextColor);
       Canvas.Brush.Color:=BackgroundColor;
     end;
     inc(y,ItemHeight);
@@ -1578,8 +1589,10 @@ begin
         inc(NodeRect.Left,Images.Width+2);
       end;
       // message text
-      DrawText(NodeRect,GetLineText(Line),IsSelected,
-               UrgencyStyles[Line.Urgency].Color);
+      col:=TextColor;
+      if col=clDefault then
+        col:=UrgencyStyles[Line.Urgency].Color;
+      DrawText(NodeRect,GetLineText(Line),IsSelected,col);
       inc(y,ItemHeight);
       inc(j);
     end;
@@ -1597,7 +1610,7 @@ begin
       NodeRect:=Rect(0,0,ClientWidth,ItemHeight);
       Canvas.Line(NodeRect.Left,NodeRect.Bottom,NodeRect.Right,NodeRect.Bottom);
       Canvas.Pen.Style:=psSolid;
-      DrawText(NodeRect,'...'+GetHeaderText(View),false,clDefault);
+      DrawText(NodeRect,'...'+GetHeaderText(View),false,TextColor);
       Canvas.Brush.Color:=BackgroundColor;
     end;
     inc(y,ItemHeight*(View.Lines.Count-j));
@@ -1607,9 +1620,11 @@ begin
       if (y+ItemHeight>0) and (y<ClientHeight) then begin
         // progress text
         NodeRect:=Rect(Indent,y,ClientWidth,y+ItemHeight);
+        col:=TextColor;
+        if col=clDefault then
+          col:=UrgencyStyles[View.ProgressLine.Urgency].Color;
         DrawText(NodeRect,View.ProgressLine.Msg,
-          (fSelectedView=View) and (FSelectedLine=View.Lines.Count),
-          UrgencyStyles[View.ProgressLine.Urgency].Color);
+          (fSelectedView=View) and (FSelectedLine=View.Lines.Count),col);
       end;
       inc(y,ItemHeight);
     end;
@@ -2360,6 +2375,7 @@ begin
   FHeaderBackground[lmvtsSuccess]:=MsgWndDefHeaderBackgroundSuccess;
   FHeaderBackground[lmvtsFailed]:=MsgWndDefHeaderBackgroundFailed;
   FAutoHeaderBackground:=MsgWndDefAutoHeaderBackground;
+  FTextColor:=MsgWndDefTextColor;
   TabStop := True;
   ParentColor := False;
   FImageChangeLink := TChangeLink.Create;
@@ -2420,6 +2436,7 @@ begin
   HeaderBackground[lmvtsRunning]:=EnvironmentOptions.MsgViewColors[mwRunning];
   HeaderBackground[lmvtsSuccess]:=EnvironmentOptions.MsgViewColors[mwSuccess];
   HeaderBackground[lmvtsFailed]:=EnvironmentOptions.MsgViewColors[mwFailed];
+  TextColor:=EnvironmentOptions.MsgViewColors[mwTextColor];
   NewOptions:=Options;
   SetOption(mcoSingleClickOpensFile,not EnvironmentOptions.MsgViewDblClickJumps);
   SetOption(mcoShowMsgIcons,EnvironmentOptions.ShowMessagesIcons);

@@ -92,6 +92,7 @@ begin
   Items.Add(lisToolHeaderSuccess);
   Items.Add(lisToolHeaderFailed);
   Items.Add(lisToolHeaderScrolledUp);
+  Items.Add(dlfMouseSimpleTextSect);
 end;
 
 procedure TMsgWndOptionsFrame.MWColorBoxChange(Sender: TObject);

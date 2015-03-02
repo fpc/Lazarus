@@ -194,7 +194,8 @@ type
     mwRunning,
     mwSuccess,
     mwFailed,
-    mwAutoHeader
+    mwAutoHeader,
+    mwTextColor
     );
 const
   MsgWndDefBackgroundColor = clWindow;
@@ -202,20 +203,23 @@ const
   MsgWndDefHeaderBackgroundSuccess = TColor($60FF60); // light green
   MsgWndDefHeaderBackgroundFailed = TColor($6060FF); // light red
   MsgWndDefAutoHeaderBackground = clSkyBlue;
+  MsgWndDefTextColor = clDefault;
 
   MsgWndDefaultColors: array[TMsgWndColor] of TColor = (
     MsgWndDefBackgroundColor,         // mwBackground
     MsgWndDefHeaderBackgroundRunning, // mwRunning
     MsgWndDefHeaderBackgroundSuccess, // mwSuccess
     MsgWndDefHeaderBackgroundFailed,  // mwFailed
-    MsgWndDefAutoHeaderBackground     // mwAutoHeader
+    MsgWndDefAutoHeaderBackground,    // mwAutoHeader
+    MsgWndDefTextColor
     );
   MsgWndColorNames: array[TMsgWndColor] of string = (
     'Background',
     'Running',
     'Success',
     'Failed',
-    'AutoHeader'
+    'AutoHeader',
+    'TextColor'
     );
 
   { External Tools - the user menu items in the Tools menu }
