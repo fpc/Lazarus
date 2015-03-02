@@ -70,7 +70,7 @@
   <CompilerOptions>
     <Version Value="8"/>
     <SearchPaths>
-      <SrcPath Value="$(LazarusDir)/lcl/;$(LazarusDir)/lcl/interfaces/$(LCLWidgetType)/"/>
+      
     </SearchPaths>
     <Other>
       <CompilerPath Value="$(CompPath)"/>

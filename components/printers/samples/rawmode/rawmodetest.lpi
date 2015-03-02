@@ -64,7 +64,7 @@
   <CompilerOptions>
     <Version Value="9"/>
     <SearchPaths>
-      <SrcPath Value="$(LazarusDir)/lcl/;$(LazarusDir)/lcl/interfaces/$(LCLWidgetType)/"/>
+      
     </SearchPaths>
     <Parsing>
       <SyntaxOptions>

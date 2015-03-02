@@ -50,7 +50,7 @@
       <Filename Value="PopupNotifierDemo"/>
     </Target>
     <SearchPaths>
-      <SrcPath Value="$(LazarusDir)\lcl\;$(LazarusDir)\lcl\interfaces\$(LCLWidgetType)\"/>
+      
     </SearchPaths>
     <CodeGeneration>
       <Generate Value="Faster"/>

@@ -51,7 +51,7 @@
   <CompilerOptions>
     <Version Value="5"/>
     <SearchPaths>
-      <SrcPath Value="$(LazarusDir)/lcl/;$(LazarusDir)/lcl/interfaces/$(LCLWidgetType)/"/>
+      
     </SearchPaths>
     <CodeGeneration>
       <Generate Value="Faster"/>

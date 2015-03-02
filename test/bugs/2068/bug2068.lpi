@@ -223,7 +223,7 @@
     <Version Value="5"/>
     <PathDelim Value="\"/>
     <SearchPaths>
-      <SrcPath Value="$(LazarusDir)\lcl\;$(LazarusDir)\lcl\interfaces\$(LCLWidgetType)\"/>
+      
     </SearchPaths>
     <CodeGeneration>
       <Generate Value="Faster"/>
