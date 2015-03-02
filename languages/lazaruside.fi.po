@@ -12697,6 +12697,10 @@ msgstr "liitä leikepöytä"
 msgid "Paste from clipboard"
 msgstr "Liitä leikepöydältä"
 
+#: lazarusidestrconsts.lispastelcolors
+msgid "Pastel Colors"
+msgstr ""
+
 #: lazarusidestrconsts.lispath
 msgid "Path"
 msgstr "Polku"
@@ -16529,7 +16533,9 @@ msgid "Included by:"
 msgstr "Luettu käännösyksiköihin:"
 
 #: lazarusidestrconsts.lisuidinproject
-msgid "in Project:"
+#, fuzzy
+#| msgid "in Project:"
+msgid "In project:"
 msgstr "Projektissa:"
 
 #: lazarusidestrconsts.lisuidlines

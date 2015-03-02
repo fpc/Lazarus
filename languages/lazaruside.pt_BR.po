@@ -12979,6 +12979,10 @@ msgstr "colar área de transferência"
 msgid "Paste from clipboard"
 msgstr ""
 
+#: lazarusidestrconsts.lispastelcolors
+msgid "Pastel Colors"
+msgstr ""
+
 #: lazarusidestrconsts.lispath
 msgid "Path"
 msgstr "Caminho"
@@ -17083,7 +17087,9 @@ msgid "Included by:"
 msgstr "Incluído por:"
 
 #: lazarusidestrconsts.lisuidinproject
-msgid "in Project:"
+#, fuzzy
+#| msgid "in Project:"
+msgid "In project:"
 msgstr "no Projeto:"
 
 #: lazarusidestrconsts.lisuidlines

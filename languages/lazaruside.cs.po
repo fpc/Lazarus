@@ -12846,6 +12846,10 @@ msgstr "vložit schránku"
 msgid "Paste from clipboard"
 msgstr ""
 
+#: lazarusidestrconsts.lispastelcolors
+msgid "Pastel Colors"
+msgstr ""
+
 #: lazarusidestrconsts.lispath
 msgid "Path"
 msgstr "Cesta"
@@ -16768,7 +16772,9 @@ msgid "Included by:"
 msgstr "Zahrnut tímto:"
 
 #: lazarusidestrconsts.lisuidinproject
-msgid "in Project:"
+#, fuzzy
+#| msgid "in Project:"
+msgid "In project:"
 msgstr "v projektu:"
 
 #: lazarusidestrconsts.lisuidlines

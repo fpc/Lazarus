@@ -12809,6 +12809,10 @@ msgstr "incolla dagli appunti"
 msgid "Paste from clipboard"
 msgstr "Incolla dagli Appunti "
 
+#: lazarusidestrconsts.lispastelcolors
+msgid "Pastel Colors"
+msgstr ""
+
 #: lazarusidestrconsts.lispath
 msgid "Path"
 msgstr "Percorso"
@@ -16660,7 +16664,9 @@ msgid "Included by:"
 msgstr "Incluso da:"
 
 #: lazarusidestrconsts.lisuidinproject
-msgid "in Project:"
+#, fuzzy
+#| msgid "in Project:"
+msgid "In project:"
 msgstr "In progetto:"
 
 #: lazarusidestrconsts.lisuidlines

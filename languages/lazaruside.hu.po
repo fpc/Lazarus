@@ -12797,6 +12797,10 @@ msgstr "vágólap beillesztése"
 msgid "Paste from clipboard"
 msgstr "Beillesztés a vágólapról"
 
+#: lazarusidestrconsts.lispastelcolors
+msgid "Pastel Colors"
+msgstr ""
+
 #: lazarusidestrconsts.lispath
 msgid "Path"
 msgstr "Útvonal"
@@ -16647,7 +16651,9 @@ msgid "Included by:"
 msgstr "Használat ebben:"
 
 #: lazarusidestrconsts.lisuidinproject
-msgid "in Project:"
+#, fuzzy
+#| msgid "in Project:"
+msgid "In project:"
 msgstr "Ebben a projektben:"
 
 #: lazarusidestrconsts.lisuidlines

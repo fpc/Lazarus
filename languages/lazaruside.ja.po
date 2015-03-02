@@ -12939,6 +12939,10 @@ msgstr "クリップボードを貼り付け"
 msgid "Paste from clipboard"
 msgstr ""
 
+#: lazarusidestrconsts.lispastelcolors
+msgid "Pastel Colors"
+msgstr ""
+
 #: lazarusidestrconsts.lispath
 msgid "Path"
 msgstr "Path"
@@ -17021,7 +17025,9 @@ msgid "Included by:"
 msgstr "次に含まれる："
 
 #: lazarusidestrconsts.lisuidinproject
-msgid "in Project:"
+#, fuzzy
+#| msgid "in Project:"
+msgid "In project:"
 msgstr "プロジェクト内"
 
 #: lazarusidestrconsts.lisuidlines

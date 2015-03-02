@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2015-02-26 00:31+0300\n"
+"PO-Revision-Date: 2015-03-03 01:13+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -12766,7 +12766,7 @@ msgstr "Чрезвычайное"
 
 #: lazarusidestrconsts.lisparsed
 msgid ", parsed "
-msgstr ", проанализировано"
+msgstr ", проанализировано "
 
 #: lazarusidestrconsts.lisparser
 msgid "parser \"%s\": %s"
@@ -12792,6 +12792,10 @@ msgstr "Вставить из буфера обмена"
 #: lazarusidestrconsts.lispastefromclipboard
 msgid "Paste from clipboard"
 msgstr "Вставить из буфера обмена"
+
+#: lazarusidestrconsts.lispastelcolors
+msgid "Pastel Colors"
+msgstr "Пастельные цвета"
 
 #: lazarusidestrconsts.lispath
 msgid "Path"
@@ -16643,8 +16647,8 @@ msgid "Included by:"
 msgstr "Включён:"
 
 #: lazarusidestrconsts.lisuidinproject
-msgid "in Project:"
-msgstr "в проекте:"
+msgid "In project:"
+msgstr "В проекте:"
 
 #: lazarusidestrconsts.lisuidlines
 msgctxt "lazarusidestrconsts.lisuidlines"

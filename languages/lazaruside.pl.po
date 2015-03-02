@@ -13365,6 +13365,10 @@ msgstr ""
 msgid "Paste from clipboard"
 msgstr ""
 
+#: lazarusidestrconsts.lispastelcolors
+msgid "Pastel Colors"
+msgstr ""
+
 #: lazarusidestrconsts.lispath
 msgid "Path"
 msgstr ""
@@ -17426,7 +17430,9 @@ msgid "Included by:"
 msgstr "Dołączane przez:"
 
 #: lazarusidestrconsts.lisuidinproject
-msgid "in Project:"
+#, fuzzy
+#| msgid "in Project:"
+msgid "In project:"
 msgstr "w projekcie:"
 
 #: lazarusidestrconsts.lisuidlines

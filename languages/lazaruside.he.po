@@ -13676,6 +13676,10 @@ msgstr "הדבק את מה שבלוח הזמני"
 msgid "Paste from clipboard"
 msgstr ""
 
+#: lazarusidestrconsts.lispastelcolors
+msgid "Pastel Colors"
+msgstr ""
+
 #: lazarusidestrconsts.lispath
 msgid "Path"
 msgstr "נתיב"
@@ -17915,7 +17919,9 @@ msgid "Included by:"
 msgstr "נכלל ע\"י:"
 
 #: lazarusidestrconsts.lisuidinproject
-msgid "in Project:"
+#, fuzzy
+#| msgid "in Project:"
+msgid "In project:"
 msgstr "בפרויקט:"
 
 #: lazarusidestrconsts.lisuidlines

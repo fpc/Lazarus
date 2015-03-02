@@ -12790,6 +12790,10 @@ msgstr "Zwischenablage einfügen"
 msgid "Paste from clipboard"
 msgstr "Aus Zwischenablage einfügen"
 
+#: lazarusidestrconsts.lispastelcolors
+msgid "Pastel Colors"
+msgstr ""
+
 #: lazarusidestrconsts.lispath
 msgid "Path"
 msgstr "Pfad"
@@ -16640,7 +16644,9 @@ msgid "Included by:"
 msgstr "Eingebunden von:"
 
 #: lazarusidestrconsts.lisuidinproject
-msgid "in Project:"
+#, fuzzy
+#| msgid "in Project:"
+msgid "In project:"
 msgstr "im Projekt:"
 
 #: lazarusidestrconsts.lisuidlines
