@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, BaseContentProvider, LNetHTTPDataProvider, IpHtml, ComCtrls,
-  Menus, Controls;
+  Menus, Controls, lhelpstrconsts;
   
 type
 
@@ -75,7 +75,7 @@ function THTTPContentProvider.LoadURL(const AURL: String;
   const AContext: THelpContext): Boolean;
 begin
   Result:=True;
-  SetTitle('Loading : ' + AURL );
+  SetTitle(Format(slhelp_Loading, [AURL]) );
   //WriteLn('Loading URL:', AURL);
   fHtml.OpenURL(AURL);
   SetTitle(AURL);
@@ -110,7 +110,7 @@ begin
   fPopUp := TPopupMenu.Create(fHtml);
   fPopUp.Items.Add(TMenuItem.Create(fPopup));
   with fPopUp.Items.Items[0] do begin
-    Caption := 'Copy';
+    Caption := slhelp_Copy;
     OnClick := @PopupCopyClick;
   end;
 

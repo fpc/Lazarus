@@ -25,7 +25,8 @@ interface
 uses
   Classes, SysUtils, Laz2_XMLCfg,
   LCLIntf, FileUtil, Forms, StdCtrls, ExtCtrls, ComCtrls, Controls, Menus,
-  BaseContentProvider, FileContentProvider, IpHtml, ChmReader, ChmDataProvider;
+  BaseContentProvider, FileContentProvider, IpHtml, ChmReader, ChmDataProvider,
+  lhelpstrconsts;
 
 type
 
@@ -361,7 +362,7 @@ var
   Time: String;
 begin
   if (fChms = nil) and (AChm = nil) then exit;
-  fStatusBar.SimpleText :='Loading: '+Uri;
+  fStatusBar.SimpleText := Format(slhelp_Loading, [Uri]);
   Application.ProcessMessages;
   StartTime := Now;
 
@@ -373,7 +374,7 @@ begin
 
   if fChms.ObjectExists(FilteredURL, AChm) = 0 then
   begin
-    fStatusBar.SimpleText := URI + ' not found!';
+    fStatusBar.SimpleText := Format(slhelp_NotFound, [URI]);
     Exit;
   end;
   if (Pos('ms-its', Uri) = 0) and (AChm <> nil) then
@@ -395,7 +396,7 @@ begin
     EndTime := Now;
 
     Time := INtToStr(DateTimeToTimeStamp(EndTime).Time - DateTimeToTimeStamp(StartTime).Time);
-    fStatusBar.SimpleText :='Loaded: '+Uri+' in '+ Time+'ms';
+    fStatusBar.SimpleText := Format(slhelp_LoadedInMs, [Uri, Time]);
 
   end
   else
@@ -486,8 +487,8 @@ end;
 procedure TChmContentProvider.QueueFillToc(AChm: TChmReader);
 begin
   fContentsTree.Visible := False;
-  fContentsPanel.Caption := 'Table of Contents Loading. Please Wait ...';
-  fStatusBar.SimpleText:= 'Table of Contents Loading ...';
+  fContentsPanel.Caption := slhelp_TableOfContentsLoadingPleaseWait;
+  fStatusBar.SimpleText := slhelp_TableOfContentsLoading;
   Application.ProcessMessages;
   Application.QueueAsyncCall(@FillToc, PtrInt(AChm));
 end;
@@ -574,7 +575,7 @@ begin
       {$ENDIF}
       if SM <> nil then
       begin
-        fStatusBar.SimpleText:= 'Index Loading ...';
+        fStatusBar.SimpleText := slhelp_IndexLoading;
         Application.ProcessMessages;
         with TContentsFiller.Create(fIndexView, SM, @fStopTimer, CHMReader) do
         begin
@@ -992,7 +993,7 @@ begin
           if (Length(DocURL) > 0) and (DocURL[1] <> '/') then
             Insert('/', DocURL, 1);
           if DocTitle = '' then
-            DocTitle := 'untitled';
+            DocTitle := slhelp_Untitled;
           Item := TContentTreeNode(fSearchResults.Items.Add(Item, DocTitle));
           Item.Data:= fChms.Chm[i];
           Item.Url:= DocURL;
@@ -1011,7 +1012,7 @@ begin
 
   if fSearchResults.Items.Count = 0 then
   begin
-    fSearchResults.Items.Add(nil, 'No Results');
+    fSearchResults.Items.Add(nil, slhelp_NoResults);
   end;
   fSearchResults.EndUpdate;
 end;
@@ -1157,7 +1158,7 @@ begin
   fContentsTab := TTabSheet.Create(fTabsControl);
   with fContentsTab do
   begin
-    Caption := 'Contents';
+    Caption := slhelp_Contents;
     Parent := fTabsControl;
     //BorderSpacing.Around := 6;
   end;
@@ -1189,7 +1190,7 @@ begin
   fIndexTab := TTabSheet.Create(fTabsControl);
   with fIndexTab do
   begin
-    Caption := 'Index';
+    Caption := slhelp_Index;
     Parent := fTabsControl;
     //BorderSpacing.Around := 6;
   end;
@@ -1204,7 +1205,7 @@ begin
     AnchorSide[akRight].Control := fIndexTab;
     AnchorSide[akRight].Side := asrBottom;
     AnchorSide[akTop].Control := fIndexTab;
-    EditLabel.Caption := 'Search';
+    EditLabel.Caption := slhelp_Search;
     EditLabel.AutoSize := True;
     LabelPosition := lpAbove;
     OnChange := @SearchEditChange;
@@ -1240,7 +1241,7 @@ begin
   fSearchTab := TTabSheet.Create(fTabsControl);
   with fSearchTab do
   begin
-    Caption := 'Search';
+    Caption := slhelp_Search;
     Parent := fTabsControl;
   end;
   fKeywordLabel := TLabel.Create(fSearchTab);
@@ -1248,7 +1249,7 @@ begin
   begin
     Parent := fSearchTab;
     Top := 6;
-    Caption := 'Keyword:';
+    Caption := slhelp_Keyword;
     Left := 6;
     AutoSize := True;
   end;
@@ -1275,7 +1276,7 @@ begin
     AnchorSide[akLeft].Control := fSearchTab;
     AnchorSide[akTop].Control := fKeywordCombo;
     AnchorSide[akTop].Side := asrBottom;
-    Caption := 'Find';
+    Caption := slhelp_Find;
     OnClick := @SearchButtonClick;
   end;
   fResultsLabel := TLabel.Create(fSearchTab);
@@ -1289,7 +1290,7 @@ begin
     AnchorSide[akRight].Side := asrBottom;
     AnchorSide[akTop].Control := fSearchBtn;
     AnchorSide[akTop].Side := asrBottom;
-    Caption := 'Search Results:';
+    Caption := slhelp_SearchResults;
     AutoSize := True;
   end;
   fSearchResults := TTreeView.Create(fSearchTab);
@@ -1345,7 +1346,7 @@ begin
   fPopUp.Items.Add(TMenuItem.Create(fPopup));
   with fPopUp.Items.Items[0] do
   begin
-    Caption := 'Copy';
+    Caption := slhelp_Copy;
     OnClick := @PopupCopyClick;
   end;
   fHtml.PopupMenu := fPopUp;

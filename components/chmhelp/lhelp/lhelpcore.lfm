@@ -5,7 +5,7 @@ object HelpForm: THelpForm
   Width = 758
   ActiveControl = Panel1
   Caption = 'LHelp'
-  ClientHeight = 508
+  ClientHeight = 515
   ClientWidth = 758
   Icon.Data = {
     7E04000000000100010010100000010020006804000016000000280000001000
@@ -238,7 +238,7 @@ object HelpForm: THelpForm
   end
   object PageControl: TPageControl
     Left = 0
-    Height = 476
+    Height = 483
     Top = 32
     Width = 758
     Align = alClient
@@ -306,7 +306,7 @@ object HelpForm: THelpForm
   end
   object ImageList1: TImageList
     left = 80
-    top = 80
+    top = 75
     Bitmap = {
       4C690400000010000000100000007001E300B0CE2A000000000000000000F609
       0200E1281B00005959000090AF00329FCCFF75888800003A3A00000E0E00FA11
