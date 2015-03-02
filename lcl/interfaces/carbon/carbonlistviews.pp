@@ -428,6 +428,8 @@ end;
 
 procedure TCarbonListColumn.SetHeaderWidth(AWidth: Integer);
 begin
+  if AWidth < 0 then
+    AWidth := 0;
   OSError(SetDataBrowserTableViewNamedColumnWidth(FOwner.Widget, PropertyID, AWidth),
     Self, 'SetHeaderWidth', 'SetDataBrowserTableViewNamedColumnWidth');
 
