@@ -577,6 +577,7 @@ procedure TEditorMouseOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
     ACombo.Items.Add(dlfMouseSimpleButtonContextMenu);       // mbaContextMenu
     ACombo.Items.Add(dlfMouseSimpleButtonContextMenuDbg);    // mbaContextMenuDebug;
     ACombo.Items.Add(dlfMouseSimpleButtonContextMenuTab);    // mbaContextMenuTab;
+    ACombo.Items.Add(dlfMouseSimpleButtonMultiCaretToggle);  // mbaMultiCaretToggle;
   end;
 
   procedure SetupWheelCombo(ACombo: TComboBox);

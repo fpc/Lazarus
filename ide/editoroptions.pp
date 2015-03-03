@@ -59,7 +59,7 @@ uses
   SynHighlighterPas, SynHighlighterPerl, SynHighlighterPHP, SynHighlighterSQL,
   SynHighlighterPython, SynHighlighterUNIXShellScript, SynHighlighterXML,
   SynHighlighterJScript, SynHighlighterDiff, SynHighlighterBat, SynHighlighterIni,
-  SynHighlighterPo,
+  SynHighlighterPo, SynPluginMultiCaret,
   // codetools
   LinkScanner, CodeToolManager,
   // IDEIntf
@@ -736,6 +736,8 @@ type
     mbaContextMenuDebug,
     mbaContextMenuTab,
 
+    mbaMultiCaretToggle,
+
     // Old values, needed to load old config
     moTCLNone, moTMIgnore,
     moTMPaste,
@@ -743,7 +745,7 @@ type
     moTCLJumpOrBlock
   );
 
-  TMouseOptButtonAction = mbaNone..mbaContextMenuTab;
+  TMouseOptButtonAction = mbaNone..mbaMultiCaretToggle;
 
 const
   MouseOptButtonActionOld: Array [moTCLNone..moTCLJumpOrBlock] of TMouseOptButtonActionOld = (
@@ -913,7 +915,7 @@ type
     property TextAltLeftClick: TMouseOptButtonAction read FTextAltLeftClick write FTextAltLeftClick
              default mbaSelectColumn;
     property TextShiftCtrlLeftClick: TMouseOptButtonAction read FTextShiftCtrlLeftClick write FTextShiftCtrlLeftClick
-             default mbaNone;  // continue selection
+             default mbaMultiCaretToggle;  // continue selection
     property TextShiftAltLeftClick: TMouseOptButtonAction read FTextShiftAltLeftClick write FTextShiftAltLeftClick
              default mbaNone;  // continue selection
     property TextAltCtrlLeftClick: TMouseOptButtonAction read FTextAltCtrlLeftClick write FTextAltCtrlLeftClick
@@ -1312,6 +1314,7 @@ type
     fUndoLimit: Integer;
     fTabWidth:  Integer;
     FBracketHighlightStyle: TSynEditBracketHighlightStyle;
+    FMultiCaretOnColumnSelect: Boolean;
 
     // Display options
     fVisibleRightMargin: Boolean;
@@ -1586,6 +1589,8 @@ type
     property ReverseFoldPopUpOrder: Boolean
         read FReverseFoldPopUpOrder write FReverseFoldPopUpOrder default True;
     property UseTabHistory: Boolean read fUseTabHistory write fUseTabHistory;
+    property MultiCaretOnColumnSelect: Boolean
+      read FMultiCaretOnColumnSelect write FMultiCaretOnColumnSelect default True;
 
     // Highlighter Pas
     property PasExtendedKeywordsMode: Boolean
@@ -3260,7 +3265,7 @@ begin
   FTextAltCtrlLeftClick      := mbaNone;
   FTextShiftLeftClick        := mbaNone;
   FTextShiftAltLeftClick     := mbaNone;
-  FTextShiftCtrlLeftClick    := mbaNone;
+  FTextShiftCtrlLeftClick    := mbaMultiCaretToggle;
   FTextShiftAltCtrlLeftClick := mbaNone;
   // middle
   FTextMiddleClick             := mbaPaste;
@@ -3431,6 +3436,8 @@ procedure TEditorMouseOptions.ResetTextToDefault;
             AddCommand(emcContextMenu, True,       AButton, AClickCount, ADir, AShift, AShiftMask, emcoSelectionCaretMoveOutside, 0, 1);
         mbaContextMenuTab:
             AddCommand(emcContextMenu, True,       AButton, AClickCount, ADir, AShift, AShiftMask, emcoSelectionCaretMoveOutside, 0, 2);
+        mbaMultiCaretToggle:
+            AddCommand(emcPluginMultiCaretToggleCaret, True,       AButton, AClickCount, ADir, AShift, AShiftMask, 0, 0, 0);
       end;
     end;
   end;
@@ -3505,8 +3512,8 @@ begin
   if FTextShiftCtrlLeftClick = mbaNone
   then SelKey := [ssShift]
   else SelKey := [];
-  AddBtnClick(FTextCtrlLeftClick,         mbXLeft,   [SYNEDIT_LINK_MODIFIER], ModKeys, False, SelKey);
-  AddBtnClick(FTextShiftCtrlLeftClick,    mbXLeft,   [ssShift, SYNEDIT_LINK_MODIFIER],               ModKeys, False, SelKey);
+  AddBtnClick(FTextCtrlLeftClick,         mbXLeft,   [SYNEDIT_LINK_MODIFIER],          ModKeys, False, SelKey);
+  AddBtnClick(FTextShiftCtrlLeftClick,    mbXLeft,   [ssShift, SYNEDIT_LINK_MODIFIER], ModKeys, False, SelKey);
 
   if FTextShiftAltLeftClick = mbaNone
   then SelKey := [ssShift]
@@ -4387,6 +4394,7 @@ begin
   FGutterSeparatorIndex := 3;
   fSynEditOptions := SynEditDefaultOptions;
   fSynEditOptions2 := SynEditDefaultOptions2;
+  FMultiCaretOnColumnSelect := True;
 
   // Display options
   fEditorFont := SynDefaultFontName;
@@ -5539,6 +5547,10 @@ begin
       end;
     end;
 
+    {$IFnDEF WithoutSynMultiCaret}
+    if ASynEdit is TIDESynEditor then
+      TIDESynEditor(ASynEdit).MultiCaret.EnableWithColumnSelection := MultiCaretOnColumnSelect;
+    {$ENDIF}
 
     // Display options
     ASynEdit.Gutter.Visible := fVisibleGutter;

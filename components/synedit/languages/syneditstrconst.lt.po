@@ -488,6 +488,10 @@ msgstr "Jokio veiksmo"
 msgid "Quick Paste Selection"
 msgstr "Spartusis atrankos įdėjimas"
 
+#: syneditstrconst.syns_emcpluginmulticarettogglecaret
+msgid "Toggle extra caret"
+msgstr ""
+
 #: syneditstrconst.syns_emcselection_opt
 msgid "Mode,Begin,Continue"
 msgstr "Veiksena,Pradėti,Tęsti"

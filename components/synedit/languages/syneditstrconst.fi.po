@@ -480,6 +480,10 @@ msgstr "Ei toimintoa"
 msgid "Quick Paste Selection"
 msgstr "Pika-liitä valinta"
 
+#: syneditstrconst.syns_emcpluginmulticarettogglecaret
+msgid "Toggle extra caret"
+msgstr ""
+
 #: syneditstrconst.syns_emcselection_opt
 msgid "Mode,Begin,Continue"
 msgstr "Moodi,Ala,Jatka"

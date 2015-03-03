@@ -2836,6 +2836,10 @@ end;
 
 procedure TSynEditScreenCaretPainterInternal.BeginScroll(dx, dy: Integer; const rcScroll,
   rcClip: TRect);
+{$IFDEF SynCaretNoHideInSroll}
+var
+  rs: TIsInRectState;
+{$ENDIF}
 begin
   assert(not((FInPaint or FInScroll)), 'TSynEditScreenCaretPainterInternal.BeginScroll: not((FInPaint or FInScroll))');
   if (FState <> []) then
@@ -2847,7 +2851,11 @@ begin
     inherited SetCaretPosEx(-1,-1);
   end;
   {$ELSE}
-  if ((IsInRect(rcClip) = irPartInside) or (IsInRect(rcScroll) = irPartInside)) and FIsDrawn then begin
+  rs := IsInRect(rcScroll);
+  if not( ((IsInRect(rcClip) = irOutside) and (rs = irOutside)) or
+          ((IsInRect(rcClip, Left+dx, Top+dy, Width, Height) = irInside) and (rs = irInside))
+        )
+  then begin
     HideCaret;
     inherited SetCaretPosEx(-1,-1);
   end;

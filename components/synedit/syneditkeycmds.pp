@@ -277,6 +277,7 @@ const
   ecPluginFirstCompletion = 19000;
   ecPluginFirstSyncro     = 19010;
   ecPluginFirstTemplEdit  = 19030;
+  ecPluginFirstMultiCaret = 19050;
 
   ecPluginFirst = 20000;
 
@@ -1253,6 +1254,7 @@ initialization
 finalization
   ExtraIdentToIntFn := nil;
   ExtraIntToIdentFn := nil;
+  ExtraGetEditorCommandValues := nil;
 
 end.
 

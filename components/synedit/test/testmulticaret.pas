@@ -22,10 +22,13 @@ type
     FMultiCaret: TSynPluginMultiCaretTest;
   public
     procedure ReCreateEdit; reintroduce;
+    procedure ReCreateEdit(ALines: TStringArray; AOpt: TSynEditorOptions2 = [];
+      AOptRemove: TSynEditorOptions2 = []);
     procedure RunCmdSeq(cmds: Array of TSynEditorCommand; chars: array of String);
   published
     procedure CaretList;
     procedure Edit;
+    procedure Delete;
     procedure ReplaceColSel;
     procedure TabKey;
     procedure Paste;
@@ -42,6 +45,14 @@ begin
   SynEdit.BlockIndent := 2;
   SynEdit.BlockTabIndent := 0;
   SynEdit.TabWidth := 4;
+end;
+
+procedure TTestMultiCaret.ReCreateEdit(ALines: TStringArray; AOpt: TSynEditorOptions2;
+  AOptRemove: TSynEditorOptions2);
+begin
+  ReCreateEdit;
+  SynEdit.Options2 := SynEdit.Options2 - AOptRemove + AOpt;
+  SetLines(ALines);
 end;
 
 procedure TTestMultiCaret.RunCmdSeq(cmds: array of TSynEditorCommand; chars: array of String);
@@ -229,6 +240,182 @@ begin
 
 
 
+end;
+
+procedure TTestMultiCaret.Delete;
+  function TestText1: TStringArray;
+  begin
+    SetLength(Result, 8);
+    Result[0] := '1aA';
+    Result[1] := '2bB';
+    Result[2] := '3cC';
+    Result[3] := '4dD';
+    Result[4] := '5eE';
+    Result[5] := '6fF';
+    Result[6] := '7gG';
+    Result[7] := '';
+  end;
+  function TestText1Del: TStringArray;
+  begin
+    SetLength(Result, 8);
+    Result[0] := '1aA';
+    Result[1] := '2B';
+    Result[2] := '3C';
+    Result[3] := '4D';
+    Result[4] := '5E';
+    Result[5] := '6F';
+    Result[6] := '7gG';
+    Result[7] := '';
+  end;
+  function TestText1Del2: TStringArray;
+  begin
+    SetLength(Result, 8);
+    Result[0] := '1aA';
+    Result[1] := 'B';
+    Result[2] := 'C';
+    Result[3] := 'D';
+    Result[4] := 'E';
+    Result[5] := 'F';
+    Result[6] := '7gG';
+    Result[7] := '';
+  end;
+  function TestText1DelExtra: TStringArray;
+  begin
+    SetLength(Result, 8);
+    Result[0] := '1aA';
+    Result[1] := '2B';
+    Result[2] := '3';
+    Result[3] := 'D';
+    Result[4] := '5E';
+    Result[5] := '6F';
+    Result[6] := '7gG';
+    Result[7] := '';
+  end;
+var
+  Opt, OptRemove: TSynEditorOptions2;
+begin
+  PushBaseName('NO eoPersistentBlock, HAS eoOverwriteBlock');
+  Opt := [eoOverwriteBlock];
+  OptRemove := [eoPersistentBlock];
+
+    PushBaseName('ecDeleteLastChar');
+
+      PushBaseName('ecDeleteLastChar - zero width sel');
+      ReCreateEdit(TestText1, Opt, OptRemove);
+      SetCaret(3,2);
+      RunCmdSeq([ecColSelDown, ecColSelDown, ecColSelDown, ecColSelDown], []);
+      RunCmdSeq([ecDeleteLastChar], []);
+      TestIsFullText('', TestText1Del);
+      TestIsCaret('', 2, 6);
+
+      PopPushBaseName('ecDeleteLastChar - ONE width backward sel');
+      ReCreateEdit(TestText1, Opt, OptRemove);
+      SetCaret(3,2);
+      RunCmdSeq([ecColSelDown, ecColSelDown, ecColSelDown, ecColSelDown, ecColSelLeft], []);
+      RunCmdSeq([ecDeleteLastChar], []);
+      TestIsFullText('', TestText1Del);
+      TestIsCaret('', 2, 6);
+
+      PopPushBaseName('ecDeleteLastChar - ONE width sel');
+      ReCreateEdit(TestText1, Opt, OptRemove);
+      SetCaret(2,2);
+      RunCmdSeq([ecColSelDown, ecColSelDown, ecColSelDown, ecColSelDown, ecColSelRight], []);
+      RunCmdSeq([ecDeleteLastChar], []);
+      TestIsFullText('', TestText1Del);
+      TestIsCaret('', 2, 6);
+
+      PopPushBaseName('ecDeleteLastChar - Two width sel');
+      ReCreateEdit(TestText1, Opt, OptRemove);
+      SetCaret(1,2);
+      RunCmdSeq([ecColSelDown, ecColSelDown, ecColSelDown, ecColSelDown, ecColSelRight, ecColSelRight], []);
+      RunCmdSeq([ecDeleteLastChar], []);
+      TestIsFullText('', TestText1Del2);
+      TestIsCaret('', 1, 6);
+
+      PopPushBaseName('ecDeleteLastChar - ONE width sel / extra caret');
+      ReCreateEdit(TestText1, Opt, OptRemove);
+      SetCaret(2,2);
+      RunCmdSeq([ecColSelDown, ecColSelDown, ecColSelDown, ecColSelDown, ecColSelRight], []);
+      FMultiCaret.AddCaretAt(4,3);
+      FMultiCaret.AddCaretAt(2,4);
+      RunCmdSeq([ecDeleteLastChar], []);
+      TestIsFullText('', TestText1DelExtra);
+      TestIsCaret('', 2, 6);
+
+    PopPushBaseName('ecDeleteChar');
+
+      PushBaseName('ecDeleteChar - zero width sel');
+      ReCreateEdit(TestText1, Opt, OptRemove);
+      SetCaret(2,2);
+      RunCmdSeq([ecColSelDown, ecColSelDown, ecColSelDown, ecColSelDown], []);
+      RunCmdSeq([ecDeleteChar], []);
+      TestIsFullText('', TestText1Del);
+      TestIsCaret('', 2, 6);
+
+      PopPushBaseName('ecDeleteChar - ONE width backward sel');
+      ReCreateEdit(TestText1, Opt, OptRemove);
+      SetCaret(3,2);
+      RunCmdSeq([ecColSelDown, ecColSelDown, ecColSelDown, ecColSelDown, ecColSelLeft], []);
+      RunCmdSeq([ecDeleteChar], []);
+      TestIsFullText('', TestText1Del);
+      TestIsCaret('', 2, 6);
+
+      PopPushBaseName('ecDeleteChar - ONE width sel');
+      ReCreateEdit(TestText1, Opt, OptRemove);
+      SetCaret(2,2);
+      RunCmdSeq([ecColSelDown, ecColSelDown, ecColSelDown, ecColSelDown, ecColSelRight], []);
+      RunCmdSeq([ecDeleteChar], []);
+      TestIsFullText('', TestText1Del);
+      TestIsCaret('', 2, 6);
+
+      PopPushBaseName('ecDeleteChar - Two width sel');
+      ReCreateEdit(TestText1, Opt, OptRemove);
+      SetCaret(1,2);
+      RunCmdSeq([ecColSelDown, ecColSelDown, ecColSelDown, ecColSelDown, ecColSelRight, ecColSelRight], []);
+      RunCmdSeq([ecDeleteChar], []);
+      TestIsFullText('', TestText1Del2);
+      TestIsCaret('', 1, 6);
+
+    PopBaseName;
+  PopBaseName;
+
+  PopPushBaseName('NO eoPersistentBlock, NO eoOverwriteBlock');
+  Opt := [];
+  OptRemove := [eoOverwriteBlock, eoPersistentBlock];
+
+    PushBaseName('ecDeleteLastChar');
+      PopPushBaseName('ecDeleteLastChar - Two width sel');
+      ReCreateEdit(TestText1, Opt, OptRemove);
+      SetCaret(1,2);
+      RunCmdSeq([ecColSelDown, ecColSelDown, ecColSelDown, ecColSelDown, ecColSelRight, ecColSelRight], []);
+      RunCmdSeq([ecDeleteLastChar], []);
+      TestIsFullText('', TestText1Del);
+      TestIsCaret('', 2, 6);
+
+    PopPushBaseName('ecDeleteChar');
+      PopPushBaseName('ecDeleteChar - Two width backward sel');
+      ReCreateEdit(TestText1, Opt, OptRemove);
+      SetCaret(4,2);
+      RunCmdSeq([ecColSelDown, ecColSelDown, ecColSelDown, ecColSelDown, ecColSelLeft, ecColSelLeft], []);
+      RunCmdSeq([ecDeleteChar], []);
+      TestIsFullText('', TestText1Del);
+      TestIsCaret('', 2, 6);
+    PopBaseName;
+  PopBaseName;
+
+  PopPushBaseName('NO eoPersistentBlock, NO eoOverwriteBlock');
+  Opt := [eoPersistentBlock];
+  OptRemove := [eoOverwriteBlock];
+
+    PopPushBaseName('ecDeleteLastChar - Two width sel');
+    ReCreateEdit(TestText1, Opt, OptRemove);
+    SetCaret(1,2);
+    RunCmdSeq([ecColSelDown, ecColSelDown, ecColSelDown, ecColSelDown, ecColSelRight, ecColSelRight], []);
+    RunCmdSeq([ecDeleteLastChar], []);
+    TestIsFullText('', TestText1Del);
+    TestIsCaret('', 2, 6);
+
+  PopBaseName;
 end;
 
 procedure TTestMultiCaret.ReplaceColSel;

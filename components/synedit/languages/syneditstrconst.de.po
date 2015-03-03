@@ -490,6 +490,10 @@ msgstr "Keine Aktion"
 msgid "Quick Paste Selection"
 msgstr "Ausgewählten Text einfügen"
 
+#: syneditstrconst.syns_emcpluginmulticarettogglecaret
+msgid "Toggle extra caret"
+msgstr ""
+
 #: syneditstrconst.syns_emcselection_opt
 msgid "Mode,Begin,Continue"
 msgstr "Modus,Beginn,Weiter"

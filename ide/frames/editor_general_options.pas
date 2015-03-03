@@ -34,6 +34,7 @@ type
   { TEditorGeneralOptionsFrame }
 
   TEditorGeneralOptionsFrame = class(TAbstractIDEOptionsEditor)
+    MultiCaretOnColumnSelection: TCheckBox;
     CursorSkipsTabCheckBox: TCheckBox;
     CaretGroupDivider: TDividerBevel;
     BlockGroupDivider: TDividerBevel;
@@ -138,6 +139,7 @@ begin
   CursorSkipsTabCheckBox.Caption := dlgCursorSkipsTab;
   HomeKeyJumpsToNearestStartCheckBox.Caption := dlgHomeKeyJumpsToNearestStart;
   EndKeyJumpsToNearestStartCheckBox.Caption := dlgEndKeyJumpsToNearestStart;
+  MultiCaretOnColumnSelection.Caption := dlgMultiCaretOnColumnSelection;
 
   // Block
   BlockGroupDivider.Caption := dlgBlockGroupOptions;
@@ -171,6 +173,7 @@ begin
     CursorSkipsTabCheckBox.Checked := eoCaretSkipTab in SynEditOptions2;
     HomeKeyJumpsToNearestStartCheckBox.Checked := eoEnhanceHomeKey in SynEditOptions;
     EndKeyJumpsToNearestStartCheckBox.Checked := eoEnhanceEndKey in SynEditOptions2;
+    MultiCaretOnColumnSelection.Checked := MultiCaretOnColumnSelect;
 
     // block
     PersistentBlockCheckBox.Checked := eoPersistentBlock in SynEditOptions2;
@@ -230,6 +233,7 @@ begin
     UpdateOptionFromBool(CursorSkipsTabCheckBox.Checked, eoCaretSkipTab);
     UpdateOptionFromBool(HomeKeyJumpsToNearestStartCheckBox.Checked, eoEnhanceHomeKey);
     UpdateOptionFromBool(EndKeyJumpsToNearestStartCheckBox.Checked, eoEnhanceEndKey);
+    MultiCaretOnColumnSelect := MultiCaretOnColumnSelection.Checked;
 
     // block
     UpdateOptionFromBool(PersistentBlockCheckBox.Checked, eoPersistentBlock);

@@ -1604,6 +1604,7 @@ resourcestring
   dlfMouseSimpleButtonContextMenu      = 'Context Menu';
   dlfMouseSimpleButtonContextMenuDbg   = 'Context Menu (debug)';
   dlfMouseSimpleButtonContextMenuTab   = 'Context Menu (tab)';
+  dlfMouseSimpleButtonMultiCaretToggle = 'Toggle extra Caret';
 
   dlfMouseSimpleWheelNothing           = 'Nothing/Default';
   dlfMouseSimpleWheelSrollDef          = 'Scroll (System speed)';
@@ -1687,6 +1688,7 @@ resourcestring
   dlgCopyWordAtCursorOnCopyNone = 'Copy word on copy none';
   dlgHomeKeyJumpsToNearestStart = 'Home key jumps to nearest start';
   dlgEndKeyJumpsToNearestStart = 'End key jumps to nearest end';
+  dlgMultiCaretOnColumnSelection = 'Enable multi caret for column selection';
   dlgColorLink = '(Edit Color)';
   dlgKeyLink = '(Edit Key)';
   dlgBracketHighlight = 'Bracket highlight';

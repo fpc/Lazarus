@@ -485,6 +485,10 @@ msgstr "Ninguna acción"
 msgid "Quick Paste Selection"
 msgstr "Pegado Rapido de Selección"
 
+#: syneditstrconst.syns_emcpluginmulticarettogglecaret
+msgid "Toggle extra caret"
+msgstr ""
+
 #: syneditstrconst.syns_emcselection_opt
 msgid "Mode,Begin,Continue"
 msgstr ""

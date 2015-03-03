@@ -48,6 +48,7 @@ type
       MousePos: TPoint; var Handled: Boolean);
   private
     FKeyMap: TKeyCommandRelationList;
+    procedure AddMouseCmd(const S: string);
   public
     { public declarations }
     Procedure ResetInputs;
@@ -80,10 +81,20 @@ end;
 
 { MouseaActionDialog }
 
-procedure TMouseaActionDialog.FormCreate(Sender: TObject);
+procedure TMouseaActionDialog.AddMouseCmd(const S: string);
 var
   i: Integer;
-  CName: String;
+  s2: String;
+begin
+  if IdentToSynMouseCmd(S, i) then begin
+    s2 := MouseCommandName(i);
+    if s2 = '' then s2 := s;
+    ActionBox.Items.AddObject(s2, TObject(ptrint(i)));
+  end;
+end;
+
+procedure TMouseaActionDialog.FormCreate(Sender: TObject);
+var
   mb: TSynMouseButton;
   cc: TSynMAClickCount;
 begin
@@ -109,11 +120,7 @@ begin
   CapturePanel.ControlStyle := ControlStyle + [csTripleClicks, csQuadClicks];
   CaretCheck.Caption := dlgMouseOptCaretMove;
   ActionBox.Clear;
-  for i:= 0 to emcMax do begin
-    CName := MouseCommandName(i);
-    if CName <> '' then
-      ActionBox.Items.AddObject(CName, TObject(ptrint(i)));
-  end;
+  GetEditorMouseCommandValues(@AddMouseCmd);
   ButtonBox.Clear;
   for mb := low(TSynMouseButton) to high(TSynMouseButton) do
     ButtonBox.Items.add(ButtonName[mb]);

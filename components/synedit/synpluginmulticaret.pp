@@ -14,12 +14,18 @@ interface
 uses
   Classes, SysUtils, SynEdit, SynEditPointClasses, SynEditKeyCmds, SynEditTypes,
   LazSynTextArea, SynEditMiscProcs, LazSynEditText, SynEditMiscClasses, SynEditMouseCmds,
+  SynEditStrConst,
   {$IfDef SynMultiCaretDebug} LazLoggerBase, {$ELSE} LazLoggerDummy, {$ENDIF}
   LCLType, Controls, Graphics, Clipbrd;
 
 const
 
   emcPluginMultiCaretToggleCaret = emcPluginFirstMultiCaret;
+
+  //ecPluginMultiCaretSetCaret    = ecPluginFirstMultiCaret + 0;
+  //ecPluginMultiCaretUnsetCaret  = ecPluginFirstMultiCaret + 1;
+  //ecPluginMultiCaretToggleCaret = ecPluginFirstMultiCaret + 2;
+  //ecPluginMultiCaretClearAll    = ecPluginFirstMultiCaret + 3;
 
 type
 
@@ -177,18 +183,30 @@ type
     procedure ResetDefaults; override;
   end;
 
-  { TSynPluginMultiCaret }
+  { TSynPluginMultiCaretKeyStrokes }
+
+  TSynPluginMultiCaretKeyStrokes = class(TSynEditKeyStrokes)
+  public
+    procedure ResetDefaults; override;
+  end;
+
+  { TSynCustomPluginMultiCaret }
 
   TSynPluginMultiCaretStateFlag = (
     sfProcessingCmd, sfProcessingMain,
-    sfExtendingColumnSel
+    sfExtendingColumnSel, sfSkipCaretsAtSelection
   );
   TSynPluginMultiCaretStateFlags = set of TSynPluginMultiCaretStateFlag;
 
-  TSynPluginMultiCaret = class(TSynPluginMultiCaretBase)
+  TSynCustomPluginMultiCaret = class(TSynPluginMultiCaretBase)
   private
+    FEnableWithColumnSelection: Boolean;
     FStateFlags: TSynPluginMultiCaretStateFlags;
     FMouseActions: TSynPluginMultiCaretMouseActions;
+    FSelY1, FSElY2, FSelX: Integer;
+
+    procedure RemoveCaretsInSelection;
+    procedure SetSkipCaretAtSel;
   protected
     procedure DoEditorRemoving(AValue: TCustomSynEdit); override;
     procedure DoEditorAdded(AValue: TCustomSynEdit); override;
@@ -210,7 +228,15 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    function AddCaretAt(X, Y: Integer): Integer;
     property MouseActions: TSynPluginMultiCaretMouseActions read FMouseActions;
+    property EnableWithColumnSelection: Boolean read FEnableWithColumnSelection write FEnableWithColumnSelection default True;
+  end;
+
+  TSynPluginMultiCaret = class(TSynCustomPluginMultiCaret)
+  published
+    property MouseActions;
+    property EnableWithColumnSelection;
   end;
 
 implementation
@@ -222,6 +248,48 @@ var
 
 const
   EMPTY_LIST_LEN = 8;
+
+  SynMouseCommandNames: array [0..0] of TIdentMapEntry = (
+    (Value: emcPluginMultiCaretToggleCaret; Name: 'emcPluginMultiCaretToggleCaret')
+  );
+
+function SynMouseCmdToIdent(SynMouseCmd: Longint; var Ident: String): Boolean;
+begin
+  Ident := '';
+  Result := IntToIdent(SynMouseCmd, Ident, SynMouseCommandNames);
+end;
+
+function IdentToSynMouseCmd(const Ident: string; var SynMouseCmd: Longint): Boolean;
+begin
+  SynMouseCmd := 0;
+  Result := IdentToInt(Ident, SynMouseCmd, SynMouseCommandNames);
+end;
+
+procedure GetEditorMouseCommandValues(Proc: TGetStrProc);
+var
+  i: Integer;
+begin
+  for i := Low(SynMouseCommandNames) to High(SynMouseCommandNames) do
+    Proc(SynMouseCommandNames[I].Name);
+end;
+
+function MouseCommandName(emc: TSynEditorMouseCommand): String;
+begin
+  case emc of
+    emcPluginMultiCaretToggleCaret:   Result := SYNS_emcPluginMultiCaretToggleCaret;
+    else
+      Result := '';
+  end;
+end;
+
+function MouseCommandConfigName(emc: TSynEditorMouseCommand): String;
+begin
+  case emc of
+    emcPluginMultiCaretToggleCaret:   Result := '';
+    else
+      Result := '';
+  end;
+end;
 
 { TSynPluginMultiCaretVisual }
 
@@ -1135,9 +1203,60 @@ begin
   AddCommand(emcPluginMultiCaretToggleCaret, False, mbXMiddle, ccAny, cdDown, [ssShift], [ssShift,ssCtrl,ssAlt]);
 end;
 
-{ TSynPluginMultiCaret }
+{ TSynPluginMultiCaretKeyStrokes }
 
-procedure TSynPluginMultiCaret.DoEditorRemoving(AValue: TCustomSynEdit);
+procedure TSynPluginMultiCaretKeyStrokes.ResetDefaults;
+begin
+  inherited ResetDefaults;
+end;
+
+{ TSynCustomPluginMultiCaret }
+
+procedure TSynCustomPluginMultiCaret.RemoveCaretsInSelection;
+var
+  i, x, y: Integer;
+  bb, be: TPoint;
+  sm: TSynSelectionMode;
+begin
+  bb := SelectionObj.FirstLineBytePos;
+  be := SelectionObj.LastLineBytePos;
+  sm := SelectionObj.ActiveSelectionMode;
+  if sm = smLine then begin
+    bb.x := 0;
+    be.x := MaxInt;
+  end;
+  if (sm = smColumn) and (bb.x > be.x) then begin
+    if bb.x = be.x then
+      exit;
+    i    := bb.x;
+    bb.x := be.x;
+    be.x := i;
+  end;
+
+  i := CaretsCount;
+  while i > 0 do begin
+    dec(i);
+    x := Carets.Caret[i].x;
+    y := Carets.Caret[i].y;
+    if (y < bb.y) or
+       (y > be.y) or
+       (  ((y = bb.y) or (sm = smColumn)) and (x <= bb.x)  ) or
+       (  ((y = be.y) or (sm = smColumn)) and (x >= be.x)  )
+    then
+      Continue;
+    Carets.RemoveCaret(i);
+  end;
+end;
+
+procedure TSynCustomPluginMultiCaret.SetSkipCaretAtSel;
+begin
+  Include(FStateFlags, sfSkipCaretsAtSelection);
+  FSelY1 := SelectionObj.FirstLineBytePos.y;
+  FSElY2 := SelectionObj.LastLineBytePos.y;
+  FSelX  := SelectionObj.FirstLineBytePos.x;
+end;
+
+procedure TSynCustomPluginMultiCaret.DoEditorRemoving(AValue: TCustomSynEdit);
 begin
   if Editor <> nil then begin
     CaretObj.RemoveChangeHandler(@DoCaretChanged);
@@ -1150,7 +1269,7 @@ begin
   inherited DoEditorRemoving(AValue);
 end;
 
-procedure TSynPluginMultiCaret.DoEditorAdded(AValue: TCustomSynEdit);
+procedure TSynCustomPluginMultiCaret.DoEditorAdded(AValue: TCustomSynEdit);
 begin
   inherited DoEditorAdded(AValue);
   if Editor <> nil then begin
@@ -1163,7 +1282,7 @@ begin
   end;
 end;
 
-procedure TSynPluginMultiCaret.DoAfterDecPaintLock(Sender: TObject);
+procedure TSynCustomPluginMultiCaret.DoAfterDecPaintLock(Sender: TObject);
 begin
   if FPaintLock > 1 then begin
     inherited DoAfterDecPaintLock(Sender);
@@ -1175,14 +1294,14 @@ begin
   FStateFlags := FStateFlags - [sfProcessingCmd, sfExtendingColumnSel];
 end;
 
-procedure TSynPluginMultiCaret.DoCaretChanged(Sender: TObject);
+procedure TSynCustomPluginMultiCaret.DoCaretChanged(Sender: TObject);
 begin
   if (FStateFlags * [sfProcessingCmd, sfExtendingColumnSel] <> []) then
     exit;
   ClearCarets;
 end;
 
-procedure TSynPluginMultiCaret.DoSelectionChanged(Sender: TObject);
+procedure TSynCustomPluginMultiCaret.DoSelectionChanged(Sender: TObject);
 var
   i, x, y1, y2, y3: Integer;
   c: TPoint;
@@ -1190,7 +1309,7 @@ begin
   if (sfProcessingCmd in FStateFlags) then exit;
   y1 := Editor.BlockBegin.y;
   y2 := Editor.BlockEnd.y;
-  If not ((y1 <> y2) and (Editor.SelectionMode = smColumn)) then begin
+  If not ((y1 <> y2) and (Editor.SelectionMode = smColumn) and EnableWithColumnSelection) then begin
     ClearCarets;
     exit;
   end;
@@ -1214,31 +1333,34 @@ begin
 
 end;
 
-procedure TSynPluginMultiCaret.DoBeforeSetSelText(Sender: TObject; AMode: TSynSelectionMode;
+procedure TSynCustomPluginMultiCaret.DoBeforeSetSelText(Sender: TObject; AMode: TSynSelectionMode;
   ANewText: PChar);
 begin
   SelectionObj.RemoveBeforeSetSelTextHandler(@DoBeforeSetSelText);
 
+  RemoveCaretsInSelection;
   SelectionObj.SelText := '';
   if Carets.MainCaretIndex >= 0 then begin
     Editor.LogicalCaretXY := Carets.Caret[Carets.MainCaretIndex];
+    FSelX := Carets.Caret[Carets.MainCaretIndex].x;
   end
   else
-    assert(False, 'TSynPluginMultiCaret.ProcessSynCommand: Maincaret index not found');
+    assert(False, 'TSynCustomPluginMultiCaret.ProcessSynCommand: Maincaret index not found');
 end;
 
-procedure TSynPluginMultiCaret.ProcessSynCommand(Sender: TObject; AfterProcessing: boolean;
+procedure TSynCustomPluginMultiCaret.ProcessSynCommand(Sender: TObject; AfterProcessing: boolean;
   var Handled: boolean; var Command: TSynEditorCommand; var AChar: TUTF8Char; Data: pointer;
   HandlerData: pointer);
 
   procedure ExecCommandRepeated;
   var
-    c, i: Integer;
+    c, i, y: Integer;
+    p: TPoint;
   begin
     Handled := True;
     Editor.BeginUpdate(True);
     try
-      c := AddCaret(Editor.LogicalCaretXY.x, Editor.CaretY, [cfMainCaret, cfNoneVisual, cfAddDuplicate]);
+      c := AddCaret(Editor.LogicalCaretXY.x, Editor.CaretY, [cfMainCaret, cfNoneVisual {, cfAddDuplicate}]);
 
       // Execute Command at current caret pos
       Include(FStateFlags, sfProcessingMain);
@@ -1251,9 +1373,20 @@ procedure TSynPluginMultiCaret.ProcessSynCommand(Sender: TObject; AfterProcessin
 
       // Repeat command
       CaretObj.IncForcePastEOL;
-      for i := 0 to CaretsCount - 1 do begin
+      i := CaretsCount;
+      y := FSElY2;
+      while i > 0 do begin
+        dec(i);
         if i = c then continue;
-        Editor.LogicalCaretXY := Carets.Caret[i];
+        p := Carets.Caret[i];
+        if y > p.y then y := p.y;
+        if (sfSkipCaretsAtSelection in FStateFlags) and (y >= FSElY1) and
+           (y = p.y) and (FSelX = p.x)
+        then begin
+          dec(y);
+          continue;
+        end;
+        Editor.LogicalCaretXY := p;
         Editor.CommandProcessor(Command, AChar, nil, [hcfInit, hcfFinish]);
       end;
       CaretObj.DecForcePastEOL;
@@ -1264,7 +1397,7 @@ procedure TSynPluginMultiCaret.ProcessSynCommand(Sender: TObject; AfterProcessin
         RemoveCaret(Carets.MainCaretIndex);
       end
       else
-        assert(False, 'TSynPluginMultiCaret.ProcessSynCommand: Maincaret index not found');
+        assert(False, 'TSynCustomPluginMultiCaret.ProcessSynCommand: Maincaret index not found');
     finally
       Editor.EndUpdate;
     end;
@@ -1298,6 +1431,11 @@ begin
     ecLineBreak..ecChar:
       begin
         Include(FStateFlags, sfProcessingCmd);
+        if ((Command = ecDeleteChar) or (Command = ecDeleteLastChar)) and
+           Editor.SelAvail and (SelectionObj.ActiveSelectionMode = smColumn) and
+           not(eoPersistentBlock in Editor.Options2)
+        then
+          SetSkipCaretAtSel;
         if Editor.ReadOnly then exit;
         ExecCommandRepeated;
       end;
@@ -1341,7 +1479,7 @@ begin
               RemoveCaret(Carets.MainCaretIndex);
             end
             else
-              assert(False, 'TSynPluginMultiCaret.ProcessSynCommand: Maincaret index not found');
+              assert(False, 'TSynCustomPluginMultiCaret.ProcessSynCommand: Maincaret index not found');
             ExecCommandRepeated;
           finally
             Editor.EndUpdate;
@@ -1370,13 +1508,13 @@ begin
 
 end;
 
-function TSynPluginMultiCaret.MaybeHandleMouseAction(var AnInfo: TSynEditMouseActionInfo;
+function TSynCustomPluginMultiCaret.MaybeHandleMouseAction(var AnInfo: TSynEditMouseActionInfo;
   HandleActionProc: TSynEditMouseActionHandler): Boolean;
 begin
   Result := HandleActionProc(FMouseActions, AnInfo);
 end;
 
-function TSynPluginMultiCaret.DoHandleMouseAction(AnAction: TSynEditMouseAction;
+function TSynCustomPluginMultiCaret.DoHandleMouseAction(AnAction: TSynEditMouseAction;
   var AnInfo: TSynEditMouseActionInfo): Boolean;
 var
   i: Integer;
@@ -1388,32 +1526,43 @@ begin
     if i >= 0 then
       RemoveCaret(i)
     else
+    if (AnInfo.NewCaret.BytePos <> CaretObj.BytePos) or (AnInfo.NewCaret.LinePos <> CaretObj.LinePos) then
       AddCaret(AnInfo.NewCaret.BytePos, AnInfo.NewCaret.LinePos);
   end;
 end;
 
-function TSynPluginMultiCaret.CreateVisual: TSynPluginMultiCaretVisual;
+function TSynCustomPluginMultiCaret.CreateVisual: TSynPluginMultiCaretVisual;
 begin
   Result := inherited CreateVisual;
   if FInPaint then
     Result.BeginPaint(FPaintClip);
 end;
 
-constructor TSynPluginMultiCaret.Create(AOwner: TComponent);
+constructor TSynCustomPluginMultiCaret.Create(AOwner: TComponent);
 begin
   FMouseActions := TSynPluginMultiCaretMouseActions.Create(Self);
   FMouseActions.ResetDefaults;
+  FEnableWithColumnSelection := True;
   inherited Create(AOwner);
 end;
 
-destructor TSynPluginMultiCaret.Destroy;
+destructor TSynCustomPluginMultiCaret.Destroy;
 begin
   inherited Destroy;
   FreeAndNil(FMouseActions);
 end;
 
-{$IfDef SynMultiCaretDebug}
+function TSynCustomPluginMultiCaret.AddCaretAt(X, Y: Integer): Integer;
+begin
+  AddCaret(x, y);
+end;
+
 initialization
+  RegisterMouseCmdIdentProcs(@IdentToSynMouseCmd, @SynMouseCmdToIdent);
+  RegisterExtraGetEditorMouseCommandValues(@GetEditorMouseCommandValues);
+  RegisterMouseCmdNameAndOptProcs(@MouseCommandName, @MouseCommandConfigName);
+
+{$IfDef SynMultiCaretDebug}
   SynMCaretDebug := DebugLogger.FindOrRegisterLogGroup('SynMultiCaretDebug' {$IFDEF SynMultiCaretDebug} , True {$ENDIF} );
 {$ENDIF}
 end.

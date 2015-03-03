@@ -488,6 +488,10 @@ msgstr "Без Дії"
 msgid "Quick Paste Selection"
 msgstr "Швидкий Вибір Вставки"
 
+#: syneditstrconst.syns_emcpluginmulticarettogglecaret
+msgid "Toggle extra caret"
+msgstr ""
+
 #: syneditstrconst.syns_emcselection_opt
 msgid "Mode,Begin,Continue"
 msgstr "Режим,Почати,Продовжити"

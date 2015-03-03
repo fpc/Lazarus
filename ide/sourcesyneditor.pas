@@ -56,7 +56,7 @@ uses
   SynEditTextBuffer, SynEditFoldedView, SynTextDrawer, SynEditTextBase, LazSynEditText,
   SynPluginTemplateEdit, SynPluginSyncroEdit, LazSynTextArea, SynEditHighlighter,
   SynEditHighlighterFoldBase, SynHighlighterPas, SynEditMarkupHighAll, SynEditKeyCmds,
-  SynEditMarkupIfDef, SynEditMiscProcs, SynPluginMultiCaret,
+  SynEditMarkupIfDef, SynEditMiscProcs, SynPluginMultiCaret, SynEditPointClasses,
   etSrcEditMarks, LazarusIDEStrConsts;
 
 type
@@ -1610,8 +1610,9 @@ begin
   FUserWordsList := TFPList.Create;
   FTemplateEdit:=TSynPluginTemplateEdit.Create(Self);
   FSyncroEdit := TSynPluginSyncroEdit.Create(Self);
-  {$IFDEF WithSynMultiCaret}
+  {$IFnDEF WithoutSynMultiCaret}
   FMultiCaret := TSynPluginMultiCaret.Create(Self);
+  FMultiCaret.MouseActions.Clear; // will be added to SynEdit
   FMultiCaret.SetCaretTypeSize(ctVerticalLine, 2, 1024, -1, 0, [ccsRelativeHeight]);
   FMultiCaret.SetCaretTypeSize(ctBlock, 1024, 1024, 0, 0, [ccsRelativeWidth, ccsRelativeHeight]);
   FMultiCaret.Color := $606060;

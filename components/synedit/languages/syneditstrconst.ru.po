@@ -486,6 +486,10 @@ msgstr "Нет действия"
 msgid "Quick Paste Selection"
 msgstr "Быстрая вставка выделенного"
 
+#: syneditstrconst.syns_emcpluginmulticarettogglecaret
+msgid "Toggle extra caret"
+msgstr ""
+
 #: syneditstrconst.syns_emcselection_opt
 msgid "Mode,Begin,Continue"
 msgstr "Режим,Начать,Продолжить"
