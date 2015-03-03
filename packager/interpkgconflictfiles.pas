@@ -45,13 +45,6 @@
       unit_u_recompile_obj_older_than_asm=10033_U_Recompiling unit, obj is older than asm
       unit_w_cant_compile_unit_with_changed_incfile=10040_W_Can't recompile unit $1, but found modifed include files
       unit_u_source_modified=10041_U_File $1 is newer than the one used for creating PPU file $2
-    - test orphaned ppu, 2 ppu, 1 src
-    - test orphaned ppu, 2 ppu, 0 src
-    - test orphaned ppu, 1 ppu, 1 src (other pkg)
-    - test duplicate src, 0 ppu, 2 src
-    - test duplicate src, 1 ppu, 2 src
-    - test duplicate src, 2 ppu, 2 src
-    - test duplicate inc
 }
 unit InterPkgConflictFiles;
 
@@ -143,6 +136,7 @@ type
 function CheckInterPkgFiles(IDEObject: TObject;
   PkgList: TFPList; out FilesChanged: boolean
   ): boolean; // returns false if user cancelled
+function FilenameIsCompiledSource(aFilename: string): boolean;
 
 implementation
 
@@ -180,31 +174,41 @@ function TPGIPAmbiguousFileGroup.Add(PPUorSrc, CounterPart: TPGInterPkgFile
 begin
   if (PPUorSrc=nil) then
     RaiseException('');
+  if (CounterPart<>nil) and (CounterPart.OwnerInfo<>PPUorSrc.OwnerInfo) then
+    RaiseException('');
   Result:=length(CompiledFiles);
   SetLength(CompiledFiles,Result+1);
   SetLength(Sources,Result+1);
-  if FilenameIsPascalUnit(PPUorSrc.ShortFilename) then
+  if FilenameIsCompiledSource(PPUorSrc.ShortFilename) then
   begin
-    Sources[Result]:=PPUorSrc;
-    if (CounterPart=nil) or FilenameIsPascalUnit(CounterPart.ShortFilename) then
-      CompiledFiles[Result]:=nil
-    else
-      CompiledFiles[Result]:=CounterPart;
-  end else begin
     CompiledFiles[Result]:=PPUorSrc;
     if (CounterPart<>nil) and FilenameIsPascalUnit(CounterPart.ShortFilename) then
       Sources[Result]:=CounterPart
     else
       Sources[Result]:=nil;
+  end else begin
+    Sources[Result]:=PPUorSrc;
+    if (CounterPart<>nil) and FilenameIsCompiledSource(CounterPart.ShortFilename) then
+      CompiledFiles[Result]:=CounterPart
+    else
+      CompiledFiles[Result]:=nil;
   end;
 end;
 
 function TPGIPAmbiguousFileGroup.IndexOfOwner(OwnerInfo: TPGInterPkgOwnerInfo
   ): integer;
 begin
-  Result:=length(CompiledFiles)-1;
-  while (Result>=0) and (CompiledFiles[Result].OwnerInfo<>OwnerInfo) do
+  Result:=length(Sources)-1;
+  while (Result>=0) do
+  begin
+    if (Sources[Result]<>nil) then
+    begin
+      if (Sources[Result].OwnerInfo=OwnerInfo) then exit;
+    end else begin
+      if (CompiledFiles[Result].OwnerInfo=OwnerInfo) then exit;
+    end;
     dec(Result);
+  end;
 end;
 
 procedure TPGIPAmbiguousFileGroup.Switch(Index1, Index2: integer);
@@ -276,6 +280,7 @@ procedure TPGIPConflictsDialog.DeleteSelectedFilesButtonClick(Sender: TObject);
     if DeleteFileInteractive(aFilename)<>mrOk then exit(false);
     if FilenameIsPascalUnit(aFilename) then
     begin
+      // unit source -> delete compiled files and resources
       DeleteFileUTF8(ChangeFileExt(aFilename,'.ppu'));
       DeleteFileUTF8(ChangeFileExt(aFilename,'.o'));
       DeleteFileUTF8(ChangeFileExt(aFilename,'.rst'));
@@ -283,8 +288,8 @@ procedure TPGIPConflictsDialog.DeleteSelectedFilesButtonClick(Sender: TObject);
       DeleteFileUTF8(ChangeFileExt(aFilename,'.lfm'));
       DeleteFileUTF8(ChangeFileExt(aFilename,'.dfm'));
       DeleteFileUTF8(ChangeFileExt(aFilename,'.xfm'));
-    end else if (CompareFileExt(aFilename,'ppu')=0)
-    or (CompareFileExt(aFilename,'o')=0) then begin
+    end else if FilenameIsCompiledSource(aFilename) then begin
+      // compiled file -> delete compiled files. Keep sources.
       DeleteFileUTF8(ChangeFileExt(aFilename,'.ppu'));
       DeleteFileUTF8(ChangeFileExt(aFilename,'.o'));
       DeleteFileUTF8(ChangeFileExt(aFilename,'.rst'));
@@ -641,10 +646,10 @@ var
         Ext:=LowerCase(ExtractFileExt(aFilename));
         AnUnitName:='';
         case Ext of
-        '.ppu','.o','.pas','.pp','.p':
+        '.ppu','.o','.rst','.rsj','.pas','.pp','.p':
           if not IsIncDir then
           begin
-            AnUnitName:=ExtractFilename(aFilename);
+            AnUnitName:=ExtractFileNameOnly(aFilename);
             if not IsDottedIdentifier(AnUnitName) then continue;
           end;
         '.inc', '.lfm', '.dfm': ;
@@ -706,7 +711,8 @@ var
       ONode:=Node;
       Node:=Node.Successor;
       OFile:=TPGInterPkgFile(ONode.Data);
-      if CompareFileExt(OFile.ShortFilename,'o')<>0 then continue;
+      if not FilenameIsCompiledSource(OFile.ShortFilename) then continue;
+      if CompareFileExt(OFile.ShortFilename,'.ppu',false)=0 then continue;
       // search corresponding .ppu
       PPUFileName:=ChangeFileExt(OFile.FullFilename,'.ppu');
       SearchFile:=TPGInterPkgFile.Create(PPUFileName,'',nil);
@@ -840,6 +846,7 @@ var
         FirstNodeSameUnitname:=CurNode;
       CurNode:=CurNode.Successor;
       if CurUnit.OwnerInfo.HasOptionUr then continue;
+
       // CurUnit is an unit without -Ur
       // => check units with same name
       FileGroup:=nil;
@@ -888,7 +895,10 @@ var
             Msg+=' in "'+CurUnit.OwnerInfo.Name+'"';
             Msg+=', orphaned ppu "'+CurUnit.FullFilename+'"';
           end;
-          IDEMessagesWindow.AddCustomMessage(mluWarning,Msg);
+          if IDEMessagesWindow<>nil then
+            IDEMessagesWindow.AddCustomMessage(mluWarning,Msg)
+          else
+            debugln('Warning: ',Msg);
         end;
       end;
 
@@ -951,7 +961,10 @@ var
           Msg:='Duplicate file "'+CurFile.AnUnitName+'"';
           Msg+=' in "'+CurFile.OwnerInfo.Name+'"';
           Msg+=', path="'+CurFile.FullFilename+'"';
-          IDEMessagesWindow.AddCustomMessage(mluWarning,Msg);
+          if IDEMessagesWindow<>nil then
+            IDEMessagesWindow.AddCustomMessage(mluWarning,Msg)
+          else
+            debugln('Warning: ',Msg);
         end;
       end;
 
@@ -1020,6 +1033,14 @@ begin
     FullFiles.Free;
     OwnerInfos.Free;
   end;
+end;
+
+function FilenameIsCompiledSource(aFilename: string): boolean;
+var
+  Ext: String;
+begin
+  Ext:=lowercase(ExtractFileExt(aFilename));
+  Result:=(Ext='.ppu') or (Ext='.o') or (Ext='.rst') or (Ext='.rsj');
 end;
 
 end.
