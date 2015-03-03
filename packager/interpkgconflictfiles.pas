@@ -25,26 +25,33 @@
     Check source files and compiled files for name conflicts between packages.
 
   ToDo:
-    - project compiler option verbosity: check duplicate files
+    - project compiler option verbosity: dialog on duplicate files
     - save date ignore
     - use date ignore
     - clear ignore on
       - clean build
       - error cant find include file
-    unit_f_cant_find_ppu=10022_F_Can't find unit $1 used by $2
-    unit_u_ppu_invalid_header=10007_U_PPU Invalid Header (no PPU at the begin)
-    unit_f_cant_compile_unit=10021_F_Can't compile unit $1, no sources available
-    unit_f_cant_find_ppu=10022_F_Can't find unit $1 used by $2
-    unit_w_unit_name_error=10023_W_Unit $1 was not found but $2 exists
-    unit_f_unit_name_error=10024_F_Unit $1 searched but $2 found
-    unit_u_recompile_crc_change=10028_U_Recompiling $1, checksum changed for $2
-    unit_u_recompile_source_found_alone=10029_U_Recompiling $1, source found only
-    unit_u_recompile_staticlib_is_older=10030_U_Recompiling unit, static lib is older than ppufile
-    unit_u_recompile_sharedlib_is_older=10031_U_Recompiling unit, shared lib is older than ppufile
-    unit_u_recompile_obj_and_asm_older=10032_U_Recompiling unit, obj and asm are older than ppufile
-    unit_u_recompile_obj_older_than_asm=10033_U_Recompiling unit, obj is older than asm
-    unit_w_cant_compile_unit_with_changed_incfile=10040_W_Can't recompile unit $1, but found modifed include files
-    unit_u_source_modified=10041_U_File $1 is newer than the one used for creating PPU file $2
+      unit_f_cant_find_ppu=10022_F_Can't find unit $1 used by $2
+      unit_u_ppu_invalid_header=10007_U_PPU Invalid Header (no PPU at the begin)
+      unit_f_cant_compile_unit=10021_F_Can't compile unit $1, no sources available
+      unit_f_cant_find_ppu=10022_F_Can't find unit $1 used by $2
+      unit_w_unit_name_error=10023_W_Unit $1 was not found but $2 exists
+      unit_f_unit_name_error=10024_F_Unit $1 searched but $2 found
+      unit_u_recompile_crc_change=10028_U_Recompiling $1, checksum changed for $2
+      unit_u_recompile_source_found_alone=10029_U_Recompiling $1, source found only
+      unit_u_recompile_staticlib_is_older=10030_U_Recompiling unit, static lib is older than ppufile
+      unit_u_recompile_sharedlib_is_older=10031_U_Recompiling unit, shared lib is older than ppufile
+      unit_u_recompile_obj_and_asm_older=10032_U_Recompiling unit, obj and asm are older than ppufile
+      unit_u_recompile_obj_older_than_asm=10033_U_Recompiling unit, obj is older than asm
+      unit_w_cant_compile_unit_with_changed_incfile=10040_W_Can't recompile unit $1, but found modifed include files
+      unit_u_source_modified=10041_U_File $1 is newer than the one used for creating PPU file $2
+    - test orphaned ppu, 2 ppu, 1 src
+    - test orphaned ppu, 2 ppu, 0 src
+    - test orphaned ppu, 1 ppu, 1 src (other pkg)
+    - test duplicate src, 0 ppu, 2 src
+    - test duplicate src, 1 ppu, 2 src
+    - test duplicate src, 2 ppu, 2 src
+    - test duplicate inc
 }
 unit InterPkgConflictFiles;
 
@@ -58,6 +65,7 @@ uses
   LazFileUtils, AvgLvlTree, BasicCodeTools, DefineTemplates, CodeToolManager,
   // IDEIntf
   ProjectIntf, CompOptsIntf, IDEWindowIntf, LazIDEIntf, IDEImagesIntf,
+  IDEMsgIntf, IDEExternToolIntf,
   // IDE
   LazarusIDEStrConsts, CompilerOptions, EnvironmentOpts, IDEProcs, DialogProcs,
   TransferMacros, LazConf, IDECmdLine, PackageDefs, PackageSystem, InputHistory;
@@ -85,26 +93,23 @@ type
     OwnerInfo: TPGInterPkgOwnerInfo;
     constructor Create(TheFullFilename, TheUnitName: string; Owner: TPGInterPkgOwnerInfo);
   end;
+  TPGInterPkgFileArray = array of TPGInterPkgFile;
 
-  { TPGIPAmbiguousFile }
+  { TPGIPAmbiguousFileGroup }
 
-  TPGIPAmbiguousFile = class
+  TPGIPAmbiguousFileGroup = class
   public
-    Filename: string;
-    OwnerInfo: TPGInterPkgOwnerInfo;
-    ConflictFilename: string;
-    ConflictOwner: TPGInterPkgOwnerInfo;
-    procedure Switch; virtual;
+    CompiledFiles: TPGInterPkgFileArray;
+    Sources: TPGInterPkgFileArray;
+    function Add(PPUorSrc, CounterPart: TPGInterPkgFile): integer;
+    function IndexOfOwner(OwnerInfo: TPGInterPkgOwnerInfo): integer;
+    procedure Switch(Index1, Index2: integer);
   end;
 
-  { TPGIPAmbiguousCompiledFile }
-
-  TPGIPAmbiguousCompiledFile = class(TPGIPAmbiguousFile)
-  public
-    SrcFilename: string; // the corresponding .pas/.pp file, if it exists
-    ConflictSrcFilename: string; // the corresponding .pas/.pp file, if it exists
-    procedure Switch; override;
-  end;
+  TPGIPCategory = (
+    pgipOrphanedCompiled,
+    pgipDuplicateSource
+    );
 
   { TPGIPConflictsDialog }
 
@@ -126,14 +131,13 @@ type
     DeleteSelectedFilesButton: TButton;
     FImgIndexChecked: integer;
     FImgIndexUnchecked: integer;
+    FCategoryNodes: array[TPGIPCategory] of TTreeNode;
     procedure UpdateButtons;
     procedure IgnoreConflicts;
-    procedure IgnoreConflict(AmbFile: TPGIPAmbiguousFile);
   public
-    SrcFiles: TObjectList; // list of TPGIPAmbiguousFile
-    CompiledFiles: TObjectList; // list of TPGIPAmbiguousCompiledFile
+    FileGroups: TObjectList; // list of TPGIPAmbiguousFileGroup
     FilesChanged: boolean;
-    procedure Init(TheSrcFiles, TheCompiledFiles: TObjectList);
+    procedure Init(Groups: TObjectList);
   end;
 
 function CheckInterPkgFiles(IDEObject: TObject;
@@ -165,28 +169,50 @@ var
   F1: TPGInterPkgFile absolute File1;
   F2: TPGInterPkgFile absolute File2;
 begin
-  Result:=CompareFilenames(F1.ShortFilename,F2.ShortFilename);
+  // compare case insensitive to find cross platform duplicates
+  Result:=CompareFilenamesIgnoreCase(F1.ShortFilename,F2.ShortFilename);
 end;
 
-{ TPGIPAmbiguousCompiledFile }
+{ TPGIPAmbiguousFileGroup }
 
-procedure TPGIPAmbiguousCompiledFile.Switch;
-var
-  s: String;
+function TPGIPAmbiguousFileGroup.Add(PPUorSrc, CounterPart: TPGInterPkgFile
+  ): integer;
 begin
-  inherited Switch;
-  s:=SrcFilename; SrcFilename:=ConflictSrcFilename; ConflictSrcFilename:=s;
+  if (PPUorSrc=nil) then
+    RaiseException('');
+  Result:=length(CompiledFiles);
+  SetLength(CompiledFiles,Result+1);
+  SetLength(Sources,Result+1);
+  if FilenameIsPascalUnit(PPUorSrc.ShortFilename) then
+  begin
+    Sources[Result]:=PPUorSrc;
+    if (CounterPart=nil) or FilenameIsPascalUnit(CounterPart.ShortFilename) then
+      CompiledFiles[Result]:=nil
+    else
+      CompiledFiles[Result]:=CounterPart;
+  end else begin
+    CompiledFiles[Result]:=PPUorSrc;
+    if (CounterPart<>nil) and FilenameIsPascalUnit(CounterPart.ShortFilename) then
+      Sources[Result]:=CounterPart
+    else
+      Sources[Result]:=nil;
+  end;
 end;
 
-{ TPGIPAmbiguousFile }
-
-procedure TPGIPAmbiguousFile.Switch;
-var
-  s: String;
-  o: TPGInterPkgOwnerInfo;
+function TPGIPAmbiguousFileGroup.IndexOfOwner(OwnerInfo: TPGInterPkgOwnerInfo
+  ): integer;
 begin
-  s:=Filename; Filename:=ConflictFilename; ConflictFilename:=s;
-  o:=OwnerInfo; OwnerInfo:=ConflictOwner; ConflictOwner:=o;
+  Result:=length(CompiledFiles)-1;
+  while (Result>=0) and (CompiledFiles[Result].OwnerInfo<>OwnerInfo) do
+    dec(Result);
+end;
+
+procedure TPGIPAmbiguousFileGroup.Switch(Index1, Index2: integer);
+var
+  aFile: TPGInterPkgFile;
+begin
+  aFile:=Sources[Index1]; Sources[Index1]:=Sources[Index2]; Sources[Index2]:=aFile;
+  aFile:=CompiledFiles[Index1]; CompiledFiles[Index1]:=CompiledFiles[Index2]; CompiledFiles[Index2]:=aFile;
 end;
 
 { TPGIPConflictsDialog }
@@ -202,7 +228,7 @@ var
   r: TRect;
 begin
   if Stage<>cdPostPaint then exit;
-  if TObject(Node.Data) is TPGIPAmbiguousFile then begin
+  if TObject(Node.Data) is TPGIPAmbiguousFileGroup then begin
     if Node.ImageIndex=FImgIndexChecked then
       Detail := tbCheckBoxCheckedNormal
     else
@@ -224,7 +250,7 @@ var
 begin
   Node:=ConflictsTreeView.GetNodeAt(X,Y);
   if Node=nil then exit;
-  if TObject(Node.Data) is TPGIPAmbiguousFile then begin
+  if TObject(Node.Data) is TPGIPAmbiguousFileGroup then begin
     if (X>=Node.DisplayIconLeft) and (X<Node.DisplayTextLeft) then begin
       if Node.ImageIndex=FImgIndexChecked then
         Node.ImageIndex:=FImgIndexUnchecked
@@ -238,8 +264,12 @@ end;
 
 procedure TPGIPConflictsDialog.DeleteSelectedFilesButtonClick(Sender: TObject);
 
-  function DeleteFileGroup(aFilename: string): boolean;
+  function DeleteFileAndAssociates(aFile: TPGInterPkgFile): boolean;
+  var
+    aFilename: String;
   begin
+    if aFile=nil then exit(true);
+    aFilename:=aFile.FullFilename;
     {$IFDEF VerboseCheckInterPkgFiles}
     debugln(['DeleteFileGroup ',aFilename]);
     {$ENDIF}
@@ -275,48 +305,46 @@ procedure TPGIPConflictsDialog.DeleteSelectedFilesButtonClick(Sender: TObject);
 
 var
   Node: TTreeNode;
-  AmbFile: TPGIPAmbiguousFile;
-  LastAmbFile: TPGIPAmbiguousFile;
   NextNode: TTreeNode;
-  DeleteFile1: Boolean;
-  DeleteFile2: Boolean;
+  FileGroup: TPGIPAmbiguousFileGroup;
+  IndexInGroup: integer;
+  ConflictCount: Integer;
 begin
   ConflictsTreeView.Items.BeginUpdate;
   try
     Node:=ConflictsTreeView.Items.GetFirstNode;
-    LastAmbFile:=nil;
+    IndexInGroup:=-1;
+    ConflictCount:=0;
     while Node<>nil do
     begin
       NextNode:=Node.GetNext;
-      if TObject(Node.Data) is TPGIPAmbiguousFile then
+      if TObject(Node.Data) is TPGIPAmbiguousFileGroup then
       begin
-        AmbFile:=TPGIPAmbiguousFile(Node.Data);
-        {$IFDEF VerboseCheckInterPkgFiles}
-        debugln(['TPGIPConflictsDialog.DeleteSelectedFilesButtonClick ',Node.Text,' File=',AmbFile.Filename]);
-        {$ENDIF}
-        if AmbFile<>LastAmbFile then
+        FileGroup:=TPGIPAmbiguousFileGroup(Node.Data);
+        inc(IndexInGroup);
+        if Node.ImageIndex=FImgIndexChecked then
         begin
-          DeleteFile1:=Node.ImageIndex=FImgIndexChecked;
-          DeleteFile2:=false;
-        end else begin
-          DeleteFile2:=Node.ImageIndex=FImgIndexChecked;
-          {$IFDEF VerboseCheckInterPkgFiles}
-          debugln(['TPGIPConflictsDialog.DeleteSelectedFilesButtonClick Delete 1=',DeleteFile1,' 2=',DeleteFile2]);
-          {$ENDIF}
-          if DeleteFile1 then
-            if not DeleteFileGroup(AmbFile.Filename) then exit;
-          if DeleteFile2 then
-            if not DeleteFileGroup(AmbFile.ConflictFilename) then exit;
-          if not FileExistsUTF8(AmbFile.Filename)
-          or not FileExistsUTF8(AmbFile.ConflictFilename) then begin
+          if not DeleteFileAndAssociates(FileGroup.Sources[IndexInGroup]) then exit;
+          if not DeleteFileAndAssociates(FileGroup.CompiledFiles[IndexInGroup]) then exit;
+        end;
+        if ((FileGroup.Sources[IndexInGroup]<>nil)
+        and FileExistsUTF8(FileGroup.Sources[IndexInGroup].FullFilename))
+        or ((FileGroup.CompiledFiles[IndexInGroup]<>nil)
+        and FileExistsUTF8(FileGroup.CompiledFiles[IndexInGroup].FullFilename))
+        then
+          inc(ConflictCount);
+        if IndexInGroup=length(FileGroup.Sources)-1 then
+        begin
+          if ConflictCount<=1 then begin
             // conflict does not exist anymore
             FilesChanged:=true;
             Node:=Node.Parent;
             NextNode:=Node.GetNextSkipChildren;
             Node.Delete;
           end;
+          IndexInGroup:=-1;
+          ConflictCount:=0;
         end;
-        LastAmbFile:=AmbFile;
       end;
       Node:=NextNode;
     end;
@@ -385,7 +413,7 @@ begin
   ConflictCount:=0;
   Node:=ConflictsTreeView.Items.GetFirstNode;
   while Node<>nil do begin
-    if TObject(Node.Data) is TPGIPAmbiguousFile then
+    if TObject(Node.Data) is TPGIPAmbiguousFileGroup then
     begin
       inc(ConflictCount);
       if Node.ImageIndex=FImgIndexChecked then
@@ -399,35 +427,12 @@ begin
 end;
 
 procedure TPGIPConflictsDialog.IgnoreConflicts;
-var
-  Node: TTreeNode;
-  AmbFile: TPGIPAmbiguousFile;
-  LastAmbFile: TPGIPAmbiguousFile;
 begin
-  Node:=ConflictsTreeView.Items.GetFirstNode;
-  LastAmbFile:=nil;
-  while Node<>nil do begin
-    if TObject(Node.Data) is TPGIPAmbiguousFile then
-    begin
-      AmbFile:=TPGIPAmbiguousFile(Node.Data);
-      if AmbFile<>LastAmbFile then begin
-        IgnoreConflict(AmbFile);
-      end;
-      LastAmbFile:=AmbFile;
-    end;
-    Node:=Node.GetNext;
-  end;
-
+  // ToDo
   ModalResult:=mrOk;
 end;
 
-procedure TPGIPConflictsDialog.IgnoreConflict(AmbFile: TPGIPAmbiguousFile);
-begin
-
-  //InputHistories.Ignores.Add(Identifier);
-end;
-
-procedure TPGIPConflictsDialog.Init(TheSrcFiles, TheCompiledFiles: TObjectList);
+procedure TPGIPConflictsDialog.Init(Groups: TObjectList);
 
   function AddChild(ParentNode: TTreeNode; Caption: string): TTreeNode;
   begin
@@ -435,77 +440,86 @@ procedure TPGIPConflictsDialog.Init(TheSrcFiles, TheCompiledFiles: TObjectList);
   end;
 
 var
-  MainNode: TTreeNode;
-  i: Integer;
-  AmbFile: TPGIPAmbiguousCompiledFile;
+  i, j: Integer;
   ItemNode: TTreeNode;
   s: String;
-  ConflictNode: TTreeNode;
+  FileGroupNode: TTreeNode;
+  FileGroup: TPGIPAmbiguousFileGroup;
+  SrcFile: TPGInterPkgFile;
+  CompiledFile: TPGInterPkgFile;
+  CurFile: TPGInterPkgFile;
+  c: TPGIPCategory;
 begin
-  SrcFiles:=TheSrcFiles;
-  CompiledFiles:=TheCompiledFiles;
+  FileGroups:=Groups;
 
   ConflictsTreeView.Items.BeginUpdate;
   ConflictsTreeView.Items.Clear;
   ConflictsTreeView.Images:=ImageList1;
-  if CompiledFiles.Count>0 then
+  for c in TPGIPCategory do
+    FCategoryNodes[c]:=nil;
+  for i:=0 to FileGroups.Count-1 do
   begin
-    MainNode:=ConflictsTreeView.Items.Add(nil,'Conflicting compiled files');
-    for i:=0 to CompiledFiles.Count-1 do
-    begin
-      AmbFile:=TPGIPAmbiguousCompiledFile(CompiledFiles[i]);
-      s:=ExtractFilename(AmbFile.Filename);
-      ConflictNode:=AddChild(MainNode,s);
-      begin
-        // first file
-        s:=ExtractFilename(AmbFile.Filename);
-        if AmbFile.OwnerInfo.Owner is TLazPackage then
-          s+=' of package '+AmbFile.OwnerInfo.Name
-        else
-          s+=' of '+AmbFile.OwnerInfo.Name;
-        ItemNode:=AddChild(ConflictNode,s);
-        ItemNode.ImageIndex:=FImgIndexChecked; // default: delete
-        ItemNode.Data:=AmbFile;
-        begin
-          // file path and src
-          AddChild(ItemNode,'File: '+AmbFile.Filename);
-          if not FilenameIsPascalSource(AmbFile.Filename) then begin
-            if AmbFile.SrcFilename='' then
-              s:='No source found'
-            else
-              s:='Source file: '+AmbFile.SrcFilename;
-            AddChild(ItemNode,s);
-          end;
-        end;
-        ItemNode.SelectedIndex:=ItemNode.ImageIndex;
+    FileGroup:=TPGIPAmbiguousFileGroup(FileGroups[i]);
 
-        // conflict file owner
-        s:=ExtractFilename(AmbFile.ConflictFilename);
-        if AmbFile.ConflictOwner.Owner is TLazPackage then
-          s+=' of package '+AmbFile.ConflictOwner.Name
-        else
-          s+=' of '+AmbFile.ConflictOwner.Name;
-        ItemNode:=AddChild(ConflictNode,s);
+    // category
+    if FileGroup.Sources[0]=nil then
+    begin
+      // orphaned compiled file
+      CurFile:=FileGroup.CompiledFiles[0];
+      c:=pgipOrphanedCompiled;
+      if FCategoryNodes[c]=nil then
+        FCategoryNodes[c]:=
+          ConflictsTreeView.Items.Add(nil,'Orphaned compiled files');
+    end else begin
+      // duplicate source file
+      CurFile:=FileGroup.Sources[0];
+      c:=pgipDuplicateSource;
+      if FCategoryNodes[c]=nil then
+        FCategoryNodes[c]:=
+          ConflictsTreeView.Items.Add(nil,'Duplicate source files');
+    end;
+
+    // file group
+    s:=ExtractFilename(CurFile.ShortFilename);
+    FileGroupNode:=AddChild(FCategoryNodes[c],s);
+
+    for j:=0 to length(FileGroup.Sources)-1 do
+    begin
+      SrcFile:=FileGroup.Sources[j];
+      CompiledFile:=FileGroup.CompiledFiles[j];
+
+      if SrcFile<>nil then
+        CurFile:=SrcFile
+      else
+        CurFile:=CompiledFile;
+
+      s:=ExtractFilename(CurFile.ShortFilename);
+      if CurFile.OwnerInfo.Owner is TLazPackage then
+        s+=' of package '+CurFile.OwnerInfo.Name
+      else
+        s+=' of '+CurFile.OwnerInfo.Name;
+      ItemNode:=AddChild(FileGroupNode,s);
+      if SrcFile=nil then
+        ItemNode.ImageIndex:=FImgIndexChecked // default: delete
+      else
         ItemNode.ImageIndex:=FImgIndexUnchecked; // default: keep
-        ItemNode.Data:=AmbFile;
-        begin
-          // file path
-          AddChild(ItemNode,'File: '+AmbFile.ConflictFilename);
-          if not FilenameIsPascalSource(AmbFile.ConflictFilename) then begin
-            if AmbFile.ConflictSrcFilename='' then begin
-              s:='No source found';
-              ItemNode.ImageIndex:=FImgIndexChecked; // default: delete
-            end
-            else
-              s:='Source file: '+AmbFile.ConflictSrcFilename;
-            AddChild(ItemNode,s);
-          end;
-        end;
-        ItemNode.SelectedIndex:=ItemNode.ImageIndex;
+      ItemNode.SelectedIndex:=ItemNode.ImageIndex;
+      ItemNode.Data:=FileGroup;
+      begin
+        // file paths of compiled and src
+        if CompiledFile<>nil then
+          AddChild(ItemNode,'Compiled: '+CompiledFile.FullFilename);
+        if SrcFile<>nil then
+          AddChild(ItemNode,'Source: '+SrcFile.FullFilename)
+        else
+          AddChild(ItemNode,'No source found');
       end;
     end;
-    MainNode.Expand(true);
   end;
+  // expand all nodes
+  for c in TPGIPCategory do
+    if FCategoryNodes[c]<>nil then
+      FCategoryNodes[c].Expand(true);
 
   ConflictsTreeView.Items.EndUpdate;
 
@@ -540,8 +554,7 @@ var
   FullFiles: TAvgLvlTree; // tree of TPGInterPkgFile sorted for FullFilename
   Units: TAvgLvlTree; // tree of TPGInterPkgFile sorted for AnUnitName
   ShortFiles: TAvgLvlTree; // tree of TPGInterPkgFile sorted for ShortFilename
-  AmbiguousCompiledFiles: TObjectList; // list of TPGIPAmbiguousCompiledFile
-  AmbiguousSrcFiles: TObjectList; // list of TPGIPAmbiguousFile
+  AmbiguousFileGroups: TObjectList; // list of TPGIPAmbiguousFileGroup
 
   procedure AddOwnerInfo(TheOwner: TObject);
   var
@@ -634,7 +647,7 @@ var
             AnUnitName:=ExtractFilename(aFilename);
             if not IsDottedIdentifier(AnUnitName) then continue;
           end;
-        '.inc': ;
+        '.inc', '.lfm', '.dfm': ;
         else
           continue;
         end;
@@ -744,124 +757,143 @@ var
     Result:=false;
   end;
 
-  procedure CheckPPUFilesInWrongDirs;
-  { Check if a ppu/o of pkg A has a unit (source or ppu) in another package B
-    Unless A uses B and B has -Ur or A has -Ur and B uses A
-    => IDE: delete+retry or ignore or cancel
-    => lazbuild: warn }
-
-    function FindUnitSource(aPPUFile: TPGInterPkgFile): TPGInterPkgFile;
-    // find a unit source (e.g. .pas) in same package
-
-      function FindSrc(Node: TAvgLvlTreeNode; Left: boolean): TPGInterPkgFile;
-      begin
-        while Node<>nil do begin
-          Result:=TPGInterPkgFile(Node.Data);
-          if CompareFilenames(ExtractFileNameOnly(Result.ShortFilename),
-            ExtractFileNameOnly(aPPUFile.ShortFilename))<>0 then break;
-          if (aPPUFile.OwnerInfo=Result.OwnerInfo)
-          and FilenameIsPascalSource(Result.ShortFilename) then exit;
-          if Left then
-            Node:=Node.Precessor
-          else
-            Node:=Node.Successor;
-        end;
-        Result:=nil;
-      end;
-
-    var
-      StartNode: TAvgLvlTreeNode;
+  function CheckIfFilesCanConflict(FileGroup: TPGIPAmbiguousFileGroup;
+    File1, File2: TPGInterPkgFile): boolean;
+  begin
+    Result:=false;
+    // report only one unit per package
+    if File1.OwnerInfo=File2.OwnerInfo then exit;
+    if (FileGroup<>nil) and (FileGroup.IndexOfOwner(File1.OwnerInfo)>=0)
+    then exit;
+    // check -Ur
+    if OptionUrAllowsDuplicate(File2,File1) then
+      exit;
+    // check shared directories
+    if CompareFilenames(File2.FullFilename,File1.FullFilename)=0 then
     begin
-      StartNode:=ShortFiles.FindPointer(aPPUFile);
-      Result:=FindSrc(StartNode,true);
-      if Result<>nil then exit;
-      Result:=FindSrc(StartNode,false);
+      // Two packages share directories
+      // It would would require a lenghty codetools check to find out if
+      // this is right or wrong
+      // => skip
+      exit;
+    end;
+    Result:=true;
+  end;
+
+  function FindUnitSourcePPU(TheUnit: TPGInterPkgFile): TPGInterPkgFile;
+  // find in same package the source of a ppu, or the ppu of a source
+  var
+    SearchPPU: Boolean;
+
+    function FindSrc(Node: TAvgLvlTreeNode; Left: boolean): TPGInterPkgFile;
+    var
+      IsPPU: Boolean;
+    begin
+      while Node<>nil do begin
+        Result:=TPGInterPkgFile(Node.Data);
+        if CompareFilenames(ExtractFileNameOnly(Result.ShortFilename),
+          ExtractFileNameOnly(TheUnit.ShortFilename))<>0 then break;
+        if (TheUnit.OwnerInfo=Result.OwnerInfo) then
+        begin
+          IsPPU:=not FilenameIsPascalUnit(Result.ShortFilename);
+          if SearchPPU=IsPPU then exit;
+        end;
+        if Left then
+          Node:=Node.Precessor
+        else
+          Node:=Node.Successor;
+      end;
+      Result:=nil;
     end;
 
   var
+    StartNode: TAvgLvlTreeNode;
+  begin
+    SearchPPU:=FilenameIsPascalUnit(TheUnit.ShortFilename); // search opposite
+    StartNode:=ShortFiles.FindPointer(TheUnit);
+    Result:=FindSrc(StartNode,true);
+    if Result<>nil then exit;
+    Result:=FindSrc(StartNode,false);
+  end;
+
+  procedure CheckDuplicateUnits;
+  { Check two or more packages have the same unit (ppu/o/pas/pp/p)
+    Unless A uses B and B has -Ur or A has -Ur and B uses A }
+  var
     CurNode: TAvgLvlTreeNode;
-    aPPUFile: TPGInterPkgFile;
-    Ext: String;
+    CurUnit: TPGInterPkgFile;
     FirstNodeSameUnitname: TAvgLvlTreeNode;
     OtherNode: TAvgLvlTreeNode;
     OtherFile: TPGInterPkgFile;
     SrcFile: TPGInterPkgFile;
-    AmbiguousFile: TPGIPAmbiguousCompiledFile;
+    FileGroup: TPGIPAmbiguousFileGroup;
     OtherSrcFile: TPGInterPkgFile;
-    IsBackward: Boolean;
+    i: Integer;
+    Msg: String;
   begin
     CurNode:=Units.FindLowest;
     FirstNodeSameUnitname:=nil;
     while CurNode<>nil do begin
-      aPPUFile:=TPGInterPkgFile(CurNode.Data);
+      CurUnit:=TPGInterPkgFile(CurNode.Data);
       if (FirstNodeSameUnitname=nil)
-      or (ComparePGInterPkgUnitnames(aPPUFile,TPGInterPkgFile(FirstNodeSameUnitname.Data))<>0) then
+      or (ComparePGInterPkgUnitnames(CurUnit,TPGInterPkgFile(FirstNodeSameUnitname.Data))<>0) then
         FirstNodeSameUnitname:=CurNode;
       CurNode:=CurNode.Successor;
-      Ext:=lowercase(ExtractFileExt(aPPUFile.ShortFilename));
-      if (Ext<>'.ppu') and (Ext<>'.o') then continue;
-      // check units with same name
+      if CurUnit.OwnerInfo.HasOptionUr then continue;
+      // CurUnit is an unit without -Ur
+      // => check units with same name
+      FileGroup:=nil;
       SrcFile:=nil;
-
       OtherNode:=FirstNodeSameUnitname;
-      IsBackward:=true;
       while OtherNode<>nil do begin
         OtherFile:=TPGInterPkgFile(OtherNode.Data);
-        if aPPUFile=OtherFile then
-          IsBackward:=false;
-        if (ComparePGInterPkgUnitnames(aPPUFile,OtherFile)<>0) then break;
+        if (ComparePGInterPkgUnitnames(CurUnit,OtherFile)<>0) then break;
         // other unit with same name found
         OtherNode:=OtherNode.Successor;
-        if OtherFile.OwnerInfo=aPPUFile.OwnerInfo then continue;
-        if (not FilenameIsPascalSource(OtherFile.ShortFilename))
-        and IsBackward then
-          continue; // report ppu/ppu conflicts only once
 
-        if CompareFilenames(aPPUFile.FullFilename,OtherFile.FullFilename)=0 then
-        begin
-          // two packages share directories
-          // it would would require a lenghty codetools check to find out
-          // if this is right or wrong
-          // => skip
+        if not CheckIfFilesCanConflict(FileGroup,CurUnit,OtherFile) then
           continue;
-        end;
+        //debugln(['CheckPPUFilesInWrongDirs duplicate units found: file1="',CurUnit.FullFilename,'"(',CurUnit.OwnerInfo.Name,') file2="',OtherFile.FullFilename,'"(',OtherFile.OwnerInfo.Name,')']);
 
-        // ppu in one package, unit with same name in another package
-        if OptionUrAllowsDuplicate(aPPUFile,OtherFile) then continue;
-        //debugln(['CheckPPUFilesInWrongDirs duplicate units found: file1="',aPPUFile.FullFilename,'"(',aPPUFile.OwnerInfo.Name,') file2="',OtherFile.FullFilename,'"(',OtherFile.OwnerInfo.Name,')']);
-        // check if this package has a source for this ppu
-        if SrcFile=nil then
-          SrcFile:=FindUnitSource(aPPUFile);
-        if FilenameIsPascalSource(OtherFile.ShortFilename) then
-          OtherSrcFile:=nil
-        else
-          OtherSrcFile:=FindUnitSource(OtherFile);
-        AmbiguousFile:=TPGIPAmbiguousCompiledFile.Create;
-        AmbiguousFile.Filename:=aPPUFile.FullFilename;
-        AmbiguousFile.OwnerInfo:=aPPUFile.OwnerInfo;
-        AmbiguousFile.ConflictFilename:=OtherFile.FullFilename;
-        AmbiguousFile.ConflictOwner:=OtherFile.OwnerInfo;
-        if SrcFile<>nil then
-          AmbiguousFile.SrcFilename:=SrcFile.FullFilename;
-        if OtherSrcFile<>nil then
-          AmbiguousFile.ConflictSrcFilename:=OtherSrcFile.FullFilename;
+        if FileGroup=nil then begin
+          FileGroup:=TPGIPAmbiguousFileGroup.Create;
+          SrcFile:=FindUnitSourcePPU(CurUnit);
+          FileGroup.Add(CurUnit,SrcFile);
+          AmbiguousFileGroups.Add(FileGroup);
+        end;
+        OtherSrcFile:=FindUnitSourcePPU(OtherFile);
+        FileGroup.Add(OtherFile,OtherSrcFile);
         if (SrcFile<>nil) and (OtherSrcFile=nil) then
-          AmbiguousFile.Switch;
-
-        if ConsoleVerbosity>=0 then
         begin
-          DbgOut('Warning: CheckPPUFilesInWrongDirs duplicate units found:');
-          DbgOut(' file1="',AmbiguousFile.Filename,'"(',AmbiguousFile.OwnerInfo.Name);
-          if AmbiguousFile.SrcFilename<>'' then
-            DbgOut(',source=',AmbiguousFile.SrcFilename);
-          DbgOut(') file2="',AmbiguousFile.ConflictFilename,'"(',AmbiguousFile.ConflictOwner.Name);
-          if AmbiguousFile.ConflictSrcFilename<>'' then
-            DbgOut(',source=',AmbiguousFile.ConflictSrcFilename);
-          debugln(')');
+          // put the orphaned ppu at top
+          FileGroup.Switch(0,length(FileGroup.Sources)-1);
         end;
-
-        AmbiguousCompiledFiles.Add(AmbiguousFile);
       end;
+
+      // create Warnings
+      if FileGroup<>nil then begin
+        for i:=0 to length(FileGroup.Sources)-1 do
+        begin
+          CurUnit:=FileGroup.CompiledFiles[i];
+          SrcFile:=FileGroup.Sources[i];
+          if SrcFile<>nil then
+          begin
+            Msg:='Duplicate unit "'+SrcFile.AnUnitName+'"';
+            Msg+=' in "'+SrcFile.OwnerInfo.Name+'"';
+            if CurUnit<>nil then
+              Msg+=', ppu="'+CurUnit.FullFilename+'"';
+            Msg+=', source="'+SrcFile.FullFilename+'"';
+          end else begin
+            Msg:='Duplicate unit "'+CurUnit.AnUnitName+'"';
+            Msg+=' in "'+CurUnit.OwnerInfo.Name+'"';
+            Msg+=', orphaned ppu "'+CurUnit.FullFilename+'"';
+          end;
+          IDEMessagesWindow.AddCustomMessage(mluWarning,Msg);
+        end;
+      end;
+
+      // all duplicates of this unitname were found -> skip to next unitname
+      CurNode:=OtherNode;
     end;
   end;
 
@@ -876,7 +908,9 @@ var
     FirstNodeSameShortName: TAvgLvlTreeNode;
     OtherNode: TAvgLvlTreeNode;
     OtherFile: TPGInterPkgFile;
-    AmbiguousFile: TPGIPAmbiguousFile;
+    FileGroup: TPGIPAmbiguousFileGroup;
+    i: Integer;
+    Msg: String;
   begin
     CurNode:=ShortFiles.FindLowest;
     FirstNodeSameShortName:=nil;
@@ -886,38 +920,43 @@ var
       or (ComparePGInterPkgShortFilename(CurFile,TPGInterPkgFile(FirstNodeSameShortName.Data))<>0) then
         FirstNodeSameShortName:=CurNode;
       CurNode:=CurNode.Successor;
-      if not FilenameIsPascalSource(CurFile.ShortFilename) then continue;
+      if CurFile.AnUnitName<>'' then
+        continue; // units were already checked in CheckDuplicateUnits
+
       // check files with same short name
+      FileGroup:=nil;
       OtherNode:=FirstNodeSameShortName;
       while OtherNode<>nil do begin
         OtherFile:=TPGInterPkgFile(OtherNode.Data);
-        OtherNode:=OtherNode.Successor;
         if (ComparePGInterPkgShortFilename(CurFile,OtherFile)<>0) then break;
+        OtherNode:=OtherNode.Successor;
+
         // other file with same short name found
-        if OtherFile.OwnerInfo=CurFile.OwnerInfo then continue;
-
-        if CompareFilenames(CurFile.FullFilename,OtherFile.FullFilename)=0 then
-        begin
-          // two packages share directories
-          // it would would require a lenghty codetools check to find out
-          // if this is right or wrong
-          // => skip
+        if not CheckIfFilesCanConflict(FileGroup,CurFile,OtherFile) then
           continue;
-        end;
 
-        // two files with same short name in different packages
-        if OptionUrAllowsDuplicate(CurFile,OtherFile) then continue;
-        if ConsoleVerbosity>=0 then
-        begin
-          debugln(['Warning: CheckDuplicateSrcFiles duplicate file found: file1="',CurFile.FullFilename,'"(',CurFile.OwnerInfo.Name,') file2="',OtherFile.FullFilename,'"(',OtherFile.OwnerInfo.Name,')']);
+        if FileGroup=nil then begin
+          FileGroup:=TPGIPAmbiguousFileGroup.Create;
+          FileGroup.Add(CurFile,nil);
+          AmbiguousFileGroups.Add(FileGroup);
         end;
-        AmbiguousFile:=TPGIPAmbiguousFile.Create;
-        AmbiguousFile.Filename:=CurFile.FullFilename;
-        AmbiguousFile.OwnerInfo:=CurFile.OwnerInfo;
-        AmbiguousFile.ConflictFilename:=OtherFile.FullFilename;
-        AmbiguousFile.ConflictOwner:=OtherFile.OwnerInfo;
-        AmbiguousSrcFiles.Add(AmbiguousFile);
+        FileGroup.Add(OtherFile,nil);
       end;
+
+      // create Warnings
+      if FileGroup<>nil then begin
+        for i:=0 to length(FileGroup.Sources)-1 do
+        begin
+          CurFile:=FileGroup.Sources[i];
+          Msg:='Duplicate file "'+CurFile.AnUnitName+'"';
+          Msg+=' in "'+CurFile.OwnerInfo.Name+'"';
+          Msg+=', path="'+CurFile.FullFilename+'"';
+          IDEMessagesWindow.AddCustomMessage(mluWarning,Msg);
+        end;
+      end;
+
+      // all duplicates of this file were found -> skip to next group
+      CurNode:=OtherNode;
     end;
   end;
 
@@ -932,8 +971,7 @@ begin
   FullFiles:=TAvgLvlTree.Create(@ComparePGInterPkgFullFilenames);
   Units:=TAvgLvlTree.Create(@ComparePGInterPkgUnitnames);
   ShortFiles:=TAvgLvlTree.Create(@ComparePGInterPkgShortFilename);
-  AmbiguousCompiledFiles:=TObjectList.create(true);
-  AmbiguousSrcFiles:=TObjectList.create(true);
+  AmbiguousFileGroups:=TObjectList.create(true);
   Dlg:=nil;
   try
     // get target OS, CPU and LCLWidgetType
@@ -962,22 +1000,20 @@ begin
     RemoveSecondaryFiles;
 
     // checks
-    CheckPPUFilesInWrongDirs;
+    CheckDuplicateUnits;
     CheckDuplicateSrcFiles;
-    if (AmbiguousSrcFiles.Count=0)
-    and (AmbiguousCompiledFiles.Count=0) then exit;
+    if (AmbiguousFileGroups.Count=0) then exit;
 
     // show warnings
     if LazarusIDE<>nil then begin
       // IDE
       Dlg:=TPGIPConflictsDialog.Create(nil);
-      Dlg.Init(AmbiguousSrcFiles,AmbiguousCompiledFiles);
+      Dlg.Init(AmbiguousFileGroups);
       if Dlg.ShowModal<>mrOK then exit(false);
       FilesChanged:=Dlg.FilesChanged;
     end;
   finally
-    AmbiguousCompiledFiles.Free;
-    AmbiguousSrcFiles.Free;
+    AmbiguousFileGroups.Free;
     Units.Free;
     ShortFiles.Free;
     FullFiles.FreeAndClear;
