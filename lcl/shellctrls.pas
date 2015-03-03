@@ -21,7 +21,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Graphics, LCLType, AvgLvlTree,
-  ComCtrls, FileUtil, LazUtf8, LCLStrConsts;
+  ComCtrls, FileUtil, LazFileUtils, LazUtf8, LCLStrConsts;
 
 {$if defined(Windows) or defined(darwin)}
 {$define CaseInsensitiveFilenames}
@@ -962,6 +962,7 @@ var
   i: integer;
   FQRootPath, RelPath: String;
   RootIsAbsolute: Boolean;
+  IsRelPath: Boolean;
 
   function GetAdjustedNodeText(ANode: TTreeNode): String;
   begin
@@ -990,10 +991,24 @@ var
       Result := ((Attr and faDirectory) > 0)
     else
       Result := True;
-    if Result and (not (otHidden in FObjectTypes)) then
+    //writeln('TCustomShellTreeView.SetPath.Exists: Result = ',Result);
+  end;
+
+  function ContainsHiddenDir(Fn: String): Boolean;
+  var
+    i: Integer;
+    Attr: LongInt;
+    Dirs: TStringList;
+    RelPath: String;
+  begin
+    //if fn=root then alwayy return false
+    if (CompareFileNames(Fn, FQRootPath) = 0) then
+      Result := False
+    else
     begin
-      Result := ((Attr and faHidden) = 0);
-      if Result then
+      Attr := FileGetAttrUtf8(Fn);
+      Result := ((Attr and faHidden) = faHidden);
+      if not Result then
       begin
         //it also is not allowed that any folder above is hidden
         Fn := ChompPathDelim(Fn);
@@ -1010,13 +1025,21 @@ var
               Fn := Dirs.Strings[i]
             else
               Fn := Fn + PathDelim + Dirs.Strings[i];
+            if (Fn = '') then Continue;
+            RelPath := CreateRelativePath(Fn, FQRootPath, False, True);
+            //don't check if Fn now is "higher up the tree" than the current root
+            if (RelPath = '') or ((Length(RelPath) > 1) and (RelPath[1] = '.') and (RelPath[2] = '.')) then
+            begin
+              //writeln('Fn is higher: ',Fn);
+              Continue;
+            end;
             {$if defined(windows) and not defined(wince)}
             if (Length(Fn) = 2) and (Fn[2] = ':') then Continue;
             {$endif}
             Attr := FileGetAttrUtf8(Fn);
             if (Attr <> -1) and ((Attr and faHidden) > 0) then
             begin
-              Result := False;
+              Result := True;
               //writeln('TCustomShellTreeView.SetPath.Exists: a subdir is hiddden: Result := False');
               Break;
             end;
@@ -1026,7 +1049,6 @@ var
         end;
       end;
     end;
-    //writeln('TCustomShellTreeView.SetPath.Exists: Result = ',Result);
   end;
 
 begin
@@ -1036,7 +1058,7 @@ begin
 
   if (GetRootPath <> '') then
     //FRoot is already Expanded in SetRoot, just add PathDelim if needed
-    FQRootPath := IncludeTrailingPathDelimiter(GetRootPath)
+    FQRootPath := AppendPathDelim(GetRootPath)
   else
     FQRootPath := '';
   RootIsAbsolute := (FQRootPath = '') or (FQRootPath = PathDelim)
@@ -1076,17 +1098,23 @@ begin
 
   //AValue now is a fully qualified path and it exists
   //Now check if it is a subdirectory of FQRootPath
-  RelPath := CreateRelativePath(AValue, FQRootPath, False);
+  //RelPath := CreateRelativePath(AValue, FQRootPath, False);
+  IsRelPath := (FQRootPath = '') or TryCreateRelativePath(AValue, FQRootPath, False, True, RelPath);
 
-  //writeln('SetPath: CreaterealtivePath = ',RelPath);
+  //writeln('TCustomShellTreeView.SetPath: ');
+  //writeln('  IsRelPath = ',IsRelPath);
+  //writeln('  RelPath = "',RelPath,'"');
 
-  if (RelPath <> '') and (RelPath[1] = '.') then
+
+  if (not IsRelpath) or ((RelPath <> '') and ((Length(RelPath) > 1) and (RelPath[1] = '.') and (RelPath[2] = '.'))) then
   begin
     // CreateRelativePath retruns a string beginning with ..
     // so AValue is not a subdirectory of FRoot
     Raise EInvalidPath.CreateFmt(sShellCtrlsInvalidPathRelative,[AValue, FQRootPath]);
   end;
 
+  if (RelPath = '') and (FQRootPath = '') then
+    RelPath := AValue;
   //writeln('RelPath = ',RelPath);
   if (RelPath = '') then
   begin
@@ -1100,6 +1128,9 @@ begin
     Exit;
   end;
 
+  if not (otHidden in FObjectTypes) and ContainsHiddenDir(AValue) then
+    Raise EInvalidPath.CreateFmt(sShellCtrlsInvalidPathRelative,[AValue, FQRootPath]);
+
   sl := TStringList.Create;
   sl.Delimiter := PathDelim;
   sl.StrictDelimiter := True;
@@ -1107,7 +1138,11 @@ begin
   if (sl.Count > 0) and (sl[0] = '') then  // This happens when root dir is empty
     sl[0] := PathDelim;                    //  and PathDelim was the first char
   if (sl.Count > 0) and (sl[sl.Count-1] = '') then sl.Delete(sl.Count-1); //remove last empty string
-  if (sl.Count = 0) then Exit;
+  if (sl.Count = 0) then
+  begin
+    sl.Free;
+    Exit;
+  end;
 
   //for i := 0 to sl.Count - 1 do writeln('sl[',i:2,']="',sl[i],'"');
 
