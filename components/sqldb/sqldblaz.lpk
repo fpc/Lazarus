@@ -2,6 +2,7 @@
 <CONFIG>
   <Package Version="4">
     <Name Value="SQLDBLaz"/>
+    <Type Value="RunAndDesignTime"/>
     <Author Value="Joost van der Sluis"/>
     <CompilerOptions>
       <Version Value="11"/>
@@ -15,14 +16,14 @@
       </Parsing>
       <Other>
         <CustomOptions Value="$(IDEBuildOptions)"/>
-        <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
     <Description Value="Lazarus package for the FCL SQLdb components.
 "/>
-    <License Value="Modified LGPL
-"/>
-    <Version Major="1" Release="1"/>
+    <License Value="Modified LGPL-2
+
+With the exception of the unit registersqldb, which is GPL-2. This unit contains code for the IDE and is usually not used by programs."/>
+    <Version Major="1" Release="2"/>
     <Files Count="4">
       <Item1>
         <Filename Value="registersqldb.pas"/>
@@ -48,7 +49,6 @@
       <EnableI18N Value="True"/>
       <OutDir Value="languages"/>
     </i18n>
-    <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="3">
       <Item1>
         <PackageName Value="CodeTools"/>
