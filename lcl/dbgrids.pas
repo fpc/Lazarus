@@ -936,6 +936,7 @@ procedure TCustomDBGrid.OnDataSetScrolled(aDataSet: TDataSet; Distance: Integer
   );
 var
   OldEditorMode: boolean;
+  OldRow: Integer;
 begin
   {$ifdef dbgDBGrid}
   DebugLn('%s.OnDataSetScrolled Distance=%d ds.RecordCount=%d',[ClassName, Distance, aDataSet.RecordCount]);
@@ -950,7 +951,12 @@ begin
     EditorMode := False;
 
   if Distance<>0 then begin
-    Row:= FixedRows + FDataLink.ActiveRecord;
+
+    OldRow := Row;
+    Row := FixedRows + FDataLink.ActiveRecord;
+    if OldRow=Row then  // if OldRow<>NewRow SelectEditor will be called by MoveExtend
+      SelectEditor;     // if OldRow=NewRow we need to manually call SelectEditor
+
     Invalidate;
   end else
     UpdateActive;
