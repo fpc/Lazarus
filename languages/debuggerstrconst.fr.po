@@ -154,3 +154,4 @@ msgstr "\"Nouvelle valeur\" est vide."
 #: debuggerstrconst.synfthedebuggerwasnotabletomodifythevalue
 msgid "The debugger was not able to modify the value."
 msgstr "Le débogueur n'est pas parvenu à modifier la valeur."
+
