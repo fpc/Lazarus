@@ -293,7 +293,8 @@ type
     property ShellTreeView;
   end;
 
-  EInvalidPath = class(Exception);
+  EShellCtrl = class(Exception);
+  EInvalidPath = class(EShellCtrl);
 
 function DbgS(OT: TObjectTypes): String; overload;
 
@@ -400,7 +401,7 @@ begin
   if not (csDesigning in ComponentState)
      and (AValue <> '')
      and not DirectoryExistsUtf8(ExpandFilenameUtf8(AValue)) then
-     Raise Exception.CreateFmt(sShellCtrlsInvalidRoot,[ExpandFileNameUtf8(AValue)]);
+     Raise EInvalidPath.CreateFmt(sShellCtrlsInvalidRoot,[ExpandFileNameUtf8(AValue)]);
   if (AValue = '') then
     FRoot := GetBasePath
   else
@@ -869,14 +870,14 @@ begin
     if IsDirectory then
     begin
       //Note: the folder may have been deleted in the mean time
-      //an exception will be raise by the next line in that case
+      //an exception will be raised by the next line in that case
       FShellListView.Root := GetPathFromNode(ANode)
     end
     else
     begin
       //At this point we cannot tell if item used to be a folder or a file
       if not FileExistsUtf8(CurrentNodePath) then
-        Raise Exception.CreateFmt(sShellCtrlsSelectedItemDoesNotExists,[CurrentNodePath]);
+        Raise EShellCtrl.CreateFmt(sShellCtrlsSelectedItemDoesNotExists,[CurrentNodePath]);
       if Assigned(Anode.Parent) then
         FShellListView.Root := GetPathFromNode(ANode.Parent)
       else
@@ -1264,7 +1265,7 @@ begin
     if not (csDesigning in ComponentState)
        and (Value <> '')
        and not DirectoryExistsUtf8(ExpandFilenameUtf8(Value)) then
-       Raise Exception.CreateFmt(sShellCtrlsInvalidRoot,[Value]);
+       Raise EInvalidPath.CreateFmt(sShellCtrlsInvalidRoot,[Value]);
     FRoot := Value;
     Clear;
     Items.Clear;
