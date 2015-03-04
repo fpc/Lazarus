@@ -498,8 +498,7 @@ begin
   FInitialRoot := '';
 
   // Initial property values
-
-  ObjectTypes:= [otFolders];
+  FObjectTypes:= [otFolders];
 
   // Populating the base dirs is done in Loaded
 end;
