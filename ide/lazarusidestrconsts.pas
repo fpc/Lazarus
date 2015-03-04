@@ -1490,6 +1490,7 @@ resourcestring
   lisShowSpecialCharacters = 'Show special characters';
   dlgCloseButtonsNotebook = 'Show close buttons in notebook';
   dlgCtrlMiddleTabCloseOtherPages = 'Ctrl-middle-click on tab closes all others';
+  dlgSourceEditTabMultiLine = 'Multiline tabs';
   dlgHideSingleTabInNotebook = 'Hide tab in single page windows';
   dlgTabNumbersNotebook = 'Show tab numbers in notebook';
   dlgNotebookTabPos = 'Source notebook tabs position';

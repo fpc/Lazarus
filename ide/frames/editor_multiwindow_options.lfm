@@ -1,4 +1,4 @@
-inherited EditorMultiWindowOptionsFrame: TEditorMultiWindowOptionsFrame
+object EditorMultiWindowOptionsFrame: TEditorMultiWindowOptionsFrame
   Left = 0
   Height = 415
   Top = 0
@@ -21,15 +21,15 @@ inherited EditorMultiWindowOptionsFrame: TEditorMultiWindowOptionsFrame
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
     Left = 6
-    Height = 214
-    Top = 201
+    Height = 192
+    Top = 223
     Width = 509
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
     BorderSpacing.Right = 6
     BevelOuter = bvNone
-    ClientHeight = 214
+    ClientHeight = 192
     ClientWidth = 509
     TabOrder = 0
     object listAccessType: TCheckListBox
@@ -62,7 +62,7 @@ inherited EditorMultiWindowOptionsFrame: TEditorMultiWindowOptionsFrame
       TabOrder = 1
       object lblAccessTypeDesc: TLabel
         Left = 0
-        Height = 16
+        Height = 15
         Top = 0
         Width = 509
         Align = alTop
@@ -89,7 +89,7 @@ inherited EditorMultiWindowOptionsFrame: TEditorMultiWindowOptionsFrame
     AnchorSideRight.Side = asrBottom
     Left = 0
     Height = 3
-    Top = 92
+    Top = 116
     Width = 60
     BorderSpacing.Bottom = 6
   end
@@ -99,9 +99,9 @@ inherited EditorMultiWindowOptionsFrame: TEditorMultiWindowOptionsFrame
     AnchorSideTop.Control = pnlNBTabs
     AnchorSideTop.Side = asrBottom
     Left = 70
-    Height = 16
-    Top = 85
-    Width = 167
+    Height = 15
+    Top = 110
+    Width = 166
     BorderSpacing.Left = 10
     BorderSpacing.Bottom = 6
     Caption = 'lblEditActivationOrderSection'
@@ -116,10 +116,10 @@ inherited EditorMultiWindowOptionsFrame: TEditorMultiWindowOptionsFrame
     AnchorSideTop.Side = asrCenter
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    Left = 247
+    Left = 246
     Height = 3
-    Top = 92
-    Width = 274
+    Top = 116
+    Width = 275
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Left = 10
   end
@@ -130,8 +130,8 @@ inherited EditorMultiWindowOptionsFrame: TEditorMultiWindowOptionsFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 6
-    Height = 66
-    Top = 107
+    Height = 65
+    Top = 131
     Width = 509
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
@@ -139,12 +139,12 @@ inherited EditorMultiWindowOptionsFrame: TEditorMultiWindowOptionsFrame
     BorderSpacing.Right = 6
     BorderSpacing.Bottom = 6
     BevelOuter = bvNone
-    ClientHeight = 66
+    ClientHeight = 65
     ClientWidth = 509
     TabOrder = 1
     object lblAccessOrder: TLabel
       Left = 0
-      Height = 16
+      Height = 15
       Top = 0
       Width = 509
       Align = alTop
@@ -161,7 +161,7 @@ inherited EditorMultiWindowOptionsFrame: TEditorMultiWindowOptionsFrame
       AnchorSideRight.Side = asrBottom
       Left = 0
       Height = 19
-      Top = 22
+      Top = 21
       Width = 509
       Anchors = [akTop, akLeft, akRight]
       Caption = 'radioAccessOrderEdit'
@@ -178,7 +178,7 @@ inherited EditorMultiWindowOptionsFrame: TEditorMultiWindowOptionsFrame
       AnchorSideRight.Side = asrBottom
       Left = 0
       Height = 19
-      Top = 41
+      Top = 40
       Width = 509
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Bottom = 6
@@ -194,8 +194,8 @@ inherited EditorMultiWindowOptionsFrame: TEditorMultiWindowOptionsFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 16
-    Top = 179
+    Height = 15
+    Top = 202
     Width = 521
     Anchors = [akTop, akLeft, akRight]
     Caption = 'lblAccessType'
@@ -209,7 +209,7 @@ inherited EditorMultiWindowOptionsFrame: TEditorMultiWindowOptionsFrame
     AnchorSideRight.Side = asrBottom
     Left = 0
     Height = 3
-    Top = 7
+    Top = 6
     Width = 60
     BorderSpacing.Bottom = 6
   end
@@ -218,9 +218,9 @@ inherited EditorMultiWindowOptionsFrame: TEditorMultiWindowOptionsFrame
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = Owner
     Left = 70
-    Height = 16
+    Height = 15
     Top = 0
-    Width = 127
+    Width = 126
     BorderSpacing.Left = 10
     BorderSpacing.Bottom = 6
     Caption = 'lblMultiWinTabSection'
@@ -235,10 +235,10 @@ inherited EditorMultiWindowOptionsFrame: TEditorMultiWindowOptionsFrame
     AnchorSideTop.Side = asrCenter
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    Left = 207
+    Left = 206
     Height = 3
-    Top = 7
-    Width = 314
+    Top = 6
+    Width = 315
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Left = 10
   end
@@ -249,8 +249,8 @@ inherited EditorMultiWindowOptionsFrame: TEditorMultiWindowOptionsFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 6
-    Height = 57
-    Top = 22
+    Height = 83
+    Top = 21
     Width = 509
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
@@ -259,7 +259,7 @@ inherited EditorMultiWindowOptionsFrame: TEditorMultiWindowOptionsFrame
     BorderSpacing.Bottom = 6
     BevelOuter = bvNone
     ChildSizing.ControlsPerLine = 2
-    ClientHeight = 57
+    ClientHeight = 83
     ClientWidth = 509
     TabOrder = 2
     object chkShowCloseBtn: TCheckBox
@@ -337,6 +337,42 @@ inherited EditorMultiWindowOptionsFrame: TEditorMultiWindowOptionsFrame
       Top = 0
       Width = 1
       ParentColor = False
+    end
+    object chkMultiLine: TCheckBox
+      AnchorSideLeft.Control = CenterLabel
+      AnchorSideTop.Control = chkUseTabHistory
+      AnchorSideTop.Side = asrBottom
+      Left = 254
+      Height = 19
+      Top = 38
+      Width = 89
+      Caption = 'chkMultiLine'
+      TabOrder = 5
+    end
+    object EditorTabPositionLabel: TLabel
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = EditorTabPositionCheckBox
+      AnchorSideTop.Side = asrCenter
+      Left = 156
+      Height = 15
+      Top = 64
+      Width = 122
+      BorderSpacing.Left = 6
+      Caption = 'EditorTabPositionLabel'
+      ParentColor = False
+    end
+    object EditorTabPositionCheckBox: TComboBox
+      AnchorSideLeft.Control = pnlNBTabs
+      AnchorSideTop.Control = chkCtrlMiddleCloseOthers
+      AnchorSideTop.Side = asrBottom
+      Left = 0
+      Height = 23
+      Top = 60
+      Width = 150
+      BorderSpacing.Top = 3
+      ItemHeight = 15
+      Style = csDropDownList
+      TabOrder = 6
     end
   end
 end

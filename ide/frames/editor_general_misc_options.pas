@@ -41,9 +41,7 @@ type
   TEditorGeneralMiscOptionsFrame = class(TAbstractIDEOptionsEditor)
     EditorTrimSpaceTypeCheckBox: TComboBox;
     EditorOptionsGroupBox: TCheckGroup;
-    EditorTabPositionCheckBox: TComboBox;
     EditorTrimSpaceTypeLabel: TLabel;
-    EditorTabPositionLabel: TLabel;
     procedure EditorOptionsGroupBoxItemClick(Sender: TObject; Index: integer);
   private
     FDialog: TAbstractOptionsEditorDialog;
@@ -94,16 +92,9 @@ begin
   EditorTrimSpaceTypeCheckBox.Items.Add(dlgTrimSpaceTypeCaretMove);
   EditorTrimSpaceTypeCheckBox.Items.Add(dlgTrimSpaceTypePosOnly);
   EditorTrimSpaceTypeLabel.Caption := dlgTrimSpaceTypeCaption;
-  EditorTabPositionCheckBox.Items.Add(lisNotebookTabPosTop);
-  EditorTabPositionCheckBox.Items.Add(lisNotebookTabPosBottom);
-  EditorTabPositionCheckBox.Items.Add(lisNotebookTabPosLeft);
-  EditorTabPositionCheckBox.Items.Add(lisNotebookTabPosRight);
-  EditorTabPositionLabel.Caption := dlgNotebookTabPos;
 end;
 
 procedure TEditorGeneralMiscOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
-const
-  TabPosToIndex : Array [TTabPosition] of Integer = (0, 1, 2, 3);
 begin
   with AOptions as TEditorOptions do
   begin
@@ -120,7 +111,6 @@ begin
       {$ENDIF}
     end;
     EditorTrimSpaceTypeCheckBox.ItemIndex := ord(TrimSpaceType);
-    EditorTabPositionCheckBox.ItemIndex := TabPosToIndex[TabPosition];
   end;
 end;
 
@@ -134,8 +124,6 @@ procedure TEditorGeneralMiscOptionsFrame.WriteSettings(AOptions: TAbstractIDEOpt
       TEditorOptions(AOptions).SynEditOptions := TEditorOptions(AOptions).SynEditOptions - [AnOption];
   end;
 
-const
-  TabIndexToPos : Array [0..3] of TTabPosition = (tpTop, tpBottom, tpLeft, tpRight);
 begin
   with AOptions as TEditorOptions do
   begin
@@ -149,7 +137,6 @@ begin
     else
       SynEditOptions2 := SynEditOptions2 - [eoFoldedCopyPaste];
     TrimSpaceType := TSynEditStringTrimmingType(EditorTrimSpaceTypeCheckBox.ItemIndex);
-    TabPosition := TabIndexToPos[EditorTabPositionCheckBox.ItemIndex];
     {$IFDEF WinIME}
     UseMinimumIme := EditorOptionsGroupBox.Checked[5];
     {$ENDIF}

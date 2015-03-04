@@ -5783,6 +5783,7 @@ Begin
       Options:=Options+[nboShowCloseButtons]
     else
       Options:=Options-[nboShowCloseButtons];
+    MultiLine := EditorOpts.MultiLineTab;
     TabPosition := EditorOpts.TabPosition;
     OnChange := @NotebookPageChanged;
     OnCloseTabClicked  := @CloseTabClicked;
@@ -8152,6 +8153,7 @@ Begin
     FNoteBook.Options:=FNoteBook.Options+[nboShowCloseButtons]
   else
     FNoteBook.Options:=FNoteBook.Options-[nboShowCloseButtons];
+  FNoteBook.MultiLine := EditorOpts.MultiLineTab;
   FNotebook.TabPosition := EditorOpts.TabPosition;
 
   Exclude(States,snWarnedFont);

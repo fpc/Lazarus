@@ -1299,6 +1299,7 @@ type
     // general options
     fFindTextAtCursor: Boolean;
     fShowTabCloseButtons: Boolean;
+    FMultiLineTab: Boolean;
     fShowTabNumbers: Boolean;
     fUseTabHistory: Boolean;
     fTabPosition: TTabPosition;
@@ -1453,6 +1454,10 @@ type
       read fSynEditOptions2 write fSynEditOptions2 default SynEditDefaultOptions2;
     property ShowTabCloseButtons: Boolean
       read fShowTabCloseButtons write fShowTabCloseButtons;
+  published
+    property MultiLineTab: Boolean
+      read FMultiLineTab write FMultiLineTab default False;
+  public
     property HideSingleTabInWindow: Boolean
       read FHideSingleTabInWindow write FHideSingleTabInWindow;
     property ShowTabNumbers: Boolean read fShowTabNumbers write fShowTabNumbers;
@@ -4380,6 +4385,7 @@ procedure TEditorOptions.Init;
 begin
   // General options
   fShowTabCloseButtons := True;
+  FMultiLineTab := False;
   FHideSingleTabInWindow := False;
   fTabPosition := tpTop;
   FCopyWordAtCursorOnCopyNone := True;
