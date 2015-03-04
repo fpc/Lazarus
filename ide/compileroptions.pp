@@ -3098,11 +3098,14 @@ begin
       if NewTargetDirectory <> '' then
         switches := switches + ' '+PrepareCmdLineOption('-FE' + NewTargetDirectory);
       NewTargetFileName := ExtractFileName(NewTargetFilename);
-      if (NewTargetFilename<>'')
-      and (NewTargetFilename<>ChangeFileExt(ExtractFileName(CurMainSrcFile),GetTargetFileExt))
-      then begin
-        // custom target => pass -o
-        switches := switches + ' '+PrepareCmdLineOption('-o' + NewTargetFileName);
+      if (NewTargetFilename<>'') then
+      begin
+        if (not TargetFilenameApplyConventions)
+        or (NewTargetFilename<>ChangeFileExt(ExtractFileName(CurMainSrcFile),GetTargetFileExt))
+        then begin
+          // custom target => pass -o
+          switches := switches + ' '+PrepareCmdLineOption('-o' + NewTargetFileName);
+        end;
       end;
     end;
   end;
