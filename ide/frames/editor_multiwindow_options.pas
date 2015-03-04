@@ -130,6 +130,7 @@ var
 begin
   TmpNB := TSourceNotebook.Create(nil, -1);
   chkShowCloseBtn.Enabled := nbcShowCloseButtons in TmpNB.GetCapabilities;
+  chkMultiLine.Enabled := nbcMultiLine in TmpNB.GetCapabilities;
   TmpNB.Free;
 
   lblMultiWinTabSection.Caption := dlgMultiWinTabGroup;
