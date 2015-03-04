@@ -118,7 +118,7 @@ function FindShortFileNameOnDisk(const Filename: string): string;
 function CreateNonExistingFilename(const BaseFilename: string): string;
 function FindFPCTool(const Executable, CompilerFilename: string): string;
 procedure ResolveLinksInFileList(List: TStrings; RemoveDanglingLinks: Boolean);
-function FindProgram(const Programname, BaseDirectory: string;
+function FindProgram(ProgramName, BaseDirectory: string;
                      WithBaseDirectory: boolean): string;
 
 // search paths
@@ -1501,14 +1501,23 @@ begin
   Result:=true;
 end;
 
-function FindProgram(const Programname, BaseDirectory: string;
+function FindProgram(ProgramName, BaseDirectory: string;
   WithBaseDirectory: boolean): string;
 var
   Flags: TSearchFileInPathFlags;
 begin
-  if FilenameIsAbsolute(Programname) then begin
-    if FileExistsUTF8(Programname) then
-      Result:=Programname
+  Result:='';
+  if ProgramName='' then exit;
+  {$IFDEF Unix}
+  if ProgramName[1]='~' then begin
+    Delete(ProgramName,1,1);
+    ProgramName:=GetEnvironmentVariableUTF8('HOME')+ProgramName;
+  end;
+  {$ENDIF}
+  ProgramName:=ResolveDots(ProgramName);
+  if FilenameIsAbsolute(ProgramName) then begin
+    if FileExistsCached(ProgramName) then
+      Result:=ProgramName
     else
       Result:='';
     exit;
@@ -1516,7 +1525,7 @@ begin
   Flags:=[];
   if not WithBaseDirectory then
     Include(Flags,sffDontSearchInBasePath);
-  Result:=FileUtil.SearchFileInPath(Programname,BaseDirectory,
+  Result:=FileUtil.SearchFileInPath(ProgramName,BaseDirectory,
                                     GetProgramSearchPath,PathSep,Flags);
 end;
 

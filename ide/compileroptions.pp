@@ -4189,6 +4189,7 @@ function TCompilationToolOptions.Execute(const WorkingDir, ToolTitle,
 var
   ExtTool: TAbstractExternalTool;
 begin
+  if Command='' then exit(mrOk);
   if SourceEditorManagerIntf<>nil then
     SourceEditorManagerIntf.ClearErrorLines;
 
@@ -4217,11 +4218,14 @@ var
   Filename: String;
 begin
   CurCommand:=GetParsedCommand;
+  //debugln(['TCompilationToolOptions.CreateExtTool CurCommand=[',CurCommand,']']);
   if CurCommand='' then
     exit(nil);
   SplitCmdLine(CurCommand,ProgramFilename,Params);
+  //debugln(['TCompilationToolOptions.CreateExtTool Prg=[',ProgramFilename,'] Params=[',Params,']']);
   if not FilenameIsAbsolute(ProgramFilename) then begin
     Filename:=FindProgram(ProgramFilename,WorkingDir,true);
+    //debugln(['TCompilationToolOptions.CreateExtTool Found=[',Filename,']']);
     if Filename<>'' then ProgramFilename:=Filename;
   end;
   Result:=ExternalToolList.Add(ToolTitle);
