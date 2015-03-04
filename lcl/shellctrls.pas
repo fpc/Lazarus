@@ -994,6 +994,19 @@ var
     //writeln('TCustomShellTreeView.SetPath.Exists: Result = ',Result);
   end;
 
+  function PathIsDriveRoot({%H-}Path: String): Boolean;  {$if not (defined(windows) and not defined(wince))}inline;{$endif}
+  //At least Win7 reports faHidden on all physical drive-roots (e.g. C:\)
+  begin
+    {$if defined(windows) and not defined(wince)}
+    Result := (Length(Path) = 3) and
+              (Upcase(Path[1]) in ['A'..'Z']) and
+              (Path[2] = DriveSeparator) and
+              (Path[3] in AllowDirectorySeparators);
+    {$else}
+    Result := False;
+    {$endif windows}
+  end;
+
   function ContainsHiddenDir(Fn: String): Boolean;
   var
     i: Integer;
@@ -1001,13 +1014,13 @@ var
     Dirs: TStringList;
     RelPath: String;
   begin
-    //if fn=root then alwayy return false
+    //if fn=root then always return false
     if (CompareFileNames(Fn, FQRootPath) = 0) then
       Result := False
     else
     begin
       Attr := FileGetAttrUtf8(Fn);
-      Result := ((Attr and faHidden) = faHidden);
+      Result := ((Attr and faHidden) = faHidden) and not PathIsDriveRoot(Fn);
       if not Result then
       begin
         //it also is not allowed that any folder above is hidden
@@ -1037,10 +1050,10 @@ var
             if (Length(Fn) = 2) and (Fn[2] = ':') then Continue;
             {$endif}
             Attr := FileGetAttrUtf8(Fn);
-            if (Attr <> -1) and ((Attr and faHidden) > 0) then
+            if (Attr <> -1) and ((Attr and faHidden) > 0) and not PathIsDriveRoot(Fn) then
             begin
               Result := True;
-              //writeln('TCustomShellTreeView.SetPath.Exists: a subdir is hiddden: Result := False');
+              //writeln('TCustomShellTreeView.SetPath.Exists: a subdir is hidden: Result := False');
               Break;
             end;
           end;
@@ -1104,6 +1117,7 @@ begin
   //writeln('TCustomShellTreeView.SetPath: ');
   //writeln('  IsRelPath = ',IsRelPath);
   //writeln('  RelPath = "',RelPath,'"');
+  //writeln('  FQRootPath = "',FQRootPath,'"');
 
 
   if (not IsRelpath) or ((RelPath <> '') and ((Length(RelPath) > 1) and (RelPath[1] = '.') and (RelPath[2] = '.'))) then
@@ -1129,7 +1143,7 @@ begin
   end;
 
   if not (otHidden in FObjectTypes) and ContainsHiddenDir(AValue) then
-    Raise EInvalidPath.CreateFmt(sShellCtrlsInvalidPathRelative,[AValue, FQRootPath]);
+    Raise EInvalidPath.CreateFmt(sShellCtrlsInvalidPath,[AValue, FQRootPath]);
 
   sl := TStringList.Create;
   sl.Delimiter := PathDelim;
