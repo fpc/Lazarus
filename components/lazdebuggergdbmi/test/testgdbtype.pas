@@ -605,6 +605,10 @@ begin
 end;
 
 procedure TTestGdbType.TestExpressionBreaker;
+  procedure AssertEqualsLc(n,s1,s2: string);
+  begin
+    AssertEquals(n, LowerCase(s1), LowerCase(s2));
+  end;
 
   procedure InitExpr(e: String; var b: TGDBExpression; out r: PGDBPTypeRequest; out v: Boolean; rewritten: string = '');
   begin
@@ -614,8 +618,8 @@ procedure TTestGdbType.TestExpressionBreaker;
     debugln('##### '+e);
     DumpGExp(b);
     if rewritten <> ''
-    then AssertEquals(e+' as text', rewritten, b.Text)
-    else AssertEquals(e+' as text', e, b.Text);
+    then AssertEqualsLc(e+' as text', rewritten, b.Text)
+    else AssertEqualsLc(e+' as text', e, b.Text);
     v := b.NeedValidation(r);
     if r <> nil then DumpReq(r);
     debugln;
@@ -641,18 +645,18 @@ begin
   n := 'abc[123].x';
   InitExpr(n, b, r, v);
   AssertTrue(n + ' is array', b.Parts[0] is TGDBExpressionPartArray);
-  AssertTrue(n + ' ptype', (r <> nil) and (r^.Request = 'ptype abc'));
+  AssertTrue(n + ' ptype', (r <> nil) and (LowerCase(r^.Request) = 'ptype abc'));
 
   r^.Result := ParseTypeFromGdb('type = ^(array [0..-1] of TFoo)');
   ContinueExpr(b, r, v);
   AssertTrue(n + ' Needexp after dyn array', not v);
-  AssertEquals(n + ' text after dyn array', 'TFoo(abc^[123]).x', b.Text);
+  AssertEqualsLc(n + ' text after dyn array', 'TFoo(abc^[123]).x', b.Text);
 
   InitExpr(n, b, r, v);
   r^.Result := ParseTypeFromGdb('type = array [0..1000] of TFoo');
   ContinueExpr(b, r, v);
   AssertTrue(n + ' Needexp after stat array', not v);
-  AssertEquals(n + ' text after stat array', 'TFoo(abc[123]).x', b.Text);
+  AssertEqualsLc(n + ' text after stat array', 'TFoo(abc[123]).x', b.Text);
 
   InitExpr(n, b, r, v);
   r^.Result := ParseTypeFromGdb('type = ^TFoo');
@@ -661,14 +665,14 @@ begin
   r^.Result := ParseTypeFromGdb('type = array of TFoo');
   ContinueExpr(b, r, v);
   AssertTrue(n + ' Needexp after dyn array(dwarf)', not v);
-  AssertEquals(n + ' text after dyn array(dwarf)', 'TFoo(abc^[123]).x', b.Text);
+  AssertEqualsLc(n + ' text after dyn array(dwarf)', 'TFoo(abc^[123]).x', b.Text);
 
 
   InitExpr(n, b, r, v);
   r^.Result := ParseTypeFromGdb('type = array [0..1000] of ^TFoo');
   ContinueExpr(b, r, v);
   AssertTrue(n + ' Needexp after stat array ^TFoo', not v);
-  AssertEquals(n + ' text after stat array ^TFoo', '^TFoo(abc[123]).x', b.Text);
+  AssertEqualsLc(n + ' text after stat array ^TFoo', '^TFoo(abc[123]).x', b.Text);
 
   // with NO need for typecast
   n := 'abc[123]';
@@ -676,63 +680,63 @@ begin
   r^.Result := ParseTypeFromGdb('type = ^(array [0..-1] of TFoo)');
   ContinueExpr(b, r, v);
   AssertTrue(n + ' Needexp after dyn array', not v);
-  AssertEquals(n + ' text after dyn array', 'abc^[123]', b.Text);
+  AssertEqualsLc(n + ' text after dyn array', 'abc^[123]', b.Text);
 
   n := 'a(abc[123])';
   InitExpr(n, b, r, v);
   r^.Result := ParseTypeFromGdb('type = ^(array [0..-1] of TFoo)');
   ContinueExpr(b, r, v);
   AssertTrue(n + ' Needexp after dyn array', not v);
-  AssertEquals(n + ' text after dyn array', 'a(abc^[123])', b.Text);
+  AssertEqualsLc(n + ' text after dyn array', 'a(abc^[123])', b.Text);
 
   n := 'abc[123]+1';
   InitExpr(n, b, r, v);
   r^.Result := ParseTypeFromGdb('type = ^(array [0..-1] of TFoo)');
   ContinueExpr(b, r, v);
   AssertTrue(n + ' Needexp after dyn array', not v);
-  AssertEquals(n + ' text after dyn array', 'abc^[123]+1', b.Text);
+  AssertEqualsLc(n + ' text after dyn array', 'abc^[123]+1', b.Text);
 
   // multi index
 
   n := 'abc[123][456]';
   InitExpr(n, b, r, v);
-  AssertTrue(n + ' ptype 1', (r <> nil) and (r^.Request = 'ptype abc'));
+  AssertTrue(n + ' ptype 1', (r <> nil) and (LowerCase(r^.Request) = 'ptype abc'));
   r^.Result := ParseTypeFromGdb('type = ^(array [0..-1] of TFooA)');
   ContinueExpr(b, r, v);
   AssertTrue(n + ' Needexp after dyn array 1', v);
   //AssertTrue(n + ' ptype 2', (r <> nil) and (r^.Request = 'ptype TFooA(abc^[123])'));
-  AssertTrue(n + ' ptype 2', (r <> nil) and (r^.Request = 'ptype abc^[0]'));
+  AssertTrue(n + ' ptype 2', (r <> nil) and (LowerCase(r^.Request) = 'ptype abc^[0]'));
   r^.Result := ParseTypeFromGdb('type = ^(array [0..-1] of TFoo)');
   ContinueExpr(b, r, v);
   AssertTrue(n + ' Needexp after dyn array 2', not v);
-  //AssertEquals(n + ' text after dyn array 2', 'TFooA(abc^[123])^[456]', b.Text);
-  AssertEquals(n + ' text after dyn array 2', 'abc^[123]^[456]', b.Text);
+  //AssertEqualsLc(n + ' text after dyn array 2', 'TFooA(abc^[123])^[456]', b.Text);
+  AssertEqualsLc(n + ' text after dyn array 2', 'abc^[123]^[456]', b.Text);
 
   n := 'abc[123][456]';
   InitExpr(n, b, r, v);
   r^.Result := ParseTypeFromGdb('type = array [3..1000] of TFooA');
   ContinueExpr(b, r, v);
   AssertTrue(n + ' Needexp after stat array 1', v);
-  //AssertTrue(n + ' ptype 2a', (r <> nil) and (r^.Request = 'ptype TFooA(abc[123])'));
-  AssertTrue(n + ' ptype 2a', (r <> nil) and (r^.Request = 'ptype abc[3]'));
+  //AssertTrue(n + ' ptype 2a', (r <> nil) and (LowerCase(r^.Request) = 'ptype TFooA(abc[123])'));
+  AssertTrue(n + ' ptype 2a', (r <> nil) and (LowerCase(r^.Request) = 'ptype abc[3]'));
   r^.Result := ParseTypeFromGdb('type = ^(array [0..-1] of TFoo)');
   ContinueExpr(b, r, v);
   AssertTrue(n + ' Needexp after stat,dyn array 2', not v);
-  //AssertEquals(n + ' text after dyn array 2', 'TFooA(abc[123])^[456]', b.Text);
-  AssertEquals(n + ' text after dyn array 2', 'abc[123]^[456]', b.Text);
+  //AssertEqualsLc(n + ' text after dyn array 2', 'TFooA(abc[123])^[456]', b.Text);
+  AssertEqualsLc(n + ' text after dyn array 2', 'abc[123]^[456]', b.Text);
 
   n := 'abc[123][456]';
   InitExpr(n, b, r, v);
   r^.Result := ParseTypeFromGdb('type = ^(array [0..-1] of TFooA)');
   ContinueExpr(b, r, v);
   AssertTrue(n + ' Needexp after dyn array 1', v);
-  //AssertTrue(n + ' ptype 2b', (r <> nil) and (r^.Request = 'ptype TFooA(abc^[123])'));
-  AssertTrue(n + ' ptype 2b', (r <> nil) and (r^.Request = 'ptype abc^[0]'));
+  //AssertTrue(n + ' ptype 2b', (r <> nil) and (LowerCase(r^.Request) = 'ptype TFooA(abc^[123])'));
+  AssertTrue(n + ' ptype 2b', (r <> nil) and (LowerCase(r^.Request) = 'ptype abc^[0]'));
   r^.Result := ParseTypeFromGdb('type = array [0..1000] of TFoo');
   ContinueExpr(b, r, v);
   AssertTrue(n + ' Needexp after dyn,stat array 2', not v);
-  //AssertEquals(n + ' text after dyn array 2', 'TFooA(abc^[123])[456]', b.Text);
-  AssertEquals(n + ' text after dyn array 2', 'abc^[123][456]', b.Text);
+  //AssertEqualsLc(n + ' text after dyn array 2', 'TFooA(abc^[123])[456]', b.Text);
+  AssertEqualsLc(n + ' text after dyn array 2', 'abc^[123][456]', b.Text);
 
 
 
@@ -746,7 +750,7 @@ begin
   r^.Result := ParseTypeFromGdb('type = ^^(array [0..-1] of TRECFORARRAY1)');
   ContinueExpr(b, r, v);
   AssertTrue(n + 'No Need expr, after ^^ dyn array 1', not v);
-  AssertEquals(n + ' text after ^^ dyn array', '^^TRECFORARRAY1(qwe)[1][2]', b.Text);
+  AssertEqualsLc(n + ' text after ^^ dyn array', '^^TRECFORARRAY1(qwe)[1][2]', b.Text);
 
   n := 'qwe[3][2].a';
   InitExpr(n, b, r, v);
@@ -754,7 +758,7 @@ begin
   r^.Result := ParseTypeFromGdb('type = array [3..5] of ^(array of TRECFORARRAY1)');
   ContinueExpr(b, r, v);
   AssertTrue(n + 'No Need expr, after stat dyn array 1', not v);
-  AssertEquals(n + ' text after stat dyn array', 'TRECFORARRAY1(qwe[3]^[2]).a', b.Text);
+  AssertEqualsLc(n + ' text after stat dyn array', 'TRECFORARRAY1(qwe[3]^[2]).a', b.Text);
 
 
   n := 'qwe[3]';
@@ -766,26 +770,26 @@ begin
   r^.Result := ParseTypeFromGdb('type = char');
   ContinueExpr(b, r, v);
   AssertTrue(n + 'No Need expr', not v);
-  AssertEquals(n + ' text after', 'qwe[3]', b.Text);
+  AssertEqualsLc(n + ' text after', 'qwe[3]', b.Text);
   AssertEquals(n + ' maybe string ', True, b.MayNeedStringFix);
-  AssertEquals(n + ' text after as string', 'qwe[3-1]', b.TextStrFixed);
+  AssertEqualsLc(n + ' text after as string', 'qwe[3-1]', b.TextStrFixed);
 
 
   n := 'abc()[123]';
   InitExpr(n, b, r, v);
   AssertTrue(n + ' is array', b.Parts[0] is TGDBExpressionPartArray);
-  AssertTrue(n + ' ptype', (r <> nil) and (r^.Request = 'ptype abc()'));
+  AssertTrue(n + ' ptype', (r <> nil) and (LowerCase(r^.Request) = 'ptype abc()'));
 
 
   n := 'abc(x[1])[123]';
   InitExpr(n, b, r, v);
   AssertTrue(n + ' is array', b.Parts[0] is TGDBExpressionPartArray);
   AssertTrue(n + ' r.next', (r <> nil) and (r^.Next = nil));
-  AssertTrue(n + ' ptype', (r <> nil) and (r^.Request = 'ptype x')); // cant eval the outer array yet
+  AssertTrue(n + ' ptype', (r <> nil) and (LowerCase(r^.Request) = 'ptype x')); // cant eval the outer array yet
 
   r^.Result := ParseTypeFromGdb('type = array [0..1000] of TFoo');
   ContinueExpr(b, r, v);
-  AssertTrue(n + ' ptype outer ', (r <> nil) and (r^.Request = 'ptype abc(x[0])'));
+  AssertTrue(n + ' ptype outer ', (r <> nil) and (LowerCase(r^.Request) = 'ptype abc(x[0])'));
 
 
   n := 'abc()[x[123]]';
@@ -802,7 +806,7 @@ begin
 
   n := 'abc[1,2,3].x[1]';
   InitExpr(n, b, r, v, 'abc[1][2][3].x[1]');
-  AssertEquals(n+' toSkipArrayIdx', 'abc[0][0][0].x[0]', b.TextEx[[toSkipArrayIdx]]);
+  AssertEqualsLc(n+' toSkipArrayIdx', 'abc[0][0][0].x[0]', b.TextEx[[toSkipArrayIdx]]);
 
   n := 'abc[1,2,3].x and abc[1,2][3].y';
   InitExpr(n, b, r, v, 'abc[1][2][3].x and abc[1][2][3].y');
