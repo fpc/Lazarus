@@ -190,7 +190,9 @@ type
     function GetApplicationTitleStatement(StringConstStartPos, EndPos: integer;
           var Title: string): boolean;
     function SetApplicationTitleStatement(const NewTitle: string;
-          SourceChangeCache: TSourceChangeCache): boolean;
+          SourceChangeCache: TSourceChangeCache;
+          const SpaceCharBeforeSymbol: string = '';
+          const SpaceCharAfterSymbol: string = ''): boolean;
     function RemoveApplicationTitleStatement(
           SourceChangeCache: TSourceChangeCache): boolean;
 
@@ -3015,7 +3017,9 @@ begin
 end;
 
 function TStandardCodeTool.SetApplicationTitleStatement(const NewTitle: string;
-  SourceChangeCache: TSourceChangeCache): boolean;
+  SourceChangeCache: TSourceChangeCache;
+  const SpaceCharBeforeSymbol: string = '';
+  const SpaceCharAfterSymbol: string = ''): boolean;
 var
   StartPos, StringConstStartPos, EndPos: integer;
   OldExists: Boolean;
@@ -3044,7 +3048,7 @@ begin
     Indent:=Beauty.GetLineIndent(Src,StartPos)+Beauty.Indent;
   end;
   // create statement
-  NewStatement:='Application.Title:='+StringToPascalConst(NewTitle)+';';
+  NewStatement:='Application.Title'+SpaceCharBeforeSymbol+':='+SpaceCharAfterSymbol+StringToPascalConst(NewTitle)+';';
   NewStatement:=Beauty.BeautifyStatement(NewStatement,Indent);
   SourceChangeCache.MainScanner:=Scanner;
   if not SourceChangeCache.Replace(gtNewLine,gtNewLine,StartPos,EndPos,

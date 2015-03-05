@@ -1587,7 +1587,7 @@ begin
     begin
     NewSource.Add('  // quick check parameters');
     NewSource.Add('  ErrorMsg'+SpaceCharBeforeSymbols+':='+SpaceCharAfterSymbols+'CheckOptions(''h'',''help'');');
-    NewSource.Add('  if ErrorMsg<>'''' then begin');
+    NewSource.Add('  if ErrorMsg'+SpaceCharBeforeSymbols+'<>'+SpaceCharAfterSymbols+''''' then begin');
     NewSource.Add('    ShowException(Exception.Create(ErrorMsg));');
     NewSource.Add('    Terminate;');
     NewSource.Add('    Exit;');
@@ -1645,7 +1645,7 @@ begin
     begin
     AProject.Flags:=AProject.Flags+[pfMainUnitHasTitleStatement];
     AProject.Title:=T;
-    NewSource.Add('  Application.Title'+SpaceCharBeforeSymbols+':='+SpaceCharBeforeSymbols+''''+T+''';');
+    NewSource.Add('  Application.Title'+SpaceCharBeforeSymbols+':='+SpaceCharAfterSymbols+''''+T+''';');
     end;
   NewSource.Add('  Application.Run;');
   NewSource.Add('  Application.Free;');

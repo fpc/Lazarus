@@ -752,7 +752,9 @@ type
     function GetApplicationTitleStatement(Code: TCodeBuffer;
           var Title: string): boolean;
     function SetApplicationTitleStatement(Code: TCodeBuffer;
-          const NewTitle: string): boolean;
+      const NewTitle: string;
+      const SpaceCharBeforeSymbol: string = '';
+      const SpaceCharAfterSymbol: string = ''): boolean;
     function RemoveApplicationTitleStatement(Code: TCodeBuffer): boolean;
 
     // forms
@@ -5429,7 +5431,9 @@ begin
 end;
 
 function TCodeToolManager.SetApplicationTitleStatement(Code: TCodeBuffer;
-  const NewTitle: string): boolean;
+  const NewTitle: string;
+  const SpaceCharBeforeSymbol: string = '';
+  const SpaceCharAfterSymbol: string = ''): boolean;
 begin
   Result:=false;
   {$IFDEF CTDEBUG}
@@ -5438,7 +5442,9 @@ begin
   if not InitCurCodeTool(Code) then exit;
   try
     Result:=FCurCodeTool.SetApplicationTitleStatement(NewTitle,
-                                                      SourceChangeCache);
+                                                      SourceChangeCache,
+                                                      SpaceCharBeforeSymbol,
+                                                      SpaceCharAfterSymbol);
   except
     on e: Exception do Result:=HandleException(e);
   end;
