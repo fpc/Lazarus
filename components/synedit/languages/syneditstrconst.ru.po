@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2015-01-28 01:17+0300\n"
+"PO-Revision-Date: 2015-03-06 00:09+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -488,7 +488,7 @@ msgstr "Быстрая вставка выделенного"
 
 #: syneditstrconst.syns_emcpluginmulticarettogglecaret
 msgid "Toggle extra caret"
-msgstr ""
+msgstr "Включить или выключить дополнительный курсор"
 
 #: syneditstrconst.syns_emcselection_opt
 msgid "Mode,Begin,Continue"
