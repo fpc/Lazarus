@@ -74,6 +74,10 @@ msgstr "履歴を後進"
 msgid "History forward"
 msgstr "履歴を前進"
 
+#: lazarusidestrconsts.dlfmousesimplebuttonmulticarettoggle
+msgid "Toggle extra Caret"
+msgstr ""
+
 #: lazarusidestrconsts.dlfmousesimplebuttonnothing
 msgctxt "lazarusidestrconsts.dlfmousesimplebuttonnothing"
 msgid "Nothing/Default"
@@ -2501,6 +2505,10 @@ msgctxt "lazarusidestrconsts.dlgmsgs"
 msgid "Messages"
 msgstr "メッセージ"
 
+#: lazarusidestrconsts.dlgmulticaretoncolumnselection
+msgid "Enable multi caret for column selection"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmultiselect
 msgid "Multi Select"
 msgstr "複数選択"
@@ -3095,6 +3103,10 @@ msgstr "ガイドラインに留まる"
 
 #: lazarusidestrconsts.dlgsnapguidelineshint
 msgid "When a control is close to being aligned with another control, it snaps to the aligned position."
+msgstr ""
+
+#: lazarusidestrconsts.dlgsourceedittabmultiline
+msgid "Multiline tabs"
 msgstr ""
 
 #: lazarusidestrconsts.dlgspacenotcosmos

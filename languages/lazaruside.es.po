@@ -74,6 +74,10 @@ msgstr "Retroceder en el historial"
 msgid "History forward"
 msgstr "Avanzar en el historial"
 
+#: lazarusidestrconsts.dlfmousesimplebuttonmulticarettoggle
+msgid "Toggle extra Caret"
+msgstr ""
+
 #: lazarusidestrconsts.dlfmousesimplebuttonnothing
 msgctxt "lazarusidestrconsts.dlfmousesimplebuttonnothing"
 msgid "Nothing/Default"
@@ -2617,6 +2621,10 @@ msgctxt "lazarusidestrconsts.dlgmsgs"
 msgid "Messages"
 msgstr "Mensajes"
 
+#: lazarusidestrconsts.dlgmulticaretoncolumnselection
+msgid "Enable multi caret for column selection"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmultiselect
 msgid "Multi Select"
 msgstr "Multiselección"
@@ -3263,6 +3271,10 @@ msgstr "Ajustar a líneas guía"
 
 #: lazarusidestrconsts.dlgsnapguidelineshint
 msgid "When a control is close to being aligned with another control, it snaps to the aligned position."
+msgstr ""
+
+#: lazarusidestrconsts.dlgsourceedittabmultiline
+msgid "Multiline tabs"
 msgstr ""
 
 #: lazarusidestrconsts.dlgspacenotcosmos

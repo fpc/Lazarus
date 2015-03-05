@@ -77,6 +77,10 @@ msgstr "Atgal praeityje"
 msgid "History forward"
 msgstr "Pirmyn praeityje"
 
+#: lazarusidestrconsts.dlfmousesimplebuttonmulticarettoggle
+msgid "Toggle extra Caret"
+msgstr ""
+
 #: lazarusidestrconsts.dlfmousesimplebuttonnothing
 msgctxt "lazarusidestrconsts.dlfmousesimplebuttonnothing"
 msgid "Nothing/Default"
@@ -2531,6 +2535,10 @@ msgctxt "lazarusidestrconsts.dlgmsgs"
 msgid "Messages"
 msgstr "Pranešimai"
 
+#: lazarusidestrconsts.dlgmulticaretoncolumnselection
+msgid "Enable multi caret for column selection"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmultiselect
 msgid "Multi Select"
 msgstr "Pažymėti kelis"
@@ -3129,6 +3137,10 @@ msgstr "Pritraukti prie orientavimo linijų"
 
 #: lazarusidestrconsts.dlgsnapguidelineshint
 msgid "When a control is close to being aligned with another control, it snaps to the aligned position."
+msgstr ""
+
+#: lazarusidestrconsts.dlgsourceedittabmultiline
+msgid "Multiline tabs"
 msgstr ""
 
 #: lazarusidestrconsts.dlgspacenotcosmos

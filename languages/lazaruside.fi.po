@@ -74,6 +74,10 @@ msgstr "Historia takaisin"
 msgid "History forward"
 msgstr "Historia eteenpäin"
 
+#: lazarusidestrconsts.dlfmousesimplebuttonmulticarettoggle
+msgid "Toggle extra Caret"
+msgstr ""
+
 #: lazarusidestrconsts.dlfmousesimplebuttonnothing
 msgctxt "lazarusidestrconsts.dlfmousesimplebuttonnothing"
 msgid "Nothing/Default"
@@ -2487,6 +2491,10 @@ msgctxt "lazarusidestrconsts.dlgmsgs"
 msgid "Messages"
 msgstr "Viestit"
 
+#: lazarusidestrconsts.dlgmulticaretoncolumnselection
+msgid "Enable multi caret for column selection"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmultiselect
 msgid "Multi Select"
 msgstr "Monivalinta"
@@ -3075,6 +3083,10 @@ msgstr "Kiinnity kohdistusviivojen avulla"
 #: lazarusidestrconsts.dlgsnapguidelineshint
 msgid "When a control is close to being aligned with another control, it snaps to the aligned position."
 msgstr "Kun kontrolli on melkein linjassa toisen kontrollin kanssa, se napsahtaa samaan linjaan."
+
+#: lazarusidestrconsts.dlgsourceedittabmultiline
+msgid "Multiline tabs"
+msgstr ""
 
 #: lazarusidestrconsts.dlgspacenotcosmos
 msgctxt "lazarusidestrconsts.dlgspacenotcosmos"

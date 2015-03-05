@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2015-03-03 01:13+0300\n"
+"PO-Revision-Date: 2015-03-06 00:09+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -74,6 +74,10 @@ msgstr "Перейти по истории назад"
 #: lazarusidestrconsts.dlfmousesimplebuttonhistforw
 msgid "History forward"
 msgstr "Перейти по истории вперёд"
+
+#: lazarusidestrconsts.dlfmousesimplebuttonmulticarettoggle
+msgid "Toggle extra Caret"
+msgstr "Включить или выключить дополнительный курсор"
 
 #: lazarusidestrconsts.dlfmousesimplebuttonnothing
 msgctxt "lazarusidestrconsts.dlfmousesimplebuttonnothing"
@@ -2495,6 +2499,10 @@ msgctxt "lazarusidestrconsts.dlgmsgs"
 msgid "Messages"
 msgstr "Сообщения"
 
+#: lazarusidestrconsts.dlgmulticaretoncolumnselection
+msgid "Enable multi caret for column selection"
+msgstr "Включить несколько курсоров при выделении столбца"
+
 #: lazarusidestrconsts.dlgmultiselect
 msgid "Multi Select"
 msgstr "Множественное выделение"
@@ -3084,6 +3092,10 @@ msgstr "Выравнивать по линиям позиционировани�
 #: lazarusidestrconsts.dlgsnapguidelineshint
 msgid "When a control is close to being aligned with another control, it snaps to the aligned position."
 msgstr "Когда компонент уже почти выровнен с другим, он перемещается в выровненное положение"
+
+#: lazarusidestrconsts.dlgsourceedittabmultiline
+msgid "Multiline tabs"
+msgstr "Многострочный список вкладок"
 
 #: lazarusidestrconsts.dlgspacenotcosmos
 msgctxt "lazarusidestrconsts.dlgspacenotcosmos"
