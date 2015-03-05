@@ -57,6 +57,7 @@ function Quote(const AValue: String; AForce: Boolean=False): String;
 function ConvertGdbPathAndFile(const AValue: String): String; // fix path, delim, unescape, and to utf8
 function ParseGDBString(const AValue: String): String; // remove quotes(') and convert #dd chars: #9'ab'#9'x'
 function GetLeadingAddr(var AValue: String; out AnAddr: TDBGPtr; ARemoveFromValue: Boolean = False): Boolean;
+function UpperCaseSymbols(s: string): string;
 
 procedure SmartWriteln(const s: string);
 
@@ -325,7 +326,7 @@ begin
   SetLength(Result, Dst - @Result[1]); // adjust to actual length
 end;
 
-function Unquote(const AValue: String): String;
+function UnQuote(const AValue: String): String;
 var
   len: Integer;
 begin
@@ -427,6 +428,35 @@ begin
   if ARemoveFromValue then begin
     if (i < length(AValue)) and (AValue[i+1] in [' ']) then inc(i);
     delete(AValue, 1, i);
+  end;
+end;
+
+function UpperCaseSymbols(s: string): string;
+var
+  i, l: Integer;
+begin
+  Result := s;
+  i := 1;
+  l := Length(Result);
+  while (i <= l) do begin
+    if Result[i] = '''' then begin
+      inc(i);
+      while (i <= l) and (Result[i] <> '''') do
+        inc(i);
+    end
+    else
+    if Result[i] = '"' then begin
+      inc(i);
+      while (i < l) and (Result[i] <> '"') do
+        inc(i);
+    end;
+    (* uppercase due to https://sourceware.org/bugzilla/show_bug.cgi?id=17835
+       gdb 7.7 and 7.8 fail to find members, if lowercased
+       Alternative prefix with "self." if gdb returns &"Type TCLASSXXXX has no component named EXPRESSION.\n"
+    *)
+    if (i<=l) and  (Result[i] in ['a'..'z']) then
+      Result[i] := UpperCase(Result[i])[1];
+    inc(i);
   end;
 end;
 

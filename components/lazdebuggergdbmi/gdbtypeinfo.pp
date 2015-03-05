@@ -1752,8 +1752,28 @@ begin
   EndPtr := AText + ATextLen;
 
 
-  while (CurPtr < EndPtr) and not(CurPtr^ in ['[', '(', ',', '%', '&', '$', '0']) do inc(CurPtr);
-  if CurPtr = EndPtr then exit; // no fixup needed
+  while (CurPtr < EndPtr) and not(CurPtr^ in ['[', '(', ',', '%', '&', '$', '0', '''', '"']) do begin
+    if CurPtr^ = '''' then begin
+      inc(CurPtr);
+      while (CurPtr < EndPtr) and (CurPtr^ <> '''') do
+        inc(CurPtr);
+    end
+    else
+    if CurPtr^ = '"' then begin
+      inc(CurPtr);
+      while (CurPtr < EndPtr) and (CurPtr^ <> '"') do
+        inc(CurPtr);
+    end;
+    (* uppercase due to https://sourceware.org/bugzilla/show_bug.cgi?id=17835
+       gdb 7.7 and 7.8 fail to find members, if lowercased
+       Alternative prefix with "self." if gdb returns &"Type TCLASSXXXX has no component named EXPRESSION.\n"
+    *)
+    if (CurPtr < EndPtr) and (CurPtr^ in ['a'..'z']) then
+      CurPtr^ := UpperCase(CurPtr^)[1];
+    inc(CurPtr);
+  end;
+  if CurPtr = EndPtr then
+    exit; // no fixup needed
 
   CurPtr := AText;
   CurList:= TGDBExpressionPartList.Create;
@@ -2027,6 +2047,7 @@ end;
 constructor TGDBExpression.Create(ATextStr: String);
 begin
   FTextStr := ATextStr;
+  UniqueString(FTextStr);
   Create(PChar(FTextStr), length(FTextStr));
 end;
 
@@ -2233,11 +2254,7 @@ begin
   Create(skSimple, ''); // initialize
   FInternalTypeName := '';
   FEvalError := False;
-  (* uppercase due to https://sourceware.org/bugzilla/show_bug.cgi?id=17835
-     gdb 7.7 and 7.8 fail to find members, if lowercased
-     Alternative prefix with "self." if gdb returns &"Type TCLASSXXXX has no component named EXPRESSION.\n"
-  *)
-  FExpression := UpperCase(AnExpression);
+  FExpression := AnExpression;
   FOrigExpression := FExpression;
   FCreationFlags := AFlags;
   FExprEvaluateFormat := AFormat;
