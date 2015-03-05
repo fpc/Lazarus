@@ -41,7 +41,8 @@ uses
   Controls, Forms, SynRegExpr, FileProcs, Laz2_XMLCfg, LazUTF8,
   CompOptsIntf, ProjectIntf, LazIDEIntf,
   ProjectResourcesIntf,
-  frmCustomApplicationOptions, PublishModule, IDEProcs, LazarusIDEStrConsts;
+  frmCustomApplicationOptions, PublishModule, IDEProcs, LazarusIDEStrConsts,
+  CodeToolsOptions;
 
 type
   TOnLoadSaveFilename = procedure(var Filename:string; Load:boolean) of object;
@@ -382,7 +383,6 @@ type
 
 
 implementation
-
 
 { TProjectBookmark }
 
@@ -1291,7 +1291,7 @@ begin
     +'  { you can add units after this };'+LineEnding
     +LineEnding
     +'begin'+LineEnding
-    +'  RequireDerivedFormResource:=True;'+LineEnding
+    +'  RequireDerivedFormResource'+SpaceCharBeforeSymbols+':='+SpaceCharAfterSymbols+'True;'+LineEnding
     +'  Application.Initialize;'+LineEnding
     +'  Application.Run;'+LineEnding
     +'end.'+LineEnding
@@ -1586,7 +1586,7 @@ begin
   if CO then
     begin
     NewSource.Add('  // quick check parameters');
-    NewSource.Add('  ErrorMsg:=CheckOptions(''h'',''help'');');
+    NewSource.Add('  ErrorMsg'+SpaceCharBeforeSymbols+':='+SpaceCharAfterSymbols+'CheckOptions(''h'',''help'');');
     NewSource.Add('  if ErrorMsg<>'''' then begin');
     NewSource.Add('    ShowException(Exception.Create(ErrorMsg));');
     NewSource.Add('    Terminate;');
@@ -1616,7 +1616,7 @@ begin
     NewSource.Add('begin');
     NewSource.Add('  inherited Create(TheOwner);');
     If CS then
-    NewSource.Add('  StopOnException:=True;');
+    NewSource.Add('  StopOnException'+SpaceCharBeforeSymbols+':='+SpaceCharAfterSymbols+'True;');
     NewSource.Add('end;');
     NewSource.Add('');
     end;
@@ -1633,19 +1633,19 @@ begin
     NewSource.Add('procedure '+C+'.WriteHelp;');
     NewSource.Add('begin');
     NewSource.Add('  { add your help code here }');
-    NewSource.Add('  writeln(''Usage: '',ExeName,'' -h'');');
+    NewSource.Add('  Writeln(''Usage: '',ExeName,'' -h'');');
     NewSource.Add('end;');
     NewSource.Add('');
     end;
   NewSource.Add('var');
   NewSource.Add('  Application: '+C+';');
   NewSource.Add('begin');
-  NewSource.Add('  Application:='+C+'.Create(nil);');
+  NewSource.Add('  Application'+SpaceCharBeforeSymbols+':='+SpaceCharAfterSymbols+C+'.Create(nil);');
   If (T<>'') then
     begin
     AProject.Flags:=AProject.Flags+[pfMainUnitHasTitleStatement];
     AProject.Title:=T;
-    NewSource.Add('  Application.Title:='''+T+''';');
+    NewSource.Add('  Application.Title'+SpaceCharBeforeSymbols+':='+SpaceCharBeforeSymbols+''''+T+''';');
     end;
   NewSource.Add('  Application.Run;');
   NewSource.Add('  Application.Free;');
