@@ -78,6 +78,7 @@ begin
         DataSet.GetFieldNames(List)
       else
       begin
+        DataSet.FieldDefs.Update;
         for i := 0 to DataSet.FieldDefs.Count - 1 do
           List.Add(DataSet.FieldDefs[i].Name);
       end;
