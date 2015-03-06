@@ -38,12 +38,8 @@ See http://www.gnu.org/licenses/gpl.html
 interface
 
 uses
-  { delphi }
-  {$ifndef fpc}
-  Windows, ShellAPI,
-  {$endif}
-  SysUtils, Classes, Controls, Forms,
-  ComCtrls, ExtCtrls, StdCtrls,
+  SysUtils, Classes, Controls, Forms, ComCtrls, ExtCtrls, StdCtrls,
+  LCLIntf, LCLType,
   { local }
   ParseTreeNode;
 
@@ -319,15 +315,16 @@ end;
 procedure TfrmShowParseTree.FormKeyUp(Sender: TObject; var Key: word;
   Shift: TShiftState);
 begin
-{$ifndef fpc}
-  if Key = VK_F1 then
-    try
-      Application.HelpContext(HELP_MAIN);
-    except
-      if FileExists(Application.HelpFile) then
-        ShellExecute(Handle, 'open', PChar(Application.HelpFile), nil, nil, SW_SHOWNORMAL);
-    end;
-{$endif}
+  case Key of
+    VK_F1:
+      try
+        Application.HelpContext(HELP_MAIN);
+      except
+        if FileExists(Application.HelpFile) then
+          OpenDocument(Application.HelpFile);
+      end;
+    VK_ESCAPE: Close;
+  end;
 end;
 
 end.
