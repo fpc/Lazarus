@@ -770,7 +770,6 @@ type
     procedure LockRelease;
     procedure UnlockRelease;
 
-    function  ConvertPascalExpression(var AExpression: String): Boolean;
     // ---
     procedure ClearSourceInfo;
     function  FindBreakpoint(const ABreakpoint: Integer): TDBGBreakPoint;
@@ -8968,157 +8967,6 @@ begin
   FSourceNames.Clear;
 end;
 
-function TGDBMIDebugger.ConvertPascalExpression(var AExpression: String): Boolean;
-var
-  R: String;
-  P: PChar;
-  InString, WasString, IsText, ValIsChar: Boolean;
-  n: Integer;
-  ValMode: Char;
-  Value: QWord;
-
-  function AppendValue: Boolean;
-  var
-    S: String;
-  begin
-    if ValMode = #0 then Exit(True);
-    if not (ValMode in ['h', 'd', 'o', 'b']) then Exit(False);
-
-    if ValIsChar
-    then begin
-      if not IsText
-      then begin
-        R := R + '"';
-        IsText := True;
-      end;
-      R := R + '\' + OctStr(Value, 3);
-      ValIsChar := False;
-    end
-    else begin
-      if IsText
-      then begin
-        R := R + '"';
-        IsText := False;
-      end;
-      Str(Value, S);
-      R := R + S;
-    end;
-    Result := True;
-    ValMode := #0;
-  end;
-
-begin
-  R := '';
-  Instring := False;
-  WasString := False;
-  IsText := False;
-  ValIsChar := False;
-  ValMode := #0;
-  Value := 0;
-
-  P := PChar(AExpression);
-  for n := 1 to Length(AExpression) do
-  begin
-    if InString
-    then begin
-      case P^ of
-        '''': begin
-          InString := False;
-          // delay setting terminating ", more characters defined through # may follow
-          WasString := True;
-        end;
-        #0..#31,
-        '"', '\',
-        #128..#255: begin
-          R := R + '\' + OctStr(Ord(P^), 3);
-        end;
-      else
-        R := R + P^;
-      end;
-      Inc(P);
-      Continue;
-    end;
-
-    case P^ of
-      '''': begin
-        if WasString
-        then begin
-          R := R + '\' + OctStr(Ord(''''), 3)
-        end
-        else begin
-          if not AppendValue then Exit(False);
-          if not IsText
-          then R := R + '"';
-        end;
-        IsText := True;
-        InString := True;
-      end;
-      '#': begin
-        if not AppendValue then Exit(False);
-        Value := 0;
-        ValMode := 'D';
-        ValIsChar := True;
-      end;
-      '$', '&', '%': begin
-        if not (ValMode in [#0, 'D']) then Exit(False);
-        ValMode := P^;
-      end;
-    else
-      case ValMode of
-        'D', 'd': begin
-          case P^ of
-            '0'..'9': Value := Value * 10 + Ord(P^) - Ord('0');
-          else
-            Exit(False);
-          end;
-          ValMode := 'd';
-        end;
-        '$', 'h': begin
-          case P^ of
-            '0'..'9': Value := Value * 16 + Ord(P^) - Ord('0');
-            'a'..'f': Value := Value * 16 + Ord(P^) - Ord('a');
-            'A'..'F': Value := Value * 16 + Ord(P^) - Ord('A');
-          else
-            Exit(False);
-          end;
-          ValMode := 'h';
-        end;
-        '&', 'o': begin
-          case P^ of
-            '0'..'7': Value := Value * 8 + Ord(P^) - Ord('0');
-          else
-            Exit(False);
-          end;
-          ValMode := 'o';
-        end;
-        '%', 'b': begin
-          case P^ of
-            '0': Value := Value shl 1;
-            '1': Value := Value shl 1 or 1;
-          else
-            Exit(False);
-          end;
-          ValMode := 'b';
-        end;
-      else
-        if IsText
-        then begin
-          R := R + '"';
-          IsText := False;
-        end;
-        R := R + P^;
-      end;
-    end;
-    WasString := False;
-    Inc(p);
-  end;
-
-  if not AppendValue then Exit(False);
-  if IsText then R := R + '"';
-  AExpression := R;
-  Result := True;
-end;
-
 function TGDBMIDebugger.StartDebugging(AContinueCommand: TGDBMIExecCommandType): Boolean;
 begin
   Result := StartDebugging(TGDBMIDebuggerCommandExecute.Create(Self, AContinueCommand));
@@ -9587,7 +9435,7 @@ var
   S: String;
 begin
   S := Expression;
-  if TGDBMIDebugger(Debugger).ConvertPascalExpression(S)
+  if ConvertPascalExpression(S)
   then FParsedExpression := S
   else FParsedExpression := Expression;
   if (FBreakID = 0) and Enabled and

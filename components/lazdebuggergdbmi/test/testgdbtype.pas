@@ -18,6 +18,7 @@ type
     procedure TestPTypeParser;
     procedure TestExpressionBreaker;
     procedure TestUnEscape;
+    procedure TestConvertPascalExpression;
   end; 
 
 implementation
@@ -827,6 +828,23 @@ begin
   AssertEquals('4:a\102\tc\\d', 'aB  c\d', UnEscapeBackslashed('a\102\tc\\d', [uefOctal, uefTab],4));
   AssertEquals('a\102\tc\\d', 'aB\tc\d',   UnEscapeBackslashed('a\102\tc\\d', [uefOctal],4));
   AssertEquals('4:a\102\tc\\d (no oct)', 'a\102   c\d', UnEscapeBackslashed('a\102\tc\\d', [uefTab],4));
+end;
+
+procedure TTestGdbType.TestConvertPascalExpression;
+  procedure AssertEqualsConv(n, s1, s2: string);
+  begin
+    AssertTrue(n, ConvertPascalExpression(s2));
+    AssertEquals(n, s1, s2);
+  end;
+begin
+  AssertEqualsConv('', 'a=1', 'a=1');
+  AssertEqualsConv('', 'a="11"', 'a=''11''');
+  AssertEqualsConv('', 'a="1\0471"', 'a=''1''''1''');
+  AssertEqualsConv('', 'a="11"', 'a="11"');
+  AssertEqualsConv('', 'a="11\061"', 'a=''11''#49');
+  AssertEqualsConv('', 'a="1\061"', 'a=''1''#49');
+
+  AssertEqualsConv('', 'a=''1''', 'a=''1''');
 end;
 
 
