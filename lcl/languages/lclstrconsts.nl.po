@@ -612,7 +612,7 @@ msgstr "Kan geen rijen invoegen als het rooster geen kolommen heeft"
 
 #: lclstrconsts.rsgridhasnorows
 msgid "Cannot insert columns into a grid when it has no rows"
-msgstr "Kan geen kolommen invogen als het rooster geen rijen heeft"
+msgstr "Kan geen kolommen invoegen als het rooster geen rijen heeft"
 
 #: lclstrconsts.rsgridindexoutofrange
 msgid "Grid index out of range."
