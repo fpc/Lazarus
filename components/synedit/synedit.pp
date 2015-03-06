@@ -512,6 +512,10 @@ type
     FBookMarks: array[0..9] of TSynEditMark;
     fMouseDownX: integer;
     fMouseDownY: integer;
+    FMouseDownButton: TMouseButton;
+    FMouseDownShift: TShiftState;
+    FConfirmMouseDownMatchAct: TSynEditMouseAction;
+    FConfirmMouseDownMatchFound: Boolean;
     fBookMarkOpt: TSynBookMarkOpt;
     FMouseWheelAccumulator, FMouseWheelLinesAccumulator: integer;
     fHideSelection: boolean;
@@ -2993,6 +2997,8 @@ var
   i, j: integer;
   p1, p2: TPoint;
   s: String;
+  AnActionResultDummy: TSynEditMouseActionResult;
+  DownMisMatch: Boolean;
 begin
   AnAction := nil;
   Result := False;
@@ -3000,6 +3006,46 @@ begin
     AnAction := AnActionList.FindCommand(AnInfo, AnAction);
 
     if AnAction = nil then exit(False);
+
+    if (FConfirmMouseDownMatchAct <> nil) then begin
+      // simulated up click at the coordinates of the down click
+      if FConfirmMouseDownMatchAct = AnAction then begin
+        FConfirmMouseDownMatchFound := True;
+        exit(True);
+      end;
+      if not(crLastDownPosSearchAll in FConfirmMouseDownMatchAct.ButtonUpRestrictions) then
+        exit(True);
+
+      continue;
+    end;
+
+    if (AnAction.ClickDir = cdUp) and (AnAction.ButtonUpRestrictions - [crAllowFallback] <> []) then
+    begin
+      DownMisMatch := ( (crLastDownButton in AnAction.ButtonUpRestrictions) and
+                        (SynMouseButtonMap[FMouseDownButton] <> AnInfo.Button) ) or
+                      ( (crLastDownShift in AnAction.ButtonUpRestrictions) and
+                        (FMouseDownShift * [ssShift, ssAlt, ssCtrl, ssMeta, ssSuper, ssHyper, ssAltGr, ssCaps, ssNum, ssScroll]
+                         <> AnInfo.Shift * [ssShift, ssAlt, ssCtrl, ssMeta, ssSuper, ssHyper, ssAltGr, ssCaps, ssNum, ssScroll]) ) or
+                      ( (crLastDownPosSameLine in AnAction.ButtonUpRestrictions) and
+                        (PixelsToRowColumn(Point(fMouseDownX, fMouseDownY)).y <> AnInfo.NewCaret.LinePos) );
+
+      If (not DownMisMatch) and (crLastDownPos in AnAction.ButtonUpRestrictions) then begin
+        try
+          FConfirmMouseDownMatchAct := AnAction;
+          FConfirmMouseDownMatchFound := False;
+          // simulate up click at the coordinates of the down click
+          FindAndHandleMouseAction(AnInfo.Button, AnInfo.Shift, fMouseDownX, fMouseDownY, AnInfo.CCount, cdUp, AnActionResultDummy);
+        finally
+          FConfirmMouseDownMatchAct := nil;
+        end;
+        DownMisMatch := not FConfirmMouseDownMatchFound;
+      end;
+
+      If DownMisMatch then
+        exit(not(crAllowFallback in AnAction.ButtonUpRestrictions));
+    end;
+
+
     ACommand := AnAction.Command;
     AnInfo.CaretDone := False;
 
@@ -3382,6 +3428,8 @@ begin
   LastMouseCaret:=PixelsToRowColumn(Point(X,Y));
   fMouseDownX := X;
   fMouseDownY := Y;
+  FMouseDownButton := Button;
+  FMouseDownShift := Shift;
 
   fStateFlags := fStateFlags - [sfDblClicked, sfTripleClicked, sfQuadClicked,
                                 sfLeftGutterClick, sfRightGutterClick,

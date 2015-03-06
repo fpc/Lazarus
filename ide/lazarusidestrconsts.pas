@@ -5909,6 +5909,12 @@ resourcestring
   lisJumpToProcedure = 'Jump to procedure %s';
   lisFindDeclarationOf = 'Find Declaration of %s';
   lisInitializeLocalVariable = 'Initialize Local Variable';
+  synfMatchActionPosOfMouseDown = 'Match action pos of mouse down';
+  synfMatchActionLineOfMouseDown = 'Match action line of mouse down';
+  synfSearchAllActionOfMouseDown = 'Search all action of mouse down';
+  synfMatchActionButtonOfMouseDown = 'Match action button of mouse down';
+  synfMatchActionModifiersOfMouseDown = 'Match action modifiers of mouse down';
+  synfContinueWithNextMouseUpAction = 'Continue with next mouse up action';
 implementation
 
 end.

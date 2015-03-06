@@ -3326,6 +3326,7 @@ end;
 procedure TEditorMouseOptions.ResetGutterToDefault;
 var
   CDir: TSynMAClickDir;
+  R: TSynMAUpRestrictions;
 begin
   FGutterActions.Clear;
   FGutterActionsFold.Clear;
@@ -3342,37 +3343,39 @@ begin
   end;
 
   CDir := cdDown;
+  R := [];
   if FGutterLeft = moglUpClickAndSelect then begin
     CDir := cdUp;
+    R := crRestrictAll;
     with FGutterActions do begin
       AddCommand(emcStartSelections,   True, mbXLeft, ccAny, cdDown, [],               [ssShift], emcoSelectionStart);
       AddCommand(emcStartSelections,   True, mbXLeft, ccAny, cdDown, [ssShift],        [ssShift], emcoSelectionContinue);
     end;
   end;
   with FGutterActions do begin
-    AddCommand(emcOnMainGutterClick,   False, mbXLeft,   ccAny,    CDir, [], []);  // breakpoint
+    AddCommand(emcOnMainGutterClick,   False, mbXLeft,   ccAny,    CDir, R, [], []);  // breakpoint
   end;
   with FGutterActionsFold do begin
-    AddCommand(emcNone,                False, mbXLeft,   ccAny,    CDir, [], []);
+    AddCommand(emcNone,                False, mbXLeft,   ccAny,    CDir, R, [], []);
   end;
   with FGutterActionsFoldCol do begin
-    AddCommand(emcCodeFoldCollaps,     False, mbXLeft,   ccAny,    CDir, [ssAlt],   [ssAlt, SYNEDIT_LINK_MODIFIER], emcoCodeFoldCollapsOne);
-    AddCommand(emcCodeFoldExpand,      False, mbXLeft,   ccAny,    CDir, [SYNEDIT_LINK_MODIFIER],  [ssAlt, SYNEDIT_LINK_MODIFIER], emcoCodeFoldExpandAll);
-    AddCommand(emcCodeFoldExpand,      False, mbXLeft,   ccAny,    CDir, [],        [],              emcoCodeFoldExpandOne);
+    AddCommand(emcCodeFoldCollaps,     False, mbXLeft,   ccAny,    CDir, R, [ssAlt],   [ssAlt, SYNEDIT_LINK_MODIFIER], emcoCodeFoldCollapsOne);
+    AddCommand(emcCodeFoldExpand,      False, mbXLeft,   ccAny,    CDir, R, [SYNEDIT_LINK_MODIFIER],  [ssAlt, SYNEDIT_LINK_MODIFIER], emcoCodeFoldExpandAll);
+    AddCommand(emcCodeFoldExpand,      False, mbXLeft,   ccAny,    CDir, R, [],        [],              emcoCodeFoldExpandOne);
     // TODO: why depend on FTextMiddleClick?
     if FTextMiddleClick <> mbaNone then
-      AddCommand(emcCodeFoldCollaps,   False, mbXMiddle, ccAny,    CDir, [],       [],               emcoCodeFoldCollapsOne);
-    if CDir = cdUp then
-      AddCommand(emcNone,              False, mbXLeft,   ccAny,    cdDown, [], []);
+      AddCommand(emcCodeFoldCollaps,   False, mbXMiddle, ccAny,    CDir, R, [],       [],               emcoCodeFoldCollapsOne);
+    //if CDir = cdUp then
+    //  AddCommand(emcNone,              False, mbXLeft,   ccAny,    cdDown, [], []);
   end;
   with FGutterActionsFoldExp do begin
-    AddCommand(emcCodeFoldCollaps,     False, mbXLeft,   ccAny,    CDir, [],       [SYNEDIT_LINK_MODIFIER], emcoCodeFoldCollapsOne);
-    AddCommand(emcCodeFoldCollaps,     False, mbXLeft,   ccAny,    CDir, [SYNEDIT_LINK_MODIFIER], [SYNEDIT_LINK_MODIFIER], emcoCodeFoldCollapsAll);
+    AddCommand(emcCodeFoldCollaps,     False, mbXLeft,   ccAny,    CDir, R, [],       [SYNEDIT_LINK_MODIFIER], emcoCodeFoldCollapsOne);
+    AddCommand(emcCodeFoldCollaps,     False, mbXLeft,   ccAny,    CDir, R, [SYNEDIT_LINK_MODIFIER], [SYNEDIT_LINK_MODIFIER], emcoCodeFoldCollapsAll);
     // TODO: why depend on FTextMiddleClick?
     if FTextMiddleClick <> mbaNone then
-      AddCommand(emcCodeFoldCollaps,   False, mbXMiddle, ccAny,    CDir, [],       [],       emcoCodeFoldCollapsOne);
-    if CDir = cdUp then
-      AddCommand(emcNone,              False, mbXLeft,   ccAny,    cdDown, [], []);
+      AddCommand(emcCodeFoldCollaps,   False, mbXMiddle, ccAny,    CDir, R, [],       [],       emcoCodeFoldCollapsOne);
+    //if CDir = cdUp then
+    //  AddCommand(emcNone,              False, mbXLeft,   ccAny,    cdDown, [], []);
   end;
 
 end;
@@ -5621,6 +5624,12 @@ begin
     end;
     if ASynEdit.Gutter.LineNumberPart <> nil then begin
       ASynEdit.Gutter.LineNumberPart.MouseActions.Assign(FUserMouseSettings.GutterActionsLines);
+    end;
+    if ShowLineNumbers then begin // changes does the same as linenumbers
+      if ASynEdit.Gutter.ChangesPart<> nil then
+        ASynEdit.Gutter.ChangesPart.MouseActions.Assign(FUserMouseSettings.GutterActionsLines);
+      if (ASynEdit.Gutter.SeparatorPart <> nil) and (GutterSeparatorIndex = 2) then
+        ASynEdit.Gutter.SeparatorPart.MouseActions.Assign(FUserMouseSettings.GutterActionsLines);
     end;
   finally
     ASynEdit.EndUpdate;

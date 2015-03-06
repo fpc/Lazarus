@@ -56,9 +56,19 @@ type
   TSynMouseButton = LazSynEditMouseCmdsTypes.TSynMouseButton;
   TSynMAClickCount = (ccSingle, ccDouble, ccTriple, ccQuad, ccAny);
   TSynMAClickDir = (cdUp, cdDown);
+  TSynMAUpRestriction = ( // Restrict cdUp
+    crLastDownPos,                     // check if the lasth MouseDown had same Pos (as in would have triggered the same command)
+    crLastDownPosSameLine,             // check if the last dow
+    crLastDownPosSearchAll,            // allow to find downclick at lower priority or parent list
+    crLastDownButton, crLastDownShift, // check if the lasth MouseDown had same Button / Shift
+    crAllowFallback  // If action is restricted, continue search for up action in (fallback, or parent list)
+  );
+  TSynMAUpRestrictions = set of TSynMAUpRestriction;
   ESynMouseCmdError = class(Exception);
 
 const
+  crRestrictAll = [crLastDownPos, crLastDownPosSameLine, crLastDownButton, crLastDownShift];
+
   mbXLeft      =  LazSynEditMouseCmdsTypes.mbLeft;
   mbXRight     =  LazSynEditMouseCmdsTypes.mbRight;
   mbXMiddle    =  LazSynEditMouseCmdsTypes.mbMiddle;
@@ -100,6 +110,7 @@ type
 
   TSynEditMouseAction = class(TCollectionItem)
   private
+    FButtonUpRestrictions: TSynMAUpRestrictions;
     FClickDir: TSynMAClickDir;
     FIgnoreUpClick: Boolean;
     FOption: TSynEditorMouseCommandOpt;
@@ -111,6 +122,7 @@ type
     FCommand: TSynEditorMouseCommand;
     FMoveCaret: Boolean;
     procedure SetButton(const AValue: TSynMouseButton);
+    procedure SetButtonUpRestrictions(AValue: TSynMAUpRestrictions);
     procedure SetClickCount(const AValue: TSynMAClickCount);
     procedure SetClickDir(AValue: TSynMAClickDir);
     procedure SetCommand(const AValue: TSynEditorMouseCommand);
@@ -138,6 +150,8 @@ type
     property Button: TSynMouseButton read FButton write SetButton               default mbXLeft;
     property ClickCount: TSynMAClickCount read FClickCount write SetClickCount  default ccSingle;
     property ClickDir: TSynMAClickDir read FClickDir write SetClickDir          default cdUp;
+    property ButtonUpRestrictions: TSynMAUpRestrictions
+             read FButtonUpRestrictions write SetButtonUpRestrictions           default [];
     property Command: TSynEditorMouseCommand read FCommand write SetCommand;
     property MoveCaret: Boolean read FMoveCaret write SetMoveCaret              default False;
     property IgnoreUpClick: Boolean read FIgnoreUpClick write SetIgnoreUpClick  default False; // only for mouse down
@@ -177,7 +191,16 @@ type
              const AOpt: TSynEditorMouseCommandOpt = 0;
              const APrior: Integer = 0;
              const AOpt2: integer = 0;
-             const AIgnoreUpClick: Boolean = False);
+             const AIgnoreUpClick: Boolean = False); overload;
+    procedure AddCommand(const ACmd: TSynEditorMouseCommand;
+             const AMoveCaret: Boolean;
+             const AButton: TSynMouseButton; const AClickCount: TSynMAClickCount;
+             const ADir: TSynMAClickDir; const AnUpRestrict: TSynMAUpRestrictions;
+             const AShift, AShiftMask: TShiftState;
+             const AOpt: TSynEditorMouseCommandOpt = 0;
+             const APrior: Integer = 0;
+             const AOpt2: integer = 0;
+             const AIgnoreUpClick: Boolean = False); overload;
   public
     property Items[Index: Integer]: TSynEditMouseAction read GetItem
       write SetItem; default;
@@ -624,6 +647,14 @@ begin
     ClickDir := cdDown;
 end;
 
+procedure TSynEditMouseAction.SetButtonUpRestrictions(AValue: TSynMAUpRestrictions);
+begin
+  if FButtonUpRestrictions = AValue then Exit;
+  FButtonUpRestrictions := AValue;
+  if Collection <> nil then
+    TSynEditMouseActions(Collection).AssertNoConflict(self);
+end;
+
 procedure TSynEditMouseAction.SetClickCount(const AValue: TSynMAClickCount);
 begin
   if FClickCount = AValue then exit;
@@ -718,6 +749,7 @@ begin
     FCommand    := TSynEditMouseAction(Source).Command;
     FClickCount := TSynEditMouseAction(Source).ClickCount;
     FClickDir   := TSynEditMouseAction(Source).ClickDir;
+    FButtonUpRestrictions := TSynEditMouseAction(Source).ButtonUpRestrictions;
     FButton     := TSynEditMouseAction(Source).Button;
     FShift      := TSynEditMouseAction(Source).Shift;
     FShiftMask  := TSynEditMouseAction(Source).ShiftMask;
@@ -787,6 +819,7 @@ begin
   Result := (Other.Button     = self.Button)
         and (Other.ClickCount = self.ClickCount)
         and (Other.ClickDir   = self.ClickDir)
+        and (Other.ButtonUpRestrictions   = self.ButtonUpRestrictions)
         and (Other.Shift      = self.Shift)
         and (Other.ShiftMask  = self.ShiftMask)
         and (Other.Priority   = self.Priority)
@@ -943,6 +976,17 @@ procedure TSynEditMouseActions.AddCommand(const ACmd: TSynEditorMouseCommand;
   const AClickCount: TSynMAClickCount; const ADir: TSynMAClickDir;
   const AShift, AShiftMask: TShiftState; const AOpt: TSynEditorMouseCommandOpt = 0;
   const APrior: Integer = 0; const AOpt2: integer = 0; const AIgnoreUpClick: Boolean = False);
+begin
+  AddCommand(ACmd, AMoveCaret, AButton, AClickCount, ADir, [], AShift, AShiftMask, AOpt, APrior,
+    AOpt2, AIgnoreUpClick);
+end;
+
+procedure TSynEditMouseActions.AddCommand(const ACmd: TSynEditorMouseCommand;
+  const AMoveCaret: Boolean; const AButton: TSynMouseButton;
+  const AClickCount: TSynMAClickCount; const ADir: TSynMAClickDir;
+  const AnUpRestrict: TSynMAUpRestrictions; const AShift, AShiftMask: TShiftState;
+  const AOpt: TSynEditorMouseCommandOpt; const APrior: Integer; const AOpt2: integer;
+  const AIgnoreUpClick: Boolean);
 var
   new: TSynEditMouseAction;
 begin
@@ -955,6 +999,7 @@ begin
       Button := AButton;
       ClickCount := AClickCount;
       ClickDir := ADir;
+      ButtonUpRestrictions := AnUpRestrict;
       Shift := AShift;
       ShiftMask := AShiftMask;
       Option := AOpt;

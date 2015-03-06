@@ -5,7 +5,7 @@ unit MouseActionDialog;
 interface
 
 uses
-  Classes, Forms, Controls, ExtCtrls, StdCtrls, ButtonPanel, Spin,
+  Classes, Forms, Controls, ExtCtrls, StdCtrls, ButtonPanel, Spin, CheckLst,
   SynEditMouseCmds, LazarusIDEStrConsts, KeyMapping, IDECommands, types;
 
 var
@@ -26,8 +26,10 @@ type
     ButtonBox: TComboBox;
     ButtonPanel1: TButtonPanel;
     CaretCheck: TCheckBox;
+    chkUpRestrict: TCheckListBox;
     ClickBox: TComboBox;
     PaintBox1: TPaintBox;
+    Panel1: TPanel;
     PriorLabel: TLabel;
     OptBox: TComboBox;
     CtrlCheck: TCheckBox;
@@ -36,6 +38,7 @@ type
     OptLabel: TLabel;
     Opt2Spin: TSpinEdit;
     Opt2Label: TLabel;
+    ScrollBox1: TScrollBox;
     ShiftCheck: TCheckBox;
     PriorSpin: TSpinEdit;
     procedure ActionBoxChange(Sender: TObject);
@@ -43,6 +46,7 @@ type
     procedure ButtonBoxChange(Sender: TObject);
     procedure CapturePanelMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer);
+    procedure DirCheckChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure PaintBox1MouseWheel(Sender: TObject; Shift: TShiftState; WheelDelta: Integer;
       MousePos: TPoint; var Handled: Boolean);
@@ -97,6 +101,8 @@ procedure TMouseaActionDialog.FormCreate(Sender: TObject);
 var
   mb: TSynMouseButton;
   cc: TSynMAClickCount;
+  r: TSynMAUpRestriction;
+  s: string;
 begin
   ButtonName[mbXLeft]:=dlgMouseOptBtnLeft;
   ButtonName[mbXRight]:=dlgMouseOptBtnRight;
@@ -111,6 +117,21 @@ begin
   ClickName[ccTriple]:=dlgMouseOptBtn3;
   ClickName[ccQuad]:=dlgMouseOptBtn4;
   ClickName[ccAny]:=dlgMouseOptBtnAny;
+
+  for r := low(TSynMAUpRestriction) to high(TSynMAUpRestriction) do
+    case r of
+      crLastDownPos:          chkUpRestrict.AddItem(synfMatchActionPosOfMouseDown, nil);
+      crLastDownPosSameLine:  chkUpRestrict.AddItem(synfMatchActionLineOfMouseDown, nil);
+      crLastDownPosSearchAll: chkUpRestrict.AddItem(synfSearchAllActionOfMouseDown, nil);
+      crLastDownButton:       chkUpRestrict.AddItem(synfMatchActionButtonOfMouseDown, nil);
+      crLastDownShift:        chkUpRestrict.AddItem(synfMatchActionModifiersOfMouseDown, nil);
+      crAllowFallback:        chkUpRestrict.AddItem(synfContinueWithNextMouseUpAction, nil);
+      else begin
+        WriteStr(s, r);
+        chkUpRestrict.AddItem(s, nil);
+      end;
+    end;
+
 
   ButtonDirName[cdUp]:=lisUp;
   ButtonDirName[cdDown]:=lisDown;
@@ -139,6 +160,8 @@ begin
 end;
 
 procedure TMouseaActionDialog.ResetInputs;
+var
+  r: TSynMAUpRestriction;
 begin
   ActionBox.ItemIndex := 0;
   ButtonBox.ItemIndex := 0;
@@ -147,6 +170,8 @@ begin
   ShiftCheck.State := cbGrayed;
   AltCheck.State := cbGrayed;
   CtrlCheck.State := cbGrayed;
+  for r := low(TSynMAUpRestriction) to high(TSynMAUpRestriction) do
+    chkUpRestrict.Checked[ord(r)] := False;
 
   ActionBoxChange(nil);
   OptBox.ItemIndex := 0;
@@ -162,6 +187,7 @@ end;
 procedure TMouseaActionDialog.ButtonBoxChange(Sender: TObject);
 begin
   DirCheck.Enabled := not(IndexToBtn[ButtonBox.ItemIndex] in [mbXWheelUp, mbXWheelDown]);
+  chkUpRestrict.Enabled := DirCheck.Enabled and DirCheck.Checked;
 end;
 
 procedure TMouseaActionDialog.ActionBoxChange(Sender: TObject);
@@ -211,6 +237,11 @@ begin
   CtrlCheck.Checked  := ssCtrl in Shift;
 end;
 
+procedure TMouseaActionDialog.DirCheckChange(Sender: TObject);
+begin
+  chkUpRestrict.Enabled := DirCheck.Checked;
+end;
+
 procedure TMouseaActionDialog.PaintBox1MouseWheel(Sender: TObject; Shift: TShiftState;
   WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
 begin
@@ -224,6 +255,8 @@ begin
 end;
 
 procedure TMouseaActionDialog.ReadFromAction(MAct: TSynEditMouseAction);
+var
+  r: TSynMAUpRestriction;
 begin
   ActionBox.ItemIndex := ActionBox.Items.IndexOfObject(TObject(Pointer(PtrUInt(MAct.Command))));
   ButtonBox.ItemIndex := BtnToIndex[MAct.Button];
@@ -238,6 +271,8 @@ begin
   if not(ssCtrl in MAct.ShiftMask) then CtrlCheck.State := cbGrayed;
   PriorSpin.Value := MAct.Priority;
   Opt2Spin.Value := MAct.Option2;
+  for r := low(TSynMAUpRestriction) to high(TSynMAUpRestriction) do
+    chkUpRestrict.Checked[ord(r)] := r in MAct.ButtonUpRestrictions;
 
   ActionBoxChange(nil);
   ButtonBoxChange(nil);
@@ -250,6 +285,8 @@ begin
 end;
 
 procedure TMouseaActionDialog.WriteToAction(MAct: TSynEditMouseAction);
+var
+  r: TSynMAUpRestriction;
 begin
   MAct.Command := TSynEditorMouseCommand(PtrUInt(Pointer(ActionBox.items.Objects[ActionBox.ItemIndex])));
   MAct.Button := IndexToBtn[ButtonBox.ItemIndex];
@@ -268,6 +305,10 @@ begin
   if CtrlCheck.Checked then MAct.Shift := MAct.Shift + [ssCtrl];
   MAct.Priority := PriorSpin.Value;
   MAct.Option2 := Opt2Spin.Value;
+  MAct.ButtonUpRestrictions := [];
+  for r := low(TSynMAUpRestriction) to high(TSynMAUpRestriction) do
+    if chkUpRestrict.Checked[ord(r)] then
+      MAct.ButtonUpRestrictions := MAct.ButtonUpRestrictions + [r];
 
   if OptBox.Enabled then begin
     if MAct.Command =  emcSynEditCommand then begin
