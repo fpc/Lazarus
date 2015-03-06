@@ -86,6 +86,7 @@ type
     tsTestTree: TTabSheet;
     tsResultsXML: TTabSheet;
     XMLSynEdit: TSynEdit;
+    FFirstFailure: TTreeNode; // reference to first failed test
     procedure ActCheckAllExecute(Sender: TObject);
     procedure ActCheckCurrentSuiteExecute(Sender: TObject);
     procedure ActCloseFormExecute(Sender: TObject);
@@ -271,6 +272,7 @@ end;
 
 procedure TGUITestRunner.RunExecute(Sender: TObject);
 begin
+  FFirstFailure := nil;
   testSuite := GetTestRegistry;
   TestTree.Selected := TestTree.Items[0];
   RunTest(testSuite);
@@ -303,11 +305,13 @@ end;
 
 procedure TGUITestRunner.ActRunHighlightedTestExecute(Sender: TObject);
 begin
+  FFirstFailure := nil;
   if (TestTree.Selected <> nil) and (TestTree.Selected.Data <> nil) then
   begin
     testSuite := TTest(TestTree.Selected.Data);
   end;
   RunTest(testSuite);
+  TestTree.MakeSelectionVisible;
 end;
 
 procedure TGUITestRunner.ActUncheckAllExecute(Sender: TObject);
@@ -665,11 +669,17 @@ begin
     if not(AFailure.IsIgnoredTest) then
     begin
       // Genuine failure
+      if not Assigned(FFirstFailure) then
+        FFirstFailure := FailureNode;
       node.Message := AFailure.ExceptionMessage;
       node.ImageIndex := imgWarningSign;
       node.SelectedIndex := imgWarningSign;
       node := TestTree.Items.AddChild(FailureNode,
         Format(rsException, [AFailure.ExceptionClassName])) as TMessageTreeNode;
+      node.ImageIndex := imgWarningSign;
+      node.SelectedIndex := imgWarningSign;
+      node := TestTree.Items.AddChild(FailureNode,
+        Format('at line %d in <%s>', [AFailure.LineNumber, AFailure.UnitName])) as TMessageTreeNode;
       node.ImageIndex := imgWarningSign;
       node.SelectedIndex := imgWarningSign;
       PaintNodeFailure(FailureNode);
@@ -706,6 +716,8 @@ begin
   ErrorNode := FindNode(ATest);
   if Assigned(ErrorNode) then
   begin
+    if not Assigned(FFirstFailure) then
+      FFirstFailure := ErrorNode;
     MessageNode := TestTree.Items.AddChild(ErrorNode,
       Format(rsExceptionMes, [FirstLine(AError.ExceptionMessage)]))
       as TMessageTreeNode;
@@ -844,7 +856,12 @@ end;
 
 procedure TGUITestRunner.EndTestSuite(ATestSuite: TTestSuite);
 begin
-  // do nothing
+  // scroll treeview to first failed test
+  if Assigned(FFirstFailure) then
+  begin
+    TestTree.Selected := FFirstFailure;
+    TestTree.MakeSelectionVisible;
+  end;
 end;
 
 procedure TranslateResStrings;
