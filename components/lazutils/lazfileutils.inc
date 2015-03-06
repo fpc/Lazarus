@@ -374,3 +374,21 @@ procedure FindCloseUTF8(var F: TSearchrec);
 begin
   SysUtils.FindClose(F);
 end;
+
+function DbgSFileAttr(Attr: LongInt): String;
+begin
+  if (Attr = -1) then
+    Result := ('[Invalid]')
+  else
+  begin
+    Result := '[-------]';
+    if (faDirectory and Attr) = 0 then Result[2] := 'D';
+    if (faArchive and Attr)   = 0 then Result[3] := 'A';
+    if (faSysFile and Attr)   = 0 then Result[4] := 'S';
+    if (faReadOnly and Attr)  = 0 then Result[5] := 'R';
+    if (faHidden and Attr)    = 0 then Result[6] := 'H';
+    if (faVolumeId and Attr)  = 0 then Result[7] := 'V';
+    if (faSymLink and Attr)   = 0 then Result[8] := 'L';
+  end;
+end;
+

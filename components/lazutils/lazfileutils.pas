@@ -109,6 +109,9 @@ function ReadAllLinks(const Filename: string;
 function TryReadAllLinks(const Filename: string): string; // if a link is broken returns Filename
 function GetShellLinkTarget(const FileName: string): string;
 
+// for debugging
+function DbgSFileAttr(Attr: LongInt): String;
+
 
 type
   TPhysicalFilenameOnError = (pfeException,pfeEmpty,pfeOriginal);
