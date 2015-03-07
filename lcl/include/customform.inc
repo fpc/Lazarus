@@ -1124,7 +1124,8 @@ begin
     Canvas.Handle := DC;
     //DebugLn('[TCustomForm.PaintWindow] ',ClassName,' DC=',DbgS(DC,8),'  ',DbgS(FCanvas.Handle,8));
     try
-      if FDesigner <> nil then FDesigner.PaintGrid else Paint;
+      Paint;
+      if FDesigner <> nil then FDesigner.PaintGrid;
     finally
       Canvas.Handle := 0;
     end;
