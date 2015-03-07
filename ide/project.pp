@@ -2164,7 +2164,7 @@ var
 begin
   Src:=SourceText;
   if Beautify then
-    Src:=SourceEditorManagerIntf.ReIndent(Src);
+    Src:=SourceEditorManagerIntf.Beautify(Src);
   Source.Source:=Src;
 end;
 

@@ -993,8 +993,7 @@ type
     procedure ClearExecutionMarks;
     procedure FillExecutionMarks;
     procedure ReloadEditorOptions;
-    function ReIndent(const Src: string; OldIndent: integer=0;
-      OldTabWidth: integer=4): string; override;
+    function Beautify(const Src: string): string; override;
     // find / replace text
     procedure FindClicked(Sender: TObject);
     procedure FindNextClicked(Sender: TObject);
@@ -9438,22 +9437,12 @@ begin
   end;
 end;
 
-function TSourceEditorManager.ReIndent(const Src: string; OldIndent: integer;
-  OldTabWidth: integer): string;
+function TSourceEditorManager.Beautify(const Src: string): string;
 var
-  NewTabWidth: Integer;
   NewIndent: Integer;
 begin
-  if OldIndent=0 then
-    GuessIndentSize(Src,OldIndent,EditorOpts.TabWidth);
-  if (eoTabsToSpaces in EditorOpts.SynEditOptions)
-  or (EditorOpts.BlockTabIndent=0) then
-    NewTabWidth:=0
-  else
-    NewTabWidth:=EditorOpts.TabWidth;
   NewIndent:=EditorOpts.BlockTabIndent*EditorOpts.TabWidth+EditorOpts.BlockIndent;
-  //debugln(['TSourceEditorManager.ReIndent OldIndent=',OldIndent,' OldTabWidth=',OldTabWidth,' NewIndent=',NewIndent,' NewTabWidth=',NewTabWidth]);
-  Result:=BasicCodeTools.ReIndent(Src,OldIndent,OldTabWidth,NewIndent,NewTabWidth);
+  Result := CodeToolBoss.Beautifier.BeautifyStatement(Src, NewIndent);
 end;
 
 procedure TSourceEditorManager.FindClicked(Sender: TObject);

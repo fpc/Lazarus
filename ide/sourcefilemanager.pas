@@ -1724,7 +1724,7 @@ begin
       NewUnitInfo.ComponentResourceName:='';
     end;
     Src:=NewFileDescriptor.CreateSource(NewUnitInfo.Filename,NewUnitName,NewUnitInfo.ComponentName);
-    Src:=SourceEditorManager.ReIndent(Src);
+    Src:=SourceEditorManager.Beautify(Src);
     //debugln(['TLazSourceFileManager.NewFile ',dbgtext(Src)]);
     Src:=CodeToolBoss.SourceChangeCache.BeautifyCodeOptions.BeautifyStatement(Src,0);
     NewUnitInfo.Source.Source:=Src;

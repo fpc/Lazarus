@@ -247,9 +247,6 @@ function GetTranslatedAtomTypes(a: TAtomType): string;
 function TranslatedAtomToType(const s: string): TAtomType;
 function ReadIdentifier(const s, DefaultIdent: string): string;
 
-function SpaceCharBeforeSymbols: string;
-function SpaceCharAfterSymbols: string;
-
 implementation
 
 {$R lazarus_indentation.res}
@@ -330,22 +327,6 @@ begin
     Result:=s
   else
     Result:=DefaultIdent;
-end;
-
-function SpaceCharBeforeSymbols: string;
-begin
-  if atSymbol in CodeToolsOpts.DoInsertSpaceInFront then
-    Result:= ' '
-  else
-    Result:= '';
-end;
-
-function SpaceCharAfterSymbols: string;
-begin
-  if atSymbol in CodeToolsOpts.DoInsertSpaceAfter then
-    Result:= ' '
-  else
-    Result:= '';
 end;
 
 { TCodeToolsOptions }

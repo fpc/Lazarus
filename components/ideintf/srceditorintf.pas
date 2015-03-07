@@ -285,7 +285,7 @@ type
     // Messages
     procedure ClearErrorLines; virtual; abstract;
     // General source functions
-    function ReIndent(const Src: string; OldIndent: integer = 0; OldTabWidth: integer = 4): string; virtual; abstract;
+    function Beautify(const Src: string): string; virtual; abstract;
   protected
     // Completion Plugins
     function GetActiveCompletionPlugin: TSourceEditorCompletionPlugin; virtual; abstract;

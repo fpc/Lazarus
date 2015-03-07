@@ -4975,8 +4975,7 @@ var
 
     NewTitle:=AProject.GetTitle;
     if (OldTitle <> NewTitle) and (not AProject.TitleIsDefault) then
-      if not CodeToolBoss.SetApplicationTitleStatement(AProject.MainUnitInfo.Source, NewTitle,
-               SpaceCharBeforeSymbols, SpaceCharAfterSymbols) then
+      if not CodeToolBoss.SetApplicationTitleStatement(AProject.MainUnitInfo.Source, NewTitle) then
       begin
         IDEMessageDialog(lisProjOptsError,
           Format(lisUnableToChangeProjectTitleInSource, [LineEnding, CodeToolBoss.ErrorMessage]),
