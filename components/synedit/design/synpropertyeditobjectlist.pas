@@ -214,6 +214,7 @@ procedure TSynKeyCommandPropertyEditor.GetValues(Proc: TGetStrProc);
 var
   CValue: Integer;
 begin
+  CValue:=0;
   if not IdentToSynMouseCmd(GetVisualValue, CValue) then Proc(GetVisualValue);
   GetEditorCommandValues(Proc);
 end;
@@ -238,6 +239,7 @@ end;
 
 function TSynMouseCommandPropertyEditor.OrdValueToVisualValue(OrdValue: longint): string;
 begin
+  Result:='';
   if not SynMouseCmdToIdent(OrdValue, Result) then
     Result := inherited OrdValueToVisualValue(OrdValue);
 end;
@@ -248,6 +250,8 @@ var
   CName: String;
   i: TSynEditorMouseCommand;
 begin
+  CValue:=0;
+  CName:='';
   if not IdentToSynMouseCmd(GetVisualValue, CValue) then Proc(GetVisualValue);
   for i := 0 to emcMax do
     if SynMouseCmdToIdent(i, CName) then Proc(CName);
@@ -257,6 +261,7 @@ procedure TSynMouseCommandPropertyEditor.SetValue(const NewValue: ansistring);
 var
   CValue: Integer;
 begin
+  CValue:=0;
   if IdentToSynMouseCmd(NewValue, CValue) then SetOrdValue(CValue)
   else inherited SetValue(NewValue);
 end;
