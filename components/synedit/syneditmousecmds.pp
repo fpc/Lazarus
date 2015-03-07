@@ -157,6 +157,7 @@ type
     property IgnoreUpClick: Boolean read FIgnoreUpClick write SetIgnoreUpClick  default False; // only for mouse down
     property Option: TSynEditorMouseCommandOpt read FOption write SetOption     default 0;
     property Option2: Integer read FOption2 write SetOption2                    default 0;
+    // Priority: 0 = highest / MaxInt = lowest
     property Priority: TSynEditorMouseCommandOpt read FPriority write SetPriority default 0;
   end;
 
@@ -312,6 +313,9 @@ const
   emcoSelectLineFull          =  TSynEditorMouseCommandOpt(1);
   emcoMouseLinkShow           =  TSynEditorMouseCommandOpt(0);
   emcoMouseLinkHide           =  TSynEditorMouseCommandOpt(1);
+
+  emcoNotDragedSetCaretOnUp   = TSynEditorMouseCommandOpt(0);
+  emcoNotDragedNoCaretOnUp    = TSynEditorMouseCommandOpt(1);
 
   emcoCodeFoldCollapsOne      = TSynEditorMouseCommandOpt(0);
   emcoCodeFoldCollapsAll      = TSynEditorMouseCommandOpt(1);
@@ -480,6 +484,7 @@ begin
     emcStartLineSelectionsNoneEmpty:   Result := SYNS_emcSelection_opt;
     emcSelectLine:            Result := SYNS_emcSelectLine_opt;
     emcMouseLink:             Result := SYNS_emcMouseLink_opt;
+    emcStartDragMove:         Result := SYNS_emcStartDragMove_opt;
     emcCodeFoldCollaps:       Result := SYNS_emcCodeFoldCollaps_opt;
     emcCodeFoldExpand:        Result := SYNS_emcCodeFoldExpand_opt;
     emcContextMenu:           Result := SYNS_emcContextMenuCaretMove_opt;

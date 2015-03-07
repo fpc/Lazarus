@@ -3494,7 +3494,7 @@ procedure TEditorMouseOptions.ResetTextToDefault;
         mbaContextMenuTab:
             AddCommand(emcContextMenu, True,       AButton, AClickCount, ADir, AShift, AShiftMask, emcoSelectionCaretMoveOutside, 0, 2);
         mbaMultiCaretToggle:
-            AddCommand(emcPluginMultiCaretToggleCaret, True,       AButton, AClickCount, ADir, AShift, AShiftMask, 0, 0, 0);
+            AddCommand(emcPluginMultiCaretToggleCaret, False, AButton, AClickCount, ADir, AShift, AShiftMask);
       end;
     end;
   end;
@@ -3685,8 +3685,9 @@ begin
 
   if FTextDrag then
     with FSelActions do begin
-      AddCommand(emcStartDragMove, False, mbXLeft, ccSingle, cdDown, [], []);
+      AddCommand(emcStartDragMove, False, mbXLeft, ccSingle, cdDown, [], [], emcoNotDragedNoCaretOnUp);
     end;
+    FTextActions.AddCommand(emcNone, True, mbXLeft, ccSingle, cdUp, [], [], 0, 99);
 end;
 
 procedure TEditorMouseOptions.ResetToUserScheme;

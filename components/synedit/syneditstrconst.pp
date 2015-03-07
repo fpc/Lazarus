@@ -411,6 +411,7 @@ resourcestring
   SYNS_emcPasteSelection           = 'Quick Paste Selection';
   SYNS_emcMouseLink                = 'Source Link';
   SYNS_emcMouseLink_opt            = 'Underline,yes, no';
+  SYNS_emcStartDragMove_opt        = 'Caret on up if not dragged, No Caret on up if not dragged';
   SYNS_emcContextMenu              = 'Popup Menu';
   SYNS_emcBreakPointToggle         = 'Toggle Breakpoint';
   SYNS_emcCodeFoldCollaps          = 'Fold Code';

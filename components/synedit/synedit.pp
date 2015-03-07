@@ -188,7 +188,7 @@ type
     // Mouse-states
     sfLeftGutterClick, sfRightGutterClick,
     sfInClick, sfDblClicked, sfTripleClicked, sfQuadClicked,
-    sfWaitForDragging, sfIsDragging, sfWaitForMouseSelecting, sfMouseSelecting, sfMouseDoneSelecting,
+    sfWaitForDragging, sfWaitForDraggingNoCaret, sfIsDragging, sfWaitForMouseSelecting, sfMouseSelecting, sfMouseDoneSelecting,
     sfIgnoreUpClick,
     sfSelChanged
     );                                           //mh 2000-10-30
@@ -3205,6 +3205,8 @@ begin
         begin
           if SelAvail and (SelectionMode = smNormal) then begin
             Include(fStateFlags, sfWaitForDragging);
+            if AnAction.Option = emcoNotDragedNoCaretOnUp then
+              Include(fStateFlags, sfWaitForDraggingNoCaret);
             MouseCapture := True;
             ResetMouseCapture := False;
           end
@@ -3441,7 +3443,7 @@ begin
   fStateFlags := fStateFlags - [sfDblClicked, sfTripleClicked, sfQuadClicked,
                                 sfLeftGutterClick, sfRightGutterClick,
                                 sfWaitForMouseSelecting, sfMouseSelecting, sfMouseDoneSelecting,
-                                sfWaitForDragging, sfIgnoreUpClick
+                                sfWaitForDragging, sfWaitForDraggingNoCaret, sfIgnoreUpClick
                                ];
 
   Include(fStateFlags, sfInClick);
@@ -3516,7 +3518,7 @@ begin
       or (Abs(fMouseDownY - Y) >= GetSystemMetrics(SM_CYDRAG))
     then begin
       FStateFlags := FStateFlags
-                   -[sfWaitForDragging, sfWaitForMouseSelecting, sfMouseSelecting]
+                   -[sfWaitForDragging, sfWaitForDraggingNoCaret, sfWaitForMouseSelecting, sfMouseSelecting]
                    + [sfIsDragging];
       FBlockSelection.StickyAutoExtend := False;
       //debugln('TCustomSynEdit.MouseMove BeginDrag');
@@ -3724,7 +3726,7 @@ begin
     CType := ccSingle;
   fStateFlags:=fStateFlags - [sfInClick, sfDblClicked,sfTripleClicked,sfQuadClicked];
 
-  if sfWaitForDragging in fStateFlags then
+  if fStateFlags * [sfWaitForDragging, sfWaitForDraggingNoCaret] = [sfWaitForDragging] then
   begin
     ComputeCaret(X, Y);
     SetBlockBegin(LogicalCaretXY);

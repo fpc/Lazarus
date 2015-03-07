@@ -520,6 +520,10 @@ msgstr "Вибір Стовпчика"
 msgid "Drag Selection"
 msgstr "Вибір Перетягування"
 
+#: syneditstrconst.syns_emcstartdragmove_opt
+msgid "Caret on up if not dragged, No Caret on up if not dragged"
+msgstr ""
+
 #: syneditstrconst.syns_emcstartlineselections
 msgid "Line Selection"
 msgstr "Вибір Рядка"

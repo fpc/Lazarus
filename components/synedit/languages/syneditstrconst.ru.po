@@ -518,6 +518,10 @@ msgstr "Выделение столбца"
 msgid "Drag Selection"
 msgstr "Перетаскивание выделенного"
 
+#: syneditstrconst.syns_emcstartdragmove_opt
+msgid "Caret on up if not dragged, No Caret on up if not dragged"
+msgstr ""
+
 #: syneditstrconst.syns_emcstartlineselections
 msgid "Line Selection"
 msgstr "Выбор строки"

@@ -522,6 +522,10 @@ msgstr "Spaltenmodus"
 msgid "Drag Selection"
 msgstr "Auswahl verschieben"
 
+#: syneditstrconst.syns_emcstartdragmove_opt
+msgid "Caret on up if not dragged, No Caret on up if not dragged"
+msgstr ""
+
 #: syneditstrconst.syns_emcstartlineselections
 msgid "Line Selection"
 msgstr "Zeilenmodus"

@@ -520,6 +520,10 @@ msgstr "Scegli colonna"
 msgid "Drag Selection"
 msgstr "Trascina la selezione"
 
+#: syneditstrconst.syns_emcstartdragmove_opt
+msgid "Caret on up if not dragged, No Caret on up if not dragged"
+msgstr ""
+
 #: syneditstrconst.syns_emcstartlineselections
 msgid "Line Selection"
 msgstr "Selezione riga"

@@ -520,6 +520,10 @@ msgstr "Stulpelio žymėjimas"
 msgid "Drag Selection"
 msgstr "Vilkti atranką"
 
+#: syneditstrconst.syns_emcstartdragmove_opt
+msgid "Caret on up if not dragged, No Caret on up if not dragged"
+msgstr ""
+
 #: syneditstrconst.syns_emcstartlineselections
 msgid "Line Selection"
 msgstr "Eilutės žymėjimas"

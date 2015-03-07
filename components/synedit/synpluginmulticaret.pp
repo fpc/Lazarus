@@ -1522,6 +1522,7 @@ begin
   Result := False;
 
   if AnAction.Command = emcPluginMultiCaretToggleCaret then begin
+    Result := True;
     i := Carets.FindCaretIdx(AnInfo.NewCaret.BytePos, AnInfo.NewCaret.LinePos);
     if i >= 0 then
       RemoveCaret(i)
