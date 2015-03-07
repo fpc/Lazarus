@@ -67,6 +67,7 @@ type
     FPOFile: TPOFile;
   public
     constructor Create(POFileName: string);
+    constructor Create(aPOFile: TPOFile);
     destructor Destroy; override;
     procedure TranslateStringProperty(Sender: TObject; const Instance: TPersistent;
       PropInfo: PPropInfo; var Content: string); override;
@@ -429,6 +430,12 @@ begin
   inherited Create;
   // TPOFile expects AFileName in UTF-8 encoding, no conversion required
   FPOFile := TPOFile.Create(POFileName);
+end;
+
+constructor TPOTranslator.Create(aPOFile: TPOFile);
+begin
+  inherited Create;
+  FPOFile := aPOFile;
 end;
 
 destructor TPOTranslator.Destroy;
