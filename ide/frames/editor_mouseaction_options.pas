@@ -33,6 +33,8 @@ type
   { TEditorMouseOptionsFrame }
 
   TEditorMouseOptionsFrame = class(TAbstractIDEOptionsEditor)
+    chkGutterTextLines: TCheckBox;
+    GutterLeftRadio3: TRadioButton;
     lblWheel: TLabel;
     lblWheelAlt: TLabel;
     lblWheelCtrl: TLabel;
@@ -498,7 +500,11 @@ begin
   if GutterLeftRadio2.Checked then
     FTempMouseSettings.GutterLeft := moglUpClickAndSelect
   else
+  if GutterLeftRadio3.Checked then
+    FTempMouseSettings.GutterLeft := moglUpClickAndSelectRighHalf
+  else
     FTempMouseSettings.GutterLeft := moGLDownClick;
+  FTempMouseSettings.SelectOnLineNumbers := chkGutterTextLines.Checked;
   FTempMouseSettings.ResetGutterToDefault;
   if FDialog.FindEditor(TEditorMouseOptionsAdvFrame) <> nil then
     TEditorMouseOptionsAdvFrame(FDialog.FindEditor(TEditorMouseOptionsAdvFrame)).RefreshSettings;
@@ -605,6 +611,8 @@ begin
   GutterDividerLabel.Caption := dlfMouseSimpleGutterSect;
   GutterLeftRadio1.Caption := dlfMouseSimpleGutterLeftDown;
   GutterLeftRadio2.Caption := dlfMouseSimpleGutterLeftUp;
+  GutterLeftRadio3.Caption := dlfMouseSimpleGutterLeftUpRight;
+  chkGutterTextLines.Caption := dlfMouseSimpleGutterLines;
 
   TextDividerLabel.Caption := dlfMouseSimpleTextSect;
   TextDrag.Caption := dlfMouseSimpleTextSectDrag;
@@ -773,7 +781,9 @@ begin
   case FTempMouseSettings.GutterLeft of
     moGLDownClick: GutterLeftRadio1.Checked := True;
     moglUpClickAndSelect: GutterLeftRadio2.Checked := True;
+    moglUpClickAndSelectRighHalf: GutterLeftRadio3.Checked := True;
   end;
+  chkGutterTextLines.Checked := FTempMouseSettings.SelectOnLineNumbers;
   TextDrag.Checked    := FTempMouseSettings.TextDrag;
   RightMoveCaret.Checked := FTempMouseSettings.TextRightMoveCaret;
 

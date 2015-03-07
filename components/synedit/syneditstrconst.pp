@@ -401,6 +401,7 @@ resourcestring
   SYNS_emcStartSelection           = 'Selection';
   SYNS_emcStartColumnSelections    = 'Column Selection';
   SYNS_emcStartLineSelections      = 'Line Selection';
+  SYNS_emcStartLineSelectionsNoneEmpty = 'Line Selection (select immediate)';
   SYNS_emcSelection_opt            = 'Mode,Begin,Continue';
   SYNS_emcSelectWord               = 'Select Word';
   SYNS_emcSelectLine               = 'Select Line';

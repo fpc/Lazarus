@@ -524,6 +524,10 @@ msgstr "Вибір Перетягування"
 msgid "Line Selection"
 msgstr "Вибір Рядка"
 
+#: syneditstrconst.syns_emcstartlineselectionsnoneempty
+msgid "Line Selection (select immediate)"
+msgstr ""
+
 #: syneditstrconst.syns_emcstartselection
 msgid "Selection"
 msgstr "Вибір"

@@ -523,6 +523,10 @@ msgstr "Kijelölés húzása"
 msgid "Line Selection"
 msgstr "Sor kijelölés"
 
+#: syneditstrconst.syns_emcstartlineselectionsnoneempty
+msgid "Line Selection (select immediate)"
+msgstr ""
+
 #: syneditstrconst.syns_emcstartselection
 msgid "Selection"
 msgstr "Kijelölés"

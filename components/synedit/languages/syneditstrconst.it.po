@@ -524,6 +524,10 @@ msgstr "Trascina la selezione"
 msgid "Line Selection"
 msgstr "Selezione riga"
 
+#: syneditstrconst.syns_emcstartlineselectionsnoneempty
+msgid "Line Selection (select immediate)"
+msgstr ""
+
 #: syneditstrconst.syns_emcstartselection
 msgid "Selection"
 msgstr "Selezione"

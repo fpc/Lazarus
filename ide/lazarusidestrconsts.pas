@@ -1543,6 +1543,8 @@ resourcestring
   dlfMouseSimpleGutterSect = 'Gutter';
   dlfMouseSimpleGutterLeftDown = 'Standard, All actions (breakpoint, fold) on mouse down';
   dlfMouseSimpleGutterLeftUp = 'Extended, Actions (breakpoint, fold) on mouse up. Selection on mouse down and move';
+  dlfMouseSimpleGutterLeftUpRight = 'Extended, Actions, right gutter half only';
+  dlfMouseSimpleGutterLines = 'Use line numers to select lines';
   dlfMouseSimpleTextSect = 'Text';
   dlfMouseSimpleTextSectDrag = 'Drag selection (copy/paste)';
   dlfMouseSimpleRightMoveCaret = 'Right mouse includes caret move';
@@ -1636,6 +1638,7 @@ resourcestring
   dlgMouseOptNodeGutterFoldCol = 'Collapsed [+]';
   dlgMouseOptNodeGutterFoldExp = 'Expanded [-]';
   dlgMouseOptNodeGutterLines = 'Line Numbers';
+  dlgMouseOptNodeGutterChanges = 'Line Changes';
   dlgMouseOptHeadOrder = 'Order';
   dlgMouseOptHeadContext = 'Context';
   dlgMouseOptHeadDesc = 'Action';

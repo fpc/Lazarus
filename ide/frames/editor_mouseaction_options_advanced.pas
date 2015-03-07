@@ -90,6 +90,7 @@ type
     FGutterNode: TTreeNode;
     FGutterFoldNode, FGutterFoldExpNode, FGutterFoldColNode: TTreeNode;
     FGutterLinesNode: TTreeNode;
+    FGutterChangeNode: TTreeNode;
     FCurNode: TTreeNode;
 
     FCurActions: TSynEditMouseActions;
@@ -624,6 +625,9 @@ begin
   // LineNum
   FGutterLinesNode := ContextTree.Items.AddChild(FGutterNode, dlgMouseOptNodeGutterLines);
   FGutterLinesNode.Data := FTempMouseSettings.GutterActionsLines;
+  // Changes
+  FGutterChangeNode := ContextTree.Items.AddChild(FGutterNode, dlgMouseOptNodeGutterChanges);
+  FGutterChangeNode.Data := FTempMouseSettings.GutterActionsChanges;
 
   ActionGrid.Constraints.MinWidth := ActionGrid.ColCount * MinGridColSize;
   ActionGrid.Cells[0,0] := dlgMouseOptHeadDesc;

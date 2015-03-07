@@ -524,6 +524,10 @@ msgstr "Vilkti atranką"
 msgid "Line Selection"
 msgstr "Eilutės žymėjimas"
 
+#: syneditstrconst.syns_emcstartlineselectionsnoneempty
+msgid "Line Selection (select immediate)"
+msgstr ""
+
 #: syneditstrconst.syns_emcstartselection
 msgid "Selection"
 msgstr "Žymėjimas"

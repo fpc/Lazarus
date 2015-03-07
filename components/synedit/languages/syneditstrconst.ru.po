@@ -522,6 +522,10 @@ msgstr "Перетаскивание выделенного"
 msgid "Line Selection"
 msgstr "Выбор строки"
 
+#: syneditstrconst.syns_emcstartlineselectionsnoneempty
+msgid "Line Selection (select immediate)"
+msgstr ""
+
 #: syneditstrconst.syns_emcstartselection
 msgid "Selection"
 msgstr "Выделение"

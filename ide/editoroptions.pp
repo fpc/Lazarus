@@ -717,7 +717,11 @@ type
   end;
 
   TEditorOptions = class;
-  TMouseOptGutterLeftType = (moGLDownClick, moglUpClickAndSelect);
+  TMouseOptGutterLeftType = (
+    moGLDownClick,
+    moglUpClickAndSelect,
+    moglUpClickAndSelectRighHalf   // Changes and fold gutter (parts close to the text)
+  );
   TMouseOptButtonActionOld = (
     mbaNone,
     mbaSelect, mbaSelectColumn, mbaSelectLine,
@@ -775,7 +779,9 @@ type
     FUserSchemes: TQuickStringlist;
   private
     FCustomSavedActions: Boolean;
+    FGutterActionsChanges: TSynEditMouseActions;
     FMainActions, FSelActions, FTextActions: TSynEditMouseActions;
+    FSelectOnLineNumbers: Boolean;
     FName: String;
     FGutterActions: TSynEditMouseActions;
     FGutterActionsFold, FGutterActionsFoldExp, FGutterActionsFoldCol: TSynEditMouseActions;
@@ -887,9 +893,12 @@ type
     property GutterActionsFoldExp: TSynEditMouseActions read FGutterActionsFoldExp;
     property GutterActionsFoldCol: TSynEditMouseActions read FGutterActionsFoldCol;
     property GutterActionsLines: TSynEditMouseActions read FGutterActionsLines;
+    property GutterActionsChanges: TSynEditMouseActions read FGutterActionsChanges;
   published
     property GutterLeft: TMouseOptGutterLeftType read FGutterLeft write FGutterLeft
              default moglUpClickAndSelect;
+    property SelectOnLineNumbers: Boolean read FSelectOnLineNumbers write FSelectOnLineNumbers
+             default True;
     property TextDrag: Boolean read FTextDrag write FTextDrag
              default True;
     property TextRightMoveCaret: Boolean read FTextRightMoveCaret  write FTextRightMoveCaret
@@ -3234,6 +3243,7 @@ begin
   FGutterActionsFoldExp := TSynEditMouseActions.Create(nil);
   FGutterActionsFoldCol := TSynEditMouseActions.Create(nil);
   FGutterActionsLines   := TSynEditMouseActions.Create(nil);
+  FGutterActionsChanges := TSynEditMouseActions.Create(nil);
   FUserSchemes := TQuickStringlist.Create;
   FVersion := 0;
 end;
@@ -3250,6 +3260,7 @@ begin
   FGutterActionsFoldExp.Free;
   FGutterActionsFoldCol.Free;
   FGutterActionsLines.Free;
+  FGutterActionsChanges.Free;
   inherited Destroy;
 end;
 
@@ -3321,9 +3332,17 @@ begin
 
   FTextRightMoveCaret  := False;
   FTextDrag            := True;
+  FSelectOnLineNumbers := True;
 end;
 
 procedure TEditorMouseOptions.ResetGutterToDefault;
+  procedure AddStartSel(List: TSynEditMouseActions);
+  begin
+    with List do begin
+      AddCommand(emcStartSelections,   True, mbXLeft, ccAny, cdDown, [],               [ssShift], emcoSelectionStart);
+      AddCommand(emcStartSelections,   True, mbXLeft, ccAny, cdDown, [ssShift],        [ssShift], emcoSelectionContinue);
+    end;
+  end;
 var
   CDir: TSynMAClickDir;
   R: TSynMAUpRestrictions;
@@ -3333,6 +3352,7 @@ begin
   FGutterActionsFoldExp.Clear;
   FGutterActionsFoldCol.Clear;
   FGutterActionsLines.Clear;
+  FGutterActionsChanges.Clear;
   //TMouseOptGutterLeftType = (moGLDownClick, moglUpClickAndSelect);
 
   with FGutterActions do begin
@@ -3342,19 +3362,48 @@ begin
     AddCommand(emcCodeFoldContextMenu, False, mbXRight,  ccSingle, cdUp, [], []);
   end;
 
+
   CDir := cdDown;
   R := [];
   if FGutterLeft = moglUpClickAndSelect then begin
     CDir := cdUp;
     R := crRestrictAll;
-    with FGutterActions do begin
-      AddCommand(emcStartSelections,   True, mbXLeft, ccAny, cdDown, [],               [ssShift], emcoSelectionStart);
-      AddCommand(emcStartSelections,   True, mbXLeft, ccAny, cdDown, [ssShift],        [ssShift], emcoSelectionContinue);
-    end;
+    AddStartSel(FGutterActions);
   end;
+
   with FGutterActions do begin
     AddCommand(emcOnMainGutterClick,   False, mbXLeft,   ccAny,    CDir, R, [], []);  // breakpoint
   end;
+
+
+  if FGutterLeft in [moglUpClickAndSelect, moglUpClickAndSelectRighHalf] then begin
+    CDir := cdUp;
+    R := crRestrictAll;
+    AddStartSel(FGutterActionsChanges);
+  end;
+
+  with FGutterActionsChanges do begin
+    if FGutterLeft = moGLDownClick then
+      AddCommand(emcNone,   False, mbXLeft,   ccAny,    cdDown, [], []);
+    AddCommand(emcNone,   False, mbXLeft,   ccAny,    cdUp, [], []);
+  end;
+
+
+  if FGutterLeft = moglUpClickAndSelectRighHalf then begin
+    if not FSelectOnLineNumbers then
+      AddStartSel(FGutterActionsLines);
+    AddStartSel(FGutterActionsFold);
+  end;
+
+
+  if FSelectOnLineNumbers then begin
+    with FGutterActionsLines do begin
+      AddCommand(emcStartLineSelectionsNoneEmpty,   True, mbXLeft, ccAny, cdDown, [],               [ssShift], emcoSelectionStart);
+      AddCommand(emcStartLineSelectionsNoneEmpty,   True, mbXLeft, ccAny, cdDown, [ssShift],        [ssShift], emcoSelectionContinue);
+      AddCommand(emcNone,   False, mbXLeft,   ccAny,    cdUp, [], []);
+    end;
+  end;
+
   with FGutterActionsFold do begin
     AddCommand(emcNone,                False, mbXLeft,   ccAny,    CDir, R, [], []);
   end;
@@ -3659,6 +3708,7 @@ begin
   FGutterActionsFoldExp.Assign(Src.GutterActionsFoldExp);
   FGutterActionsFoldCol.Assign(Src.GutterActionsFoldCol);
   FGutterActionsLines.Assign  (Src.GutterActionsLines);
+  FGutterActionsChanges.Assign(Src.GutterActionsChanges);
 end;
 
 procedure TEditorMouseOptions.SetTextCtrlLeftClick(AValue: TMouseOptButtonActionOld);
@@ -3686,6 +3736,7 @@ begin
   FName                 := Src.FName;
 
   FGutterLeft           := Src.GutterLeft;
+  FSelectOnLineNumbers  := Src.SelectOnLineNumbers;
   FTextDrag             := Src.TextDrag;
   FTextRightMoveCaret   := Src.TextRightMoveCaret;
   FSelectedUserScheme   := Src.FSelectedUserScheme;
@@ -3792,7 +3843,8 @@ begin
     Temp.GutterActionsFold.Equals   (self.GutterActionsFold) and
     Temp.GutterActionsFoldCol.Equals(self.GutterActionsFoldCol) and
     Temp.GutterActionsFoldExp.Equals(self.GutterActionsFoldExp) and
-    Temp.GutterActionsLines.Equals  (self.GutterActionsLines);
+    Temp.GutterActionsLines.Equals  (self.GutterActionsLines) and
+    Temp.GutterActionsChanges.Equals(Self.GutterActionsChanges);
   Temp.Free;
 end;
 
@@ -3897,6 +3949,7 @@ begin
     LoadMouseAct(aPath + 'GutterFoldExp/', GutterActionsFoldExp);
     LoadMouseAct(aPath + 'GutterFoldCol/', GutterActionsFoldCol);
     LoadMouseAct(aPath + 'GutterLineNum/', GutterActionsLines);
+    LoadMouseAct(aPath + 'GutterLineChange/', GutterActionsChanges);
 
     if Version < 1 then begin
       try
@@ -3955,6 +4008,7 @@ begin
     SaveMouseAct(aPath + 'GutterFoldExp/', GutterActionsFoldExp);
     SaveMouseAct(aPath + 'GutterFoldCol/', GutterActionsFoldCol);
     SaveMouseAct(aPath + 'GutterLineNum/', GutterActionsLines);
+    SaveMouseAct(aPath + 'GutterLineChange/', GutterActionsChanges);
   end else begin
     // clear unused entries
     aXMLConfig.DeletePath(aPath + 'Main');
@@ -4007,6 +4061,7 @@ begin
   LoadMouseAct(aPath + 'GutterFoldExp/', GutterActionsFoldExp);
   LoadMouseAct(aPath + 'GutterFoldCol/', GutterActionsFoldCol);
   LoadMouseAct(aPath + 'GutterLineNum/', GutterActionsLines);
+  LoadMouseAct(aPath + 'GutterLineChange/', GutterActionsChanges);
 end;
 
 procedure TEditorMouseOptions.ExportToXml(aXMLConfig: TRttiXMLConfig; aPath: String);
@@ -4037,6 +4092,7 @@ begin
   SaveMouseAct(aPath + 'GutterFoldExp/', GutterActionsFoldExp);
   SaveMouseAct(aPath + 'GutterFoldCol/', GutterActionsFoldCol);
   SaveMouseAct(aPath + 'GutterLineNum/', GutterActionsLines);
+  SaveMouseAct(aPath + 'GutterLineChange/', GutterActionsChanges);
   MAct.Free;
 end;
 
@@ -5625,12 +5681,14 @@ begin
     if ASynEdit.Gutter.LineNumberPart <> nil then begin
       ASynEdit.Gutter.LineNumberPart.MouseActions.Assign(FUserMouseSettings.GutterActionsLines);
     end;
-    if ShowLineNumbers then begin // changes does the same as linenumbers
-      if ASynEdit.Gutter.ChangesPart<> nil then
-        ASynEdit.Gutter.ChangesPart.MouseActions.Assign(FUserMouseSettings.GutterActionsLines);
-      if (ASynEdit.Gutter.SeparatorPart <> nil) and (GutterSeparatorIndex = 2) then
-        ASynEdit.Gutter.SeparatorPart.MouseActions.Assign(FUserMouseSettings.GutterActionsLines);
-    end;
+    if ASynEdit.Gutter.ChangesPart<> nil then
+      ASynEdit.Gutter.ChangesPart.MouseActions.Assign(FUserMouseSettings.GutterActionsChanges);
+
+    if (ASynEdit.Gutter.SeparatorPart <> nil) and (GutterSeparatorIndex = 2) and ShowLineNumbers then
+      ASynEdit.Gutter.SeparatorPart.MouseActions.Assign(FUserMouseSettings.GutterActionsLines)
+    else
+    if (ASynEdit.Gutter.SeparatorPart <> nil) and (GutterSeparatorIndex >= 2) then
+      ASynEdit.Gutter.SeparatorPart.MouseActions.Assign(FUserMouseSettings.GutterActionsChanges);
   finally
     ASynEdit.EndUpdate;
   end;

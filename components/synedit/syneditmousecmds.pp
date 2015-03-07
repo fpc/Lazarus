@@ -262,6 +262,7 @@ const
   emcStartSelections          =  TSynEditorMouseCommand(1);    // Start BlockSelection (Default Left Mouse Btn)
   emcStartColumnSelections    =  TSynEditorMouseCommand(3);    // Column BlockSelection (Default Alt - Left Mouse Btn)
   emcStartLineSelections      =  TSynEditorMouseCommand(4);    // Line BlockSelection (Default Alt - Left Mouse Btn)
+  emcStartLineSelectionsNoneEmpty =  TSynEditorMouseCommand(5);    // Line BlockSelection (Default Alt - Left Mouse Btn)
 
   emcSelectWord               =  TSynEditorMouseCommand(6);
   emcSelectLine               =  TSynEditorMouseCommand(7);
@@ -357,11 +358,12 @@ const
 implementation
 
 const
-  SynMouseCommandNames: array [0..27] of TIdentMapEntry = (
+  SynMouseCommandNames: array [0..28] of TIdentMapEntry = (
     (Value: emcNone;                  Name: 'emcNone'),
     (Value: emcStartSelections;       Name: 'emcStartSelections'),
     (Value: emcStartColumnSelections; Name: 'emcStartColumnSelections'),
     (Value: emcStartLineSelections;   Name: 'emcStartLineSelections'),
+    (Value: emcStartLineSelectionsNoneEmpty;   Name: 'emcStartLineSelectionsNoneEmpty'),
 
     (Value: emcSelectWord;            Name: 'emcSelectWord'),
     (Value: emcSelectLine;            Name: 'emcSelectLine'),
@@ -424,6 +426,7 @@ begin
     emcStartSelections:       Result := SYNS_emcStartSelection;
     emcStartColumnSelections: Result := SYNS_emcStartColumnSelections;
     emcStartLineSelections:   Result := SYNS_emcStartLineSelections;
+    emcStartLineSelectionsNoneEmpty: Result := SYNS_emcStartLineSelectionsNoneEmpty;
     emcSelectWord:            Result := SYNS_emcSelectWord;
     emcSelectLine:            Result := SYNS_emcSelectLine;
     emcSelectPara:            Result := SYNS_emcSelectPara;
@@ -473,7 +476,8 @@ begin
   case emc of
     emcStartSelections,
     emcStartColumnSelections,
-    emcStartLineSelections:   Result := SYNS_emcSelection_opt;
+    emcStartLineSelections,
+    emcStartLineSelectionsNoneEmpty:   Result := SYNS_emcSelection_opt;
     emcSelectLine:            Result := SYNS_emcSelectLine_opt;
     emcMouseLink:             Result := SYNS_emcMouseLink_opt;
     emcCodeFoldCollaps:       Result := SYNS_emcCodeFoldCollaps_opt;

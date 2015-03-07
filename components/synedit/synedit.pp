@@ -3104,7 +3104,7 @@ begin
 
     case ACommand of
       emcNone: ; // do nothing, but result := true
-      emcStartSelections, emcStartColumnSelections, emcStartLineSelections,
+      emcStartSelections, emcStartColumnSelections, emcStartLineSelections, emcStartLineSelectionsNoneEmpty,
       emcStartSelectTokens, emcStartSelectWords, emcStartSelectLines:
         begin
           FMouseSelectionCmd := emcNone;
@@ -3117,6 +3117,13 @@ begin
               FMouseSelectionMode := smColumn;
             emcStartLineSelections:
                 FMouseSelectionMode := smLine;
+            emcStartLineSelectionsNoneEmpty: begin
+                FMouseSelectionMode := smLine;
+                if (AnAction.Option <> emcoSelectionContinue) or (not SelAvail) then
+                  FBlockSelection.StartLineBytePos := FCaret.LineBytePos;
+                FBlockSelection.ActiveSelectionMode := smLine;
+                FBlockSelection.ForceSingleLineSelected := True;
+              end;
             emcStartSelectTokens, emcStartSelectWords, emcStartSelectLines: begin
                 FMouseSelectionCmd := ACommand;
                 AnInfo.NewCaret.LineCharPos := PixelsToRowColumn(Point(AnInfo.MouseX, AnInfo.MouseY), [scmLimitToLines, scmForceLeftSidePos]);
@@ -3596,8 +3603,9 @@ begin
       if (sfMouseSelecting in fStateFlags) and ((fScrollDeltaX <> 0) or (fScrollDeltaY <> 0)) then
         Include(fStateFlags, sfMouseDoneSelecting);
     end;
-    if sfMouseDoneSelecting in fStateFlags then
+    if sfMouseDoneSelecting in fStateFlags then begin
       FBlockSelection.ActiveSelectionMode := FMouseSelectionMode;
+    end;
     if sfIsDragging in fStateFlags then
       FBlockSelection.DecPersistentLock;
   end

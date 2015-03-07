@@ -527,6 +527,10 @@ msgstr ""
 msgid "Line Selection"
 msgstr "Zaznaczenie wiersza"
 
+#: syneditstrconst.syns_emcstartlineselectionsnoneempty
+msgid "Line Selection (select immediate)"
+msgstr ""
+
 #: syneditstrconst.syns_emcstartselection
 msgid "Selection"
 msgstr "Zaznaczenie"

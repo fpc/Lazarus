@@ -103,6 +103,7 @@ type
     FEnabled: Boolean;
     FHookedLines: Boolean;
     FIsSettingText: Boolean;
+    FForceSingleLineSelected: Boolean;
     FActiveSelectionMode: TSynSelectionMode;
     FSelectionMode:       TSynSelectionMode;
     FStartLinePos: Integer; // 1 based
@@ -126,6 +127,7 @@ type
     procedure SetCaret(const AValue: TSynEditCaret);
     procedure SetEnabled(const Value : Boolean);
     procedure SetActiveSelectionMode(const Value: TSynSelectionMode);
+    procedure SetForceSingleLineSelected(AValue: Boolean);
     procedure SetHide(const AValue: Boolean);
     procedure SetPersistent(const AValue: Boolean);
     procedure SetSelectionMode      (const AValue: TSynSelectionMode);
@@ -163,6 +165,7 @@ type
     procedure AddBeforeSetSelTextHandler(AHandler: TSynBeforeSetSelTextEvent);
     procedure RemoveBeforeSetSelTextHandler(AHandler: TSynBeforeSetSelTextEvent);
     property  Enabled: Boolean read FEnabled write SetEnabled;
+    property  ForceSingleLineSelected: Boolean read FForceSingleLineSelected write SetForceSingleLineSelected;
     property  ActiveSelectionMode: TSynSelectionMode
                 read FActiveSelectionMode write SetActiveSelectionMode;
     property  SelectionMode: TSynSelectionMode
@@ -2159,6 +2162,7 @@ begin
     FInvalidateLinesMethod(nInval1, nInval2);
   end;
   FActiveSelectionMode := FSelectionMode;
+  FForceSingleLineSelected := False;
   FHide := False;
   FStartLinePos := Value.Y;
   FStartBytePos := Value.X;
@@ -2261,6 +2265,18 @@ begin
   end;
 end;
 
+procedure TSynEditSelection.SetForceSingleLineSelected(AValue: Boolean);
+var
+  WasAvail: Boolean;
+begin
+  if FForceSingleLineSelected = AValue then Exit;
+  WasAvail := SelAvail;
+  FForceSingleLineSelected := AValue;
+
+  if WasAvail <> SelAvail then
+    fOnChangeList.CallNotifyEvents(self);
+end;
+
 procedure TSynEditSelection.SetHide(const AValue: Boolean);
 begin
   if FHide = AValue then exit;
@@ -2337,7 +2353,8 @@ begin
     end;
   end
   else
-    Result := (FStartBytePos <> FEndBytePos) or (FStartLinePos <> FEndLinePos);
+    Result := (FStartBytePos <> FEndBytePos) or (FStartLinePos <> FEndLinePos)
+      or ( (FActiveSelectionMode = smLine) and FForceSingleLineSelected);
 end;
 
 function TSynEditSelection.SelCanContinue(ACaret: TSynEditCaret): Boolean;
