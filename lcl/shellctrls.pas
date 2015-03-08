@@ -604,6 +604,8 @@ end;
   Finds all files/directories directly inside a directory.
   Does not recurse inside subdirectories.
 
+  AResult will contain TFileItem objects upon return, make sure to free them in the calling routine
+
   AMask may contain multiple file masks separated by ;
   Don't add a final ; after the last mask.
 }
@@ -672,11 +674,6 @@ begin
         IsValidDirectory := (ShortFilename <> '.') and (ShortFilename <> '..');
 
         IsHidden := (DirInfo.Attr and faHidden = faHidden);
-        //LinuxToWinAttr already does this in FF/FN
-        //{$IFDEF Unix}
-        //if (DirInfo.Name<>'') and (DirInfo.Name[1]='.') then
-        //  IsHidden:=true;
-        //{$ENDIF}
 
         // First check if we show hidden files
         if IsHidden then AddFile := (otHidden in AObjectTypes)
@@ -789,11 +786,6 @@ var
             (SR.Name <> '..')) then
          begin
            IsHidden := ((Attr and faHidden) > 0);
-           //LinuxToWinAttr already does this in FF/FN
-           //{$IFDEF Unix}
-           //if (SR.Name<>'') and (SR.Name[1]='.') then
-           //  IsHidden := True;
-           //{$ENDIF}
            if not (IsHidden and (not ((otHidden in fObjectTypes)))) then
            begin
              Result := True;
@@ -820,7 +812,7 @@ begin
 
     for i := 0 to Files.Count - 1 do
     begin
-      NewNode := Items.AddChildObject(ANode, Files.Strings[i], nil); //@Files.Strings[i]);
+      NewNode := Items.AddChildObject(ANode, Files.Strings[i], nil);
       TShellTreeNode(NewNode).FFileInfo := TFileItem(Files.Objects[i]).FileInfo;
       TShellTreeNode(NewNode).SetBasePath(TFileItem(Files.Objects[i]).FBasePath);
 
@@ -837,14 +829,6 @@ end;
 
 procedure TCustomShellTreeView.PopulateWithBaseFiles;
 {$if defined(windows) and not defined(wince)}
-const
-  DRIVE_UNKNOWN = 0;
-  DRIVE_NO_ROOT_DIR = 1;
-  DRIVE_REMOVABLE = 2;
-  DRIVE_FIXED = 3;
-  DRIVE_REMOTE = 4;
-  DRIVE_CDROM = 5;
-  DRIVE_RAMDISK = 6;
 var
   r: LongWord;
   Drives: array[0..128] of char;
@@ -861,8 +845,6 @@ begin
   pDrive := Drives;
   while pDrive^ <> #0 do
   begin
-//    r := GetDriveType(pDrive);
-
     NewNode := Items.AddChildObject(nil, ExcludeTrailingBackslash(pDrive), pDrive);
     //Yes, we want to remove the backslash,so don't use ChompPathDelim here
     TShellTreeNode(NewNode).FFileInfo.Name := ExcludeTrailingBackslash(pDrive);
@@ -870,7 +852,6 @@ begin
     TShellTreeNode(NewNode).FFileInfo.Attr := faDirectory + faSysFile + faHidden;
     TShellTreeNode(NewNode).SetBasePath('');
     NewNode.HasChildren := True;
-
     Inc(pDrive, 4);
   end;
 end;
