@@ -928,15 +928,16 @@ end;
 
 function TCustomShellTreeView.GetPathFromNode(ANode: TTreeNode): string;
 begin
-  Result := '';
-  if ANode <> nil then  // Will return the root if nothing is selected (ANode=nil)
+  if Assigned(ANode) then
   begin
     Result := TShellTreeNode(ANode).FullFilename;
     if TShellTreeNode(ANode).IsDirectory then
       Result := AppendPathDelim(Result);
-  end;
-  if not FilenameIsAbsolute(Result) then
-    Result := GetRootPath() + Result;    // Include root directory
+    if not FilenameIsAbsolute(Result) then
+      Result := GetRootPath() + Result;    // Include root directory
+  end
+  else
+    Result := '';
 end;
 
 function TCustomShellTreeView.GetSelectedNodePath: string;
