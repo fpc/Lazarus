@@ -86,7 +86,7 @@ endif
 endif
 
 [compiler]
-options=-gl -Sc $(LCL_DISABLE_CHECKS)
+options=-gl -Sic $(LCL_DISABLE_CHECKS)
 unittargetdir=units/$(CPU_TARGET)-$(OS_TARGET)
 unitdir=../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) . $(NONWIN32) forms widgetset
 includedir=include
