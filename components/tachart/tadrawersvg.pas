@@ -384,7 +384,10 @@ end;
 
 procedure TSVGDrawer.SetBrush(ABrush: TFPCustomBrush);
 begin
-  FBrushColor := FPColorOrMono(ABrush.FPColor);
+  if ABrush is TBrush then
+    FBrushColor := FChartColorToFPColorFunc(ColorOrMono(TBrush(ABrush).Color))
+  else
+    FBrushColor := FPColorOrMono(ABrush.FPColor);
   FBrushStyle := ABrush.Style;
 end;
 
