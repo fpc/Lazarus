@@ -406,14 +406,10 @@ procedure TSeriesPointer.DrawSize(ADrawer: IChartDrawer;
     SetLength(pts, Length(AStr));
     for i := 1 to Length(AStr) do begin
       if AStr[i] = ' ' then begin
-        ADrawer.Polygon(pts, 0, j);
-        {
-        // modified by wp: polyline does not draw pointer border correctly on qt, see issue #0027620
         if Brush.Style = bsClear then
           ADrawer.Polyline(pts, 0, j)
         else
           ADrawer.Polygon(pts, 0, j); // Winding?
-        }
         j := 0;
       end
       else begin
