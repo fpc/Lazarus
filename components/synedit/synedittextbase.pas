@@ -143,7 +143,7 @@ type
     FCount, FCapacity: Integer;
     FReason: TSynEditorCommand;
     function GetItem(Index: Integer): TSynEditUndoItem;
-    procedure Grow;
+    procedure Grow(ANeededCapacity: Integer = 0);
   protected
     Function HasUndoInfo: Boolean;
     procedure Append(AnUndoGroup: TSynEditUndoItem);
@@ -158,7 +158,7 @@ type
 
     procedure Assign(AnUndoGroup: TSynEditUndoGroup);
     procedure Add(AnItem: TSynEditUndoItem);
-    procedure Clear;
+    procedure Clear(OnlyFreeItems: Boolean = False);
     procedure Insert(AIndex: Integer; AnItem: TSynEditUndoItem);
     procedure Delete(AIndex: Integer);
     function  Pop: TSynEditUndoItem;
@@ -563,9 +563,12 @@ end;
 
 { TSynEditUndoGroup }
 
-procedure TSynEditUndoGroup.Grow;
+procedure TSynEditUndoGroup.Grow(ANeededCapacity: Integer);
 begin
-  FCapacity := FCapacity + Max(10, FCapacity Div 8);
+  if ANeededCapacity > 0 then
+    FCapacity := Max(ANeededCapacity, FCapacity)
+  else
+    FCapacity := FCapacity + Max(10, FCapacity Div 8);
   SetLength(FItems, FCapacity);
 end;
 
@@ -621,8 +624,16 @@ end;
 
 procedure TSynEditUndoGroup.TranferTo(AnUndoGroup: TSynEditUndoGroup);
 begin
-  AnUndoGroup.Assign(self);
+  //AnUndoGroup.Assign(self);
+  AnUndoGroup.Clear(True);
+  AnUndoGroup.FCapacity := Count;
+  AnUndoGroup.FCount := Count;
+  AnUndoGroup.FItems := FItems;
+  FItems := nil;
+  FCapacity := 0;
   FCount := 0; // Do not clear; that would free the items
+
+  AnUndoGroup.FReason := Reason;
 end;
 
 function TSynEditUndoGroup.CanMergeWith(AnUndoGroup: TSynEditUndoGroup): Boolean;
@@ -638,12 +649,20 @@ procedure TSynEditUndoGroup.MergeWith(AnUndoGroup: TSynEditUndoGroup);
 begin
   // Merge other group to start
   AnUndoGroup.Pop.Free;
-  if AnUndoGroup.Count > 0 then begin
-    fItems[0].Free;
-    fItems[0] := AnUndoGroup.Pop;
-  end;
-  while AnUndoGroup.Count > 0 do
-    Insert(0, AnUndoGroup.Pop);
+  if AnUndoGroup.Count = 0 then
+    exit;
+
+  Grow(Count + AnUndoGroup.Count); // since we replace item[0], this is one extra
+
+  If AnUndoGroup.Count > 1 then
+    System.Move(FItems[1], FItems[AnUndoGroup.Count],
+                (FCount - 1) * SizeOf(TSynEditUndoItem));
+  assert(Count > 0, 'TSynEditUndoGroup.MergeWith: Count > 0');
+  FItems[0].Free;
+  System.Move(AnUndoGroup.FItems[0], FItems[0],
+              (AnUndoGroup.Count) * SizeOf(TSynEditUndoItem));
+  FCount := FCount + AnUndoGroup.FCount - 1;
+  AnUndoGroup.FCount := 0;
 end;
 
 function TSynEditUndoGroup.GetItem(Index: Integer): TSynEditUndoItem;
@@ -659,7 +678,7 @@ end;
 
 destructor TSynEditUndoGroup.Destroy;
 begin
-  Clear;
+  Clear(True);
   FItems := nil;
   inherited Destroy;
 end;
@@ -691,13 +710,13 @@ begin
   inc (FCount);
 end;
 
-procedure TSynEditUndoGroup.Clear;
+procedure TSynEditUndoGroup.Clear(OnlyFreeItems: Boolean);
 begin
   while FCount > 0 do begin
     dec(FCount);
     FItems[FCount].Free;
   end;
-  if FCapacity > 100 then begin
+  if (not OnlyFreeItems) and (FCapacity > 100) then begin
     FCapacity := 100;
     SetLength(FItems, FCapacity);
   end;
