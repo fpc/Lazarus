@@ -135,6 +135,7 @@ type
   protected
     procedure OnComponentRenamed(AComponent: TComponent);
     procedure OnComponentSelection(const NewSelection: TPersistentSelectionList);
+    procedure OnComponentDelete(APersistent: TPersistent);
     procedure OnRefreshPropertyValues;
     function GetSelectedAction: TContainedAction;
     procedure Notification(AComponent: TComponent; Operation: TOperation);
@@ -757,6 +758,16 @@ begin
     ACanvas.DrawFocusRect(ARect);
 end;
 
+procedure TActionListEditor.OnComponentDelete(APersistent: TPersistent);
+var
+  i: Integer;
+begin
+  if not (APersistent is TContainedAction) then Exit;
+  i := lstActionName.Items.IndexOfObject(APersistent);
+  if i >= 0 then
+    lstActionName.Items.Delete(i);
+end;
+
 procedure TActionListEditor.SBShowMenuNewActionsClick(Sender: TObject);
 var
   MousePoint: TPoint;
@@ -891,6 +902,7 @@ begin
   GlobalDesignHook.AddHandlerComponentRenamed(@OnComponentRenamed);
   GlobalDesignHook.AddHandlerSetSelection(@OnComponentSelection);
   GlobalDesignHook.AddHandlerRefreshPropertyValues(@OnRefreshPropertyValues);
+  GlobalDesignHook.AddHandlerPersistentDeleting(@OnComponentDelete);
 
   AddActionEditor(Self);
 end;
