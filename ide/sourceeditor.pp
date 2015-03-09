@@ -49,7 +49,7 @@ uses
   LazFileCache, LazUTF8,
   // codetools
   BasicCodeTools, CodeBeautifier, CodeToolManager, CodeCache, SourceLog,
-  LinkScanner, CodeTree,
+  LinkScanner, CodeTree, SourceChanger,
   // synedit
   SynEditLines, SynEditStrConst, SynEditTypes, SynEdit, SynRegExpr,
   SynEditHighlighter, SynEditAutoComplete, SynEditKeyCmds, SynCompletion,
@@ -9439,10 +9439,18 @@ end;
 
 function TSourceEditorManager.Beautify(const Src: string): string;
 var
-  NewIndent: Integer;
+  NewIndent, NewTabWidth: Integer;
 begin
+  Result:=CodeToolBoss.Beautifier.BeautifyStatement(Src,2,[bcfDoNotIndentFirstLine]);
+
+  if (eoTabsToSpaces in EditorOpts.SynEditOptions)
+  or (EditorOpts.BlockTabIndent=0) then
+    NewTabWidth:=0
+  else
+    NewTabWidth:=EditorOpts.TabWidth;
   NewIndent:=EditorOpts.BlockTabIndent*EditorOpts.TabWidth+EditorOpts.BlockIndent;
-  Result := CodeToolBoss.Beautifier.BeautifyStatement(Src, NewIndent);
+
+  Result:=BasicCodeTools.ReIndent(Result,2,0,NewIndent,NewTabWidth);
 end;
 
 procedure TSourceEditorManager.FindClicked(Sender: TObject);
