@@ -61,8 +61,8 @@ type
     procedure SetPath(AValue: string);
     procedure SetRoot(const AValue: string);
     procedure SetShellListView(const Value: TCustomShellListView);
-    procedure CreateNodeClass(Sender: TCustomTreeView; var NodeClass: TTreeNodeClass);
   protected
+    procedure DoCreateNodeClass(var NewNodeClass: TTreeNodeClass); override;
     procedure Loaded; override;
     function CreateNode: TTreeNode; override;
     { Other methods specific to Lazarus }
@@ -420,10 +420,12 @@ begin
     Value.ShellTreeView := Self;
 end;
 
-procedure TCustomShellTreeView.CreateNodeClass(Sender: TCustomTreeView;
-  var NodeClass: TTreeNodeClass);
+
+procedure TCustomShellTreeView.DoCreateNodeClass(
+  var NewNodeClass: TTreeNodeClass);
 begin
-  NodeClass := TShellTreeNode;
+  NewNodeClass := TShellTreeNode;
+  inherited DoCreateNodeClass(NewNodeClass);
 end;
 
 procedure TCustomShellTreeView.Loaded;
@@ -439,9 +441,8 @@ function TCustomShellTreeView.CreateNode: TTreeNode;
 begin
   Result := inherited CreateNode;
   //just in case someone attaches a new OnCreateNodeClass which does not return a TShellTreeNode (sub)class
-  if not (Self.OnCreateNodeClass = @CreateNodeClass) then
-    if not (Result is TShellTreeNode) then
-      Raise EShellCtrl.Create(sShellTreeViewIncorrectNodeType);
+  if not (Result is TShellTreeNode) then
+    Raise EShellCtrl.Create(sShellTreeViewIncorrectNodeType);
 end;
 
 procedure TCustomShellTreeView.SetRoot(const AValue: string);
@@ -555,7 +556,6 @@ end;
 constructor TCustomShellTreeView.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  OnCreateNodeClass := @CreateNodeClass;
   FInitialRoot := '';
 
   // Initial property values
