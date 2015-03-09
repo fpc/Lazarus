@@ -273,7 +273,10 @@ end;
 
 procedure TFPVectorialDrawer.SetBrush(ABrush: TFPCustomBrush);
 begin
-  FBrushColor := ABrush.FPColor;
+  if ABrush is TBrush then
+    SetBrushColor(TBrush(ABrush).Color)
+  else
+    FBrushColor := ABrush.FPColor;
   FBrushStyle := ABrush.Style;
 end;
 
@@ -306,7 +309,10 @@ end;
 
 procedure TFPVectorialDrawer.SetPen(APen: TFPCustomPen);
 begin
-  FPenColor := APen.FPColor;
+  if APen is TPen then
+    FPenColor := FChartColorToFPColorFunc(TPen(APen).Color)
+  else
+    FPenColor := APen.FPColor;
   FPenStyle := APen.Style;
   FPenWidth := APen.Width;
 end;
