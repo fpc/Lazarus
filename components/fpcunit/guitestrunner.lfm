@@ -43,6 +43,7 @@ object GUITestRunner: TGUITestRunner
     FFFF0000FFFF0000FFFF0000FFFF0000FFFF0000FFFF0000FFFF
   }
   OnCreate = GUITestRunnerCreate
+  OnDestroy = FormDestroy
   OnShow = GUITestRunnerShow
   Position = poScreenCenter
   ShowHint = True

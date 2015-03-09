@@ -1,5 +1,5 @@
 {
-  Copyright (C) 2004-2014 Dean Zobec, contributors
+  Copyright (C) 2004-2015 Dean Zobec, contributors
 
   This library is free software; you can redistribute it and/or modify it
   under the terms of the GNU Library General Public License as published by
@@ -32,7 +32,8 @@ uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs,
   ExtCtrls, Buttons, ComCtrls, ActnList, Menus, Clipbrd, StdCtrls,
   testdecorator, xmltestreport,
-  fpcunit, testregistry, SynEdit, SynHighlighterXML, gettext, Translations;
+  fpcunit, testregistry, SynEdit, SynHighlighterXML, gettext, Translations,
+  inifiles;
 
 type
 
@@ -86,7 +87,6 @@ type
     tsTestTree: TTabSheet;
     tsResultsXML: TTabSheet;
     XMLSynEdit: TSynEdit;
-    FFirstFailure: TTreeNode; // reference to first failed test
     procedure ActCheckAllExecute(Sender: TObject);
     procedure ActCheckCurrentSuiteExecute(Sender: TObject);
     procedure ActCloseFormExecute(Sender: TObject);
@@ -94,6 +94,7 @@ type
     procedure ActUncheckAllExecute(Sender: TObject);
     procedure ActRunHighLightedTestUpdate(Sender: TObject);
     procedure ActUncheckCurrentSuiteExecute(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
     procedure RunExecute(Sender: TObject);
     procedure GUITestRunnerCreate(Sender: TObject);
     procedure GUITestRunnerShow(Sender: TObject);
@@ -116,6 +117,8 @@ type
     skipsCounter: Integer;
     barColor: TColor;
     testSuite: TTest;
+    FFirstFailure: TTreeNode; // reference to first failed test
+    FINI: TINIFile;
     procedure BuildTree(rootNode: TTreeNode; aSuite: TTestSuite);
     function  FindNode(aTest: TTest): TTreeNode;
     procedure ResetNodeColors;
@@ -268,6 +271,8 @@ begin
     TestTree.Items.SelectOnlyThis(TestTree.Items[0]);
     TestTree.Items[0].Expand(False);
   end;
+
+  FINI := TINIFile.Create(ExtractFileNameOnly(ParamStr(0))+ '.ini');
 end;
 
 procedure TGUITestRunner.RunExecute(Sender: TObject);
@@ -341,10 +346,25 @@ begin
   end;
 end;
 
+procedure TGUITestRunner.FormDestroy(Sender: TObject);
+begin
+  // store window position and size
+  FINI.WriteInteger('WindowState', 'Left', Left);
+  FINI.WriteInteger('WindowState', 'Top', Top);
+  FINI.WriteInteger('WindowState', 'Width', Width);
+  FINI.WriteInteger('WindowState', 'Height', Height);
+  FINI.Free;
+end;
+
 procedure TGUITestRunner.GUITestRunnerShow(Sender: TObject);
 begin
   if (ParamStrUTF8(1) = '--now') or (ParamStrUTF8(1) = '-n') then
     RunExecute(Self);
+  // restore last used position and size
+  Left := FINI.ReadInteger('WindowState', 'Left', Left);
+  Top := FINI.ReadInteger('WindowState', 'Top', Top);
+  Width := FINI.ReadInteger('WindowState', 'Width', Width);
+  Height := FINI.ReadInteger('WindowState', 'Height', Height);
 end;
 
 procedure TGUITestRunner.MenuItem3Click(Sender: TObject);
@@ -653,7 +673,6 @@ begin
   ActRunHighlightedTest.Enabled := AValue;
   RunAction.Enabled := AValue;
 end;
-
 
 procedure TGUITestRunner.AddFailure(ATest: TTest; AFailure: TTestFailure);
 var
