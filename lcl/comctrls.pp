@@ -3337,6 +3337,7 @@ type
     procedure CreateWnd; override;
     procedure Delete(Node: TTreeNode); virtual;
     procedure DestroyWnd; override;
+    procedure DoCreateNodeClass(var NewNodeClass: TTreeNodeClass); virtual;
     procedure DoEndDrag(Target: TObject; X, Y: Integer); override;
     function DoMouseWheel(Shift: TShiftState; WheelDelta: Integer;
                           MousePos: TPoint): Boolean; override;

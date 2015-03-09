@@ -3185,6 +3185,12 @@ begin
   FLastVertScrollInfo.cbSize := 0;
 end;
 
+procedure TCustomTreeView.DoCreateNodeClass(var NewNodeClass: TTreeNodeClass);
+begin
+  if Assigned(OnCreateNodeClass) then
+    OnCreateNodeClass(Self,NewNodeClass);
+end;
+
 procedure TCustomTreeView.BeginAutoDrag;
 begin
   BeginDrag(False);
@@ -5165,8 +5171,7 @@ begin
   if Result = nil then
   begin
     NewNodeClass:=TTreeNode;
-    if Assigned(OnCreateNodeClass) then
-      OnCreateNodeClass(Self,NewNodeClass);
+    DoCreateNodeClass(NewNodeClass);
     Result := NewNodeClass.Create(Items);
   end;
 end;
