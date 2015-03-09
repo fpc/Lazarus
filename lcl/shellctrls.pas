@@ -883,7 +883,7 @@ end;
 function TCustomShellTreeView.GetPathFromNode(ANode: TTreeNode): string;
 begin
   Result := '';
-  if ANode <> nil then  // Will return the root if nothing is selected (ANode=nil)
+  if Assigned(ANode) then
   begin
     // Build the path. In the future use ANode.Data instead of ANode.Text
     if (ANode.Parent = nil) and (GetRootPath <> '') then
@@ -900,9 +900,9 @@ begin
       else
         Result := IncludeTrailingPathDelimiter(ANode.Text) + Result;
     end;
+    if not FilenameIsAbsolute(Result) then
+      Result := GetRootPath() + Result;    // Include root directory
   end;
-  if not FilenameIsAbsolute(Result) then
-    Result := GetRootPath() + Result;    // Include root directory
 end;
 
 function TCustomShellTreeView.GetSelectedNodePath: string;
