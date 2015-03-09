@@ -22,10 +22,16 @@ const
 
   emcPluginMultiCaretToggleCaret = emcPluginFirstMultiCaret;
 
-  //ecPluginMultiCaretSetCaret    = ecPluginFirstMultiCaret + 0;
-  //ecPluginMultiCaretUnsetCaret  = ecPluginFirstMultiCaret + 1;
-  //ecPluginMultiCaretToggleCaret = ecPluginFirstMultiCaret + 2;
-  //ecPluginMultiCaretClearAll    = ecPluginFirstMultiCaret + 3;
+  ecPluginMultiCaretSetCaret    = ecPluginFirstMultiCaret + 0;
+  ecPluginMultiCaretUnsetCaret  = ecPluginFirstMultiCaret + 1;
+  ecPluginMultiCaretToggleCaret = ecPluginFirstMultiCaret + 2;
+  ecPluginMultiCaretClearAll    = ecPluginFirstMultiCaret + 3;
+
+  ecPluginMultiCaretModeCancelOnMove  = ecPluginFirstMultiCaret + 4;
+  ecPluginMultiCaretModeMoveAll       = ecPluginFirstMultiCaret + 5;
+
+  // last
+  ecPluginLastMultiCaret = ecPluginFirstMultiCaret + 5;
 
 type
 
@@ -136,12 +142,13 @@ type
 
     FPaintLock: Integer;
     FPaintLockFlags: set of
-      (plfUpdateCaretsPos, plfDeferUpdateCaretsPos,
+      (plfUpdateCaretsPos, plfDeferUpdateCaretsPos, plfMergeCarets,
        plfBoundsChanged, plfTextSizeChanged);
 
     function  GetTextArea: TLazSynTextArea;
     procedure DoTextSizeChanged(Sender: TObject);
     procedure DoBoundsChanged(Sender: TObject);
+    procedure MergeAndRemoveCarets;
     procedure DoEditorPaintEvent(Sender: TObject; EventType: TSynPaintEvent;
       const prcClip: TRect);
     procedure DoEditorScrollEvent(Sender: TObject; EventType: TSynScrollEvent; dx,
@@ -150,8 +157,6 @@ type
     procedure DoAfterDecPaintLock(Sender: TObject); virtual;
     procedure DoBeforeIncPaintLock(Sender: TObject); virtual;
     procedure DoBufferChanged(Sender: TObject);
-    procedure DoLinesEdited(Sender: TSynEditStrings; aLinePos, aBytePos, aCount,
-                            aLineBrkCnt: Integer; aText: String);
     procedure SetColor(AValue: TColor);
     property TextArea: TLazSynTextArea read GetTextArea;
     function CreateVisual: TSynPluginMultiCaretVisual; virtual;
@@ -162,7 +167,10 @@ type
     procedure UpdateCaretsPos;
     procedure ClearCarets;
     function  CaretsCount: Integer;
+    procedure DoCleared; virtual;
 
+    procedure DoLinesEdited(Sender: TSynEditStrings; aLinePos, aBytePos, aCount,
+                            aLineBrkCnt: Integer; aText: String); virtual;
     procedure DoEditorRemoving(AValue: TCustomSynEdit); override;
     procedure DoEditorAdded(AValue: TCustomSynEdit); override;
 
@@ -192,20 +200,37 @@ type
 
   { TSynCustomPluginMultiCaret }
 
+  TSynPluginMultiCaretMode = (
+    mcmCancelOnCaretMove,
+    mcmMoveAllCarets,
+    // Osly for ActiveMode
+    mcmNoCarets,
+    mcmAddingCarets // move main caret, keep others
+  );
+  TSynPluginMultiCaretDefaultMode = mcmCancelOnCaretMove..mcmMoveAllCarets;
+
   TSynPluginMultiCaretStateFlag = (
     sfProcessingCmd, sfProcessingMain,
-    sfExtendingColumnSel, sfSkipCaretsAtSelection
+    sfExtendingColumnSel, sfSkipCaretsAtSelection,
+    sfCreateCaretAtCurrentPos
   );
   TSynPluginMultiCaretStateFlags = set of TSynPluginMultiCaretStateFlag;
 
   TSynCustomPluginMultiCaret = class(TSynPluginMultiCaretBase)
   private
+    FActiveMode: TSynPluginMultiCaretMode;
+    FDefaultColumnSelectMode: TSynPluginMultiCaretDefaultMode;
+    FDefaultMode: TSynPluginMultiCaretDefaultMode;
     FEnableWithColumnSelection: Boolean;
+    FKeyStrokes: TSynPluginMultiCaretKeyStrokes;
     FStateFlags: TSynPluginMultiCaretStateFlags;
     FMouseActions: TSynPluginMultiCaretMouseActions;
     FSelY1, FSElY2, FSelX: Integer;
 
     procedure RemoveCaretsInSelection;
+    procedure SetActiveMode(AValue: TSynPluginMultiCaretMode);
+    procedure SetDefaultColumnSelectMode(AValue: TSynPluginMultiCaretDefaultMode);
+    procedure SetDefaultMode(AValue: TSynPluginMultiCaretDefaultMode);
     procedure SetSkipCaretAtSel;
   protected
     procedure DoEditorRemoving(AValue: TCustomSynEdit); override;
@@ -213,10 +238,20 @@ type
 
     procedure DoAfterDecPaintLock(Sender: TObject); override;
 
+    procedure DoCleared; override;
+    procedure DoLinesEdited(Sender: TSynEditStrings; aLinePos, aBytePos, aCount,
+      aLineBrkCnt: Integer; aText: String); override;
     procedure DoCaretChanged(Sender: TObject);
     procedure DoSelectionChanged(Sender: TObject);
     procedure DoBeforeSetSelText(Sender: TObject; AMode: TSynSelectionMode; ANewText: PChar);
-    procedure ProcessSynCommand(Sender: TObject; AfterProcessing: boolean;
+    procedure TranslateKey(Sender: TObject; Code: word; SState: TShiftState;
+      var Data: pointer; var IsStartOfCombo: boolean; var Handled: boolean;
+      var Command: TSynEditorCommand; FinishComboOnly: Boolean;
+      var ComboKeyStrokes: TSynEditKeyStrokes);
+    procedure ProcessMySynCommand(Sender: TObject; AfterProcessing: boolean;
+      var Handled: boolean; var Command: TSynEditorCommand; var AChar: TUTF8Char;
+      Data: pointer; HandlerData: pointer);
+    procedure ProcessAllSynCommand(Sender: TObject; AfterProcessing: boolean;
               var Handled: boolean; var Command: TSynEditorCommand;
               var AChar: TUTF8Char; Data: pointer; HandlerData: pointer);
     function MaybeHandleMouseAction(var AnInfo: TSynEditMouseActionInfo;
@@ -228,15 +263,22 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    function AddCaretAt(X, Y: Integer): Integer;
+    procedure AddCaretAt(X, Y: Integer);
     property MouseActions: TSynPluginMultiCaretMouseActions read FMouseActions;
+    property KeyStrokes: TSynPluginMultiCaretKeyStrokes read FKeyStrokes;
     property EnableWithColumnSelection: Boolean read FEnableWithColumnSelection write FEnableWithColumnSelection default True;
+    property ActiveMode: TSynPluginMultiCaretMode read FActiveMode write SetActiveMode;
+    property DefaultMode: TSynPluginMultiCaretDefaultMode read FDefaultMode write SetDefaultMode default mcmMoveAllCarets;
+    property DefaultColumnSelectMode: TSynPluginMultiCaretDefaultMode read FDefaultColumnSelectMode write SetDefaultColumnSelectMode default mcmCancelOnCaretMove;
   end;
 
   TSynPluginMultiCaret = class(TSynCustomPluginMultiCaret)
   published
     property MouseActions;
+    property KeyStrokes;
     property EnableWithColumnSelection;
+    property DefaultMode;
+    property DefaultColumnSelectMode;
   end;
 
 implementation
@@ -252,6 +294,36 @@ const
   SynMouseCommandNames: array [0..0] of TIdentMapEntry = (
     (Value: emcPluginMultiCaretToggleCaret; Name: 'emcPluginMultiCaretToggleCaret')
   );
+
+const
+  EditorKeyCommandStrs: array[0..5] of TIdentMapEntry = (
+    (Value: ecPluginMultiCaretSetCaret;         Name: 'ecPluginMultiCaretSetCaret'),
+    (Value: ecPluginMultiCaretUnsetCaret;       Name: 'ecPluginMultiCaretUnsetCaret'),
+    (Value: ecPluginMultiCaretToggleCaret;      Name: 'ecPluginMultiCaretToggleCaret'),
+    (Value: ecPluginMultiCaretClearAll;         Name: 'ecPluginMultiCaretClearAll'),
+    (Value: ecPluginMultiCaretModeCancelOnMove; Name: 'ecPluginMultiCaretModeCancelOnMove'),
+    (Value: ecPluginMultiCaretModeMoveAll;      Name: 'ecPluginMultiCaretModeMoveAll')
+  );
+
+function IdentToKeyCommand(const Ident: string; var Cmd: longint): boolean;
+begin
+  Result := IdentToInt(Ident, Cmd, EditorKeyCommandStrs);
+end;
+
+function KeyCommandToIdent(Cmd: longint; var Ident: string): boolean;
+begin
+  Result := (Cmd >= ecPluginFirstMultiCaret) and (Cmd <= ecPluginLastMultiCaret);
+  if not Result then exit;
+  Result := IntToIdent(Cmd, Ident, EditorKeyCommandStrs);
+end;
+
+procedure GetEditorCommandValues(Proc: TGetStrProc);
+var
+  i: integer;
+begin
+  for i := Low(EditorKeyCommandStrs) to High(EditorKeyCommandStrs) do
+    Proc(EditorKeyCommandStrs[I].Name);
+end;
 
 function SynMouseCmdToIdent(SynMouseCmd: Longint; var Ident: String): Boolean;
 begin
@@ -849,10 +921,26 @@ begin
   UpdateCaretsPos;
 end;
 
+procedure TSynPluginMultiCaretBase.MergeAndRemoveCarets;
+var
+  i: Integer;
+begin
+  if FPaintLock > 0 then begin
+    include(FPaintLockFlags, plfMergeCarets);
+    exit;
+  end;
+
+  Carets.FindAndRemoveMergedCarets;
+  i := Carets.FindCaretIdx(CaretObj.BytePos, CaretObj.LinePos);
+  if i >= 0 then
+    Carets.RemoveCaret(i);
+end;
+
 procedure TSynPluginMultiCaretBase.DoLinesEdited(Sender: TSynEditStrings; aLinePos, aBytePos,
   aCount, aLineBrkCnt: Integer; aText: String);
 begin
   Carets.AdjustAllAfterEdit(aLinePos, aBytePos, aCount, aLineBrkCnt);
+  MergeAndRemoveCarets;
 end;
 
 procedure TSynPluginMultiCaretBase.SetColor(AValue: TColor);
@@ -1002,6 +1090,8 @@ begin
     DoBoundsChanged(nil);
   if plfTextSizeChanged in FPaintLockFlags then
     DoTextSizeChanged(nil);
+  if plfMergeCarets in FPaintLockFlags then
+    MergeAndRemoveCarets;
   Exclude(FPaintLockFlags, plfDeferUpdateCaretsPos);
   if plfUpdateCaretsPos in FPaintLockFlags then
     UpdateCaretsPos;
@@ -1110,11 +1200,17 @@ begin
   Carets.Clear(True);
   FUsedList.Clear;
   FUnUsedList.Clear;
+  DoCleared;
 end;
 
 function TSynPluginMultiCaretBase.CaretsCount: Integer;
 begin
   Result := Carets.Count;
+end;
+
+procedure TSynPluginMultiCaretBase.DoCleared;
+begin
+  //
 end;
 
 procedure TSynPluginMultiCaretBase.DoBufferChanged(Sender: TObject);
@@ -1199,18 +1295,45 @@ end;
 
 procedure TSynPluginMultiCaretMouseActions.ResetDefaults;
 begin
-  Clear; // todo left button
-  AddCommand(emcPluginMultiCaretToggleCaret, False, mbXMiddle, ccAny, cdDown, [ssShift], [ssShift,ssCtrl,ssAlt]);
+  Clear;
+  AddCommand(emcPluginMultiCaretToggleCaret, False, mbXLeft, ccAny, cdDown, [ssShift, ssCtrl], [ssShift,ssCtrl,ssAlt]);
 end;
 
 { TSynPluginMultiCaretKeyStrokes }
 
 procedure TSynPluginMultiCaretKeyStrokes.ResetDefaults;
+  procedure AddKey(const ACmd: TSynEditorCommand; const AKey: word;
+     const AShift: TShiftState; const AShiftMask: TShiftState = []);
+  begin
+    with Add do
+    begin
+      Key       := AKey;
+      Shift     := AShift;
+      ShiftMask := AShiftMask;
+      Command   := ACmd;
+    end;
+  end;
 begin
   inherited ResetDefaults;
+  AddKey(ecPluginMultiCaretToggleCaret, VK_SPACE, [ssShift, ssCtrl], [ssShift,ssCtrl,ssAlt]);
+  AddKey(ecPluginMultiCaretClearAll, VK_ESCAPE, [ssShift, ssCtrl], [ssShift,ssCtrl,ssAlt]);
 end;
 
 { TSynCustomPluginMultiCaret }
+
+procedure TSynCustomPluginMultiCaret.TranslateKey(Sender: TObject; Code: word;
+  SState: TShiftState; var Data: pointer; var IsStartOfCombo: boolean; var Handled: boolean;
+  var Command: TSynEditorCommand; FinishComboOnly: Boolean;
+  var ComboKeyStrokes: TSynEditKeyStrokes);
+begin
+  if Handled then
+  exit;
+  if not FinishComboOnly then
+    FKeyStrokes.ResetKeyCombo;
+  Command := FKeyStrokes.FindKeycodeEx(Code, SState, Data, IsStartOfCombo, FinishComboOnly, ComboKeyStrokes);
+
+  Handled := (Command <> ecNone) or IsStartOfCombo;
+end;
 
 procedure TSynCustomPluginMultiCaret.RemoveCaretsInSelection;
 var
@@ -1248,6 +1371,26 @@ begin
   end;
 end;
 
+procedure TSynCustomPluginMultiCaret.SetActiveMode(AValue: TSynPluginMultiCaretMode);
+begin
+  if FActiveMode = AValue then Exit;
+  FActiveMode := AValue;
+  if FActiveMode = mcmNoCarets then
+    ClearCarets;
+end;
+
+procedure TSynCustomPluginMultiCaret.SetDefaultColumnSelectMode(AValue: TSynPluginMultiCaretDefaultMode);
+begin
+  if FDefaultColumnSelectMode = AValue then Exit;
+  FDefaultColumnSelectMode := AValue;
+end;
+
+procedure TSynCustomPluginMultiCaret.SetDefaultMode(AValue: TSynPluginMultiCaretDefaultMode);
+begin
+  if FDefaultMode = AValue then Exit;
+  FDefaultMode := AValue;
+end;
+
 procedure TSynCustomPluginMultiCaret.SetSkipCaretAtSel;
 begin
   Include(FStateFlags, sfSkipCaretsAtSelection);
@@ -1261,8 +1404,9 @@ begin
   if Editor <> nil then begin
     CaretObj.RemoveChangeHandler(@DoCaretChanged);
     SelectionObj.RemoveChangeHandler(@DoSelectionChanged);
-    Editor.UnregisterCommandHandler(@ProcessSynCommand);
-    //Editor.UnRegisterKeyTranslationHandler(@TranslateKey);
+    Editor.UnregisterCommandHandler(@ProcessAllSynCommand);
+    Editor.UnregisterCommandHandler(@ProcessMySynCommand);
+    Editor.UnRegisterKeyTranslationHandler(@TranslateKey);
     Editor.UnregisterMouseActionSearchHandler(@MaybeHandleMouseAction);
     Editor.UnregisterMouseActionExecHandler(@DoHandleMouseAction);
   end;
@@ -1275,8 +1419,9 @@ begin
   if Editor <> nil then begin
     Editor.RegisterMouseActionSearchHandler(@MaybeHandleMouseAction);
     Editor.RegisterMouseActionExecHandler(@DoHandleMouseAction);
-    Editor.RegisterCommandHandler(@ProcessSynCommand, nil, [hcfInit, hcfFinish]);
-    //Editor.RegisterKeyTranslationHandler(@TranslateKey);
+    Editor.RegisterCommandHandler(@ProcessAllSynCommand, nil, [hcfInit, hcfFinish]);
+    Editor.RegisterCommandHandler(@ProcessMySynCommand, nil, [hcfPreExec]);
+    Editor.RegisterKeyTranslationHandler(@TranslateKey);
     SelectionObj.AddChangeHandler(@DoSelectionChanged);
     CaretObj.AddChangeHandler(@DoCaretChanged);
   end;
@@ -1291,13 +1436,35 @@ begin
 
   UpdateCaretsPos;
   inherited DoAfterDecPaintLock(Sender);
-  FStateFlags := FStateFlags - [sfProcessingCmd, sfExtendingColumnSel];
+  FStateFlags := FStateFlags - [sfExtendingColumnSel];
+end;
+
+procedure TSynCustomPluginMultiCaret.DoCleared;
+begin
+  inherited DoCleared;
+  FActiveMode := mcmNoCarets;
+  Exclude(FStateFlags, sfCreateCaretAtCurrentPos);
+end;
+
+procedure TSynCustomPluginMultiCaret.DoLinesEdited(Sender: TSynEditStrings; aLinePos,
+  aBytePos, aCount, aLineBrkCnt: Integer; aText: String);
+begin
+  inherited DoLinesEdited(Sender, aLinePos, aBytePos, aCount, aLineBrkCnt, aText);
+  Exclude(FStateFlags, sfCreateCaretAtCurrentPos);
 end;
 
 procedure TSynCustomPluginMultiCaret.DoCaretChanged(Sender: TObject);
 begin
-  if (FStateFlags * [sfProcessingCmd, sfExtendingColumnSel] <> []) then
+  if (sfCreateCaretAtCurrentPos in FStateFlags) then begin
+    AddCaret(CaretObj.OldLineBytePos.x, CaretObj.OldLinePos);
+    exclude(FStateFlags, sfCreateCaretAtCurrentPos);
     exit;
+  end;
+  if (FStateFlags * [sfProcessingCmd, sfExtendingColumnSel] <> []) or
+     (FActiveMode = mcmAddingCarets)
+  then
+    exit;
+
   ClearCarets;
 end;
 
@@ -1331,6 +1498,8 @@ begin
     AddCaret(x, i);
   end;
 
+  if FActiveMode = mcmNoCarets then
+    FActiveMode := DefaultColumnSelectMode;
 end;
 
 procedure TSynCustomPluginMultiCaret.DoBeforeSetSelText(Sender: TObject; AMode: TSynSelectionMode;
@@ -1345,10 +1514,54 @@ begin
     FSelX := Carets.Caret[Carets.MainCaretIndex].x;
   end
   else
-    assert(False, 'TSynCustomPluginMultiCaret.ProcessSynCommand: Maincaret index not found');
+    assert(False, 'TSynCustomPluginMultiCaret.ProcessAllSynCommand: Maincaret index not found');
 end;
 
-procedure TSynCustomPluginMultiCaret.ProcessSynCommand(Sender: TObject; AfterProcessing: boolean;
+procedure TSynCustomPluginMultiCaret.ProcessMySynCommand(Sender: TObject;
+  AfterProcessing: boolean; var Handled: boolean; var Command: TSynEditorCommand;
+  var AChar: TUTF8Char; Data: pointer; HandlerData: pointer);
+var
+  i: Integer;
+begin
+  // hcfPreExec
+  if Handled then exit;
+
+  Handled := True;
+  case Command of
+    ecPluginMultiCaretSetCaret: begin
+        if Carets.FindCaretIdx(CaretObj.BytePos, CaretObj.LinePos) < 0 then
+          include(FStateFlags, sfCreateCaretAtCurrentPos);
+        FActiveMode := mcmAddingCarets;
+      end;
+    ecPluginMultiCaretUnsetCaret: begin
+        exclude(FStateFlags, sfCreateCaretAtCurrentPos);
+        i := Carets.FindCaretIdx(CaretObj.BytePos, CaretObj.LinePos);
+        if i >= 0 then
+          RemoveCaret(i);
+        FActiveMode := mcmAddingCarets;
+      end;
+    ecPluginMultiCaretToggleCaret: begin
+        i := Carets.FindCaretIdx(CaretObj.BytePos, CaretObj.LinePos);
+        if (i > 0) or (sfCreateCaretAtCurrentPos in FStateFlags) then begin
+          exclude(FStateFlags, sfCreateCaretAtCurrentPos);
+          if i >= 0 then
+            RemoveCaret(i);
+        end
+        else begin
+          include(FStateFlags, sfCreateCaretAtCurrentPos);
+        end;
+        FActiveMode := mcmAddingCarets;
+      end;
+    ecPluginMultiCaretClearAll: ClearCarets;
+
+    ecPluginMultiCaretModeCancelOnMove: FActiveMode := mcmCancelOnCaretMove;
+    ecPluginMultiCaretModeMoveAll:      FActiveMode := mcmMoveAllCarets;
+    else
+      Handled := False;
+  end;
+end;
+
+procedure TSynCustomPluginMultiCaret.ProcessAllSynCommand(Sender: TObject; AfterProcessing: boolean;
   var Handled: boolean; var Command: TSynEditorCommand; var AChar: TUTF8Char; Data: pointer;
   HandlerData: pointer);
 
@@ -1391,16 +1604,54 @@ procedure TSynCustomPluginMultiCaret.ProcessSynCommand(Sender: TObject; AfterPro
       end;
       CaretObj.DecForcePastEOL;
 
-      Carets.FindAndRemoveMergedCarets;
       if Carets.MainCaretIndex >= 0 then begin
         Editor.LogicalCaretXY := Carets.Caret[Carets.MainCaretIndex];
         RemoveCaret(Carets.MainCaretIndex);
       end
       else
-        assert(False, 'TSynCustomPluginMultiCaret.ProcessSynCommand: Maincaret index not found');
+        assert(False, 'TSynCustomPluginMultiCaret.ProcessAllSynCommand: Maincaret index not found');
     finally
       Editor.EndUpdate;
     end;
+  end;
+
+  procedure ExecCaretMoveRepeated;
+  var
+    i: Integer;
+    c, p: TPoint;
+  begin
+    Handled := True;
+    Editor.BeginUpdate(True);
+    try
+      // Execute Command at current caret pos
+      Include(FStateFlags, sfProcessingMain);
+      Editor.CommandProcessor(Command, AChar, data, [hcfInit, hcfFinish]);
+      c := CaretObj.LineCharPos;
+      Exclude(FStateFlags, sfProcessingMain);
+
+      // Repeat command
+      // TODO left and up mavement loop 0 to count
+      i := CaretsCount;
+      while i > 0 do begin
+        dec(i);
+        p := Carets.Caret[i];
+        Editor.LogicalCaretXY := p;
+        Editor.CommandProcessor(Command, AChar, nil, [hcfInit, hcfFinish]);
+        Carets.SetCaret(i, Editor.LogicalCaretXY);
+      end;
+
+    finally
+      CaretObj.LineCharPos := c;
+      MergeAndRemoveCarets;
+      Editor.EndUpdate;
+    end;
+  end;
+
+  procedure StartEditing;
+  begin
+    Include(FStateFlags, sfProcessingCmd);
+    if (FActiveMode = mcmAddingCarets) and (not Editor.ReadOnly) then
+      FActiveMode := DefaultMode;
   end;
 
   procedure HandleNewColSelection;
@@ -1410,6 +1661,7 @@ procedure TSynCustomPluginMultiCaret.ProcessSynCommand(Sender: TObject; AfterPro
 var
   ClipHelper: TSynClipboardStream;
 begin
+  // hcfInit / hcfFinish
   if (sfProcessingCmd in FStateFlags) or (CaretsCount = 0) then
     exit;
   if AfterProcessing then begin
@@ -1425,87 +1677,104 @@ begin
      command is already initialized / prevent macro recorder from recording again.
   *)
 
-  case Command of
-  // TODO: delete and smColumn -- only delete once
-    ecDeleteLastChar..ecDeleteLine,
-    ecLineBreak..ecChar:
-      begin
-        Include(FStateFlags, sfProcessingCmd);
-        if ((Command = ecDeleteChar) or (Command = ecDeleteLastChar)) and
-           Editor.SelAvail and (SelectionObj.ActiveSelectionMode = smColumn) and
-           not(eoPersistentBlock in Editor.Options2)
-        then
-          SetSkipCaretAtSel;
-        if Editor.ReadOnly then exit;
-        ExecCommandRepeated;
-      end;
-    ecPaste:
-      begin
-        Include(FStateFlags, sfProcessingCmd);
-        if Editor.ReadOnly then exit;
-
-        if (SelectionObj.ActiveSelectionMode = smColumn) and
-           (SelectionObj.StartLinePos <> SelectionObj.EndLinePos)
-        then begin
-          ClipHelper := TSynClipboardStream.Create;
-          try
-            ClipHelper.ReadFromClipboard(Clipboard);
-            if ClipHelper.SelectionMode = smColumn then begin
-              Exclude(FStateFlags, sfProcessingCmd);
-              exit;
-            end;
-          finally
-            ClipHelper.Free;
-          end;
-        end;
-
-        ExecCommandRepeated;
-      end;
-    ecTab..ecShiftTab:
-      begin
-        Include(FStateFlags, sfProcessingCmd);
-        if Editor.ReadOnly then exit;
-
-        if (eoTabIndent in Editor.Options) and Editor.SelAvail and
-           (SelectionObj.ActiveSelectionMode = smColumn)
-        then begin
-          // no indent for column mode, when multicaret
-          Editor.BeginUpdate(True);
-          try
-            AddCaret(Editor.LogicalCaretXY.x, Editor.CaretY, [cfMainCaret, cfNoneVisual, cfAddDuplicate]);
-            Editor.SelText := '';
-            if Carets.MainCaretIndex >= 0 then begin
-              Editor.LogicalCaretXY := Carets.Caret[Carets.MainCaretIndex];
-              RemoveCaret(Carets.MainCaretIndex);
-            end
-            else
-              assert(False, 'TSynCustomPluginMultiCaret.ProcessSynCommand: Maincaret index not found');
-            ExecCommandRepeated;
-          finally
-            Editor.EndUpdate;
-          end;
-        end
-        else
+  try
+    case Command of
+    // TODO: delete and smColumn -- only delete once
+      ecDeleteLastChar..ecDeleteLine,
+      ecLineBreak..ecChar:
+        begin
+          StartEditing;
+          if ((Command = ecDeleteChar) or (Command = ecDeleteLastChar)) and
+             Editor.SelAvail and (SelectionObj.ActiveSelectionMode = smColumn) and
+             not(eoPersistentBlock in Editor.Options2)
+          then
+            SetSkipCaretAtSel;
+          if Editor.ReadOnly then exit;
           ExecCommandRepeated;
-      end;
-    ecSelColCmdRangeStart..ecSelColCmdRangeEnd:
-      begin
-        Include(FStateFlags, sfExtendingColumnSel);
-      end;
-    ecCopy,
-    ecScrollUp..ecScrollRight,
-    ecInsertMode..ecToggleMode,
-    ecNormalSelect, ecLineSelect,
-    ecSetMarker0..ecSetMarker9,
-    ecToggleMarker0..ecToggleMarker9,
-    EcFoldLevel1..EcFoldLevel9, EcFoldLevel0, EcFoldCurrent,
-    ecGotFocus, ecLostFocus
-    :
-      ; // Ignore, if no changes occur
-    else
-      ClearCarets;
-  end;
+        end;
+      ecPaste:
+        begin
+          StartEditing;
+          if Editor.ReadOnly then exit;
 
+          if (SelectionObj.ActiveSelectionMode = smColumn) and
+             (SelectionObj.StartLinePos <> SelectionObj.EndLinePos)
+          then begin
+            ClipHelper := TSynClipboardStream.Create;
+            try
+              ClipHelper.ReadFromClipboard(Clipboard);
+              if ClipHelper.SelectionMode = smColumn then begin
+                Exclude(FStateFlags, sfProcessingCmd);
+                exit;
+              end;
+            finally
+              ClipHelper.Free;
+            end;
+          end;
+
+          ExecCommandRepeated;
+        end;
+      ecTab..ecShiftTab:
+        begin
+          StartEditing;
+          if Editor.ReadOnly then exit;
+
+          if (eoTabIndent in Editor.Options) and Editor.SelAvail and
+             (SelectionObj.ActiveSelectionMode = smColumn)
+          then begin
+            // no indent for column mode, when multicaret
+            Editor.BeginUpdate(True);
+            try
+              AddCaret(Editor.LogicalCaretXY.x, Editor.CaretY, [cfMainCaret, cfNoneVisual, cfAddDuplicate]);
+              Editor.SelText := '';
+              if Carets.MainCaretIndex >= 0 then begin
+                Editor.LogicalCaretXY := Carets.Caret[Carets.MainCaretIndex];
+                RemoveCaret(Carets.MainCaretIndex);
+              end
+              else
+                assert(False, 'TSynCustomPluginMultiCaret.ProcessAllSynCommand: Maincaret index not found');
+              ExecCommandRepeated;
+            finally
+              Editor.EndUpdate;
+            end;
+          end
+          else
+            ExecCommandRepeated;
+        end;
+      ecSelColCmdRangeStart..ecSelColCmdRangeEnd:
+        begin
+          Include(FStateFlags, sfExtendingColumnSel);
+        end;
+      ecLeft..ecHalfWordRight: begin
+          if FActiveMode = mcmMoveAllCarets then begin
+            Include(FStateFlags, sfProcessingCmd);
+            ExecCaretMoveRepeated;
+          end
+          else
+          if FActiveMode = mcmAddingCarets then
+            Include(FStateFlags, sfProcessingCmd)
+          else
+            ClearCarets;
+        end;
+      ecCopy,
+      ecScrollUp..ecScrollRight,
+      ecInsertMode..ecToggleMode,
+      ecNormalSelect, ecLineSelect,
+      ecSetMarker0..ecSetMarker9,
+      ecToggleMarker0..ecToggleMarker9,
+      EcFoldLevel1..EcFoldLevel9, EcFoldLevel0, EcFoldCurrent,
+      ecGotFocus, ecLostFocus
+      :
+        ; // Ignore, if no changes occur
+      ecPluginFirstMultiCaret..ecPluginLastMultiCaret: ; // ignore and handle in hcfPreExec
+      else
+        ClearCarets;
+    end;
+
+    Exclude(FStateFlags, sfSkipCaretsAtSelection);
+  finally
+    Exclude(FStateFlags, sfProcessingCmd);
+  end;
 end;
 
 function TSynCustomPluginMultiCaret.MaybeHandleMouseAction(var AnInfo: TSynEditMouseActionInfo;
@@ -1527,8 +1796,11 @@ begin
     if i >= 0 then
       RemoveCaret(i)
     else
-    if (AnInfo.NewCaret.BytePos <> CaretObj.BytePos) or (AnInfo.NewCaret.LinePos <> CaretObj.LinePos) then
+    if (AnInfo.NewCaret.BytePos <> CaretObj.BytePos) or (AnInfo.NewCaret.LinePos <> CaretObj.LinePos) then begin
       AddCaret(AnInfo.NewCaret.BytePos, AnInfo.NewCaret.LinePos);
+      if FActiveMode = mcmNoCarets then
+        FActiveMode := DefaultMode;
+    end;
   end;
 end;
 
@@ -1543,7 +1815,12 @@ constructor TSynCustomPluginMultiCaret.Create(AOwner: TComponent);
 begin
   FMouseActions := TSynPluginMultiCaretMouseActions.Create(Self);
   FMouseActions.ResetDefaults;
+  FKeyStrokes := TSynPluginMultiCaretKeyStrokes.Create(Self);
+  FKeyStrokes.ResetDefaults;
   FEnableWithColumnSelection := True;
+  FActiveMode := mcmNoCarets;
+  FDefaultMode := mcmMoveAllCarets;
+  FDefaultColumnSelectMode := mcmCancelOnCaretMove;
   inherited Create(AOwner);
 end;
 
@@ -1551,17 +1828,23 @@ destructor TSynCustomPluginMultiCaret.Destroy;
 begin
   inherited Destroy;
   FreeAndNil(FMouseActions);
+  FreeAndNil(FKeyStrokes);
 end;
 
-function TSynCustomPluginMultiCaret.AddCaretAt(X, Y: Integer): Integer;
+procedure TSynCustomPluginMultiCaret.AddCaretAt(X, Y: Integer);
 begin
   AddCaret(x, y);
+  if FActiveMode = mcmNoCarets then
+    FActiveMode := FDefaultMode;
 end;
 
 initialization
   RegisterMouseCmdIdentProcs(@IdentToSynMouseCmd, @SynMouseCmdToIdent);
   RegisterExtraGetEditorMouseCommandValues(@GetEditorMouseCommandValues);
   RegisterMouseCmdNameAndOptProcs(@MouseCommandName, @MouseCommandConfigName);
+
+  RegisterKeyCmdIdentProcs(@IdentToKeyCommand,  @KeyCommandToIdent);
+  RegisterExtraGetEditorCommandValues(@GetEditorCommandValues);
 
 {$IfDef SynMultiCaretDebug}
   SynMCaretDebug := DebugLogger.FindOrRegisterLogGroup('SynMultiCaretDebug' {$IFDEF SynMultiCaretDebug} , True {$ENDIF} );

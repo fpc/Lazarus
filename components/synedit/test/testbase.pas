@@ -121,6 +121,9 @@ type
     procedure TestIsFullText(Name: String; Lines: Array of String);
     procedure TestIsFullText(Name: String; Lines: Array of String; Repl: Array of const);
 
+    procedure TestIsCaretLogAndFullText(Name: String; X, Y: Integer; Text: String); // logical caret
+    procedure TestIsCaretLogAndFullText(Name: String; X, Y: Integer; Lines: Array of String); // logical caret
+    procedure TestIsCaretLogAndFullText(Name: String; X, Y: Integer; Lines: Array of String; Repl: Array of const); // logical caret
   end;
 
   function MyDbg(t: String): String;
@@ -398,6 +401,26 @@ procedure TTestBase.TestIsFullText(Name: String; Lines: array of String;
   Repl: array of const);
 begin
   TestIsFullText(Name, LinesToText(LinesReplace(Lines, Repl)));
+end;
+
+procedure TTestBase.TestIsCaretLogAndFullText(Name: String; X, Y: Integer; Text: String);
+begin
+  TestIsCaret(Name, X, Y);
+  TestIsFullText(Name, Text);
+end;
+
+procedure TTestBase.TestIsCaretLogAndFullText(Name: String; X, Y: Integer;
+  Lines: array of String);
+begin
+  TestIsCaret(Name, X, Y);
+  TestIsFullText(Name, Lines);
+end;
+
+procedure TTestBase.TestIsCaretLogAndFullText(Name: String; X, Y: Integer;
+  Lines: array of String; Repl: array of const);
+begin
+  TestIsCaret(Name, X, Y);
+  TestIsFullText(Name, Lines, Repl);
 end;
 
 procedure TTestBase.TestFail(Name, Func, Expect, Got: String; Result: Boolean = False);

@@ -2812,6 +2812,12 @@ resourcestring
   srkmecToggleMode            = 'Toggle Mode';
   srkmecBlockIndent           = 'Indent block';
   srkmecBlockUnindent         = 'Unindent block';
+  srkmecPluginMultiCaretSetCaret         = 'Add extra caret';
+  srkmecPluginMultiCaretUnsetCaret       = 'Remove extra caret';
+  srkmecPluginMultiCaretToggleCaret      = 'Toggle extra caret';
+  srkmecPluginMultiCaretClearAll         = 'Clear all extra carets';
+  srkmecPluginMultiCaretModeCancelOnMove = 'Cursor keys clear all extra carets';
+  srkmecPluginMultiCaretModeMoveAll      = 'Cursor keys move all extra carets';
 
   srkmecBlockSetBegin   = 'Set block begin';
   srkmecBlockSetEnd     = 'Set block end';
@@ -3107,6 +3113,7 @@ resourcestring
   srkmCatEditing        = 'Text editing commands';
   lisKMDeleteLastChar   = 'Delete last char';
   srkmCatCmdCmd         = 'Command commands';
+  srkmCatMultiCaret     = 'Multi caret commands';
   srkmCatSearchReplace  = 'Text search and replace commands';
   srkmCatMarker         = 'Text marker commands';
   srkmCatFold           = 'Text folding commands';

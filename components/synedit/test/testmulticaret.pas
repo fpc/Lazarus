@@ -20,6 +20,7 @@ type
   TTestMultiCaret = class(TTestBase)
   protected
     FMultiCaret: TSynPluginMultiCaretTest;
+    procedure SetCaretAndColumnSelect(X, Y, Down, Right: Integer);
   public
     procedure ReCreateEdit; reintroduce;
     procedure ReCreateEdit(ALines: TStringArray; AOpt: TSynEditorOptions2 = [];
@@ -37,6 +38,28 @@ type
 implementation
 
 { TTestMultiCaret }
+
+procedure TTestMultiCaret.SetCaretAndColumnSelect(X, Y, Down, Right: Integer);
+var
+  i: Integer;
+begin
+  SetCaret(X, Y);
+  if Down > 0 then
+    for i := 1 to Down do
+      RunCmdSeq([ecColSelDown], [])
+  else
+  if Down < 0 then
+    for i := 1 to -Down do
+      RunCmdSeq([ecColSelUp], []);
+
+  if Right > 0 then
+    for i := 1 to Right do
+      RunCmdSeq([ecColSelRight], [])
+  else
+  if Right < 0 then
+    for i := 1 to -Right do
+      RunCmdSeq([ecColSelLeft], []);
+end;
 
 procedure TTestMultiCaret.ReCreateEdit;
 begin
@@ -210,31 +233,25 @@ procedure TTestMultiCaret.Edit;
 begin
   ReCreateEdit;
   SetLines(TestText1);
-  SetCaret(1,2);
 
-  RunCmdSeq([ecColSelDown, ecColSelDown, ecColSelDown, ecColSelDown], []);
-  TestIsFullText('', TestText1);
-  TestIsCaret('', 1,6);
+  SetCaretAndColumnSelect(1,2, 4,0);
+  TestIsCaretLogAndFullText('', 1, 6, TestText1);
 
   RunCmdSeq([ecChar], ['A']);
-  TestIsFullText('', TestText1A);
-  TestIsCaret('', 2,6);
+  TestIsCaretLogAndFullText('', 2, 6, TestText1A);
 
   RunCmdSeq([ecDeleteLastChar], []);
-  TestIsFullText('', TestText1);
-  TestIsCaret('', 1,6);
+  TestIsCaretLogAndFullText('', 1, 6, TestText1);
   // 4 extra carets + main caret
   AssertEquals(BaseTestName+'', 4, FMultiCaret.Carets.Count);
 
   RunCmdSeq([ecDeleteLastChar], []);
-  TestIsFullText('', TestText1Del);
-  TestIsCaret('', 6,1);
+  TestIsCaretLogAndFullText('', 6, 1, TestText1Del);
   // 4 extra carets + main caret
   AssertEquals(BaseTestName+'', 4, FMultiCaret.Carets.Count);
 
   RunCmdSeq([ecDeleteLastChar], []);
-  TestIsFullText('', TestText1Del, [1, '6']);
-  TestIsCaret('', 1,1);
+  TestIsCaretLogAndFullText('', 1, 1, TestText1Del, [1, '6']);
   // NO extra carets
   AssertEquals(BaseTestName+'', 0, FMultiCaret.Carets.Count);
 
@@ -264,6 +281,18 @@ procedure TTestMultiCaret.Delete;
     Result[3] := '4D';
     Result[4] := '5E';
     Result[5] := '6F';
+    Result[6] := '7gG';
+    Result[7] := '';
+  end;
+  function TestText1DelAndBS: TStringArray;
+  begin
+    SetLength(Result, 8);
+    Result[0] := '1aA';
+    Result[1] := 'B';
+    Result[2] := 'C';
+    Result[3] := 'D';
+    Result[4] := 'E';
+    Result[5] := 'F';
     Result[6] := '7gG';
     Result[7] := '';
   end;
@@ -301,80 +330,65 @@ begin
     PushBaseName('ecDeleteLastChar');
 
       PushBaseName('ecDeleteLastChar - zero width sel');
-      ReCreateEdit(TestText1, Opt, OptRemove);
-      SetCaret(3,2);
-      RunCmdSeq([ecColSelDown, ecColSelDown, ecColSelDown, ecColSelDown], []);
-      RunCmdSeq([ecDeleteLastChar], []);
-      TestIsFullText('', TestText1Del);
-      TestIsCaret('', 2, 6);
+        ReCreateEdit(TestText1, Opt, OptRemove);
+        SetCaretAndColumnSelect(3,2, 4,0);
+        RunCmdSeq([ecDeleteLastChar], []);
+        TestIsCaretLogAndFullText('', 2, 6, TestText1Del);
 
       PopPushBaseName('ecDeleteLastChar - ONE width backward sel');
-      ReCreateEdit(TestText1, Opt, OptRemove);
-      SetCaret(3,2);
-      RunCmdSeq([ecColSelDown, ecColSelDown, ecColSelDown, ecColSelDown, ecColSelLeft], []);
-      RunCmdSeq([ecDeleteLastChar], []);
-      TestIsFullText('', TestText1Del);
-      TestIsCaret('', 2, 6);
+        ReCreateEdit(TestText1, Opt, OptRemove);
+        SetCaretAndColumnSelect(3,2, 4,-1);
+        RunCmdSeq([ecDeleteLastChar], []);
+        TestIsCaretLogAndFullText('', 2, 6, TestText1Del);
+
+        RunCmdSeq([ecDeleteLastChar], []);
+        TestIsCaretLogAndFullText('BS again', 1, 6, TestText1DelAndBS);
 
       PopPushBaseName('ecDeleteLastChar - ONE width sel');
-      ReCreateEdit(TestText1, Opt, OptRemove);
-      SetCaret(2,2);
-      RunCmdSeq([ecColSelDown, ecColSelDown, ecColSelDown, ecColSelDown, ecColSelRight], []);
-      RunCmdSeq([ecDeleteLastChar], []);
-      TestIsFullText('', TestText1Del);
-      TestIsCaret('', 2, 6);
+        ReCreateEdit(TestText1, Opt, OptRemove);
+        SetCaretAndColumnSelect(2,2, 4,1);
+        RunCmdSeq([ecDeleteLastChar], []);
+        TestIsCaretLogAndFullText('', 2, 6, TestText1Del);
 
       PopPushBaseName('ecDeleteLastChar - Two width sel');
-      ReCreateEdit(TestText1, Opt, OptRemove);
-      SetCaret(1,2);
-      RunCmdSeq([ecColSelDown, ecColSelDown, ecColSelDown, ecColSelDown, ecColSelRight, ecColSelRight], []);
-      RunCmdSeq([ecDeleteLastChar], []);
-      TestIsFullText('', TestText1Del2);
-      TestIsCaret('', 1, 6);
+        ReCreateEdit(TestText1, Opt, OptRemove);
+        SetCaretAndColumnSelect(1,2, 4,2);
+        RunCmdSeq([ecDeleteLastChar], []);
+        TestIsCaretLogAndFullText('', 1, 6, TestText1Del2);
 
       PopPushBaseName('ecDeleteLastChar - ONE width sel / extra caret');
-      ReCreateEdit(TestText1, Opt, OptRemove);
-      SetCaret(2,2);
-      RunCmdSeq([ecColSelDown, ecColSelDown, ecColSelDown, ecColSelDown, ecColSelRight], []);
-      FMultiCaret.AddCaretAt(4,3);
-      FMultiCaret.AddCaretAt(2,4);
-      RunCmdSeq([ecDeleteLastChar], []);
-      TestIsFullText('', TestText1DelExtra);
-      TestIsCaret('', 2, 6);
+        ReCreateEdit(TestText1, Opt, OptRemove);
+        SetCaretAndColumnSelect(2,2, 4,1);
+        FMultiCaret.AddCaretAt(4,3);
+        FMultiCaret.AddCaretAt(2,4);
+        RunCmdSeq([ecDeleteLastChar], []);
+        TestIsCaretLogAndFullText('', 2, 6, TestText1DelExtra);
 
     PopPushBaseName('ecDeleteChar');
 
       PushBaseName('ecDeleteChar - zero width sel');
-      ReCreateEdit(TestText1, Opt, OptRemove);
-      SetCaret(2,2);
-      RunCmdSeq([ecColSelDown, ecColSelDown, ecColSelDown, ecColSelDown], []);
-      RunCmdSeq([ecDeleteChar], []);
-      TestIsFullText('', TestText1Del);
-      TestIsCaret('', 2, 6);
+        ReCreateEdit(TestText1, Opt, OptRemove);
+        SetCaretAndColumnSelect(2,2, 4,0);
+        RunCmdSeq([ecDeleteChar], []);
+        TestIsCaretLogAndFullText('', 2, 6, TestText1Del);
 
       PopPushBaseName('ecDeleteChar - ONE width backward sel');
-      ReCreateEdit(TestText1, Opt, OptRemove);
-      SetCaret(3,2);
-      RunCmdSeq([ecColSelDown, ecColSelDown, ecColSelDown, ecColSelDown, ecColSelLeft], []);
-      RunCmdSeq([ecDeleteChar], []);
-      TestIsFullText('', TestText1Del);
-      TestIsCaret('', 2, 6);
+        ReCreateEdit(TestText1, Opt, OptRemove);
+        SetCaretAndColumnSelect(3,2, 4,-1);
+        RunCmdSeq([ecDeleteChar], []);
+        TestIsCaretLogAndFullText('', 2, 6, TestText1Del);
 
       PopPushBaseName('ecDeleteChar - ONE width sel');
-      ReCreateEdit(TestText1, Opt, OptRemove);
-      SetCaret(2,2);
-      RunCmdSeq([ecColSelDown, ecColSelDown, ecColSelDown, ecColSelDown, ecColSelRight], []);
-      RunCmdSeq([ecDeleteChar], []);
-      TestIsFullText('', TestText1Del);
-      TestIsCaret('', 2, 6);
+        ReCreateEdit(TestText1, Opt, OptRemove);
+        SetCaretAndColumnSelect(2,2, 4,1);
+        RunCmdSeq([ecDeleteChar], []);
+        TestIsCaretLogAndFullText('', 2, 6, TestText1Del);
 
       PopPushBaseName('ecDeleteChar - Two width sel');
-      ReCreateEdit(TestText1, Opt, OptRemove);
-      SetCaret(1,2);
-      RunCmdSeq([ecColSelDown, ecColSelDown, ecColSelDown, ecColSelDown, ecColSelRight, ecColSelRight], []);
-      RunCmdSeq([ecDeleteChar], []);
-      TestIsFullText('', TestText1Del2);
-      TestIsCaret('', 1, 6);
+        ReCreateEdit(TestText1, Opt, OptRemove);
+        SetCaretAndColumnSelect(1,2, 4,2);
+        RunCmdSeq([ecDeleteChar], []);
+        TestIsCaretLogAndFullText('', 1, 6, TestText1Del2);
 
     PopBaseName;
   PopBaseName;
@@ -385,21 +399,17 @@ begin
 
     PushBaseName('ecDeleteLastChar');
       PopPushBaseName('ecDeleteLastChar - Two width sel');
-      ReCreateEdit(TestText1, Opt, OptRemove);
-      SetCaret(1,2);
-      RunCmdSeq([ecColSelDown, ecColSelDown, ecColSelDown, ecColSelDown, ecColSelRight, ecColSelRight], []);
-      RunCmdSeq([ecDeleteLastChar], []);
-      TestIsFullText('', TestText1Del);
-      TestIsCaret('', 2, 6);
+        ReCreateEdit(TestText1, Opt, OptRemove);
+        SetCaretAndColumnSelect(1,2, 4,2);
+        RunCmdSeq([ecDeleteLastChar], []);
+        TestIsCaretLogAndFullText('', 2, 6, TestText1Del);
 
     PopPushBaseName('ecDeleteChar');
       PopPushBaseName('ecDeleteChar - Two width backward sel');
-      ReCreateEdit(TestText1, Opt, OptRemove);
-      SetCaret(4,2);
-      RunCmdSeq([ecColSelDown, ecColSelDown, ecColSelDown, ecColSelDown, ecColSelLeft, ecColSelLeft], []);
-      RunCmdSeq([ecDeleteChar], []);
-      TestIsFullText('', TestText1Del);
-      TestIsCaret('', 2, 6);
+        ReCreateEdit(TestText1, Opt, OptRemove);
+        SetCaretAndColumnSelect(4,2, 4,-2);
+        RunCmdSeq([ecDeleteChar], []);
+        TestIsCaretLogAndFullText('', 2, 6, TestText1Del);
     PopBaseName;
   PopBaseName;
 
@@ -408,12 +418,10 @@ begin
   OptRemove := [eoOverwriteBlock];
 
     PopPushBaseName('ecDeleteLastChar - Two width sel');
-    ReCreateEdit(TestText1, Opt, OptRemove);
-    SetCaret(1,2);
-    RunCmdSeq([ecColSelDown, ecColSelDown, ecColSelDown, ecColSelDown, ecColSelRight, ecColSelRight], []);
-    RunCmdSeq([ecDeleteLastChar], []);
-    TestIsFullText('', TestText1Del);
-    TestIsCaret('', 2, 6);
+      ReCreateEdit(TestText1, Opt, OptRemove);
+      SetCaretAndColumnSelect(1,2, 4,2);
+      RunCmdSeq([ecDeleteLastChar], []);
+      TestIsCaretLogAndFullText('', 2, 6, TestText1Del);
 
   PopBaseName;
 end;
@@ -446,15 +454,12 @@ procedure TTestMultiCaret.ReplaceColSel;
 begin
   ReCreateEdit;
   SetLines(TestText1);
-  SetCaret(2,2);
 
-  RunCmdSeq([ecColSelDown, ecColSelDown, ecColSelDown, ecColSelDown, ecColSelRight], []);
-  TestIsFullText('', TestText1);
-  TestIsCaret('', 3,6);
+  SetCaretAndColumnSelect(2,2, 4,1);
+  TestIsCaretLogAndFullText('', 3, 6, TestText1);
 
   RunCmdSeq([ecChar], ['X']);
-  TestIsFullText('', TestText1X);
-  TestIsCaret('', 3,6);
+  TestIsCaretLogAndFullText('', 3, 6, TestText1X);
   // 4 extra carets + main caret
   AssertEquals(BaseTestName+'', 4, FMultiCaret.Carets.Count);
 
@@ -526,15 +531,12 @@ begin
   ReCreateEdit;
   SynEdit.Options := SynEdit.Options + [eoTabIndent] - [eoTabsToSpaces, eoSmartTabs, eoTrimTrailingSpaces];
   SetLines(TestText1);
-  SetCaret(2,2);
 
-  RunCmdSeq([ecColSelDown, ecColSelDown, ecColSelDown, ecColSelDown], []);
-  TestIsFullText('', TestText1);
-  TestIsCaret('', 2,6);
+  SetCaretAndColumnSelect(2,2, 4,0);
+  TestIsCaretLogAndFullText('', 2, 6, TestText1);
 
   RunCmdSeq([ecTab], []);
-  TestIsFullText('', TestText1Tab);
-  TestIsCaret('', 3,6);
+  TestIsCaretLogAndFullText('', 3, 6, TestText1Tab);
   // 4 extra carets + main caret
   AssertEquals(BaseTestName+'', 4, FMultiCaret.Carets.Count);
 
@@ -543,15 +545,12 @@ begin
   ReCreateEdit;
   SynEdit.Options := SynEdit.Options + [eoTabIndent] - [eoTabsToSpaces, eoSmartTabs, eoTrimTrailingSpaces];
   SetLines(TestText1);
-  SetCaret(2,2);
 
-  RunCmdSeq([ecColSelDown, ecColSelDown, ecColSelDown, ecColSelDown, ecColSelRight], []);
-  TestIsFullText('', TestText1);
-  TestIsCaret('', 3,6);
+  SetCaretAndColumnSelect(2,2, 4,1);
+  TestIsCaretLogAndFullText('', 3, 6, TestText1);
 
   RunCmdSeq([ecTab], []);
-  TestIsFullText('', TestText1TabOver);
-  TestIsCaret('', 3,6);
+  TestIsCaretLogAndFullText('', 3, 6, TestText1TabOver);
   // 4 extra carets + main caret
   AssertEquals(BaseTestName+'', 4, FMultiCaret.Carets.Count);
 
@@ -561,15 +560,12 @@ begin
   ReCreateEdit;
   SynEdit.Options := SynEdit.Options - [eoTabIndent] - [eoTabsToSpaces, eoSmartTabs, eoTrimTrailingSpaces];
   SetLines(TestText1);
-  SetCaret(2,2);
 
-  RunCmdSeq([ecColSelDown, ecColSelDown, ecColSelDown, ecColSelDown], []);
-  TestIsFullText('', TestText1);
-  TestIsCaret('', 2,6);
+  SetCaretAndColumnSelect(2,2, 4,0);
+  TestIsCaretLogAndFullText('', 2, 6, TestText1);
 
   RunCmdSeq([ecTab], []);
-  TestIsFullText('', TestText1Tab);
-  TestIsCaret('', 3,6);
+  TestIsCaretLogAndFullText('', 3, 6, TestText1Tab);
   // 4 extra carets + main caret
   AssertEquals(BaseTestName+'', 4, FMultiCaret.Carets.Count);
 
@@ -578,15 +574,12 @@ begin
   ReCreateEdit;
   SynEdit.Options := SynEdit.Options - [eoTabIndent] - [eoTabsToSpaces, eoSmartTabs, eoTrimTrailingSpaces];
   SetLines(TestText1);
-  SetCaret(2,2);
 
-  RunCmdSeq([ecColSelDown, ecColSelDown, ecColSelDown, ecColSelDown, ecColSelRight], []);
-  TestIsFullText('', TestText1);
-  TestIsCaret('', 3,6);
+  SetCaretAndColumnSelect(2,2, 4,1);
+  TestIsCaretLogAndFullText('', 3, 6, TestText1);
 
   RunCmdSeq([ecTab], []);
-  TestIsFullText('', TestText1TabOver);
-  TestIsCaret('', 3,6);
+  TestIsCaretLogAndFullText('', 3, 6, TestText1TabOver);
   // 4 extra carets + main caret
   AssertEquals(BaseTestName+'', 4, FMultiCaret.Carets.Count);
 
@@ -663,14 +656,11 @@ begin
   SetCaret(1,1);
   RunCmdSeq([ecSelRight, ecSelRight, ecCopy], []); // copy
 
-  SetCaret(2,2);
-  RunCmdSeq([ecColSelDown, ecColSelDown, ecColSelDown, ecColSelDown], []);
-  TestIsFullText('', TestText1);
-  TestIsCaret('', 2,6);
+  SetCaretAndColumnSelect(2,2, 4,0);
+  TestIsCaretLogAndFullText('', 2, 6, TestText1);
 
   RunCmdSeq([ecPaste], []);
-  TestIsFullText('', TestText1PasteNorm);
-  TestIsCaret('', 4,6);
+  TestIsCaretLogAndFullText('', 4, 6, TestText1PasteNorm);
   // 4 extra carets + main caret
   AssertEquals(BaseTestName+'', 4, FMultiCaret.Carets.Count);
 
@@ -683,14 +673,11 @@ begin
   SetCaret(1,1);
   RunCmdSeq([ecSelRight, ecSelRight, ecCopy], []); // copy
 
-  SetCaret(2,2);
-  RunCmdSeq([ecColSelDown, ecColSelDown, ecColSelDown, ecColSelDown, ecColSelRight], []);
-  TestIsFullText('', TestText1);
-  TestIsCaret('', 3,6);
+  SetCaretAndColumnSelect(2,2, 4,1);
+  TestIsCaretLogAndFullText('', 3, 6, TestText1);
 
   RunCmdSeq([ecPaste], []);
-  TestIsFullText('', TestText1PasteNormOver);
-  TestIsCaret('', 4,6);
+  TestIsCaretLogAndFullText('', 4, 6, TestText1PasteNormOver);
   // 4 extra carets + main caret
   AssertEquals(BaseTestName+'', 4, FMultiCaret.Carets.Count);
 
@@ -701,17 +688,14 @@ begin
   SynEdit.Options := SynEdit.Options + [eoTabIndent] - [eoTabsToSpaces, eoSmartTabs, eoTrimTrailingSpaces];
   SetLines(TestText1);
 
-  SetCaret(1,1);
-  RunCmdSeq([ecColSelDown, ecColSelRight, ecCopy], []); // copy
+  SetCaretAndColumnSelect(1,1, 1,1);
+  RunCmdSeq([ecCopy], []); // copy
 
-  SetCaret(2,2);
-  RunCmdSeq([ecColSelDown, ecColSelDown, ecColSelDown, ecColSelDown], []);
-  TestIsFullText('', TestText1);
-  TestIsCaret('', 2,6);
+  SetCaretAndColumnSelect(2,2, 4,0);
+  TestIsCaretLogAndFullText('', 2, 6, TestText1);
 
   RunCmdSeq([ecPaste], []);
-  TestIsFullText('', TestText1PasteCol);
-  TestIsCaret('', 3,7);
+  TestIsCaretLogAndFullText('', 3, 7, TestText1PasteCol);
   AssertEquals(BaseTestName+'', 0, FMultiCaret.Carets.Count);
 
 
@@ -720,17 +704,14 @@ begin
   SynEdit.Options := SynEdit.Options + [eoTabIndent] - [eoTabsToSpaces, eoSmartTabs, eoTrimTrailingSpaces];
   SetLines(TestText1);
 
-  SetCaret(1,1);
-  RunCmdSeq([ecColSelDown, ecColSelRight, ecCopy], []); // copy
+  SetCaretAndColumnSelect(1,1, 1,1);
+  RunCmdSeq([ecCopy], []); // copy
 
-  SetCaret(2,2);
-  RunCmdSeq([ecColSelDown, ecColSelDown, ecColSelDown, ecColSelDown, ecColSelRight], []);
-  TestIsFullText('', TestText1);
-  TestIsCaret('', 3,6);
+  SetCaretAndColumnSelect(2,2, 4,1);
+  TestIsCaretLogAndFullText('', 3, 6, TestText1);
 
   RunCmdSeq([ecPaste], []);
-  TestIsFullText('', TestText1PasteColOver);
-  TestIsCaret('', 3,3);
+  TestIsCaretLogAndFullText('', 3, 3, TestText1PasteColOver);
   AssertEquals(BaseTestName+'', 0, FMultiCaret.Carets.Count);
 
 end;

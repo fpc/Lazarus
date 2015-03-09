@@ -1613,6 +1613,7 @@ begin
   {$IFnDEF WithoutSynMultiCaret}
   FMultiCaret := TSynPluginMultiCaret.Create(Self);
   FMultiCaret.MouseActions.Clear; // will be added to SynEdit
+  FMultiCaret.KeyStrokes.Clear;
   FMultiCaret.SetCaretTypeSize(ctVerticalLine, 2, 1024, -1, 0, [ccsRelativeHeight]);
   FMultiCaret.SetCaretTypeSize(ctBlock, 1024, 1024, 0, 0, [ccsRelativeWidth, ccsRelativeHeight]);
   FMultiCaret.Color := $606060;
