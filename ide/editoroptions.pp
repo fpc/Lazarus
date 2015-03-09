@@ -1296,6 +1296,8 @@ type
     FBlockTabIndent: Integer;
     FCompletionLongLineHintInMSec: Integer;
     FCompletionLongLineHintType: TSynCompletionLongHintType;
+    FMultiCaretDefaultColumnSelectMode: TSynPluginMultiCaretDefaultMode;
+    FMultiCaretDefaultMode: TSynPluginMultiCaretDefaultMode;
     FPasExtendedKeywordsMode: Boolean;
     FHideSingleTabInWindow: Boolean;
     FPasStringKeywordMode: TSynPasStringMode;
@@ -1605,6 +1607,10 @@ type
     property UseTabHistory: Boolean read fUseTabHistory write fUseTabHistory;
     property MultiCaretOnColumnSelect: Boolean
       read FMultiCaretOnColumnSelect write FMultiCaretOnColumnSelect default True;
+    property MultiCaretDefaultMode: TSynPluginMultiCaretDefaultMode
+             read FMultiCaretDefaultMode write FMultiCaretDefaultMode default mcmMoveAllCarets;
+    property MultiCaretDefaultColumnSelectMode: TSynPluginMultiCaretDefaultMode
+             read FMultiCaretDefaultColumnSelectMode write FMultiCaretDefaultColumnSelectMode default mcmCancelOnCaretMove;
 
     // Highlighter Pas
     property PasExtendedKeywordsMode: Boolean
@@ -4461,6 +4467,8 @@ begin
   fSynEditOptions := SynEditDefaultOptions;
   fSynEditOptions2 := SynEditDefaultOptions2;
   FMultiCaretOnColumnSelect := True;
+  FMultiCaretDefaultMode := mcmMoveAllCarets;
+  FMultiCaretDefaultColumnSelectMode := mcmCancelOnCaretMove;
 
   // Display options
   fEditorFont := SynDefaultFontName;
@@ -5614,8 +5622,11 @@ begin
     end;
 
     {$IFnDEF WithoutSynMultiCaret}
-    if ASynEdit is TIDESynEditor then
+    if ASynEdit is TIDESynEditor then begin
       TIDESynEditor(ASynEdit).MultiCaret.EnableWithColumnSelection := MultiCaretOnColumnSelect;
+      TIDESynEditor(ASynEdit).MultiCaret.DefaultMode := FMultiCaretDefaultMode;
+      TIDESynEditor(ASynEdit).MultiCaret.DefaultColumnSelectMode := FMultiCaretDefaultColumnSelectMode;
+    end;
     {$ENDIF}
 
     // Display options

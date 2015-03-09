@@ -27,13 +27,15 @@ interface
 uses
   Classes, SysUtils, LCLProc, LCLType, StdCtrls, Controls, ExtCtrls, Graphics,
   EditorOptions, LazarusIDEStrConsts, IDEProcs, SourceSynEditor, IDEOptionsIntf,
-  IDEUtils, SynEdit, SynBeautifier, SynHighlighterPas, DividerBevel;
+  IDEUtils, SynEdit, SynBeautifier, SynHighlighterPas, SynPluginMultiCaret, DividerBevel;
 
 type
   TPreviewEditor = TSynEdit;
   { TEditorGeneralOptionsFrame }
 
   TEditorGeneralOptionsFrame = class(TAbstractIDEOptionsEditor)
+    chkMultiCaretColumnMode: TCheckBox;
+    chkMultiCaretMode: TCheckBox;
     MultiCaretOnColumnSelection: TCheckBox;
     CursorSkipsTabCheckBox: TCheckBox;
     CaretGroupDivider: TDividerBevel;
@@ -140,6 +142,8 @@ begin
   HomeKeyJumpsToNearestStartCheckBox.Caption := dlgHomeKeyJumpsToNearestStart;
   EndKeyJumpsToNearestStartCheckBox.Caption := dlgEndKeyJumpsToNearestStart;
   MultiCaretOnColumnSelection.Caption := dlgMultiCaretOnColumnSelection;
+  chkMultiCaretColumnMode.Caption := dlgMultiCaretColumnMode;
+  chkMultiCaretMode.Caption := dlgMultiCaretMode;
 
   // Block
   BlockGroupDivider.Caption := dlgBlockGroupOptions;
@@ -174,6 +178,8 @@ begin
     HomeKeyJumpsToNearestStartCheckBox.Checked := eoEnhanceHomeKey in SynEditOptions;
     EndKeyJumpsToNearestStartCheckBox.Checked := eoEnhanceEndKey in SynEditOptions2;
     MultiCaretOnColumnSelection.Checked := MultiCaretOnColumnSelect;
+    chkMultiCaretColumnMode.Checked := MultiCaretDefaultColumnSelectMode = mcmMoveAllCarets;
+    chkMultiCaretMode.Checked := MultiCaretDefaultMode = mcmMoveAllCarets;
 
     // block
     PersistentBlockCheckBox.Checked := eoPersistentBlock in SynEditOptions2;
@@ -234,6 +240,15 @@ begin
     UpdateOptionFromBool(HomeKeyJumpsToNearestStartCheckBox.Checked, eoEnhanceHomeKey);
     UpdateOptionFromBool(EndKeyJumpsToNearestStartCheckBox.Checked, eoEnhanceEndKey);
     MultiCaretOnColumnSelect := MultiCaretOnColumnSelection.Checked;
+    if chkMultiCaretColumnMode.Checked then
+      MultiCaretDefaultColumnSelectMode := mcmMoveAllCarets
+    else
+      MultiCaretDefaultColumnSelectMode := mcmCancelOnCaretMove;
+    if chkMultiCaretMode.Checked then
+      MultiCaretDefaultMode := mcmMoveAllCarets
+    else
+      MultiCaretDefaultMode := mcmCancelOnCaretMove;
+
 
     // block
     UpdateOptionFromBool(PersistentBlockCheckBox.Checked, eoPersistentBlock);

@@ -1693,6 +1693,8 @@ resourcestring
   dlgHomeKeyJumpsToNearestStart = 'Home key jumps to nearest start';
   dlgEndKeyJumpsToNearestStart = 'End key jumps to nearest end';
   dlgMultiCaretOnColumnSelection = 'Enable multi caret for column selection';
+  dlgMultiCaretColumnMode = 'Multi-caret (column-select) move with cursor';
+  dlgMultiCaretMode = 'Multi-caret move with cursor';
   dlgColorLink = '(Edit Color)';
   dlgKeyLink = '(Edit Key)';
   dlgBracketHighlight = 'Bracket highlight';
