@@ -158,19 +158,21 @@ type
 
   TLazarusBuilder = class
   private
-    fProfile: TBuildLazarusProfile;
+    fDefaultTargetCPU: string;
+    fDefaultTargetOS: String;
     fExtraOptions: string;
-    fPackageOptions: string;
     fMacros: TTransferMacroList;
-    fUpdateRevInc: boolean;
     fOutputDirRedirected: boolean;
-    fTargetOS: string;
-    fTargetCPU: string;
-    fTargetFilename: string; // = fTargetDir + 'lazarus'+GetExecutableExt(fTargetOS)
-    fTargetDir: string;
-    fUnitOutDir: string;
-    fWorkingDir: string;
+    fPackageOptions: string;
+    fProfile: TBuildLazarusProfile;
     fProfileChanged: boolean;
+    fTargetCPU: string;
+    fTargetDir: string;
+    fTargetFilename: string; // = fTargetDir + 'lazarus'+GetExecutableExt(fTargetOS)
+    fTargetOS: string;
+    fUnitOutDir: string;
+    fUpdateRevInc: boolean;
+    fWorkingDir: string;
     // Methods used by MakeLazarus :
     procedure ApplyCleanOnce;
     function CheckDirectoryWritable(Dir: string): boolean;
@@ -189,7 +191,7 @@ type
     function CreateAppleBundle: TModalResult;
     procedure AppendExtraOption(const aOption: string; EncloseIfSpace: boolean = True);
     // This is used by MakeLazarus and SaveIDEMakeOptions
-    function CreateIDEMakeOptions(Flags: TBuildLazarusFlags): TModalResult;
+    function PrepareTargetDir(Flags: TBuildLazarusFlags): TModalResult;
   public
     constructor Create;
     function ShowConfigureBuildLazarusDlg(AProfiles: TBuildLazarusProfiles): TModalResult;
@@ -413,8 +415,10 @@ var
   IdeBuildMode: TIdeBuildMode;
   s: String;
 begin
+  // Get target files and directories.
   Result:=mrCancel;
   fProfile:=Profile;
+  if CalcTargets(Flags)<>mrOk then exit;
 
   if LazarusIDE<>nil then
     LazarusIDE.MainBarSubTitle:=Profile.Name;
@@ -446,15 +450,14 @@ begin
     // add -w option to print leaving/entering messages of "make"
     CmdLineParams:=' -w';
     // append target OS
-    if Profile.TargetOS<>'' then
-      CmdLineParams+=' OS_TARGET='+Profile.FPCTargetOS+' OS_SOURCE='+Profile.FPCTargetOS;
+    if fTargetOS<>fDefaultTargetOS then
+      CmdLineParams+=' OS_TARGET='+fTargetOS+' OS_SOURCE='+fTargetOS;
     // append target CPU
-    if Profile.TargetCPU<>'' then
-      CmdLineParams+=' CPU_TARGET='+Profile.FPCTargetCPU+' CPU_SOURCE='+Profile.FPCTargetCPU;
+    if fTargetCPU<>fDefaultTargetCPU then
+      CmdLineParams+=' CPU_TARGET='+fTargetCPU+' CPU_SOURCE='+fTargetCPU;
 
-    // append extra Profile
-    fExtraOptions:='';
-    Result:=CreateIDEMakeOptions(Flags);
+    // create target directory and bundle
+    Result:=PrepareTargetDir(Flags);
     if Result<>mrOk then exit;
 
     fWorkingDir:=EnvironmentOptions.GetParsedLazarusDirectory;
@@ -553,8 +556,8 @@ end;
 
 function TLazarusBuilder.CalcTargets(Flags: TBuildLazarusFlags): TModalResult;
 var
-  DefaultTargetOS, DefaultTargetCPU: string;
   LazDir, TargetLCLPlatform: string;
+  DefaultTargetFilename: String;
 begin
   Result:=mrOk;
   fOutputDirRedirected:=False;
@@ -582,16 +585,16 @@ begin
   fTargetFilename:='';
   fUnitOutDir:='';
   CodeToolBoss.FPCDefinesCache.ConfigCaches.GetDefaultCompilerTarget(
-    EnvironmentOptions.GetParsedCompilerFilename,'',DefaultTargetOS,DefaultTargetCPU);
-  if DefaultTargetOS='' then
-    DefaultTargetOS:=GetCompiledTargetOS;
-  if DefaultTargetCPU='' then
-    DefaultTargetCPU:=GetCompiledTargetCPU;
+    EnvironmentOptions.GetParsedCompilerFilename,'',fDefaultTargetOS,fDefaultTargetCPU);
+  if fDefaultTargetOS='' then
+    fDefaultTargetOS:=GetCompiledTargetOS;
+  if fDefaultTargetCPU='' then
+    fDefaultTargetCPU:=GetCompiledTargetCPU;
   fTargetOS:=fProfile.FPCTargetOS;
   fTargetCPU:=fProfile.FPCTargetCPU;
   TargetLCLPlatform:=LCLPlatformDirNames[fProfile.TargetPlatform];
-  if fTargetOS='' then fTargetOS:=DefaultTargetOS;
-  if fTargetCPU='' then fTargetCPU:=DefaultTargetCPU;
+  if fTargetOS='' then fTargetOS:=fDefaultTargetOS;
+  if fTargetCPU='' then fTargetCPU:=fDefaultTargetCPU;
   LazDir:=EnvironmentOptions.GetParsedLazarusDirectory;
 
   //DebugLn(['CalcTargets NewTargetOS=',fTargetOS,' NewTargetCPU=',fTargetCPU]);
@@ -608,8 +611,8 @@ begin
   end else begin
     // no user defined target directory
     // => find it automatically
-    if (CompareText(fTargetOS,DefaultTargetOS)<>0)
-    or (CompareText(fTargetCPU,DefaultTargetCPU)<>0) then
+    if (CompareText(fTargetOS,fDefaultTargetOS)<>0)
+    or (CompareText(fTargetCPU,fDefaultTargetCPU)<>0) then
     begin
       // Case 2. crosscompiling the IDE
       // lazarus.exe to <primary config dir>/bin/<fTargetCPU>-<fTargetOS>
@@ -619,7 +622,7 @@ begin
       fUnitOutDir:=AppendPathDelim(GetPrimaryConfigPath)+'units'
                   +PathDelim+fTargetCPU+'-'+fTargetOS+PathDelim+TargetLCLPlatform;
       debugln('CalcTargets Options.TargetOS=',fProfile.FPCTargetOS,' Options.TargetCPU=',
-              fProfile.FPCTargetCPU,' DefaultOS=',DefaultTargetOS,' DefaultCPU=',DefaultTargetCPU);
+              fProfile.FPCTargetCPU,' DefaultOS=',fDefaultTargetOS,' DefaultCPU=',fDefaultTargetCPU);
     end else begin
       // -> normal compile for this platform
 
@@ -661,6 +664,40 @@ begin
   // check if target file is default
   fOutputDirRedirected:=CompareFilenames(ChompPathDelim(LazDir),
                                          ChompPathDelim(fTargetDir))<>0;
+
+  // write full file names and message ids
+  AppendExtraOption('-vbq');
+
+  if fUnitOutDir<>'' then
+    // FPC interpretes '\ ' as an escape for a space in a path on Windows,
+    // so make sure the directory doesn't end with the path delimiter.
+    AppendExtraOption('-FU'+ChompPathDelim(fUnitOutDir));
+
+  //debugln(['TLazarusBuilder.CreateIDEMakeOptions fTargetDir=',fTargetDir,' fOutputDirRedirected=',fOutputDirRedirected,' fTargetFilename=',fTargetFilename]);
+  if fOutputDirRedirected then
+    // FPC interpretes '\ ' as an escape for a space in a path on Windows,
+    // so make sure the directory doesn't end with the path delimiter.
+    AppendExtraOption('-FE'+ChompPathDelim(fTargetDir));
+
+  // Note: FPC automatically changes the last extension (append or replace)
+  // For example under linux, where executables don't need any extension
+  // fpc removes the last extension of the -o option.
+  DefaultTargetFilename:='lazarus'+GetExecutableExt(fTargetOS);
+  if CreateRelativePath(fTargetFilename,fTargetDir) <> DefaultTargetFilename then
+    AppendExtraOption('-o'+fTargetFilename);
+
+  {$IFDEF Windows}
+  if (fProfile.TargetPlatform=lpWin32)
+  and (Win32MajorVersion <=4)
+  and (Win32Platform = VER_PLATFORM_WIN32_WINDOWS) then
+    AppendExtraOption('-dWIN9XPLATFORM');
+  {$ENDIF}
+
+  // add package options for IDE
+  //DebugLn(['CreateIDEMakeOptions blfUseMakeIDECfg=',blfUseMakeIDECfg in FLags,' ExtraOptions="',fExtraOptions,'" ',fPackageOptions]);
+  if not (blfUseMakeIDECfg in Flags) then
+    AppendExtraOption(fPackageOptions,false);
+  //DebugLn(['CreateIDEMakeOptions ',MMDef.Name,' ',fExtraOptions]);
 end;
 
 procedure TLazarusBuilder.BackupExe(Flags: TBuildLazarusFlags);
@@ -755,14 +792,8 @@ begin
   //DebugLn(['AppendExtraOption ',fExtraOptions]);
 end;
 
-function TLazarusBuilder.CreateIDEMakeOptions(Flags: TBuildLazarusFlags): TModalResult;
-var
-  DefaultTargetFilename: string;
+function TLazarusBuilder.PrepareTargetDir(Flags: TBuildLazarusFlags): TModalResult;
 begin
-  // Get target files and directories.
-  Result:=CalcTargets(Flags);
-  if Result<>mrOk then exit;
-
   // backup old exe
   BackupExe(Flags);
 
@@ -778,53 +809,21 @@ begin
 
   // create apple bundle if needed
   //debugln(['CreateIDEMakeOptions NewTargetDirectory=',fTargetDir]);
-  if (compareText(fProfile.TargetOS,'darwin')=0)
+  if (compareText(fTargetOS,'darwin')=0)
   and fOutputDirRedirected and DirectoryIsWritableCached(fTargetDir) then
   begin
     Result:=CreateAppleBundle;
     if not (Result in [mrOk,mrIgnore]) then Exit;
   end;
 
-  // write full file names and message ids
-  AppendExtraOption('-vbq');
-
-  if fUnitOutDir<>'' then
-    // FPC interpretes '\ ' as an escape for a space in a path on Windows,
-    // so make sure the directory doesn't end with the path delimiter.
-    AppendExtraOption('-FU'+ChompPathDelim(fUnitOutDir));
-
-  //debugln(['TLazarusBuilder.CreateIDEMakeOptions fTargetDir=',fTargetDir,' fOutputDirRedirected=',fOutputDirRedirected,' fTargetFilename=',fTargetFilename]);
-  if fOutputDirRedirected then
-    // FPC interpretes '\ ' as an escape for a space in a path on Windows,
-    // so make sure the directory doesn't end with the path delimiter.
-    AppendExtraOption('-FE'+ChompPathDelim(fTargetDir));
-
-  // Note: FPC automatically changes the last extension (append or replace)
-  // For example under linux, where executables don't need any extension
-  // fpc removes the last extension of the -o option.
-  DefaultTargetFilename:='lazarus'+GetExecutableExt(fTargetOS);
-  if CreateRelativePath(fTargetFilename,fTargetDir) <> DefaultTargetFilename then
-    AppendExtraOption('-o'+fTargetFilename);
-
-  {$IFDEF Windows}
-  if (fProfile.TargetPlatform=lpWin32)
-  and (Win32MajorVersion <=4)
-  and (Win32Platform = VER_PLATFORM_WIN32_WINDOWS) then
-    AppendExtraOption('-dWIN9XPLATFORM');
-  {$ENDIF}
-
-  // add package options for IDE
-  //DebugLn(['CreateIDEMakeOptions blfUseMakeIDECfg=',blfUseMakeIDECfg in FLags,' ExtraOptions="',fExtraOptions,'" ',fPackageOptions]);
-  if not (blfUseMakeIDECfg in Flags) then
-    AppendExtraOption(fPackageOptions,false);
-  //DebugLn(['CreateIDEMakeOptions ',MMDef.Name,' ',fExtraOptions]);
+  Result:=mrOk;
 end;
 
 function TLazarusBuilder.IsWriteProtected(Profile: TBuildLazarusProfile): Boolean;
 // Returns True if Lazarus installation directory is write protected. Now uses OutputDirRedirected info.
 begin
   fProfile:=Profile;
-  CalcTargets([]);
+  if CalcTargets([])<>mrOk then exit(false);
   Result:=fOutputDirRedirected;
 end;
 
@@ -883,9 +882,11 @@ var
   fs: TFileStreamUTF8;
   OptionsAsText: String;
 begin
+  Result:=mrCancel;
   fProfile:=Profile;
-  fExtraOptions:='';
-  Result:=CreateIDEMakeOptions(Flags);
+  if CalcTargets(Flags)<>mrOk then exit;
+
+  Result:=PrepareTargetDir(Flags);
   if Result<>mrOk then exit;
   Filename:=GetMakeIDEConfigFilename;
   try
