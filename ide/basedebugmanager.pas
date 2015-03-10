@@ -200,7 +200,7 @@ type
 
     // Dialog routines
     procedure CreateDebugDialog(Sender: TObject; aFormName: string;
-                          var AForm: TCustomForm; DoDisableAutoSizing: boolean); virtual;
+                          var AForm: TCustomForm; DoDisableAutoSizing: boolean); virtual; abstract;
     procedure ViewDebugDialog(const ADialogType: TDebugDialogType;
                               BringToFront: Boolean = True; Show: Boolean = true;
                               DoDisableAutoSizing: boolean = false); virtual; abstract;
@@ -238,14 +238,6 @@ var
   DebuggerOptions: TDebuggerOptions = nil;
 
 implementation
-
-{ TBaseDebugManager }
-
-procedure TBaseDebugManager.CreateDebugDialog(Sender: TObject; aFormName: string;
-  var AForm: TCustomForm; DoDisableAutoSizing: boolean);
-begin
-  //
-end;
 
 { TDebuggerOptions }
 

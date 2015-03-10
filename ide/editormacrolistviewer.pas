@@ -845,6 +845,7 @@ begin
   if i = 1 then exit(AddError('Expected Command, but found "'+UTF8Copy(FText,1,1)+'"'));
 
   s := Copy(FText, 1, i-1);
+  j:=0;
   if not IdentToEditorCommand(s, j) then exit(AddError('Unknown Command "'+s+'"'));
   FEventCommand := j;
   FEventName := s;
