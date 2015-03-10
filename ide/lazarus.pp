@@ -38,7 +38,9 @@ program Lazarus;
 {off $DEFINE IDE_MEM_CHECK}
 
 uses
+  {$IFDEF EnableRedirectStdErr}
   redirect_stderr,
+  {$ENDIF}
   {$IF defined(UNIX) and not defined(DisableMultiThreading)}
   cthreads,
   {$ENDIF}

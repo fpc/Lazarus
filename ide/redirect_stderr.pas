@@ -27,13 +27,9 @@ unit redirect_stderr;
 
 interface
 
-{$IFDEF Windows}
-{$IFDEF HEAPTRC_WINDOW}
-{$IF FPC_FULLVERSION>=20701}
+{$IFDEF EnableRedirectStdErr}
 uses
   heaptrc, SysUtils, raw_window;
-{$ENDIF}
-{$ENDIF}
 {$ENDIF}
 
 Var
@@ -41,9 +37,7 @@ Var
 
 implementation
 
-{$IFDEF Windows}
-{$IFDEF HEAPTRC_WINDOW}
-{$IF FPC_FULLVERSION>=20701}
+{$IFDEF EnableRedirectStdErr}
 const
   ErrorBufferLength = 2 * 1024;
 
@@ -134,8 +128,6 @@ initialization
   AssignError(MyStdErr);
   SetHeapTraceOutput(MyStdErr);
 
-{$ENDIF}
-{$ENDIF}
 {$ENDIF}
 
 end.
