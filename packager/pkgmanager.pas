@@ -247,7 +247,7 @@ type
     function ShowFindInPackageFilesDlg(APackage: TLazPackage): TModalResult;
 
     // package graph
-    function AddPackageToGraph(APackage: TLazPackage; Replace: boolean): TModalResult;
+    function AddPackageToGraph(APackage: TLazPackage): TModalResult;
     procedure DoShowPackageGraph(Show: boolean);
     procedure DoShowPackageGraphPathList(PathList: TFPList); override;
     function ShowBrokenDependenciesReport(Dependencies: TFPList): TModalResult;
@@ -3261,8 +3261,7 @@ begin
   end;
 end;
 
-function TPkgManager.AddPackageToGraph(APackage: TLazPackage;
-  Replace: boolean): TModalResult;
+function TPkgManager.AddPackageToGraph(APackage: TLazPackage): TModalResult;
 var
   ConflictPkg: TLazPackage;
 begin
@@ -3423,19 +3422,25 @@ var
   PkgName: string;
   APackage: TLazPackage;
 begin
-  RequiredPackages:=SplitString(Packages,';');
-  for i:=0 to RequiredPackages.Count-1 do begin
-    PkgName:=Trim(RequiredPackages[i]);
-    if (PkgName='') or (not IsValidUnitName(PkgName)) then continue;
-    APackage:=PackageGraph.FindPackageWithName(PkgName,nil);
-    if APackage=nil then begin
-      DebugLn(['TPkgManager.AddProjectDependencies package not found: ',PkgName]);
-      continue;
-    end;
-    AddProjectDependency(AProject,APackage);
-  end;
-  RequiredPackages.Free;
   Result:=mrOk;
+  RequiredPackages:=SplitString(Packages,';');
+  try
+    for i:=0 to RequiredPackages.Count-1 do begin
+      PkgName:=Trim(RequiredPackages[i]);
+      if (PkgName='') or (not IsValidUnitName(PkgName)) then continue;
+      APackage:=PackageGraph.FindPackageWithName(PkgName,nil);
+      if APackage=nil then begin
+        DebugLn(['TPkgManager.AddProjectDependencies package not found: ',PkgName]);
+        if OnlyTestIfPossible then
+          exit(mrCancel);
+        continue;
+      end;
+      Result:=AddProjectDependency(AProject,APackage,OnlyTestIfPossible);
+      if Result<>mrOk then exit;
+    end;
+  finally
+    RequiredPackages.Free;
+  end;
 end;
 
 function TPkgManager.CheckProjectHasInstalledPackages(AProject: TProject; 
@@ -3687,7 +3692,7 @@ begin
       end;
       
       // integrate it into the graph
-      Result:=AddPackageToGraph(APackage,pofRevert in Flags);
+      Result:=AddPackageToGraph(APackage);
     finally
       if Result<>mrOk then APackage.Free;
     end;
