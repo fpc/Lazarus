@@ -3186,6 +3186,9 @@ begin
         s+='CurrentDirectory: '+LineEnding+Proc.CurrentDirectory+LineEnding+LineEnding;
       if Proc.Desktop<>'' then
         s+='Desktop: '+Proc.Desktop+LineEnding;
+      if Tool.EnvironmentOverrides.Text<>'' then
+        s+='Environment Overrides:'+LineEnding
+          +Tool.EnvironmentOverrides.Text+LineEnding;
       s+='Parameters:'+LineEnding;
       s+=Proc.Parameters.Text+LineEnding;
       s+='Command Line:'+LineEnding;
