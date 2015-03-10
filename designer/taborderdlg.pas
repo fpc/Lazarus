@@ -47,9 +47,9 @@ type
     procedure SortByPositionButtonClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure ItemTreeviewClick(Sender: TObject);
-    procedure TabOrderDialogCREATE(Sender: TObject);
-    procedure UpSpeedbuttonCLICK(Sender: TObject);
-    procedure DownSpeedbuttonCLICK(Sender: TObject);
+    procedure TabOrderDialogCreate(Sender: TObject);
+    procedure UpSpeedbuttonClick(Sender: TObject);
+    procedure DownSpeedbuttonClick(Sender: TObject);
     procedure ItemTreeviewKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
   private
     FUpdating: Boolean;
@@ -119,7 +119,7 @@ end;
 
 { TTabOrderDialog }
 
-procedure TTabOrderDialog.TabOrderDialogCREATE(Sender: TObject);
+procedure TTabOrderDialog.TabOrderDialogCreate(Sender: TObject);
 begin
   GlobalDesignHook.AddHandlerChangeLookupRoot(@OnSomethingChanged);
   GlobalDesignHook.AddHandlerRefreshPropertyValues(@OnSomethingChanged);
@@ -200,7 +200,7 @@ begin
   CheckButtonsEnabled;
 end;
 
-procedure TTabOrderDialog.UpSpeedbuttonCLICK(Sender: TObject);
+procedure TTabOrderDialog.UpSpeedbuttonClick(Sender: TObject);
 var
   CurItem, NewItem: TTreeNode;
 begin
@@ -210,7 +210,7 @@ begin
   SwapNodes(NewItem, CurItem, CurItem);
 end;
 
-procedure TTabOrderDialog.DownSpeedbuttonCLICK(Sender: TObject);
+procedure TTabOrderDialog.DownSpeedbuttonClick(Sender: TObject);
 var
   CurItem, NewItem: TTreeNode;
 begin

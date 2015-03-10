@@ -152,8 +152,8 @@ type
     function AnchorDesignerNoSiblingText: string;
     function AnchorDesignerNeighbourText(direction: TAnchorKind): string;
     procedure CollectValues(const ASelection: TList;
-                            var TheValues: TAnchorDesignerValues;
-                            var SelectedControlCount: integer);
+                            out TheValues: TAnchorDesignerValues;
+                            out SelectedControlCount: integer);
   protected
     procedure KeyUp(var Key: Word; Shift: TShiftState); override;
     procedure UpdateShowing; override;
@@ -964,9 +964,8 @@ begin
     Result:=AControl.Name+':'+AControl.ClassName;
 end;
 
-procedure TAnchorDesigner.CollectValues(
-  const ASelection: TList; var TheValues: TAnchorDesignerValues;
-  var SelectedControlCount: integer);
+procedure TAnchorDesigner.CollectValues(const ASelection: TList; out
+  TheValues: TAnchorDesignerValues; out SelectedControlCount: integer);
 var
   i: Integer;
   AControl: TControl;
