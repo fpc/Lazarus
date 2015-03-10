@@ -10556,6 +10556,7 @@ begin
         Opts := [];
         if EditorOpts.DbgHintAutoTypeCastClass
         then Opts := [defClassAutoCast];
+        DebugEval:='';
         if not DebugBoss.Evaluate(Expression, DebugEval, DBGType, Opts) or (DebugEval = '') then
           DebugEval := '???';
         // deference a pointer - maybe it is a class
@@ -10565,6 +10566,7 @@ begin
         begin
           if DBGType.Value.AsPointer <> nil then
           begin
+            DebugEvalDerefer:='';
             if DebugBoss.Evaluate(Expression + '^', DebugEvalDerefer, DBGTypeDerefer, Opts) then
             begin
               if Assigned(DBGTypeDerefer) and
