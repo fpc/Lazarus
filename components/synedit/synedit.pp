@@ -799,6 +799,8 @@ type
     procedure DragOver(Source: TObject; X, Y: Integer;
       State: TDragState; var Accept: Boolean); override;
     procedure DoOnResize; override;
+    procedure CalculatePreferredSize(var PreferredWidth,
+      PreferredHeight: integer; WithThemeSpace: Boolean); override;
     function  RealGetText: TCaption; override;
     procedure RealSetText(const Value: TCaption); override;
     function GetLines: TStrings; override;
@@ -4838,6 +4840,14 @@ begin
   end;
   //debugln('TCustomSynEdit.Resize ',dbgs(Width),',',dbgs(Height),',',dbgs(ClientWidth),',',dbgs(ClientHeight));
   // SetLeftChar(LeftChar);                                                     //mh 2000-10-19
+end;
+
+procedure TCustomSynEdit.CalculatePreferredSize(var PreferredWidth,
+  PreferredHeight: integer; WithThemeSpace: Boolean);
+begin
+  // synedit has no preferred size
+  PreferredWidth:=0;
+  PreferredHeight:=0;
 end;
 
 var
