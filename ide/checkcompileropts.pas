@@ -504,13 +504,18 @@ begin
   TestGroupbox.Caption:=dlgCCOTestMissingPPU;
 
   Result:=mrCancel;
-  // rtl
+
   if not Check('system',ccmlError) then exit;
-  if not Check('sysutils',ccmlError) then exit;
-  if not Check('classes',ccmlError) then exit;
-  // fcl
-  if not Check('avl_tree',ccmlError) then exit;
-  if not Check('zstream',ccmlError) then exit;
+  if not Check('objpas',ccmlError) then exit;
+
+  if CfgCache.TargetCPU='jvm' then begin
+    if not Check('uuchar',ccmlError) then exit;
+  end else begin
+    if not Check('sysutils',ccmlError) then exit;
+    if not Check('classes',ccmlError) then exit;
+    if not Check('avl_tree',ccmlError) then exit;
+    if not Check('zstream',ccmlError) then exit;
+  end;
 
   Result:=mrOk;
 end;
