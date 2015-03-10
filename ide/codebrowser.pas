@@ -54,11 +54,11 @@ uses
   CodeIndex, StdCodeTools, SourceLog, CustomCodeTool,
   // IDEIntf
   IDEWindowIntf, SrcEditorIntf, IDEMsgIntf, IDEDialogs, LazConfigStorage,
-  IDEHelpIntf, PackageIntf, TextTools, IDECommands, LazIDEIntf,
+  IDEHelpIntf, PackageIntf, IDECommands, LazIDEIntf,
   IDEExternToolIntf,
   // IDE
   Project, DialogProcs, PackageSystem, PackageDefs, LazarusIDEStrConsts,
-  IDEOptionDefs, etFPCMsgParser, BasePkgManager, AddToProjectDlg,
+  IDEOptionDefs, etFPCMsgParser, BasePkgManager,
   EnvironmentOpts;
 
 
@@ -217,14 +217,14 @@ type
     UnitFilterBeginsSpeedButton: TSpeedButton;
     UnitFilterContainsSpeedButton: TSpeedButton;
     UnitFilterEdit: TEdit;
-    procedure BrowseTreeViewMouseMove(Sender: TObject; Shift: TShiftState; X,
-      Y: Integer);
+    procedure BrowseTreeViewMouseMove(Sender: TObject; {%H-}Shift: TShiftState; {%H-}X,
+      {%H-}Y: Integer);
     procedure FormDeactivate(Sender: TObject);
     procedure UseIdentifierInCurUnitMenuItemClick(Sender: TObject);
     procedure UsePkgInCurUnitMenuItemClick(Sender: TObject);
     procedure UsePkgInProjectMenuItemClick(Sender: TObject);
     procedure UseUnitInCurUnitMenuItemClick(Sender: TObject);
-    procedure BrowseTreeViewMouseDown(Sender: TOBject; Button: TMouseButton;
+    procedure BrowseTreeViewMouseDown(Sender: TOBject; {%H-}Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure BrowseTreeViewShowHint(Sender: TObject; HintInfo: PHintInfo);
     procedure CollapseAllPackagesMenuItemClick(Sender: TObject);

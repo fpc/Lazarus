@@ -37,19 +37,19 @@ uses
   Buttons, StdCtrls, Dialogs, ExtCtrls, FileProcs, Graphics, ButtonPanel,
   LConvEncoding, lazutf8classes,
   // CodeTools
-  BasicCodeTools, CodeToolManager, CodeAtom, CodeCache, CustomCodeTool, CodeTree,
+  BasicCodeTools, CodeToolManager, CodeCache, CustomCodeTool, CodeTree,
   PascalParserTool, FindDeclarationTool,
   // IDEIntf
-  PropEdits, ObjectInspector, FormEditingIntf, ProjectIntf, TextTools,
+  PropEdits, ObjectInspector, ProjectIntf, TextTools,
   IDEDialogs, LazHelpIntf, LazHelpHTML, HelpFPDoc, MacroIntf, IDEWindowIntf,
   IDEMsgIntf, PackageIntf, LazIDEIntf, HelpIntfs, IDEHelpIntf,
   IDEExternToolIntf,
   // IDE
   LazarusIDEStrConsts, TransferMacros, DialogProcs, IDEOptionDefs,
-  ObjInspExt, EnvironmentOpts, AboutFrm, Project, MainBar, etMessagesWnd,
+  ObjInspExt, EnvironmentOpts, AboutFrm, Project, MainBar,
   IDEFPDocFileSearch, PackageDefs, PackageSystem,
   HelpOptions, MainIntf, LazConf, HelpFPCMessages, CodeHelp,
-  IDEContextHelpEdit, IDEWindowHelp, CodeBrowser;
+  IDEWindowHelp, CodeBrowser;
 
 type
 
@@ -214,7 +214,7 @@ type
     procedure ShowHelpForObjectInspector(Sender: TObject); override;
     procedure ShowHelpForIDEControl(Sender: TControl); override;
     function CreateHint(aHintWindow: THintWindow; ScreenPos: TPoint;
-      const BaseURL: string; var TheHint: string; out HintWinRect: TRect): boolean;
+      const {%H-}BaseURL: string; var TheHint: string; out HintWinRect: TRect): boolean;
       override; deprecated 'Use THintWindowManager class instead';
     function GetHintForSourcePosition(const ExpandedFilename: string;
       const CodePos: TPoint; out BaseURL, HTMLHint: string;
@@ -251,7 +251,7 @@ type
     BtnPanel: TButtonPanel;
     NodesGroupBox: TGroupBox;
     NodesListBox: TListBox;
-    procedure HelpSelectorDialogClose(Sender: TObject; var CloseAction: TCloseAction);
+    procedure HelpSelectorDialogClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure NodesListBoxDblClick(Sender: TObject);
   private
     FNodes: THelpNodeQueryList;
@@ -801,6 +801,7 @@ begin
       if ElementName='' then break;
       ContextList.Add(pihcType,ElementName);
     until false;
+    ErrMsg:='TLazIDEHTMLProvider.OpenFPDoc ShowHelpForPascalContexts';
     ShowHelpForPascalContexts(Filename,Point(1,1),PascalHelpContextLists,ErrMsg);
   finally
     if PascalHelpContextLists<>nil then begin
@@ -1619,6 +1620,7 @@ begin
       if FindDeclarationOfOIProperty(AnInspector,nil,Code,Caret,NewTopLine) then
       begin
         if NewTopLine=0 then ;
+        ErrMsg:='TIDEHelpManager.ShowHelpForObjectInspector ShowHelpForSourcePosition';
         ShowHelpForSourcePosition(Code.Filename,Caret,ErrMsg);
       end;
     end else begin

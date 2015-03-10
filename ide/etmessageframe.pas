@@ -33,11 +33,11 @@ interface
 
 uses
   Math, strutils, Classes, SysUtils, UTF8Process, FileProcs, LazFileCache,
-  LazUTF8Classes, LazFileUtils, LazUTF8, AvgLvlTree, LazConfigStorage, SynEdit,
+  LazUTF8Classes, LazFileUtils, LazUTF8, AvgLvlTree, SynEdit,
   SynEditMarks, LResources, Forms, Buttons, ExtCtrls, Controls, LMessages,
   LCLType, Graphics, LCLIntf, Themes, ImgList, GraphType, Menus, Clipbrd,
   Dialogs, StdCtrls, IDEExternToolIntf, IDEImagesIntf, MenuIntf, PackageIntf,
-  IDECommands, SrcEditorIntf, IDEDialogs, ProjectIntf, CompOptsIntf,
+  IDECommands, IDEDialogs, ProjectIntf, CompOptsIntf,
   LazarusIDEStrConsts, EnvironmentOpts, HelpFPCMessages, etSrcEditMarks,
   etQuickFixes, ExtTools, IDEOptionDefs, CompilerOptions;
 
@@ -340,7 +340,7 @@ type
     procedure SearchEditEnter(Sender: TObject);
     procedure SearchEditExit(Sender: TObject);
     procedure SearchEditKeyDown(Sender: TObject; var Key: Word;
-      Shift: TShiftState);
+      {%H-}Shift: TShiftState);
     procedure SearchNextSpeedButtonClick(Sender: TObject);
     procedure SearchPrevSpeedButtonClick(Sender: TObject);
     procedure ShowIDMenuItemClick(Sender: TObject);

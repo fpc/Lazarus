@@ -228,7 +228,7 @@ type
 
     // module sections
     function ExtractSourceName: string;
-    function GetSourceNamePos(var NamePos: TAtomPosition): boolean;
+    function GetSourceNamePos(out NamePos: TAtomPosition): boolean;
     function GetSourceName(DoBuildTree: boolean = true): string;
     function GetSourceType: TCodeTreeNodeDesc;
     function PositionInSourceName(CleanPos: integer): boolean;
@@ -2408,7 +2408,8 @@ begin
     Result:='';
 end;
 
-function TPascalReaderTool.GetSourceNamePos(var NamePos: TAtomPosition): boolean;
+function TPascalReaderTool.GetSourceNamePos(out NamePos: TAtomPosition
+  ): boolean;
 begin
   Result:=false;
   NamePos.StartPos:=-1;

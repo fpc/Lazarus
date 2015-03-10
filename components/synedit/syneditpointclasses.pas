@@ -540,8 +540,9 @@ type
     procedure UpdateDisplay;
     procedure ShowCaret;
     procedure HideCaret;
-    property Handle: HWND read GetHandle;
     property HandleAllocated: Boolean read GetHandleAllocated;
+  protected
+    property Handle: HWND read GetHandle;
   public
     constructor Create(AHandleOwner: TWinControl);
     constructor Create(AHandleOwner: TWinControl; APainterClass: TSynEditScreenCaretPainterClass);

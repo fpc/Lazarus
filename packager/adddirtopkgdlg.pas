@@ -52,7 +52,7 @@ type
     procedure ButtonPanel1CancelClick(Sender: TObject);
     procedure ButtonPanel1OkClick(Sender: TObject);
     procedure DirButtonClick(Sender: TObject);
-    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
+    procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
   private

@@ -114,8 +114,8 @@ type
     procedure OnBeforeReadPackage(Sender: TObject);
     procedure OnPackageEditorFreeEditor(APackage: TLazPackage);
     procedure OnPackageEditorGetUnitRegisterInfo(Sender: TObject;
-                              const AFilename: string; var TheUnitName: string;
-                              var HasRegisterProc: boolean);
+                              const AFilename: string; out TheUnitName: string;
+                              out HasRegisterProc: boolean);
     function PackageGraphCheckInterPkgFiles(IDEObject: TObject;
                           PkgList: TFPList; out FilesChanged: boolean): boolean;
 
@@ -187,7 +187,7 @@ type
                                  const Directory: string;
                                  ShowAbort: boolean): TModalResult;
     function DoGetUnitRegisterInfo(const AFilename: string;
-                          var TheUnitName: string; var HasRegisterProc: boolean;
+                          out TheUnitName: string; out HasRegisterProc: boolean;
                           IgnoreErrors: boolean): TModalResult;
     procedure SaveAutoInstallDependencies;
     procedure LoadStaticCustomPackages;
@@ -925,7 +925,8 @@ begin
 end;
 
 procedure TPkgManager.OnPackageEditorGetUnitRegisterInfo(Sender: TObject;
-  const AFilename: string; var TheUnitName: string; var HasRegisterProc: boolean);
+  const AFilename: string; out TheUnitName: string; out HasRegisterProc: boolean
+  );
 begin
   DoGetUnitRegisterInfo(AFilename,TheUnitName,HasRegisterProc,true);
 end;
@@ -1482,8 +1483,8 @@ begin
   Result:=mrOk;
 end;
 
-function TPkgManager.DoGetUnitRegisterInfo(const AFilename: string;
-  var TheUnitName: string; var HasRegisterProc: boolean; IgnoreErrors: boolean
+function TPkgManager.DoGetUnitRegisterInfo(const AFilename: string; out
+  TheUnitName: string; out HasRegisterProc: boolean; IgnoreErrors: boolean
   ): TModalResult;
   
   function ErrorsHandled: boolean;

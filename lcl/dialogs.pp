@@ -638,7 +638,7 @@ begin
   if (Flags and MB_OK) = MB_OK then
     Buttons := [mbOK]
   else
-    Buttons := [mbOK];
+    {%H-}Buttons := [mbOK];
 
 
   if (Flags and MB_ICONINFORMATION) = MB_ICONINFORMATION then

@@ -45,7 +45,7 @@ uses
   // codetools
   CodeAtom, CodeTree, CodeToolManager, FindDeclarationTool, BasicCodeTools,
   KeywordFuncLists, PascalParserTool, CodeCache, CacheCodeTools, CustomCodeTool,
-  FileProcs, CTXMLFixFragment, DefineTemplates, CodeToolsStructs,
+  FileProcs, DefineTemplates, CodeToolsStructs,
   // synedit
   SynHighlighterPas,
   // IDEIntf
@@ -236,7 +236,7 @@ type
     FSrcToDocMap: TAvgLvlTree; // tree of TCHSourceToFPDocFile sorted for SourceFilename
     FDeclarationCache: TDeclarationInheritanceCache;
     procedure AddHandler(HandlerType: TCodeHelpManagerHandler;
-                         const AMethod: TMethod; AsLast: boolean = false);
+                         const AMethod: TMethod; {%H-}AsLast: boolean = false);
     procedure RemoveHandler(HandlerType: TCodeHelpManagerHandler;
                             const AMethod: TMethod);
     procedure FreeHandlers;

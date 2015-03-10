@@ -34,7 +34,7 @@ interface
 
 uses
   Classes, SysUtils, Math, contnrs, LazLogger,
-  Forms, Controls, Graphics, Dialogs, ButtonPanel, ExtCtrls, StdCtrls,
+  Forms, Controls, Graphics, Dialogs, ButtonPanel, ExtCtrls,
   CodeToolManager, CodeCache, StdCodeTools,
   LazIDEIntf, IDEDialogs,
   LazarusIDEStrConsts;

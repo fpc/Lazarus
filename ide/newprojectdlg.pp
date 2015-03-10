@@ -48,7 +48,7 @@ type
     Splitter1: TSplitter;
     procedure HelpButtonClick(Sender: TObject);
     procedure ListBoxDblClick(Sender: TObject);
-    procedure ListBoxSelectionChange(Sender: TObject; User: boolean);
+    procedure ListBoxSelectionChange(Sender: TObject; {%H-}User: boolean);
   private
     FProjectDescriptor: TProjectDescriptor;
     procedure FillHelpLabel;

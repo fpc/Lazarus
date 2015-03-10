@@ -71,7 +71,7 @@ type
   public
     function IsApplicable(Msg: TMessageLine; out Identifier: string): boolean;
     procedure CreateMenuItems(Fixes: TMsgQuickFixes); override;
-    procedure QuickFix(Fixes: TMsgQuickFixes; Msg: TMessageLine); override;
+    procedure QuickFix({%H-}Fixes: TMsgQuickFixes; Msg: TMessageLine); override;
   end;
 
   { TQuickFixLocalVariableNotUsed_Remove }
@@ -80,7 +80,7 @@ type
   public
     function IsApplicable(Msg: TMessageLine; out Identifier: string): boolean;
     procedure CreateMenuItems(Fixes: TMsgQuickFixes); override;
-    procedure QuickFix(Fixes: TMsgQuickFixes; Msg: TMessageLine); override;
+    procedure QuickFix({%H-}Fixes: TMsgQuickFixes; Msg: TMessageLine); override;
   end;
 
   { TQuickFixLocalVarNotInitialized_AddAssignment }
@@ -89,7 +89,7 @@ type
   public
     function IsApplicable(Msg: TMessageLine; out Identifier: string): boolean;
     procedure CreateMenuItems(Fixes: TMsgQuickFixes); override;
-    procedure QuickFix(Fixes: TMsgQuickFixes; Msg: TMessageLine); override;
+    procedure QuickFix({%H-}Fixes: TMsgQuickFixes; Msg: TMessageLine); override;
   end;
 
   { TQuickFixUnitNotFound_Remove }
@@ -99,7 +99,7 @@ type
     function IsApplicable(Msg: TMessageLine;
       out MissingUnitName, UsedByUnit: string): boolean;
     procedure CreateMenuItems(Fixes: TMsgQuickFixes); override;
-    procedure QuickFix(Fixes: TMsgQuickFixes; Msg: TMessageLine); override;
+    procedure QuickFix({%H-}Fixes: TMsgQuickFixes; Msg: TMessageLine); override;
   end;
 
   { TQuickFixClassWithAbstractMethods
@@ -110,7 +110,7 @@ type
   public
     function IsApplicable(Msg: TMessageLine; out aClassName: string): boolean;
     procedure CreateMenuItems(Fixes: TMsgQuickFixes); override;
-    procedure QuickFix(Fixes: TMsgQuickFixes; Msg: TMessageLine); override;
+    procedure QuickFix({%H-}Fixes: TMsgQuickFixes; Msg: TMessageLine); override;
   end;
 
   { TQuickFixSrcPathOfPkgContains_OpenPkg
@@ -122,7 +122,7 @@ type
   public
     function IsApplicable(Msg: TMessageLine; out PkgName: string): boolean;
     procedure CreateMenuItems(Fixes: TMsgQuickFixes); override;
-    procedure QuickFix(Fixes: TMsgQuickFixes; Msg: TMessageLine); override;
+    procedure QuickFix({%H-}Fixes: TMsgQuickFixes; Msg: TMessageLine); override;
   end;
 
   { TQuickFix_HideWithIDEDirective - hide with IDE directive %H- }
@@ -141,7 +141,7 @@ type
     function IsApplicable(Msg: TMessageLine; out ToolData: TIDEExternalToolData;
       out IDETool: TObject): boolean;
     procedure CreateMenuItems(Fixes: TMsgQuickFixes); override;
-    procedure QuickFix(Fixes: TMsgQuickFixes; Msg: TMessageLine); override;
+    procedure QuickFix({%H-}Fixes: TMsgQuickFixes; Msg: TMessageLine); override;
   end;
 
   { TIDEQuickFixes }

@@ -35,7 +35,7 @@ interface
 uses
   Classes, SysUtils, LCLProc, Forms, Controls, Graphics, Dialogs,
   CheckLst, StdCtrls, ExtCtrls, Buttons,
-  CodeAtom, CodeTree, PascalParserTool, CodeCache, CodeToolManager,
+  CodeTree, PascalParserTool, CodeCache, CodeToolManager,
   LazIDEIntf, SrcEditorIntf, IDEDialogs,
   LazarusIDEStrConsts;
 

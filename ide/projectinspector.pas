@@ -57,7 +57,7 @@ interface
 uses
   Classes, SysUtils, LCLProc, LCLType, Forms, Controls, Buttons, ComCtrls,
   Menus, Dialogs, FileUtil, LazFileCache, ExtCtrls, Graphics,
-  CodeToolManager, CodeCache, TreeFilterEdit,
+  CodeToolManager, TreeFilterEdit,
   // IDEIntf
   IDEHelpIntf, IDECommands, IDEDialogs, IDEImagesIntf, LazIDEIntf, ProjectIntf,
   PackageIntf,
@@ -108,13 +108,13 @@ type
     procedure FormDropFiles(Sender: TObject; const FileNames: array of String);
     procedure ItemsPopupMenuPopup(Sender: TObject);
     procedure ItemsTreeViewAdvancedCustomDrawItem(Sender: TCustomTreeView;
-      Node: TTreeNode; State: TCustomDrawState; Stage: TCustomDrawStage;
-      var PaintImages, DefaultDraw: Boolean);
+      Node: TTreeNode; {%H-}State: TCustomDrawState; Stage: TCustomDrawStage;
+      var {%H-}PaintImages, {%H-}DefaultDraw: Boolean);
     procedure ItemsTreeViewDblClick(Sender: TObject);
     procedure ItemsTreeViewDragDrop(Sender, Source: TObject; X, Y: Integer);
     procedure ItemsTreeViewDragOver(Sender, Source: TObject; X, Y: Integer;
       State: TDragState; var Accept: Boolean);
-    procedure ItemsTreeViewKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure ItemsTreeViewKeyDown(Sender: TObject; var Key: Word; {%H-}Shift: TShiftState);
     procedure ItemsTreeViewSelectionChanged(Sender: TObject);
     procedure MoveDependencyUpClick(Sender: TObject);
     procedure MoveDependencyDownClick(Sender: TObject);
@@ -170,13 +170,13 @@ type
     procedure SetShowDirectoryHierarchy(const AValue: boolean);
     procedure SetSortAlphabetically(const AValue: boolean);
     procedure SetupComponents;
-    function OnTreeViewGetImageIndex(Str: String; Data: TObject; var AIsEnabled: Boolean): Integer;
+    function OnTreeViewGetImageIndex({%H-}Str: String; Data: TObject; var {%H-}AIsEnabled: Boolean): Integer;
     procedure OnProjectBeginUpdate(Sender: TObject);
     procedure OnProjectEndUpdate(Sender: TObject; ProjectChanged: boolean);
     procedure EnableI18NForSelectedLFM(TheEnable: boolean);
   protected
     procedure KeyUp(var Key: Word; Shift: TShiftState); override;
-    procedure IdleHandler(Sender: TObject; var Done: Boolean);
+    procedure IdleHandler(Sender: TObject; var {%H-}Done: Boolean);
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -1101,7 +1101,8 @@ end;
 procedure TProjectInspectorForm.OnProjectEndUpdate(Sender: TObject;
   ProjectChanged: boolean);
 begin
-  UpdateAll;
+  if ProjectChanged then
+    UpdateAll;
   EndUpdate;
 end;
 

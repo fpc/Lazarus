@@ -36,7 +36,7 @@ uses
   IDEDialogs, IDEImagesIntf, PackageIntf,
   // IDE
   PackageDefs, PackageSystem, InputHistory, LazarusIDEStrConsts, Project,
-  DialogProcs, IDEProcs;
+  IDEProcs;
 
 type
   TBuildProjectDialogItem = class
@@ -64,7 +64,7 @@ type
     procedure DeleteButtonClick(Sender: TObject);
     procedure FilesTreeViewMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
-    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
+    procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormResize(Sender: TObject);
@@ -78,7 +78,7 @@ type
     ImageIndexFile: Integer;
     FIdleConnected: boolean;
     procedure SetIdleConnected(const AValue: boolean);
-    procedure OnIdle(Sender: TObject; var Done: Boolean);
+    procedure OnIdle(Sender: TObject; var {%H-}Done: Boolean);
   private
     FProject: TProject;
     FUpdateNeeded: boolean;

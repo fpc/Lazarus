@@ -32,8 +32,8 @@ unit CleanPkgDeps;
 interface
 
 uses
-  Classes, SysUtils, contnrs, FileUtil, AvgLvlTree, LazLogger, LvlGraphCtrl,
-  Forms, Controls, Graphics, Dialogs, ButtonPanel, ComCtrls, ExtCtrls, StdCtrls,
+  Classes, SysUtils, contnrs, FileUtil, AvgLvlTree, LazLogger,
+  Forms, Controls, Graphics, Dialogs, ComCtrls, ExtCtrls, StdCtrls,
   Buttons, LazarusIDEStrConsts, Project, PackageDefs, IDEImagesIntf;
 
 const
@@ -64,7 +64,7 @@ type
     procedure SelectAllBitBtnClick(Sender: TObject);
     procedure SelectNoneBitBtnClick(Sender: TObject);
     procedure TransitivityTreeViewMouseDown(Sender: TObject;
-      Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+      {%H-}Button: TMouseButton; {%H-}Shift: TShiftState; X, Y: Integer);
   private
     function GetTVNodeChecked(TVNode: TTreeNode): boolean;
     procedure SetTVNodeChecked(TVNode: TTreeNode; AValue: boolean);

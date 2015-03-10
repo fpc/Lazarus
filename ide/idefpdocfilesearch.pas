@@ -6,8 +6,8 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  ButtonPanel, Buttons, ComCtrls, ExtCtrls, LCLType,
-  LazarusIDEStrConsts, PackageSystem, PackageDefs;
+  Buttons, ComCtrls, ExtCtrls, LCLType,
+  PackageSystem, PackageDefs;
 
 type
 
@@ -22,8 +22,8 @@ type
     SearchTextLabel: TLabel;
     Splitter1: TSplitter;
     procedure FormCreate(Sender: TObject);
-    procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
-    procedure OnIdle(Sender: TObject; var Done: Boolean);
+    procedure FormKeyDown(Sender: TObject; var Key: Word; {%H-}Shift: TShiftState);
+    procedure OnIdle(Sender: TObject; var {%H-}Done: Boolean);
   private
     FIdleConnected: boolean;
     procedure SetIdleConnected(AValue: boolean);

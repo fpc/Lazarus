@@ -34,7 +34,7 @@ unit AddToProjectDlg;
 interface
 
 uses
-  Classes, SysUtils, Math, LCLProc, Forms, Controls, Buttons,
+  Classes, SysUtils, LCLProc, Forms, Controls, Buttons,
   ComCtrls, StdCtrls, ExtCtrls, Menus, Dialogs, Graphics, FileUtil, ButtonPanel,
   AVL_Tree,
   IDEWindowIntf, PackageIntf, IDEDialogs,
@@ -80,14 +80,14 @@ type
     // add files page
     FilesListView: TListView;
     procedure AddFileButtonClick(Sender: TObject);
-    procedure AddFileListViewSelectItem(Sender: TObject; Item: TListItem;
+    procedure AddFileListViewSelectItem(Sender: TObject; {%H-}Item: TListItem;
       Selected: Boolean);
     procedure AddToProjectDialogClose(Sender: TObject;
-                                      var CloseAction: TCloseAction);
+                                      var {%H-}CloseAction: TCloseAction);
     procedure DependPkgNameComboBoxChange(Sender: TObject);
     procedure FilesDirButtonClick(Sender: TObject);
-    procedure FilesListViewSelectItem(Sender: TObject; Item: TListItem;
-      Selected: Boolean);
+    procedure FilesListViewSelectItem(Sender: TObject; {%H-}Item: TListItem;
+      {%H-}Selected: Boolean);
     procedure NewDependButtonClick(Sender: TObject);
     procedure FilesAddButtonClick(Sender: TObject);
     procedure FilesDeleteButtonClick(Sender: TObject);

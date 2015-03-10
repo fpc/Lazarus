@@ -37,11 +37,11 @@ uses
   LCLType, LCLProc, Menus, Dialogs, FileUtil, LazFileCache, ExtCtrls,
   contnrs,
   // IDEIntf CodeTools
-  CodeToolManager, CodeCache, CodeTree,
+  CodeToolManager, CodeCache,
   TreeFilterEdit,
   IDEImagesIntf, MenuIntf, LazIDEIntf, ProjectIntf, CodeToolsStructs,
-  FormEditingIntf, PackageIntf, IDEHelpIntf, IDEOptionsIntf, SrcEditorIntf,
-  IDEMsgIntf, IDEExternToolIntf,
+  FormEditingIntf, PackageIntf, IDEHelpIntf, IDEOptionsIntf,
+  IDEExternToolIntf,
   // IDE
   IDEDialogs, IDEProcs, LazarusIDEStrConsts, IDEDefs, CompilerOptions,
   ComponentReg, UnitResources, EnvironmentOpts, DialogProcs, InputHistory,
@@ -244,8 +244,8 @@ type
     procedure FormDropFiles(Sender: TObject; const FileNames: array of String);
     procedure ItemsPopupMenuPopup(Sender: TObject);
     procedure ItemsTreeViewAdvancedCustomDrawItem(Sender: TCustomTreeView;
-      Node: TTreeNode; State: TCustomDrawState; Stage: TCustomDrawStage;
-      var PaintImages, DefaultDraw: Boolean);
+      Node: TTreeNode; {%H-}State: TCustomDrawState; Stage: TCustomDrawStage;
+      var {%H-}PaintImages, {%H-}DefaultDraw: Boolean);
     procedure ItemsTreeViewDragDrop(Sender, Source: TObject; X, Y: Integer);
     procedure ItemsTreeViewDragOver(Sender, Source: TObject; X, Y: Integer;
       State: TDragState; var Accept: Boolean);
@@ -260,15 +260,15 @@ type
     procedure MinVersionEditChange(Sender: TObject);
     procedure MoveDownBtnClick(Sender: TObject);
     procedure MoveUpBtnClick(Sender: TObject);
-    procedure OnIdle(Sender: TObject; var Done: Boolean);
+    procedure OnIdle(Sender: TObject; var {%H-}Done: Boolean);
     procedure OpenFileMenuItemClick(Sender: TObject);
     procedure OptionsBitBtnClick(Sender: TObject);
-    procedure PackageEditorFormClose(Sender: TObject; var CloseAction: TCloseAction);
+    procedure PackageEditorFormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure PackageEditorFormCloseQuery(Sender: TObject; var CanClose: boolean);
     procedure PublishClick(Sender: TObject);
     procedure ReAddMenuItemClick(Sender: TObject);
-    procedure RegisteredListBoxDrawItem(Control: TWinControl; Index: Integer;
-                                        ARect: TRect; State: TOwnerDrawState);
+    procedure RegisteredListBoxDrawItem({%H-}Control: TWinControl; Index: Integer;
+                                        ARect: TRect; {%H-}State: TOwnerDrawState);
     procedure RemoveBitBtnClick(Sender: TObject);
     procedure RevertClick(Sender: TObject);
     procedure SaveAsClick(Sender: TObject);
@@ -311,7 +311,7 @@ type
     procedure SetShowDirectoryHierarchy(const AValue: boolean);
     procedure SetSortAlphabetically(const AValue: boolean);
     procedure SetupComponents;
-    function OnTreeViewGetImageIndex(Str: String; Data: TObject; var AIsEnabled: Boolean): Integer;
+    function OnTreeViewGetImageIndex({%H-}Str: String; Data: TObject; var {%H-}AIsEnabled: Boolean): Integer;
     procedure UpdateNodeImage(TVNode: TTreeNode; NodeData: TPENodeData);
     procedure UpdatePending;
     function CanUpdate(Flag: TPEFlag; Immediately: boolean): boolean;

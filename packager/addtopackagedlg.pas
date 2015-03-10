@@ -76,7 +76,7 @@ type
   end;
   
   TOnGetUnitRegisterInfo = procedure(Sender: TObject; const AFilename: string;
-    var TheUnitName: string; var HasRegisterProc: boolean) of object;
+    out TheUnitName: string; out HasRegisterProc: boolean) of object;
 
   { TAddToPackageDlg }
 
@@ -121,7 +121,7 @@ type
     FilesListView: TListView;
     NewFileBtnPanel: TPanel;
     AddFilesBtnPanel: TPanel;
-    procedure AddToPackageDlgClose(Sender: TObject; var CloseAction: TCloseAction);
+    procedure AddToPackageDlgClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure AddToPackageDlgKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure AncestorComboBoxChange(Sender: TObject);
     procedure AncestorComboBoxCloseUp(Sender: TObject);
@@ -137,7 +137,7 @@ type
     procedure FilesAddButtonClick(Sender: TObject);
     procedure FilesDeleteButtonClick(Sender: TObject);
     procedure FilesDirButtonClick(Sender: TObject);
-    procedure FilesListViewSelectItem(Sender: TObject; Item: TListItem; Selected: Boolean);
+    procedure FilesListViewSelectItem(Sender: TObject; {%H-}Item: TListItem; {%H-}Selected: Boolean);
     procedure FilesShortenButtonClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -192,7 +192,7 @@ type
     property ActivatePage: TAddToPkgType read GetActivatePage write SetActivatePage;
   end;
   
-function ShowAddToPackageDlg(Pkg: TLazPackage; var Params: TAddToPkgResult;
+function ShowAddToPackageDlg(Pkg: TLazPackage; out Params: TAddToPkgResult;
   OnGetIDEFileInfo: TGetIDEFileStateEvent;
   OnGetUnitRegisterInfo: TOnGetUnitRegisterInfo;
   var Page: TAddToPkgType): TModalResult;
@@ -210,13 +210,14 @@ implementation
 
 {$R *.lfm}
 
-function ShowAddToPackageDlg(Pkg: TLazPackage; var Params: TAddToPkgResult;
+function ShowAddToPackageDlg(Pkg: TLazPackage; out Params: TAddToPkgResult;
   OnGetIDEFileInfo: TGetIDEFileStateEvent;
-  OnGetUnitRegisterInfo: TOnGetUnitRegisterInfo;
-  var Page: TAddToPkgType): TModalResult;
+  OnGetUnitRegisterInfo: TOnGetUnitRegisterInfo; var Page: TAddToPkgType
+  ): TModalResult;
 var
   AddDlg: TAddToPackageDlg;
 begin
+  Params:=nil;
   AddDlg:=TAddToPackageDlg.Create(nil);
   AddDlg.OnGetIDEFileInfo:=OnGetIDEFileInfo;
   AddDlg.OnGetUnitRegisterInfo:=OnGetUnitRegisterInfo;
