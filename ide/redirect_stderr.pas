@@ -24,6 +24,7 @@
 unit redirect_stderr;
 
 {$mode objfpc}{$H+}
+{$I ide.inc}
 
 interface
 
