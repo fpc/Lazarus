@@ -34,7 +34,7 @@ interface
 uses
   Classes, SysUtils, TypInfo, LCLProc, Forms, Controls, Graphics,
   Dialogs, ExtCtrls, StdCtrls, ButtonPanel, SynEdit, SynHighlighterPas,
-  CodeToolsStructs, CodeAtom, CodeCache, CodeToolManager, PascalParserTool,
+  CodeToolsStructs, CodeCache, CodeToolManager, PascalParserTool,
   CodeTree,
   SrcEditorIntf, LazIDEIntf, PropEdits, IDEDialogs, CustomFormEditor, JitForms,
   Project, LazarusIDEStrConsts, EditorOptions;
@@ -181,7 +181,7 @@ var
     AncestorRoot, AncestorComponent: TComponent;
     AncestorMethod: TMethod;
   begin
-    FillByte(Result, SizeOf(Result), 0);
+    FillByte(Result{%H-}, SizeOf(Result), 0);
     if csAncestor in AComponent.ComponentState then
     begin
       // search for ancestor component
@@ -208,7 +208,7 @@ var
     end;
   end;
 
-  procedure CheckEvents(LookupRoot, AComponent: TComponent);
+  procedure CheckEvents(AComponent: TComponent);
   var
     TypeInfo: PTypeInfo;
     TypeData: PTypeData;
@@ -292,9 +292,9 @@ begin
             and (SysUtils.CompareText(LookupRoot.ClassName,CurClassName)=0) then
             begin
               PropChanged:=false;
-              CheckEvents(LookupRoot,LookupRoot);
+              CheckEvents(LookupRoot);
               for i:=0 to LookupRoot.ComponentCount-1 do
-                CheckEvents(LookupRoot,LookupRoot.Components[i]);
+                CheckEvents(LookupRoot.Components[i]);
               // update objectinspector
               if PropChanged and (GlobalDesignHook.LookupRoot=LookupRoot) then
                 GlobalDesignHook.RefreshPropertyValues;

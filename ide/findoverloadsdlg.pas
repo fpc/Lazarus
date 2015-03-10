@@ -40,8 +40,8 @@ uses
   Classes, SysUtils, LCLProc,FileUtil, Forms, Controls, Graphics,
   Dialogs, ExtCtrls, StdCtrls, Buttons, ButtonPanel, ComCtrls, AvgLvlTree,
   // codetools
-  FindDeclarationTool, PascalParserTool, CodeTree, CodeCache, CodeAtom,
-  CodeToolManager, CodeGraph, FindOverloads,
+  FindDeclarationTool, PascalParserTool, CodeTree, CodeCache,
+  CodeToolManager, FindOverloads,
   // IDE
   LazIDEIntf, ProjectIntf, SrcEditorIntf, IDEProcs;
 

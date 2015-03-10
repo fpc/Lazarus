@@ -103,8 +103,9 @@ var
 begin
   ModalResult:=mrNone;
   SaveSettings;
-  if not SearchFilesToDelete(List) then exit;
+  List:=nil;
   try
+    if not SearchFilesToDelete(List) then exit;
     if not DeleteFiles(List) then exit;
   finally
     List.Free;
