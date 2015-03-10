@@ -1997,7 +1997,10 @@ begin
       pefNeedUpdateButtons,
       pefNeedUpdateApplyDependencyButton,
       pefNeedUpdateStatusBar];
-  IdleConnected:=true;
+  if Immediately then
+    UpdatePending
+  else
+    IdleConnected:=true;
 end;
 
 function TPackageEditorForm.ShowAddDialog(var DlgPage: TAddToPkgType): TModalResult;
