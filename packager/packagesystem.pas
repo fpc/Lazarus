@@ -246,8 +246,8 @@ type
     function FindAutoInstallDependencyPath(ChildPackage: TLazPackage): TFPList;
     function FindAmbiguousUnits(APackage: TLazPackage;
                                 FirstDependency: TPkgDependency;
-                                var File1, File2: TPkgFile;
-                                var ConflictPkg: TLazPackage): boolean;
+                                out File1, File2: TPkgFile;
+                                out ConflictPkg: TLazPackage): boolean;
     function FindFPCConflictUnit(APackage: TLazPackage;
                                 FirstDependency: TPkgDependency;
                                 const Directory: string;
@@ -2576,8 +2576,8 @@ begin
 end;
 
 function TLazPackageGraph.FindAmbiguousUnits(APackage: TLazPackage;
-  FirstDependency: TPkgDependency; var File1, File2: TPkgFile;
-  var ConflictPkg: TLazPackage): boolean;
+  FirstDependency: TPkgDependency; out File1, File2: TPkgFile; out
+  ConflictPkg: TLazPackage): boolean;
 // check if two connected packages have units with the same name
 // Connected means here: a Package1 is directly required by a Package2
 // or: a Package1 and a Package2 are directly required by a Package3

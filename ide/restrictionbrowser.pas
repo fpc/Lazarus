@@ -34,7 +34,7 @@ uses
   Dialogs, StdCtrls, ComCtrls, TreeFilterEdit, ExtCtrls, Buttons,
   IDEImagesIntf, ObjectInspector,
   CompatibilityRestrictions, IDEOptionDefs, LazarusIDEStrConsts,
-  EnvironmentOpts, ComponentReg, LazConf;
+  EnvironmentOpts, LazConf;
 
 type
   { TRestrictionBrowserView }

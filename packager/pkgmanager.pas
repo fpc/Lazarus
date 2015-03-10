@@ -217,7 +217,7 @@ type
     procedure ConnectSourceNotebookEvents; override;
     procedure SetupMainBarShortCuts; override;
     procedure SetRecentPackagesMenu; override;
-    procedure AddToMenuRecentPackages(const Filename: string; Save: boolean);
+    procedure AddToMenuRecentPackages(const Filename: string);
     procedure SaveSettings; override;
     procedure UpdateVisibleComponentPalette; override;
     procedure ProcessCommand(Command: word; var Handled: boolean); override;
@@ -3045,8 +3045,7 @@ begin
      EnvironmentOptions.RecentPackageFiles,@MainIDEitmOpenRecentPackageClicked);
 end;
 
-procedure TPkgManager.AddToMenuRecentPackages(const Filename: string;
-  Save: boolean);
+procedure TPkgManager.AddToMenuRecentPackages(const Filename: string);
 begin
   AddToRecentList(Filename,EnvironmentOptions.RecentPackageFiles,
                   EnvironmentOptions.MaxRecentPackageFiles,rltFile);
@@ -3179,12 +3178,14 @@ var
   end;
 
   function GetPOFilenameParts(const Filename: string;
-    var AUnitName, Language: string): boolean;
+    out AUnitName, Language: string): boolean;
   var
     UnitNameEnd: Integer;
     LangEnd: Integer;
   begin
     Result:=false;
+    AUnitName:='';
+    Language:='';
     UnitNameEnd:=1;
     while (UnitNameEnd<=length(Filename)) and (Filename[UnitNameEnd]<>'.') do
       inc(UnitNameEnd);
@@ -3548,7 +3549,7 @@ begin
   if (pofAddToRecent in Flags) then begin
     AFilename:=APackage.Filename;
     if FileExistsCached(AFilename) then begin
-      AddToMenuRecentPackages(AFilename,false);
+      AddToMenuRecentPackages(AFilename);
     end;
   end;
 
@@ -3628,7 +3629,7 @@ begin
 
   // add to recent packages
   if pofAddToRecent in Flags then begin
-    AddToMenuRecentPackages(AFilename,false);
+    AddToMenuRecentPackages(AFilename);
   end;
 
   OpenEditor:=not (pofDoNotOpenEditor in Flags);
@@ -3807,7 +3808,7 @@ begin
   APackage.Modified:=false;
   // add to recent
   if (psfSaveAs in Flags) then begin
-    AddToMenuRecentPackages(APackage.Filename,false);
+    AddToMenuRecentPackages(APackage.Filename);
   end;
 
   if APackage.Editor<>nil then

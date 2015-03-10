@@ -30,11 +30,11 @@ unit UseUnitDlg;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, ComCtrls, StdCtrls, ExtCtrls, Buttons,
-  ButtonPanel, Dialogs, LCLProc, FileProcs, Graphics, LCLType, EditBtn, StrUtils,
+  Classes, SysUtils, Forms, Controls, StdCtrls, ExtCtrls, Buttons,
+  ButtonPanel, Dialogs, LCLProc, FileProcs, Graphics, LCLType, EditBtn,
   SourceEditor, LazIDEIntf, IDEImagesIntf, LazarusIDEStrConsts, ProjectIntf,
-  Project, CodeCache, CodeToolManager, IdentCompletionTool, CodeAtom, CodeTree,
-  PascalParserTool, ListFilterEdit, LinkScanner;
+  Project, CodeCache, CodeToolManager, IdentCompletionTool, CodeTree,
+  ListFilterEdit, LinkScanner;
 
 type
 
@@ -51,7 +51,7 @@ type
     procedure FormDestroy(Sender: TObject);
     procedure SectionRadioGroupClick(Sender: TObject);
     procedure UnitsListBoxDblClick(Sender: TObject);
-    procedure UnitsListBoxDrawItem(Control: TWinControl; Index: Integer;
+    procedure UnitsListBoxDrawItem({%H-}Control: TWinControl; Index: Integer;
       ARect: TRect; State: TOwnerDrawState);
     procedure UnitsListBoxKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
@@ -65,7 +65,7 @@ type
     procedure CreateOtherUnitsList;
     function SelectedUnit: string;
     function InterfaceSelected: Boolean;
-    procedure DetermineUsesSection(ACode: TCodeBuffer; ACursorPos: TPoint);
+    procedure DetermineUsesSection(ACode: TCodeBuffer);
     procedure FillAvailableUnitsList;
   public
 
@@ -108,7 +108,7 @@ begin
       UseUnitDlg.SectionRadioGroup.Enabled := False
     else
       // automatic choice of dest uses-section by cursor position
-      UseUnitDlg.DetermineUsesSection(SrcEdit.CodeBuffer, SrcEdit.GetCursorTextXY);
+      UseUnitDlg.DetermineUsesSection(SrcEdit.CodeBuffer);
 
     if UseUnitDlg.FilterEdit.Items.Count = 0 then
       // no available units from current project => turn on "all units"
@@ -392,14 +392,11 @@ begin
   Result:=SectionRadioGroup.ItemIndex=0;
 end;
 
-procedure TUseUnitDialog.DetermineUsesSection(ACode: TCodeBuffer; ACursorPos: TPoint);
+procedure TUseUnitDialog.DetermineUsesSection(ACode: TCodeBuffer);
 var
   ImplUsesNode: TCodeTreeNode;
   i: Integer;
   Tool: TCodeTool;
-  //CursorPos: TCodeXYPosition;
-  //CleanCursorPos: Integer;
-  //ImplNode: TCodeTreeNode;
 begin
   CodeToolBoss.Explore(ACode,Tool,false);
   if Tool=nil then exit;
@@ -408,14 +405,6 @@ begin
   if Assigned(ImplUsesNode) then
     for i := 0 to FImplUsedUnits.Count - 1 do
       FImplUsedUnits.Objects[i] := ImplUsesNode;
-  // check if cursor is behind interface section
-{Note: now default to interface section always.
-  CursorPos := CodeXYPosition(ACursorPos.X, ACursorPos.Y, ACode);
-  Tool.CaretToCleanPos(CursorPos,CleanCursorPos);
-  ImplNode:=Tool.FindImplementationNode;
-  if (ImplNode<>nil) and (CleanCursorPos>ImplNode.StartPos) then
-    SectionRadioGroup.ItemIndex := 1;
-}
   // update
   SectionRadioGroup.OnClick(SectionRadioGroup);
 end;
