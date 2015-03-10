@@ -70,7 +70,6 @@ procedure GetEncloseSelectionParams(TheType: TEncloseSelectionType;
                                     out Template: string);
 procedure EncloseTextSelection(const Template: string; Source: TStrings;
                                SelectionStart, SelectionEnd: TPoint;
-                               Indent: integer;
                                out NewSelection: string; out NewCursor: TPoint);
 
 implementation
@@ -161,8 +160,8 @@ begin
 end;
 
 procedure EncloseTextSelection(const Template: string; Source: TStrings;
-  SelectionStart, SelectionEnd: TPoint; Indent: integer; out
-  NewSelection: string; out NewCursor: TPoint);
+  SelectionStart, SelectionEnd: TPoint; out NewSelection: string; out
+  NewCursor: TPoint);
 var
   TemplateLen: Integer;
   TemplatePos: Integer;

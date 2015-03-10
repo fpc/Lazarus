@@ -4773,7 +4773,6 @@ begin
   GetEncloseSelectionParams(EncloseType,EncloseTemplate);
   EncloseTextSelection(EncloseTemplate,FEditor.Lines,
                        FEditor.BlockBegin,FEditor.BlockEnd,
-                       FEditor.BlockIndent,
                        NewSelection,NewCaretXY);
   //debugln(['TSourceEditor.EncloseSelection A NewCaretXY=',NewCaretXY.X,',',NewCaretXY.Y,' "',NewSelection,'"']);
   FEditor.SelText:=NewSelection;
