@@ -7,7 +7,7 @@ unit CairoCanvasAll;
 
 interface
 
-{$IFNDEF win64}
+{$IF FPC_FULLVERSION>=20701 or not defined(win64)}
 uses
   {%H-}CairoCanvas, {%H-}CairoPrinter;
 {$ENDIF}
