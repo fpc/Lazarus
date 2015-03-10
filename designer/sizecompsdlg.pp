@@ -53,7 +53,7 @@ type
     constructor Create(AOwner: TComponent);  override;
   end;
 
-function ShowSizeComponentsDialog(var HorizSizingID, FixedWidth,
+function ShowSizeComponentsDialog(out HorizSizingID, FixedWidth,
   VertSizingID, FixedHeight: integer): TModalResult;
 
 implementation
@@ -63,8 +63,8 @@ implementation
 uses 
   LazarusIDEStrConsts;
 
-function ShowSizeComponentsDialog(var HorizSizingID, FixedWidth,
-  VertSizingID, FixedHeight: integer): TModalResult;
+function ShowSizeComponentsDialog(out HorizSizingID, FixedWidth, VertSizingID,
+  FixedHeight: integer): TModalResult;
 var
   SizeComponentsDialog: TSizeComponentsDialog;
 begin
@@ -76,6 +76,7 @@ begin
     FixedWidth := StrToIntDef(WidthEdit.Text,0);
     VertSizingID := HeightRadioGroup.ItemIndex;
     FixedHeight := StrToIntDef(HeightEdit.Text,0);
+    Free;
   end;
 end;
 

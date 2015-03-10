@@ -38,7 +38,7 @@ interface
 
 uses
   // FCL + LCL
-  Types, Classes, Math, SysUtils, contnrs, variants, TypInfo,
+  Types, Classes, Math, SysUtils, variants, TypInfo,
   LCLProc, LCLType, LResources, LCLIntf, LMessages, InterfaceBase,
   Forms, Controls, GraphType, Graphics, Dialogs, ExtCtrls, Menus,
   ClipBrd,
