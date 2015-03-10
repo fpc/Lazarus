@@ -45,7 +45,7 @@ uses
   DiskDiffsDialog, InputHistory, CheckLFMDlg, LCLMemManager, CodeToolManager,
   CodeToolsStructs, ConvCodeTool, CodeCache, CodeTree, FindDeclarationTool,
   BasicCodeTools, SynEdit, UnitResources, IDEExternToolIntf, ObjectInspector,
-  ExtToolDialog, PublishModule, etMessagesWnd;
+  PublishModule, etMessagesWnd;
 
 type
 
@@ -196,7 +196,7 @@ type
     // methods for 'open unit' and 'open main unit'
   private
     function LoadResourceFile(AnUnitInfo: TUnitInfo; var LFMCode, LRSCode: TCodeBuffer;
-        IgnoreSourceErrors, AutoCreateResourceCode, ShowAbort: boolean): TModalResult;
+        AutoCreateResourceCode, ShowAbort: boolean): TModalResult;
     function FindBaseComponentClass(AnUnitInfo: TUnitInfo; const AComponentClassName,
         DescendantClassName: string; out AComponentClass: TComponentClass): boolean;
     function LoadAncestorDependencyHidden(AnUnitInfo: TUnitInfo;
@@ -237,8 +237,8 @@ type
   private
     function ShowSaveProjectAsDialog(UseMainSourceFile: boolean): TModalResult;
     function SaveProjectInfo(var Flags: TSaveFlags): TModalResult;
-    procedure GetMainUnit(var MainUnitInfo: TUnitInfo;
-        var MainUnitSrcEdit: TSourceEditor; UpdateModified: boolean);
+    procedure GetMainUnit(out MainUnitInfo: TUnitInfo;
+        out MainUnitSrcEdit: TSourceEditor; UpdateModified: boolean);
     procedure SaveSrcEditorProjectSpecificSettings(AnEditorInfo: TUnitEditorInfo);
     procedure SaveSourceEditorProjectSpecificSettings;
     procedure UpdateProjectResourceInfo;
@@ -2065,8 +2065,7 @@ begin
   LRSCode:=nil;
   if WasPascalSource then
   begin
-    Result:=LoadResourceFile(AnUnitInfo,LFMCode,LRSCode,
-                               not (sfSaveAs in Flags),true,CanAbort);
+    Result:=LoadResourceFile(AnUnitInfo,LFMCode,LRSCode,true,CanAbort);
     if not (Result in [mrIgnore,mrOk]) then
       exit;
   end;
@@ -5435,7 +5434,7 @@ end;
 
 function TLazSourceFileManager.LoadResourceFile(AnUnitInfo: TUnitInfo;
   var LFMCode, LRSCode: TCodeBuffer;
-  IgnoreSourceErrors, AutoCreateResourceCode, ShowAbort: boolean): TModalResult;
+  AutoCreateResourceCode, ShowAbort: boolean): TModalResult;
 var
   LFMFilename: string;
   LRSFilename: String;
@@ -5474,8 +5473,6 @@ begin
       LRSFilename:='';
       LRSCode:=nil;
     end;
-    // if no resource file found (i.e. normally the .lrs file)
-    // don't bother the user, because it is created automatically anyway
   end;
   Result:=mrOk;
 end;
@@ -6734,7 +6731,8 @@ var
     DependingUnitInfo: TUnitInfo;
     DependenciesFlags: TCloseFlags;
   begin
-    repeat
+    ModResult:=mrOk;
+repeat
       DependingUnitInfo:=Project1.UnitUsingComponentUnit(AnUnitInfo,Types);
       if DependingUnitInfo=nil then break;
       if (not UserAsked) and (not (cfQuiet in Flags))
@@ -6753,10 +6751,12 @@ var
       ModResult:=CloseUnitComponent(DependingUnitInfo,DependenciesFlags);
       if ModResult<>mrOk then exit(false);
     until false;
+    ModResult:=mrOk;
     Result:=true;
   end;
 
 begin
+  Result:=mrOk;
   UserAsked:=false;
   Project1.LockUnitComponentDependencies;
   try
@@ -6775,7 +6775,7 @@ begin
     if not CloseNext(Result,[ucdtInlineClass]) then exit;
 
     // then close all referring components
-    // These can build circles and can be freed in any order.
+    // These can build cycles and can be freed in any order.
     if not CloseNext(Result,[ucdtProperty]) then exit;
   finally
     Project1.UnlockUnitComponentDependencies;
@@ -7061,8 +7061,8 @@ begin
   Result:=mrOk;
 end;
 
-procedure TLazSourceFileManager.GetMainUnit(var MainUnitInfo: TUnitInfo;
-  var MainUnitSrcEdit: TSourceEditor; UpdateModified: boolean);
+procedure TLazSourceFileManager.GetMainUnit(out MainUnitInfo: TUnitInfo; out
+  MainUnitSrcEdit: TSourceEditor; UpdateModified: boolean);
 begin
   MainUnitSrcEdit:=nil;
   if Project1.MainUnitID>=0 then begin
