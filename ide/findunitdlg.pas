@@ -35,11 +35,11 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, Forms, Controls, Dialogs, ExtCtrls,
-  StdCtrls, ComCtrls, FileUtil, AvgLvlTree, Laz2_XMLCfg, LazFileCache,
+  StdCtrls, ComCtrls, FileUtil, Laz2_XMLCfg, LazFileCache,
   // codetools
   CodeToolsStrConsts, CodeCache, CodeToolManager,
   // IDEIntf
-  LazIDEIntf, TextTools, IDEMsgIntf, PackageIntf, IDEExternToolIntf,
+  LazIDEIntf, IDEMsgIntf, PackageIntf, IDEExternToolIntf,
   // IDE
   DialogProcs, PackageDefs, Project, IDEProcs, LazarusIDEStrConsts,
   etFPCMsgParser,
@@ -121,7 +121,7 @@ type
   public
     function IsApplicable(Msg: TMessageLine; out MissingUnit, UsedByUnit: string): boolean;
     procedure CreateMenuItems(Fixes: TMsgQuickFixes); override;
-    procedure QuickFix(Fixes: TMsgQuickFixes; Msg: TMessageLine); override;
+    procedure QuickFix({%H-}Fixes: TMsgQuickFixes; Msg: TMessageLine); override;
   end;
 
   { TQuickFixIncludeNotFound_Search - add menu item to open this search dialog }
@@ -130,7 +130,7 @@ type
   public
     function IsApplicable(Msg: TMessageLine; out IncludeFile: string): boolean;
     procedure CreateMenuItems(Fixes: TMsgQuickFixes); override;
-    procedure QuickFix(Fixes: TMsgQuickFixes; Msg: TMessageLine); override;
+    procedure QuickFix({%H-}Fixes: TMsgQuickFixes; Msg: TMessageLine); override;
     function IsCodetoolsErrorIncludeFileNotFound(Msg: string;
                                               out IncludeFile: string): boolean;
   end;
@@ -390,11 +390,12 @@ end;
 procedure TFindUnitDialog.RemoveFromUsesSection(
   Item: TMissingUnit_QuickFix_RemoveFromUses);
 begin
+  if Item=nil then ;
   if not CodeToolBoss.RemoveUnitFromAllUsesSections(Code,MissingUnitName) then
   begin
 
-  end;
-  ModalResult:=mrOk;
+  end else
+    ModalResult:=mrOk;
 end;
 
 function TFindUnitDialog.MainOwnerHasRequirement(PackageName: string): boolean;
@@ -608,6 +609,7 @@ end;
 
 constructor TMissingUnit_QuickFix_RemoveFromUses.Create(aDlg: TFindUnitDialog);
 begin
+  Dlg:=aDlg;
   Caption:='Remove unit from uses clause';
 end;
 

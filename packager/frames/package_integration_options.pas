@@ -40,7 +40,7 @@ type
   public
     function Check: Boolean; override;
     function GetTitle: string; override;
-    procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
+    procedure Setup({%H-}ADialog: TAbstractOptionsEditorDialog); override;
     procedure ReadSettings(AOptions: TAbstractIDEOptions); override;
     procedure WriteSettings(AOptions: TAbstractIDEOptions); override;
     class function SupportedOptionsClass: TAbstractIDEOptionsClass; override;
@@ -100,6 +100,7 @@ var
   CurDir: string;
   StartPos, OldStartPos: integer;
   DlgResult: TModalResult;
+  s: String;
 begin
   // check NewPath
   StartPos := 1;
@@ -112,8 +113,11 @@ begin
       FLazPackage.LongenFilename(CurDir);
       if not DirPathExists(CurDir) then
       begin
+        s:=Format(lisDirectoryNotFound, [CurDir]);
+        if Context<>'' then
+          s:=Context+LineEnding+s;
         DlgResult := QuestionDlg(lisEnvOptDlgDirectoryNotFound,
-          Format(lisDirectoryNotFound, [CurDir]),
+          s,
           mtError, [mrIgnore, mrYes, lisRemoveFromSearchPath, mrCancel], 0);
         case DlgResult of
           mrIgnore: ;
