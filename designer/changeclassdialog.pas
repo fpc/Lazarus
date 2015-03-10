@@ -57,7 +57,7 @@ type
     procedure ChangeClassDlgCreate(Sender: TObject);
     procedure NewClassComboBoxEditingDone(Sender: TObject);
     procedure NewClassComboBoxKeyUp(Sender: TObject; var Key: Word;
-      Shift: TShiftState);
+      {%H-}Shift: TShiftState);
   private
     FClasses: TAvgLvlTree;
     FNewClass: TClass;
@@ -70,7 +70,7 @@ type
     procedure FillAncestorListBox(AClass: TClass; AListBox: TListBox);
     procedure AddClass(const AClass: TPersistentClass);
     procedure AddComponentClass(const AClass: TComponentClass);
-    function CompareClasses(Tree: TAvgLvlTree; Class1, Class2: TClass): integer;
+    function CompareClasses({%H-}Tree: TAvgLvlTree; Class1, Class2: TClass): integer;
   public
     destructor Destroy; override;
     procedure FillNewClassComboBox;

@@ -75,7 +75,8 @@ type
                               Flags: TComponentPasteSelectionFlags
                               ): Boolean; virtual; abstract;
     function InvokeComponentEditor(AComponent: TComponent;
-                                   MenuIndex: integer): boolean; virtual; abstract;
+                                   {%H-}MenuIndex: integer): boolean; deprecated;
+    function InvokeComponentEditor(AComponent: TComponent): boolean; virtual; abstract;
 
     function CanUndo: Boolean; virtual; abstract;
     function CanRedo: Boolean; virtual; abstract;
@@ -1517,6 +1518,12 @@ begin
   else
     FChangeStamp:=Low(FChangeStamp);
   FHandlers[cedhtModified].CallNotifyEvents(Self);
+end;
+
+function TComponentEditorDesigner.InvokeComponentEditor(AComponent: TComponent;
+  MenuIndex: integer): boolean;
+begin
+  Result:=InvokeComponentEditor(AComponent,-1){%H-};
 end;
 
 procedure TComponentEditorDesigner.DisconnectComponent;

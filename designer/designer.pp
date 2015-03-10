@@ -282,8 +282,7 @@ type
     function CopySelectionToStream(AllComponentsStream: TStream): boolean; override;
     function InsertFromStream(s: TStream; Parent: TWinControl;
                               PasteFlags: TComponentPasteSelectionFlags): Boolean; override;
-    function InvokeComponentEditor(AComponent: TComponent;
-                                   MenuIndex: integer): boolean; override;
+    function InvokeComponentEditor(AComponent: TComponent): boolean; override;
     procedure DoProcessCommand(Sender: TObject; var Command: word;
                                var Handled: boolean);
 
@@ -1515,8 +1514,7 @@ begin
   Result:=DoDeleteSelectedPersistents;
 end;
 
-function TDesigner.InvokeComponentEditor(AComponent: TComponent;
-  MenuIndex: integer): boolean;
+function TDesigner.InvokeComponentEditor(AComponent: TComponent): boolean;
 var
   CompEditor: TBaseComponentEditor;
 begin
@@ -2343,7 +2341,7 @@ var
       begin
         // Double Click -> invoke 'Edit' of the component editor
         FShiftState := Shift;
-        InvokeComponentEditor(MouseDownComponent, -1);
+        InvokeComponentEditor(MouseDownComponent);
         FShiftState := [];
       end;
     end;
