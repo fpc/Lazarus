@@ -144,7 +144,7 @@ type
     property NewItem: TNewIDEItemTemplate Read FNewItem;
   end;
 
-function ShowNewIDEItemDialog(var NewItem: TNewIDEItemTemplate): TModalResult;
+function ShowNewIDEItemDialog(out NewItem: TNewIDEItemTemplate): TModalResult;
 
 
 implementation
@@ -152,7 +152,7 @@ implementation
 
 {$R *.lfm}
 
-function ShowNewIDEItemDialog(var NewItem: TNewIDEItemTemplate): TModalResult;
+function ShowNewIDEItemDialog(out NewItem: TNewIDEItemTemplate): TModalResult;
 var
   NewOtherDialog: TNewOtherDialog;
 begin

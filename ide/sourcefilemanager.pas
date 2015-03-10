@@ -115,7 +115,7 @@ type
     // methods for publish project
     procedure OnCopyFile(const Filename: string; var Copy: boolean; Data: TObject);
     procedure OnCopyError(const ErrorData: TCopyErrorData;
-        var Handled: boolean; Data: TObject);
+        var {%H-}Handled: boolean; {%H-}Data: TObject);
   public
     constructor Create;
     destructor Destroy; override;
@@ -658,6 +658,7 @@ begin
   end;
   if Result = nil then // should never happen
     Result := AnUnitInfo.OpenEditorInfo[0];
+  // ToDo: WantedTopLine
 end;
 
 function TFileOpener.OpenResource: TModalResult;
