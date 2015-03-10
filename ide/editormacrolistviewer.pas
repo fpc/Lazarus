@@ -237,7 +237,7 @@ procedure ShowMacroListViewer;
 procedure UpdateMacroListViewer;
 procedure DoEditorMacroStateChanged;
 
-procedure LoadProjectSpecificInfo(XMLConfig: TXMLConfig; Merge: boolean);
+procedure LoadProjectSpecificInfo(XMLConfig: TXMLConfig);
 procedure SaveProjectSpecificInfo(XMLConfig: TXMLConfig; Flags: TProjectWriteFlags);
 procedure LoadGlobalInfo;
 procedure SaveGlobalInfo;
@@ -334,7 +334,7 @@ begin
     MacroListView.DoEditorMacroStateChanged;
 end;
 
-procedure LoadProjectSpecificInfo(XMLConfig: TXMLConfig; Merge: boolean);
+procedure LoadProjectSpecificInfo(XMLConfig: TXMLConfig);
 begin
   MacroListViewer.FIgnoreMacroChanges := True;
   try

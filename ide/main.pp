@@ -5543,7 +5543,7 @@ begin
     DebugBoss.LoadProjectSpecificInfo(XMLConfig,Merge);
 
   if (TheProject=Project1) then
-    EditorMacroListViewer.LoadProjectSpecificInfo(XMLConfig, Merge);
+    EditorMacroListViewer.LoadProjectSpecificInfo(XMLConfig);
 end;
 
 procedure TMainIDE.OnSaveProjectInfoToXMLConfig(TheProject: TProject;
