@@ -33,7 +33,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, Forms, Controls, Graphics, Dialogs, FileUtil,
-  Clipbrd, StdCtrls, Buttons, Process, AVL_Tree, AsyncProcess, Menus, ExtCtrls,
+  Clipbrd, StdCtrls, Buttons, Process, AVL_Tree, Menus, ExtCtrls,
   UTF8Process, ButtonPanel, ComCtrls,
   // codetools
   KeywordFuncLists, CodeToolManager, FileProcs, DefineTemplates,
@@ -75,7 +75,7 @@ type
     TestMemo: TMemo;
     TestGroupbox: TGroupBox;
     OutputGroupBox: TGroupBox;
-    procedure ApplicationOnIdle(Sender: TObject; var Done: Boolean);
+    procedure ApplicationOnIdle(Sender: TObject; var {%H-}Done: Boolean);
     procedure CopyOutputMenuItemClick(Sender: TObject);
   private
     FIdleConnected: boolean;

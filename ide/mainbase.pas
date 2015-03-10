@@ -172,13 +172,13 @@ type
     procedure GetCurrentUnit(out ActiveSourceEditor: TSourceEditor;
                              out ActiveUnitInfo: TUnitInfo); virtual; abstract;
     procedure GetDesignerUnit(ADesigner: TDesigner;
-          var ActiveSourceEditor: TSourceEditor; var ActiveUnitInfo: TUnitInfo); virtual; abstract;
+          out ActiveSourceEditor: TSourceEditor; out ActiveUnitInfo: TUnitInfo); virtual; abstract;
     procedure GetObjectInspectorUnit(
-          var ActiveSourceEditor: TSourceEditor; var ActiveUnitInfo: TUnitInfo); virtual; abstract;
+          out ActiveSourceEditor: TSourceEditor; out ActiveUnitInfo: TUnitInfo); virtual; abstract;
     procedure GetUnitWithForm(AForm: TCustomForm;
-          var ActiveSourceEditor: TSourceEditor; var ActiveUnitInfo: TUnitInfo); virtual; abstract;
+          out ActiveSourceEditor: TSourceEditor; out ActiveUnitInfo: TUnitInfo); virtual; abstract;
     procedure GetUnitWithPersistent(APersistent: TPersistent;
-          var ActiveSourceEditor: TSourceEditor; var ActiveUnitInfo: TUnitInfo); virtual; abstract;
+          out ActiveSourceEditor: TSourceEditor; out ActiveUnitInfo: TUnitInfo); virtual; abstract;
     procedure DoShowComponentList(State: TIWGetFormState = iwgfShowOnTop); virtual; abstract;
 
     function DoOpenMacroFile(Sender: TObject; const AFilename: string): TModalResult; override;

@@ -8235,7 +8235,7 @@ var
   CodeBuf: TCodeBuffer;
 begin
   Result:=false;
-  // SynBeatifier is shared arrcoss SynEdits, and may call the wrong SrcNoteBook
+  // SynBeautifier is shared arrcoss SynEdits, and may call the wrong SrcNoteBook
   if assigned(Manager)
   then SrcEdit := Manager.FindSourceEditorWithEditorComponent(TComponent(Editor))
   else SrcEdit := FindSourceEditorWithEditorComponent(TComponent(Editor));

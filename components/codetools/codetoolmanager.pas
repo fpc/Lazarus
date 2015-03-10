@@ -807,8 +807,8 @@ type
           ): boolean;
     function JumpToPublishedMethodBody(Code: TCodeBuffer;
           const AClassName, AMethodName: string;
-          var NewCode: TCodeBuffer;
-          var NewX, NewY, NewTopLine: integer): boolean;
+          out NewCode: TCodeBuffer;
+          out NewX, NewY, NewTopLine: integer): boolean;
     function RenamePublishedMethod(Code: TCodeBuffer;
           const AClassName, OldMethodName,
           NewMethodName: string): boolean;
@@ -3718,8 +3718,8 @@ begin
 end;
 
 function TCodeToolManager.JumpToPublishedMethodBody(Code: TCodeBuffer;
-  const AClassName, AMethodName: string;
-  var NewCode: TCodeBuffer; var NewX, NewY, NewTopLine: integer): boolean;
+  const AClassName, AMethodName: string; out NewCode: TCodeBuffer; out NewX,
+  NewY, NewTopLine: integer): boolean;
 var NewPos: TCodeXYPosition;
 begin
   {$IFDEF CTDEBUG}

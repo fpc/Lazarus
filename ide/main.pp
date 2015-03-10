@@ -74,7 +74,7 @@ uses
   FileProcs, FindDeclarationTool, LinkScanner, BasicCodeTools, CodeToolsStructs,
   CodeToolManager, CodeCache, DefineTemplates, KeywordFuncLists, CodeTree,
   // synedit
-  AllSynEdit, SynEditKeyCmds, SynBeautifier, SynEditMarks,
+  AllSynEdit, SynEditKeyCmds, SynEditMarks,
   // IDE interface
   IDEIntf, ObjectInspector, PropEdits, PropEditUtils,
   MacroIntf, IDECommands, IDEWindowIntf, ComponentReg,
@@ -85,7 +85,7 @@ uses
   IDEProtocol,
   // compile
   CompilerOptions, CheckCompilerOpts, BuildProjectDlg,
-  ApplicationBundle, ImExportCompilerOpts,
+  ApplicationBundle,
   ExtTools,
   // projects
   ProjectResources, Project, ProjectDefs, NewProjectDlg, 
@@ -170,16 +170,16 @@ type
 
   TMainIDE = class(TMainIDEBase)
     // event handlers
-    procedure MainIDEFormClose(Sender: TObject; var CloseAction: TCloseAction);
+    procedure MainIDEFormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure MainIDEFormCloseQuery(Sender: TObject; var CanClose: boolean);
-    procedure OnApplicationUserInput(Sender: TObject; Msg: Cardinal);
-    procedure OnApplicationIdle(Sender: TObject; var Done: Boolean);
+    procedure OnApplicationUserInput(Sender: TObject; {%H-}Msg: Cardinal);
+    procedure OnApplicationIdle(Sender: TObject; var {%H-}Done: Boolean);
     procedure OnApplicationActivate(Sender: TObject);
     procedure OnApplicationDeActivate(Sender: TObject);
     procedure OnApplicationKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure OnApplicationQueryEndSession(var Cancel: Boolean);
     procedure OnApplicationEndSession(Sender: TObject);
-    procedure OnScreenChangedForm(Sender: TObject; Form: TCustomForm);
+    procedure OnScreenChangedForm(Sender: TObject; {%H-}Form: TCustomForm);
     procedure OnScreenRemoveForm(Sender: TObject; AForm: TCustomForm);
     procedure OnRemoteControlTimer(Sender: TObject);
     procedure OnSelectFrame(Sender: TObject; var AComponentClass: TComponentClass);
@@ -443,9 +443,6 @@ type
       Button: TMouseButton; Shift: TShiftstate; X, Y: Integer);
     procedure OnSrcNoteBookMouseLink(
       Sender: TObject; X, Y: Integer; var AllowMouseLink: Boolean);
-    function OnSrcNoteBookGetIndent(Sender: TObject; SrcEditor: TSourceEditor;
-      LogCaret, OldLogCaret: TPoint; FirstLinePos, LastLinePos: Integer;
-      Reason: TSynEditorCommand; SetIndentProc: TSynBeautifierSetIndentProc): Boolean;
     procedure OnSrcNotebookDeleteLastJumPoint(Sender: TObject);
     procedure OnSrcNotebookEditorActived(Sender: TObject);
     procedure OnSrcNotebookEditorPlaceBookmark(Sender: TObject; var Mark: TSynEditMark);
@@ -812,7 +809,7 @@ type
     procedure GetCurrentUnit(out ActiveSourceEditor: TSourceEditor;
                              out ActiveUnitInfo: TUnitInfo); override;
     procedure GetDesignerUnit(ADesigner: TDesigner;
-          var ActiveSourceEditor: TSourceEditor; var ActiveUnitInfo: TUnitInfo); override;
+          out ActiveSourceEditor: TSourceEditor; out ActiveUnitInfo: TUnitInfo); override;
     function GetProjectFileForProjectEditor(AEditor: TSourceEditorInterface): TLazProjectFile; override;
     function GetDesignerForProjectEditor(AEditor: TSourceEditorInterface;
                               LoadForm: boolean): TIDesigner; override;
@@ -823,11 +820,11 @@ type
     function GetProjectFileWithRootComponent(AComponent: TComponent): TLazProjectFile; override;
     function GetProjectFileWithDesigner(ADesigner: TIDesigner): TLazProjectFile; override;
     procedure GetObjectInspectorUnit(
-          var ActiveSourceEditor: TSourceEditor; var ActiveUnitInfo: TUnitInfo); override;
+          out ActiveSourceEditor: TSourceEditor; out ActiveUnitInfo: TUnitInfo); override;
     procedure GetUnitWithForm(AForm: TCustomForm;
-          var ActiveSourceEditor: TSourceEditor; var ActiveUnitInfo: TUnitInfo); override;
+          out ActiveSourceEditor: TSourceEditor; out ActiveUnitInfo: TUnitInfo); override;
     procedure GetUnitWithPersistent(APersistent: TPersistent;
-          var ActiveSourceEditor: TSourceEditor; var ActiveUnitInfo: TUnitInfo); override;
+          out ActiveSourceEditor: TSourceEditor; out ActiveUnitInfo: TUnitInfo); override;
     function GetAncestorUnit(AnUnitInfo: TUnitInfo): TUnitInfo;
     function GetAncestorLookupRoot(AnUnitInfo: TUnitInfo): TComponent;
     procedure UpdateSaveMenuItemsAndButtons(UpdateSaveAll: boolean); override;
@@ -2178,7 +2175,6 @@ begin
   SourceEditorManager.OnCloseClicked := @OnSrcNotebookFileClose;
   SourceEditorManager.OnClickLink := @OnSrcNoteBookClickLink;
   SourceEditorManager.OnMouseLink := @OnSrcNoteBookMouseLink;
-  SourceEditorManager.OnGetIndent := @OnSrcNoteBookGetIndent;
   SourceEditorManager.OnCurrentCodeBufferChanged:=@OnSrcNotebookCurCodeBufferChanged;
   SourceEditorManager.OnDeleteLastJumpPoint := @OnSrcNotebookDeleteLastJumPoint;
   SourceEditorManager.RegisterChangeEvent(semEditorActivate, @OnSrcNotebookEditorActived);
@@ -7801,14 +7797,13 @@ begin
     ActiveUnitInfo := Project1.UnitWithEditorComponent(ActiveSourceEditor);
 end;
 
-procedure TMainIDE.GetDesignerUnit(ADesigner: TDesigner;
-  var ActiveSourceEditor: TSourceEditor; var ActiveUnitInfo: TUnitInfo);
+procedure TMainIDE.GetDesignerUnit(ADesigner: TDesigner; out
+  ActiveSourceEditor: TSourceEditor; out ActiveUnitInfo: TUnitInfo);
 begin
+  ActiveSourceEditor:=nil;
+  ActiveUnitInfo:=nil;
   if ADesigner<>nil then begin
     GetUnitWithForm(ADesigner.Form,ActiveSourceEditor,ActiveUnitInfo);
-  end else begin
-    ActiveSourceEditor:=nil;
-    ActiveUnitInfo:=nil;
   end;
 end;
 
@@ -7845,8 +7840,8 @@ begin
     Result:=nil;
 end;
 
-procedure TMainIDE.GetObjectInspectorUnit(
-  var ActiveSourceEditor: TSourceEditor; var ActiveUnitInfo: TUnitInfo);
+procedure TMainIDE.GetObjectInspectorUnit(out
+  ActiveSourceEditor: TSourceEditor; out ActiveUnitInfo: TUnitInfo);
 begin
   ActiveSourceEditor:=nil;
   ActiveUnitInfo:=nil;
@@ -7857,11 +7852,13 @@ begin
     ActiveSourceEditor,ActiveUnitInfo);
 end;
 
-procedure TMainIDE.GetUnitWithForm(AForm: TCustomForm;
-  var ActiveSourceEditor: TSourceEditor; var ActiveUnitInfo: TUnitInfo);
+procedure TMainIDE.GetUnitWithForm(AForm: TCustomForm; out
+  ActiveSourceEditor: TSourceEditor; out ActiveUnitInfo: TUnitInfo);
 var
   AComponent: TComponent;
 begin
+  ActiveSourceEditor:=nil;
+  ActiveUnitInfo:=nil;
   if AForm<>nil then begin
     if (AForm.Designer=nil) then
       RaiseException('TMainIDE.GetUnitWithForm AForm.Designer');
@@ -7869,15 +7866,14 @@ begin
     if AComponent=nil then
       RaiseException('TMainIDE.GetUnitWithForm AComponent=nil');
     GetUnitWithPersistent(AComponent,ActiveSourceEditor,ActiveUnitInfo);
-  end else begin
-    ActiveSourceEditor:=nil;
-    ActiveUnitInfo:=nil;
   end;
 end;
 
-procedure TMainIDE.GetUnitWithPersistent(APersistent: TPersistent;
-  var ActiveSourceEditor: TSourceEditor; var ActiveUnitInfo: TUnitInfo);
+procedure TMainIDE.GetUnitWithPersistent(APersistent: TPersistent; out
+  ActiveSourceEditor: TSourceEditor; out ActiveUnitInfo: TUnitInfo);
 begin
+  ActiveSourceEditor:=nil;
+  ActiveUnitInfo:=nil;
   if (APersistent<>nil) and (Project1<>nil) then begin
     ActiveUnitInfo:=Project1.FirstUnitWithComponent;
     while ActiveUnitInfo<>nil do begin
@@ -7889,8 +7885,6 @@ begin
       ActiveUnitInfo:=ActiveUnitInfo.NextUnitWithComponent;
     end;
   end;
-  ActiveSourceEditor:=nil;
-  ActiveUnitInfo:=nil;
 end;
 
 function TMainIDE.DoCheckFilesOnDisk(Instantaneous: boolean): TModalResult;
@@ -11224,14 +11218,6 @@ begin
   end;
   AllowMouseLink := CodeToolBoss.FindDeclaration(
     ActiveUnitInfo.Source,X,Y,NewSource,NewX,NewY,NewTopLine);
-end;
-
-function TMainIDE.OnSrcNoteBookGetIndent(Sender: TObject;
-  SrcEditor: TSourceEditor; LogCaret, OldLogCaret: TPoint;
-  FirstLinePos, LastLinePos: Integer; Reason: TSynEditorCommand;
-  SetIndentProc: TSynBeautifierSetIndentProc): Boolean;
-begin
-  Result := False;
 end;
 
 procedure TMainIDE.OnSrcNotebookReadOnlyChanged(Sender: TObject);
