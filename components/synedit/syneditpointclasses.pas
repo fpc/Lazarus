@@ -226,11 +226,13 @@ type
     function  GetBytePos: Integer;
     function  GetBytePosOffset: Integer;
     function  GetCharPos: Integer;
+    function GetFullLogicalPos: TLogCaretPoint;
     function  GetLineBytePos: TPoint;
     function  GetLineCharPos: TPoint;
     procedure SetBytePos(AValue: Integer);
     procedure SetBytePosOffset(AValue: Integer);
     procedure SetCharPos(AValue: Integer);
+    procedure SetFullLogicalPos(AValue: TLogCaretPoint);
     procedure SetLineBytePos(AValue: TPoint);
     procedure SetLineCharPos(AValue: TPoint);
     procedure SetLinePos(AValue: Integer);
@@ -262,6 +264,7 @@ type
     property BytePos: Integer read GetBytePos write SetBytePos;
     property BytePosOffset: Integer read GetBytePosOffset write SetBytePosOffset;
     property LineBytePos: TPoint read GetLineBytePos write SetLineBytePos;
+    property FullLogicalPos: TLogCaretPoint read GetFullLogicalPos write SetFullLogicalPos;
 
     property LineText: string read GetLineText write SetLineText;
   end;
@@ -292,6 +295,7 @@ type
 
     function  GetOldLineCharPos: TPoint;
     function  GetOldLineBytePos: TPoint;
+    function  GetOldFullLogicalPos: TLogCaretPoint;
 
     procedure SetAllowPastEOL(const AValue: Boolean);
     procedure SetSkipTabs(const AValue: Boolean);
@@ -330,6 +334,7 @@ type
     property OldCharPos: Integer read FOldCharPos;
     property OldLineCharPos: TPoint read GetOldLineCharPos;
     property OldLineBytePos: TPoint read GetOldLineBytePos;
+    property OldFullLogicalPos: TLogCaretPoint read GetOldFullLogicalPos;
 
     property AdjustToNextChar: Boolean read FAdjustToNextChar write FAdjustToNextChar; deprecated;
     property SkipTabs: Boolean read FSkipTabs write SetSkipTabs;
@@ -610,6 +615,14 @@ begin
   Result := FCharPos;
 end;
 
+function TSynEditBaseCaret.GetFullLogicalPos: TLogCaretPoint;
+begin
+  ValidateBytePos;
+  Result.X := FLinePos;
+  Result.Y := FBytePos;
+  Result.Offs := FBytePosOffset;
+end;
+
 function TSynEditBaseCaret.GetLineBytePos: TPoint;
 begin
   ValidateBytePos;
@@ -636,6 +649,11 @@ end;
 procedure TSynEditBaseCaret.SetCharPos(AValue: Integer);
 begin
   InternalSetLineCharPos(FLinePos, AValue, [scuChangedX]);
+end;
+
+procedure TSynEditBaseCaret.SetFullLogicalPos(AValue: TLogCaretPoint);
+begin
+  InternalSetLineByterPos(AValue.y, AValue.x, AValue.Offs, [scuChangedX, scuChangedY]);
 end;
 
 procedure TSynEditBaseCaret.SetLineBytePos(AValue: TPoint);
@@ -1235,6 +1253,12 @@ end;
 function TSynEditCaret.GetOldLineBytePos: TPoint;
 begin
   Result := FLines.PhysicalToLogicalPos(OldLineCharPos);
+end;
+
+function TSynEditCaret.GetOldFullLogicalPos: TLogCaretPoint;
+begin
+  Result.Y := FOldLinePos;
+  Result.X := FLines.LogPhysConvertor.PhysicalToLogical(ToIdx(FOldLinePos), FOldCharPos, Result.Offs);
 end;
 
 procedure TSynEditCaret.SetAllowPastEOL(const AValue: Boolean);
@@ -2722,15 +2746,15 @@ begin
   am := ACanvas.AntialiasingMode;
   FSavePen.Assign(ACanvas.Pen);
 
-  l := Left + Width div 2;
-  ACanvas.MoveTo(l, Top);
+  l := X + W div 2;
+  ACanvas.MoveTo(l, Y);
   ACanvas.Pen.Mode := pmNotXOR;
   ACanvas.Pen.Style := psSolid;
   ACanvas.Pen.Color := FColor;
   ACanvas.AntialiasingMode := amOff;
   ACanvas.pen.EndCap := pecFlat;
   ACanvas.pen.Width := Width;
-  ACanvas.LineTo(l, Top+Height);
+  ACanvas.LineTo(l, Y+H);
 
   ACanvas.Pen.Assign(FSavePen);
   ACanvas.AntialiasingMode := am;
