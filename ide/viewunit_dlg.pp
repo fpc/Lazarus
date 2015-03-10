@@ -40,9 +40,9 @@ unit ViewUnit_Dlg;
 interface
 
 uses
-  SysUtils, Classes, Math, Controls, Forms, Dialogs, Buttons, StdCtrls,
-  LazarusIdeStrConsts, IDEProcs, CustomFormEditor, LCLType, LCLIntf, LMessages,
-  ExtCtrls, ButtonPanel, Menus, StrUtils, AVL_Tree, contnrs, ImgList, ComCtrls,
+  SysUtils, Classes, Controls, Forms, Dialogs, Buttons, StdCtrls,
+  LazarusIdeStrConsts, IDEProcs, CustomFormEditor, LCLType, LCLIntf,
+  ExtCtrls, ButtonPanel, Menus, AVL_Tree, ImgList, ComCtrls,
   PackageDefs, IDEWindowIntf, IDEHelpIntf, IDEImagesIntf, ListFilterEdit,
   CodeToolsStructs, CodeToolManager, FileProcs, lazutf8sysutils, LazFileUtils,
   LazLogger;
@@ -112,9 +112,9 @@ type
     SortAlphabeticallySpeedButton: TSpeedButton;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
-    procedure ListboxDrawItem(Control: TWinControl; Index: Integer;
-      ARect: TRect; State: TOwnerDrawState);
-    procedure OnIdle(Sender: TObject; var Done: Boolean);
+    procedure ListboxDrawItem({%H-}Control: TWinControl; Index: Integer;
+      ARect: TRect; {%H-}State: TOwnerDrawState);
+    procedure OnIdle(Sender: TObject; var {%H-}Done: Boolean);
     procedure SortAlphabeticallySpeedButtonClick(Sender: TObject);
     procedure OKButtonClick(Sender :TObject);
     procedure HelpButtonClick(Sender: TObject);

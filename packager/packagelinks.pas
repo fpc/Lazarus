@@ -126,12 +126,8 @@ type
     );
   TPkgLinksStates = set of TPkgLinksState;
   
-  TDependencyOwnerGetPkgFilename = function(PkgLinks: TPackageLinks;
-                                 Dependency: TPkgDependency): boolean of object;
-
   TPackageLinks = class
   private
-    FDependencyOwnerGetPkgFilename: TDependencyOwnerGetPkgFilename;
     FGlobalLinks: TAvgLvlTree; // tree of global TPackageLink sorted for ID
     FChangeStamp: integer;
     FQueueSaveUserLinks: boolean;
@@ -191,9 +187,6 @@ type
   public
     property Modified: boolean read GetModified write SetModified;
     property ChangeStamp: integer read FChangeStamp;
-    property DependencyOwnerGetPkgFilename: TDependencyOwnerGetPkgFilename
-                                           read FDependencyOwnerGetPkgFilename
-                                           write FDependencyOwnerGetPkgFilename;
     property QueueSaveUserLinks: boolean read FQueueSaveUserLinks write SetQueueSaveUserLinks;
   end;
   
@@ -1015,11 +1008,6 @@ begin
     //debugln('TPackageLinks.FindLinkWithDependency A ',Dependency.AsString);
     // WriteLinkTree(FGlobalLinks);
   //end;
-  // finally try the history lists of the Dependency Owner (Project/Package)
-  if (Result=nil) and (Dependency.Owner<>nil)
-  and Assigned(DependencyOwnerGetPkgFilename)
-  and DependencyOwnerGetPkgFilename(Self,Dependency) then
-    Result:=FindLinkWithDependencyInTree(FUserLinksSortID,Dependency,IgnoreFiles);
 end;
 
 function TPackageLinks.FindLinkWithPackageID(APackageID: TLazPackageID

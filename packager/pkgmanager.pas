@@ -88,7 +88,7 @@ type
     function OnPackageEditorCreateFpmakeFile(Sender: TObject;
                                            APackage: TLazPackage): TModalResult;
     function OnPackageEditorDeleteAmbiguousFiles(Sender: TObject;
-      APackage: TLazPackage; const Filename: string): TModalResult;
+      {%H-}APackage: TLazPackage; const Filename: string): TModalResult;
     procedure OnPackageEditorDragDropTreeView(Sender, Source: TObject;
       X, Y: Integer);
     function OnPackageEditorDragOverTreeView(Sender, Source: TObject;
@@ -159,11 +159,7 @@ type
     procedure OnOpenPackageForCurrentSrcEditFile(Sender: TObject);
 
     // LCL
-    procedure OnApplicationIdle(Sender: TObject; var Done: Boolean);
-
-    // package links
-    function PkgLinksDependencyOwnerGetPkgFilename(PkgLinks: TPackageLinks;
-      Dependency: TPkgDependency): boolean;
+    procedure OnApplicationIdle(Sender: TObject; var {%H-}Done: Boolean);
 
     // misc
     procedure GetDependencyOwnerDescription(Dependency: TPkgDependency;
@@ -525,8 +521,13 @@ end;
 
 procedure TPkgManager.OnCheckInstallPackageList(PkgIDList: TObjectList;
   RemoveConflicts: boolean; out Ok: boolean);
+var
+  Flags: TPkgInstallInIDEFlags;
 begin
-  Ok:=CheckInstallPackageList(PkgIDList);
+  Flags:=[];
+  if RemoveConflicts then
+    Include(Flags,piiifRemoveConflicts);
+  Ok:=CheckInstallPackageList(PkgIDList,Flags);
   if Ok then
     SaveAutoInstallDependencies;
 end;
@@ -1041,14 +1042,6 @@ function TPkgManager.PackageGraphExplorerUninstallPackage(Sender: TObject;
   APackage: TLazPackage): TModalResult;
 begin
   Result:=DoUninstallPackage(APackage,[],false);
-end;
-
-function TPkgManager.PkgLinksDependencyOwnerGetPkgFilename(
-  PkgLinks: TPackageLinks; Dependency: TPkgDependency): boolean;
-begin
-  Result:=false;
-  // TODO search in Project/Package history list of dependencies
-  
 end;
 
 procedure TPkgManager.MainIDEitmConfigCustomCompsClicked(Sender: TObject);
@@ -2926,7 +2919,6 @@ begin
   // package links
   PkgLinks:=TPackageLinks.Create;
   PkgLinks.UpdateAll;
-  PkgLinks.DependencyOwnerGetPkgFilename:=@PkgLinksDependencyOwnerGetPkgFilename;
 
   // package graph
   PackageGraph:=TLazPackageGraph.Create;

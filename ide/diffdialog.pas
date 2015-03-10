@@ -39,7 +39,7 @@ unit DiffDialog;
 interface
 
 uses
-  Classes, SysUtils, Math, Forms, Controls, Buttons, StdCtrls, FileUtil,
+  Classes, SysUtils, Forms, Controls, Buttons, StdCtrls, FileUtil,
   lazutf8classes, LazarusIDEStrConsts, EditorOptions, LCLType, IDEWindowIntf,
   IDEHelpIntf, InputHistory, DiffPatch, ExtCtrls, Dialogs, ComCtrls, SynEdit,
   SynHighlighterDiff, SourceEditor;
@@ -134,7 +134,7 @@ type
     procedure SetupComponents;
     procedure UpdateDiff;
     procedure SetIdleConnected(const AValue: boolean);
-    procedure OnIdle(Sender: TObject; var Done: Boolean);
+    procedure OnIdle(Sender: TObject; var {%H-}Done: Boolean);
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
