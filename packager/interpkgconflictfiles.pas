@@ -60,7 +60,7 @@ uses
   ProjectIntf, CompOptsIntf, IDEWindowIntf, LazIDEIntf, IDEImagesIntf,
   IDEMsgIntf, IDEExternToolIntf,
   // IDE
-  LazarusIDEStrConsts, CompilerOptions, EnvironmentOpts, IDEProcs, DialogProcs,
+  CompilerOptions, EnvironmentOpts, IDEProcs, DialogProcs,
   TransferMacros, LazConf, IDECmdLine, PackageDefs, PackageSystem, InputHistory;
 
 type
@@ -112,12 +112,12 @@ type
     IDEDialogLayoutStorage1: TIDEDialogLayoutStorage;
     ImageList1: TImageList;
     procedure ConflictsTreeViewAdvancedCustomDrawItem(Sender: TCustomTreeView;
-      Node: TTreeNode; State: TCustomDrawState; Stage: TCustomDrawStage;
-      var PaintImages, DefaultDraw: Boolean);
-    procedure ConflictsTreeViewMouseDown(Sender: TObject; Button: TMouseButton;
-      Shift: TShiftState; X, Y: Integer);
+      Node: TTreeNode; {%H-}State: TCustomDrawState; Stage: TCustomDrawStage;
+      var {%H-}PaintImages, {%H-}DefaultDraw: Boolean);
+    procedure ConflictsTreeViewMouseDown(Sender: TObject; {%H-}Button: TMouseButton;
+      {%H-}Shift: TShiftState; X, Y: Integer);
     procedure DeleteSelectedFilesButtonClick(Sender: TObject);
-    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
+    procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure OkButtonClick(Sender: TObject);
   private

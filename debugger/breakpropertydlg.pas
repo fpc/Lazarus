@@ -54,10 +54,10 @@ type
     rgWatchScope: TPanel;
     procedure btnHelpClick(Sender: TObject);
     procedure btnOKClick(Sender: TObject);
-    procedure BreakPointRemove(const ASender: TIDEBreakPoints;
+    procedure BreakPointRemove(const {%H-}ASender: TIDEBreakPoints;
       const ABreakpoint: TIDEBreakPoint);
-    procedure BreakPointUpdate(const ASender: TIDEBreakPoints;
-      const ABreakpoint: TIDEBreakPoint);
+    procedure BreakPointUpdate(const {%H-}ASender: TIDEBreakPoints;
+      const {%H-}ABreakpoint: TIDEBreakPoint);
     procedure chkDisableGroupsChange(Sender: TObject);
     procedure chkEnableGroupsChange(Sender: TObject);
     procedure chkEvalExpressionChange(Sender: TObject);

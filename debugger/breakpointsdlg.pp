@@ -114,7 +114,7 @@ type
     procedure BreakpointsDlgCREATE(Sender: TObject);
     procedure lvBreakPointsClick(Sender: TObject);
     procedure lvBreakPointsDBLCLICK(Sender: TObject);
-    procedure lvBreakPointsSelectItem(Sender: TObject; Item: TListItem; Selected: Boolean);
+    procedure lvBreakPointsSelectItem(Sender: TObject; {%H-}Item: TListItem; {%H-}Selected: Boolean);
     procedure mnuPopupPopup(Sender: TObject);
     procedure popDeleteAllSameSourceCLICK(Sender: TObject);
     procedure popDisableAllSameSourceCLICK(Sender: TObject);
@@ -129,11 +129,11 @@ type
     FBaseDirectory: string;
     FStates: TBreakPointsDlgStates;
     FLockActionUpdate: Integer;
-    procedure BreakPointAdd(const ASender: TIDEBreakPoints;
+    procedure BreakPointAdd(const {%H-}ASender: TIDEBreakPoints;
                             const ABreakpoint: TIDEBreakPoint);
     procedure BreakPointUpdate(const ASender: TIDEBreakPoints;
                                const ABreakpoint: TIDEBreakPoint);
-    procedure BreakPointRemove(const ASender: TIDEBreakPoints;
+    procedure BreakPointRemove(const {%H-}ASender: TIDEBreakPoints;
                                const ABreakpoint: TIDEBreakPoint);
     procedure SetBaseDirectory(const AValue: string);
     procedure popSetGroupItemClick(Sender: TObject);

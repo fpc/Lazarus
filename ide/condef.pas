@@ -85,12 +85,12 @@ type
     procedure ListBoxClick(Sender: TObject);
     procedure ListBoxDblClick(Sender: TObject);
     procedure RemoveBtnClick(Sender: TObject);
-    procedure ListBoxKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure ListBoxKeyDown(Sender: TObject; var Key: Word; {%H-}Shift: TShiftState);
     procedure FormShow(Sender: TObject);
   private
     StoredChoice, StoredFirst, StoredSecond: string;
     FS: string;
-    function SplitActiveRow(var aFirst, aSecond: string): Boolean;
+    function SplitActiveRow(out aFirst, aSecond: string): Boolean;
     procedure DeleteSelected;
     procedure UpdateButtons;
     function IsChanged: Boolean;
@@ -277,7 +277,7 @@ begin
   ListBoxClick(Nil);
 end;
 
-function TCondForm.SplitActiveRow(var aFirst, aSecond: string): Boolean;
+function TCondForm.SplitActiveRow(out aFirst, aSecond: string): Boolean;
 var
   i: integer;
   Line: string;

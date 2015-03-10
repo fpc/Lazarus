@@ -69,14 +69,14 @@ type
     tbModify: TToolButton;
     tbEvaluate: TToolButton;
     procedure cmbNewValueKeyDown(Sender: TObject; var Key: Word;
-      Shift: TShiftState);
-    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
+      {%H-}Shift: TShiftState);
+    procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure FormShow(Sender: TObject);
     procedure cmbExpressionChange(Sender: TObject);
     procedure cmbExpressionKeyDown(Sender: TObject; var Key: Word;
-      Shift: TShiftState);
+      {%H-}Shift: TShiftState);
     procedure MenuItem1Click(Sender: TObject);
     procedure MenuItem2Click(Sender: TObject);
     procedure MenuItem3Click(Sender: TObject);
@@ -154,6 +154,7 @@ begin
   Opts := [];
   if chkTypeCast.Checked then
     Opts := [defClassAutoCast];
+  R:='';
   if DebugBoss.Evaluate(S, R, DBGType, Opts)
   then begin
     if cmbExpression.Items.IndexOf(S) = -1
@@ -263,6 +264,7 @@ begin
   then cmbNewValue.Items.Insert(0, V);
 
   DBGType:=nil;
+  R:='';
   if not DebugBoss.Evaluate(S, R, DBGType) then Exit;
   FreeAndNil(DBGType);
   if fHistDirection<>EHDNone then

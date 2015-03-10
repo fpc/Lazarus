@@ -40,7 +40,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Buttons, LResources, StdCtrls, ComCtrls,
-  FileCtrl, Dialogs,
+  Dialogs,
   IDEWindowIntf, LazarusIDEStrConsts, Project, PackageDefs, PackageSystem;
 
 type
@@ -51,7 +51,7 @@ type
     NoteLabel: TLabel;
     DependencyListView: TListView;
     procedure BrokenDependenciesDialogClose(Sender: TObject;
-      var CloseAction: TCloseAction);
+      var {%H-}CloseAction: TCloseAction);
     procedure BrokenDependenciesDialogResize(Sender: TObject);
   private
     fButtons: TFPList; // list of TBitBtn

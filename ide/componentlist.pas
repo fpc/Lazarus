@@ -77,7 +77,7 @@ type
     procedure TreeFilterEdAfterFilter(Sender: TObject);
     procedure PageControlChange(Sender: TObject);
     procedure TreeKeyPress(Sender: TObject; var Key: char);
-    procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure FormKeyDown(Sender: TObject; var Key: Word; {%H-}Shift: TShiftState);
   private
     PrevPageIndex: Integer;
     PrevChangeStamp: Integer;

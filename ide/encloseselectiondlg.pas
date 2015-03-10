@@ -163,8 +163,6 @@ procedure EncloseTextSelection(const Template: string; Source: TStrings;
   SelectionStart, SelectionEnd: TPoint;
   Indent: integer;
   var NewSelection: string; var NewCursor: TPoint);
-const
-  TemplateBaseIndent = 2;
 var
   TemplateLen: Integer;
   TemplatePos: Integer;

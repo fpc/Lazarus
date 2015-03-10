@@ -37,7 +37,7 @@ uses
   // synedit, codetools
   SynRegExpr, SourceLog, KeywordFuncLists, BasicCodeTools,
   // IDEIntf
-  IDEWindowIntf, LazIDEIntf, SrcEditorIntf, IDEDialogs, MainIntf,
+  IDEWindowIntf, LazIDEIntf, SrcEditorIntf, IDEDialogs,
   // ide
   LazarusIDEStrConsts, InputHistory, IDEProcs, SearchResultView, Project;
 
@@ -54,7 +54,7 @@ type
     lblProgress: TLABEL;
     lblSearchText: TLABEL;
     Panel2: TPANEL;
-    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
+    procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure FormShow(Sender: TObject);
     procedure OnAddMatch(const Filename: string; const StartPos, EndPos: TPoint;
                          const Lines: string);

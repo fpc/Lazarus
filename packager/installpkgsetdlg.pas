@@ -43,7 +43,7 @@ uses
   LazFileUtils, TreeFilterEdit, PackageIntf, IDEImagesIntf, IDEHelpIntf,
   IDEDialogs, IDEWindowIntf, LazarusIDEStrConsts, EnvironmentOpts, InputHistory,
   LazConf, IDEProcs, PackageDefs, PackageSystem, PackageLinks,
-  IDEContextHelpEdit, LPKCache;
+  LPKCache;
 
 type
   TOnCheckInstallPackageList =
@@ -73,16 +73,16 @@ type
     InstalledFilterEdit: TTreeFilterEdit;
     UninstallButton: TBitBtn;
     procedure AddToInstallButtonClick(Sender: TObject);
-    function FilterEditGetImageIndex(Str: String; Data: TObject;
-      var AIsEnabled: Boolean): Integer;
-    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
+    function FilterEditGetImageIndex({%H-}Str: String; {%H-}Data: TObject;
+      var {%H-}AIsEnabled: Boolean): Integer;
+    procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure InstallTreeViewKeyPress(Sender: TObject; var Key: char);
     procedure LPKParsingTimerTimer(Sender: TObject);
     procedure OnAllLPKParsed(Sender: TObject);
-    procedure OnIdle(Sender: TObject; var Done: Boolean);
+    procedure OnIdle(Sender: TObject; var {%H-}Done: Boolean);
     procedure TreeViewAdvancedCustomDrawItem(Sender: TCustomTreeView;
-      Node: TTreeNode; State: TCustomDrawState; Stage: TCustomDrawStage;
-      var PaintImages, DefaultDraw: Boolean);
+      Node: TTreeNode; {%H-}State: TCustomDrawState; Stage: TCustomDrawStage;
+      var PaintImages, {%H-}DefaultDraw: Boolean);
     procedure AvailableTreeViewDblClick(Sender: TObject);
     procedure AvailableTreeViewKeyPress(Sender: TObject; var Key: char);
     procedure AvailableTreeViewSelectionChanged(Sender: TObject);

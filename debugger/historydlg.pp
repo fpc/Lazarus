@@ -31,7 +31,7 @@ type
     ToolButton4: TToolButton;
     tbImport: TToolButton;
     procedure lvHistoryDblClick(Sender: TObject);
-    procedure lvHistorySelectItem(Sender: TObject; Item: TListItem; Selected: Boolean);
+    procedure lvHistorySelectItem(Sender: TObject; {%H-}Item: TListItem; {%H-}Selected: Boolean);
     procedure tbClearClick(Sender: TObject);
     procedure tbHistClick(Sender: TObject);
     procedure tbHistorySelectedClick(Sender: TObject);

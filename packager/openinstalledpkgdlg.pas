@@ -45,12 +45,12 @@ type
     PkgListView: TListView;
     HintMemo: TMemo;
     Splitter1: TSplitter;
-    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
+    procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure HelpButtonClick(Sender: TObject);
     procedure OpenButtonClick(Sender: TObject);
     procedure PkgListViewDblClick(Sender: TObject);
-    procedure PkgListViewSelectItem(Sender: TObject; Item: TListItem; Selected: Boolean);
+    procedure PkgListViewSelectItem(Sender: TObject; {%H-}Item: TListItem; {%H-}Selected: Boolean);
   private
   public
     Package: TLazPackage;

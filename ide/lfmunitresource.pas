@@ -32,7 +32,7 @@ interface
 uses
   Classes, SysUtils,
   // packages
-  LCLMemManager, LResources, Forms, CodeCache, CodeToolManager,
+  LResources, Forms, CodeCache, CodeToolManager,
   // IDEIntf
   UnitResources, SrcEditorIntf, LazFileCache, LazFileUtils, AvgLvlTree,
   // IDE

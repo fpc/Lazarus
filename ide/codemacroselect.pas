@@ -46,9 +46,9 @@ type
     DescriptionMemo: TMemo;
     MacrosGroupBox: TGroupBox;
     DescriptionGroupBox: TGroupBox;
-    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
+    procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
-    procedure MacrosListBoxSelectionChange(Sender: TObject; User: boolean);
+    procedure MacrosListBoxSelectionChange(Sender: TObject; {%H-}User: boolean);
   private
     FSelected: TIDECodeMacro;
     procedure FillMacrosListbox;

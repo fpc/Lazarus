@@ -37,10 +37,10 @@ uses
   // synedit
   SynEdit, SynHighlighterPas, SynEditAutoComplete, SynRegExpr,
   // codetools
-  CodeToolManager, CodeAtom, CodeCache, KeywordFuncLists, BasicCodeTools,
+  CodeToolManager, CodeCache, KeywordFuncLists, BasicCodeTools,
   PascalParserTool,
   // IDEIntf
-  IDECommands, TextTools, SrcEditorIntf, MenuIntf, IDEWindowIntf, LazIDEIntf,
+  IDECommands, SrcEditorIntf, MenuIntf, IDEWindowIntf, LazIDEIntf,
   IDEHelpIntf, IDEDialogs,
   // IDE
   IDEProcs, InputHistory, LazarusIDEStrConsts, EditorOptions, CodeMacroSelect,
@@ -93,7 +93,7 @@ type
     procedure DeleteButtonClick(Sender: TObject);
     procedure RenameButtonClick(Sender: TObject);
     procedure FilenameButtonClick(Sender: TObject);
-    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
+    procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure HelpButtonClick(Sender: TObject);
     procedure InsertMacroButtonClick(Sender: TObject);
@@ -102,7 +102,7 @@ type
     procedure OnCutMenuItem(Sender: TObject);
     procedure OnInsertMacroMenuItem(Sender: TObject);
     procedure OnPasteMenuItem(Sender: TObject);
-    procedure TemplateListBoxSelectionChange(Sender: TObject; User: boolean);
+    procedure TemplateListBoxSelectionChange(Sender: TObject; {%H-}User: boolean);
     procedure UseMacrosCheckBoxChange(Sender: TObject);
   private
     SynAutoComplete: TSynEditAutoComplete;
@@ -159,46 +159,46 @@ function EditCodeTemplate(ASynAutoComplete: TSynEditAutoComplete;
 procedure CreateStandardCodeMacros;
 
 // standard code macros
-function CodeMacroUpper(const Parameter: string; InteractiveValue: TPersistent;
-                        SrcEdit: TSourceEditorInterface;
-                        var Value, ErrorMsg: string): boolean;
-function CodeMacroLower(const Parameter: string; InteractiveValue: TPersistent;
-                        SrcEdit: TSourceEditorInterface;
-                        var Value, ErrorMsg: string): boolean;
-function CodeMacroPaste(const Parameter: string; InteractiveValue: TPersistent;
-                        SrcEdit: TSourceEditorInterface;
-                        var Value, ErrorMsg: string): boolean;
+function CodeMacroUpper(const Parameter: string; {%H-}InteractiveValue: TPersistent;
+                        {%H-}SrcEdit: TSourceEditorInterface;
+                        var Value, {%H-}ErrorMsg: string): boolean;
+function CodeMacroLower(const Parameter: string; {%H-}InteractiveValue: TPersistent;
+                        {%H-}SrcEdit: TSourceEditorInterface;
+                        var Value, {%H-}ErrorMsg: string): boolean;
+function CodeMacroPaste(const {%H-}Parameter: string; {%H-}InteractiveValue: TPersistent;
+                        {%H-}SrcEdit: TSourceEditorInterface;
+                        var Value, {%H-}ErrorMsg: string): boolean;
 function CodeMacroProcedureHead(const Parameter: string;
+                        {%H-}InteractiveValue: TPersistent;
+                        SrcEdit: TSourceEditorInterface;
+                        var Value, ErrorMsg: string): boolean;
+function CodeMacroProcedureName(const {%H-}Parameter: string;
                         InteractiveValue: TPersistent;
                         SrcEdit: TSourceEditorInterface;
                         var Value, ErrorMsg: string): boolean;
-function CodeMacroProcedureName(const Parameter: string;
-                        InteractiveValue: TPersistent;
+function CodeMacroDate(const Parameter: string; {%H-}InteractiveValue: TPersistent;
+                        {%H-}SrcEdit: TSourceEditorInterface;
+                        var Value, {%H-}ErrorMsg: string): boolean;
+function CodeMacroTime(const Parameter: string; {%H-}InteractiveValue: TPersistent;
+                        {%H-}SrcEdit: TSourceEditorInterface;
+                        var Value, {%H-}ErrorMsg: string): boolean;
+function CodeMacroDateTime(const Parameter: string; {%H-}InteractiveValue: TPersistent;
+                        {%H-}SrcEdit: TSourceEditorInterface;
+                        var Value, {%H-}ErrorMsg: string): boolean;
+function CodeMacroAddMissingEnd(const {%H-}Parameter: string;
+                        {%H-}InteractiveValue: TPersistent;
                         SrcEdit: TSourceEditorInterface;
-                        var Value, ErrorMsg: string): boolean;
-function CodeMacroDate(const Parameter: string; InteractiveValue: TPersistent;
-                        SrcEdit: TSourceEditorInterface;
-                        var Value, ErrorMsg: string): boolean;
-function CodeMacroTime(const Parameter: string; InteractiveValue: TPersistent;
-                        SrcEdit: TSourceEditorInterface;
-                        var Value, ErrorMsg: string): boolean;
-function CodeMacroDateTime(const Parameter: string; InteractiveValue: TPersistent;
-                        SrcEdit: TSourceEditorInterface;
-                        var Value, ErrorMsg: string): boolean;
-function CodeMacroAddMissingEnd(const Parameter: string;
-                        InteractiveValue: TPersistent;
-                        SrcEdit: TSourceEditorInterface;
-                        var Value, ErrorMsg: string): boolean;
-function CodeMacroOfAll(const Parameter: string; InteractiveValue: TPersistent;
+                        var Value, {%H-}ErrorMsg: string): boolean;
+function CodeMacroOfAll(const {%H-}Parameter: string; {%H-}InteractiveValue: TPersistent;
                         SrcEdit: TSourceEditorInterface;
                         var Value, ErrorMsg: string): boolean;
 function CodeMacroPrevWord(const Parameter: string;
-                        InteractiveValue: TPersistent;
+                        {%H-}InteractiveValue: TPersistent;
                         SrcEdit: TSourceEditorInterface;
-                        var Value, ErrorMsg: string): boolean;
-function CodeMacroWordAtCursor(const Parameter: string; InteractiveValue: TPersistent;
+                        var Value, {%H-}ErrorMsg: string): boolean;
+function CodeMacroWordAtCursor(const {%H-}Parameter: string; {%H-}InteractiveValue: TPersistent;
                         SrcEdit: TSourceEditorInterface;
-                        var Value, ErrorMsg: string): boolean;
+                        var Value, {%H-}ErrorMsg: string): boolean;
 
 const
   CodeTemplatesMenuRootName = 'CodeTemplates';
@@ -640,8 +640,8 @@ begin
 end;
 
 function CodeMacroEditParam(const Parameter: string;
-  InteractiveValue: TPersistent; SrcEdit: TSourceEditorInterface; var Value,
-  ErrorMsg: string; TemplateParser: TIDETemplateParser): boolean;
+  {%H-}InteractiveValue: TPersistent; {%H-}SrcEdit: TSourceEditorInterface; var Value,
+  {%H-}ErrorMsg: string; TemplateParser: TIDETemplateParser): boolean;
 var
   p: TLazTemplateParser;
   temp: TStringList;
@@ -1074,7 +1074,7 @@ begin
     FillCodeTemplateListBox;
     Index := SynAutoComplete.Completions.IndexOf(Token);
     if Index >= 0
-    then Index := TemplateListBox.Items.IndexOfObject(TObject(Pointer(Index)));
+    then Index := TemplateListBox.Items.IndexOfObject(TObject({%H-}Pointer(Index)));
     if Index >= 0
     then TemplateListBox.ItemIndex:=Index;
     
@@ -1197,7 +1197,7 @@ begin
       // Add the index in SynAutoComplete as Object, since both indexes won't
       // be in sync after sorting
       sl.AddObject(SynAutoComplete.Completions[a]
-          +' - "'+SynAutoComplete.CompletionComments[a]+'"', TObject(Pointer(a)));
+          +' - "'+SynAutoComplete.CompletionComments[a]+'"', TObject({%H-}Pointer(a)));
     end;
     sl.Sort;
     TemplateListBox.Items.Assign(sl);

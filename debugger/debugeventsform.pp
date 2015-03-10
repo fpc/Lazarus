@@ -65,7 +65,7 @@ type
     procedure EditCopy1Update(Sender: TObject);
     procedure tvFilteredEventsAdvancedCustomDrawItem(Sender: TCustomTreeView;
       Node: TTreeNode; State: TCustomDrawState; Stage: TCustomDrawStage;
-      var PaintImages, DefaultDraw: Boolean);
+      var {%H-}PaintImages, DefaultDraw: Boolean);
   private
     function GetFilter: TDBGEventCategories;
   private

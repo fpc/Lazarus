@@ -54,14 +54,14 @@ uses
   SynEditLines, SynEditStrConst, SynEditTypes, SynEdit, SynRegExpr,
   SynEditHighlighter, SynEditAutoComplete, SynEditKeyCmds, SynCompletion,
   SynEditMiscClasses, SynEditMarkupHighAll, SynEditMarks,
-  SynBeautifier, LazSynEditText,
-  SynPluginSyncronizedEditBase, SourceSynEditor, SynMacroRecorder,
+  SynBeautifier,
+  SynPluginSyncronizedEditBase, SourceSynEditor,
   SynExportHTML, SynHighlighterPas, SynEditMarkup, SynEditMarkupIfDef,
   // Intf
   SrcEditorIntf, MenuIntf, LazIDEIntf, PackageIntf, IDEHelpIntf, IDEImagesIntf,
   IDEWindowIntf, ProjectIntf, MacroDefIntf,
   // IDE units
-  IDECmdLine, IDEDialogs, LazarusIDEStrConsts, IDECommands, CompOptsIntf,
+  IDECmdLine, IDEDialogs, LazarusIDEStrConsts, IDECommands,
   EditorOptions, EnvironmentOpts, WordCompletion, FindReplaceDialog, IDEProcs,
   IDEOptionDefs, IDEHelpManager, MacroPromptDlg, TransferMacros,
   CodeContextForm, SrcEditHintFrm, etMessagesWnd, etSrcEditMarks, InputHistory,
@@ -252,7 +252,7 @@ type
     procedure EditorMouseWheel(Sender: TObject; Shift: TShiftState;
          WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
     procedure EditorKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
-    procedure EditorStatusChanged(Sender: TObject; Changes: TSynStatusChanges);
+    procedure EditorStatusChanged(Sender: TObject; {%H-}Changes: TSynStatusChanges);
     procedure EditorPaste(Sender: TObject; var AText: String;
          var AMode: TSynSelectionMode; ALogStartPos: TPoint;
          var AnAction: TSynCopyPasteAction);
@@ -261,9 +261,9 @@ type
     procedure EditorEnter(Sender: TObject);
     procedure EditorActivateSyncro(Sender: TObject);
     procedure EditorDeactivateSyncro(Sender: TObject);
-    procedure EditorChangeUpdating(ASender: TObject; AnUpdating: Boolean);
+    procedure EditorChangeUpdating({%H-}ASender: TObject; AnUpdating: Boolean);
     function  EditorHandleMouseAction(AnAction: TSynEditMouseAction;
-                                      var AnInfo: TSynEditMouseActionInfo): Boolean;
+                                      var {%H-}AnInfo: TSynEditMouseActionInfo): Boolean;
     function GetCodeBuffer: TCodeBuffer;
     function GetExecutionLine: integer;
     function GetHasExecutionMarks: Boolean;
@@ -292,7 +292,7 @@ type
     procedure UpdateIfDefNodeStates(Force: Boolean = False);
   protected
     procedure ProcessCommand(Sender: TObject;
-       var Command: TSynEditorCommand; var AChar: TUTF8Char; Data: pointer);
+       var Command: TSynEditorCommand; var AChar: TUTF8Char; {%H-}Data: pointer);
     procedure ProcessUserCommand(Sender: TObject;
        var Command: TSynEditorCommand; var AChar: TUTF8Char; Data: pointer);
     procedure UserCommandProcessed(Sender: TObject;
@@ -306,8 +306,8 @@ type
 
     procedure FocusEditor;// called by TSourceNotebook when the Notebook page
                           // changes so the editor is focused
-    procedure OnGutterClick(Sender: TObject; X, Y, Line: integer;
-         mark: TSynEditMark);
+    procedure OnGutterClick(Sender: TObject; {%H-}X, {%H-}Y, Line: integer;
+         {%H-}Mark: TSynEditMark);
     procedure OnEditorSpecialLineColor(Sender: TObject; Line: integer;
          var Special: boolean; Markup: TSynSelectedColor);
     function RefreshEditorSettings: Boolean;
@@ -474,10 +474,10 @@ type
     procedure CheckActiveWindow;
 
     // debugging
-    procedure DoRequestExecutionMarks(Data: PtrInt);
+    procedure DoRequestExecutionMarks({%H-}Data: PtrInt);
     procedure FillExecutionMarks;
     procedure ClearExecutionMarks;
-    procedure LineInfoNotificationChange(const ASender: TObject; const ASource: String);
+    procedure LineInfoNotificationChange(const {%H-}ASender: TObject; const ASource: String);
     function  SourceToDebugLine(aLinePos: Integer): Integer;
     function  DebugToSourceLine(aLinePos: Integer): Integer;
 
@@ -575,8 +575,8 @@ type
     procedure EncodingClicked(Sender: TObject);
     procedure ExtractProcMenuItemClick(Sender: TObject);
     procedure FindOverloadsMenuItemClick(Sender: TObject);
-    procedure FormMouseUp(Sender: TObject; Button: TMouseButton;
-      Shift: TShiftState; X, Y: Integer);
+    procedure FormMouseUp(Sender: TObject; {%H-}Button: TMouseButton;
+      {%H-}Shift: TShiftState; {%H-}X, {%H-}Y: Integer);
     procedure HighlighterClicked(Sender: TObject);
     procedure InsertCharacter(const C: TUTF8Char);
     procedure InvertAssignmentMenuItemClick(Sender: TObject);
@@ -600,7 +600,7 @@ type
     procedure SrcPopUpMenuPopup(Sender: TObject);
     procedure StatusBarClick(Sender: TObject);
     procedure StatusBarDblClick(Sender: TObject);
-    procedure StatusBarDrawPanel(AStatusBar: TStatusBar; APanel: TStatusPanel;
+    procedure StatusBarDrawPanel({%H-}AStatusBar: TStatusBar; APanel: TStatusPanel;
       const ARect: TRect);
     procedure TabPopUpMenuPopup(Sender: TObject);
   private
@@ -689,20 +689,20 @@ type
     function GetActiveCompletionPlugin: TSourceEditorCompletionPlugin; override;
     function GetCompletionPlugins(Index: integer): TSourceEditorCompletionPlugin; override;
 
-    procedure EditorMouseMove(Sender: TObject; Shift: TShiftstate;
-                              X,Y: Integer);
-    procedure EditorMouseDown(Sender: TObject; Button: TMouseButton;
-                              Shift: TShiftstate; X,Y: Integer);
+    procedure EditorMouseMove(Sender: TObject; {%H-}Shift: TShiftstate;
+                              {%H-}X,{%H-}Y: Integer);
+    procedure EditorMouseDown(Sender: TObject; {%H-}Button: TMouseButton;
+                              {%H-}Shift: TShiftstate; {%H-}X,{%H-}Y: Integer);
     function EditorGetIndent(Sender: TObject; Editor: TObject;
              LogCaret, OldLogCaret: TPoint; FirstLinePos, LastLinePos: Integer;
              Reason: TSynEditorCommand;
              SetIndentProc: TSynBeautifierSetIndentProc): Boolean;
-    procedure EditorKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
-    procedure EditorMouseWheel(Sender: TObject; Shift: TShiftState;
-         WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
+    procedure EditorKeyDown(Sender: TObject; var {%H-}Key: Word; {%H-}Shift: TShiftState);
+    procedure EditorMouseWheel(Sender: TObject; {%H-}Shift: TShiftState;
+         {%H-}WheelDelta: Integer; {%H-}MousePos: TPoint; var {%H-}Handled: Boolean);
 
     procedure NotebookMouseDown(Sender: TObject; Button: TMouseButton;
-          Shift: TShiftState; X,Y: Integer);
+          {%H-}Shift: TShiftState; X,Y: Integer);
     procedure NotebookDragTabMove(Sender, Source: TObject;
                                   OldIndex, NewIndex: Integer; CopyDrag: Boolean;
                                   var Done: Boolean);
@@ -710,8 +710,8 @@ type
                                   OldIndex, NewIndex: Integer; CopyDrag: Boolean;
                                   var Accept: Boolean);
     procedure NotebookDragOver(Sender, Source: TObject;
-                               X,Y: Integer; State: TDragState; var Accept: Boolean);
-    procedure NotebookEndDrag(Sender, Target: TObject; X,Y: Integer);
+                               {%H-}X,{%H-}Y: Integer; State: TDragState; var Accept: Boolean);
+    procedure NotebookEndDrag(Sender, {%H-}Target: TObject; {%H-}X,{%H-}Y: Integer);
 
     procedure OnApplicationDeactivate(Sender: TObject);
     procedure ShowSynEditHint(const MousePos: TPoint);
@@ -731,10 +731,10 @@ type
     procedure MoveEditorNextWindow(Backward: Boolean = False; Copy: Boolean = False);
     procedure CopyEditor(OldPageIndex, NewWindowIndex, NewPageIndex: integer; Focus: Boolean = False);
     procedure ProcessParentCommand(Sender: TObject;
-       var Command: TSynEditorCommand; var AChar: TUTF8Char; Data: pointer;
+       var Command: TSynEditorCommand; var {%H-}AChar: TUTF8Char; {%H-}Data: pointer;
        var Handled: boolean);
     procedure ParentCommandProcessed(Sender: TObject;
-       var Command: TSynEditorCommand; var AChar: TUTF8Char; Data: pointer;
+       var Command: TSynEditorCommand; var {%H-}AChar: TUTF8Char; {%H-}Data: pointer;
        var Handled: boolean);
 
     function GetActiveEditor: TSourceEditorInterface; override;
@@ -852,7 +852,7 @@ type
     function  GetActiveSourceWindow: TSourceEditorWindowInterface; override;
     procedure SetActiveSourceWindow(const AValue: TSourceEditorWindowInterface); override;
     function  GetSourceWindows(Index: integer): TSourceEditorWindowInterface; override;
-    procedure DoWindowFocused(AWindow: TSourceNotebook);  // Includes Focus to ChildControl (aka Activated)
+    procedure DoWindowFocused({%H-}AWindow: TSourceNotebook);  // Includes Focus to ChildControl (aka Activated)
     function  GetActiveEditor: TSourceEditorInterface; override;
     procedure SetActiveEditor(const AValue: TSourceEditorInterface); override;
     procedure DoActiveEditorChanged;
@@ -1015,21 +1015,21 @@ type
     procedure BookMarkPrevClicked(Sender: TObject);
   protected
     // macros
-    function MacroFuncCol(const s:string; const Data: PtrInt;
-                          var Abort: boolean): string;
-    function MacroFuncRow(const s:string; const Data: PtrInt;
-                          var Abort: boolean): string;
-    function MacroFuncEdFile(const s:string; const Data: PtrInt;
-                             var Abort: boolean): string;
-    function MacroFuncCurToken(const s:string; const Data: PtrInt;
+    function MacroFuncCol(const {%H-}s:string; const {%H-}Data: PtrInt;
+                          var {%H-}Abort: boolean): string;
+    function MacroFuncRow(const {%H-}s:string; const {%H-}Data: PtrInt;
+                          var {%H-}Abort: boolean): string;
+    function MacroFuncEdFile(const {%H-}s:string; const {%H-}Data: PtrInt;
+                             var {%H-}Abort: boolean): string;
+    function MacroFuncCurToken(const {%H-}s:string; const {%H-}Data: PtrInt;
+                               var {%H-}Abort: boolean): string;
+    function MacroFuncConfirm(const s:string; const {%H-}Data: PtrInt;
                                var Abort: boolean): string;
-    function MacroFuncConfirm(const s:string; const Data: PtrInt;
-                               var Abort: boolean): string;
-    function MacroFuncPrompt(const s:string; const Data: PtrInt;
+    function MacroFuncPrompt(const s:string; const {%H-}Data: PtrInt;
                              var Abort: boolean): string;
-    function MacroFuncSave(const s:string; const Data: PtrInt;
+    function MacroFuncSave(const {%H-}s:string; const {%H-}Data: PtrInt;
                            var Abort: boolean): string;
-    function MacroFuncSaveAll(const s:string; const Data: PtrInt;
+    function MacroFuncSaveAll(const {%H-}s:string; const {%H-}Data: PtrInt;
                               var Abort: boolean): string;
   public
     procedure InitMacros(AMacroList: TTransferMacroList);
@@ -1037,7 +1037,7 @@ type
 
     function FindUniquePageName(FileName:string; IgnoreEditor: TSourceEditor):string;
     function SomethingModified(Verbose: boolean = false): boolean;
-    procedure OnIdle(Sender: TObject; var Done: Boolean);
+    procedure OnIdle(Sender: TObject; var {%H-}Done: Boolean);
     procedure OnUserInput(Sender: TObject; Msg: Cardinal);
     procedure LockAllEditorsInSourceChangeCache;
     procedure UnlockAllEditorsInSourceChangeCache;
@@ -1071,7 +1071,7 @@ type
     procedure OnWordCompletionGetSource(var Source: TStrings; SourceIndex: integer);
     procedure OnSourceCompletionTimer(Sender: TObject);
     // marks
-    procedure OnSourceMarksAction(AMark: TSourceMark; AAction: TMarksAction);
+    procedure OnSourceMarksAction(AMark: TSourceMark; {%H-}AAction: TMarksAction);
     procedure OnSourceMarksGetSynEdit(Sender: TObject; aFilename: string;
       var aSynEdit: TSynEdit);
     property CodeTemplateModul: TSynEditAutoComplete
@@ -4105,7 +4105,7 @@ begin
 end;
 
 procedure TSourceEditor.OnGutterClick(Sender: TObject; X, Y, Line: integer;
-  mark: TSynEditMark);
+  Mark: TSynEditMark);
 var
   Marks: PSourceMark;
   i, MarkCount: Integer;
@@ -4115,7 +4115,7 @@ var
   Mrk: TSourceMark;
 begin
   // create or delete breakpoint
-  // find breakpoint mark at line
+  // find breakpoint Mark at line
   Marks := nil;
   Ctrl := SYNEDIT_LINK_MODIFIER in GetKeyShiftState;
   try
@@ -6658,7 +6658,7 @@ begin
     Layout:=IDEWindowCreators.SimpleLayoutStorage.ItemByForm(Self);
     if Layout<>nil then
       Layout.Form:=nil;
-    Name := Name + '___' + IntToStr(PtrUInt(Pointer(Self)));
+    Name := Name + '___' + IntToStr({%H-}PtrUInt(Pointer(Self)));
     CloseAction := caFree;
   end
   else begin

@@ -41,7 +41,7 @@ uses
   CodeAtom, CodeCache, SourceChanger, CustomCodeTool, CodeToolManager,
   PascalParserTool, KeywordFuncLists, FileProcs, IdentCompletionTool,
   PascalReaderTool, SourceLog,
-  LazIDEIntf, TextTools, IDETextConverter, DialogProcs, MainIntf, EditorOptions,
+  LazIDEIntf, TextTools, IDETextConverter, DialogProcs, EditorOptions,
   IDEImagesIntf, CodeToolsOptions;
 
 type
@@ -51,17 +51,17 @@ type
   TLazTextConverterToolClasses = class(TTextConverterToolClasses)
   public
     function GetTempFilename: string; override;
-    function SupportsType(aTextType: TTextConverterType): boolean; override;
+    function SupportsType({%H-}aTextType: TTextConverterType): boolean; override;
     function LoadFromFile(Converter: TIDETextConverter; const AFilename: string;
                           UpdateFromDisk, Revert: Boolean): Boolean; override;
     function SaveCodeBufferToFile(Converter: TIDETextConverter;
                            const AFilename: string): Boolean; override;
     function GetCodeBufferSource(Converter: TIDETextConverter;
                                  out Source: string): boolean; override;
-    function CreateCodeBuffer(Converter: TIDETextConverter;
+    function CreateCodeBuffer({%H-}Converter: TIDETextConverter;
                               const Filename, NewSource: string;
                               out CodeBuffer: Pointer): boolean; override;
-    function LoadCodeBufferFromFile(Converter: TIDETextConverter;
+    function LoadCodeBufferFromFile({%H-}Converter: TIDETextConverter;
                                    const Filename: string;
                                    UpdateFromDisk, Revert: Boolean;
                                    out CodeBuffer: Pointer): boolean; override;
@@ -86,7 +86,7 @@ type
 // completion form and functions
 function PaintCompletionItem(const AKey: string; ACanvas: TCanvas;
   X, Y, MaxX: integer; ItemSelected: boolean; Index: integer;
-  aCompletion : TSynCompletion; CurrentCompletionType: TCompletionType;
+  {%H-}aCompletion : TSynCompletion; CurrentCompletionType: TCompletionType;
   Highlighter: TSrcIDEHighlighter; MeasureOnly: Boolean = False): TPoint;
 
 function GetIdentCompletionValue(aCompletion : TSynCompletion;

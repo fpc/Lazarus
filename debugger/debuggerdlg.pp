@@ -506,6 +506,7 @@ begin
   if Assigned(OnProcessCommand) and (Command <> ecNone) and
      (Command <> ecContextHelp) and(Command <> ecEditContextHelp)
   then begin
+    Handled:=false;
     OnProcessCommand(Self,Command,Handled);
     Key := 0;
   end;

@@ -36,7 +36,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, Forms, Controls, Menus, Graphics, GraphType,
-  Buttons, StdCtrls, ExtCtrls, ComponentEditors, LazConf, ComCtrls, Arrow,
+  Buttons, StdCtrls, ExtCtrls, ComponentEditors, LazConf, Arrow,
   ButtonPanel, Laz2_XMLCfg, LazFileUtils, LazarusIDEStrConsts, PropEdits,
   IDEProcs;
 
@@ -146,10 +146,10 @@ type
     
     // Event handling
     procedure MenuItemMouseDown(Sender: TObject; Button: TMouseButton;
-                                Shift: TShiftState; X, Y: Integer);
+                                {%H-}Shift: TShiftState; {%H-}X, {%H-}Y: Integer);
     procedure MenuItemDblClick(Sender: TObject);
-    procedure MenuItemDragDrop(Sender, Source: TObject; X, Y: Integer);
-    procedure MenuItemDragOver(Sender, Source: TObject; X, Y: Integer; State: TDragState;
+    procedure MenuItemDragDrop(Sender, {%H-}Source: TObject; X, Y: Integer);
+    procedure MenuItemDragOver(Sender, Source: TObject; {%H-}X, {%H-}Y: Integer; {%H-}State: TDragState;
                                var Accept: Boolean);
     procedure AddNewItemBeforeClick(Sender: TObject);
     procedure AddNewItemAfterClick(Sender: TObject);
@@ -198,8 +198,6 @@ const
   DESIGNER_MENU_ITEM_HEIGHT=20;
   DESIGNER_MENU_ITEM_SPACE=30;
   MIN_DESIGNER_MENU_ITEM_WIDTH=100;
-  DESIGNER_MENU_ITEM_PANEL_HEIGHT=22;
-  MIN_SUB_MENU_PANEL_WIDTH=100;
   POSITION_LEFT=10;
   POSITION_TOP=10;
   NUMBER_OF_DEFAULT_TEMPLATES = 3;

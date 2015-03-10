@@ -46,7 +46,7 @@ type
   protected
     procedure SetControl(const AValue: TWinControl); virtual;
   public
-    procedure GetPreferredSize(var PreferredWidth, PreferredHeight: integer); virtual;
+    procedure GetPreferredSize(out PreferredWidth, PreferredHeight: integer); virtual;
     procedure UpdateHint; virtual;
     property Control: TWinControl read FControl write SetControl;
   end;
@@ -55,7 +55,7 @@ type
 
   TSrcEditHintWindow = class(THintWindow)
     IdleTimer1: TIdleTimer;
-    procedure ApplicationIdle(Sender: TObject; var Done: Boolean);
+    procedure ApplicationIdle(Sender: TObject; var {%H-}Done: Boolean);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -349,7 +349,7 @@ begin
   FControl:=AValue;
 end;
 
-procedure TCodeHintProvider.GetPreferredSize(var PreferredWidth,
+procedure TCodeHintProvider.GetPreferredSize(out PreferredWidth,
   PreferredHeight: integer);
 begin
 

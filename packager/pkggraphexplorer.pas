@@ -37,8 +37,8 @@ unit PkgGraphExplorer;
 interface
 
 uses
-  Classes, SysUtils, Math, LCLProc, Forms, Controls, Buttons, ComCtrls,
-  StdCtrls, Menus, Dialogs, Graphics, FileCtrl, LCLType, ExtCtrls,
+  Classes, SysUtils, LCLProc, Forms, Controls, Buttons, ComCtrls,
+  StdCtrls, Menus, Dialogs, Graphics, LCLType, ExtCtrls,
   AVL_Tree, contnrs,
   IDECommands, PackageIntf, IDEImagesIntf, LazIDEIntf,
   LvlGraphCtrl,
@@ -70,7 +70,7 @@ type
     procedure PkgGraphExplorerShow(Sender: TObject);
     procedure PkgPopupMenuPopup(Sender: TObject);
     procedure InfoMemoKeyDown(Sender: TObject; var Key: Word;
-      Shift: TShiftState);
+      {%H-}Shift: TShiftState);
     procedure PkgTreeViewDblClick(Sender: TObject);
     procedure PkgTreeViewExpanding(Sender: TObject; Node: TTreeNode;
       var AllowExpansion: Boolean);
@@ -108,9 +108,9 @@ type
     procedure UpdateTree;
     procedure UpdateLvlGraph;
     procedure UpdateInfo;
-    procedure UpdatePackageName(Pkg: TLazPackage; const OldName: string);
-    procedure UpdatePackageID(Pkg: TLazPackage);
-    procedure UpdatePackageAdded(Pkg: TLazPackage);
+    procedure UpdatePackageName({%H-}Pkg: TLazPackage; const {%H-}OldName: string);
+    procedure UpdatePackageID({%H-}Pkg: TLazPackage);
+    procedure UpdatePackageAdded({%H-}Pkg: TLazPackage);
     procedure SelectPackage(Pkg: TLazPackage);
     function FindLvlGraphNodeWithText(const s: string): TLvlGraphNode;
     procedure ShowPath(PathList: TFPList);

@@ -30,7 +30,7 @@ type
     FKeyBinding: TEditorMacroKeyBinding;
 
     procedure DoMacroRecorderState(Sender: TObject);
-    procedure DoMacroRecorderUserCommand(aSender: TCustomSynMacroRecorder;
+    procedure DoMacroRecorderUserCommand({%H-}aSender: TCustomSynMacroRecorder;
                 aCmd: TSynEditorCommand; var aEvent: TSynMacroEvent);
   protected
     function  GetMacroName: String; override;
@@ -204,7 +204,7 @@ type
     procedure btnSetKeysClick(Sender: TObject);
     procedure FormActivate(Sender: TObject);
     procedure HelpButtonClick(Sender: TObject);
-    procedure lbRecordedViewSelectItem(Sender: TObject; Item: TListItem; Selected: Boolean);
+    procedure lbRecordedViewSelectItem(Sender: TObject; {%H-}Item: TListItem; {%H-}Selected: Boolean);
     procedure mnExportClick(Sender: TObject);
     procedure mnImportClick(Sender: TObject);
     procedure tbIDEClick(Sender: TObject);

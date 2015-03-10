@@ -61,7 +61,7 @@ type
     PackagesComboBox: TComboBox;
     ShowAllCheckBox: TCheckBox;
     procedure AddFileToAPackageDlgClose(Sender: TObject;
-      var CloseAction: TCloseAction);
+      var {%H-}CloseAction: TCloseAction);
     procedure HelpButtonClick(Sender: TObject);
     procedure OkButtonClick(Sender: TObject);
     procedure PackagesGroupBoxResize(Sender: TObject);

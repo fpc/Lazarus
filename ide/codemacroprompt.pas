@@ -34,7 +34,7 @@ uses
   Classes, SysUtils, LCLProc, Forms, Controls, Graphics, Dialogs,
   BasicCodeTools, CodeToolManager,
   SynEditAutoComplete, SynPluginTemplateEdit, SynPluginSyncronizedEditBase, SynEdit,
-  MacroIntf, LazIDEIntf, SrcEditorIntf, LazUTF8;
+  LazIDEIntf, SrcEditorIntf, LazUTF8;
 
 type
   TCodeMacroPromptDlg = class(TForm)
@@ -86,7 +86,7 @@ type
     function GetDestTemplate: String; override;
 
     function SubstituteMacro(const MacroName, MacroParameter: string;
-                             var MacroValue: string): boolean;
+                             out MacroValue: string): boolean;
     function SubstituteMacros(var Template: String): boolean;
   public
     constructor Create(TheTemplate: String);
@@ -106,7 +106,7 @@ type
   end;
 
 function ExecuteCodeTemplate(SrcEdit: TSourceEditorInterface;
-  const TemplateName, TemplateValue, TemplateComment,
+  const TemplateName, TemplateValue, {%H-}TemplateComment,
   EndOfTokenChr: string; Attributes: TStrings;
   IndentToTokenStart: boolean): boolean;
 
@@ -169,14 +169,15 @@ begin
   Result := FDestTemplate;
 end;
 
-function TLazTemplateParser.SubstituteMacro(const MacroName, MacroParameter: string;
-  var MacroValue: string): boolean;
+function TLazTemplateParser.SubstituteMacro(const MacroName,
+  MacroParameter: string; out MacroValue: string): boolean;
 var
   Macro: TIDECodeMacro;
   NewValue: String;
   ErrMsg: string;
 begin
   Result := false;
+  MacroValue:='';
   Macro := IDECodeMacros.FindByName(MacroName);
   //debugln('SubstituteMacro A ',MacroName,' ',dbgs(Macro<>nil),' ',MacroParameter);
   if Macro <> nil then begin

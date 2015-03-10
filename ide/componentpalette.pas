@@ -144,12 +144,12 @@ type
     procedure SetPageControl(const AValue: TPageControl);
     procedure SelectionToolClick(Sender: TObject);
     procedure ComponentBtnMouseDown(Sender: TObject; Button: TMouseButton;
-      Shift: TShiftState; X, Y: Integer);
-    procedure ComponentBtnMouseUp(Sender: TObject; Button: TMouseButton;
-      Shift: TShiftState; X, Y: Integer);
+      Shift: TShiftState; {%H-}X, {%H-}Y: Integer);
+    procedure ComponentBtnMouseUp(Sender: TObject; {%H-}Button: TMouseButton;
+      {%H-}Shift: TShiftState; {%H-}X, {%H-}Y: Integer);
     procedure ComponentBtnDblClick(Sender: TObject);
-    procedure OnPageMouseWheel(Sender: TObject; Shift: TShiftState;
-      WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
+    procedure OnPageMouseWheel(Sender: TObject; {%H-}Shift: TShiftState;
+      WheelDelta: Integer; {%H-}MousePos: TPoint; var Handled: Boolean);
     procedure CreatePopupMenu;
     procedure UnselectAllButtons;
     function GetUnregisteredIcon: TCustomBitmap;

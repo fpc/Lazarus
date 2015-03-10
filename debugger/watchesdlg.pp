@@ -121,7 +121,7 @@ type
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure FormShow(Sender: TObject);
     procedure lvWatchesDblClick(Sender: TObject);
-    procedure lvWatchesSelectItem(Sender: TObject; AItem: TListItem; Selected: Boolean);
+    procedure lvWatchesSelectItem(Sender: TObject; {%H-}AItem: TListItem; {%H-}Selected: Boolean);
     procedure popAddClick(Sender: TObject);
     procedure popPropertiesClick(Sender: TObject);
     procedure popEnabledClick(Sender: TObject);
@@ -142,9 +142,9 @@ type
     function  GetThreadId: Integer;
     function  GetSelectedThreads(Snap: TSnapshot): TIdeThreads;
     function GetStackframe: Integer;
-    procedure WatchAdd(const ASender: TIdeWatches; const AWatch: TIdeWatch);
+    procedure WatchAdd(const {%H-}ASender: TIdeWatches; const AWatch: TIdeWatch);
     procedure WatchUpdate(const ASender: TIdeWatches; const AWatch: TIdeWatch);
-    procedure WatchRemove(const ASender: TIdeWatches; const AWatch: TIdeWatch);
+    procedure WatchRemove(const {%H-}ASender: TIdeWatches; const AWatch: TIdeWatch);
 
     procedure UpdateInspectPane;
     procedure UpdateItem(const AItem: TListItem; const AWatch: TIdeWatch);

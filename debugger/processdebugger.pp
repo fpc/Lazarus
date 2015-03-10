@@ -49,7 +49,7 @@ type
   private
     FProcess: TProcess;
     procedure ProcessDestroyed(Sender: TObject);
-    function  ProcessEnvironment(const AVariable: String; const ASet: Boolean): Boolean;
+    function  ProcessEnvironment(const {%H-}AVariable: String; const {%H-}ASet: Boolean): Boolean;
     function  ProcessRun: Boolean;
     function  ProcessStop: Boolean;
   protected

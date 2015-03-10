@@ -468,7 +468,8 @@ end;
 procedure TPkgManager.IDEComponentPaletteEndUpdate(Sender: TObject;
   PaletteChanged: boolean);
 begin
-  UpdateVisibleComponentPalette;
+  if PaletteChanged then
+    UpdateVisibleComponentPalette;
 end;
 
 procedure TPkgManager.IDEComponentPaletteOpenPackage(Sender: TObject);

@@ -128,7 +128,7 @@ type
     function  GetSelectedThreads(Snap: TSnapshot): TIdeThreads;
     function  GetSelectedCallstack: TIdeCallStack;
     procedure DoBreakPointsChanged; override;
-    procedure BreakPointChanged(const ASender: TIDEBreakPoints; const ABreakpoint: TIDEBreakPoint);
+    procedure BreakPointChanged(const ASender: TIDEBreakPoints; const {%H-}ABreakpoint: TIDEBreakPoint);
     procedure CallStackChanged(Sender: TObject);
     procedure CallStackCurrent(Sender: TObject);
     function  ColSizeGetter(AColId: Integer; var ASize: Integer): Boolean;

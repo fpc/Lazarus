@@ -50,8 +50,8 @@ type
     procedure chkUseEventLogColorsChange(Sender: TObject);
     procedure ColorTreeAdvancedCustomDrawItem(Sender: TCustomTreeView;
       Node: TTreeNode; State: TCustomDrawState; Stage: TCustomDrawStage;
-      var PaintImages, DefaultDraw: Boolean);
-    procedure ColorTreeChange(Sender: TObject; Node: TTreeNode);
+      var {%H-}PaintImages, DefaultDraw: Boolean);
+    procedure ColorTreeChange(Sender: TObject; {%H-}Node: TTreeNode);
     procedure ColorTreeClick(Sender: TObject);
     procedure ForegroundColorBoxChange(Sender: TObject);
   private
@@ -60,9 +60,9 @@ type
     procedure UpdateSelectedColor;
   public
     function GetTitle: String; override;
-    procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
-    procedure ReadSettings(AOptions: TAbstractIDEOptions); override;
-    procedure WriteSettings(AOptions: TAbstractIDEOptions); override;
+    procedure Setup({%H-}ADialog: TAbstractOptionsEditorDialog); override;
+    procedure ReadSettings({%H-}AOptions: TAbstractIDEOptions); override;
+    procedure WriteSettings({%H-}AOptions: TAbstractIDEOptions); override;
     class function SupportedOptionsClass: TAbstractIDEOptionsClass; override;
   end;
 

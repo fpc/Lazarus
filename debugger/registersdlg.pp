@@ -78,7 +78,7 @@ type
     procedure actCopyValueExecute(Sender: TObject);
     procedure actPowerExecute(Sender: TObject);
     procedure DispDefaultClick(Sender: TObject);
-    procedure lvRegistersSelectItem(Sender: TObject; Item: TListItem; Selected: Boolean);
+    procedure lvRegistersSelectItem(Sender: TObject; Item: TListItem; {%H-}Selected: Boolean);
     procedure ToolButtonDispTypeClick(Sender: TObject);
     function GetCurrentRegisters: TRegisters;
   private

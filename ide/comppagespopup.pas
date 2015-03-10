@@ -11,7 +11,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ComCtrls,
-  strutils, ExtCtrls, Buttons, MainBar;
+  ExtCtrls, Buttons, MainBar;
 
 type
 

@@ -31,7 +31,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, Forms, Controls, Graphics, StdCtrls,
-  CodeToolManager, CodeCache, BasicCodeTools, IdentCompletionTool, CodeTree,
+  CodeToolManager, CodeCache, IdentCompletionTool, CodeTree,
   CodeAtom,
   IDEHelpIntf, SrcEditorIntf, SrcEditHintFrm, CodeHelp;
 
@@ -49,7 +49,7 @@ type
     FTextControl: TLabel;
     procedure SetHintValid(const AValue: boolean);
     procedure SetWaitingForIdle(const AValue: boolean);
-    procedure ApplicationIdle(Sender: TObject; var Done: Boolean);
+    procedure ApplicationIdle(Sender: TObject; var {%H-}Done: Boolean);
     procedure DoUpdateHint;
     procedure UpdateHintControl;
   public

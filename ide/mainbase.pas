@@ -55,19 +55,18 @@ uses
 {$IFDEF IDE_MEM_CHECK}
   MemCheck,
 {$ENDIF}
-  Math, Classes, LCLType, LCLProc, LCLIntf, StdCtrls, Buttons, Menus, ComCtrls,
+  Math, Classes, LCLType, LCLProc, LCLIntf, Buttons, Menus,
   SysUtils, types, Controls, Graphics, ExtCtrls, Dialogs, FileUtil, Forms,
-  CodeToolManager, CodeCache, AVL_Tree, SynEditKeyCmds, PackageIntf,
+  CodeToolManager, AVL_Tree, SynEditKeyCmds, PackageIntf,
   // IDEIntf
   IDEImagesIntf, SrcEditorIntf, LazIDEIntf, MenuIntf,
-  IDECommands, IDEMsgIntf, IDEWindowIntf,
+  IDECommands, IDEWindowIntf,
   // IDE
-  LazConf, LazarusIDEStrConsts, ProjectDefs, Project, PublishModule,
-  BuildLazDialog, Compiler, ComponentReg, etMessagesWnd,
-  TransferMacros, ObjectInspector, PropEdits, IDEDefs,
+  LazConf, LazarusIDEStrConsts, ProjectDefs, Project,
+  TransferMacros, ObjectInspector, PropEdits,
   EnvironmentOpts, EditorOptions, CompilerOptions, KeyMapping, IDEProcs,
-  Debugger, IDEOptionDefs, CodeToolsDefines, Splash, Designer,
-  SourceEditor, BuildManager, FindInFilesDlg,
+  Debugger, IDEOptionDefs, Splash, Designer,
+  SourceEditor, FindInFilesDlg,
   MainBar, MainIntf, SourceSynEditor, PseudoTerminalDlg;
 
 type

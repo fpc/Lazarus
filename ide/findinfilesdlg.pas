@@ -46,7 +46,7 @@ type
     TextToFindLabel: TLabel;
     WhereRadioGroup: TRadioGroup;
     procedure DirectoriesBrowseClick(Sender: TObject);
-    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
+    procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure HelpButtonClick(Sender: TObject);
     procedure OKButtonClick(Sender : TObject);

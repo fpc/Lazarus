@@ -63,10 +63,10 @@ type
     procedure FormShow(Sender: TObject);
     procedure StringGridKeyPress(Sender: TObject; var Key: char);
     procedure StringGridMouseDown(Sender: TObject; Button: TMouseButton;
-      Shift: TShiftState; X, Y: Integer);
-    procedure StringGrid1MouseMove(Sender: TObject; Shift: TShiftState; X,
+      {%H-}Shift: TShiftState; X, Y: Integer);
+    procedure StringGrid1MouseMove(Sender: TObject; {%H-}Shift: TShiftState; X,
       Y: Integer);
-    procedure StringGrid2MouseMove(Sender: TObject; Shift: TShiftState; X,
+    procedure StringGrid2MouseMove(Sender: TObject; {%H-}Shift: TShiftState; X,
       Y: Integer);
   private
     FOnInsertCharacter: TOnInsertCharacterEvent;
