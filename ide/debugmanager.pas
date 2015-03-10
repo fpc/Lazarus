@@ -80,7 +80,7 @@ type
     procedure mnuAddBpDataAtCursor(Sender: TObject);
 
     // Debugger events
-    procedure DebuggerBreakPointHit(ADebugger: TDebuggerIntf; ABreakPoint: TBaseBreakPoint; var ACanContinue: Boolean);
+    procedure DebuggerBreakPointHit({%H-}ADebugger: TDebuggerIntf; ABreakPoint: TBaseBreakPoint; var {%H-}ACanContinue: Boolean);
     procedure DebuggerBeforeChangeState(ADebugger: TDebuggerIntf; AOldState: TDBGState);
     procedure DebuggerChangeState(ADebugger: TDebuggerIntf; OldState: TDBGState);
     procedure DebuggerCurrentLine(Sender: TObject; const ALocation: TDBGLocationRec);
@@ -305,8 +305,6 @@ type
     procedure Update(Item: TCollectionItem); override;
   end;
 
-  TDBGEventCategories = set of TDBGEventCategory;
-
 { TProjectExceptions }
 
 procedure TProjectExceptions.SetIgnoreAll(const AValue: Boolean);
@@ -435,6 +433,7 @@ begin
         [lisHitCount, Hitcount,
         lisAction, GetBreakPointActionsDescription(Self),
         lisCondition, Expression]);
+  if SenderMark<>nil then ;
 end;
 
 procedure TManagedBreakPoint.OnSourceMarkCreatePopupMenu(
@@ -446,6 +445,7 @@ begin
     AddMenuItem(lisEnableBreakPoint, True, @OnToggleEnableMenuItemClick);
   AddMenuItem(lisDeleteBreakPoint, True, @OnDeleteMenuItemClick);
   AddMenuItem(lisViewBreakPointProperties, True, @OnViewPropertiesMenuItemClick);
+  if SenderMark<>nil then ;
 end;
 
 procedure TManagedBreakPoint.DoChanged;
@@ -782,6 +782,7 @@ end;
 
 function TDebugManager.DoProjectClose(Sender: TObject; AProject: TLazProject): TModalResult;
 begin
+  if AProject<>Project1 then exit;
   ResetDebugger;
   Result := mrOK;
 end;
@@ -1082,6 +1083,7 @@ var
 begin
   if Destroying or (MainIDE=nil) or (MainIDE.ToolStatus=itExiting)
   then exit;
+  if AOldState=dsNone then ;
   assert((ADebugger=FDebugger) and (ADebugger<>nil), 'TDebugManager.OnDebuggerChangeState');
 
   FInStateChange := True;
