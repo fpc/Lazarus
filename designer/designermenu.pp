@@ -141,7 +141,7 @@ type
     procedure RealignDesigner;
     procedure Draw(DMenuItem: TDesignerMenuItem; FormPanel,SubMenuPanel: TPanel); //draw function
     procedure SetCoordinates(Coord_Left,Coord_Top,Coord_Right: Integer; DMenuItem: TDesignerMenuItem); //coord. of each designermenuitem
-    function GetSubMenuHeight(DMenuItem: TDesignerMenuItem; LeftPos,TopPos: Integer; Ident: string): TRect; //width and height of submenu panel
+    function GetSubMenuHeight(DMenuItem: TDesignerMenuItem): TRect; //width and height of submenu panel
     function GetMaxCoordinates(DMenuItem: TDesignerMenuItem; Max_Width, Max_Height: Integer): TRect; //width and height of all expanded menu items
     
     // Event handling
@@ -534,7 +534,7 @@ begin
     begin
       if (DMenuItem.PrevItem = nil) then
       begin
-        SubMenuDimensions:=GetSubMenuHeight(Root, 0, 0, DMenuItem.ID);
+        SubMenuDimensions:=GetSubMenuHeight(Root);
         with temp_panel do
         begin
           Parent:=FormPanel;
@@ -586,9 +586,9 @@ begin
       ((DMenuItem.SubMenu.Selected) or (DMenuItem.SubMenu.Active)))) then
     begin
       if (fMenu is TpopupMenu) and (DMenuItem.Level = 1) then
-        SubMenuDimensions:=GetSubMenuHeight(GetDesignerMenuItem(Root, DMenuItem.SubMenu.ID), DMenuItem.coord.right + 1, 0, DMenuItem.SubMenu.ID)
+        SubMenuDimensions:=GetSubMenuHeight(GetDesignerMenuItem(Root, DMenuItem.SubMenu.ID))
       else
-        SubMenuDimensions:=GetSubMenuHeight(GetDesignerMenuItem(Root, DMenuItem.SubMenu.ID), 0, 1, DMenuItem.SubMenu.ID);
+        SubMenuDimensions:=GetSubMenuHeight(GetDesignerMenuItem(Root, DMenuItem.SubMenu.ID));
       with DMenuItem.SubMenuPanel do
       begin
         Parent:=SubMenuPanel;
@@ -690,7 +690,8 @@ end;
 // -------------------------------------------------------------------------------------------------------------------//
 // Determines a position of the SubMenuPanel of some DesignerMenuItem ------------------------------------------------//
 //--------------------------------------------------------------------------------------------------------------------//
-function TDesignerMainMenu.GetSubMenuHeight(DMenuItem: TDesignerMenuItem; LeftPos,TopPos: Integer; Ident: string): TRect;
+function TDesignerMainMenu.GetSubMenuHeight(DMenuItem: TDesignerMenuItem
+  ): TRect;
 var
   coords: TRect;
   SubItemCount: Integer;
