@@ -60,10 +60,10 @@ type
     FKeywordPrefixNode: THelpNode;
   public
     function GetNodesForKeyword(const HelpKeyword: string;
-                        var ListOfNodes: THelpNodeQueryList; var ErrMsg: string
+                        var ListOfNodes: THelpNodeQueryList; var {%H-}ErrMsg: string
                         ): TShowHelpResult; override;
-    function ShowHelp(Query: THelpQuery; BaseNode, NewNode: THelpNode;
-                      QueryItem: THelpQueryItem;
+    function ShowHelp(Query: THelpQuery; {%H-}BaseNode, {%H-}NewNode: THelpNode;
+                      {%H-}QueryItem: THelpQueryItem;
                       var ErrMsg: string): TShowHelpResult; override;
   end;
 
@@ -76,7 +76,7 @@ type
     fWaitingForAsync: boolean;
     FProviders: TLIHProviders;
     procedure SetProviders(const AValue: TLIHProviders);
-    procedure OpenNextURL(Data: PtrInt); // called via Application.QueueAsyncCall
+    procedure OpenNextURL({%H-}Data: PtrInt); // called via Application.QueueAsyncCall
     procedure OpenFPDoc(Path: string);
   public
     NextURL: string;
@@ -156,8 +156,8 @@ type
 
   TIDEHelpDatabases = class(THelpDatabases)
   public
-    function ShowHelpSelector(Query: THelpQuery; Nodes: THelpNodeQueryList;
-                              var ErrMsg: string;
+    function ShowHelpSelector({%H-}Query: THelpQuery; Nodes: THelpNodeQueryList;
+                              var {%H-}ErrMsg: string;
                               var Selection: THelpNodeQuery
                               ): TShowHelpResult; override;
     function GetBaseDirectoryForBasePathObject(BasePathObject: TObject): string; override;
@@ -362,6 +362,8 @@ begin
   KeywordQuery:=THelpQueryKeyword(Query);
   KeyWord:=copy(KeywordQuery.Keyword,length(FPCKeyWordHelpPrefix)+1,length(KeywordQuery.Keyword));
   debugln(['TSimpleFPCKeywordHelpDatabase.ShowHelp Keyword=',Keyword]);
+  // ToDo: implement me
+  ErrMsg:='';
 end;
 
 function HTMLToCaption(const s: string; MaxLines: integer): string;

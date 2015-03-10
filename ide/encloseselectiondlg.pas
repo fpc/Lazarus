@@ -62,7 +62,7 @@ type
     function GetEncloseType: TEncloseSelectionType;
   end;
   
-function ShowEncloseSelectionDialog(var TheType: TEncloseSelectionType
+function ShowEncloseSelectionDialog(out TheType: TEncloseSelectionType
                                     ): TModalResult;
 function EncloseSelectionTypeDescription(TheType: TEncloseSelectionType
                                          ): string;
@@ -94,11 +94,12 @@ begin
   end;
 end;
 
-function ShowEncloseSelectionDialog(var TheType: TEncloseSelectionType
+function ShowEncloseSelectionDialog(out TheType: TEncloseSelectionType
   ): TModalResult;
 var
   TheDialog: TEncloseSelectionDialog;
 begin
+  TheType:=estBeginEnd;
   TheDialog:=TEncloseSelectionDialog.Create(nil);
   Result:=TheDialog.ShowModal;
   if Result=mrOk then

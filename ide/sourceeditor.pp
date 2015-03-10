@@ -299,9 +299,9 @@ type
        var Command: TSynEditorCommand; var AChar: TUTF8Char; Data: pointer);
     function AutoCompleteChar(Char: TUTF8Char; var AddChar: boolean;
        Category: TAutoCompleteOption): boolean;
-    function AutoBlockCompleteChar(Char: TUTF8Char; var AddChar: boolean;
+    function AutoBlockCompleteChar({%H-}Char: TUTF8Char; var {%H-}AddChar: boolean;
        Category: TAutoCompleteOption; aTextPos: TPoint; Line: string): boolean;
-    function AutoBlockCompleteChar(Char: TUTF8Char): boolean;
+    function AutoBlockCompleteChar({%H-}Char: TUTF8Char): boolean;
     procedure AutoCompleteBlock;
 
     procedure FocusEditor;// called by TSourceNotebook when the Notebook page
@@ -318,7 +318,7 @@ type
     procedure SetErrorLine(NewLine: integer);
     procedure SetExecutionLine(NewLine: integer);
     procedure StartIdentCompletionBox(JumpToError: boolean);
-    procedure StartWordCompletionBox(JumpToError: boolean);
+    procedure StartWordCompletionBox;
 
     function IsFirstShared(Sender: TObject): boolean;
 
@@ -3371,7 +3371,7 @@ Begin
     SourceNotebook.StartShowCodeContext(true);
 
   ecWordCompletion :
-    StartWordCompletionBox(true);
+    StartWordCompletionBox;
 
   ecFind:
     StartFindAndReplace(false);
@@ -3537,7 +3537,7 @@ Begin
   ecClearBookmarkForFile: begin
       if Assigned(Manager) and Assigned(Manager.OnClearBookmarkId) then
         for i := 0 to 9 do
-          if EditorComponent.GetBookMark(i,x,y{%H-}) then
+          if EditorComponent.GetBookMark(i,x{%H-},y{%H-}) then
             Manager.OnClearBookmarkId(Self, i);
     end;
 
@@ -4365,6 +4365,9 @@ var
   s: String;
 begin
   Result:=false;
+  if (not EditorOpts.AutoBlockCompletion)
+  or (not (SyntaxHighlighterType in [lshFreePascal,lshDelphi])) then
+    exit;
   FEditor.GetWordBoundsAtRowCol(aTextPos, x1, x2);
   // use the token left of the caret
   x2 := Min(x2, aTextPos.x);
@@ -4597,7 +4600,7 @@ begin
   {$ENDIF}
 end;
 
-procedure TSourceEditor.StartWordCompletionBox(JumpToError: boolean);
+procedure TSourceEditor.StartWordCompletionBox;
 var
   TextS: String;
   LogCaret: TPoint;
