@@ -369,12 +369,12 @@ type
 
     // compiler directives
     function GuessMisplacedIfdefEndif(Code: TCodeBuffer; X,Y: integer;
-          var NewCode: TCodeBuffer;
-          var NewX, NewY, NewTopLine: integer): boolean;
+          out NewCode: TCodeBuffer;
+          out NewX, NewY, NewTopLine: integer): boolean;
     // find include directive of include file at position X,Y
     function FindEnclosingIncludeDirective(Code: TCodeBuffer; X,Y: integer;
-          var NewCode: TCodeBuffer;
-          var NewX, NewY, NewTopLine: integer): boolean;
+          out NewCode: TCodeBuffer;
+          out NewX, NewY, NewTopLine: integer): boolean;
     function FindResourceDirective(Code: TCodeBuffer; StartX, StartY: integer;
           out NewCode: TCodeBuffer; out NewX, NewY, NewTopLine: integer;
           const Filename: string = ''; SearchInCleanSrc: boolean = true): boolean;
@@ -467,7 +467,7 @@ type
     function GatherUnitNames(Code: TCodeBuffer): Boolean;
     function GatherIdentifiers(Code: TCodeBuffer; X,Y: integer): boolean;
     function GetIdentifierAt(Code: TCodeBuffer; X,Y: integer;
-          var Identifier: string): boolean;
+          out Identifier: string): boolean;
     function IdentItemCheckHasChilds(IdentItem: TIdentifierListItem): boolean;
     function FindAbstractMethods(Code: TCodeBuffer; X,Y: integer;
           out ListOfPCodeXYPosition: TFPList;
@@ -531,8 +531,8 @@ type
 
     // expressions
     function GetStringConstBounds(Code: TCodeBuffer; X,Y: integer;
-          var StartCode: TCodeBuffer; var StartX, StartY: integer;
-          var EndCode: TCodeBuffer; var EndX, EndY: integer;
+          out StartCode: TCodeBuffer; out StartX, StartY: integer;
+          out EndCode: TCodeBuffer; out EndX, EndY: integer;
           ResolveComments: boolean): boolean;
     procedure ImproveStringConstantStart(const ACode: string; var StartPos: integer);
     procedure ImproveStringConstantEnd(const ACode: string; var EndPos: integer);
@@ -2345,8 +2345,8 @@ begin
   {$ENDIF}
 end;
 
-function TCodeToolManager.GetIdentifierAt(Code: TCodeBuffer; X, Y: integer;
-  var Identifier: string): boolean;
+function TCodeToolManager.GetIdentifierAt(Code: TCodeBuffer; X, Y: integer; out
+  Identifier: string): boolean;
 var
   CleanPos: integer;
 begin
@@ -2975,10 +2975,10 @@ begin
   BasicCodeTools.ImproveStringConstantEnd(ACode,EndPos);
 end;
 
-function TCodeToolManager.GetStringConstBounds(Code: TCodeBuffer; X, Y: integer;
-  var StartCode: TCodeBuffer; var StartX, StartY: integer;
-  var EndCode: TCodeBuffer; var EndX, EndY: integer;
-  ResolveComments: boolean): boolean;
+function TCodeToolManager.GetStringConstBounds(Code: TCodeBuffer; X,
+  Y: integer; out StartCode: TCodeBuffer; out StartX, StartY: integer; out
+  EndCode: TCodeBuffer; out EndX, EndY: integer; ResolveComments: boolean
+  ): boolean;
 var
   CursorPos, StartPos, EndPos: TCodeXYPosition;
 begin
@@ -3086,9 +3086,9 @@ begin
   end;
 end;
 
-function TCodeToolManager.GuessMisplacedIfdefEndif(Code: TCodeBuffer; X,Y: integer;
-  var NewCode: TCodeBuffer;
-  var NewX, NewY, NewTopLine: integer): boolean;
+function TCodeToolManager.GuessMisplacedIfdefEndif(Code: TCodeBuffer; X,
+  Y: integer; out NewCode: TCodeBuffer; out NewX, NewY, NewTopLine: integer
+  ): boolean;
 var
   CursorPos: TCodeXYPosition;
   NewPos: TCodeXYPosition;
@@ -3114,7 +3114,7 @@ begin
 end;
 
 function TCodeToolManager.FindEnclosingIncludeDirective(Code: TCodeBuffer; X,
-  Y: integer; var NewCode: TCodeBuffer; var NewX, NewY, NewTopLine: integer
+  Y: integer; out NewCode: TCodeBuffer; out NewX, NewY, NewTopLine: integer
   ): boolean;
 var
   CursorPos: TCodeXYPosition;

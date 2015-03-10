@@ -132,11 +132,11 @@ type
 function ShowMakeResStrDialog(
   const StartPos, EndPos: TPoint; Code: TCodeBuffer;
   Positions: TCodeXYPositions;
-  var NewIdentifier, NewIdentifierValue: string;
-  var NewSourceLines: string;
-  var ResStrSectionCode: TCodeBuffer;
-  var ResStrSectionXY: TPoint;
-  var InsertPolicy: TResourcestringInsertPolicy): TModalResult;
+  out NewIdentifier, NewIdentifierValue: string;
+  out NewSourceLines: string;
+  out ResStrSectionCode: TCodeBuffer;
+  out ResStrSectionXY: TPoint;
+  out InsertPolicy: TResourcestringInsertPolicy): TModalResult;
 
 implementation
 
@@ -145,20 +145,24 @@ implementation
 uses
   Math;
 
-function ShowMakeResStrDialog(
-  const StartPos, EndPos: TPoint; Code: TCodeBuffer;
-  Positions: TCodeXYPositions;
-  var NewIdentifier, NewIdentifierValue: string;
-  var NewSourceLines: string;
-  var ResStrSectionCode: TCodeBuffer;
-  var ResStrSectionXY: TPoint;
-  var InsertPolicy: TResourcestringInsertPolicy): TModalResult;
+function ShowMakeResStrDialog(const StartPos, EndPos: TPoint;
+  Code: TCodeBuffer; Positions: TCodeXYPositions; out NewIdentifier,
+  NewIdentifierValue: string; out NewSourceLines: string; out
+  ResStrSectionCode: TCodeBuffer; out ResStrSectionXY: TPoint; out
+  InsertPolicy: TResourcestringInsertPolicy): TModalResult;
 var
   MakeResStrDialog: TMakeResStrDialog;
   Section: PCodeXYPosition;
   ResourcestringSectionID: Integer;
 begin
   //debugln('ShowMakeResStrDialog StartPos=',dbgs(StartPos),' EndPos=',dbgs(EndPos),' ');
+  NewIdentifier:='';
+  NewIdentifierValue:='';
+  NewSourceLines:='';
+  ResStrSectionCode:=nil;
+  ResStrSectionXY:=Point(0,0);
+  InsertPolicy:=rsipNone;
+
   MakeResStrDialog:=TMakeResStrDialog.Create(nil);
   MakeResStrDialog.Positions:=CodeToolBoss.Positions.CreateCopy;
   MakeResStrDialog.SetSource(Code,StartPos,EndPos);

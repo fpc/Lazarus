@@ -88,17 +88,16 @@ type
 
 function ShowExtractProcDialog(Code: TCodeBuffer;
   const BlockBegin, BlockEnd: TPoint;
-  var NewSource: TCodeBuffer;
-  var NewX, NewY, NewTopLine: integer): TModalResult;
+  out NewSource: TCodeBuffer;
+  out NewX, NewY, NewTopLine: integer): TModalResult;
 
 implementation
 
 {$R *.lfm}
 
-function ShowExtractProcDialog(Code: TCodeBuffer;
-  const BlockBegin, BlockEnd: TPoint;
-  var NewSource: TCodeBuffer;
-  var NewX, NewY, NewTopLine: integer): TModalresult;
+function ShowExtractProcDialog(Code: TCodeBuffer; const BlockBegin,
+  BlockEnd: TPoint; out NewSource: TCodeBuffer; out NewX, NewY,
+  NewTopLine: integer): TModalResult;
 var
   ExtractProcDialog: TExtractProcDialog;
   MethodPossible: Boolean;
@@ -112,6 +111,10 @@ var
   SubProcPossible: boolean;
 begin
   Result:=mrCancel;
+  NewSource:=nil;
+  NewX:=0;
+  NewY:=0;
+  NewTopLine:=0;
   if CompareCaret(BlockBegin,BlockEnd)<=0 then begin
     IDEMessageDialog(lisNoCodeSelected,
       lisPleaseSelectSomeCodeToExtractANewProcedureMethod,

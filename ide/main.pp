@@ -611,10 +611,10 @@ type
       Scanner: TLinkScanner);
 
     // SearchResultsView events
-    procedure SearchResultsViewSelectionChanged(sender: TObject);
+    procedure SearchResultsViewSelectionChanged({%H-}sender: TObject);
 
     // JumpHistoryView events
-    procedure JumpHistoryViewSelectionChanged(sender: TObject);
+    procedure JumpHistoryViewSelectionChanged({%H-}sender: TObject);
 
     // External Tools events
     procedure FPCMsgFilePoolLoadFile(aFilename: string; out s: string);
@@ -10250,7 +10250,7 @@ Begin
   AnUnitInfo := TUnitInfo(Project1.Bookmarks.UnitInfoForBookmarkWithIndex(ID));
   if (AnUnitInfo <> nil) and (AnUnitInfo.OpenEditorInfoCount > 0) then
     OldEdit := TSourceEditor(AnUnitInfo.OpenEditorInfo[0].EditorComponent);
-  if (OldEdit<>nil) and OldEdit.EditorComponent.GetBookMark(ID,OldX,OldY) then
+  if (OldEdit<>nil) and OldEdit.EditorComponent.GetBookMark(ID,OldX{%H-},OldY{%H-}) then
   begin
     if (not Toggle) and (OldX=NewXY.X) and (OldY=NewXY.Y) then
       exit;  // no change
