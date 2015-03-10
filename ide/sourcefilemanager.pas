@@ -657,7 +657,12 @@ begin
       break;
   end;
   if Result = nil then // should never happen
-    Result := AnUnitInfo.OpenEditorInfo[0];
+    Result := AnUnitInfo.OpenEditorInfo[0]
+  else begin
+    if (WantedTopLine>0)
+    and (AnUnitInfo.OpenEditorInfo[j].EditorComponent<>nil) then
+      AnUnitInfo.OpenEditorInfo[j].EditorComponent.TopLine:=WantedTopLine;
+  end;
   // ToDo: WantedTopLine
 end;
 
