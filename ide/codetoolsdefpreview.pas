@@ -89,7 +89,7 @@ type
     procedure ClearValues;
     procedure FillTemplateTree;
     procedure SetComboBox(AComboBox: TComboBox; const NewText: string);
-    procedure DefineTreeCalculate(DefineTree: TDefineTree; Node: TDefineTemplate;
+    procedure DefineTreeCalculate({%H-}DefineTree: TDefineTree; Node: TDefineTemplate;
                   ValueParsed: boolean; const ParsedValue: string;
                   ExpressionCalculated: boolean; const ExpressionResult: string;
                   Execute: boolean);
