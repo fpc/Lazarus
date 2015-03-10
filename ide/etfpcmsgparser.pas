@@ -1935,7 +1935,8 @@ begin
         s:=Format(lisCannotFind, [MissingUnitname]);
         if UsedByUnit<>'' then
           s+=Format(lisUsedBy, [UsedByUnit]);
-        s+=Format(lisIncompatiblePpu, [PPUFilename]);
+        if PPUFilename<>'' then
+          s+=Format(lisIncompatiblePpu, [PPUFilename]);
         if PPUFiles.Count=1 then
           s+=Format(lisPackage3, [TIDEPackage(PPUFiles.Objects[0]).Name])
         else begin
