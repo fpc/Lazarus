@@ -5319,8 +5319,7 @@ begin
   for o:=Low(TSrcEditSearchOption) to High(TSrcEditSearchOption) do
     if o in SearchOptions then
       Include(NewOptions,SrcEdit2SynEditSearchOption[o]);
-  Result:=DoFindAndReplace(LazFindReplaceDialog.FindText, LazFindReplaceDialog.ReplaceText,
-    NewOptions);
+  Result:=DoFindAndReplace(ASearch, AReplace, NewOptions);
 end;
 
 function TSourceEditor.GetSourceText: string;
