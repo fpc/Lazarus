@@ -47,6 +47,11 @@ type
     destructor Destroy; override;
     property HasGUI: boolean read FHasGUI write FHasGUI;
 
+    // methods for building IDE (will be changed when project groups are there)
+    procedure SetBuildTargetProject1; virtual; abstract;
+    procedure SetBuildTargetIDE; virtual; abstract;
+    function BuildTargetIDEIsDefault: boolean; virtual; abstract;
+
     function GetBuildMacroOverride(const MacroName: string): string; virtual; abstract;
     function GetBuildMacroOverrides: TStrings; virtual; abstract;
     function GetTargetOS: string; virtual; abstract;

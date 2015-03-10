@@ -5310,112 +5310,119 @@ var
 begin
   if not MainIDE.DoResetToolStatus([rfInteractive]) then exit(mrCancel);
 
-  PackageGraph.BeginUpdate(true);
-  PkgList:=nil;
   try
-    // check if package is designtime package
-    if APackage.PackageType in [lptRunTime,lptRunTimeOnly] then begin
-      Btns:=[mbAbort];
-      if APackage.PackageType=lptRunTime then
-        Include(Btns,mbIgnore);
-      Result:=IDEMessageDialog(lisPkgMangPackageIsNoDesigntimePackage,
-        Format(lisPkgMangThePackageIsARuntimeOnlyPackageRuntimeOnlyPackages,
-               [APackage.IDAsString, LineEnding]),
-        mtError,Btns);
-      if Result<>mrIgnore then exit;
-    end;
-    // check if package requires a runtime only package
-    ConflictDep:=PackageGraph.FindRuntimePkgOnlyRecursively(
-      APackage.FirstRequiredDependency);
-    if ConflictDep<>nil then begin
-      IDEQuestionDialog(lisNotADesigntimePackage,
-        Format(lisThePackageCanNotBeInstalledBecauseItRequiresWhichI, [
-          APackage.Name, ConflictDep.AsString]),
-        mtError,
-        [mrCancel]
-        );
-      exit;
-    end;
+    BuildBoss.SetBuildTargetIDE;
 
-    // save package
-    if APackage.IsVirtual or APackage.Modified then begin
-      Result:=DoSavePackage(APackage,[]);
+    PackageGraph.BeginUpdate(true);
+    PkgList:=nil;
+    try
+
+      // check if package is designtime package
+      if APackage.PackageType in [lptRunTime,lptRunTimeOnly] then begin
+        Btns:=[mbAbort];
+        if APackage.PackageType=lptRunTime then
+          Include(Btns,mbIgnore);
+        Result:=IDEMessageDialog(lisPkgMangPackageIsNoDesigntimePackage,
+          Format(lisPkgMangThePackageIsARuntimeOnlyPackageRuntimeOnlyPackages,
+                 [APackage.IDAsString, LineEnding]),
+          mtError,Btns);
+        if Result<>mrIgnore then exit;
+      end;
+      // check if package requires a runtime only package
+      ConflictDep:=PackageGraph.FindRuntimePkgOnlyRecursively(
+        APackage.FirstRequiredDependency);
+      if ConflictDep<>nil then begin
+        IDEQuestionDialog(lisNotADesigntimePackage,
+          Format(lisThePackageCanNotBeInstalledBecauseItRequiresWhichI, [
+            APackage.Name, ConflictDep.AsString]),
+          mtError,
+          [mrCancel]
+          );
+        exit;
+      end;
+
+      // save package
+      if APackage.IsVirtual or APackage.Modified then begin
+        Result:=DoSavePackage(APackage,[]);
+        if Result<>mrOk then exit;
+      end;
+
+      // check consistency
+      Result:=CheckPackageGraphForCompilation(APackage,nil,
+                              EnvironmentOptions.GetParsedLazarusDirectory,false);
       if Result<>mrOk then exit;
-    end;
 
-    // check consistency
-    Result:=CheckPackageGraphForCompilation(APackage,nil,
-                            EnvironmentOptions.GetParsedLazarusDirectory,false);
-    if Result<>mrOk then exit;
-    
-    // get all required packages, which will also be auto installed
-    APackage.GetAllRequiredPackages(PkgList,false);
-    if PkgList=nil then PkgList:=TFPList.Create;
-    
-    // remove packages already marked for installation
-    for i:=PkgList.Count-1 downto 0 do begin
-      RequiredPackage:=TLazPackage(PkgList[i]);
-      if (RequiredPackage.AutoInstall<>pitNope) then
-        PkgList.Delete(i);
-    end;
+      // get all required packages, which will also be auto installed
+      APackage.GetAllRequiredPackages(PkgList,false);
+      if PkgList=nil then PkgList:=TFPList.Create;
 
-    // now PkgList contains only the required packages that were added to the
-    // list of installation packages
-    // => show the user the list
-    if PkgList.Count>0 then begin
-      s:='';
+      // remove packages already marked for installation
+      for i:=PkgList.Count-1 downto 0 do begin
+        RequiredPackage:=TLazPackage(PkgList[i]);
+        if (RequiredPackage.AutoInstall<>pitNope) then
+          PkgList.Delete(i);
+      end;
+
+      // now PkgList contains only the required packages that were added to the
+      // list of installation packages
+      // => show the user the list
+      if PkgList.Count>0 then begin
+        s:='';
+        for i:=0 to PkgList.Count-1 do begin
+          RequiredPackage:=TLazPackage(PkgList[i]);
+          s:=s+RequiredPackage.IDAsString+LineEnding;
+        end;
+        if PkgList.Count=0 then
+          Msg:=Format(lisPkgMangInstallingThePackageWillAutomaticallyInstallThePac,
+                      [APackage.IDAsString])
+        else
+          Msg:=Format(lisPkgMangInstallingThePackageWillAutomaticallyInstallThePac2,
+                      [APackage.IDAsString]);
+        Result:=IDEMessageDialog(lisPkgMangAutomaticallyInstalledPackages,
+          Msg+LineEnding+s,mtConfirmation,[mbOk,mbCancel]);
+        if Result<>mrOk then exit;
+      end;
+
+      // warn for packages with suspicious settings
+      Result:=WarnForSuspiciousPackage(APackage);
+      if Result<>mrOk then exit;
       for i:=0 to PkgList.Count-1 do begin
         RequiredPackage:=TLazPackage(PkgList[i]);
-        s:=s+RequiredPackage.IDAsString+LineEnding;
+        Result:=WarnForSuspiciousPackage(RequiredPackage);
+        if Result<>mrOk then exit;
       end;
-      if PkgList.Count=0 then
-        Msg:=Format(lisPkgMangInstallingThePackageWillAutomaticallyInstallThePac,
-                    [APackage.IDAsString])
-      else
-        Msg:=Format(lisPkgMangInstallingThePackageWillAutomaticallyInstallThePac2,
-                    [APackage.IDAsString]);
-      Result:=IDEMessageDialog(lisPkgMangAutomaticallyInstalledPackages,
-        Msg+LineEnding+s,mtConfirmation,[mbOk,mbCancel]);
-      if Result<>mrOk then exit;
+
+      // add packages to auto installed packages
+      if GetPkgListIndex(APackage)<0 then
+        PkgList.Add(APackage);
+      NeedSaving:=false;
+      for i:=0 to PkgList.Count-1 do begin
+        RequiredPackage:=TLazPackage(PkgList[i]);
+        if RequiredPackage.AutoInstall=pitNope then begin
+          RequiredPackage.AutoInstall:=pitStatic;
+          Dependency:=RequiredPackage.CreateDependencyWithOwner(Self);
+          Dependency.AddToList(PackageGraph.FirstAutoInstallDependency,pdlRequires);
+          PackageGraph.OpenDependency(Dependency,false);
+          NeedSaving:=true;
+        end;
+      end;
+    finally
+      PackageGraph.EndUpdate;
+      PkgList.Free;
     end;
 
-    // warn for packages with suspicious settings
-    Result:=WarnForSuspiciousPackage(APackage);
+    if NeedSaving then begin
+      PackageGraph.SortAutoInstallDependencies;
+      SaveAutoInstallDependencies;
+    end;
+
+    // save IDE build configs, so user can build IDE on command line
+    BuildIDEFlags:=[blfDontClean,blfOnlyIDE];
+    Result:=MainIDE.DoSaveBuildIDEConfigs(BuildIDEFlags);
     if Result<>mrOk then exit;
-    for i:=0 to PkgList.Count-1 do begin
-      RequiredPackage:=TLazPackage(PkgList[i]);
-      Result:=WarnForSuspiciousPackage(RequiredPackage);
-      if Result<>mrOk then exit;
-    end;
-
-    // add packages to auto installed packages
-    if GetPkgListIndex(APackage)<0 then
-      PkgList.Add(APackage);
-    NeedSaving:=false;
-    for i:=0 to PkgList.Count-1 do begin
-      RequiredPackage:=TLazPackage(PkgList[i]);
-      if RequiredPackage.AutoInstall=pitNope then begin
-        RequiredPackage.AutoInstall:=pitStatic;
-        Dependency:=RequiredPackage.CreateDependencyWithOwner(Self);
-        Dependency.AddToList(PackageGraph.FirstAutoInstallDependency,pdlRequires);
-        PackageGraph.OpenDependency(Dependency,false);
-        NeedSaving:=true;
-      end;
-    end;
   finally
-    PackageGraph.EndUpdate;
-    PkgList.Free;
+    BuildBoss.SetBuildTargetProject1;
   end;
-
-  if NeedSaving then begin
-    PackageGraph.SortAutoInstallDependencies;
-    SaveAutoInstallDependencies;
-  end;
-
-  // save IDE build configs, so user can build IDE on command line
-  BuildIDEFlags:=[blfDontClean,blfOnlyIDE];
-  Result:=MainIDE.DoSaveBuildIDEConfigs(BuildIDEFlags);
-  if Result<>mrOk then exit;
 
   // ask user to rebuild Lazarus now
   Result:=IDEMessageDialog(lisPkgMangRebuildLazarus,
@@ -5426,7 +5433,7 @@ begin
     Result:=mrOk;
     exit;
   end;
-  
+
   // rebuild Lazarus
   Result:=MainIDE.DoBuildLazarus(BuildIDEFlags);
   if Result<>mrOk then exit;

@@ -223,10 +223,10 @@ type
     // methods for building IDE (will be changed when project groups are there)
     procedure SetBuildTarget(const TargetOS, TargetCPU, LCLWidgetType: string;
                              ScanFPCSrc: TScanModeFPCSources; Quiet: boolean);
-    procedure SetBuildTargetProject1(Quiet: boolean;
-                               ScanFPCSrc: TScanModeFPCSources = smsfsBackground);
-    procedure SetBuildTargetIDE;
-    function BuildTargetIDEIsDefault: boolean;
+    procedure SetBuildTargetProject1; override; overload;
+    procedure SetBuildTargetProject1(Quiet: boolean; ScanFPCSrc: TScanModeFPCSources = smsfsBackground); overload;
+    procedure SetBuildTargetIDE; override;
+    function BuildTargetIDEIsDefault: boolean; override;
 
     property FPCSrcScans: TFPCSrcScans read FFPCSrcScans;
     property BuildTarget: TObject read FBuildTarget; // TProject or nil
@@ -2640,6 +2640,11 @@ begin
   if FPCTargetChanged and (ScanFPCSrc<>smsfsSkip) then
     RescanCompilerDefines(false,false,ScanFPCSrc=smsfsWaitTillDone,Quiet);
   //if (PackageGraph<>nil) and (PackageGraph.CodeToolsPackage<>nil) then debugln(['TBuildManager.SetBuildTarget CODETOOLS OUTDIR=',PackageGraph.CodeToolsPackage.CompilerOptions.GetUnitOutPath(true,coptParsed),' ',PackageGraph.CodeToolsPackage.CompilerOptions.ParsedOpts.ParsedStamp[pcosOutputDir],' ',CompilerParseStamp]);
+end;
+
+procedure TBuildManager.SetBuildTargetProject1;
+begin
+  SetBuildTargetProject1(true);
 end;
 
 procedure TBuildManager.SetBuildTargetProject1(Quiet: boolean;
