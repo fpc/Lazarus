@@ -81,7 +81,7 @@ type
     FilesListView: TListView;
     procedure AddFileButtonClick(Sender: TObject);
     procedure AddFileListViewSelectItem(Sender: TObject; {%H-}Item: TListItem;
-      Selected: Boolean);
+      {%H-}Selected: Boolean);
     procedure AddToProjectDialogClose(Sender: TObject;
                                       var {%H-}CloseAction: TCloseAction);
     procedure DependPkgNameComboBoxChange(Sender: TObject);

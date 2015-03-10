@@ -32,7 +32,6 @@ interface
 uses
   Classes, SysUtils, LCLProc, Forms, Controls, Graphics, StdCtrls,
   CodeToolManager, CodeCache, IdentCompletionTool, CodeTree,
-  CodeAtom,
   IDEHelpIntf, SrcEditorIntf, SrcEditHintFrm, CodeHelp;
 
 type

@@ -40,7 +40,7 @@ uses
   SynEditHighlighter, SynRegExpr, SynCompletion, BasicCodeTools, CodeTree,
   CodeAtom, CodeCache, SourceChanger, CustomCodeTool, CodeToolManager,
   PascalParserTool, KeywordFuncLists, FileProcs, IdentCompletionTool,
-  PascalReaderTool, SourceLog,
+  PascalReaderTool,
   LazIDEIntf, TextTools, IDETextConverter, DialogProcs, EditorOptions,
   IDEImagesIntf, CodeToolsOptions;
 

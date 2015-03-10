@@ -31,7 +31,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, LCLType, Controls, Forms, ComCtrls, Buttons,
-  ButtonPanel, ExtCtrls, EditBtn, StdCtrls, Dialogs, TreeFilterEdit,
+  ButtonPanel, ExtCtrls, StdCtrls, Dialogs, TreeFilterEdit,
   IDEWindowIntf, IDEOptionsIntf, IDECommands, IDEHelpIntf, ProjectIntf,
   EnvironmentOpts, LazarusIDEStrConsts, EditorOptions,
   BuildModesManager, TransferMacros, project_save_options, Project,

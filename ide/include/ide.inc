@@ -54,7 +54,7 @@
   {$OPTIMIZATION NOSTACKFRAME}
 {$ENDIF}
 
-{$IF defined(Windows) and defined(HEAPTRC_WINDOW) and FPC_FULLVERSION>=20701}
+{$IF defined(Windows) and defined(HEAPTRC_WINDOW) and (FPC_FULLVERSION>=20701)}
   {$DEFINE EnableRedirectStdErr}
 {$ENDIF}
 

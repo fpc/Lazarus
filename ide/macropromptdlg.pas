@@ -38,7 +38,7 @@ uses
   {$IFDEF IDE_MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, LCLType, Controls, Forms, Buttons, StdCtrls, ComCtrls, 
+  Classes, SysUtils, LCLType, Controls, Forms, Buttons, StdCtrls,
   Dialogs, LResources, LazarusIDEStrConsts;
 
 
@@ -51,7 +51,7 @@ type
     procedure MacroPrompDialogResize(Sender: TObject);
     procedure OkButtonClick(Sender: TObject);
     procedure CancelButtonClick(Sender: TObject);
-    procedure DataEditKeyDown(Sender: TObject; var Key:Word; Shift:TShiftState);
+    procedure DataEditKeyDown(Sender: TObject; var Key:Word; {%H-}Shift:TShiftState);
   public
     constructor Create(AnOwner: TComponent); override;
   end;

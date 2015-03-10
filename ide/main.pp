@@ -64,7 +64,7 @@ uses
   AsyncProcess,
 {$ENDIF}
   // lazutils
-  LazUTF8, Laz2_XMLCfg, AvgLvlTree,
+  LazUTF8, Laz2_XMLCfg,
   // lcl
   LCLProc, LCLType, LCLIntf, LConvEncoding, ComCtrls,
   FileUtil, LResources, Forms, Buttons, Menus, Controls, GraphType,

@@ -34,7 +34,7 @@ interface
 uses
   Classes, SysUtils, LCLProc, Forms, Controls, Graphics, Dialogs, FileUtil,
   Clipbrd, StdCtrls, Buttons, Process, AVL_Tree, Menus, ExtCtrls,
-  UTF8Process, ButtonPanel, ComCtrls,
+  ButtonPanel, ComCtrls,
   // codetools
   KeywordFuncLists, CodeToolManager, FileProcs, DefineTemplates,
   CodeToolsStructs,

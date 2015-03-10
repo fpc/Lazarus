@@ -41,7 +41,7 @@ uses
   Graphics, Dialogs, LCLType, LCLIntf, Themes, Buttons, SynEdit, SynEditKeyCmds,
   BasicCodeTools, KeywordFuncLists, LinkScanner, CodeCache, FindDeclarationTool,
   IdentCompletionTool, CodeTree, CodeAtom, PascalParserTool, CodeToolManager,
-  SourceChanger, SrcEditorIntf, LazIDEIntf, IDEProcs, LazarusIDEStrConsts;
+  SrcEditorIntf, LazIDEIntf, IDEProcs, LazarusIDEStrConsts;
 
 type
 

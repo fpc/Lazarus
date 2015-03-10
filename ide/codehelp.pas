@@ -302,7 +302,7 @@ type
                                  out CacheWasUsed: boolean): TCodeHelpParseResult;
     function GetCodeContext(CodePos: PCodeXYPosition;
                             out FindContext: TFindContext;
-                            Complete: boolean;
+                            {%H-}Complete: boolean;
                             out CacheWasUsed: boolean): TCodeHelpParseResult;
     function GetElementChain(Code: TCodeBuffer; X, Y: integer; Complete: boolean;
                              out Chain: TCodeHelpElementChain;

@@ -38,7 +38,7 @@ uses
   LazarusIDEStrConsts, LazIDEIntf, FormEditor, IDEExternToolIntf,
   // codetools
   CodeToolManager, StdCodeTools, CodeTree, CodeAtom,
-  FindDeclarationTool, PascalReaderTool, PascalParserTool, LFMTrees,
+  FindDeclarationTool, LFMTrees,
   ExprEval, KeywordFuncLists, BasicCodeTools, LinkScanner,
   CodeCache, SourceChanger, CustomCodeTool, CodeToolsStructs,
   // Converter

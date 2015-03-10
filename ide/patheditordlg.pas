@@ -22,7 +22,7 @@ interface
 
 uses
   Classes, SysUtils, types, Forms, Controls, Buttons, StdCtrls, Dialogs,
-  FileUtil, ButtonPanel, ExtCtrls, EditBtn, MacroIntf, IDEImagesIntf, LCLType,
+  FileUtil, ButtonPanel, ExtCtrls, MacroIntf, IDEImagesIntf, LCLType,
   Graphics, Menus, TransferMacros, LazarusIDEStrConsts, shortpathedit, Clipbrd,
   LCLProc;
 

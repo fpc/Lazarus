@@ -31,7 +31,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, StdCtrls, ExtCtrls, Buttons,
-  ButtonPanel, Dialogs, LCLProc, FileProcs, Graphics, LCLType, EditBtn,
+  ButtonPanel, Dialogs, LCLProc, FileProcs, Graphics, LCLType,
   SourceEditor, LazIDEIntf, IDEImagesIntf, LazarusIDEStrConsts, ProjectIntf,
   Project, CodeCache, CodeToolManager, IdentCompletionTool, CodeTree,
   ListFilterEdit, LinkScanner;

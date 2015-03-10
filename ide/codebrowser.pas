@@ -49,7 +49,7 @@ uses
   Dialogs, Clipbrd, LCLIntf, AVL_Tree, StdCtrls, ExtCtrls, ComCtrls, Buttons,
   Menus, HelpIntfs,
   // codetools
-  CodeAtom, BasicCodeTools, DefineTemplates, CodeTree, CodeCache,
+  BasicCodeTools, DefineTemplates, CodeTree, CodeCache,
   CodeToolsStructs, CodeToolManager, PascalParserTool, LinkScanner, FileProcs,
   CodeIndex, StdCodeTools, SourceLog, CustomCodeTool,
   // IDEIntf
@@ -383,7 +383,7 @@ type
   public
     function IsApplicable(Msg: TMessageLine; out Identifier: string): boolean;
     procedure CreateMenuItems(Fixes: TMsgQuickFixes); override;
-    procedure QuickFix(Fixes: TMsgQuickFixes; Msg: TMessageLine); override;
+    procedure QuickFix({%H-}Fixes: TMsgQuickFixes; Msg: TMessageLine); override;
   end;
 var
   CodeBrowserView: TCodeBrowserView = nil;
@@ -1878,8 +1878,6 @@ procedure TCodeBrowserView.GetNodeIdentifier(Tool: TStandardCodeTool;
       Result:=LeftStr(Result, MAX_LEN)+'...';
   end;
 
-const
-  NodeFlags = [];
 begin
   if CTNode.StartPos>=CTNode.EndPos then begin
     Identifier:='';

@@ -42,7 +42,7 @@ interface
 uses
   SysUtils, Classes, Controls, Forms, Dialogs, Buttons, StdCtrls,
   LazarusIdeStrConsts, IDEProcs, CustomFormEditor, LCLType, LCLIntf,
-  ExtCtrls, ButtonPanel, Menus, AVL_Tree, ImgList, ComCtrls,
+  ExtCtrls, ButtonPanel, Menus, AVL_Tree, ComCtrls,
   PackageDefs, IDEWindowIntf, IDEHelpIntf, IDEImagesIntf, ListFilterEdit,
   CodeToolsStructs, CodeToolManager, FileProcs, lazutf8sysutils, LazFileUtils,
   LazLogger;

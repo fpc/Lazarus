@@ -9,7 +9,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, DbgIntfDebuggerBase, Forms, Controls, Graphics, Dialogs,
-  StdCtrls, ComCtrls, LCLType, Contnrs, LazarusIDEStrConsts, BaseDebugManager, Debugger;
+  StdCtrls, ComCtrls, LCLType, LazarusIDEStrConsts, BaseDebugManager, Debugger;
 
 type
 
