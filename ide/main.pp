@@ -595,8 +595,6 @@ type
     function OnCodeToolBossGetMethodName(const Method: TMethod;
                                          PropOwner: TObject): String;
     procedure CodeToolBossPrepareTree(Sender: TObject);
-    procedure CodeToolBossProgress(Sender: TObject; Index, MaxIndex: integer;
-                                   const Msg: string; var Abort: boolean);
     procedure OnCodeToolBossGetIndenterExamples(Sender: TObject;
                 Code: TCodeBuffer; Step: integer; // starting at 0
                 var CodeBuffers: TFPList; // stopping when CodeBuffers=nil
@@ -607,7 +605,7 @@ type
 
     function CTMacroFunctionProject(Data: Pointer): boolean;
     procedure OnCompilerParseStampIncreased;
-    procedure CodeToolBossScannerInit(Self: TCodeToolManager;
+    procedure CodeToolBossScannerInit({%H-}Self: TCodeToolManager;
       Scanner: TLinkScanner);
 
     // SearchResultsView events
@@ -8737,7 +8735,6 @@ begin
   // load caches
   MainBuildBoss.LoadFPCDefinesCaches;
 
-  CodeToolBoss.DefinePool.OnProgress:=@CodeToolBossProgress;
   CodeToolBoss.SourceCache.ExpirationTimeInDays:=365;
   CodeToolBoss.SourceCache.OnEncodeSaving:=@OnCodeBufferEncodeSaving;
   CodeToolBoss.SourceCache.OnDecodeLoaded:=@OnCodeBufferDecodeLoaded;
@@ -8958,12 +8955,6 @@ begin
     DebugLn(['TMainIDE.CodeToolBossPrepareTree 2 "',CodeToolBoss.GetUnitPathForDirectory('',false),'"']);
     {$ENDIF}
   end;
-end;
-
-procedure TMainIDE.CodeToolBossProgress(Sender: TObject; Index,
-  MaxIndex: integer; const Msg: string; var Abort: boolean);
-begin
-  //DebugLn(['TMainIDE.CodeToolBossProgress ',Index,' ',MaxIndex]);
 end;
 
 procedure TMainIDE.OnCodeToolBossGetIndenterExamples(Sender: TObject;
