@@ -4982,8 +4982,7 @@ var
 begin
   Result:=mrOk;
   Dlg:=FindInFilesDialog;
-  Dlg.DirectoriesComboBox.Text:='';
-  Dlg.FindInFilesPerDialog(Project1);
+  Dlg.FindInSearchPath(APackage.SourceDirectories.CreateSearchPathFromAllFiles);
 end;
 
 function TPkgManager.AddDependencyToUnitOwners(const OwnedFilename,

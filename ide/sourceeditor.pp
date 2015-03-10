@@ -355,7 +355,7 @@ type
     // find
     procedure StartFindAndReplace(Replace:boolean);
     procedure AskReplace(Sender: TObject; const ASearch, AReplace:
-       string; Line, Column: integer; var Action: TSrcEditReplaceAction); override;
+       string; Line, Column: integer; out Action: TSrcEditReplaceAction); override;
     procedure OnReplace(Sender: TObject; const ASearch, AReplace:
        string; {%H-}Line, {%H-}Column: integer; var Action: TSynReplaceAction);
     function  DoFindAndReplace(aFindText, aReplaceText: String; anOptions: TSynSearchOptions): Integer;
@@ -2963,7 +2963,7 @@ begin
 end;
 
 procedure TSourceEditor.AskReplace(Sender: TObject; const ASearch,
-  AReplace: string; Line, Column: integer; var Action: TSrcEditReplaceAction);
+  AReplace: string; Line, Column: integer; out Action: TSrcEditReplaceAction);
 var
   SynAction: TSynReplaceAction;
 begin

@@ -57,13 +57,13 @@ type
   end;
 
 
-function ShowCodeMacroSelectDialog(var Parameter: string): TIDECodeMacro;
+function ShowCodeMacroSelectDialog(out Parameter: string): TIDECodeMacro;
 
 implementation
 
 {$R *.lfm}
 
-function ShowCodeMacroSelectDialog(var Parameter: string): TIDECodeMacro;
+function ShowCodeMacroSelectDialog(out Parameter: string): TIDECodeMacro;
 var
   CodeMacroSelectDlg: TCodeMacroSelectDlg;
 begin
