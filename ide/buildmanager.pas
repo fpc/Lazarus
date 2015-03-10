@@ -2633,7 +2633,8 @@ begin
   LCLTargetChanged:=(OldLCLWidgetType<>fLCLWidgetType);
 
   if FPCTargetChanged or LCLTargetChanged then begin
-    //DebugLn(['TMainIDE.SetBuildTarget Old=',OldTargetCPU,'-',OldTargetOS,'-',OldLCLWidgetType,' New=',fTargetCPU,'-',fTargetOS,'-',fLCLWidgetType,' FPC=',FPCTargetChanged,' LCL=',LCLTargetChanged]);
+    if ConsoleVerbosity>=1 then
+      DebugLn(['TMainIDE.SetBuildTarget Old=',OldTargetCPU,'-',OldTargetOS,'-',OldLCLWidgetType,' New=',fTargetCPU,'-',fTargetOS,'-',fLCLWidgetType,' FPC=',FPCTargetChanged,' LCL=',LCLTargetChanged]);
   end;
   if LCLTargetChanged then
     CodeToolBoss.SetGlobalValue(ExternalMacroStart+'LCLWidgetType',fLCLWidgetType);
@@ -2668,11 +2669,7 @@ begin
     NewTargetCPU:=BuildLazOpts.TargetCPU;
     NewLCLWidgetSet:=LCLPlatformDirNames[BuildLazOpts.TargetPlatform];
   end;
-  if (NewTargetOS='') or (NewTargetOS='default') then
-    NewTargetOS:=GetCompiledTargetOS;
-  if (NewTargetCPU='') or (NewTargetCPU='default') then
-    NewTargetCPU:=GetCompiledTargetCPU;
-  if ConsoleVerbosity>=0 then
+  if ConsoleVerbosity>=1 then
     debugln(['TBuildManager.SetBuildTargetIDE OS=',NewTargetOS,' CPU=',NewTargetCPU,' WS=',NewLCLWidgetSet]);
   SetBuildTarget(NewTargetOS,NewTargetCPU,NewLCLWidgetSet,smsfsBackground,false);
 end;
