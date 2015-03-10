@@ -43,7 +43,7 @@ uses
   Classes, SysUtils, LCLProc, Forms, Controls, Graphics, Dialogs,
   contnrs, StdCtrls, ExtCtrls, ComCtrls, ButtonPanel,
   // codetools
-  CodeCache, CodeToolManager, FileProcs, DirectoryCacher, DefineTemplates,
+  CodeToolManager, FileProcs, DirectoryCacher, DefineTemplates,
   // IDEIntf
   LazIDEIntf, TextTools, IDEMsgIntf, PackageIntf, ProjectIntf,
   IDEExternToolIntf,
@@ -108,7 +108,7 @@ type
     procedure FindUnitOwnerNames(aFile: TICCFile);
     procedure SearchDirectory(anUnitName: string; Dir: string;
                               IsFPCPath: boolean; Files: TICCFiles);
-    procedure SearchInFPCFiles(anUnitName, SearchPath: string; Files: TICCFiles);
+    procedure SearchInFPCFiles(anUnitName: string; Files: TICCFiles);
     procedure SearchInSearchPath(anUnitName, SearchPath: string; Files: TICCFiles);
     function SearchUnit(anUnitName, SearchPath: string): TICCFiles;
     procedure AddNodesForUnit(anUnitName: string; Files: TICCFiles);
@@ -128,7 +128,7 @@ type
   public
     function IsApplicable(Msg: TMessageLine; out Unitname1, Unitname2: string): boolean;
     procedure CreateMenuItems(Fixes: TMsgQuickFixes); override;
-    procedure QuickFix(Fixes: TMsgQuickFixes; Msg: TMessageLine); override;
+    procedure QuickFix({%H-}Fixes: TMsgQuickFixes; Msg: TMessageLine); override;
   end;
 
 procedure InitInspectChecksumChangedQuickFixItems;
@@ -282,7 +282,7 @@ begin
 end;
 
 procedure TInspectChksumChgDialog.SearchInFPCFiles(
-  anUnitName, SearchPath: string; Files: TICCFiles);
+  anUnitName: string; Files: TICCFiles);
 var
   UnitSetID: String;
   UnitSet: TFPCUnitSetCache;
@@ -312,7 +312,7 @@ begin
   if (anUnitName='') then exit;
 
   SearchInSearchPath(anUnitName,SearchPath,Result);
-  SearchInFPCFiles(anUnitName,SearchPath,Result);
+  SearchInFPCFiles(anUnitName,Result);
 end;
 
 procedure TInspectChksumChgDialog.AddNodesForUnit(anUnitName: string;
@@ -380,9 +380,8 @@ var
   SearchPath: String;
 begin
   FMsg:=aMsg;
-  REMatches(Msg,'Recompiling ([a-z_][a-z_0-9]*), checksum changed for ([a-z_][a-z_0-9]*)','i');
-  FUnit1:=REVar(1);
-  FUnit2:=REVar(2);
+  FUnit1:=aUnitName1;
+  FUnit2:=aUnitName2;
   FreeAndNil(FUnit1Files);
   FreeAndNil(FUnit2Files);
 

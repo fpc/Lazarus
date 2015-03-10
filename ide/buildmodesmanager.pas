@@ -53,7 +53,7 @@ type
     NoteLabel: TLabel;
     procedure btnCreateDefaultModesClick(Sender: TObject);
     procedure BuildModesStringGridDrawCell(Sender: TObject; aCol,
-      aRow: Integer; aRect: TRect; aState: TGridDrawState);
+      aRow: Integer; aRect: TRect; {%H-}aState: TGridDrawState);
     procedure CancelButtonClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -65,7 +65,7 @@ type
     procedure BuildModesCheckboxToggled(Sender: TObject;
       aCol, aRow: Integer; aState: TCheckboxState);
     procedure BuildModesStringGridSelection(Sender: TObject;
-      aCol, aRow: Integer);
+      {%H-}aCol, {%H-}aRow: Integer);
     procedure BuildModesStringGridValidateEntry(Sender: TObject;
       aCol, aRow: Integer; const OldValue: string; var NewValue: String);
     procedure FormShow(Sender: TObject);
