@@ -465,8 +465,8 @@ type
       JumpToError: boolean; out Handled, Abort: boolean);
     procedure OnSrcNotebookShowCodeContext(JumpToError: boolean;
                                            out Abort: boolean);
-    procedure OnSrcNotebookJumpToHistoryPoint(var NewCaretXY: TPoint;
-      var NewTopLine: integer; var DestEditor: TSourceEditor; JumpAction: TJumpHistoryAction);
+    procedure OnSrcNotebookJumpToHistoryPoint(out NewCaretXY: TPoint;
+      out NewTopLine: integer; out DestEditor: TSourceEditor; JumpAction: TJumpHistoryAction);
     procedure OnSrcNotebookReadOnlyChanged(Sender: TObject);
     procedure OnSrcNotebookSaveAll(Sender: TObject);
     procedure OnSrcNotebookShowHintForSource(SrcEdit: TSourceEditor;
@@ -11085,8 +11085,8 @@ begin
   Project1.JumpHistory.DeleteLast;
 end;
 
-procedure TMainIDE.OnSrcNotebookJumpToHistoryPoint(var NewCaretXY: TPoint;
-  var NewTopLine: integer; var DestEditor: TSourceEditor;
+procedure TMainIDE.OnSrcNotebookJumpToHistoryPoint(out NewCaretXY: TPoint; out
+  NewTopLine: integer; out DestEditor: TSourceEditor;
   JumpAction: TJumpHistoryAction);
 { How the HistoryIndex works:
 
@@ -11114,6 +11114,8 @@ var DestIndex, UnitIndex: integer;
 begin
   DestEditor := nil;
   NewCaretXY.Y:=-1;
+  NewCaretXY.X:=-1;
+  NewTopLine:=-1;
   JumpHistory:=Project1.JumpHistory;
 
   {$IFDEF VerboseJumpHistory}

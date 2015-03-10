@@ -524,9 +524,9 @@ type
 
   TJumpHistoryAction = (jhaBack, jhaForward, jhaViewWindow);
 
-  TOnJumpToHistoryPoint = procedure(var NewCaretXY: TPoint;
-                                    var NewTopLine: integer;
-                                    var DestEditor: TSourceEditor;
+  TOnJumpToHistoryPoint = procedure(out NewCaretXY: TPoint;
+                                    out NewTopLine: integer;
+                                    out DestEditor: TSourceEditor;
                                     Action: TJumpHistoryAction) of object;
   TOnAddJumpPoint = procedure(ACaretXY: TPoint; ATopLine: integer;
                   AEditor: TSourceEditor; DeleteForwardHistory: boolean) of object;
