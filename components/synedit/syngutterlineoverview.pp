@@ -1382,10 +1382,7 @@ var
 begin
   inherited DoResize(Sender);
   if (not SynEdit.HandleAllocated) or (not Self.Visible) then exit;
-  FWinControl.Top := Top;
-  FWinControl.Left := Left;
-  FWinControl.Width := Width;
-  FWinControl.Height := Height;
+  FWinControl.BoundsRect := Bounds(Left,Top,Width,Height);
 
   {$IFDEF DARWIN}
   FLineMarks.PixelHeight := Height;
