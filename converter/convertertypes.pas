@@ -61,7 +61,7 @@ type
   public
     constructor Create;
     destructor Destroy; override;
-    function Find(aParentType: string; var Index: Integer): Boolean;
+    function Find(aParentType: string; out Index: Integer): Boolean;
     function AddVisualOffset(const aParentType: string; aTop, aLeft: Integer): integer;
     property Items[Index: Integer]: TVisualOffset read GetVisualOffset
                                                  write SetVisualOffset; default;
@@ -152,7 +152,7 @@ begin
   inherited Destroy;
 end;
 
-function TVisualOffsets.Find(aParentType: string; var Index: Integer): Boolean;
+function TVisualOffsets.Find(aParentType: string; out Index: Integer): Boolean;
 var
   i: Integer;
 begin
