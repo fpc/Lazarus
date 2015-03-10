@@ -5172,8 +5172,10 @@ begin
 
   // register custom IDE components
   RegistrationPackage:=DefaultPackage;
+  {$IFDEF CustomIDEComps}
   if IDEComponentPalette<>nil then
     IDEComponentPalette.RegisterCustomIDEComponents(@RegisterCustomIDEComponent);
+  {$ENDIF}
   if DefaultPackage.FileCount=0 then begin
     FreeThenNil(FDefaultPackage);
   end else begin

@@ -357,7 +357,7 @@ type
     procedure AskReplace(Sender: TObject; const ASearch, AReplace:
        string; Line, Column: integer; var Action: TSrcEditReplaceAction); override;
     procedure OnReplace(Sender: TObject; const ASearch, AReplace:
-       string; Line, Column: integer; var Action: TSynReplaceAction);
+       string; {%H-}Line, {%H-}Column: integer; var Action: TSynReplaceAction);
     function  DoFindAndReplace(aFindText, aReplaceText: String; anOptions: TSynSearchOptions): Integer;
     procedure FindNextUTF8;
     procedure FindPrevious;
@@ -3537,7 +3537,7 @@ Begin
   ecClearBookmarkForFile: begin
       if Assigned(Manager) and Assigned(Manager.OnClearBookmarkId) then
         for i := 0 to 9 do
-          if EditorComponent.GetBookMark(i,x,y) then
+          if EditorComponent.GetBookMark(i,x,y{%H-}) then
             Manager.OnClearBookmarkId(Self, i);
     end;
 

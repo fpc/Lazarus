@@ -233,8 +233,10 @@ type
     function IndexOfPageComponent(AComponent: TComponent): integer;
     procedure Update(ForceUpdateAll: Boolean); virtual; abstract;
     procedure IterateRegisteredClasses(Proc: TGetComponentClassEvent);
+    {$IFDEF CustomIDEComps}
     procedure RegisterCustomIDEComponents(
                         const RegisterProc: RegisterUnitComponentProc); virtual; abstract;
+    {$ENDIF}
     procedure RemoveAllHandlersOfObject(AnObject: TObject);
     procedure AddHandlerUpdateVisible(
                         const OnUpdateCompVisibleEvent: TUpdateCompVisibleEvent;

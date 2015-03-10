@@ -46,7 +46,7 @@ type
   protected
     procedure SetControl(const AValue: TWinControl); virtual;
   public
-    procedure GetPreferredSize(out PreferredWidth, PreferredHeight: integer); virtual;
+    procedure GetPreferredSize(var {%H-}PreferredWidth, {%H-}PreferredHeight: integer); virtual;
     procedure UpdateHint; virtual;
     property Control: TWinControl read FControl write SetControl;
   end;
@@ -349,7 +349,7 @@ begin
   FControl:=AValue;
 end;
 
-procedure TCodeHintProvider.GetPreferredSize(out PreferredWidth,
+procedure TCodeHintProvider.GetPreferredSize(var PreferredWidth,
   PreferredHeight: integer);
 begin
 

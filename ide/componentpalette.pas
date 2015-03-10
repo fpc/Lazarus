@@ -173,8 +173,10 @@ type
     procedure OnGetNonVisualCompIcon(Sender: TObject;
                                      AComponent: TComponent; var Icon: TCustomBitmap);
     function FindComponent(const CompClassName: string): TRegisteredComponent; override;
+    {$IFDEF CustomIDEComps}
     procedure RegisterCustomIDEComponents(
                        const RegisterProc: RegisterUnitComponentProc); override;
+    {$ENDIF}
     procedure Update(ForceUpdateAll: Boolean); override;
     function AssignOrigCompsForPage(PageName: string;
                                     DestComps: TStringList): Boolean; override;
@@ -1318,14 +1320,13 @@ begin
     Result:=nil;
 end;
 
+{$IFDEF CustomIDEComps}
 procedure TComponentPalette.RegisterCustomIDEComponents(
   const RegisterProc: RegisterUnitComponentProc);
 begin
-  //inherited RegisterCustomIDEComponents(RegisterProc);
-  {$IFDEF CustomIDEComps}
   CustomIDEComps.RegisterCustomComponents(RegisterProc);
-  {$ENDIF}
 end;
+{$ENDIF}
 
 end.
 
