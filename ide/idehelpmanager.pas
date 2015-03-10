@@ -828,7 +828,7 @@ var
   URLParams: string;
 begin
   Result:=false;
-  SplitURL(NextURL,URLScheme,URLPath,URLParams);
+  SplitURL(URL,URLScheme,URLPath,URLParams);
   if (URLScheme='file') or (URLScheme='lazdoc') or (URLScheme='fpdoc') then
     Result:=true;
 end;
