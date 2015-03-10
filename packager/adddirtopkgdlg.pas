@@ -61,9 +61,7 @@ type
     fIncludeFilterRE, fExcludeFilterRE: TRegExpr;
     procedure SetLazPackage(const AValue: TLazPackage);
     function GatherFiles(Directory: string; WithSubDirs: boolean;
-      OnlyTextFiles: boolean;
-      IncludeFilter: string; IncludeFilterRegEx: boolean;
-      ExcludeFilter: string; ExcludeFilterRegEx: boolean): boolean;
+      OnlyTextFiles: boolean): boolean;
     function UpdateFilter: boolean;
   public
     property LazPackage: TLazPackage read FLazPackage write SetLazPackage;
@@ -143,9 +141,7 @@ end;
 procedure TAddDirToPkgDialog.ButtonPanel1OkClick(Sender: TObject);
 begin
   if not GatherFiles(DirEdit.Text,SubDirCheckBox.Checked,
-    OnlyTextCheckBox.Checked,
-    IncludeFilterCombobox.Text,IncludeRegExCheckBox.Checked,
-    ExcludeFilterCombobox.Text,ExcludeRegExCheckBox.Checked) then exit;
+    OnlyTextCheckBox.Checked) then exit;
   ModalResult:=mrOk;
 end;
 
@@ -180,9 +176,7 @@ begin
 end;
 
 function TAddDirToPkgDialog.GatherFiles(Directory: string;
-  WithSubDirs: boolean; OnlyTextFiles: boolean; IncludeFilter: string;
-  IncludeFilterRegEx: boolean; ExcludeFilter: string;
-  ExcludeFilterRegEx: boolean): boolean;
+  WithSubDirs: boolean; OnlyTextFiles: boolean): boolean;
 
   function FileCanBeAdded(AFilename: string): boolean;
   begin
