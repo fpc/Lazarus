@@ -187,8 +187,7 @@ type
         var LFMCode, LRSCode: TCodeBuffer; CanAbort: boolean): TModalResult;
     function SaveUnitComponent(AnUnitInfo: TUnitInfo;
         LRSCode, LFMCode: TCodeBuffer; Flags: TSaveFlags): TModalResult;
-    function RemoveLooseEvents(AnUnitInfo: TUnitInfo;
-        OkOnCodeErrors: boolean): TModalResult;
+    function RemoveLooseEvents(AnUnitInfo: TUnitInfo): TModalResult;
     function RenameUnit(AnUnitInfo: TUnitInfo; NewFilename, NewUnitName: string;
         var LFMCode, LRSCode: TCodeBuffer): TModalResult;
     function RenameUnitLowerCase(AnUnitInfo: TUnitInfo; AskUser: boolean): TModalresult;
@@ -4643,7 +4642,7 @@ begin
     ComponentSavingOk:=true;
 
     // clean up component
-    Result:=RemoveLooseEvents(AnUnitInfo,true);
+    Result:=RemoveLooseEvents(AnUnitInfo);
     if Result<>mrOk then exit;
 
     // save designer form properties to the component
@@ -4909,8 +4908,8 @@ begin
   {$ENDIF}
 end;
 
-function TLazSourceFileManager.RemoveLooseEvents(AnUnitInfo: TUnitInfo;
-  OkOnCodeErrors: boolean): TModalResult;
+function TLazSourceFileManager.RemoveLooseEvents(AnUnitInfo: TUnitInfo
+  ): TModalResult;
 var
   ComponentModified: boolean;
   ActiveSrcEdit: TSourceEditor;
