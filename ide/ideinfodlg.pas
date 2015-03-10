@@ -48,7 +48,7 @@ type
     GeneralTabSheet: TTabSheet;
     ModifiedTabSheet: TTabSheet;
     HelpTabSheet: TTabSheet;
-    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
+    procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
   private
     // general
@@ -192,8 +192,6 @@ begin
 end;
 
 procedure TIDEInfoDialog.GatherIDEVersion(sl: TStrings);
-const
-  LazarusVersionStr= {$I version.inc};
 begin
   sl.Add('Lazarus version: '+GetLazarusVersionString);
   sl.Add('Lazarus svn revision: '+LazarusRevisionStr);

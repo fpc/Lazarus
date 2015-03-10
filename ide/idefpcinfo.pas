@@ -45,7 +45,7 @@ type
     PageControl1: TPageControl;
     ValuesTabSheet: TTabSheet;
     OutputTabSheet: TTabSheet;
-    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
+    procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
   private
     procedure UpdateValuesMemo;

@@ -33,7 +33,7 @@ uses
   Classes, SysUtils, LCLProc, LCLType, Controls, Forms, ComCtrls, Buttons,
   ButtonPanel, ExtCtrls, EditBtn, StdCtrls, Dialogs, TreeFilterEdit,
   IDEWindowIntf, IDEOptionsIntf, IDECommands, IDEHelpIntf, ProjectIntf,
-  CompOptsIntf, IDEDialogs, EnvironmentOpts, LazarusIDEStrConsts, EditorOptions,
+  EnvironmentOpts, LazarusIDEStrConsts, EditorOptions,
   BuildModesManager, TransferMacros, project_save_options, Project,
   ModeMatrixOpts, PackageDefs, PackageSystem, Compiler_ModeMatrix,
   Compiler_Other_Options;
@@ -73,7 +73,6 @@ type
     function FilterEditFilterItem(Item: TObject; out Done: Boolean): Boolean;
     procedure FormShow(Sender: TObject);
     procedure HelpButtonClick(Sender: TObject);
-    procedure IDEOptionsDialogKeyPress(Sender: TObject; var Key: char);
     procedure OkButtonClick(Sender: TObject);
     procedure CancelButtonClick(Sender: TObject);
   private
@@ -126,8 +125,6 @@ implementation
 
 {$R *.lfm}
 
-uses
-  IDEContextHelpEdit;
 
 const
   LazUtilsPkg = 'LazUtils';
@@ -171,8 +168,6 @@ begin
   ButtonPanel.CancelButton.OnClick := @CancelButtonClick;
   ButtonPanel.HelpButton.Caption:= lisMenuHelp;
   ButtonPanel.HelpButton.OnClick := @HelpButtonClick;
-
-  OnKeyPress:=@IDEOptionsDialogKeyPress;
 end;
 
 procedure TIDEOptionsDialog.FormShow(Sender: TObject);
@@ -191,11 +186,6 @@ begin
     LazarusHelp.ShowHelpForIDEControl(FPrevEditor)
   else
     LazarusHelp.ShowHelpForIDEControl(Self);
-end;
-
-procedure TIDEOptionsDialog.IDEOptionsDialogKeyPress(Sender: TObject; var Key: char);
-begin
-  //debugln(['TIDEOptionsDialog.IDEOptionsDialogKeyPress ',ord(Key)]);
 end;
 
 procedure TIDEOptionsDialog.CategoryTreeChange(Sender: TObject; Node: TTreeNode);

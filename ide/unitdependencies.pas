@@ -38,7 +38,7 @@ uses
   Classes, SysUtils, types, math, AVL_Tree, LazLogger, LazFileUtils, LazUTF8,
   Forms, Controls, ExtCtrls, ComCtrls, StdCtrls, Buttons, Dialogs, Menus,
   Clipbrd, LvlGraphCtrl, LazIDEIntf, ProjectIntf, IDEWindowIntf, PackageIntf,
-  SrcEditorIntf, IDEImagesIntf, IDECommands, IDEDialogs, IDEMsgIntf, TextTools,
+  SrcEditorIntf, IDEImagesIntf, IDECommands, IDEDialogs, IDEMsgIntf,
   IDEExternToolIntf,
   CodeToolManager, DefineTemplates, CodeToolsStructs,
   CTUnitGraph, CTUnitGroupGraph, FileProcs, CodeCache, LazarusIDEStrConsts,
@@ -310,7 +310,7 @@ type
   public
     function IsApplicable(Msg: TMessageLine; out Unitname1, Unitname2: string): boolean;
     procedure CreateMenuItems(Fixes: TMsgQuickFixes); override;
-    procedure QuickFix(Fixes: TMsgQuickFixes; Msg: TMessageLine); override;
+    procedure QuickFix({%H-}Fixes: TMsgQuickFixes; Msg: TMessageLine); override;
   end;
 
 var

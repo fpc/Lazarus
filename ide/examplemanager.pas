@@ -34,13 +34,13 @@ type
     SelectNoneButton: TBitBtn;
     ProjectsGroupBox: TGroupBox;
     procedure cbIncludeAllDirsClick(Sender: TObject);
-    procedure cgIncludedDirsItemClick(Sender: TObject; Index: integer);
+    procedure cgIncludedDirsItemClick(Sender: TObject; {%H-}Index: integer);
     procedure FormCreate(Sender: TObject);
-    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
+    procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure BuildAllSelectedButtonClick(Sender: TObject);
     procedure OpenSelectedButtonClick(Sender: TObject);
     procedure ProjectFilterAfterFilter(Sender: TObject);
-    procedure ProjectsListBoxSelectionChange(Sender: TObject; User: boolean);
+    procedure ProjectsListBoxSelectionChange(Sender: TObject; {%H-}User: boolean);
     procedure cbRelativePathClick(Sender: TObject);
     procedure edRootDirectoryChange(Sender: TObject);
     procedure SelectAllButtonClick(Sender: TObject);
@@ -52,7 +52,7 @@ type
     fIdleConnected: boolean;
     procedure FillProjectsPending;
     procedure SetIdleConnected(const AValue: boolean);
-    procedure OnIdle(Sender: TObject; var Done: Boolean);
+    procedure OnIdle(Sender: TObject; var {%H-}Done: Boolean);
   public
     constructor Create(AnOwner: TComponent); override;
     destructor Destroy; override;

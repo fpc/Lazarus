@@ -40,8 +40,8 @@ unit InitialSetupDlgs;
 interface
 
 uses
-  Classes, SysUtils, strutils, contnrs, LCLProc, Forms, Controls, Buttons,
-  Dialogs, FileUtil, Laz2_XMLCfg, lazutf8classes, LazFileUtils, LazFileCache,
+  Classes, SysUtils, contnrs, LCLProc, Forms, Controls, Buttons,
+  Dialogs, FileUtil, lazutf8classes, LazFileUtils, LazFileCache,
   LazLogger, Graphics, ComCtrls, ExtCtrls, StdCtrls, DefineTemplates,
   CodeToolManager, FileProcs, TransferMacros, MacroDefIntf, GDBMIDebugger,
   DbgIntfDebuggerBase, LazarusIDEStrConsts, LazConf, EnvironmentOpts, IDEProcs,

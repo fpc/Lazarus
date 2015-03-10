@@ -60,11 +60,11 @@ type
     MainMemo: TMemo;
     TargetComboBox: TComboBox;
     TargetLabel: TLabel;
-    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
+    procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
-    procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
-    procedure OnIdle(Sender: TObject; var Done: Boolean);
+    procedure FormKeyDown(Sender: TObject; var Key: Word; {%H-}Shift: TShiftState);
+    procedure OnIdle(Sender: TObject; var {%H-}Done: Boolean);
     procedure TargetComboBoxChange(Sender: TObject);
   private
     FIdleConnected: boolean;

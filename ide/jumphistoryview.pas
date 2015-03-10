@@ -40,7 +40,7 @@ type
     procedure listHistoryClick(Sender : TObject);
     procedure listHistoryDblClick(Sender : TObject);
     procedure listHistoryKeyPress(Sender: TObject; var Key: char);
-    procedure OnIdle(Sender : TObject; var Done: Boolean);
+    procedure OnIdle(Sender : TObject; var {%H-}Done: Boolean);
   private
     { private declarations }
     fOnSelectionChanged : TNotifyEvent;
@@ -50,8 +50,8 @@ type
       const Line: string): string;
     procedure InitDisplay;
   protected
-    procedure IndexChanged(Sender: TObject; Index: Integer);
-    procedure ListChanged(Sender: TObject; Index: Integer);
+    procedure IndexChanged(Sender: TObject; {%H-}Index: Integer);
+    procedure ListChanged(Sender: TObject; {%H-}Index: Integer);
   public
     { public declarations }
     property SelectedIndex : Integer read GetSelectedIndex;
