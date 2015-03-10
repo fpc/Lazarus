@@ -703,10 +703,10 @@ type
 
     procedure NotebookMouseDown(Sender: TObject; Button: TMouseButton;
           {%H-}Shift: TShiftState; X,Y: Integer);
-    procedure NotebookDragTabMove(Sender, Source: TObject;
+    procedure NotebookDragDropEx(Sender, Source: TObject;
                                   OldIndex, NewIndex: Integer; CopyDrag: Boolean;
                                   var Done: Boolean);
-    procedure NotebookCanDragTabMove(Sender, Source: TObject;
+    procedure NotebookDragOverEx(Sender, Source: TObject;
                                   OldIndex, NewIndex: Integer; CopyDrag: Boolean;
                                   var Accept: Boolean);
     procedure NotebookDragOver(Sender, Source: TObject;
@@ -5788,8 +5788,8 @@ Begin
     OnCloseTabClicked  := @CloseTabClicked;
     OnMouseDown:=@NotebookMouseDown;
     TabDragMode := dmAutomatic;
-    OnTabDragOverEx  := @NotebookCanDragTabMove;
-    OnTabDragDropEx  := @NotebookDragTabMove;
+    OnTabDragOverEx  := @NotebookDragOverEx;
+    OnTabDragDropEx  := @NotebookDragDropEx;
     OnTabDragOver    := @NotebookDragOver;
     OnTabEndDrag     := @NotebookEndDrag;
     ShowHint:=true;
@@ -6261,6 +6261,7 @@ begin
       i := 0;
       while i < Manager.SourceEditorCount do begin
         se:=Manager.SourceEditors[i];
+        BookMarkX:=0; BookMarkY:=0;
         if se.EditorComponent.GetBookMark(BookMarkID,BookMarkX,BookMarkY) then
         begin
           MarkDesc:=MarkDesc+': '+se.PageName+' ('+IntToStr(BookMarkY)+','+IntToStr(BookMarkX)+')';
@@ -7875,7 +7876,7 @@ begin
   end;
 end;
 
-procedure TSourceNotebook.NotebookDragTabMove(Sender, Source: TObject; OldIndex,
+procedure TSourceNotebook.NotebookDragDropEx(Sender, Source: TObject; OldIndex,
   NewIndex: Integer; CopyDrag: Boolean; var Done: Boolean);
   function SourceIndex: Integer;
   begin
@@ -7907,7 +7908,7 @@ begin
   Done := True;
 end;
 
-procedure TSourceNotebook.NotebookCanDragTabMove(Sender, Source: TObject;
+procedure TSourceNotebook.NotebookDragOverEx(Sender, Source: TObject;
   OldIndex, NewIndex: Integer; CopyDrag: Boolean; var Accept: Boolean);
 
   function SourceIndex: Integer;
@@ -7938,6 +7939,7 @@ end;
 procedure TSourceNotebook.NotebookDragOver(Sender, Source: TObject; X, Y: Integer;
   State: TDragState; var Accept: Boolean);
 begin
+  if Accept=true then ; // set by NotebookDragOverEx
   FUpdateTabAndPageTimer.Enabled := False;
   if State = dsDragLeave then
     FUpdateTabAndPageTimer.Enabled := True
@@ -10040,6 +10042,7 @@ end;
 procedure TSourceEditorManager.OnCodeTemplateTokenNotFound(Sender: TObject;
   AToken: string; AnEditor: TCustomSynEdit; var Index: integer);
 begin
+  if Index=0 then ;
   //debugln('TSourceNotebook.OnCodeTemplateTokenNotFound ',AToken,',',AnEditor.ReadOnly,',',DefaultCompletionForm.CurrentCompletionType=ctNone);
   if (AnEditor.ReadOnly=false) and
      (DefaultCompletionForm.CurrentCompletionType=ctNone)
@@ -10047,7 +10050,8 @@ begin
     DefaultCompletionForm.CurrentCompletionType:=ctTemplateCompletion;
     DefaultCompletionForm.Editor:=AnEditor;
     DefaultCompletionForm.Execute
-      (AToken, GetScreenRectForToken(AnEditor, AnEditor.CaretX-length(AToken), AnEditor.CaretY, AnEditor.CaretX-1));
+      (AToken, GetScreenRectForToken(AnEditor, AnEditor.CaretX-length(AToken),
+       AnEditor.CaretY, AnEditor.CaretX-1));
   end;
 end;
 

@@ -223,7 +223,7 @@ type
     function FindBreakPointMark(ASrcEdit: TSourceEditorBase;
                                 ALine: integer): TSourceMark;
     procedure GetMarksForLine(ASrcEdit: TSourceEditorBase; ALine: integer;
-                              var Marks: PSourceMark; var MarkCount: integer);
+                              out Marks: PSourceMark; out MarkCount: integer);
   public
     property ImgList: TImageList read FImgList write FImgList;
     property Items[Index: integer]: TSourceMark read GetItems; default;
@@ -753,7 +753,7 @@ begin
 end;
 
 procedure TSourceMarks.GetMarksForLine(ASrcEdit: TSourceEditorBase;
-  ALine: integer; var Marks: PSourceMark; var MarkCount: integer);
+  ALine: integer; out Marks: PSourceMark; out MarkCount: integer);
 var
   i, Capacity: integer;
   AVLNode: TAVLTreeNode;
@@ -762,13 +762,13 @@ var
   HasChange: Boolean;
   SrcEditorID: TSourceEditorSharedValuesBase;
 begin
+  MarkCount := 0;
+  Marks := nil;
   SrcEditorID := ASrcEdit.GetSharedValues;
   if SrcEditorID = nil then
     exit;
 
   Capacity := 0;
-  MarkCount := 0;
-  Marks := nil;
   EditorIDAndLine.EditorID := SrcEditorID;
   EditorIDAndLine.Line := ALine;
   AVLNode := FindFirstMarkNode(EditorIDAndLine.EditorID, ALine);
