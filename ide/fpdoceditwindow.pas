@@ -859,7 +859,8 @@ procedure TFPDocEditor.OnFPDocChanged(Sender: TObject;
   FPDocFPFile: TLazFPDocFile);
 begin
   if fpdefWriting in FFlags then exit;
-
+  if FPDocFPFile=nil then exit;
+  // maybe eventually update the editor
 end;
 
 procedure TFPDocEditor.LoadGUIValues(Element: TCodeHelpElement);
@@ -1033,7 +1034,7 @@ begin
   fpdiDescription:
     begin
       PageControl.ActivePage:=DescrTabSheet;
-
+      DescrMemo.CaretPos:=LineCol;
     end;
   fpdiErrors: PageControl.ActivePage:=ErrorsTabSheet;
   fpdiSeeAlso: PageControl.ActivePage:=SeeAlsoTabSheet;

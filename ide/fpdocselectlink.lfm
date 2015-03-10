@@ -9,7 +9,7 @@ object FPDocLinkEditorDlg: TFPDocLinkEditorDlg
   ClientWidth = 408
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  LCLVersion = '0.9.27'
+  LCLVersion = '1.5'
   object LinkLabel: TLabel
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = TitleEdit
@@ -17,8 +17,8 @@ object FPDocLinkEditorDlg: TFPDocLinkEditorDlg
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 6
-    Height = 18
-    Top = 69
+    Height = 15
+    Top = 64
     Width = 396
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 6
@@ -33,7 +33,7 @@ object FPDocLinkEditorDlg: TFPDocLinkEditorDlg
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 6
-    Height = 18
+    Height = 15
     Top = 6
     Width = 396
     Anchors = [akTop, akLeft, akRight]
@@ -46,8 +46,8 @@ object FPDocLinkEditorDlg: TFPDocLinkEditorDlg
     AnchorSideTop.Control = LinkEdit
     AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 106
-    Top = 120
+    Height = 124
+    Top = 110
     Width = 396
     Align = alBottom
     Anchors = [akTop, akLeft, akRight, akBottom]
@@ -59,9 +59,17 @@ object FPDocLinkEditorDlg: TFPDocLinkEditorDlg
   end
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 44
-    Top = 232
+    Height = 36
+    Top = 240
     Width = 396
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
     TabOrder = 0
     ShowButtons = [pbOK, pbCancel]
   end
@@ -72,8 +80,8 @@ object FPDocLinkEditorDlg: TFPDocLinkEditorDlg
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 6
-    Height = 27
-    Top = 93
+    Height = 25
+    Top = 85
     Width = 396
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Left = 6
@@ -81,7 +89,6 @@ object FPDocLinkEditorDlg: TFPDocLinkEditorDlg
     BorderSpacing.Right = 6
     OnChange = LinkEditChange
     OnKeyDown = LinkEditKeyDown
-    OnUTF8KeyPress = LinkEditUTF8KeyPress
     ParentShowHint = False
     ShowHint = True
     TabOrder = 1
@@ -93,8 +100,8 @@ object FPDocLinkEditorDlg: TFPDocLinkEditorDlg
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 6
-    Height = 27
-    Top = 30
+    Height = 25
+    Top = 27
     Width = 396
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 6

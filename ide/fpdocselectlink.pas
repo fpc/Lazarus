@@ -99,14 +99,13 @@ type
     TitleLabel: TLabel;
     LinkEdit: TEdit;
     LinkLabel: TLabel;
-    procedure CompletionBoxMouseDown(Sender: TObject; Button: TMouseButton;
-      Shift: TShiftState; X, Y: Integer);
+    procedure CompletionBoxMouseDown(Sender: TObject; {%H-}Button: TMouseButton;
+      {%H-}Shift: TShiftState; {%H-}X, Y: Integer);
     procedure CompletionBoxPaint(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure LinkEditChange(Sender: TObject);
     procedure LinkEditKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
-    procedure LinkEditUTF8KeyPress(Sender: TObject; var UTF8Key: TUTF8Char);
   private
     FStartFPDocFile: TLazFPDocFile;
     fItems: TFPDocLinkCompletionList;
@@ -274,11 +273,6 @@ begin
     end;
     if Handled then Key:=VK_UNKNOWN;
   end;
-end;
-
-procedure TFPDocLinkEditorDlg.LinkEditUTF8KeyPress(Sender: TObject;
-  var UTF8Key: TUTF8Char);
-begin
 end;
 
 procedure TFPDocLinkEditorDlg.SetSourceFilename(const AValue: string);
