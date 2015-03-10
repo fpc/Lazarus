@@ -772,12 +772,10 @@ begin
   //debugln('TComponentPalette.ComponentBtnDblClick ',TComponent(Sender).Name);
   if SelectAButton(TComponent(Sender)) and (FSelected<>nil) then begin
     if FormEditingHook<>nil then begin
+      TypeClass:=FSelected.ComponentClass;
       if assigned(FSelected.OnGetCreationClass) then
-      begin
         FSelected.OnGetCreationClass(Self,TypeClass);
-        if TypeClass=nil then exit;
-      end else
-        TypeClass:=FSelected.ComponentClass;
+      if TypeClass=nil then exit;
       ParentComp:=FormEditingHook.GetDefaultComponentParent(TypeClass);
       if ParentComp=nil then exit;
       if not FormEditingHook.GetDefaultComponentPosition(TypeClass,ParentComp,X,Y)

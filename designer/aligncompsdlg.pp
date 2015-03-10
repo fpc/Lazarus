@@ -44,13 +44,14 @@ type
     constructor Create(AOwner: TComponent);  override;
   end;
 
-function ShowAlignComponentsDialog(var HorizAlignID, VertAlignID: integer): TModalResult;
+function ShowAlignComponentsDialog(out HorizAlignID, VertAlignID: integer): TModalResult;
 
 implementation
 
 {$R *.lfm}
 
-function ShowAlignComponentsDialog(var HorizAlignID, VertAlignID: integer): TModalResult;
+function ShowAlignComponentsDialog(out HorizAlignID, VertAlignID: integer
+  ): TModalResult;
 var
   AlignComponentsDialog: TAlignComponentsDialog;
 begin

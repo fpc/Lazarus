@@ -155,7 +155,6 @@ type
     procedure SetGridColor(const AValue: TColor);
     procedure SetGridSizeX(const AValue: integer);
     procedure SetGridSizeY(const AValue: integer);
-    procedure SetIsControl(Value: Boolean);
     procedure SetMediator(const AValue: TDesignerMediator);
     procedure SetPopupMenuComponentEditor(const AValue: TBaseComponentEditor);
     procedure SetShowBorderSpacing(const AValue: boolean);
@@ -185,8 +184,8 @@ type
     procedure KeyUp(Sender: TControl; var TheMessage: TLMKEY);
     function  HandleSetCursor(var TheMessage: TLMessage): boolean;
     procedure HandlePopupMenu(Sender: TControl; var Message: TLMContextMenu);
-    procedure GetMouseMsgShift(TheMessage: TLMMouse; var Shift: TShiftState;
-                               var Button: TMouseButton);
+    procedure GetMouseMsgShift(TheMessage: TLMMouse; out Shift: TShiftState;
+                               out Button: TMouseButton);
 
     // procedures for working with components and persistents
     function GetDesignControl(AControl: TControl): TControl;
@@ -316,7 +315,7 @@ type
                                   var TheMessage: TLMessage): Boolean; override;
     function UniqueName(const BaseName: string): string; override;
     Procedure RemovePersistentAndChilds(APersistent: TPersistent);
-    procedure Notification(AComponent: TComponent;
+    procedure Notification({%H-}AComponent: TComponent;
                            Operation: TOperation); override;
     procedure ValidateRename(AComponent: TComponent;
        const CurName, NewName: string); override;
@@ -336,7 +335,7 @@ type
     property GridSizeX: integer read GetGridSizeX write SetGridSizeX;
     property GridSizeY: integer read GetGridSizeY write SetGridSizeY;
     property GridColor: TColor read GetGridColor write SetGridColor;
-    property IsControl: Boolean read GetIsControl write SetIsControl;
+    property IsControl: Boolean read GetIsControl;
     property Mediator: TDesignerMediator read FMediator write SetMediator;
     property ProcessingDesignerEvent: Integer read FProcessingDesignerEvent;
     property OnActivated: TNotifyEvent read FOnActivated write FOnActivated;
@@ -1857,10 +1856,11 @@ begin
   Message.Result := 1;
 end;
 
-procedure TDesigner.GetMouseMsgShift(TheMessage: TLMMouse;
-  var Shift: TShiftState; var Button: TMouseButton);
+procedure TDesigner.GetMouseMsgShift(TheMessage: TLMMouse; out
+  Shift: TShiftState; out Button: TMouseButton);
 begin
   Shift := [];
+  Button := mbLeft;
   if (TheMessage.Keys and MK_Shift) = MK_Shift then
     Include(Shift, ssShift);
   if (TheMessage.Keys and MK_Control) = MK_Control then
@@ -3351,11 +3351,6 @@ procedure TDesigner.SetGridSizeY(const AValue: integer);
 begin
   if GridSizeY=AValue then exit;
   EnvironmentOptions.GridSizeY:=AValue;
-end;
-
-procedure TDesigner.SetIsControl(Value: Boolean);
-begin
-
 end;
 
 procedure TDesigner.SetMediator(const AValue: TDesignerMediator);

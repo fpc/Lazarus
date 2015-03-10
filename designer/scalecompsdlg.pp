@@ -46,13 +46,13 @@ type
     constructor Create(AOwner: TComponent);  override;
   end;
 
-function ShowScaleComponentsDialog(var ScaleInPercent: integer): TModalResult;
+function ShowScaleComponentsDialog(out ScaleInPercent: integer): TModalResult;
 
 implementation
 
 {$R *.lfm}
 
-function ShowScaleComponentsDialog(var ScaleInPercent: integer): TModalResult;
+function ShowScaleComponentsDialog(out ScaleInPercent: integer): TModalResult;
 var
   ScaleComponentsDialog: TScaleComponentsDialog;
 begin
