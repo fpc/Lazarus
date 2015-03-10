@@ -5715,6 +5715,15 @@ resourcestring
   lisUnableToCreateNewFileBecauseThereIsAlreadyADirecto = 'Unable to create '
     +'new file, because there is already a directory with this name.';
 
+  //Toolbar options
+  lisToolbarOptions = 'Toolbar Options';
+  lisToolbarOptionsToolbarsVisible = 'Toolbars visible';
+  lisToolbarOptionsStandardVisible = 'Standard toolbar visible';
+  lisToolbarOptionsViewDebugVisible = 'Debug toolbar visible';
+  lisToolbarOptionsHighLight = 'Highlight toolbars buttons';
+  lisToolbarOptionsRaise = 'Raise toolbars';
+  miToolbar = 'Options';
+
   // File Filters - Environment options
   lisFileFiltersTitle ='These are file filters that will appear in all File Open dialogs';
   lisFileFilters = 'File Filters';

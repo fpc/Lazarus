@@ -114,7 +114,7 @@ uses
   // environment option frames
   editor_general_options, componentpalette_options, formed_options, OI_options,
   MsgWnd_Options, files_options, desktop_options, window_options,
-  Backup_Options, naming_options, fpdoc_options,
+  Backup_Options, naming_options, fpdoc_options, toolbar_options,
   editor_display_options, editor_keymapping_options, editor_mouseaction_options,
   editor_mouseaction_options_advanced, editor_color_options, editor_markup_options,
   editor_markup_userdefined, editor_codetools_options, editor_codefolding_options,
@@ -155,7 +155,7 @@ uses
   UseUnitDlg, FindOverloadsDlg, EditorFileManager,
   CleanDirDlg, CodeContextForm, AboutFrm, CompatibilityRestrictions,
   RestrictionBrowser, ProjectWizardDlg, IDECmdLine, IDEGuiCmdLine, CodeExplOpts,
-  EditorMacroListViewer, SourceFileManager,
+  EditorMacroListViewer, SourceFileManager, ToolWin,
   // main ide
   MainBar, MainIntf, MainBase;
 
@@ -388,6 +388,7 @@ type
     procedure SetBuildModePopupMenuPopup(Sender: TObject);
     procedure mnuChgBuildModeClicked(Sender: TObject);
     procedure mnuSetBuildModeClick(Sender: TObject); // event for drop down items
+    procedure ToolBarOptionsClick(Sender: TObject);
   private
     fBuilder: TLazarusBuilder;
     procedure AllowCompilation(aAllow: Boolean);
@@ -2024,19 +2025,10 @@ procedure TMainIDE.SetupSpeedButtons;
     end;
   end;
 
-  function CreateToolBar(AName: String): TToolBar;
-  begin
-    Result := TToolBar.Create(OwningComponent);
-    Result.Name := AName;
-    Result.Parent := MainIDEBar.pnlSpeedButtons;
-    Result.Images := IDEImages.Images_16;
-    Result.AutoSize := true;
-  end;
-
 begin
   // Panel for buttons on the left
   MainIDEBar.pnlSpeedButtons := TPanel.Create(OwningComponent);
-  with MainIDEBar.pnlSpeedButtons do 
+  with MainIDEBar.pnlSpeedButtons do
   begin
     Name := 'pnlSpeedButtons';
     Parent := MainIDEBar;
@@ -2044,12 +2036,48 @@ begin
     Caption := '';
     BevelOuter := bvNone;
     AutoSize := true;
-    Visible := EnvironmentOptions.IDESpeedButtonsVisible;
+    Visible := EnvironmentOptions.ToolbarVisible;
+    OnMouseDown := @MainIDEBar.pnlSpeedButtonsMouseDown;
+    Constraints.MinWidth := 5;
   end;
 
-  MainIDEBar.tbViewDebug := CreateToolBar('tbViewDebug');
-  MainIDEBar.tbStandard := CreateToolBar('tbStandard');
+  //panel for Standar toolbar
+  MainIDEBar.pnStandard := TPanel.Create(OwningComponent);
+  with MainIDEBar.pnStandard do
+  begin
+    Name := 'pnStandard';
+    Parent := MainIDEBar.pnlSpeedButtons;
+    Align := alNone;
+    Left := EnvironmentOptions.ToolBarStandardLeft;
+    Top := EnvironmentOptions.ToolBarStandardTop;
+    Height := 25;
+    Constraints.MaxHeight := 25;
+    Caption := '';
+    if EnvironmentOptions.ToolBarRaised  then
+      BevelOuter := bvRaised
+    else
+      BevelOuter := bvNone;
+    AutoSize := True;
+    DoubleBuffered := True;
+    Visible := EnvironmentOptions.ToolBarStandardVisible;
+    if Visible then
+      MainIDEBar.ToolBarsVisibleCount  := MainIDEBar.ToolBarsVisibleCount + 1;
+  end;
 
+  //Standard toolbar
+  MainIDEBar.tbStandard := TToolBar.Create(OwningComponent);
+  with MainIDEBar.tbStandard do
+  begin
+    Name := 'tbStandard';
+    Parent := MainIDEBar.pnStandard;
+    Align := alClient;
+    Flat := not EnvironmentOptions.ToolBarHighlight;
+    EdgeBorders := EdgeBorders - [ebTop];
+    Images := IDEImages.Images_16;
+    AutoSize := True;
+  end;
+
+  //buttons for standard toolbar
   MainIDEBar.NewUnitSpeedBtn     := CreateButton(MainIDEBar.tbStandard , 'NewUnitSpeedBtn'    , 'item_unit'                 , @mnuNewUnitClicked, lisMenuNewUnit);
   MainIDEBar.NewFormSpeedBtn     := CreateButton(MainIDEBar.tbStandard , 'NewFormSpeedBtn'    , 'item_form'                 , @mnuNewFormClicked, lisMenuNewForm);
   MainIDEBar.tbDivider1          := CreateDivider(MainIDEBar.tbStandard);
@@ -2058,6 +2086,58 @@ begin
   MainIDEBar.SaveAllSpeedBtn     := CreateButton(MainIDEBar.tbStandard , 'SaveAllSpeedBtn'    , 'menu_save_all'             , @mnuSaveAllClicked, lisHintSaveAll);
   MainIDEBar.tbDivider2          := CreateDivider(MainIDEBar.tbStandard);
   MainIDEBar.ToggleFormSpeedBtn  := CreateButton(MainIDEBar.tbStandard , 'ToggleFormSpeedBtn' , 'menu_view_toggle_form_unit', @mnuToggleFormUnitCLicked, lisHintToggleFormUnit);
+
+  //splitter for Standard toolbar
+  MainIDEBar.spStandard := TSplitterEx.Create(OwningComponent);
+  with MainIDEBar.spStandard do
+  begin
+    Name := 'spStandard';
+    Parent := MainIDEBar.pnStandard;
+    Align := alLeft;
+    ResizeStyle := rsNone;
+    Cursor := crDefault;
+    DoubleBuffered := True;
+    OnMouseDown := @MainIDEBar.SplitterMouseDown;
+    OnMouseMove := @MainIDEBar.SplitterMouseMove;
+    OnMouseUp := @MainIDEBar.SplitterMouseUp;
+  end;
+
+
+  //panel for ViewDebug toolbar
+  MainIDEBar.pnViewDebug := TPanel.Create(OwningComponent);
+  with MainIDEBar.pnViewDebug do
+  begin
+    Name := 'pnViewDebug';
+    Parent := MainIDEBar.pnlSpeedButtons;
+    Align := alNone;
+    Left := EnvironmentOptions.ToolBarViewDebugLeft;
+    Top := EnvironmentOptions.ToolBarViewDebugTop;
+    Height := 25;
+    Constraints.MaxHeight := 25;
+    Caption := '';
+    if EnvironmentOptions.ToolBarRaised then
+      BevelOuter := bvRaised
+    else
+      BevelOuter := bvNone;
+    AutoSize := True;
+    DoubleBuffered := True;
+    Visible := EnvironmentOptions.ToolBarViewDebugVisible;
+    if Visible then
+      MainIDEBar.ToolBarsVisibleCount := MainIDEBar.ToolBarsVisibleCount + 1;
+  end;
+
+  //ViewDebug toolbar
+  MainIDEBar.tbViewDebug := TToolBar.Create(OwningComponent);
+  with MainIDEBar.tbViewDebug do
+  begin
+    Name := 'tbViewDebug';
+    Parent := MainIDEBar.pnViewDebug;
+    Align := alClient;
+    Flat := not EnvironmentOptions.ToolBarHighlight;
+    EdgeBorders := EdgeBorders - [ebTop];
+    Images := IDEImages.Images_16;
+    AutoSize := True;
+  end;
 
   MainIDEBar.ViewUnitsSpeedBtn   := CreateButton(MainIDEBar.tbViewDebug, 'ViewUnitsSpeedBtn'  , 'menu_view_units'           , @mnuViewUnitsClicked, lisHintViewUnits);
   MainIDEBar.ViewFormsSpeedBtn   := CreateButton(MainIDEBar.tbViewDebug, 'ViewFormsSpeedBtn'  , 'menu_view_forms'           , @mnuViewFormsClicked, lisHintViewForms);
@@ -2069,6 +2149,38 @@ begin
   MainIDEBar.StepIntoSpeedButton := CreateButton(MainIDEBar.tbViewDebug, 'StepIntoSpeedButton', 'menu_stepinto'             , @mnuStepIntoProjectClicked, lisHintStepInto);
   MainIDEBar.StepOverSpeedButton := CreateButton(MainIDEBar.tbViewDebug, 'StepOverpeedButton' , 'menu_stepover'             , @mnuStepOverProjectClicked, lisHintStepOver);
   MainIDEBar.StepOutSpeedButton  := CreateButton(MainIDEBar.tbViewDebug, 'StepOutSpeedButton' , 'menu_stepout'              , @mnuStepOutProjectClicked, lisHintStepOut);
+
+  //splitter for ViewDebug toolbar
+  MainIDEBar.spViewDebug := TSplitterEx.Create(OwningComponent);
+  with MainIDEBar.spViewDebug do
+  begin
+    Name := 'spViewDebug';
+    Parent := MainIDEBar.pnViewDebug;
+    Align := alLeft;
+    ResizeStyle := rsNone;
+    Cursor := crDefault;
+    DoubleBuffered := True;
+    OnMouseDown := @MainIDEBar.SplitterMouseDown;
+    OnMouseMove := @MainIDEBar.SplitterMouseMove;
+    OnMouseUp := @MainIDEBar.SplitterMouseUp;
+  end;
+
+  MainIDEBar.pmOptions := TPopupMenu.Create(OwningComponent);
+  MainIDEBar.pmOptions.Images := IDEImages.Images_16;
+  MainIDEBar.miOptions := TMenuItem.Create(OwningComponent);
+  with MainIDEBar.miOptions do
+  begin
+     Name := 'miToolbarOption';
+     Caption := miToolbar;
+     OnClick := @ToolBarOptionsClick;
+     Enabled := True;
+     Visible := True;
+     ImageIndex := IDEImages.LoadImage(16, 'menu_environment_options');
+   end;
+  MainIDEBar.pmOptions.Items.Add(MainIDEBar.miOptions);
+  MainIDEBar.spStandard.PopupMenu := MainIDEBar.pmOptions;
+  MainIDEBar.spViewDebug.PopupMenu := MainIDEBar.pmOptions;
+  MainIDEBar.pnlSpeedButtons.PopupMenu := MainIDEBar.pmOptions;
 
   MainIDEBar.CreatePopupMenus(OwningComponent);
 
@@ -3757,7 +3869,7 @@ begin
   SpeedButtonsVisible:=not MainIDEBar.pnlSpeedButtons.Visible;
   MainIDEBar.itmViewIDESpeedButtons.Checked:=SpeedButtonsVisible;
   MainIDEBar.pnlSpeedButtons.Visible:=SpeedButtonsVisible;
-  EnvironmentOptions.IDESpeedButtonsVisible:=MainIDEBar.pnlSpeedButtons.Visible;
+  EnvironmentOptions.ToolbarVisible := MainIDEBar.pnlSpeedButtons.Visible;
 end;
 
 procedure TMainIDE.AllowCompilation(aAllow: Boolean);
@@ -12743,6 +12855,11 @@ end;
 procedure TMainIDE.mnuSearchFindDeclaration(Sender: TObject);
 begin
   DoFindDeclarationAtCursor;
+end;
+
+procedure TMainIDE.ToolBarOptionsClick(Sender: TObject);
+begin
+  DoOpenIDEOptions(TToolbarOptionsFrame, '', [], []);
 end;
 
 

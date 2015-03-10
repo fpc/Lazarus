@@ -770,7 +770,7 @@ begin
     CreateMenuItem(ParentMI,itmViewComponentPalette,'itmViewComponentPalette',lisMenuViewComponentPalette, '',
       true, EnvironmentOptions.ComponentPaletteVisible);
     CreateMenuItem(ParentMI,itmViewIDESpeedButtons,'itmViewIDESpeedButtons',lisMenuViewIDESpeedButtons, '',
-      true, EnvironmentOptions.IDESpeedButtonsVisible);
+      true, EnvironmentOptions.ToolbarVisible);
   end;
 end;
 

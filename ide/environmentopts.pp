@@ -273,7 +273,6 @@ type
     FIDENameForDesignedFormList: boolean;
 
     // main buttons
-    FIDESpeedButtonsVisible: boolean;
     FShowButtonGlyphs: TApplicationShowGlyphs;
     FShowMenuGlyphs: TApplicationShowGlyphs;
 
@@ -291,6 +290,17 @@ type
     // CompletionWindow
     FCompletionWindowWidth: Integer;
     FCompletionWindowHeight: Integer;
+
+    //toolbars
+    FToolbarVisible: Boolean;
+    FToolBarStandardVisible: Boolean;
+    FToolBarStandardLeft: Integer;
+    FToolBarStandardTop: Integer;
+    FToolBarViewDebugVisible: Boolean;
+    FToolBarViewDebugLeft: Integer;
+    FToolBarViewDebugTop: Integer;
+    FToolBarHighlight: Boolean;
+    FToolBarRaised: Boolean;
 
     // component palette
     FComponentPaletteOptions: TCompPaletteOptions;
@@ -513,9 +523,6 @@ type
                                                     write FIDEProjectDirectoryInIdeTitle;
     property ComponentPaletteVisible: boolean read FComponentPaletteVisible
                                               write FComponentPaletteVisible;
-    property IDESpeedButtonsVisible: boolean read FIDESpeedButtonsVisible
-                                             write FIDESpeedButtonsVisible;
-
     property CompletionWindowWidth: Integer read FCompletionWindowWidth
                                             write FCompletionWindowWidth;
     property CompletionWindowHeight: Integer read FCompletionWindowHeight
@@ -524,6 +531,27 @@ type
     // window menu list
     property IDENameForDesignedFormList: boolean read FIDENameForDesignedFormList
                                                write FIDENameForDesignedFormList;
+
+    //toolbars option
+    property ToolbarVisible: boolean read FToolbarVisible
+                                     write FToolbarVisible;
+    property ToolBarStandardVisible: Boolean  read FToolBarStandardVisible
+                                             write FToolBarStandardVisible;
+    property ToolBarStandardLeft: Integer read FToolBarStandardLeft
+                                         write FToolBarStandardLeft;
+    property ToolBarStandardTop: Integer read FToolBarStandardTop
+                                         write FToolBarStandardTop;
+    property ToolBarViewDebugVisible: Boolean read FToolBarViewDebugVisible
+                                             write FToolBarViewDebugVisible;
+    property ToolBarViewDebugLeft: Integer read FToolBarViewDebugLeft
+                                         write FToolBarViewDebugLeft;
+    property ToolBarViewDebugTop: Integer read FToolBarViewDebugTop
+                                         write FToolBarViewDebugTop;
+    property ToolBarHighlight: Boolean read FToolBarHighlight
+                                      write FToolBarHighlight;
+    property ToolBarRaised: Boolean read FToolBarRaised
+                                   write FToolBarRaised;
+
     // component palette
     property ComponentPaletteOptions: TCompPaletteOptions read FComponentPaletteOptions;
 
@@ -866,7 +894,6 @@ begin
   FIDETitleIncludesBuildMode:=false;
   FIDEProjectDirectoryInIdeTitle:=false;
   FComponentPaletteVisible:=true;
-  FIDESpeedButtonsVisible:=true;
 
   // window menu
   FIDENameForDesignedFormList:=false;
@@ -898,6 +925,16 @@ begin
 
   FCompletionWindowWidth := 320;
   FCompletionWindowHeight := 6;
+
+  FToolbarVisible := False;
+  FToolBarStandardVisible := False;
+  FToolBarStandardLeft := 0;
+  FToolBarStandardTop := 0;
+  FToolBarViewDebugVisible := False;
+  FToolBarViewDebugLeft := 0;
+  FToolBarViewDebugTop := 26;
+  FToolBarHighlight := False;
+  FToolBarRaised := False;
 
   // component palette
   FComponentPaletteOptions:=TCompPaletteOptions.Create;
@@ -1187,8 +1224,6 @@ begin
         Path+'Desktop/IDEProjectDirectoryInIdeTitle/Value',false);
       FComponentPaletteVisible:=XMLConfig.GetValue(
         Path+'Desktop/ComponentPaletteVisible/Value',true);
-      FIDESpeedButtonsVisible:=XMLConfig.GetValue(
-        Path+'Desktop/IDESpeedButtonsVisible/Value',true);
       FCompletionWindowWidth:=XMLConfig.GetValue(
         Path+'Desktop/CompletionWindowWidth/Value', 320);
       FCompletionWindowHeight:=XMLConfig.GetValue(
@@ -1197,6 +1232,28 @@ begin
       // Window menu
       FIDENameForDesignedFormList:=XMLConfig.GetValue(
         Path+'Desktop/IDENameForDesignedFormList/Value',false);
+
+      // Toolbar
+      FToolBarStandardVisible := XMLConfig.GetValue(
+        Path+'Desktop/Toolbars/Standarad/ToolBarStandardVisible/Value', True);
+      FToolBarStandardLeft := XMLConfig.GetValue(
+        Path+'Desktop/Toolbars/Standarad/ToolBarStandardLeft/Value', 0);
+      FToolBarStandardTop := XMLConfig.GetValue(
+        Path+'Desktop/Toolbars/Standarad/ToolBarStandardTop/Value', 0);
+
+      FToolBarViewDebugVisible :=XMLConfig.GetValue(
+        Path+'Desktop/Toolbars/ViewDebug/ToolBarViewDebugVisible/Value', True);
+      FToolBarViewDebugLeft := XMLConfig.GetValue(
+        Path+'Desktop/Toolbars/Standarad/ToolBarViewDebugLeft/Value', 0);
+      FToolBarViewDebugTop := XMLConfig.GetValue(
+        Path+'Desktop/Toolbars/Standarad/ToolBarViewDebugTop/Value', 26);
+
+      FToolbarVisible := XMLConfig.GetValue(
+        Path+'Desktop/Toolbars/Common/ToolbarVisible/Value', True);
+      FToolBarHighlight := XMLConfig.GetValue(
+        Path+'Desktop/Toolbars/Common/ToolBarHighlight/Value', False);
+      FToolBarRaised := XMLConfig.GetValue(
+        Path+'Desktop/Toolbars/Common/ToolBarRaised/Value', False);
 
       // form editor
       FShowGrid:=XMLConfig.GetValue(
@@ -1572,8 +1629,6 @@ begin
                                FIDEProjectDirectoryInIdeTitle,false);
       XMLConfig.SetDeleteValue(Path+'Desktop/ComponentPaletteVisible/Value',
                                FComponentPaletteVisible,true);
-      XMLConfig.SetDeleteValue(Path+'Desktop/IDESpeedButtonsVisible/Value',
-                               FIDESpeedButtonsVisible,true);
       XMLConfig.SetDeleteValue(Path+'Desktop/CompletionWindowWidth/Value',
                                FCompletionWindowWidth, 320);
       XMLConfig.SetDeleteValue(Path+'Desktop/CompletionWindowHeight/Value',
@@ -1582,6 +1637,29 @@ begin
       // Window menu
       XMLConfig.SetDeleteValue(Path+'Desktop/IDENameForDesignedFormList/Value',
                                FIDENameForDesignedFormList,false);
+
+      // toolbar
+      XMLConfig.SetDeleteValue(Path+'Desktop/Toolbars/Standarad/ToolBarStandardVisible/Value',
+                               FToolBarStandardVisible, True);
+      XMLConfig.SetDeleteValue(Path+'Desktop/Toolbars/Standarad/ToolBarStandardLeft/Value',
+                               FToolBarStandardLeft, 0);
+      XMLConfig.SetDeleteValue(Path+'Desktop/Toolbars/Standarad/ToolBarStandardTop/Value',
+                               FToolBarStandardTop, 0);
+
+      XMLConfig.SetDeleteValue(Path+'Desktop/Toolbars/ViewDebug/ToolBarViewDebugVisible/Value',
+                               FToolBarViewDebugVisible, True);
+      XMLConfig.SetDeleteValue(Path+'Desktop/Toolbars/Standarad/ToolBarViewDebugLeft/Value',
+                               FToolBarViewDebugLeft, 0);
+      XMLConfig.SetDeleteValue(Path+'Desktop/Toolbars/Standarad/ToolBarViewDebugTop/Value',
+                               FToolBarViewDebugTop, 26);
+
+      XMLConfig.SetDeleteValue(Path+'Desktop/Toolbars/Common/ToolbarVisible/Value',
+                               FToolbarVisible, True);
+      XMLConfig.SetDeleteValue(Path+'Desktop/Toolbars/Common/ToolBarHighlight/Value',
+                               FToolBarHighlight, False);
+      XMLConfig.SetDeleteValue(Path+'Desktop/Toolbars/Common/ToolBarRaised/Value',
+                              FToolBarRaised, False);
+
       // form editor
       XMLConfig.SetDeleteValue(Path+'FormEditor/ShowBorderSpacing',
                                FShowBorderSpacing,false);
