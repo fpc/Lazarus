@@ -440,7 +440,7 @@ type
     procedure OnSrcNoteBookAddJumpPoint(ACaretXY: TPoint; ATopLine: integer;
       AEditor: TSourceEditor; DeleteForwardHistory: boolean);
     procedure OnSrcNoteBookClickLink(Sender: TObject;
-      Button: TMouseButton; Shift: TShiftstate; X, Y: Integer);
+      {%H-}Button: TMouseButton; {%H-}Shift: TShiftstate; X, Y: Integer);
     procedure OnSrcNoteBookMouseLink(
       Sender: TObject; X, Y: Integer; var AllowMouseLink: Boolean);
     procedure OnSrcNotebookDeleteLastJumPoint(Sender: TObject);
@@ -588,10 +588,10 @@ type
     procedure OnCodeToolBossFindDefineProperty(Sender: TObject;
                const PersistentClassName, AncestorClassName, Identifier: string;
                var IsDefined: boolean);
-    procedure OnCodeBufferDecodeLoaded(Code: TCodeBuffer;
+    procedure OnCodeBufferDecodeLoaded({%H-}Code: TCodeBuffer;
          const Filename: string; var Source, DiskEncoding, MemEncoding: string);
     procedure OnCodeBufferEncodeSaving(Code: TCodeBuffer;
-                                    const Filename: string; var Source: string);
+                                    const {%H-}Filename: string; var Source: string);
     function OnCodeToolBossGetMethodName(const Method: TMethod;
                                          PropOwner: TObject): String;
     procedure CodeToolBossPrepareTree(Sender: TObject);
@@ -797,7 +797,7 @@ type
     function DoExampleManager: TModalResult; override;
     function DoBuildLazarus(Flags: TBuildLazarusFlags): TModalResult; override;
     function DoBuildAdvancedLazarus(ProfileNames: TStringList): TModalResult;
-    function DoBuildFile(ShowAbort: Boolean): TModalResult;
+    function DoBuildFile({%H-}ShowAbort: Boolean): TModalResult;
     function DoRunFile: TModalResult;
     function DoConfigBuildFile: TModalResult;
     function GetIDEDirectives(AnUnitInfo: TUnitInfo;
@@ -4380,6 +4380,7 @@ procedure TMainIDE.mnuAttachDebuggerClicked(Sender: TObject);
 var
   H: boolean;
 begin
+  H:=false;
   OnProcessIDECommand(nil, ecAttach, H);
 end;
 
@@ -4387,6 +4388,7 @@ procedure TMainIDE.mnuDetachDebuggerClicked(Sender: TObject);
 var
   H: boolean;
 begin
+  H:=false;
   OnProcessIDECommand(nil, ecDetach, H);
 end;
 
@@ -5556,6 +5558,7 @@ end;
 
 procedure TMainIDE.OnProjectGetTestDirectory(TheProject: TProject; out TestDir: string);
 begin
+  if TheProject=nil then ;
   TestDir:=GetTestBuildDirectory;
 end;
 
@@ -6957,8 +6960,10 @@ end;
 
 procedure TMainIDE.DoRestart;
 
+{$ifdef darwin}
 const
   DarwinStartlazBundlePath = 'lazarus.app/Contents/Resources/startlazarus.app/Contents/MacOS/';
+{$endif}
 
   procedure StartStarter;
   var
@@ -7170,7 +7175,7 @@ begin
     // prepare static auto install packages
     //PkgOptions:='';
     // create inherited compiler options
-    Builder.PackageOptions:=PackageGraph.GetIDEInstallPackageOptions(InheritedOptionStrings);
+    Builder.PackageOptions:=PackageGraph.GetIDEInstallPackageOptions(InheritedOptionStrings{%H-});
 
     Result:=Builder.SaveIDEMakeOptions(MiscellaneousOptions.BuildLazProfiles.Current,
                                        Flags+[blfOnlyIDE]);
@@ -7250,7 +7255,7 @@ begin
     end;
 
     // create inherited compiler options
-    fBuilder.PackageOptions:=PackageGraph.GetIDEInstallPackageOptions(InheritedOptionStrings);
+    fBuilder.PackageOptions:=PackageGraph.GetIDEInstallPackageOptions(InheritedOptionStrings{%H-});
 
     // check ambiguous units
     CodeToolBoss.GetFPCVersionForDirectory(EnvironmentOptions.GetParsedLazarusDirectory,
@@ -8562,9 +8567,10 @@ begin
 end;
 
 procedure TMainIDE.OnDesignerPersistentDeleted(Sender: TObject; APersistent: TPersistent);
-// important: APersistent was freed, do not access it
+// important: APersistent was freed, do not access its content, only the pointer
 begin
   if dfDestroyingForm in TDesigner(Sender).Flags then exit;
+  if APersistent=nil then ;
   if ObjectInspector1<>nil then
     ObjectInspector1.FillPersistentComboBox;
 end;
@@ -8584,6 +8590,7 @@ begin
 
   if dfDestroyingForm in CurDesigner.Flags then exit;
 
+  ActiveSrcEdit:=nil;
   if not BeginCodeTool(CurDesigner,ActiveSrcEdit,ActiveUnitInfo,
                 [ctfSwitchToFormSource]) then exit;
   ActiveForm:=CurDesigner.Form;
@@ -8717,6 +8724,7 @@ var
   ActiveSrcEdit: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
 begin
+  if Manager<>CodeToolBoss then exit;
   ActiveSrcEdit:=nil;
   Abort:=not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]);
 end;
@@ -8816,6 +8824,7 @@ var
   Flags: TOpenFlags;
   CodeBuf: TCodeBuffer;
 begin
+  if Manager<>CodeToolBoss then exit;
   if OpenEditorsOnCodeToolChange then begin
     // open all sources in editor
     for i:=0 to Manager.SourceChangeCache.BuffersToModifyCount-1 do begin
@@ -8850,6 +8859,7 @@ var
   AnUnitInfo: TUnitInfo;
   MsgResult: TModalResult;
 begin
+  if Manager<>CodeToolBoss then exit;
   for i:=0 to CodeToolBoss.SourceChangeCache.BuffersToModifyCount-1 do begin
     SrcBuf:=CodeToolBoss.SourceChangeCache.BuffersToModify[i];
     AnUnitInfo:=nil;
@@ -8878,6 +8888,7 @@ begin
   Result:=nil;
   // check if SrcFilename is project file
   if Project1=nil then exit;
+  if TheUnitInFilename<>'' then exit;
   AnUnitInfo:=Project1.ProjectUnitWithFilename(SrcFilename);
   if AnUnitInfo=nil then exit;
   // SrcFilename is a project file

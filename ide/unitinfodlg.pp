@@ -75,7 +75,7 @@ type
 function ShowUnitInfoDlg(const AnUnitName, AType: string;
   IsPartOfProject: boolean; SizeInBytes, UnitSizeWithIncludeFiles, UnitSizeParsed,
   LineCount, UnitLineCountWithIncludes, UnitLineCountParsed: integer;
-  const FilePath: string; const IncludedBy: string; var ClearIncludedBy: boolean;
+  const FilePath: string; const IncludedBy: string; out ClearIncludedBy: boolean;
   const UnitPath, IncludePath, SrcPath: string): TModalResult;
 
 implementation
@@ -83,14 +83,16 @@ implementation
 {$R *.lfm}
 
 function ShowUnitInfoDlg(const AnUnitName, AType: string;
-  IsPartOfProject: boolean;
-  SizeInBytes, UnitSizeWithIncludeFiles, UnitSizeParsed,
-  LineCount, UnitLineCountWithIncludes, UnitLineCountParsed: integer;
-  const FilePath: string; const IncludedBy: string; var ClearIncludedBy: boolean;
-  const UnitPath, IncludePath, SrcPath: string): TModalResult;
+  IsPartOfProject: boolean; SizeInBytes, UnitSizeWithIncludeFiles,
+  UnitSizeParsed, LineCount, UnitLineCountWithIncludes,
+  UnitLineCountParsed: integer; const FilePath: string;
+  const IncludedBy: string; out ClearIncludedBy: boolean; const UnitPath,
+  IncludePath, SrcPath: string): TModalResult;
 var Dlg: TUnitInfoDialog;
   s: String;
 begin
+  ClearIncludedBy:=false;
+
   Dlg:=TUnitInfoDialog.Create(nil);
   with Dlg do begin
     Caption:=Format(lisInformationAboutUnit, [AnUnitName]);
