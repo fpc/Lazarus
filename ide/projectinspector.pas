@@ -181,10 +181,10 @@ type
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
     function IsUpdateLocked: boolean; inline;
-    procedure UpdateTitle(Immediately: boolean = false);
-    procedure UpdateProjectFiles(Immediately: boolean = false);
-    procedure UpdateRequiredPackages(Immediately: boolean = false);
-    procedure UpdateButtons(Immediately: boolean = false);
+    procedure UpdateTitle;
+    procedure UpdateProjectFiles;
+    procedure UpdateRequiredPackages;
+    procedure UpdateButtons;
     procedure UpdatePending;
     function CanUpdate(Flag: TProjectInspectorFlag): boolean;
     function GetSingleSelectedDependency: TPkgDependency;
@@ -433,6 +433,7 @@ var
   AddResult: TAddToProjectResult;
   i: Integer;
 begin
+  AddResult:=nil;
   if ShowAddToProjectDlg(LazProject,AddResult)<>mrOk then exit;
 
   case AddResult.AddType of
@@ -991,7 +992,7 @@ begin
   end;
 end;
 
-procedure TProjectInspectorForm.UpdateProjectFiles(Immediately: boolean);
+procedure TProjectInspectorForm.UpdateProjectFiles;
 var
   CurFile: TUnitInfo;
   FilesBranch: TTreeFilterBranch;
@@ -1027,7 +1028,7 @@ begin
   UpdateButtons;
 end;
 
-procedure TProjectInspectorForm.UpdateRequiredPackages(Immediately: boolean);
+procedure TProjectInspectorForm.UpdateRequiredPackages;
 var
   Dependency: TPkgDependency;
   RequiredBranch, RemovedBranch: TTreeFilterBranch;
@@ -1290,7 +1291,7 @@ begin
   end;
 end;
 
-procedure TProjectInspectorForm.UpdateTitle(Immediately: boolean);
+procedure TProjectInspectorForm.UpdateTitle;
 var
   NewCaption: String;
 begin
@@ -1306,7 +1307,7 @@ begin
   end;
 end;
 
-procedure TProjectInspectorForm.UpdateButtons(Immediately: boolean);
+procedure TProjectInspectorForm.UpdateButtons;
 var
   i: Integer;
   TVNode: TTreeNode;
@@ -1355,13 +1356,13 @@ begin
   ItemsTreeView.BeginUpdate;
   try
     if pifNeedUpdateFiles in FFlags then
-      UpdateProjectFiles(true);
+      UpdateProjectFiles;
     if pifNeedUpdateDependencies in FFlags then
-      UpdateRequiredPackages(true);
+      UpdateRequiredPackages;
     if pifNeedUpdateTitle in FFlags then
-      UpdateTitle(true);
+      UpdateTitle;
     if pifNeedUpdateButtons in FFlags then
-      UpdateButtons(true);
+      UpdateButtons;
     IdleConnected:=false;
   finally
     ItemsTreeView.EndUpdate;

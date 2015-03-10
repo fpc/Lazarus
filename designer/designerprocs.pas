@@ -107,7 +107,7 @@ function GetParentFormRelativeParentClientOrigin(Component: TComponent): TPoint;
 function GetFormRelativeMousePosition(Form: TCustomForm): TPoint;
 
 procedure GetComponentBounds(AComponent: TComponent;
-  var Left, Top, Width, Height: integer);
+  out Left, Top, Width, Height: integer);
 function GetComponentLeft(AComponent: TComponent): integer;
 function GetComponentTop(AComponent: TComponent): integer;
 function GetComponentWidth(AComponent: TComponent): integer;
@@ -250,8 +250,8 @@ begin
   dec(Result.Y,FormClientOrigin.Y);
 end;
 
-procedure GetComponentBounds(AComponent: TComponent;
-  var Left, Top, Width, Height: integer);
+procedure GetComponentBounds(AComponent: TComponent; out Left, Top, Width,
+  Height: integer);
 begin
   if AComponent is TControl then 
   begin
