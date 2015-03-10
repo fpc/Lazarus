@@ -10019,7 +10019,6 @@ begin
 
     // show make resourcestring dialog
     Result:=ShowMakeResStrDialog(StartPos,EndPos,StartCode,
-                                 CodeToolBoss.Positions,
                                  NewIdentifier,NewIdentValue,NewSourceLines,
                                  SectionCode,SectionCaretXY,InsertPolicy);
     if (Result<>mrOk) then exit;

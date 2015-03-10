@@ -39,7 +39,7 @@ interface
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ComCtrls,
   ExtCtrls, StdCtrls,
-  CodeTree, CodeToolManager, CodeAtom, CodeCache,
+  CodeTree, CodeToolManager, CodeCache,
   IDEImagesIntf;
 
 type
@@ -66,7 +66,7 @@ type
     procedure cbObjectsChange(Sender: TObject);
     procedure edMethodsChange(Sender: TObject);
     procedure edMethodsKeyDown(Sender: TObject; var Key: Word;
-      Shift: TShiftState);
+      {%H-}Shift: TShiftState);
     procedure edMethodsKeyPress(Sender: TObject; var Key: char);
     procedure FormCreate(Sender: TObject);
     procedure FormKeyPress(Sender: TObject; var Key: char);
@@ -105,8 +105,7 @@ implementation
 {$R *.lfm}
 
 uses
-  MenuIntf
-  ,SrcEditorIntf
+  SrcEditorIntf
   ,PascalParserTool
   ,KeywordFuncLists
   ,LCLType

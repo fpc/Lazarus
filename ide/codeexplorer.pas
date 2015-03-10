@@ -156,7 +156,7 @@ type
     procedure CodeRefreshSpeedButtonClick(Sender: TObject);
     procedure RenameMenuItemClick(Sender: TObject);
     procedure TreePopupmenuPopup(Sender: TObject);
-    procedure OnUserInput(Sender: TObject; Msg: Cardinal);
+    procedure OnUserInput(Sender: TObject; {%H-}Msg: Cardinal);
   private
     fCategoryNodes: array[TCodeExplorerCategory] of TTreeNode;
     FCodeFilename: string;

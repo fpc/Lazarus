@@ -39,10 +39,10 @@ unit MakeResStrDlg;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, Forms, Controls, Buttons, ComCtrls, StdCtrls,
+  Classes, SysUtils, LCLProc, Forms, Controls, Buttons, StdCtrls,
   Dialogs, ExtCtrls, IDEWindowIntf,
   SynHighlighterPas, SynEdit,
-  CodeToolManager, CodeAtom, CodeToolsStructs, CodeCache,
+  CodeToolManager, CodeToolsStructs, CodeCache,
   IDEHelpIntf, IDEDialogs,
   LazarusIDEStrConsts,
   EditorOptions, InputHistory, MiscOptions, IDEProcs;
@@ -121,7 +121,7 @@ type
     function ResStrExistsInCurrentSection(const Identifier: string): boolean;
     function ResStrExistsInAnySection(const Identifier: string): boolean;
     function ResStrExistsWithSameValue(const Identifier: string): boolean;
-    procedure GetNewSource(var NewSource, ResourceStringValue: string);
+    procedure GetNewSource(out NewSource, ResourceStringValue: string);
     procedure Init;
     procedure SaveHistories;
     procedure SaveIdentPrefixes;
@@ -131,7 +131,6 @@ type
   
 function ShowMakeResStrDialog(
   const StartPos, EndPos: TPoint; Code: TCodeBuffer;
-  Positions: TCodeXYPositions;
   out NewIdentifier, NewIdentifierValue: string;
   out NewSourceLines: string;
   out ResStrSectionCode: TCodeBuffer;
@@ -142,14 +141,12 @@ implementation
 
 {$R *.lfm}
 
-uses
-  Math;
 
 function ShowMakeResStrDialog(const StartPos, EndPos: TPoint;
-  Code: TCodeBuffer; Positions: TCodeXYPositions; out NewIdentifier,
-  NewIdentifierValue: string; out NewSourceLines: string; out
-  ResStrSectionCode: TCodeBuffer; out ResStrSectionXY: TPoint; out
-  InsertPolicy: TResourcestringInsertPolicy): TModalResult;
+  Code: TCodeBuffer; out NewIdentifier, NewIdentifierValue: string; out
+  NewSourceLines: string; out ResStrSectionCode: TCodeBuffer; out
+  ResStrSectionXY: TPoint; out InsertPolicy: TResourcestringInsertPolicy
+  ): TModalResult;
 var
   MakeResStrDialog: TMakeResStrDialog;
   Section: PCodeXYPosition;
@@ -533,7 +530,7 @@ begin
   Result:=false;
 end;
 
-procedure TMakeResStrDialog.GetNewSource(var NewSource,
+procedure TMakeResStrDialog.GetNewSource(out NewSource,
   ResourceStringValue: string);
 var
   FormatStringConstant: string;
@@ -544,6 +541,8 @@ var
   RightSide: String;
   StartInStringConst, EndInStringConst: boolean;
 begin
+  NewSource:='';
+  ResourceStringValue:='';
   if not CodeToolBoss.StringConstToFormatString(Code,StartPos.X,StartPos.Y,
      Code,EndPos.X,EndPos.Y,FormatStringConstant,FormatParameters,
      StartInStringConst,EndInStringConst)

@@ -34,7 +34,7 @@ interface
 uses
   Classes, SysUtils, LCLProc, AVL_Tree, Forms, Controls, Graphics,
   Dialogs, ExtCtrls, Buttons, StdCtrls,
-  BasicCodeTools, CodeTree, CodeAtom, CodeCache, CodeToolManager,
+  BasicCodeTools, CodeTree, CodeCache, CodeToolManager,
   ExtractProcTool,
   IDEHelpIntf, IDEDialogs,
   LazarusIDEStrConsts, IDEProcs, MiscOptions;
@@ -61,7 +61,7 @@ type
     procedure HelpButtonClick(Sender: TObject);
     procedure ExtractProcDialogCreate(Sender: TObject);
     procedure ExtractProcDialogClose(Sender: TObject;
-      var CloseAction: TCloseAction);
+      var {%H-}CloseAction: TCloseAction);
     procedure OkButtonClick(Sender: TObject);
   private
     FMethodPossible: boolean;
