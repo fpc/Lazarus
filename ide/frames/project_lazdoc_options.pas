@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs,
   StdCtrls, Buttons, Project, IDEOptionsIntf, LazarusIDEStrConsts, IDEProcs,
-  FPDocEditWindow, CodeHelp;
+  CodeHelp;
 
 type
 
@@ -28,13 +28,13 @@ type
     procedure DeletePathButtonClick(Sender: TObject);
     procedure FPDocPackageNameEditEnter(Sender: TObject);
     procedure FPDocPackageNameEditExit(Sender: TObject);
-    procedure PathsListBoxSelectionChange(Sender: TObject; User: boolean);
+    procedure PathsListBoxSelectionChange(Sender: TObject; {%H-}User: boolean);
     procedure PathEditChange(Sender: TObject);
   private
     function GetFPDocPkgNameEditValue: string;
   public
     function GetTitle: string; override;
-    procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
+    procedure Setup({%H-}ADialog: TAbstractOptionsEditorDialog); override;
     procedure ReadSettings(AOptions: TAbstractIDEOptions); override;
     procedure WriteSettings(AOptions: TAbstractIDEOptions); override;
     class function SupportedOptionsClass: TAbstractIDEOptionsClass; override;

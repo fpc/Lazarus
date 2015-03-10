@@ -48,7 +48,7 @@ type
     procedure DefinesCheckListClick(Sender: TObject);
     procedure DefinesCheckListDblClick(Sender: TObject);
     procedure RemoveBtnClick(Sender: TObject);
-    procedure DefinesCheckListKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure DefinesCheckListKeyDown(Sender: TObject; var Key: Word; {%H-}Shift: TShiftState);
   private
     FIdleConnected: Boolean;
     FOptionsReader: TCompilerOptReader;
@@ -56,7 +56,7 @@ type
     FCustomOptions: TStrings;
     FUseComments: Boolean;
     procedure SetIdleConnected(AValue: Boolean);
-    procedure OnIdle(Sender: TObject; var Done: Boolean);
+    procedure OnIdle(Sender: TObject; var {%H-}Done: Boolean);
     procedure DeleteSelected;
     procedure UpdateButtons;
   private

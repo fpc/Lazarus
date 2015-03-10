@@ -23,8 +23,8 @@ type
     sbAllOptions: TScrollBox;
     procedure btnResetOptionsFilterClick(Sender: TObject);
     procedure cbShowModifiedClick(Sender: TObject);
-    procedure sbMouseWheel(Sender: TObject; Shift: TShiftState;
-      WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
+    procedure sbMouseWheel(Sender: TObject; {%H-}Shift: TShiftState;
+      WheelDelta: Integer; {%H-}MousePos: TPoint; var Handled: Boolean);
     procedure edOptionsFilterChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
   private
@@ -36,7 +36,7 @@ type
     FEffectiveShowModified: Boolean;
     FRenderedOnce: Boolean;
     procedure SetIdleConnected(AValue: Boolean);
-    procedure OnIdle(Sender: TObject; var Done: Boolean);
+    procedure OnIdle(Sender: TObject; var {%H-}Done: Boolean);
     procedure CheckBoxClick(Sender: TObject);
     procedure EditChange(Sender: TObject);
     procedure ComboChange(Sender: TObject);

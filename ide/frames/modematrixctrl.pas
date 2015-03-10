@@ -220,7 +220,7 @@ type
     fRedoItems: TObjectList; // list of TGroupedMatrix, 0=oldest
     function GetModeColumns(Index: integer): TGridColumn;
     function GetModes: TGroupedMatrixModes;
-    procedure InvalidateGroupedCells(aCol, aRow: Integer);
+    procedure InvalidateGroupedCells({%H-}aCol, aRow: Integer);
     procedure SetActiveMode(AValue: integer);
     procedure SetActiveModeColor(AValue: TColor);
     procedure SetIndent(AValue: integer);

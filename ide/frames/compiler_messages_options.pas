@@ -6,8 +6,8 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, LazFileCache, LazLoggerBase, ListFilterEdit,
-  StdCtrls, CheckLst, Dialogs, IDEOptionsIntf, IDEMsgIntf, IDEExternToolIntf,
-  MacroIntf, IDEDialogs, CompOptsIntf, CodeToolsFPCMsgs, CompilerOptions,
+  StdCtrls, CheckLst, Dialogs, IDEOptionsIntf, IDEExternToolIntf,
+  IDEDialogs, CompOptsIntf, CodeToolsFPCMsgs, CompilerOptions,
   LazarusIDEStrConsts, etFPCMsgParser;
 
 type
@@ -33,7 +33,7 @@ type
     destructor Destroy; override;
 
     function GetTitle: String; override;
-    procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
+    procedure Setup({%H-}ADialog: TAbstractOptionsEditorDialog); override;
     procedure ReadSettings(AOptions: TAbstractIDEOptions); override;
     procedure WriteSettings(AOptions: TAbstractIDEOptions); override;
     class function SupportedOptionsClass: TAbstractIDEOptionsClass; override;
@@ -50,7 +50,7 @@ var
   MsgId: Integer;
 begin
   if (Index < 0) or (Index >= chklistCompMsg.Items.Count) then exit;
-  MsgId:=Integer(PtrUInt(Pointer(chklistCompMsg.Items.Objects[Index])));
+  MsgId:=Integer({%H-}PtrUInt(Pointer(chklistCompMsg.Items.Objects[Index])));
   if MsgId<=0 then exit;
   if chklistCompMsg.Checked[Index] then begin
     // show message, this is the default
@@ -65,7 +65,7 @@ var
 begin
   Result:=true;
   if TempMessages=nil then exit;
-  MsgId:=Integer(PtrUInt(Pointer(Item)));
+  MsgId:=Integer({%H-}PtrUInt(Pointer(Item)));
   if MsgId<=0 then exit;
   Result:=TempMessages[MsgId]<>cfvHide;
 end;
@@ -150,7 +150,7 @@ begin
         else continue;
         end;
         s+=': '+Item.Pattern;
-        editMsgFilter.Items.AddObject(s,TObject(Pointer(PtrUInt(Item.ID))));
+        editMsgFilter.Items.AddObject(s,TObject({%H-}Pointer(PtrUInt(Item.ID))));
       end;
     finally
       FPCMsgFilePool.UnloadFile(FPCMsgFile);

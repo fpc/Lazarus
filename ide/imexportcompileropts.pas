@@ -35,7 +35,7 @@ uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls, Buttons,
   Menus, ExtCtrls, EditBtn, ButtonPanel,
   IDEProcs, FileUtil, Laz2_XMLCfg, LazFileCache, LCLType, LazarusIDEStrConsts,
-  MainIntf, IDEOptionsIntf, InputHistory, Project, CompilerOptions;
+  IDEOptionsIntf, InputHistory, Project, CompilerOptions;
 
 type
   { TImExportCompOptsDlg }
@@ -51,7 +51,7 @@ type
     RecentPopupMenu: TPopupMenu;
     procedure FileNameEditChangeImport(Sender: TObject);
     procedure FileNameEditChangeExport(Sender: TObject);
-    procedure ImExportCompOptsDlgCLOSE(Sender: TObject; var CloseAction: TCloseAction);
+    procedure ImExportCompOptsDlgCLOSE(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure ImExportCompOptsDlgCREATE(Sender: TObject);
     procedure OpenButtonCLICK(Sender: TObject);
     procedure PopupClick(Sender: TObject);

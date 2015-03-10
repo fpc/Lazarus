@@ -36,10 +36,10 @@ type
     ObjectPathButton: TPathEditorButton;
     LibraryPathButton: TPathEditorButton;
     FLazPackage: TLazPackage;
-    function PathEditBtnExecuted(Context: String; var NewPath: String): Boolean;
+    function PathEditBtnExecuted({%H-}Context: String; var NewPath: String): Boolean;
   public
     function GetTitle: string; override;
-    procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
+    procedure Setup({%H-}ADialog: TAbstractOptionsEditorDialog); override;
     procedure ReadSettings(AOptions: TAbstractIDEOptions); override;
     procedure WriteSettings(AOptions: TAbstractIDEOptions); override;
     class function SupportedOptionsClass: TAbstractIDEOptionsClass; override;

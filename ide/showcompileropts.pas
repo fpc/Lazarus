@@ -56,7 +56,7 @@ type
     InhTreeView: TTreeView;
     PageControl1: TPageControl;
     RelativePathsCheckBox: TCheckBox;
-    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
+    procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure InhTreeViewSelectionChanged(Sender: TObject);

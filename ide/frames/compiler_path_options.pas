@@ -379,7 +379,7 @@ begin
       begin
         if (SearchDirectoryInSearchPath(NewParsedUnitPath,CurPath)>0)
         or (CompareFilenames(BaseDir,AppendPathDelim(CurPath))=0) then
-          Duplicates.AddObject(CurPath,TObject(Pointer(i)));
+          Duplicates.AddObject(CurPath,TObject({%H-}Pointer(i)));
       end;
       inc(i);
     until p>length(NewParsedSrcPath);
