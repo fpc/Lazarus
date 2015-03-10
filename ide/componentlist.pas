@@ -71,7 +71,7 @@ type
     procedure miExpandClick(Sender: TObject);
     procedure OKButtonClick(Sender: TObject);
     procedure ComponentsDblClick(Sender: TObject);
-    procedure ComponentsClick(Sender: TObject);
+    procedure ComponentsChange(Sender: TObject; Node: TTreeNode);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure pmCollapseExpandPopup(Sender: TObject);
     procedure TreeFilterEdAfterFilter(Sender: TObject);
@@ -347,7 +347,7 @@ begin
   OKButtonClick(nil);       // Select and close this form
 end;
 
-procedure TComponentListForm.ComponentsClick(Sender: TObject);
+procedure TComponentListForm.ComponentsChange(Sender: TObject; Node: TTreeNode);
 // This is used for all 3 treeviews
 var
   AComponent: TRegisteredComponent;

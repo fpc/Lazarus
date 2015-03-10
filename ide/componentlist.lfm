@@ -59,7 +59,7 @@ object ComponentListForm: TComponentListForm
           ShowLines = False
           ShowRoot = False
           TabOrder = 0
-          OnClick = ComponentsClick
+          OnChange = ComponentsChange
           OnDblClick = ComponentsDblClick
           OnKeyPress = TreeKeyPress
           Options = [tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoRowSelect, tvoToolTips]
@@ -95,7 +95,7 @@ object ComponentListForm: TComponentListForm
           RowSelect = True
           ShowLines = False
           TabOrder = 0
-          OnClick = ComponentsClick
+          OnChange = ComponentsChange
           OnDblClick = ComponentsDblClick
           OnKeyPress = TreeKeyPress
           Options = [tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoRightClickSelect, tvoRowSelect, tvoShowButtons, tvoShowRoot, tvoToolTips]
@@ -131,7 +131,7 @@ object ComponentListForm: TComponentListForm
           RightClickSelect = True
           RowSelect = True
           TabOrder = 0
-          OnClick = ComponentsClick
+          OnChange = ComponentsChange
           OnDblClick = ComponentsDblClick
           OnKeyPress = TreeKeyPress
           Options = [tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoRightClickSelect, tvoRowSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
