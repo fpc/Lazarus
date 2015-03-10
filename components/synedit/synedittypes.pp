@@ -59,6 +59,11 @@ type
   TLinePos = type integer; // 1..high(Integer);
   TLineIdx = type integer; // 0..high(Integer);
 
+  TLogCaretPoint = record
+    X, Y, Offs: Integer;
+  end;
+
+
   TSynCoordinateMappingFlag = (
     scmLimitToLines,
     scmIncludePartVisible,
