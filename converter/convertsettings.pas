@@ -31,7 +31,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, IDEProcs,
-  StdCtrls, EditBtn, Buttons, ExtCtrls, DialogProcs, ButtonPanel, ComCtrls,
+  StdCtrls, Buttons, ExtCtrls, DialogProcs, ButtonPanel, ComCtrls,
   LazarusIDEStrConsts, CodeToolsStructs, CodeToolManager, CodeCache,
   DividerBevel, BaseIDEIntf, IDEMsgIntf, IDEExternToolIntf, AVL_Tree,
   LazConfigStorage, ConverterTypes, ReplaceNamesUnit, ReplaceFuncsUnit;

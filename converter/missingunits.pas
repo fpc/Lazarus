@@ -35,12 +35,12 @@ uses
   Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics,
   Dialogs, Buttons, StdCtrls, FileUtil, CheckLst, Menus, ExtCtrls,
   // Components
-  SynEdit, CodeAtom, CodeCache, CodeToolManager, DefineTemplates,
+  SynEdit, CodeToolManager, DefineTemplates,
   // IDEIntf
-  LazIDEIntf, IDEMsgIntf,
+  LazIDEIntf,
   // IDE
   CompilerOptions,
-  PackageDefs, Project, DialogProcs, IDEProcs, LazarusIDEStrConsts;
+  PackageDefs, Project, IDEProcs, LazarusIDEStrConsts;
 
 type
 

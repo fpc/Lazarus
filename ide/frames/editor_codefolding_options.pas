@@ -27,7 +27,7 @@ interface
 uses
   Classes, SysUtils, FileUtil, Forms, StdCtrls, ExtCtrls, Graphics,
   LCLType, EditorOptions, LazarusIDEStrConsts, IDEOptionsIntf, Controls,
-  SynEditHighlighter, SynEditHighlighterFoldBase, Spin, ComCtrls, ColorBox, CheckLst, Buttons;
+  SynEditHighlighter, SynEditHighlighterFoldBase, CheckLst, Buttons;
 
 type
 
@@ -49,7 +49,7 @@ type
     procedure chkFoldChange(Sender: TObject);
     procedure FoldConfigCheckListBoxClick(Sender: TObject);
     procedure FoldConfigCheckListBoxClickCheck(Sender: TObject);
-    procedure FoldConfigCheckListBoxKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure FoldConfigCheckListBoxKeyUp(Sender: TObject; var {%H-}Key: Word; {%H-}Shift: TShiftState);
     procedure LanguageComboBoxChange(Sender: TObject);
     procedure LanguageComboBoxExit(Sender: TObject);
     procedure LanguageComboBoxKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -65,7 +65,7 @@ type
   public
     destructor Destroy; override;
     function GetTitle: String; override;
-    procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
+    procedure Setup({%H-}ADialog: TAbstractOptionsEditorDialog); override;
     procedure ReadSettings(AOptions: TAbstractIDEOptions); override;
     procedure WriteSettings(AOptions: TAbstractIDEOptions); override;
     function GetHighlighter(SynType: TLazSyntaxHighlighter;
@@ -116,7 +116,7 @@ begin
       FoldConfigCheckListBox.Checked[j] :=
         Hl.FoldConfig[FCurFoldInfo.Info^[i].Index].Enabled and
         (Hl.FoldConfig[FCurFoldInfo.Info^[i].Index].Modes * [fmFold, fmHide] <> []);
-      FoldConfigCheckListBox.Items.Objects[j] := TObject(Pointer(PtrUInt(i)));
+      FoldConfigCheckListBox.Items.Objects[j] := TObject({%H-}Pointer(PtrUInt(i)));
     end;
   end;
 end;

@@ -60,9 +60,9 @@ type
     procedure ChooseSchemeButtonClick(Sender: TObject);
     procedure ClearButtonClick(Sender: TObject);
     function FilterEditFilterItem(Item: TObject; out Done: Boolean): Boolean;
-    procedure FilterEditKeyPress(Sender: TObject; var Key: char);
+    procedure FilterEditKeyPress(Sender: TObject; var {%H-}Key: char);
     procedure FindKeyButtonClick(Sender: TObject);
-    procedure OnIdle(Sender: TObject; var Done: Boolean);
+    procedure OnIdle(Sender: TObject; var {%H-}Done: Boolean);
     procedure ResetKeyFilterBtnClick(Sender: TObject);
     procedure TreeViewDblClick(Sender: TObject);
     procedure TreeViewKeyPress(Sender: TObject; var Key: char);

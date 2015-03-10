@@ -33,9 +33,9 @@ interface
 uses
   Classes, SysUtils, Forms, Controls, Dialogs,
   // IDE
-  LazarusIDEStrConsts, IDEMsgIntf, IDEExternToolIntf,
+  LazarusIDEStrConsts, IDEExternToolIntf,
   // codetools
-  CodeToolManager, StdCodeTools, CodeTree, CodeCache, CodeToolsStructs, AVL_Tree,
+  CodeToolManager, StdCodeTools, CodeTree, CodeToolsStructs, AVL_Tree,
   LinkScanner, KeywordFuncLists, SourceChanger, CodeAtom, CodeToolsStrConsts, FileProcs,
   // Converter
   ConverterTypes, ConvCodeTool, ConvertSettings, ReplaceNamesUnit;

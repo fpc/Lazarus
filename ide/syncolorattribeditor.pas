@@ -6,10 +6,10 @@ interface
 
 uses
   Classes, Controls, StdCtrls, sysutils, ExtCtrls, Graphics, GraphUtil,
-  ColorBox, ComCtrls, LCLProc, LCLType, LCLIntf, Dialogs, Menus, Forms, Spin, SynEdit,
-  SynEditMiscClasses, SynGutterCodeFolding, SynGutterLineNumber, SynEditTypes,
-  SynGutterChanges, SynEditMouseCmds, SynEditHighlighter, SynTextDrawer,
-  DividerBevel, Laz2_XMLCfg, EditorOptions, IDEOptionsIntf,
+  ColorBox, LCLProc, LCLType, LCLIntf, Dialogs, Menus, Forms, Spin, SynEdit,
+  SynGutterCodeFolding, SynEditTypes,
+  SynEditMouseCmds, SynEditHighlighter, SynTextDrawer,
+  EditorOptions, IDEOptionsIntf,
   editor_general_options, IDEImagesIntf, LazarusIDEStrConsts, IDEProcs, typinfo,
   LazConf, SourceMarks, types, math, FPCanvas;
 
@@ -65,9 +65,9 @@ type
     procedure ForegroundColorBoxGetColors(Sender: TCustomColorBox; Items: TStrings);
     procedure ForePriorSpinChange(Sender: TObject);
     procedure FrameEdgesBoxDrawItem(Control: TWinControl; Index: Integer; ARect: TRect;
-      State: TOwnerDrawState);
+      {%H-}State: TOwnerDrawState);
     procedure FrameStyleBoxDrawItem(Control: TWinControl; Index: Integer; ARect: TRect;
-      State: TOwnerDrawState);
+      {%H-}State: TOwnerDrawState);
     procedure GeneralCheckBoxOnChange(Sender: TObject);
     procedure pnlElementAttributesResize(Sender: TObject);
     procedure TextStyleRadioOnChange(Sender: TObject);
@@ -384,6 +384,8 @@ var
   var w,h: Integer;
   begin
     if not Other.Visible then exit;
+    h:=0;
+    w:=0;
     Other.GetPreferredSize(w,h);
     if w <= MinWidth then exit;
     MinAnchor := Other;

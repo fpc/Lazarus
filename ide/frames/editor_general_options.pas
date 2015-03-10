@@ -26,8 +26,8 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, LCLType, StdCtrls, Controls, ExtCtrls, Graphics,
-  EditorOptions, LazarusIDEStrConsts, IDEProcs, SourceSynEditor, IDEOptionsIntf,
-  IDEUtils, SynEdit, SynBeautifier, SynHighlighterPas, SynPluginMultiCaret, DividerBevel;
+  EditorOptions, LazarusIDEStrConsts, IDEProcs, IDEOptionsIntf,
+  IDEUtils, SynEdit, SynHighlighterPas, SynPluginMultiCaret, DividerBevel;
 
 type
   TPreviewEditor = TSynEdit;

@@ -79,8 +79,8 @@ type
     procedure SetEditorFontSizeSpinEditValue(FontSize: Integer);
 
     procedure FontDialogApplyClicked(Sender: TObject);
-    function DoSynEditMouse(var AnInfo: TSynEditMouseActionInfo;
-                         HandleActionProc: TSynEditMouseActionHandler): Boolean;
+    function DoSynEditMouse(var {%H-}AnInfo: TSynEditMouseActionInfo;
+                         {%H-}HandleActionProc: TSynEditMouseActionHandler): Boolean;
   public
     function GetTitle: String; override;
     procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
@@ -101,7 +101,7 @@ var
   tm: TTextMetric;
 begin
   DisplayPreview.Canvas.Font.Assign(DisplayPreview.Font);
-  if LCLIntf.GetTextMetrics(DisplayPreview.Canvas.Handle, tm) then
+  if LCLIntf.GetTextMetrics(DisplayPreview.Canvas.Handle, tm{%H-}) then
     Result := -(NegativeSize + MulDiv(tm.tmInternalLeading, 72, DisplayPreview.Font.PixelsPerInch))
   else
     Result := -NegativeSize;

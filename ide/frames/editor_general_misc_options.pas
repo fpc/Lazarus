@@ -31,7 +31,7 @@ unit editor_general_misc_options;
 interface
 
 uses
-  LCLProc, StdCtrls, SynEdit, ExtCtrls, ComCtrls, EditorOptions,
+  LCLProc, StdCtrls, SynEdit, ExtCtrls, EditorOptions,
   LazarusIDEStrConsts, IDEProcs, IDEOptionsIntf, editor_general_options,
   SynEditTextTrimmer;
 
@@ -42,7 +42,7 @@ type
     EditorTrimSpaceTypeCheckBox: TComboBox;
     EditorOptionsGroupBox: TCheckGroup;
     EditorTrimSpaceTypeLabel: TLabel;
-    procedure EditorOptionsGroupBoxItemClick(Sender: TObject; Index: integer);
+    procedure EditorOptionsGroupBoxItemClick(Sender: TObject; {%H-}Index: integer);
   private
     FDialog: TAbstractOptionsEditorDialog;
     function GeneralPage: TEditorGeneralOptionsFrame; inline;

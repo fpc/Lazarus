@@ -25,7 +25,7 @@ type
     pmiDelRow: TMenuItem;
     pmiInsRow: TMenuItem;
     lblTitle: TLabel;
-    procedure grdFileFiltersKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure grdFileFiltersKeyDown(Sender: TObject; var Key: Word; {%H-}Shift: TShiftState);
     procedure pmiAddRowClick(Sender: TObject);
     procedure pmiDelRowClick(Sender: TObject);
     procedure pmiInsRowClick(Sender: TObject);
@@ -38,9 +38,9 @@ type
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
     function GetTitle: String; override;
-    procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
-    procedure ReadSettings(AOptions: TAbstractIDEOptions); override;
-    procedure WriteSettings(AOptions: TAbstractIDEOptions); override;
+    procedure Setup({%H-}ADialog: TAbstractOptionsEditorDialog); override;
+    procedure ReadSettings({%H-}AOptions: TAbstractIDEOptions); override;
+    procedure WriteSettings({%H-}AOptions: TAbstractIDEOptions); override;
     class function SupportedOptionsClass: TAbstractIDEOptionsClass; override;
   end;
 
@@ -64,8 +64,6 @@ const
 
 
 procedure LoadFileDialogFilter;
-const
-  cFilter = '%s (%s)|%s|';            // each filter is seperated by another | sign
 var
   cfg: TConfigStorage;
   cnt: integer;

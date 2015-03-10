@@ -60,7 +60,7 @@ type
     Panel2: TPanel;
     Splitter1: TSplitter;
     procedure listAccessTypeClickCheck(Sender: TObject);
-    procedure listAccessTypeKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure listAccessTypeKeyUp(Sender: TObject; var {%H-}Key: Word; {%H-}Shift: TShiftState);
     procedure radioAccessOrderEditChange(Sender: TObject);
   private
     { private declarations }
@@ -69,7 +69,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     function GetTitle: String; override;
-    procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
+    procedure Setup({%H-}ADialog: TAbstractOptionsEditorDialog); override;
     procedure ReadSettings(AOptions: TAbstractIDEOptions); override;
     procedure WriteSettings(AOptions: TAbstractIDEOptions); override;
     class function SupportedOptionsClass: TAbstractIDEOptionsClass; override;

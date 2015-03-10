@@ -26,8 +26,8 @@ interface
 
 uses
   Classes, Controls, math, types, typinfo, sysutils, Laz2_XMLCfg, LazFileUtils,
-  LCLProc, LCLType, LCLIntf, LazUTF8, StdCtrls, ExtCtrls, Graphics, GraphUtil, ColorBox,
-  ComCtrls, Dialogs, Menus, Spin, maskedit, SynEdit, SynEditMiscClasses,
+  LCLProc, LCLType, LCLIntf, LazUTF8, StdCtrls, ExtCtrls, Graphics,
+  ComCtrls, Dialogs, Menus, SynEdit, SynEditMiscClasses,
   SynGutterCodeFolding, SynGutterLineNumber, SynEditTypes, SynGutterChanges,
   SynEditMouseCmds, SynEditHighlighter, SynTextDrawer, SynColorAttribEditor,
   DividerBevel, IDEOptionsIntf, IDEImagesIntf, IDEUtils, EditorOptions,
@@ -90,12 +90,12 @@ type
     pnlElementAttributes: TPanel;
     procedure btnExportClick(Sender: TObject);
     procedure ColorElementTreeAdvancedCustomDrawItem(Sender: TCustomTreeView; Node: TTreeNode;
-      State: TCustomDrawState; Stage: TCustomDrawStage; var PaintImages, DefaultDraw: Boolean);
-    procedure ColorElementTreeChange(Sender: TObject; Node: TTreeNode);
+      State: TCustomDrawState; Stage: TCustomDrawStage; var {%H-}PaintImages, DefaultDraw: Boolean);
+    procedure ColorElementTreeChange(Sender: TObject; {%H-}Node: TTreeNode);
     procedure ColorElementTreeClick(Sender: TObject);
-    procedure ColorElementTreeKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
-    procedure ColorPreviewMouseUp(Sender: TObject; Button: TMouseButton;
-      Shift: TShiftState; X, Y: Integer);
+    procedure ColorElementTreeKeyDown(Sender: TObject; var Key: Word; {%H-}Shift: TShiftState);
+    procedure ColorPreviewMouseUp(Sender: TObject; {%H-}Button: TMouseButton;
+      {%H-}Shift: TShiftState; X, Y: Integer);
     procedure ColorSchemeButtonClick(Sender: TObject);
     procedure DoColorChanged(Sender: TObject);
     procedure ForePriorEditKeyPress(Sender: TObject; var Key: char);
@@ -152,13 +152,13 @@ type
     procedure ApplyCurrentScheme;
     procedure UpdateCurrentScheme;
 
-    procedure OnStatusChange(Sender: TObject; Changes: TSynStatusChanges);
+    procedure OnStatusChange(Sender: TObject; {%H-}Changes: TSynStatusChanges);
     procedure OnSpecialLineMarkup(Sender: TObject; Line: Integer;
       var Special: boolean; aMarkup: TSynSelectedColor);
 
     function GeneralPage: TEditorGeneralOptionsFrame;
     function DoSynEditMouse(var AnInfo: TSynEditMouseActionInfo;
-                         HandleActionProc: TSynEditMouseActionHandler): Boolean;
+                         {%H-}HandleActionProc: TSynEditMouseActionHandler): Boolean;
     procedure LanguageMenuItemClick(Sender: TObject);
     procedure ColorSchemeMenuItemClick(Sender: TObject);
     procedure SetLanguageItem(ALanguage: String);

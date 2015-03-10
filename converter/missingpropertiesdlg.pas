@@ -33,17 +33,17 @@ interface
 
 uses
   // FCL+LCL
-  Classes, SysUtils, Math, LCLProc, Forms, Controls, Grids, LResources,
+  Classes, SysUtils, LCLProc, Forms, Controls, Grids, LResources,
   LConvEncoding, Graphics, Dialogs, Buttons, StdCtrls, ExtCtrls, contnrs,
   FileUtil, LazUTF8Classes, LCLType, LazUTF8,
   // components
   SynHighlighterLFM, SynEdit, SynEditMiscClasses, LFMTrees,
   // codetools
-  BasicCodeTools, CodeCache, CodeToolManager, CodeToolsStructs, CodeCompletionTool,
+  CodeCache, CodeToolManager, CodeToolsStructs, CodeCompletionTool,
   // IDE
-  IDEDialogs, ComponentReg, PackageIntf, IDEWindowIntf, DialogProcs,
+  ComponentReg, PackageIntf, IDEWindowIntf,
   CustomFormEditor, LazarusIDEStrConsts, IDEProcs,
-  EditorOptions, CheckLFMDlg, IDEMsgIntf, Project, SourceMarks,
+  EditorOptions, CheckLFMDlg, Project, SourceMarks,
   // Converter
   ConverterTypes, ConvertSettings, ReplaceNamesUnit,
   ConvCodeTool, FormFileConv, UsedUnits;
@@ -135,7 +135,6 @@ type
 
 implementation
 
-uses strutils;
 
 {$R *.lfm}
 

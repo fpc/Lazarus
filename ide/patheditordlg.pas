@@ -68,15 +68,15 @@ type
     procedure FormShow(Sender: TObject);
     procedure MoveDownButtonClick(Sender: TObject);
     procedure MoveUpButtonClick(Sender: TObject);
-    procedure PathListBoxDrawItem(Control: TWinControl; Index: Integer;
-      ARect: TRect; State: TOwnerDrawState);
+    procedure PathListBoxDrawItem({%H-}Control: TWinControl; Index: Integer;
+      ARect: TRect; {%H-}State: TOwnerDrawState);
     procedure PathListBoxKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
-    procedure PathListBoxSelectionChange(Sender: TObject; User: boolean);
+    procedure PathListBoxSelectionChange(Sender: TObject; {%H-}User: boolean);
     procedure ReplaceButtonClick(Sender: TObject);
     procedure ImportMenuItemClick(Sender: TObject);
     procedure TemplatesListBoxDblClick(Sender: TObject);
-    procedure TemplatesListBoxSelectionChange(Sender: TObject; User: boolean);
+    procedure TemplatesListBoxSelectionChange(Sender: TObject; {%H-}User: boolean);
   private
     FBaseDirectory: string;
     FEffectiveBaseDirectory: string;

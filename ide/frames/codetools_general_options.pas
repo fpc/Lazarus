@@ -27,7 +27,7 @@ interface
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, StdCtrls, Buttons,
   Dialogs, ExtCtrls, Graphics,
-  IDEDialogs, PathEditorDlg,
+  IDEDialogs,
   CodeToolsOptions, LazarusIDEStrConsts, IDEOptionsIntf;
 
 type

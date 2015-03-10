@@ -30,7 +30,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, FileUtil, CodeToolManager, DefineTemplates, Forms,
-  StdCtrls, Dialogs, Controls, Spin, EnvironmentOpts, MacroIntf,
+  StdCtrls, Dialogs, Controls, Spin, EnvironmentOpts,
   IDEOptionsIntf, IDEDialogs,
   LazarusIDEStrConsts, InputHistory, LazConf, IDEProcs,
   IDEUtils, InitialSetupProc, DialogProcs;
@@ -97,7 +97,7 @@ type
   public
     function Check: Boolean; override;
     function GetTitle: String; override;
-    procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
+    procedure Setup({%H-}ADialog: TAbstractOptionsEditorDialog); override;
     procedure ReadSettings(AOptions: TAbstractIDEOptions); override;
     procedure WriteSettings(AOptions: TAbstractIDEOptions); override;
     procedure RestoreSettings(AOptions: TAbstractIDEOptions); override;

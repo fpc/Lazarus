@@ -26,8 +26,8 @@ interface
 
 uses
   Classes, StdCtrls, ComCtrls, Graphics, sysutils,
-  EditorOptions, LazarusIDEStrConsts, IDEOptionsIntf, Spin, ExtCtrls,
-  SynEditMarkupBracket, editor_color_options, editor_general_options,
+  EditorOptions, LazarusIDEStrConsts, IDEOptionsIntf, ExtCtrls,
+  editor_color_options, editor_general_options,
   SynEdit, SynCompletion, LCLType;
 
 type
@@ -52,7 +52,7 @@ type
     procedure AutoDelayTrackBarChange(Sender: TObject);
   public
     function GetTitle: String; override;
-    procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
+    procedure Setup({%H-}ADialog: TAbstractOptionsEditorDialog); override;
     procedure ReadSettings(AOptions: TAbstractIDEOptions); override;
     procedure WriteSettings(AOptions: TAbstractIDEOptions); override;
     class function SupportedOptionsClass: TAbstractIDEOptionsClass; override;

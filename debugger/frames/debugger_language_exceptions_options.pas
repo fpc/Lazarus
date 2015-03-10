@@ -50,9 +50,9 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     function GetTitle: String; override;
-    procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
-    procedure ReadSettings(AOptions: TAbstractIDEOptions); override;
-    procedure WriteSettings(AOptions: TAbstractIDEOptions); override;
+    procedure Setup({%H-}ADialog: TAbstractOptionsEditorDialog); override;
+    procedure ReadSettings({%H-}AOptions: TAbstractIDEOptions); override;
+    procedure WriteSettings({%H-}AOptions: TAbstractIDEOptions); override;
     class function SupportedOptionsClass: TAbstractIDEOptionsClass; override;
   end;
 
@@ -68,6 +68,7 @@ var
   idx: Integer;
   S: String;
 begin
+  S:='';
   if not InputQuery(lisDebugOptionsFrmAddException, lisDebugOptionsFrmEnterExceptionName, S)
   then Exit;
 

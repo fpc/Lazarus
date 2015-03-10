@@ -31,9 +31,9 @@ type
     lblDatabases: TLabel;
     ViewerPropsGroupBox: TGroupBox;
     ViewersListBox: TListBox;
-    procedure DatabasesListBoxSelectionChange(Sender: TObject; User: boolean);
+    procedure DatabasesListBoxSelectionChange(Sender: TObject; {%H-}User: boolean);
     procedure FPCDocHTMLBrowseButtonClick(Sender: TObject);
-    procedure ViewersListBoxSelectionChange(Sender: TObject; User: boolean);
+    procedure ViewersListBoxSelectionChange(Sender: TObject; {%H-}User: boolean);
   private
     ViewersPropertiesGrid: TCustomPropertiesGrid;
     DatabasesPropertiesGrid: TCustomPropertiesGrid;
@@ -44,7 +44,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     function GetTitle: String; override;
-    procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
+    procedure Setup({%H-}ADialog: TAbstractOptionsEditorDialog); override;
     procedure ReadSettings(AOptions: TAbstractIDEOptions); override;
     procedure WriteSettings(AOptions: TAbstractIDEOptions); override;
     class function SupportedOptionsClass: TAbstractIDEOptionsClass; override;

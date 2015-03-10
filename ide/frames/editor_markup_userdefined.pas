@@ -7,7 +7,7 @@ interface
 uses
   Classes, StdCtrls, ComCtrls, Graphics, sysutils, math, EditorOptions,
   LazarusIDEStrConsts, SynColorAttribEditor, KeyMapping, KeyMapShortCutDlg,
-  IDEOptionsIntf, IDECommands, IDEDialogs, Spin, ExtCtrls, SynEditMarkupBracket,
+  IDEOptionsIntf, IDECommands, IDEDialogs, Spin, ExtCtrls,
   editor_color_options, editor_general_options, editor_keymapping_options,
   SynEdit, SynCompletion, SynHighlighterPas, SynEditKeyCmds,
   SynEditMarkupHighAll, DividerBevel, LazLoggerBase, LCLType, Menus, Grids,
@@ -89,12 +89,12 @@ type
     procedure tbSelectListClick(Sender: TObject);
     procedure GeneralCheckBoxChange(Sender: TObject);
     procedure tbSelectPageClicked(Sender: TObject);
-    procedure WordListColRowDeleted(Sender: TObject; IsColumn: Boolean; sIndex,
-      tIndex: Integer);
+    procedure WordListColRowDeleted(Sender: TObject; {%H-}IsColumn: Boolean; {%H-}sIndex,
+      {%H-}tIndex: Integer);
     procedure WordListEditingDone(Sender: TObject);
     procedure WordListExit(Sender: TObject);
-    procedure WordListKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
-    procedure WordListSelection(Sender: TObject; aCol, aRow: Integer);
+    procedure WordListKeyUp(Sender: TObject; var {%H-}Key: Word; {%H-}Shift: TShiftState);
+    procedure WordListSelection(Sender: TObject; {%H-}aCol, aRow: Integer);
   private
     { private declarations }
     FGlobalColors: TEditorUserDefinedWordsList;

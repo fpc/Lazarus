@@ -27,7 +27,7 @@ interface
 uses
   Classes, SysUtils, fgl, Graphics, Forms, Controls, StdCtrls, Dialogs, Buttons,
   ComCtrls, ExtCtrls, FileUtil, LCLProc, LCLType, Menus, IDEProcs, Laz2_XMLCfg,
-  LazConfigStorage, EnvironmentOpts, LazarusIDEStrConsts, IDEOptionsIntf,
+  EnvironmentOpts, LazarusIDEStrConsts, IDEOptionsIntf,
   IDEImagesIntf, DividerBevel, ComponentReg, ComponentPalette, IDEOptionDefs,
   PackageDefs;
 
@@ -58,16 +58,16 @@ type
     Splitter1: TSplitter;
     procedure AddPageButtonClick(Sender: TObject);
     procedure ComponentsListViewChange(Sender: TObject; Item: TListItem;
-      Change: TItemChange);
+      {%H-}Change: TItemChange);
     procedure ComponentsListViewClick(Sender: TObject);
     procedure ComponentsListViewCustomDraw(Sender: TCustomListView;
-      const ARect: TRect; var DefaultDraw: Boolean);
+      const {%H-}ARect: TRect; var {%H-}DefaultDraw: Boolean);
     procedure ComponentsListViewCustomDrawItem(Sender: TCustomListView;
-      Item: TListItem; State: TCustomDrawState; var DefaultDraw: Boolean);
+      Item: TListItem; {%H-}State: TCustomDrawState; var {%H-}DefaultDraw: Boolean);
     procedure ComponentsListViewDragDrop(Sender, Source: TObject; X, Y: Integer);
-    procedure ComponentsListViewDragOver(Sender, Source: TObject; X, Y: Integer;
-      State: TDragState; var Accept: Boolean);
-    procedure ComponentsListViewItemChecked(Sender: TObject; Item: TListItem);
+    procedure ComponentsListViewDragOver(Sender, Source: TObject; {%H-}X, {%H-}Y: Integer;
+      {%H-}State: TDragState; var Accept: Boolean);
+    procedure ComponentsListViewItemChecked(Sender: TObject; {%H-}Item: TListItem);
     procedure ComponentsListViewKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure CompMoveDownBtnClick(Sender: TObject);
     procedure ImportButtonClick(Sender: TObject);
@@ -77,9 +77,9 @@ type
     procedure PageMoveUpBtnClick(Sender: TObject);
     procedure PagesListBoxDragDrop(Sender, Source: TObject; X, Y: Integer);
     procedure PagesListBoxDragOver(Sender, Source: TObject; X, Y: Integer;
-      State: TDragState; var Accept: Boolean);
+      {%H-}State: TDragState; var Accept: Boolean);
     procedure PagesListBoxKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
-    procedure PagesListBoxSelectionChange(Sender: TObject; User: boolean);
+    procedure PagesListBoxSelectionChange(Sender: TObject; {%H-}User: boolean);
     procedure PagesPopupMenuPopup(Sender: TObject);
     procedure RestoreButtonClick(Sender: TObject);
     procedure DeleteMenuItemClick(Sender: TObject);

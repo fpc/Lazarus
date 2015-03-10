@@ -57,9 +57,6 @@ implementation
 
 {$R *.lfm}
 
-uses 
-  IDEContextHelpEdit;
-
 function ShowChooseKeySchemeDialog(var NewScheme: string): TModalResult;
 var
   ChooseKeySchemeDlg: TChooseKeySchemeDlg;

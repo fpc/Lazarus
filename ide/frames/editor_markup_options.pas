@@ -64,7 +64,7 @@ type
     procedure BracketLinkMouseLeave(Sender: TObject);
     procedure chkExtPasKeywordsChange(Sender: TObject);
     procedure chkKWGroupsClickCheck(Sender: TObject);
-    procedure chkKWGroupsKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure chkKWGroupsKeyUp(Sender: TObject; var {%H-}Key: Word; {%H-}Shift: TShiftState);
     procedure dropPasStringKeywordsChange(Sender: TObject);
     function GeneralPage: TEditorGeneralOptionsFrame; inline;
     function FoldPage: TEditorCodefoldingOptionsFrame; inline;

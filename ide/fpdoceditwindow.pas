@@ -31,18 +31,18 @@ interface
 
 uses
   // FCL
-  Classes, SysUtils, StrUtils, contnrs,
-  Laz2_DOM, Laz2_XMLRead, Laz2_XMLWrite,
+  Classes, SysUtils,
+  Laz2_DOM, Laz2_XMLRead,
   // LCL
   LCLProc, LResources, StdCtrls, Buttons, ComCtrls, Controls, Dialogs,
   ExtCtrls, Forms, Graphics, LCLType,
   // Synedit
   SynEdit,
   // codetools
-  BasicCodeTools, FileProcs, CodeAtom, CodeCache, CodeToolManager,
+  FileProcs, CodeCache, CodeToolManager,
   CTXMLFixFragment,
   // IDEIntf
-  IDEWindowIntf, ProjectIntf, LazIDEIntf, IDEHelpIntf, LazHelpIntf, Menus,
+  IDEWindowIntf, ProjectIntf, LazIDEIntf, IDEHelpIntf, Menus,
   SrcEditorIntf, IDEDialogs,
   // IDE
   IDEOptionDefs, EnvironmentOpts, PackageSystem, IDEProcs, LazarusIDEStrConsts,

@@ -33,7 +33,7 @@ type
   TCodetoolsAtomCheckboxesOptionsFrame = class(TAbstractIDEOptionsEditor)
   protected
     procedure CreateAtomCheckBoxes(
-      ParentGroupBox: TGroupBox; AtomTypes: TAtomTypes; Columns: integer;
+      ParentGroupBox: TGroupBox; AtomTypes: TAtomTypes; {%H-}Columns: integer;
       AOnClick: TNotifyEvent);
     function ReadAtomCheckBoxes(ParentGroupBox: TGroupBox): TAtomTypes;
     procedure SetAtomCheckBoxes(AtomTypes: TAtomTypes; ParentGroupBox: TGroupBox);

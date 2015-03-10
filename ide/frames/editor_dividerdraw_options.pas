@@ -52,7 +52,7 @@ type
     procedure LanguageComboBoxChange(Sender: TObject);
     procedure LanguageComboBoxExit(Sender: TObject);
     procedure LanguageComboBoxKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
-    procedure DividerConfigListBoxKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure DividerConfigListBoxKeyUp(Sender: TObject; var {%H-}Key: Word; {%H-}Shift: TShiftState);
     procedure DividerConfigListBoxClick(Sender: TObject);
     procedure DividerSpinEditChange(Sender: TObject);
     procedure NestLvlColorBoxChange(Sender: TObject);
@@ -72,7 +72,7 @@ type
   public
     destructor Destroy; override;
     function GetTitle: String; override;
-    procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
+    procedure Setup({%H-}ADialog: TAbstractOptionsEditorDialog); override;
     procedure ReadSettings(AOptions: TAbstractIDEOptions); override;
     procedure WriteSettings(AOptions: TAbstractIDEOptions); override;
     class function SupportedOptionsClass: TAbstractIDEOptionsClass; override;

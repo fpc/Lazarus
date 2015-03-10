@@ -45,11 +45,11 @@ type
     procedure BtnDefaultClick(Sender: TObject);
     procedure ButtonBoxChange(Sender: TObject);
     procedure CapturePanelMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState;
-      X, Y: Integer);
+      {%H-}X, {%H-}Y: Integer);
     procedure DirCheckChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure PaintBox1MouseWheel(Sender: TObject; Shift: TShiftState; WheelDelta: Integer;
-      MousePos: TPoint; var Handled: Boolean);
+      {%H-}MousePos: TPoint; var {%H-}Handled: Boolean);
   private
     FKeyMap: TKeyCommandRelationList;
     procedure AddMouseCmd(const S: string);
@@ -90,6 +90,7 @@ var
   i: Integer;
   s2: String;
 begin
+  i:=0;
   if IdentToSynMouseCmd(S, i) then begin
     s2 := MouseCommandName(i);
     if s2 = '' then s2 := s;
@@ -196,7 +197,7 @@ var
   i: Integer;
 begin
   OptBox.Items.Clear;
-  ACmd := TSynEditorMouseCommand(PtrUInt(Pointer(ActionBox.items.Objects[ActionBox.ItemIndex])));
+  ACmd := TSynEditorMouseCommand({%H-}PtrUInt(Pointer(ActionBox.items.Objects[ActionBox.ItemIndex])));
   if ACmd =  emcSynEditCommand then begin
     OptBox.Enabled := True;
     OptBox.Clear;
@@ -205,7 +206,7 @@ begin
          (KeyMap.Relations[i].Category.Scope = IDECmdScopeSrcEditOnly)
       then
         OptBox.Items.AddObject(KeyMap.Relations[i].GetLocalizedName,
-                               TObject(Pointer(PtrUInt(KeyMap.Relations[i].Command))));
+                               TObject({%H-}Pointer(PtrUInt(KeyMap.Relations[i].Command))));
     OptLabel.Caption := dlgMouseOptionsynCommand;
     OptBox.ItemIndex := 0;
   end
@@ -258,7 +259,7 @@ procedure TMouseaActionDialog.ReadFromAction(MAct: TSynEditMouseAction);
 var
   r: TSynMAUpRestriction;
 begin
-  ActionBox.ItemIndex := ActionBox.Items.IndexOfObject(TObject(Pointer(PtrUInt(MAct.Command))));
+  ActionBox.ItemIndex := ActionBox.Items.IndexOfObject(TObject({%H-}Pointer(PtrUInt(MAct.Command))));
   ButtonBox.ItemIndex := BtnToIndex[MAct.Button];
   ClickBox.ItemIndex  := ClickToIndex[MAct.ClickCount];
   DirCheck.Checked    := MAct.ClickDir = cdUp;
@@ -278,7 +279,7 @@ begin
   ButtonBoxChange(nil);
   if OptBox.Enabled then begin
     if MAct.Command =  emcSynEditCommand then
-      OptBox.ItemIndex := OptBox.Items.IndexOfObject(TObject(Pointer(PtrUInt(MAct.Option))))
+      OptBox.ItemIndex := OptBox.Items.IndexOfObject(TObject({%H-}Pointer(PtrUInt(MAct.Option))))
     else
       OptBox.ItemIndex := MAct.Option;
   end;
@@ -288,7 +289,7 @@ procedure TMouseaActionDialog.WriteToAction(MAct: TSynEditMouseAction);
 var
   r: TSynMAUpRestriction;
 begin
-  MAct.Command := TSynEditorMouseCommand(PtrUInt(Pointer(ActionBox.items.Objects[ActionBox.ItemIndex])));
+  MAct.Command := TSynEditorMouseCommand({%H-}PtrUInt(Pointer(ActionBox.items.Objects[ActionBox.ItemIndex])));
   MAct.Button := IndexToBtn[ButtonBox.ItemIndex];
   MAct.ClickCount := IndexToClick[ClickBox.ItemIndex];
   MAct.MoveCaret := CaretCheck.Checked;
@@ -312,7 +313,7 @@ begin
 
   if OptBox.Enabled then begin
     if MAct.Command =  emcSynEditCommand then begin
-      MAct.Option := TSynEditorMouseCommandOpt(PtrUInt(Pointer(OptBox.Items.Objects[OptBox.ItemIndex])));
+      MAct.Option := TSynEditorMouseCommandOpt({%H-}PtrUInt(Pointer(OptBox.Items.Objects[OptBox.ItemIndex])));
     end
     else
       MAct.Option := OptBox.ItemIndex;

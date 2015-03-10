@@ -53,31 +53,31 @@ type
     DelButton: TToolButton;
     ActionGrid: TStringGrid;
     ContextTree: TTreeView;
-    procedure ActionGridHeaderClick(Sender: TObject; IsColumn: Boolean; Index: Integer);
-    procedure ActionGridCompareCells(Sender: TObject; ACol, ARow, BCol, BRow: Integer;
+    procedure ActionGridHeaderClick(Sender: TObject; {%H-}IsColumn: Boolean; Index: Integer);
+    procedure ActionGridCompareCells(Sender: TObject; {%H-}ACol, ARow, {%H-}BCol, BRow: Integer;
       var Result: integer);
-    procedure ActionGridMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState;
-      X, Y: Integer);
-    procedure ActionGridMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
-    procedure ActionGridMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X,
-      Y: Integer);
-    procedure ActionGridSelection(Sender: TObject; aCol, aRow: Integer);
+    procedure ActionGridMouseDown(Sender: TObject; {%H-}Button: TMouseButton; {%H-}Shift: TShiftState;
+      {%H-}X, Y: Integer);
+    procedure ActionGridMouseMove(Sender: TObject; {%H-}Shift: TShiftState; {%H-}X, {%H-}Y: Integer);
+    procedure ActionGridMouseUp(Sender: TObject; {%H-}Button: TMouseButton; {%H-}Shift: TShiftState; {%H-}X,
+      {%H-}Y: Integer);
+    procedure ActionGridSelection(Sender: TObject; {%H-}aCol, {%H-}aRow: Integer);
     procedure ContextTreeChange(Sender: TObject; Node: TTreeNode);
-    procedure OtherActionGridHeaderClick(Sender: TObject; IsColumn: Boolean; Index: Integer);
-    procedure OtherActionGridHeaderSized(Sender: TObject; IsColumn: Boolean; Index: Integer);
-    procedure OtherActionGridMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState;
-      X, Y: Integer);
-    procedure OtherActionGridMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
-    procedure OtherActionGridMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X,
-      Y: Integer);
+    procedure OtherActionGridHeaderClick(Sender: TObject; {%H-}IsColumn: Boolean; Index: Integer);
+    procedure OtherActionGridHeaderSized(Sender: TObject; {%H-}IsColumn: Boolean; {%H-}Index: Integer);
+    procedure OtherActionGridMouseDown(Sender: TObject; {%H-}Button: TMouseButton; {%H-}Shift: TShiftState;
+      {%H-}X, Y: Integer);
+    procedure OtherActionGridMouseMove(Sender: TObject; {%H-}Shift: TShiftState; {%H-}X, {%H-}Y: Integer);
+    procedure OtherActionGridMouseUp(Sender: TObject; {%H-}Button: TMouseButton; {%H-}Shift: TShiftState; {%H-}X,
+      {%H-}Y: Integer);
     procedure OtherActionGridResize(Sender: TObject);
     procedure AddNewButtonClick(Sender: TObject);
-    procedure OtherActionGridSelectCell(Sender: TObject; aCol, aRow: Integer;
+    procedure OtherActionGridSelectCell(Sender: TObject; {%H-}aCol, {%H-}aRow: Integer;
       var CanSelect: Boolean);
     procedure OtherActToggleBoxChange(Sender: TObject);
     procedure UpdateButtonClick(Sender: TObject);
     procedure DelButtonClick(Sender: TObject);
-    procedure ActionGridHeaderSized(Sender: TObject; IsColumn: Boolean; Index: Integer);
+    procedure ActionGridHeaderSized(Sender: TObject; {%H-}IsColumn: Boolean; {%H-}Index: Integer);
     procedure ActionGridResize(Sender: TObject);
     procedure BtnExportClick(Sender: TObject);
     procedure BtnImportClick(Sender: TObject);
@@ -114,7 +114,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     function GetTitle: String; override;
-    procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
+    procedure Setup({%H-}ADialog: TAbstractOptionsEditorDialog); override;
     procedure ReadSettings(AOptions: TAbstractIDEOptions); override;
     procedure WriteSettings(AOptions: TAbstractIDEOptions); override;
     procedure RefreshSettings;
@@ -425,7 +425,7 @@ begin
               FillRow(OtherActionGrid, Row, 2, ActList[i]);
               OtherActionGrid.Cells[1,Row] := Node.Text;
               OtherActionGrid.Cells[0,Row] := IntToStr(Order);
-              OtherActionGrid.Objects[1,Row] := TObject(Pointer(PtrInt(Order)));
+              OtherActionGrid.Objects[1,Row] := TObject({%H-}Pointer(PtrInt(Order)));
               FoundOrder := Order;
               FAllowOtherActSel := True;
               if ActList[i].Equals(MAct) and (ActList = FCurActions) then

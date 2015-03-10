@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ExtCtrls,
-  Buttons, ButtonPanel, ComCtrls, Grids, CheckLst, Menus, StdCtrls, SynRegExpr,
+  Buttons, ButtonPanel, Grids, CheckLst, Menus, StdCtrls, SynRegExpr,
   LazarusIDEStrConsts, ConverterTypes;
 
 type
@@ -102,8 +102,8 @@ type
     procedure PopupMenu1Popup(Sender: TObject);
     procedure InsertRow1Click(Sender: TObject);
     procedure DeleteRow1Click(Sender: TObject);
-    procedure GridPrepareCanvas(sender: TObject; aCol, aRow: Integer;
-      aState: TGridDrawState);
+    procedure GridPrepareCanvas(sender: TObject; {%H-}aCol, aRow: Integer;
+      {%H-}aState: TGridDrawState);
     procedure OKButtonClick(Sender: TObject);
   public
     function FromFuncListToUI(aFuncsAndCateg: TFuncsAndCategories): boolean;

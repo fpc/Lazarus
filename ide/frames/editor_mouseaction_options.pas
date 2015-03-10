@@ -193,7 +193,7 @@ type
     procedure CheckOrRadioChange(Sender: TObject);
     procedure chkPredefinedSchemeChange(Sender: TObject);
     procedure dropUserSchemesChange(Sender: TObject);
-    procedure dropUserSchemesKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure dropUserSchemesKeyDown(Sender: TObject; var {%H-}Key: Word; {%H-}Shift: TShiftState);
     procedure ResetGutterButtonClick(Sender: TObject);
     procedure ResetTextButtonClick(Sender: TObject);
     procedure ResetAllButtonClick(Sender: TObject);

@@ -32,15 +32,15 @@ interface
 
 uses
   // LCL+FCL
-  Classes, SysUtils, FileProcs, Forms, Controls, DialogProcs, Dialogs,
+  Classes, SysUtils, FileProcs, Forms, Controls, Dialogs,
   contnrs, strutils,
   // IDE
-  LazarusIDEStrConsts, LazIDEIntf, FormEditor, IDEMsgIntf, IDEExternToolIntf,
+  LazarusIDEStrConsts, LazIDEIntf, FormEditor, IDEExternToolIntf,
   // codetools
   CodeToolManager, StdCodeTools, CodeTree, CodeAtom,
   FindDeclarationTool, PascalReaderTool, PascalParserTool, LFMTrees,
   ExprEval, KeywordFuncLists, BasicCodeTools, LinkScanner,
-  CodeCache, SourceChanger, CustomCodeTool, CodeToolsStructs, EventCodeTool,
+  CodeCache, SourceChanger, CustomCodeTool, CodeToolsStructs,
   // Converter
   ConverterTypes, ConvertSettings, ReplaceNamesUnit, ReplaceFuncsUnit;
 

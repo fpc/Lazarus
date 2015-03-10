@@ -726,7 +726,7 @@ type
 
     // register proc
     function HasInterfaceRegisterProc(Code: TCodeBuffer;
-          var HasRegisterProc: boolean): boolean;
+          out HasRegisterProc: boolean): boolean;
           
     // Delphi to Lazarus conversion
     function ConvertDelphiToLazarusSource(Code: TCodeBuffer;
@@ -5620,9 +5620,10 @@ begin
 end;
 
 function TCodeToolManager.HasInterfaceRegisterProc(Code: TCodeBuffer;
-  var HasRegisterProc: boolean): boolean;
+  out HasRegisterProc: boolean): boolean;
 begin
   Result:=false;
+  HasRegisterProc:=false;
   {$IFDEF CTDEBUG}
   DebugLn('TCodeToolManager.HasInterfaceRegisterProc A ',Code.Filename);
   {$ENDIF}

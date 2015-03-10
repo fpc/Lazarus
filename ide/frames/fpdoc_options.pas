@@ -43,12 +43,12 @@ type
     procedure LazDocDeletePathButtonClick(Sender: TObject);
     procedure LazDocAddPathButtonClick(Sender: TObject);
     procedure LazDocBrowseButtonClick(Sender: TObject);
-    procedure LazDocListBoxSelectionChange(Sender: TObject; User: boolean);
+    procedure LazDocListBoxSelectionChange(Sender: TObject; {%H-}User: boolean);
     procedure LazDocPathEditChange(Sender: TObject);
   private
   public
     function GetTitle: String; override;
-    procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
+    procedure Setup({%H-}ADialog: TAbstractOptionsEditorDialog); override;
     procedure ReadSettings(AOptions: TAbstractIDEOptions); override;
     procedure WriteSettings(AOptions: TAbstractIDEOptions); override;
     class function SupportedOptionsClass: TAbstractIDEOptionsClass; override;
