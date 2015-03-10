@@ -199,7 +199,7 @@ type
                                        ): TComponent; override;
     function GetDefaultComponentPosition(TypeClass: TComponentClass;
                                          ParentComponent: TComponent;
-                                         var X,Y: integer): boolean; override;
+                                         out X,Y: integer): boolean; override;
     function CreateComponent(ParentComponent: TComponent;
                              TypeClass: TComponentClass;
                              const AUnitName: shortstring;
@@ -2290,7 +2290,7 @@ begin
 end;
 
 function TCustomFormEditor.GetDefaultComponentPosition(
-  TypeClass: TComponentClass; ParentComponent: TComponent; var X, Y: integer
+  TypeClass: TComponentClass; ParentComponent: TComponent; out X, Y: integer
   ): boolean;
 var
   i: Integer;

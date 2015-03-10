@@ -109,7 +109,7 @@ type
                                        ): TComponent; virtual; abstract;
     function GetDefaultComponentPosition(TypeClass: TComponentClass;
                                          ParentComp: TComponent;
-                                         var X,Y: integer): boolean; virtual; abstract;
+                                         out X,Y: integer): boolean; virtual; abstract;
     function CreateComponent(ParentComp: TComponent;
                              TypeClass: TComponentClass;
                              const AUnitName: shortstring;
