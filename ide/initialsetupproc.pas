@@ -355,10 +355,19 @@ begin
       Note:=lisSystemPpuNotFoundCheckYourFpcCfg;
       exit;
     end;
-    if CompareFileExt(CfgCache.Units['classes'],'ppu',false)<>0 then
+    if (CfgCache.RealTargetCPU='jvm') then
     begin
-      Note:=lisClassesPpuNotFoundCheckYourFpcCfg;
-      exit;
+      if (CompareFileExt(CfgCache.Units['uuchar'],'ppu',false)<>0) then
+      begin
+        Note:= 'uuchar.ppu not found. Check your fpc.cfg.';
+        exit;
+      end;
+    end else begin
+      if (CompareFileExt(CfgCache.Units['classes'],'ppu',false)<>0) then
+      begin
+        Note:=lisClassesPpuNotFoundCheckYourFpcCfg;
+        exit;
+      end;
     end;
   end;
 
