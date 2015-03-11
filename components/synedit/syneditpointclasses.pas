@@ -619,8 +619,8 @@ end;
 function TSynEditBaseCaret.GetFullLogicalPos: TLogCaretPoint;
 begin
   ValidateBytePos;
-  Result.X := FLinePos;
-  Result.Y := FBytePos;
+  Result.Y := FLinePos;
+  Result.X := FBytePos;
   Result.Offs := FBytePosOffset;
 end;
 

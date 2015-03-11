@@ -5,7 +5,7 @@ unit TestMultiCaret;
 interface
 
 uses
-  Classes, SysUtils, TestBase, SynEditKeyCmds, SynPluginMultiCaret, SynEdit, Clipbrd,
+  Classes, SysUtils, TestBase, SynEditKeyCmds, SynPluginMultiCaret, SynEdit, Clipbrd, Forms,
   testregistry;
 
 type
@@ -20,14 +20,81 @@ type
   TTestMultiCaret = class(TTestBase)
   protected
     FMultiCaret: TSynPluginMultiCaretTest;
+    FOptAdd,  FOptRemove:  TSynEditorOptions;
+    FOpt2Add, FOpt2Remove: TSynEditorOptions2;
+    FEnableWithColumnSelection: Boolean;
+    FDefaultMode: TSynPluginMultiCaretDefaultMode;
+    FDefaultColumnSelectMode: TSynPluginMultiCaretDefaultMode;
+
+    procedure SetUp; override;
+
+
     procedure SetCaretAndColumnSelect(X, Y, Down, Right: Integer);
+    procedure SetCaretsByKey(X, Y: Integer; CaretMoves: Array of Integer; EndMode: TSynPluginMultiCaretMode = mcmAddingCarets); //  [ {SET}, Right,DOwn, {SET}, Right,DOwn,..]
+    procedure SetCaretsByKey(CaretMoves: Array of Integer; EndMode: TSynPluginMultiCaretMode = mcmAddingCarets); //  [ {SET}, Right,DOwn, {SET}, Right,DOwn,..]
+
+    procedure TestExtraCaretCount(AName: String; ExpCount: Integer);
+    procedure TestExtraCaretPos(AName: String; ExpCount: Integer; ExpPos: array of integer); // x,y
+    procedure TestExtraCaretPosAndOffs(AName: String; ExpCount: Integer; ExpPos: array of integer); // x,y,offs
+
+    procedure RunAndTest(AName: String;
+        cmds: Array of TSynEditorCommand; chars: array of String;
+        X, Y: Integer; ExpLines: Array of String
+      );
+    procedure RunAndTest(AName: String;
+        cmds: Array of TSynEditorCommand; // no chars
+        X, Y: Integer; ExpLines: Array of String
+      );
+    procedure RunAndTest(AName: String;
+        cmds: Array of TSynEditorCommand; chars: array of String;
+        X, Y, Offs: Integer; ExpLines: Array of String
+      );
+    procedure RunAndTest(AName: String;
+        cmds: Array of TSynEditorCommand; // no chars
+        X, Y, Offs: Integer; ExpLines: Array of String
+      );
+
+
+    procedure RunAndTest(AName: String;
+        cmds: Array of TSynEditorCommand; chars: array of String;
+        X, Y: Integer; ExpLines: Array of String;
+        ExpCount: Integer; ExpPos: array of integer   // x, [offs,] y
+      );
+    procedure RunAndTest(AName: String;
+        cmds: Array of TSynEditorCommand; // no chars
+        X, Y: Integer; ExpLines: Array of String;
+        ExpCount: Integer; ExpPos: array of integer   // x, [offs,] y
+      );
+    procedure RunAndTest(AName: String;
+        cmds: Array of TSynEditorCommand; chars: array of String;
+        X, Y, Offs: Integer; ExpLines: Array of String;
+        ExpCount: Integer; ExpPos: array of integer   // x, [offs,] y
+      );
+    procedure RunAndTest(AName: String;
+        cmds: Array of TSynEditorCommand; // no chars
+        X, Y, Offs: Integer; ExpLines: Array of String;
+        ExpCount: Integer; ExpPos: array of integer   // x, [offs,] y
+      );
+
+    // y1/2 1-based
+    function DelCol(Lines: Array of String; y1,y2,X: Integer; Cnt: Integer = 1): TStringArray;
+    // ADel: y,x,cnt,   y,x,cnt, .... 1-based
+    function DelCol(Lines: Array of String; ADel: Array of Integer): TStringArray;
+
+    function TestText1: TStringArray;
+    function TestText1(DelY1, DelY2, DelX: Integer; DelCnt: Integer = 1): TStringArray;
+    function TestText1(ADel: Array of Integer): TStringArray;
+    function TestText2: TStringArray;
+    function TestText2(DelY1, DelY2, DelX: Integer; DelCnt: Integer = 1): TStringArray;
+    function TestText2(ADel: Array of Integer): TStringArray;
   public
     procedure ReCreateEdit; reintroduce;
-    procedure ReCreateEdit(ALines: TStringArray; AOpt: TSynEditorOptions2 = [];
-      AOptRemove: TSynEditorOptions2 = []);
+    procedure ReCreateEdit(ALines: TStringArray);
     procedure RunCmdSeq(cmds: Array of TSynEditorCommand; chars: array of String);
   published
     procedure CaretList;
+    procedure ColumnSelect;
+    procedure CursorMove;
     procedure Edit;
     procedure Delete;
     procedure ReplaceColSel;
@@ -38,6 +105,19 @@ type
 implementation
 
 { TTestMultiCaret }
+
+procedure TTestMultiCaret.SetUp;
+begin
+  FOptAdd := [];
+  FOptRemove := [];
+  FOpt2Add := [];
+  FOpt2Remove := [];
+  FEnableWithColumnSelection := True;
+  FDefaultMode := mcmMoveAllCarets;
+  FDefaultColumnSelectMode := mcmCancelOnCaretMove;
+
+  inherited SetUp;
+end;
 
 procedure TTestMultiCaret.SetCaretAndColumnSelect(X, Y, Down, Right: Integer);
 var
@@ -61,20 +141,232 @@ begin
       RunCmdSeq([ecColSelLeft], []);
 end;
 
+procedure TTestMultiCaret.SetCaretsByKey(X, Y: Integer; CaretMoves: array of Integer;
+  EndMode: TSynPluginMultiCaretMode);
+begin
+  SetCaret(X, Y);
+  SetCaretsByKey(CaretMoves, EndMode);
+end;
+
+procedure TTestMultiCaret.SetCaretsByKey(CaretMoves: array of Integer;
+  EndMode: TSynPluginMultiCaretMode);
+var
+  i, j: Integer;
+begin
+  for i := 0 to (Length(CaretMoves) div 2) - 1 do begin
+    RunCmdSeq([ecPluginMultiCaretSetCaret], []);
+    if CaretMoves[i*2+1] > 0 then
+      for j := 1 to CaretMoves[i*2+1] do
+        RunCmdSeq([ecDown], [])
+    else
+    if CaretMoves[i*2+1] < 0 then
+      for j := 1 to -CaretMoves[i*2+1] do
+        RunCmdSeq([ecUp], []);
+
+    if CaretMoves[i*2+0] > 0 then
+      for j := 1 to CaretMoves[i*2+0] do
+        RunCmdSeq([ecRight], [])
+    else
+    if CaretMoves[i*2+0] < 0 then
+      for j := 1 to -CaretMoves[i*2+0] do
+        RunCmdSeq([ecLeft], []);
+  end;
+  FMultiCaret.ActiveMode := EndMode;
+end;
+
+procedure TTestMultiCaret.TestExtraCaretCount(AName: String; ExpCount: Integer);
+begin
+  AssertEquals(BaseTestName+' '+AName + ' extra count', ExpCount, FMultiCaret.Carets.Count);
+end;
+
+procedure TTestMultiCaret.TestExtraCaretPos(AName: String; ExpCount: Integer;
+  ExpPos: array of integer);
+var
+  i: Integer;
+begin
+  AssertEquals(BaseTestName+' '+AName + ' extra count', ExpCount, FMultiCaret.Carets.Count);
+  AssertEquals(BaseTestName+' '+AName + 'selftest',length(ExpPos), ExpCount*2);
+  for i := 0 to ExpCount - 1 do begin
+    AssertEquals(BaseTestName+' '+AName + ' extra pos x', ExpPos[i*2+0], FMultiCaret.Carets.CaretX[i]);
+    AssertEquals(BaseTestName+' '+AName + ' extra pos y', ExpPos[i*2+1], FMultiCaret.Carets.CaretY[i]);
+  end
+end;
+
+procedure TTestMultiCaret.TestExtraCaretPosAndOffs(AName: String; ExpCount: Integer;
+  ExpPos: array of integer);
+var
+  i: Integer;
+begin
+  AssertEquals(BaseTestName+' '+AName + ' extra count', ExpCount, FMultiCaret.Carets.Count);
+  AssertEquals(BaseTestName+' '+AName + 'selftest',length(ExpPos), ExpCount*3);
+  for i := 0 to ExpCount - 1 do begin
+    AssertEquals(BaseTestName+' '+AName + ' extra pos x', ExpPos[i*3+0], FMultiCaret.Carets.CaretX[i]);
+    AssertEquals(BaseTestName+' '+AName + ' extra pos y', ExpPos[i*3+1], FMultiCaret.Carets.CaretY[i]);
+    AssertEquals(BaseTestName+' '+AName + ' extra pos O', ExpPos[i*3+2], FMultiCaret.Carets.CaretOffs[i]);
+  end
+end;
+
+procedure TTestMultiCaret.RunAndTest(AName: String; cmds: array of TSynEditorCommand;
+  chars: array of String; X, Y: Integer; ExpLines: array of String);
+begin
+  RunCmdSeq(cmds, chars);
+  TestIsCaretLogAndFullText(AName, X, Y, ExpLines);
+end;
+
+procedure TTestMultiCaret.RunAndTest(AName: String; cmds: array of TSynEditorCommand; X,
+  Y: Integer; ExpLines: array of String);
+begin
+  RunAndTest(AName, cmds, [], X, Y, ExpLines);
+end;
+
+procedure TTestMultiCaret.RunAndTest(AName: String; cmds: array of TSynEditorCommand;
+  chars: array of String; X, Y, Offs: Integer; ExpLines: array of String);
+begin
+  RunCmdSeq(cmds, chars);
+  TestIsCaretLogAndFullText(AName, X, Y, Offs, ExpLines);
+end;
+
+procedure TTestMultiCaret.RunAndTest(AName: String; cmds: array of TSynEditorCommand; X, Y,
+  Offs: Integer; ExpLines: array of String);
+begin
+  RunAndTest(AName, cmds, [], X, Y, Offs, ExpLines);
+end;
+
+procedure TTestMultiCaret.RunAndTest(AName: String; cmds: array of TSynEditorCommand;
+  chars: array of String; X, Y: Integer; ExpLines: array of String; ExpCount: Integer;
+  ExpPos: array of integer);
+begin
+  RunAndTest(AName, cmds, chars, X, Y, 0, ExpLines, ExpCount, ExpPos);
+end;
+
+procedure TTestMultiCaret.RunAndTest(AName: String; cmds: array of TSynEditorCommand; X,
+  Y: Integer; ExpLines: array of String; ExpCount: Integer; ExpPos: array of integer);
+begin
+  RunAndTest(AName, cmds, [], X, Y, ExpLines, ExpCount, ExpPos);
+end;
+
+procedure TTestMultiCaret.RunAndTest(AName: String; cmds: array of TSynEditorCommand;
+  chars: array of String; X, Y, Offs: Integer; ExpLines: array of String; ExpCount: Integer;
+  ExpPos: array of integer);
+begin
+  RunAndTest(AName, cmds, chars, X, Y, Offs, ExpLines);
+  if length(ExpPos) = 0 then
+    TestExtraCaretCount(AName, ExpCount)
+  else
+  if length(ExpPos) = ExpCount * 2 then
+    TestExtraCaretPos(AName, ExpCount, ExpPos)
+  else
+  if length(ExpPos) = ExpCount * 3 then
+    TestExtraCaretPosAndOffs(AName, ExpCount, ExpPos)
+  else
+    AssertTrue(BaseTestName+' '+AName + 'selftest CaretCOUNT <> pos-array-len', false);
+end;
+
+procedure TTestMultiCaret.RunAndTest(AName: String; cmds: array of TSynEditorCommand; X, Y,
+  Offs: Integer; ExpLines: array of String; ExpCount: Integer; ExpPos: array of integer);
+begin
+  RunAndTest(AName, cmds, [], X, Y, Offs, ExpLines, ExpCount, ExpPos);
+end;
+
+function TTestMultiCaret.DelCol(Lines: array of String; y1, y2, X: Integer;
+  Cnt: Integer): TStringArray;
+var
+  i: Integer;
+begin
+  SetLength(Result, length(Lines));
+  for i := 0 to high(Lines) do
+    Result[i] := Lines[i];
+  for i := y1-1 to y2-1 do
+    system.Delete(Result[i], X, Cnt);
+end;
+
+function TTestMultiCaret.DelCol(Lines: array of String; ADel: array of Integer): TStringArray;
+var
+  i: Integer;
+begin
+  SetLength(Result, length(Lines));
+  for i := 0 to high(Lines) do
+    Result[i] := Lines[i];
+  for i := 0 to (length(ADel) div 3) - 1 do
+    system.Delete(Result[ADel[i*3+0]-1], ADel[i*3+1], ADel[i*3+2]);
+end;
+
+function TTestMultiCaret.TestText1: TStringArray;
+begin
+  SetLength(Result, 8);
+  Result[0] := '1abc def gh';
+  Result[1] := '2mno pqr st';
+  Result[2] := '3ABC DEF GH';
+  Result[3] := '4MNO PQR ST';
+  Result[4] := '5xyz klm op';
+  Result[5] := '6aA bB cC dD';
+  Result[6] := '7mM nN oO pP';
+  Result[7] := '';
+end;
+
+function TTestMultiCaret.TestText1(DelY1, DelY2, DelX: Integer; DelCnt: Integer): TStringArray;
+begin
+  Result := DelCol(TestText1(), DelY1, DelY2, DelX, DelCnt);
+end;
+
+function TTestMultiCaret.TestText1(ADel: array of Integer): TStringArray;
+begin
+  Result := DelCol(TestText1(), ADel);
+end;
+
+function TTestMultiCaret.TestText2: TStringArray;
+begin
+  SetLength(Result, 18);
+  Result[0] := '1abc def gh';
+  Result[1] := '2mno pqr st';
+  Result[2] := '1abc def gh Oo xx 99';
+  Result[3] := '2äöü pqr st Oo xx 99';
+  Result[4] := '3ÄÖÜ DEF GH Oo xx 99';
+  Result[5] := '4MNä PQR ST Oo xx 99';
+  Result[6] := '5xyÜ klm op';
+  Result[7] := '6aA b'#9#9'B cC dD';
+  Result[8] := '7mM n'#9#9'N oO pP';
+  Result[9] := '6aA b'#9#9'B cC dD';
+  Result[10] := '1abc アアウ gh Oo xx 99';
+  Result[11] := '2mno pqr アウ Oo xx 99';
+  Result[12] := '3アアウアアウ GH Oo xx 99';
+  Result[13] := '4Mアアウアアウ ST Oo xx 99';
+  Result[14] := '5xyz klm op bB cC dD';
+  Result[15] := '6a'#9#9#9#9'A';
+  Result[16] := '7mM nN oO pP';
+  Result[17] := '';
+end;
+
+function TTestMultiCaret.TestText2(DelY1, DelY2, DelX: Integer; DelCnt: Integer): TStringArray;
+begin
+  Result := DelCol(TestText2(), DelY1, DelY2, DelX, DelCnt);
+end;
+
+function TTestMultiCaret.TestText2(ADel: array of Integer): TStringArray;
+begin
+  Result := DelCol(TestText2(), ADel);
+end;
+
 procedure TTestMultiCaret.ReCreateEdit;
 begin
   inherited;
   FMultiCaret := TSynPluginMultiCaretTest.Create(SynEdit);
+
+  SynEdit.Options  := SynEdit.Options  - FOptRemove  + FOptAdd;
+  SynEdit.Options2 := SynEdit.Options2 - FOpt2Remove + FOpt2Add;
+
+  FMultiCaret.EnableWithColumnSelection := FEnableWithColumnSelection;
+  FMultiCaret.DefaultMode := FDefaultMode;
+  FMultiCaret.DefaultColumnSelectMode := FDefaultColumnSelectMode;
+
   SynEdit.BlockIndent := 2;
   SynEdit.BlockTabIndent := 0;
   SynEdit.TabWidth := 4;
 end;
 
-procedure TTestMultiCaret.ReCreateEdit(ALines: TStringArray; AOpt: TSynEditorOptions2;
-  AOptRemove: TSynEditorOptions2);
+procedure TTestMultiCaret.ReCreateEdit(ALines: TStringArray);
 begin
   ReCreateEdit;
-  SynEdit.Options2 := SynEdit.Options2 - AOptRemove + AOpt;
   SetLines(ALines);
 end;
 
@@ -91,6 +383,7 @@ begin
       inc(j);
     end;
     SynEdit.CommandProcessor(cmds[i], a, nil);
+    Application.ProcessMessages;
   end;
 end;
 
@@ -103,14 +396,14 @@ procedure TTestMultiCaret.CaretList;
 
     c := TSynPluginMultiCaretList.Create;
     for i := 0 to high(a) do begin
-      c.AddCaret(1,a[i]);
+      c.AddCaret(1,a[i],0);
       for j := 1 to c.Count-1 do
         AssertTrue(Format(name+' Test %d %d', [i, j]), c.Caret[j].y > c.Caret[j-1].y);
     end;
 
     c.Clear;
     for i := 0 to high(a) do begin
-      k := c.AddCaret(1,a[i]);
+      k := c.AddCaret(1,a[i],0);
       AssertEquals(Format(name+' Test %d %d', [i, j]),a[i], c.Caret[k].y);
       for j := 1 to c.Count-1 do
         AssertTrue(Format(name+' Test %d %d', [i, j]), c.Caret[j].y > c.Caret[j-1].y);
@@ -118,14 +411,14 @@ procedure TTestMultiCaret.CaretList;
 
     c.Clear;
     for i := 0 to high(a) do begin
-      c.AddCaret(1,a[i]);
+      c.AddCaret(1,a[i],0);
     end;
     for j := 1 to c.Count-1 do
       AssertTrue(Format(name+' Test %d %d', [i, j]), c.Caret[j].y > c.Caret[j-1].y);
 
     c.Clear;
     for i := high(a) downto 0 do begin
-      k := c.AddCaret(1,a[i]);
+      k := c.AddCaret(1,a[i],0);
       AssertEquals(Format(name+' Test %d %d', [i, j]),a[i], c.Caret[k].y);
       for j := 1 to c.Count-1 do
         AssertTrue(Format(name+' Test %d %d', [i, j]), c.Caret[j].y > c.Caret[j-1].y);
@@ -136,7 +429,7 @@ procedure TTestMultiCaret.CaretList;
       for n := 0 to m do begin
         c.Clear;
         for i := 0 to m do begin
-          k := c.AddCaret(1,a[i]);
+          k := c.AddCaret(1,a[i],0);
           AssertEquals(Format(name+' Test %d %d', [i, j]),a[i], c.Caret[k].y);
         end;
         for j := 1 to c.Count-1 do
@@ -197,8 +490,150 @@ begin
   TestSequenceEx('1', [1,2,3,4,-1]);
 end;
 
+procedure TTestMultiCaret.ColumnSelect;
+begin
+  PushBaseName('Simple  0 width col select ep/down');
+  ReCreateEdit(TestText1);
+  SetCaret(3,3);
+  RunAndTest('', [ecColSelDown],   3,4, TestText1,   1, [3,3,0]);
+  RunAndTest('', [ecColSelDown],   3,5, TestText1,   2, [3,3,0,  3,4,0]);
+  RunAndTest('', [ecColSelUp],     3,4, TestText1,   1, [3,3,0]);
+  RunAndTest('', [ecColSelUp],     3,3, TestText1,   0, []);
+  RunAndTest('', [ecColSelUp],     3,2, TestText1,   1, [3,3,0]);
+  RunAndTest('', [ecColSelDown],   3,3, TestText1,   0, []);
+  RunAndTest('', [ecColSelDown],   3,4, TestText1,   1, [3,3,0]);
+  RunAndTest('', [ecColSelDown],   3,5, TestText1,   2, [3,3,0,  3,4,0]);
+  PopPushBaseName('column sel left/right');
+  RunAndTest('', [ecColSelLeft],    2,5, TestText1,   2, [2,3,0,  2,4,0]);
+  RunAndTest('', [ecColSelRight],   3,5, TestText1,   2, [3,3,0,  3,4,0]);
+  RunAndTest('', [ecColSelRight],   4,5, TestText1,   2, [4,3,0,  4,4,0]);
+  RunAndTest('', [ecColSelRight],   5,5, TestText1,   2, [5,3,0,  5,4,0]);
+  PopPushBaseName('column sel, 2 width up/down');
+  RunAndTest('', [ecColSelDown],    5,6, TestText1,   3, [5,3,0,  5,4,0,  5,5,0]);
+  RunAndTest('', [ecColSelUp],      5,5, TestText1,   2, [5,3,0,  5,4,0]);
+  RunAndTest('', [ecColSelUp],      5,4, TestText1,   1, [5,3,0]);
+  PopBaseName;
+
+  PushBaseName('double width char');
+  FOptAdd := [eoKeepCaretX];
+  ReCreateEdit(TestText2);
+  // X at      log pos 4 / phys 4 / 3 chars before
+  SetCaret(4,12);
+  // X goes to log pos 5 / phys 4 / 2 chars => 1 double width char
+  RunAndTest('', [ecColSelDown],   5,13, TestText2,   1, [4,12,0]);
+  // X goes to log pos 3 / phys 3 / 2 chars => pushed forward by following dbl-w char
+  RunAndTest('', [ecColSelDown],   3,14, TestText2,   2, [3,12,0,  2,13,0]); // 2,13 is pushed forward
+  // X goes to log pos 4 / phys 4 => keepcaretX   // 1,14 is oout of line
+  RunAndTest('', [ecColSelDown],   4,15, TestText2,   3, [4,12,0,  5,13,0,  3,14,0]);
+
+  // X goes to log pos 3 / phys 3 / 2 chars => pushed forward by following dbl-w char
+  RunAndTest('', [ecColSelUp],   3,14, TestText2,   2, [3,12,0,  2,13,0]);
+  // X goes to log pos 5 / phys 4 / 2 chars => 1 double width char
+  RunAndTest('', [ecColSelUp],   5,13, TestText2,   1, [4,12,0]);
+
+  // X goes to log pos 3 / phys 3 / 2 chars => pushed forward by following dbl-w char
+  RunAndTest('', [ecColSelDown],   3,14, TestText2,   2, [3,12,0,  2,13,0]); // 2,13 is pushed forward
+
+end;
+
+procedure TTestMultiCaret.CursorMove;
+begin
+  PushBaseName('eoScrollPastEol, eoCaretSkipTab');
+    FOptAdd := [eoScrollPastEol];
+    FOptRemove := [];
+    FOpt2Add := [eoCaretSkipTab];
+    FOpt2Remove := [];
+    FDefaultColumnSelectMode := mcmMoveAllCarets;
+
+
+    PushBaseName('ecUp');
+      ReCreateEdit(TestText1);
+      SetCaretAndColumnSelect(3,3, 1,0);
+      RunAndTest('Height 2', [ecUp],   3,3, TestText1,   1, [3,2,0]);
+
+      ReCreateEdit(TestText1);
+      SetCaretAndColumnSelect(3,3, 2,0);
+      RunAndTest('Height 3', [ecUp],   3,4, TestText1,   2, [3,2,0,  3,3,0]);
+
+      ReCreateEdit(TestText1);
+      SetCaretsByKey(3,3, [1,0, 1,0], mcmMoveAllCarets);
+      RunAndTest('Width 3', [ecUp],   5,2, TestText1,   2, [3,2,0,  4,2,0]);
+    PopBaseName;
+
+    PushBaseName('ecUp');
+      ReCreateEdit(TestText1);
+      SetCaretAndColumnSelect(3,3, 1,0);
+      RunAndTest('Height 2', [ecDown],   3,5, TestText1,   1, [3,4,0]);
+
+      ReCreateEdit(TestText1);
+      SetCaretAndColumnSelect(3,3, 2,0);
+      RunAndTest('Height 3', [ecDown],   3,6, TestText1,   2, [3,4,0,  3,5,0]);
+
+      ReCreateEdit(TestText1);
+      SetCaretsByKey(3,3, [1,0, 1,0], mcmMoveAllCarets);
+      RunAndTest('Width 3', [ecDown],   5,4, TestText1,   2, [3,4,0,  4,4,0]);
+    PopBaseName;
+
+    PushBaseName('ecLeft');
+      ReCreateEdit(TestText1);
+      SetCaretAndColumnSelect(3,3, 1,0);
+      RunAndTest('Height 2', [ecLeft],   2,4, TestText1,   1, [2,3,0]);
+
+      ReCreateEdit(TestText1);
+      SetCaretAndColumnSelect(3,3, 2,0);
+      RunAndTest('Height 3', [ecLeft],   2,5, TestText1,   2, [2,3,0,  2,4,0]);
+
+      ReCreateEdit(TestText1);
+      SetCaretsByKey(3,3, [1,0, 1,0], mcmMoveAllCarets);
+      RunAndTest('Width 3', [ecLeft],   4,3, TestText1,   2, [2,3,0,  3,3,0]);
+    PopBaseName;
+
+    PushBaseName('ecRight');
+      ReCreateEdit(TestText1);
+      SetCaretAndColumnSelect(3,3, 1,0);
+      RunAndTest('Height 2', [ecRight],   4,4, TestText1,   1, [4,3,0]);
+
+      ReCreateEdit(TestText1);
+      SetCaretAndColumnSelect(3,3, 2,0);
+      RunAndTest('Height 3', [ecRight],   4,5, TestText1,   2, [4,3,0,  4,4,0]);
+
+      ReCreateEdit(TestText1);
+      SetCaretsByKey(3,3, [1,0, 1,0], mcmMoveAllCarets);
+      RunAndTest('Width 3', [ecRight],   6,3, TestText1,   2, [4,3,0,  5,3,0]);
+    PopBaseName;
+  PopBaseName;
+
+  PushBaseName('eoScrollPastEol, NO eoCaretSkipTab - move through tab');
+    FOptAdd := [eoScrollPastEol];
+    FOptRemove := [];
+    FOpt2Add := [];
+    FOpt2Remove := [eoCaretSkipTab];
+    FDefaultColumnSelectMode := mcmMoveAllCarets;
+
+    PushBaseName('ecRight');
+      ReCreateEdit(TestText2); // tabw=4
+      SetCaretAndColumnSelect(6,8, 2,0); // before both tabs
+      RunAndTest('Height 3', [ecRight],   6,10,1, TestText2,   2, [6,8,1, 6,9,1]);
+      RunAndTest('Height 3', [ecRight],   6,10,2, TestText2,   2, [6,8,2, 6,9,2]);
+      RunAndTest('Height 3', [ecRight],   7,10,0, TestText2,   2, [7,8,0, 7,9,0]);
+      RunAndTest('Height 3', [ecRight],   7,10,1, TestText2,   2, [7,8,1, 7,9,1]);
+    PopBaseName;
+
+    PushBaseName('ecLeft');
+      ReCreateEdit(TestText2); // tabw=4
+      SetCaretAndColumnSelect(8,8, 2,0); // after both tabs
+      RunAndTest('Height 3', [ecLeft],   7,10,3, TestText2,   2, [7,8,3, 7,9,3]);
+      RunAndTest('Height 3', [ecLeft],   7,10,2, TestText2,   2, [7,8,2, 7,9,2]);
+      RunAndTest('Height 3', [ecLeft],   7,10,1, TestText2,   2, [7,8,1, 7,9,1]);
+      RunAndTest('Height 3', [ecLeft],   7,10,0, TestText2,   2, [7,8,0, 7,9,0]);
+      RunAndTest('Height 3', [ecLeft],   6,10,2, TestText2,   2, [6,8,2, 6,9,2]);
+    PopBaseName;
+  PopBaseName;
+
+end;
+
 procedure TTestMultiCaret.Edit;
-  function TestText1: TStringArray;
+  function LocalText1: TStringArray;
   begin
     SetLength(Result, 8);
     Result[0] := '1';
@@ -210,7 +645,7 @@ procedure TTestMultiCaret.Edit;
     Result[6] := '7';
     Result[7] := '';
   end;
-  function TestText1A: TStringArray;
+  function LocalText1A: TStringArray;
   begin
     SetLength(Result, 8);
     Result[0] := '1';
@@ -222,7 +657,7 @@ procedure TTestMultiCaret.Edit;
     Result[6] := '7';
     Result[7] := '';
   end;
-  function TestText1Del: TStringArray;
+  function LocalText1Del: TStringArray;
   begin
     SetLength(Result, 3);
     Result[0] := '123456';
@@ -232,26 +667,26 @@ procedure TTestMultiCaret.Edit;
 
 begin
   ReCreateEdit;
-  SetLines(TestText1);
+  SetLines(LocalText1);
 
   SetCaretAndColumnSelect(1,2, 4,0);
-  TestIsCaretLogAndFullText('', 1, 6, TestText1);
+  TestIsCaretLogAndFullText('', 1, 6, LocalText1);
 
   RunCmdSeq([ecChar], ['A']);
-  TestIsCaretLogAndFullText('', 2, 6, TestText1A);
+  TestIsCaretLogAndFullText('', 2, 6, LocalText1A);
 
   RunCmdSeq([ecDeleteLastChar], []);
-  TestIsCaretLogAndFullText('', 1, 6, TestText1);
+  TestIsCaretLogAndFullText('', 1, 6, LocalText1);
   // 4 extra carets + main caret
   AssertEquals(BaseTestName+'', 4, FMultiCaret.Carets.Count);
 
   RunCmdSeq([ecDeleteLastChar], []);
-  TestIsCaretLogAndFullText('', 6, 1, TestText1Del);
+  TestIsCaretLogAndFullText('', 6, 1, LocalText1Del);
   // 4 extra carets + main caret
   AssertEquals(BaseTestName+'', 4, FMultiCaret.Carets.Count);
 
   RunCmdSeq([ecDeleteLastChar], []);
-  TestIsCaretLogAndFullText('', 1, 1, TestText1Del, [1, '6']);
+  TestIsCaretLogAndFullText('', 1, 1, LocalText1Del, [1, '6']);
   // NO extra carets
   AssertEquals(BaseTestName+'', 0, FMultiCaret.Carets.Count);
 
@@ -260,7 +695,7 @@ begin
 end;
 
 procedure TTestMultiCaret.Delete;
-  function TestText1: TStringArray;
+  function LocalText1: TStringArray;
   begin
     SetLength(Result, 8);
     Result[0] := '1aA';
@@ -272,7 +707,7 @@ procedure TTestMultiCaret.Delete;
     Result[6] := '7gG';
     Result[7] := '';
   end;
-  function TestText1Del: TStringArray;
+  function LocalText1Del: TStringArray;
   begin
     SetLength(Result, 8);
     Result[0] := '1aA';
@@ -284,7 +719,7 @@ procedure TTestMultiCaret.Delete;
     Result[6] := '7gG';
     Result[7] := '';
   end;
-  function TestText1DelAndBS: TStringArray;
+  function LocalText1DelAndBS: TStringArray;
   begin
     SetLength(Result, 8);
     Result[0] := '1aA';
@@ -296,7 +731,7 @@ procedure TTestMultiCaret.Delete;
     Result[6] := '7gG';
     Result[7] := '';
   end;
-  function TestText1Del2: TStringArray;
+  function LocalText1Del2: TStringArray;
   begin
     SetLength(Result, 8);
     Result[0] := '1aA';
@@ -308,7 +743,7 @@ procedure TTestMultiCaret.Delete;
     Result[6] := '7gG';
     Result[7] := '';
   end;
-  function TestText1DelExtra: TStringArray;
+  function LocalText1DelExtra: TStringArray;
   begin
     SetLength(Result, 8);
     Result[0] := '1aA';
@@ -320,114 +755,190 @@ procedure TTestMultiCaret.Delete;
     Result[6] := '7gG';
     Result[7] := '';
   end;
-var
-  Opt, OptRemove: TSynEditorOptions2;
 begin
   PushBaseName('NO eoPersistentBlock, HAS eoOverwriteBlock');
-  Opt := [eoOverwriteBlock];
-  OptRemove := [eoPersistentBlock];
+  FOpt2Add := [eoOverwriteBlock];
+  FOpt2Remove := [eoPersistentBlock];
 
     PushBaseName('ecDeleteLastChar');
 
       PushBaseName('ecDeleteLastChar - zero width sel');
-        ReCreateEdit(TestText1, Opt, OptRemove);
+        ReCreateEdit(LocalText1);
         SetCaretAndColumnSelect(3,2, 4,0);
         RunCmdSeq([ecDeleteLastChar], []);
-        TestIsCaretLogAndFullText('', 2, 6, TestText1Del);
+        TestIsCaretLogAndFullText('', 2, 6, LocalText1Del);
 
       PopPushBaseName('ecDeleteLastChar - ONE width backward sel');
-        ReCreateEdit(TestText1, Opt, OptRemove);
+        ReCreateEdit(LocalText1);
         SetCaretAndColumnSelect(3,2, 4,-1);
         RunCmdSeq([ecDeleteLastChar], []);
-        TestIsCaretLogAndFullText('', 2, 6, TestText1Del);
+        TestIsCaretLogAndFullText('', 2, 6, LocalText1Del);
 
         RunCmdSeq([ecDeleteLastChar], []);
-        TestIsCaretLogAndFullText('BS again', 1, 6, TestText1DelAndBS);
+        TestIsCaretLogAndFullText('BS again', 1, 6, LocalText1DelAndBS);
 
       PopPushBaseName('ecDeleteLastChar - ONE width sel');
-        ReCreateEdit(TestText1, Opt, OptRemove);
+        ReCreateEdit(LocalText1);
         SetCaretAndColumnSelect(2,2, 4,1);
         RunCmdSeq([ecDeleteLastChar], []);
-        TestIsCaretLogAndFullText('', 2, 6, TestText1Del);
+        TestIsCaretLogAndFullText('', 2, 6, LocalText1Del);
 
       PopPushBaseName('ecDeleteLastChar - Two width sel');
-        ReCreateEdit(TestText1, Opt, OptRemove);
+        ReCreateEdit(LocalText1);
         SetCaretAndColumnSelect(1,2, 4,2);
         RunCmdSeq([ecDeleteLastChar], []);
-        TestIsCaretLogAndFullText('', 1, 6, TestText1Del2);
+        TestIsCaretLogAndFullText('', 1, 6, LocalText1Del2);
 
       PopPushBaseName('ecDeleteLastChar - ONE width sel / extra caret');
-        ReCreateEdit(TestText1, Opt, OptRemove);
+        ReCreateEdit(LocalText1);
         SetCaretAndColumnSelect(2,2, 4,1);
-        FMultiCaret.AddCaretAt(4,3);
-        FMultiCaret.AddCaretAt(2,4);
+        FMultiCaret.AddCaretAtLogPos(4,3,0);
+        FMultiCaret.AddCaretAtLogPos(2,4,0);
         RunCmdSeq([ecDeleteLastChar], []);
-        TestIsCaretLogAndFullText('', 2, 6, TestText1DelExtra);
+        TestIsCaretLogAndFullText('', 2, 6, LocalText1DelExtra);
 
     PopPushBaseName('ecDeleteChar');
 
       PushBaseName('ecDeleteChar - zero width sel');
-        ReCreateEdit(TestText1, Opt, OptRemove);
+        ReCreateEdit(TestText1);
+        SetCaretAndColumnSelect(2,2, 1,0);
+        RunAndTest('Height 2', [ecDeleteChar],   2, 3, TestText1(2,3, 2,1),   1, []);
+        RunAndTest('Height 2', [ecRight],        3, 3, TestText1(2,3, 2,1),   0, []);
+        RunAndTest('Height 2', [ecRight, ecUndo],2, 3, TestText1,   0, []);
+
+        ReCreateEdit(TestText1);
+        SetCaretAndColumnSelect(2,2, 2,0);
+        RunAndTest('Height 3', [ecDeleteChar],   2, 4, TestText1(2,4, 2,1),   2, []);
+        RunAndTest('Height 3', [ecRight],        3, 4, TestText1(2,4, 2,1),   0, []);
+        RunAndTest('Height 2', [ecRight, ecUndo],2, 4, TestText1,   0, []);
+
+        ReCreateEdit(TestText1);
+        SetCaretAndColumnSelect(2,2, 3,0);
+        RunAndTest('Height 4', [ecDeleteChar],   2, 5, TestText1(2,5, 2,1),   3, []);
+        RunAndTest('Height 4', [ecRight],        3, 5, TestText1(2,5, 2,1),   0, []);
+        RunAndTest('Height 2', [ecRight, ecUndo],2, 5, TestText1,   0, []);
+
+        ReCreateEdit(TestText1);
         SetCaretAndColumnSelect(2,2, 4,0);
-        RunCmdSeq([ecDeleteChar], []);
-        TestIsCaretLogAndFullText('', 2, 6, TestText1Del);
+        RunAndTest('Height 5', [ecDeleteChar],   2, 6, TestText1(2,6, 2,1),   4, []);
+        RunAndTest('Height 5', [ecRight],        3, 6, TestText1(2,6, 2,1),   0, []);
+        RunAndTest('Height 2', [ecRight, ecUndo],2, 6, TestText1,   0, []);
+
+        ReCreateEdit(TestText1);
+        SetCaretAndColumnSelect(2,2, 5,0);
+        RunAndTest('Height 5', [ecDeleteChar],   2, 7, TestText1(2,7, 2,1),   5, []);
+        RunAndTest('Height 5', [ecRight],        3, 7, TestText1(2,7, 2,1),   0, []);
+        RunAndTest('Height 2', [ecRight, ecUndo],2, 7, TestText1,   0, []);
+
+
+        ReCreateEdit(TestText1);
+        SetCaretAndColumnSelect(2,2, 4,0);
+        RunAndTest('', [ecDeleteChar],   2, 6, TestText1(2,6, 2,1),   4, []);
+        RunAndTest('', [ecRight],        3, 6, TestText1(2,6, 2,1),   0, []);
+
+
+        ReCreateEdit(TestText1);
+        SetCaretAndColumnSelect(1,2, 1,0);
+        RunAndTest('X=0, Height 2', [ecDeleteChar],   1, 3, TestText1(2,3, 1,1),   1, []);
+        RunAndTest('X=0, Height 2', [ecRight],        2, 3, TestText1(2,3, 1,1),   0, []);
+        RunAndTest('X=0, Height 2', [ecRight, ecUndo],1, 3, TestText1,   0, []);
+
+        ReCreateEdit(TestText1);
+        SetCaretAndColumnSelect(1,2, 2,0);
+        RunAndTest('X=0, Height 3', [ecDeleteChar],   1, 4, TestText1(2,4, 1,1),   2, []);
+        RunAndTest('X=0, Height 3', [ecRight],        2, 4, TestText1(2,4, 1,1),   0, []);
+        RunAndTest('X=0, Height 3', [ecRight, ecUndo],1, 4, TestText1,   0, []);
+
+        ReCreateEdit(TestText1);
+FMultiCaret.DefaultColumnSelectMode := mcmMoveAllCarets;
+        SetCaretAndColumnSelect(1,2, 2,0);
+        RunAndTest('X=0, Height 3', [ecDeleteChar],   1, 4, TestText1(2,4, 1,1),   2, [1,2, 1,3]);
+        RunAndTest('X=0, Height 3', [ecRight],        2, 4, TestText1(2,4, 1,1),   2, [2,2, 2,3]);
+        RunAndTest('X=0, Height 3', [ecUndo],1, 4, TestText1,   0, []);
 
       PopPushBaseName('ecDeleteChar - ONE width backward sel');
-        ReCreateEdit(TestText1, Opt, OptRemove);
+        ReCreateEdit(LocalText1);
         SetCaretAndColumnSelect(3,2, 4,-1);
         RunCmdSeq([ecDeleteChar], []);
-        TestIsCaretLogAndFullText('', 2, 6, TestText1Del);
+        TestIsCaretLogAndFullText('', 2, 6, LocalText1Del);
 
       PopPushBaseName('ecDeleteChar - ONE width sel');
-        ReCreateEdit(TestText1, Opt, OptRemove);
+        ReCreateEdit(LocalText1);
         SetCaretAndColumnSelect(2,2, 4,1);
         RunCmdSeq([ecDeleteChar], []);
-        TestIsCaretLogAndFullText('', 2, 6, TestText1Del);
+        TestIsCaretLogAndFullText('', 2, 6, LocalText1Del);
 
       PopPushBaseName('ecDeleteChar - Two width sel');
-        ReCreateEdit(TestText1, Opt, OptRemove);
+        ReCreateEdit(LocalText1);
         SetCaretAndColumnSelect(1,2, 4,2);
         RunCmdSeq([ecDeleteChar], []);
-        TestIsCaretLogAndFullText('', 1, 6, TestText1Del2);
+        TestIsCaretLogAndFullText('', 1, 6, LocalText1Del2);
 
     PopBaseName;
   PopBaseName;
 
   PopPushBaseName('NO eoPersistentBlock, NO eoOverwriteBlock');
-  Opt := [];
-  OptRemove := [eoOverwriteBlock, eoPersistentBlock];
+  FOpt2Add := [];
+  FOpt2Remove := [eoOverwriteBlock, eoPersistentBlock];
 
     PushBaseName('ecDeleteLastChar');
       PopPushBaseName('ecDeleteLastChar - Two width sel');
-        ReCreateEdit(TestText1, Opt, OptRemove);
+        ReCreateEdit(LocalText1);
         SetCaretAndColumnSelect(1,2, 4,2);
         RunCmdSeq([ecDeleteLastChar], []);
-        TestIsCaretLogAndFullText('', 2, 6, TestText1Del);
+        TestIsCaretLogAndFullText('', 2, 6, LocalText1Del);
 
     PopPushBaseName('ecDeleteChar');
       PopPushBaseName('ecDeleteChar - Two width backward sel');
-        ReCreateEdit(TestText1, Opt, OptRemove);
+        ReCreateEdit(LocalText1);
         SetCaretAndColumnSelect(4,2, 4,-2);
         RunCmdSeq([ecDeleteChar], []);
-        TestIsCaretLogAndFullText('', 2, 6, TestText1Del);
+        TestIsCaretLogAndFullText('', 2, 6, LocalText1Del);
     PopBaseName;
   PopBaseName;
 
   PopPushBaseName('NO eoPersistentBlock, NO eoOverwriteBlock');
-  Opt := [eoPersistentBlock];
-  OptRemove := [eoOverwriteBlock];
+  FOpt2Add := [eoPersistentBlock];
+  FOpt2Remove := [eoOverwriteBlock];
 
     PopPushBaseName('ecDeleteLastChar - Two width sel');
-      ReCreateEdit(TestText1, Opt, OptRemove);
+      ReCreateEdit(LocalText1);
       SetCaretAndColumnSelect(1,2, 4,2);
       RunCmdSeq([ecDeleteLastChar], []);
-      TestIsCaretLogAndFullText('', 2, 6, TestText1Del);
+      TestIsCaretLogAndFullText('', 2, 6, LocalText1Del);
 
   PopBaseName;
+
+  // Delete and merge caret
+  ReCreateEdit(TestText1);
+  SetCaretAndColumnSelect(4,2, 0,0);
+  SetCaretsByKey([2,0, 2,0, 2,0]); // 4carets / main caret at end
+  RunAndTest('', [ecDeleteLastChar],  6,2, TestText1([2,9,1, 2,7,1, 2,5,1, 2,3,1]), 3, [3,2,0, 4,2,0, 5,2,0]);
+  RunAndTest('', [ecDeleteLastChar],  2,2, TestText1([2,2,8]), 0, []);
+
+  ReCreateEdit(TestText1);
+  SetCaretAndColumnSelect(10,2, 0,0);
+  SetCaretsByKey([-2,0, -2,0, -2,0]); // 4carets / main caret at start
+  RunAndTest('', [ecDeleteLastChar],  3,2, TestText1([2,9,1, 2,7,1, 2,5,1, 2,3,1]), 3, [4,2,0, 5,2,0, 6,2,0]);
+  RunAndTest('', [ecDeleteLastChar],  2,2, TestText1([2,2,8]), 0, []);
+
+  ReCreateEdit(TestText1);
+  SetCaretAndColumnSelect(10,2, 0,0);
+  SetCaretsByKey([-2,0, -4,0, +2,0]); // 4carets / main caret in middle
+  RunAndTest('', [ecDeleteLastChar],  4,2, TestText1([2,9,1, 2,7,1, 2,5,1, 2,3,1]), 3, [3,2,0, 5,2,0, 6,2,0]);
+  RunAndTest('', [ecDeleteLastChar],  2,2, TestText1([2,2,8]), 0, []);
+
+  ReCreateEdit(TestText1);
+  SetCaretAndColumnSelect(3,2, 0,0);
+  SetCaretsByKey([2,0, 2,0, 2,0]); // 4carets / main caret at end
+  RunAndTest('', [ecDeleteChar],  6,2, TestText1([2,9,1, 2,7,1, 2,5,1, 2,3,1]), 3, [3,2,0, 4,2,0, 5,2,0]);
+  RunAndTest('', [ecDeleteChar],  3,2, TestText1([2,3,8]), 0, []);
+
+
 end;
 
 procedure TTestMultiCaret.ReplaceColSel;
-  function TestText1: TStringArray;
+  function LocalText1: TStringArray;
   begin
     SetLength(Result, 8);
     Result[0] := '1aA';
@@ -439,7 +950,7 @@ procedure TTestMultiCaret.ReplaceColSel;
     Result[6] := '7gG';
     Result[7] := '';
   end;
-  function TestText1X: TStringArray;
+  function LocalText1X: TStringArray;
   begin
     SetLength(Result, 8);
     Result[0] := '1aA';
@@ -453,20 +964,20 @@ procedure TTestMultiCaret.ReplaceColSel;
   end;
 begin
   ReCreateEdit;
-  SetLines(TestText1);
+  SetLines(LocalText1);
 
   SetCaretAndColumnSelect(2,2, 4,1);
-  TestIsCaretLogAndFullText('', 3, 6, TestText1);
+  TestIsCaretLogAndFullText('', 3, 6, LocalText1);
 
   RunCmdSeq([ecChar], ['X']);
-  TestIsCaretLogAndFullText('', 3, 6, TestText1X);
+  TestIsCaretLogAndFullText('', 3, 6, LocalText1X);
   // 4 extra carets + main caret
   AssertEquals(BaseTestName+'', 4, FMultiCaret.Carets.Count);
 
 end;
 
 procedure TTestMultiCaret.TabKey;
-  function TestText1: TStringArray;
+  function LocalText1: TStringArray;
   begin
     SetLength(Result, 8);
     Result[0] := '1a';
@@ -478,7 +989,7 @@ procedure TTestMultiCaret.TabKey;
     Result[6] := '7g';
     Result[7] := '';
   end;
-  function TestText1Tab: TStringArray;
+  function LocalText1Tab: TStringArray;
   begin
     SetLength(Result, 8);
     Result[0] := '1a';
@@ -490,7 +1001,7 @@ procedure TTestMultiCaret.TabKey;
     Result[6] := '7g';
     Result[7] := '';
   end;
-  function TestText1Indent: TStringArray;
+  function LocalText1Indent: TStringArray;
   begin
     SetLength(Result, 8);
     Result[0] := '1a';
@@ -502,7 +1013,7 @@ procedure TTestMultiCaret.TabKey;
     Result[6] := '7g';
     Result[7] := '';
   end;
-  function TestText1IndentX: TStringArray;
+  function LocalText1IndentX: TStringArray;
   begin
     SetLength(Result, 8);
     Result[0] := '1a';
@@ -514,7 +1025,7 @@ procedure TTestMultiCaret.TabKey;
     Result[6] := '7g';
     Result[7] := '';
   end;
-  function TestText1TabOver: TStringArray;
+  function LocalText1TabOver: TStringArray;
   begin
     SetLength(Result, 8);
     Result[0] := '1a';
@@ -530,13 +1041,13 @@ begin
   PushBaseName('ZERO width selection -- WITH eoTabIndent');
   ReCreateEdit;
   SynEdit.Options := SynEdit.Options + [eoTabIndent] - [eoTabsToSpaces, eoSmartTabs, eoTrimTrailingSpaces];
-  SetLines(TestText1);
+  SetLines(LocalText1);
 
   SetCaretAndColumnSelect(2,2, 4,0);
-  TestIsCaretLogAndFullText('', 2, 6, TestText1);
+  TestIsCaretLogAndFullText('', 2, 6, LocalText1);
 
   RunCmdSeq([ecTab], []);
-  TestIsCaretLogAndFullText('', 3, 6, TestText1Tab);
+  TestIsCaretLogAndFullText('', 3, 6, LocalText1Tab);
   // 4 extra carets + main caret
   AssertEquals(BaseTestName+'', 4, FMultiCaret.Carets.Count);
 
@@ -544,13 +1055,13 @@ begin
   PopPushBaseName('ONE width selection -- WITH eoTabIndent');
   ReCreateEdit;
   SynEdit.Options := SynEdit.Options + [eoTabIndent] - [eoTabsToSpaces, eoSmartTabs, eoTrimTrailingSpaces];
-  SetLines(TestText1);
+  SetLines(LocalText1);
 
   SetCaretAndColumnSelect(2,2, 4,1);
-  TestIsCaretLogAndFullText('', 3, 6, TestText1);
+  TestIsCaretLogAndFullText('', 3, 6, LocalText1);
 
   RunCmdSeq([ecTab], []);
-  TestIsCaretLogAndFullText('', 3, 6, TestText1TabOver);
+  TestIsCaretLogAndFullText('', 3, 6, LocalText1TabOver);
   // 4 extra carets + main caret
   AssertEquals(BaseTestName+'', 4, FMultiCaret.Carets.Count);
 
@@ -559,13 +1070,13 @@ begin
   PopPushBaseName('ZERO width selection -- WITHOUT eoTabIndent');
   ReCreateEdit;
   SynEdit.Options := SynEdit.Options - [eoTabIndent] - [eoTabsToSpaces, eoSmartTabs, eoTrimTrailingSpaces];
-  SetLines(TestText1);
+  SetLines(LocalText1);
 
   SetCaretAndColumnSelect(2,2, 4,0);
-  TestIsCaretLogAndFullText('', 2, 6, TestText1);
+  TestIsCaretLogAndFullText('', 2, 6, LocalText1);
 
   RunCmdSeq([ecTab], []);
-  TestIsCaretLogAndFullText('', 3, 6, TestText1Tab);
+  TestIsCaretLogAndFullText('', 3, 6, LocalText1Tab);
   // 4 extra carets + main caret
   AssertEquals(BaseTestName+'', 4, FMultiCaret.Carets.Count);
 
@@ -573,13 +1084,13 @@ begin
   PopPushBaseName('ONE width selection -- WITHOUT eoTabIndent');
   ReCreateEdit;
   SynEdit.Options := SynEdit.Options - [eoTabIndent] - [eoTabsToSpaces, eoSmartTabs, eoTrimTrailingSpaces];
-  SetLines(TestText1);
+  SetLines(LocalText1);
 
   SetCaretAndColumnSelect(2,2, 4,1);
-  TestIsCaretLogAndFullText('', 3, 6, TestText1);
+  TestIsCaretLogAndFullText('', 3, 6, LocalText1);
 
   RunCmdSeq([ecTab], []);
-  TestIsCaretLogAndFullText('', 3, 6, TestText1TabOver);
+  TestIsCaretLogAndFullText('', 3, 6, LocalText1TabOver);
   // 4 extra carets + main caret
   AssertEquals(BaseTestName+'', 4, FMultiCaret.Carets.Count);
 
@@ -587,7 +1098,7 @@ begin
 end;
 
 procedure TTestMultiCaret.Paste;
-  function TestText1: TStringArray;
+  function LocalText1: TStringArray;
   begin
     SetLength(Result, 8);
     Result[0] := '1a';
@@ -599,7 +1110,7 @@ procedure TTestMultiCaret.Paste;
     Result[6] := '7g';
     Result[7] := '';
   end;
-  function TestText1PasteNorm: TStringArray;
+  function LocalText1PasteNorm: TStringArray;
   begin
     SetLength(Result, 8);
     Result[0] := '1a';
@@ -611,7 +1122,7 @@ procedure TTestMultiCaret.Paste;
     Result[6] := '7g';
     Result[7] := '';
   end;
-  function TestText1PasteNormOver: TStringArray;
+  function LocalText1PasteNormOver: TStringArray;
   begin
     SetLength(Result, 8);
     Result[0] := '1a';
@@ -623,7 +1134,7 @@ procedure TTestMultiCaret.Paste;
     Result[6] := '7g';
     Result[7] := '';
   end;
-  function TestText1PasteCol: TStringArray;
+  function LocalText1PasteCol: TStringArray;
   begin
     SetLength(Result, 8);
     Result[0] := '1a';
@@ -635,7 +1146,7 @@ procedure TTestMultiCaret.Paste;
     Result[6] := '72g';
     Result[7] := '';
   end;
-  function TestText1PasteColOver: TStringArray;
+  function LocalText1PasteColOver: TStringArray;
   begin
     SetLength(Result, 8);
     Result[0] := '1a';
@@ -651,16 +1162,16 @@ begin
   PushBaseName('ZERO width selection -- paste normal');
   ReCreateEdit;
   SynEdit.Options := SynEdit.Options + [eoTabIndent] - [eoTabsToSpaces, eoSmartTabs, eoTrimTrailingSpaces];
-  SetLines(TestText1);
+  SetLines(LocalText1);
 
   SetCaret(1,1);
   RunCmdSeq([ecSelRight, ecSelRight, ecCopy], []); // copy
 
   SetCaretAndColumnSelect(2,2, 4,0);
-  TestIsCaretLogAndFullText('', 2, 6, TestText1);
+  TestIsCaretLogAndFullText('', 2, 6, LocalText1);
 
   RunCmdSeq([ecPaste], []);
-  TestIsCaretLogAndFullText('', 4, 6, TestText1PasteNorm);
+  TestIsCaretLogAndFullText('', 4, 6, LocalText1PasteNorm);
   // 4 extra carets + main caret
   AssertEquals(BaseTestName+'', 4, FMultiCaret.Carets.Count);
 
@@ -668,16 +1179,16 @@ begin
   PopPushBaseName('ONE width selection -- paste normal');
   ReCreateEdit;
   SynEdit.Options := SynEdit.Options + [eoTabIndent] - [eoTabsToSpaces, eoSmartTabs, eoTrimTrailingSpaces];
-  SetLines(TestText1);
+  SetLines(LocalText1);
 
   SetCaret(1,1);
   RunCmdSeq([ecSelRight, ecSelRight, ecCopy], []); // copy
 
   SetCaretAndColumnSelect(2,2, 4,1);
-  TestIsCaretLogAndFullText('', 3, 6, TestText1);
+  TestIsCaretLogAndFullText('', 3, 6, LocalText1);
 
   RunCmdSeq([ecPaste], []);
-  TestIsCaretLogAndFullText('', 4, 6, TestText1PasteNormOver);
+  TestIsCaretLogAndFullText('', 4, 6, LocalText1PasteNormOver);
   // 4 extra carets + main caret
   AssertEquals(BaseTestName+'', 4, FMultiCaret.Carets.Count);
 
@@ -686,32 +1197,32 @@ begin
   PushBaseName('ZERO width selection -- paste column');
   ReCreateEdit;
   SynEdit.Options := SynEdit.Options + [eoTabIndent] - [eoTabsToSpaces, eoSmartTabs, eoTrimTrailingSpaces];
-  SetLines(TestText1);
+  SetLines(LocalText1);
 
   SetCaretAndColumnSelect(1,1, 1,1);
   RunCmdSeq([ecCopy], []); // copy
 
   SetCaretAndColumnSelect(2,2, 4,0);
-  TestIsCaretLogAndFullText('', 2, 6, TestText1);
+  TestIsCaretLogAndFullText('', 2, 6, LocalText1);
 
   RunCmdSeq([ecPaste], []);
-  TestIsCaretLogAndFullText('', 3, 7, TestText1PasteCol);
+  TestIsCaretLogAndFullText('', 3, 7, LocalText1PasteCol);
   AssertEquals(BaseTestName+'', 0, FMultiCaret.Carets.Count);
 
 
   PopPushBaseName('ONE width selection -- paste column');
   ReCreateEdit;
   SynEdit.Options := SynEdit.Options + [eoTabIndent] - [eoTabsToSpaces, eoSmartTabs, eoTrimTrailingSpaces];
-  SetLines(TestText1);
+  SetLines(LocalText1);
 
   SetCaretAndColumnSelect(1,1, 1,1);
   RunCmdSeq([ecCopy], []); // copy
 
   SetCaretAndColumnSelect(2,2, 4,1);
-  TestIsCaretLogAndFullText('', 3, 6, TestText1);
+  TestIsCaretLogAndFullText('', 3, 6, LocalText1);
 
   RunCmdSeq([ecPaste], []);
-  TestIsCaretLogAndFullText('', 3, 3, TestText1PasteColOver);
+  TestIsCaretLogAndFullText('', 3, 3, LocalText1PasteColOver);
   AssertEquals(BaseTestName+'', 0, FMultiCaret.Carets.Count);
 
 end;
