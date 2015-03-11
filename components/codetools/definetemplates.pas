@@ -785,7 +785,9 @@ type
   TFPCTargetConfigCaches = class(TComponent)
   private
     FChangeStamp: integer;
+    FExtraOptions: string;
     fItems: TAVLTree; // tree of TFPCTargetConfigCache
+    FTestFilename: string;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -803,6 +805,8 @@ type
     procedure GetDefaultCompilerTarget(const CompilerFilename,CompilerOptions: string;
                   out TargetOS, TargetCPU: string);
     function GetListing: string;
+    property TestFilename: string read FTestFilename write FTestFilename; // an empty file to test the compiler, will be auto created
+    property ExtraOptions: string read FExtraOptions write FExtraOptions; // additional compiler options not used as key, e.g. -Fr<language file>
   end;
 
   TFPCSourceCaches = class;
@@ -929,14 +933,16 @@ type
   private
     FConfigCaches: TFPCTargetConfigCaches;
     FConfigCachesSaveStamp: integer;
-    FExtraOptions: string;
     FSourceCaches: TFPCSourceCaches;
     FSourceCachesSaveStamp: integer;
-    FTestFilename: string;
     fUnitToSrcCaches: TFPList; // list of TFPCUnitSetCache
+    function GetExtraOptions: string;
+    function GetTestFilename: string;
     procedure SetConfigCaches(const AValue: TFPCTargetConfigCaches);
+    procedure SetExtraOptions(AValue: string);
     procedure SetSourceCaches(const AValue: TFPCSourceCaches);
     procedure ClearUnitToSrcCaches;
+    procedure SetTestFilename(AValue: string);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -948,8 +954,8 @@ type
     function NeedsSave: boolean;
     property SourceCaches: TFPCSourceCaches read FSourceCaches write SetSourceCaches;
     property ConfigCaches: TFPCTargetConfigCaches read FConfigCaches write SetConfigCaches;
-    property TestFilename: string read FTestFilename write FTestFilename; // an empty file to test the compiler, will be auto created
-    property ExtraOptions: string read FExtraOptions write FExtraOptions; // additional compiler options not used as key, e.g. -Fr<language file>
+    property TestFilename: string read GetTestFilename write SetTestFilename; // an empty file to test the compiler, will be auto created
+    property ExtraOptions: string read GetExtraOptions write SetExtraOptions; // additional compiler options not used as key, e.g. -Fr<language file>
     function GetFPCVersion(const CompilerFilename, TargetOS, TargetCPU: string;
                            UseCompiledVersionAsDefault: boolean): string;
     function FindUnitSet(const CompilerFilename, TargetOS, TargetCPU,
@@ -8184,6 +8190,8 @@ begin
     TargetOS:='';
     TargetCPU:='';
   end else begin
+    if Cfg.NeedsUpdate then
+      Cfg.Update(TestFilename);
     TargetOS:=Cfg.RealTargetOS;
     TargetCPU:=Cfg.RealTargetCPU;
   end;
@@ -8653,6 +8661,21 @@ begin
   FConfigCachesSaveStamp:=Low(FConfigCachesSaveStamp);
 end;
 
+function TFPCDefinesCache.GetExtraOptions: string;
+begin
+  Result:=ConfigCaches.ExtraOptions;
+end;
+
+function TFPCDefinesCache.GetTestFilename: string;
+begin
+  Result:=ConfigCaches.TestFilename;
+end;
+
+procedure TFPCDefinesCache.SetExtraOptions(AValue: string);
+begin
+  ConfigCaches.ExtraOptions:=AValue;
+end;
+
 procedure TFPCDefinesCache.SetSourceCaches(const AValue: TFPCSourceCaches);
 begin
   if FSourceCaches=AValue then exit;
@@ -8667,6 +8690,11 @@ begin
   for i:=0 to fUnitToSrcCaches.Count-1 do
     TObject(fUnitToSrcCaches[i]).Free;
   fUnitToSrcCaches.Clear;
+end;
+
+procedure TFPCDefinesCache.SetTestFilename(AValue: string);
+begin
+  ConfigCaches.TestFilename:=AValue;
 end;
 
 constructor TFPCDefinesCache.Create(AOwner: TComponent);
