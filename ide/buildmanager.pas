@@ -2628,7 +2628,10 @@ begin
                     or (CodeToolBoss.DefineTree.FindDefineTemplateByName(
                          StdDefTemplLazarusSources,true)=nil);
   if FPCTargetChanged then
+  begin
     IncreaseBuildMacroChangeStamp;
+    CodeToolBoss.DefineTree.ClearCache;
+  end;
 
   // compute new LCLWidgetType
   fLCLWidgetType:=GetEffectiveLCLWidgetType;
