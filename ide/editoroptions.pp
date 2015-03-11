@@ -3420,8 +3420,9 @@ begin
     // TODO: why depend on FTextMiddleClick?
     if FTextMiddleClick <> mbaNone then
       AddCommand(emcCodeFoldCollaps,   False, mbXMiddle, ccAny,    CDir, R, [],       [],               emcoCodeFoldCollapsOne);
-    //if CDir = cdUp then
-    //  AddCommand(emcNone,              False, mbXLeft,   ccAny,    cdDown, [], []);
+    // do not allow selection, over colapse/expand icons. Those may depend cursor pos (e.g. hide selected lines)
+    if CDir = cdUp then
+      AddCommand(emcNone,              False, mbXLeft,   ccAny,    cdDown, [], []);
   end;
   with FGutterActionsFoldExp do begin
     AddCommand(emcCodeFoldCollaps,     False, mbXLeft,   ccAny,    CDir, R, [],       [SYNEDIT_LINK_MODIFIER], emcoCodeFoldCollapsOne);
@@ -3429,8 +3430,9 @@ begin
     // TODO: why depend on FTextMiddleClick?
     if FTextMiddleClick <> mbaNone then
       AddCommand(emcCodeFoldCollaps,   False, mbXMiddle, ccAny,    CDir, R, [],       [],       emcoCodeFoldCollapsOne);
-    //if CDir = cdUp then
-    //  AddCommand(emcNone,              False, mbXLeft,   ccAny,    cdDown, [], []);
+    // do not allow selection, over colapse/expand icons. Those may depend cursor pos (e.g. hide selected lines)
+    if CDir = cdUp then
+      AddCommand(emcNone,              False, mbXLeft,   ccAny,    cdDown, [], []);
   end;
 
 end;
