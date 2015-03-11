@@ -527,7 +527,8 @@ var
 begin
   {$IFDEF MEM_CHECK}CheckHeap('TPascalParserTool.BuildTree A '+IntToStr(MemCheck_GetMem_Cnt));{$ENDIF}
   {$IFDEF CTDEBUG}
-  DebugLn('TPascalParserTool.BuildTree START ',MainFilename,' Range=',dbgs(Range),' ScannedRange=',dbgs(ScannedRange));
+  //if ExtractFileNameOnly(MainFilename)='androidr14' then
+    DebugLn('TPascalParserTool.BuildTree START ',MainFilename,' Range=',dbgs(Range),' ScannedRange=',dbgs(ScannedRange));
   {$ENDIF}
   ValidateToolDependencies;
   if not UpdateNeeded(Range) then begin
@@ -566,7 +567,8 @@ begin
   // scan code
   BeginParsing(Range);
   {$IFDEF VerboseUpdateNeeded}
-  DebugLn(['TPascalParserTool.BuildTree PARSING ... LastScannedRange=',dbgs(ScannedRange),' new Range=',dbgs(Range),' ',MainFilename]);
+  //if ExtractFileNameOnly(MainFilename)='androidr14' then
+    DebugLn(['TPascalParserTool.BuildTree PARSING ... LastScannedRange=',dbgs(ScannedRange),' new Range=',dbgs(Range),' ',MainFilename]);
   {$ENDIF}
   //debugln(['TPascalParserTool.BuildTree "',Src,'"']);
 
@@ -4181,6 +4183,7 @@ begin
           end;
           CurNode.EndPos:=CurPos.StartPos;
           EndChildNode;
+          IsForward:=false;
         end;
       end else if UpAtomIs('HELPER') then begin
         IsHelper:=true;
@@ -4266,7 +4269,7 @@ begin
   if CurPos.Flag=cafSemicolon then
     ReadNextAtom;
   // read post modifiers
-  if UpAtomIs('EXTERNAL') then begin
+  if IsForward and UpAtomIs('EXTERNAL') then begin
     ReadNextAtom;
     if UpAtomIs('NAME') then begin
       ReadNextAtom;

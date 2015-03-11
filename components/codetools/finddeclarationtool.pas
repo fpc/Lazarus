@@ -821,7 +821,7 @@ type
     function FindDefaultAncestorOfClass(ClassNode: TCodeTreeNode;
       Params: TFindDeclarationParams; FindClassContext: boolean): boolean; // returns false for TObject, IInterface, IUnknown
     function FindAncestorOfClassInheritance(IdentifierNode: TCodeTreeNode;
-      Params: TFindDeclarationParams; FindClassContext: boolean): boolean;
+      ResultParams: TFindDeclarationParams; FindClassContext: boolean): boolean;
     function FindAncestorsOfClass(ClassNode: TCodeTreeNode;
       var ListOfPFindContext: TFPList;
       Params: TFindDeclarationParams; FindClassContext: boolean;
@@ -5781,13 +5781,14 @@ begin
 end;
 
 function TFindDeclarationTool.FindAncestorOfClassInheritance(
-  IdentifierNode: TCodeTreeNode;
-  Params: TFindDeclarationParams; FindClassContext: boolean): boolean;
+  IdentifierNode: TCodeTreeNode; ResultParams: TFindDeclarationParams;
+  FindClassContext: boolean): boolean;
 var
-  OldInput: TFindDeclarationInput;
-  AncestorNode, ClassNode, ClassIdentNode: TCodeTreeNode;
+  ClassNode: TCodeTreeNode;
   AncestorContext: TFindContext;
   AncestorStartPos: LongInt;
+  ExprType: TExpressionType;
+  Params: TFindDeclarationParams;
 begin
   {$IFDEF CheckNodeTool}CheckNodeTool(IdentifierNode);{$ENDIF}
   if (IdentifierNode=nil)
@@ -5800,7 +5801,6 @@ begin
   Result:=false;
 
   ClassNode:=IdentifierNode.Parent.Parent;
-  ClassIdentNode:=ClassNode.Parent;
 
   if IdentifierNode.Desc=ctnSpecialize then begin
     if (IdentifierNode.FirstChild=nil) then begin
@@ -5812,33 +5812,46 @@ begin
     MoveCursorToCleanPos(IdentifierNode.FirstChild.StartPos);
   end else
     MoveCursorToCleanPos(IdentifierNode.StartPos);
-  AncestorStartPos:=CurPos.StartPos;
   ReadNextAtom;
   AtomIsIdentifierE;
+  AncestorStartPos:=CurPos.StartPos;
   ReadNextAtom;
-  if CurPos.Flag=cafPoint then begin
-    ReadNextAtom;
-    AtomIsIdentifierE;
-    AncestorStartPos:=CurPos.StartPos;
-  end;
-  {$IFDEF ShowTriedContexts}
-  DebugLn('[TFindDeclarationTool.FindAncestorOfClass] ',
-  ' search ancestor class = ',GetIdentifier(@Src[AncestorStartPos]));
-  {$ENDIF}
 
-  // search ancestor
-  Params.Save(OldInput);
-  Params.Flags:=[fdfSearchInParentNodes,fdfIgnoreCurContextNode,
-                 fdfExceptionOnNotFound,fdfSearchInAncestors]
-                +(fdfGlobals*Params.Flags)
-                -[fdfTopLvlResolving];
-  Params.SetIdentifier(Self,@Src[AncestorStartPos],nil);
-  Params.ContextNode:=ClassIdentNode;
-  if not FindIdentifierInContext(Params) then
-    exit;
+  Params:=TFindDeclarationParams.Create;
+  try
+    Params.Flags:=fdfDefaultForExpressions-[fdfSearchInAncestors];
+    Params.ContextNode:=ClassNode;
+    if CurPos.Flag in [cafRoundBracketClose,cafComma] then begin
+      // simple identifier
+      {$IFDEF ShowTriedContexts}
+      DebugLn('[TFindDeclarationTool.FindAncestorOfClass] ',
+      ' search ancestor class="',GetIdentifier(@Src[AncestorStartPos]),'" for class "',ExtractClassName(ClassNode,false),'"');
+      {$ENDIF}
+      Params.SetIdentifier(Self,@Src[AncestorStartPos],nil);
+      if not FindIdentifierInContext(Params) then
+        exit;
+      AncestorContext.Tool:=Params.NewCodeTool;
+      AncestorContext.Node:=Params.NewNode;
+    end else begin
+      // complex identifier
+      {$IFDEF ShowTriedContexts}
+      DebugLn(['[TFindDeclarationTool.FindAncestorOfClass] ',
+      ' search complex ancestor class = "',ExtractNode(IdentifierNode,[]),'"']);
+      {$ENDIF}
+      Params.Flags:=fdfDefaultForExpressions-[fdfSearchInAncestors];
+      ExprType:=FindExpressionTypeOfTerm(IdentifierNode.StartPos,IdentifierNode.EndPos,Params,false);
+      if ExprType.Desc=xtContext then
+        AncestorContext:=ExprType.Context
+      else
+        AncestorContext:=CleanFindContext;
+    end;
+  finally
+    Params.Free;
+  end;
 
   // check result
-  if not (Params.NewNode.Desc in [ctnTypeDefinition,ctnGenericType]) then
+  if (AncestorContext.Node=nil)
+  or (not (AncestorContext.Node.Desc in [ctnTypeDefinition,ctnGenericType])) then
   begin
     MoveCursorToCleanPos(AncestorStartPos);
     ReadNextAtom;
@@ -5847,21 +5860,29 @@ begin
 
   // search ancestor class context
   if FindClassContext then begin
-    AncestorNode:=Params.NewNode;
-    Params.Flags:=Params.Flags+[fdfFindChildren];
-    AncestorContext:=Params.NewCodeTool.FindBaseTypeOfNode(Params,AncestorNode);
-    Params.SetResult(AncestorContext);
+    Params:=TFindDeclarationParams.Create;
+    try
+      Params.Flags:=fdfDefaultForExpressions+[fdfFindChildren];
+      AncestorContext:=AncestorContext.Tool.FindBaseTypeOfNode(Params,AncestorContext.Node);
 
-    // check result
-    if not (Params.NewNode.Desc in AllClasses) then
-    begin
-      MoveCursorToCleanPos(AncestorStartPos);
-      ReadNextAtom;
-      RaiseExceptionFmt(ctsStrExpectedButAtomFound,['class',GetAtom]);
+      // check result
+      if not (AncestorContext.Node.Desc in AllClasses) then begin
+        MoveCursorToCleanPos(AncestorStartPos);
+        ReadNextAtom;
+        RaiseExceptionFmt(ctsStrExpectedButAtomFound,['class',GetAtom]);
+      end;
+      if AncestorContext.Node=ClassNode then begin
+        MoveCursorToCleanPos(AncestorStartPos);
+        ReadNextAtom;
+        RaiseException('cycle detected');
+      end;
+    finally
+      Params.Free;
     end;
   end;
+
+  ResultParams.SetResult(AncestorContext);
   Result:=true;
-  Params.Load(OldInput,true);
 end;
 
 function TFindDeclarationTool.FindAncestorsOfClass(ClassNode: TCodeTreeNode;
@@ -6066,9 +6087,7 @@ begin
     Node:=InheritanceNode.FirstChild;
     while Node<>nil do begin
       if not FindAncestorOfClassInheritance(Node,Params,true) then exit;
-      if (ClassNode.Desc in AllClassInterfaces)
-      or (Params.NewNode.Desc in AllClassObjects) then
-        SearchDefaultAncestor:=false;
+      SearchDefaultAncestor:=false;
       if Search(Params.NewCodeTool,Params.NewNode) then exit(true);
       Node:=Node.NextBrother;
     end;
