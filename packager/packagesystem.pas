@@ -3608,9 +3608,7 @@ var
   Tool1: TAbstractExternalTool;
   Tool2: TAbstractExternalTool;
   ToolGroup: TExternalToolGroup;
-  {$IFDEF EnableCheckInterPkgFiles}
   FilesChanged: boolean;
-  {$ENDIF}
 begin
   {$IFDEF VerbosePkgCompile}
   debugln('TLazPackageGraph.CompileRequiredPackages A MinPolicy=',dbgs(Policy),' SkipDesignTimePackages=',SkipDesignTimePackages);
