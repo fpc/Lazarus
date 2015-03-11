@@ -2313,12 +2313,15 @@ begin
 end;
 
 function TCustomCodeTool.IsPCharInSrc(ACleanPos: PChar): boolean;
-var NewPos: integer;
+// Note: the ending #0 is a valid position
+var
+  p: PChar;
 begin
   Result:=false;
   if Src='' then exit;
-  NewPos:=PtrInt(PtrUInt(ACleanPos))-PtrInt(PtrUInt(@Src[1]))+1;
-  if (NewPos<1) or (NewPos>SrcLen) then exit;
+  p:=PChar(Src);
+  if p>ACleanPos then exit;
+  if ACleanPos>p+SrcLen then exit;
   Result:=true;
 end;
 
