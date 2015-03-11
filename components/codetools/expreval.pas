@@ -1992,9 +1992,13 @@ begin
 end;
 
 procedure TExpressionEvaluator.WriteDebugReport;
+var
+  i: Integer;
 begin
   DebugLn('[TExpressionEvaluator.WriteDebugReport] ');
   ConsistencyCheck;
+  for i:=0 to Count-1 do
+    debugln('  ',Items(i));
 end;
 
 function TExpressionEvaluator.CalcMemSize(WithNamesAndValues: boolean;
