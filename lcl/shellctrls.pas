@@ -145,8 +145,17 @@ type
     property OnChange;
     property OnChanging;
     property OnClick;
+    property OnCollapsed;
+    property OnCollapsing;
     property OnCustomDraw;
     property OnCustomDrawItem;
+    property OnDblClick;
+    property OnEdited;
+    property OnEditing;
+    property OnEnter;
+    property OnExit;
+    property OnExpanded;
+    property OnExpanding;
     property OnKeyDown;
     property OnKeyPress;
     property OnKeyUp;
