@@ -5658,13 +5658,13 @@ resourcestring
     +'file name. Usually it starts with fpc, ppc or ppcross.';
   lisFpcCfgIsMissing = 'fpc.cfg is missing.';
   lisSystemPpuNotFoundCheckYourFpcCfg = 'system.ppu not found. Check your fpc.cfg.';
-  lisClassesPpuNotFoundCheckYourFpcCfg = 'classes.ppu not found. Check your fpc.cfg.';
   lisWelcomeToLazarusIDE = 'Welcome to Lazarus IDE %s';
   lisStartIDE = 'Start IDE';
   lisUnableToLoadFile2 = 'unable to load file %s: %s';
   lisDirectoryNotFound2 = 'directory %s not found';
   lisFileNotFound3 = 'file %s not found';
   lisFileNotFound4 = 'file not found';
+  lisPpuNotFoundCheckYourFpcCfg = '%s.ppu not found. Check your fpc.cfg.';
   lisISDDirectoryNotFound = 'directory not found';
   lisDebuggerFeedbackInformation = 'Debugger Information';
   lisDebuggerFeedbackWarning = 'Debugger Warning';
