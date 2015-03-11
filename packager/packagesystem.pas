@@ -3665,12 +3665,10 @@ begin
 
         if FirstDependency<>nil then
         begin
-          {$IFDEF EnableCheckInterPkgFiles}
           if not OnCheckInterPkgFiles(FirstDependency.Owner,PkgList,FilesChanged)
           then exit(mrCancel);
           if FilesChanged then
             FreeAndNil(BuildItems);
-          {$ENDIF}
         end;
       until BuildItems<>nil;
 

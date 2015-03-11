@@ -1019,11 +1019,13 @@ begin
 
     // show warnings
     if LazarusIDE<>nil then begin
+      {$IFDEF EnableCheckInterPkgFiles}
       // IDE
       Dlg:=TPGIPConflictsDialog.Create(nil);
       Dlg.Init(AmbiguousFileGroups);
       if Dlg.ShowModal<>mrOK then exit(false);
       FilesChanged:=Dlg.FilesChanged;
+      {$ENDIF}
     end;
   finally
     AmbiguousFileGroups.Free;
