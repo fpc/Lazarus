@@ -278,7 +278,9 @@ begin
 
   // check
   if (FTargets.Count>0) then
-    MainTarget:=TObject(FTargets.Last);
+    MainTarget:=TInfoNeedBuildItem(FTargets.Last).Target
+  else
+    MainTarget:=nil;
 
   i:=0;
   while i<FTargets.Count do begin
@@ -421,7 +423,8 @@ procedure TIDEInfoNeedBuildDlg.SetMainTarget(AValue: TObject);
 begin
   if FMainTarget=AValue then Exit;
   FMainTarget:=AValue;
-  if (FMainTarget=LazarusIDE) then
+  //debugln(['TIDEInfoNeedBuildDlg.SetMainTarget ',DbgSName(MainTarget)]);
+  if (MainTarget=LazarusIDE) then
     MainBuildBoss.SetBuildTargetIDE
   else
     MainBuildBoss.SetBuildTargetProject1(true);

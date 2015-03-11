@@ -57,7 +57,7 @@ type
 
   TBuildManager = class(TBaseBuildManager)
   private
-    FBuildTarget: TObject;
+    FBuildTarget: TProject;
     FUnitSetCache: TFPCUnitSetCache;
     fBuildLazExtraOptions: string; // last build lazarus extra options
     FUnitSetChangeStamp: integer;
@@ -229,7 +229,7 @@ type
     function BuildTargetIDEIsDefault: boolean; override;
 
     property FPCSrcScans: TFPCSrcScans read FFPCSrcScans;
-    property BuildTarget: TObject read FBuildTarget; // TProject or nil
+    property BuildTarget: TProject read FBuildTarget; // TProject or nil
   end;
   
 var
@@ -307,10 +307,10 @@ end;
 function TBuildManager.MacroFuncBuildMode(const Param: string;
   const Data: PtrInt; var Abort: boolean): string;
 begin
-  if Project1<>nil then
-    Result:=Project1.ActiveBuildMode.Identifier
+  if FBuildTarget<>nil then
+    Result:=FBuildTarget.ActiveBuildMode.Identifier
   else
-    Result:='';
+    Result:='default';
 end;
 
 constructor TBuildManager.Create(AOwner: TComponent);
@@ -609,19 +609,17 @@ end;
 function TBuildManager.GetFPCompilerFilename: string;
 var
   s: string;
-  AProject: TProject;
   Opts: TProjectCompilerOptions;
 begin
   Result:='';
-  if (FBuildTarget is TProject) then
+  if FBuildTarget<>nil then
   begin
-    AProject:=TProject(FBuildTarget);
-    Opts:=AProject.CompilerOptions;
+    Opts:=FBuildTarget.CompilerOptions;
     if ([crCompile,crBuild]*Opts.CompileReasons<>[])
     and (Opts.CompilerPath<>'')
     and (not Opts.ParsedOpts.Values[pcosCompilerPath].Parsing)
     then begin
-      Result:=AProject.GetCompilerFilename;
+      Result:=FBuildTarget.GetCompilerFilename;
       //debugln(['TBuildManager.GetFPCompilerFilename project compiler="',Result,'"']);
     end;
   end;
@@ -636,15 +634,15 @@ var
   s: String;
 begin
   Result:='';
-  if FBuildTarget is TProject then
+  if FBuildTarget<>nil then
   begin
-    s:=ExtractFPCFrontEndParameters(TProject(FBuildTarget).CompilerOptions.CustomOptions);
+    s:=ExtractFPCFrontEndParameters(FBuildTarget.CompilerOptions.CustomOptions);
     if GlobalMacroList.SubstituteStr(s) then
     begin
       if s<>'' then
         Result:=s;
     end else begin
-      debugln(['WARNING: [GetFPCFrontEndOptions] ignoring invalid macros in custom options for fpc frontend: "',ExtractFPCFrontEndParameters(TProject(FBuildTarget).CompilerOptions.CustomOptions),'"']);
+      debugln(['WARNING: [GetFPCFrontEndOptions] ignoring invalid macros in custom options for fpc frontend: "',ExtractFPCFrontEndParameters(FBuildTarget.CompilerOptions.CustomOptions),'"']);
     end;
   end;
   if LazarusIDE<>nil then
@@ -886,11 +884,11 @@ begin
   // then check the project's compiler
   if not IsFPCExecutable(CompilerFilename,FPCExecMsg) then begin
     Msg:='';
-    if (FBuildTarget is TProject)
-    and ([crCompile,crBuild]*TProject(FBuildTarget).CompilerOptions.CompileReasons<>[])
-    and (TProject(FBuildTarget).CompilerOptions.CompilerPath<>'')
+    if (FBuildTarget<>nil)
+    and ([crCompile,crBuild]*FBuildTarget.CompilerOptions.CompileReasons<>[])
+    and (FBuildTarget.CompilerOptions.CompilerPath<>'')
     then begin
-      CompilerFilename:=TProject(FBuildTarget).GetCompilerFilename;
+      CompilerFilename:=FBuildTarget.GetCompilerFilename;
       if not IsFPCExecutable(CompilerFilename,FPCExecMsg) then begin
         Msg+='Project''s compiler: "'+CompilerFilename+'": '+FPCExecMsg+#13;
       end;
@@ -1158,7 +1156,7 @@ begin
   NeedBuildAllFlag:=false;
 
   // get main source filename
-  if not Project1.IsVirtual then begin
+  if not AProject.IsVirtual then begin
     SrcFilename:=CreateRelativePath(AProject.MainUnitInfo.Filename,
                                     AProject.ProjectDirectory);
   end else begin
@@ -1166,7 +1164,7 @@ begin
   end;
 
   CompilerFilename:=AProject.GetCompilerFilename;
-  //DebugLn(['TBuildManager.DoCheckIfProjectNeedsCompilation CompilerFilename="',CompilerFilename,'" CompilerPath="',Project1.CompilerOptions.CompilerPath,'"']);
+  //DebugLn(['TBuildManager.DoCheckIfProjectNeedsCompilation CompilerFilename="',CompilerFilename,'" CompilerPath="',AProject.CompilerOptions.CompilerPath,'"']);
   // Note: use absolute paths, because some external tools resolve symlinked directories
   CompilerParams :=
     AProject.CompilerOptions.MakeOptionsString(SrcFilename,[ccloAbsolutePaths])
@@ -1777,7 +1775,7 @@ begin
   if AnUnitInfo.IsPartOfProject then
   begin
     // use project resource type
-    Result := Project1.ProjResources.ResourceType;
+    Result := AnUnitInfo.Project.ProjResources.ResourceType;
   end
   else
     Result := rtLRS;
@@ -1803,9 +1801,9 @@ var
   OutputDir: String;
 begin
   if AnUnitInfo.IsPartOfProject
-  and (not Project1.IsVirtual)
+  and (not AnUnitInfo.Project.IsVirtual)
   and (pfLRSFilesInOutputDirectory in Project1.Flags) then begin
-    OutputDir:=Project1.GetOutputDirectory;
+    OutputDir:=AnUnitInfo.Project.GetOutputDirectory;
     if OutputDir<>'' then begin
       Result:=AppendPathDelim(OutputDir)
               +ExtractFileNameOnly(AnUnitInfo.Filename)+ResourceFileExt;
@@ -2368,8 +2366,8 @@ function TBuildManager.OnGetBuildMacroValues(Options: TBaseCompilerOptions;
     // TargetOS
     if not Values.IsDefined('TargetOS') then begin
       s:='';
-      if Project1<>nil then
-        s:=Project1.CompilerOptions.TargetOS;
+      if FBuildTarget<>nil then
+        s:=FBuildTarget.CompilerOptions.TargetOS;
       if s='' then
         s:=GetCompiledTargetOS;
       Values.Values['TargetOS']:=s;
@@ -2387,8 +2385,8 @@ function TBuildManager.OnGetBuildMacroValues(Options: TBaseCompilerOptions;
     // TargetCPU
     if not Values.IsDefined('TargetCPU') then begin
       s:='';
-      if Project1<>nil then
-        s:=Project1.CompilerOptions.TargetCPU;
+      if FBuildTarget<>nil then
+        s:=FBuildTarget.CompilerOptions.TargetCPU;
       if s='' then
         s:=GetCompiledTargetCPU;
       Values.Values['TargetCPU']:=s;
@@ -2400,13 +2398,13 @@ function TBuildManager.OnGetBuildMacroValues(Options: TBaseCompilerOptions;
     Target: String;
     CurMode: String;
   begin
-    if Project1<>nil then begin
+    if FBuildTarget<>nil then begin
       Target:=GetModeMatrixTarget(Options);
-      CurMode:=Project1.ActiveBuildMode.Identifier;
+      CurMode:=FBuildTarget.ActiveBuildMode.Identifier;
       if EnvironmentOptions<>nil then
         ApplyBuildMatrixMacros(EnvironmentOptions.BuildMatrixOptions,Target,CurMode,Vars);
-      ApplyBuildMatrixMacros(Project1.BuildModes.SharedMatrixOptions,Target,CurMode,Vars);
-      ApplyBuildMatrixMacros(Project1.BuildModes.SessionMatrixOptions,Target,CurMode,Vars);
+      ApplyBuildMatrixMacros(FBuildTarget.BuildModes.SharedMatrixOptions,Target,CurMode,Vars);
+      ApplyBuildMatrixMacros(FBuildTarget.BuildModes.SessionMatrixOptions,Target,CurMode,Vars);
     end;
     SetCmdLineOverrides(Vars);
     {$IFDEF VerboseBuildMacros}
@@ -2507,17 +2505,17 @@ var
   ActiveMode: String;
 begin
   Target:=GetModeMatrixTarget(Sender);
-  if Project1=nil then
-    ActiveMode:='default'
+  if FBuildTarget<>nil then
+    ActiveMode:=FBuildTarget.ActiveBuildMode.Identifier
   else
-    ActiveMode:=Project1.ActiveBuildMode.Identifier;
+    ActiveMode:='default';
   if bmgtEnvironment in Types then
     EnvironmentOptions.BuildMatrixOptions.AppendCustomOptions(Target,ActiveMode,Options);
-  if Project1<>nil then begin
+  if FBuildTarget<>nil then begin
     if bmgtProject in Types then
-      Project1.BuildModes.SharedMatrixOptions.AppendCustomOptions(Target,ActiveMode,Options);
+      FBuildTarget.BuildModes.SharedMatrixOptions.AppendCustomOptions(Target,ActiveMode,Options);
     if bmgtSession in Types then
-      Project1.BuildModes.SessionMatrixOptions.AppendCustomOptions(Target,ActiveMode,Options);
+      FBuildTarget.BuildModes.SessionMatrixOptions.AppendCustomOptions(Target,ActiveMode,Options);
   end;
 end;
 
@@ -2527,15 +2525,19 @@ var
   Target: String;
   ActiveMode: String;
 begin
-  if Project1=nil then exit;
   Target:=GetModeMatrixTarget(Sender);
-  ActiveMode:=Project1.ActiveBuildMode.Identifier;
+  if FBuildTarget<>nil then
+    ActiveMode:=FBuildTarget.ActiveBuildMode.Identifier
+  else
+    ActiveMode:='default';
   if bmgtEnvironment in Types then
     EnvironmentOptions.BuildMatrixOptions.GetOutputDirectory(Target,ActiveMode,OutDir);
-  if bmgtProject in Types then
-    Project1.BuildModes.SharedMatrixOptions.GetOutputDirectory(Target,ActiveMode,OutDir);
-  if bmgtSession in Types then
-    Project1.BuildModes.SessionMatrixOptions.GetOutputDirectory(Target,ActiveMode,OutDir);
+  if FBuildTarget<>nil then begin
+    if bmgtProject in Types then
+      FBuildTarget.BuildModes.SharedMatrixOptions.GetOutputDirectory(Target,ActiveMode,OutDir);
+    if bmgtSession in Types then
+      FBuildTarget.BuildModes.SessionMatrixOptions.GetOutputDirectory(Target,ActiveMode,OutDir);
+  end;
 end;
 
 function TBuildManager.GetModeMatrixTarget(Sender: TObject): string;
@@ -2574,8 +2576,8 @@ procedure TBuildManager.SetBuildTarget(const TargetOS, TargetCPU,
   begin
     if OverrideLCLWidgetType<>'' then
       Result:=OverrideLCLWidgetType
-    else if Project1<>nil then begin
-      Result:=Project1.CompilerOptions.GetEffectiveLCLWidgetType
+    else if FBuildTarget<>nil then begin
+      Result:=FBuildTarget.CompilerOptions.GetEffectiveLCLWidgetType
     end
     else
       Result:='';
@@ -2602,7 +2604,7 @@ begin
   // compute new TargetOS
   if OverrideTargetOS<>'' then
     fTargetOS:=OverrideTargetOS
-  else if FBuildTarget is TProject then
+  else if FBuildTarget<>nil then
     fTargetOS:=TProject(FBuildTarget).CompilerOptions.TargetOS
   else
     fTargetOS:='';
@@ -2613,7 +2615,7 @@ begin
   // compute new TargetCPU
   if OverrideTargetCPU<>'' then
     fTargetCPU:=OverrideTargetCPU
-  else if FBuildTarget is TProject then
+  else if FBuildTarget<>nil then
     fTargetCPU:=TProject(FBuildTarget).CompilerOptions.TargetCPU
   else
     fTargetCPU:='';
@@ -2624,7 +2626,7 @@ begin
   FPCTargetChanged:=(OldTargetOS<>fTargetOS)
                     or (OldTargetCPU<>fTargetCPU)
                     or (CodeToolBoss.DefineTree.FindDefineTemplateByName(
-                         StdDefTemplLazarusSrcDir,true)=nil);
+                         StdDefTemplLazarusSources,true)=nil);
   if FPCTargetChanged then
     IncreaseBuildMacroChangeStamp;
 
@@ -2633,7 +2635,7 @@ begin
   LCLTargetChanged:=(OldLCLWidgetType<>fLCLWidgetType);
 
   if FPCTargetChanged or LCLTargetChanged then begin
-    if ConsoleVerbosity>=1 then
+    if ConsoleVerbosity>=0 then
       DebugLn(['TMainIDE.SetBuildTarget Old=',OldTargetCPU,'-',OldTargetOS,'-',OldLCLWidgetType,' New=',fTargetCPU,'-',fTargetOS,'-',fLCLWidgetType,' FPC=',FPCTargetChanged,' LCL=',LCLTargetChanged]);
   end;
   if LCLTargetChanged then
@@ -2651,9 +2653,10 @@ end;
 procedure TBuildManager.SetBuildTargetProject1(Quiet: boolean;
   ScanFPCSrc: TScanModeFPCSources);
 begin
+  //debugln(['TBuildManager.SetBuildTargetProject1 START']);
   FBuildTarget:=Project1;
   if FBuildTarget<>nil then
-    TProject(FBuildTarget).IDEOptions.AddHandlerDestroy(@OnProjectDestroy);
+    FBuildTarget.IDEOptions.AddHandlerDestroy(@OnProjectDestroy);
   SetBuildTarget('','','',ScanFPCSrc,Quiet);
 end;
 
@@ -2663,6 +2666,7 @@ var
   NewTargetCPU: String;
   NewLCLWidgetSet: String;
 begin
+  //debugln(['TBuildManager.SetBuildTargetIDE START']);
   FBuildTarget:=nil;
   with MiscellaneousOptions do begin
     NewTargetOS:=BuildLazOpts.TargetOS;
