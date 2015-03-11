@@ -158,8 +158,7 @@ type
 
   TLazarusBuilder = class
   private
-    fDefaultTargetCPU: string;
-    fDefaultTargetOS: String;
+    fCompilerTargetCPU, fCompilerTargetOS: String;
     fExtraOptions: string;
     fMacros: TTransferMacroList;
     fOutputDirRedirected: boolean;
@@ -450,10 +449,10 @@ begin
     // add -w option to print leaving/entering messages of "make"
     CmdLineParams:=' -w';
     // append target OS
-    if fTargetOS<>fDefaultTargetOS then
+    if fTargetOS<>fCompilerTargetOS then
       CmdLineParams+=' OS_TARGET='+fTargetOS+' OS_SOURCE='+fTargetOS;
     // append target CPU
-    if fTargetCPU<>fDefaultTargetCPU then
+    if fTargetCPU<>fCompilerTargetCPU then
       CmdLineParams+=' CPU_TARGET='+fTargetCPU+' CPU_SOURCE='+fTargetCPU;
 
     // create target directory and bundle
@@ -555,9 +554,17 @@ begin
 end;
 
 function TLazarusBuilder.CalcTargets(Flags: TBuildLazarusFlags): TModalResult;
+
+  function IfPairIs(const Var1, Var2, Value1, Value2: string): boolean;
+  begin
+    Result:=((Var1=Value1) or (Var1=Value2))
+        and ((Var2=Value1) or (Var2=Value2));
+  end;
+
 var
   LazDir, TargetLCLPlatform: string;
   DefaultTargetFilename: String;
+  IsCrossCompiling: Boolean;
 begin
   Result:=mrOk;
   fOutputDirRedirected:=False;
@@ -585,17 +592,22 @@ begin
   fTargetFilename:='';
   fUnitOutDir:='';
   CodeToolBoss.FPCDefinesCache.ConfigCaches.GetDefaultCompilerTarget(
-    EnvironmentOptions.GetParsedCompilerFilename,'',fDefaultTargetOS,fDefaultTargetCPU);
-  if fDefaultTargetOS='' then
-    fDefaultTargetOS:=GetCompiledTargetOS;
-  if fDefaultTargetCPU='' then
-    fDefaultTargetCPU:=GetCompiledTargetCPU;
+    EnvironmentOptions.GetParsedCompilerFilename,'',fCompilerTargetOS,fCompilerTargetCPU);
+  if fCompilerTargetOS='' then
+    fCompilerTargetOS:=GetCompiledTargetOS;
+  if fCompilerTargetCPU='' then
+    fCompilerTargetCPU:=GetCompiledTargetCPU;
   fTargetOS:=fProfile.FPCTargetOS;
   fTargetCPU:=fProfile.FPCTargetCPU;
   TargetLCLPlatform:=LCLPlatformDirNames[fProfile.TargetPlatform];
-  if fTargetOS='' then fTargetOS:=fDefaultTargetOS;
-  if fTargetCPU='' then fTargetCPU:=fDefaultTargetCPU;
+  if fTargetOS='' then fTargetOS:=GetCompiledTargetOS;
+  if fTargetCPU='' then fTargetCPU:=GetCompiledTargetCPU;
   LazDir:=EnvironmentOptions.GetParsedLazarusDirectory;
+
+  if fTargetOS<>fCompilerTargetOS then
+    AppendExtraOption('-T'+fTargetOS);
+  if fTargetCPU<>fCompilerTargetCPU then
+    AppendExtraOption('-P'+fTargetCPU);
 
   //DebugLn(['CalcTargets NewTargetOS=',fTargetOS,' NewTargetCPU=',fTargetCPU]);
   if (fProfile.TargetDirectory<>'') then begin
@@ -611,8 +623,20 @@ begin
   end else begin
     // no user defined target directory
     // => find it automatically
-    if (CompareText(fTargetOS,fDefaultTargetOS)<>0)
-    or (CompareText(fTargetCPU,fDefaultTargetCPU)<>0) then
+    IsCrossCompiling:=false;
+    if (CompareText(fTargetOS,GetCompiledTargetOS)<>0)
+    or (CompareText(fTargetCPU,GetCompiledTargetCPU)<>0) then
+    begin
+      IsCrossCompiling:=true;
+      if IfPairIs(fTargetCPU,GetCompiledTargetCPU,'i386','x86_64') then
+      begin
+        if (fTargetOS=GetCompiledTargetOS)
+        or IfPairIs(fTargetOS,GetCompiledTargetOS,'win32','win64') then
+          IsCrossCompiling:=false; // a 32 or 64bit IDE is more a flavor than cross compiling
+      end;
+    end;
+
+    if IsCrossCompiling then
     begin
       // Case 2. crosscompiling the IDE
       // lazarus.exe to <primary config dir>/bin/<fTargetCPU>-<fTargetOS>
@@ -622,7 +646,7 @@ begin
       fUnitOutDir:=AppendPathDelim(GetPrimaryConfigPath)+'units'
                   +PathDelim+fTargetCPU+'-'+fTargetOS+PathDelim+TargetLCLPlatform;
       debugln('CalcTargets Options.TargetOS=',fProfile.FPCTargetOS,' Options.TargetCPU=',
-              fProfile.FPCTargetCPU,' DefaultOS=',fDefaultTargetOS,' DefaultCPU=',fDefaultTargetCPU);
+              fProfile.FPCTargetCPU,' CompilerDefaultOS=',fCompilerTargetOS,' CompilerDefaultCPU=',fCompilerTargetCPU);
     end else begin
       // -> normal compile for this platform
 
