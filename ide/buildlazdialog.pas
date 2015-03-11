@@ -600,8 +600,8 @@ begin
   fTargetOS:=fProfile.FPCTargetOS;
   fTargetCPU:=fProfile.FPCTargetCPU;
   TargetLCLPlatform:=LCLPlatformDirNames[fProfile.TargetPlatform];
-  if fTargetOS='' then fTargetOS:=GetCompiledTargetOS;
-  if fTargetCPU='' then fTargetCPU:=GetCompiledTargetCPU;
+  if fTargetOS='' then fTargetOS:=fCompilerTargetOS;
+  if fTargetCPU='' then fTargetCPU:=fCompilerTargetCPU;
   LazDir:=EnvironmentOptions.GetParsedLazarusDirectory;
 
   if fTargetOS<>fCompilerTargetOS then
