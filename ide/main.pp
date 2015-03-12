@@ -1523,6 +1523,7 @@ begin
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.Create IDE COMPONENTS');{$ENDIF}
 
   // load installed packages
+  TComponentPalette(IDEComponentPalette).PageControl:=MainIDEBar.ComponentPageControl;
   PkgBoss.LoadInstalledPackages;
 
   EditorMacroListViewer.LoadGlobalInfo; // Must be after packages are loaded/registered.
@@ -8575,7 +8576,7 @@ var
   Grid: TOICustomPropertyGrid;
   Row: TOIPropertyGridRow;
 begin
-  TComponentPalette(IDEComponentPalette).DoAfterComponentAdded;
+  IDEComponentPalette.DoAfterComponentAdded;
   if EnvironmentOptions.CreateComponentFocusNameProperty
   and (ObjectInspector1<>nil) then begin
     if (ObjectInspector1.ShowFavorites) and (EnvironmentOptions.SwitchToFavoritesOITab) then

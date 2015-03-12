@@ -25,6 +25,9 @@ interface
 
 uses
   Classes, SysUtils, typinfo, AVL_Tree, fgl,
+  {$IFDEF CustomIDEComps}
+  CustomIDEComps,
+  {$ENDIF}
   Controls, Laz2_XMLCfg, LCLProc;
 
 type
@@ -184,21 +187,6 @@ type
 
   TBaseComponentPalette = class
   private
-    FHandlers: array[TComponentPaletteHandlerType] of TMethodList;
-    FComponentPageClass: TBaseComponentPageClass;
-    FOnBeginUpdate: TNotifyEvent;
-    FOnEndUpdate: TEndUpdatePaletteEvent;
-    FHideControls: boolean;
-    FUpdateLock: integer;
-    fChanged: boolean;
-    fChangeStamp: integer;
-    // Used to find names that differ in character case only.
-    fOrigPageHelper: TStringList;
-    procedure AddHandler(HandlerType: TComponentPaletteHandlerType;
-                         const AMethod: TMethod; AsLast: boolean = false);
-    procedure RemoveHandler(HandlerType: TComponentPaletteHandlerType;
-                            const AMethod: TMethod);
-  protected
     // List of pages, created based on user ordered and original pages.
     fPages: TBaseComponentPageList;
     // List of all components in all pages.
@@ -213,15 +201,25 @@ type
     // Lists have page names. Object holds another StringList for component names.
     fOrigComponentPageCache: TStringList;  // Original
     fUserComponentPageCache: TStringList;  // User ordered
+    // Used to find names that differ in character case only.
+    fOrigPageHelper: TStringList;
+    fHandlers: array[TComponentPaletteHandlerType] of TMethodList;
+    fComponentPageClass: TBaseComponentPageClass;
+    fHideControls: boolean;
+    fUpdateLock: integer;
+    fChanged: boolean;
+    fChangeStamp: integer;
+    procedure AddHandler(HandlerType: TComponentPaletteHandlerType;
+                         const AMethod: TMethod; AsLast: boolean = false);
+    procedure RemoveHandler(HandlerType: TComponentPaletteHandlerType;
+                            const AMethod: TMethod);
     procedure CacheOrigComponentPages;
     function CreatePagesFromUserOrder: Boolean;
-    procedure DoChange; virtual;
-    procedure OnPageAddedComponent({%H-}Component: TRegisteredComponent); virtual;
-    procedure OnPageRemovedComponent({%H-}Page: TBaseComponentPage;
-                                {%H-}Component: TRegisteredComponent); virtual;
-    procedure OnComponentVisibleChanged({%H-}AComponent: TRegisteredComponent); virtual;
-    procedure OnPageVisibleChanged({%H-}APage: TBaseComponentPage); virtual;
-    function VoteCompVisibility(AComponent: TRegisteredComponent): Boolean; virtual;
+    procedure DoChange;
+    procedure DoPageAddedComponent(Component: TRegisteredComponent);
+    procedure DoPageRemovedComponent(Component: TRegisteredComponent);
+    function VoteCompVisibility(AComponent: TRegisteredComponent): Boolean;
+  protected
     function GetSelected: TRegisteredComponent; virtual;
     procedure SetSelected(const AValue: TRegisteredComponent); virtual; abstract;
   public
@@ -235,7 +233,7 @@ type
     procedure EndUpdate;
     function IsUpdateLocked: boolean;
     procedure IncChangeStamp;
-    procedure DoAfterComponentAdded; virtual;
+    procedure DoAfterComponentAdded;
     function IndexOfPageName(const APageName: string): integer;
     function IndexOfPageWithName(const APageName: string): integer;
     function GetPage(const APageName: string; aCaseSens: Boolean = False): TBaseComponentPage;
@@ -243,12 +241,9 @@ type
     procedure RemoveComponent(AComponent: TRegisteredComponent);
     function FindComponent(const CompClassName: string): TRegisteredComponent;
     function CreateNewClassName(const Prefix: string): string;
-    procedure Update(ForceUpdateAll: Boolean); virtual; abstract;
+    procedure Update(ForceUpdateAll: Boolean); virtual;
     procedure IterateRegisteredClasses(Proc: TGetComponentClassEvent);
-    {$IFDEF CustomIDEComps}
-    procedure RegisterCustomIDEComponents(
-                        const RegisterProc: RegisterUnitComponentProc); virtual; abstract;
-    {$ENDIF}
+    // Registered handlers
     procedure RemoveAllHandlersOfObject(AnObject: TObject);
     procedure AddHandlerUpdateVisible(
                         const OnUpdateCompVisibleEvent: TUpdateCompVisibleEvent;
@@ -259,6 +254,9 @@ type
                         const OnComponentAddedEvent: TComponentAddedEvent);
     procedure RemoveHandlerComponentAdded(
                         const OnComponentAddedEvent: TComponentAddedEvent);
+    {$IFDEF CustomIDEComps}
+    procedure RegisterCustomIDEComponents(const RegisterProc: RegisterUnitComponentProc);
+    {$ENDIF}
   public
     property Pages: TBaseComponentPageList read fPages;
     property Comps: TRegisteredComponentList read fComps;
@@ -642,14 +640,14 @@ procedure TBaseComponentPage.SetVisible(const AValue: boolean);
 begin
   if FVisible=AValue then exit;
   FVisible:=AValue;
-  if (FPalette<>nil) then
-    FPalette.OnPageVisibleChanged(Self);
+  //if (FPalette<>nil) then
+  //  FPalette.OnPageVisibleChanged(Self);
 end;
 
 procedure TBaseComponentPage.OnComponentVisibleChanged(AComponent: TRegisteredComponent);
 begin
-  if FPalette<>nil then
-    FPalette.OnComponentVisibleChanged(AComponent);
+  //if FPalette<>nil then
+  //  FPalette.OnComponentVisibleChanged(AComponent);
 end;
 
 { TBaseComponentPalette }
@@ -844,17 +842,17 @@ begin
     Result := Nil;
 end;
 
+function TBaseComponentPalette.GetSelected: TRegisteredComponent;
+begin
+  result := nil;
+end;
+
 procedure TBaseComponentPalette.AddHandler(HandlerType: TComponentPaletteHandlerType;
   const AMethod: TMethod; AsLast: boolean);
 begin
   if FHandlers[HandlerType]=nil then
     FHandlers[HandlerType]:=TMethodList.Create;
   FHandlers[HandlerType].Add(AMethod,AsLast);
-end;
-
-function TBaseComponentPalette.GetSelected: TRegisteredComponent;
-begin
-  result := nil;
 end;
 
 procedure TBaseComponentPalette.RemoveHandler(HandlerType: TComponentPaletteHandlerType;
@@ -871,25 +869,16 @@ begin
     Update(False);
 end;
 
-procedure TBaseComponentPalette.OnPageAddedComponent(Component: TRegisteredComponent);
+procedure TBaseComponentPalette.DoPageAddedComponent(Component: TRegisteredComponent);
 begin
+  fComponentCache.Add(Component);
   DoChange;
 end;
 
-procedure TBaseComponentPalette.OnPageRemovedComponent(Page: TBaseComponentPage;
-  Component: TRegisteredComponent);
+procedure TBaseComponentPalette.DoPageRemovedComponent(Component: TRegisteredComponent);
 begin
+  fComponentCache.Remove(Component);
   DoChange;
-end;
-
-procedure TBaseComponentPalette.OnComponentVisibleChanged(AComponent: TRegisteredComponent);
-begin
-  ;
-end;
-
-procedure TBaseComponentPalette.OnPageVisibleChanged(APage: TBaseComponentPage);
-begin
-  ;
 end;
 
 function TBaseComponentPalette.VoteCompVisibility(AComponent: TRegisteredComponent): Boolean;
@@ -984,7 +973,7 @@ begin
   and (ComparePriority(NewPriority,Comps[InsertIndex].GetPriority)<=0) do
     inc(InsertIndex);
   fComps.Insert(InsertIndex,NewComponent);
-  OnPageAddedComponent(NewComponent);
+  DoPageAddedComponent(NewComponent);
 
   if NewComponent.FOrigPageName = '' then Exit;
 
@@ -1011,7 +1000,7 @@ procedure TBaseComponentPalette.RemoveComponent(AComponent: TRegisteredComponent
 begin
   fComps.Remove(AComponent);
   AComponent.RealPage:=nil;
-  //ToDo: fix OnPageRemovedComponent(AComponent.RealPage,AComponent);
+  //ToDo: fix DoPageRemovedComponent(AComponent);
 end;
 
 function TBaseComponentPalette.FindComponent(const CompClassName: string): TRegisteredComponent;
@@ -1041,6 +1030,14 @@ begin
   end;
 end;
 
+procedure TBaseComponentPalette.Update(ForceUpdateAll: Boolean);
+begin
+  fUserOrder.SortPagesAndCompsUserOrder;
+  CreatePagesFromUserOrder;
+  //for Viewer in Viewers do
+  //  Viewer.Update(ForceUpdateAll);
+end;
+
 procedure TBaseComponentPalette.IterateRegisteredClasses(Proc: TGetComponentClassEvent);
 var
   i: Integer;
@@ -1056,6 +1053,8 @@ begin
   for HandlerType:=Low(HandlerType) to High(HandlerType) do
     FHandlers[HandlerType].RemoveAllMethodsOfObject(AnObject);
 end;
+
+// Add / Remove handlers
 
 procedure TBaseComponentPalette.AddHandlerUpdateVisible(
   const OnUpdateCompVisibleEvent: TUpdateCompVisibleEvent; AsLast: boolean);
@@ -1080,6 +1079,14 @@ procedure TBaseComponentPalette.RemoveHandlerComponentAdded(
 begin
   RemoveHandler(cphtComponentAdded,TMethod(OnComponentAddedEvent));
 end;
+
+{$IFDEF CustomIDEComps}
+procedure TBaseComponentPalette.RegisterCustomIDEComponents(
+  const RegisterProc: RegisterUnitComponentProc);
+begin
+  CustomIDEComps.RegisterCustomComponents(RegisterProc);
+end;
+{$ENDIF}
 
 end.
 

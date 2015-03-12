@@ -3078,7 +3078,6 @@ begin
     PackageGraph.LoadStaticBasePackages;
     LoadStaticCustomPackages;
     LoadAutoInstallPackages;
-    TComponentPalette(IDEComponentPalette).PageControl:=MainIDEBar.ComponentPageControl;
   finally
     IDEComponentPalette.EndUpdate;
   end;

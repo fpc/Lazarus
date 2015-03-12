@@ -41,9 +41,6 @@ uses
   Classes, SysUtils, AVL_Tree, fgl,
   Controls, Forms, Graphics, ComCtrls, Buttons, Menus, ExtCtrls,
   FileUtil, LazFileCache, PropEdits, LCLProc, FormEditingIntf, LazIDEIntf,
-  {$IFDEF CustomIDEComps}
-  CustomIDEComps,
-  {$ENDIF}
   MainBase, LazarusIDEStrConsts, ComponentReg, DesignerProcs, PackageDefs, EnvironmentOpts;
 
 const
@@ -116,10 +113,8 @@ type
     function FindCompByButton(Button: TSpeedButton): TRegisteredComponent;
     function FindPkgCompByButton(Button: TComponent): TPkgComponent;
     function IndexOfPageComponent(AComponent: TComponent): integer;
-    // Component layout :
     procedure ReAlignButtons(aSheet: TCustomPage);
     procedure UpdateNoteBookButtons(ForceUpdateAll: Boolean);
-
     procedure RemoveUnneededPage(aSheet: TCustomPage);
     procedure SetPageControl(const AValue: TPageControl);
     procedure SelectionToolClick(Sender: TObject);
@@ -135,24 +130,15 @@ type
     function GetUnregisteredIcon: TCustomBitmap;
     function GetSelectButtonIcon: TCustomBitmap;
     function SelectAButton(Button: TSpeedButton): boolean;
-  protected
-    procedure OnPageAddedComponent(Component: TRegisteredComponent); override;
-    procedure OnPageRemovedComponent(Page: TBaseComponentPage;
-                                     Component: TRegisteredComponent); override;
-    procedure CheckComponentDesignerVisible(AComponent: TComponent;
-                                            var Invisible: boolean);
+    procedure ComponentWasAdded;
+    procedure CheckComponentDesignerVisible(AComponent: TComponent; var Invisible: boolean);
     procedure SetSelected(const AValue: TRegisteredComponent); override;
     function GetSelected: TRegisteredComponent; override;
   public
     constructor Create;
     destructor Destroy; override;
-    procedure DoAfterComponentAdded; override;
     procedure OnGetNonVisualCompIcon(Sender: TObject;
                                      AComponent: TComponent; var Icon: TCustomBitmap);
-    {$IFDEF CustomIDEComps}
-    procedure RegisterCustomIDEComponents(
-                       const RegisterProc: RegisterUnitComponentProc); override;
-    {$ENDIF}
     procedure Update(ForceUpdateAll: Boolean); override;
   public
     property PageControl: TPageControl read FPageControl write SetPageControl;
@@ -809,21 +795,9 @@ begin
   Handled := True;
 end;
 
-procedure TComponentPalette.OnPageAddedComponent(Component: TRegisteredComponent);
-begin
-  fComponentCache.Add(Component);
-  inherited OnPageAddedComponent(Component);
-end;
-
-procedure TComponentPalette.OnPageRemovedComponent(Page: TBaseComponentPage;
-  Component: TRegisteredComponent);
-begin
-  fComponentCache.Remove(Component);
-  inherited OnPageRemovedComponent(Page, Component);
-end;
-
 procedure TComponentPalette.Update(ForceUpdateAll: Boolean);
 begin
+  inherited Update(ForceUpdateAll);
   {$IFDEF VerboseComponentPalette}
   DebugLn(['TComponentPalette.Update, calling UpdateNoteBookButtons, fUpdatingPageControl=', fUpdatingPageControl]);
   {$ENDIF}
@@ -852,6 +826,8 @@ begin
   fComponentButtons:=TComponentButtonMap.Create;
   fComponentButtons.Sorted:=True;
   OnComponentIsInvisible:=@CheckComponentDesignerVisible;
+  {IDEComponentPalette.} AddHandlerComponentAdded(@ComponentWasAdded);
+  ComponentPageClass := TComponentPage;   // Used by CreatePagesFromUserOrder
 end;
 
 destructor TComponentPalette.Destroy;
@@ -885,13 +861,6 @@ begin
     FPageControl.EnableAlign;
 end;
 
-procedure TComponentPalette.DoAfterComponentAdded;
-begin
-  inherited DoAfterComponentAdded;
-  if not (ssShift in GetKeyShiftState) and (SelectionMode = csmSingle) then
-    Selected := nil;
-end;
-
 function TComponentPalette.GetUnregisteredIcon: TCustomBitmap;
 begin
   if fUnregisteredIcon = nil then 
@@ -917,6 +886,12 @@ begin
   NewComponent := FindCompByButton(Button);
   Selected := NewComponent;
   Result := (Selected = NewComponent);
+end;
+
+procedure TComponentPalette.ComponentWasAdded;
+begin
+  if not (ssShift in GetKeyShiftState) and (SelectionMode = csmSingle) then
+    Selected := nil;
 end;
 
 procedure TComponentPalette.ReAlignButtons(aSheet: TCustomPage);
@@ -966,11 +941,7 @@ begin
   FPageControl.DisableAlign;
   try
     fOldActivePage:=FPageControl.ActivePage;
-    fUserOrder.SortPagesAndCompsUserOrder;
-    ComponentPageClass := TComponentPage;   // Used by CreatePagesFromUserOrder
-    CreatePagesFromUserOrder;
     CreatePopupMenu;
-
     {$IFDEF VerboseComponentPalette}
     DebugLn(['TComponentPalette.UpdateNoteBookButtons: FPageCount before=', FPageControl.PageCount]);
     {$ENDIF}
@@ -991,8 +962,8 @@ begin
     fVisiblePageIndex := 0;
     for i := 0 to Pages.Count-1 do
     begin
-      // fPages and fUserOrder.ComponentPages are now synchronized, same index applies.
-      Assert(Pages[i].PageName=fUserOrder.ComponentPages[i],
+      // Pages and UserOrder.ComponentPages are now synchronized, same index applies.
+      Assert(Pages[i].PageName=UserOrder.ComponentPages[i],
              'UpdateNoteBookButtons: Page names do not match.');
       Pg := TComponentPage(Pages[i]);
       {$IFDEF LCLQt}   // Qt has some problems in moving existing tabs!
@@ -1001,7 +972,7 @@ begin
         Pg.RemoveSheet;
       end;
       {$ENDIF}
-      Pg.InsertVisiblePage(TStringList(fUserOrder.ComponentPages.Objects[i]));
+      Pg.InsertVisiblePage(TStringList(UserOrder.ComponentPages.Objects[i]));
       {$IFDEF VerboseComponentPalette}
       DebugLn(['TComponentPalette.UpdateNoteBookButtons: PageIndex=', i, ' PageName=',Pages[i].PageName]);
       {$ENDIF}
@@ -1072,14 +1043,6 @@ function TComponentPalette.FindPkgCompByButton(Button: TComponent): TPkgComponen
 begin
   Result := FindCompByButton(Button as TSpeedButton) as TPkgComponent;
 end;
-
-{$IFDEF CustomIDEComps}
-procedure TComponentPalette.RegisterCustomIDEComponents(
-  const RegisterProc: RegisterUnitComponentProc);
-begin
-  CustomIDEComps.RegisterCustomComponents(RegisterProc);
-end;
-{$ENDIF}
 
 end.
 
