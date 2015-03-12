@@ -212,9 +212,12 @@ begin
       else if UniCode=TableIndex then
         writeln('  '+IntToStr(UniCode)+'..'+IntToStr(UniCode+j)
                 +': Result:=Unicode;')
-      else
+      else begin
+        s:=IntToStr(TableIndex-UniCode);
+        if s[1]<>'-' then s:='+'+s;
         writeln('  '+IntToStr(UniCode)+'..'+IntToStr(UniCode+j)
-                +': Result:=Unicode-'+IntToStr(UniCode-TableIndex)+';');
+                +': Result:=Unicode'+s+';');
+      end;
       inc(i,j);
     end;
     inc(i);
