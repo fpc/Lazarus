@@ -43,5 +43,10 @@ Score:=10;
 Targets:='netware';
 Add('rtl/netwlibc');
 
+// jvm uses the java system.pp on both android and java
+Score:=10;
+Targets:='jvm';
+Add('rtl/java');
+
 // end.
 
