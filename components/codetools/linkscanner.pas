@@ -2183,7 +2183,7 @@ function TLinkScanner.UpdateNeeded(
    3. unit source changed
    4. one of its include files changed
    5. init values changed (e.g. initial compiler defines)
-   7. a missing include file can now be found
+   6. a missing include file can now be found
 }
 var i: integer;
   SrcLog: TSourceLog;
@@ -2235,6 +2235,8 @@ begin
   end;
 
   // check initvalues
+  //if ExtractFileNameOnly(MainFilename)='androidr14' then
+  //  debugln(['TLinkScanner.UpdateNeeded FGlobalInitValuesChangeStep=',FGlobalInitValuesChangeStep,' CurInitValuesChangeStep=',CurInitValuesChangeStep]);
   if FGlobalInitValuesChangeStep<>CurInitValuesChangeStep then begin
     FGlobalInitValuesChangeStep:=CurInitValuesChangeStep;
     if Assigned(FOnGetInitValues) then begin
@@ -2243,7 +2245,8 @@ begin
       and (NewInitValuesChangeStep<>FInitValuesChangeStep)
       and (not FInitValues.Equals(NewInitValues)) then begin
         {$IFDEF VerboseUpdateNeeded}
-        DebugLn(['TLinkScanner.UpdateNeeded because InitValues changed ',MainFilename]);
+        //if ExtractFileNameOnly(MainFilename)='androidr14' then
+          DebugLn(['TLinkScanner.UpdateNeeded because InitValues changed ',MainFilename]);
         {$ENDIF}
         Include(FStates,lssInitValuesChanged);
         exit;
