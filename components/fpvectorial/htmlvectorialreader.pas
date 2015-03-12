@@ -32,7 +32,7 @@ type
     //
     function ReadEntityFromNode(ANode: TDOMNode; AData: TvTextPageSequence; ADoc: TvVectorialDocument): TvEntity;
     function ReadHeaderFromNode(ANode: TDOMNode; AData: TvTextPageSequence; ADoc: TvVectorialDocument): TvEntity;
-    function ReadParagraphFromNode(ANode: TDOMNode; AData: TvTextPageSequence; ADoc: TvVectorialDocument): TvEntity;
+    procedure ReadParagraphFromNode(ADest: TvParagraph; ANode: TDOMNode; AData: TvTextPageSequence; ADoc: TvVectorialDocument);
     function ReadSVGFromNode(ANode: TDOMNode; AData: TvTextPageSequence; ADoc: TvVectorialDocument): TvEntity;
     function ReadMathFromNode(ANode: TDOMNode; AData: TvTextPageSequence; ADoc: TvVectorialDocument): TvEntity;
     function ReadTableFromNode(ANode: TDOMNode; AData: TvTextPageSequence; ADoc: TvVectorialDocument): TvEntity;
@@ -77,12 +77,18 @@ function TvHTMLVectorialReader.ReadEntityFromNode(ANode: TDOMNode;
   AData: TvTextPageSequence; ADoc: TvVectorialDocument): TvEntity;
 var
   lEntityName: DOMString;
+  lPara: TvParagraph;
 begin
   Result := nil;
   lEntityName := LowerCase(ANode.NodeName);
   case lEntityName of
     'h1', 'h2', 'h3', 'h4', 'h5', 'h6': Result := ReadHeaderFromNode(ANode, AData, ADoc);
-    'p': Result := ReadParagraphFromNode(ANode, AData, ADoc);
+    'p':
+    begin
+      lPara := AData.AddParagraph();
+      ReadParagraphFromNode(lPara, ANode, AData, ADoc);
+      Result := nil;
+    end;
     'svg': Result := ReadSVGFromNode(ANode, AData, ADoc);
     'math': Result := ReadMathFromNode(ANode, AData, ADoc);
     'table': Result := ReadTableFromNode(ANode, AData, ADoc);
@@ -114,18 +120,93 @@ begin
   end;
 end;
 
-function TvHTMLVectorialReader.ReadParagraphFromNode(ANode: TDOMNode;
-  AData: TvTextPageSequence; ADoc: TvVectorialDocument): TvEntity;
+procedure TvHTMLVectorialReader.ReadParagraphFromNode(ADest: TvParagraph; ANode: TDOMNode;
+  AData: TvTextPageSequence; ADoc: TvVectorialDocument);
 var
-  CurParagraph: TvParagraph;
   lText: TvText;
   lTextStr: string;
+  lCurNode: TDOMNode;
+  lNodeName, lNodeValue, lAttrName, lAttrValue: DOMString;
+  lCurAttr: TDOMNode;
+  lRasterImage: TvRasterImage;
+  i: Integer;
+  lWidth, lHeight: Double;
 begin
-  Result := nil;
-  CurParagraph := AData.AddParagraph();
-  CurParagraph.Style := ADoc.StyleTextBody;
-  lTextStr := ANode.FirstChild.NodeValue;
-  lText := CurParagraph.AddText(lTextStr);
+  ADest.Style := ADoc.StyleTextBody;
+
+  lCurNode := ANode.FirstChild;
+  while Assigned(lCurNode) do
+  begin
+    lNodeName := lCurNode.NodeName;
+    lNodeValue := lCurNode.NodeValue;
+
+    if lCurNode is TDOMText then
+    begin
+      lTextStr := lNodeValue;
+      lText := ADest.AddText(lTextStr);
+      lCurNode := lCurNode.NextSibling;
+      Continue;
+    end;
+
+    case lNodeName of
+    // <image width="100" height="100" xlink:href="data:image/png;base64,UgAAA....QSK5CYII="/>
+    // <img src="images/noimage.gif" width="100" height="100" alt="No image" />
+    'img', 'image':
+    begin
+      for i := 0 to lCurNode.Attributes.Length - 1 do
+      begin
+        lRasterImage := nil;
+        lAttrName := lCurNode.Attributes.Item[i].NodeName;
+        lAttrValue := lCurNode.Attributes.Item[i].NodeValue;
+
+        case lAttrName of
+        'src':
+        begin
+          lAttrValue := lCurAttr.NodeValue;
+          lAttrValue := ExtractFilePath(FFilename) + lAttrValue;
+
+          if TvVectorialDocument.GetFormatFromExtension(lAttrValue, False) = vfUnknown then
+          begin
+            if not FileExists(lAttrValue) then Continue;
+
+            lRasterImage := ADest.AddRasterImage();
+            lRasterImage.CreateImageFromFile(lAttrValue);
+          end
+          else
+          begin
+            {lRasterImage := ADest.AddRasterImage()
+            lRasterImage.CreateImageFromFile(lAttrValue);}
+          end;
+        end;
+        'xlink:href':
+        begin
+          {lAttrValue := lCurAttr.NodeValue;
+          lRasterImage := ADest.AddRasterImage();
+          lAttrValue := ExtractFilePath(FFilename) + lAttrValue;
+          lRasterImage.CreateImageFromFile(lAttrValue);}
+        end;
+        'width':
+        begin
+          lWidth := StrToInt(lAttrValue);
+        end;
+        'height':
+        begin
+          lHeight := StrToInt(lAttrValue);
+        end;
+        end;
+      end;
+
+      if lRasterImage <> nil then
+      begin
+        lRasterImage.Width := lWidth;
+        lRasterImage.Height := lHeight;
+      end;
+
+    end;
+    end;
+
+    lCurNode := lCurNode.NextSibling;
+  end;
 end;
 
 function TvHTMLVectorialReader.ReadSVGFromNode(ANode: TDOMNode;
@@ -217,7 +298,7 @@ end;
 function TvHTMLVectorialReader.ReadTableRowNode(ATable: TvTable; ANode: TDOMNode;
   AData: TvTextPageSequence; ADoc: TvVectorialDocument): TvEntity;
 var
-  lCurNode, lCurSubnode: TDOMNode;
+  lCurNode: TDOMNode;
   lNodeName, lNodeValue: DOMString;
   CurRow: TvTableRow;
   CurCell: TvTableCell;
@@ -242,8 +323,9 @@ begin
     'td':
     begin
       CurCell := CurRow.AddCell();
+
       CurCellPara := CurCell.AddParagraph();
-      CurCellPara.AddText(GetTextContentFromNode(lCurNode));
+      Self.ReadParagraphFromNode(CurCellPara, lCurNode, AData, ADoc);
     end;
     end;
 

@@ -718,6 +718,7 @@ type
     Width, Height: Double;
     destructor Destroy; override;
     procedure CreateRGB888Image(AWidth, AHeight: Cardinal);
+    procedure CreateImageFromFile(AFilename: string);
     procedure InitializeWithConvertionOf3DPointsToHeightMap(APage: TvVectorialPage; AWidth, AHeight: Integer);
     procedure Render(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
@@ -965,6 +966,7 @@ type
     destructor Destroy; override;
     function AddText(AText: string): TvText;
     function AddField(AKind : TvFieldKind): TvField;
+    function AddRasterImage: TvRasterImage;
     procedure CalculateBoundingBox(ADest: TFPCustomCanvas; var ALeft, ATop, ARight, ABottom: Double); override;
     function TryToSelect(APos: TPoint; var ASubpart: Cardinal): TvFindEntityResult; override;
     procedure Render(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
@@ -1224,7 +1226,7 @@ type
     procedure ReadFromStream(AStream: TStream; AFormat: TvVectorialFormat);
     procedure ReadFromStrings(AStrings: TStrings; AFormat: TvVectorialFormat);
     procedure ReadFromXML(ADoc: TXMLDocument; AFormat: TvVectorialFormat);
-    class function GetFormatFromExtension(AFileName: string): TvVectorialFormat;
+    class function GetFormatFromExtension(AFileName: string; ARaiseException: Boolean = True): TvVectorialFormat;
     function  GetDetailedFileFormat(): string;
     procedure GuessDocumentSize();
     procedure GuessGoodZoomLevel(AScreenSize: Integer = 500);
@@ -1432,6 +1434,7 @@ type
 
   TvCustomVectorialReader = class
   protected
+    FFilename: string;
     class function GetTextContentsFromNode(ANode: TDOMNode): DOMString;
   public
     { General reading methods }
@@ -4528,6 +4531,25 @@ begin
 {$endif}
 end;
 
+procedure TvRasterImage.CreateImageFromFile(AFilename: string);
+{$ifdef USE_LCL_CANVAS}
+var
+  AImage: TLazIntfImage;
+  lRawImage: TRawImage;
+{$endif}
+begin
+{$ifdef USE_LCL_CANVAS}
+  lRawImage.Init;
+  lRawImage.Description.Init_BPP32_A8R8G8B8_BIO_TTB(0,0);
+  lRawImage.CreateData(false);
+  AImage := TLazIntfImage.Create(0,0);
+  AImage.SetRawImage(lRawImage);
+  AImage.LoadFromFile(AFilename);
+
+  RasterImage := AImage;
+{$endif}
+end;
+
 procedure TvRasterImage.InitializeWithConvertionOf3DPointsToHeightMap(APage: TvVectorialPage; AWidth, AHeight: Integer);
 var
   lEntity: TvEntity;
@@ -4635,6 +4657,9 @@ begin
     lBitmap.Free;
   end;
   {$endif}
+
+  CalcEntityCanvasMinMaxXY(ARenderInfo, lFinalX, lFinalY);
+  CalcEntityCanvasMinMaxXY(ARenderInfo, lFinalX+lFinalW, lFinalY+lFinalH);
 
   //ADest.Draw(lFinalX, lFinalY, RasterImage); doesnt work
 end;
@@ -5773,6 +5798,12 @@ begin
   AddEntity(Result);
 end;
 
+function TvParagraph.AddRasterImage: TvRasterImage;
+begin
+  Result := TvRasterImage.Create(FPage);
+  AddEntity(Result);
+end;
+
 procedure TvParagraph.CalculateBoundingBox(ADest: TFPCustomCanvas; var ALeft,
   ATop, ARight, ABottom: Double);
 var
@@ -5880,6 +5911,18 @@ begin
       lText.Y := OldTextY;
       if lResetOldStyle then
         TvText(lEntity).Style := nil;
+    end
+    else
+    begin
+      OldTextX := lText.X;
+      OldTextY := lText.Y;
+      lEntity.X := CoordToCanvasX(lEntity.X + X + lCurWidth);
+      lEntity.Y := lEntity.Y + Y;
+
+      lEntity.Render(ADest, lEntityRenderInfo, ADestX, ADestY, AMulX, AMuly);
+
+      lEntity.X := OldTextX;
+      lEntity.Y := OldTextY;
     end;
 
     MergeRenderInfo(lEntityRenderInfo, ARenderInfo);
@@ -7262,8 +7305,8 @@ begin
   end;
 end;
 
-class function TvVectorialDocument.GetFormatFromExtension(AFileName: string
-  ): TvVectorialFormat;
+class function TvVectorialDocument.GetFormatFromExtension(AFileName: string;
+  ARaiseException: Boolean = True): TvVectorialFormat;
 var
   lExt: string;
 begin
@@ -7283,8 +7326,10 @@ begin
   else if AnsiCompareText(lExt, STR_ODG_EXTENSION) = 0 then Result := vfODG
   else if AnsiCompareText(lExt, STR_DOCX_EXTENSION) = 0 then Result := vfDOCX
   else if AnsiCompareText(lExt, STR_HTML_EXTENSION) = 0 then Result := vfHTML
+  else if ARaiseException then
+    raise Exception.Create('TvVectorialDocument.GetFormatFromExtension: The extension (' + lExt + ') doesn''t match any supported formats.')
   else
-    raise Exception.Create('TvVectorialDocument.GetFormatFromExtension: The extension (' + lExt + ') doesn''t match any supported formats.');
+    Result := vfUnknown;
 end;
 
 function  TvVectorialDocument.GetDetailedFileFormat(): string;
@@ -7739,6 +7784,7 @@ procedure TvCustomVectorialReader.ReadFromFile(AFileName: string; AData: TvVecto
 var
   FileStream: TFileStream;
 begin
+  FFilename := AFilename;
   FileStream := TFileStream.Create(AFileName, fmOpenRead or fmShareDenyNone);
   try
     ReadFromStream(FileStream, AData);
