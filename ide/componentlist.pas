@@ -85,9 +85,10 @@ type
     FClassList: TStringList;
     FKeepSelected: Boolean;
     procedure ClearSelection;
+    procedure SelectionWasChanged;
     procedure ComponentWasAdded;
     procedure DoComponentInheritence(Comp: TRegisteredComponent);
-    procedure UpdateComponentSelection;
+    procedure UpdateComponents;
     procedure UpdateButtonState;
   protected
     procedure UpdateShowing; override;
@@ -129,10 +130,11 @@ begin
   PageControl.ActivePage := TabSheetList;
   if Assigned(IDEComponentPalette) then
   begin
-    UpdateComponentSelection;
+    UpdateComponents;
     with ListTree do
       Selected := Items.GetFirstNode;
     TreeFilterEd.InvalidateFilter;
+    IDEComponentPalette.AddHandlerSelectionChanged(@SelectionWasChanged);
     IDEComponentPalette.AddHandlerComponentAdded(@ComponentWasAdded);
   end;
 end;
@@ -165,7 +167,7 @@ end;
 procedure TComponentListForm.FormActivate(Sender: TObject);
 begin
   if Assigned(IDEComponentPalette) and (IDEComponentPalette.ChangeStamp<>PrevChangeStamp) then
-    UpdateComponentSelection;
+    UpdateComponents;
 end;
 
 procedure TComponentListForm.ClearSelection;
@@ -175,24 +177,46 @@ begin
   InheritanceTree.Selected := Nil;
 end;
 
+procedure SelectTreeComp(aTree: TTreeView);
+var
+  Node: TTreeNode;
+begin
+  with IDEComponentPalette do
+    if Assigned(Selected) then
+      Node := aTree.Items.FindNodeWithText(Selected.ComponentClass.ClassName)
+    else
+      Node := Nil;
+  aTree.Selected := Node;
+end;
+
+procedure TComponentListForm.SelectionWasChanged;
+begin
+  // ToDo: Select the component in active treeview.
+  if ListTree.IsVisible then
+    SelectTreeComp(ListTree)
+  else if PalletteTree.IsVisible then
+    SelectTreeComp(PalletteTree)
+  else if InheritanceTree.IsVisible then
+    SelectTreeComp(InheritanceTree)
+end;
+
+function GetSelectedTreeComp(aTree: TTreeView): TRegisteredComponent;
+begin
+  if Assigned(aTree.Selected) then
+    Result := TRegisteredComponent(aTree.Selected.Data)
+  else
+    Result := nil;
+end;
+
 function TComponentListForm.GetSelectedComponent: TRegisteredComponent;
 begin
-  Result:=nil;
+  Result := nil;
   if ListTree.IsVisible then
-  begin
-    if Assigned(ListTree.Selected) then
-      Result := TRegisteredComponent(ListTree.Selected.Data);
-  end
+    Result := GetSelectedTreeComp(ListTree)
   else if PalletteTree.IsVisible then
-  begin
-    if Assigned(PalletteTree.Selected) then
-      Result := TRegisteredComponent(PalletteTree.Selected.Data);
-  end
+    Result := GetSelectedTreeComp(PalletteTree)
   else if InheritanceTree.IsVisible then
-  begin
-    if Assigned(InheritanceTree.Selected) then
-      Result := TRegisteredComponent(InheritanceTree.Selected.Data);
-  end;
+    Result := GetSelectedTreeComp(InheritanceTree)
 end;
 
 procedure TComponentListForm.ComponentWasAdded;
@@ -268,7 +292,7 @@ begin
   end;
 end;
 
-procedure TComponentListForm.UpdateComponentSelection;
+procedure TComponentListForm.UpdateComponents;
 // Fill all three tabsheets: Flat list, Palette layout and Component inheritence.
 var
   Pg: TBaseComponentPage;
