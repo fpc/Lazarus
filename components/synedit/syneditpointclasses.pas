@@ -340,6 +340,7 @@ type
     property SkipTabs: Boolean read FSkipTabs write SetSkipTabs;
     property AllowPastEOL: Boolean read FAllowPastEOL write SetAllowPastEOL;
     property KeepCaretX: Boolean read FKeepCaretX write SetKeepCaretX;
+    property KeepCaretXPos: Integer read FLastCharPos write FLastCharPos;
     property MaxLeftChar: TMaxLeftCharFunc read FMaxLeftChar write FMaxLeftChar;
   end;
 
