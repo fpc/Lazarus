@@ -1869,7 +1869,7 @@ begin
 
   // get default targets
   if Rules=nil then Rules:=DefaultFPCSourceRules;
-  Targets:=Rules.GetDefaultTargets(TargetOS,TargetOS);
+  Targets:=Rules.GetDefaultTargets(TargetOS,TargetCPU);
 
   TargetRules:=nil;
   Links:=TAVLTree.Create(@CompareUnitNameLinks);
