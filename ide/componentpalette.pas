@@ -40,8 +40,9 @@ interface
 uses
   Classes, SysUtils, AVL_Tree, fgl,
   Controls, Forms, Graphics, ComCtrls, Buttons, Menus, ExtCtrls,
-  FileUtil, LazFileCache, PropEdits, LCLProc, FormEditingIntf, LazIDEIntf,
-  MainBase, LazarusIDEStrConsts, ComponentReg, DesignerProcs, PackageDefs, EnvironmentOpts;
+  FileUtil, LazFileCache, PropEdits, LCLProc, MainBase, LazarusIDEStrConsts,
+  FormEditingIntf, LazIDEIntf, IDEImagesIntf,
+  ComponentReg, DesignerProcs, PackageDefs, EnvironmentOpts;
 
 const
   CompPalSelectionToolBtnPrefix = 'PaletteSelectBtn';
@@ -92,6 +93,7 @@ type
     procedure OpenPackageClicked(Sender: TObject);
     procedure OpenUnitClicked(Sender: TObject);
     procedure ComponentListClicked(Sender: TObject);
+    procedure OptionsClicked(Sender: TObject);
     procedure PalettePopupMenuPopup(Sender: TObject);
     procedure PopupMenuPopup(Sender: TObject);
   private
@@ -149,7 +151,7 @@ type
 function CompareControlsWithTag(Control1, Control2: Pointer): integer;
 
 implementation
-
+uses componentpalette_options;
 {$R ../images/components_images.res}
 {$DEFINE USE_PageIndex}
 
@@ -561,6 +563,11 @@ begin
   MainIDE.DoShowComponentList;
 end;
 
+procedure TComponentPalette.OptionsClicked(Sender: TObject);
+begin
+  MainIDE.DoOpenIDEOptions(TCompPaletteOptionsFrame, '', [], []);
+end;
+
 procedure TComponentPalette.PalettePopupMenuPopup(Sender: TObject);
 begin
   ;
@@ -599,7 +606,8 @@ end;
 
 procedure TComponentPalette.SetPageControl(const AValue: TPageControl);
 var
-  MenuItem: TMenuItem;
+  miCompList,
+  miOptions: TMenuItem;
 begin
   if FPageControl=AValue then exit;
   ClearButtons;
@@ -611,13 +619,22 @@ begin
       PalettePopupMenu.OnPopup:=@PalettePopupMenuPopup;
       PalettePopupMenu.Name:='PalettePopupMenu';
       // Component List
-      MenuItem:=TMenuItem.Create(PalettePopupMenu);
-      with MenuItem do begin
+      PalettePopupMenu.Images := IDEImages.Images_16;
+      miCompList:=TMenuItem.Create(PalettePopupMenu);
+      with miCompList do begin
         Name:='ComponentListMenuItem';
         Caption:=lisCompPalComponentList;
         OnClick:=@ComponentListClicked;
       end;
-      PalettePopupMenu.Items.Add(MenuItem);
+      PalettePopupMenu.Items.Add(miCompList);
+      miOptions:=TMenuItem.Create(PalettePopupMenu);
+      with miOptions do begin
+        Name:='OptionsMenuItem';
+        Caption:=dlgOIOptions;
+        OnClick:=@OptionsClicked;
+        ImageIndex := IDEImages.LoadImage(16, 'menu_environment_options');
+      end;
+      PalettePopupMenu.Items.Add(miOptions);
     end;
     FPageControl.PopupMenu:=PalettePopupMenu;
   end;
