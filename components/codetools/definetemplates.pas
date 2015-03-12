@@ -568,7 +568,7 @@ type
     function CreateFPCTemplate(const CompilerPath, CompilerOptions,
                                TestPascalFile: string;
                                out UnitSearchPath, TargetOS,
-                               TargetProcessor: string;
+                               aTargetCPU: string;
                                Owner: TObject): TDefineTemplate;
     function GetFPCVerFromFPCTemplate(Template: TDefineTemplate;
                         out FPCVersion, FPCRelease, FPCPatch: integer): boolean;
@@ -1994,15 +1994,15 @@ begin
     ctsDefaultFPCSource2OperatingSystem,
     ExternalMacroStart+'SrcOS2',SrcOS2,da_DefineRecurse);
   Result.AddChild(NewDefTempl);
-  // define #TargetProcessor
+  // define #TargetCPU
   TargetCPU:=Config.RealTargetCPU;
   if TargetCPU='' then
     TargetCPU:=Config.TargetCPU;
   if TargetCPU='' then
     TargetCPU:=GetCompiledTargetCPU;
-  NewDefTempl:=TDefineTemplate.Create('Define TargetProcessor',
+  NewDefTempl:=TDefineTemplate.Create('Define TargetCPU',
     ctsDefaultFPCTargetProcessor,
-    ExternalMacroStart+'TargetProcessor',TargetCPU,
+    TargetCPUMacroName,TargetCPU,
     da_DefineRecurse);
   Result.AddChild(NewDefTempl);
 
@@ -2043,7 +2043,7 @@ end;
 function CreateFPCSourceTemplate(FPCSrcDir: string; Owner: TObject
   ): TDefineTemplate;
 var
-  Dir, SrcOS, SrcOS2, TargetProcessor,
+  Dir, SrcOS, SrcOS2, aTargetCPU,
   IncPathMacro: string;
   DS: char; // dir separator
 
@@ -2072,8 +2072,8 @@ var
       IncludePathMacroName,IncPathMacro+';inc',
       da_Define));
     RTLSrcOSDir.AddChild(TDefineTemplate.Create('Include Path',
-      'include path to TargetProcessor directories',
-      IncludePathMacroName,IncPathMacro+';'+TargetProcessor,
+      'include path to TargetCPU directories',
+      IncludePathMacroName,IncPathMacro+';'+aTargetCPU,
       da_Define));
     ParentDefTempl.AddChild(IfTargetOSIsNotSrcOS);
 
@@ -2086,8 +2086,8 @@ var
       SrcOS2,da_Directory);
     IfTargetOSIsNotSrcOS2.AddChild(RTLSrcOS2Dir);
     RTLSrcOS2Dir.AddChild(TDefineTemplate.Create('Include Path',
-      'include path to TargetProcessor directories',
-      IncludePathMacroName,IncPathMacro+';'+TargetProcessor,
+      'include path to TargetCPU directories',
+      IncludePathMacroName,IncPathMacro+';'+aTargetCPU,
       da_DefineRecurse));
     ParentDefTempl.AddChild(IfTargetOSIsNotSrcOS2);
   end;
@@ -2126,8 +2126,8 @@ begin
     Dir:=AppendPathDelim(FPCSrcDir);
     SrcOS:='$('+ExternalMacroStart+'SrcOS)';
     SrcOS2:='$('+ExternalMacroStart+'SrcOS2)';
-    TargetProcessor:='$('+ExternalMacroStart+'TargetProcessor)';
-    IncPathMacro:='$('+ExternalMacroStart+'IncPath)';
+    aTargetCPU:=TargetCPUMacro;
+    IncPathMacro:=IncludePathMacro;
 
     Result:=TDefineTemplate.Create(StdDefTemplFPCSrc,
        Format(ctsFreePascalSourcesPlusDesc,['RTL, FCL, Packages, Compiler']),
@@ -2162,12 +2162,12 @@ begin
       +';'+Dir+'rtl'+DS+SrcOS+DS
       +';'+Dir+'rtl'+DS+TargetOSMacro+DS
       +';'+Dir+'rtl'+DS+SrcOS2+DS
-      +';'+Dir+'rtl'+DS+SrcOS2+DS+TargetProcessor
-      +';'+Dir+'rtl'+DS+TargetProcessor+DS
-      +';'+Dir+'rtl'+DS+TargetOSMacro+DS+TargetProcessor+DS;
+      +';'+Dir+'rtl'+DS+SrcOS2+DS+aTargetCPU
+      +';'+Dir+'rtl'+DS+aTargetCPU+DS
+      +';'+Dir+'rtl'+DS+TargetOSMacro+DS+aTargetCPU+DS;
     RTLDir.AddChild(TDefineTemplate.Create('Include Path',
       Format(ctsIncludeDirectoriesPlusDirs,
-      ['objpas, inc,'+TargetProcessor+','+SrcOS]),
+      ['objpas, inc,'+aTargetCPU+','+SrcOS]),
       IncludePathMacroName,s,da_DefineRecurse));
 
     // if solaris or darwin or beos then define FPC_USE_LIBC
@@ -2212,16 +2212,16 @@ begin
                                      TargetOSMacro,da_Directory);
     s:=IncPathMacro
       +';'+Dir+'rtl'+DS+TargetOSMacro+DS+SrcOS+'inc' // e.g. rtl/win32/inc/
-      +';'+Dir+'rtl'+DS+TargetOSMacro+DS+TargetProcessor+DS
+      +';'+Dir+'rtl'+DS+TargetOSMacro+DS+aTargetCPU+DS
       ;
     RTLOSDir.AddChild(TDefineTemplate.Create('Include Path',
-      Format(ctsIncludeDirectoriesPlusDirs,[TargetProcessor]),
+      Format(ctsIncludeDirectoriesPlusDirs,[aTargetCPU]),
       IncludePathMacroName,
       s,da_DefineRecurse));
     s:=SrcPathMacro
       +';'+Dir+'rtl'+DS+'objpas'+DS;
     RTLOSDir.AddChild(TDefineTemplate.Create('Src Path',
-      Format(ctsAddsDirToSourcePath,[TargetProcessor]),
+      Format(ctsAddsDirToSourcePath,[aTargetCPU]),
       ExternalMacroStart+'SrcPath',s,da_DefineRecurse));
     RTLDir.AddChild(RTLOSDir);
 
@@ -2411,7 +2411,7 @@ begin
        da_Directory);
     CompilerDir.AddChild(TDefineTemplate.Create('SrcPath','SrcPath addition',
       ExternalMacroStart+'SrcPath',
-      SrcPathMacro+';'+Dir+TargetProcessor,da_Define));
+      SrcPathMacro+';'+Dir+aTargetCPU,da_Define));
     CompilerDir.AddChild(TDefineTemplate.Create('IncPath','IncPath addition',
       IncludePathMacroName,
       IncPathMacro+';'+Dir+'compiler',da_DefineRecurse));
@@ -5090,7 +5090,7 @@ end;
 
 function TDefinePool.CreateFPCTemplate(
   const CompilerPath, CompilerOptions, TestPascalFile: string;
-  out UnitSearchPath, TargetOS, TargetProcessor: string;
+  out UnitSearchPath, TargetOS, aTargetCPU: string;
   Owner: TObject): TDefineTemplate;
 // create symbol definitions for the freepascal compiler
 // To get reliable values the compiler itself is asked for
@@ -5228,7 +5228,7 @@ begin
   UnitSearchPath:='';
   TargetOS:='';
   SrcOS:='';
-  TargetProcessor:='';
+  aTargetCPU:='';
   if (CompilerPath='') or (not FileIsExecutable(CompilerPath)) then exit;
   LastDefTempl:=nil;
   // find all initial compiler macros and all unit paths
@@ -5352,10 +5352,10 @@ begin
       i:=1;
       while i<=OutLen do begin
         if Buf[i] in [#10,#13] then begin
-          TargetProcessor:=copy(Buf,1,i-1);
-          NewDefTempl:=TDefineTemplate.Create('Define TargetProcessor',
+          aTargetCPU:=copy(Buf,1,i-1);
+          NewDefTempl:=TDefineTemplate.Create('Define TargetCPU',
             ctsDefaultFPCTargetProcessor,
-            ExternalMacroStart+'TargetProcessor',TargetProcessor,
+            TargetCPUMacroName,aTargetCPU,
             da_DefineRecurse);
           AddTemplate(NewDefTempl);
           break;
@@ -5466,7 +5466,7 @@ function TDefinePool.CreateFPCSrcTemplate(
   UnitLinkListValid: boolean; var UnitLinkList: string;
   Owner: TObject): TDefineTemplate;
 var
-  Dir, SrcOS, SrcOS2, TargetProcessor, UnitLinks: string;
+  Dir, SrcOS, SrcOS2, TargetCPU, UnitLinks: string;
   UnitTree: TAVLTree; // tree of TDefTemplUnitNameLink
   IncPathMacro, DefaultSrcOS, DefaultSrcOS2: string;
   ProgressID: integer;
@@ -5584,7 +5584,7 @@ var
           // replace processor type
           for i:=Low(FPCProcessorNames) to High(FPCProcessorNames) do
             if ReplaceDir(FPCProcessorNames[i],DefaultProcessorName,
-              TargetProcessor)
+              TargetCPU)
             then
               break;
         end;
@@ -5949,8 +5949,8 @@ var
       IncludePathMacroName,IncPathMacro+';inc',
       da_Define));
     RTLSrcOSDir.AddChild(TDefineTemplate.Create('Include Path',
-      'include path to TargetProcessor directories',
-      IncludePathMacroName,IncPathMacro+';'+TargetProcessor,
+      'include path to TargetCPU directories',
+      IncludePathMacroName,IncPathMacro+';'+TargetCPU,
       da_Define));
     ParentDefTempl.AddChild(IfTargetOSIsNotSrcOS);
 
@@ -5963,8 +5963,8 @@ var
       SrcOS2,da_Directory);
     IfTargetOSIsNotSrcOS2.AddChild(RTLSrcOS2Dir);
     RTLSrcOS2Dir.AddChild(TDefineTemplate.Create('Include Path',
-      'include path to TargetProcessor directories',
-      IncludePathMacroName,IncPathMacro+';'+TargetProcessor,
+      'include path to TargetCPU directories',
+      IncludePathMacroName,IncPathMacro+';'+TargetCPU,
       da_DefineRecurse));
     ParentDefTempl.AddChild(IfTargetOSIsNotSrcOS2);
   end;
@@ -5986,8 +5986,8 @@ begin
     Dir:=AppendPathDelim(FPCSrcDir);
     SrcOS:='$('+ExternalMacroStart+'SrcOS)';
     SrcOS2:='$('+ExternalMacroStart+'SrcOS2)';
-    TargetProcessor:='$('+ExternalMacroStart+'TargetProcessor)';
-    IncPathMacro:='$('+ExternalMacroStart+'IncPath)';
+    TargetCPU:=TargetCPUMacro;
+    IncPathMacro:=IncludePathMacro;
     DefaultSrcOS:=GetDefaultSrcOSForTargetOS(DefaultTargetOS);
     DefaultSrcOS2:=GetDefaultSrcOS2ForTargetOS(DefaultTargetOS);
 

@@ -42,7 +42,7 @@ uses
   {$IFDEF MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, FileProcs, CodeToolsStrConsts, CodeTree, CodeAtom,
+  Classes, SysUtils, FileProcs, CodeToolsStrConsts, CodeTree, CodeAtom, ExprEval,
   CustomCodeTool, MultiKeyWordListTool, KeywordFuncLists, BasicCodeTools,
   CodeToolsStructs, LinkScanner, CodeCache, AVL_Tree;
 
@@ -140,6 +140,9 @@ type
     // parsing
     FLastCompilerMode: TCompilerMode;
     FLastCompilerModeSwitches: TCompilerModeSwitches;
+    FLastDefineStatic: Boolean;
+    FLastDefineEmbedded: Boolean;
+    FLastDefineTargetCPU: String;
     procedure FetchScannerSource(Range: TLinkScannerRange); override;
     // sections
     function KeyWordFuncSection: boolean;
@@ -513,6 +516,7 @@ end;
 function TPascalParserTool.EndOfSourceExpected: boolean;
 begin
   Result:=false;
+  //debugln(['TPascalParserTool.EndOfSourceExpected ',MainFilename,' Atom=',GetAtom,' ',CleanPosToStr(CurPos.StartPos,true)]);
   SaveRaiseEndOfSourceExpected;
 end;
 
@@ -598,7 +602,8 @@ begin
       CurNode:=Tree.Root;
       if CurNode<>nil then
         while CurNode.NextBrother<>nil do CurNode:=CurNode.NextBrother;
-      //debugln(['TPascalParserTool.BuildTree CurNode=',CurNode.DescAsString]);
+      //if (ExtractFileNameOnly(MainFilename)='androidr14') and (CurNode<>nil) then
+        //debugln(['TPascalParserTool.BuildTree CurNode=',CurNode.DescAsString]);
       if (CurNode=nil)
       or ((CurNode.Desc in AllSourceTypes) and (CurNode.FirstChild=nil)) then begin
         // parse source from the beginning
@@ -782,7 +787,8 @@ begin
 
       ReadNextAtom;
       {$IFDEF VerboseUpdateNeeded}
-      debugln(['TPascalParserTool.BuildTree ScannedRange=',dbgs(ScannedRange),' CurNode=',CurNode.DescAsString,' first atom=',GetAtom,' Range=',dbgs(Range)]);
+      //if ExtractFileNameOnly(MainFilename)='androidr14' then
+        debugln(['TPascalParserTool.BuildTree ScannedRange=',dbgs(ScannedRange),' CurNode=',CurNode.DescAsString,' first atom=',GetAtom,' Range=',dbgs(Range)]);
       {$ENDIF}
 
       if (CurNode.Desc in (AllSourceTypes+[ctnInterface]))
@@ -5144,6 +5150,9 @@ var
   DiffPos: PtrInt;
   Node: TCodeTreeNode;
   DeleteNode: TCodeTreeNode;
+  aHasStatic: Boolean;
+  aHasEmbedded: Boolean;
+  aTargetCPU: String;
 begin
   // update scanned code
   if FLastScannerChangeStep=Scanner.ChangeStep then begin
@@ -5155,10 +5164,23 @@ begin
     // code has changed
     //debugln(['TPascalParserTool.FetchScannerSource link scanner has changed ',MainFilename]);
     FLastScannerChangeStep:=Scanner.ChangeStep;
+    aHasStatic:=Scanner.Values.IsDefined('STATIC');
+    aHasEmbedded:=Scanner.Values.IsDefined('EMBEDDED');
+    aTargetCPU:=Scanner.Values[ExternalMacroStart+'TargetCPU'];
     AllChanged:=(FLastCompilerMode<>Scanner.CompilerMode)
-             or (FLastCompilerModeSwitches<>Scanner.CompilerModeSwitches);
+             or (FLastCompilerModeSwitches<>Scanner.CompilerModeSwitches)
+             or (FLastDefineStatic<>aHasStatic)
+             or (FLastDefineEmbedded<>aHasEmbedded)
+             or (FLastDefineTargetCPU<>aTargetCPU);
+    //if ExtractFileNameOnly(MainFilename)='androidr14' then begin
+      //Scanner.Values.WriteDebugReport;
+      //debugln(['TPascalParserTool.FetchScannerSource ',aTargetCPU,' old=',FLastDefineTargetCPU]);
+    //end;
     FLastCompilerMode:=Scanner.CompilerMode;
     FLastCompilerModeSwitches:=Scanner.CompilerModeSwitches;
+    FLastDefineStatic:=aHasStatic;
+    FLastDefineEmbedded:=aHasEmbedded;
+    FLastDefineTargetCPU:=aTargetCPU;
     NewSrc:=Scanner.CleanedSrc;
     NewSrcLen:=length(NewSrc);
     if AllChanged then begin

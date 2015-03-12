@@ -2236,7 +2236,7 @@ begin
 
   // check initvalues
   //if ExtractFileNameOnly(MainFilename)='androidr14' then
-  //  debugln(['TLinkScanner.UpdateNeeded FGlobalInitValuesChangeStep=',FGlobalInitValuesChangeStep,' CurInitValuesChangeStep=',CurInitValuesChangeStep]);
+    //debugln(['TLinkScanner.UpdateNeeded FGlobalInitValuesChangeStep=',FGlobalInitValuesChangeStep,' CurInitValuesChangeStep=',CurInitValuesChangeStep]);
   if FGlobalInitValuesChangeStep<>CurInitValuesChangeStep then begin
     FGlobalInitValuesChangeStep:=CurInitValuesChangeStep;
     if Assigned(FOnGetInitValues) then begin
