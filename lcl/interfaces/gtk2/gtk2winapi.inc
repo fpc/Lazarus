@@ -2561,13 +2561,18 @@ var
   end;
 
   function NeedOffsetCalc: Boolean;
+  var
+    AClipRect: TRect;
   begin
-
+    {see issue #27547}
+    AClipRect := RectFromGdkRect(TGtkDeviceContext(DC).ClipRect);
+    OffsetRect(AClipRect, -AClipRect.Left, -AClipRect.Top);
     Result := (TGtkDeviceContext(DC).CurrentFont^.LogFont.lfOrientation <> 0) and
         (Flags and DT_SINGLELINE <> 0) and
         (Flags and DT_VCENTER = 0) and (Flags and DT_CENTER = 0) and
         (Flags and DT_RIGHT = 0) and (Flags and  DT_BOTTOM = 0) and
-        (Flags and DT_CALCRECT = 0) and not IsRectEmpty(SavedRect);
+        (Flags and DT_CALCRECT = 0) and not IsRectEmpty(SavedRect) and
+        EqualRect(AClipRect, Rect);
   end;
 
 
