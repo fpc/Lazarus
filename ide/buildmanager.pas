@@ -182,7 +182,7 @@ type
     function GetLCLWidgetType: string; override;
     function GetRunCommandLine: string; override;
 
-    function GetFPCompilerFilename(ApplyProjectMacros: boolean = true): string; override;
+    function GetFPCompilerFilename: string; override;
     function GetFPCFrontEndOptions: string; override;
     function GetProjectPublishDir: string; override;
     function GetProjectTargetFilename(aProject: TProject): string; override;
@@ -606,8 +606,7 @@ begin
   end;
 end;
 
-function TBuildManager.GetFPCompilerFilename(ApplyProjectMacros: boolean
-  ): string;
+function TBuildManager.GetFPCompilerFilename: string;
 var
   s: string;
   Opts: TProjectCompilerOptions;
@@ -618,15 +617,18 @@ begin
     Opts:=FBuildTarget.CompilerOptions;
     if ([crCompile,crBuild]*Opts.CompileReasons<>[])
     and (Opts.CompilerPath<>'')
-    then begin
-      if ApplyProjectMacros then
-      begin
-        if (not Opts.ParsedOpts.Values[pcosCompilerPath].Parsing) then
-          Result:=FBuildTarget.GetCompilerFilename;
-      end else begin
-        Result:=Opts.CompilerPath;
-        if not IDEMacros.SubstituteMacros(Result) then Result:='';
-      end;
+    and (not Opts.ParsedOpts.Values[pcosCompilerPath].Parsing) then
+    begin
+      Result:=Opts.CompilerPath;
+      // the compiler filename is resolved twice, once for getting the default
+      // compiler target OS/CPU and once with the real values.
+      // For easier debugging macros, avoid this double resolve.
+      if Result='$(CompPath)' then
+        Result:=''
+      else if (Pos('$',Result)<1) and (FilenameIsAbsolute(Result)) then
+        Result:=TrimFilename(Result)
+      else
+        Result:=FBuildTarget.GetCompilerFilename;
       //debugln(['TBuildManager.GetFPCompilerFilename project compiler="',Result,'"']);
     end;
   end;
@@ -2377,6 +2379,12 @@ function TBuildManager.OnGetBuildMacroValues(Options: TBaseCompilerOptions;
         s:=FBuildTarget.CompilerOptions.TargetOS;
       if s='' then
         s:=fTargetOS;
+      if s='' then begin
+        {$IFDEF VerboseDefaultCompilerTarget}
+        debugln(['SetDefaults WARNING: no TargetOS']);
+        {$ENDIF}
+        s:=GetCompiledTargetOS;
+      end;
       Values.Values['TargetOS']:=s;
     end;
     // SrcOS
@@ -2397,6 +2405,12 @@ function TBuildManager.OnGetBuildMacroValues(Options: TBaseCompilerOptions;
       if s='' then
         s:=fTargetCPU;
       Values.Values['TargetCPU']:=s;
+      if s='' then begin
+        {$IFDEF VerboseDefaultCompilerTarget}
+        debugln(['SetDefaults WARNING: no TargetCPU']);
+        {$ENDIF}
+        s:=GetCompiledTargetCPU;
+      end;
     end;
   end;
 
@@ -2603,7 +2617,9 @@ var
   CompilerTargetCPU: string;
   CompQueryOptions: String;
 begin
-  //debugln(['TBuildManager.SetBuildTarget TargetOS="',TargetOS,'" TargetCPU="',TargetCPU,'" LCLWidgetType="',LCLWidgetType,'"']);
+  {$IFDEF VerboseDefaultCompilerTarget}
+  debugln(['TBuildManager.SetBuildTarget TargetOS="',TargetOS,'" TargetCPU="',TargetCPU,'" LCLWidgetType="',LCLWidgetType,'"']);
+  {$ENDIF}
   OldTargetOS:=fTargetOS;
   OldTargetCPU:=fTargetCPU;
   OldLCLWidgetType:=fLCLWidgetType;
@@ -2611,14 +2627,11 @@ begin
   OverrideTargetCPU:=GetFPCTargetCPU(TargetCPU);
   OverrideLCLWidgetType:=lowercase(LCLWidgetType);
 
-  CodeToolBoss.FPCDefinesCache.ConfigCaches.GetDefaultCompilerTarget(
-    EnvironmentOptions.GetParsedCompilerFilename,'',CompilerTargetOS,CompilerTargetCPU);
-
   // compute new TargetOS
   if OverrideTargetOS<>'' then
     fTargetOS:=OverrideTargetOS
   else if FBuildTarget<>nil then
-    fTargetOS:=TProject(FBuildTarget).CompilerOptions.TargetOS
+    fTargetOS:=FBuildTarget.CompilerOptions.TargetOS
   else
     fTargetOS:='';
   if SysUtils.CompareText(fTargetOS,'default')=0 then
@@ -2628,7 +2641,7 @@ begin
   if OverrideTargetCPU<>'' then
     fTargetCPU:=OverrideTargetCPU
   else if FBuildTarget<>nil then
-    fTargetCPU:=TProject(FBuildTarget).CompilerOptions.TargetCPU
+    fTargetCPU:=FBuildTarget.CompilerOptions.TargetCPU
   else
     fTargetCPU:='';
   if SysUtils.CompareText(fTargetCPU,'default')=0 then
@@ -2642,10 +2655,9 @@ begin
       CompQueryOptions:='-P'+GetFPCTargetCPU(fTargetCPU)
     else if fTargetOS<>'' then
       CompQueryOptions:='-T'+GetFPCTargetOS(fTargetOS);
+    // Note: resolving the comiler filename requires macros
     CodeToolBoss.FPCDefinesCache.ConfigCaches.GetDefaultCompilerTarget(
-      GetFPCompilerFilename(false),CompQueryOptions,CompilerTargetOS,CompilerTargetCPU);
-    if ConsoleVerbosity>0 then
-      debugln(['TBuildManager.SetBuildTarget OS=',fTargetOS,' CPU=',fTargetCPU,' CompQueryOptions=',CompQueryOptions,' DefaultOS=',CompilerTargetOS,' DefaultCPU=',CompilerTargetCPU]);
+      GetFPCompilerFilename,CompQueryOptions,CompilerTargetOS,CompilerTargetCPU);
     if fTargetOS='' then
       fTargetOS:=CompilerTargetOS;
     if fTargetOS='' then
@@ -2654,6 +2666,11 @@ begin
       fTargetCPU:=CompilerTargetCPU;
     if fTargetCPU='' then
       fTargetCPU:=GetCompiledTargetCPU;
+    // the macros were resolved with default values
+    // => invalidate macros so they now use the actual values
+    IncreaseBuildMacroChangeStamp;
+    if ConsoleVerbosity>0 then
+      debugln(['TBuildManager.SetBuildTarget OS=',fTargetOS,' CPU=',fTargetCPU,' CompQueryOptions=',CompQueryOptions,' DefaultOS=',CompilerTargetOS,' DefaultCPU=',CompilerTargetCPU]);
   end;
 
   fTargetOS:=GetFPCTargetOS(fTargetOS);
@@ -2675,7 +2692,7 @@ begin
 
   if FPCTargetChanged or LCLTargetChanged then begin
     if ConsoleVerbosity>=0 then
-      DebugLn(['TMainIDE.SetBuildTarget Old=',OldTargetCPU,'-',OldTargetOS,'-',OldLCLWidgetType,' New=',fTargetCPU,'-',fTargetOS,'-',fLCLWidgetType,' FPC=',FPCTargetChanged,' LCL=',LCLTargetChanged]);
+      DebugLn(['TBuildManager.SetBuildTarget Old=',OldTargetCPU,'-',OldTargetOS,'-',OldLCLWidgetType,' New=',fTargetCPU,'-',fTargetOS,'-',fLCLWidgetType,' FPC=',FPCTargetChanged,' LCL=',LCLTargetChanged]);
   end;
   if LCLTargetChanged then
     CodeToolBoss.SetGlobalValue(ExternalMacroStart+'LCLWidgetType',fLCLWidgetType);
