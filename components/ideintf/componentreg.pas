@@ -24,8 +24,8 @@ unit ComponentReg;
 interface
 
 uses
-  Classes, SysUtils, typinfo, Controls,
-  Laz2_XMLCfg, LCLProc, fgl;
+  Classes, SysUtils, typinfo, AVL_Tree, fgl,
+  Controls, Laz2_XMLCfg, LCLProc;
 
 type
   TComponentPriorityCategory = (
@@ -92,6 +92,24 @@ type
     property HiddenPageNames: TStringList read FHiddenPageNames;
   end;
 
+  { TCompPaletteUserOrder }
+
+  // Like TCompPaletteOptions but collects all pages and components,
+  //  including the original ones. The palette is later synchronized with this.
+  TCompPaletteUserOrder = class(TBaseCompPaletteOptions)
+  private
+    fPalette: TBaseComponentPalette;
+    // Reference to either EnvironmentOptions.ComponentPaletteOptions or a copy of it.
+    fOptions: TCompPaletteOptions;
+  public
+    constructor Create(aPalette: TBaseComponentPalette);
+    destructor Destroy; override;
+    procedure Clear;
+    function SortPagesAndCompsUserOrder: Boolean;
+  public
+    property Options: TCompPaletteOptions read fOptions write fOptions;
+  end;
+
   { TRegisteredComponent }
 
   TRegisteredComponent = class
@@ -122,7 +140,6 @@ type
     property Visible: boolean read FVisible write SetVisible;
   end;
 
-  TRegisteredComponentClass = class of TRegisteredComponent;
   TRegisteredComponentList = specialize TFPGList<TRegisteredComponent>;
 
 
@@ -145,7 +162,7 @@ type
     property Visible: boolean read FVisible write SetVisible;
   end;
 
-  TBaseComponentPageClass = class of TBaseComponentPage;
+  //TBaseComponentPageClass = class of TBaseComponentPage;
 
   { TBaseComponentPalette }
   
@@ -167,8 +184,7 @@ type
   TBaseComponentPalette = class
   private
     FHandlers: array[TComponentPaletteHandlerType] of TMethodList;
-    FBaseComponentPageClass: TBaseComponentPageClass;
-    FRegisteredComponentClass: TRegisteredComponentClass;
+    //FBaseComponentPageClass: TBaseComponentPageClass;
     FOnBeginUpdate: TNotifyEvent;
     FOnEndUpdate: TEndUpdatePaletteEvent;
     FHideControls: boolean;
@@ -188,6 +204,16 @@ type
     fComps: TRegisteredComponentList;
     // New pages added and their priorities, ordered by priority.
     fOrigPagePriorities: TPagePriorityList;
+    // User ordered + original pages and components
+    fUserOrder: TCompPaletteUserOrder;
+    // Component cache, a tree of TRegisteredComponent sorted for componentclass
+    fComponentCache: TAVLTree;
+    // Two page caches, one for original pages, one for user ordered pages.
+    // Lists have page names. Object holds another StringList for component names.
+    fOrigComponentPageCache: TStringList;  // Original
+    fUserComponentPageCache: TStringList;  // User ordered
+    procedure CacheOrigComponentPages;
+
     procedure DoChange; virtual;
     procedure DoBeginUpdate; virtual;
     procedure DoEndUpdate(Changed: boolean); virtual;
@@ -198,18 +224,15 @@ type
     procedure OnPageVisibleChanged({%H-}APage: TBaseComponentPage); virtual;
     function VoteCompVisibility(AComponent: TRegisteredComponent): Boolean; virtual;
     function GetSelected: TRegisteredComponent; virtual;
-    procedure SetBaseComponentPageClass(const AValue: TBaseComponentPageClass); virtual;
-    procedure SetRegisteredComponentClass(const AValue: TRegisteredComponentClass); virtual;
+    //procedure SetBaseComponentPageClass(const AValue: TBaseComponentPageClass); virtual;
     procedure SetSelected(const AValue: TRegisteredComponent); virtual; abstract;
   public
-    constructor Create;
+    constructor Create(EnvPaletteOptions: TCompPaletteOptions);
     destructor Destroy; override;
     procedure Clear;
-    function AssignOrigCompsForPage(PageName: string;
-                                    DestComps: TStringList): Boolean; virtual; abstract;
-    function AssignOrigVisibleCompsForPage(PageName: string;
-                                    DestComps: TStringList): Boolean; virtual; abstract;
-    function RefUserCompsForPage(PageName: string): TStringList; virtual; abstract;
+    function AssignOrigCompsForPage(PageName: string; DestComps: TStringList): Boolean;
+    function AssignOrigVisibleCompsForPage(PageName: string; DestComps: TStringList): Boolean;
+    function RefUserCompsForPage(PageName: string): TStringList;
     procedure BeginUpdate(Change: boolean);
     procedure EndUpdate;
     function IsUpdateLocked: boolean;
@@ -220,7 +243,7 @@ type
     function GetPage(const APageName: string; aCaseSens: Boolean = False): TBaseComponentPage;
     procedure AddComponent(NewComponent: TRegisteredComponent);
     procedure RemoveComponent(AComponent: TRegisteredComponent);
-    function FindComponent(const CompClassName: string): TRegisteredComponent; virtual;
+    function FindComponent(const CompClassName: string): TRegisteredComponent;
     function CreateNewClassName(const Prefix: string): string;
     procedure Update(ForceUpdateAll: Boolean); virtual; abstract;
     procedure IterateRegisteredClasses(Proc: TGetComponentClassEvent);
@@ -242,15 +265,15 @@ type
     property Pages: TBaseComponentPageList read fPages;
     property Comps: TRegisteredComponentList read fComps;
     property OrigPagePriorities: TPagePriorityList read fOrigPagePriorities;
-    property BaseComponentPageClass: TBaseComponentPageClass read FBaseComponentPageClass;
-    property RegisteredComponentClass: TRegisteredComponentClass
-                                                 read FRegisteredComponentClass;
+    //property BaseComponentPageClass: TBaseComponentPageClass read FBaseComponentPageClass;
     property UpdateLock: integer read FUpdateLock;
     property ChangeStamp: integer read fChangeStamp;
     property OnBeginUpdate: TNotifyEvent read FOnBeginUpdate write FOnBeginUpdate;
     property OnEndUpdate: TEndUpdatePaletteEvent read FOnEndUpdate write FOnEndUpdate;
     property HideControls: boolean read FHideControls write FHideControls;
     property Selected: TRegisteredComponent read GetSelected write SetSelected;
+    // User ordered + original pages and components.
+    property UserOrder: TCompPaletteUserOrder read fUserOrder;
   end;
   
 
@@ -289,7 +312,7 @@ begin
   Result:=p1.Level-p2.Level;
 end;
 
-function CompareIDEComponentByClassName(Data1, Data2: pointer): integer;
+function CompareIDEComponentByClassName(Data1, Data2: Pointer): integer;
 var
   Comp1: TRegisteredComponent;
   Comp2: TRegisteredComponent;
@@ -298,6 +321,16 @@ begin
   Comp2:=TRegisteredComponent(Data2);
   Result:=AnsiCompareText(Comp1.ComponentClass.Classname,
                           Comp2.ComponentClass.Classname);
+end;
+
+function CompareClassNameWithRegisteredComponent(Key, Data: Pointer): integer;
+var
+  AClassName: String;
+  RegComp: TRegisteredComponent;
+begin
+  AClassName:=String(Key);
+  RegComp:=TRegisteredComponent(Data);
+  Result:=CompareText(AClassName,RegComp.ComponentClass.ClassName);
 end;
 
 function dbgs(const c: TComponentPriorityCategory): string;
@@ -477,6 +510,61 @@ begin
   Result:=true;
 end;
 
+{ TCompPaletteUserOrder }
+
+constructor TCompPaletteUserOrder.Create(aPalette: TBaseComponentPalette);
+begin
+  inherited Create;
+  fPalette:=aPalette;
+end;
+
+destructor TCompPaletteUserOrder.Destroy;
+begin
+  Clear;
+  inherited Destroy;
+end;
+
+procedure TCompPaletteUserOrder.Clear;
+begin
+  inherited Clear;
+end;
+
+function TCompPaletteUserOrder.SortPagesAndCompsUserOrder: Boolean;
+// Calculate page order using user config and default order. User config takes priority.
+// This order will finally be shown in the palette.
+var
+  DstComps: TStringList;
+  PageI, i: Integer;
+  PgName: String;
+begin
+  Result:=True;
+  Clear;
+  fPalette.CacheOrigComponentPages;
+  // First add user defined page order from EnvironmentOptions,
+  FComponentPages.Assign(fOptions.PageNames);
+  // then add other pages which don't have user configuration
+  for PageI := 0 to fPalette.OrigPagePriorities.Count-1 do
+  begin
+    PgName:=fPalette.OrigPagePriorities.Keys[PageI];
+    if (FComponentPages.IndexOf(PgName) = -1)
+    and (fOptions.HiddenPageNames.IndexOf(PgName) = -1) then
+      FComponentPages.Add(PgName);
+  end;
+  // Map components with their pages
+  for PageI := 0 to FComponentPages.Count-1 do
+  begin
+    PgName := FComponentPages[PageI];
+    DstComps := TStringList.Create;
+    DstComps.CaseSensitive := True;
+    FComponentPages.Objects[PageI] := DstComps;
+    i := fOptions.ComponentPages.IndexOf(PgName);
+    if i >= 0 then                      // Add components reordered by user.
+      DstComps.Assign(fOptions.ComponentPages.Objects[i] as TStringList)
+    else                                // Add components that were not reordered.
+      fPalette.AssignOrigCompsForPage(PgName, DstComps);
+  end;
+end;
+
 { TRegisteredComponent }
 
 procedure TRegisteredComponent.SetVisible(const AValue: boolean);
@@ -566,11 +654,22 @@ end;
 
 { TBaseComponentPalette }
 
-constructor TBaseComponentPalette.Create;
+constructor TBaseComponentPalette.Create(EnvPaletteOptions: TCompPaletteOptions);
 begin
   fPages:=TBaseComponentPageList.Create;
   fComps:=TRegisteredComponentList.Create;
   fOrigPagePriorities:=TPagePriorityList.Create;
+  fUserOrder:=TCompPaletteUserOrder.Create(Self);
+  fUserOrder.Options:=EnvPaletteOptions; // EnvironmentOptions.ComponentPaletteOptions;
+  fComponentCache:=TAVLTree.Create(@CompareIDEComponentByClassName);
+  fOrigComponentPageCache:=TStringList.Create;
+  fOrigComponentPageCache.OwnsObjects:=True;
+  fOrigComponentPageCache.CaseSensitive:=True;
+  fOrigComponentPageCache.Sorted:=True;
+  fUserComponentPageCache:=TStringList.Create;
+  fUserComponentPageCache.OwnsObjects:=True;
+  fUserComponentPageCache.CaseSensitive:=True;
+  fUserComponentPageCache.Sorted:=True;
   fOrigPageHelper:=TStringList.Create; // Note: CaseSensitive = False
   fOrigPageHelper.Sorted:=True;
 end;
@@ -581,6 +680,10 @@ var
 begin
   Clear;
   FreeAndNil(fOrigPageHelper);
+  FreeAndNil(fUserComponentPageCache);
+  FreeAndNil(fOrigComponentPageCache);
+  FreeAndNil(fComponentCache);
+  FreeAndNil(fUserOrder);
   FreeAndNil(fOrigPagePriorities);
   FreeAndNil(fComps);
   FreeAndNil(fPages);
@@ -601,6 +704,75 @@ begin
   fComps.Clear;
   fOrigPagePriorities.Clear;
   fOrigPageHelper.Clear;
+end;
+
+procedure TBaseComponentPalette.CacheOrigComponentPages;
+var
+  sl: TStringList;
+  PageI, CompI: Integer;
+  PgName: string;
+  Comp: TRegisteredComponent;
+begin
+  if fOrigComponentPageCache.Count > 0 then Exit;  // Fill cache only once.
+  for PageI := 0 to fOrigPagePriorities.Count-1 do
+  begin
+    PgName:=fOrigPagePriorities.Keys[PageI];
+    Assert((PgName <> '') and not fOrigComponentPageCache.Find(PgName, CompI),
+                  Format('CacheComponentPages: %s already cached.', [PgName]));
+    // Add a cache StringList for this page name.
+    sl := TStringList.Create;
+    sl.CaseSensitive := True;
+    fOrigComponentPageCache.AddObject(PgName, sl);
+    // Find all components for this page and add them to cache.
+    for CompI := 0 to fComps.Count-1 do begin
+      Comp := fComps[CompI];
+      if Comp.OrigPageName = PgName then //if SameText(Comp.OrigPageName, PgName) then
+        sl.AddObject(Comp.ComponentClass.ClassName, Comp);
+    end;
+  end;
+end;
+
+function TBaseComponentPalette.AssignOrigCompsForPage(PageName: string;
+  DestComps: TStringList): Boolean;
+// Returns True if the page was found.
+var
+  sl: TStringList;
+  i: Integer;
+begin
+  Result := fOrigComponentPageCache.Find(PageName, i);
+  if Result then begin
+    sl := fOrigComponentPageCache.Objects[i] as TStringList;
+    DestComps.Assign(sl);
+  end
+  else
+    DestComps.Clear;
+    //raise Exception.Create(Format('AssignOrigCompsForPage: %s not found in cache.', [PageName]));
+end;
+
+function TBaseComponentPalette.AssignOrigVisibleCompsForPage(PageName: string;
+  DestComps: TStringList): Boolean;
+// Returns True if the page was found.
+var
+  sl: TStringList;
+  i: Integer;
+begin
+  DestComps.Clear;
+  Result := fOrigComponentPageCache.Find(PageName, i);
+  if not Result then Exit;
+  sl := fOrigComponentPageCache.Objects[i] as TStringList;
+  for i := 0 to sl.Count-1 do
+    if FindComponent(sl[i]).Visible then
+      DestComps.Add(sl[i]);
+end;
+
+function TBaseComponentPalette.RefUserCompsForPage(PageName: string): TStringList;
+var
+  i: Integer;
+begin
+  if fUserComponentPageCache.Find(PageName, i) then
+    Result := fUserComponentPageCache.Objects[i] as TStringList
+  else
+    Result := Nil;
 end;
 
 procedure TBaseComponentPalette.AddHandler(HandlerType: TComponentPaletteHandlerType;
@@ -673,18 +845,6 @@ begin
     TUpdateCompVisibleEvent(FHandlers[cphtUpdateVisible][i])(AComponent,Vote);
   Result:=Vote>0;
   AComponent.Visible:=Result;
-end;
-
-procedure TBaseComponentPalette.SetBaseComponentPageClass(
-  const AValue: TBaseComponentPageClass);
-begin
-  FBaseComponentPageClass:=AValue;
-end;
-
-procedure TBaseComponentPalette.SetRegisteredComponentClass(
-  const AValue: TRegisteredComponentClass);
-begin
-  FRegisteredComponentClass:=AValue;
 end;
 
 procedure TBaseComponentPalette.BeginUpdate(Change: boolean);
@@ -797,14 +957,14 @@ end;
 
 function TBaseComponentPalette.FindComponent(const CompClassName: string): TRegisteredComponent;
 var
-  i: Integer;
+  ANode: TAVLTreeNode;
 begin
-  for i:=0 to Comps.Count-1 do begin
-    Result:=Comps[i];
-    if CompareText(Result.ComponentClass.ClassName,CompClassName) = 0 then
-      exit;
-  end;
-  Result:=nil;
+  ANode:=fComponentCache.FindKey(Pointer(CompClassName),
+                                 @CompareClassNameWithRegisteredComponent);
+  if ANode<>nil then
+    Result:=TRegisteredComponent(ANode.Data)
+  else
+    Result:=nil;
 end;
 
 function TBaseComponentPalette.CreateNewClassName(const Prefix: string): string;
