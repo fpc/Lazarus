@@ -3628,8 +3628,8 @@ begin
         exit;
       end;
     end;
-    OldContextNode:=Params.ContextNode;
-    if OldContextNode.FirstChild<>nil then begin
+    if CurContextNode.FirstChild<>nil then begin
+      OldContextNode:=Params.ContextNode;
       Params.ContextNode:=CurContextNode;
       Result:=FindEnumInContext(Params);
       Params.ContextNode:=OldContextNode;
