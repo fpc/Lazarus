@@ -101,7 +101,6 @@ type
     FOnOpenPackage: TNotifyEvent;
     FOnOpenUnit: TNotifyEvent;
     FOnClassSelected: TNotifyEvent;
-    FSelected: TRegisteredComponent;
     FSelectionMode: TComponentSelectionMode;
     fUnregisteredIcon: TCustomBitmap;
     fSelectButtonIcon: TCustomBitmap;
@@ -127,13 +126,12 @@ type
       WheelDelta: Integer; {%H-}MousePos: TPoint; var Handled: Boolean);
     procedure CreatePopupMenu;
     procedure UnselectAllButtons;
+    procedure SelectionWasChanged;
     function GetUnregisteredIcon: TCustomBitmap;
     function GetSelectButtonIcon: TCustomBitmap;
     function SelectAButton(Button: TSpeedButton): boolean;
     procedure ComponentWasAdded;
     procedure CheckComponentDesignerVisible(AComponent: TComponent; var Invisible: boolean);
-    procedure SetSelected(const AValue: TRegisteredComponent); override;
-    function GetSelected: TRegisteredComponent; override;
   public
     constructor Create;
     destructor Destroy; override;
@@ -515,8 +513,8 @@ end;
 procedure TComponentPalette.ActivePageChanged(Sender: TObject);
 begin
   if FPageControl=nil then exit;
-  if (FSelected<>nil)
-  and ((FSelected.RealPage as TComponentPage).PageComponent=FPageControl.ActivePage) then exit;
+  if (Selected<>nil)
+  and ((Selected.RealPage as TComponentPage).PageComponent=FPageControl.ActivePage) then exit;
   if fUpdatingPageControl then exit;
   {$IFDEF VerboseComponentPalette}
   DebugLn('TComponentPalette.ActivePageChanged: Calling ReAlignButtons, setting Selected:=nil.');
@@ -667,11 +665,11 @@ var
   DisableAutoSize: Boolean;
 begin
   //debugln('TComponentPalette.ComponentBtnDblClick ',TComponent(Sender).Name);
-  if SelectAButton(TSpeedButton(Sender)) and (FSelected<>nil) then begin
+  if SelectAButton(TSpeedButton(Sender)) and (Selected<>nil) then begin
     if FormEditingHook<>nil then begin
-      TypeClass:=FSelected.ComponentClass;
-      if assigned(FSelected.OnGetCreationClass) then
-        FSelected.OnGetCreationClass(Self,TypeClass);
+      TypeClass:=Selected.ComponentClass;
+      if assigned(Selected.OnGetCreationClass) then
+        Selected.OnGetCreationClass(Self,TypeClass);
       if TypeClass=nil then exit;
       ParentComp:=FormEditingHook.GetDefaultComponentParent(TypeClass);
       if ParentComp=nil then exit;
@@ -702,7 +700,7 @@ var
 begin
   for i:=0 to Pages.Count-1 do begin
     CurPage:=Pages[i];
-    if (FSelected=nil) or (FSelected.RealPage<>CurPage) then begin
+    if (Selected=nil) or (Selected.RealPage<>CurPage) then begin
       SelectButtonOnPage:=TSpeedButton(TComponentPage(CurPage).SelectButton);
       if SelectButtonOnPage<>nil then
         SelectButtonOnPage.Down:=true;
@@ -710,39 +708,26 @@ begin
   end;
 end;
 
-procedure TComponentPalette.SetSelected(const AValue: TRegisteredComponent);
+procedure TComponentPalette.SelectionWasChanged;
 var
   Sheet: TTabSheet;
   i: Integer;
 begin
-  if FSelected=AValue then exit;
-  FSelected:=AValue;
-  if FSelected<>nil then begin
-    if (FSelected.RealPage=nil) or (FSelected.RealPage.Palette<>Self)
-    or (not FSelected.Visible)
-    or (not FSelected.CanBeCreatedInDesigner) then
-      FSelected:=nil;
-  end;
   if FPageControl=nil then exit;
   UnselectAllButtons;
-  if FSelected=nil then exit;
-  Assert(Assigned(FSelected.RealPage), 'TComponentPalette.SetSelected: FSelected.RealPage = Nil.');
-  Sheet:=(FSelected.RealPage as TComponentPage).PageComponent as TTabSheet;
+  if Selected=nil then exit;
+  Assert(Assigned(Selected.RealPage), 'TComponentPalette.SelectionWasChanged: Selected.RealPage = Nil.');
+  Sheet:=(Selected.RealPage as TComponentPage).PageComponent as TTabSheet;
   {$IFDEF VerboseComponentPalette}
-  DebugLn(['TComponentPalette.SetSelected: Setting FPageControl.ActivePage index ',Sheet.PageIndex]);
+  DebugLn(['TComponentPalette.SelectionWasChanged: Setting FPageControl.ActivePage index ',Sheet.PageIndex]);
   {$ENDIF}
   // Switch to the new page
   FPageControl.ActivePage:=Sheet;
   // Build the GUI layout for this page if not done yet.
-  if not fComponentButtons.Find(FSelected.ComponentClass.ClassName, i) then
+  if not fComponentButtons.Find(Selected.ComponentClass.ClassName, i) then
     ReAlignButtons(FPageControl.ActivePage);
   // Select button
-  fComponentButtons[FSelected.ComponentClass.ClassName].Down := true;
-end;
-
-function TComponentPalette.GetSelected: TRegisteredComponent;
-begin
-  Result:=FSelected;
+  fComponentButtons[Selected.ComponentClass.ClassName].Down := true;
 end;
 
 procedure TComponentPalette.CreatePopupMenu;
@@ -827,6 +812,7 @@ begin
   fComponentButtons.Sorted:=True;
   OnComponentIsInvisible:=@CheckComponentDesignerVisible;
   {IDEComponentPalette.} AddHandlerComponentAdded(@ComponentWasAdded);
+  {IDEComponentPalette.} AddHandlerSelectionChanged(@SelectionWasChanged);
   ComponentPageClass := TComponentPage;   // Used by CreatePagesFromUserOrder
 end;
 
