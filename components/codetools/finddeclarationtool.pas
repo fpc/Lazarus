@@ -3253,23 +3253,27 @@ var
         end;
       end;
 
-      if (ContextNode.Desc in (AllClasses-[ctnRecordType]))
-      and (fdfSearchInAncestors in Params.Flags) then begin
-        // after searching in a class definition, search in its ancestors
+      if (ContextNode.Desc in (AllClasses-[ctnRecordType])) then begin
+        if (fdfSearchInAncestors in Params.Flags) then begin
+          // after searching in a class definition, search in its ancestors
 
-        // ToDo: check for cycles in ancestors
-        Params.Save(OldInput);
-        Exclude(Params.Flags,fdfExceptionOnNotFound);
-        Result:=FindIdentifierInAncestors(ContextNode,Params);
-        Params.Load(OldInput,true);
-        if Result then begin
-          FindIdentifierInContext:=true;
-          {$IFDEF ShowCollect}
-          if fdfCollect in Params.Flags then
-            raise Exception.Create('fdfCollect must never return true');
-          {$ENDIF}
-          exit(AbortNoCacheResult);
+          // ToDo: check for cycles in ancestors
+          Params.Save(OldInput);
+          Exclude(Params.Flags,fdfExceptionOnNotFound);
+          Result:=FindIdentifierInAncestors(ContextNode,Params);
+          Params.Load(OldInput,true);
+          if Result then begin
+            FindIdentifierInContext:=true;
+            {$IFDEF ShowCollect}
+            if fdfCollect in Params.Flags then
+              raise Exception.Create('fdfCollect must never return true');
+            {$ENDIF}
+            exit(AbortNoCacheResult);
+          end;
         end;
+        // if this was a nested class, the identifier can be in the ancestors
+        // of the enclosing class
+        Params.Flags:=Params.Flags+[fdfSearchInAncestors];
       end;
 
       if (ContextNode=StartContextNode)
@@ -3480,6 +3484,9 @@ begin
           // -> search in all children
           MoveContextNodeToChildren;
 
+        ctnClassInheritance:
+          Params.Flags:=Params.Flags-[fdfSearchInAncestors];
+
         ctnTypeDefinition, ctnVarDefinition, ctnConstDefinition,
         ctnGenericType, ctnGlobalProperty:
           if SearchInTypeVarConstGlobPropDefinition then exit;
@@ -3604,8 +3611,8 @@ var OldContextNode, CurContextNode: TCodeTreeNode;
   CollectResult: TIdentifierFoundResult;
 begin
   Result:=false;
-  if Params.ContextNode=nil then exit;
   CurContextNode:=Params.ContextNode;
+  if CurContextNode=nil then exit;
   CurContextNode:=CurContextNode.FirstChild;
   while CurContextNode<>nil do begin
     if (CurContextNode.Desc=ctnEnumIdentifier) then begin
@@ -5784,6 +5791,7 @@ function TFindDeclarationTool.FindAncestorOfClassInheritance(
   IdentifierNode: TCodeTreeNode; ResultParams: TFindDeclarationParams;
   FindClassContext: boolean): boolean;
 var
+  InheritanceNode: TCodeTreeNode;
   ClassNode: TCodeTreeNode;
   AncestorContext: TFindContext;
   AncestorStartPos: LongInt;
@@ -5800,7 +5808,8 @@ begin
       +' not an inheritance node');
   Result:=false;
 
-  ClassNode:=IdentifierNode.Parent.Parent;
+  InheritanceNode:=IdentifierNode.Parent;
+  ClassNode:=InheritanceNode.Parent;
 
   if IdentifierNode.Desc=ctnSpecialize then begin
     if (IdentifierNode.FirstChild=nil) then begin
@@ -5820,7 +5829,7 @@ begin
   Params:=TFindDeclarationParams.Create;
   try
     Params.Flags:=fdfDefaultForExpressions-[fdfSearchInAncestors];
-    Params.ContextNode:=ClassNode;
+    Params.ContextNode:=InheritanceNode;
     if CurPos.Flag in [cafRoundBracketClose,cafComma] then begin
       // simple identifier
       {$IFDEF ShowTriedContexts}
@@ -5836,7 +5845,7 @@ begin
       // complex identifier
       {$IFDEF ShowTriedContexts}
       DebugLn(['[TFindDeclarationTool.FindAncestorOfClass] ',
-      ' search complex ancestor class = "',ExtractNode(IdentifierNode,[]),'"']);
+      ' search complex ancestor class = "',ExtractNode(IdentifierNode,[]),'" for class "',ExtractClassName(ClassNode,false),'"']);
       {$ENDIF}
       Params.Flags:=fdfDefaultForExpressions-[fdfSearchInAncestors];
       ExprType:=FindExpressionTypeOfTerm(IdentifierNode.StartPos,IdentifierNode.EndPos,Params,false);
