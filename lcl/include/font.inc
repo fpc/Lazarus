@@ -145,11 +145,11 @@ begin
         Height := lfHeight;
         if lfWeight >= FW_BOLD then
           Include(Style, fsBold);
-        if lfItalic = 1 then
+        if lfItalic > 0 then
           Include(Style, fsItalic);
-        if lfUnderline = 1 then
+        if lfUnderline > 0 then
           Include(Style, fsUnderline);
-        if lfStrikeOut = 1 then
+        if lfStrikeOut > 0 then
           Include(Style, fsStrikeOut);
         Charset := TFontCharset(lfCharSet);
         Name := lfFaceName;
