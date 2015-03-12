@@ -122,7 +122,7 @@ resourcestring
   lisPause = 'Pause';
   lisStop = 'Stop';
   lisBuilding = 'Building';
-  lisTheIDEIsStillBuilding = 'The IDE is still building.';
+  lisOptions = 'Options';
   lisLess = 'Less';
   lisMore = 'More';
   lisMoreSub = 'More >>';
@@ -140,6 +140,7 @@ resourcestring
   lisRenameShowResult = 'Show list of renamed Identifiers';
   lisResourceNameMustBeUnique = 'Resource name must be unique.';
   lisFailedToAddNNotUniqueResources = 'Failed to add %d not unique resource(s)';
+  lisTheIDEIsStillBuilding = 'The IDE is still building.';
 
   // errors
   lisErrInvalidOption = 'Invalid option at position %d: "%s"';
@@ -1395,7 +1396,6 @@ resourcestring
 
   dlgOIMiscellaneous = 'Miscellaneous';
   dlgOISpeedSettings = 'Speed settings';
-  dlgOIOptions = 'Options';
   dlgOIItemHeight = 'Item height';
   dlgHeightOfOnePropertyInGrid = 'Height of one property in the grid.';
   dlgOIUseDefaultLazarusSettings = 'Use default Lazarus settings';
@@ -2476,7 +2476,6 @@ resourcestring
   lisRunParamsTheHostApplicationIsNotExecutable = 'The host application "%s" is not executable.';
   dlgTextToFind = '&Text to find';
   dlgReplaceWith = '&Replace with';
-  dlgFROpts = 'Options';
   lisBFWhenThisFileIsActiveInSourceEditor = 'When this file is active in source editor';
   lisBFOnBuildProjectExecuteTheBuildFileCommandInstead = 'On build project '
     +'execute the Build File command instead';
@@ -5722,7 +5721,6 @@ resourcestring
   lisToolbarOptionsViewDebugVisible = 'Debug toolbar visible';
   lisToolbarOptionsHighLight = 'Highlight toolbars buttons';
   lisToolbarOptionsRaise = 'Raise toolbars';
-  miToolbar = 'Options';
 
   // File Filters - Environment options
   lisFileFiltersTitle ='These are file filters that will appear in all File Open dialogs';

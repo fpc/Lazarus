@@ -172,7 +172,7 @@ procedure TOIOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
   ObjectInspectorColorsGroupBox.Caption := dlgColors;
   OIMiscGroupBox.Caption := dlgOIMiscellaneous;
-  OIOptionsGroupBox.Caption := dlgOIOptions;
+  OIOptionsGroupBox.Caption := lisOptions;
   ObjectInspectorSpeedSettingsGroupBox.Caption := dlgOISpeedSettings;
 
   BtnUseDefaultLazarusSettings.Caption := dlgOIUseDefaultLazarusSettings;

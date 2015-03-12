@@ -470,12 +470,12 @@ begin
 
   CodePage.Caption:=lisCode;
   CodeRefreshSpeedButton.Hint:=dlgUnitDepRefresh;
-  CodeOptionsSpeedButton.Hint:=dlgFROpts;
+  CodeOptionsSpeedButton.Hint:=lisOptions;
   CodeFilterEdit.Text:=lisCEFilter;
   DirectivesPage.Caption:=lisDirectives;
   DirectivesFilterEdit.Text:=lisCEFilter;
   DirRefreshSpeedButton.Hint:=dlgUnitDepRefresh;
-  DirOptionsSpeedButton.Hint:=dlgFROpts;
+  DirOptionsSpeedButton.Hint:=lisOptions;
 
   CodeRefreshSpeedButton.LoadGlyphFromResourceName(HInstance, 'laz_refresh');
   CodeOptionsSpeedButton.LoadGlyphFromResourceName(HInstance, 'menu_environment_options');

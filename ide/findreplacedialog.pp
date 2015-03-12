@@ -132,7 +132,7 @@ begin
   ReplaceTextComboBox.Text:='';
   ReplaceWithCheckbox.Caption:=dlgReplaceWith;
   EnableAutoCompleteSpeedButton.LoadGlyphFromResourceName(HInstance, 'menu_stepinto');
-  OptionsGroupBox.Caption:=dlgFROpts;
+  OptionsGroupBox.Caption:=lisOptions;
 
   with CaseSensitiveCheckBox do begin
     Caption:=dlgCaseSensitive;

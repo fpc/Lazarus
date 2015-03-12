@@ -334,7 +334,7 @@ begin
   // options
   with OptionsGroupBox do
   begin
-    Caption:=dlgFROpts;
+    Caption:=lisOptions;
     Items.Add(lisDiffDlgCaseInsensitive);
     Items.Add(lisDiffDlgIgnoreIfEmptyLinesWereAdd);
     Items.Add(lisDiffDlgIgnoreSpacesAtStartOfLine);

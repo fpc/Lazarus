@@ -547,7 +547,7 @@ begin
     Parent:=RunPage;
   end;
 
-  GeneralPage.Caption:=dlgFROpts;
+  GeneralPage.Caption:=lisOptions;
   WhenFileIsActiveGroupbox.Caption:=lisBFWhenThisFileIsActiveInSourceEditor;
   OverrideBuildProjectCheckbox.Caption:=
     lisBFOnBuildProjectExecuteTheBuildFileCommandInstead;

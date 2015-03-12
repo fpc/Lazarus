@@ -159,7 +159,7 @@ constructor TMsgWndOptionsFrame.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
 
-  MWOptionsLabel.Caption:=dlgOIOptions;
+  MWOptionsLabel.Caption:=lisOptions;
   MWColorsGroupBox.Caption:=dlgColors;
   MWSpeedSetColorsGroupBox.Caption:=lisSetAllColors;
   MWSetDefaultColorsButton.Caption:=lisLazarusDefault;

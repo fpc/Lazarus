@@ -167,7 +167,7 @@ begin
   TextToFindLabel.Caption := dlgTextToFind;
   ReplaceCheckBox.Caption := dlgReplaceWith;
 
-  OptionsCheckGroupBox.Caption := dlgFROpts;
+  OptionsCheckGroupBox.Caption := lisOptions;
   OptionsCheckGroupBox.Items[0] := dlgCaseSensitive;
   OptionsCheckGroupBox.Items[1] := dlgWholeWordsOnly;
   OptionsCheckGroupBox.Items[2] := dlgRegularExpressions;

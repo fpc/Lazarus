@@ -2183,7 +2183,7 @@ begin
   with MainIDEBar.miOptions do
   begin
      Name := 'miToolbarOption';
-     Caption := miToolbar;
+     Caption := lisOptions;
      OnClick := @ToolBarOptionsClick;
      Enabled := True;
      Visible := True;

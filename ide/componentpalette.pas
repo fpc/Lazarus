@@ -630,7 +630,7 @@ begin
       miOptions:=TMenuItem.Create(PalettePopupMenu);
       with miOptions do begin
         Name:='OptionsMenuItem';
-        Caption:=dlgOIOptions;
+        Caption:=lisOptions;
         OnClick:=@OptionsClicked;
         ImageIndex := IDEImages.LoadImage(16, 'menu_environment_options');
       end;

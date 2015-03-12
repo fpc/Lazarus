@@ -539,7 +539,7 @@ begin
   MsgOptionsMenuSection:=RegisterIDEMenuSection(Root,'Option Section');
     Parent:=MsgOptionsMenuSection;
     Parent.ChildsAsSubMenu:=true;
-    Parent.Caption:=dlgOIOptions;
+    Parent.Caption:=lisOptions;
     MsgWndStayOnTopMenuItem:=RegisterIDEMenuCommand(Parent,
       'Window stay on top', lisWindowStaysOnTop);
     MsgFilenameStyleMenuSection:=RegisterIDEMenuSection(Parent,'Filename Styles');

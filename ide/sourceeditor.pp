@@ -1608,7 +1608,7 @@ begin
   {%endregion}
 
   SrcEditMenuEditorProperties:=RegisterIDEMenuCommand(SourceEditorMenuRoot,
-           'EditorProperties', dlgFROpts, nil, nil, nil, 'menu_environment_options');
+           'EditorProperties', lisOptions, nil, nil, nil, 'menu_environment_options');
 end;
 
 function dbgSourceNoteBook(snb: TSourceNotebook): string;
