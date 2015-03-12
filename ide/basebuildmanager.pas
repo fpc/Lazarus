@@ -59,7 +59,7 @@ type
     function GetLCLWidgetType: string; virtual; abstract;
     function GetRunCommandLine: string; virtual; abstract;
 
-    function GetFPCompilerFilename(ApplyProjectMacros: boolean = true): string; virtual; abstract;
+    function GetFPCompilerFilename: string; virtual; abstract;
     function GetFPCFrontEndOptions: string; virtual; abstract;
     function GetProjectPublishDir: string; virtual; abstract;
     function GetProjectTargetFilename(aProject: TProject): string; virtual; abstract;
