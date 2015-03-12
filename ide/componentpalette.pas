@@ -82,6 +82,7 @@ type
   TComponentPage = class(TBaseComponentPage)
   private
     fPageComponent: TCustomPage;
+    fSelectButton: TComponent;
     fBtnIndex: integer;
     fIndex: Integer;           // Index in the Pages container.
     fCompNames: TStringList;   // Reference to component names.
@@ -98,7 +99,9 @@ type
     constructor Create(const ThePageName: string);
     destructor Destroy; override;
     function GetScrollBox: TScrollBox;
+  public
     property PageComponent: TCustomPage read fPageComponent write fPageComponent;
+    property SelectButton: TComponent read fSelectButton write fSelectButton;
   end;
 
   { TComponentPalette }
@@ -305,6 +308,7 @@ end;
 
 destructor TComponentPage.Destroy;
 begin
+  FreeAndNil(fSelectButton);
   FreeAndNil(fPageComponent);
   inherited Destroy;
 end;
@@ -820,7 +824,7 @@ begin
   for i:=0 to Pages.Count-1 do begin
     CurPage:=Pages[i];
     if (FSelected=nil) or (FSelected.RealPage<>CurPage) then begin
-      SelectButtonOnPage:=TSpeedButton(CurPage.SelectButton);
+      SelectButtonOnPage:=TSpeedButton(TComponentPage(CurPage).SelectButton);
       if SelectButtonOnPage<>nil then
         SelectButtonOnPage.Down:=true;
     end;

@@ -134,7 +134,6 @@ type
   private
     FPageName: string;
     FPalette: TBaseComponentPalette;
-    FSelectButton: TComponent;
     FVisible: boolean;
   protected
     procedure SetVisible(const AValue: boolean); virtual;
@@ -145,7 +144,6 @@ type
   public
     property PageName: string read FPageName;
     property Palette: TBaseComponentPalette read FPalette write FPalette;
-    property SelectButton: TComponent read FSelectButton write FSelectButton;
     property Visible: boolean read FVisible write SetVisible;
   end;
 
@@ -553,7 +551,6 @@ end;
 
 destructor TBaseComponentPage.Destroy;
 begin
-  FreeAndNil(FSelectButton);
   inherited Destroy;
 end;
 
