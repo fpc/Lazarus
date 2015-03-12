@@ -1363,7 +1363,7 @@ begin
   else
     WideStr := GetUtf8String(Str);
 
-
+  ClipRect := Rect(0, 0, 0, 0);
   B := QtDC.getClipping;
   if (Flags and DT_NOCLIP = DT_NOCLIP) and
     (Flags and DT_WORDBREAK = DT_WORDBREAK) then
@@ -1414,12 +1414,15 @@ begin
   // also it works only with DT_TOP DT_LEFT. Qt can handle multiline
   // text in this case too.
   Pt := Point(0, 0);
-  if (QtDC.Font.Angle <> 0) and
-    (Flags and DT_VCENTER = 0) and (Flags and DT_CENTER = 0) and
-    (Flags and DT_RIGHT = 0) and (Flags and  DT_BOTTOM = 0) then
+  if (QtDC.Font.Angle <> 0) then
   begin
-    Pt := Point(ARect.Left, ARect.Top);
-    CalculateOffsetWithAngle(QtDC.font.Angle, Pt.X, Pt.Y);
+    if IsRectEmpty(ClipRect) and QtDC.getClipping then
+      ClipRect := QtDC.getClipRegion.getBoundingRect;
+    if EqualRect(ClipRect, ARect) then
+    begin
+      Pt := Point(ARect.Left, ARect.Top);
+      CalculateOffsetWithAngle(QtDC.font.Angle, Pt.X, Pt.Y);
+    end;
   end;
 
   // we cannot fit into rectangle, so use DT_SINGLELINE.See #17329.
