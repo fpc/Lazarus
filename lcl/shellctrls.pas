@@ -83,7 +83,7 @@ type
       AMask: string; AObjectTypes: TObjectTypes; AResult: TStrings; AFileSortType: TFileSortType = fstNone);
     { Other methods specific to Lazarus }
     function  GetPathFromNode(ANode: TTreeNode): string;
-    function  GetSelectedNodePath: string;
+    function  GetSelectedNodePath: string; deprecated 'Use property Path instead';
     procedure Refresh(ANode: TTreeNode); overload;
 
     { Properties }
