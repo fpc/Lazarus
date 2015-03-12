@@ -96,7 +96,6 @@ type
 
   TRegisteredComponent = class
   private
-    FButton: TComponent;
     FComponentClass: TComponentClass;
     FOnGetCreationClass: TOnGetCreationClass;
     FOrigPageName: string;
@@ -120,7 +119,6 @@ type
                                                      write FOnGetCreationClass;
     property OrigPageName: string read FOrigPageName;
     property RealPage: TBaseComponentPage read FRealPage write FRealPage;
-    property Button: TComponent read FButton write FButton;
     property Visible: boolean read FVisible write SetVisible;
   end;
 
@@ -223,7 +221,6 @@ type
     procedure AddComponent(NewComponent: TRegisteredComponent);
     procedure RemoveComponent(AComponent: TRegisteredComponent);
     function FindComponent(const CompClassName: string): TRegisteredComponent; virtual;
-    function FindButton(Button: TComponent): TRegisteredComponent;
     function CreateNewClassName(const Prefix: string): string;
     procedure Update(ForceUpdateAll: Boolean); virtual; abstract;
     procedure IterateRegisteredClasses(Proc: TGetComponentClassEvent);
@@ -502,7 +499,6 @@ destructor TRegisteredComponent.Destroy;
 begin
   if Assigned(FRealPage) and Assigned(FRealPage.Palette) then
     FRealPage.Palette.RemoveComponent(Self);
-  FreeAndNil(FButton);
   inherited Destroy;
 end;
 
@@ -807,17 +803,6 @@ begin
     Result:=Comps[i];
     if CompareText(Result.ComponentClass.ClassName,CompClassName) = 0 then
       exit;
-  end;
-  Result:=nil;
-end;
-
-function TBaseComponentPalette.FindButton(Button: TComponent): TRegisteredComponent;
-var
-  i: Integer;
-begin
-  for i:=0 to Comps.Count-1 do begin
-    Result:=Comps[i];
-    if Result.Button=Button then exit;
   end;
   Result:=nil;
 end;
