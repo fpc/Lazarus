@@ -141,6 +141,8 @@ type
     fVisiblePageIndex: integer;
     // User ordered + original pages and components
     fUserOrder: TCompPaletteUserOrder;
+    procedure ClearButtons;
+    function FindPkgCompByButton(Button: TComponent): TPkgComponent;
     procedure ReAlignButtons(aSheet: TCustomPage);
     procedure UpdateNoteBookButtons(ForceUpdateAll: Boolean);
     //procedure AssociatePageComps(aPageInd: Integer; aCompNames: TStringList);
@@ -173,8 +175,6 @@ type
   public
     constructor Create;
     destructor Destroy; override;
-    procedure Clear;
-    procedure ClearButtons;
     procedure DoAfterComponentAdded; override;
     procedure OnGetNonVisualCompIcon(Sender: TObject;
                                      AComponent: TComponent; var Icon: TCustomBitmap);
@@ -660,7 +660,7 @@ procedure TComponentPalette.OpenPackageClicked(Sender: TObject);
 var
   PkgComponent: TPkgComponent;
 begin
-  PkgComponent:=TPkgComponent(FindButton(PopupMenu.PopupComponent));
+  PkgComponent:=FindPkgCompByButton(PopupMenu.PopupComponent);
   if (PkgComponent=nil) or (PkgComponent.PkgFile=nil)
   or (PkgComponent.PkgFile.LazPackage=nil) then exit;
   if Assigned(OnOpenPackage) then
@@ -671,7 +671,7 @@ procedure TComponentPalette.OpenUnitClicked(Sender: TObject);
 var
   PkgComponent: TPkgComponent;
 begin
-  PkgComponent:=TPkgComponent(FindButton(PopupMenu.PopupComponent));
+  PkgComponent:=FindPkgCompByButton(PopupMenu.PopupComponent);
   if (PkgComponent=nil) or (PkgComponent.PkgFile=nil)
   or (PkgComponent.PkgFile.LazPackage=nil) then exit;
   if Assigned(OnOpenUnit) then
@@ -695,7 +695,7 @@ var
   UnitFilename: String;
   ShownFilename: String;
 begin
-  PkgComponent:=TPkgComponent(FindButton(PopupMenu.PopupComponent));
+  PkgComponent:=FindPkgCompByButton(PopupMenu.PopupComponent);
   APackage:=nil;
   if (PkgComponent<>nil) and (PkgComponent.PkgFile<>nil) then
     APackage:=PkgComponent.PkgFile.LazPackage;
@@ -832,6 +832,8 @@ begin
 end;
 
 procedure TComponentPalette.SetSelected(const AValue: TRegisteredComponent);
+var
+  Sheet: TTabSheet;
 begin
   if FSelected=AValue then exit;
   FSelected:=AValue;
@@ -845,12 +847,12 @@ begin
   UnselectAllButtons;
   if FSelected=nil then exit;
   Assert(Assigned(FSelected.RealPage), 'TComponentPalette.SetSelected: FSelected.RealPage = Nil.');
+  Sheet:=(FSelected.RealPage as TComponentPage).PageComponent as TTabSheet;
   {$IFDEF VerboseComponentPalette}
-  DebugLn(['TComponentPalette.SetSelected: Setting FPageControl.ActivePage=',
-    FSelected.RealPage.PageComponent, ', Index ', FSelected.RealPage.PageComponent.PageIndex]);
+  DebugLn(['TComponentPalette.SetSelected: Setting FPageControl.ActivePage=',Sheet,', Index ',Sheet.PageIndex]);
   {$ENDIF}
   // Switch to the new page
-  FPageControl.ActivePage:=TTabSheet((FSelected.RealPage as TComponentPage).PageComponent);
+  FPageControl.ActivePage:=Sheet;
   // Build the GUI layout for this page if not done yet.
   if FSelected.Button=nil then
     ReAlignButtons(FPageControl.ActivePage);
@@ -1063,13 +1065,6 @@ begin
   FreeAndNil(PopupMenu);
   FreeAndNil(PalettePopupMenu);
   inherited Destroy;
-end;
-
-procedure TComponentPalette.Clear;
-begin
-  ClearButtons;
-  fUserOrder.Clear;
-  inherited Clear;
 end;
 
 procedure TComponentPalette.ClearButtons;
@@ -1344,6 +1339,11 @@ begin
     Result:=TRegisteredComponent(ANode.Data)
   else
     Result:=nil;
+end;
+
+function TComponentPalette.FindPkgCompByButton(Button: TComponent): TPkgComponent;
+begin
+  Result := FindButton(Button) as TPkgComponent;
 end;
 
 {$IFDEF CustomIDEComps}
