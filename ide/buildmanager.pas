@@ -2087,7 +2087,7 @@ begin
     Compute;
     FFPCVerChangeStamp:=CompilerParseStamp;
     {$IFDEF VerboseFPCSrcScan}
-    debugln(['TBuildManager.MacroFuncFPCVer FPCVer=',FFPCVer,' FPC_FULLVERSION=',FFPC_FULLVERSION]);
+    debugln(['TBuildManager.MacroFuncFPCVer FPCVer=',FFPCVer,' FPC_FULLVERSION=',FFPC_FULLVERSION,' Stamp=',FFPCVerChangeStamp]);
     {$ENDIF}
   end;
   Result:=FFPCVer;
