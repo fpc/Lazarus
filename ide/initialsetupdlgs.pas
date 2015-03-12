@@ -45,7 +45,7 @@ uses
   LazLogger, Graphics, ComCtrls, ExtCtrls, StdCtrls, DefineTemplates,
   CodeToolManager, FileProcs, TransferMacros, MacroDefIntf, GDBMIDebugger,
   DbgIntfDebuggerBase, LazarusIDEStrConsts, LazConf, EnvironmentOpts, IDEProcs,
-  AboutFrm, IDETranslations, InitialSetupProc;
+  AboutFrm, IDETranslations, BaseBuildManager, InitialSetupProc;
   
 type
   TInitialSetupDialog = class;
@@ -964,6 +964,7 @@ var
   Quality: TSDFilenameQuality;
   s: String;
   ImageIndex: Integer;
+  CfgCache: TFPCTargetConfigCache;
 begin
   if csDestroying in ComponentState then exit;
   CurCaption:=CompilerComboBox.Text;
@@ -971,6 +972,13 @@ begin
   if fLastParsedCompiler=EnvironmentOptions.GetParsedCompilerFilename then exit;
   fLastParsedCompiler:=EnvironmentOptions.GetParsedCompilerFilename;
   //debugln(['TInitialSetupDialog.UpdateCompilerNote ',fLastParsedCompiler]);
+
+  // check compiler again
+  CfgCache:=CodeToolBoss.FPCDefinesCache.ConfigCaches.Find(
+                                             fLastParsedCompiler,'','','',true);
+  CfgCache.Update(CodeToolBoss.FPCDefinesCache.TestFilename);
+  BuildBoss.SetBuildTargetIDE;
+
   Quality:=CheckCompilerQuality(fLastParsedCompiler,Note,
                                 CodeToolBoss.FPCDefinesCache.TestFilename);
   if Quality<>sddqInvalid then begin
