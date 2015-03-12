@@ -1266,6 +1266,11 @@ begin
   if cfNoneVisual in flags then
     exit;
 
+  if FPaintLock > 0 then begin
+    UpdateCaretsPos;
+    exit;
+  end;
+
   if (eoNoCaret in Editor.Options) or
      not((eoPersistentCaret in Editor.Options) or Editor.Focused)
   then begin
