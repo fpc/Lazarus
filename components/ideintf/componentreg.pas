@@ -216,8 +216,6 @@ type
     procedure CacheOrigComponentPages;
     function CreatePagesFromUserOrder: Boolean;
     procedure DoChange; virtual;
-    procedure DoBeginUpdate; virtual;
-    procedure DoEndUpdate(Changed: boolean); virtual;
     procedure OnPageAddedComponent({%H-}Component: TRegisteredComponent); virtual;
     procedure OnPageRemovedComponent({%H-}Page: TBaseComponentPage;
                                 {%H-}Component: TRegisteredComponent); virtual;
@@ -267,10 +265,7 @@ type
     property OrigPagePriorities: TPagePriorityList read fOrigPagePriorities;
     property ComponentPageClass: TBaseComponentPageClass read FComponentPageClass
                                                         write FComponentPageClass;
-    property UpdateLock: integer read FUpdateLock;
     property ChangeStamp: integer read fChangeStamp;
-    property OnBeginUpdate: TNotifyEvent read FOnBeginUpdate write FOnBeginUpdate;
-    property OnEndUpdate: TEndUpdatePaletteEvent read FOnEndUpdate write FOnEndUpdate;
     property HideControls: boolean read FHideControls write FHideControls;
     property Selected: TRegisteredComponent read GetSelected write SetSelected;
     // User ordered + original pages and components.
@@ -876,16 +871,6 @@ begin
     Update(False);
 end;
 
-procedure TBaseComponentPalette.DoBeginUpdate;
-begin
-
-end;
-
-procedure TBaseComponentPalette.DoEndUpdate(Changed: boolean);
-begin
-  if Assigned(OnEndUpdate) then OnEndUpdate(Self,Changed);
-end;
-
 procedure TBaseComponentPalette.OnPageAddedComponent(Component: TRegisteredComponent);
 begin
   DoChange;
@@ -924,19 +909,19 @@ end;
 procedure TBaseComponentPalette.BeginUpdate(Change: boolean);
 begin
   inc(FUpdateLock);
-  if FUpdateLock=1 then begin
-    fChanged:=Change;
-    DoBeginUpdate;
-    if Assigned(OnBeginUpdate) then OnBeginUpdate(Self);
-  end else
+  if FUpdateLock=1 then
+    fChanged:=Change
+  else
     fChanged:=fChanged or Change;
 end;
 
 procedure TBaseComponentPalette.EndUpdate;
 begin
-  if FUpdateLock<=0 then RaiseException('TBaseComponentPalette.EndUpdate');
+  if FUpdateLock<=0 then
+    RaiseException('TBaseComponentPalette.EndUpdate');
   dec(FUpdateLock);
-  if FUpdateLock=0 then DoEndUpdate(fChanged);
+  if (FUpdateLock=0) and fChanged then
+    Update(False);
 end;
 
 function TBaseComponentPalette.IsUpdateLocked: boolean;

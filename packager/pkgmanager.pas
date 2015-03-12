@@ -150,8 +150,6 @@ type
     procedure MainIDEitmPackageLinksClicked(Sender: TObject);
 
     // component palette
-    procedure IDEComponentPaletteEndUpdate(Sender: TObject;
-                                           PaletteChanged: boolean);
     procedure IDEComponentPaletteOpenPackage(Sender: TObject);
     procedure IDEComponentPaletteOpenUnit(Sender: TObject);
 
@@ -215,7 +213,6 @@ type
     procedure SetRecentPackagesMenu; override;
     procedure AddToMenuRecentPackages(const Filename: string);
     procedure SaveSettings; override;
-    procedure UpdateVisibleComponentPalette; override;
     procedure ProcessCommand(Command: word; var Handled: boolean); override;
     procedure OnSourceEditorPopupMenu(const AddMenuItemProc: TAddMenuItemProc); override;
     procedure TranslateResourceStrings; override;
@@ -463,13 +460,6 @@ begin
   finally
     PkgIDList.Free;
   end;
-end;
-
-procedure TPkgManager.IDEComponentPaletteEndUpdate(Sender: TObject;
-  PaletteChanged: boolean);
-begin
-  if PaletteChanged then
-    UpdateVisibleComponentPalette;
 end;
 
 procedure TPkgManager.IDEComponentPaletteOpenPackage(Sender: TObject);
@@ -2913,7 +2903,6 @@ begin
   // componentpalette
   IDEComponentPalette:=TComponentPalette.Create;
   CompPalette:=TComponentPalette(IDEComponentPalette);
-  CompPalette.OnEndUpdate:=@IDEComponentPaletteEndUpdate;
   CompPalette.OnOpenPackage:=@IDEComponentPaletteOpenPackage;
   CompPalette.OnOpenUnit:=@IDEComponentPaletteOpenUnit;
 
@@ -3089,6 +3078,7 @@ begin
     PackageGraph.LoadStaticBasePackages;
     LoadStaticCustomPackages;
     LoadAutoInstallPackages;
+    TComponentPalette(IDEComponentPalette).PageControl:=MainIDEBar.ComponentPageControl;
   finally
     IDEComponentPalette.EndUpdate;
   end;
@@ -3105,11 +3095,6 @@ begin
     Dependency.RemoveFromList(PackageGraph.FirstAutoInstallDependency,pdlRequires);
     Dependency.Free;
   end;
-end;
-
-procedure TPkgManager.UpdateVisibleComponentPalette;
-begin
-  TComponentPalette(IDEComponentPalette).PageControl:=MainIDEBar.ComponentPageControl;
 end;
 
 procedure TPkgManager.ProcessCommand(Command: word; var Handled: boolean);

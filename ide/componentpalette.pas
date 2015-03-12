@@ -101,7 +101,6 @@ type
     fComponentButtons: TComponentButtonMap;
     // Visual container for tabs
     FPageControl: TPageControl;
-    fNoteBookNeedsUpdate: boolean;
     FOnOpenPackage: TNotifyEvent;
     FOnOpenUnit: TNotifyEvent;
     FOnClassSelected: TNotifyEvent;
@@ -137,7 +136,6 @@ type
     function GetSelectButtonIcon: TCustomBitmap;
     function SelectAButton(Button: TSpeedButton): boolean;
   protected
-    procedure DoEndUpdate(Changed: boolean); override;
     procedure OnPageAddedComponent(Component: TRegisteredComponent); override;
     procedure OnPageRemovedComponent(Page: TBaseComponentPage;
                                      Component: TRegisteredComponent); override;
@@ -642,7 +640,6 @@ begin
   {$IFDEF VerboseComponentPalette}
   DebugLn(['TComponentPalette.SetPageControl, calling UpdateNoteBookButtons, ', AValue]);
   {$ENDIF}
-  UpdateNoteBookButtons(False);
 end;
 
 procedure TComponentPalette.SelectionToolClick(Sender: TObject);
@@ -798,17 +795,6 @@ begin
   PopupMenu.Items.Add(MenuItem);
 end;
 
-procedure TComponentPalette.DoEndUpdate(Changed: boolean);
-begin
-  if Changed or fNoteBookNeedsUpdate then begin
-    {$IFDEF VerboseComponentPalette}
-    DebugLn(['TComponentPalette.DoEndUpdate, calling UpdateNoteBookButtons, Changed=', Changed]);
-    {$ENDIF}
-    UpdateNoteBookButtons(False);
-  end;
-  inherited DoEndUpdate(Changed);
-end;
-
 procedure TComponentPalette.OnPageMouseWheel(Sender: TObject; Shift: TShiftState;
       WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
 begin
@@ -839,8 +825,7 @@ end;
 procedure TComponentPalette.Update(ForceUpdateAll: Boolean);
 begin
   {$IFDEF VerboseComponentPalette}
-  DebugLn(['TComponentPalette.Update, calling UpdateNoteBookButtons, fUpdatingPageControl=',
-           fUpdatingPageControl, ', fNoteBookNeedsUpdate=', fNoteBookNeedsUpdate]);
+  DebugLn(['TComponentPalette.Update, calling UpdateNoteBookButtons, fUpdatingPageControl=', fUpdatingPageControl]);
   {$ENDIF}
   UpdateNoteBookButtons(ForceUpdateAll);
 end;
@@ -974,14 +959,8 @@ var
   Pg: TComponentPage;
 begin
   if fUpdatingPageControl then exit;
-  if IsUpdateLocked then begin
-    fNoteBookNeedsUpdate:=true;
-    exit;
-  end;
-  if FPageControl=nil then begin
-    fNoteBookNeedsUpdate:=false;
-    exit;
-  end;
+  Assert(not IsUpdateLocked, 'TComponentPalette.UpdateNoteBookButtons: IsUpdateLocked');
+  if FPageControl=Nil then exit;
   // lock
   fUpdatingPageControl:=true;
   FPageControl.DisableAlign;
@@ -1048,7 +1027,6 @@ begin
   finally
     // unlock
     fUpdatingPageControl:=false;
-    fNoteBookNeedsUpdate:=false;
     FPageControl.EnableAlign;
   end;
 end;
