@@ -1365,16 +1365,16 @@ begin
 
 
   B := QtDC.getClipping;
-  if B and
-    (Flags and DT_NOCLIP = DT_NOCLIP) and
+  if (Flags and DT_NOCLIP = DT_NOCLIP) and
     (Flags and DT_WORDBREAK = DT_WORDBREAK) then
   begin
-    ClipRect := QtDC.getClipRegion.getBoundingRect;
+    if B then
+      ClipRect := QtDC.getClipRegion.getBoundingRect;
     //this is just to get same behaviour as gtk2 and win32
     //IMO, we should change ARect.Left and/or ARect.Top if smaller than
     //clip rect (map to clipRect). Then multiline text is drawn ok.
     //look at issue http://bugs.freepascal.org/view.php?id=17678 . zeljko.
-    if (ARect.Left < ClipRect.Left) or (ARect.Top < ClipRect.Top) then
+    if not B or (B and ((ARect.Left < ClipRect.Left) or (ARect.Top < ClipRect.Top))) then
     begin
       {$note remove ifdef if I'm wrong about DT_WORDBREAK OBSERVATION}
       {$IFDEF QT_DRAWTEXT_MAP_TO_CLIPRECT}
