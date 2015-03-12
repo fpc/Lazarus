@@ -63,7 +63,7 @@ uses
   PackageDefs, PackageLinks, PackageSystem, OpenInstalledPkgDlg,
   PkgGraphExplorer, BrokenDependenciesDlg, CompilerOptions,
   IDETranslations, TransferMacros, BuildLazDialog, NewDialog, FindInFilesDlg,
-  IDEDialogs, UnitResources, ProjectInspector, ComponentPalette, SourceEditor,
+  IDEDialogs, UnitResources, ProjectInspector, SourceEditor,
   AddFileToAPackageDlg, LazarusPackageIntf, PublishProjectDlg, PkgLinksDlg,
   InterPkgConflictFiles, InstallPkgSetDlg, ConfirmPkgListDlg, NewPkgComponentDlg,
   // bosses
@@ -2892,19 +2892,11 @@ begin
 end;
 
 constructor TPkgManager.Create(TheOwner: TComponent);
-var
-  CompPalette: TComponentPalette;
 begin
   inherited Create(TheOwner);
   OnGetDependencyOwnerDescription:=@GetDependencyOwnerDescription;
   OnGetDependencyOwnerDirectory:=@GetDependencyOwnerDirectory;
   OnPackageFileLoaded:=@PackageFileLoaded;
-
-  // componentpalette
-  IDEComponentPalette:=TComponentPalette.Create;
-  CompPalette:=TComponentPalette(IDEComponentPalette);
-  CompPalette.OnOpenPackage:=@IDEComponentPaletteOpenPackage;
-  CompPalette.OnOpenUnit:=@IDEComponentPaletteOpenUnit;
 
   // package links
   PkgLinks:=TPackageLinks.Create;
@@ -2972,15 +2964,12 @@ end;
 
 destructor TPkgManager.Destroy;
 begin
-  if IDEComponentPalette<>nil then
-    TComponentPalette(IDEComponentPalette).PageControl:=nil;
   FreeThenNil(LazPackageDescriptors);
   PackageGraph.FreeAutoInstallDependencies;
   FreeThenNil(PackageGraphExplorer);
   FreeThenNil(PackageEditors);
   FreeThenNil(PackageGraph);
   FreeThenNil(PkgLinks);
-  FreeThenNil(IDEComponentPalette);
   FreeThenNil(PackageDependencies);
   inherited Destroy;
 end;

@@ -1407,6 +1407,8 @@ constructor TMainIDE.Create(TheOwner: TComponent);
 var
   Layout: TSimpleWindowLayout;
   FormCreator: TIDEWindowCreator;
+  PkgMngr: TPkgManager;
+  CompPalette: TComponentPalette;
   AMenuHeight: Integer;
 begin
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.Create START');{$ENDIF}
@@ -1505,7 +1507,8 @@ begin
   DebugBoss.ConnectMainBarEvents;
   DebuggerDlg.OnProcessCommand := @OnProcessIDECommand;
 
-  PkgBoss:=TPkgManager.Create(nil);
+  PkgMngr:=TPkgManager.Create(nil);
+  PkgBoss:=PkgMngr;
   PkgBoss.ConnectMainBarEvents;
   LPKInfoCache:=TLPKInfoCache.Create;
   HelpBoss:=TIDEHelpManager.Create(nil);
@@ -1522,8 +1525,13 @@ begin
   LoadMenuShortCuts;
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.Create IDE COMPONENTS');{$ENDIF}
 
+  // componentpalette
+  CompPalette:=TComponentPalette.Create;
+  IDEComponentPalette:=CompPalette;
+  CompPalette.OnOpenPackage:=@PkgMngr.IDEComponentPaletteOpenPackage;
+  CompPalette.OnOpenUnit:=@PkgMngr.IDEComponentPaletteOpenUnit;
+  CompPalette.PageControl:=MainIDEBar.ComponentPageControl;
   // load installed packages
-  TComponentPalette(IDEComponentPalette).PageControl:=MainIDEBar.ComponentPageControl;
   PkgBoss.LoadInstalledPackages;
 
   EditorMacroListViewer.LoadGlobalInfo; // Must be after packages are loaded/registered.
@@ -1616,7 +1624,10 @@ begin
   FreeThenNil(IDEQuickFixes);
   FreeThenNil(GlobalDesignHook);
   FreeThenNil(LPKInfoCache);
+  if IDEComponentPalette<>nil then
+    TComponentPalette(IDEComponentPalette).PageControl:=nil;
   FreeThenNil(PkgBoss);
+  FreeThenNil(IDEComponentPalette);
   FreeThenNil(HelpBoss);
   FreeThenNil(DebugBoss);
   FreeThenNil(TheCompiler);
