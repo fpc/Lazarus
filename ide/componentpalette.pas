@@ -81,6 +81,7 @@ type
 
   TComponentPage = class(TBaseComponentPage)
   private
+    fPageComponent: TCustomPage;
     fBtnIndex: integer;
     fIndex: Integer;           // Index in the Pages container.
     fCompNames: TStringList;   // Reference to component names.
@@ -96,6 +97,8 @@ type
   public
     constructor Create(const ThePageName: string);
     destructor Destroy; override;
+    function GetScrollBox: TScrollBox;
+    property PageComponent: TCustomPage read fPageComponent write fPageComponent;
   end;
 
   { TComponentPalette }
@@ -172,6 +175,7 @@ type
     procedure DoAfterComponentAdded; override;
     procedure OnGetNonVisualCompIcon(Sender: TObject;
                                      AComponent: TComponent; var Icon: TCustomBitmap);
+    function IndexOfPageComponent(AComponent: TComponent): integer;
     function FindComponent(const CompClassName: string): TRegisteredComponent; override;
     {$IFDEF CustomIDEComps}
     procedure RegisterCustomIDEComponents(
@@ -301,7 +305,17 @@ end;
 
 destructor TComponentPage.Destroy;
 begin
+  FreeAndNil(fPageComponent);
   inherited Destroy;
+end;
+
+function TComponentPage.GetScrollBox: TScrollBox;
+begin
+  if Assigned(PageComponent) and (PageComponent.ComponentCount > 0)
+  and (PageComponent.Components[0] is TScrollBox) then
+    Result := TScrollBox(PageComponent.Components[0])
+  else
+    Result := Nil;
 end;
 
 function IsSelectionToolBtn(aControl: TControl): boolean;
@@ -618,7 +632,7 @@ procedure TComponentPalette.ActivePageChanged(Sender: TObject);
 begin
   if FPageControl=nil then exit;
   if (FSelected<>nil)
-  and (FSelected.RealPage.PageComponent=FPageControl.ActivePage) then exit;
+  and ((FSelected.RealPage as TComponentPage).PageComponent=FPageControl.ActivePage) then exit;
   if fUpdatingPageControl then exit;
   {$IFDEF VerboseComponentPalette}
   DebugLn('TComponentPalette.ActivePageChanged: Calling ReAlignButtons, setting Selected:=nil.');
@@ -832,7 +846,7 @@ begin
     FSelected.RealPage.PageComponent, ', Index ', FSelected.RealPage.PageComponent.PageIndex]);
   {$ENDIF}
   // Switch to the new page
-  FPageControl.ActivePage:=TTabSheet(FSelected.RealPage.PageComponent);
+  FPageControl.ActivePage:=TTabSheet((FSelected.RealPage as TComponentPage).PageComponent);
   // Build the GUI layout for this page if not done yet.
   if FSelected.Button=nil then
     ReAlignButtons(FPageControl.ActivePage);
@@ -1304,6 +1318,16 @@ begin
     Icon:=TPkgComponent(ARegComp).Icon
   else
     Icon:=GetUnregisteredIcon;
+end;
+
+function TComponentPalette.IndexOfPageComponent(AComponent: TComponent): integer;
+begin
+  if AComponent<>nil then begin
+    Result:=Pages.Count-1;
+    while (Result>=0) and ((Pages[Result] as TComponentPage).PageComponent<>AComponent) do
+      dec(Result);
+  end else
+    Result:=-1;
 end;
 
 function TComponentPalette.FindComponent(const CompClassName: string): TRegisteredComponent;

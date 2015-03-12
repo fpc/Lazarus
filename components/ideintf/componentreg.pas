@@ -24,7 +24,7 @@ unit ComponentReg;
 interface
 
 uses
-  Classes, SysUtils, typinfo, Controls, ComCtrls, Forms,
+  Classes, SysUtils, typinfo, Controls,
   Laz2_XMLCfg, LCLProc, fgl;
 
 type
@@ -132,7 +132,6 @@ type
 
   TBaseComponentPage = class
   private
-    FPageComponent: TCustomPage;
     FPageName: string;
     FPalette: TBaseComponentPalette;
     FSelectButton: TComponent;
@@ -143,11 +142,9 @@ type
   public
     constructor Create(const ThePageName: string);
     destructor Destroy; override;
-    function GetScrollBox: TScrollBox;
   public
     property PageName: string read FPageName;
     property Palette: TBaseComponentPalette read FPalette write FPalette;
-    property PageComponent: TCustomPage read FPageComponent write FPageComponent;
     property SelectButton: TComponent read FSelectButton write FSelectButton;
     property Visible: boolean read FVisible write SetVisible;
   end;
@@ -230,7 +227,6 @@ type
     function FindComponent(const CompClassName: string): TRegisteredComponent; virtual;
     function FindButton(Button: TComponent): TRegisteredComponent;
     function CreateNewClassName(const Prefix: string): string;
-    function IndexOfPageComponent(AComponent: TComponent): integer;
     procedure Update(ForceUpdateAll: Boolean); virtual; abstract;
     procedure IterateRegisteredClasses(Proc: TGetComponentClassEvent);
     {$IFDEF CustomIDEComps}
@@ -557,7 +553,6 @@ end;
 
 destructor TBaseComponentPage.Destroy;
 begin
-  FreeAndNil(FPageComponent);
   FreeAndNil(FSelectButton);
   inherited Destroy;
 end;
@@ -574,15 +569,6 @@ procedure TBaseComponentPage.OnComponentVisibleChanged(AComponent: TRegisteredCo
 begin
   if FPalette<>nil then
     FPalette.OnComponentVisibleChanged(AComponent);
-end;
-
-function TBaseComponentPage.GetScrollBox: TScrollBox;
-begin
-  if Assigned(PageComponent) and (PageComponent.ComponentCount > 0)
-  and (PageComponent.Components[0] is TScrollBox) then
-    Result := TScrollBox(PageComponent.Components[0])
-  else
-    Result := Nil;
 end;
 
 { TBaseComponentPalette }
@@ -852,16 +838,6 @@ begin
       inc(i);
     until FindComponent(Result)=nil;
   end;
-end;
-
-function TBaseComponentPalette.IndexOfPageComponent(AComponent: TComponent): integer;
-begin
-  if AComponent<>nil then begin
-    Result:=Pages.Count-1;
-    while (Result>=0) and (Pages[Result].PageComponent<>AComponent) do
-      dec(Result);
-  end else
-    Result:=-1;
 end;
 
 procedure TBaseComponentPalette.IterateRegisteredClasses(Proc: TGetComponentClassEvent);
