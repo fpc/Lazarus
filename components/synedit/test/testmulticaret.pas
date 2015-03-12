@@ -37,6 +37,9 @@ type
     procedure TestExtraCaretPos(AName: String; ExpCount: Integer; ExpPos: array of integer); // x,y
     procedure TestExtraCaretPosAndOffs(AName: String; ExpCount: Integer; ExpPos: array of integer); // x,y,offs
 
+    procedure TestExtraCaretPos(AName: String; X, Y: Integer; ExpCount: Integer; ExpPos: array of integer); // x,y
+    procedure TestExtraCaretPosAndOffs(AName: String; X, Y, Offs: Integer; ExpCount: Integer; ExpPos: array of integer); // x,y,offs
+
     procedure RunAndTest(AName: String;
         cmds: Array of TSynEditorCommand; chars: array of String;
         X, Y: Integer; ExpLines: Array of String
@@ -204,6 +207,20 @@ begin
     AssertEquals(BaseTestName+' '+AName + ' extra pos y', ExpPos[i*3+1], FMultiCaret.Carets.CaretY[i]);
     AssertEquals(BaseTestName+' '+AName + ' extra pos O', ExpPos[i*3+2], FMultiCaret.Carets.CaretOffs[i]);
   end
+end;
+
+procedure TTestMultiCaret.TestExtraCaretPos(AName: String; X, Y: Integer; ExpCount: Integer;
+  ExpPos: array of integer);
+begin
+  TestIsCaret(AName, X, Y);
+  TestExtraCaretPos(AName, ExpCount, ExpPos);
+end;
+
+procedure TTestMultiCaret.TestExtraCaretPosAndOffs(AName: String; X, Y, Offs: Integer;
+  ExpCount: Integer; ExpPos: array of integer);
+begin
+  TestIsCaret(AName, X, Y, Offs);
+  TestExtraCaretPosAndOffs(AName, ExpCount, ExpPos);
 end;
 
 procedure TTestMultiCaret.RunAndTest(AName: String; cmds: array of TSynEditorCommand;
@@ -537,6 +554,14 @@ begin
 end;
 
 procedure TTestMultiCaret.CursorMove;
+  function LocalText1: TStringArray;
+  begin
+    SetLength(Result, 4);
+    Result[0] := '    123   ';
+    Result[1] := '      abc ';
+    Result[2] := '      abc ';
+    Result[3] := '';
+  end;
 begin
   PushBaseName('eoScrollPastEol, eoCaretSkipTab');
     FOptAdd := [eoScrollPastEol];
@@ -630,6 +655,23 @@ begin
     PopBaseName;
   PopBaseName;
 
+  // move through tab, but not double-widths
+
+  PushBaseName('ecLineStart swap to carets');
+    FOptAdd := [eoScrollPastEol, eoEnhanceHomeKey];
+    FOptRemove := [eoTrimTrailingSpaces];
+    FOpt2Add := [eoEnhanceEndKey];
+    FOpt2Remove := [];
+
+    ReCreateEdit(LocalText1);
+    SetCaretsByKey(1,1, [2,0,  0,1], mcmMoveAllCarets);
+    TestExtraCaretPosAndOffs('', 3,2,0,  2, [1,1,0,  3,1,0]);
+    RunAndTest('3 carets',       [ecLineStart],   1,2,0, LocalText1,   2, [1,1,0,  5,1,0]);
+    RunAndTest('3 carets Right', [ecRight],       2,2,0, LocalText1,   2, [2,1,0,  6,1,0]);
+    RunAndTest('3 carets',       [ecLineStart],   1,2,0, LocalText1,   2, [1,1,0,  5,1,0]);
+    RunAndTest('3 carets',       [ecLineStart],   7,2,0, LocalText1,   2, [1,1,0,  5,1,0]);
+
+  PopBaseName;
 end;
 
 procedure TTestMultiCaret.Edit;

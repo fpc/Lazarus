@@ -8,7 +8,7 @@ unit SynPluginMultiCaret;
 {$IfDef SynMultiCaretAssert}
   {$ASSERTIONS on}
 {$ENDIF}
-
+{ $INLINE off}
 interface
 
 uses
@@ -74,7 +74,7 @@ type
     property  ScreenCaret[Index: Integer]: TSynPluginMultiCaretVisual read GetScreenCaret; default;
   end;
 
-  TCaretFlag = (cfMainCaret, cfNoneVisual, cfAddDuplicate);
+  TCaretFlag = (cfMainCaret, cfNoneVisual, cfAddDuplicate, cfIterationDone);
   TCaretFlags = set of TCaretFlag;
 
   { TSynPluginMultiCaretList }
@@ -89,6 +89,7 @@ type
       Flags: TCaretFlags;
       Visual: TSynPluginMultiCaretVisual;
     end;
+    PCaretData = ^TCaretData;
   private
     FLowIndex, FHighIndex: Integer;
     FMainCaretIndex: Integer;
@@ -114,7 +115,7 @@ type
 
     function  InternalRemoveCaretEx(RawIndex: Integer; AlternativeRawIndex: Integer = -1): Integer;
     function  InternalRemoveCaret(RawIndex: Integer): integer;
-    procedure AdjustAfterChange(RawIndex: Integer);
+    procedure AdjustAfterChange(RawIndex: Integer); inline;
   public
     constructor Create;
     function  AddCaret(X, Y, Offs: Integer; flags: TCaretFlags = []; PhysX: Integer = -1): Integer;
@@ -137,6 +138,32 @@ type
     property Visual[Index: Integer]: TSynPluginMultiCaretVisual read GetVisual write SetVisual;
     property Flags[Index: Integer]: TCaretFlags read GetFlags;
     property MainCaretIndex: Integer read GetMainCaretIndex;
+
+  private
+    FCurrenCaret, FBeforeNextCaret: PCaretData;
+    FIterationDoneCount: Integer;
+    FLowCaret, FHighCaret: PCaretData;  // used in AdjustAfterChange
+    FIteratoreMode: (mciNone, mciUp, mciDown);
+    function GetCurrentCaretFull: TLogCaretPoint; inline;
+    function GetCurrentCaretKeepX: Integer; inline;
+    procedure SetCurrentCaretFull(AValue: TLogCaretPoint); inline;
+    procedure SetCurrentCaretKeepX(AValue: Integer); inline;
+
+    procedure AdjustAfterChange(ACaret: PCaretData);
+  public
+    // During iteration no calls to add/remove are allowed
+    procedure StartIteratorAtFirst; // valid after first call to IterateNextUp
+    function  IterateNextUp: Boolean; inline;
+    procedure StartIteratorAtLast;
+    function  IterateNextDown: Boolean; inline;
+    //procedure AbortIterator;
+
+    property CurrentCaretFull: TLogCaretPoint read GetCurrentCaretFull write SetCurrentCaretFull;
+    property CurrentCaretKeepX: Integer read GetCurrentCaretKeepX write SetCurrentCaretKeepX;
+    //property CurrentCaret: TPoint read GetCurrentCaret  write SetCurrentCaret;
+    //property CurrentCaretX: Integer read GetCurrentCaretX write SetCurrentCaretX;
+    //property CurrentCaretOffs: Integer read GetCurrentCaretOffs write SetCurrentCaretOffs;
+    //property CurrentCaretY: Integer read GetCurrentCaretY write SetCurrentCaretY;
   end;
 
   { TSynPluginMultiCaretBase }
@@ -705,6 +732,7 @@ end;
 
 function TSynPluginMultiCaretList.InternalRemoveCaret(RawIndex: Integer): integer;
 begin
+  assert(FIteratoreMode=mciNone, 'TSynPluginMultiCaretList.AddCaret: FIteratoreMode=mciNone');
   assert((RawIndex>=FLowIndex) and (RawIndex <= FHighIndex), 'TSynPluginMultiCaretList.InternalRemoveCaret: (RawIndex>=FLowIndex) and (RawIndex <= FHighIndex)');
   Result := 0; // change to LowCaret .. RawIndex
 
@@ -726,7 +754,7 @@ begin
     inc(FLowIndex);
     if RawIndex > FMainCaretIndex then
       inc(FMainCaretIndex);
-    Result := 1;
+    Result := 1; // FLowIndex was increasde by 1;
   end;
 
   //debugln(SynMCaretDebug, ['TSynPluginMultiCaretList.InternalRemoveCaret ', RawIndex, ' , ', count]);
@@ -734,58 +762,13 @@ end;
 
 procedure TSynPluginMultiCaretList.AdjustAfterChange(RawIndex: Integer);
 var
-  NewIdx, y, x: Integer;
+  NewIdx, y, x, o: Integer;
   v: TCaretData;
 begin
-  assert((RawIndex>=FLowIndex) and (RawIndex <= FHighIndex), 'TSynPluginMultiCaretList.AdjustAfterChange: (Index>=FLowIndex) and (Index <= FHighIndex)');
-  NewIdx := RawIndex;
-  y := FCarets[RawIndex].y;
-  x := FCarets[RawIndex].x;
-  if (RawIndex > FLowIndex) and
-     ((y < FCarets[RawIndex-1].y) or ((y = FCarets[RawIndex-1].y) and (x <= FCarets[RawIndex-1].x)))
-  then begin
-    if (RawIndex-1 > FLowIndex) and
-       ((y < FCarets[RawIndex-2].y) or ((y = FCarets[RawIndex-2].y) and (x < FCarets[RawIndex-2].x)))
-    then
-      NewIdx := FindEqOrNextCaretRawIdx(x,y, FLowIndex, RawIndex - 2)
-    else
-      NewIdx := RawIndex-1;
-
-    if (y = FCarets[NewIdx].y) and (x = FCarets[NewIdx].x) then begin
-      if FMergeLock = 0 then
-        InternalRemoveCaretEx(RawIndex, NewIdx);
-      exit;
-    end;
-    v := FCarets[RawIndex];
-    {$IfDef SynMultiCaretDebug}
-debugln(SynMCaretDebug, ['TSynPluginMultiCaretList.AdjustAfterChange ', NewIdx, ' ',RawIndex]);
-    {$EndIf}
-    Move(FCarets[NewIdx], FCarets[NewIdx+1], (RawIndex-NewIdx) * SizeOf(FCarets[0]));
-    FCarets[NewIdx] := v;
-  end
-  else
-  if (RawIndex < FHighIndex) and
-     ((y > FCarets[RawIndex+1].y) or ((y = FCarets[RawIndex+1].y) and (x >= FCarets[RawIndex+1].x)))
-  then begin
-    if (RawIndex+1 < FHighIndex) and
-       ((y > FCarets[RawIndex+2].y) or ((y = FCarets[RawIndex+2].y) and (x > FCarets[RawIndex+2].x)))
-    then
-      NewIdx := FindEqOrNextCaretRawIdx(x,y, RawIndex + 2, FHighIndex)
-    else
-      NewIdx := RawIndex+1;
-
-    if (y = FCarets[NewIdx].y) and (x = FCarets[NewIdx].x) then begin
-      if FMergeLock = 0 then
-        InternalRemoveCaretEx(RawIndex, NewIdx);
-      exit;
-    end;
-    v := FCarets[RawIndex];
-    {$IfDef SynMultiCaretDebug}
-debugln(SynMCaretDebug, ['TSynPluginMultiCaretList.AdjustAfterChange ', NewIdx, ' ',RawIndex]);
-    {$EndIf}
-    Move(FCarets[RawIndex+1], FCarets[RawIndex], (NewIdx-RawIndex) * SizeOf(FCarets[0]));
-    FCarets[NewIdx] := v;
-  end;
+  assert(FIteratoreMode=mciNone, 'TSynPluginMultiCaretList.AddCaret: FIteratoreMode=mciNone');
+  FLowCaret := @FCarets[FLowIndex];
+  FHighCaret := @FCarets[FHighIndex];
+  AdjustAfterChange(@FCarets[RawIndex]);
 end;
 
 constructor TSynPluginMultiCaretList.Create;
@@ -801,6 +784,7 @@ var
   NewCarets: Array of TCaretData;
   Len, AddLen, i, Middle: Integer;
 begin
+  assert(FIteratoreMode=mciNone, 'TSynPluginMultiCaretList.AddCaret: FIteratoreMode=mciNone');
   Result := FindEqOrNextCaretRawIdx(x, y, Offs);
   if Result < FLowIndex then
     Result := FLowIndex;
@@ -882,6 +866,7 @@ end;
 
 procedure TSynPluginMultiCaretList.RemoveCaret(Index: Integer);
 begin
+  assert(FIteratoreMode=mciNone, 'TSynPluginMultiCaretList.RemoveCaret: FIteratoreMode=mciNone');
   InternalRemoveCaret(Index+FLowIndex);
 end;
 
@@ -889,6 +874,7 @@ procedure TSynPluginMultiCaretList.Clear(AFreeVisual: Boolean);
 var
   i: Integer;
 begin
+  assert(FIteratoreMode=mciNone, 'TSynPluginMultiCaretList.Clear: FIteratoreMode=mciNone');
   if AFreeVisual then
   begin
     for i := FLowIndex to FHighIndex do
@@ -1045,6 +1031,208 @@ end;
 procedure TSynPluginMultiCaretList.DecMergeLock;
 begin
   dec(FMergeLock);
+end;
+
+function TSynPluginMultiCaretList.GetCurrentCaretFull: TLogCaretPoint;
+begin
+  Result.X := FCurrenCaret^.x;
+  Result.Y := FCurrenCaret^.y;
+  Result.Offs := FCurrenCaret^.offs;
+end;
+
+function TSynPluginMultiCaretList.GetCurrentCaretKeepX: Integer;
+begin
+  Result := FCurrenCaret^.KeepX;
+end;
+
+procedure TSynPluginMultiCaretList.SetCurrentCaretFull(AValue: TLogCaretPoint);
+begin
+  FCurrenCaret^.x := AValue.X;
+  FCurrenCaret^.y := AValue.Y;
+  FCurrenCaret^.offs := AValue.Offs;
+  AdjustAfterChange(FCurrenCaret);
+end;
+
+procedure TSynPluginMultiCaretList.SetCurrentCaretKeepX(AValue: Integer);
+begin
+  FCurrenCaret^.KeepX := AValue;
+  AdjustAfterChange(FCurrenCaret);
+end;
+
+procedure TSynPluginMultiCaretList.AdjustAfterChange(ACaret: PCaretData);
+  function ToRawIndex(C: PCaretData): Integer;
+  begin
+    Result := (C - @FCarets[0]) div SizeOf(FCarets[0]);
+  end;
+var
+  NewCaretPos, HelpCaretPos: PCaretData;
+  NewCaretIdx, y, x, o: Integer;
+  v: TCaretData;
+begin
+  assert((ACaret>=FLowCaret) and (ACaret <= FHighCaret) and (ACaret <> nil), 'TSynPluginMultiCaretList.AdjustAfterChange: (ACaret>=FLowCaret) and (ACaret <= FHighCaret)');
+  // if iterating then this must only be called with fcurrentcaret
+  assert((FIteratoreMode=mciNone) or ((ACaret = FCurrenCaret)), 'TSynPluginMultiCaretList.AdjustAfterChange: (FIteratoreMode=mciNone) or (ACaret = FCurrenCaret)');
+  y := ACaret^.y;
+  x := ACaret^.x;
+  o := ACaret^.offs;
+
+  if (ACaret > FLowCaret) then begin
+    NewCaretPos := ACaret - 1;
+    if (y < NewCaretPos^.y) or
+       ( (y = NewCaretPos^.y) and
+         ( (x < NewCaretPos^.x) or ( (x = NewCaretPos^.x) and (o <= NewCaretPos^.offs) ) )
+       )
+    then begin
+      HelpCaretPos := NewCaretPos - 1;
+      if (HelpCaretPos >= FLowCaret) and
+         ( (y < HelpCaretPos^.y) or
+           ( (y = HelpCaretPos^.y) and
+             ( (x < HelpCaretPos^.x) or ( (x = HelpCaretPos^.x) and (o < HelpCaretPos^.offs) ) )
+           ) )
+      then begin
+        NewCaretIdx := FindEqOrNextCaretRawIdx(x,y,o, FLowIndex, ToRawIndex(HelpCaretPos));
+        NewCaretPos := @FCarets[NewCaretIdx];
+      end;
+
+      if (y = NewCaretPos^.y) and (x = NewCaretPos^.x) and (o = NewCaretPos^.offs) then begin
+        if FMergeLock = 0 then
+          InternalRemoveCaretEx(ToRawIndex(ACaret), ToRawIndex(NewCaretPos));
+        exit;
+      end;
+      v := ACaret^;
+      {$IfDef SynMultiCaretDebug}
+  debugln(SynMCaretDebug, ['TSynPluginMultiCaretList.AdjustAfterChange ', ToRawIndex(NewCaretPos), ' ',ToRawIndex(ACaret)]);
+      {$EndIf}
+      Move(NewCaretPos^, (NewCaretPos+1)^, Pointer(ACaret)-Pointer(NewCaretPos));
+      NewCaretPos^ := v;
+
+      assert(FBeforeNextCaret=nil, 'TSynPluginMultiCaretList.AdjustAfterChange: FBeforeNextCaret=nil');
+      FCurrenCaret := NewCaretPos; // move down
+      case FIteratoreMode of
+        mciUp:   FBeforeNextCaret := ACaret; // continue at ACaret+1;
+        mciDown: begin
+          FBeforeNextCaret := ACaret + 1;  // continue at ACaret;
+          Include(FCurrenCaret^.Flags, cfIterationDone);
+          inc(FIterationDoneCount);
+        end;
+      end;
+    end
+  end
+  else
+  if (ACaret < FHighCaret) then begin
+    NewCaretPos := ACaret + 1;
+    if (y > NewCaretPos^.y) or
+       ( (y = NewCaretPos^.y) and
+         ( (x > NewCaretPos^.x) or ( (x = NewCaretPos^.x) and (o >= NewCaretPos^.offs) ) )
+       )
+    then begin
+      HelpCaretPos := NewCaretPos + 1;
+      if (HelpCaretPos <= FHighCaret) and
+         ( (y > HelpCaretPos^.y) or
+           ( (y = HelpCaretPos^.y) and
+             ( (x > HelpCaretPos^.x) or ( (x = HelpCaretPos^.x) and (o > HelpCaretPos^.offs) ) )
+           ) )
+      then begin
+        NewCaretIdx := FindEqOrNextCaretRawIdx(x,y,o, ToRawIndex(HelpCaretPos), FHighIndex);
+        NewCaretPos := @FCarets[NewCaretIdx];
+      end;
+
+      if (y = NewCaretPos^.y) and (x = NewCaretPos^.x) and (o = NewCaretPos^.offs) then begin
+        if FMergeLock = 0 then
+          InternalRemoveCaretEx(ToRawIndex(ACaret), ToRawIndex(NewCaretPos));
+        exit;
+      end;
+      v := ACaret^;
+      {$IfDef SynMultiCaretDebug}
+  debugln(SynMCaretDebug, ['TSynPluginMultiCaretList.AdjustAfterChange ', ToRawIndex(NewCaretPos), ' ',ToRawIndex(ACaret)]);
+      {$EndIf}
+      Move((ACaret+1)^, ACaret^, Pointer(NewCaretPos)-Pointer(ACaret));
+      NewCaretPos^ := v;
+
+      assert(FBeforeNextCaret=nil, 'TSynPluginMultiCaretList.AdjustAfterChange: FBeforeNextCaret=nil');
+      FCurrenCaret := NewCaretPos; // move down
+      case FIteratoreMode of
+        mciDown:   FBeforeNextCaret := ACaret; // continue at ACaret-1;
+        mciUp: begin
+          FBeforeNextCaret := ACaret - 1;  // continue at ACaret;
+          Include(FCurrenCaret^.Flags, cfIterationDone);
+          inc(FIterationDoneCount);
+        end;
+      end;
+    end;
+  end;
+end;
+
+procedure TSynPluginMultiCaretList.StartIteratorAtFirst;
+begin
+  FBeforeNextCaret := nil;
+  if Length(FCarets) = 0 then begin
+    FLowCaret := nil;
+    FHighCaret := nil;
+    FCurrenCaret := nil;
+    exit;
+  end;
+  FLowCaret := @FCarets[FLowIndex];
+  FHighCaret := @FCarets[FHighIndex];
+  FCurrenCaret := FLowCaret - 1;
+  FIteratoreMode := mciUp;
+end;
+
+function TSynPluginMultiCaretList.IterateNextUp: Boolean;
+begin
+  if FBeforeNextCaret <> nil then begin
+    FCurrenCaret := FBeforeNextCaret;
+    FBeforeNextCaret := nil;
+  end;
+  repeat
+    Result := FCurrenCaret < FHighCaret;
+    if not Result then begin
+      FIteratoreMode := mciNone;
+      assert(FIterationDoneCount = 0, 'TSynPluginMultiCaretList.IterateNextUp: FIterationDoneCount = 0');
+      exit;
+    end;
+    inc(FCurrenCaret);
+    if not(cfIterationDone in FCurrenCaret^.Flags) then
+      break;
+    Exclude(FCurrenCaret^.Flags, cfIterationDone);
+    dec(FIterationDoneCount);
+  until False;
+end;
+
+procedure TSynPluginMultiCaretList.StartIteratorAtLast;
+begin
+  FBeforeNextCaret := nil;
+  if Length(FCarets) = 0 then begin
+    FLowCaret := nil;
+    FHighCaret := nil;
+    FCurrenCaret := nil;
+    exit;
+  end;
+  FLowCaret := @FCarets[FLowIndex];
+  FHighCaret := @FCarets[FHighIndex];
+  FCurrenCaret := FHighCaret + 1;
+  FIteratoreMode := mciDown;
+end;
+
+function TSynPluginMultiCaretList.IterateNextDown: Boolean;
+begin
+  if FBeforeNextCaret <> nil then begin
+    FCurrenCaret := FBeforeNextCaret;
+    FBeforeNextCaret := nil;
+  end;
+  repeat
+    Result := FCurrenCaret > FLowCaret;
+    if not Result then begin
+      FIteratoreMode := mciNone;
+      assert(FIterationDoneCount = 0, 'TSynPluginMultiCaretList.IterateNextDown: FIterationDoneCount = 0');
+      exit;
+    end;
+    dec(FCurrenCaret);
+    if not(cfIterationDone in FCurrenCaret^.Flags) then
+      break;
+    Exclude(FCurrenCaret^.Flags, cfIterationDone);
+    dec(FIterationDoneCount);
+  until False;
 end;
 
 { TSynPluginMultiCaretBase }
@@ -1271,9 +1459,7 @@ begin
     exit;
   end;
 
-  if (eoNoCaret in Editor.Options) or
-     not((eoPersistentCaret in Editor.Options) or Editor.Focused)
-  then begin
+  if (eoNoCaret in Editor.Options) then begin
     Carets.Visual[Result] := nil;
     exit;
   end;
@@ -1289,7 +1475,7 @@ begin
       Carets.Visual[Result] := GetVisual;
     x := ViewedTextBuffer.LogPhysConvertor.LogicalToPhysical(ToIdx(y), x, Offs); // TODO: check if offs was adjusted? But should not happen for NEW caret
     Carets.Visual[Result].DisplayPos := TextArea.RowColumnToPixels(Point(x, y1));
-    Carets.Visual[Result].Visible := True;
+    Carets.Visual[Result].Visible := (eoPersistentCaret in Editor.Options) or Editor.Focused;
   end
   else
     Carets.Visual[Result] := nil;
@@ -1304,19 +1490,20 @@ procedure TSynPluginMultiCaretBase.UpdateCaretsPos;
 var
   i, x, y, o, w: Integer;
   y1, y2: Integer;
+  vis: Boolean;
 begin
   if plfDeferUpdateCaretsPos in FPaintLockFlags then exit;
   if FPaintLock > 0 then begin
     include(FPaintLockFlags, plfUpdateCaretsPos);
     exit;
   end;
-  if (eoNoCaret in Editor.Options) or
-     not((eoPersistentCaret in Editor.Options) or Editor.Focused)
-  then begin
-    for i := 0 to FUsedList.Count - 1 do
-      FUsedList[i].Visible := False;
+  if (eoNoCaret in Editor.Options) then begin
+    for i := 0 to CaretsCount - 1 do
+      Carets.Visual[i] := nil;
     exit;
   end;
+
+  vis := (eoPersistentCaret in Editor.Options) or Editor.Focused;
 
   w := Editor.LinesInWindow + 1;
   for i := 0 to CaretsCount - 1 do begin
@@ -1339,7 +1526,7 @@ begin
         Carets.Visual[i] := GetVisual;
       x := ViewedTextBuffer.LogPhysConvertor.LogicalToPhysical(ToIdx(y), x, o);
       Carets.Visual[i].DisplayPos := TextArea.RowColumnToPixels(Point(x, y1));
-      Carets.Visual[i].Visible := True;
+      Carets.Visual[i].Visible := vis;
 //todo: remove if duplicate
       // check if offs was adjusted
       //if o <> Carets.CaretOffs[i] then
@@ -1963,33 +2150,30 @@ procedure TSynCustomPluginMultiCaret.ProcessAllSynCommand(Sender: TObject; After
       case Command of
         ecLeft, ecUp, ecWordLeft, ecLineStart, ecPageUp, ecPageLeft,
         ecPageTop, ecLineTextStart, ecWordEndLeft, ecHalfWordLeft:
-          begin;
-            i := 0;
-            j := CaretsCount;
-            while i < j do begin
-              CaretObj.FullLogicalPos := Carets.CaretFull[i];
-              k := Carets.CaretKeepX[i];
+          begin
+            Carets.StartIteratorAtFirst;
+            while Carets.IterateNextUp do begin
+              CaretObj.FullLogicalPos := Carets.CurrentCaretFull;
+              k := Carets.CurrentCaretKeepX;
               if k > 0 then
                 CaretObj.KeepCaretXPos := k;
               Editor.CommandProcessor(Command, AChar, nil, [hcfInit, hcfFinish]);
-              Carets.CaretFull[i] := CaretObj.FullLogicalPos;
-              Carets.CaretKeepX[i] := CaretObj.KeepCaretXPos;
-              inc(i);
+              Carets.CurrentCaretFull := CaretObj.FullLogicalPos;
+              Carets.CurrentCaretKeepX := CaretObj.KeepCaretXPos;
             end;
           end;
         ecEditorTop, ecEditorBottom: ClearCarets;
         else
           begin
-            i := CaretsCount;
-            while i > 0 do begin
-              dec(i);
-              CaretObj.FullLogicalPos := Carets.CaretFull[i];
-              k := Carets.CaretKeepX[i];
+            Carets.StartIteratorAtLast;
+            while Carets.IterateNextDown do begin
+              CaretObj.FullLogicalPos := Carets.CurrentCaretFull;
+              k := Carets.CurrentCaretKeepX;
               if k > 0 then
                 CaretObj.KeepCaretXPos := k;
               Editor.CommandProcessor(Command, AChar, nil, [hcfInit, hcfFinish]);
-              Carets.CaretFull[i] := CaretObj.FullLogicalPos;
-              Carets.CaretKeepX[i] := CaretObj.KeepCaretXPos;
+              Carets.CurrentCaretFull := CaretObj.FullLogicalPos;
+              Carets.CurrentCaretKeepX := CaretObj.KeepCaretXPos;
             end;
         end;
       end;
