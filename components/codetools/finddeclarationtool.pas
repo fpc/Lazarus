@@ -2754,6 +2754,7 @@ var
   LastCacheEntry: PCodeTreeNodeCacheEntry;
   SearchRangeFlags: TNodeCacheEntryFlags;
   NodeCacheEntryFlags: TNodeCacheEntryFlags;
+  Flags: TFindDeclarationFlags;
 
   procedure InitNodesAndCacheAccess;
   
@@ -2773,16 +2774,17 @@ var
     FirstSearchedNode:=nil;
     LastSearchedNode:=nil;
     SearchRangeFlags:=[];
-    if fdfSearchInParentNodes in Params.Flags then
+    Flags:=Params.Flags;
+    if fdfSearchInParentNodes in Flags then
       Include(SearchRangeFlags,ncefSearchedInParents);
-    if fdfSearchInAncestors in Params.Flags then
+    if fdfSearchInAncestors in Flags then
     Include(SearchRangeFlags,ncefSearchedInAncestors);
     LastNodeCache:=nil;
     LastCacheEntry:=nil;
     NodeCacheEntryFlags:=[];
-    if fdfSearchInParentNodes in Params.Flags then
+    if fdfSearchInParentNodes in Flags then
       Include(NodeCacheEntryFlags,ncefSearchedInParents);
-    if fdfSearchInAncestors in Params.Flags then
+    if fdfSearchInAncestors in Flags then
       Include(NodeCacheEntryFlags,ncefSearchedInAncestors);
   end;
 
@@ -2792,7 +2794,7 @@ var
   begin
     Result:=false;
     // the node cache is identifier based
-    if ([fdfCollect,fdfExtractOperand]*Params.Flags<>[]) then exit;
+    if ([fdfCollect,fdfExtractOperand]*Flags<>[]) then exit;
     
     NodeCache:=GetNodeCache(ContextNode,false);
     if (NodeCache<>LastNodeCache) then begin
@@ -2801,7 +2803,7 @@ var
       if NodeCache<>nil then begin
         LastCacheEntry:=NodeCache.FindNearest(Params.Identifier,
                     ContextNode.StartPos,ContextNode.EndPos,
-                    not (fdfSearchForward in Params.Flags));
+                    not (fdfSearchForward in Flags));
       end else
         LastCacheEntry:=nil;
     end;
@@ -2842,7 +2844,7 @@ var
     if not Found then exit;
     FindIdentifierInContext:=true;
     {$IFDEF ShowCollect}
-    if fdfCollect in Params.Flags then
+    if fdfCollect in Flags then
       raise Exception.Create('fdfCollect must never return true');
     {$ENDIF}
     {$IFDEF ShowFoundIdentifier}
@@ -2850,7 +2852,7 @@ var
     Params.WriteDebugReport;
     {$ENDIF}
     if (FirstSearchedNode=nil) then exit;
-    if ([fdfDoNotCache,fdfCollect,fdfExtractOperand]*Params.Flags<>[]) then exit;
+    if ([fdfDoNotCache,fdfCollect,fdfExtractOperand]*Flags<>[]) then exit;
     if ([fodDoNotCache]*Params.NewFlags<>[]) then exit;
     if (Params.OnIdentifierFound<>@CheckSrcIdentifier) then exit;
     if (Params.FoundProc<>nil) then exit; // do not cache proc searches
@@ -2864,7 +2866,7 @@ var
       exit;
     end;
     AddResultToNodeCaches(FirstSearchedNode,EndNode,
-                      fdfSearchForward in Params.Flags,Params,SearchRangeFlags);
+                      fdfSearchForward in Flags,Params,SearchRangeFlags);
   end;
 
   function CheckResult(NewResult, CallOnIdentifierFound: boolean): boolean;
@@ -2890,13 +2892,13 @@ var
   var IdentFoundResult: TIdentifierFoundResult;
   begin
     Result:=true;
-    FindIdentifierInContext:=NewResult and (not (fdfCollect in Params.Flags));
+    FindIdentifierInContext:=NewResult and (not (fdfCollect in Flags));
     {$IFDEF ShowCollect}
-    if fdfCollect in Params.Flags then begin
+    if fdfCollect in Flags then begin
       DebugLn('[TFindDeclarationTool.FindIdentifierInContext.CheckResult] COLLECT CheckResult Ident=',
       '"',GetIdentifier(Params.Identifier),'"',
       ' File="',ExtractFilename(MainFilename)+'"',
-      ' Flags=[',dbgs(Params.Flags)+']',
+      ' Flags=[',dbgs(Flags)+']',
       ' NewResult=',DbgS(NewResult),
       ' CallOnIdentifierFound=',DbgS(CallOnIdentifierFound));
     end;
@@ -2908,14 +2910,14 @@ var
       Params.WriteDebugReport;
       {$ENDIF}
 
-      if fdfExtractOperand in Params.Flags then
+      if fdfExtractOperand in Flags then
         case Params.NewNode.Desc of
           ctnVarDefinition, ctnConstDefinition:
             with Params do
               AddOperandPart(GetIdentifier(@NewCodeTool.Src[NewNode.StartPos]));
           ctnProperty,ctnGlobalProperty:
             begin
-              if fdfPropertyResolving in Params.Flags then begin
+              if fdfPropertyResolving in Flags then begin
                 if not PropNodeIsTypeLess(Params.NewNode)
                 and ReadTilGetterOfProperty(Params.NewNode) then begin
                   // continue searching of getter
@@ -2935,7 +2937,7 @@ var
         '"',GetIdentifier(Params.Identifier),'"',
         ' StartContext="',StartContextNode.DescAsString,'" "',copy(Src,StartContextNode.StartPos,20),'"',
         ' File="',ExtractFilename(MainFilename)+'"',
-        ' Flags=[',dbgs(Params.Flags),']'
+        ' Flags=[',dbgs(Flags),']'
         ]);}
 
         IdentFoundResult:=Params.NewCodeTool.DoOnIdentifierFound(Params,
@@ -2948,7 +2950,7 @@ var
         Result:=IdentFoundResult<>ifrProceedSearch;
         if IdentFoundResult<>ifrAbortSearch then exit;
       end else begin
-        if fdfCollect in Params.Flags then
+        if fdfCollect in Flags then
           Result:=false;
         CacheResult(true,ContextNode);
         exit;
@@ -2966,7 +2968,7 @@ var
       end;
       FindIdentifierInContext:=true;
       {$IFDEF ShowCollect}
-      if fdfCollect in Params.Flags then
+      if fdfCollect in Flags then
         raise Exception.Create('fdfCollect must never return true');
       {$ENDIF}
       Params.SetResult(Params.FoundProc^.Context.Tool,
@@ -2978,9 +2980,9 @@ var
       exit;
     end;
     // identifier was not found
-    if not (fdfExceptionOnNotFound in Params.Flags) then exit;
+    if not (fdfExceptionOnNotFound in Flags) then exit;
     if (Params.Identifier<>nil)
-    and not (fdfExceptionOnPredefinedIdent in Params.Flags)
+    and not (fdfExceptionOnPredefinedIdent in Flags)
     and WordIsPredefinedIdentifier.DoItCaseInsensitive(Params.Identifier)
     then begin
       Params.SetResult(nil,nil);
@@ -2996,7 +2998,7 @@ var
   procedure MoveContextNodeToChildren;
   begin
     if (ContextNode.LastChild<>nil) then begin
-      if not (fdfSearchForward in Params.Flags) then begin
+      if not (fdfSearchForward in Flags) then begin
         RaiseLastErrorIfInFrontOfCleanedPos(ContextNode.EndPos);
         ContextNode:=ContextNode.LastChild;
       end else
@@ -3015,7 +3017,7 @@ var
     if (Node=nil) or (Node.Desc<>ctnGenericParams) then exit;
     Node:=Node.FirstChild;
     while Node<>nil do begin
-      if (fdfCollect in Params.Flags)
+      if (fdfCollect in Flags)
       or CompareSrcIdentifiers(Node.StartPos,Params.Identifier)
       then begin
         {$IFDEF ShowTriedIdentifiers}
@@ -3024,7 +3026,7 @@ var
         // identifier found
         Params.SetResult(Self,Node);
         Result:=CheckResult(true,true);
-        if not (fdfCollect in Params.Flags) then
+        if not (fdfCollect in Flags) then
           exit;
       end;
       Node:=Node.NextBrother;
@@ -3052,7 +3054,7 @@ var
       if NameNode=nil then exit;
     end;
 
-    if (fdfCollect in Params.Flags)
+    if (fdfCollect in Flags)
     or CompareSrcIdentifiers(NameNode.StartPos,Params.Identifier)
     then begin
       {$IFDEF ShowTriedIdentifiers}
@@ -3061,8 +3063,8 @@ var
       // identifier found
       Params.SetResult(Self,ContextNode);
       Result:=CheckResult(true,true);
-      if not (fdfCollect in Params.Flags) then begin
-        if (fdfSkipClassForward in Params.Flags)
+      if not (fdfCollect in Flags) then begin
+        if (fdfSkipClassForward in Flags)
         and (ContextNode.FirstChild<>nil)
         and (ContextNode.FirstChild.Desc in AllClasses)
         and ((ctnsForwardDeclaration and ContextNode.FirstChild.SubDesc)<>0)
@@ -3099,7 +3101,7 @@ var
   //          false if search should continue
   begin
     Result:=false;
-    if (fdfCollect in Params.Flags)
+    if (fdfCollect in Flags)
     or CompareSrcIdentifiers(ContextNode.StartPos,Params.Identifier)
     then begin
       {$IFDEF ShowTriedIdentifiers}
@@ -3108,7 +3110,7 @@ var
       // identifier found
       Params.SetResult(Self,ContextNode);
       Result:=CheckResult(true,true);
-      if not (fdfCollect in Params.Flags) then begin
+      if not (fdfCollect in Flags) then begin
         exit;
       end;
     end;
@@ -3119,7 +3121,7 @@ var
     Result:=false;
     if ContextNode.FirstChild=nil then exit;
     //debugln('SearchInOnBlockDefinition B ',GetIdentifier(@Src[ContextNode.StartPos]));
-    if (fdfCollect in Params.Flags)
+    if (fdfCollect in Flags)
     or CompareSrcIdentifiers(ContextNode.FirstChild.StartPos,Params.Identifier)
     then begin
       {$IFDEF ShowTriedIdentifiers}
@@ -3128,7 +3130,7 @@ var
       // identifier found
       Params.SetResult(Self,ContextNode.FirstChild);
       Result:=CheckResult(true,true);
-      if not (fdfCollect in Params.Flags) then
+      if not (fdfCollect in Flags) then
         exit;
     end;
   end;
@@ -3145,17 +3147,17 @@ var
     ReadNextAtom; // read keyword
     if (SrcNode.Desc=ctnProgram) and (not UpAtomIs('PROGRAM')) then exit;
     ReadNextAtom; // read name
-    if (fdfCollect in Params.Flags)
+    if (fdfCollect in Flags)
     or CompareSrcIdentifiers(CurPos.StartPos,Params.Identifier) then
     begin
       // identifier found
       {$IFDEF ShowTriedIdentifiers}
-      if not (fdfCollect in Params.Flags) then
+      if not (fdfCollect in Flags) then
         DebugLn('  Source Name Identifier found="',GetIdentifier(Params.Identifier),'"');
       {$ENDIF}
       Params.SetResult(Self,SrcNode,CurPos.StartPos);
       Result:=CheckResult(true,true);
-      if not (fdfCollect in Params.Flags) then
+      if not (fdfCollect in Flags) then
         exit;
     end;
   end;
@@ -3165,7 +3167,7 @@ var
     Result:=false;
     if SearchInSourceName then
       exit(true);
-    if (not (fdfIgnoreUsedUnits in Params.Flags))
+    if (not (fdfIgnoreUsedUnits in Flags))
     and FindIdentifierInHiddenUsedUnits(Params) then begin
       Result:=CheckResult(true,false);
     end;
@@ -3177,13 +3179,13 @@ var
   //          false if search should continue
   begin
     Result:=false;
-    if (fdfCollect in Params.Flags)
+    if (fdfCollect in Flags)
     or (Params.Identifier[0]<>'[') then begin
       MoveCursorToNodeStart(ContextNode);
       ReadNextAtom; // read keyword 'property'
       if UpAtomIs('CLASS') then ReadNextAtom;
       ReadNextAtom; // read name
-      if (fdfCollect in Params.Flags)
+      if (fdfCollect in Flags)
       or CompareSrcIdentifiers(CurPos.StartPos,Params.Identifier) then begin
         // identifier found
         {$IFDEF ShowTriedIdentifiers}
@@ -3206,9 +3208,9 @@ var
     Result:=true;
     if (not ContextNode.HasAsParent(StartContextNode)) then begin
       // searching in a prior node, will leave the start context
-      if (not (fdfSearchInParentNodes in Params.Flags)) then begin
+      if (not (fdfSearchInParentNodes in Flags)) then begin
         // searching in any parent context is not permitted
-        if not ((fdfSearchInAncestors in Params.Flags)
+        if not ((fdfSearchInAncestors in Flags)
         and (ContextNode.Desc in AllClasses)) then begin
           // even searching in ancestors contexts is not permitted
           // -> there is no prior context accessible any more
@@ -3246,7 +3248,7 @@ var
         if SearchInGenericParams(ContextNode.Parent) then begin
           FindIdentifierInContext:=true;
           {$IFDEF ShowCollect}
-          if fdfCollect in Params.Flags then
+          if fdfCollect in Flags then
             raise Exception.Create('fdfCollect must never return true');
           {$ENDIF}
           exit(AbortNoCacheResult);
@@ -3254,7 +3256,7 @@ var
       end;
 
       if (ContextNode.Desc in (AllClasses-[ctnRecordType])) then begin
-        if (fdfSearchInAncestors in Params.Flags) then begin
+        if (fdfSearchInAncestors in Flags) then begin
           // after searching in a class definition, search in its ancestors
 
           // ToDo: check for cycles in ancestors
@@ -3265,7 +3267,7 @@ var
           if Result then begin
             FindIdentifierInContext:=true;
             {$IFDEF ShowCollect}
-            if fdfCollect in Params.Flags then
+            if fdfCollect in Flags then
               raise Exception.Create('fdfCollect must never return true');
             {$ENDIF}
             exit(AbortNoCacheResult);
@@ -3273,24 +3275,29 @@ var
         end;
         // if this was a nested class, the identifier can be in the ancestors
         // of the enclosing class
-        Params.Flags:=Params.Flags+[fdfSearchInAncestors];
+        Flags:=Flags+[fdfSearchInAncestors];
+      end else if ContextNode.Desc=ctnClassInheritance then begin
+        if (StartContextNode=ContextNode)
+        or StartContextNode.HasAsParent(ContextNode) then
+          // searching an ancestor => don't search within ancestors
+          Exclude(Flags,fdfSearchInAncestors);
       end;
 
       if (ContextNode=StartContextNode)
-      and (not (fdfSearchInParentNodes in Params.Flags)) then begin
+      and (not (fdfSearchInParentNodes in Flags)) then begin
         // startcontext completed => not searching in parents or ancestors
         ContextNode:=nil;
         exit(Proceed);
       end;
 
-      if ((not (fdfSearchForward in Params.Flags))
+      if ((not (fdfSearchForward in Flags))
            and (ContextNode.PriorBrother<>nil))
-      or ((fdfSearchForward in Params.Flags)
+      or ((fdfSearchForward in Flags)
           and (ContextNode.NextBrother<>nil)
           and (ContextNode.NextBrother.Desc<>ctnImplementation)) then
       begin
         // search next in prior/next brother
-        if not (fdfSearchForward in Params.Flags) then
+        if not (fdfSearchForward in Flags) then
           ContextNode:=ContextNode.PriorBrother
         else begin
           RaiseLastErrorIfInFrontOfCleanedPos(ContextNode.NextBrother.EndPos);
@@ -3332,7 +3339,7 @@ var
           break;
         end;
       end else if (ContextNode.Parent<>nil)
-      and ((fdfSearchInParentNodes in Params.Flags)
+      and ((fdfSearchInParentNodes in Flags)
         or (ContextNode.HasAsParent(StartContextNode))) then
       begin
         // search next in parent
@@ -3383,7 +3390,7 @@ var
             if Result then begin
               FindIdentifierInContext:=true;
               {$IFDEF ShowCollect}
-              if fdfCollect in Params.Flags then
+              if fdfCollect in Flags then
                 raise Exception.Create('fdfCollect must never return true');
               {$ENDIF}
               exit(AbortNoCacheResult);
@@ -3410,23 +3417,23 @@ begin
   '"'+GetIdentifier(Params.Identifier)+'"',
   ' Context="'+ContextNode.DescAsString+'" "'+StringToPascalConst(copy(Src,ContextNode.StartPos,20)),'"',
   ' at '+CleanPosToStr(ContextNode.StartPos,true),
-  ' Flags=['+dbgs(Params.Flags)+']'
+  ' Flags=['+dbgs(Flags)+']'
   );
   {$ELSE}
     {$IFDEF ShowCollect}
-    if fdfCollect in Params.Flags then begin
+    if fdfCollect in Flags then begin
       DebugLn(['[TFindDeclarationTool.FindIdentifierInContext] COLLECT Start Ident=',
       '"',GetIdentifier(Params.Identifier),'"',
       ' Context="',ContextNode.DescAsString,'" "',copy(Src,ContextNode.StartPos,20),'"',
       ' at '+CleanPosToStr(ContextNode.StartPos,true),
-      ' Flags=[',dbgs(Params.Flags),']'
+      ' Flags=[',dbgs(Flags),']'
       ]);
     end;
     {$ENDIF}
   {$ENDIF}
 
   if (ContextNode.Desc=ctnInterface)
-  and (fdfIgnoreUsedUnits in Params.Flags) then begin
+  and (fdfIgnoreUsedUnits in Flags) then begin
     {$IFDEF ShowTriedContexts}
     DebugLn(['TFindDeclarationTool.FindIdentifierInContext searching in interface of ',MainFilename]);
     {$ENDIF}
@@ -3442,22 +3449,22 @@ begin
       DebugLn('[TFindDeclarationTool.FindIdentifierInContext] Loop Ident=',
       '"',GetIdentifier(Params.Identifier),'"',
       ' Context="',ContextNode.DescAsString,'" "',copy(Src,ContextNode.StartPos,20),'"',
-      ' Flags=[',dbgs(Params.Flags),']'
+      ' Flags=[',dbgs(Flags),']'
       );
       {$ELSE}
         {$IFDEF ShowCollect}
-        if fdfCollect in Params.Flags then begin
+        if fdfCollect in Flags then begin
           DebugLn('[TFindDeclarationTool.FindIdentifierInContext] COLLECT Loop Ident=',
           '"',GetIdentifier(Params.Identifier),'"',
           ' Context="',ContextNode.DescAsString,'" "',copy(Src,ContextNode.StartPos,20),'"',
-          ' Flags=[',dbgs(Params.Flags),']'
+          ' Flags=[',dbgs(Flags),']'
           );
         end;
         {$ENDIF}
       {$ENDIF}
       // search identifier in current context
       LastContextNode:=ContextNode;
-      if not (fdfIgnoreCurContextNode in Params.Flags) then begin
+      if not (fdfIgnoreCurContextNode in Flags) then begin
         // search in cache
         if FindInNodeCache then begin
           if CheckResult(Params.NewNode<>nil,Params.NewNode<>nil) then
@@ -3483,9 +3490,6 @@ begin
           // they just define a range and not a context.
           // -> search in all children
           MoveContextNodeToChildren;
-
-        ctnClassInheritance:
-          Params.Flags:=Params.Flags-[fdfSearchInAncestors];
 
         ctnTypeDefinition, ctnVarDefinition, ctnConstDefinition,
         ctnGenericType, ctnGlobalProperty:
@@ -3561,6 +3565,7 @@ begin
         end;
       end else begin
         Exclude(Params.Flags,fdfIgnoreCurContextNode);
+        Exclude(Flags,fdfIgnoreCurContextNode);
         {$IFDEF ShowTriedContexts}
         DebugLn('[TFindDeclarationTool.FindIdentifierInContext] IgnoreCurContext ');
         {$ENDIF}
@@ -3586,12 +3591,12 @@ begin
   end;}
   // if we are here, the identifier was not found and there was no error
   if (FirstSearchedNode<>nil) and (Params.FoundProc=nil)
-  and ([fdfCollect,fdfExtractOperand]*Params.Flags=[]) then begin
+  and ([fdfCollect,fdfExtractOperand]*Flags=[]) then begin
     // add result to cache
     Params.NewNode:=nil;
     Params.NewCodeTool:=nil;
     AddResultToNodeCaches(FirstSearchedNode,LastSearchedNode,
-                    fdfSearchForward in Params.Flags,Params,SearchRangeFlags);
+                    fdfSearchForward in Flags,Params,SearchRangeFlags);
   end;
   CheckResult(false,false);
 end;
@@ -5797,6 +5802,14 @@ var
   AncestorStartPos: LongInt;
   ExprType: TExpressionType;
   Params: TFindDeclarationParams;
+
+  procedure RaiseExpected(const Expected: string);
+  begin
+    MoveCursorToCleanPos(AncestorStartPos);
+    ReadNextAtom;
+    RaiseExceptionFmt(ctsStrExpectedButAtomFound,[Expected,ExtractNode(IdentifierNode,[])]);
+  end;
+
 begin
   {$IFDEF CheckNodeTool}CheckNodeTool(IdentifierNode);{$ENDIF}
   if (IdentifierNode=nil)
@@ -5829,7 +5842,7 @@ begin
   Params:=TFindDeclarationParams.Create;
   try
     Params.Flags:=fdfDefaultForExpressions-[fdfSearchInAncestors];
-    Params.ContextNode:=InheritanceNode;
+    Params.ContextNode:=IdentifierNode;
     if CurPos.Flag in [cafRoundBracketClose,cafComma] then begin
       // simple identifier
       {$IFDEF ShowTriedContexts}
@@ -5847,47 +5860,41 @@ begin
       DebugLn(['[TFindDeclarationTool.FindAncestorOfClass] ',
       ' search complex ancestor class = "',ExtractNode(IdentifierNode,[]),'" for class "',ExtractClassName(ClassNode,false),'"']);
       {$ENDIF}
-      Params.Flags:=fdfDefaultForExpressions-[fdfSearchInAncestors];
+      if not FindClassContext then
+        Params.Flags:=Params.Flags+[fdfFindVariable];
       ExprType:=FindExpressionTypeOfTerm(IdentifierNode.StartPos,IdentifierNode.EndPos,Params,false);
-      if ExprType.Desc=xtContext then
-        AncestorContext:=ExprType.Context
-      else
-        AncestorContext:=CleanFindContext;
+      if ExprType.Desc<>xtContext then
+        RaiseExpected('type');
+      AncestorContext:=ExprType.Context
     end;
   finally
     Params.Free;
   end;
 
-  // check result
-  if (AncestorContext.Node=nil)
-  or (not (AncestorContext.Node.Desc in [ctnTypeDefinition,ctnGenericType])) then
-  begin
-    MoveCursorToCleanPos(AncestorStartPos);
-    ReadNextAtom;
-    RaiseExceptionFmt(ctsStrExpectedButAtomFound,['type',GetAtom]);
-  end;
-
-  // search ancestor class context
   if FindClassContext then begin
-    Params:=TFindDeclarationParams.Create;
-    try
-      Params.Flags:=fdfDefaultForExpressions+[fdfFindChildren];
-      AncestorContext:=AncestorContext.Tool.FindBaseTypeOfNode(Params,AncestorContext.Node);
-
-      // check result
-      if not (AncestorContext.Node.Desc in AllClasses) then begin
-        MoveCursorToCleanPos(AncestorStartPos);
-        ReadNextAtom;
-        RaiseExceptionFmt(ctsStrExpectedButAtomFound,['class',GetAtom]);
+    // search ancestor class context
+    if (AncestorContext.Node.Desc in [ctnTypeDefinition,ctnGenericType]) then
+    begin
+      Params:=TFindDeclarationParams.Create;
+      try
+        Params.Flags:=fdfDefaultForExpressions+[fdfFindChildren];
+        AncestorContext:=AncestorContext.Tool.FindBaseTypeOfNode(Params,AncestorContext.Node);
+      finally
+        Params.Free;
       end;
-      if AncestorContext.Node=ClassNode then begin
-        MoveCursorToCleanPos(AncestorStartPos);
-        ReadNextAtom;
-        RaiseException('cycle detected');
-      end;
-    finally
-      Params.Free;
     end;
+    // check result
+    if not (AncestorContext.Node.Desc in AllClasses) then
+      RaiseExpected('class');
+    if AncestorContext.Node=ClassNode then begin
+      MoveCursorToCleanPos(AncestorStartPos);
+      ReadNextAtom;
+      RaiseException('cycle detected');
+    end;
+  end else begin
+    // check if class identifier
+    if (not (AncestorContext.Node.Desc in [ctnTypeDefinition,ctnGenericType])) then
+      RaiseExpected('type');
   end;
 
   ResultParams.SetResult(AncestorContext);
@@ -6076,7 +6083,7 @@ function TFindDeclarationTool.FindIdentifierInAncestors(
   begin
     Params.Save(OldInput);
     Params.ContextNode:=AncestorClassNode;
-    Params.Flags:=Params.Flags-[fdfIgnoreCurContextNode,fdfSearchInParentNodes];
+    Params.Flags:=Params.Flags-[fdfIgnoreCurContextNode,fdfSearchInParentNodes]+[fdfSearchInAncestors];
     Result:=AncestorTool.FindIdentifierInContext(Params);
     Params.Load(OldInput,true);
   end;
