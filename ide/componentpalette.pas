@@ -49,9 +49,6 @@ uses
 const
   CompPalSelectionToolBtnPrefix = 'PaletteSelectBtn';
   CompPaletteCompBtnPrefix = 'PaletteBtn';
-  {$IFDEF VerboseComponentPalette}
-  CompPalVerbPgName = 'Dialogs'; //'Standard';
-  {$ENDIF}
 type
   TComponentSelectionMode = (
     csmSingle, // reset selection on component add
@@ -65,7 +62,6 @@ type
     fPageComponent: TCustomPage;
     fSelectButton: TComponent;
     fBtnIndex: integer;
-    fIndex: Integer;           // Index in the Pages container.
     fCompNames: TStringList;   // Reference to component names.
     fGuiCreated: Boolean;
     procedure ReAlignButtons;
@@ -124,7 +120,6 @@ type
     // Component layout :
     procedure ReAlignButtons(aSheet: TCustomPage);
     procedure UpdateNoteBookButtons(ForceUpdateAll: Boolean);
-    function CreatePagesFromUserOrder: Boolean;
 
     procedure RemoveUnneededPage(aSheet: TCustomPage);
     procedure SetPageControl(const AValue: TPageControl);
@@ -519,14 +514,14 @@ begin
     DebugLn(['TComponentPalette.CreateButtons PAGE="',PageName,'", PageIndex=',PageComponent.PageIndex]);
   {$ENDIF}
   // create selection button
-  CreateSelectionButton(IntToStr(fIndex), ScrollBox);
+  CreateSelectionButton(IntToStr(FIndex), ScrollBox);
   // create component buttons and delete unneeded ones
   fBtnIndex := 0;
   Assert(Assigned(fCompNames), 'TComponentPage.CreateButtons: fCompNames is not assigned.');
   for i := 0 to fCompNames.Count-1 do begin
     Comp := Pal.FindComponent(fCompNames[i]) as TPkgComponent;
     if Assigned(Comp) then
-      CreateOrDelButton(Comp, Format('%d_%d_',[fIndex,i]), ScrollBox);
+      CreateOrDelButton(Comp, Format('%d_%d_',[FIndex,i]), ScrollBox);
   end;
   fGuiCreated := True;
 end;
@@ -905,75 +900,6 @@ begin
     FPageControl.EnableAlign;
 end;
 
-function TComponentPalette.CreatePagesFromUserOrder: Boolean;
-var
-  UserPageI, CurPgInd, CompI: Integer;
-  aVisibleCompCnt: integer;
-  PgName: String;
-  Pg: TComponentPage;
-  CompNames, UserComps: TStringList;
-  Comp: TRegisteredComponent;
-begin
-  Result := True;
-  fUserComponentPageCache.Clear;
-  for UserPageI := 0 to fUserOrder.ComponentPages.Count-1 do
-  begin
-    PgName := fUserOrder.ComponentPages[UserPageI];
-    CurPgInd := IndexOfPageName(PgName);
-    if CurPgInd = -1 then begin
-      // Create a new page
-      {$IFDEF VerboseComponentPalette}
-      DebugLn(['TComponentPalette.CreatePagesFromUserOrder, page ', PgName, ' index ',UserPageI]);
-      {$ENDIF}
-      Pg := TComponentPage.Create(PgName);
-      fPages.Insert(UserPageI, Pg);
-      Pg.Palette := Self;
-    end
-    else if CurPgInd <> UserPageI then begin
-      {$IFDEF VerboseComponentPalette}
-      DebugLn(['TComponentPalette.CreatePagesFromUserOrder, move ', PgName, ' from ',CurPgInd, ' to ',UserPageI]);
-      {$ENDIF}
-      fPages.Move(CurPgInd, UserPageI); // Move page to right place.
-    end;
-    Pg := TComponentPage(Pages[UserPageI]);
-    Pg.fIndex := UserPageI;
-    Assert(PgName = Pg.PageName,
-      Format('TComponentPalette.CreatePagesFromUserOrder: Page names differ, "%s" and "%s".',
-             [PgName, Pg.PageName]));
-    // New cache page
-    UserComps := TStringList.Create;
-    UserComps.CaseSensitive := True;
-    fUserComponentPageCache.AddObject(PgName, UserComps);
-    // Associate components belonging to this page
-    aVisibleCompCnt := 0;
-    CompNames := TStringList(fUserOrder.ComponentPages.Objects[UserPageI]);
-    for CompI := 0 to CompNames.Count-1 do
-    begin
-      Comp := FindComponent(CompNames[CompI]);
-      if not Assigned(Comp) then Continue;
-      Comp.RealPage := Pg;
-      UserComps.AddObject(CompNames[CompI], Comp);
-      if VoteCompVisibility(Comp) then
-        inc(aVisibleCompCnt);
-    end;
-    {$IFDEF VerboseComponentPalette}
-    if PgName=CompPalVerbPgName then
-      debugln(['TComponentPalette.CreatePagesFromUserOrder HideControls=',HideControls,' aVisibleCompCnt=',aVisibleCompCnt]);
-    {$ENDIF}
-    Pg.Visible := (CompareText(PgName,'Hidden')<>0) and (aVisibleCompCnt>0);
-  end;
-  // Remove left-over pages.
-  while fPages.Count > fUserOrder.ComponentPages.Count do begin
-    Pg := TComponentPage(fPages[fPages.Count-1]);
-    {$IFDEF VerboseComponentPalette}
-    DebugLn(['TComponentPalette.CreatePagesFromUserOrder: Deleting left-over page=',
-             Pg.PageName, ', Index=', fPages.Count-1]);
-    {$ENDIF}
-    fPages.Delete(fPages.Count-1);
-    Pg.Free;
-  end;
-end;
-
 procedure TComponentPalette.DoAfterComponentAdded;
 begin
   inherited DoAfterComponentAdded;
@@ -1062,6 +988,7 @@ begin
   try
     fOldActivePage:=FPageControl.ActivePage;
     fUserOrder.SortPagesAndCompsUserOrder;
+    ComponentPageClass := TComponentPage;   // Used by CreatePagesFromUserOrder
     CreatePagesFromUserOrder;
     CreatePopupMenu;
 
