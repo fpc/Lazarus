@@ -7174,7 +7174,6 @@ begin
   Builder:=TLazarusBuilder.Create;
   try
     // prepare static auto install packages
-    //PkgOptions:='';
     // create inherited compiler options
     Builder.PackageOptions:=PackageGraph.GetIDEInstallPackageOptions(InheritedOptionStrings);
 
