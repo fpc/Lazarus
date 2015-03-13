@@ -487,6 +487,10 @@ msgstr ""
 msgid "Quick Paste Selection"
 msgstr ""
 
+#: syneditstrconst.syns_emcpluginmulticaretselectiontocarets
+msgid "Set CArets at EOL in selected lines"
+msgstr ""
+
 #: syneditstrconst.syns_emcpluginmulticarettogglecaret
 msgid "Toggle extra caret"
 msgstr ""

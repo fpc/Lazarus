@@ -488,6 +488,10 @@ msgstr "Jokio veiksmo"
 msgid "Quick Paste Selection"
 msgstr "Spartusis atrankos įdėjimas"
 
+#: syneditstrconst.syns_emcpluginmulticaretselectiontocarets
+msgid "Set CArets at EOL in selected lines"
+msgstr ""
+
 #: syneditstrconst.syns_emcpluginmulticarettogglecaret
 msgid "Toggle extra caret"
 msgstr ""

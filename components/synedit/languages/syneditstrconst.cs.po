@@ -487,6 +487,10 @@ msgstr "Žádná akce"
 msgid "Quick Paste Selection"
 msgstr "Rychle vložit výběr"
 
+#: syneditstrconst.syns_emcpluginmulticaretselectiontocarets
+msgid "Set CArets at EOL in selected lines"
+msgstr ""
+
 #: syneditstrconst.syns_emcpluginmulticarettogglecaret
 msgid "Toggle extra caret"
 msgstr ""

@@ -485,6 +485,10 @@ msgstr "ללא פעולה"
 msgid "Quick Paste Selection"
 msgstr "העתקה מהירה של הבחירה"
 
+#: syneditstrconst.syns_emcpluginmulticaretselectiontocarets
+msgid "Set CArets at EOL in selected lines"
+msgstr ""
+
 #: syneditstrconst.syns_emcpluginmulticarettogglecaret
 msgid "Toggle extra caret"
 msgstr ""

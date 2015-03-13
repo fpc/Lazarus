@@ -3502,7 +3502,10 @@ procedure TEditorMouseOptions.ResetTextToDefault;
         mbaContextMenuTab:
             AddCommand(emcContextMenu, True,       AButton, AClickCount, ADir, AShift, AShiftMask, emcoSelectionCaretMoveOutside, 0, 2);
         mbaMultiCaretToggle:
+          begin
             AddCommand(emcPluginMultiCaretToggleCaret, False, AButton, AClickCount, ADir, AShift, AShiftMask);
+            FSelActions.AddCommand(emcPluginMultiCaretSelectionToCarets, False, AButton, AClickCount, ADir, AShift, AShiftMask);
+          end;
       end;
     end;
   end;

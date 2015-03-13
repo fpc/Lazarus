@@ -437,6 +437,7 @@ resourcestring
   SYNS_emcWheelScroll_opt          = 'Speed,"System settings",Lines,Pages,"Pages (less one line)"';
 
   SYNS_emcPluginMultiCaretToggleCaret = 'Toggle extra caret';
+  SYNS_emcPluginMultiCaretSelectionToCarets = 'Set CArets at EOL in selected lines';
 implementation
 
 end.

@@ -20,7 +20,8 @@ uses
 
 const
 
-  emcPluginMultiCaretToggleCaret = emcPluginFirstMultiCaret;
+  emcPluginMultiCaretToggleCaret = emcPluginFirstMultiCaret + 0;
+  emcPluginMultiCaretSelectionToCarets = emcPluginFirstMultiCaret + 1;
 
   ecPluginMultiCaretSetCaret    = ecPluginFirstMultiCaret + 0;
   ecPluginMultiCaretUnsetCaret  = ecPluginFirstMultiCaret + 1;
@@ -253,7 +254,8 @@ type
   TSynPluginMultiCaretStateFlag = (
     sfProcessingCmd, sfProcessingMain,
     sfExtendingColumnSel, sfSkipCaretsAtSelection,
-    sfCreateCaretAtCurrentPos
+    sfCreateCaretAtCurrentPos,
+    sfSkipSelChanged, sfSkipCaretChanged
   );
   TSynPluginMultiCaretStateFlags = set of TSynPluginMultiCaretStateFlag;
 
@@ -343,8 +345,9 @@ var
 const
   EMPTY_LIST_LEN = 8;
 
-  SynMouseCommandNames: array [0..0] of TIdentMapEntry = (
-    (Value: emcPluginMultiCaretToggleCaret; Name: 'emcPluginMultiCaretToggleCaret')
+  SynMouseCommandNames: array [0..1] of TIdentMapEntry = (
+    (Value: emcPluginMultiCaretToggleCaret; Name: 'emcPluginMultiCaretToggleCaret'),
+    (Value: emcPluginMultiCaretSelectionToCarets; Name: 'emcPluginMultiCaretSelectionToCarets')
   );
 
 const
@@ -400,7 +403,8 @@ end;
 function MouseCommandName(emc: TSynEditorMouseCommand): String;
 begin
   case emc of
-    emcPluginMultiCaretToggleCaret:   Result := SYNS_emcPluginMultiCaretToggleCaret;
+    emcPluginMultiCaretToggleCaret:       Result := SYNS_emcPluginMultiCaretToggleCaret;
+    emcPluginMultiCaretSelectionToCarets: Result := SYNS_emcPluginMultiCaretSelectionToCarets;
     else
       Result := '';
   end;
@@ -409,7 +413,8 @@ end;
 function MouseCommandConfigName(emc: TSynEditorMouseCommand): String;
 begin
   case emc of
-    emcPluginMultiCaretToggleCaret:   Result := '';
+    emcPluginMultiCaretToggleCaret,
+    emcPluginMultiCaretSelectionToCarets:   Result := '';
     else
       Result := '';
   end;
@@ -1837,7 +1842,7 @@ begin
 
   UpdateCaretsPos;
   inherited DoAfterDecPaintLock(Sender);
-  Exclude(FStateFlags, sfExtendingColumnSel);
+  FStateFlags := FStateFlags - [sfExtendingColumnSel, sfSkipSelChanged, sfSkipCaretChanged];
 end;
 
 procedure TSynCustomPluginMultiCaret.DoCleared;
@@ -1867,7 +1872,7 @@ begin
     exclude(FStateFlags, sfCreateCaretAtCurrentPos);
     exit;
   end;
-  if (FStateFlags * [sfProcessingCmd, sfExtendingColumnSel] <> []) or
+  if (FStateFlags * [sfProcessingCmd, sfExtendingColumnSel, sfSkipCaretChanged] <> []) or
      (ActiveMode = mcmAddingCarets)
   then
     exit;
@@ -1922,7 +1927,7 @@ var
   SelFirstY, SelLastY, CurY: Integer;
   CurCaret: TLogCaretPoint;
 begin
-  if (sfProcessingCmd in FStateFlags) then exit;
+  if (FStateFlags * [sfProcessingCmd, sfSkipSelChanged] <> []) then exit;
   SelFirstY := Editor.BlockBegin.y;
   SelLastY := Editor.BlockEnd.y;
   If not ((SelFirstY <> SelLastY) and (Editor.SelectionMode = smColumn) and EnableWithColumnSelection) then begin
@@ -2323,24 +2328,42 @@ end;
 function TSynCustomPluginMultiCaret.DoHandleMouseAction(AnAction: TSynEditMouseAction;
   var AnInfo: TSynEditMouseActionInfo): Boolean;
 var
-  i: Integer;
+  i, j: Integer;
 begin
   Result := False;
 
-  if AnAction.Command = emcPluginMultiCaretToggleCaret then begin
-    Result := True;
-    i := Carets.FindCaretIdx(AnInfo.NewCaret.BytePos, AnInfo.NewCaret.LinePos, AnInfo.NewCaret.BytePosOffset);
-    if i >= 0 then
-      RemoveCaret(i)
-    else
-    if (AnInfo.NewCaret.BytePos <> CaretObj.BytePos) or (AnInfo.NewCaret.LinePos <> CaretObj.LinePos) then begin
-      AddCaret(AnInfo.NewCaret.BytePos, AnInfo.NewCaret.LinePos, AnInfo.NewCaret.BytePosOffset);
-    end;
-    if CaretsCount > 0 then
-      ActiveMode := DefaultMode
-    else
-      ActiveMode := mcmNoCarets;
-    exclude(FStateFlags, sfCreateCaretAtCurrentPos);
+  case AnAction.Command of
+    emcPluginMultiCaretToggleCaret:
+      begin
+        Result := True;
+        i := Carets.FindCaretIdx(AnInfo.NewCaret.BytePos, AnInfo.NewCaret.LinePos, AnInfo.NewCaret.BytePosOffset);
+        if i >= 0 then
+          RemoveCaret(i)
+        else
+        if (AnInfo.NewCaret.BytePos <> CaretObj.BytePos) or (AnInfo.NewCaret.LinePos <> CaretObj.LinePos) then begin
+          AddCaret(AnInfo.NewCaret.BytePos, AnInfo.NewCaret.LinePos, AnInfo.NewCaret.BytePosOffset);
+        end;
+        if CaretsCount > 0 then
+          ActiveMode := DefaultMode
+        else
+          ActiveMode := mcmNoCarets;
+        exclude(FStateFlags, sfCreateCaretAtCurrentPos);
+      end;
+    emcPluginMultiCaretSelectionToCarets:
+      begin
+        j := SelectionObj.LastLineBytePos.y;
+        i := SelectionObj.FirstLineBytePos.y;
+        SelectionObj.Clear;
+        CaretObj.LineBytePos := Point(Length(ViewedTextBuffer[ToIdx(j)])+1, j);
+        while i < j do begin
+          AddCaret(Length(ViewedTextBuffer[ToIdx(i)])+1, i, 0);
+          inc(i);
+        end;
+        if CaretsCount > 0 then
+          ActiveMode := DefaultMode;
+        if FPaintLock > 0 then
+          FStateFlags := FStateFlags + [sfSkipSelChanged, sfSkipCaretChanged];
+      end;
   end;
 end;
 
