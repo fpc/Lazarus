@@ -2322,6 +2322,9 @@ begin
           AddKeyWord('cp8859_1');
           AddKeyWord('cp8859_2');
           AddKeyWord('cp8859_5');
+        end else if Directive='interfaces' then begin
+          AddKeyWord('COM');
+          AddKeyWord('CORBA');
         end;
       end;
       exit;
