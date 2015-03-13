@@ -28,7 +28,7 @@ uses
   Classes, SysUtils, Graphics, Forms, Controls, StdCtrls, Dialogs, Buttons,
   ComCtrls, ExtCtrls, FileUtil, LCLProc, LCLType, Menus, IDEProcs, Laz2_XMLCfg,
   EnvironmentOpts, LazarusIDEStrConsts, IDEOptionsIntf,
-  IDEImagesIntf, DividerBevel, ComponentReg, ComponentPalette, IDEOptionDefs,
+  IDEImagesIntf, DividerBevel, ComponentReg, IDEOptionDefs,
   PackageDefs;
 
 type

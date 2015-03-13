@@ -1033,7 +1033,6 @@ end;
 function TComponentPalette.FindCompByButton(Button: TSpeedButton): TRegisteredComponent;
 var
   i: Integer;
-  CompName: String;
 begin
   i := fComponentButtons.IndexOfData(Button);
   if i >= 0 then

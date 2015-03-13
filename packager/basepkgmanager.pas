@@ -62,7 +62,6 @@ type
     procedure SetupMainBarShortCuts; virtual; abstract;
     procedure SetRecentPackagesMenu; virtual; abstract;
     procedure SaveSettings; virtual; abstract;
-    procedure UpdateVisibleComponentPalette; virtual; abstract;
     procedure ProcessCommand(Command: word; var Handled: boolean); virtual; abstract;
     procedure OnSourceEditorPopupMenu(const AddMenuItemProc: TAddMenuItemProc); virtual; abstract;
     procedure TranslateResourceStrings; virtual; abstract;
