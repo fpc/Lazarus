@@ -4543,6 +4543,8 @@ begin
     // default interface is IDispatch
     BaseClassName:='IDispatch';
   end else if ClassNode.Desc in AllClassInterfaces then begin
+    if Scanner.Values.IsDefined('CPUJVM') then
+      exit; // JVM has no default interface
     // Delphi has as default interface IInterface
     // FPC has as default interface IUnknown and an alias IInterface = IUnknown
     if CompareSrcIdentifiers(ClassIdentNode.StartPos,'IUnknown') then exit;
