@@ -3285,7 +3285,21 @@ procedure TPascalParserTool.ReadVariableType;
 var
   ParentNode: TCodeTreeNode;
   HasSemicolon: Boolean;
-  CanExternal: Boolean;
+
+  function CanExternal: Boolean; inline;
+  begin
+    Result:=(CurNode.Parent.Desc in [ctnVarSection,ctnClassClassVar])
+      and ((CurNode.Parent.Parent.Desc in AllCodeSections)
+           or ((CurNode.Parent.Parent.Desc in (AllClassBaseSections+AllClassInterfaces))
+              and Scanner.Values.IsDefined('CPUJVM')));
+  end;
+
+  function CanPublic: Boolean; inline;
+  begin
+    Result:=(CurNode.Parent.Desc in [ctnVarSection])
+        and (CurNode.Parent.Parent.Desc in AllCodeSections);
+  end;
+
 begin
   ReadNextAtom;
   // type
@@ -3340,12 +3354,9 @@ begin
   end;
   //if UpAtomIs('EXTERNAL') then
   //  debugln(['TPascalParserTool.ReadVariableType ',CurNode.Parent.Parent.DescAsString,' ',CurNode.Parent.DescAsString,' ',CurNode.DescAsString]);
-  CanExternal:=(CurNode.Parent.Desc in [ctnVarSection,ctnClassClassVar])
-    and ((CurNode.Parent.Parent.Desc in AllCodeSections)
-         or ((CurNode.Parent.Parent.Desc in (AllClassBaseSections+AllClassInterfaces))
-            and Scanner.Values.IsDefined('CPUJVM')));
-  if CanExternal and (UpAtomIs('PUBLIC') or UpAtomIs('EXPORT')
-    or UpAtomIs('EXTERNAL') or UpAtomIs('WEAKEXTERNAL')) then
+  if ((UpAtomIs('EXPORT') or UpAtomIs('EXTERNAL') or UpAtomIs('WEAKEXTERNAL'))
+      and CanExternal)
+  or (UpAtomIs('PUBLIC') and CanPublic) then
   begin
     // examples:
     //   a: b; public;
@@ -3354,7 +3365,6 @@ begin
     //   a: b; external c;
     //   a: b; external name 'c';
     //   a: b; external 'library' name 'c';
-    //   a: b; section 'c';
     if UpAtomIs('EXTERNAL') or UpAtomIs('WEAKEXTERNAL') then begin
       // read external identifier
       ReadNextAtom;
@@ -3381,8 +3391,8 @@ begin
     end;
     if CurPos.Flag<>cafSemicolon then
       SaveRaiseCharExpectedButAtomFound(';');
-  end else if CanExternal and Scanner.Values.IsDefined('EMBEDDED')
-  and UpAtomIs('SECTION') then begin
+  end else if UpAtomIs('SECTION') and CanExternal and Scanner.Values.IsDefined('EMBEDDED')
+  then begin
     // section 'sectionname'
     ReadNextAtom;
     if (not AtomIsStringConstant)
