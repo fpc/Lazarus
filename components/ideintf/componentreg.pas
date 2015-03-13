@@ -271,8 +271,8 @@ type
   end;
   
 
-const
   {$IFDEF VerboseComponentPalette}
+const
   CompPalVerbPgName = 'Dialogs'; //'Standard';
   {$ENDIF}
 var
