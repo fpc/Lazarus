@@ -204,7 +204,7 @@ end;
 
 function TSynPikeSyn.Func45: TtkTokenKind;
 begin
-  if KeyComp('else') or KeyComp('bool') or KeyComp('new') then
+  if KeyComp('else') or KeyComp('new') then
     Result := tkKey
   else Result := tkIdentifier;
 end;
@@ -221,7 +221,7 @@ end;
 
 function TSynPikeSyn.Func48: TtkTokenKind;
 begin
-  if KeyComp('false') or KeyComp('local') then Result := tkKey else Result := tkIdentifier;
+  if KeyComp('false') or KeyComp('local') or KeyComp('bool') then Result := tkKey else Result := tkIdentifier;
 end;
 
 function TSynPikeSyn.Func54: TtkTokenKind;
