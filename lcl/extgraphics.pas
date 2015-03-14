@@ -13,7 +13,7 @@
   for details about the license.
  *****************************************************************************
 }
-unit extgraphics;
+unit ExtGraphics;
 
 {$mode objfpc}{$H+}
 

@@ -17,7 +17,7 @@
     The ID can be signed or unsigned, with a size of 1,2,4,8,16 or 32 bytes
     The data can be of any (constant) size.
 }
-unit maps;
+unit Maps;
 
 {$mode objfpc}{$H+}
 

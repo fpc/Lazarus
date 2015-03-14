@@ -24,7 +24,7 @@
   Dont use anything from the LCL here as this unit should be kept strictly independent
   only LCLProc for DebugLn is allowed, but only during debuging
 }
-unit lazcanvas;
+unit LazCanvas;
 
 {$mode objfpc}{$H+}
 { $define lazcanvas_debug}

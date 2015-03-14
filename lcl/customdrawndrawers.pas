@@ -1,4 +1,4 @@
-unit customdrawndrawers;
+unit CustomDrawnDrawers;
 
 {$mode objfpc}{$H+}
 

@@ -1,4 +1,4 @@
-unit customdrawn_android;
+unit CustomDrawn_Android;
 
 {$mode objfpc}{$H+}
 { $define CD_UseImageResources}

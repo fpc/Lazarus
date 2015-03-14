@@ -2,19 +2,19 @@
   This source is only used to compile and install the package.
  }
 
-unit alllclunits;
+unit AllLCLUnits;
 
 interface
 
 uses
   CheckLst, Clipbrd, ColorBox, ComCtrls, Controls, CustomTimer, DBActns, 
   DbCtrls, DBGrids, DefaultTranslator, Dialogs, DynamicArray, DynHashArray, 
-  DynQueue, ExtCtrls, ExtDlgs, ExtendedStrings, extgraphics, FileCtrl, Forms, 
+  DynQueue, ExtCtrls, ExtDlgs, ExtendedStrings, ExtGraphics, FileCtrl, Forms, 
   Graphics, GraphMath, GraphType, GraphUtil, Grids, HelpIntfs, IcnsTypes, 
   ImageListCache, ImgList, IniPropStorage, InterfaceBase, IntfGraphics, 
   LazHelpHTML, LazHelpIntf, LazLinkedList, LCLClasses, LCLIntf, LCLMemManager, 
   LCLMessageGlue, LCLProc, LCLResCache, LCLStrConsts, LCLType, Menus, 
-  LCLUnicodeData, LCLVersion, LMessages, LResources, maps, MaskEdit, 
+  LCLUnicodeData, LCLVersion, LMessages, LResources, Maps, MaskEdit, 
   PairSplitter, PopupNotifier, PostScriptCanvas, PostScriptPrinter, 
   postscriptunicode, Printers, PropertyStorage, RubberBand, ShellCtrls, Spin, 
   StdActns, StdCtrls, StringHashList, TextStrings, Themes, TmSchema, Toolwin, 
@@ -23,10 +23,10 @@ uses
   WSExtDlgs, WSFactory, WSForms, WSGrids, WSImgList, WSLCLClasses, WSMenus, 
   WSPairSplitter, WSProc, WSReferences, WSSpin, WSStdCtrls, WSToolwin, 
   ActnList, AsyncProcess, ButtonPanel, Buttons, Calendar, RegisterLCL, 
-  ValEdit, lazcanvas, lazdialogs, lazregions, customdrawn_common, 
-  customdrawncontrols, customdrawndrawers, lazdeviceapis, LDockTree, 
-  LazFreeTypeIntfDrawer, customdrawn_winxp, customdrawn_android, Arrow, 
-  EditBtn, ComboEx, DBExtCtrls, customdrawn_mac, LazarusPackageIntf;
+  ValEdit, LazCanvas, LazDialogs, LazRegions, CustomDrawn_Common, 
+  CustomDrawnControls, CustomDrawnDrawers, LazDeviceApis, LDockTree,
+  LazFreeTypeIntfDrawer, CustomDrawn_WinXP, CustomDrawn_Android, Arrow, 
+  EditBtn, ComboEx, DBExtCtrls, CustomDrawn_Mac, LazarusPackageIntf;
 
 implementation
 

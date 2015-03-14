@@ -1,4 +1,4 @@
-unit customdrawn_mac;
+unit CustomDrawn_Mac;
 
 {$mode objfpc}{$H+}
 

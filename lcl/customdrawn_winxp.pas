@@ -1,4 +1,4 @@
-unit customdrawn_winxp;
+unit CustomDrawn_WinXP;
 
 {$mode objfpc}{$H+}
 

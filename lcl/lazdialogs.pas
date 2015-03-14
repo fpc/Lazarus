@@ -1,4 +1,4 @@
-unit lazdialogs;
+unit LazDialogs;
 
 {$mode objfpc}{$H+}
 

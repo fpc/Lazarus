@@ -8,7 +8,7 @@
 
   Author: Jesus Reyes Aguilar
 }
-unit postscriptunicode;
+unit PostScriptUnicode;
 
 {$mode objfpc}{$H+}
 

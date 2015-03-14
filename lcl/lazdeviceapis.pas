@@ -9,7 +9,7 @@
 
   License: The same modified LGPL as the rest of the LCL
 }
-unit lazdeviceapis;
+unit LazDeviceApis;
 
 {$mode delphi}
 

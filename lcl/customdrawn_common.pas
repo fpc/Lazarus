@@ -1,4 +1,4 @@
-unit customdrawn_common;
+unit CustomDrawn_Common;
 
 {$mode objfpc}{$H+}
 

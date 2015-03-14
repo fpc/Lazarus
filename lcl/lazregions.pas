@@ -3,7 +3,7 @@
 
   Author: Felipe Monteiro de Carvalho
 }
-unit lazregions;
+unit LazRegions;
 
 {$mode objfpc}{$H+}
 
