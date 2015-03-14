@@ -73,6 +73,7 @@ uses
   // codetools
   FileProcs, FindDeclarationTool, LinkScanner, BasicCodeTools, CodeToolsStructs,
   CodeToolManager, CodeCache, DefineTemplates, KeywordFuncLists, CodeTree,
+  StdCodeTools,
   // synedit
   AllSynEdit, SynEditKeyCmds, SynBeautifier, SynEditMarks,
   // IDE interface
@@ -807,6 +808,8 @@ type
     function DoConfigBuildFile: TModalResult;
     function GetIDEDirectives(AnUnitInfo: TUnitInfo;
                               DirectiveList: TStrings): TModalResult;
+    function FilterIDEDirective(Tool: TStandardCodeTool;
+                                StartPos, {%H-}EndPos: integer): boolean;
 
     // useful information methods
     procedure GetCurrentUnit(out ActiveSourceEditor: TSourceEditor;
@@ -7584,7 +7587,7 @@ begin
     if FilenameIsPascalSource(ActiveUnitInfo.Filename) then begin
       // parse source for IDE directives (i.e. % comments)
       CodeResult:=CodeToolBoss.SetIDEDirectives(ActiveUnitInfo.Source,
-                                                DirectiveList);
+                                             DirectiveList,@FilterIDEDirective);
       ApplyCodeToolChanges;
       if not CodeResult then begin
         DoJumpToCodeToolBossError;
@@ -7614,7 +7617,7 @@ begin
   Result:=mrCancel;
   if FilenameIsPascalSource(AnUnitInfo.Filename) then begin
     // parse source for IDE directives (i.e. % comments)
-    CodeResult:=CodeToolBoss.GetIDEDirectives(AnUnitInfo.Source,DirectiveList);
+    CodeResult:=CodeToolBoss.GetIDEDirectives(AnUnitInfo.Source,DirectiveList,@FilterIDEDirective);
     if not CodeResult then begin
       DoJumpToCodeToolBossError;
       exit;
@@ -7624,6 +7627,23 @@ begin
     //DebugLn(['TMainIDE.GetIDEDirectives ',dbgstr(DirectiveList.Text)]);
   end;
   Result:=mrOk;
+end;
+
+function TMainIDE.FilterIDEDirective(Tool: TStandardCodeTool; StartPos,
+  EndPos: integer): boolean;
+var
+  Src: PChar;
+  d: TIDEDirective;
+begin
+  Result:=false;
+  Src:=@Tool.Src[StartPos];
+  if (Src^<>'{') then exit;
+  inc(Src);
+  if (Src^<>'%') then exit;
+  inc(Src);
+  for d in TIDEDirective do
+    if CompareIdentifiers(Src,PChar(IDEDirectiveNames[d]))=0 then
+      exit(true);
 end;
 
 function TMainIDE.DoConvertDFMtoLFM: TModalResult;
