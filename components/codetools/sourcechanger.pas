@@ -1337,7 +1337,7 @@ begin
 
   // start new line if necessary
   if (LastLineEndInAtom<1) and (CurLineLen+length(NewAtom)>LineLength)
-  and (LastSplitPos>1) then begin
+  and (LastSplitPos>LastSrcLineStart) then begin
     // new atom does not fit into the line and there is a split position
     // -> split line
     //DebugLn(['[TBeautifyCodeOptions.AddAtom]  NEW LINE CurLineLen=',CurLineLen,' NewAtom="',dbgstr(NewAtom),'" LastSplitPos="',dbgstr(copy(CurCode,LastSplitPos-5,5))+'|'+dbgstr(copy(CurCode,LastSplitPos,5)),'" LineLength=',LineLength]);
@@ -1789,7 +1789,7 @@ begin
       end;
       
       if (not (CurAtomType in DoNotSplitLineInFront))
-      and (not (LastAtomType in DoNotSplitLineAfter))
+      and (not (LastAtomType in DoNotSplitLineAfter+[atNewLine]))
       and (CommentLvl=0) then
         LastSplitPos:=length(Result)+1;
       {DebugLn('SPLIT LINE  CurPos='+dbgs(CurPos)+' CurAtom="'+CurAtom+'"'
