@@ -5426,8 +5426,6 @@ end;
 function TGtk2WidgetSet.IsValidDC(const DC: HDC): Boolean;
 begin
   Result := FDeviceContexts.Contains({%H-}Pointer(DC));
-  if Result and (TGtkDeviceContext(DC).Widget <> nil) then
-    Result := (TGtkDeviceContext(DC).Drawable <> nil);
 end;
 
 {------------------------------------------------------------------------------
