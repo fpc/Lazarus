@@ -88,7 +88,6 @@ type
     FTokenID: TtkTokenKind;
     FExtTokenID: TxtkTokenKind;
     fEol: Boolean;
-    fIdentFuncTable: array[0..172] of TIdentFuncTableFunc;
     fLineNumber: Integer;
     fCommentAttri: TSynHighlighterAttributes;
     fDocumentAttri: TSynHighlighterAttributes;
@@ -100,8 +99,6 @@ type
     fStringAttri: TSynHighlighterAttributes;
     fSymbolAttri: TSynHighlighterAttributes;
     fAnnotationAttri: TSynHighlighterAttributes;
-    function KeyHash(ToHash: PChar): Integer;
-    function KeyComp(const aKey: String): Boolean;
     function Func17: TtkTokenKind;
     function Func21: TtkTokenKind;
     function Func32: TtkTokenKind;
@@ -183,11 +180,14 @@ type
     procedure TildeProc;
     procedure XOrSymbolProc;
     procedure UnknownProc;
-    function AltFunc: TtkTokenKind;
-    procedure InitIdent;
     function IdentKind(MayBe: PChar): TtkTokenKind;
     procedure MakeMethodTables;
   protected
+    fIdentFuncTable: array[0..172] of TIdentFuncTableFunc;
+    function AltFunc: TtkTokenKind;
+    function KeyHash(ToHash: PChar): Integer;
+    function KeyComp(const aKey: String): Boolean;
+    procedure InitIdent; virtual;
     function GetIdentChars: TSynIdentChars; override;
     function GetSampleSource: string; override;
     function GetExtTokenID: TxtkTokenKind;

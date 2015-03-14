@@ -393,7 +393,8 @@ const
   SYNS_LangSynGenMsgfiles       =  'SynGen Msg files';
   SYNS_LangUnreal               =  'Unreal';
   SYNS_LangTeX                  =  'TeX';
-  SYNS_LangPo                  =  'po language files';
+  SYNS_LangPo                   =  'po language files';
+  SYNS_LangPike                 =  'Pike';
 
 resourcestring
 

@@ -30,7 +30,7 @@ uses
   LazSynTextArea, SynRegExpr, SynTextDrawer, SynEditMarkupGutterMark, 
   SynHighlighterBat, SynHighlighterIni, SynEditMarkupSpecialChar, 
   SynEditTextDoubleWidthChars, SynEditTextSystemCharWidth, SynEditMarkupIfDef, 
-  SynPluginMultiCaret, LazarusPackageIntf;
+  SynPluginMultiCaret, synhighlighterpike, LazarusPackageIntf;
 
 implementation
 

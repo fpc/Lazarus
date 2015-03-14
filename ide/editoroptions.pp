@@ -59,7 +59,7 @@ uses
   SynHighlighterPas, SynHighlighterPerl, SynHighlighterPHP, SynHighlighterSQL,
   SynHighlighterPython, SynHighlighterUNIXShellScript, SynHighlighterXML,
   SynHighlighterJScript, SynHighlighterDiff, SynHighlighterBat, SynHighlighterIni,
-  SynHighlighterPo, SynPluginMultiCaret,
+  SynHighlighterPo, SynHighlighterPike, SynPluginMultiCaret,
   // codetools
   LinkScanner, CodeToolManager,
   // IDEIntf
@@ -86,7 +86,7 @@ type
   TLazSyntaxHighlighter =
     (lshNone, lshText, lshFreePascal, lshDelphi, lshLFM, lshXML, lshHTML,
     lshCPP, lshPerl, lshJava, lshBash, lshPython, lshPHP, lshSQL, lshJScript,
-    lshDiff, lshBat, lshIni, lshPo);
+    lshDiff, lshBat, lshIni, lshPo, lshPike);
 
   TColorSchemeAttributeFeature =
     ( hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior,
@@ -399,7 +399,8 @@ const
       (Count: 0; Info: nil), // Diff
       (Count: 0; Info: nil), // Ini
       (Count: 0; Info: nil), // Bat
-      (Count: 0; Info: nil)  // PO
+      (Count: 0; Info: nil), // PO
+      (Count: 0; Info: nil)  // Pike
     );
 
 type
@@ -599,7 +600,8 @@ const
       (Count:  3; Info: @EditorOptionsFoldInfoDiff[0]), // Diff
       (Count:  0; Info: nil), // Bat
       (Count:  0; Info: nil), // Ini
-      (Count:  0; Info: nil)  // PO
+      (Count:  0; Info: nil), // PO
+      (Count:  0; Info: nil)  // Pike
     );
 
 const
@@ -631,7 +633,7 @@ const
     (nil, nil, TIDESynFreePasSyn, TIDESynPasSyn, TSynLFMSyn, TSynXMLSyn,
     TSynHTMLSyn, TSynCPPSyn, TSynPerlSyn, TSynJavaSyn, TSynUNIXShellScriptSyn,
     TSynPythonSyn, TSynPHPSyn, TSynSQLSyn, TSynJScriptSyn, TSynDiffSyn,
-    TSynBatSyn, TSynIniSyn, TSynPoSyn);
+    TSynBatSyn, TSynIniSyn, TSynPoSyn, TSynPikeSyn);
 
 
 { Comments }
@@ -655,7 +657,8 @@ const
     comtNone,  // Diff
     comtNone,  // Bat
     comtNone,  // Ini
-    comtNone   // po
+    comtNone,  // po
+    comtCPP    // lshPike
     );
 
 const
@@ -1689,7 +1692,8 @@ const
     'Diff',
     'Bat',
     'Ini',
-    'PO'
+    'PO',
+    'Pike'
     );
 
 var
@@ -1739,7 +1743,8 @@ const
     lshDiff,
     lshBat,
     lshIni,
-    lshPo
+    lshPo,
+    lshPike
     );
 
 var
@@ -3138,6 +3143,32 @@ begin
     //  Add('String=String');
     //end;
     CaretXY := Point(3,1);
+  end;
+  Add(NewInfo);
+
+  // create info for Pike
+  NewInfo := TEditOptLanguageInfo.Create;
+  NewInfo.TheType := lshPike;
+  NewInfo.DefaultCommentType := DefaultCommentTypes[NewInfo.TheType];
+  NewInfo.SynClass := LazSyntaxHighlighterClasses[NewInfo.TheType];
+  NewInfo.SetBothFilextensions('pike;pmod');
+  NewInfo.SampleSource := TSynPikeSyn.Pike_GetSampleSource();
+  with NewInfo do
+  begin
+    AddAttrSampleLines[ahaTextBlock] := 12;
+    MappedAttributes := TStringList.Create;
+    with MappedAttributes do
+    begin
+      Add('Comment=Comment');
+      Add('Documentation=Comment');
+      Add('Identifier=Identifier');
+      Add('Reserved_word=Reserved_word');
+      Add('Number=Number');
+      Add('Space=Space');
+      Add('String=String');
+      Add('Symbol=Symbol');
+    end;
+    CaretXY := Point(1,1);
   end;
   Add(NewInfo);
 
