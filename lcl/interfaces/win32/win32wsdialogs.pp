@@ -160,6 +160,10 @@ function UTF8StringToPAnsiChar(const s: string) : PAnsiChar;
 function CanUseVistaDialogs(const AOpenDialog: TOpenDialog): Boolean;
 {$endif}
 
+var
+  cOpenDialogAllFiles: string = 'All files';
+
+
 implementation
 
 function SaveApplicationState: TApplicationState;
@@ -670,7 +674,7 @@ begin
     ReplacePipe(Filter);
   end
   else
-    Filter := 'All File Types(*.*)'+#0+'*.*'+#0; // Default -> avoid empty combobox
+    Filter := cOpenDialogAllFiles+' (*.*)'+#0+'*.*'+#0; // Default -> avoid empty combobox
 
   OpenFile := AllocMem(SizeOf(OpenFileName));
   with OpenFile^ do
@@ -840,7 +844,7 @@ begin
   ParsedFilter := TParseStringList.Create(AOpenDialog.Filter, '|');
   if ParsedFilter.Count = 0 then
   begin
-    ParsedFilter.Add('All File Types(*.*)');
+    ParsedFilter.Add(cOpenDialogAllFiles+' (*.*)');
     ParsedFilter.Add('*.*');
   end;
   try
