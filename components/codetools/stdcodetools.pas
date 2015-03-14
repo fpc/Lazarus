@@ -57,6 +57,8 @@ uses
   CustomCodeTool, CodeToolsStructs, LazFileUtils;
 
 type
+  TStandardCodeTool = class;
+
   TInsertStatementPosDescription = class
   public
     InsertPos: integer;
@@ -72,6 +74,8 @@ type
     const ClassContext, AncestorClassContext: TFindContext;
     LFMNode: TLFMTreeNode;
     const IdentName: string; var IsDefined: boolean) of object;
+  TOnIDEDirectiveFilter = function(Tool: TStandardCodeTool;
+    StartPos, EndPos: integer): boolean of object; // true = use
 
   { TStandardCodeTool }
 
@@ -348,9 +352,11 @@ type
           SourceChangeCache: TSourceChangeCache): boolean;
     
     // IDE % directives
-    function GetIDEDirectives(DirectiveList: TStrings): boolean;
+    function GetIDEDirectives(DirectiveList: TStrings;
+          const Filter: TOnIDEDirectiveFilter = nil): boolean;
     function SetIDEDirectives(DirectiveList: TStrings;
-          SourceChangeCache: TSourceChangeCache): boolean;
+          SourceChangeCache: TSourceChangeCache;
+          const Filter: TOnIDEDirectiveFilter = nil): boolean;
 
     procedure CalcMemSize(Stats: TCTMemStats); override;
   end;
@@ -4101,7 +4107,8 @@ begin
   Result:=true;
 end;
 
-function TStandardCodeTool.GetIDEDirectives(DirectiveList: TStrings): boolean;
+function TStandardCodeTool.GetIDEDirectives(DirectiveList: TStrings;
+  const Filter: TOnIDEDirectiveFilter): boolean;
 var
   StartPos: Integer;
   EndPos: Integer;
@@ -4114,7 +4121,8 @@ begin
     StartPos:=FindNextIDEDirective(Src,EndPos,Scanner.NestedComments);
     if StartPos<1 then break;
     EndPos:=FindCommentEnd(Src,StartPos,Scanner.NestedComments);
-    DirectiveList.Add(copy(Src,StartPos,EndPos-StartPos));
+    if (Filter=nil) or Filter(Self,StartPos,EndPos) then
+      DirectiveList.Add(copy(Src,StartPos,EndPos-StartPos));
     if EndPos>SrcLen then break;
     StartPos:=EndPos;
   until false;
@@ -4122,7 +4130,8 @@ begin
 end;
 
 function TStandardCodeTool.SetIDEDirectives(DirectiveList: TStrings;
-  SourceChangeCache: TSourceChangeCache): boolean;
+  SourceChangeCache: TSourceChangeCache; const Filter: TOnIDEDirectiveFilter
+  ): boolean;
 var
   InsertPos: Integer;
   EndPos: Integer;
@@ -4137,7 +4146,12 @@ begin
 
   // find first old IDE directive
   InsertPos:=FindNextIDEDirective(Src,1,Scanner.NestedComments);
-  if InsertPos<1 then InsertPos:=0;
+  if InsertPos>=1 then begin
+    EndPos:=FindCommentEnd(Src,InsertPos,Scanner.NestedComments);
+    if (Filter<>nil) and (not Filter(Self,InsertPos,EndPos)) then
+      InsertPos:=0;
+  end else
+    InsertPos:=0;
 
   // remove all old IDE directives
   if InsertPos>=1 then
@@ -4149,18 +4163,21 @@ begin
     StartPos:=FindNextIDEDirective(Src,EndPos,Scanner.NestedComments);
     if StartPos<1 then break;
     EndPos:=FindCommentEnd(Src,StartPos,Scanner.NestedComments);
-    // remove also space in front of directive
-    while (StartPos>1) and (Src[StartPos-1] in [' ',#9]) do dec(StartPos);
-    // remove also space behind directive
-    while (EndPos<=SrcLen) and (Src[EndPos] in [' ',#9]) do inc(EndPos);
-    if (EndPos<=SrcLen) and (Src[EndPos] in [#10,#13]) then begin
-      inc(EndPos);
-      if (EndPos<=SrcLen) and (Src[EndPos] in [#10,#13])
-      and (Src[EndPos]<>Src[EndPos-1]) then
+    if (Filter=nil) or Filter(Self,StartPos,EndPos) then begin
+      // remove also space in front of directive
+      while (StartPos>1) and (Src[StartPos-1] in [' ',#9]) do dec(StartPos);
+      // remove also space behind directive
+      while (EndPos<=SrcLen) and (Src[EndPos] in [' ',#9]) do inc(EndPos);
+      if (EndPos<=SrcLen) and (Src[EndPos] in [#10,#13]) then begin
         inc(EndPos);
+        if (EndPos<=SrcLen) and (Src[EndPos] in [#10,#13])
+        and (Src[EndPos]<>Src[EndPos-1]) then
+          inc(EndPos);
+      end;
+      // remove directive
+      if not SourceChangeCache.Replace(gtNone,gtNone,StartPos,EndPos,'') then
+        exit;
     end;
-    // remove directive
-    SourceChangeCache.Replace(gtNone,gtNone,StartPos,EndPos,'');
     if EndPos>SrcLen then break;
     StartPos:=EndPos;
   until false;

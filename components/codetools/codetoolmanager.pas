@@ -827,10 +827,10 @@ type
           const APropertyPath: string = ''): boolean;
 
     // IDE % directives
-    function GetIDEDirectives(Code: TCodeBuffer;
-          DirectiveList: TStrings): boolean;
-    function SetIDEDirectives(Code: TCodeBuffer;
-          DirectiveList: TStrings): boolean;
+    function GetIDEDirectives(Code: TCodeBuffer; DirectiveList: TStrings;
+          const Filter: TOnIDEDirectiveFilter = nil): boolean;
+    function SetIDEDirectives(Code: TCodeBuffer; DirectiveList: TStrings;
+          const Filter: TOnIDEDirectiveFilter = nil): boolean;
           
     // linker jumping
     function JumpToLinkerIdentifier(Code: TCodeBuffer;
@@ -3800,7 +3800,7 @@ begin
 end;
 
 function TCodeToolManager.GetIDEDirectives(Code: TCodeBuffer;
-  DirectiveList: TStrings): boolean;
+  DirectiveList: TStrings; const Filter: TOnIDEDirectiveFilter): boolean;
 begin
   {$IFDEF CTDEBUG}
   DebugLn('TCodeToolManager.GetIDEDirectives A ',Code.Filename);
@@ -3808,14 +3808,14 @@ begin
   Result:=false;
   if not InitCurCodeTool(Code) then exit;
   try
-    Result:=FCurCodeTool.GetIDEDirectives(DirectiveList);
+    Result:=FCurCodeTool.GetIDEDirectives(DirectiveList,Filter);
   except
     on e: Exception do Result:=HandleException(e);
   end;
 end;
 
 function TCodeToolManager.SetIDEDirectives(Code: TCodeBuffer;
-  DirectiveList: TStrings): boolean;
+  DirectiveList: TStrings; const Filter: TOnIDEDirectiveFilter): boolean;
 begin
   {$IFDEF CTDEBUG}
   DebugLn('TCodeToolManager.GetIDEDirectives A ',Code.Filename);
@@ -3823,7 +3823,7 @@ begin
   Result:=false;
   if not InitCurCodeTool(Code) then exit;
   try
-    Result:=FCurCodeTool.SetIDEDirectives(DirectiveList,SourceChangeCache);
+    Result:=FCurCodeTool.SetIDEDirectives(DirectiveList,SourceChangeCache,Filter);
   except
     on e: Exception do Result:=HandleException(e);
   end;
