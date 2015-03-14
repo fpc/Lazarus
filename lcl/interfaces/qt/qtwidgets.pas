@@ -17201,6 +17201,8 @@ end;
 function TQtPage.EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
 var
   ASize: TSize;
+  ACapture: HWND;
+  B: Boolean;
 begin
   Result := False;
   if LCLObject = nil then
@@ -17227,7 +17229,22 @@ begin
       DelayResizeEvent(QWidgetH(Sender), ASize);
       exit;
     end;
-  end;
+  end else
+  if (QEvent_type(Event) = QEventShow) then
+  begin
+    if Assigned(DragManager) and DragManager.IsDragging then
+      ACapture := GetCapture
+    else
+      ACapture := 0;
+    B := (ACapture <> 0) and (ACapture <> HWND(Self));
+    Result := inherited EventFilter(Sender, Event);
+    if B then
+    begin
+      QtWidgetSet.InvalidateWidgetAtCache;
+      SetCapture(0);
+      SetCapture(HWND(Self));
+    end;
+  end else
   Result := inherited EventFilter(Sender, Event);
 end;
 
