@@ -958,7 +958,7 @@ var
         for i:=0 to length(FileGroup.Sources)-1 do
         begin
           CurFile:=FileGroup.Sources[i];
-          Msg:='Duplicate file "'+CurFile.AnUnitName+'"';
+          Msg:='Duplicate file "'+ExtractFileName(CurFile.ShortFilename)+'"';
           Msg+=' in "'+CurFile.OwnerInfo.Name+'"';
           Msg+=', path="'+CurFile.FullFilename+'"';
           if IDEMessagesWindow<>nil then
