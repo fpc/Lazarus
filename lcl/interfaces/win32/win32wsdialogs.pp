@@ -338,6 +338,13 @@ begin
     ACommonDialog.UserChoice := mrCancel;
 end;
 
+{$ifdef UseVistaDialogs}
+function CanUseVistaDialogs(const AOpenDialog: TOpenDialog): Boolean;
+begin
+  Result := (WindowsVersion >= wvVista) and not (ofOldStyleDialog in AOpenDialog.Options);
+end;
+{$endif}
+
 { TWin32WSColorDialog }
 
 class function TWin32WSColorDialog.CreateHandle(const ACommonDialog: TCommonDialog): THandle;
@@ -755,6 +762,8 @@ end;
 
 { TWin32WSOpenDialog }
 {$ifdef UseVistaDialogs}
+
+
 class procedure TWin32WSOpenDialog.SetupVistaFileDialog(ADialog: IFileDialog; const AOpenDialog: TOpenDialog);
 { non-used flags
 FOS_PICKFOLDERS
@@ -954,7 +963,8 @@ var
 {$endif}
 begin
   {$ifdef UseVistaDialogs}
-  if (WindowsVersion >= wvVista) and ThemeServices.ThemesEnabled then
+  if CanUseVistaDialogs(TOpenDialog(ACommonDialog)) then
+  //if (WindowsVersion >= wvVista) and ThemeServices.ThemesEnabled then
   begin
     if Succeeded(CoCreateInstance(CLSID_FileOpenDialog, nil, CLSCTX_INPROC_SERVER, IFileOpenDialog, Dialog)) and Assigned(Dialog) then
     begin
@@ -976,7 +986,8 @@ var
 begin
   if ACommonDialog.Handle <> 0 then
   {$ifdef UseVistaDialogs}
-    if (WindowsVersion >= wvVista) and ThemeServices.ThemesEnabled then
+    if CanUseVistaDialogs(TOpenDialog(ACommonDialog)) then
+    //if (WindowsVersion >= wvVista) and ThemeServices.ThemesEnabled then
     begin
       Dialog := IFileDialog(ACommonDialog.Handle);
       Dialog._Release;
@@ -1003,7 +1014,8 @@ begin
       lInitialDir := TOpenDialog(ACommonDialog).InitialDir;
       if lInitialDir <> '' then SetCurrentDirUTF8(lInitialDir);
       {$ifdef UseVistaDialogs}
-      if (WindowsVersion >= wvVista) and ThemeServices.ThemesEnabled then
+      if CanUseVistaDialogs(TOpenDialog(ACommonDialog)) then
+      //if (WindowsVersion >= wvVista) and ThemeServices.ThemesEnabled then
       begin
         Dialog := IFileOpenDialog(ACommonDialog.Handle);
         VistaDialogShowModal(Dialog, TOpenDialog(ACommonDialog));
@@ -1039,7 +1051,8 @@ var
 {$endif}
 begin
   {$ifdef UseVistaDialogs}
-  if (WindowsVersion >= wvVista) and ThemeServices.ThemesEnabled then
+  if CanUseVistaDialogs(TOpenDialog(ACommonDialog)) then
+  //if (WindowsVersion >= wvVista) and ThemeServices.ThemesEnabled then
   begin
     if Succeeded(CoCreateInstance(CLSID_FileSaveDialog, nil, CLSCTX_INPROC_SERVER, IFileSaveDialog, Dialog)) and Assigned(Dialog) then
     begin
@@ -1061,7 +1074,8 @@ var
 begin
   if ACommonDialog.Handle <> 0 then
   {$ifdef UseVistaDialogs}
-    if (WindowsVersion >= wvVista) and ThemeServices.ThemesEnabled then
+    if CanUseVistaDialogs(TOpenDialog(ACommonDialog)) then
+    //if (WindowsVersion >= wvVista) and ThemeServices.ThemesEnabled then
     begin
       Dialog := IFileDialog(ACommonDialog.Handle);
       Dialog._Release;
@@ -1088,7 +1102,8 @@ begin
       lInitialDir := TSaveDialog(ACommonDialog).InitialDir;
       if lInitialDir <> '' then SetCurrentDirUTF8(lInitialDir);
       {$ifdef UseVistaDialogs}
-      if (WindowsVersion >= wvVista) and ThemeServices.ThemesEnabled then
+      if CanUseVistaDialogs(TOpenDialog(ACommonDialog)) then
+      //if (WindowsVersion >= wvVista) and ThemeServices.ThemesEnabled then
       begin
         Dialog := IFileSaveDialog(ACommonDialog.Handle);
         TWin32WSOpenDialog.VistaDialogShowModal(Dialog, TOpenDialog(ACommonDialog));
