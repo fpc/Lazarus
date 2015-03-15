@@ -3067,7 +3067,7 @@ Qt and Carbon have not implemented it.</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomMemo.Lines">
-        <short>An array with one string for every line (paragraph) in the control.</short>
+        <short>An array with one string for every line (paragraph) in the control. Whilst it type is TStrings you cannot store Objects inside it.</short>
         <descr/>
       </element>
       <!-- property Visibility: public -->
