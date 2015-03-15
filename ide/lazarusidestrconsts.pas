@@ -5905,7 +5905,7 @@ resourcestring
   lisEnableFlagUseUnitOfUnitInPackage = '. Enable flag "Use Unit" of unit %s in package %s';
   lisOfTheProjectInspector = ' of the Project Inspector';
   lisOfPackage = ' of package %s';
-  lisCompileWithVdForMoreDetailsCheckForDuplicates = '%s -> Compile with -vd '
+  lisCompileWithVdForMoreDetailsCheckForDuplicates = 'Compile with -vd '
     +'for more details. Check for duplicates.';
   lisCannotFindUnit = 'Cannot find unit %s';
   lisIncompatiblePpu = ', incompatible ppu=%s';
