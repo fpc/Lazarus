@@ -266,10 +266,6 @@ type
                                        out CacheWasUsed: boolean;
                                        out AnOwner: TObject;// a package or a project or LazarusHelp or nil for user defined
                                        CreateIfNotExists: boolean = false): string;
-    function GetFPDocFilenameForPkgFile(PkgFile: TPkgFile;
-                                    ResolveIncludeFiles: Boolean;
-                                    out CacheWasUsed: boolean;
-                                    CreateIfNotExists: boolean = false): string;
     procedure GetFPDocFilenamesForSources(SrcFilenames: TFilenameToStringTree;
                       ResolveIncludeFiles: boolean;
                       var FPDocFilenames: TFilenameToStringTree // Filename to ModuleName
@@ -1721,40 +1717,6 @@ begin
   {$ifdef VerboseCodeHelp}
   DebugLn(['TCodeHelpManager.GetFPDocFilenameForSource ',dbgsName(AnOwner)]);
   {$endif}
-end;
-
-function TCodeHelpManager.GetFPDocFilenameForPkgFile(PkgFile: TPkgFile;
-  ResolveIncludeFiles: Boolean; out CacheWasUsed: boolean;
-  CreateIfNotExists: boolean): string;
-var
-  APackage: TLazPackage;
-  BaseDir: String;
-  SrcFilename: String;
-  CodeBuf: TCodeBuffer;
-begin
-  Result:='';
-  CacheWasUsed:=false;
-  APackage:=TLazPackage(PkgFile.LazPackage);
-  if APackage.FPDocPaths='' then exit;
-  BaseDir:=APackage.DirectoryExpanded;
-  if BaseDir='' then exit;
-
-  SrcFilename:=PkgFile.GetFullFilename;
-  if ResolveIncludeFiles then begin
-    CodeBuf:=CodeToolBoss.FindFile(SrcFilename);
-    if CodeBuf<>nil then begin
-      CodeBuf:=CodeToolBoss.GetMainCode(CodeBuf);
-      if CodeBuf<>nil then begin
-        SrcFilename:=CodeBuf.Filename;
-      end;
-    end;
-  end;
-
-  if not FilenameIsPascalUnit(SrcFilename) then exit;
-  SrcFilename:=ExtractFileNameOnly(SrcFilename)+'.xml';
-
-  Result:=SearchFileInPath(SrcFilename,BaseDir,APackage.FPDocPaths,';',
-                           ctsfcDefault);
 end;
 
 procedure TCodeHelpManager.GetFPDocFilenamesForSources(
