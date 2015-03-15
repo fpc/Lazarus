@@ -2696,7 +2696,7 @@ begin
   end;
   if LCLTargetChanged then
     CodeToolBoss.SetGlobalValue(ExternalMacroStart+'LCLWidgetType',fLCLWidgetType);
-  if FPCTargetChanged and (ScanFPCSrc<>smsfsSkip) then
+  if ScanFPCSrc<>smsfsSkip then
     RescanCompilerDefines(false,false,ScanFPCSrc=smsfsWaitTillDone,Quiet);
   //if (PackageGraph<>nil) and (PackageGraph.CodeToolsPackage<>nil) then debugln(['TBuildManager.SetBuildTarget CODETOOLS OUTDIR=',PackageGraph.CodeToolsPackage.CompilerOptions.GetUnitOutPath(true,coptParsed),' ',PackageGraph.CodeToolsPackage.CompilerOptions.ParsedOpts.ParsedStamp[pcosOutputDir],' ',CompilerParseStamp]);
 end;
