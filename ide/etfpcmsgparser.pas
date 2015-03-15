@@ -1587,10 +1587,20 @@ end;
 procedure TIDEFPCParser.ImproveMsgHiddenByIDEDirective(
   aPhase: TExtToolParserSyncPhase; MsgLine: TMessageLine; SourceOK: Boolean);
 // check for {%H-}
+
+  function IsH(p: PChar): boolean; inline;
+  begin
+    Result:=(p^='{') and (p[1]='%') and (p[2]='H') and (p[3]='-');
+  end;
+
 var
   p: PChar;
   X: Integer;
   Y: Integer;
+  HasDirective: Boolean;
+  AbsPos: Integer; // 0-based
+  OtherPos: Integer;
+  AtomEnd: integer;
 begin
   if MsgLine.Urgency>=mluError then exit;
   if mlfHiddenByIDEDirectiveValid in MsgLine.Flags then exit;
@@ -1601,15 +1611,44 @@ begin
   Y:=MsgLine.Line;
   if (y<=fCurSource.LineCount) and (x-1<=fCurSource.GetLineLength(y-1))
   then begin
-    p:=PChar(fCurSource.Source)+fCurSource.GetLineStart(y-1)+x-2;
-    //debugln(['TFPCParser.ImproveMsgHiddenByIDEDirective ',aFilename,' ',Y,',',X,' ',copy(fCurSource.GetLine(y-1),1,x-1),'|',copy(fCurSource.GetLine(y-1),x,100),' p=',p[0],p[1],p[2]]);
-    if ((p^='{') and (p[1]='%') and (p[2]='H') and (p[3]='-'))
-    or ((x>5) and (p[-5]='{') and (p[-4]='%') and (p[-3]='H') and (p[-2]='-')
-      and (p[-1]='}'))
-    then begin
-      //debugln(['TFPCParser.ImproveMsgHiddenByIDEDirective HIDDEN ',aFilename,' ',Y,',',X,' ',MsgLine.Msg]);
+    HasDirective:=false;
+    AbsPos:=fCurSource.GetLineStart(y-1)+x-2; // 0-based
+    p:=PChar(fCurSource.Source)+AbsPos;
+    //debugln(['TFPCParser.ImproveMsgHiddenByIDEDirective ',MsgLine.Filename,' ',Y,',',X,' ',copy(fCurSource.GetLine(y-1),1,x-1),'|',copy(fCurSource.GetLine(y-1),x,100),' p=',p[0],p[1],p[2]]);
+    if IsH(p) then
+      // directive beginning at cursor
+      HasDirective:=true
+    else if (x>5) and IsH(p-5) then
+      // directive ending at cursor
+      HasDirective:=true
+    else begin
+      // different compiler versions report some message positions differently.
+      // They changed some message positions from start to end of token.
+      // => check other end of token
+      //debugln(['TIDEFPCParser.ImproveMsgHiddenByIDEDirective mlfLeftToken=',mlfLeftToken in MsgLine.Flags]);
+      if mlfLeftToken in MsgLine.Flags then begin
+        if IsIdentChar[p[-1]] then begin
+          OtherPos:=AbsPos+1;
+          ReadPriorPascalAtom(fCurSource.Source,OtherPos,AtomEnd);
+          if (OtherPos>5) and (AtomEnd=AbsPos+1)
+          and IsH(@fCurSource.Source[OtherPos-5]) then begin
+            // for example: {%H-}identifier|
+            HasDirective:=true;
+          end;
+        end;
+      end else begin
+        if IsIdentStartChar[p^] then begin
+          inc(p,GetIdentLen(p));
+          if IsH(p) then
+            // for example: |identifier{%H-}
+            HasDirective:=true;
+        end;
+      end;
+    end;
+    if HasDirective then begin
       MsgLine.Flags:=MsgLine.Flags+[mlfHiddenByIDEDirective,
         mlfHiddenByIDEDirectiveValid];
+      exit;
     end;
   end;
   MsgLine.Flags:=MsgLine.Flags+[mlfHiddenByIDEDirectiveValid];
@@ -2142,7 +2181,7 @@ end;
 
 procedure TIDEFPCParser.ImproveMsgIdentifierPosition(
   aPhase: TExtToolParserSyncPhase; MsgLine: TMessageLine; SourceOK: boolean);
-{ FPC report the token after the identifier
+{ FPC sometimes reports the token after the identifier
   => fix the position
   Examples:
     "  i :="
@@ -2159,16 +2198,28 @@ var
   p, AtomEnd: integer;
   Src: String;
   Identifier: String;
+  NewP: Integer;
 begin
   Col:=MsgLine.Column;
   Line:=MsgLine.Line;
   if (Col<1) or (Line<1) then
     exit;
   if (Line=1) and (Col=1) then exit;
-  if (not IsMsgID(MsgLine,FPCMsgIDIdentifierNotFound,fMsgItemIdentifierNotFound))
-  and (not IsMsgID(MsgLine,FPCMsgIDMethodIdentifierExpected,fMsgItemMethodIdentifierExpected))
-  then
-    exit;
+  if MsgLine.SubTool<>SubToolFPC then exit;
+  if MsgLine.MsgID=0 then begin
+    // maybe not compiled with -vq: search patterns of common messages
+    if (not IsMsgID(MsgLine,FPCMsgIDIdentifierNotFound,fMsgItemIdentifierNotFound))
+    and (not IsMsgID(MsgLine,FPCMsgIDMethodIdentifierExpected,fMsgItemMethodIdentifierExpected))
+    then
+      exit;
+  end;
+  if MsgLine.MsgID=FPCMsgIDMethodIdentifierExpected then
+    Identifier:=''
+  else begin
+    Identifier:=GetFPCMsgValue1(MsgLine);
+    if (Identifier='') or not IsValidIdent(Identifier) then exit;
+  end;
+
   if MsgLine.Attribute[AttrPosChecked]<>'' then exit;
   if NeedSource(aPhase,SourceOK) then
     exit;
@@ -2176,11 +2227,6 @@ begin
 
   //DebuglnThreadLog(['Old Line=',Line,' ',MsgLine.Column]);
   if Line>=fCurSource.LineCount then exit;
-  if MsgLine.MsgID=FPCMsgIDIdentifierNotFound then begin
-    Identifier:=GetFPCMsgValue1(MsgLine);
-    if Identifier='' then exit;
-  end else
-    Identifier:='';
   fCurSource.GetLineRange(Line-1,LineRange);
   //DebuglnThreadLog(['Old Range=',LineRange.StartPos,'-',LineRange.EndPos,' Str="',copy(fCurSource.Source,LineRange.StartPos,LineRange.EndPos-LineRange.StartPos),'"']);
   Col:=Min(Col,LineRange.EndPos-LineRange.StartPos+1);
@@ -2189,7 +2235,7 @@ begin
   if Identifier<>'' then begin
     // message is about a specific identifier
     if CompareIdentifiers(PChar(Identifier),@Src[p])=0 then begin
-      // already pointing at the right identifier
+      // already pointing at the start of the identifier
       exit;
     end;
   end else begin
@@ -2201,27 +2247,36 @@ begin
   end;
   // go to prior token
   //DebuglnThreadLog(['New Line=',Line,' Col=',Col,' p=',p]);
-  ReadPriorPascalAtom(Src,p,AtomEnd,false);
-  if p<1 then exit;
+  NewP:=p;
+  ReadPriorPascalAtom(Src,NewP,AtomEnd,false);
+  if NewP<1 then exit;
   if Identifier<>'' then begin
     // message is about a specific identifier
-    if CompareIdentifiers(PChar(Identifier),@Src[p])<>0 then begin
+    if CompareIdentifiers(PChar(Identifier),@Src[NewP])<>0 then begin
       // the prior token is not the identifier neither
       // => don't know
       exit;
     end;
   end else begin
     // message is about any one identifier
-    if not IsIdentStartChar[Src[p]] then begin
+    if not IsIdentStartChar[Src[NewP]] then begin
       // the prior token is not an identifier neither
       // => don't know
       exit;
     end;
   end;
-  fCurSource.AbsoluteToLineCol(p,Line,Col);
-  //DebuglnThreadLog(['New Line=',Line,' Col=',Col,' p=',p]);
+  fCurSource.AbsoluteToLineCol(NewP,Line,Col);
+  //DebuglnThreadLog(['New Line=',Line,' Col=',Col,' p=',NewP]);
   if (Line<1) or (Col<1) then exit;
-  MsgLine.SetSourcePosition(MsgLine.Filename,Line,Col)
+  if MsgLine.Urgency>=mluError then begin
+    // position errors at start of wrong identifier, nicer for identifier completion
+    MsgLine.SetSourcePosition(MsgLine.Filename,Line,Col);
+    MsgLine.Flags:=MsgLine.Flags-[mlfLeftToken];
+  end else begin
+    // position hints at end of identifier, nicer for {%H-}
+    MsgLine.SetSourcePosition(MsgLine.Filename,Line,Col+length(Identifier));
+    MsgLine.Flags:=MsgLine.Flags+[mlfLeftToken];
+  end;
 end;
 
 procedure TIDEFPCParser.Translate(p: PChar; MsgItem, TranslatedItem: TFPCMsgItem;
@@ -2782,10 +2837,10 @@ begin
         end;
       end;
 
+      ImproveMsgIdentifierPosition(aPhase, MsgLine, SourceOK);
       ImproveMsgHiddenByIDEDirective(aPhase, MsgLine, SourceOK);
       ImproveMsgUnitNotUsed(aPhase, MsgLine);
       ImproveMsgSenderNotUsed(aPhase, MsgLine);
-      ImproveMsgIdentifierPosition(aPhase, MsgLine, SourceOK);
     end else if MsgLine.SubTool=SubToolFPCLinker then begin
       ImproveMsgLinkerUndefinedReference(aPhase, MsgLine);
     end;
