@@ -425,7 +425,10 @@ end;
 
 procedure TSVGDrawer.SetPen(APen: TFPCustomPen);
 begin
-  FPen.FPColor := FPColorOrMono(APen.FPColor);
+  if APen is TPen then
+    FPen.FPColor := FChartColorToFPColorFunc(ColorOrMono(TPen(APen).Color))
+  else
+    FPen.FPColor := FPColorOrMono(APen.FPColor);
   FPen.Style := APen.Style;
   FPen.Width := APen.Width;
 end;
