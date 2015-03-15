@@ -171,7 +171,8 @@ var
 begin
   Result := inherited CreateHandle(ACommonDialog);
   {$ifdef UseVistaDialogs}
-  if (WindowsVersion >= wvVista) and ThemeServices.ThemesEnabled then
+  //if (WindowsVersion >= wvVista) and ThemeServices.ThemesEnabled then
+  if CanUseVistaDialogs(TOpenDialog(ACommonDialog)) then
   begin
     Dialog := IFileOpenDialog(Result);
     if Succeeded(Dialog.GetOptions(@fos)) then
@@ -217,7 +218,8 @@ var
 begin
   Result := inherited CreateHandle(ACommonDialog);
   {$ifdef UseVistaDialogs}
-  if (WindowsVersion >= wvVista) and ThemeServices.ThemesEnabled then
+  //if (WindowsVersion >= wvVista) and ThemeServices.ThemesEnabled then
+  if CanUseVistaDialogs(TOpenDialog(ACommonDialog)) then
   begin
     Dialog := IFileSaveDialog(Result);
     if Succeeded(Dialog.GetOptions(@fos)) then

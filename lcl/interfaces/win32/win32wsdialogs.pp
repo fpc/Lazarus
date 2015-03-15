@@ -156,6 +156,10 @@ procedure RestoreApplicationState(AState: TApplicationState);
 function UTF8StringToPWideChar(const s: string) : PWideChar;
 function UTF8StringToPAnsiChar(const s: string) : PAnsiChar;
 
+{$ifdef UseVistaDialogs}
+function CanUseVistaDialogs(const AOpenDialog: TOpenDialog): Boolean;
+{$endif}
+
 implementation
 
 function SaveApplicationState: TApplicationState;
