@@ -156,7 +156,7 @@ type
   protected
     FIndex: Integer;           // Index in the Pages container.
     procedure SetVisible(const AValue: boolean); virtual;
-    procedure OnComponentVisibleChanged(AComponent: TRegisteredComponent); virtual;
+    procedure OnComponentVisibleChanged({%H-}AComponent: TRegisteredComponent); virtual;
   public
     constructor Create(const ThePageName: string);
     destructor Destroy; override;
@@ -241,7 +241,7 @@ type
     procedure RemoveComponent(AComponent: TRegisteredComponent);
     function FindComponent(const CompClassName: string): TRegisteredComponent;
     function CreateNewClassName(const Prefix: string): string;
-    procedure Update(ForceUpdateAll: Boolean); virtual;
+    procedure Update({%H-}ForceUpdateAll: Boolean); virtual;
     procedure IterateRegisteredClasses(Proc: TGetComponentClassEvent);
     // Registered handlers
     procedure DoAfterComponentAdded;
@@ -646,8 +646,7 @@ end;
 
 procedure TBaseComponentPage.OnComponentVisibleChanged(AComponent: TRegisteredComponent);
 begin
-  //if FPalette<>nil then
-  //  FPalette.OnComponentVisibleChanged(AComponent);
+
 end;
 
 { TBaseComponentPalette }
@@ -1024,8 +1023,6 @@ procedure TBaseComponentPalette.Update(ForceUpdateAll: Boolean);
 begin
   fUserOrder.SortPagesAndCompsUserOrder;
   CreatePagesFromUserOrder;
-  //for Viewer in Viewers do
-  //  Viewer.Update(ForceUpdateAll);
 end;
 
 procedure TBaseComponentPalette.IterateRegisteredClasses(Proc: TGetComponentClassEvent);
