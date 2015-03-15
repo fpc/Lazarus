@@ -416,7 +416,7 @@ begin
   if Code=nil then
     Code:=fPascalBuffer;
   Filename:=ExtractFilename(Code.Filename);
-  IDEMessagesWindow.AddCustomMessage(mluError,ErrorMessage,Filename,Y,X);
+  IDEMessagesWindow.AddCustomMessage(mluError,ErrorMessage,Filename,Y,X,'Codetools');
   Application.ProcessMessages;
 end;
 
