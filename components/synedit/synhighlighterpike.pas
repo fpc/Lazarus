@@ -50,7 +50,7 @@ interface
 uses
   SysUtils, Classes,
   LCLIntf, LCLType, Graphics,
-  SynEditTypes, SynEditHighlighter, synhighlighterjava;
+  SynEditHighlighter, synhighlighterjava;
 
 type
   TSynPikeSyn = class(TSynJavaSyn)
