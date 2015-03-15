@@ -328,7 +328,7 @@ var
 begin
   AClassName:=String(Key);
   RegComp:=TRegisteredComponent(Data);
-  Result:=CompareText(AClassName,RegComp.ComponentClass.ClassName);
+  Result:=AnsiCompareText(AClassName, RegComp.ComponentClass.ClassName);
 end;
 
 function dbgs(const c: TComponentPriorityCategory): string;
