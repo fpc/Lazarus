@@ -64,7 +64,7 @@ begin
     // if there is a modal form, then don't show hints for other forms
     if Assigned(Screen.FFocusedForm) and
        (fsModal in Screen.FFocusedForm.FormState) and
-       (GetParentForm(Result.Control) <> Screen.FFocusedForm) then
+       (GetParentForm(Result.Control) <> GetParentForm(Screen.FFocusedForm)) then
       Result.ControlHasHint := False;
   end;
 end;
