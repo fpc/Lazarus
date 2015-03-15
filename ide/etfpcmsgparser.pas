@@ -2414,8 +2414,6 @@ begin
   Translate(p,MsgItem,TranslatedItem,TranslatedMsg,MsgType);
   Msg:=p;
   case fMsgID of
-  FPCMsgIDErrorWhileCompilingResources: // Error while compiling resources
-    Msg+=' -> Compile with -vd for more details. Check for duplicates.';
   FPCMsgIDThereWereErrorsCompiling: // There were $1 errors compiling module, stopping
     MsgType:=mluVerbose;
   end;
@@ -2661,8 +2659,8 @@ begin
   then begin
     // Error while compiling resources
     AddResourceMessages;
-    MsgLine.Msg:=Format(lisCompileWithVdForMoreDetailsCheckForDuplicates, [
-      MsgLine.Msg]);
+    MsgLine.Msg:=MsgLine.Msg+' -> '+'Compile with -vd for more details. Check for duplicates.';
+    MsgLine.TranslatedMsg:=MsgLine.TranslatedMsg+' -> '+lisCompileWithVdForMoreDetailsCheckForDuplicates;
   end
   else if IsMsgID(MsgLine,FPCMsgIDErrorWhileLinking,fMsgItemErrorWhileLinking) then
     AddLinkingMessages
