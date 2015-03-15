@@ -193,6 +193,8 @@ type
       MsgLine: TMessageLine);
     procedure ImproveMsgIdentifierPosition(aPhase: TExtToolParserSyncPhase;
       MsgLine: TMessageLine; SourceOK: boolean);
+    function FindSrcViaPPU(aPhase: TExtToolParserSyncPhase; MsgLine: TMessageLine;
+      const PPUFilename: string): boolean;
     procedure Translate(p: PChar; MsgItem, TranslatedItem: TFPCMsgItem;
       out TranslatedMsg: String; out MsgType: TMessageLineUrgency);
     procedure ReverseInstantFPCCacheDir(var aFilename: string; aSynchronized: boolean);
@@ -2279,6 +2281,80 @@ begin
   end;
 end;
 
+function TIDEFPCParser.FindSrcViaPPU(aPhase: TExtToolParserSyncPhase;
+  MsgLine: TMessageLine; const PPUFilename: string): boolean;
+{ in main thread
+ for example:
+   /usr/lib/fpc/3.1.1/units/x86_64-linux/rtl/sysutils.ppu:filutil.inc(481,10) Error: (5088) ...
+   PPUFilename=/usr/lib/fpc/3.1.1/units/x86_64-linux/rtl/sysutils.ppu
+   Filename=filutil.inc
+}
+var
+  i: Integer;
+  PrevMsgLine: TMessageLine;
+  aFilename: String;
+  MsgWorkerDir: String;
+  UnitSrcFilename: String;
+  IncPath: String;
+  Dir: String;
+  ShortFilename: String;
+  IncFilename: String;
+  AnUnitName: String;
+  InFilename: String;
+begin
+  case aPhase of
+  etpspAfterReadLine: exit(false);
+  etpspSynchronized: ;
+  etpspAfterSync: exit(true);
+  end;
+  Result:=true;
+
+  // in main thread
+  i:=MsgLine.Index;
+  aFilename:=MsgLine.Filename;
+  //debugln(['TIDEFPCParser.FindSrcViaPPU i=',i,' PPUFilename="',PPUFilename,'" Filename="',aFilename,'"']);
+  if (i>0) then begin
+    PrevMsgLine:=Tool.WorkerMessages[i-1];
+    if (PrevMsgLine.SubTool=SubToolFPC)
+    and (CompareFilenames(PPUFilename,PrevMsgLine.Attribute['PPU'])=0)
+    and FilenameIsAbsolute(PrevMsgLine.Filename)
+    and (CompareFilenames(ExtractFilename(PrevMsgLine.Filename),ExtractFilename(aFilename))=0)
+    then begin
+      // same file as previous message => use it
+      MsgLine.Filename:=PrevMsgLine.Filename;
+      exit;
+    end;
+  end;
+
+  if not FilenameIsAbsolute(PPUFilename) then
+  begin
+    exit;
+  end;
+
+  ShortFilename:=ExtractFilename(aFilename);
+  MsgWorkerDir:=MsgLine.Attribute[FPCMsgAttrWorkerDirectory];
+  AnUnitName:=ExtractFilenameOnly(PPUFilename);
+  InFilename:='';
+  UnitSrcFilename:=CodeToolBoss.DirectoryCachePool.FindUnitSourceInCompletePath(
+                              MsgWorkerDir,AnUnitName,InFilename);
+  //debugln(['TIDEFPCParser.FindSrcViaPPU MsgWorkerDir="',MsgWorkerDir,'" UnitSrcFilename="',UnitSrcFilename,'"']);
+  if UnitSrcFilename<>'' then begin
+    if CompareFilenames(ExtractFilename(UnitSrcFilename),ShortFilename)=0 then
+    begin
+      MsgLine.Filename:=UnitSrcFilename;
+      exit;
+    end;
+    Dir:=ChompPathDelim(TrimFilename(ExtractFilePath(UnitSrcFilename)));
+    IncPath:=CodeToolBoss.GetIncludePathForDirectory(Dir);
+    IncFilename:=SearchFileInPath(ShortFilename,Dir,IncPath,';',ctsfcDefault);
+    //debugln(['TIDEFPCParser.FindSrcViaPPU Dir="',Dir,'" IncPath="',IncPath,'" ShortFilename="',ShortFilename,'" IncFilename="',IncFilename,'"']);
+    if IncFilename<>'' then begin
+      MsgLine.Filename:=IncFilename;
+      exit;
+    end;
+  end;
+end;
+
 procedure TIDEFPCParser.Translate(p: PChar; MsgItem, TranslatedItem: TFPCMsgItem;
   out TranslatedMsg: String; out MsgType: TMessageLineUrgency);
 begin
@@ -2430,6 +2506,7 @@ function TIDEFPCParser.CheckForFileLineColMessage(p: PChar): boolean;
   filename(line,column) Hint: (msgid) message
   filename(line) Hint: (msgid) message
   B:\file(3)name(line,column) Hint: (msgid) message
+  /usr/lib/fpc/3.1.1/units/x86_64-linux/rtl/sysutils.ppu:filutil.inc(481,10) Error: (5088) ...
 }
 var
   FileStartPos: PChar;
@@ -2445,17 +2522,29 @@ var
   TranslatedMsg: String;
   aFilename: String;
   Column: Integer;
+  PPUFileStartPos: PChar;
+  PPUFileEndPos: PChar;
 begin
   Result:=false;
   FileStartPos:=p;
   FileEndPos:=nil;
+  PPUFileStartPos:=nil;
+  PPUFileEndPos:=nil;
   // search colon and last ( in front of colon
   while true do begin
     case p^ of
     #0: exit;
     '(': FileEndPos:=p;
     ':':
-      if (DriveSeparator='') or (p-FileStartPos>1) then
+      if (p-FileStartPos>5) and (p[-4]='.') and (p[-3] in ['p','P'])
+      and (p[-2] in ['p','P']) and (p[-1] in ['u','U']) then begin
+        // e.g. /usr/lib/fpc/3.1.1/units/x86_64-linux/rtl/sysutils.ppu:filutil.inc(481,10) Error: (5088) ...
+        if PPUFileStartPos<>nil then exit;
+        PPUFileStartPos:=FileStartPos;
+        PPUFileEndPos:=p;
+        FileStartPos:=p+1;
+      end
+      else if (DriveSeparator='') or (p-FileStartPos>1) then
         break;
     end;
     inc(p);
@@ -2536,6 +2625,8 @@ begin
   MsgLine.SubTool:=SubToolFPC;
   MsgLine.Urgency:=MsgType;
   aFilename:=GetString(FileStartPos,FileEndPos-FileStartPos);
+  if PPUFileStartPos<>nil then
+    MsgLine.Attribute['PPU']:=GetString(PPUFileStartPos,PPUFileEndPos-PPUFileStartPos);
   MsgLine.Filename:=LongenFilename(MsgLine,aFilename);
   MsgLine.Line:=Str2Integer(LineStartPos,0);
   MsgLine.Column:=Column;
@@ -2686,6 +2777,11 @@ begin
     ReverseInstantFPCCacheDir(Result,false);
     exit;
   end;
+  if MsgLine.Attribute['PPU']<>'' then begin
+    MsgLine.Attribute[FPCMsgAttrWorkerDirectory]:=Tool.WorkerDirectory;
+    exit;
+  end;
+
   ShortFilename:=Result;
   // check last message line
   LastMsgLine:=Tool.WorkerMessages.GetLastLine;
@@ -2734,6 +2830,7 @@ var
   PrevMsgLine: TMessageLine;
   CmdLineParams: String;
   SrcFilename: String;
+  PPUFilename: String;
 begin
   //debugln(['TIDEFPCParser.ImproveMessages START ',aSynchronized,' Last=',fLastWorkerImprovedMessage[aSynchronized],' Now=',Tool.WorkerMessages.Count]);
   for i:=fLastWorkerImprovedMessage[aPhase]+1 to Tool.WorkerMessages.Count-1 do
@@ -2745,6 +2842,14 @@ begin
     and (MsgLine.SubTool=SubToolFPC) and (MsgLine.Filename<>'')
     then begin
       aFilename:=MsgLine.Filename;
+      PPUFilename:='';
+      if (not FilenameIsAbsolute(aFilename)) then begin
+        PPUFilename:=MsgLine.Attribute['PPU'];
+        if PPUFilename<>'' then begin
+          // compiler gave ppu file and relative source file
+          if not FindSrcViaPPU(aPhase,MsgLine,PPUFilename) then continue;
+        end;
+      end;
       if (not FilenameIsAbsolute(aFilename)) then begin
         // short file name => 1. search the full file name in previous message
         if i>0 then begin
