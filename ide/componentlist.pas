@@ -71,7 +71,7 @@ type
     procedure miExpandClick(Sender: TObject);
     procedure OKButtonClick(Sender: TObject);
     procedure ComponentsDblClick(Sender: TObject);
-    procedure ComponentsChange(Sender: TObject; Node: TTreeNode);
+    procedure ComponentsChange(Sender: TObject; {%H-}Node: TTreeNode);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure pmCollapseExpandPopup(Sender: TObject);
     procedure TreeFilterEdAfterFilter(Sender: TObject);

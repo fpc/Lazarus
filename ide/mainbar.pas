@@ -391,12 +391,12 @@ type
     procedure MainIDEBarDropFiles(Sender: TObject;
       const FileNames: array of String);
     procedure SplitterMouseDown(Sender: TObject; Button: TMouseButton;
-      Shift: TShiftState; X, Y: Integer);
-    procedure SplitterMouseUp(Sender: TObject; Button: TMouseButton;
-      Shift: TShiftState; X, Y: Integer);
-    procedure SplitterMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
+      {%H-}Shift: TShiftState; X, Y: Integer);
+    procedure SplitterMouseUp(Sender: TObject; {%H-}Button: TMouseButton;
+      {%H-}Shift: TShiftState; {%H-}X, {%H-}Y: Integer);
+    procedure SplitterMouseMove(Sender: TObject; {%H-}Shift: TShiftState; X, Y: Integer);
     procedure pnlSpeedButtonsMouseDown(Sender: TObject; Button: TMouseButton;
-      Shift: TShiftState; X, Y: Integer);
+      {%H-}Shift: TShiftState; {%H-}X, {%H-}Y: Integer);
   private
     FOldWindowState: TWindowState;
     FOnActive: TNotifyEvent;
