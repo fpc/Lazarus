@@ -2623,7 +2623,7 @@ begin
   if FCodeBuffer=nil then exit;
   //DebugLn(['TSourceEditor.UpdateCodeBuffer ',FCodeBuffer.FileName]);
   IncreaseIgnoreCodeBufferLock;
-  SynEditor.BeginUpdate;
+  SynEditor.BeginUpdate(False);
   try
     FCodeBuffer.Assign(SynEditor.Lines);
     FEditorStampCommitedToCodetools:=(SynEditor.Lines as TSynEditLines).TextChangeStamp;
@@ -9795,7 +9795,7 @@ begin
   begin
     //debugln(['TSourceEditorManager.OnIdle ',MarklingProducerCount]);
     aFilename:=SrcEdit.FileName;
-    SrcEdit.EditorComponent.BeginUpdate;
+    SrcEdit.EditorComponent.BeginUpdate(False);
     for i:=0 to MarklingProducerCount-1 do
     begin
       Marklings:=MarklingProducers[i].GetMarklings(aFilename,FreeList,FreeMarklings);
