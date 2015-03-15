@@ -298,6 +298,7 @@ type
     FSelY1, FSelY2, FSelX: Integer;
     FColSelDoneY1, FColSelDoneY2, FColSelDonePhysX: Integer;
     FSpaceTrimmerLocked: Boolean;
+    FForeignPaintLock: Integer;
 
     procedure RemoveCaretsInSelection;
     procedure SetActiveMode(AValue: TSynPluginMultiCaretMode);
@@ -322,6 +323,8 @@ type
     procedure DoBufferChanged(Sender: TObject); override;
 
     procedure DoAfterDecPaintLock(Sender: TObject); override;
+    procedure DoIncForeignPaintLock(Sender: TObject);
+    procedure DoDecForeignPaintLock(Sender: TObject);
 
     procedure DoCleared; override;
     procedure DoLinesEdited(Sender: TSynEditStrings; aLinePos, aBytePos, aCount,
@@ -1950,6 +1953,8 @@ end;
 procedure TSynCustomPluginMultiCaret.DoEditorRemoving(AValue: TCustomSynEdit);
 begin
   if Editor <> nil then begin
+    ViewedTextBuffer.RemoveNotifyHandler(senrDecOwnedPaintLock, @DoDecForeignPaintLock);
+    ViewedTextBuffer.RemoveNotifyHandler(senrIncOwnedPaintLock, @DoIncForeignPaintLock);
     ViewedTextBuffer.UndoList.UnregisterUpdateCaretUndo(@UpdateCaretForUndo);
     CaretObj.RemoveChangeHandler(@DoCaretChanged);
     SelectionObj.RemoveChangeHandler(@DoSelectionChanged);
@@ -1976,14 +1981,20 @@ begin
     SelectionObj.AddChangeHandler(@DoSelectionChanged);
     CaretObj.AddChangeHandler(@DoCaretChanged);
     ViewedTextBuffer.UndoList.RegisterUpdateCaretUndo(@UpdateCaretForUndo);
+    ViewedTextBuffer.AddNotifyHandler(senrIncOwnedPaintLock, @DoIncForeignPaintLock);
+    ViewedTextBuffer.AddNotifyHandler(senrDecOwnedPaintLock, @DoDecForeignPaintLock);
   end;
 end;
 
 procedure TSynCustomPluginMultiCaret.DoBufferChanged(Sender: TObject);
 begin
   inherited DoBufferChanged(Sender);
+  TSynEditStrings(Sender).RemoveNotifyHandler(senrDecOwnedPaintLock, @DoDecForeignPaintLock);
+  TSynEditStrings(Sender).RemoveNotifyHandler(senrIncOwnedPaintLock, @DoIncForeignPaintLock);
   TSynEditStrings(Sender).UndoList.UnregisterUpdateCaretUndo(@UpdateCaretForUndo);
   ViewedTextBuffer.UndoList.RegisterUpdateCaretUndo(@UpdateCaretForUndo);
+  ViewedTextBuffer.AddNotifyHandler(senrIncOwnedPaintLock, @DoIncForeignPaintLock);
+  ViewedTextBuffer.AddNotifyHandler(senrDecOwnedPaintLock, @DoDecForeignPaintLock);
 end;
 
 procedure TSynCustomPluginMultiCaret.DoAfterDecPaintLock(Sender: TObject);
@@ -1996,6 +2007,18 @@ begin
   UpdateCaretsPos;
   inherited DoAfterDecPaintLock(Sender);
   FStateFlags := FStateFlags - [sfExtendingColumnSel, sfSkipSelChanged, sfSkipCaretChanged];
+end;
+
+procedure TSynCustomPluginMultiCaret.DoIncForeignPaintLock(Sender: TObject);
+begin
+  if Sender = Editor then exit;
+  inc(FForeignPaintLock);
+end;
+
+procedure TSynCustomPluginMultiCaret.DoDecForeignPaintLock(Sender: TObject);
+begin
+  if Sender = Editor then exit;
+  dec(FForeignPaintLock);
 end;
 
 procedure TSynCustomPluginMultiCaret.DoCleared;
@@ -2011,6 +2034,12 @@ end;
 procedure TSynCustomPluginMultiCaret.DoLinesEdited(Sender: TSynEditStrings; aLinePos,
   aBytePos, aCount, aLineBrkCnt: Integer; aText: String);
 begin
+  if (FStateFlags * [sfProcessingCmd] = []) and
+     (FForeignPaintLock = 0)
+  then
+    ClearCarets;
+
+
   inherited DoLinesEdited(Sender, aLinePos, aBytePos, aCount, aLineBrkCnt, aText);
   Exclude(FStateFlags, sfCreateCaretAtCurrentPos);
 end;
@@ -2026,7 +2055,8 @@ begin
     exit;
   end;
   if (FStateFlags * [sfProcessingCmd, sfExtendingColumnSel, sfSkipCaretChanged] <> []) or
-     (ActiveMode = mcmAddingCarets)
+     (ActiveMode = mcmAddingCarets) or
+     (FForeignPaintLock > 0)
   then
     exit;
 
@@ -2080,7 +2110,9 @@ var
   SelFirstY, SelLastY, CurY: Integer;
   CurCaret: TLogCaretPoint;
 begin
-  if (FStateFlags * [sfProcessingCmd, sfSkipSelChanged] <> []) then exit;
+  if (FStateFlags * [sfProcessingCmd, sfSkipSelChanged] <> []) or
+     (FForeignPaintLock > 0)
+  then exit;
   SelFirstY := Editor.BlockBegin.y;
   SelLastY := Editor.BlockEnd.y;
   If not ((SelFirstY <> SelLastY) and (Editor.SelectionMode = smColumn) and EnableWithColumnSelection) then begin
