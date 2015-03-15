@@ -12,27 +12,27 @@ object MakeResStrDialog: TMakeResStrDialog
   Constraints.MinWidth = 480
   OnCreate = FormCreate
   Position = poScreenCenter
-  LCLVersion = '0.9.29'
+  LCLVersion = '1.5'
   object ConversionGroupBox: TGroupBox
     Left = 6
-    Height = 248
+    Height = 242
     Top = 6
     Width = 637
     Align = alTop
     AutoSize = True
     BorderSpacing.Around = 6
     Caption = 'ConversionGroupBox'
-    ClientHeight = 227
-    ClientWidth = 629
+    ClientHeight = 225
+    ClientWidth = 633
     TabOrder = 0
     object ResStrSectionLabel: TLabel
       AnchorSideLeft.Control = IdentifierGroupBox
       AnchorSideTop.Control = IdentifierGroupBox
       AnchorSideTop.Side = asrBottom
       Left = 12
-      Height = 18
-      Top = 135
-      Width = 125
+      Height = 15
+      Top = 131
+      Width = 106
       Alignment = taRightJustify
       BorderSpacing.Top = 2
       BorderSpacing.Around = 6
@@ -44,9 +44,9 @@ object MakeResStrDialog: TMakeResStrDialog
       AnchorSideTop.Control = ResStrSectionComboBox
       AnchorSideTop.Side = asrBottom
       Left = 12
-      Height = 18
-      Top = 168
-      Width = 180
+      Height = 15
+      Top = 164
+      Width = 151
       Alignment = taRightJustify
       BorderSpacing.Top = 2
       BorderSpacing.Around = 6
@@ -59,42 +59,40 @@ object MakeResStrDialog: TMakeResStrDialog
       AnchorSideTop.Side = asrBottom
       AnchorSideBottom.Side = asrBottom
       Left = 6
-      Height = 22
-      Top = 199
-      Width = 198
+      Height = 24
+      Top = 195
+      Width = 175
       BorderSpacing.Around = 6
       Caption = 'AppendResStrRadioButton'
       Checked = True
-      State = cbChecked
       TabOrder = 0
+      TabStop = True
     end
     object InsertContextSensitiveRadioButton: TRadioButton
       AnchorSideLeft.Control = InsertAlphabeticallyResStrRadioButton
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = ResStrWithSameValuesCombobox
       AnchorSideTop.Side = asrBottom
-      Left = 495
-      Height = 22
-      Top = 199
-      Width = 256
+      Left = 434
+      Height = 24
+      Top = 195
+      Width = 221
       BorderSpacing.Around = 6
       Caption = 'InsertContextSensitiveRadioButton'
       TabOrder = 1
-      TabStop = False
     end
     object InsertAlphabeticallyResStrRadioButton: TRadioButton
       AnchorSideLeft.Control = AppendResStrRadioButton
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = ResStrWithSameValuesCombobox
       AnchorSideTop.Side = asrBottom
-      Left = 210
-      Height = 22
-      Top = 199
-      Width = 279
+      Left = 187
+      Height = 24
+      Top = 195
+      Width = 241
       BorderSpacing.Around = 6
       Caption = 'InsertAlphabeticallyResStrRadioButton'
       TabOrder = 2
-      TabStop = False
     end
     object ResStrSectionComboBox: TComboBox
       AnchorSideLeft.Control = ResStrSectionLabel
@@ -103,10 +101,10 @@ object MakeResStrDialog: TMakeResStrDialog
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = ConversionGroupBox
       AnchorSideRight.Side = asrBottom
-      Left = 143
+      Left = 124
       Height = 27
-      Top = 133
-      Width = 480
+      Top = 129
+      Width = 503
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Around = 6
       ItemHeight = 0
@@ -121,10 +119,10 @@ object MakeResStrDialog: TMakeResStrDialog
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = ConversionGroupBox
       AnchorSideRight.Side = asrBottom
-      Left = 198
+      Left = 169
       Height = 27
-      Top = 166
-      Width = 425
+      Top = 162
+      Width = 458
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Around = 6
       ItemHeight = 0
@@ -134,24 +132,24 @@ object MakeResStrDialog: TMakeResStrDialog
     end
     object IdentifierGroupBox: TGroupBox
       Left = 6
-      Height = 121
+      Height = 117
       Top = 6
-      Width = 617
+      Width = 621
       Align = alTop
       AutoSize = True
       BorderSpacing.Around = 6
       Caption = 'IdentifierGroupBox'
       ClientHeight = 100
-      ClientWidth = 609
+      ClientWidth = 617
       TabOrder = 5
       object IdentLengthLabel: TLabel
-        AnchorSideTop.Control = CustomIdentifierCheckBox
-        AnchorSideTop.Side = asrBottom
+        AnchorSideTop.Control = IdentLengthComboBox
+        AnchorSideTop.Side = asrCenter
         AnchorSideRight.Control = IdentLengthComboBox
-        Left = 384
-        Height = 18
-        Top = 36
-        Width = 113
+        Left = 408
+        Height = 15
+        Top = 42
+        Width = 97
         Alignment = taRightJustify
         Anchors = [akTop, akRight]
         BorderSpacing.Top = 2
@@ -161,12 +159,12 @@ object MakeResStrDialog: TMakeResStrDialog
       end
       object IdentPrefixLabel: TLabel
         AnchorSideLeft.Control = IdentifierGroupBox
-        AnchorSideTop.Control = CustomIdentifierCheckBox
-        AnchorSideTop.Side = asrBottom
+        AnchorSideTop.Control = IdentPrefixComboBox
+        AnchorSideTop.Side = asrCenter
         Left = 6
-        Height = 18
-        Top = 36
-        Width = 106
+        Height = 15
+        Top = 42
+        Width = 91
         Alignment = taRightJustify
         BorderSpacing.Top = 2
         BorderSpacing.Around = 6
@@ -180,10 +178,10 @@ object MakeResStrDialog: TMakeResStrDialog
         AnchorSideTop.Side = asrBottom
         AnchorSideRight.Control = IdentifierGroupBox
         AnchorSideRight.Side = asrBottom
-        Left = 118
-        Height = 27
-        Top = 67
-        Width = 485
+        Left = 103
+        Height = 25
+        Top = 69
+        Width = 508
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Around = 6
         Enabled = False
@@ -194,9 +192,9 @@ object MakeResStrDialog: TMakeResStrDialog
       object CustomIdentifierCheckBox: TCheckBox
         AnchorSideTop.Side = asrBottom
         Left = 6
-        Height = 22
+        Height = 24
         Top = 6
-        Width = 597
+        Width = 605
         Align = alTop
         BorderSpacing.Around = 6
         Caption = 'CustomIdentifierCheckBox'
@@ -208,9 +206,9 @@ object MakeResStrDialog: TMakeResStrDialog
         AnchorSideTop.Side = asrBottom
         AnchorSideRight.Control = IdentifierGroupBox
         AnchorSideRight.Side = asrBottom
-        Left = 503
+        Left = 511
         Height = 27
-        Top = 34
+        Top = 36
         Width = 100
         Anchors = [akTop, akRight]
         BorderSpacing.Around = 6
@@ -224,9 +222,9 @@ object MakeResStrDialog: TMakeResStrDialog
         AnchorSideLeft.Side = asrBottom
         AnchorSideTop.Control = CustomIdentifierCheckBox
         AnchorSideTop.Side = asrBottom
-        Left = 118
+        Left = 103
         Height = 27
-        Top = 34
+        Top = 36
         Width = 100
         BorderSpacing.Around = 6
         ItemHeight = 0
@@ -239,13 +237,13 @@ object MakeResStrDialog: TMakeResStrDialog
   object CodePanel: TPanel
     AnchorSideBottom.Control = CancelButton
     Left = 6
-    Height = 239
-    Top = 260
+    Height = 251
+    Top = 254
     Width = 637
     Align = alClient
     BorderSpacing.Around = 6
     BevelOuter = bvNone
-    ClientHeight = 239
+    ClientHeight = 251
     ClientWidth = 637
     TabOrder = 1
     object SrcPreviewGroupBox: TGroupBox
@@ -257,14 +255,14 @@ object MakeResStrDialog: TMakeResStrDialog
       Align = alTop
       Anchors = [akTop, akLeft, akRight, akBottom]
       Caption = 'SrcPreviewGroupBox'
-      ClientHeight = 78
-      ClientWidth = 629
+      ClientHeight = 82
+      ClientWidth = 633
       TabOrder = 0
       inline SrcPreviewSynEdit: TSynEdit
         Left = 6
-        Height = 66
+        Height = 70
         Top = 6
-        Width = 617
+        Width = 621
         Align = alClient
         BorderSpacing.Around = 6
         Font.Color = clBlack
@@ -277,30 +275,19 @@ object MakeResStrDialog: TMakeResStrDialog
         TabOrder = 0
         BookMarkOptions.Xoffset = -18
         Gutter.Visible = False
-        Gutter.Width = 0
+        Gutter.Width = 57
         Gutter.MouseActions = <        
           item
-            Shift = []
-            ShiftMask = []
-            Button = mbLeft
             ClickCount = ccAny
             ClickDir = cdDown
-            Command = 13
-            MoveCaret = False
-            Option = 0
-            Priority = 0
+            Command = emcOnMainGutterClick
           end        
           item
-            Shift = []
-            ShiftMask = []
             Button = mbRight
-            ClickCount = ccSingle
-            ClickDir = cdUp
-            Command = 12
-            MoveCaret = False
-            Option = 0
-            Priority = 0
+            Command = emcContextMenu
           end>
+        RightGutter.Width = 0
+        RightGutter.MouseActions = <>
         Highlighter = SynPasSyn
         Keystrokes = <        
           item
@@ -625,137 +612,102 @@ object MakeResStrDialog: TMakeResStrDialog
           end>
         MouseActions = <        
           item
-            Shift = []
             ShiftMask = [ssShift, ssAlt]
-            Button = mbLeft
-            ClickCount = ccSingle
             ClickDir = cdDown
-            Command = 1
+            Command = emcStartSelections
             MoveCaret = True
-            Option = 0
-            Priority = 0
           end        
           item
             Shift = [ssShift]
             ShiftMask = [ssShift, ssAlt]
-            Button = mbLeft
-            ClickCount = ccSingle
             ClickDir = cdDown
-            Command = 1
+            Command = emcStartSelections
             MoveCaret = True
             Option = 1
-            Priority = 0
           end        
           item
             Shift = [ssAlt]
             ShiftMask = [ssShift, ssAlt]
-            Button = mbLeft
-            ClickCount = ccSingle
             ClickDir = cdDown
-            Command = 3
+            Command = emcStartColumnSelections
             MoveCaret = True
-            Option = 0
-            Priority = 0
           end        
           item
             Shift = [ssShift, ssAlt]
             ShiftMask = [ssShift, ssAlt]
-            Button = mbLeft
-            ClickCount = ccSingle
             ClickDir = cdDown
-            Command = 3
+            Command = emcStartColumnSelections
             MoveCaret = True
             Option = 1
-            Priority = 0
           end        
           item
-            Shift = []
-            ShiftMask = []
             Button = mbRight
-            ClickCount = ccSingle
-            ClickDir = cdUp
-            Command = 12
-            MoveCaret = False
-            Option = 0
-            Priority = 0
+            Command = emcContextMenu
           end        
           item
-            Shift = []
-            ShiftMask = []
-            Button = mbLeft
             ClickCount = ccDouble
             ClickDir = cdDown
-            Command = 6
+            Command = emcSelectWord
             MoveCaret = True
-            Option = 0
-            Priority = 0
           end        
           item
-            Shift = []
-            ShiftMask = []
-            Button = mbLeft
             ClickCount = ccTriple
             ClickDir = cdDown
-            Command = 7
+            Command = emcSelectLine
             MoveCaret = True
-            Option = 0
-            Priority = 0
           end        
           item
-            Shift = []
-            ShiftMask = []
-            Button = mbLeft
             ClickCount = ccQuad
             ClickDir = cdDown
-            Command = 8
+            Command = emcSelectPara
             MoveCaret = True
-            Option = 0
-            Priority = 0
           end        
           item
-            Shift = []
-            ShiftMask = []
             Button = mbMiddle
-            ClickCount = ccSingle
             ClickDir = cdDown
-            Command = 10
+            Command = emcPasteSelection
             MoveCaret = True
-            Option = 0
-            Priority = 0
           end        
           item
             Shift = [ssCtrl]
             ShiftMask = [ssShift, ssAlt, ssCtrl]
-            Button = mbLeft
-            ClickCount = ccSingle
-            ClickDir = cdUp
-            Command = 11
-            MoveCaret = False
-            Option = 0
-            Priority = 0
+            Command = emcMouseLink
           end>
+        MouseTextActions = <>
         MouseSelActions = <        
           item
-            Shift = []
-            ShiftMask = []
-            Button = mbLeft
-            ClickCount = ccSingle
             ClickDir = cdDown
-            Command = 9
-            MoveCaret = False
-            Option = 0
-            Priority = 0
+            Command = emcStartDragMove
           end>
         Lines.Strings = (
           'SrcPreviewSynEdit'
         )
+        VisibleSpecialChars = [vscSpace, vscTabAtLast]
+        SelectedColor.BackPriority = 50
+        SelectedColor.ForePriority = 50
+        SelectedColor.FramePriority = 50
+        SelectedColor.BoldPriority = 50
+        SelectedColor.ItalicPriority = 50
+        SelectedColor.UnderlinePriority = 50
+        SelectedColor.StrikeOutPriority = 50
         BracketHighlightStyle = sbhsBoth
+        BracketMatchColor.Background = clNone
+        BracketMatchColor.Foreground = clNone
+        BracketMatchColor.Style = [fsBold]
+        FoldedCodeColor.Background = clNone
+        FoldedCodeColor.Foreground = clGray
+        FoldedCodeColor.FrameColor = clGray
+        MouseLinkColor.Background = clNone
+        MouseLinkColor.Foreground = clBlue
+        LineHighlightColor.Background = clNone
+        LineHighlightColor.Foreground = clNone
         inline TSynGutterPartList
           object TSynGutterMarks
-            Width = 23
+            Width = 24
+            MouseActions = <>
           end
           object TSynGutterLineNumber
-            Width = 25
+            Width = 17
             MouseActions = <>
             MarkupInfo.Background = clBtnFace
             MarkupInfo.Foreground = clNone
@@ -766,35 +718,28 @@ object MakeResStrDialog: TMakeResStrDialog
           end
           object TSynGutterChanges
             Width = 4
+            MouseActions = <>
             ModifiedColor = 59900
             SavedColor = clGreen
           end
           object TSynGutterSeparator
             Width = 2
+            MouseActions = <>
+            MarkupInfo.Background = clWhite
+            MarkupInfo.Foreground = clGray
           end
           object TSynGutterCodeFolding
             MouseActions = <            
               item
-                Shift = []
-                ShiftMask = []
                 Button = mbRight
-                ClickCount = ccSingle
-                ClickDir = cdUp
-                Command = 16
-                MoveCaret = False
-                Option = 0
-                Priority = 0
+                Command = emcCodeFoldContextMenu
               end            
               item
-                Shift = []
                 ShiftMask = [ssShift]
                 Button = mbMiddle
                 ClickCount = ccAny
                 ClickDir = cdDown
-                Command = 14
-                MoveCaret = False
-                Option = 0
-                Priority = 0
+                Command = emcCodeFoldCollaps
               end            
               item
                 Shift = [ssShift]
@@ -802,58 +747,36 @@ object MakeResStrDialog: TMakeResStrDialog
                 Button = mbMiddle
                 ClickCount = ccAny
                 ClickDir = cdDown
-                Command = 14
-                MoveCaret = False
+                Command = emcCodeFoldCollaps
                 Option = 1
-                Priority = 0
               end            
               item
-                Shift = []
-                ShiftMask = []
-                Button = mbLeft
                 ClickCount = ccAny
                 ClickDir = cdDown
-                Command = 0
-                MoveCaret = False
-                Option = 0
-                Priority = 0
+                Command = emcNone
               end>
             MarkupInfo.Background = clNone
             MarkupInfo.Foreground = clGray
             MouseActionsExpanded = <            
               item
-                Shift = []
-                ShiftMask = []
-                Button = mbLeft
                 ClickCount = ccAny
                 ClickDir = cdDown
-                Command = 14
-                MoveCaret = False
-                Option = 0
-                Priority = 0
+                Command = emcCodeFoldCollaps
               end>
             MouseActionsCollapsed = <            
               item
                 Shift = [ssCtrl]
                 ShiftMask = [ssCtrl]
-                Button = mbLeft
                 ClickCount = ccAny
                 ClickDir = cdDown
-                Command = 15
-                MoveCaret = False
-                Option = 0
-                Priority = 0
+                Command = emcCodeFoldExpand
               end            
               item
-                Shift = []
                 ShiftMask = [ssCtrl]
-                Button = mbLeft
                 ClickCount = ccAny
                 ClickDir = cdDown
-                Command = 15
-                MoveCaret = False
+                Command = emcCodeFoldExpand
                 Option = 1
-                Priority = 0
               end>
           end
         end
@@ -861,19 +784,19 @@ object MakeResStrDialog: TMakeResStrDialog
     end
     object StringConstGroupBox: TGroupBox
       Left = 0
-      Height = 135
+      Height = 147
       Top = 104
       Width = 637
       Align = alClient
       Caption = 'StringConstGroupBox'
-      ClientHeight = 114
-      ClientWidth = 629
+      ClientHeight = 130
+      ClientWidth = 633
       TabOrder = 1
       inline StringConstSynEdit: TSynEdit
         Left = 6
-        Height = 102
+        Height = 118
         Top = 6
-        Width = 617
+        Width = 621
         Align = alClient
         BorderSpacing.Around = 6
         Font.Color = clBlack
@@ -886,30 +809,19 @@ object MakeResStrDialog: TMakeResStrDialog
         TabOrder = 0
         BookMarkOptions.Xoffset = -18
         Gutter.Visible = False
-        Gutter.Width = 0
+        Gutter.Width = 57
         Gutter.MouseActions = <        
           item
-            Shift = []
-            ShiftMask = []
-            Button = mbLeft
             ClickCount = ccAny
             ClickDir = cdDown
-            Command = 13
-            MoveCaret = False
-            Option = 0
-            Priority = 0
+            Command = emcOnMainGutterClick
           end        
           item
-            Shift = []
-            ShiftMask = []
             Button = mbRight
-            ClickCount = ccSingle
-            ClickDir = cdUp
-            Command = 12
-            MoveCaret = False
-            Option = 0
-            Priority = 0
+            Command = emcContextMenu
           end>
+        RightGutter.Width = 0
+        RightGutter.MouseActions = <>
         Highlighter = SynPasSyn
         Keystrokes = <        
           item
@@ -1234,137 +1146,102 @@ object MakeResStrDialog: TMakeResStrDialog
           end>
         MouseActions = <        
           item
-            Shift = []
             ShiftMask = [ssShift, ssAlt]
-            Button = mbLeft
-            ClickCount = ccSingle
             ClickDir = cdDown
-            Command = 1
+            Command = emcStartSelections
             MoveCaret = True
-            Option = 0
-            Priority = 0
           end        
           item
             Shift = [ssShift]
             ShiftMask = [ssShift, ssAlt]
-            Button = mbLeft
-            ClickCount = ccSingle
             ClickDir = cdDown
-            Command = 1
+            Command = emcStartSelections
             MoveCaret = True
             Option = 1
-            Priority = 0
           end        
           item
             Shift = [ssAlt]
             ShiftMask = [ssShift, ssAlt]
-            Button = mbLeft
-            ClickCount = ccSingle
             ClickDir = cdDown
-            Command = 3
+            Command = emcStartColumnSelections
             MoveCaret = True
-            Option = 0
-            Priority = 0
           end        
           item
             Shift = [ssShift, ssAlt]
             ShiftMask = [ssShift, ssAlt]
-            Button = mbLeft
-            ClickCount = ccSingle
             ClickDir = cdDown
-            Command = 3
+            Command = emcStartColumnSelections
             MoveCaret = True
             Option = 1
-            Priority = 0
           end        
           item
-            Shift = []
-            ShiftMask = []
             Button = mbRight
-            ClickCount = ccSingle
-            ClickDir = cdUp
-            Command = 12
-            MoveCaret = False
-            Option = 0
-            Priority = 0
+            Command = emcContextMenu
           end        
           item
-            Shift = []
-            ShiftMask = []
-            Button = mbLeft
             ClickCount = ccDouble
             ClickDir = cdDown
-            Command = 6
+            Command = emcSelectWord
             MoveCaret = True
-            Option = 0
-            Priority = 0
           end        
           item
-            Shift = []
-            ShiftMask = []
-            Button = mbLeft
             ClickCount = ccTriple
             ClickDir = cdDown
-            Command = 7
+            Command = emcSelectLine
             MoveCaret = True
-            Option = 0
-            Priority = 0
           end        
           item
-            Shift = []
-            ShiftMask = []
-            Button = mbLeft
             ClickCount = ccQuad
             ClickDir = cdDown
-            Command = 8
+            Command = emcSelectPara
             MoveCaret = True
-            Option = 0
-            Priority = 0
           end        
           item
-            Shift = []
-            ShiftMask = []
             Button = mbMiddle
-            ClickCount = ccSingle
             ClickDir = cdDown
-            Command = 10
+            Command = emcPasteSelection
             MoveCaret = True
-            Option = 0
-            Priority = 0
           end        
           item
             Shift = [ssCtrl]
             ShiftMask = [ssShift, ssAlt, ssCtrl]
-            Button = mbLeft
-            ClickCount = ccSingle
-            ClickDir = cdUp
-            Command = 11
-            MoveCaret = False
-            Option = 0
-            Priority = 0
+            Command = emcMouseLink
           end>
+        MouseTextActions = <>
         MouseSelActions = <        
           item
-            Shift = []
-            ShiftMask = []
-            Button = mbLeft
-            ClickCount = ccSingle
             ClickDir = cdDown
-            Command = 9
-            MoveCaret = False
-            Option = 0
-            Priority = 0
+            Command = emcStartDragMove
           end>
         Lines.Strings = (
           'StringConstSynEdit'
         )
+        VisibleSpecialChars = [vscSpace, vscTabAtLast]
+        SelectedColor.BackPriority = 50
+        SelectedColor.ForePriority = 50
+        SelectedColor.FramePriority = 50
+        SelectedColor.BoldPriority = 50
+        SelectedColor.ItalicPriority = 50
+        SelectedColor.UnderlinePriority = 50
+        SelectedColor.StrikeOutPriority = 50
         BracketHighlightStyle = sbhsBoth
+        BracketMatchColor.Background = clNone
+        BracketMatchColor.Foreground = clNone
+        BracketMatchColor.Style = [fsBold]
+        FoldedCodeColor.Background = clNone
+        FoldedCodeColor.Foreground = clGray
+        FoldedCodeColor.FrameColor = clGray
+        MouseLinkColor.Background = clNone
+        MouseLinkColor.Foreground = clBlue
+        LineHighlightColor.Background = clNone
+        LineHighlightColor.Foreground = clNone
         inline TSynGutterPartList
           object TSynGutterMarks
-            Width = 23
+            Width = 24
+            MouseActions = <>
           end
           object TSynGutterLineNumber
-            Width = 25
+            Width = 17
             MouseActions = <>
             MarkupInfo.Background = clBtnFace
             MarkupInfo.Foreground = clNone
@@ -1375,35 +1252,28 @@ object MakeResStrDialog: TMakeResStrDialog
           end
           object TSynGutterChanges
             Width = 4
+            MouseActions = <>
             ModifiedColor = 59900
             SavedColor = clGreen
           end
           object TSynGutterSeparator
             Width = 2
+            MouseActions = <>
+            MarkupInfo.Background = clWhite
+            MarkupInfo.Foreground = clGray
           end
           object TSynGutterCodeFolding
             MouseActions = <            
               item
-                Shift = []
-                ShiftMask = []
                 Button = mbRight
-                ClickCount = ccSingle
-                ClickDir = cdUp
-                Command = 16
-                MoveCaret = False
-                Option = 0
-                Priority = 0
+                Command = emcCodeFoldContextMenu
               end            
               item
-                Shift = []
                 ShiftMask = [ssShift]
                 Button = mbMiddle
                 ClickCount = ccAny
                 ClickDir = cdDown
-                Command = 14
-                MoveCaret = False
-                Option = 0
-                Priority = 0
+                Command = emcCodeFoldCollaps
               end            
               item
                 Shift = [ssShift]
@@ -1411,58 +1281,36 @@ object MakeResStrDialog: TMakeResStrDialog
                 Button = mbMiddle
                 ClickCount = ccAny
                 ClickDir = cdDown
-                Command = 14
-                MoveCaret = False
+                Command = emcCodeFoldCollaps
                 Option = 1
-                Priority = 0
               end            
               item
-                Shift = []
-                ShiftMask = []
-                Button = mbLeft
                 ClickCount = ccAny
                 ClickDir = cdDown
-                Command = 0
-                MoveCaret = False
-                Option = 0
-                Priority = 0
+                Command = emcNone
               end>
             MarkupInfo.Background = clNone
             MarkupInfo.Foreground = clGray
             MouseActionsExpanded = <            
               item
-                Shift = []
-                ShiftMask = []
-                Button = mbLeft
                 ClickCount = ccAny
                 ClickDir = cdDown
-                Command = 14
-                MoveCaret = False
-                Option = 0
-                Priority = 0
+                Command = emcCodeFoldCollaps
               end>
             MouseActionsCollapsed = <            
               item
                 Shift = [ssCtrl]
                 ShiftMask = [ssCtrl]
-                Button = mbLeft
                 ClickCount = ccAny
                 ClickDir = cdDown
-                Command = 15
-                MoveCaret = False
-                Option = 0
-                Priority = 0
+                Command = emcCodeFoldExpand
               end            
               item
-                Shift = []
                 ShiftMask = [ssCtrl]
-                Button = mbLeft
                 ClickCount = ccAny
                 ClickDir = cdDown
-                Command = 15
-                MoveCaret = False
+                Command = emcCodeFoldExpand
                 Option = 1
-                Priority = 0
               end>
           end
         end
@@ -1480,21 +1328,21 @@ object MakeResStrDialog: TMakeResStrDialog
   end
   object BtnPanel: TPanel
     Left = 0
-    Height = 46
-    Top = 505
+    Height = 40
+    Top = 511
     Width = 649
     Align = alBottom
     AutoSize = True
     BevelOuter = bvNone
-    ClientHeight = 46
+    ClientHeight = 40
     ClientWidth = 649
     TabOrder = 2
     object OKButton: TBitBtn
       AnchorSideBottom.Side = asrBottom
-      Left = 466
-      Height = 34
+      Left = 487
+      Height = 28
       Top = 6
-      Width = 85
+      Width = 75
       Align = alRight
       AutoSize = True
       BorderSpacing.Around = 6
@@ -1504,17 +1352,16 @@ object MakeResStrDialog: TMakeResStrDialog
       Default = True
       Kind = bkOK
       ModalResult = 1
-      NumGlyphs = 0
       OnClick = OkButtonClick
       TabOrder = 0
     end
     object CancelButton: TBitBtn
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Side = asrBottom
-      Left = 557
-      Height = 34
+      Left = 568
+      Height = 28
       Top = 6
-      Width = 86
+      Width = 75
       Align = alRight
       AutoSize = True
       BorderSpacing.Around = 6
@@ -1524,16 +1371,15 @@ object MakeResStrDialog: TMakeResStrDialog
       Constraints.MinWidth = 75
       Kind = bkCancel
       ModalResult = 2
-      NumGlyphs = 0
       OnClick = CancelButtonClick
       TabOrder = 1
     end
     object HelpButton: TBitBtn
       AnchorSideBottom.Side = asrBottom
       Left = 6
-      Height = 34
+      Height = 28
       Top = 6
-      Width = 85
+      Width = 75
       Align = alLeft
       AutoSize = True
       BorderSpacing.Around = 6
@@ -1541,7 +1387,6 @@ object MakeResStrDialog: TMakeResStrDialog
       Constraints.MinHeight = 25
       Constraints.MinWidth = 75
       Kind = bkHelp
-      NumGlyphs = 0
       OnClick = HelpButtonClick
       TabOrder = 2
     end
