@@ -975,7 +975,9 @@ var
 
 var
   i: Integer;
+  {$IFDEF EnableCheckInterPkgFiles}
   Dlg: TPGIPConflictsDialog;
+  {$ENDIF}
 begin
   Result:=true;
   FilesChanged:=false;
@@ -985,7 +987,9 @@ begin
   Units:=TAvgLvlTree.Create(@ComparePGInterPkgUnitnames);
   ShortFiles:=TAvgLvlTree.Create(@ComparePGInterPkgShortFilename);
   AmbiguousFileGroups:=TObjectList.create(true);
+  {$IFDEF EnableCheckInterPkgFiles}
   Dlg:=nil;
+  {$ENDIF}
   try
     // get target OS, CPU and LCLWidgetType
     TargetOS:='$(TargetOS)';
@@ -1028,6 +1032,9 @@ begin
       {$ENDIF}
     end;
   finally
+    {$IFDEF EnableCheckInterPkgFiles}
+    Dlg.Free;
+    {$ENDIF}
     AmbiguousFileGroups.Free;
     Units.Free;
     ShortFiles.Free;

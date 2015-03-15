@@ -41,8 +41,8 @@ uses
   IDEProcs, InitialSetupProc, ExtTools, CompilerOptions, ApplicationBundle,
   TransferMacros, EnvironmentOpts, IDETranslations, LazarusIDEStrConsts,
   IDECmdLine, ExtToolDialog, MiscOptions, Project, LazConf, PackageDefs,
-  PackageLinks, PackageSystem, BuildLazDialog, BuildProfileManager,
-  BuildManager, BaseBuildManager, ModeMatrixOpts;
+  PackageLinks, PackageSystem, InterPkgConflictFiles, BuildLazDialog,
+  BuildProfileManager, BuildManager, BaseBuildManager, ModeMatrixOpts;
   
 type
 
@@ -81,6 +81,8 @@ type
                                           out Directory: string);
     // Event procedure that adds every package added to the package graph to the (user) package links
     procedure PackageGraphAddPackage(Pkg: TLazPackage);
+    function PackageGraphCheckInterPkgFiles(IDEObject: TObject;
+                          PkgList: TFPList; out FilesChanged: boolean): boolean;
 
     // project
     procedure OnProjectChangeInfoFile(TheProject: TProject);
@@ -297,6 +299,12 @@ end;
 procedure TLazBuildApplication.PackageGraphAddPackage(Pkg: TLazPackage);
 begin
   if FileExists(Pkg.FileName) then PkgLinks.AddUserLink(Pkg);
+end;
+
+function TLazBuildApplication.PackageGraphCheckInterPkgFiles(
+  IDEObject: TObject; PkgList: TFPList; out FilesChanged: boolean): boolean;
+begin
+  Result:=CheckInterPkgFiles(IDEObject,PkgList,FilesChanged);
 end;
 
 procedure TLazBuildApplication.OnProjectChangeInfoFile(TheProject: TProject);
@@ -1172,6 +1180,7 @@ begin
   // package graph
   PackageGraph:=TLazPackageGraph.Create;
   PackageGraph.OnAddPackage:=@PackageGraphAddPackage;
+  PackageGraph.OnCheckInterPkgFiles:=@PackageGraphCheckInterPkgFiles;
 end;
 
 procedure TLazBuildApplication.SetupDialogs;

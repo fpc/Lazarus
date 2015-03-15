@@ -52,6 +52,7 @@
       <Unit1>
         <Filename Value="buildmanager.pas"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="BuildManager"/>
       </Unit1>
       <Unit2>
         <Filename Value="basebuildmanager.pas"/>
@@ -60,6 +61,7 @@
       <Unit3>
         <Filename Value="idecmdline.pas"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="IDECmdLine"/>
       </Unit3>
     </Units>
   </ProjectOptions>
@@ -70,7 +72,7 @@
     </Target>
     <SearchPaths>
       <IncludeFiles Value="include;include/$(TargetOS)"/>
-      <OtherUnitFiles Value="../designer;../packager;../debugger"/>
+      <OtherUnitFiles Value="../designer;../packager;../debugger;../ide"/>
       <UnitOutputDirectory Value="../units/$(TargetCPU)-$(TargetOS)/$(LCLWidgetType)"/>
     </SearchPaths>
   </CompilerOptions>
