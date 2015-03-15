@@ -159,6 +159,7 @@ type
       override;
     function OnGetBuildMacroValues(Options: TBaseCompilerOptions;
                                    IncludeSelf: boolean): TCTCfgScriptVariables;
+    function GetActiveBuildModeName: string;
     procedure AppendMatrixCustomOption(Sender: TObject;
       var Options: string; Types: TBuildMatrixGroupTypes);
     procedure GetMatrixOutputDirectoryOverride(Sender: TObject;
@@ -307,10 +308,7 @@ end;
 function TBuildManager.MacroFuncBuildMode(const Param: string;
   const Data: PtrInt; var Abort: boolean): string;
 begin
-  if FBuildTarget<>nil then
-    Result:=FBuildTarget.ActiveBuildMode.Identifier
-  else
-    Result:='default';
+  Result:=GetActiveBuildModeName;
 end;
 
 constructor TBuildManager.Create(AOwner: TComponent);
@@ -2414,18 +2412,18 @@ function TBuildManager.OnGetBuildMacroValues(Options: TBaseCompilerOptions;
     end;
   end;
 
-  procedure SetProjectMacroValues(Vars: TCTCfgScriptVariables);
+  procedure ApplyMacroOverrides(Vars: TCTCfgScriptVariables);
   var
     Target: String;
-    CurMode: String;
+    ActiveMode: String;
   begin
+    ActiveMode:=GetActiveBuildModeName;
+    Target:=GetModeMatrixTarget(Options);
+    if EnvironmentOptions<>nil then
+      ApplyBuildMatrixMacros(EnvironmentOptions.BuildMatrixOptions,Target,ActiveMode,Vars);
     if FBuildTarget<>nil then begin
-      Target:=GetModeMatrixTarget(Options);
-      CurMode:=FBuildTarget.ActiveBuildMode.Identifier;
-      if EnvironmentOptions<>nil then
-        ApplyBuildMatrixMacros(EnvironmentOptions.BuildMatrixOptions,Target,CurMode,Vars);
-      ApplyBuildMatrixMacros(FBuildTarget.BuildModes.SharedMatrixOptions,Target,CurMode,Vars);
-      ApplyBuildMatrixMacros(FBuildTarget.BuildModes.SessionMatrixOptions,Target,CurMode,Vars);
+      ApplyBuildMatrixMacros(FBuildTarget.BuildModes.SharedMatrixOptions,Target,ActiveMode,Vars);
+      ApplyBuildMatrixMacros(FBuildTarget.BuildModes.SessionMatrixOptions,Target,ActiveMode,Vars);
     end;
     SetCmdLineOverrides(Vars);
     {$IFDEF VerboseBuildMacros}
@@ -2481,7 +2479,7 @@ begin
       {$ENDIF}
 
       // the macro values of the active project take precedence
-      SetProjectMacroValues(Result);
+      ApplyMacroOverrides(Result);
 
       ParseOpts.MacroValuesStamp:=BuildMacroChangeStamp;
     finally
@@ -2510,13 +2508,21 @@ begin
       end;
 
       // the macro values of the active project take precedence
-      SetProjectMacroValues(Result);
+      ApplyMacroOverrides(Result);
 
       ParseOpts.InheritedMacroValuesStamp:=BuildMacroChangeStamp;
     finally
       ParseOpts.InheritedMacroValuesParsing:=false;
     end;
   end;
+end;
+
+function TBuildManager.GetActiveBuildModeName: string;
+begin
+  if FBuildTarget<>nil then
+    Result:=FBuildTarget.ActiveBuildMode.Identifier
+  else
+    Result:='default';
 end;
 
 procedure TBuildManager.AppendMatrixCustomOption(Sender: TObject;
@@ -2526,10 +2532,7 @@ var
   ActiveMode: String;
 begin
   Target:=GetModeMatrixTarget(Sender);
-  if FBuildTarget<>nil then
-    ActiveMode:=FBuildTarget.ActiveBuildMode.Identifier
-  else
-    ActiveMode:='default';
+  ActiveMode:=GetActiveBuildModeName;
   if bmgtEnvironment in Types then
     EnvironmentOptions.BuildMatrixOptions.AppendCustomOptions(Target,ActiveMode,Options);
   if FBuildTarget<>nil then begin
@@ -2547,10 +2550,7 @@ var
   ActiveMode: String;
 begin
   Target:=GetModeMatrixTarget(Sender);
-  if FBuildTarget<>nil then
-    ActiveMode:=FBuildTarget.ActiveBuildMode.Identifier
-  else
-    ActiveMode:='default';
+  ActiveMode:=GetActiveBuildModeName;
   if bmgtEnvironment in Types then
     EnvironmentOptions.BuildMatrixOptions.GetOutputDirectory(Target,ActiveMode,OutDir);
   if FBuildTarget<>nil then begin
