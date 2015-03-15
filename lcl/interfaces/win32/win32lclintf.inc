@@ -326,7 +326,11 @@ var
   DialogButtons: PTASKDIALOG_BUTTON;
   State: TApplicationState;
 begin
-  if (WindowsVersion >= wvVista) and ThemeServices.ThemesEnabled then
+  //TaskDialogIndirect is available in Vista and up, but only if app was built with manifest.
+  //The check for the latter is done by checking for ComCtlVersionIE6 (which is set in the manifest)
+  //The availability of TaskDialogIndirect does not depend on the status of ThemeServices
+  //Issue #0027664
+  if (WindowsVersion >= wvVista) and (GetFileVersion(comctl32) >= ComCtlVersionIE6) then
   begin
     FillChar(TaskConfig{%H-}, SizeOf(TaskConfig), 0);
     TaskConfig.cbSize := SizeOf(TaskConfig);
@@ -660,7 +664,11 @@ var
   DialogButtons: PTASKDIALOG_BUTTON;
   State: TApplicationState;
 begin
-  if (WindowsVersion >= wvVista) and ThemeServices.ThemesEnabled then
+  //TaskDialogIndirect is available in Vista and up, but only if app was built with manifest.
+  //The check for the latter is done by checking for ComCtlVersionIE6 (which is set in the manifest)
+  //The availability of TaskDialogIndirect does not depend on the status of ThemeServices
+  //Issue #0027664
+  if (WindowsVersion >= wvVista) and (GetFileVersion(comctl32) >= ComCtlVersionIE6) then
   begin
     FillChar(TaskConfig, SizeOf(TaskConfig), 0);
     TaskConfig.cbSize := SizeOf(TaskConfig);
