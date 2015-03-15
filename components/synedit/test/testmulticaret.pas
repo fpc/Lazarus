@@ -19,14 +19,16 @@ type
 
   TTestMultiCaret = class(TTestBase)
   protected
-    FMultiCaret: TSynPluginMultiCaretTest;
+    FMultiCaret, FMultiCaret2: TSynPluginMultiCaretTest;
     FOptAdd,  FOptRemove:  TSynEditorOptions;
     FOpt2Add, FOpt2Remove: TSynEditorOptions2;
     FEnableWithColumnSelection: Boolean;
     FDefaultMode: TSynPluginMultiCaretDefaultMode;
     FDefaultColumnSelectMode: TSynPluginMultiCaretDefaultMode;
+    FSynEdit2: TTestSynEdit;
 
     procedure SetUp; override;
+    procedure TearDown; override;
 
 
     procedure SetCaretAndColumnSelect(X, Y, Down, Right: Integer);
@@ -93,6 +95,9 @@ type
   public
     procedure ReCreateEdit; reintroduce;
     procedure ReCreateEdit(ALines: TStringArray);
+    procedure ReCreateSharedEdit(Reverse: boolean = False);
+    procedure SwapEdit; reintroduce;
+
     procedure RunCmdSeq(cmds: Array of TSynEditorCommand; chars: array of String);
   published
     procedure CaretList;
@@ -103,6 +108,7 @@ type
     procedure ReplaceColSel;
     procedure TabKey;
     procedure Paste;
+    procedure Undo;
   end;
 
 implementation
@@ -120,6 +126,12 @@ begin
   FDefaultColumnSelectMode := mcmCancelOnCaretMove;
 
   inherited SetUp;
+end;
+
+procedure TTestMultiCaret.TearDown;
+begin
+  FreeAndNil(FSynEdit2);
+  inherited TearDown;
 end;
 
 procedure TTestMultiCaret.SetCaretAndColumnSelect(X, Y, Down, Right: Integer);
@@ -385,6 +397,44 @@ procedure TTestMultiCaret.ReCreateEdit(ALines: TStringArray);
 begin
   ReCreateEdit;
   SetLines(ALines);
+end;
+
+procedure TTestMultiCaret.ReCreateSharedEdit(Reverse: boolean);
+begin
+  FSynEdit2.Free;
+  Form.Height := 600;
+  Form.Width :=  500;
+
+  FSynEdit2 := TTestSynEdit.Create(Form);
+  FSynEdit2.Parent := Form;
+  FSynEdit2.Top := 250;
+  FSynEdit2.Left := 0;
+  FSynEdit2.Width:= 500;
+  FSynEdit2.Height := 250;
+
+  FMultiCaret2 := TSynPluginMultiCaretTest.Create(FSynEdit2);
+
+  if Reverse then begin
+    FSynEdit2.Lines.Assign(FSynEdit.Lines);
+    FSynEdit.ShareTextBufferFrom(FSynEdit2)
+  end
+  else
+    FSynEdit2.ShareTextBufferFrom(FSynEdit);
+end;
+
+procedure TTestMultiCaret.SwapEdit;
+var
+  m: TSynPluginMultiCaretTest;
+  e: TTestSynEdit;
+begin
+  m := FMultiCaret;
+  e := FSynEdit;
+
+  FMultiCaret := FMultiCaret2;
+  FSynEdit := FSynEdit2;
+
+  FMultiCaret2 := m;
+  FSynEdit2 := e;
 end;
 
 procedure TTestMultiCaret.RunCmdSeq(cmds: array of TSynEditorCommand; chars: array of String);
@@ -846,31 +896,31 @@ begin
         SetCaretAndColumnSelect(2,2, 1,0);
         RunAndTest('Height 2', [ecDeleteChar],   2, 3, TestText1(2,3, 2,1),   1, []);
         RunAndTest('Height 2', [ecRight],        3, 3, TestText1(2,3, 2,1),   0, []);
-        RunAndTest('Height 2', [ecRight, ecUndo],2, 3, TestText1,   0, []);
+        RunCmdSeq([ecRight, ecUndo],[]);
 
         ReCreateEdit(TestText1);
         SetCaretAndColumnSelect(2,2, 2,0);
         RunAndTest('Height 3', [ecDeleteChar],   2, 4, TestText1(2,4, 2,1),   2, []);
         RunAndTest('Height 3', [ecRight],        3, 4, TestText1(2,4, 2,1),   0, []);
-        RunAndTest('Height 2', [ecRight, ecUndo],2, 4, TestText1,   0, []);
+        RunCmdSeq([ecRight, ecUndo],[]);
 
         ReCreateEdit(TestText1);
         SetCaretAndColumnSelect(2,2, 3,0);
         RunAndTest('Height 4', [ecDeleteChar],   2, 5, TestText1(2,5, 2,1),   3, []);
         RunAndTest('Height 4', [ecRight],        3, 5, TestText1(2,5, 2,1),   0, []);
-        RunAndTest('Height 2', [ecRight, ecUndo],2, 5, TestText1,   0, []);
+        RunCmdSeq([ecRight, ecUndo],[]);
 
         ReCreateEdit(TestText1);
         SetCaretAndColumnSelect(2,2, 4,0);
         RunAndTest('Height 5', [ecDeleteChar],   2, 6, TestText1(2,6, 2,1),   4, []);
         RunAndTest('Height 5', [ecRight],        3, 6, TestText1(2,6, 2,1),   0, []);
-        RunAndTest('Height 2', [ecRight, ecUndo],2, 6, TestText1,   0, []);
+        RunCmdSeq([ecRight, ecUndo],[]);
 
         ReCreateEdit(TestText1);
         SetCaretAndColumnSelect(2,2, 5,0);
         RunAndTest('Height 5', [ecDeleteChar],   2, 7, TestText1(2,7, 2,1),   5, []);
         RunAndTest('Height 5', [ecRight],        3, 7, TestText1(2,7, 2,1),   0, []);
-        RunAndTest('Height 2', [ecRight, ecUndo],2, 7, TestText1,   0, []);
+        RunCmdSeq([ecRight, ecUndo],[]);
 
 
         ReCreateEdit(TestText1);
@@ -883,20 +933,20 @@ begin
         SetCaretAndColumnSelect(1,2, 1,0);
         RunAndTest('X=0, Height 2', [ecDeleteChar],   1, 3, TestText1(2,3, 1,1),   1, []);
         RunAndTest('X=0, Height 2', [ecRight],        2, 3, TestText1(2,3, 1,1),   0, []);
-        RunAndTest('X=0, Height 2', [ecRight, ecUndo],1, 3, TestText1,   0, []);
+        RunCmdSeq([ecRight, ecUndo],[]);
 
         ReCreateEdit(TestText1);
         SetCaretAndColumnSelect(1,2, 2,0);
         RunAndTest('X=0, Height 3', [ecDeleteChar],   1, 4, TestText1(2,4, 1,1),   2, []);
         RunAndTest('X=0, Height 3', [ecRight],        2, 4, TestText1(2,4, 1,1),   0, []);
-        RunAndTest('X=0, Height 3', [ecRight, ecUndo],1, 4, TestText1,   0, []);
+        RunCmdSeq([ecRight, ecUndo],[]);
 
         ReCreateEdit(TestText1);
 FMultiCaret.DefaultColumnSelectMode := mcmMoveAllCarets;
         SetCaretAndColumnSelect(1,2, 2,0);
         RunAndTest('X=0, Height 3', [ecDeleteChar],   1, 4, TestText1(2,4, 1,1),   2, [1,2, 1,3]);
         RunAndTest('X=0, Height 3', [ecRight],        2, 4, TestText1(2,4, 1,1),   2, [2,2, 2,3]);
-        RunAndTest('X=0, Height 3', [ecUndo],1, 4, TestText1,   0, []);
+        RunCmdSeq([ecUndo],[]);
 
       PopPushBaseName('ecDeleteChar - ONE width backward sel');
         ReCreateEdit(LocalText1);
@@ -1267,6 +1317,243 @@ begin
   TestIsCaretLogAndFullText('', 3, 3, LocalText1PasteColOver);
   AssertEquals(BaseTestName+'', 0, FMultiCaret.Carets.Count);
 
+end;
+
+procedure TTestMultiCaret.Undo;
+  function LocalText1: TStringArray;
+  begin
+    SetLength(Result, 8);
+    Result[0] := 'abcde';
+    Result[1] := 'ABCDE';
+    Result[2] := 'mnopq';
+    Result[3] := 'MNOPQ';
+    Result[4] := 'KLMXYZ';
+    Result[5] := 'klmxyz';
+    Result[6] := 'rsthi';
+    Result[7] := '';
+  end;
+  function LocalText1X: TStringArray;
+  begin
+    SetLength(Result, 8);
+    Result[0] := 'acde'; // b missing
+    Result[1] := 'ABCDE';
+    Result[2] := 'mnopq';
+    Result[3] := 'MNOPQ';
+    Result[4] := 'KLMXYZ';
+    Result[5] := 'klmxyz';
+    Result[6] := 'rsthi';
+    Result[7] := '';
+  end;
+  function LocalText1A: TStringArray;
+  begin
+    SetLength(Result, 8);
+    Result[0] := 'abcde';
+    Result[1] := 'AB123CDE';
+    Result[2] := 'mn123opq';
+    Result[3] := 'MN123OPQ';
+    Result[4] := 'KL123MXYZ';
+    Result[5] := 'kl123mxyz';
+    Result[6] := 'rsthi';
+    Result[7] := '';
+  end;
+  function LocalText1B: TStringArray;
+  begin
+    SetLength(Result, 8);
+    Result[0] := 'abcde';
+    Result[1] := 'AB145623CDE';
+    Result[2] := 'mn145623opq';
+    Result[3] := 'MN145623OPQ';
+    Result[4] := 'KL145623MXYZ';
+    Result[5] := 'kl145623mxyz';
+    Result[6] := 'rsthi';
+    Result[7] := '';
+  end;
+  function LocalText1C: TStringArray;
+  begin
+    SetLength(Result, 8);
+    Result[0] := 'abcde';
+    Result[1] := 'AB14578623CDE';
+    Result[2] := 'mn14578623opq';
+    Result[3] := 'MN14578623OPQ';
+    Result[4] := 'KL14578623MXYZ';
+    Result[5] := 'kl14578623mxyz';
+    Result[6] := 'rsthi';
+    Result[7] := '';
+  end;
+begin
+  FOptAdd := [eoGroupUndo];
+  PushBaseName('undo mcmCancelOnCaretMove');
+    FDefaultColumnSelectMode := mcmCancelOnCaretMove;
+    ReCreateEdit(TestText1);
+    SetCaret(3,3);
+    RunAndTest('', [ecColSelDown],       3,4, TestText1,            1, [3,3,0]);
+    RunAndTest('', [ecColSelDown],       3,5, TestText1,            2, [3,3,0,  3,4,0]);
+    RunAndTest('', [ecColSelDown],       3,6, TestText1,            3, [3,3,0,  3,4,0,  3,5,0]);
+
+    RunAndTest('', [ecDeleteLastChar],   2,6, TestText1(3,6,2,1),   3, [2,3,0,  2,4,0,  2,5,0]);
+    RunAndTest('', [ecUndo],             3,6, TestText1,            3, [3,3,0,  3,4,0,  3,5,0]);
+
+    RunAndTest('', [ecDeleteChar],       3,6, TestText1(3,6,3,1),   3, [3,3,0,  3,4,0,  3,5,0]);
+    RunAndTest('', [ecUndo],             3,6, TestText1,            3, [3,3,0,  3,4,0,  3,5,0]);
+
+  PopPushBaseName('undo mcmMoveAllCarets');
+    FDefaultColumnSelectMode := mcmMoveAllCarets;
+    ReCreateEdit(TestText1);
+    SetCaret(3,3);
+    RunAndTest('', [ecColSelDown],       3,4, TestText1,            1, [3,3,0]);
+    RunAndTest('', [ecColSelDown],       3,5, TestText1,            2, [3,3,0,  3,4,0]);
+    RunAndTest('', [ecColSelDown],       3,6, TestText1,            3, [3,3,0,  3,4,0,  3,5,0]);
+
+    RunAndTest('', [ecDeleteLastChar],   2,6, TestText1(3,6,2,1),   3, [2,3,0,  2,4,0,  2,5,0]);
+    RunAndTest('', [ecUndo],             3,6, TestText1,            3, [3,3,0,  3,4,0,  3,5,0]);
+
+    RunAndTest('', [ecDeleteChar],       3,6, TestText1(3,6,3,1),   3, [3,3,0,  3,4,0,  3,5,0]);
+    RunAndTest('', [ecUndo],             3,6, TestText1,            3, [3,3,0,  3,4,0,  3,5,0]);
+
+    RunAndTest('', [ecDeleteChar],       3,6, TestText1(3,6,3,1),   3, [3,3,0,  3,4,0,  3,5,0]);
+    RunAndTest('', [ecLeft],             2,6, TestText1(3,6,3,1),   3, [2,3,0,  2,4,0,  2,5,0]);
+    RunAndTest('', [ecUndo],             3,6, TestText1,            3, [3,3,0,  3,4,0,  3,5,0]);
+
+  PopBaseName();
+
+
+PopPushBaseName('SHARED');
+  PushBaseName('undo mcmCancelOnCaretMove');
+    FDefaultColumnSelectMode := mcmCancelOnCaretMove;
+    ReCreateEdit(TestText1);
+    ReCreateSharedEdit;
+    SetCaret(3,3);
+    RunAndTest('', [ecColSelDown],       3,4, TestText1,            1, [3,3,0]);
+    RunAndTest('', [ecColSelDown],       3,5, TestText1,            2, [3,3,0,  3,4,0]);
+    RunAndTest('', [ecColSelDown],       3,6, TestText1,            3, [3,3,0,  3,4,0,  3,5,0]);
+
+    RunAndTest('', [ecDeleteLastChar],   2,6, TestText1(3,6,2,1),   3, [2,3,0,  2,4,0,  2,5,0]);
+    RunAndTest('', [ecUndo],             3,6, TestText1,            3, [3,3,0,  3,4,0,  3,5,0]);
+
+    RunAndTest('', [ecDeleteChar],       3,6, TestText1(3,6,3,1),   3, [3,3,0,  3,4,0,  3,5,0]);
+    RunAndTest('', [ecUndo],             3,6, TestText1,            3, [3,3,0,  3,4,0,  3,5,0]);
+
+    RunAndTest('', [ecDeleteLastChar],   2,6, TestText1(3,6,2,1),   3, [2,3,0,  2,4,0,  2,5,0]);
+    SwapEdit;
+    RunAndTest('', [ecUndo],             3,6, TestText1,            3, [3,3,0,  3,4,0,  3,5,0]);
+
+
+  PopPushBaseName('undo mcmMoveAllCarets');
+    FDefaultColumnSelectMode := mcmMoveAllCarets;
+    ReCreateEdit(TestText1);
+    ReCreateSharedEdit;
+    SetCaret(3,3);
+    RunAndTest('', [ecColSelDown],       3,4, TestText1,            1, [3,3,0]);
+    RunAndTest('', [ecColSelDown],       3,5, TestText1,            2, [3,3,0,  3,4,0]);
+    RunAndTest('', [ecColSelDown],       3,6, TestText1,            3, [3,3,0,  3,4,0,  3,5,0]);
+
+    RunAndTest('', [ecDeleteLastChar],   2,6, TestText1(3,6,2,1),   3, [2,3,0,  2,4,0,  2,5,0]);
+    RunAndTest('', [ecUndo],             3,6, TestText1,            3, [3,3,0,  3,4,0,  3,5,0]);
+
+    RunAndTest('', [ecDeleteChar],       3,6, TestText1(3,6,3,1),   3, [3,3,0,  3,4,0,  3,5,0]);
+    RunAndTest('', [ecUndo],             3,6, TestText1,            3, [3,3,0,  3,4,0,  3,5,0]);
+
+    RunAndTest('', [ecDeleteChar],       3,6, TestText1(3,6,3,1),   3, [3,3,0,  3,4,0,  3,5,0]);
+    RunAndTest('', [ecLeft],             2,6, TestText1(3,6,3,1),   3, [2,3,0,  2,4,0,  2,5,0]);
+    RunAndTest('', [ecUndo],             3,6, TestText1,            3, [3,3,0,  3,4,0,  3,5,0]);
+
+    RunAndTest('', [ecDeleteLastChar],   2,6, TestText1(3,6,2,1),   3, [2,3,0,  2,4,0,  2,5,0]);
+    SwapEdit;
+    RunAndTest('', [ecUndo],             3,6, TestText1,            3, [3,3,0,  3,4,0,  3,5,0]);
+  PopBaseName();
+PopBaseName();
+
+PopPushBaseName('SHARED');
+  PushBaseName('undo mcmCancelOnCaretMove');
+    FDefaultColumnSelectMode := mcmCancelOnCaretMove;
+    ReCreateEdit(TestText1);
+    ReCreateSharedEdit(True);
+    SetCaret(3,3);
+    RunAndTest('', [ecColSelDown],       3,4, TestText1,            1, [3,3,0]);
+    RunAndTest('', [ecColSelDown],       3,5, TestText1,            2, [3,3,0,  3,4,0]);
+    RunAndTest('', [ecColSelDown],       3,6, TestText1,            3, [3,3,0,  3,4,0,  3,5,0]);
+
+    RunAndTest('', [ecDeleteLastChar],   2,6, TestText1(3,6,2,1),   3, [2,3,0,  2,4,0,  2,5,0]);
+    RunAndTest('', [ecUndo],             3,6, TestText1,            3, [3,3,0,  3,4,0,  3,5,0]);
+
+    RunAndTest('', [ecDeleteChar],       3,6, TestText1(3,6,3,1),   3, [3,3,0,  3,4,0,  3,5,0]);
+    RunAndTest('', [ecUndo],             3,6, TestText1,            3, [3,3,0,  3,4,0,  3,5,0]);
+
+    RunAndTest('', [ecDeleteLastChar],   2,6, TestText1(3,6,2,1),   3, [2,3,0,  2,4,0,  2,5,0]);
+    SwapEdit;
+    RunAndTest('', [ecUndo],             3,6, TestText1,            3, [3,3,0,  3,4,0,  3,5,0]);
+
+
+  PopPushBaseName('undo mcmMoveAllCarets');
+    FDefaultColumnSelectMode := mcmMoveAllCarets;
+    ReCreateEdit(TestText1);
+    ReCreateSharedEdit(True);
+    SetCaret(3,3);
+    RunAndTest('', [ecColSelDown],       3,4, TestText1,            1, [3,3,0]);
+    RunAndTest('', [ecColSelDown],       3,5, TestText1,            2, [3,3,0,  3,4,0]);
+    RunAndTest('', [ecColSelDown],       3,6, TestText1,            3, [3,3,0,  3,4,0,  3,5,0]);
+
+    RunAndTest('', [ecDeleteLastChar],   2,6, TestText1(3,6,2,1),   3, [2,3,0,  2,4,0,  2,5,0]);
+    RunAndTest('', [ecUndo],             3,6, TestText1,            3, [3,3,0,  3,4,0,  3,5,0]);
+
+    RunAndTest('', [ecDeleteChar],       3,6, TestText1(3,6,3,1),   3, [3,3,0,  3,4,0,  3,5,0]);
+    RunAndTest('', [ecUndo],             3,6, TestText1,            3, [3,3,0,  3,4,0,  3,5,0]);
+
+    RunAndTest('', [ecDeleteChar],       3,6, TestText1(3,6,3,1),   3, [3,3,0,  3,4,0,  3,5,0]);
+    RunAndTest('', [ecLeft],             2,6, TestText1(3,6,3,1),   3, [2,3,0,  2,4,0,  2,5,0]);
+    RunAndTest('', [ecUndo],             3,6, TestText1,            3, [3,3,0,  3,4,0,  3,5,0]);
+
+    RunAndTest('', [ecDeleteLastChar],   2,6, TestText1(3,6,2,1),   3, [2,3,0,  2,4,0,  2,5,0]);
+    SwapEdit;
+    RunAndTest('', [ecUndo],             3,6, TestText1,            3, [3,3,0,  3,4,0,  3,5,0]);
+  PopBaseName();
+PopBaseName();
+
+  PushBaseName('undo redo mcmMoveAllCarets');
+    FDefaultColumnSelectMode := mcmMoveAllCarets;
+    ReCreateEdit(LocalText1);
+    SetCaretAndColumnSelect(3,2, 4,0);
+    RunAndTest('', [ecChar,ecChar,ecChar], ['1','2','3'],     6,6, LocalText1A,  4, [6,2, 6,3, 6,4, 6,5]);
+    RunAndTest('', [ecLeft,ecLeft],                           4,6, LocalText1A,  4, [4,2, 4,3, 4,4, 4,5]);
+    RunAndTest('', [ecChar,ecChar,ecChar], ['4','5','6'],     7,6, LocalText1B,  4, [7,2, 7,3, 7,4, 7,5]);
+    RunAndTest('', [ecLeft],                                  6,6, LocalText1B,  4, [6,2, 6,3, 6,4, 6,5]);
+    RunAndTest('', [ecChar,ecChar], ['7','8'],                8,6, LocalText1C,  4, [8,2, 8,3, 8,4, 8,5]);
+    RunAndTest('', [ecUndo],                                  6,6, LocalText1B,  4, [6,2, 6,3, 6,4, 6,5]);
+    RunAndTest('', [ecUndo],                                  4,6, LocalText1A,  4, [4,2, 4,3, 4,4, 4,5]);
+    RunAndTest('', [ecUndo],                                  3,6, LocalText1,   4, [3,2, 3,3, 3,4, 3,5]);
+
+    RunAndTest('', [ecRedo],                                  6,6, LocalText1A,  4, [6,2, 6,3, 6,4, 6,5]);
+    RunAndTest('', [ecRedo],                                  7,6, LocalText1B,  4, [7,2, 7,3, 7,4, 7,5]);
+    RunAndTest('', [ecRedo], ['7','8'],                       8,6, LocalText1C,  4, [8,2, 8,3, 8,4, 8,5]);
+
+    RunAndTest('', [ecUndo],                                  6,6, LocalText1B,  4, [6,2, 6,3, 6,4, 6,5]);
+    RunAndTest('', [ecUndo],                                  4,6, LocalText1A,  4, [4,2, 4,3, 4,4, 4,5]);
+    RunAndTest('', [ecUndo],                                  3,6, LocalText1,   4, [3,2, 3,3, 3,4, 3,5]);
+
+    RunAndTest('', [ecRedo],                                  6,6, LocalText1A,  4, [6,2, 6,3, 6,4, 6,5]);
+    RunAndTest('', [ecRedo],                                  7,6, LocalText1B,  4, [7,2, 7,3, 7,4, 7,5]);
+
+
+    ReCreateEdit(LocalText1X);
+    SetCaret(2,1);
+    RunAndTest('', [ecChar], ['b'],                3,1, LocalText1,  0, []); // Undo to just ONE caret
+    RunCmdSeq([ecDown], []);
+    SetCaretsByKey([0,1, 0,1, 0,1, 0,1], mcmMoveAllCarets);
+    RunAndTest('', [ecChar,ecChar,ecChar], ['1','2','3'],     6,6, LocalText1A,  4, [6,2, 6,3, 6,4, 6,5]);
+    RunAndTest('', [ecLeft,ecLeft],                           4,6, LocalText1A,  4, [4,2, 4,3, 4,4, 4,5]);
+    RunAndTest('', [ecChar,ecChar,ecChar], ['4','5','6'],     7,6, LocalText1B,  4, [7,2, 7,3, 7,4, 7,5]);
+    RunAndTest('', [ecUndo],                                  4,6, LocalText1A,  4, [4,2, 4,3, 4,4, 4,5]);
+    RunAndTest('', [ecUndo],                                  3,6, LocalText1,   4, [3,2, 3,3, 3,4, 3,5]);
+    RunAndTest('', [ecUndo],                                  2,1, LocalText1X,  0, []);
+
+    RunAndTest('', [ecRedo],                                  3,1, LocalText1,  0, []);
+    RunAndTest('', [ecRedo],                                  6,6, LocalText1A,  4, [6,2, 6,3, 6,4, 6,5]);
+    RunAndTest('', [ecRedo],                                  7,6, LocalText1B,  4, [7,2, 7,3, 7,4, 7,5]);
+
+
+//    RunAndTest('', [ecColSelDown],       3,4, LocalText1,            1, [3,3,0]);
+
+  PopBaseName;
 end;
 
 initialization

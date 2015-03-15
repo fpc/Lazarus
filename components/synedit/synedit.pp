@@ -137,6 +137,8 @@ type
     var Handled: boolean; var Command: TSynEditorCommand;
     FinishComboOnly: Boolean; var ComboKeyStrokes: TSynEditKeyStrokes) of object;
 
+  TSynUndoRedoItemEvent = function (Caller: TObject; Item: TSynEditUndoItem): Boolean of object;
+
   TPaintEvent = procedure(Sender: TObject; ACanvas: TCanvas) of object;
 
   TChangeUpdatingEvent = procedure(ASender: TObject; AnUpdating: Boolean) of object;
@@ -368,6 +370,13 @@ type
     );
   end;
 
+  { TSynUndoRedoItemHandlerList }
+
+  TSynUndoRedoItemHandlerList = Class(TMethodList)
+  public
+    function CallUndoRedoItemHandlers(Caller: TObject; Item: TSynEditUndoItem): Boolean;
+  end;
+
   { TLazSynMouseDownEventList }
 
   TLazSynMouseDownEventList = Class(TMethodList)
@@ -542,6 +551,7 @@ type
     fTSearch: TSynEditSearch;
     fHookedCommandHandlers: TList;
     FHookedKeyTranslationList: TSynHookedKeyTranslationList;
+    FUndoRedoItemHandlerList: TSynUndoRedoItemHandlerList;
     FMouseDownEventList: TLazSynMouseDownEventList;
     FKeyDownEventList: TLazSynKeyDownEventList;
     FKeyPressEventList: TLazSynKeyPressEventList;
@@ -1007,6 +1017,9 @@ type
 
     procedure RegisterKeyTranslationHandler(AHandlerProc: THookedKeyTranslationEvent);
     procedure UnRegisterKeyTranslationHandler(AHandlerProc: THookedKeyTranslationEvent);
+
+    procedure RegisterUndoRedoItemHandler(AHandlerProc: TSynUndoRedoItemEvent);
+    procedure UnRegisterUndoRedoItemHandler(AHandlerProc: TSynUndoRedoItemEvent);
 
     procedure RegisterStatusChangedHandler(AStatusChangeProc: TStatusChangeEvent; AChanges: TSynStatusChanges);
     procedure UnRegisterStatusChangedHandler(AStatusChangeProc: TStatusChangeEvent);
@@ -2036,6 +2049,8 @@ begin
   Cursor := crIBeam;
   fPlugins := TList.Create;
   FHookedKeyTranslationList := TSynHookedKeyTranslationList.Create;
+  FUndoRedoItemHandlerList := TSynUndoRedoItemHandlerList.Create;
+
   // needed before setting color
   fMarkupHighCaret := TSynEditMarkupHighlightAllCaret.Create(self);
   fMarkupHighCaret.Selection := FBlockSelection;
@@ -2388,6 +2403,7 @@ begin
   FRightGutter.UnRegisterResizeHandler(@GutterResized);
 
   FreeAndNil(FHookedKeyTranslationList);
+  FreeAndNil(FUndoRedoItemHandlerList);
   fHookedCommandHandlers:=nil;
   fPlugins:=nil;
   FCaret.Lines := nil;
@@ -5313,7 +5329,8 @@ begin
     end
     else
       if not Item.PerformUndo(self) then
-        FTheLinesView.EditRedo(Item);
+        if not FUndoRedoItemHandlerList.CallUndoRedoItemHandlers(Self, Item) then
+          FTheLinesView.EditRedo(Item);
   finally
     FCaret.DecForcePastEOL;
     Item.Free;
@@ -5446,7 +5463,8 @@ begin
 
     else
       if not Item.PerformUndo(self) then
-        FTheLinesView.EditUndo(Item);
+        if not FUndoRedoItemHandlerList.CallUndoRedoItemHandlers(Self, Item) then
+          FTheLinesView.EditUndo(Item);
   finally
     FTrimmedLinesView.UndoTrimmedSpaces := False;
     FCaret.DecForcePastEOL;
@@ -8986,6 +9004,16 @@ begin
   FHookedKeyTranslationList.Remove(TMEthod(AHandlerProc));
 end;
 
+procedure TCustomSynEdit.RegisterUndoRedoItemHandler(AHandlerProc: TSynUndoRedoItemEvent);
+begin
+  FUndoRedoItemHandlerList.Add(TMEthod(AHandlerProc));
+end;
+
+procedure TCustomSynEdit.UnRegisterUndoRedoItemHandler(AHandlerProc: TSynUndoRedoItemEvent);
+begin
+  FUndoRedoItemHandlerList.Remove(TMEthod(AHandlerProc));
+end;
+
 procedure TCustomSynEdit.RegisterStatusChangedHandler(AStatusChangeProc: TStatusChangeEvent;
   AChanges: TSynStatusChanges);
 begin
@@ -9364,6 +9392,19 @@ begin
   i:=Count;
   while NextDownIndex(i) do
     TKeyPressEvent(Items[i])(Sender, Key);
+end;
+
+{ TSynUndoRedoItemHandlerList }
+
+function TSynUndoRedoItemHandlerList.CallUndoRedoItemHandlers(Caller: TObject;
+  Item: TSynEditUndoItem): Boolean;
+var
+  i: LongInt;
+begin
+  i:=Count;
+  Result := False;
+  while NextDownIndex(i) and (not Result) do
+    Result := TSynUndoRedoItemEvent(Items[i])(Caller, Item);
 end;
 
 { TLazSynMouseDownEventList }

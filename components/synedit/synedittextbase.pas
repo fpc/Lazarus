@@ -128,9 +128,9 @@ type
   protected
     // IsEqual is only needed/implemented for Carets
     function IsEqualContent(AnItem: TSynEditUndoItem): Boolean; virtual;
-    function IsEqual(AnItem: TSynEditUndoItem): Boolean;
     function DebugString: String; virtual;
   public
+    function IsEqual(AnItem: TSynEditUndoItem): Boolean;
     function IsCaretInfo: Boolean; virtual;
     function PerformUndo(Caller: TObject): Boolean; virtual; abstract;
   end;
@@ -169,6 +169,14 @@ type
 
 
   TSynGetCaretUndoProc = function: TSynEditUndoItem of object;
+  TSynUpdateCaretUndoProc = procedure(var AnUndoItem: TSynEditUndoItem; AnIsBeginUndo: Boolean) of object;
+
+  { TSynEditUpdateCaretUndoProcList }
+
+  TSynEditUpdateCaretUndoProcList = Class(TMethodList)
+  public
+    procedure CallSearchUpdateCaretUndoProcs(var AnUndoItem: TSynEditUndoItem; AnIsBeginUndo: Boolean);
+  end;
 
   { TSynEditUndoList }
 
@@ -184,6 +192,7 @@ type
     fMaxUndoActions: integer;
     fOnAdded: TNotifyEvent;
     FOnNeedCaretUndo: TSynGetCaretUndoProc;
+    FOnNeedCaretUndoList: TSynEditUpdateCaretUndoProcList;
     fUnModifiedItem: integer;
     FForceGroupEnd: Boolean;
     procedure EnsureMaxEntries;
@@ -219,6 +228,9 @@ type
     property InGroupCount: integer read FInGroupCount;
     {$ENDIF}
   public
+    procedure RegisterUpdateCaretUndo(AnUpdateProc: TSynUpdateCaretUndoProc);
+    procedure UnregisterUpdateCaretUndo(AnUpdateProc: TSynUpdateCaretUndoProc);
+
     property CanUndo: boolean read GetCanUndo;
     property FullUndoImpossible: boolean read fFullUndoImposible;
     property ItemCount: integer read GetItemCount;
@@ -246,6 +258,18 @@ begin
   raise ESynEditStorageMem.CreateFmt(SListIndexOutOfBounds, [Index]);
 end;
 
+{ TSynEditUpdateCaretUndoProcList }
+
+procedure TSynEditUpdateCaretUndoProcList.CallSearchUpdateCaretUndoProcs(var AnUndoItem: TSynEditUndoItem;
+  AnIsBeginUndo: Boolean);
+var
+  i: LongInt;
+begin
+  i:=Count;
+  while NextDownIndex(i) do
+    TSynUpdateCaretUndoProc(Items[i])(AnUndoItem, AnIsBeginUndo);
+end;
+
 { TSynEditStringsBase }
 
 function TSynEditStringsBase.GetPChar(ALineIndex: Integer): PChar;
@@ -261,6 +285,7 @@ constructor TSynEditUndoList.Create;
 begin
   inherited Create;
   // Create and keep one undo group => avoids resizing the FItems list
+  FOnNeedCaretUndoList := TSynEditUpdateCaretUndoProcList.Create;
   FUndoGroup := TSynEditUndoGroup.Create;
   FIsInsideRedo := False;
   fItems := TList.Create;
@@ -274,6 +299,7 @@ begin
   Clear;
   fItems.Free;
   FreeAndNil(FUndoGroup);
+  FreeAndNil(FOnNeedCaretUndoList);
   inherited Destroy;
 end;
 
@@ -349,12 +375,18 @@ begin
 end;
 
 procedure TSynEditUndoList.BeginBlock;
+var
+  c: TSynEditUndoItem;
 begin
   Inc(FInGroupCount);
   if (FInGroupCount = 1) then begin
     FUndoGroup.Clear;
+    c := nil;
     if assigned(FOnNeedCaretUndo) then
-      FUndoGroup.add(FOnNeedCaretUndo());
+      c := FOnNeedCaretUndo();
+    FOnNeedCaretUndoList.CallSearchUpdateCaretUndoProcs(c, True);
+    if c <> nil then
+      FUndoGroup.add(c);
   end;
   {$IFDEF SynUndoDebugCalls}
   DebugLnEnter(['>> TSynEditUndoList.BeginBlock ', DebugName, ' ', DbgSName(self), ' ', dbgs(Self), ' fLockCount=', fLockCount, ' Cnt=', fItems.Count, ' FInGroupCount=', FInGroupCount, ' fUnModifiedItem=', fUnModifiedItem]);
@@ -378,15 +410,21 @@ end;
 procedure TSynEditUndoList.EndBlock;
 var
   ugroup: TSynEditUndoGroup;
+  c: TSynEditUndoItem;
 begin
   if FInGroupCount > 0 then begin
     Dec(FInGroupCount);
     if (FInGroupCount = 0) and FUndoGroup.HasUndoInfo then
     begin
       // Keep position for REDO; Do not replace if present
-      if (not FUndoGroup.Items[FUndoGroup.Count - 1].IsCaretInfo)
-          and assigned(FOnNeedCaretUndo) then
-        FUndoGroup.Add(FOnNeedCaretUndo());
+      if (not FUndoGroup.Items[FUndoGroup.Count - 1].IsCaretInfo) then begin
+        c := nil;
+        if assigned(FOnNeedCaretUndo) then
+          c := FOnNeedCaretUndo();
+        FOnNeedCaretUndoList.CallSearchUpdateCaretUndoProcs(c, False);
+        if c <> nil then
+          FUndoGroup.add(c);
+      end;
       if (fItems.Count > 0) and FGroupUndo and (not IsTopMarkedAsUnmodified) and
         (not FForceGroupEnd) and
         FUndoGroup.CanMergeWith(TSynEditUndoGroup(fItems[fItems.Count - 1])) then
@@ -518,6 +556,16 @@ end;
 function TSynEditUndoList.UnModifiedMarkerExists: boolean;
 begin
   Result := fUnModifiedItem >= 0;
+end;
+
+procedure TSynEditUndoList.RegisterUpdateCaretUndo(AnUpdateProc: TSynUpdateCaretUndoProc);
+begin
+  FOnNeedCaretUndoList.Add(TMethod(AnUpdateProc));
+end;
+
+procedure TSynEditUndoList.UnregisterUpdateCaretUndo(AnUpdateProc: TSynUpdateCaretUndoProc);
+begin
+  FOnNeedCaretUndoList.Remove(TMethod(AnUpdateProc));
 end;
 
 { TSynEditUndoItem }
