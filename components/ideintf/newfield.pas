@@ -1,4 +1,3 @@
-{  $Id$  }
 { Copyright (C) 2005 Alexandru Alexandrov
   Date: 11.06.2005
 
@@ -10,27 +9,26 @@
 { 2010-07-15 - New field type option (Data) Marcelo B. Paula
   2010-10-30 - Persistent Name Edit...      Marcelo B. Paula }
 
-unit newfield;
+unit NewField;
 
-{$mode Delphi} {$H+}
+{$mode ObjFPC}{$H+}
 
 interface
 
 uses
   Classes, Math, SysUtils, LCLIntf, Graphics, Controls, Forms, Dialogs,
-  ExtCtrls, StdCtrls, Buttons, DB, ObjInspStrConsts,
+  ExtCtrls, StdCtrls, Buttons, ButtonPanel, DB, ObjInspStrConsts,
   ComponentEditors, PropEdits, PropEditUtils, TypInfo;
 
 type
 
   { TNewFieldFrm }
 
-  TNewFieldFrm=class(TForm)
-    CancelBtn: TBitBtn;
+  TNewFieldFrm = class(TForm)
+    ButtonPanel1: TButtonPanel;
     EditCompName: TEdit;
     Label7: TLabel;
     NoteLbl: TLabel;
-    OKBtn: TBitBtn;
     Panel2: TPanel;
     GroupBox1: TGroupBox;
     Label1: TLabel;
@@ -51,7 +49,6 @@ type
     SelectLookupKeys: TComboBox;
     SelectResultField: TComboBox;
     DataSetsCombo: TComboBox;
-    Panel4: TPanel;
     procedure DataSetsComboChange(Sender: TObject);
     procedure EditCompNameChange(Sender: TObject);
     procedure EditNameChange(Sender: TObject);
@@ -67,7 +64,6 @@ type
     function GetPersistentName: string;
     procedure SetPersistentName(const AValue: string);
   private
-    { Private declarations }
     LinkDataSet: TDataSet;
     FDesigner: TComponentEditorDesigner;
     AddLookupDatasetProc: TGetStrProc;
@@ -80,7 +76,6 @@ type
     property PersistentName: string read GetPersistentName write SetPersistentName;
     function SizeEnable:Boolean;
   public
-    { Public declarations }
     constructor Create(AOwner: TComponent; ADataset: TDataset;
       ADesigner: TComponentEditorDesigner); reintroduce;
     destructor Destroy; override;
@@ -141,12 +136,12 @@ begin
 end;
 
 constructor TNewFieldFrm.Create(AOwner: TComponent; ADataset: TDataset;
-      ADesigner: TComponentEditorDesigner);
+  ADesigner: TComponentEditorDesigner);
 begin
   LinkDataSet := ADataSet;
   FDesigner := ADesigner;
   inherited Create(AOwner);
-  AddLookupDatasetProc := AddLookupDataset;
+  AddLookupDatasetProc := @AddLookupDataset;
   UpdateFieldsTypes;
   UpdateLookupDatasets(Self);
 end;
@@ -165,7 +160,7 @@ end;
 procedure TNewFieldFrm.EditNameChange(Sender: TObject);
 begin
   if Trim(EditName.Text) <> '' then
-     PersistentName := FDesigner.CreateUniqueComponentName(LinkDataset.Name + EditName.Text)
+    PersistentName := FDesigner.CreateUniqueComponentName(LinkDataset.Name + EditName.Text)
   else
     PersistentName := '';
 
@@ -193,8 +188,9 @@ begin
   Label5.Caption := fesLookupKeys;
   Label6.Caption := fesResultField;
   Label7.Caption := fesPersistentCompName;
-  OkBtn.Caption := fesOkBtn;
-  CancelBtn.Caption := fesCancelBtn;
+  ButtonPanel1.OKButton.Caption := fesOkBtn;
+  ButtonPanel1.OKButton.OnClick:=@OKBtnClick;
+  ButtonPanel1.CancelButton.Caption := fesCancelBtn;
 
   if Assigned(LinkDataSet) then begin
     try
@@ -220,7 +216,7 @@ end;
 
 procedure TNewFieldFrm.UpdateLookupDatasets(Sender: TObject);
 var
-    sText: string;
+  sText: string;
 begin
   sText := SelectLookupKeys.Text;
   DataSetsCombo.Clear;
@@ -331,20 +327,25 @@ end;
 
 procedure TNewFieldFrm.RadioGroup1Click(Sender: TObject);
 begin
-  case RadioGroup1.ItemIndex of
-    0..1: begin //data,calculated field
-      Panel3.Visible := False;
-      Panel2.Visible := True;
-      ClientHeight := Panel1.Height + Panel2.Height + Panel4.Height;
+  DisableAlign;
+  try
+    case RadioGroup1.ItemIndex of
+      0..1: begin //data,calculated field
+        Panel3.Visible := False;
+        Panel2.Visible := True;
+        ClientHeight := Panel1.Height + Panel2.Height + ButtonPanel1.Height;
+      end;
+      2: begin //lookup field
+        Panel3.Visible := True;
+        Panel2.Visible := False;
+        ClientHeight := Panel1.Height + Panel3.Height + ButtonPanel1.Height;
+      end;
     end;
-    2: begin //lookup field
-      Panel3.Visible := True;
-      Panel2.Visible := False;
-      ClientHeight := Panel1.Height + Panel3.Height + Panel4.Height;
-    end;
+    SetButtons;
+  finally
+    EnableAlign;
   end;
-  SetButtons;
-end ;
+end;
 
 procedure TNewFieldFrm.SelectKeyFieldsChange(Sender: TObject);
 begin
@@ -355,12 +356,12 @@ end;
 procedure TNewFieldFrm.SelectLookupKeysChange(Sender: TObject);
 begin
   SetButtons;
-end ;
+end;
 
 procedure TNewFieldFrm.SelectResultFieldChange(Sender: TObject);
 begin
   SetButtons;
-end ;
+end;
 
 procedure TNewFieldFrm.SelectTypeChange(Sender: TObject);
 begin
@@ -368,7 +369,7 @@ begin
   SetButtons;
   if Trim(EditSize.Text) <> '' then
      EditSize.Text := '';
-end ;
+end;
 
 procedure TNewFieldFrm.SetButtons;
 begin
@@ -384,10 +385,10 @@ begin
     end;
   //
   case RadioGroup1.ItemIndex of
-    0..1: OkBtn.Enabled := (Length(EditName.Text) > 0) And
+    0..1: ButtonPanel1.OKButton.Enabled := (Length(EditName.Text) > 0) And
                            (Length(PersistentName) > 0) And
                            (SelectType.ItemIndex > -1);
-    2: OkBtn.Enabled := (SelectKeyFields.Text <> '') And
+    2: ButtonPanel1.OKButton.Enabled := (SelectKeyFields.Text <> '') And
                           (DataSetsCombo.ItemIndex > -1) And
                           (SelectLookupKeys.Text <> '') And
                           (SelectResultField.Text <> '');
