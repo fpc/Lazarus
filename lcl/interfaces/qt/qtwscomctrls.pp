@@ -1602,7 +1602,7 @@ begin
       try
         QListWidgetItem_icon(LWI, AIcon);
         if QIcon_isNull(AIcon) then
-          IconRect := Rect(Result.Left, Result.Top, Result.Left, Result.Top)
+          IconRect := Rect(Result.Left, Result.Top, Result.Right, Result.Bottom)
         else
         begin
           Size.cx := 0;
@@ -1664,7 +1664,7 @@ begin
       try
         QTreeWidgetItem_icon(TWI, AIcon, ASubItem);
         if QIcon_isNull(AIcon) then
-          IconRect := Rect(Result.Left, Result.Top, Result.Left, Result.Top)
+          IconRect := Rect(Result.Left, Result.Top, Result.Right, Result.Bottom)
         else
         begin
           Size.cx := 0;
