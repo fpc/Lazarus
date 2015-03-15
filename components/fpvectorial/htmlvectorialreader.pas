@@ -153,9 +153,11 @@ begin
     // <img src="images/noimage.gif" width="100" height="100" alt="No image" />
     'img', 'image':
     begin
+      lRasterImage := nil;
+      lWidth := -1;
+      lHeight := -1;
       for i := 0 to lCurNode.Attributes.Length - 1 do
       begin
-        lRasterImage := nil;
         lAttrName := lCurNode.Attributes.Item[i].NodeName;
         lAttrValue := lCurNode.Attributes.Item[i].NodeValue;
 
@@ -195,6 +197,11 @@ begin
         end;
         end;
       end;
+
+      if lWidth <= 0 then
+        lWidth := lRasterImage.RasterImage.Width;
+      if lHeight <= 0 then
+        lHeight := lRasterImage.RasterImage.Height;
 
       if lRasterImage <> nil then
       begin

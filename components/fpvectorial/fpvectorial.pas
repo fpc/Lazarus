@@ -717,6 +717,7 @@ type
     RasterImage: TFPCustomImage;
     Width, Height: Double;
     destructor Destroy; override;
+    procedure CalculateBoundingBox(ADest: TFPCustomCanvas; var ALeft, ATop, ARight, ABottom: Double); override;
     procedure CreateRGB888Image(AWidth, AHeight: Cardinal);
     procedure CreateImageFromFile(AFilename: string);
     procedure InitializeWithConvertionOf3DPointsToHeightMap(APage: TvVectorialPage; AWidth, AHeight: Integer);
@@ -4513,6 +4514,15 @@ begin
   inherited Destroy;
 end;
 
+procedure TvRasterImage.CalculateBoundingBox(ADest: TFPCustomCanvas;
+  var ALeft, ATop, ARight, ABottom: Double);
+begin
+  ALeft := X;
+  ATop := Y;
+  ARight := X + Width;
+  ABottom := Y + Height;
+end;
+
 procedure TvRasterImage.CreateRGB888Image(AWidth, AHeight: Cardinal);
 {$ifdef USE_LCL_CANVAS}
 var
@@ -5824,12 +5834,9 @@ begin
   lEntity := GetFirstEntity();
   while lEntity <> nil do
   begin
-    if lEntity is TvText then
-    begin
-      lText.CalculateBoundingBox(ADest, lLeft, lTop, lRight, lBottom);
-      lCurWidth := lCurWidth + (lRight - lLeft);
-      lCurHeight := Max(lCurHeight, Abs(lTop - lBottom));
-    end;
+    lEntity.CalculateBoundingBox(ADest, lLeft, lTop, lRight, lBottom);
+    lCurWidth := lCurWidth + (lRight - lLeft);
+    lCurHeight := Max(lCurHeight, Abs(lTop - lBottom));
     lEntity := GetNextEntity();
   end;
 
@@ -6036,19 +6043,17 @@ var
   lCurHeight: Double = 0.0;
   lLeft, lTop, lRight, lBottom: Double;
   lEntity: TvEntity;
-  lParagraph: TvParagraph absolute lEntity;
+  //lParagraph: TvParagraph absolute lEntity;
 begin
   Result := 0;
   lEntity := GetFirstEntity();
   while lEntity <> nil do
   begin
-    if lEntity is TvParagraph then
-    begin
-      lParagraph.X := X;
-      lParagraph.Y := Y + Result;
-      lParagraph.CalculateBoundingBox(ADest, lLeft, lTop, lRight, lBottom);
-      Result := Result + (lBottom - lTop);
-    end;
+    lEntity.X := X;
+    lEntity.Y := Y + Result;
+    lEntity.CalculateBoundingBox(ADest, lLeft, lTop, lRight, lBottom);
+    Result := Result + (lBottom - lTop);
+
     lEntity := GetNextEntity();
   end;
 
@@ -6059,7 +6064,7 @@ function TvRichText.CalculateMaxNeededWidth(ADest: TFPCustomCanvas): Double;
 var
   lLeft, lTop, lRight, lBottom: Double;
   lEntity: TvEntity;
-  lParagraph: TvParagraph absolute lEntity;
+  //lParagraph: TvParagraph absolute lEntity;
 begin
   Result := 0;
 
@@ -6069,13 +6074,11 @@ begin
     lEntity := GetFirstEntity();
     while lEntity <> nil do
     begin
-      if lEntity is TvParagraph then
-      begin
-        lParagraph.X := X;
-        lParagraph.Y := Y + Result;
-        lParagraph.CalculateBoundingBox(ADest, lLeft, lTop, lRight, lBottom);
-        Result := Max(Result, (lRight - lLeft));
-      end;
+      lEntity.X := X;
+      lEntity.Y := Y + Result;
+      lEntity.CalculateBoundingBox(ADest, lLeft, lTop, lRight, lBottom);
+      Result := Max(Result, (lRight - lLeft));
+
       lEntity := GetNextEntity();
     end;
   end;
@@ -6094,7 +6097,7 @@ var
   lCurHeight: Double = 0.0;
   lLeft, lTop, lRight, lBottom: Double;
   lEntity: TvEntity;
-  lParagraph: TvParagraph absolute lEntity;
+  //lParagraph: TvParagraph absolute lEntity;
   lEntityRenderInfo: TvRenderInfo;
 begin
   ARenderInfo.EntityCanvasMinXY := Point(-1, -1);
@@ -6103,14 +6106,12 @@ begin
   lEntity := GetFirstEntity();
   while lEntity <> nil do
   begin
-    if lEntity is TvParagraph then
-    begin
-      lParagraph.X := X;
-      lParagraph.Y := Y + lCurHeight;
-      lParagraph.Render(ADest, lEntityRenderInfo, ADestX, ADestY, AMulX, AMuly);
-      lParagraph.CalculateBoundingBox(ADest, lLeft, lTop, lRight, lBottom);
-      lCurHeight := lCurHeight + (lBottom - lTop);
-    end;
+    lEntity.X := X;
+    lEntity.Y := Y + lCurHeight;
+    lEntity.Render(ADest, lEntityRenderInfo, ADestX, ADestY, AMulX, AMuly);
+    lEntity.CalculateBoundingBox(ADest, lLeft, lTop, lRight, lBottom);
+    lCurHeight := lCurHeight + (lBottom - lTop);
+
     lEntity := GetNextEntity();
     MergeRenderInfo(lEntityRenderInfo, ARenderInfo);
   end;
