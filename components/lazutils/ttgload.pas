@@ -122,7 +122,7 @@ const
  var
    left_bearing, advance : TT_Pos;
  begin
-   TT_Get_Metrics( face^.horizontalHeader, index, left_bearing{%H-}, advance {%H-});
+   TT_Get_Metrics( face^.horizontalHeader, index, left_bearing{%H-}, advance{%H-});
 
    lsb := Int(left_bearing);
    aw  := Int(advance);
