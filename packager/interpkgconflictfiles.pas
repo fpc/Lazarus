@@ -786,22 +786,23 @@ var
     Result:=true;
   end;
 
-  function FindUnitSourcePPU(TheUnit: TPGInterPkgFile): TPGInterPkgFile;
+  procedure FindUnitSourcePPU(var TheUnit: TPGInterPkgFile; out UnitPPU: TPGInterPkgFile);
   // find in same package the source of a ppu, or the ppu of a source
   var
     SearchPPU: Boolean;
+    AnUnitName: string;
 
-    function FindSrc(Node: TAvgLvlTreeNode; Left: boolean): TPGInterPkgFile;
+    function FindOther(Node: TAvgLvlTreeNode; Left: boolean): TPGInterPkgFile;
     var
       IsPPU: Boolean;
     begin
       while Node<>nil do begin
         Result:=TPGInterPkgFile(Node.Data);
         if CompareFilenames(ExtractFileNameOnly(Result.ShortFilename),
-          ExtractFileNameOnly(TheUnit.ShortFilename))<>0 then break;
+          AnUnitName)<>0 then break;
         if (TheUnit.OwnerInfo=Result.OwnerInfo) then
         begin
-          IsPPU:=not FilenameIsPascalUnit(Result.ShortFilename);
+          IsPPU:=FilenameIsCompiledSource(Result.ShortFilename);
           if SearchPPU=IsPPU then exit;
         end;
         if Left then
@@ -814,12 +815,20 @@ var
 
   var
     StartNode: TAvgLvlTreeNode;
+    h: TPGInterPkgFile;
   begin
+    UnitPPU:=nil;
+    AnUnitName:=ExtractFileNameOnly(TheUnit.ShortFilename);
     SearchPPU:=FilenameIsPascalUnit(TheUnit.ShortFilename); // search opposite
     StartNode:=ShortFiles.FindPointer(TheUnit);
-    Result:=FindSrc(StartNode,true);
-    if Result<>nil then exit;
-    Result:=FindSrc(StartNode,false);
+    UnitPPU:=FindOther(StartNode,true);
+    if UnitPPU=nil then
+      UnitPPU:=FindOther(StartNode,false);
+    if not SearchPPU then begin
+      h:=TheUnit;
+      TheUnit:=UnitPPU;
+      UnitPPU:=h;
+    end;
   end;
 
   procedure CheckDuplicateUnits;
@@ -831,9 +840,9 @@ var
     FirstNodeSameUnitname: TAvgLvlTreeNode;
     OtherNode: TAvgLvlTreeNode;
     OtherFile: TPGInterPkgFile;
-    SrcFile: TPGInterPkgFile;
+    PPUFile: TPGInterPkgFile;
     FileGroup: TPGIPAmbiguousFileGroup;
-    OtherSrcFile: TPGInterPkgFile;
+    OtherPPUFile: TPGInterPkgFile;
     i: Integer;
     Msg: String;
   begin
@@ -850,7 +859,7 @@ var
       // CurUnit is an unit without -Ur
       // => check units with same name
       FileGroup:=nil;
-      SrcFile:=nil;
+      PPUFile:=nil;
       OtherNode:=FirstNodeSameUnitname;
       while OtherNode<>nil do begin
         OtherFile:=TPGInterPkgFile(OtherNode.Data);
@@ -861,16 +870,27 @@ var
         if not CheckIfFilesCanConflict(FileGroup,CurUnit,OtherFile) then
           continue;
         //debugln(['CheckPPUFilesInWrongDirs duplicate units found: file1="',CurUnit.FullFilename,'"(',CurUnit.OwnerInfo.Name,') file2="',OtherFile.FullFilename,'"(',OtherFile.OwnerInfo.Name,')']);
+        FindUnitSourcePPU(OtherFile,OtherPPUFile);
+        if FileGroup=nil then
+          FindUnitSourcePPU(CurUnit,PPUFile);
+
+        if (PPUFile<>nil) and (OtherPPUFile<>nil)
+        and (CompareFilenames(PPUFile.FullFilename,OtherPPUFile.FullFilename)=0)
+        and (OtherFile=nil) then begin
+          // the same ppu is in both packages
+          // and only one package has a source
+          // for example: two packages share output directories
+          // => ok
+          continue;
+        end;
 
         if FileGroup=nil then begin
           FileGroup:=TPGIPAmbiguousFileGroup.Create;
-          SrcFile:=FindUnitSourcePPU(CurUnit);
-          FileGroup.Add(CurUnit,SrcFile);
+          FileGroup.Add(CurUnit,PPUFile);
           AmbiguousFileGroups.Add(FileGroup);
         end;
-        OtherSrcFile:=FindUnitSourcePPU(OtherFile);
-        FileGroup.Add(OtherFile,OtherSrcFile);
-        if (SrcFile<>nil) and (OtherSrcFile=nil) then
+        FileGroup.Add(OtherFile,OtherPPUFile);
+        if (PPUFile<>nil) and (OtherPPUFile=nil) then
         begin
           // put the orphaned ppu at top
           FileGroup.Switch(0,length(FileGroup.Sources)-1);
@@ -882,14 +902,14 @@ var
         for i:=0 to length(FileGroup.Sources)-1 do
         begin
           CurUnit:=FileGroup.CompiledFiles[i];
-          SrcFile:=FileGroup.Sources[i];
-          if SrcFile<>nil then
+          PPUFile:=FileGroup.Sources[i];
+          if PPUFile<>nil then
           begin
-            Msg:='Duplicate unit "'+SrcFile.AnUnitName+'"';
-            Msg+=' in "'+SrcFile.OwnerInfo.Name+'"';
+            Msg:='Duplicate unit "'+PPUFile.AnUnitName+'"';
+            Msg+=' in "'+PPUFile.OwnerInfo.Name+'"';
             if CurUnit<>nil then
               Msg+=', ppu="'+CurUnit.FullFilename+'"';
-            Msg+=', source="'+SrcFile.FullFilename+'"';
+            Msg+=', source="'+PPUFile.FullFilename+'"';
           end else begin
             Msg:='Duplicate unit "'+CurUnit.AnUnitName+'"';
             Msg+=' in "'+CurUnit.OwnerInfo.Name+'"';
