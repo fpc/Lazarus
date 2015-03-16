@@ -2041,7 +2041,6 @@ function TBaseCompilerOptions.GetInheritedOption(
 var
   AddOptionsList: TFPList; // list of TAdditionalCompilerOptions
   p: TCompilerOptionsParseType;
-  ParsedValue, UnparsedValue: String;
 begin
   if (fInheritedOptParseStamps<>CompilerParseStamp)
   then begin
@@ -2056,23 +2055,6 @@ begin
         GatherInheritedOptions(AddOptionsList,p,fInheritedOptions[p]);
       end;
       AddOptionsList.Free;
-    end;
-    // add project additions
-    if Assigned(OnAppendCustomOption) then begin
-      UnparsedValue:='';
-      OnAppendCustomOption(Self,UnparsedValue,bmgtAll);
-      if Assigned(ParsedOpts.OnLocalSubstitute) then
-      begin
-        //DebugLn(['TParsedCompilerOptions.DoParseOption local "',ParsedValue,'" ...']);
-        ParsedValue:=ParsedOpts.OnLocalSubstitute(UnparsedValue,false);
-      end else
-        ParsedValue:=UnparsedValue;
-      ParsedValue:=SpecialCharsToSpaces(ParsedValue,true);
-      UnparsedValue:=SpecialCharsToSpaces(UnparsedValue,true);
-      fInheritedOptions[coptParsed][icoCustomOptions]:=
-        MergeCustomOptions(fInheritedOptions[coptParsed][icoCustomOptions],ParsedValue);
-      fInheritedOptions[coptUnparsed][icoCustomOptions]:=
-        MergeCustomOptions(fInheritedOptions[coptUnparsed][icoCustomOptions],UnparsedValue);
     end;
     fInheritedOptParseStamps:=CompilerParseStamp;
   end;
@@ -3820,6 +3802,7 @@ var
   Opts: TBaseCompilerOptions;
   VarName: String;
   Vars: TCTCfgScriptVariables;
+  MoreOptions: String;
 begin
   Result:=Values[Option].UnparsedValue;
   Opts:=nil;
@@ -3843,7 +3826,19 @@ begin
   pcosLinkerOptions:
     Result:=MergeLinkerOptions(Result,Vars[VarName]);
   pcosCustomOptions:
-    Result:=MergeCustomOptions(Result,Vars[VarName]);
+    begin
+      Result:=MergeCustomOptions(Result,Vars[VarName]);
+      // add project/global overrides
+      if (Owner is TBaseCompilerOptions) and Assigned(OnAppendCustomOption) then
+      begin
+        MoreOptions:='';
+        OnAppendCustomOption(Opts,MoreOptions,bmgtAll);
+        if Assigned(OnLocalSubstitute) then
+          MoreOptions:=OnLocalSubstitute(MoreOptions,false);
+        MoreOptions:=SpecialCharsToSpaces(MoreOptions,true);
+        Result:=MergeCustomOptions(Result,MoreOptions);
+      end;
+    end;
   pcosOutputDir,pcosCompilerPath:
     if Vars.IsDefined(PChar(VarName)) then
       Result:=GetForcedPathDelims(Vars[VarName]);
