@@ -233,9 +233,13 @@ type
     function GetHighlightUserWordCount: Integer;
     function GetHighlightUserWords(AIndex: Integer): TSourceSynEditMarkupHighlightAllMulti;
     function GetIDEGutterMarks: TIDESynGutterMarks;
+    function GetIsInMultiCaretMainExecution: Boolean;
+    function GetIsInMultiCaretRepeatExecution: Boolean;
+    function GetOnMultiCaretBeforeCommand: TSynMultiCaretBeforeCommand;
     procedure GetTopInfoMarkupForLine(Sender: TObject; {%H-}Line: integer; var Special: boolean;
       aMarkup: TSynSelectedColor);
     procedure SetHighlightUserWordCount(AValue: Integer);
+    procedure SetOnMultiCaretBeforeCommand(AValue: TSynMultiCaretBeforeCommand);
     procedure SetShowTopInfo(AValue: boolean);
     procedure SetTopInfoMarkup(AValue: TSynSelectedColor);
     procedure DoHighlightChanged(Sender: TSynEditStrings; {%H-}AIndex, {%H-}ACount : Integer);
@@ -271,6 +275,9 @@ type
     procedure SetIfdefNodeState(ALinePos, AstartPos: Integer; AState: TSynMarkupIfdefNodeState);
     property  OnIfdefNodeStateRequest: TSynMarkupIfdefStateRequest read FOnIfdefNodeStateRequest write FOnIfdefNodeStateRequest;
     property  MarkupIfDef: TSourceSynEditMarkupIfDef read FMarkupIfDef;
+    property  IsInMultiCaretMainExecution: Boolean read GetIsInMultiCaretMainExecution;
+    property  IsInMultiCaretRepeatExecution: Boolean read GetIsInMultiCaretRepeatExecution;
+    property  OnMultiCaretBeforeCommand: TSynMultiCaretBeforeCommand read GetOnMultiCaretBeforeCommand write SetOnMultiCaretBeforeCommand;
   end;
 
   TIDESynHighlighterPasRangeList = class(TSynHighlighterPasRangeList)
@@ -1509,6 +1516,11 @@ begin
   end;
 end;
 
+procedure TIDESynEditor.SetOnMultiCaretBeforeCommand(AValue: TSynMultiCaretBeforeCommand);
+begin
+  FMultiCaret.OnBeforeCommand := AValue;
+end;
+
 procedure TIDESynEditor.SetShowTopInfo(AValue: boolean);
 begin
   if FShowTopInfo = AValue then Exit;
@@ -1532,6 +1544,21 @@ end;
 function TIDESynEditor.GetIDEGutterMarks: TIDESynGutterMarks;
 begin
   Result := TIDESynGutterMarks(Gutter.Parts.ByClass[TIDESynGutterMarks, 0]);
+end;
+
+function TIDESynEditor.GetIsInMultiCaretMainExecution: Boolean;
+begin
+  Result := FMultiCaret.IsInMainExecution;
+end;
+
+function TIDESynEditor.GetIsInMultiCaretRepeatExecution: Boolean;
+begin
+  Result := FMultiCaret.IsInRepeatExecution;
+end;
+
+function TIDESynEditor.GetOnMultiCaretBeforeCommand: TSynMultiCaretBeforeCommand;
+begin
+  Result := FMultiCaret.OnBeforeCommand;
 end;
 
 function TIDESynEditor.IsIfdefMarkupActive: Boolean;
@@ -1610,14 +1637,12 @@ begin
   FUserWordsList := TFPList.Create;
   FTemplateEdit:=TSynPluginTemplateEdit.Create(Self);
   FSyncroEdit := TSynPluginSyncroEdit.Create(Self);
-  {$IFnDEF WithoutSynMultiCaret}
   FMultiCaret := TSynPluginMultiCaret.Create(Self);
   FMultiCaret.MouseActions.Clear; // will be added to SynEdit
   FMultiCaret.KeyStrokes.Clear;
   FMultiCaret.SetCaretTypeSize(ctVerticalLine, 2, 1024, -1, 0, [ccsRelativeHeight]);
   FMultiCaret.SetCaretTypeSize(ctBlock, 1024, 1024, 0, 0, [ccsRelativeWidth, ccsRelativeHeight]);
   FMultiCaret.Color := $606060;
-  {$ENDIF}
 
   FMarkupForGutterMark := TSynEditMarkupGutterMark.Create(Self, FWordBreaker);
   TSynEditMarkupManager(MarkupMgr).AddMarkUp(FMarkupForGutterMark);

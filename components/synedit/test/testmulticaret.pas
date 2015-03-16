@@ -766,16 +766,15 @@ begin
 
   RunCmdSeq([ecChar], ['A']);
   TestIsCaretLogAndFullText('', 2, 6, LocalText1A);
+  TestExtraCaretPos('', 4, [2,2, 2,3, 2,4, 2,5]);
 
   RunCmdSeq([ecDeleteLastChar], []);
   TestIsCaretLogAndFullText('', 1, 6, LocalText1);
-  // 4 extra carets + main caret
-  AssertEquals(BaseTestName+'', 4, FMultiCaret.Carets.Count);
+  TestExtraCaretPos('', 4, [1,2, 1,3, 1,4, 1,5]);
 
   RunCmdSeq([ecDeleteLastChar], []);
   TestIsCaretLogAndFullText('', 6, 1, LocalText1Del);
-  // 4 extra carets + main caret
-  AssertEquals(BaseTestName+'', 4, FMultiCaret.Carets.Count);
+  TestExtraCaretPos('', 4, [2,1, 3,1, 4,1, 5,1]);
 
   RunCmdSeq([ecDeleteLastChar], []);
   TestIsCaretLogAndFullText('', 1, 1, LocalText1Del, [1, '6']);
@@ -1129,62 +1128,82 @@ procedure TTestMultiCaret.TabKey;
     Result[6] := '7g';
     Result[7] := '';
   end;
+  function LocalText1AfterIndent: TStringArray;
+  begin
+    SetLength(Result, 8);
+    Result[0] := '1a';
+    Result[1] := '  2b';
+    Result[2] := '  3c';
+    Result[3] := '  4d';
+    Result[4] := '5e';
+    Result[5] := '6f';
+    Result[6] := '7g';
+    Result[7] := '';
+  end;
 begin
-  PushBaseName('ZERO width selection -- WITH eoTabIndent');
-  ReCreateEdit;
-  SynEdit.Options := SynEdit.Options + [eoTabIndent] - [eoTabsToSpaces, eoSmartTabs, eoTrimTrailingSpaces];
-  SetLines(LocalText1);
+  PushBaseName('WITH eoTabIndent');
+    FOptAdd := [eoTabIndent];
+    FOptRemove := [eoTabsToSpaces, eoSmartTabs, eoTrimTrailingSpaces];
 
-  SetCaretAndColumnSelect(2,2, 4,0);
-  TestIsCaretLogAndFullText('', 2, 6, LocalText1);
+    PushBaseName('ZERO width selection');
+      ReCreateEdit(LocalText1);
+      SetCaretAndColumnSelect(2,2, 4,0);
+      TestIsCaretLogAndFullText('', 2, 6, LocalText1);
 
-  RunCmdSeq([ecTab], []);
-  TestIsCaretLogAndFullText('', 3, 6, LocalText1Tab);
-  // 4 extra carets + main caret
-  AssertEquals(BaseTestName+'', 4, FMultiCaret.Carets.Count);
+      RunCmdSeq([ecTab], []);
+      TestIsCaretLogAndFullText('', 3, 6, LocalText1Tab);
+      // 4 extra carets + main caret
+      AssertEquals(BaseTestName+'', 4, FMultiCaret.Carets.Count);
+
+    PopPushBaseName('ONE width selection');
+      ReCreateEdit(LocalText1);
+      SetCaretAndColumnSelect(2,2, 4,1);
+      TestIsCaretLogAndFullText('', 3, 6, LocalText1);
+
+      RunCmdSeq([ecTab], []);
+      TestIsCaretLogAndFullText('', 3, 6, LocalText1TabOver);
+      // 4 extra carets + main caret
+      AssertEquals(BaseTestName+'', 4, FMultiCaret.Carets.Count);
+    PopBaseName;
+
+    PopPushBaseName('indent selection');
+      ReCreateEdit(LocalText1);
+      SetCaretAndSel(2,2, 2,4);
+      FMultiCaret.AddCaretAtLogPos(3,4,0);
+      FMultiCaret.ActiveMode := mcmMoveAllCarets;
+
+      RunCmdSeq([ecTab], []);
+      TestIsCaretLogAndFullText('', 4, 4, LocalText1AfterIndent);
+      TestExtraCaretPos('', 1, [5,4]);
+    PopBaseName;
+
+  PopBaseName;
+
+  PushBaseName('WITHOUT eoTabIndent');
+    FOptAdd := [];
+    FOptRemove := [eoTabIndent, eoTabsToSpaces, eoSmartTabs, eoTrimTrailingSpaces];
+
+    PushBaseName('ZERO width selection');
+      ReCreateEdit(LocalText1);
+      SetCaretAndColumnSelect(2,2, 4,0);
+      TestIsCaretLogAndFullText('', 2, 6, LocalText1);
+
+      RunCmdSeq([ecTab], []);
+      TestIsCaretLogAndFullText('', 3, 6, LocalText1Tab);
+      // 4 extra carets + main caret
+      AssertEquals(BaseTestName+'', 4, FMultiCaret.Carets.Count);
 
 
-  PopPushBaseName('ONE width selection -- WITH eoTabIndent');
-  ReCreateEdit;
-  SynEdit.Options := SynEdit.Options + [eoTabIndent] - [eoTabsToSpaces, eoSmartTabs, eoTrimTrailingSpaces];
-  SetLines(LocalText1);
+    PopPushBaseName('ONE width selection');
+      ReCreateEdit(LocalText1);
+      SetCaretAndColumnSelect(2,2, 4,1);
+      TestIsCaretLogAndFullText('', 3, 6, LocalText1);
 
-  SetCaretAndColumnSelect(2,2, 4,1);
-  TestIsCaretLogAndFullText('', 3, 6, LocalText1);
-
-  RunCmdSeq([ecTab], []);
-  TestIsCaretLogAndFullText('', 3, 6, LocalText1TabOver);
-  // 4 extra carets + main caret
-  AssertEquals(BaseTestName+'', 4, FMultiCaret.Carets.Count);
-
-
-
-  PopPushBaseName('ZERO width selection -- WITHOUT eoTabIndent');
-  ReCreateEdit;
-  SynEdit.Options := SynEdit.Options - [eoTabIndent] - [eoTabsToSpaces, eoSmartTabs, eoTrimTrailingSpaces];
-  SetLines(LocalText1);
-
-  SetCaretAndColumnSelect(2,2, 4,0);
-  TestIsCaretLogAndFullText('', 2, 6, LocalText1);
-
-  RunCmdSeq([ecTab], []);
-  TestIsCaretLogAndFullText('', 3, 6, LocalText1Tab);
-  // 4 extra carets + main caret
-  AssertEquals(BaseTestName+'', 4, FMultiCaret.Carets.Count);
-
-
-  PopPushBaseName('ONE width selection -- WITHOUT eoTabIndent');
-  ReCreateEdit;
-  SynEdit.Options := SynEdit.Options - [eoTabIndent] - [eoTabsToSpaces, eoSmartTabs, eoTrimTrailingSpaces];
-  SetLines(LocalText1);
-
-  SetCaretAndColumnSelect(2,2, 4,1);
-  TestIsCaretLogAndFullText('', 3, 6, LocalText1);
-
-  RunCmdSeq([ecTab], []);
-  TestIsCaretLogAndFullText('', 3, 6, LocalText1TabOver);
-  // 4 extra carets + main caret
-  AssertEquals(BaseTestName+'', 4, FMultiCaret.Carets.Count);
+      RunCmdSeq([ecTab], []);
+      TestIsCaretLogAndFullText('', 3, 6, LocalText1TabOver);
+      // 4 extra carets + main caret
+      AssertEquals(BaseTestName+'', 4, FMultiCaret.Carets.Count);
+    PopBaseName;
 
   PopBaseName;
 end;

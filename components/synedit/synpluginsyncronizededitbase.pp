@@ -183,7 +183,7 @@ type
     FAreaMarkupEnabled: Boolean;
     FMarkupEnabled: Boolean;
     FEnabled: Boolean;
-    FEditing: Boolean;
+    FEditing: Boolean;  // In ApplyChangeList, edit actions are caused by the plugin itself
     FPaintLock: Integer;
     FOwnPaintLock: Integer;
     FTextBufferChanging: Boolean;

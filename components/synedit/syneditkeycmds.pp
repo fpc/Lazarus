@@ -149,8 +149,8 @@ const
   ecColSelEditorBottom = ecEditorBottom + ecColumnSelection;
   ecColSelLineTextStart= ecLineTextStart + ecColumnSelection;
 
-  ecSelColCmdRangeStart = ecLeft + ecColumnSelection;
-  ecSelColCmdRangeEnd   = ecLeft + ecColumnSelection + 48; // 1 less for ecSelectAll
+  ecSelColCmdRangeStart = ecColumnSelection;
+  ecSelColCmdRangeEnd   = ecColumnSelection + 48; // 1 less for ecSelectAll
 
 
   ecSelectAll       = 199;  // Select entire contents of editor, cursor to end

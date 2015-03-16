@@ -54,7 +54,7 @@ uses
   SynEditLines, SynEditStrConst, SynEditTypes, SynEdit, SynRegExpr,
   SynEditHighlighter, SynEditAutoComplete, SynEditKeyCmds, SynCompletion,
   SynEditMiscClasses, SynEditMarkupHighAll, SynEditMarks,
-  SynBeautifier,
+  SynBeautifier, SynPluginMultiCaret,
   SynPluginSyncronizedEditBase, SourceSynEditor,
   SynExportHTML, SynHighlighterPas, SynEditMarkup, SynEditMarkupIfDef,
   // Intf
@@ -291,6 +291,8 @@ type
 
     procedure UpdateIfDefNodeStates(Force: Boolean = False);
   protected
+    procedure DoMultiCaretBeforeCommand(Sender: TObject; ACommand: TSynEditorCommand;
+      var AnAction: TSynMultiCaretCommandAction; var AFlags: TSynMultiCaretCommandFlags);
     procedure ProcessCommand(Sender: TObject;
        var Command: TSynEditorCommand; var AChar: TUTF8Char; {%H-}Data: pointer);
     procedure ProcessUserCommand(Sender: TObject;
@@ -3192,6 +3194,37 @@ begin
   FEditor.CaretXY := FTempCaret;
 end;
 
+procedure TSourceEditor.DoMultiCaretBeforeCommand(Sender: TObject;
+  ACommand: TSynEditorCommand; var AnAction: TSynMultiCaretCommandAction;
+  var AFlags: TSynMultiCaretCommandFlags);
+begin
+  if (FSourceNoteBook<>nil) and (snIncrementalFind in FSourceNoteBook.States) then begin
+    AnAction := ccaClearCarets;
+  end;
+
+  case ACommand of
+    ecToggleComment:
+      if FEditor.SelAvail then
+        AnAction := ccaAdjustCarets
+      else
+        AnAction := ccaRepeatCommandPerLine; // one per line
+    ecInsertUserName,
+    ecInsertDateTime,
+    ecInsertChangeLogEntry,
+    ecInsertCVSAuthor,
+    ecInsertCVSDate,
+    ecInsertCVSHeader,
+    ecInsertCVSID,
+    ecInsertCVSLog,
+    ecInsertCVSName,
+    ecInsertCVSRevision,
+    ecInsertCVSSource,
+    ecInsertGUID,
+    ecInsertFilename:
+      AnAction := ccaRepeatCommand;
+  end;
+end;
+
 procedure TSourceEditor.ProcessCommand(Sender: TObject;
   var Command: TSynEditorCommand; var AChar: TUTF8Char; Data: pointer);
 // these are normal commands for synedit (lower than ecUserFirst),
@@ -3264,7 +3297,7 @@ begin
 
   ecSelEditorTop, ecSelEditorBottom, ecEditorTop, ecEditorBottom:
     begin
-      if FaOwner<>nil then
+      if (FaOwner<>nil) and (not FEditor.IsInMultiCaretRepeatExecution) then
         Manager.AddJumpPointClicked(Self);
     end;
 
@@ -4529,6 +4562,7 @@ Begin
       OnPlaceBookmark := @EditorPlaceBookmark;
       OnClearBookmark := @EditorClearBookmark;
       OnChangeUpdating  := @EditorChangeUpdating;
+      OnMultiCaretBeforeCommand := @DoMultiCaretBeforeCommand;
       RegisterMouseActionExecHandler(@EditorHandleMouseAction);
       // IMPORTANT: when you change above, don't forget updating UnbindEditor
       Parent := AParent;
