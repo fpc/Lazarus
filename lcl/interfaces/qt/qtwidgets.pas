@@ -8508,10 +8508,14 @@ begin
         if not getVisible then
           Result := FOwner.SlotMouseWheel(FOwner.Widget, Event)
         else
-          Result := inherited EventFilter(Sender, Event);
-
-        // DebugLn('TQtScrollBar.EventFilter: QEventWheel ',dbgsName(LCLObject),' Result=',dbgs(Result));
-
+        begin
+          // issue #27675.Do not send wheel event from cbox when dropped down.
+          // LCL thinks that combobox sent that event so we have undesirable effects.
+          if (FOwner.ChildOfComplexWidget = ccwComboBox) and getEnabled then
+            Result := False
+          else
+            Result := inherited EventFilter(Sender, Event);
+        end;
         // do not scroll when disabled or issue #25992
         if not getEnabled then
           Result := True
