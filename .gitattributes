@@ -5815,6 +5815,7 @@ images/components/tdateedit.png -text svneol=unset#image/png
 images/components/tdbcalendar.png -text svneol=unset#image/png
 images/components/tdbcheckbox.png -text svneol=unset#image/png
 images/components/tdbcombobox.png -text svneol=unset#image/png
+images/components/tdbdateedit.png -text svneol=unset#image/png
 images/components/tdbedit.png -text svneol=unset#image/png
 images/components/tdbgrid.png -text svneol=unset#image/png
 images/components/tdbgroupbox.png -text svneol=unset#image/png
