@@ -93,6 +93,7 @@ type
     ttCase,
     ttClass,
     ttConst,
+    ttConstref,
     ttContains,
     ttConstructor,
     ttDestructor,
@@ -322,7 +323,7 @@ const
   Declarations: TTokenTypeSet =
     [ttConst, ttResourceString, ttVar, ttThreadVar, ttType, ttLabel, ttExports];
 
-  ParamTypes: TTokenTypeSet = [ttVar, ttConst, ttOut];
+  ParamTypes: TTokenTypeSet = [ttVar, ttConst, ttConstref, ttOut];
 
   BlockOutdentWords: TTokenTypeSet =
     [ttVar, ttThreadVar, ttConst, ttResourceString, ttType, ttLabel,
@@ -581,6 +582,7 @@ begin
   AddKeyword('case', wtReservedWord, ttCase);
   AddKeyword('class', wtReservedWord, ttClass);
   AddKeyword('const', wtReservedWord, ttConst);
+  AddKeyword('constref', wtReservedWordDirective, ttConstref);
   AddKeyword('constructor', wtReservedWord, ttConstructor);
 
   AddKeyword('destructor', wtReservedWord, ttDestructor);

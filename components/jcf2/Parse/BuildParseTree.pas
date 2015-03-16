@@ -3842,14 +3842,14 @@ end;
 
 procedure TBuildParseTree.RecogniseFormalParam;
 const
-  PARAM_PREFIXES: TTokenTypeSet = [ttVar, ttConst];
+  PARAM_PREFIXES: TTokenTypeSet = [ttVar, ttConst, ttConstRef];
 begin
   PushNode(nFormalParam);
 
   if (fcTokenList.FirstSolidTokenType = ttOpenSquareBracket) then
     RecogniseAttributes;
 
-  { FormalParm -> [VAR | CONST | OUT] Parameter
+  { FormalParm -> [VAR | CONST | CONSTREF | OUT] Parameter
 
     'out' is different as it is also a param name so this is legal
     procedure Foo(out out: integer);
@@ -4479,8 +4479,8 @@ begin
 
   Recognise(ttOpenSquareBracket);
   repeat
-    if (fcTokenList.FirstSolidTokenType in [ttConst, ttVar, ttOut]) then
-      Recognise([ttConst, ttVar, ttOut]);
+    if (fcTokenList.FirstSolidTokenType in [ttConst, ttConstref, ttVar, ttOut]) then
+      Recognise([ttConst, ttConstref, ttVar, ttOut]);
 
     RecogniseIdentList(False);
     Recognise(ttColon);
