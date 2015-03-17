@@ -94,7 +94,7 @@ type
   public
     CompiledFiles: TPGInterPkgFileArray;
     Sources: TPGInterPkgFileArray;
-    function Add(PPUorSrc, CounterPart: TPGInterPkgFile): integer;
+    function Add(SrcFile, PPUFile: TPGInterPkgFile): integer;
     function IndexOfOwner(OwnerInfo: TPGInterPkgOwnerInfo): integer;
     procedure Switch(Index1, Index2: integer);
   end;
@@ -169,30 +169,22 @@ end;
 
 { TPGIPAmbiguousFileGroup }
 
-function TPGIPAmbiguousFileGroup.Add(PPUorSrc, CounterPart: TPGInterPkgFile
+function TPGIPAmbiguousFileGroup.Add(SrcFile, PPUFile: TPGInterPkgFile
   ): integer;
 begin
-  if (PPUorSrc=nil) then
+  if (SrcFile=nil) and (PPUFile=nil) then
     RaiseException('');
-  if (CounterPart<>nil) and (CounterPart.OwnerInfo<>PPUorSrc.OwnerInfo) then
+  if (SrcFile<>nil) and (PPUFile<>nil) and (PPUFile.OwnerInfo<>SrcFile.OwnerInfo) then
+    RaiseException('');
+  if (SrcFile<>nil) and FilenameIsCompiledSource(SrcFile.ShortFilename) then
+    RaiseException('');
+  if (PPUFile<>nil) and not FilenameIsCompiledSource(PPUFile.ShortFilename) then
     RaiseException('');
   Result:=length(CompiledFiles);
   SetLength(CompiledFiles,Result+1);
   SetLength(Sources,Result+1);
-  if FilenameIsCompiledSource(PPUorSrc.ShortFilename) then
-  begin
-    CompiledFiles[Result]:=PPUorSrc;
-    if (CounterPart<>nil) and FilenameIsPascalUnit(CounterPart.ShortFilename) then
-      Sources[Result]:=CounterPart
-    else
-      Sources[Result]:=nil;
-  end else begin
-    Sources[Result]:=PPUorSrc;
-    if (CounterPart<>nil) and FilenameIsCompiledSource(CounterPart.ShortFilename) then
-      CompiledFiles[Result]:=CounterPart
-    else
-      CompiledFiles[Result]:=nil;
-  end;
+  Sources[Result]:=SrcFile;
+  CompiledFiles[Result]:=PPUFile
 end;
 
 function TPGIPAmbiguousFileGroup.IndexOfOwner(OwnerInfo: TPGInterPkgOwnerInfo
@@ -873,12 +865,21 @@ var
         FindUnitSourcePPU(OtherFile,OtherPPUFile);
         if FileGroup=nil then
           FindUnitSourcePPU(CurUnit,PPUFile);
+        if (CurUnit<>nil) and (OtherFile<>nil)
+        and (CompareFilenames(CurUnit.FullFilename,OtherFile.FullFilename)=0) then
+        begin
+          // two packages share source directories
+          // -> do not warn single files
+          continue;
+        end;
+
+        debugln(['CheckPPUFilesInWrongDirs duplicate units found: file1="',CurUnit.FullFilename,'"(',CurUnit.OwnerInfo.Name,') ppu=',PPUFile<>nil,' file2="',OtherFile.FullFilename,'"(',OtherFile.OwnerInfo.Name,') ppu=',OtherPPUFile<>nil]);
 
         if (PPUFile<>nil) and (OtherPPUFile<>nil)
         and (CompareFilenames(PPUFile.FullFilename,OtherPPUFile.FullFilename)=0)
         and (OtherFile=nil) then begin
           // the same ppu is in both packages
-          // and only one package has a source
+          // ... and only one package has a source
           // for example: two packages share output directories
           // => ok
           continue;
@@ -916,7 +917,7 @@ var
             Msg+=', orphaned ppu "'+CurUnit.FullFilename+'"';
           end;
           if IDEMessagesWindow<>nil then
-            IDEMessagesWindow.AddCustomMessage(mluWarning,Msg)
+            IDEMessagesWindow.AddCustomMessage(mluNote,Msg)
           else
             debugln('Warning: ',Msg);
         end;
