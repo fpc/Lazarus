@@ -216,6 +216,7 @@ type
 
     FOnFontChangedHandlers: TMethodList;
     FOnFontChangedLock: Integer;
+    function GetCharExtra: Integer;
     function GetEto: TEtoBuffer;
   protected
     procedure ReleaseETODist; virtual;
@@ -273,7 +274,7 @@ type
     property FrameStyle[Side: TLazSynBorderSide]: TSynLineStyle write SetFrameStyle;
 
     property Style: TFontStyles write SetStyle;
-    property CharExtra: Integer read FCharExtra write SetCharExtra;
+    property CharExtra: Integer read GetCharExtra write SetCharExtra;
     property UseUTF8: boolean read GetUseUTF8;
     property MonoSpace: boolean read GetMonoSpace;
   end;
@@ -1004,6 +1005,11 @@ begin
   FEtoInitLen := 0;
 end;
 
+function TheTextDrawer.GetCharExtra: Integer;
+begin
+  Result := Max(FCharExtra, -FBaseCharWidth + 1);
+end;
+
 procedure TheTextDrawer.ReleaseETODist;
 begin
   FEto.Clear;
@@ -1045,7 +1051,7 @@ end;
 
 function TheTextDrawer.GetCharWidth: Integer;
 begin
-  Result := FBaseCharWidth + FCharExtra;
+  Result := FBaseCharWidth + CharExtra;
 end;
 
 function TheTextDrawer.GetCharHeight: Integer;
@@ -1211,7 +1217,7 @@ begin
     DrawFrame(RectFrame);
   end;
 
-  NeedDistArray:= ForceEto or (FCharExtra <> 0) or
+  NeedDistArray:= ForceEto or (CharExtra <> 0) or
     (FBaseCharWidth <> FFontStock.CharAdvance) or FFontStock.NeedETO;
   ForceEto := False;
   //DebugLn(['TheTextDrawer.ExtTextOut NeedDistArray=',NeedDistArray]);
@@ -1336,7 +1342,7 @@ end;
 
 function TheTextDrawer.NeedsEto: boolean;
 begin
-  Result := (FCharExtra <> 0) or (FBaseCharWidth <> FFontStock.CharAdvance) or FFontStock.NeedETO;
+  Result := (CharExtra <> 0) or (FBaseCharWidth <> FFontStock.CharAdvance) or FFontStock.NeedETO;
 end;
 
 procedure TheTextDrawer.DrawLine(X, Y, X2, Y2: Integer; AColor: TColor);
@@ -1446,7 +1452,7 @@ begin
     GetSBCharRange;
     if pRun <> pCrnt then
     begin
-      SetTextCharacterExtra(StockDC, FCharExtra + FCrntDx);
+      SetTextCharacterExtra(StockDC, CharExtra + FCrntDx);
       Len := PtrUInt(pRun) - PtrUInt(pCrnt);
       with TmpRect do
       begin
@@ -1462,7 +1468,7 @@ begin
       break;
 
     GetDBCharRange;
-    SetTextCharacterExtra(StockDC, FCharExtra + FCrntDBDx);
+    SetTextCharacterExtra(StockDC, CharExtra + FCrntDBDx);
     Len := PtrUInt(pRun) - PtrUInt(pCrnt);
     with TmpRect do
     begin
@@ -1478,7 +1484,7 @@ begin
   if (pCrnt = Text) or // maybe Text is not assigned or Length is 0
      (TmpRect.Right < ARect.Right) then
   begin
-    SetTextCharacterExtra(StockDC, FCharExtra + FCrntDx);
+    SetTextCharacterExtra(StockDC, CharExtra + FCrntDx);
     LCLIntf.ExtTextOut(StockDC, X, Y, fuOptions, @TmpRect, nil, 0, nil);
   end;
 end;

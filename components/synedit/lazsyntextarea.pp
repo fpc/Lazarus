@@ -121,7 +121,7 @@ type
     FTextBounds: TRect;
     FPadding: array [TLazSynBorderSide] of Integer;
     FExtraCharSpacing: integer;
-    FExtraLineSpacing: integer;
+    FExtraLineSpacing, FCurrentExtraLineSpacing: integer;
     FVisibleSpecialChars: TSynVisibleSpecialChars;
     FRightEdgeColumn: integer;
     FRightEdgeVisible: boolean;
@@ -129,6 +129,7 @@ type
     FTopLine: TLinePos;
     FLeftChar: Integer;
 
+    function GetExtraCharSpacing: integer;
     function GetPadding(Side: TLazSynBorderSide): integer;
     procedure SetExtraCharSpacing(AValue: integer);
     procedure SetExtraLineSpacing(AValue: integer);
@@ -160,8 +161,8 @@ type
     property Padding[Side: TLazSynBorderSide]: integer read GetPadding write SetPadding;
     property ForegroundColor: TColor read FForegroundColor write FForegroundColor;
     property BackgroundColor: TColor read FBackgroundColor write FBackgroundColor;
-    property ExtraCharSpacing: integer read FExtraCharSpacing write SetExtraCharSpacing;
-    property ExtraLineSpacing: integer read FExtraLineSpacing write SetExtraLineSpacing;
+    property ExtraCharSpacing: integer read GetExtraCharSpacing write SetExtraCharSpacing;
+    property ExtraLineSpacing: integer read FCurrentExtraLineSpacing write SetExtraLineSpacing;
     property VisibleSpecialChars: TSynVisibleSpecialChars read FVisibleSpecialChars write FVisibleSpecialChars;
     property RightEdgeColumn: integer  read FRightEdgeColumn write FRightEdgeColumn;
     property RightEdgeVisible: boolean read FRightEdgeVisible write FRightEdgeVisible;
@@ -1129,6 +1130,11 @@ begin
   Result := FPadding[Side];
 end;
 
+function TLazSynTextArea.GetExtraCharSpacing: integer;
+begin
+  Result := Max(FExtraCharSpacing, -CharWidth+1);
+end;
+
 procedure TLazSynTextArea.SetExtraCharSpacing(AValue: integer);
 begin
   if FExtraCharSpacing = AValue then Exit;
@@ -1140,7 +1146,8 @@ procedure TLazSynTextArea.SetExtraLineSpacing(AValue: integer);
 begin
   if FExtraLineSpacing = AValue then Exit;
   FExtraLineSpacing := AValue;
-  FTextHeight := FTextDrawer.CharHeight + FExtraLineSpacing;
+  FCurrentExtraLineSpacing := Max(AValue, -FTextDrawer.CharHeight+1);
+  FTextHeight := FTextDrawer.CharHeight + FCurrentExtraLineSpacing;
   FontChanged;
 end;
 
@@ -1261,6 +1268,7 @@ begin
 
   FExtraCharSpacing := TLazSynTextArea(Src).FExtraCharSpacing;
   FExtraLineSpacing := TLazSynTextArea(Src).FExtraLineSpacing;
+  FCurrentExtraLineSpacing := TLazSynTextArea(Src).FCurrentExtraLineSpacing;
   FVisibleSpecialChars := TLazSynTextArea(Src).FVisibleSpecialChars;
   FRightEdgeColumn := TLazSynTextArea(Src).FRightEdgeColumn;
   FRightEdgeVisible := TLazSynTextArea(Src).FRightEdgeVisible;
@@ -1305,7 +1313,7 @@ begin
   // ToDo: wait for handle creation
   // Report FLinesInWindow=-1 if no handle
   FCharWidth := FTextDrawer.CharWidth;  // includes extra
-  FTextHeight := FTextDrawer.CharHeight + FExtraLineSpacing;
+  FTextHeight := FTextDrawer.CharHeight + ExtraLineSpacing;
 
   OldChars := FCharsInWindow;
   OldLines := FLinesInWindow;

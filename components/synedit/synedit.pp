@@ -7958,7 +7958,7 @@ begin
     FScreenCaret.Lock;
     try
       FScreenCaret.CharWidth := CharWidth;
-      FScreenCaret.CharHeight := LineHeight - Max(0, ExtraLineSpacing);
+      FScreenCaret.CharHeight := LineHeight - Max(0, FPaintArea.TextArea.ExtraLineSpacing);
       SizeOrFontChanged(TRUE);
     finally
       FScreenCaret.UnLock;
