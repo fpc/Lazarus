@@ -137,9 +137,10 @@ begin
   // set bits for all waiting handles
   for n := 0 to Count do   
   begin
-    if Max < AHandles[n] then Max := AHandles[n];
-    if AHandles[n] <> 0 then
-      FpFD_Set(AHandles[n], FDS);
+    if AHandles[n] < 0 then
+      continue;
+    if Max < AHandles[n] + 1 then Max := AHandles[n] + 1;
+    FpFD_Set(AHandles[n], FDS);
   end;
   if Max=0 then begin
     // no valid handle, so no change possible
@@ -158,7 +159,7 @@ begin
     // Select:
     // R = -1 on error, 0 on timeout, >0 on success and is number of handles
     // FDSWait is changed, and indicates what descriptors have changed
-    R := FpSelect(Max + 1, @FDSWait, nil, nil, TimeOut);
+    R := FpSelect(Max, @FDSWait, nil, nil, TimeOut);
 
     if CurCallStamp <> FReadLineCallStamp then
       exit;
