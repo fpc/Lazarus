@@ -86,8 +86,6 @@ type
 
     // project
     procedure OnProjectChangeInfoFile(TheProject: TProject);
-    procedure OnProjectGetTestDirectory({%H-}TheProject: TProject; out
-      TestDir: string);
 
     // dialogs
     function OnIDEMessageDialog(const aCaption, aMsg: string;
@@ -315,12 +313,6 @@ begin
   else
     CodeToolBoss.SetGlobalValue(ExternalMacroStart+'ProjPath',
                                 Project1.ProjectDirectory)
-end;
-
-procedure TLazBuildApplication.OnProjectGetTestDirectory(TheProject: TProject;
-  out TestDir: string);
-begin
-  TestDir:=BuildBoss.GetTestBuildDirectory;
 end;
 
 function TLazBuildApplication.OnIDEMessageDialog(const aCaption, aMsg: string;
@@ -802,7 +794,7 @@ var
       Error(ErrorBuildFailed,'Unable to create project unit output directory '+UnitOutputDirectory);
 
     // create target output directory
-    TargetExeName := Project1.CompilerOptions.CreateTargetFilename(Project1.MainFilename);
+    TargetExeName := Project1.CompilerOptions.CreateTargetFilename;
     TargetExeDir := ExtractFilePath(TargetExeName);
     if not ForceDirectory(TargetExeDir) then
       Error(ErrorBuildFailed,'Unable to create project target directory '+TargetExeDir);
@@ -834,7 +826,7 @@ var
       CompilerFilename:=Project1.GetCompilerFilename;
     //DebugLn(['TLazBuildApplication.BuildProject CompilerFilename="',CompilerFilename,'" CompilerPath="',Project1.CompilerOptions.CompilerPath,'"']);
     // CompileHint: use absolute paths, same as TBuildManager.DoCheckIfProjectNeedsCompilation
-    CompilerParams:=Project1.CompilerOptions.MakeOptionsString(SrcFilename,[ccloAbsolutePaths])
+    CompilerParams:=Project1.CompilerOptions.MakeOptionsString([ccloAbsolutePaths])
                                            +' '+PrepareCmdLineOption(SrcFilename);
 
     NeedBuildAllFlag:=false;
@@ -842,7 +834,7 @@ var
     if (crCompile in Project1.CompilerOptions.CompileReasons) then begin
       // check if project is already uptodate
       SubResult:=MainBuildBoss.DoCheckIfProjectNeedsCompilation(Project1,
-                                                           NeedBuildAllFlag,CompileHint);
+                                                  NeedBuildAllFlag,CompileHint);
       if (not BuildAll)
       and (not (pfAlwaysBuild in Project1.Flags)) then begin
         if SubResult=mrNo then begin
@@ -976,7 +968,6 @@ begin
 
     Result.MainProject:=true;
     Result.OnFileBackup:=@BuildBoss.BackupFile;
-    Result.OnGetTestDirectory:=@OnProjectGetTestDirectory;
     Result.OnChangeProjectInfoFile:=@OnProjectChangeInfoFile;
 
   finally

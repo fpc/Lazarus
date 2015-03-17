@@ -486,12 +486,10 @@ type
 
     procedure SetAlternativeCompile(const Command: string; ScanFPCMsgs: boolean); override;
 
-    function MakeOptionsString(Flags: TCompilerCmdLineOptions): String;
-    function MakeOptionsString(const MainSourceFileName: string;
-                               Flags: TCompilerCmdLineOptions): String; virtual;
+    function MakeOptionsString(Flags: TCompilerCmdLineOptions): String; virtual;
     function GetSyntaxOptionsString: string; virtual;
     function CreatePPUFilename(const SourceFileName: string): string; override;
-    function CreateTargetFilename(const MainSourceFileName: string): string; virtual;
+    function CreateTargetFilename: string; virtual;
     function GetTargetFileExt: string; virtual;
     function GetTargetFilePrefix: string; virtual;
     procedure GetInheritedCompilerOptions(var OptionsList: TFPList // list of TAdditionalCompilerOptions
@@ -1903,8 +1901,7 @@ end;
 {------------------------------------------------------------------------------
   TBaseCompilerOptions CreateTargetFilename
 ------------------------------------------------------------------------------}
-function TBaseCompilerOptions.CreateTargetFilename(
-  const MainSourceFileName: string): string;
+function TBaseCompilerOptions.CreateTargetFilename: string;
 
   procedure AppendDefaultExt;
   var
@@ -1952,13 +1949,20 @@ function TBaseCompilerOptions.CreateTargetFilename(
 var
   UnitOutDir: String;
   OutFilename: String;
+  Dir: String;
 begin
   Result:=TargetFilename;
-  if Assigned(ParsedOpts.OnLocalSubstitute) then
+  if Result='' then
   begin
-    Result:=ParsedOpts.OnLocalSubstitute(Result,false);
+    // the compiler cuts off the source extension
+    TargetFilename:=ExtractFileNameOnly(GetDefaultMainSourceFileName);
   end else begin
-    Result:=ParseString(ParsedOpts,Result,false);
+    if Assigned(ParsedOpts.OnLocalSubstitute) then
+    begin
+      Result:=ParsedOpts.OnLocalSubstitute(Result,false);
+    end else begin
+      Result:=ParseString(ParsedOpts,Result,false);
+    end;
   end;
   if (Result<>'') and FilenameIsAbsolute(Result) then begin
     // fully specified target filename
@@ -1971,9 +1975,13 @@ begin
       if UnitOutDir='' then
         UnitOutDir:=BaseDirectory;
       Result:=AppendPathDelim(UnitOutDir)+ExtractFileName(Result);
-    end else begin
+    end else if BaseDirectory<>'' then begin
       // the program is put relative to the base directory
       Result:=CreateAbsolutePath(Result,BaseDirectory);
+    end else begin
+      // put into test directory
+      Dir:=EnvironmentOptions.GetParsedTestBuildDirectory;
+      Result:=CreateAbsolutePath(Result,Dir);
     end;
   end else begin
     // no target given => put into unit output directory
@@ -1981,7 +1989,9 @@ begin
     UnitOutDir:=GetUnitOutPath(false);
     if UnitOutDir='' then
       UnitOutDir:=BaseDirectory;
-    OutFilename:=ExtractFileNameOnly(MainSourceFileName);
+    if UnitOutDir='' then
+      UnitOutDir:=EnvironmentOptions.GetParsedTestBuildDirectory;
+    OutFilename:=ExtractFileNameOnly(GetDefaultMainSourceFileName);
     //debugln('TBaseCompilerOptions.CreateTargetFilename MainSourceFileName=',MainSourceFileName,' OutFilename=',OutFilename,' TargetFilename=',TargetFilename,' UnitOutDir=',UnitOutDir);
     Result:=CreateAbsolutePath(OutFilename,UnitOutDir);
   end;
@@ -2435,15 +2445,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  TBaseCompilerOptions MakeOptionsString
-------------------------------------------------------------------------------}
-function TBaseCompilerOptions.MakeOptionsString(
-  Flags: TCompilerCmdLineOptions): String;
-begin
-  Result:=MakeOptionsString(GetDefaultMainSourceFileName,Flags);
-end;
-
-{------------------------------------------------------------------------------
   function TBaseCompilerOptions.MakeOptionsString(
     const MainSourceFilename: string;
     Flags: TCompilerCmdLineOptions): String;
@@ -2451,7 +2452,7 @@ end;
   Get all the options and create a string that can be passed to the compiler
 ------------------------------------------------------------------------------}
 function TBaseCompilerOptions.MakeOptionsString(
-  const MainSourceFileName: string; Flags: TCompilerCmdLineOptions): String;
+  Flags: TCompilerCmdLineOptions): String;
 var
   switches, tempsw, t: String;
   InhLinkerOpts: String;
@@ -2487,10 +2488,6 @@ var
   end;
 
 begin
-  CurMainSrcFile:=MainSourceFileName;
-  if CurMainSrcFile='' then
-    CurMainSrcFile:=GetDefaultMainSourceFileName;
-
   switches := '';
 
   { options of fpc 2.7.1 :
@@ -3057,12 +3054,13 @@ begin
   {   * -o to define the target file name.
       * -FE if the target file name is not in the project directory (where the lpi file is)
       * -FU if the unit output directory is not empty }
+  CurMainSrcFile:=GetDefaultMainSourceFileName;
   //DebugLn(['TBaseCompilerOptions.MakeOptionsString ',DbgSName(Self),' ',ccloDoNotAppendOutFileOption in Flags,' TargetFilename="',TargetFilename,'" CurMainSrcFile="',CurMainSrcFile,'" CurOutputDir="',CurOutputDir,'"']);
   if (not (ccloDoNotAppendOutFileOption in Flags))
     and (not (ccloNoMacroParams in Flags))
     and ((TargetFilename<>'') or (CurMainSrcFile<>'') or (CurOutputDir<>'')) then
   begin
-    NewTargetFilename := CreateTargetFilename(CurMainSrcFile);
+    NewTargetFilename := CreateTargetFilename;
     if (NewTargetFilename<>'') then
     begin
       if not (ccloAbsolutePaths in Flags) then
@@ -3922,6 +3920,8 @@ function TParsedCompilerOptions.DoParseOption(const OptionText: string;
       Result:=GetParsedPIValue(pcosBaseDir)
     else
       Result:=GetParsedValue(pcosBaseDir);
+    if Result='' then
+      Result:=EnvironmentOptions.GetParsedTestBuildDirectory;
   end;
 
   procedure MakeFilenameAbsolute(var aFilename: string);

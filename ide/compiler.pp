@@ -278,7 +278,7 @@ var
   TargetFilename: String;
 begin
   Result:=mrCancel;
-  if ConsoleVerbosity>=0 then
+  if ConsoleVerbosity>=1 then
     DebugLn('TCompiler.Compile WorkingDir="',WorkingDir,'" CompilerFilename="',CompilerFilename,'" CompilerParams="',CompilerParams,'"');
 
   try
@@ -323,8 +323,7 @@ begin
   if TargetCPU<>GetCompiledTargetCPU then
     Title+=Format(lisCPU, [TargetCPU]);
   TargetFilename:=AProject.GetShortFilename(
-          AProject.CompilerOptions.CreateTargetFilename(AProject.MainFilename),
-          false);
+          AProject.CompilerOptions.CreateTargetFilename,false);
   if TargetFilename<>'' then
     Title+=Format(lisTarget2, [TargetFilename]);
 

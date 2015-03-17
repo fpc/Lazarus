@@ -64,7 +64,6 @@ type
     function GetProjectPublishDir: string; virtual; abstract;
     function GetProjectTargetFilename(aProject: TProject): string; virtual; abstract;
     function GetProjectUsesAppBundle: Boolean; virtual; abstract;
-    function GetTestProjectFilename(aProject: TProject): string; virtual; abstract;
     function GetTestUnitFilename(AnUnitInfo: TUnitInfo): string; virtual; abstract;
     function GetTestBuildDirectory: string; virtual; abstract;
     function IsTestUnitFilename(const AFilename: string): boolean; virtual; abstract;

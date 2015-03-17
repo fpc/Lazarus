@@ -76,8 +76,6 @@ type
                                  Merge: boolean) of object;
   TOnSaveProjectInfo = procedure(TheProject: TProject;
                XMLConfig: TXMLConfig; WriteFlags: TProjectWriteFlags) of object;
-  TOnProjectGetTestDirectory = procedure(TheProject: TProject;
-                                         out TestDir: string) of object;
   TOnChangeProjectInfoFile = procedure(TheProject: TProject) of object;
 
   TOnSaveUnitSessionInfoInfo = procedure(AUnitInfo: TUnitInfo) of object;
@@ -752,7 +750,6 @@ type
     FOnChangeProjectInfoFile: TOnChangeProjectInfoFile;
     FOnEndUpdate: TEndUpdateProjectEvent;
     fOnFileBackup: TOnFileBackup;
-    FOnGetTestDirectory: TOnProjectGetTestDirectory;
     FOnLoadProjectInfo: TOnLoadProjectInfo;
     FOnSaveProjectInfo: TOnSaveProjectInfo;
     FOnSaveUnitSessionInfo: TOnSaveUnitSessionInfoInfo;
@@ -1026,7 +1023,6 @@ type
     function GetOutputDirectory: string;
     function GetCompilerFilename: string;
     function GetStateFilename: string;
-    function GetTestDirectory: string;
     function GetCompileSourceFilename: string;
     procedure AutoAddOutputDirToIncPath;
 
@@ -1096,8 +1092,6 @@ type
                                                  write FOnChangeProjectInfoFile;
     property OnEndUpdate: TEndUpdateProjectEvent read FOnEndUpdate write FOnEndUpdate;
     property OnFileBackup: TOnFileBackup read fOnFileBackup write fOnFileBackup;
-    property OnGetTestDirectory: TOnProjectGetTestDirectory read FOnGetTestDirectory
-                                                            write FOnGetTestDirectory;
     property OnLoadProjectInfo: TOnLoadProjectInfo read FOnLoadProjectInfo
                                                    write FOnLoadProjectInfo;
     property OnSaveProjectInfo: TOnSaveProjectInfo read FOnSaveProjectInfo
@@ -4822,10 +4816,7 @@ end;
 
 function TProject.GetOutputDirectory: string;
 begin
-  if IsVirtual then
-    Result:=GetTestDirectory
-  else
-    Result:=CompilerOptions.ParsedOpts.GetParsedValue(pcosOutputDir);
+  Result:=CompilerOptions.ParsedOpts.GetParsedValue(pcosOutputDir);
 end;
 
 function TProject.GetCompilerFilename: string;
@@ -4839,14 +4830,6 @@ begin
   if (not FilenameIsAbsolute(Result)) and (not IsVirtual) then
     Result:=ProjectDirectory;
   Result:=AppendPathDelim(Result)+ChangeFileExt(GetCompileSourceFilename,'.compiled');
-end;
-
-function TProject.GetTestDirectory: string;
-begin
-  if Assigned(OnGetTestDirectory) then
-    OnGetTestDirectory(Self,Result)
-  else
-    Result:=GetCurrentDirUTF8;
 end;
 
 function TProject.GetCompileSourceFilename: string;

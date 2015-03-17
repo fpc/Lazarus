@@ -188,7 +188,6 @@ type
     function GetProjectPublishDir: string; override;
     function GetProjectTargetFilename(aProject: TProject): string; override;
     function GetProjectUsesAppBundle: Boolean; override;
-    function GetTestProjectFilename(aProject: TProject): string; override;
     function GetTestUnitFilename(AnUnitInfo: TUnitInfo): string; override;
     function GetTestBuildDirectory: string; override;
     function IsTestUnitFilename(const AFilename: string): boolean; override;
@@ -682,15 +681,8 @@ begin
   if aProject=nil then exit;
   Result:=aProject.RunParameterOptions.HostApplicationFilename;
   GlobalMacroList.SubstituteStr(Result);
-  if Result='' then begin
-    if aProject.IsVirtual then
-      Result:=GetTestProjectFilename(aProject)
-    else begin
-      if aProject.MainUnitID>=0 then begin
-        Result :=
-          aProject.CompilerOptions.CreateTargetFilename(aProject.MainFilename);
-      end;
-    end;
+  if (Result='') and (aProject.MainUnitID>=0) then begin
+    Result := aProject.CompilerOptions.CreateTargetFilename;
   end;
 end;
 
@@ -699,24 +691,6 @@ begin
   Result := (Project1<>nil)
     and (Project1.RunParameterOptions.HostApplicationFilename = '')
     and (GetTargetOS = 'darwin') and Project1.UseAppBundle;
-end;
-
-function TBuildManager.GetTestProjectFilename(aProject: TProject): string;
-var
-  TestDir: String;
-begin
-  Result:='';
-  if aProject=nil then exit;
-  if (aProject.MainUnitID<0) then exit;
-  Result:=GetTestUnitFilename(aProject.MainUnitInfo);
-  if Result='' then exit;
-  Result:=aProject.CompilerOptions.CreateTargetFilename(Result);
-  if Result='' then exit;
-  if (not FilenameIsAbsolute(Result)) then begin
-    TestDir:=GetTestBuildDirectory;
-    if TestDir='' then exit;
-    Result:=TestDir+Result;
-  end;
 end;
 
 function TBuildManager.GetTestUnitFilename(AnUnitInfo: TUnitInfo): string;
@@ -1123,6 +1097,7 @@ var
   AnUnitInfo: TUnitInfo;
   LFMFilename: String;
   IcoRes: TProjectIcon;
+  aTargetFilename: String;
 
   function EditorFileHasChanged: boolean;
   begin
@@ -1174,7 +1149,7 @@ begin
   //DebugLn(['TBuildManager.DoCheckIfProjectNeedsCompilation CompilerFilename="',CompilerFilename,'" CompilerPath="',AProject.CompilerOptions.CompilerPath,'"']);
   // Note: use absolute paths, because some external tools resolve symlinked directories
   CompilerParams :=
-    AProject.CompilerOptions.MakeOptionsString(SrcFilename,[ccloAbsolutePaths])
+    AProject.CompilerOptions.MakeOptionsString([ccloAbsolutePaths])
            + ' ' + PrepareCmdLineOption(SrcFilename);
   //DebugLn('TBuildManager.DoCheckIfProjectNeedsCompilation WorkingDir="',WorkingDir,'" SrcFilename="',SrcFilename,'" CompilerFilename="',CompilerFilename,'" CompilerParams="',CompilerParams,'"');
 
@@ -1331,6 +1306,16 @@ begin
       +'  File age="'+FileAgeToStr(FileAgeCached(IcoRes.IcoFileName))+'"'+LineEnding
       +'  State file age="'+FileAgeToStr(StateFileAge)+'"'+LineEnding
       +'  State file='+StateFilename+LineEnding;
+    exit(mrYes);
+  end;
+
+  // check target file
+  aTargetFilename:=AProject.CompilerOptions.CreateTargetFilename;
+  debugln(['TBuildManager.DoCheckIfProjectNeedsCompilation aTargetFilename=',aTargetFilename]);
+  if (aTargetFilename<>'') and not FileExistsCached(aTargetFilename) then begin
+    if ConsoleVerbosity>=0 then
+      debugln(['TBuildManager.DoCheckIfProjectNeedsCompilation missing target file "',aTargetFilename,'"']);
+    Note+='Project''s target file "'+aTargetFilename+'" is missing.';
     exit(mrYes);
   end;
 
@@ -1621,12 +1606,7 @@ begin
   Result := False;
   if Project1.MainUnitInfo = nil then
     Exit;
-  if Project1.IsVirtual then
-    TargetExeName := GetTestBuildDirectory +
-      ExtractFilename(Project1.MainUnitInfo.Filename)
-  else
-    TargetExeName := Project1.CompilerOptions.CreateTargetFilename(
-      Project1.MainFilename);
+  TargetExeName := Project1.CompilerOptions.CreateTargetFilename;
 
   if not (CreateApplicationBundle(TargetExeName, Project1.GetTitle, True) in
     [mrOk, mrIgnore]) then

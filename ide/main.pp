@@ -691,7 +691,6 @@ type
                                              XMLConfig: TXMLConfig; Merge: boolean);
     procedure OnSaveProjectInfoToXMLConfig(TheProject: TProject;
                          XMLConfig: TXMLConfig; WriteFlags: TProjectWriteFlags);
-    procedure OnProjectGetTestDirectory(TheProject: TProject; out TestDir: string);
     procedure OnProjectChangeInfoFile(TheProject: TProject);
     procedure OnSaveProjectUnitSessionInfo(AUnitInfo: TUnitInfo);
   public
@@ -5683,12 +5682,6 @@ begin
     EditorMacroListViewer.SaveProjectSpecificInfo(XMLConfig, WriteFlags);
 end;
 
-procedure TMainIDE.OnProjectGetTestDirectory(TheProject: TProject; out TestDir: string);
-begin
-  if TheProject=nil then ;
-  TestDir:=GetTestBuildDirectory;
-end;
-
 procedure TMainIDE.OnProjectChangeInfoFile(TheProject: TProject);
 begin
   if (Project1=nil) or (TheProject<>Project1) then exit;
@@ -6283,7 +6276,6 @@ begin
   Result.OnLoadProjectInfo:=@OnLoadProjectInfoFromXMLConfig;
   Result.OnSaveProjectInfo:=@OnSaveProjectInfoToXMLConfig;
   Result.OnSaveUnitSessionInfo:=@OnSaveProjectUnitSessionInfo;
-  Result.OnGetTestDirectory:=@OnProjectGetTestDirectory;
   Result.OnChangeProjectInfoFile:=@OnProjectChangeInfoFile;
   Result.IDEOptions.OnBeforeRead:=@DoProjectOptionsBeforeRead;
   Result.IDEOptions.OnAfterWrite:=@DoProjectOptionsAfterWrite;
@@ -6813,9 +6805,7 @@ begin
     end;
 
     // create target output directory
-    TargetExeName := Project1.CompilerOptions.CreateTargetFilename(Project1.MainFilename);
-    if Project1.IsVirtual and (not FilenameIsAbsolute(TargetExeName)) then
-      TargetExeName := GetTestBuildDirectory + TargetExeName;
+    TargetExeName := Project1.CompilerOptions.CreateTargetFilename;
     TargetExeDirectory:=ExtractFilePath(TargetExeName);
     if (FilenameIsAbsolute(TargetExeDirectory))
     and (not DirPathExistsCached(TargetExeDirectory)) then begin
@@ -6883,7 +6873,7 @@ begin
         CompilerFilename:=Project1.GetCompilerFilename;
         // Hint: use absolute paths, because some external tools resolve symlinked directories
         CompilerParams :=
-          Project1.CompilerOptions.MakeOptionsString(SrcFilename,[ccloAbsolutePaths])
+          Project1.CompilerOptions.MakeOptionsString([ccloAbsolutePaths])
                  + ' ' + PrepareCmdLineOption(SrcFilename);
         // write state file, to avoid building clean every time
         Result:=Project1.SaveStateFile(CompilerFilename,CompilerParams,false);

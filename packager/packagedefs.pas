@@ -370,7 +370,7 @@ type
     function GetOwnerName: string; override;
     procedure InvalidateOptions;
     function GetDefaultMainSourceFileName: string; override;
-    function CreateTargetFilename(const {%H-}MainSourceFileName: string): string; override;
+    function CreateTargetFilename: string; override;
     function HasCompilerCommand: boolean; override;
 
     procedure LoadFromXMLConfig(AXMLConfig: TXMLConfig; const Path: string); override;
@@ -4161,8 +4161,7 @@ begin
     Result:=inherited GetDefaultMainSourceFileName;
 end;
 
-function TPkgCompilerOptions.CreateTargetFilename(
-  const MainSourceFileName: string): string;
+function TPkgCompilerOptions.CreateTargetFilename: string;
 begin
   Result:='';
 end;

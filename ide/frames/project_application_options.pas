@@ -86,8 +86,7 @@ begin
     TargetExeName := LazarusIDE.GetTestBuildDirectory +
       ExtractFilename(AProject.MainUnitInfo.Filename)
   else
-    TargetExeName := AProject.CompilerOptions.CreateTargetFilename(
-      AProject.MainFilename);
+    TargetExeName := AProject.CompilerOptions.CreateTargetFilename;
 
   if not (CreateApplicationBundle(TargetExeName, AProject.GetTitle, True) in
     [mrOk, mrIgnore]) then
