@@ -184,6 +184,7 @@ type
 
   TSynStateFlag = (sfCaretChanged, sfHideCursor,
     sfEnsureCursorPos, sfEnsureCursorPosAtResize,
+    sfExplicitTopLine, sfExplicitLeftChar,  // when doing EnsureCursorPos keep top/Left, if they where set explicitly after the caret (only applies before handle creation)
     sfIgnoreNextChar, sfPainting, sfHasPainted, sfHasScrolled,
     sfScrollbarChanged, sfHorizScrollbarVisible, sfVertScrollbarVisible,
     sfAfterLoadFromFileNeeded,
@@ -4353,6 +4354,7 @@ end;
 procedure TCustomSynEdit.CaretChanged(Sender: TObject);
 begin
   Include(fStateFlags, sfCaretChanged);
+  fStateFlags := fStateFlags - [sfExplicitTopLine, sfExplicitLeftChar];
   if FCaret.OldCharPos <> FCaret.CharPos then
     Include(fStatusChanges, scCaretX);
   if FCaret.OldLinePos <> FCaret.LinePos then begin
@@ -4389,6 +4391,8 @@ begin
   //{BUG21996} DebugLn(['TCustomSynEdit.SetLeftChar=',Value,'  Caret=',dbgs(CaretXY),', BlockBegin=',dbgs(BlockBegin),' BlockEnd=',dbgs(BlockEnd), ' StateFlags=',dbgs(fStateFlags), ' paintlock', FPaintLock]);
   Value := Min(Value, CurrentMaxLeftChar);
   Value := Max(Value, 1);
+  if not HandleAllocated then
+    Include(fStateFlags, sfExplicitLeftChar);
   if Value <> FTextArea.LeftChar then begin
     FTextArea.LeftChar := Value;
     UpdateScrollBars;
@@ -4510,6 +4514,8 @@ begin
   if FFoldedLinesView.FoldedAtTextIndex[Value-1] then
     Value := FindNextUnfoldedLine(Value, True);
 
+  if not HandleAllocated then
+    Include(fStateFlags, sfExplicitTopLine);
   NewTopView := FFoldedLinesView.TextIndexToViewPos(Value-1);
   if NewTopView <> TopView then begin
     TopView := NewTopView;
@@ -5107,6 +5113,9 @@ begin
 
   AValue := Min(AValue, CurrentMaxTopView);
   AValue := Max(AValue, 1);
+
+  if not HandleAllocated then
+    Include(fStateFlags, sfExplicitTopLine);
 
   (* ToDo: FFoldedLinesView.TopLine := AValue;
     Required, if "TopView := TopView" or "TopLine := TopLine" is called,
@@ -6248,24 +6257,28 @@ begin
           MaxX:=Min(PhysBlockEndXY.X,MinX+CharsInWindow-1);
       end;
     end;
-    {DebugLn('TCustomSynEdit.EnsureCursorPosVisible A CaretX=',dbgs(PhysCaretXY.X),
-      ' BlockX=',dbgs(PhysBlockBeginXY.X)+'-'+dbgs(PhysBlockEndXY.X),
-      ' CharsInWindow='+dbgs(CharsInWindow), MinX='+dbgs(MinX),' MaxX='+dbgs(MaxX),
-      ' LeftChar='+dbgs(LeftChar), '');}
-    if MinX < LeftChar then
-      LeftChar := MinX
-    else if LeftChar < MaxX - (Max(1, CharsInWindow) - 1 - FScreenCaret.ExtraLineChars) then
-      LeftChar := MaxX - (Max(1, CharsInWindow) - 1 - FScreenCaret.ExtraLineChars)
-    else
-      LeftChar := LeftChar;                                                     //mh 2000-10-19
-    //DebugLn(['TCustomSynEdit.EnsureCursorPosVisible B LeftChar=',LeftChar,' MinX=',MinX,' MaxX=',MaxX,' CharsInWindow=',CharsInWindow]);
-    // Make sure Y is visible
-    if CaretY < TopLine then
-      TopLine := CaretY
-    else if CaretY > ScreenRowToRow(Max(1, LinesInWindow) - 1) then             //mh 2000-10-19
-      TopLine := FFoldedLinesView.TextPosAddLines(CaretY, -Max(0, LinesInWindow-1))
-    else
-      TopView := TopView;                                                       //mh 2000-10-19
+    if not (sfExplicitLeftChar in fStateFlags) then begin
+      {DebugLn('TCustomSynEdit.EnsureCursorPosVisible A CaretX=',dbgs(PhysCaretXY.X),
+        ' BlockX=',dbgs(PhysBlockBeginXY.X)+'-'+dbgs(PhysBlockEndXY.X),
+        ' CharsInWindow='+dbgs(CharsInWindow), MinX='+dbgs(MinX),' MaxX='+dbgs(MaxX),
+        ' LeftChar='+dbgs(LeftChar), '');}
+      if MinX < LeftChar then
+        LeftChar := MinX
+      else if LeftChar < MaxX - (Max(1, CharsInWindow) - 1 - FScreenCaret.ExtraLineChars) then
+        LeftChar := MaxX - (Max(1, CharsInWindow) - 1 - FScreenCaret.ExtraLineChars)
+      else
+        LeftChar := LeftChar;                                                     //mh 2000-10-19
+    end;
+    if not (sfExplicitTopLine in fStateFlags) then begin
+      //DebugLn(['TCustomSynEdit.EnsureCursorPosVisible B LeftChar=',LeftChar,' MinX=',MinX,' MaxX=',MaxX,' CharsInWindow=',CharsInWindow]);
+      // Make sure Y is visible
+      if CaretY < TopLine then
+        TopLine := CaretY
+      else if CaretY > ScreenRowToRow(Max(1, LinesInWindow) - 1) then             //mh 2000-10-19
+        TopLine := FFoldedLinesView.TextPosAddLines(CaretY, -Max(0, LinesInWindow-1))
+      else
+        TopView := TopView;                                                       //mh 2000-10-19
+    end;
   finally
     DoDecPaintLock(Self);
     //{BUG21996} DebugLnExit(['TCustomSynEdit.EnsureCursorPosVisible Caret=',dbgs(CaretXY),', BlockBegin=',dbgs(BlockBegin),' BlockEnd=',dbgs(BlockEnd), ' StateFlags=',dbgs(fStateFlags), ' paintlock', FPaintLock]);
