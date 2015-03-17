@@ -155,7 +155,9 @@ var
   F1: TPGInterPkgFile absolute File1;
   F2: TPGInterPkgFile absolute File2;
 begin
-  Result:=CompareDottedIdentifiers(PChar(Pointer(F1.AnUnitName)),PChar(Pointer(F2.AnUnitName)));
+  Assert(Assigned(F1), 'ComparePGInterPkgUnitnames: File1=Nil.');
+  Assert(Assigned(F2), 'ComparePGInterPkgUnitnames: File2=Nil.');
+  Result:=CompareDottedIdentifiers(PChar(F1.AnUnitName),PChar(F2.AnUnitName));
 end;
 
 function ComparePGInterPkgShortFilename(File1, File2: Pointer): integer;
@@ -863,8 +865,10 @@ var
           continue;
         //debugln(['CheckPPUFilesInWrongDirs duplicate units found: file1="',CurUnit.FullFilename,'"(',CurUnit.OwnerInfo.Name,') file2="',OtherFile.FullFilename,'"(',OtherFile.OwnerInfo.Name,')']);
         FindUnitSourcePPU(OtherFile,OtherPPUFile);
-        if FileGroup=nil then
+        if FileGroup=nil then begin
           FindUnitSourcePPU(CurUnit,PPUFile);
+          Assert(Assigned(CurUnit), 'CheckDuplicateUnits: FindUnitSourcePPU() changed CurUnit to Nil. Not good!');
+        end;
         if (CurUnit<>nil) and (OtherFile<>nil)
         and (CompareFilenames(CurUnit.FullFilename,OtherFile.FullFilename)=0) then
         begin
