@@ -873,7 +873,7 @@ var
           continue;
         end;
 
-        debugln(['CheckPPUFilesInWrongDirs duplicate units found: file1="',CurUnit.FullFilename,'"(',CurUnit.OwnerInfo.Name,') ppu=',PPUFile<>nil,' file2="',OtherFile.FullFilename,'"(',OtherFile.OwnerInfo.Name,') ppu=',OtherPPUFile<>nil]);
+        //debugln(['CheckPPUFilesInWrongDirs duplicate units found: file1="',CurUnit.FullFilename,'"(',CurUnit.OwnerInfo.Name,') ppu=',PPUFile<>nil,' file2="',OtherFile.FullFilename,'"(',OtherFile.OwnerInfo.Name,') ppu=',OtherPPUFile<>nil]);
 
         if (PPUFile<>nil) and (OtherPPUFile<>nil)
         and (CompareFilenames(PPUFile.FullFilename,OtherPPUFile.FullFilename)=0)
