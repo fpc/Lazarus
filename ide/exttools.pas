@@ -39,7 +39,7 @@ uses
   // Codetools
   FileProcs, CodeToolsStructs,
   // LCL
-  LCLIntf, LCLProc, Forms, Dialogs, FileUtil, AvgLvlTree,
+  LCLIntf, Forms, Dialogs, FileUtil, AvgLvlTree,
   // IDEIntf
   IDEExternToolIntf, BaseIDEIntf, MacroIntf, IDEMsgIntf, IDEDialogs,
   PackageIntf, LazIDEIntf,
