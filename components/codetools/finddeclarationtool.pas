@@ -7339,7 +7339,7 @@ var
           // -> check if in a function
           if fdfExtractOperand in Params.Flags then Params.AddOperandPart('Result');
           ProcNode:=StartNode;
-          while not NodeIsFunction(ProcNode) do
+          while (ProcNode<>nil) and not NodeIsFunction(ProcNode) do
             ProcNode:=ProcNode.Parent;
           if (ProcNode<>nil) then begin
             if IsEnd and (fdfFindVariable in StartFlags) then begin
