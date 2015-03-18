@@ -59,7 +59,7 @@ uses
   LazarusIDEStrConsts, TransferMacros, LazConf, IDEProcs, DialogProcs,
   MainBar, ExtToolEditDlg, EnvironmentOpts,
   ApplicationBundle, CompilerOptions, BuildProfileManager,
-  GenericListEditor, GenericCheckList, PackageSystem, PackageDefs;
+  GenericListEditor, GenericCheckList, IDECmdLine, PackageSystem, PackageDefs;
 
 type
 
@@ -292,7 +292,7 @@ begin
         Ext:=LowerCase(ExtractFileExt(FileInfo.Name));
         if (Ext='.ppu') or (Ext='.o') or (Ext='.rst') or (Ext='.rsj') then begin
           if not DeleteFileUTF8(Filename) then
-            debugln(['CleanLazarusSrcDir failed to delete file "',Filename,'"']);
+            debugln(['Error : (lazarus) Clean directory: failed to delete file "',Filename,'"']);
         end;
       end;
     until FindNextUTF8(FileInfo)<>0;
@@ -336,7 +336,7 @@ var
 begin
   RevisionIncFile:=AppendPathDelim(EnvironmentOptions.GetParsedLazarusDirectory)+'ide'+PathDelim+'revision.inc';
   if not FileExistsUTF8(RevisionIncFile) then begin
-    debugln(['Note: revision.inc file missing: ',RevisionIncFile]);
+    debugln(['Note: (lazarus) revision.inc file missing: ',RevisionIncFile]);
     sl:=TStringList.Create;
     sl.Add('// Created by lazbuild');
     sl.Add('const RevisionStr = '''+LazarusVersionStr+''';');
@@ -344,7 +344,7 @@ begin
       sl.SaveToFile(RevisionIncFile);
     except
       on E: Exception do begin
-        debugln(['Note: can not write ',RevisionIncFile,': ',E.Message]);
+        debugln(['Warning: (lazarus) unable to write ',RevisionIncFile,': ',E.Message]);
       end;
     end;
     sl.Free;
@@ -357,14 +357,14 @@ var
 begin
   if FileExistsUTF8(fTargetFilename) then begin
     if not DeleteFileUTF8(fTargetFilename) then begin
-      debugln(['Building IDE failed. Can not delete "',fTargetFilename,'"']);
+      debugln(['Error: (lazarus) Building IDE failed. Unable to delete "',fTargetFilename,'"']);
       exit;
     end;
   end;
   BackupFilename:=GetBackupExeFilename(fTargetFilename);
   if FileExistsUTF8(BackupFilename) then begin
     if not RenameFileUTF8(BackupFilename,fTargetFilename) then begin
-      debugln(['Building IDE failed. Can not restore backup file "',BackupFilename,'" to "',fTargetFilename,'"']);
+      debugln(['Error: (lazarus) Building IDE failed. Unable to restore backup file "',BackupFilename,'" to "',fTargetFilename,'"']);
     end;
   end;
 end;
@@ -614,12 +614,12 @@ begin
     // Case 1. the user has set a target directory
     fTargetDir:=fProfile.GetParsedTargetDirectory(fMacros);
     if fTargetDir='' then begin
-      debugln('CalcTargets macro aborted Options.TargetDirectory=',fProfile.TargetDirectory);
+      debugln('Error: (lazarus) [CalcTargets] error resolving macros in TargetDirectory=',fProfile.TargetDirectory);
       Exit(mrAbort);
     end;
     fUnitOutDir:=AppendPathDelim(fTargetDir)+'units';
-    debugln('CalcTargets TargetDirectory=',fTargetDir);
-    debugln('CalcTargets UnitsTargetDirectory=',fUnitOutDir);
+    debugln('Hint: (lazarus) [CalcTargets] TargetDirectory=',fTargetDir);
+    debugln('Hint: (lazarus) [CalcTargets] UnitsTargetDirectory=',fUnitOutDir);
   end else begin
     // no user defined target directory
     // => find it automatically
@@ -645,7 +645,7 @@ begin
       // ppu files to <primary config dir>/units/<fTargetCPU>-<fTargetOS>/<LCLWidgetType>
       fUnitOutDir:=AppendPathDelim(GetPrimaryConfigPath)+'units'
                   +PathDelim+fTargetCPU+'-'+fTargetOS+PathDelim+TargetLCLPlatform;
-      debugln('CalcTargets Options.TargetOS=',fProfile.FPCTargetOS,' Options.TargetCPU=',
+      debugln('Hint: (lazarus) [CalcTargets] Cross Compiling TargetOS=',fProfile.FPCTargetOS,' TargetCPU=',
               fProfile.FPCTargetCPU,' CompilerDefaultOS=',fCompilerTargetOS,' CompilerDefaultCPU=',fCompilerTargetCPU);
     end else begin
       // -> normal compile for this platform
@@ -660,7 +660,7 @@ begin
           // ppu files to <primary config dir>/units/<fTargetCPU>-<fTargetOS>/<LCLWidgetType>
           fUpdateRevInc:=false;
           fTargetDir:=AppendPathDelim(GetPrimaryConfigPath)+'bin';
-          debugln('CalcTargets LazDir readonly NewTargetDirectory=',fTargetDir);
+          debugln('Hint: (lazarus) [CalcTargets] Lazarus directory is readonly, using fallback target directory: ',fTargetDir);
           fUnitOutDir:=AppendPathDelim(GetPrimaryConfigPath)+'units'
                   +PathDelim+fTargetCPU+'-'+fTargetOS+PathDelim+TargetLCLPlatform;
         end else begin
@@ -740,38 +740,38 @@ begin
     // confused which one is the newest
     if FileExistsUTF8(AltFilename) then begin
       if DeleteFileUTF8(AltFilename) then
-        debugln(['Note: deleted file "',AltFilename,'"'])
+        debugln(['Note: (lazarus) deleted file "',AltFilename,'"'])
       else
-        debugln(['WARNING: unable to delete file "',AltFilename,'"']);
+        debugln(['Warning: (lazarus) unable to delete file "',AltFilename,'"']);
     end;
 
     // try to rename the old exe
     BackupFilename:=GetBackupExeFilename(fTargetFilename);
     if FileExistsUTF8(BackupFilename) then
       if DeleteFileUTF8(BackupFilename) then begin
-        debugln(['Note: deleted backup "',BackupFilename,'"']);
+        debugln(['Note: (lazarus) deleted backup "',BackupFilename,'"']);
       end else begin
         // unable to delete old backup file, maybe an old IDE is still running
         // => try to backup the backup
         Backup2Filename:=LeftStr(fTargetFilename,length(fTargetFilename)-length(Ext))+'.old2'+Ext;
         if FileExistsUTF8(Backup2Filename) then begin
           if DeleteFileUTF8(Backup2Filename) then
-            debugln(['Note: deleted backup "',Backup2Filename,'"'])
+            debugln(['Note: (lazarus) deleted backup "',Backup2Filename,'"'])
           else
-            debugln(['WARNING: unable to delete old backup file "'+Backup2Filename+'"']);
+            debugln(['Warning: (lazarus) unable to delete old backup file "'+Backup2Filename+'"']);
         end;
         if not FileExistsUTF8(Backup2Filename) then begin
           if RenameFileUTF8(BackupFilename,Backup2Filename) then
-            debugln(['Note: renamed old backup file "'+BackupFilename+'" to "',Backup2Filename,'"'])
+            debugln(['Note: (lazarus) renamed old backup file "'+BackupFilename+'" to "',Backup2Filename,'"'])
           else
-            debugln(['WARNING: unable to rename old backup file "'+BackupFilename+'" to "',Backup2Filename,'"']);
+            debugln(['Warning: (lazarus) unable to rename old backup file "'+BackupFilename+'" to "',Backup2Filename,'"']);
       end;
     end;
     if not FileExistsUTF8(BackupFilename) then begin
       if RenameFileUTF8(fTargetFilename,BackupFilename) then
-        debugln(['Note: renamed file "'+fTargetFilename+'" to "',BackupFilename,'"'])
+        debugln(['Note: (lazarus) renamed file "'+fTargetFilename+'" to "',BackupFilename,'"'])
       else
-        debugln(['WARNING: unable to rename file "'+fTargetFilename+'" to "',BackupFilename,'"']);
+        debugln(['Warning: (lazarus) unable to rename file "'+fTargetFilename+'" to "',BackupFilename,'"']);
     end;
   end;
   if (not (blfReplaceExe in Flags)) and FileExistsUTF8(fTargetFilename) then
@@ -789,14 +789,14 @@ begin
     //debugln(['CreateAppleBundle TargetFile=',fTargetFilename]);
     Result:=CreateApplicationBundle(fTargetFilename, 'Lazarus');
     if not (Result in [mrOk,mrIgnore]) then begin
-      debugln(['CreateAppleBundle CreateApplicationBundle failed']);
+      debugln(['Error: (lazarus) unable to create application bundle']);
       if IDEMessagesWindow<>nil then
         IDEMessagesWindow.AddCustomMessage(mluError,'to create application bundle '+BundleDir);
       exit;
     end;
     Result:=CreateAppBundleSymbolicLink(fTargetFilename);
     if not (Result in [mrOk,mrIgnore]) then begin
-      debugln(['CreateAppleBundle CreateAppBundleSymbolicLink failed']);
+      debugln(['Error: (lazarus) unable to create symlink in application bundle: ',fTargetFilename]);
       if IDEMessagesWindow<>nil then
         IDEMessagesWindow.AddCustomMessage(mluError,'failed to create application bundle symlink to '+fTargetFilename);
       exit;
@@ -1386,7 +1386,7 @@ end;
 procedure TConfigureBuildLazarusDlg.CleanRadioButtonClick(Sender: TObject);
 begin
   CleanCommonCheckBox.Checked:=CleanAllRadioButton.Checked;
-  DebugLn(['TConfigureBuildLazarusDlg.CleanRadioButtonClick: set CleanCommonCheckBox to ', CleanCommonRadioButton.Checked]);
+  //DebugLn(['TConfigureBuildLazarusDlg.CleanRadioButtonClick: set CleanCommonCheckBox to ', CleanCommonRadioButton.Checked]);
 end;
 
 procedure TConfigureBuildLazarusDlg.CleanCommonCheckBoxClick(Sender: TObject);
@@ -1395,7 +1395,7 @@ begin
     CleanAllRadioButton.Checked:=True
   else
     CleanAutoRadioButton.Checked:=True;
-  DebugLn(['TConfigureBuildLazarusDlg.CleanCommonCheckBoxClick: set CleanCommonRadioButton to ', CleanCommonCheckBox.Checked]);
+  //DebugLn(['TConfigureBuildLazarusDlg.CleanCommonCheckBoxClick: set CleanCommonRadioButton to ', CleanCommonCheckBox.Checked]);
 end;
 
 end.

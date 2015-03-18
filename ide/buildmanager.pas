@@ -282,7 +282,7 @@ procedure TBuildManager.OnMacroSubstitution(TheMacro: TTransferMacro;
 begin
   if TheMacro=nil then begin
     if ConsoleVerbosity>=0 then
-      DebugLn('WARNING: Macro not defined: "'+MacroName+'".');
+      DebugLn('Warning: (lazarus) Macro not defined: "'+MacroName+'".');
     {$IFDEF VerboseMacroNotDefined}
     DumpStack;
     {$ENDIF}
@@ -648,12 +648,12 @@ begin
       if s<>'' then
         Result:=s;
     end else begin
-      debugln(['WARNING: [GetFPCFrontEndOptions] ignoring invalid macros in custom options for fpc frontend: "',ExtractFPCFrontEndParameters(FBuildTarget.CompilerOptions.CustomOptions),'"']);
+      debugln(['Warning: (lazarus) [GetFPCFrontEndOptions] ignoring invalid macros in custom options for fpc frontend: "',ExtractFPCFrontEndParameters(FBuildTarget.CompilerOptions.CustomOptions),'"']);
     end;
   end;
   if LazarusIDE<>nil then
     if not LazarusIDE.CallHandlerGetFPCFrontEndParams(Self,Result) then begin
-      debugln(['WARNING: TBuildManager.GetFPCFrontEndOptions: LazarusIDE.CallHandlerGetFPCFrontEndParams failed Result="',Result,'"']);
+      debugln(['Warning: TBuildManager.GetFPCFrontEndOptions: LazarusIDE.CallHandlerGetFPCFrontEndParams failed Result="',Result,'"']);
     end;
   Result:=UTF8Trim(Result);
 end;
@@ -786,7 +786,7 @@ procedure TBuildManager.RescanCompilerDefines(ResetBuildTarget,
     if Cfg=nil then exit(true);
     if Cfg.RealCompiler='' then begin
       if ConsoleVerbosity>=0 then
-        debugln(['PPUFilesAndCompilerMatch Compiler=',Cfg.Compiler,' RealComp=',Cfg.RealCompiler,' InPath=',Cfg.RealCompilerInPath]);
+        debugln(['Error: (lazarus) [PPUFilesAndCompilerMatch] Compiler=',Cfg.Compiler,' RealComp=',Cfg.RealCompiler,' InPath=',Cfg.RealCompilerInPath]);
       IDEMessageDialog(lisCCOErrorCaption, Format(
         lisCompilerDoesNotSupportTarget, [Cfg.Compiler, Cfg.TargetCPU, Cfg.TargetOS]),
         mtError,[mbOk]);
@@ -878,7 +878,7 @@ begin
     if not IsFPCExecutable(CompilerFilename,FPCExecMsg) then begin
       Msg+='Environment compiler: "'+CompilerFilename+'": '+FPCExecMsg+#13;
     end;
-    debugln('WARNING: TBuildManager.RescanCompilerDefines: invalid compiler:');
+    debugln('Warning: (lazarus) [TBuildManager.RescanCompilerDefines]: invalid compiler:');
     debugln(Msg);
     if not Quiet then begin
       IDEMessageDialog('Error','There is no Free Pascal Compiler'
@@ -1057,7 +1057,7 @@ begin
   except
     on E: Exception do begin
       if ConsoleVerbosity>=0 then
-        debugln(['LoadFPCDefinesCaches Error loadinf file '+aFilename+':'+E.Message]);
+        debugln(['Error: (lazarus) [LoadFPCDefinesCaches] Error reading file '+aFilename+':'+E.Message]);
     end;
   end;
 end;
@@ -1083,7 +1083,7 @@ begin
   except
     on E: Exception do begin
       if ConsoleVerbosity>=0 then
-        debugln(['LoadFPCDefinesCaches Error loading file '+aFilename+':'+E.Message]);
+        debugln(['Error: (lazarus) [SaveFPCDefinesCaches] Error writing file '+aFilename+':'+E.Message]);
     end;
   end;
 end;
@@ -1137,7 +1137,7 @@ var
 
 begin
   NeedBuildAllFlag:=false;
-  DbgCap:='Project needs building: ';
+  DbgCap:='Hint: (lazarus) Project needs building: ';
 
   // get main source filename
   if not AProject.IsVirtual then begin
@@ -1322,7 +1322,7 @@ begin
   end;
 
   if not HasGUI then
-    debugln(['lazbuild: Build Project: nothing to do.']);
+    debugln(['Hint: (lazarus) Build Project: nothing to do.']);
   Result:=mrNo;
 end;
 
@@ -1566,7 +1566,7 @@ begin
                                  TListSortCompare(@CompareUnitNameAndUnitFile));
             if (ANode<>nil) and (not IgnoreAll) then begin
               if ConsoleVerbosity>=0 then
-                DebugLn(['TBuildManager.CheckUnitPathForAmbiguousPascalFiles CurUnitName="',CurUnitName,'" CurFilename="',CurFilename,'" OtherUnitName="',PUnitFile(ANode.Data)^.FileUnitName,'" OtherFilename="',PUnitFile(ANode.Data)^.Filename,'"']);
+                DebugLn(['Note: (lazarus) [TBuildManager.CheckUnitPathForAmbiguousPascalFiles] CurUnitName="',CurUnitName,'" CurFilename="',CurFilename,'" OtherUnitName="',PUnitFile(ANode.Data)^.FileUnitName,'" OtherFilename="',PUnitFile(ANode.Data)^.Filename,'"']);
               // pascal unit exists twice
               Result:=IDEQuestionDialog(lisAmbiguousUnitFound,
                 Format(lisTheUnitExistsTwiceInTheUnitPathOfThe,[CurUnitName,ContextDescription])
@@ -1855,11 +1855,11 @@ begin
           Code:=AnUnitInfo.Source;
           if (Code<>nil) and (Code.DiskEncoding<>EncodingUTF8) then begin
             if ConsoleVerbosity>=0 then
-              DebugLn(['TBuildManager.UpdateProjectAutomaticFiles fixing encoding of ',Code.Filename,' from ',Code.DiskEncoding,' to ',EncodingUTF8]);
+              DebugLn(['Note: (lazarus) fixing encoding of ',Code.Filename,' from ',Code.DiskEncoding,' to ',EncodingUTF8]);
             Code.DiskEncoding:=EncodingUTF8;
             if not Code.Save then begin
               if ConsoleVerbosity>=0 then
-                DebugLn(['TBuildManager.UpdateProjectAutomaticFiles failed to save file ',Code.Filename]);
+                DebugLn(['Note: (lazarus) [TBuildManager.UpdateProjectAutomaticFiles] failed to save file ',Code.Filename]);
             end;
           end;
         end;
@@ -1914,20 +1914,20 @@ begin
       List:=nil;
       try
         if ConsoleVerbosity>=0 then
-          debugln(['TBuildManager.MacroFuncInstantFPCCache ',Prog]);
-        List:=RunTool(Prog,'--get-cache');
+          debugln(['Hint: (lazarus) TBuildManager.MacroFuncInstantFPCCache ',Prog]);
+        List:=RunTool(Prog,'--get-cache','',ConsoleVerbosity<0);
         if (List<>nil) and (List.Count>0) then
           FMacroInstantFPCCache:=List[0];
         List.Free;
       except
         on E: Exception do begin
           if ConsoleVerbosity>=0 then
-            debugln(['TBuildManager.MacroFuncInstantFPCCache error running '+Prog+': '+E.Message]);
+            debugln(['Warning: (lazarus) [TBuildManager.MacroFuncInstantFPCCache] error running '+Prog+': '+E.Message]);
         end;
       end;
     end;
     if ConsoleVerbosity>=0 then
-      debugln(['TBuildManager.MacroFuncInstantFPCCache ',FMacroInstantFPCCache]);
+      debugln(['Hint: (lazarus) [TBuildManager.MacroFuncInstantFPCCache] ',FMacroInstantFPCCache]);
   end;
   Result:=FMacroInstantFPCCache;
 end;
@@ -1949,7 +1949,7 @@ begin
     else begin
       Result:='<Invalid parameter for macro Project:'+Param+'>';
       if ConsoleVerbosity>=0 then
-        debugln('WARNING: TMainIDE.MacroFuncProject: ',Result);
+        debugln('Warning: (lazarus) [TMainIDE.MacroFuncProject]: ',Result);
     end;
   end else begin
     Result:='';
@@ -2433,7 +2433,7 @@ begin
 
     if ParseOpts.MacroValuesParsing then begin
       if ConsoleVerbosity>=-1 then
-        debugln(['TBuildManager.OnGetBuildMacroValues cycle computing macros of ',dbgsname(Options.Owner)]);
+        debugln(['Warning: (lazarus) [TBuildManager.OnGetBuildMacroValues] cycle computing macros of ',dbgsname(Options.Owner)]);
       exit;
     end;
 
@@ -2449,17 +2449,17 @@ begin
         Result.Assign(Values);
       {$IF defined(VerboseBuildMacros) or defined(DebugLCLBaseConditionals)}
       if (Options.Owner is TLazPackage) and (TLazPackage(Options.Owner).Name='LCLBase') then
-        Result.WriteDebugReport('TPkgManager.OnGetBuildMacroValues before execute: Conditionals="'+dbgstr(Options.Conditionals),'"');
+        Result.WriteDebugReport('TBuildManager.OnGetBuildMacroValues before execute: Conditionals="'+dbgstr(Options.Conditionals),'"');
       {$ENDIF}
       if not ParseOpts.MacroValues.Execute(Options.Conditionals) then begin
         if ConsoleVerbosity>=0 then
-          debugln(['TPkgManager.OnGetBuildMacroValues Error: ',ParseOpts.MacroValues.GetErrorStr(0)]);
+          debugln(['Error: (lazarus) [TBuildManager.OnGetBuildMacroValues] Error: ',ParseOpts.MacroValues.GetErrorStr(0)]);
         debugln(Options.Conditionals);
       end;
 
       {$IFDEF VerboseBuildMacros}
       if (Options.Owner is TLazPackage) and (TLazPackage(Options.Owner).Name='LCL') then
-        Result.WriteDebugReport('TPkgManager.OnGetBuildMacroValues executed: '+dbgstr(Options.Conditionals),'  ');
+        Result.WriteDebugReport('TBuildManager.OnGetBuildMacroValues executed: '+dbgstr(Options.Conditionals),'  ');
       {$ENDIF}
 
       // the macro values of the active project take precedence
@@ -2476,7 +2476,7 @@ begin
     // compute inherited values
     if ParseOpts.InheritedMacroValuesParsing then begin
       if ConsoleVerbosity>=0 then
-        debugln(['TPkgManager.OnGetBuildMacroValues circle computing inherited macros of ',dbgsname(Options.Owner)]);
+        debugln(['Error: (lazarus) [TBuildManager.OnGetBuildMacroValues] cycle detected computing inherited macros of ',dbgsname(Options.Owner)]);
       exit;
     end;
     ParseOpts.InheritedMacroValuesParsing:=true;
@@ -2654,7 +2654,7 @@ begin
     // => invalidate macros so they now use the actual values
     IncreaseBuildMacroChangeStamp;
     if ConsoleVerbosity>0 then
-      debugln(['TBuildManager.SetBuildTarget OS=',fTargetOS,' CPU=',fTargetCPU,' CompQueryOptions=',CompQueryOptions,' DefaultOS=',CompilerTargetOS,' DefaultCPU=',CompilerTargetCPU]);
+      debugln(['Hint: (lazarus) [TBuildManager.SetBuildTarget] OS=',fTargetOS,' CPU=',fTargetCPU,' CompQueryOptions=',CompQueryOptions,' DefaultOS=',CompilerTargetOS,' DefaultCPU=',CompilerTargetCPU]);
   end;
 
   fTargetOS:=GetFPCTargetOS(fTargetOS);
@@ -2676,7 +2676,7 @@ begin
 
   if FPCTargetChanged or LCLTargetChanged then begin
     if ConsoleVerbosity>=0 then
-      DebugLn(['TBuildManager.SetBuildTarget Old=',OldTargetCPU,'-',OldTargetOS,'-',OldLCLWidgetType,' New=',fTargetCPU,'-',fTargetOS,'-',fLCLWidgetType,' FPC=',FPCTargetChanged,' LCL=',LCLTargetChanged]);
+      DebugLn(['Hint: (lazarus) [TBuildManager.SetBuildTarget] Old=',OldTargetCPU,'-',OldTargetOS,'-',OldLCLWidgetType,' New=',fTargetCPU,'-',fTargetOS,'-',fLCLWidgetType,' FPC=',FPCTargetChanged,' LCL=',LCLTargetChanged]);
   end;
   if LCLTargetChanged then
     CodeToolBoss.SetGlobalValue(ExternalMacroStart+'LCLWidgetType',fLCLWidgetType);
@@ -2714,7 +2714,7 @@ begin
     NewLCLWidgetSet:=LCLPlatformDirNames[BuildLazOpts.TargetPlatform];
   end;
   if ConsoleVerbosity>=1 then
-    debugln(['TBuildManager.SetBuildTargetIDE OS=',NewTargetOS,' CPU=',NewTargetCPU,' WS=',NewLCLWidgetSet]);
+    debugln(['Hint: (lazarus) [TBuildManager.SetBuildTargetIDE] OS=',NewTargetOS,' CPU=',NewTargetCPU,' WS=',NewLCLWidgetSet]);
   SetBuildTarget(NewTargetOS,NewTargetCPU,NewLCLWidgetSet,smsfsBackground,false);
 end;
 

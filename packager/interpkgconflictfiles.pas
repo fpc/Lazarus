@@ -923,7 +923,7 @@ var
           if IDEMessagesWindow<>nil then
             IDEMessagesWindow.AddCustomMessage(mluNote,Msg)
           else
-            debugln('Warning: ',Msg);
+            debugln('Warning: (lazarus) ',Msg);
         end;
       end;
 
@@ -989,7 +989,7 @@ var
           if IDEMessagesWindow<>nil then
             IDEMessagesWindow.AddCustomMessage(mluWarning,Msg)
           else
-            debugln('Warning: ',Msg);
+            debugln('Warning: (lazarus) ',Msg);
         end;
       end;
 

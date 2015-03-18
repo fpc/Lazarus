@@ -272,7 +272,7 @@ begin
   if Backup then begin
     Result:=BackupFileInteractive(Filename);
     if Result<>mrOk then begin
-      debugln(['SaveCodeBufferToFile backup failed: "',Filename,'"']);
+      debugln(['Error: (lazarus) unable to backup file: "',Filename,'"']);
       exit;
     end;
   end else
@@ -702,6 +702,8 @@ begin
         {$IFNDEF DisableChecks}
         DebugLn('LFMtoLRSstream ',E.Message);
         {$ENDIF}
+        debugln(['Error: (lazarus) [ConvertLFMToLRSFileInteractive] unable to convert '+LFMFilename+' to '+LRSFilename+':'+LineEnding
+          +E.Message]);
         Result:=IDEMessageDialogAb('Error',
           'Error while converting '+LFMFilename+' to '+LRSFilename+':'+LineEnding
           +E.Message,mtError,[mbCancel,mbIgnore],ShowAbort);
@@ -716,7 +718,7 @@ begin
       Result:=SaveCodeBuffer(LRSBuffer);
     end else begin
       Result:=mrCancel;
-      debugln('ConvertLFMToLRSFileInteractive unable to create codebuffer ',LRSFilename);
+      debugln('Error: (lazarus) [ConvertLFMToLRSFileInteractive] unable to create codebuffer ',LRSFilename);
     end;
   finally
     LFMMemStream.Free;

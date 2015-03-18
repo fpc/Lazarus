@@ -285,13 +285,13 @@ begin
   inherited ToolExited;
   if Tool.Terminated then begin
     ToolState:=lmvtsFailed;
-    debugln(Caption,': terminated');
+    debugln('Error: (lazarus) ',Caption,': terminated');
   end else if (ExitStatus<>0) then begin
     ToolState:=lmvtsFailed;
-    debugln(Caption,': stopped with exit code '+IntToStr(ExitStatus));
+    debugln('Error: (lazarus) ',Caption,': stopped with exit code '+IntToStr(ExitStatus));
   end else if Tool.ErrorMessage<>'' then begin
     ToolState:=lmvtsFailed;
-    debugln(Caption,': ERROR: ',Tool.ErrorMessage);
+    debugln('Error: (lazarus) ',Caption,': ',Tool.ErrorMessage);
   end else begin
     ToolState:=lmvtsSuccess;
   end;
@@ -643,7 +643,7 @@ procedure TExternalTool.DoExecute;
   begin
     if (FStage>=etsStopped) then exit(true);
     if (ErrorMessage='') then exit(false);
-    debugln(['TExternalTool.DoExecute.CheckError Error=',ErrorMessage]);
+    debugln(['Error: (lazarus) [TExternalTool.DoExecute.CheckError] Error=',ErrorMessage]);
     EnterCriticalSection;
     try
       if FStage>=etsStopped then exit(true);
@@ -759,6 +759,8 @@ begin
 end;
 
 procedure TExternalTool.DoStart;
+var
+  s: String;
 begin
   // set Stage to etsStarting
   EnterCriticalSection;
@@ -782,9 +784,14 @@ begin
     Thread.Tool:=Self;
     FThread.FreeOnTerminate:=true;
   end;
-  if ConsoleVerbosity>=0 then begin
-    debugln(['TExternalTool.DoExecute Title="',Title,'" Process.CurrentDirectory="',Process.CurrentDirectory,'" Executable="',Process.Executable,'" Params:']);
-    debugln(Process.Parameters.Text);
+  if ConsoleVerbosity>=-1 then begin
+    if ExtToolConsole=nil then
+      s:=''
+    else
+      s:='"'+CmdLineParams+'"';
+    debugln(['Hint: (lazarus) Execute Title="',Title,'", Working Directory="',Process.CurrentDirectory,'", Executable="',Process.Executable,'" Params:',s]);
+    if ExtToolConsole=nil then
+      debugln(Process.Parameters.Text);
   end;
   Thread.Start;
 end;
@@ -1105,13 +1112,13 @@ begin
       s:=ToolOptions.WorkingDirectory;
       if ToolOptions.ResolveMacros then begin
         if not GlobalMacroList.SubstituteStr(s) then begin
-          debugln(['TExternalTools.OnRunExternalTool ',ToolOptions.Title,' failed: macros of WorkerDirectory: "',ToolOptions.WorkingDirectory,'"']);
+          debugln(['Error: (lazarus) [TExternalTools.OnRunExternalTool] ',ToolOptions.Title,' failed: macros of WorkerDirectory: "',ToolOptions.WorkingDirectory,'"']);
           exit;
         end;
       end;
       s:=ChompPathDelim(CleanAndExpandDirectory(s));
       if not DirectoryExistsUTF8(s) then begin
-        debugln(['TExternalTools.OnRunExternalTool ',ToolOptions.Title,' failed: missing directory "',s,'"']);
+        debugln(['Error: (lazarus) [TExternalTools.OnRunExternalTool] ',ToolOptions.Title,' failed: missing directory "',s,'"']);
         exit;
       end;
       Proc.CurrentDirectory:=s;
@@ -1123,7 +1130,7 @@ begin
         for i:=0 to Proc.Environment.Count-1 do begin
           s:=Proc.Environment[i];
           if not GlobalMacroList.SubstituteStr(s) then begin
-            debugln(['TExternalTools.OnRunExternalTool ',ToolOptions.Title,' failed: environment override "',Proc.Environment,'"']);
+            debugln(['Error: (lazarus) [TExternalTools.OnRunExternalTool] ',ToolOptions.Title,' failed: environment override "',Proc.Environment,'"']);
             exit;
           end;
           Proc.Environment[i]:=s;
@@ -1134,7 +1141,7 @@ begin
       s:=ToolOptions.Executable;
       if ToolOptions.ResolveMacros then begin
         if not GlobalMacroList.SubstituteStr(s) then begin
-          debugln(['TExternalTools.OnRunExternalTool ',ToolOptions.Title,' failed: macros of Executable: "',ToolOptions.Executable,'"']);
+          debugln(['Error: (lazarus) [TExternalTools.OnRunExternalTool] ',ToolOptions.Title,' failed: macros of Executable: "',ToolOptions.Executable,'"']);
           exit;
         end;
       end;
@@ -1155,21 +1162,21 @@ begin
         end;
         {$ENDIF}
         if s='' then begin
-          debugln(['TExternalTools.OnRunExternalTool ',ToolOptions.Title,' failed: missing executable "',ToolOptions.Executable,'"']);
+          debugln(['Error: (lazarus) [TExternalTools.OnRunExternalTool] ',ToolOptions.Title,' failed: missing executable "',ToolOptions.Executable,'"']);
           exit;
         end;
       end;
       if (not FilenameIsAbsolute(s))
       or (not FileExistsUTF8(s)) then begin
-        debugln(['TExternalTools.OnRunExternalTool ',ToolOptions.Title,'  failed: missing executable: "',s,'"']);
+        debugln(['Error: (lazarus) [TExternalTools.OnRunExternalTool] ',ToolOptions.Title,'  failed: missing executable: "',s,'"']);
         exit;
       end;
       if DirectoryExistsUTF8(s) then begin
-        debugln(['TExternalTools.OnRunExternalTool ',ToolOptions.Title,'  failed: executable is a directory: "',s,'"']);
+        debugln(['Error: (lazarus) [TExternalTools.OnRunExternalTool] ',ToolOptions.Title,'  failed: executable is a directory: "',s,'"']);
         exit;
       end;
       if not FileIsExecutable(s) then begin
-        debugln(['TExternalTools.OnRunExternalTool ',ToolOptions.Title,'  failed: executable lacks permission to run: "',s,'"']);
+        debugln(['Error: (lazarus) [TExternalTools.OnRunExternalTool] ',ToolOptions.Title,'  failed: executable lacks permission to run: "',s,'"']);
         exit;
       end;
       Proc.Executable:=s;
@@ -1178,7 +1185,7 @@ begin
       s:=ToolOptions.CmdLineParams;
       if ToolOptions.ResolveMacros then begin
         if not GlobalMacroList.SubstituteStr(s) then begin
-          debugln(['TExternalTools.OnRunExternalTool ',ToolOptions.Title,' failed: macros in cmd line params "',ToolOptions.CmdLineParams,'"']);
+          debugln(['Error: (lazarus) [TExternalTools.OnRunExternalTool] ',ToolOptions.Title,' failed: macros in cmd line params "',ToolOptions.CmdLineParams,'"']);
           exit;
         end;
       end;
@@ -1220,7 +1227,7 @@ begin
           Tool.AddParsers(ToolOptions.Scanners[i]);
       if ToolOptions.ResolveMacros then begin
         if not Tool.ResolveMacros then begin
-          debugln(['TExternalTools.OnRunExternalTool failed to resolve macros']);
+          debugln(['Error: (lazarus) [TExternalTools.OnRunExternalTool] failed to resolve macros']);
           exit;
         end;
       end;

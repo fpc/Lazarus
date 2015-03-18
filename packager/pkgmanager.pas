@@ -741,7 +741,7 @@ begin
     IconLRSFilename:=ChangeFileExt(Params.UnitFilename,'')+'_icon.lrs';
     CodeBuf:=CodeToolBoss.CreateFile(IconLRSFilename);
     if CodeBuf=nil then begin
-      debugln(['TPkgManager.OnPackageEditorCreateFile file create failed: ',IconLRSFilename]);
+      debugln(['Error: (lazarus) [TPkgManager.OnPackageEditorCreateFile] file create failed: ',IconLRSFilename]);
       exit;
     end;
     try
@@ -1542,14 +1542,14 @@ begin
     // check package name
     if (StaticPackage^.Name='') or (not IsValidUnitName(StaticPackage^.Name))
     then begin
-      DebugLn('TPkgManager.LoadStaticCustomPackages Invalid Package Name: "',
+      DebugLn('Warning: (lazarus) [TPkgManager.LoadStaticCustomPackages] Invalid Package Name: "',
         BinaryStrToText(StaticPackage^.Name),'"');
       continue;
     end;
     
     // check register procedure
     if (StaticPackage^.RegisterProc=nil) then begin
-      DebugLn('TPkgManager.LoadStaticCustomPackages',
+      DebugLn('Warning: (lazarus) [TPkgManager.LoadStaticCustomPackages]',
         ' Package "',StaticPackage^.Name,'" has no register procedure.');
       continue;
     end;
@@ -2514,7 +2514,7 @@ var
         r:=CopyFileWithErrorDialogs(OldFilename,NewFilename,[mbAbort,mbIgnore]);
       end;
       if not (r in [mrIgnore,mrOK]) then begin
-        debugln(['MoveOrCopyFile ERROR: rename/copy failed: "',OldFilename,'" to "',NewFilename,'"']);
+        debugln(['Error: MoveOrCopyFile: rename/copy failed: "',OldFilename,'" to "',NewFilename,'"']);
         exit;
       end;
     end else begin
@@ -3311,7 +3311,7 @@ begin
   ConflictDependency:=PackageGraph.FindConflictRecursively(
     AProject.FirstRequiredDependency,APackage);
   if ConflictDependency<>nil then begin
-    DebugLn(['TPkgManager.AddProjectDependency ',APackage.IDAsString,' conflicts with ',ConflictDependency.AsString]);
+    DebugLn(['Error: (lazarus) [TPkgManager.AddProjectDependency] ',APackage.IDAsString,' conflicts with ',ConflictDependency.AsString]);
     Result:=mrCancel;
     exit;
   end;
@@ -3330,7 +3330,7 @@ begin
   if ProvidingAPackage<>nil then
   begin
     // package is already provided by another package
-    DebugLn(['TPkgManager.AddProjectDependency ',APackage.Name,' is already provided by ',ProvidingAPackage.IDAsString]);
+    DebugLn(['Error: (lazarus) [TPkgManager.AddProjectDependency] ',APackage.Name,' is already provided by ',ProvidingAPackage.IDAsString]);
     Result:=mrOk;
     exit;
   end;
@@ -3397,7 +3397,7 @@ begin
       if (PkgName='') or (not IsValidUnitName(PkgName)) then continue;
       APackage:=PackageGraph.FindPackageWithName(PkgName,nil);
       if APackage=nil then begin
-        DebugLn(['TPkgManager.AddProjectDependencies package not found: ',PkgName]);
+        DebugLn(['Error: (lazarus) [TPkgManager.AddProjectDependencies] package not found: ',PkgName]);
         if OnlyTestIfPossible then
           exit(mrCancel);
         continue;
@@ -3895,7 +3895,7 @@ var
         // search path contains source directory of another package
         if Option=pcosIncludePath then;
         s:=aType+' of "'+aCompilerOptions.GetOwnerName+'" contains "'+Dir+'", which belongs to package "'+OtherPackage.Name+'"';
-        debugln(['TPkgManager.CheckUserSearchPaths WARNING: ',s]);
+        debugln(['Warning: (lazarus) [TPkgManager.CheckUserSearchPaths]: ',s]);
         { ToDo: find out
            - which path it is in the unparsed path
            - if there is already the dependency
@@ -3928,7 +3928,7 @@ var
         if FilenameIsPascalUnit(aFilename) then begin
           // warning: packages output path contain unit source
           s:='output directory of '+aCompilerOptions.GetOwnerName+' contains Pascal unit source "'+aFilename+'"';
-          debugln(['CheckOutPathContainsSources WARNING: ',s]);
+          debugln(['Warning: (lazarus) [CheckOutPathContainsSources]: ',s]);
           { ToDo: if the OutPath is not the default: ask user and change it }
           IDEMessagesWindow.AddCustomMessage(mluWarning,s);
           exit;
@@ -3959,7 +3959,7 @@ var
         // Note: when changing this, update TQuickFixSrcPathOfPkgContains_OpenPkg
         s:=Format(lisOtherSourcesPathOfPackageContainsDirectoryWhichIsA, [
           aCompilerOptions.GetOwnerName, Dir]);
-        debugln(['CheckSrcPathIsInUnitPath WARNING: ',s]);
+        debugln(['Warning: (lazarus) [CheckSrcPathIsInUnitPath]: ',s]);
         { ToDo: ask user and remove dir from unit path }
         IDEMessagesWindow.AddCustomMessage(mluWarning,s);
         exit;
@@ -4066,7 +4066,7 @@ var
       if FileIsInPath(Filename,NewLazarusSrcDir)
       and FileExistsUTF8(Filename) then
       begin
-        DebugLn(['TPkgManager.LazarusSrcDirChanged load: ',Filename]);
+        DebugLn(['Hint: (lazarus) [TPkgManager.LazarusSrcDirChanged] load: ',Filename]);
         // open package in new lazarus source directory
         MsgResult:=DoOpenPackageFile(Filename,[pofDoNotOpenEditor,pofRevert],true);
         if MsgResult=mrAbort then exit(false);
@@ -4082,9 +4082,9 @@ begin
   NewLazarusSrcDir:=EnvironmentOptions.GetParsedLazarusDirectory;
   FLastLazarusSrcDir:=NewLazarusSrcDir;
   if CompareFilenames(OldLazarusSrcDir,NewLazarusSrcDir)=0 then exit;
-  debugln(['TPkgManager.LazarusSrcDirChanged loading new lpl files from ',PkgLinks.GetGlobalLinkDirectory]);
+  debugln(['Hint: (lazarus) [TPkgManager.LazarusSrcDirChanged] loading new lpl files from ',PkgLinks.GetGlobalLinkDirectory]);
   if PkgLinks.IsUpdating then
-    debugln(['TPkgManager.LazarusSrcDirChanged inconsistency: pkglinks are locked']);
+    debugln(['Warning: (lazarus) [TPkgManager.LazarusSrcDirChanged] inconsistency: pkglinks are locked']);
   PkgLinks.UpdateGlobalLinks;
 
   VisitedPkgs:=TStringToStringTree.Create(false);
@@ -4176,8 +4176,8 @@ function TPkgManager.DoCompilePackage(APackage: TLazPackage;
   Flags: TPkgCompileFlags; ShowAbort: boolean): TModalResult;
 begin
   Result:=mrCancel;
-  
-  DebugLn('TPkgManager.DoCompilePackage A ',APackage.IDAsString,' Flags=',PkgCompileFlagsToString(Flags));
+
+  DebugLn('Hint: (lazarus) compile package ',APackage.IDAsString,' Flags=',PkgCompileFlagsToString(Flags));
   
   if APackage.IsVirtual then exit;
 
@@ -4236,7 +4236,7 @@ begin
   if (OldPkgFile=nil) or (OldPkgFile.LazPackage.ReadOnly) then
     exit;
   OldPackage:=OldPkgFile.LazPackage;
-  debugln('TPkgManager.OnRenameFile A OldPackage="',OldPackage.Name);
+  debugln('Hint: (lazarus) [TPkgManager.OnRenameFile] OldPackage="',OldPackage.Name);
   NewPkgFile:=PackageGraph.FindFileInAllPackages(NewFilename,true,false);
   if (NewPkgFile<>nil) and (OldPackage<>NewPkgFile.LazPackage) then exit;
 
@@ -4438,10 +4438,10 @@ var
         RequiredPackage:=TLazPackage(MissingDependencies.Objects[i]);
         RequiredPackage:=TLazPackage(RedirectPackageDependency(RequiredPackage));
         if UnitOwner is TProject then begin
-          DebugLn('TPkgManager.AddUnitDependenciesForComponentClasses Adding Project Dependency ',TProject(UnitOwner).GetTitle,' -> ',RequiredPackage.Name);
+          DebugLn('Hint: (lazarus) [TPkgManager.AddUnitDependenciesForComponentClasses] Adding Project Dependency ',TProject(UnitOwner).GetTitle,' -> ',RequiredPackage.Name);
           AddProjectDependency(TProject(UnitOwner),RequiredPackage);
         end else if UnitOwner is TLazPackage then begin
-          DebugLn('TPkgManager.AddUnitDependenciesForComponentClasses Adding Package Dependency ',TLazPackage(UnitOwner).Name,' -> ',RequiredPackage.Name);
+          DebugLn('Hint: (lazarus) [TPkgManager.AddUnitDependenciesForComponentClasses] Adding Package Dependency ',TLazPackage(UnitOwner).Name,' -> ',RequiredPackage.Name);
           AddPackageDependency(TLazPackage(UnitOwner),RequiredPackage.Name);
         end;
       end;
@@ -4456,7 +4456,7 @@ var
     Result:=LoadAndParseUnitBuf;
     if Result<>mrOk then exit;
     for i:=0 to UnitNames.Count-1 do begin
-      DebugLn('TPkgManager.AddUnitDependenciesForComponentClasses Extending Uses ',UnitBuf.Filename,' ',UnitNames[i]);
+      DebugLn('Hint: (lazarus) [TPkgManager.AddUnitDependenciesForComponentClasses] Extending Uses ',UnitBuf.Filename,' ',UnitNames[i]);
       if not CodeToolBoss.AddUnitToMainUsesSection(UnitBuf,UnitNames[i],'') then
         MainIDE.DoJumpToCodeToolBossError;
     end;
@@ -4569,7 +4569,7 @@ begin
     end;
     UnitOwners.Free;
   end else begin
-    DebugLn(['TPkgManager.GetMissingDependenciesForUnit WARNING: unit has no owner: ',UnitFilename]);
+    DebugLn(['Warning: (lazarus) [TPkgManager.GetMissingDependenciesForUnit] unit has no owner: ',UnitFilename]);
   end;
   Result:=mrOk;
 end;
@@ -4971,7 +4971,7 @@ begin
   // find needed package
   RequiredPkgFile:=SearchUnitInDesigntimePackages(RequiredUnitName,nil);
   if RequiredPkgFile=nil then begin
-    DebugLn(['TPkgManager.AddDependencyToUnitOwners unit not in designtime package: ',RequiredUnitName]);
+    DebugLn(['Note: (lazarus) [TPkgManager.AddDependencyToUnitOwners] unit not in designtime package: ',RequiredUnitName]);
     exit;
   end;
   RequiredPkg:=RequiredPkgFile.LazPackage;
@@ -4980,7 +4980,7 @@ begin
   OwnersList:=GetOwnersOfUnit(OwnedFilename);
   try
     if (OwnersList=nil) or (OwnersList.Count=0) then begin
-      DebugLn(['TPkgManager.AddDependencyToUnitOwners Owner not found of unit ',OwnedFilename]);
+      DebugLn(['Note: (lazarus) TPkgManager.AddDependencyToUnitOwners Owner not found of unit ',OwnedFilename]);
       exit;
     end;
     // add package dependency
@@ -5010,14 +5010,14 @@ begin
     Filename:=APackageList[i];
     if Filename='' then
       Filename:=APackage.Filename;
-    debugln(['TPkgManager.RevertPackages BEFORE Old=',APackage.Filename,' New=',Filename,' ',FileExistsCached(Filename)]);
+    debugln(['Hint: (lazarus) [TPkgManager.RevertPackages] BEFORE Old=',APackage.Filename,' New=',Filename,' ',FileExistsCached(Filename)]);
     if FileExistsCached(Filename) then
       Result:=DoOpenPackageFile(Filename,[pofRevert],true)
     else begin
       APackage.LPKSource:=nil;
       APackage.Missing:=true;
     end;
-    debugln(['TPkgManager.RevertPackages AFTER ',PackageGraph.FindPackageWithFilename(Filename)<>nil]);
+    debugln(['Hint: (lazarus) [TPkgManager.RevertPackages] AFTER ',PackageGraph.FindPackageWithFilename(Filename)<>nil]);
     if Result=mrAbort then exit;
   end;
   Result:=mrOk;
@@ -5067,7 +5067,7 @@ begin
   if FilenameIsPascalUnit(Filename) then begin
     Result:=DoGetUnitRegisterInfo(Filename,TheUnitName,HasRegisterProc,false);
     if Result<>mrOk then begin
-      debugln(['TPkgManager.DoAddActiveUnitToAPackage DoGetUnitRegisterInfo failed']);
+      debugln(['Error: (lazarus) [TPkgManager.DoAddActiveUnitToAPackage] DoGetUnitRegisterInfo failed']);
       exit;
     end;
   end;
@@ -5135,7 +5135,7 @@ begin
     SaveFlags:=[sfCanAbort];
     if not FilenameIsAbsolute(AFilename) then
       SaveFlags:=[sfSaveAs];
-    debugln(['TPkgManager.SavePackageFiles saving ',AFilename]);
+    debugln(['Error: (lazarus) [TPkgManager.SavePackageFiles] failed writing "',AFilename,'"']);
     Result:=LazarusIDE.DoSaveEditorFile(SrcEdit,SaveFlags);
     if Result=mrIgnore then Result:=mrOk;
     if Result<>mrOk then exit;
@@ -5855,7 +5855,7 @@ begin
                             EnvironmentOptions.GetParsedLazarusDirectory,false);
     if Result<>mrOk then begin
       if ConsoleVerbosity>0 then
-        debugln(['TPkgManager.DoCompileAutoInstallPackages CheckPackageGraphForCompilation failed']);
+        debugln(['Error: (lazarus) [TPkgManager.DoCompileAutoInstallPackages] CheckPackageGraphForCompilation failed']);
       exit;
     end;
     //DebugLn(['TPkgManager.DoCompileAutoInstallPackages LCLUnitPath=',PackageGraph.LCLPackage.CompilerOptions.GetUnitPath(true)]);
@@ -5865,7 +5865,7 @@ begin
       Result:=MainIDE.DoSaveForBuild(crCompile);
       if Result<>mrOk then begin
         if ConsoleVerbosity>0 then
-          debugln(['TPkgManager.DoCompileAutoInstallPackages MainIDE.DoSaveForBuild failed']);
+          debugln(['Error: (lazarus) [TPkgManager.DoCompileAutoInstallPackages] MainIDE.DoSaveForBuild failed']);
         exit;
       end;
     end;
@@ -5878,7 +5878,7 @@ begin
                                                  CompilePolicy);
     if Result<>mrOk then begin
       if ConsoleVerbosity>0 then
-        debugln(['TPkgManager.DoCompileAutoInstallPackages PackageGraph.CompileRequiredPackages failed']);
+        debugln(['Error: (lazarus) [TPkgManager.DoCompileAutoInstallPackages] PackageGraph.CompileRequiredPackages failed']);
       exit;
     end;
 
@@ -6105,7 +6105,7 @@ begin
     for i := 0 to UnitList.Count - 1 do 
     begin
       ARoot := TUnitInfo(UnitList[i]).Component;
-      DebugLn(['TPkgManager.FindReferencedRootComponent Root=',dbgsName(CurRoot),' Searched="',ComponentName,'" other root=',dbgsName(ARoot)]);
+      DebugLn(['Hint: (lazarus) [TPkgManager.FindReferencedRootComponent] Root=',dbgsName(CurRoot),' Searched="',ComponentName,'" other root=',dbgsName(ARoot)]);
       if (ARoot <> nil) and (SysUtils.CompareText(ComponentName, ARoot.Name) = 0) then
       begin
         Result := ARoot;

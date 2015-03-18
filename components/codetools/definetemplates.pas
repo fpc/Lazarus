@@ -998,9 +998,9 @@ function MakeRelativeFileList(Files: TStrings; out BaseDir: string): TStringList
 function Compress1FileList(Files: TStrings): TStringList; // thread-safe
 function Decompress1FileList(Files: TStrings): TStringList; // thread-safe
 function RunTool(const Filename: string; Params: TStrings;
-                 WorkingDirectory: string = ''): TStringList; // thread-safe
+                 WorkingDirectory: string = ''; Quiet: boolean = false): TStringList; // thread-safe
 function RunTool(const Filename, Params: string;
-                 WorkingDirectory: string = ''): TStringList; // thread-safe
+                 WorkingDirectory: string = ''; Quiet: boolean = false): TStringList; // thread-safe
 
 type
   // fpc parameter effecting search for compiler
@@ -1296,7 +1296,7 @@ begin
 end;
 
 function RunTool(const Filename: string; Params: TStrings;
-  WorkingDirectory: string): TStringList;
+  WorkingDirectory: string; Quiet: boolean): TStringList;
 var
   buf: string;
   TheProcess: TProcessUTF8;
@@ -1312,7 +1312,7 @@ begin
   Result:=TStringList.Create;
   try
     buf:='';
-    if MainThreadID=GetCurrentThreadId then begin
+    if (MainThreadID=GetCurrentThreadId) and not Quiet then begin
       DbgOut(['RunTool ',Filename]);
       for i:=0 to Params.Count-1 do
         dbgout(' "',Params[i],'"');
@@ -1362,15 +1362,15 @@ begin
   end;
 end;
 
-function RunTool(const Filename, Params: string;
-  WorkingDirectory: string): TStringList;
+function RunTool(const Filename, Params: string; WorkingDirectory: string;
+  Quiet: boolean): TStringList;
 var
   ParamList: TStringList;
 begin
   ParamList:=TStringList.Create;
   try
     SplitCmdLineParams(Params,ParamList);
-    Result:=RunTool(Filename,ParamList,WorkingDirectory);
+    Result:=RunTool(Filename,ParamList,WorkingDirectory,Quiet);
   finally
     ParamList.Free;
   end;
