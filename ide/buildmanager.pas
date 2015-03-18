@@ -498,6 +498,7 @@ procedure TBuildManager.SetupExternalTools;
 begin
   // setup the external tool queue
   ExternalTools:=TExternalTools.Create(Self);
+  ExternalTools.MaxProcessCount:=EnvironmentOptions.MaxExtToolsInParallel;
   RegisterFPCParser;
   RegisterMakeParser;
   ExternalToolList.RegisterParser(TDefaultParser);

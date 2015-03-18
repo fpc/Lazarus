@@ -62,6 +62,7 @@ type
     fLazarusDirOverride : String;
     fLazarusDirInCfg: string;
     fCPUOverride: String;
+    FMaxProcessCount: integer;
     fOSOverride: String;
     FSkipDependencies: boolean;
     fInitialized: boolean;
@@ -162,6 +163,7 @@ type
     property CompilerOverride: String read fCompilerOverride write fCompilerOverride;
     property LazarusDirOverride: String read fLazarusDirOverride write fLazarusDirOverride;
     property BuildModeOverride: String read FBuildModeOverride write FBuildModeOverride;
+    property MaxProcessCount: integer read FMaxProcessCount write FMaxProcessCount;
   end;
 
 var
@@ -502,7 +504,7 @@ begin
     i:=BuildLazProfiles.IndexByName(BuildModeOverride);
     if i<0 then
     begin
-      debugln(['ERROR: IDE build mode "'+BuildModeOverride+'" not found']);
+      debugln(['Error: (lazarus) IDE build mode "'+BuildModeOverride+'" not found']);
       if ConsoleVerbosity>=-2 then begin
         debugln;
         debugln('Available IDE build modes:');
@@ -522,7 +524,7 @@ begin
     BuildLazProfiles.CurrentIndex:=i;
   end;
   if ConsoleVerbosity>=0 then
-    debugln(['NOTE: Building Lazarus IDE with profile "',CurProf.Name,'"']);
+    debugln(['Hint: (lazarus) Building Lazarus IDE with profile "',CurProf.Name,'"']);
 
   if (Length(OSOverride) <> 0) then
     CurProf.TargetOS:=OSOverride;
@@ -554,7 +556,7 @@ begin
   IDEMacros.SubstituteMacros(TargetDir);
   if not ForceDirectory(TargetDir) then begin
     if ConsoleVerbosity>=-1 then
-      DebugLn('WARNING: failed creating IDE target directory "',TargetDir,'" (TLazBuildApplication.BuildLazarusIDE)');
+      DebugLn('Warning: (lazarus) failed creating IDE target directory "',TargetDir,'" (TLazBuildApplication.BuildLazarusIDE)');
     exit;
   end;
 
@@ -569,7 +571,7 @@ begin
                   Flags+[blfDontBuild]);
       if CurResult<>mrOk then begin
         if ConsoleVerbosity>=-1 then
-          DebugLn('ERROR: BuildLazarusIDE: Clean all failed.');
+          DebugLn('Error: (lazarus) Building IDE: Clean all failed.');
         exit;
       end;
     end;
@@ -578,7 +580,7 @@ begin
     CurResult:=PackageGraph.SaveAutoInstallConfig;
     if CurResult<>mrOk then begin
       if ConsoleVerbosity>=-1 then
-        DebugLn('ERROR: BuildLazarusIDE: failed saving IDE make config files.');
+        DebugLn('Error: (lazarus) Building IDE: failed saving IDE make config files.');
       exit;
     end;
 
@@ -586,7 +588,7 @@ begin
     if not CompileAutoInstallPackages(BuildLazProfiles.Current.IdeBuildMode<>bmBuild)
     then begin
       if ConsoleVerbosity>=-1 then
-        DebugLn('ERROR: BuildLazarusIDE: Compile AutoInstall Packages failed.');
+        DebugLn('Error: (lazarus) Building IDE: Compile AutoInstall Packages failed.');
       exit;
     end;
 
@@ -597,7 +599,7 @@ begin
     CurResult:=Builder.SaveIDEMakeOptions(BuildLazProfiles.Current,Flags+[blfBackupOldExe]);
     if CurResult<>mrOk then begin
       if ConsoleVerbosity>=-1 then
-        DebugLn('ERROR: BuildLazarusIDE: failed saving idemake.cfg');
+        DebugLn('Error: (lazarus) Building IDE: failed saving idemake.cfg');
       exit;
     end;
 
@@ -606,7 +608,7 @@ begin
                            Flags+[blfUseMakeIDECfg,blfOnlyIDE]);
     if CurResult<>mrOk then begin
       if ConsoleVerbosity>=-1 then
-        DebugLn('ERROR: BuildLazarusIDE: Building IDE failed.');
+        DebugLn('Error: (lazarus) Building IDE: Building IDE failed.');
       exit;
     end;
 
@@ -816,7 +818,7 @@ var
     if not Project1.ProjResources.Regenerate(SrcFileName, False, True, '') then
     begin
       if ConsoleVerbosity>=-1 then
-        DebugLn('TLazBuildApplication.BuildProject Project1.Resources.Regenerate failed');
+        DebugLn('Error: (lazarus) Project1.Resources.Regenerate failed of ',SrcFilename);
     end;
 
     // get compiler parameters
@@ -839,13 +841,13 @@ var
       and (not (pfAlwaysBuild in Project1.Flags)) then begin
         if SubResult=mrNo then begin
           if ConsoleVerbosity>=0 then
-            debugln(['TLazBuildApplication.BuildProject MainBuildBoss.DoCheckIfProjectNeedsCompilation nothing to be done']);
+            debugln(['Hint: (lazarus) [TLazBuildApplication.BuildProject] MainBuildBoss.DoCheckIfProjectNeedsCompilation nothing to do']);
           exit(true);
         end;
         if SubResult<>mrYes then
         begin
           if ConsoleVerbosity>=0 then
-            debugln(['TLazBuildApplication.BuildProject MainBuildBoss.DoCheckIfProjectNeedsCompilation failed']);
+            debugln(['Hint: (lazarus) [TLazBuildApplication.BuildProject] MainBuildBoss.DoCheckIfProjectNeedsCompilation failed']);
           exit(false);
         end;
       end;
@@ -1050,7 +1052,7 @@ begin
     PackageName:=Package.Name;
     // set it as (static) autoinstall: select for installation
     if ConsoleVerbosity>=0 then
-      debugln(['adding package "'+PkgFilename+'" to install list of IDE']);
+      debugln(['Hint: (lazarus) adding package "'+PkgFilename+'" to install list of IDE']);
     if MiscellaneousOptions.BuildLazProfiles.StaticAutoInstallPackages.IndexOf(PackageName)<0 then
       MiscellaneousOptions.BuildLazProfiles.StaticAutoInstallPackages.Add(PackageName);
   end;
@@ -1072,7 +1074,7 @@ begin
   fInitialized:=true;
 
   if ConsoleVerbosity>=0 then
-    debugln(['primary config path: ',GetPrimaryConfigPath]);
+    debugln(['Hint: (lazarus) primary config path: ',GetPrimaryConfigPath]);
   CreatePrimaryConfigPath;
 
   MainBuildBoss:=TBuildManager.Create(nil);
@@ -1111,7 +1113,7 @@ begin
 
     if LazBuildApp.HasOption('language') then begin
       if ConsoleVerbosity>=0 then
-        debugln('Note: overriding language with command line: ',
+        debugln('Note: (lazarus) overriding language with command line: ',
           LazBuildApp.GetOptionValue('language'));
       EnvironmentOptions.LanguageID:=LazBuildApp.GetOptionValue('language');
     end;
@@ -1122,13 +1124,15 @@ begin
     //debugln(['TLazBuildApplication.LoadEnvironmentOptions LazarusDirectory="',LazarusDirectory,'"']);
     if LazarusDirOverride<>'' then
       LazarusDirectory:=CleanAndExpandDirectory(LazarusDirOverride);
+    if MaxProcessCount>=0 then;
+      MaxExtToolsInParallel:=MaxProcessCount;
   end;
   if not FileExistsUTF8(EnvironmentOptions.GetParsedLazarusDirectory
     +SetDirSeparators('packager/registration/fcl.lpk'))
   then begin
     CheckLazarusDirectoryQuality(EnvironmentOptions.GetParsedLazarusDirectory,Note);
     if ConsoleVerbosity>=-1 then
-      debugln(['Error: invalid Lazarus directory "'+EnvironmentOptions.LazarusDirectory+'": '+Note]);
+      debugln(['Error: (lazarus) invalid Lazarus directory "'+EnvironmentOptions.LazarusDirectory+'": '+Note]);
     Terminate;
   end;
 end;
@@ -1192,7 +1196,7 @@ begin
   try
     if ConsoleVerbosity>=-1 then
     begin
-      dbgout('storing');
+      dbgout('Hint: (lazarus) storing');
       if StoreLazDir then
         dbgout(' Lazarus directory "',EnvironmentOptions.LazarusDirectory,'"');
       if StoreCompPath then
@@ -1212,6 +1216,8 @@ begin
       Cfg.Free;
     end;
   except
+    on E: Exception do
+      debugln(['Error: (lazarus) unable to edit file ',EnvironmentOptions.Filename]);
   end;
 end;
 
@@ -1319,7 +1325,7 @@ begin
                 begin
                 // Required argument
                 NeedArg:=true;
-                if ConsoleVerbosity>=-1 then
+                if ConsoleVerbosity>0 then
                   debugln(['P ',P,' J ',J,' ',O[J],' ',l,' Havearg ',HaveArg]);
                 If ((P+1)=Length(ShortOptions)) or (Shortoptions[P+2]<>':') Then
                   If (J<L) or not haveArg then // Must be last in multi-opt !!
@@ -1350,6 +1356,7 @@ begin
   inherited Create(TheOwner);
   SetupDialogs;
   Files:=TStringList.Create;
+  fMaxProcessCount:=-1;
 end;
 
 destructor TLazBuildApplication.Destroy;
@@ -1386,7 +1393,7 @@ begin
   for i:=0 to Files.Count-1 do begin
     if not BuildFile(Files[i]) then begin
       if ConsoleVerbosity>=-1 then
-        debugln('Failed building ',Files[i]);
+        debugln('Error: (lazarus) Building failed: ',Files[i]);
       ExitCode := ErrorBuildFailed;
       exit;
     end;
@@ -1396,7 +1403,7 @@ begin
   if AddPackage then begin
     if not AddPackagesToInstallList(Files) then begin
       if ConsoleVerbosity>=-1 then
-        debugln('Failed adding package(s) ',Files.Text);
+        debugln('Error (lazarus) Adding package(s) failed: ',Files.Text);
       ExitCode := ErrorBuildFailed;
       exit;
     end;
@@ -1473,6 +1480,7 @@ begin
     LongOptions.Add('compiler:');
     LongOptions.Add('lazarusdir:');
     LongOptions.Add('create-makefile');
+    LongOptions.Add('max-process-count:');
     ErrorMsg:=RepairedCheckOptions('lBrdq',LongOptions,Options,NonOptions);
     if ErrorMsg<>'' then begin
       writeln(ErrorMsg);
@@ -1484,10 +1492,9 @@ begin
     if HasOption('build-ide') then begin
       BuildIDE:=true;
       BuildIDEOptions:=GetOptionValue('build-ide');
+      if ConsoleVerbosity>=0 then
+        writeln('Parameter: build-ide=',BuildIDEOptions);
     end;
-
-    // Add package to list of to be installed packages)
-    AddPackage:=HasOption('add-package');
 
     // files
     Files.Assign(NonOptions);
@@ -1497,27 +1504,52 @@ begin
       exit;
     end;
 
+    // Add package to list of to be installed packages)
+    if HasOption('add-package') then begin
+      AddPackage:=true;
+      if ConsoleVerbosity>=0 then
+        writeln('Parameter: add-package');
+    end;
+
     // primary config path
-    if HasOption('primary-config-path') then
-      SetPrimaryConfigPath(GetOptionValue('primary-config-path'))
-    else if HasOption('pcp') then
+    if HasOption('primary-config-path') then begin
+      SetPrimaryConfigPath(GetOptionValue('primary-config-path'));
+      if ConsoleVerbosity>=0 then
+        writeln('Parameter: primary-config-path=',GetPrimaryConfigPath);
+    end else if HasOption('pcp') then begin
       SetPrimaryConfigPath(GetOptionValue('pcp'));
+      if ConsoleVerbosity>=0 then
+        writeln('Parameter: pcp=',GetPrimaryConfigPath);
+    end;
 
     // secondary config path
-    if HasOption('secondary-config-path') then
-      SetPrimaryConfigPath(GetOptionValue('secondary-config-path'))
-    else if HasOption('scp') then
+    if HasOption('secondary-config-path') then begin
+      SetPrimaryConfigPath(GetOptionValue('secondary-config-path'));
+      if ConsoleVerbosity>=0 then
+        writeln('Parameter: secondary-config-path=',GetSecondaryConfigPath);
+    end else if HasOption('scp') then begin
       SetSecondaryConfigPath(GetOptionValue('scp'));
-      
+      if ConsoleVerbosity>=0 then
+        writeln('Parameter: scp=',GetSecondaryConfigPath);
+    end;
+
     // build all
-    if HasOption('B','build-all') then
+    if HasOption('B','build-all') then begin
       BuildAll:=true;
+      if ConsoleVerbosity>=0 then
+        writeln('Parameter: build-all');
+    end;
     if HasOption('r','recursive') then begin
       BuildAll:=true;
       BuildRecursive:=true;
+      if ConsoleVerbosity>=0 then
+        writeln('Parameter: recursive');
     end;
-    if HasOption('d','skip-dependencies') then
+    if HasOption('d','skip-dependencies') then begin
       SkipDependencies:=true;
+      if ConsoleVerbosity>=0 then
+        writeln('Parameter: skip-dependencies');
+    end;
     if BuildRecursive and SkipDependencies then begin
       writeln('Error: --recursive and --skip-dependencies. You have to make up your mind.');
       WriteUsage;
@@ -1526,39 +1558,73 @@ begin
 
     // overides
     // widgetset
-    if HasOption('ws') then
-      WidgetSetOverride := GetOptionValue('ws')
-    else if HasOption('widgetset') then
+    if HasOption('ws') then begin
+      WidgetSetOverride := GetOptionValue('ws');
+      if ConsoleVerbosity>=0 then
+        writeln('Parameter: ws=',WidgetSetOverride);
+    end else if HasOption('widgetset') then begin
       WidgetSetOverride := GetOptionValue('widgetset');
-      
+      if ConsoleVerbosity>=0 then
+        writeln('Parameter: widgetset=',WidgetSetOverride);
+    end;
+
     // operating system
-    if HasOption('os') then
-      OSOverride := GetOptionValue('os')
-    else if HasOption('operating-system') then
+    if HasOption('os') then begin
+      OSOverride := GetOptionValue('os');
+      if ConsoleVerbosity>=0 then
+        writeln('Parameter: os=',OSOverride);
+    end else if HasOption('operating-system') then begin
       OSOverride := GetOptionValue('operating-system');
+      if ConsoleVerbosity>=0 then
+        writeln('Parameter: operating-system=',OSOverride);
+    end;
 
     // cpu
-    if HasOption('cpu') then
+    if HasOption('cpu') then begin
       CPUOverride := GetOptionValue('cpu');
+      if ConsoleVerbosity>=0 then
+        writeln('Parameter: cpu=',CPUOverride);
+    end;
 
     // build mode
-    if HasOption('bm') then
-      BuildModeOverride := GetOptionValue('bm')
-    else if HasOption('build-mode') then
+    if HasOption('bm') then begin
+      BuildModeOverride := GetOptionValue('bm');
+      if ConsoleVerbosity>=0 then
+        writeln('Parameter: bm=',BuildModeOverride);
+    end else if HasOption('build-mode') then begin
       BuildModeOverride := GetOptionValue('build-mode');
+      if ConsoleVerbosity>=0 then
+        writeln('Parameter: build-mode=',BuildModeOverride);
+    end;
 
     // compiler
-    if HasOption('compiler') then
+    if HasOption('compiler') then begin
       CompilerOverride := GetOptionValue('compiler');
+      if ConsoleVerbosity>=0 then
+        writeln('Parameter: compiler=',CompilerOverride);
+    end;
 
-    if HasOption('lazarusdir') then
+    // lazarusdir
+    if HasOption('lazarusdir') then begin
       LazarusDirOverride := GetOptionValue('lazarusdir');
+      if ConsoleVerbosity>=0 then
+        writeln('Parameter: lazarusdir=',LazarusDirOverride);
+    end;
+
+    // max-process-count
+    if HasOption('max-process-count') then begin
+      MaxProcessCount:=StrToInt(GetOptionValue('max-process-count'));
+      if ConsoleVerbosity>=0 then
+        writeln('Parameter: max-process-count=',MaxProcessCount);
+    end;
 
     if HasOption('create-makefile') then
     begin
       CreateMakefile := true;
+      if ConsoleVerbosity>=0 then
+        writeln('Parameter: create-makefile');
       if AddPackage then
-        Error(ErrorPackageNameInvalid,'Can you combine --create-makefile and --add-package');
+        Error(ErrorPackageNameInvalid,'You can not combine --create-makefile and --add-package');
     end;
   finally
     Options.Free;
@@ -1638,6 +1704,10 @@ begin
   writeln('');
   writeln('--lazarusdir=<Lazarus directory>');
   writeln(LongToConsole(space+lisLazarusDirOverride));
+  writeln('');
+  writeln('--max-process-count=<count>');
+  writeln(LongToConsole(space+
+    lisMaximumNumberOfThreadsForCompilingInParallelDefaul));
   writeln('');
 end;
 

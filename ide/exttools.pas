@@ -1308,7 +1308,7 @@ begin
   InitCriticalSection(FCritSec);
   fRunning:=TFPList.Create;
   fParsers:=TFPList.Create;
-  MaxProcessCount:=2;
+  MaxProcessCount:=DefaultMaxProcessCount;
   if ExternalToolList=nil then
     ExternalToolList:=Self;
   if ExternalTools=nil then
