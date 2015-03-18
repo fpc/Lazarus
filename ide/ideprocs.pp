@@ -2670,10 +2670,5 @@ begin
   LCLProc.DbgOut(s);
 end;
 
-initialization
-  CTDbgOutEvent:=@CTDbgOut;
-finalization
-  CTDbgOutEvent:=nil;
-
 end.
 
