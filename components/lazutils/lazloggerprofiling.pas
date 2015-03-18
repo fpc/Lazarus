@@ -49,7 +49,7 @@ type
 
 // %0:s Current block, since enter
 // %1:s Sum of Nested blocks frame
-// %2:s Paren block, since enter
+// %2:s Parent block, since enter
 // %4:s Sum of Nested blocks in parent frame
 function DbgsMemUsed(AFormat: String = '%0:d'): string;
 function DbgsTimeUsed(AFormat: String = '%0:n'): string;
