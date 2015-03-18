@@ -41,7 +41,7 @@ interface
 
 uses
   Classes, SysUtils, math, FileUtil, lazutf8classes, LazConf, LCLProc,
-  IDECmdLine;
+  FileProcs, IDECmdLine;
 
 procedure ParseGuiCmdLineParams(var SkipAutoLoadingLastProject,
                                     StartedByStartLazarus,
@@ -177,6 +177,8 @@ begin
     else if ParamIsOption(i, '--quiet') then
       ConsoleVerbosity:=Min(0,ConsoleVerbosity-1);
   end;
+  if ConsoleVerbosity>=0 then
+    CTConsoleVerbosity:=1;
 end;
 
 function SetupMainIDEInstance: boolean;

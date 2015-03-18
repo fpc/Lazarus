@@ -245,6 +245,9 @@ function CfgStrToDate(const s: string; out Date: TDateTime; const aFormat: strin
 function SimpleFormat(const Fmt: String; const Args: Array of const): String;
 
 // debugging
+var
+  CTConsoleVerbosity: integer = {$IFDEF VerboseCodetools}1{$ELSE}0{$ENDIF}; // 0=quiet, 1=normal, 2=verbose
+
 procedure RaiseCatchableException(const Msg: string);
 procedure RaiseAndCatchException;
 

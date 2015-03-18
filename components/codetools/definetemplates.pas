@@ -1702,7 +1702,7 @@ begin
     fs:=TFileStreamUTF8.Create(TestFilename,fmCreate);
     fs.Free;
   except
-    debugln(['RunFPCVerbose unable to create test file "'+TestFilename+'"']);
+    debugln(['Warning: [RunFPCVerbose] unable to create test file "'+TestFilename+'"']);
     exit;
   end;
 
@@ -1717,7 +1717,7 @@ begin
     //DebugLn(['RunFPCVerbose ',CompilerFilename,' ',Params,' ',WorkDir]);
     List:=RunTool(CompilerFilename,Params,WorkDir);
     if (List=nil) or (List.Count=0) then begin
-      debugln(['RunFPCVerbose failed: ',CompilerFilename,' ',Params]);
+      debugln(['Warning: RunFPCVerbose failed: ',CompilerFilename,' ',Params]);
       exit;
     end;
     Result:=ParseFPCVerbose(List,WorkDir,ConfigFiles,RealCompilerFilename,
@@ -2134,7 +2134,7 @@ begin
   Ok:=false;
   try
     if (FPCSrcDir='') or (not DirPathExists(FPCSrcDir)) then begin
-      DebugLn(['CreateFPCSrcTemplate FPCSrcDir does not exist: FPCSrcDir="',FPCSrcDir,'"']);
+      DebugLn(['Warning: [CreateFPCSrcTemplate] FPCSrcDir does not exist: FPCSrcDir="',FPCSrcDir,'"']);
       exit;
     end;
     DS:=PathDelim;
@@ -2654,7 +2654,7 @@ begin
     end;
   except
     on e: Exception do begin
-      debugln('ParseMakefileFPC Filename=',Filename,' E.Message=',E.Message);
+      debugln('Error: [ParseMakefileFPC] Filename=',Filename,': ',E.Message);
     end;
   end;
   Params.Free;
@@ -3915,8 +3915,8 @@ begin
     end;
     Result:=(SrcNode=nil) and (DestNode=nil);
     if not Result then begin
-      DebugLn('TDefineTemplate.IsEqual DIFF 3 ',Name,' ',
-        ADefineTemplate.Name,' ',dbgs(ChildCount),' ',dbgs(ADefineTemplate.ChildCount));
+      //DebugLn('TDefineTemplate.IsEqual DIFF 3 ',Name,' ',
+      //  ADefineTemplate.Name,' ',dbgs(ChildCount),' ',dbgs(ADefineTemplate.ChildCount));
     end;
   end;
 end;
@@ -5238,7 +5238,7 @@ begin
   Result:=nil;
   //DebugLn('TDefinePool.CreateFPCTemplate PPC386Path="',CompilerPath,'" FPCOptions="',CompilerOptions,'"');
   if TestPascalFile='' then begin
-    DebugLn(['WARNING: TDefinePool.CreateFPCTemplate TestPascalFile empty']);
+    DebugLn(['Warning: [TDefinePool.CreateFPCTemplate] TestPascalFile empty']);
   end;
   UnitSearchPath:='';
   TargetOS:='';
@@ -5257,7 +5257,7 @@ begin
     if CompilerOptions<>'' then
       CmdLine:=CmdLine+CompilerOptions+' ';
     CmdLine:=CmdLine+TestPascalFile;
-    DebugLn('TDefinePool.CreateFPCTemplate CmdLine="',CmdLine,'"');
+    //DebugLn('TDefinePool.CreateFPCTemplate CmdLine="',CmdLine,'"');
 
     TheProcess := TProcessUTF8.Create(nil);
     TheProcess.CommandLine := CmdLine;
@@ -5394,7 +5394,7 @@ begin
     end;
   except
     on E: Exception do begin
-      DebugLn('ERROR: TDefinePool.CreateFPCTemplate (',Step,'): ',E.Message);
+      DebugLn('Error: TDefinePool.CreateFPCTemplate (',Step,'): ',E.Message);
     end;
   end;
   if Result<>nil then
@@ -5855,8 +5855,8 @@ var
     else
       DebugLn('MISSING');
     {$ELSE}
-    if UnitLink=nil then
-      DebugLn(['WARNING: unable to find source of fpc unit ',AnUnitName]);
+    if (UnitLink=nil) and (CTConsoleVerbosity>=0) then
+      DebugLn(['Warning: unable to find source of fpc unit ',AnUnitName]);
     {$ENDIF}
     if UnitLink=nil then exit;
     s:=AnUnitName+' '+UnitLink.Filename+LineEnding;
@@ -5992,7 +5992,7 @@ begin
   DebugLn('CreateFPCSrcTemplate ',FPCSrcDir,': length(UnitSearchPath)=',DbgS(length(UnitSearchPath)),' Valid=',DbgS(UnitLinkListValid),' PPUExt=',PPUExt);
   {$ENDIF}
   if UnitSearchPath='' then begin
-    DebugLn(['Note: TDefinePool.CreateFPCSrcTemplate UnitSearchPath empty']);
+    DebugLn(['Note: [TDefinePool.CreateFPCSrcTemplate] UnitSearchPath empty']);
   end;
   Result:=nil;
   ProgressID:=0;
@@ -6007,7 +6007,7 @@ begin
     DefaultSrcOS2:=GetDefaultSrcOS2ForTargetOS(DefaultTargetOS);
 
     if (FPCSrcDir='') or (not DirPathExists(FPCSrcDir)) then begin
-      DebugLn(['TDefinePool.CreateFPCSrcTemplate FPCSrcDir does not exist: FPCSrcDir="',FPCSrcDir,'" (env FPCDIR)']);
+      DebugLn(['Warning: [TDefinePool.CreateFPCSrcTemplate] FPCSrcDir does not exist: FPCSrcDir="',FPCSrcDir,'" (env FPCDIR)']);
       exit;
     end;
     // try to find for every reachable ppu file the unit file in the FPC sources
@@ -7538,7 +7538,7 @@ begin
     SubPath:=Path+'Defines/Macro'+IntToStr(i)+'/';
     DefineName:=UpperCaseStr(XMLConfig.GetValue(SubPath+'Name',''));
     if (DefineName='') or (not IsValidIdent(DefineName)) then begin
-      DebugLn(['TFPCTargetConfigCache.LoadFromXMLConfig invalid define name ',DefineName]);
+      DebugLn(['Warning: [TFPCTargetConfigCache.LoadFromXMLConfig] invalid define name ',DefineName]);
       continue;
     end;
     DefineValue:=XMLConfig.GetValue(SubPath+'Value','');
@@ -7600,7 +7600,7 @@ begin
       Filename:=TrimFilename(UnitList[i]);
       Unit_Name:=ExtractFileNameOnly(Filename);
       if (Unit_Name='') or not IsValidIdent(Unit_Name) then begin
-        DebugLn(['TFPCTargetConfigCache.LoadFromXMLConfig invalid unitname: ',s]);
+        DebugLn(['Warning: [TFPCTargetConfigCache.LoadFromXMLConfig] invalid unitname: ',s]);
         continue;
       end;
       if Units=nil then
@@ -7758,18 +7758,21 @@ var
 begin
   Result:=true;
   if (not FileExistsCached(Compiler)) then begin
-    debugln(['TFPCTargetConfigCache.NeedsUpdate TargetOS="',TargetOS,'" TargetCPU="',TargetCPU,'" Options="',CompilerOptions,'" compiler file missing "',Compiler,'"']);
+    if CTConsoleVerbosity>0 then
+      debugln(['Hint: [TFPCTargetConfigCache.NeedsUpdate] TargetOS="',TargetOS,'" TargetCPU="',TargetCPU,'" Options="',CompilerOptions,'" compiler file missing "',Compiler,'"']);
     exit;
   end;
   if (FileAgeCached(Compiler)<>CompilerDate) then begin
-    debugln(['TFPCTargetConfigCache.NeedsUpdate TargetOS="',TargetOS,'" TargetCPU="',TargetCPU,'" Options="',CompilerOptions,'" compiler file changed "',Compiler,'" FileAge=',FileAgeCached(Compiler),' StoredAge=',CompilerDate]);
+    if CTConsoleVerbosity>0 then
+      debugln(['Hint: [TFPCTargetConfigCache.NeedsUpdate] TargetOS="',TargetOS,'" TargetCPU="',TargetCPU,'" Options="',CompilerOptions,'" compiler file changed "',Compiler,'" FileAge=',FileAgeCached(Compiler),' StoredAge=',CompilerDate]);
     exit;
   end;
   if (RealCompiler<>'') and (CompareFilenames(RealCompiler,Compiler)<>0)
   then begin
     if (not FileExistsCached(RealCompiler))
     or (FileAgeCached(RealCompiler)<>RealCompilerDate) then begin
-      debugln(['TFPCTargetConfigCache.NeedsUpdate TargetOS="',TargetOS,'" TargetCPU="',TargetCPU,'" Options="',CompilerOptions,'" real compiler file changed "',RealCompiler,'"']);
+      if CTConsoleVerbosity>0 then
+        debugln(['Hint: [TFPCTargetConfigCache.NeedsUpdate] TargetOS="',TargetOS,'" TargetCPU="',TargetCPU,'" Options="',CompilerOptions,'" real compiler file changed "',RealCompiler,'"']);
       exit;
     end;
   end;
@@ -7777,18 +7780,21 @@ begin
   // and that is the RealCompiler
   AFilename:=FindRealCompilerInPath(TargetCPU,true);
   if RealCompilerInPath<>AFilename then begin
-    debugln(['TFPCTargetConfigCache.NeedsUpdate TargetOS="',TargetOS,'" TargetCPU="',TargetCPU,'" Options="',CompilerOptions,'" real compiler in PATH changed from "',RealCompilerInPath,'" to "',AFilename,'"']);
+    if CTConsoleVerbosity>0 then
+      debugln(['Hint: [TFPCTargetConfigCache.NeedsUpdate] TargetOS="',TargetOS,'" TargetCPU="',TargetCPU,'" Options="',CompilerOptions,'" real compiler in PATH changed from "',RealCompilerInPath,'" to "',AFilename,'"']);
     exit;
   end;
   for i:=0 to ConfigFiles.Count-1 do begin
     Cfg:=ConfigFiles[i];
     if (Cfg.Filename='') or (not FilenameIsAbsolute(Cfg.Filename)) then continue;
     if FileExistsCached(Cfg.Filename)<>Cfg.FileExists then begin
-      debugln(['TFPCTargetConfigCache.NeedsUpdate TargetOS="',TargetOS,'" TargetCPU="',TargetCPU,'" Options="',CompilerOptions,'" config fileexists changed "',Cfg.Filename,'"']);
+      if CTConsoleVerbosity>0 then
+        debugln(['Hint: [TFPCTargetConfigCache.NeedsUpdate] TargetOS="',TargetOS,'" TargetCPU="',TargetCPU,'" Options="',CompilerOptions,'" config fileexists changed "',Cfg.Filename,'"']);
       exit;
     end;
     if Cfg.FileExists and (FileAgeCached(Cfg.Filename)<>Cfg.FileDate) then begin
-      debugln(['TFPCTargetConfigCache.NeedsUpdate TargetOS="',TargetOS,'" TargetCPU="',TargetCPU,'" Options="',CompilerOptions,'" config file changed "',Cfg.Filename,'"']);
+      if CTConsoleVerbosity>0 then
+        debugln(['Hint: [TFPCTargetConfigCache.NeedsUpdate] TargetOS="',TargetOS,'" TargetCPU="',TargetCPU,'" Options="',CompilerOptions,'" config file changed "',Cfg.Filename,'"']);
       exit;
     end;
   end;
@@ -7835,7 +7841,8 @@ begin
     OldOptions.Assign(Self);
     Clear;
 
-    debugln(['TFPCTargetConfigCache.Update ',Compiler,' TargetOS=',TargetOS,' TargetCPU=',TargetCPU,' CompilerOptions=',CompilerOptions,' ExtraOptions=',ExtraOptions,' PATH=',GetEnvironmentVariableUTF8('PATH')]);
+    if CTConsoleVerbosity>0 then
+      debugln(['Hint: [TFPCTargetConfigCache.NeedsUpdate] ',Compiler,' TargetOS=',TargetOS,' TargetCPU=',TargetCPU,' CompilerOptions=',CompilerOptions,' ExtraOptions=',ExtraOptions,' PATH=',GetEnvironmentVariableUTF8('PATH')]);
     CompilerDate:=FileAgeCached(Compiler);
     if FileExistsCached(Compiler) then begin
       ExtraOptions:=GetFPCInfoCmdLineOptions(ExtraOptions);
@@ -7867,8 +7874,10 @@ begin
       // store the real compiler file and date
       if (RealCompiler<>'') and FileExistsCached(RealCompiler) then begin
         RealCompilerDate:=FileAgeCached(RealCompiler);
-      end else
-        debugln(['TFPCTargetConfigCache.Update WARNING: compiler is broken: Compiler="'+Compiler+'" Options="'+ExtraOptions+'" RealCompiler="',RealCompiler,'"']);
+      end else begin
+        if CTConsoleVerbosity>=-1 then
+          debugln(['Warning: [TFPCTargetConfigCache.Update] invalid compiler: Compiler="'+Compiler+'" Options="'+ExtraOptions+'" RealCompiler="',RealCompiler,'"']);
+      end;
       // store the list of tried and read cfg files
       if CfgFiles<>nil then
         for i:=0 to CfgFiles.Count-1 do begin
@@ -7885,7 +7894,8 @@ begin
       if (UnitPaths<>nil) and (UnitPaths.Count>0) then
         Units:=GatherUnitsInSearchPaths(UnitPaths,OnProgress)
       else begin
-        debugln(['TFPCTargetConfigCache.Update WARNING: no unit paths: ',Compiler,' ',ExtraOptions]);
+        if CTConsoleVerbosity>=-1 then
+          debugln(['Warning: [TFPCTargetConfigCache.Update] no unit paths: ',Compiler,' ',ExtraOptions]);
         Units:=TStringToStringTree.Create(false);
       end;
       // check if the system ppu exists
@@ -7894,7 +7904,8 @@ begin
     // check for changes
     if not Equals(OldOptions) then begin
       IncreaseChangeStamp;
-      debugln(['TFPCTargetConfigCache.Update: has changed']);
+      if CTConsoleVerbosity>=0 then
+        debugln(['Hint: [TFPCTargetConfigCache.Update] has changed']);
     end;
     Result:=true;
   finally
@@ -8485,7 +8496,8 @@ begin
     or ((Files=nil)<>(OldFiles=nil))
     or ((Files<>nil) and (Files.Text<>OldFiles.Text)) then begin
       IncreaseChangeStamp;
-      debugln(['TFPCSourceCache.Update ',Directory,' has changed.']);
+      if CTConsoleVerbosity>0 then
+        debugln(['Hint: [TFPCSourceCache.Update] ',Directory,' has changed.']);
     end;
   finally
     OldFiles.Free;

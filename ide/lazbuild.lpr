@@ -33,7 +33,7 @@ uses
   CustApp, LCLProc, Dialogs, Forms, Controls,
   FileUtil, Masks, InterfaceBase, UTF8Process, LConvEncoding,
   // codetools
-  CodeCache, CodeToolManager, DefineTemplates, Laz2_XMLCfg, LazUTF8,
+  CodeCache, CodeToolManager, DefineTemplates, FileProcs, Laz2_XMLCfg, LazUTF8,
   // IDEIntf
   MacroIntf, PackageIntf, IDEDialogs, ProjectIntf, IDEExternToolIntf,
   CompOptsIntf, IDEOptionsIntf, LazIDEIntf,
@@ -386,16 +386,16 @@ begin
   end
   else begin
     // File exists:
-    if CompareFileExt(Filename,'.lpk')=0 then
+    if FileUtil.CompareFileExt(Filename,'.lpk')=0 then
       if AddPackage then begin
         // this is handled in AddPackagesToInstallList
         Result:=true;
       end
       else
         Result:=BuildPackage(Filename)
-    else if CompareFileExt(Filename,'.lpi')=0 then
+    else if FileUtil.CompareFileExt(Filename,'.lpi')=0 then
         Result:=BuildProject(Filename)
-    else if CompareFileExt(Filename,'.lpr')=0 then begin
+    else if FileUtil.CompareFileExt(Filename,'.lpr')=0 then begin
       Filename:=ChangeFileExt(Filename,'.lpi');
       if FileExists(Filename) then
         Result:=BuildProject(Filename)
@@ -1023,7 +1023,7 @@ begin
     // Look for package name in all known packages
     PackageName:='';
     PkgFilename:='';
-    if CompareFileExt(PackageNamesOrFiles[i],'.lpk')=0 then
+    if FileUtil.CompareFileExt(PackageNamesOrFiles[i],'.lpk')=0 then
       PkgFilename:=PackageNamesOrFiles[i]
     else if IsValidIdent(PackageNamesOrFiles[i]) then begin
       PackageLink:=PkgLinks.FindLinkWithPkgName(PackageNamesOrFiles[i]);
@@ -1453,6 +1453,7 @@ begin
     else if (p='-q') or (p='--quiet') then
       ConsoleVerbosity:=Min(0,ConsoleVerbosity-1);
   end;
+  CTConsoleVerbosity:=ConsoleVerbosity;
 
   Options:=TStringList.Create;
   NonOptions:=TStringList.Create;
