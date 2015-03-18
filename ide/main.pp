@@ -7225,6 +7225,12 @@ begin
   ToolStatus:=itBuilder;
   with MiscellaneousOptions do
   try
+    if MainBuildBoss.HasGUI then begin
+      // Note: while the IDE is running the user might run another IDE,
+      // => save install list, so that starting the new IDE shows the right
+      // package list
+      Save;
+    end;
     MainBuildBoss.SetBuildTargetIDE;
 
     // clean up
