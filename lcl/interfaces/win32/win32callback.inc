@@ -2502,10 +2502,11 @@ begin
 
   if WinProcess then
   begin
-    if (Msg=WM_CHAR) and ((WParam=VK_RETURN) or (WPARAM=VK_ESCAPE)) and
+    if ((Msg=WM_CHAR) and ((WParam=VK_RETURN) or (WPARAM=VK_ESCAPE)) and
        ((lWinControl is TCustomCombobox) or
         ((lWinControl is TCustomEdit) and not (lWinControl is TCustomMemo ))
-       )
+       ))
+       or (Msg=WM_SYSCHAR)      // Windows message processing is postponed
     then
       // this thing will beep, don't call defaultWindowProc
     else
@@ -2541,6 +2542,10 @@ begin
         // winapi too inconsistent about return value
         if (lWinControl <> nil) and (PLMsg^.Result = 0) and CharCodeNotEmpty then
           DeliverMessage(lWinControl, PLMsg^);
+
+        // Windows message processing for WM_SYSCHAR not processed (will get WM_MENUCHAR)
+        if (Msg=WM_SYSCHAR) and (PLMsg^.Result = 0) and CharCodeNotEmpty then
+          PLMsg^.Result := CallDefaultWindowProc(Window, Msg, WParam, LParam);
 
         // handle Ctrl-A for edit controls
         if (PLMsg^.Result = 0) and (Msg = WM_KEYDOWN) and (WParam = Ord('A'))
