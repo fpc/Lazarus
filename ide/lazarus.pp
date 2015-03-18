@@ -53,6 +53,7 @@ uses
   SysUtils,
   Interfaces,
   Forms, LCLProc,
+  IDEOptionsIntf,
   LazConf, IDEGuiCmdLine,
   Splash,
   Main,
@@ -78,6 +79,7 @@ uses
 {$R ../images/laz_images.res}
 
 begin
+  HasGUI:=true;
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('lazarus.pp: begin');{$ENDIF}
 
   RequireDerivedFormResource := True;

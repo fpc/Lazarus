@@ -42,7 +42,7 @@ uses
   ExprEval, BasicCodeTools, CodeToolManager, DefineTemplates, CodeCache,
   FileProcs, CodeToolsCfgScript, CodeToolsStructs,
   // IDEIntf
-  ProjectIntf, MacroIntf, IDEDialogs, IDEExternToolIntf,
+  IDEOptionsIntf, ProjectIntf, MacroIntf, IDEDialogs, IDEExternToolIntf,
   CompOptsIntf, LazIDEIntf, MacroDefIntf, IDEMsgIntf,
   // IDE
   IDECmdLine, LazarusIDEStrConsts, DialogProcs, IDEProcs, CodeToolsOptions,

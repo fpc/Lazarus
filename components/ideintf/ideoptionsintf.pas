@@ -313,6 +313,9 @@ const
 
   GroupPkgCompiler  = 200200;
 
+var
+  HasGUI: boolean = true; // lazbuild sets this to false
+
 implementation
 
 var

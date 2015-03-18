@@ -1422,7 +1422,6 @@ begin
   SetupDialogs;
 
   MainBuildBoss:=TBuildManager.Create(nil);
-  MainBuildBoss.HasGUI:=true;
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.Create BUILD MANAGER');{$ENDIF}
   // setup macros before loading options
   MainBuildBoss.SetupTransferMacros;
@@ -7338,7 +7337,7 @@ begin
   ToolStatus:=itBuilder;
   with MiscellaneousOptions do
   try
-    if MainBuildBoss.HasGUI then begin
+    if HasGUI then begin
       // Note: while the IDE is running the user might run another IDE,
       // => save install list, so that starting the new IDE shows the right
       // package list

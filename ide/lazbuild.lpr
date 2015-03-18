@@ -36,7 +36,7 @@ uses
   CodeCache, CodeToolManager, DefineTemplates, Laz2_XMLCfg, LazUTF8,
   // IDEIntf
   MacroIntf, PackageIntf, IDEDialogs, ProjectIntf, IDEExternToolIntf,
-  CompOptsIntf, LazIDEIntf,
+  CompOptsIntf, IDEOptionsIntf, LazIDEIntf,
   // IDE
   IDEProcs, InitialSetupProc, ExtTools, CompilerOptions, ApplicationBundle,
   TransferMacros, EnvironmentOpts, IDETranslations, LazarusIDEStrConsts,
@@ -1076,7 +1076,6 @@ begin
   CreatePrimaryConfigPath;
 
   MainBuildBoss:=TBuildManager.Create(nil);
-  MainBuildBoss.HasGUI:=false;
   SetupMacros;
   LoadEnvironmentOptions;
   if Terminated then exit(false);
@@ -1662,6 +1661,7 @@ begin
   {$IFDEF BuildWidgetSetCocoa}  Result:=lpCocoa;  {$ENDIF}
   {$IFDEF BuildWidgetSetNoGui}  Result:=lpNoGUI;  {$ENDIF}
 
+  HasGUI:=false;
   FilterConfigFileContent;
   // free LCL Application to help debugging nogui issues
   Application.Free;

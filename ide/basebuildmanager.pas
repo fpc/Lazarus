@@ -40,12 +40,9 @@ type
   { TBaseBuildManager }
 
   TBaseBuildManager = class(TComponent)
-  private
-    FHasGUI: boolean;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    property HasGUI: boolean read FHasGUI write FHasGUI;
 
     // methods for building IDE (will be changed when project groups are there)
     procedure SetBuildTargetProject1; virtual; abstract;
