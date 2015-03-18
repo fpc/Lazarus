@@ -1662,6 +1662,7 @@ begin
   {$IFDEF BuildWidgetSetNoGui}  Result:=lpNoGUI;  {$ENDIF}
 
   HasGUI:=false;
+  ConsoleVerbosity:=-1;
   FilterConfigFileContent;
   // free LCL Application to help debugging nogui issues
   Application.Free;

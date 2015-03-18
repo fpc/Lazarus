@@ -1098,6 +1098,7 @@ var
   LFMFilename: String;
   IcoRes: TProjectIcon;
   aTargetFilename: String;
+  DbgCap: String;
 
   function EditorFileHasChanged: boolean;
   begin
@@ -1112,7 +1113,7 @@ var
       then begin
         Result:=true;
         if ConsoleVerbosity>=0 then
-          DebugLn('TMainIDE.CheckIfProjectNeedsCompilation  Editor Unit in project''s unit path has changed ',AProject.IDAsString,' ',AnUnitInfo.Filename);
+          DebugLn(DbgCap,'Editor Unit in project''s unit path has changed ',AProject.IDAsString,' ',AnUnitInfo.Filename);
         Note+='Editor unit "'+AnUnitInfo.Filename+'" in project''s unit search path is newer than state file:'+LineEnding
           +'  File age="'+FileAgeToStr(FileAgeCached(AnUnitInfo.Filename))+'"'+LineEnding
           +'  State file age="'+FileAgeToStr(StateFileAge)+'"'+LineEnding
@@ -1125,7 +1126,7 @@ var
     then begin
       Result:=true;
       if ConsoleVerbosity>=0 then
-        DebugLn('TMainIDE.CheckIfProjectNeedsCompilation  Editor Src in project''s include path has changed ',AProject.IDAsString,' ',AnUnitInfo.Filename);
+        DebugLn(DbgCap,'Editor Src in project''s include path has changed ',AProject.IDAsString,' ',AnUnitInfo.Filename);
       Note+='Editor file "'+AnUnitInfo.Filename+'" in project''s include search path is newer than state file:'+LineEnding
         +'  File age="'+FileAgeToStr(FileAgeCached(AnUnitInfo.Filename))+'"'+LineEnding
         +'  State file age="'+FileAgeToStr(StateFileAge)+'"'+LineEnding
@@ -1136,6 +1137,7 @@ var
 
 begin
   NeedBuildAllFlag:=false;
+  DbgCap:='Project needs building: ';
 
   // get main source filename
   if not AProject.IsVirtual then begin
@@ -1146,12 +1148,12 @@ begin
   end;
 
   CompilerFilename:=AProject.GetCompilerFilename;
-  //DebugLn(['TBuildManager.DoCheckIfProjectNeedsCompilation CompilerFilename="',CompilerFilename,'" CompilerPath="',AProject.CompilerOptions.CompilerPath,'"']);
+  //DebugLn([DbgCap,'CompilerFilename="',CompilerFilename,'" CompilerPath="',AProject.CompilerOptions.CompilerPath,'"']);
   // Note: use absolute paths, because some external tools resolve symlinked directories
   CompilerParams :=
     AProject.CompilerOptions.MakeOptionsString([ccloAbsolutePaths])
            + ' ' + PrepareCmdLineOption(SrcFilename);
-  //DebugLn('TBuildManager.DoCheckIfProjectNeedsCompilation WorkingDir="',WorkingDir,'" SrcFilename="',SrcFilename,'" CompilerFilename="',CompilerFilename,'" CompilerParams="',CompilerParams,'"');
+  //DebugLn(DbgCap,'WorkingDir="',WorkingDir,'" SrcFilename="',SrcFilename,'" CompilerFilename="',CompilerFilename,'" CompilerParams="',CompilerParams,'"');
 
   // check state file
   StateFilename:=AProject.GetStateFilename;
@@ -1159,7 +1161,7 @@ begin
   if Result<>mrOk then exit; // read error and user aborted
   if not (lpsfStateFileLoaded in AProject.StateFlags) then begin
     if ConsoleVerbosity>=0 then
-      DebugLn('TBuildManager.CheckIfPackageNeedsCompilation  No state file for ',AProject.IDAsString);
+      DebugLn(DbgCap,'No state file for ',AProject.IDAsString);
     Note+='State file "'+StateFilename+'" of '+AProject.IDAsString+' is missing.'+LineEnding;
     NeedBuildAllFlag:=true;
     exit(mrYes);
@@ -1181,7 +1183,7 @@ begin
   if FileExistsCached(SrcFilename) and (StateFileAge<FileAgeCached(SrcFilename)) then
   begin
     if ConsoleVerbosity>=0 then
-      DebugLn('TBuildManager.CheckIfProjectNeedsCompilation  SrcFile outdated ',AProject.IDAsString);
+      DebugLn(DbgCap,'SrcFile outdated ',AProject.IDAsString);
     Note+='Source file "'+SrcFilename+'" of '+AProject.IDAsString+' outdated:'+LineEnding
       +'  Source age='+FileAgeToStr(FileAgeCached(SrcFilename))+LineEnding
       +'  State file age='+FileAgeToStr(StateFileAge)+LineEnding
@@ -1192,7 +1194,7 @@ begin
   // check compiler and params
   if CompilerFilename<>AProject.LastCompilerFilename then begin
     if ConsoleVerbosity>=0 then begin
-      DebugLn('TBuildManager.CheckIfProjectNeedsCompilation  Compiler filename changed for ',AProject.IDAsString);
+      DebugLn(DbgCap,'Compiler filename changed for ',AProject.IDAsString);
       DebugLn('  Old="',AProject.LastCompilerFilename,'"');
       DebugLn('  Now="',CompilerFilename,'"');
     end;
@@ -1204,7 +1206,7 @@ begin
   end;
   if not FileExistsCached(CompilerFilename) then begin
     if ConsoleVerbosity>=0 then begin
-      DebugLn('TBuildManager.CheckIfProjectNeedsCompilation  Compiler file not found for ',AProject.IDAsString);
+      DebugLn(DbgCap,'Compiler file not found for ',AProject.IDAsString);
       DebugLn('  File="',CompilerFilename,'"');
     end;
     Note+='Compiler file "'+CompilerFilename+'" not found for '+AProject.IDAsString+'.'+LineEnding;
@@ -1212,7 +1214,7 @@ begin
   end;
   if FileAgeCached(CompilerFilename)<>AProject.LastCompilerFileDate then begin
     if ConsoleVerbosity>=0 then begin
-      DebugLn('TBuildManager.CheckIfProjectNeedsCompilation  Compiler file changed for ',AProject.IDAsString);
+      DebugLn(DbgCap,'Compiler file changed for ',AProject.IDAsString);
       DebugLn('  File="',CompilerFilename,'"');
     end;
     Note+='Compiler file "'+CompilerFilename+'" for '+AProject.IDAsString+' changed:'+LineEnding
@@ -1223,7 +1225,7 @@ begin
   end;
   if CompilerParams<>AProject.LastCompilerParams then begin
     if ConsoleVerbosity>=0 then begin
-      DebugLn('TBuildManager.CheckIfProjectNeedsCompilation  Compiler params changed for ',AProject.IDAsString);
+      DebugLn(DbgCap,'Compiler params changed for ',AProject.IDAsString);
       DebugLn('  Old="',AProject.LastCompilerParams,'"');
       DebugLn('  Now="',CompilerParams,'"');
     end;
@@ -1240,7 +1242,7 @@ begin
 
   if not AProject.LastCompileComplete then begin
     if ConsoleVerbosity>=0 then
-      DebugLn('TBuildManager.CheckIfProjectNeedsCompilation  Compile was incomplete for ',AProject.IDAsString);
+      DebugLn(DbgCap,'Compile was incomplete for ',AProject.IDAsString);
     Note+='Last compile was incomplete.'+LineEnding
       +'  State file='+StateFilename+LineEnding;
     exit(mrYes);
@@ -1260,7 +1262,7 @@ begin
     begin
       if (StateFileAge<FileAgeCached(AnUnitInfo.Filename)) then begin
         if ConsoleVerbosity>=0 then
-          DebugLn('TMainIDE.CheckIfProjectNeedsCompilation  Src has changed ',AProject.IDAsString,' ',AnUnitInfo.Filename);
+          DebugLn(DbgCap,'Src has changed ',AProject.IDAsString,' ',AnUnitInfo.Filename);
         Note+='File "'+AnUnitInfo.Filename+'" of '+AProject.IDAsString+' is newer than state file:'+LineEnding
           +'  File age="'+FileAgeToStr(FileAgeCached(AnUnitInfo.Filename))+'"'+LineEnding
           +'  State file age="'+FileAgeToStr(StateFileAge)+'"'+LineEnding
@@ -1272,7 +1274,7 @@ begin
         if FileExistsCached(LFMFilename)
         and (StateFileAge<FileAgeCached(LFMFilename)) then begin
           if ConsoleVerbosity>=0 then
-            DebugLn('TMainIDE.CheckIfProjectNeedsCompilation  LFM has changed ',AProject.IDAsString,' ',LFMFilename);
+            DebugLn(DbgCap,'LFM has changed ',AProject.IDAsString,' ',LFMFilename);
           Note+='File "'+LFMFilename+'" of '+AProject.IDAsString+' is newer than state file:'+LineEnding
             +'  File age="'+FileAgeToStr(FileAgeCached(LFMFilename))+'"'+LineEnding
             +'  State file age="'+FileAgeToStr(StateFileAge)+'"'+LineEnding
@@ -1300,7 +1302,7 @@ begin
   and FileExistsCached(IcoRes.IcoFileName)
   and (StateFileAge<FileAgeCached(IcoRes.IcoFileName)) then begin
     if ConsoleVerbosity>=0 then
-      debugln(['TBuildManager.DoCheckIfProjectNeedsCompilation icon has changed ',
+      debugln([DbgCap,'icon has changed ',
         AProject.IDAsString,' "',IcoRes.IcoFileName,'"']);
     Note+='Project''s ico file "'+IcoRes.IcoFileName+'" is newer than state file:'+LineEnding
       +'  File age="'+FileAgeToStr(FileAgeCached(IcoRes.IcoFileName))+'"'+LineEnding
@@ -1311,14 +1313,16 @@ begin
 
   // check target file
   aTargetFilename:=AProject.CompilerOptions.CreateTargetFilename;
-  debugln(['TBuildManager.DoCheckIfProjectNeedsCompilation aTargetFilename=',aTargetFilename]);
+  //debugln(['TBuildManager.DoCheckIfProjectNeedsCompilation aTargetFilename=',aTargetFilename]);
   if (aTargetFilename<>'') and not FileExistsCached(aTargetFilename) then begin
     if ConsoleVerbosity>=0 then
-      debugln(['TBuildManager.DoCheckIfProjectNeedsCompilation missing target file "',aTargetFilename,'"']);
+      debugln([DbgCap,'missing target file "',aTargetFilename,'"']);
     Note+='Project''s target file "'+aTargetFilename+'" is missing.';
     exit(mrYes);
   end;
 
+  if not HasGUI then
+    debugln(['lazbuild: Build Project: nothing to do.']);
   Result:=mrNo;
 end;
 

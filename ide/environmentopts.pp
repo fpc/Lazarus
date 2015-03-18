@@ -2001,7 +2001,7 @@ begin
       IncreaseCompilerParseStamp;
       try
         Result:=GetParsedValue(eopFPCSourceDirectory);
-        debugln(['TEnvironmentOptions.GetParsedFPCSourceDirectory FPCVer=',FPCVer,' FPCSrcDir=',Result]);
+        //debugln(['TEnvironmentOptions.GetParsedFPCSourceDirectory FPCVer=',FPCVer,' FPCSrcDir=',Result]);
       finally
         OverrideFPCVer:='';
         IncreaseCompilerParseStamp;
