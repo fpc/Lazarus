@@ -839,6 +839,7 @@ var
     OtherPPUFile: TPGInterPkgFile;
     i: Integer;
     Msg: String;
+    SrcFile: TPGInterPkgFile;
   begin
     CurNode:=Units.FindLowest;
     FirstNodeSameUnitname:=nil;
@@ -854,6 +855,7 @@ var
       // => check units with same name
       FileGroup:=nil;
       PPUFile:=nil;
+      SrcFile:=nil;
       OtherNode:=FirstNodeSameUnitname;
       while OtherNode<>nil do begin
         OtherFile:=TPGInterPkgFile(OtherNode.Data);
@@ -866,18 +868,16 @@ var
         //debugln(['CheckPPUFilesInWrongDirs duplicate units found: file1="',CurUnit.FullFilename,'"(',CurUnit.OwnerInfo.Name,') file2="',OtherFile.FullFilename,'"(',OtherFile.OwnerInfo.Name,')']);
         FindUnitSourcePPU(OtherFile,OtherPPUFile);
         if FileGroup=nil then begin
-          FindUnitSourcePPU(CurUnit,PPUFile);
-          Assert(Assigned(CurUnit), 'CheckDuplicateUnits: FindUnitSourcePPU() changed CurUnit to Nil. Not good!');
+          SrcFile:=CurUnit;
+          FindUnitSourcePPU(SrcFile,PPUFile);
         end;
-        if (CurUnit<>nil) and (OtherFile<>nil)
-        and (CompareFilenames(CurUnit.FullFilename,OtherFile.FullFilename)=0) then
+        if (SrcFile<>nil) and (OtherFile<>nil)
+        and (CompareFilenames(SrcFile.FullFilename,OtherFile.FullFilename)=0) then
         begin
           // two packages share source directories
           // -> do not warn single files
           continue;
         end;
-
-        //debugln(['CheckPPUFilesInWrongDirs duplicate units found: file1="',CurUnit.FullFilename,'"(',CurUnit.OwnerInfo.Name,') ppu=',PPUFile<>nil,' file2="',OtherFile.FullFilename,'"(',OtherFile.OwnerInfo.Name,') ppu=',OtherPPUFile<>nil]);
 
         if (PPUFile<>nil) and (OtherPPUFile<>nil)
         and (CompareFilenames(PPUFile.FullFilename,OtherPPUFile.FullFilename)=0)
@@ -891,7 +891,7 @@ var
 
         if FileGroup=nil then begin
           FileGroup:=TPGIPAmbiguousFileGroup.Create;
-          FileGroup.Add(CurUnit,PPUFile);
+          FileGroup.Add(SrcFile,PPUFile);
           AmbiguousFileGroups.Add(FileGroup);
         end;
         FileGroup.Add(OtherFile,OtherPPUFile);
@@ -906,19 +906,19 @@ var
       if FileGroup<>nil then begin
         for i:=0 to length(FileGroup.Sources)-1 do
         begin
-          CurUnit:=FileGroup.CompiledFiles[i];
-          PPUFile:=FileGroup.Sources[i];
-          if PPUFile<>nil then
+          SrcFile:=FileGroup.Sources[i];
+          PPUFile:=FileGroup.CompiledFiles[i];
+          if SrcFile<>nil then
           begin
+            Msg:='Duplicate unit "'+SrcFile.AnUnitName+'"';
+            Msg+=' in "'+SrcFile.OwnerInfo.Name+'"';
+            if PPUFile<>nil then
+              Msg+=', ppu="'+PPUFile.FullFilename+'"';
+            Msg+=', source="'+SrcFile.FullFilename+'"';
+          end else begin
             Msg:='Duplicate unit "'+PPUFile.AnUnitName+'"';
             Msg+=' in "'+PPUFile.OwnerInfo.Name+'"';
-            if CurUnit<>nil then
-              Msg+=', ppu="'+CurUnit.FullFilename+'"';
-            Msg+=', source="'+PPUFile.FullFilename+'"';
-          end else begin
-            Msg:='Duplicate unit "'+CurUnit.AnUnitName+'"';
-            Msg+=' in "'+CurUnit.OwnerInfo.Name+'"';
-            Msg+=', orphaned ppu "'+CurUnit.FullFilename+'"';
+            Msg+=', orphaned ppu "'+PPUFile.FullFilename+'"';
           end;
           if IDEMessagesWindow<>nil then
             IDEMessagesWindow.AddCustomMessage(mluNote,Msg)
