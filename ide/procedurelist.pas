@@ -541,8 +541,13 @@ end;
 procedure TProcedureListForm.FormCreate(Sender: TObject);
 begin
   if SourceEditorManagerIntf.ActiveEditor = nil then
+  begin
+    //SetupGUI makes the dialog look as it should, and is clears the listview
+    //thus preventing a crash when clicking on the LV
+    SetupGUI;
     Exit; //==>
-    
+  end;
+
   FMainFilename := SourceEditorManagerIntf.ActiveEditor.Filename;
   Caption := Caption + ExtractFileName(FMainFilename);
   SetupGUI;
