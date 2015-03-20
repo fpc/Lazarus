@@ -3298,10 +3298,13 @@ end;
 
 function TGtk3WidgetSet.RemoveProp(Handle: hwnd; Str: PChar): THandle;
 begin
-  {$IFDEF GTK3DEBUGNOTIMPLEMENTED}
-  DebugLn('WARNING: TGtk3WidgetSet.RemoveProp not implemented ...');
-  {$ENDIF}
-  Result:=inherited RemoveProp(Handle, Str);
+  Result := 0;
+  if Handle = 0 then
+    exit;
+  g_object_set_data(TGtk3Widget(Handle).Widget, Str, nil);
+  if TGtk3Widget(Handle).GetContainerWidget <> TGtk3Widget(Handle).Widget then
+    g_object_set_data(TGtk3Widget(Handle).GetContainerWidget, Str, nil);
+  Result := 1;
 end;
 
 function TGtk3WidgetSet.RestoreDC(DC: HDC; SavedDC: Integer): Boolean;
