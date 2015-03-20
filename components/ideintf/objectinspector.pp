@@ -2503,6 +2503,7 @@ end;
 procedure TOICustomPropertyGrid.SetTopY(const NewValue:integer);
 var
   NewTopY: integer;
+  r: Types.TRect;
 begin
   NewTopY := TopMax;
   if NewValue < NewTopY then
@@ -2510,10 +2511,12 @@ begin
   if NewTopY < 0 then
     NewTopY := 0;
   if FTopY<>NewTopY then begin
+    r := ClientRect;
+    if not ScrollWindowEx(Handle,0,FTopY-NewTopY,@r,@r,0,nil, SW_INVALIDATE+SW_SCROLLCHILDREN) then
+      Invalidate;
     FTopY:=NewTopY;
     UpdateScrollBar;
     AlignEditComponents;
-    Invalidate;
   end;
 end;
 
