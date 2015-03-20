@@ -4523,9 +4523,17 @@ begin
     if Assigned(ClipRegion) then
       CurRegionObject := ClipRegion^.GDIRegionObject;
     ARect := Rect(0, 0, 0, 0);
-    if Assigned(CurRegionObject) then
+    //debugln(['TGtk2WidgetSet.GetClipRGN ',GetWidgetDebugReport(Widget),' CurRegionObject=',Assigned(CurRegionObject),' DC=',dbgs(DC)]);
+
+    if Assigned(CurRegionObject) then begin
       // create a copy of the current clipregion
-      ClipRegionWithDCOffset := gdk_region_copy(CurRegionObject)
+      ClipRegionWithDCOffset := gdk_region_copy(CurRegionObject);
+      // move it to the DC offset
+      // Example: if the ClipRegion is at 10,10 and the DCOrigin is at 10,10,
+      //          then the ClipRegion must be moved to 0,0
+      DCOrigin := Offset;
+      gdk_region_offset(ClipRegionWithDCOffset, -DCOrigin.x, -DCOrigin.Y);
+    end
     else
     begin
       // create a default clipregion
@@ -4533,11 +4541,6 @@ begin
       LPtoDP(DC, ARect, 2);
       ClipRegionWithDCOffset := CreateRectGDKRegion(ARect);
     end;
-    // move it to the DC offset
-    // Example: if the ClipRegion is at 10,10 and the DCOrigin is at 10,10,
-    //          then the ClipRegion must be moved to 0,0
-    DCOrigin := Offset;
-    gdk_region_offset(ClipRegionWithDCOffset, -DCOrigin.x, -DCOrigin.Y);
 
     // free the old region in RGN
     if Assigned({%H-}PGdiObject(RGN)^.GDIRegionObject) then

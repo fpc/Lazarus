@@ -1803,6 +1803,7 @@ begin
   begin
     RectRgn := CreateRectRGN(ARect.Left, ARect.Top, ARect.Right, ARect.Bottom);
     Intersection := CreateEmptyRegion;
+    //debugln(['TWidgetSet.RectVisible ARect=',dbgs(ARect)]);
     CombineResult := CombineRGN(Intersection, RectRGN, ClipRGN, RGN_AND);
     if CombineResult in [SimpleRegion, ComplexRegion] then
       Result := True;
