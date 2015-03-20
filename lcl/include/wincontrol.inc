@@ -4730,7 +4730,8 @@ begin
 
   try
     // check if child controls need clipping
-    //DebugLn('[TWinControl.PaintHandler] ',DbgSName(Self),' B');
+    //if Name='GroupBox1' then
+      //DebugLn('[TWinControl.PaintHandler] ',DbgSName(Self),' B');
     ControlsNeedsClipping:=false;
     if FControls<>nil then
       for I := 0 to FControls.Count - 1 do
@@ -4739,6 +4740,8 @@ begin
           break;
         end;
     // exclude child controls and send new paint message
+    //if Name='GroupBox1' then
+      //debugln(['TWinControl.PaintHandler ControlsNeedsClipping=',ControlsNeedsClipping,' ControlCount=',ControlCount]);
     if not ControlsNeedsClipping then begin
       //DebugLn('[TWinControl.PaintHandler] ',DbgSName(Self),' no clipping ...');
       PaintWindow(DC)
@@ -4810,20 +4813,26 @@ begin
       I := FControls.IndexOf(First);
       if I < 0 then I := 0;
     end;
+    //debugln(['TWinControl.PaintControls ',DbgSName(Self),' ClientRect=',dbgs(ClientRect)]);
     Count := FControls.Count;
     while I < Count do
     begin
       TempControl := TControl(FControls.Items[I]);
       {$ifdef DEBUG_WINDOW_ORG}
-      DebugLn(
-        Format(':> [TWinControl.PaintControls] C  DC=%d TempControl=%s Left=%d Top=%d Width=%d Height=%d',
-        [DC, TempControl.Name, TempControl.Left, TempControl.Top, TempControl.Width, TempControl.Height]));
+      if Name='GroupBox1' then
+        DebugLn(
+        Format(':> [TWinControl.PaintControls] C  DC=%d TempControl=%s Left=%d Top=%d Width=%d Height=%d IsVisible=%s RectVisible=%s',
+        [DC, DbgSName(TempControl),
+          TempControl.Left, TempControl.Top, TempControl.Width, TempControl.Height,
+          dbgs(IsVisible),
+          dbgs(RectVisible(DC, TempControl.BoundsRect))
+          ]));
       {$endif}
       if not (TempControl is TWinControl) then begin
         //DebugLn('TWinControl.PaintControls B Self=',Self.Name,':',Self.ClassName,' Control=',TempControl.Name,':',TempControl.ClassName,' ',TempControl.Left,',',TempControl.Top,',',TempControl.Width,',',TempControl.Height);
         with TempControl do
           if IsVisible
-          and RectVisible(DC, Rect(Left, Top, Left + Width, Top + Height)) then
+          and RectVisible(DC, TempControl.BoundsRect) then
           begin
             if csPaintCopy in Self.ControlState then
               Include(FControlState, csPaintCopy);
@@ -4864,7 +4873,7 @@ procedure TWinControl.PaintWindow(DC: HDC);
 var
   Message: TLMessage;
 begin
-  //DebugLn('[TWinControl.PaintWindow] ',Name,':',Classname,'  DC=',DbgS(DC,8));
+  //DebugLn('[TWinControl.PaintWindow] ',Name,':',Classname,'  DC=',DbgS(DC));
   if (csDestroying in ComponentState)
   or ((DC=0) and (not HandleAllocated)) then
     exit;
@@ -6635,7 +6644,7 @@ var
   PS : TPaintStruct;
   ClientBoundRect: TRect;
 begin
-  //DebugLn('[TWinControl.WMPaint] ',Name,':',ClassName,'  ',DbgS(Msg.DC,8));
+  //DebugLn('[TWinControl.WMPaint] ',DbgSName(Self),'  ',DbgS(Msg.DC));
   {$IFDEF VerboseResizeFlicker}
   DebugLn('[TWinControl.WMPaint] ',DbgSName(Self),'  Bounds=',dbgs(BoundsRect),' ClientRect=',dbgs(ClientRect));
   {$ENDIF}
@@ -6647,7 +6656,8 @@ begin
     DebugLn('TWinControl.WMPaint A ',Name,':',ClassName);
   {$ENDIF}
 
-  //DebugLn(Format('Trace:> [TWinControl.WMPaint] %s Msg.DC: 0x%x', [ClassName, Msg.DC]));
+  //if Name='GroupBox1' then
+  //  debugln(['TWinControl.WMPaint ',DbgSName(Self),' DoubleBuffered=',DoubleBuffered,' Msg.DC=',dbgs(Msg.DC),' csCustomPaint=',csCustomPaint in ControlState,' ControlCount=',ControlCount,' ClientRect=',dbgs(ClientRect)]);
   if (Msg.DC <> 0) or not DoubleBuffered then
   begin
     if not (csCustomPaint in ControlState) and (ControlCount = 0) then
