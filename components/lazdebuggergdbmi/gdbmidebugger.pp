@@ -10980,7 +10980,7 @@ begin
       WStr := WStr + OneChar;
       CurLocation := CurLocation + 2;
     end;
-  until (OneChar = #0);
+  until (OneChar = #0) or (Length(WStr) > DebuggerProperties.MaxDisplayLengthForString);
   Result := UTF16ToUTF8(WStr);
 end;
 
