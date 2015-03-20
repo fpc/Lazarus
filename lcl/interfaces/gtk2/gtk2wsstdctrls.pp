@@ -2377,6 +2377,7 @@ class procedure TGtk2WSCustomGroupBox.GetPreferredSize(
   const AWinControl: TWinControl; var PreferredWidth, PreferredHeight: integer;
   WithThemeSpace: Boolean);
 begin
+  // ToDo: compute the minimum size ignoring LCL child controls
   GetGTKDefaultWidgetSize(AWinControl, PreferredWidth, PreferredHeight,
                           WithThemeSpace);
 end;

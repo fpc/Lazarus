@@ -7988,7 +7988,7 @@ procedure TWinControl.CalculatePreferredSize(var PreferredWidth,
     if not aControl.IsVisible then exit;
     if aControl<>Self then begin
       aControl.GetPreferredSize(w,h,true,true);
-      debugln([Prefix,'W ',DbgSName(aControl),' ',dbgs(aControl.BoundsRect),' Pref=',w,'x',h]);
+      debugln([Prefix,'Child ',DbgSName(aControl),' ',dbgs(aControl.BoundsRect),' Pref=',w,'x',h]);
     end;
     if aControl is TWinControl then
       for i:=0 to TWinControl(aControl).ControlCount-1 do
@@ -7997,7 +7997,7 @@ procedure TWinControl.CalculatePreferredSize(var PreferredWidth,
 
   function IsVerbose: boolean;
   begin
-    Result:=(Name='Edit1');
+    Result:=(Name='GroupBox1');
   end;
   {$ENDIF}
 
