@@ -2709,6 +2709,7 @@ begin
       end;
     emcPluginMultiCaretSelectionToCarets:
       begin
+        Result := True;
         j := SelectionObj.LastLineBytePos.y;
         i := SelectionObj.FirstLineBytePos.y;
         SelectionObj.Clear;
