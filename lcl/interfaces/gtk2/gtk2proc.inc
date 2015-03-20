@@ -6171,6 +6171,9 @@ begin
   else
     PanelText := '';
 
+  if (CurPanel <> nil) and (CurPanel.Style = psOwnerDraw) then
+    PanelText := '';
+
   ContextID := gtk_statusbar_get_context_id(PGTKStatusBar(StatusPanelWidget),
                                             'state');
   //DebugLn('  PanelText="',PanelText,'"');
