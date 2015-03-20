@@ -198,7 +198,7 @@ begin
   if R > 0 
   then begin
     for n := 0 to Count do   
-      if  (AHandles[n] <> 0) 
+      if  (AHandles[n] >= 0)
       and (FpFD_ISSET(AHandles[n],FDSWait)=1)
       then begin
         Result := Result or 1 shl n;
