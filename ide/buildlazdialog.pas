@@ -58,7 +58,7 @@ uses
   // IDE
   LazarusIDEStrConsts, TransferMacros, LazConf, IDEProcs, DialogProcs,
   MainBar, ExtToolEditDlg, EnvironmentOpts,
-  ApplicationBundle, CompilerOptions, BuildProfileManager,
+  ApplicationBundle, ModeMatrixOpts, CompilerOptions, BuildProfileManager,
   GenericListEditor, GenericCheckList, IDECmdLine, PackageSystem, PackageDefs;
 
 type
@@ -418,7 +418,6 @@ begin
   Result:=mrCancel;
   fProfile:=Profile;
   if CalcTargets(Flags)<>mrOk then exit;
-  debugln(['TLazarusBuilder.MakeLazarus AAA1 ',fExtraOptions]);
 
   if LazarusIDE<>nil then
     LazarusIDE.MainBarSubTitle:=Profile.Name;
@@ -593,6 +592,9 @@ begin
     {$ENDIF}
 
     AppendExtraOption(fProfile.ExtraOptions,false);
+
+    if OnAppendCustomOption<>nil then
+      OnAppendCustomOption(Self,fExtraOptions,[bmgtEnvironment]);
   end;
 
   // set target filename and target directory:
