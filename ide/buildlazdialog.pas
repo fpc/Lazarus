@@ -574,8 +574,18 @@ begin
   fExtraOptions:=fProfile.ExtraOptions;
 
   // check for special IDE config file
+  //DebugLn(['CreateIDEMakeOptions blfUseMakeIDECfg=',blfUseMakeIDECfg in FLags,' ExtraOptions="',fExtraOptions,'" ',fPackageOptions]);
   if (blfUseMakeIDECfg in Flags) then
-    SpecialIdeConfig;
+    SpecialIdeConfig
+  else if not (blfUseMakeIDECfg in Flags) then
+    AppendExtraOption(fPackageOptions,false);
+
+  {$IFDEF Windows}
+  if (fProfile.TargetPlatform=lpWin32)
+  and (Win32MajorVersion <=4)
+  and (Win32Platform = VER_PLATFORM_WIN32_WINDOWS) then
+    AppendExtraOption('-dWIN9XPLATFORM');
+  {$ENDIF}
 
   // set target filename and target directory:
   // 1. the user has set a target directory
@@ -710,17 +720,6 @@ begin
   if CreateRelativePath(fTargetFilename,fTargetDir) <> DefaultTargetFilename then
     AppendExtraOption('-o'+fTargetFilename);
 
-  {$IFDEF Windows}
-  if (fProfile.TargetPlatform=lpWin32)
-  and (Win32MajorVersion <=4)
-  and (Win32Platform = VER_PLATFORM_WIN32_WINDOWS) then
-    AppendExtraOption('-dWIN9XPLATFORM');
-  {$ENDIF}
-
-  // add package options for IDE
-  //DebugLn(['CreateIDEMakeOptions blfUseMakeIDECfg=',blfUseMakeIDECfg in FLags,' ExtraOptions="',fExtraOptions,'" ',fPackageOptions]);
-  if not (blfUseMakeIDECfg in Flags) then
-    AppendExtraOption(fPackageOptions,false);
   //DebugLn(['CreateIDEMakeOptions ',MMDef.Name,' ',fExtraOptions]);
 end;
 
