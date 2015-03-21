@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2015-01-27 17:03+0100\n"
+"PO-Revision-Date: 2015-03-21 17:57+0100\n"
 "Last-Translator: Swen Heinig <swen@heinig.email>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -3097,7 +3097,7 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgsourceedittabmultiline
 msgid "Multiline tabs"
-msgstr ""
+msgstr "Mehrzeilige Tabs"
 
 #: lazarusidestrconsts.dlgspacenotcosmos
 msgctxt "lazarusidestrconsts.dlgspacenotcosmos"
@@ -6555,15 +6555,15 @@ msgstr "Eltern-Container"
 
 #: lazarusidestrconsts.lisconvproblemsfindingallunits
 msgid "Problems when trying to find all units from project file %s"
-msgstr ""
+msgstr "Probleme beim Finden aller Units aus Projektdatei %s"
 
 #: lazarusidestrconsts.lisconvproblemsfixingincludefile
 msgid "Problems when fixing include files in file %s"
-msgstr ""
+msgstr "Probleme beim Berichtigen der Includedateien in Datei %s"
 
 #: lazarusidestrconsts.lisconvproblemsrepairingformfile
 msgid "Problems when repairing form file %s"
-msgstr ""
+msgstr "Probleme beim Reparieren der Formulardatei %s"
 
 #: lazarusidestrconsts.lisconvrepairingincludefiles
 msgid "Repairing include files : "
@@ -6890,7 +6890,6 @@ msgid "Cursor row in current editor"
 msgstr "Cursor-Zeile im aktuellem Editor"
 
 #: lazarusidestrconsts.liscustomopthint
-#, fuzzy
 #| msgid "These options are passed to the compiler after comments are deleted and macros are replaced."
 msgid "These options are passed to the compiler after macros are replaced."
 msgstr "Diese Einstellungen werden direkt an den Compiler geleitet. Makros werden ersetzt und Zeilenumbrüche durch einzelne Leerzeichen ersetzt."
@@ -9413,7 +9412,7 @@ msgstr "Abgeleitete Projekt-Komponente"
 
 #: lazarusidestrconsts.lisinitializelocalvariable
 msgid "Initialize Local Variable"
-msgstr ""
+msgstr "Lokale Variable initialisieren"
 
 #: lazarusidestrconsts.lisinordertocreateacleancopyoftheprojectpackageallfil
 msgid "In order to create a clean copy of the project/package, all files in the following directory will be deleted and all its content will be lost.%sDelete all files in \"%s\"?"
@@ -12094,7 +12093,7 @@ msgstr "Dateien verschieben?"
 
 #: lazarusidestrconsts.lismovefilesfromtothedirectoryof
 msgid "Move %s file(s) from %s to the directory%s%s%sof %s?"
-msgstr ""
+msgstr "%s Datei(en) von %s in das Verzeichnis%s%s%svon %s verschieben?"
 
 #: lazarusidestrconsts.lismoveonepositiondown
 msgid "Move \"%s\" one position down"
@@ -12106,11 +12105,11 @@ msgstr "Bewege \"%s\" eine Position nach oben"
 
 #: lazarusidestrconsts.lismoveorcopyfiles
 msgid "Move or Copy files?"
-msgstr ""
+msgstr "Dateien verschieben oder kopieren?"
 
 #: lazarusidestrconsts.lismoveorcopyfilesfromtothedirectoryofpackage
 msgid "Move or copy %s file(s) from %s to the directory%s%s%sof %s?"
-msgstr ""
+msgstr "%s Datei(en) von %s in das Verzeichnis%s%s%svon %s verschieben oder kopieren?"
 
 #: lazarusidestrconsts.lismovepage
 msgid "Move Page"
@@ -12804,7 +12803,7 @@ msgstr "Aus Zwischenablage einfügen"
 
 #: lazarusidestrconsts.lispastelcolors
 msgid "Pastel Colors"
-msgstr ""
+msgstr "Pastellfarben"
 
 #: lazarusidestrconsts.lispath
 msgid "Path"
@@ -15122,7 +15121,7 @@ msgstr "Suchpfade"
 
 #: lazarusidestrconsts.lissearchunit
 msgid "Search Unit \"%s\""
-msgstr ""
+msgstr "Suche Unit \"%s\""
 
 #: lazarusidestrconsts.lissecondaryconfigdirectorywherelazarussearchesfor
 msgid "secondary config directory, where Lazarus searches for config template files. Default is "
@@ -15195,7 +15194,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisselectedmodeswerebuilt
 msgid "Selected %d modes were successfully built."
-msgstr ""
+msgstr "Gewählte %d Modi wurden erfolgreich erstellt."
 
 #: lazarusidestrconsts.lisselectedrightneighbour
 msgid "(selected right neighbour)"
@@ -15251,7 +15250,7 @@ msgstr "(Standard-Einrückung festlegen)"
 
 #: lazarusidestrconsts.lissetutf8inrtl
 msgid "Set UTF-8 in RTL"
-msgstr ""
+msgstr "UTF-8 für RTL einrichten"
 
 #: lazarusidestrconsts.lisshort
 msgid "Short:"
@@ -15368,7 +15367,7 @@ msgstr "Units anzeigen"
 
 #: lazarusidestrconsts.lisshowunitswithinitialization
 msgid "Show units with initialization/finalization sections"
-msgstr ""
+msgstr "Zeige Units mit initialization/finalization Abschnitten"
 
 #: lazarusidestrconsts.lisshowunitswithinitializationhint
 msgid "These units may initialize global data used by the program/application. Remove with care."
@@ -16119,7 +16118,7 @@ msgstr ""
 
 #: lazarusidestrconsts.listherearenoconflictingkeys
 msgid "There are no conflicting keys."
-msgstr ""
+msgstr "Es gibt keine sich widersprechenden Tastenkombinationen."
 
 #: lazarusidestrconsts.listhereareotherfilesinthedirectorywiththesamename
 msgid "There are other files in the directory with the same name,%swhich only differ in case:%s%s%sDelete them?"
@@ -16287,7 +16286,7 @@ msgstr "Diese Hilfeanzeige"
 
 #: lazarusidestrconsts.listhisistestprojectfordesigntimepackage
 msgid "This is a test project for a design time package, testing it outside the IDE."
-msgstr ""
+msgstr "Dies ist ein Testprojekt für ein Entwicklungszeit-Package. Testen sie es außerhalb der IDE."
 
 #: lazarusidestrconsts.listhislookslikeapascalfileitisrecommendedtouselowerc
 msgid "This looks like a Pascal file.%sIt is recommended to use lower case filenames, to avoid various problems on some filesystems and different compilers.%sRename it to lowercase?"
@@ -16409,7 +16408,7 @@ msgstr "Umschalten der Anzeige der Dateinamen zwischen voller/relativer Pfad"
 
 #: lazarusidestrconsts.listoolhasnoexecutable
 msgid "tool \"%s\" has no executable"
-msgstr ""
+msgstr "Werkzeug \"%s\" hat keine ausführbare Datei"
 
 #: lazarusidestrconsts.listoolheaderfailed
 msgid "Tool Header: Failed"
@@ -16656,7 +16655,6 @@ msgid "Included by:"
 msgstr "Eingebunden von:"
 
 #: lazarusidestrconsts.lisuidinproject
-#, fuzzy
 #| msgid "in Project:"
 msgid "In project:"
 msgstr "im Projekt:"
@@ -17666,7 +17664,7 @@ msgstr "i18n-Einstellungen"
 
 #: lazarusidestrconsts.rsincludeversioninfohint
 msgid "Version info is stored if the executable format supports it."
-msgstr ""
+msgstr "Versionsinformation wird gespeichert, wenn das Format der ausführbaren Datei es unterstützt."
 
 #: lazarusidestrconsts.rsincludeversioninfoinexecutable
 msgid "Include version info in executable"
