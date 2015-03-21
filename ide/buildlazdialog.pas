@@ -418,6 +418,7 @@ begin
   Result:=mrCancel;
   fProfile:=Profile;
   if CalcTargets(Flags)<>mrOk then exit;
+  debugln(['TLazarusBuilder.MakeLazarus AAA1 ',fExtraOptions]);
 
   if LazarusIDE<>nil then
     LazarusIDE.MainBarSubTitle:=Profile.Name;
@@ -570,22 +571,29 @@ begin
   fOutputDirRedirected:=False;
   fUpdateRevInc:=fProfile.UpdateRevisionInc;
 
-  // create extra options
-  fExtraOptions:=fProfile.ExtraOptions;
+  fExtraOptions:='';
 
   // check for special IDE config file
   //DebugLn(['CreateIDEMakeOptions blfUseMakeIDECfg=',blfUseMakeIDECfg in FLags,' ExtraOptions="',fExtraOptions,'" ',fPackageOptions]);
   if (blfUseMakeIDECfg in Flags) then
-    SpecialIdeConfig
-  else if not (blfUseMakeIDECfg in Flags) then
+  begin
+    SpecialIdeConfig;
+  end
+  else begin
     AppendExtraOption(fPackageOptions,false);
 
-  {$IFDEF Windows}
-  if (fProfile.TargetPlatform=lpWin32)
-  and (Win32MajorVersion <=4)
-  and (Win32Platform = VER_PLATFORM_WIN32_WINDOWS) then
-    AppendExtraOption('-dWIN9XPLATFORM');
-  {$ENDIF}
+    // write full file names and message ids
+    AppendExtraOption('-vbq');
+
+    {$IFDEF Windows}
+    if (fProfile.TargetPlatform=lpWin32)
+    and (Win32MajorVersion <=4)
+    and (Win32Platform = VER_PLATFORM_WIN32_WINDOWS) then
+      AppendExtraOption('-dWIN9XPLATFORM');
+    {$ENDIF}
+
+    AppendExtraOption(fProfile.ExtraOptions,false);
+  end;
 
   // set target filename and target directory:
   // 1. the user has set a target directory
@@ -613,11 +621,6 @@ begin
   if fTargetOS='' then fTargetOS:=fCompilerTargetOS;
   if fTargetCPU='' then fTargetCPU:=fCompilerTargetCPU;
   LazDir:=EnvironmentOptions.GetParsedLazarusDirectory;
-
-  if fTargetOS<>fCompilerTargetOS then
-    AppendExtraOption('-T'+fTargetOS);
-  if fTargetCPU<>fCompilerTargetCPU then
-    AppendExtraOption('-P'+fTargetCPU);
 
   //DebugLn(['CalcTargets NewTargetOS=',fTargetOS,' NewTargetCPU=',fTargetCPU]);
   if (fProfile.TargetDirectory<>'') then begin
@@ -699,26 +702,32 @@ begin
   fOutputDirRedirected:=CompareFilenames(ChompPathDelim(LazDir),
                                          ChompPathDelim(fTargetDir))<>0;
 
-  // write full file names and message ids
-  AppendExtraOption('-vbq');
+  // append target options
+  if not (blfUseMakeIDECfg in Flags) then
+  begin
+    if fTargetOS<>fCompilerTargetOS then
+      AppendExtraOption('-T'+fTargetOS);
+    if fTargetCPU<>fCompilerTargetCPU then
+      AppendExtraOption('-P'+fTargetCPU);
 
-  if fUnitOutDir<>'' then
-    // FPC interpretes '\ ' as an escape for a space in a path on Windows,
-    // so make sure the directory doesn't end with the path delimiter.
-    AppendExtraOption('-FU'+ChompPathDelim(fUnitOutDir));
+    if fUnitOutDir<>'' then
+      // FPC interpretes '\ ' as an escape for a space in a path on Windows,
+      // so make sure the directory doesn't end with the path delimiter.
+      AppendExtraOption('-FU'+ChompPathDelim(fUnitOutDir));
 
-  //debugln(['TLazarusBuilder.CreateIDEMakeOptions fTargetDir=',fTargetDir,' fOutputDirRedirected=',fOutputDirRedirected,' fTargetFilename=',fTargetFilename]);
-  if fOutputDirRedirected then
-    // FPC interpretes '\ ' as an escape for a space in a path on Windows,
-    // so make sure the directory doesn't end with the path delimiter.
-    AppendExtraOption('-FE'+ChompPathDelim(fTargetDir));
+    //debugln(['TLazarusBuilder.CreateIDEMakeOptions fTargetDir=',fTargetDir,' fOutputDirRedirected=',fOutputDirRedirected,' fTargetFilename=',fTargetFilename]);
+    if fOutputDirRedirected then
+      // FPC interpretes '\ ' as an escape for a space in a path on Windows,
+      // so make sure the directory doesn't end with the path delimiter.
+      AppendExtraOption('-FE'+ChompPathDelim(fTargetDir));
 
-  // Note: FPC automatically changes the last extension (append or replace)
-  // For example under linux, where executables don't need any extension
-  // fpc removes the last extension of the -o option.
-  DefaultTargetFilename:='lazarus'+GetExecutableExt(fTargetOS);
-  if CreateRelativePath(fTargetFilename,fTargetDir) <> DefaultTargetFilename then
-    AppendExtraOption('-o'+fTargetFilename);
+    // Note: FPC automatically changes the last extension (append or replace)
+    // For example under linux, where executables don't need any extension
+    // fpc removes the last extension of the -o option.
+    DefaultTargetFilename:='lazarus'+GetExecutableExt(fTargetOS);
+    if CreateRelativePath(fTargetFilename,fTargetDir) <> DefaultTargetFilename then
+      AppendExtraOption('-o'+fTargetFilename);
+  end;
 
   //DebugLn(['CreateIDEMakeOptions ',MMDef.Name,' ',fExtraOptions]);
 end;
@@ -907,7 +916,7 @@ var
 begin
   Result:=mrCancel;
   fProfile:=Profile;
-  if CalcTargets(Flags)<>mrOk then exit;
+  if CalcTargets(Flags-[blfUseMakeIDECfg])<>mrOk then exit;
 
   Result:=PrepareTargetDir(Flags);
   if Result<>mrOk then exit;

@@ -7395,7 +7395,7 @@ begin
     // save extra options
     IDEBuildFlags:=Flags;
     Result:=fBuilder.SaveIDEMakeOptions(BuildLazProfiles.Current,
-               IDEBuildFlags-[blfUseMakeIDECfg,blfDontClean]+[blfBackupOldExe]);
+               IDEBuildFlags-[blfDontClean]+[blfBackupOldExe]);
     if Result<>mrOk then begin
       DebugLn('TMainIDE.DoBuildLazarus: Save IDEMake options failed.');
       exit;
