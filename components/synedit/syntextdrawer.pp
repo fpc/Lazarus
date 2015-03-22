@@ -224,7 +224,6 @@ type
     function GetUseUTF8: boolean;
     function GetMonoSpace: boolean;
     function CreateColorPen(AColor: TColor; AStyle: LongWord = PS_SOLID): HPen;
-    property StockDC: HDC read FDC;
     property DrawingCount: Integer read FDrawingCount;
     property FontStock: TheFontStock read FFontStock;
     property BaseCharWidth: Integer read FBaseCharWidth;
@@ -277,6 +276,7 @@ type
     property CharExtra: Integer read GetCharExtra write SetCharExtra;
     property UseUTF8: boolean read GetUseUTF8;
     property MonoSpace: boolean read GetMonoSpace;
+    property StockDC: HDC read FDC;
   end;
 
   { TheTextDrawerEx }

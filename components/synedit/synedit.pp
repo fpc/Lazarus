@@ -1948,7 +1948,8 @@ begin
                                                             (FTrimmedLinesView);
 
   {$IFDEF WithSynExperimentalCharWidth}
-  FSysCharWidthLinesView := TSynEditStringSystemWidthChars.Create(FDoubleWidthChrLinesView, Self.Canvas);
+  //FSysCharWidthLinesView := TSynEditStringSystemWidthChars.Create(FDoubleWidthChrLinesView, Self.Canvas);
+  FSysCharWidthLinesView := TSynEditStringSystemWidthChars.Create(FTrimmedLinesView, Self.Canvas);
 
   FBidiChrLinesView := TSynEditStringBidiChars.Create(FSysCharWidthLinesView);
   FTabbedLinesView := TSynEditStringTabExpander.Create(FBidiChrLinesView);
@@ -2032,6 +2033,9 @@ begin
   {$ENDIF}
 
   fTextDrawer := TheTextDrawer.Create([fsBold], fFontDummy);
+  {$IFDEF WithSynExperimentalCharWidth}
+  FSysCharWidthLinesView.TextDrawer := fTextDrawer;
+  {$ENDIF} // WithSynExperimentalCharWidth
   FPaintLineColor := TSynSelectedColor.Create;
   FPaintLineColor2 := TSynSelectedColor.Create;
   fBookMarkOpt := TSynBookMarkOpt.Create(Self);

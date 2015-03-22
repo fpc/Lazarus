@@ -36,7 +36,8 @@ interface
 
 uses
   {$IFDEF WindowsDesktop} windows,  {$endif}
-  Classes, SysUtils, LazSynEditText, LazUTF8, Controls, Graphics, LazLoggerBase;
+  Classes, SysUtils, Types, LazSynEditText, SynTextDrawer, LazUTF8, Controls, Graphics,
+  LazLoggerBase;
 
 type
 
@@ -46,12 +47,18 @@ type
 
   TSynEditStringSystemWidthChars = class(TSynEditStringsLinked)
   private
+    FCharWidth: Integer;
     FHandleOwner: TCanvas;
+    fTextDrawer: TheTextDrawer;
   protected
+  {$IFDEF WindowsDesktop} // Do nothing on other OS/ parent handles default
     procedure DoGetPhysicalCharWidths(Line: PChar; LineLen, Index: Integer; PWidths: PPhysicalCharWidth); override;
+  {$endif}
   public
     constructor Create(ASynStringSource: TSynEditStrings; AHandleOwner: TCanvas);
     property HandleOwner: TCanvas read FHandleOwner;
+    property CharWidth:   Integer read FCharWidth write FCharWidth;
+    property TextDrawer: TheTextDrawer read fTextDrawer write fTextDrawer;
   end;
 
 implementation
@@ -68,9 +75,9 @@ begin
   FHandleOwner := AHandleOwner;
 end;
 
+{$IFDEF WindowsDesktop}
 procedure TSynEditStringSystemWidthChars.DoGetPhysicalCharWidths(Line: PChar; LineLen,
   Index: Integer; PWidths: PPhysicalCharWidth);
-  {$IFDEF WindowsDesktop}
 var
   //s: UnicodeString;// wideString;
   i: DWORD;
@@ -82,7 +89,6 @@ var
   s: WideString;
   j, k: Integer;
   l: SizeUInt;
-  {$endif}
 begin
   inherited DoGetPhysicalCharWidths(Line, LineLen, Index, PWidths);
   if (not IsUtf8) then
@@ -94,9 +100,8 @@ begin
     debugln(LOG_SynSystemWidthChars, ['TSynEditStringSystemWidthChars NO HANDLE ']);
     exit;
   end;
+if TextDrawer= nil then exit;;
 
-
-  {$IFDEF WindowsDesktop}
   SetLength(s, LineLen+1);  // wide chars of UTF-16 <= bytes of UTF-8 string
   if ConvertUTF8ToUTF16(PWideChar(S), LineLen+1, Line, LineLen, [toInvalidCharToSymbol], l) <> trNoError then
     exit;
@@ -111,8 +116,19 @@ begin
   SetLength(glyph, Length(s)+1);    cpRes.lpGlyphs    := @glyph[0];
   cpRes.nGlyphs := length(s);
 
-  i := GetCharacterPlacementW(FHandleOwner.Handle, pwidechar(s), length(s), 0,
-                              @cpRes, GCP_DIACRITIC + GCP_KASHIDA + GCP_LIGATE);
+//exit;
+  {$IFDEF WithSynExperimentalCharWidth}
+  // Need to find fallback font(s), and measure with them too.
+  TextDrawer.BeginDrawing(FHandleOwner.Handle);
+  i := GetFontLanguageInfo(textdrawer.StockDC);
+  if (i and GCP_ERROR) <> 0 then i := 0; //exit;
+  i := i and FLI_MASK or GCP_GLYPHSHAPE;
+
+  i := GetCharacterPlacementW(
+  textdrawer.StockDC,  //FHandleOwner.Handle,
+  pwidechar(s), length(s), 0, @cpRes, i); //GCP_DIACRITIC + GCP_KASHIDA + GCP_LIGATE);
+  TextDrawer.EndDrawing;
+  {$endif}
   if i = 0 then begin
     debugln(LOG_SynSystemWidthChars, ['TSynEditStringSystemWidthChars FAILED for line ', Index]);
     exit;
@@ -127,6 +143,8 @@ begin
           debugln(LOG_SynSystemWidthChars, ['TSynEditStringSystemWidthChars for line ', Index, ' set char at ', j, '(', k, ') to be drawn with previous']);
           PWidths^ := 0;
         end;
+        if dx[k] > fTextDrawer.CharWidth then
+          PWidths^ := 2; // assums that is the max size, if font is proportional
       end;
       inc(k);
     end;
@@ -135,8 +153,8 @@ begin
     inc(Line);
   end;
 
-  {$endif}
 end;
+{$endif}
 
 
 initialization
