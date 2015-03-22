@@ -59,10 +59,15 @@ type
 
   TFpDebugDebuggerProperties = class(TDebuggerProperties)
   private
+    FConsoleTty: string;
     FNextOnlyStopOnStartLine: boolean;
   public
     constructor Create; override;
     procedure Assign(Source: TPersistent); override;
+    {$ifdef unix}
+  published
+    {$endif unix}
+    property ConsoleTty: string read FConsoleTty write FConsoleTty;
   published
     property NextOnlyStopOnStartLine: boolean read FNextOnlyStopOnStartLine write FNextOnlyStopOnStartLine;
   end;
@@ -319,6 +324,7 @@ begin
   inherited Assign(Source);
   if Source is TFpDebugDebuggerProperties then begin
     FNextOnlyStopOnStartLine := TFpDebugDebuggerProperties(Source).NextOnlyStopOnStartLine;
+    FConsoleTty:=TFpDebugDebuggerProperties(Source).ConsoleTty;
   end;
 end;
 
@@ -1421,6 +1427,7 @@ function TFpDebugDebugger.RequestCommand(const ACommand: TDBGCommand;
   const AParams: array of const): Boolean;
 var
   EvalFlags: TDBGEvaluateFlags;
+  AConsoleTty: string;
   addr: TDBGPtr;
 begin
   result := False;
@@ -1432,6 +1439,9 @@ begin
       if not assigned(FDbgController.MainProcess) then
         begin
         FDbgController.ExecutableFilename:=FileName;
+        AConsoleTty:=TFpDebugDebuggerProperties(GetProperties).ConsoleTty;
+        FDbgController.ConsoleTty:=AConsoleTty;
+        FDbgController.RedirectConsoleOutput:=AConsoleTty='';
         FDbgController.Params.Clear;
         if Arguments<>'' then
           CommandToList(Arguments, FDbgController.Params);
