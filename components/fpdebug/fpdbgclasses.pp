@@ -262,7 +262,7 @@ type
     // Should analyse why the debugger has stopped.
     function AnalyseDebugEvent(AThread: TDbgThread): TFPDEvent; virtual; abstract;
   public
-    class function StartInstance(AFileName: string; AParams, AnEnvironment: TStrings; AWorkingDirectory: string; AOnLog: TOnLog): TDbgProcess; virtual;
+    class function StartInstance(AFileName: string; AParams, AnEnvironment: TStrings; AWorkingDirectory, AConsoleTty: string; AOnLog: TOnLog; ReDirectOutput: boolean): TDbgProcess; virtual;
     constructor Create(const AName: string; const AProcessID, AThreadID: Integer; AOnLog: TOnLog); virtual;
     destructor Destroy; override;
     function  AddBreak(const ALocation: TDbgPtr): TDbgBreakpoint; overload;
@@ -956,7 +956,7 @@ resourcestring
   sNoDebugSupport = 'Debug support is not available for this platform .';
 
 class function TDbgProcess.StartInstance(AFileName: string; AParams,
-  AnEnvironment: TStrings; AWorkingDirectory: string; AOnLog: TOnLog): TDbgProcess;
+  AnEnvironment: TStrings; AWorkingDirectory, AConsoleTty: string; AOnLog: TOnLog; ReDirectOutput: boolean): TDbgProcess;
 begin
   if assigned(AOnLog) then
     AOnLog(sNoDebugSupport, dllError)

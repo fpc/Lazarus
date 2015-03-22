@@ -257,7 +257,7 @@ type
     function CreateThread(AthreadIdentifier: THandle; out IsMainThread: boolean): TDbgThread; override;
     function AnalyseDebugEvent(AThread: TDbgThread): TFPDEvent; override;
   public
-    class function StartInstance(AFileName: string; AParams, AnEnvironment: TStrings; AWorkingDirectory: string; AOnLog: TOnLog): TDbgProcess; override;
+    class function StartInstance(AFileName: string; AParams, AnEnvironment: TStrings; AWorkingDirectory, AConsoleTty: string; AOnLog: TOnLog; ReDirectOutput: boolean): TDbgProcess; override;
     constructor Create(const AName: string; const AProcessID, AThreadID: Integer; AOnLog: TOnLog); override;
     destructor Destroy; override;
 
@@ -283,7 +283,8 @@ procedure RegisterDbgClasses;
 implementation
 
 var
-  GSlavePtyFd: cint;
+  GConsoleTty: string;
+  GSlavePTyFd: cint;
 
 procedure RegisterDbgClasses;
 begin
@@ -304,21 +305,35 @@ procedure TDbgLinuxProcess.OnForkEvent(Sender: TObject);
 procedure OnForkEvent;
 {$endif VER2_6}
 var
-  e: integer;
+  ConsoleTtyFd: cint;
 begin
-  login_tty(GSlavePtyFd);
-  e := fpgeterrno;
-  if e <> 0 then
+  if GConsoleTty<>'' then
     begin
-    writeln('Failed to login to pty. Errcode: '+inttostr(e)+' - '+inttostr(GSlavePtyFd));
+    ConsoleTtyFd:=FpOpen(GConsoleTty,O_RDWR+O_NOCTTY);
+    if ConsoleTtyFd>-1 then
+      begin
+      if (FpIOCtl(ConsoleTtyFd, TIOCSCTTY, nil) = -1) then
+        begin
+        // This call always fails for some reason. That's also why login_tty can not be used. (login_tty
+        // also calls TIOCSCTTY, but when it fails it aborts) The failure is ignored.
+        // writeln('Failed to set tty '+inttostr(fpgeterrno));
+        end;
+
+      FpDup2(ConsoleTtyFd,0);
+      FpDup2(ConsoleTtyFd,1);
+      FpDup2(ConsoleTtyFd,2);
+      end
+    else
+      writeln('Failed to open tty '+GConsoleTty+'. Errno: '+inttostr(fpgeterrno));
+    end
+  else if GSlavePTyFd>-1 then
+    begin
+    if login_tty(GSlavePTyFd) <> 0 then
+      writeln('Failed to login to tty. Errcode: '+inttostr(fpgeterrno)+' - '+inttostr(GSlavePTyFd));
     end;
 
-  fpPTrace(PTRACE_TRACEME, 0, nil, nil);
-  e := fpgeterrno;
-  if e <> 0 then
-    begin
-    writeln('Failed to start trace of process. Errcode: '+inttostr(e));
-    end;
+  if fpPTrace(PTRACE_TRACEME, 0, nil, nil) <> 0 then
+    writeln('Failed to start trace of process. Errcode: '+inttostr(fpgeterrno));
 end;
 
 function TDbgLinuxThread.GetDebugRegOffset(ind: byte): pointer;
@@ -564,12 +579,11 @@ end;
 destructor TDbgLinuxProcess.Destroy;
 begin
   FProcProcess.Free;
-  if FMasterPtyFd>-1 then
-    FpClose(FMasterPtyFd);
   inherited Destroy;
 end;
 
-class function TDbgLinuxProcess.StartInstance(AFileName: string; AParams, AnEnvironment: TStrings; AWorkingDirectory: string; AOnLog: TOnLog): TDbgProcess;
+class function TDbgLinuxProcess.StartInstance(AFileName: string; AParams, AnEnvironment: TStrings; AWorkingDirectory, AConsoleTty: string;
+  AOnLog: TOnLog; ReDirectOutput: boolean): TDbgProcess;
 var
   PID: TPid;
   AProcess: TProcess;
@@ -591,6 +605,21 @@ begin
     Exit;
   end;
 
+  AMasterPtyFd:=-1;
+  if ReDirectOutput then
+    begin
+    if AConsoleTty<>'' then
+      AOnLog('It is of no use to provide a console-tty when the console output is being redirected.', dllInfo);
+    GConsoleTty:='';
+    if openpty(@AMasterPtyFd, @GSlavePTyFd, nil, nil, nil) <> 0 then
+      AOnLog('Failed to open pseudo-tty. Errcode: '+inttostr(fpgeterrno), dllDebug);
+    end
+  else
+    begin
+    GSlavePTyFd:=-1;
+    GConsoleTty:=AConsoleTty;
+    end;
+
   AProcess := TProcess.Create(nil);
   try
     AProcess.OnForkEvent:=@OnForkEvent;
@@ -598,8 +627,7 @@ begin
     AProcess.Parameters:=AParams;
     AProcess.Environment:=AnEnvironment;
     AProcess.CurrentDirectory:=AWorkingDirectory;
-    if openpty(@AMasterPtyFd, @GSlavePtyFd, nil, nil, nil) <> 0 then
-      AOnLog('Failed to open new pty. Errcode: '+inttostr(fpgeterrno), dllDebug);
+
     AProcess.Execute;
     PID:=AProcess.ProcessID;
 
@@ -612,6 +640,11 @@ begin
     begin
       AOnLog(Format('Failed to start process "%s". Errormessage: "%s".',[AFileName, E.Message]), dllInfo);
       AProcess.Free;
+
+    if GSlavePTyFd>-1 then
+      FpClose(GSlavePTyFd);
+    if AMasterPtyFd>-1 then
+      FpClose(AMasterPtyFd);
     end;
   end;
 end;

@@ -122,6 +122,8 @@ type
     FProcessMap: TMap;
     FPDEvent: TFPDEvent;
     FParams: TStringList;
+    FConsoleTty: string;
+    FRedirectConsoleOutput: boolean;
     FWorkingDirectory: string;
     procedure SetEnvironment(AValue: TStrings);
     procedure SetExecutableFilename(AValue: string);
@@ -159,6 +161,8 @@ type
     property Params: TStringList read FParams write SetParams;
     property Environment: TStrings read FEnvironment write SetEnvironment;
     property WorkingDirectory: string read FWorkingDirectory write FWorkingDirectory;
+    property RedirectConsoleOutput: boolean read FRedirectConsoleOutput write FRedirectConsoleOutput;
+    property ConsoleTty: string read FConsoleTty write FConsoleTty;
     // With this parameter set a 'next' will only stop if the current
     // instruction is the first inststruction of a line according to the
     // debuginfo.
@@ -543,7 +547,7 @@ begin
     Exit;
     end;
 
-  FCurrentProcess := OSDbgClasses.DbgProcessClass.StartInstance(FExecutableFilename, Params, Environment, WorkingDirectory, @Log);
+  FCurrentProcess := OSDbgClasses.DbgProcessClass.StartInstance(FExecutableFilename, Params, Environment, WorkingDirectory, FConsoleTty , @Log, RedirectConsoleOutput);
   if assigned(FCurrentProcess) then
     begin
     FProcessMap.Add(FCurrentProcess.ProcessID, FCurrentProcess);

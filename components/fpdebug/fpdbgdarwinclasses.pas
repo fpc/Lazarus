@@ -138,7 +138,7 @@ type
     function CreateThread(AthreadIdentifier: THandle; out IsMainThread: boolean): TDbgThread; override;
     function AnalyseDebugEvent(AThread: TDbgThread): TFPDEvent; override;
   public
-    class function StartInstance(AFileName: string; AParams, AnEnvironment: TStrings; AWorkingDirectory: string; AOnLog: TOnLog): TDbgProcess; override;
+    class function StartInstance(AFileName: string; AParams, AnEnvironment: TStrings; AWorkingDirectory, AConsoleTty: string; AOnLog: TOnLog; ReDirectOutput: boolean): TDbgProcess; override;
     constructor Create(const AName: string; const AProcessID, AThreadID: Integer; AOnLog: TOnLog); override;
     destructor Destroy; override;
     procedure LoadInfo; override;
@@ -165,9 +165,7 @@ procedure RegisterDbgClasses;
 implementation
 
 var
-  GSlavePtyFd: cint;
-  GMasterPtyFd: cint;
-  GSlavePty: string;
+  GConsoleTty: string;
 
 type
   vm_map_t = mach_port_t;
@@ -249,30 +247,32 @@ procedure TDbgDarwinProcess.OnForkEvent(Sender: TObject);
 {$else}
 procedure OnForkEvent;
 {$endif VER2_6}
+var
+  ConsoleTtyFd: cint;
 begin
   if FpSetsid<>0 then
     begin
     // For some reason, FpSetsid always fails.
     // writeln('Failed to set sid. '+inttostr(fpgeterrno));
     end;
-  if GSlavePty<>'' then
+  if GConsoleTty<>'' then
   begin
-    GSlavePtyFd:=FpOpen(GSlavePty, O_RDWR + O_NOCTTY);
-    if GSlavePtyFd>-1 then
+    ConsoleTtyFd:=FpOpen(GConsoleTty, O_RDWR + O_NOCTTY);
+    if ConsoleTtyFd>-1 then
       begin
-      if (FpIOCtl(GSlavePtyFd, TIOCSCTTY, nil) = -1) then
+      if (FpIOCtl(ConsoleTtyFd, TIOCSCTTY, nil) = -1) then
         begin
         // This call always fails for some reason. That's also why login_tty can not be used. (login_tty
         // also calls TIOCSCTTY, but when it fails it aborts) The failure is ignored.
         // writeln('Failed to set tty '+inttostr(fpgeterrno));
         end;
 
-      safefpdup2(GSlavePtyFd,0);
-      safefpdup2(GSlavePtyFd,1);
-      safefpdup2(GSlavePtyFd,2);
+      safefpdup2(ConsoleTtyFd,0);
+      safefpdup2(ConsoleTtyFd,1);
+      safefpdup2(ConsoleTtyFd,2);
       end
     else
-      writeln('Failed to open tty '+GSlavePty+'. Errno: '+inttostr(fpgeterrno));
+      writeln('Failed to open tty '+GConsoleTty+'. Errno: '+inttostr(fpgeterrno));
   end;
 
   fpPTrace(PTRACE_TRACEME, 0, nil, nil);
@@ -651,8 +651,6 @@ end;
 destructor TDbgDarwinProcess.Destroy;
 begin
   FProcProcess.Free;
-  if FMasterPtyFd>-1 then
-    FpClose(FMasterPtyFd);
   inherited Destroy;
 end;
 
@@ -695,11 +693,12 @@ begin
     log('No dSYM bundle ('+dSYMFilename+') found.', dllInfo);
 end;
 
-class function TDbgDarwinProcess.StartInstance(AFileName: string; AParams, AnEnvironment: TStrings; AWorkingDirectory: string; AOnLog: TOnLog): TDbgProcess;
+class function TDbgDarwinProcess.StartInstance(AFileName: string; AParams, AnEnvironment: TStrings; AWorkingDirectory, AConsoleTty: string; AOnLog: TOnLog; ReDirectOutput: boolean): TDbgProcess;
 var
   PID: TPid;
   AProcess: TProcess;
   AnExecutabeFilename: string;
+  AMasterPtyFd: cint;
 begin
   result := nil;
 
@@ -720,6 +719,24 @@ begin
       end;
     end;
 
+  AMasterPtyFd:=-1;
+  if ReDirectOutput then
+    begin
+    if AConsoleTty<>'' then
+      AOnLog('It is of no use to provide a console-tty when the console output is being redirected.', dllInfo);
+    AMasterPtyFd := posix_openpt(O_RDWR + O_NOCTTY);
+    if AMasterPtyFd<0 then
+      AOnLog('Failed to open pseudo-tty. Errno: ' + IntToStr(fpgeterrno), dllError)
+    else
+      begin
+      if grantpt(AMasterPtyFd)<>0 then
+        AOnLog('Failed to set pseudo-tty slave permissions. Errno: ' + IntToStr(fpgeterrno), dllError);
+      if unlockpt(AMasterPtyFd)<>0 then
+        AOnLog('Failed to unlock pseudo-tty slave. Errno: ' + IntToStr(fpgeterrno), dllError);
+      AConsoleTty := strpas(ptsname(AMasterPtyFd));
+      end;
+    end;
+
   AProcess := TProcess.Create(nil);
   try
     AProcess.OnForkEvent:=@OnForkEvent;
@@ -727,26 +744,14 @@ begin
     AProcess.Parameters:=AParams;
     AProcess.Environment:=AnEnvironment;
     AProcess.CurrentDirectory:=AWorkingDirectory;
-
-    GSlavePty:='';
-    GMasterPtyFd := posix_openpt(O_RDWR + O_NOCTTY);
-    if GMasterPtyFd<0 then
-      AOnLog('Failed to open pseudo-tty. Errno: ' + IntToStr(fpgeterrno), dllDebug)
-    else
-    begin
-      if grantpt(GMasterPtyFd)<>0 then
-        AOnLog('Failed to set pseudo-tty slave permissions. Errno: ' + IntToStr(fpgeterrno), dllDebug);
-      if unlockpt(GMasterPtyFd)<>0 then
-        AOnLog('Failed to unlock pseudo-tty slave. Errno: ' + IntToStr(fpgeterrno), dllDebug);
-      GSlavePty := strpas(ptsname(GMasterPtyFd));
-    end;
+    GConsoleTty := AConsoleTty;
 
     AProcess.Execute;
     PID:=AProcess.ProcessID;
 
     sleep(100);
     result := TDbgDarwinProcess.Create(AFileName, Pid, -1, AOnLog);
-    TDbgDarwinProcess(result).FMasterPtyFd := GMasterPtyFd;
+    TDbgDarwinProcess(result).FMasterPtyFd := AMasterPtyFd;
     TDbgDarwinProcess(result).FProcProcess := AProcess;
     TDbgDarwinProcess(result).FExecutableFilename := AnExecutabeFilename;
   except
@@ -754,6 +759,9 @@ begin
     begin
       AOnLog(Format('Failed to start process "%s". Errormessage: "%s".',[AFileName, E.Message]), dllInfo);
       AProcess.Free;
+
+      if AMasterPtyFd>-1 then
+        FpClose(AMasterPtyFd);
     end;
   end;
 end;
