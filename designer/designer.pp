@@ -3958,7 +3958,6 @@ begin
   if ShowAlignComponentsDialog(HorizAlignID,VertAlignID)=mrOk then 
   begin
     case HorizAlignID of
-     0: HorizAlignment:=csaNone;
      1: HorizAlignment:=csaSides1;
      2: HorizAlignment:=csaCenters;
      3: HorizAlignment:=csaSides2;
@@ -3966,9 +3965,9 @@ begin
      5: HorizAlignment:=csaSpaceEqually;
      6: HorizAlignment:=csaSide1SpaceEqually;
      7: HorizAlignment:=csaSide2SpaceEqually;
+     else HorizAlignment:=csaNone;  // value=0, this prevents compiler warning.
     end;
     case VertAlignID of
-     0: VertAlignment:=csaNone;
      1: VertAlignment:=csaSides1;
      2: VertAlignment:=csaCenters;
      3: VertAlignment:=csaSides2;
@@ -3976,6 +3975,7 @@ begin
      5: VertAlignment:=csaSpaceEqually;
      6: VertAlignment:=csaSide1SpaceEqually;
      7: VertAlignment:=csaSide2SpaceEqually;
+     else VertAlignment:=csaNone;  // value=0, this prevents compiler warning.
     end;
     ControlSelection.AlignComponents(HorizAlignment,VertAlignment);
     Modified;
@@ -4014,16 +4014,16 @@ begin
   if ShowSizeComponentsDialog(HorizSizingID,AWidth,VertSizingID,AHeight) = mrOk then 
   begin
     case HorizSizingID of
-     0: HorizSizing:=cssNone;
      1: HorizSizing:=cssShrinkToSmallest;
      2: HorizSizing:=cssGrowToLargest;
      3: HorizSizing:=cssFixed;
+     else HorizSizing:=cssNone;  // value=0, this prevents compiler warning.
     end;
     case VertSizingID of
-     0: VertSizing:=cssNone;
      1: VertSizing:=cssShrinkToSmallest;
      2: VertSizing:=cssGrowToLargest;
      3: VertSizing:=cssFixed;
+     else VertSizing:=cssNone;  // value=0, this prevents compiler warning.
     end;
     ControlSelection.SizeComponents(HorizSizing,AWidth,VertSizing,AHeight);
     Modified;

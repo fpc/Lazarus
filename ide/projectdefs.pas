@@ -1481,7 +1481,9 @@ function TProjectManualProgramDescriptor.CreateStartFiles(AProject: TLazProject
 begin
   if AProject.MainFile<>nil then
     Result:=LazarusIDE.DoOpenEditorFile(AProject.MainFile.Filename,-1,-1,
-                                        [ofProjectLoading,ofRegularFile]);
+                                        [ofProjectLoading,ofRegularFile])
+  else
+    Result:=mrCancel;
 end;
 
 { TProjectEmptyProgramDescriptor }

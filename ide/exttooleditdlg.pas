@@ -474,7 +474,7 @@ var
   Src: TExternalUserTools;
   i: Integer;
 begin
-  if Obj=Self then exit;
+  if Obj=Self then exit(true);
   if Obj is TExternalUserTools then begin
     Src:=TExternalUserTools(Obj);
     Result:=false;

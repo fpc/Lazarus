@@ -404,6 +404,7 @@ begin
     else exit(false);
     end;
   end;
+  Result:=true;
 end;
 
 function TMainIDEInterface.DoJumpToSourcePosition(const Filename: string; NewX, NewY,

@@ -1761,6 +1761,7 @@ var
 begin
   if GetLineAt(HintInfo^.CursorPos.Y,View,Line) then begin
     MsgLine:=nil;
+    s:='';
     if Line<0 then
       s:=GetHeaderText(View)
     else if Line<View.Lines.Count then begin
@@ -3140,7 +3141,7 @@ begin
     MinUrgency:=mluHint
   else if Sender=MsgFilterDebugMenuItem then
     MinUrgency:=mluVerbose3
-  else if Sender=MsgFilterNoneMenuItem then
+  else {if Sender=MsgFilterNoneMenuItem then}
     MinUrgency:=mluNone;
   MessagesCtrl.ActiveFilter.MinUrgency:=MinUrgency;
   //debugln(['TMessagesFrame.FilterUrgencyMenuItemClick ',MessageLineUrgencyNames[MinUrgency]]);

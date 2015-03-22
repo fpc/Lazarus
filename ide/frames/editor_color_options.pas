@@ -1072,6 +1072,7 @@ begin
       ColorElementTree.Items.Add(nil, AdditionalHighlightGroupNames[j]);
 
   // Fill Attributes in
+  DefNode := nil;
   for i := 0 to FCurrentColorScheme.AttributeCount - 1 do begin
     Attr := FCurrentColorScheme.AttributeAtPos[i];
     if Attr.StoredName <> '' then begin

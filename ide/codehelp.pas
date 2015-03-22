@@ -1548,6 +1548,7 @@ var
     CurPath: String;
     p: Integer;
   begin
+    Result:=false;
     if Paths='' then exit;
     if not IDEMacros.CreateAbsoluteSearchPath(Paths,BaseDir) then exit;
     //DebugLn(['SearchInPath START ',Paths]);
@@ -1566,7 +1567,6 @@ var
       end;
     until p>length(Paths);
     Filename:='';
-    Result:=false;
   end;
   
   function CheckUnitOwners(CheckSourceDirectories: boolean;
@@ -1987,6 +1987,7 @@ begin
     Result:=Tool.ExtractSourceName;
   end else begin
     while CodeNode<>nil do begin
+      NodeName:='';
       case CodeNode.Desc of
       ctnVarDefinition:
         if Tool.NodeIsResultIdentifier(CodeNode) then
@@ -2009,7 +2010,6 @@ begin
       ctnIdentifier:
         if Tool.NodeIsResultType(CodeNode) then
           NodeName:='Result';
-      else NodeName:='';
       end;
       if NodeName<>'' then begin
         if Result<>'' then

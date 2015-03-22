@@ -163,7 +163,7 @@ var
   HasLinefeed: Boolean;
 begin
   if InText = '' then
-    Exit;
+    Exit('');
   HasLinefeed := InText[Length(InText)] in [#10,#13];
   InLines := TStringList.Create;
   InLines.Text := InText;

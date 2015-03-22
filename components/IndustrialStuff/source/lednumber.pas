@@ -273,7 +273,7 @@ end;
 
 function TCustomLEDNumber.GetAbout : string;
 begin
-//  Result := VpVersionStr;
+  Result := ''; //VpVersionStr;
 end;
 {=====}
 

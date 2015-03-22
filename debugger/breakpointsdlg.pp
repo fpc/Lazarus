@@ -874,6 +874,7 @@ begin
         case ABreakpoint.WatchScope of
           wpsGlobal: s:= lisWatchScopeGlobal;
           wpsLocal:  s:= lisWatchScopeLocal;
+          else s := '';
         end;
         s := s +' / ';
         case ABreakpoint.WatchKind of

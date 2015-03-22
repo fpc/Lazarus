@@ -471,7 +471,7 @@ function TFindOverloadsWorker.AddFileToScan(const Filename: string;
   CheckExtension: boolean): TFOWFile;
 begin
   if CheckExtension and (not FilenameIsPascalSource(Filename)) then
-    exit;
+    exit(nil);
   Result:=FindFile(Filename);
   if Result<>nil then exit;
   Result:=TFOWFile.Create(Filename);

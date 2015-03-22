@@ -369,7 +369,9 @@ begin
       Result:=TLazPackage(DepOwner).IDAsString
     else
       Result:=TLazPackage(DepOwner).Name;
-  end;
+  end
+  else
+    Result:='';
 end;
 
 function TCleanPkgDepsDlg.FetchDeletes: TObjectList;

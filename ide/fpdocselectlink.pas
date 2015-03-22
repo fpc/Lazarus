@@ -441,11 +441,12 @@ begin
         end;
         if (ModuleOwner<>nil) and (ModuleOwner<>StartModuleOwner) then begin
           // different module
-          if ModuleOwner is TLazProject then begin
-            ModuleName:=lowercase(ExtractFileNameOnly(TLazProject(ModuleOwner).ProjectInfoFile));
-          end else if ModuleOwner is TLazPackage then begin
-            ModuleName:=TLazPackage(ModuleOwner).Name;
-          end;
+          if ModuleOwner is TLazProject then
+            ModuleName:=lowercase(ExtractFileNameOnly(TLazProject(ModuleOwner).ProjectInfoFile))
+          else if ModuleOwner is TLazPackage then
+            ModuleName:=TLazPackage(ModuleOwner).Name
+          else
+            ModuleName:='';
           if ModuleName<>'' then
             ElementName:='#'+ModuleName+'.'+ElementName
           else

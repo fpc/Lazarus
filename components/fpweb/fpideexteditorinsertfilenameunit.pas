@@ -78,7 +78,7 @@ end;
 procedure TfpIDEExtEditorInsertFileNameForm.FillFilesList;
 var
   i:integer;
-  S, Ext:string;
+  S:string;
 begin
   LBFiles.Items.Clear;
   if Assigned(LazarusIDE) and Assigned(LazarusIDE.ActiveProject) then

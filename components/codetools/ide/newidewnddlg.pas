@@ -130,11 +130,11 @@ begin
     debugln('Source: ==================================================');
     debugln(Src);
     debugln('==========================================================');
-    exit;
+    exit('');
   end;
   if EndPos<1 then begin
     debugln(['ERROR: TFileDescIDEDockableWindow.ExtractTemplate marker "'+EndMarker+'" not found']);
-    exit;
+    exit('');
   end;
   inc(StartPos,length(StartMarker));
   Result:=UTF8Trim(copy(Src,StartPos,EndPos-StartPos));

@@ -1043,7 +1043,7 @@ var
   CurUnit: TUGUnit;
   ProjFile: TLazProjectFile;
 begin
-  if AProject=nil then exit;
+  if AProject=nil then exit(nil);
   Result:=Groups.GetGroup(GroupPrefixProject,true);
   Result.BaseDir:=ExtractFilePath(AProject.ProjectInfoFile);
   if not FilenameIsAbsolute(Result.BaseDir) then
@@ -1070,7 +1070,7 @@ var
   Filename: String;
   CurUnit: TUGUnit;
 begin
-  if APackage=nil then exit;
+  if APackage=nil then exit(nil);
   Result:=Groups.GetGroup(APackage.Name,true);
   Result.BaseDir:=APackage.DirectoryExpanded;
   if not FilenameIsAbsolute(Result.BaseDir) then

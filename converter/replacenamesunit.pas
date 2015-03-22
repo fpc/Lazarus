@@ -277,7 +277,9 @@ begin
     fGrid.Cells[0,GridEndInd]:=AOldIdent;
     fGrid.Cells[1,GridEndInd]:=Result;
     Inc(GridEndInd);
-  end;
+  end
+  else
+    Result:='';
 end;
 
 

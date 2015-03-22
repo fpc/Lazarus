@@ -2924,7 +2924,6 @@ procedure TfrDesignerForm.GetFontList;
 var
   DC: HDC;
   Lf: TLogFont;
-  S: String;
   {$IFDEF USE_PRINTER_FONTS}
   Lst: TStrings;
   i: Integer;
@@ -3259,7 +3258,6 @@ end;
 
 procedure TfrDesignerForm.FilePreviewExecute(Sender: TObject); // preview
 var
-  v1, v2: Boolean;
   TestRepStream:TMemoryStream;
   Rep, SaveR:TfrReport;
 
@@ -6382,8 +6380,6 @@ end;
 {----------------------------------------------------------------------------}
 // menu bitmaps
 procedure TfrDesignerForm.SetMenuBitmaps;
-var
-  i: Integer;
 begin
   MaxItemWidth := 0; MaxShortCutWidth := 0;
 
@@ -7771,7 +7767,6 @@ end;
 procedure TfrCustomMemoViewDetailReportProperty.GetValues(Proc: TGetStrProc);
 var
   I: Integer;
-  Values: TStringList;
 begin
   if Assigned(CurReport) then
   begin
@@ -7821,7 +7816,7 @@ end;
 
 procedure TlrInternalTools.InsertDbFields;
 var
-  i, x, y, dx, dy, pdx, adx, tdx, tdy: Integer;
+  i, x, y, dx, dy, pdx, adx: Integer;
   HeaderL, DataL: TFpList;
   t, t1: TfrView;
   b: TfrBandView;

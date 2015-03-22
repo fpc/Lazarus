@@ -751,9 +751,8 @@ begin
   then begin
     FHasError := True;
     AddError('Wrong amount of param');
-    exit;
+    exit(0);
   end;
-
   Result := FParams[Index].Num;
 end;
 
@@ -763,9 +762,8 @@ begin
   then begin
     FHasError := True;
     AddError('Wrong amount of param');
-    exit;
+    exit('');
   end;
-
   Result := FParams[Index].Text;
 end;
 
@@ -774,9 +772,8 @@ begin
   if (Index < 0) or (Index >= Length(FParams)) then begin
     FHasError := True;
     AddError('Wrong amount of param');
-    exit;
+    exit(ptString); // What to return here?
   end;
-
   Result := FParams[Index].ParamType;
 end;
 

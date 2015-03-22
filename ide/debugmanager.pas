@@ -782,7 +782,7 @@ end;
 
 function TDebugManager.DoProjectClose(Sender: TObject; AProject: TLazProject): TModalResult;
 begin
-  if AProject<>Project1 then exit;
+  if AProject<>Project1 then exit(mrCancel);
   ResetDebugger;
   Result := mrOK;
 end;
@@ -1368,8 +1368,10 @@ begin
   end;
 
   Editor := nil;
-  if SourceEditorManager <> nil
-  then Editor := SourceEditorManager.SourceEditorIntfWithFilename(NewSource.Filename);
+  if SourceEditorManager <> nil then
+    Editor := SourceEditorManager.SourceEditorIntfWithFilename(NewSource.Filename)
+  else
+    NewSource := Nil;
 
   // jump editor to execution line
   Flags := [jfAddJumpPoint, jfSearchVirtualFullPath];

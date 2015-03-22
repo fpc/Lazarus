@@ -815,6 +815,8 @@ var
     NewBounds: TSynSearchTermOptsBounds;
   begin
     NewTerm := '';
+    B1 := False;
+    B2 := False;
     if syn.SelAvail and (syn.BlockBegin.y = syn.BlockEnd.y) then begin
       NewTerm := syn.SelText;
       LineTxt := syn.Lines[syn.CaretY-1];

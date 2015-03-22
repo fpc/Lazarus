@@ -475,6 +475,7 @@ var
     CommChBeg, CommBeg, CommEnd, i: Integer;   // Start and end of comment.
   begin
     Result:='';
+    CommBeg:=0;
     CommEnd:=Length(aStr);
     CommChBeg:=PosEx('//', aStr, aPossibleStartPos);
     if CommChBeg<>0 then

@@ -1400,7 +1400,9 @@ begin
       else
         AddToProjectLater(aFileName);    // Add to project later.
     end;
-  end;
+  end
+  else
+    Result:=False;
 end;
 
 function TConvertDelphiProjPack.CheckPackageDep(AUnitName: string): Boolean;

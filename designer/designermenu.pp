@@ -733,7 +733,9 @@ begin
     temp_coord:=GetMaxCoordinates(DMenuItem.SubMenu, Max_Width, Max_Height);
     Max_Width:=temp_coord.Right;
     Max_Height:=temp_coord.Bottom;
-  end;
+  end
+  else
+    temp_coord:=Rect(0,0,0,0);
   if (DMenuItem.NextItem <> nil) then
     temp_coord:=GetMaxCoordinates(DMenuItem.NextItem, Max_Width, Max_Height);
     
@@ -1779,6 +1781,7 @@ var
   DesignerMenuItem: TDesignerMenuItem;
 begin
   if not (Sender is TPropertyEditor) then Exit;
+  InvalidateNeeded := False;
   for i := 0 to TPropertyEditor(Sender).PropCount - 1 do
   begin
     Instance := TPropertyEditor(Sender).GetComponent(i);
@@ -2251,6 +2254,7 @@ var
   i: Integer;
   temp_menuitem: TMenuItem;
 begin
+  Result := Nil;
   case TheAction of
   // Insert new AMenuItem after selected AMenuItem
   1: begin

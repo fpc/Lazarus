@@ -137,12 +137,6 @@ procedure TfrDesOptionsForm.FillFonts;
 var
   DC: HDC;
   Lf: TLogFont;
-  S: String;
-  {$IFDEF USE_PRINTER_FONTS}
-  Lst: TStrings;
-  i: Integer;
-  j: PtrInt;
-  {$ENDIF}
 begin
   ComboBox1.Clear;
   DC := GetDC(0);

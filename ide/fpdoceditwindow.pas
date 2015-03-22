@@ -1056,7 +1056,7 @@ end;
 
 function TFPDocEditor.GUIModified: boolean;
 begin
-  if fpdefReading in FFlags then exit;
+  if fpdefReading in FFlags then exit(false);
   Result:=(ShortEdit.Text<>FOldVisualValues[fpdiShort])
     or (LinkEdit.Text<>FOldVisualValues[fpdiElementLink])
     or (DescrMemo.Text<>FOldVisualValues[fpdiDescription])

@@ -161,6 +161,7 @@ begin
     dcRun:         Result := ProcessRun;
     dcStop:        Result := ProcessStop;
     dcEnvironment: Result := ProcessEnvironment(String(APArams[0].VAnsiString), AParams[1].VBoolean);
+    else Result := False;
   end;
 end;
 

@@ -287,7 +287,7 @@ function TfrShapeView.GetClipRgn(rt: TfrRgnType): HRGN;
 const
   Delta = 10;
 var
-  x1, y1, xp, yp : Integer;
+  xp : Integer;
   Pts         : Array[0..6] of TPoint;
   min, bx, by, bx1, by1, w1, w2, fw: Integer;
 begin

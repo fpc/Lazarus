@@ -3285,6 +3285,7 @@ function TPkgManager.OpenProjectDependencies(AProject: TProject;
 var
   BrokenDependencies: TFPList;
 begin
+  Result:=mrOk;
   PackageGraph.OpenRequiredDependencyList(AProject.FirstRequiredDependency);
   if ReportMissing then begin
     BrokenDependencies:=PackageGraph.FindAllBrokenDependencies(nil,
@@ -3293,8 +3294,7 @@ begin
       Result:=ShowBrokenDependenciesReport(BrokenDependencies);
       BrokenDependencies.Free;
     end;
-  end else
-    Result:=mrOk;
+  end;
   PkgLinks.SaveUserLinks;
 end;
 
@@ -5016,6 +5016,7 @@ begin
     else begin
       APackage.LPKSource:=nil;
       APackage.Missing:=true;
+      Result:=mrCancel;
     end;
     debugln(['Hint: (lazarus) [TPkgManager.RevertPackages] AFTER ',PackageGraph.FindPackageWithFilename(Filename)<>nil]);
     if Result=mrAbort then exit;
@@ -5033,7 +5034,7 @@ var
   HasRegisterProc: Boolean;
 begin
   MainIDE.GetCurrentUnitInfo(ActiveSourceEditor,ActiveUnitInfo);
-  if ActiveSourceEditor=nil then exit;
+  if ActiveSourceEditor=nil then exit(mrAbort);
 
   Filename:=ActiveUnitInfo.Filename;
 

@@ -2271,7 +2271,9 @@ end;
 function TUnitInfo.AddBookmark(X, Y, ID: integer): integer;
 begin
   if FSetBookmarLock = 0 then
-    Result := Bookmarks.Add(X, Y, ID);
+    Result := Bookmarks.Add(X, Y, ID)
+  else
+    Result := -1;
   SessionModified := True;
   Project1.AddBookmark(X, Y, ID, Self);
 end;
@@ -3983,7 +3985,7 @@ var CodeBuf: TCodeBuffer;
 begin
   CodeBuf:=GetResourceFile(AnUnitInfo,1);
   if CodeBuf=nil then begin
-    if AnUnitInfo.Filename='' then exit;
+    if AnUnitInfo.Filename='' then exit('');
     Result:=ChangeFileExt(AnUnitInfo.Filename,ResourceFileExt);
     exit;
   end else
@@ -6095,7 +6097,9 @@ var
 begin
   MainUnitInfo:=FProject.MainUnitInfo;
   if (MainUnitInfo<>nil) then
-    Result:=ExtractFileName(MainUnitInfo.Filename);
+    Result:=ExtractFileName(MainUnitInfo.Filename)
+  else
+    Result:='';
   if Result='' then
     Result:=inherited GetDefaultMainSourceFileName;
 end;

@@ -53,7 +53,6 @@ implementation
 
 procedure RegisterLRExportFilter(AFilter: TlrPreviewToolsAbstract);
 var
-  C: Integer;
   i: Integer;
 begin
   for i:=0 to lrExportFilters.Count - 1 do
@@ -65,7 +64,6 @@ end;
 
 procedure UnRegisterLRExportFilter(AFilter: TlrPreviewToolsAbstract);
 var
-  C: Integer;
   i: Integer;
 begin
   i:=lrExportFilters.IndexOf(AFilter);

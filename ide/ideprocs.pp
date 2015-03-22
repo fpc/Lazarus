@@ -2603,12 +2603,11 @@ var
   Count1: Int64;
   Count2: Int64;
 begin
+  Result:=false;
   if s1.Memory=nil then begin
     Result:=s2.Memory=nil;
   end else begin
-    if s2.Memory=nil then begin
-      Result:=false;
-    end else begin
+    if s2.Memory<>nil then begin
       p1:=PChar(s1.Memory);
       p2:=PChar(s2.Memory);
       Count1:=s1.Size;

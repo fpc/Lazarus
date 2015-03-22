@@ -2910,6 +2910,7 @@ begin
   ShortDirectory:=NewDirectory;
   LazPackage.ShortenFilename(ShortDirectory,true);
   if ShortDirectory='' then exit;
+  ShortIncDirectory:='';
   LazPackage.LongenFilename(NewDirectory);
   NewDirectory:=ChompPathDelim(NewDirectory);
   
@@ -3031,6 +3032,7 @@ begin
     else exit(false);
     end;
   end;
+  Result:=true;
 end;
 
 function TPackageEditorForm.FilesEditTreeView: TTreeView;

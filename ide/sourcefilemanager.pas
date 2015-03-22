@@ -1226,6 +1226,7 @@ begin
         CurPath:=AppendPathDelim(ExtractFilePath(FActiveUnitInfo.Filename))+CurPath;
     end;
     for c:=0 to 2 do begin
+      TempFile:='';
       // FPC searches first lowercase, then keeping case, then uppercase
       case c of
         0: TempFile:=LowerCase(FFileName);
@@ -1755,6 +1756,7 @@ begin
   // syntax highlighter type
   NewUnitInfo.DefaultSyntaxHighlighter := FilenameToLazSyntaxHighlighter(NewFilename);
 
+  NewSrcEdit := Nil;
   if nfOpenInEditor in NewFlags then begin
     // open a new sourceeditor
     SrcNoteBook := SourceEditorManager.ActiveOrNewSourceWindow;
@@ -2101,6 +2103,7 @@ begin
   end;
 
   // b) do actual save
+  DestFilename := '';
   if (sfSaveToTestDir in Flags) or AnUnitInfo.IsVirtual then
   begin
     // save source to test directory
@@ -2484,7 +2487,7 @@ var
     SearchPath: String;
     SearchFile: String;
   begin
-    if CompiledSrcExt='' then exit;
+    if CompiledSrcExt='' then exit('');
     // get unit path for compiled units
     UnitPath:=BaseDir+';'+StartUnitPath;
     UnitPath:=TrimSearchPath(UnitPath,BaseDir);
@@ -3551,7 +3554,7 @@ var
 begin
   //debugln('[TLazSourceFileManager.CreateProjectForProgram] A ',ProgramBuf.Filename);
   if (Project1 <> nil)
-  and (not MainIDE.DoResetToolStatus([rfInteractive, rfSuccessOnTrigger])) then exit;
+  and (not MainIDE.DoResetToolStatus([rfInteractive, rfSuccessOnTrigger])) then exit(mrAbort);
 
   Result:=SaveProjectIfChanged;
   if Result=mrAbort then exit;
@@ -6989,6 +6992,7 @@ var
   DestFilename: String;
   SkipSavingMainSource: Boolean;
 begin
+  Result:=mrOk;
   Project1.ActiveWindowIndexAtStart := SourceEditorManager.ActiveSourceWindowIndex;
 
   // update source notebook page names
@@ -7023,7 +7027,6 @@ begin
     AddRecentProjectFileToEnvironment(Project1.ProjectInfoFile);
     MainIDE.SaveIncludeLinks;
     MainIDE.UpdateCaption;
-    if Result=mrAbort then exit;
   end;
 
   // save main source
@@ -7062,8 +7065,6 @@ begin
       end;
     end;
   end;
-
-  Result:=mrOk;
 end;
 
 procedure TLazSourceFileManager.GetMainUnit(out MainUnitInfo: TUnitInfo; out

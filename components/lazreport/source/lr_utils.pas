@@ -390,7 +390,7 @@ end;
 procedure frGetDataSetAndField(ComplexName: String; var DataSet: TfrTDataSet;
   out Field: TfrTField);
 var
-  n, i, j: Integer;
+  n: Integer;
   Owner, Component: TComponent;
   s1, s2, s3, s4: String;
   frDS, F:TfrObject;
@@ -1049,7 +1049,7 @@ end;
 
 function UTF8CountWords(const str:string; out WordCount,SpcCount,SpcSize:Integer): TArrUTF8Item;
 var
-  b,i,j,n,len: Integer;
+  b,i,j,len: Integer;
   spc: boolean;
 begin
   i := 1;

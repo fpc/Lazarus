@@ -888,6 +888,7 @@ function TSelectedControl.GetWidth: integer;
 var
   r: TRect;
 begin
+  Result := 0;
   if FUseCache then
     Result := FCachedWidth
   else 

@@ -1885,7 +1885,7 @@ var
 begin
   ActiveSrcEdit:=nil;
   if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[ctfSwitchToFormSource]) then
-    Exit;
+    Exit(False);
   {$IFDEF IDE_DEBUG}
   debugln('');
   debugln('[TMainIDE.OnPropHookCompatibleMethodExists] ************ ',AMethodName);
@@ -11977,7 +11977,7 @@ var
 begin
   ActiveSrcEdit:=nil;
   if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[ctfSwitchToFormSource]) then
-    Exit;
+    Exit(False);
   {$IFDEF IDE_DEBUG}
   debugln('');
   debugln('[TMainIDE.OnPropHookMethodExists] ************ ',AMethodName);

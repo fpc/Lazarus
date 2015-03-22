@@ -898,8 +898,10 @@ begin
       else
         Opt1 := '';
     end
-    else
+    else begin
+      Opt2 := '';
       Opt1 := aDescr;
+    end;
     if Opt1 <> '' then         // Can be empty when line in help output is split.
       NewSetElem(Opt1)
     else if fCompilerOpts.Count > 0 then

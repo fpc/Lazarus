@@ -656,6 +656,7 @@ var
   MsgResult: TModalResult;
 begin
   Node:=FirstErrorNode;
+  s:='';
   if Node=TVNodeLazarus then
     s:=lisWithoutAProperLazarusDirectoryYouWillGetALotOfWarn
   else if Node=TVNodeCompiler then

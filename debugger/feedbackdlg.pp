@@ -95,7 +95,7 @@ begin
 
   case ShowModal of
     mrOk: Result := frOk;
-    mrCancel: Result := frStop;
+    else {mrCancel:} Result := frStop;
   end;
 end;
 

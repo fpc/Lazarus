@@ -2353,8 +2353,8 @@ var
     Stream: TLazarusResourceStream;
   begin
     FPResource := FindResource(HInstance, PChar(AResName), PChar(RT_RCDATA));
-    if FPResource <> 0 then
-      Stream := TLazarusResourceStream.CreateFromHandle(HInstance, FPResource);
+    if FPResource = 0 then exit;
+    Stream := TLazarusResourceStream.CreateFromHandle(HInstance, FPResource);
     XMLConfig := TRttiXMLConfig.Create('');
     XMLConfig.ReadFromStream(Stream);
     Singleton.RegisterScheme(XMLConfig, ASchemeName, 'Lazarus/ColorSchemes/');
@@ -2568,10 +2568,7 @@ function TEditOptLanguageInfo.SampleLineToAddAttr(
   Line: Integer): TAdditionalHilightAttribute;
 begin
   if Line < 1 then
-  begin
-    Result := ahaNone;
-    exit;
-  end;
+    exit(ahaNone);
   for Result := Low(TAdditionalHilightAttribute)
     to High(TAdditionalHilightAttribute) do
     if (Result <> ahaNone) and (AddAttrSampleLines[Result] = Line) then

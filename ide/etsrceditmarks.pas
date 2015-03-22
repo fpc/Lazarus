@@ -883,7 +883,7 @@ begin
   {$ENDIF}
 
   if (FromPosY=ToPosY) and (FromPosX=ToPosX) then
-    exit; // no change => ignore
+    exit(nil); // no change => ignore
 
   // consistency check
   if IsCaretInFront(ToPosY,ToPosX,FromPosY,FromPosX) then

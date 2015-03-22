@@ -85,6 +85,7 @@ var
   Code: TCodeBuffer;
 begin
   // get cursor position
+  Result:=mrAbort;
   SrcEdit:=SourceEditorManagerIntf.ActiveEditor;
   if SrcEdit=nil then exit;
   Code:=TCodeBuffer(SrcEdit.CodeToolsBuffer);

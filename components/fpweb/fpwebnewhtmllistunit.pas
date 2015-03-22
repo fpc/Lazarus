@@ -63,8 +63,6 @@ uses strutils;
 { TfpwebNewHTMLListForm }
 
 function TfpwebNewHTMLListForm.HtmlText: string;
-var
-  i:integer;
 begin
   Result:=DupeString('<li>  </li>'+LineEnding, SERows.Value);
   if RGStyle.ItemIndex = 0 then

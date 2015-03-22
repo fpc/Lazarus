@@ -752,16 +752,16 @@ begin
           PopupMenu := popList;
           NewTreeView.Canvas.Brush.Color:= clWhite;
         end;//with
+        SearchObj:=NewTreeView.SearchObject;
+        if SearchObj<>nil then begin
+          SearchObj.SearchString:= SearchText;
+          SearchObj.ReplaceText := ReplaceText;
+          SearchObj.SearchDirectories:= ADirectories;
+          SearchObj.SearchMask:= AMask;
+          SearchObj.SearchOptions:= TheOptions;
+        end;
+        NewTreeView.Skipped:=0;
       end;//if
-      SearchObj:=NewTreeView.SearchObject;
-      if SearchObj<>nil then begin
-        SearchObj.SearchString:= SearchText;
-        SearchObj.ReplaceText := ReplaceText;
-        SearchObj.SearchDirectories:= ADirectories;
-        SearchObj.SearchMask:= AMask;
-        SearchObj.SearchOptions:= TheOptions;
-      end;
-      NewTreeView.Skipped:=0;
       Result:= Pages[PageIndex];
       SearchInListEdit.Text:='';
       SearchInListEdit.Filter:='';

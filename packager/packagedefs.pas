@@ -4140,7 +4140,9 @@ end;
 function TPkgCompilerOptions.GetOwnerName: string;
 begin
   if LazPackage<>nil then
-    Result:=LazPackage.IDAsString;
+    Result:=LazPackage.IDAsString
+  else
+    Result:='';
 end;
 
 procedure TPkgCompilerOptions.InvalidateOptions;

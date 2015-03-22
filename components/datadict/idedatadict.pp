@@ -298,8 +298,9 @@ Var
 begin
   I:=FKnownDicts.IndexOf(ADict);
   If (I<>-1) then
-    Result:=(FKnownDicts.Objects[i] as TDDFile).FFileName;
-
+    Result:=(FKnownDicts.Objects[i] as TDDFile).FFileName
+  Else
+    Result:='';
 end;
 
 { TDDFile }

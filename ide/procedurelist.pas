@@ -171,11 +171,8 @@ var
   c: Char;
   i: Integer;
 begin
-  if SubStr='' then
-  begin
-    Result := true;
-  end
-  else
+  Result := SubStr='';
+  if not Result then
   begin
     Src := PChar(Str);
     PFilter := PChar(SubStr);

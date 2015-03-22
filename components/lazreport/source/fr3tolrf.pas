@@ -113,6 +113,7 @@ function LoadFastReport3(Report: TfrReport; aFileName: string; out Log:string): 
 var
   Reader: Tfr3Reader;
 begin
+  Result := 0;
   Reader := Tfr3Reader.Create;
   Reader.Report := Report;
   try
@@ -272,7 +273,6 @@ end;
 procedure Tfr3Reader.LoadReport(Node: TDOMNode);
 var
   Attr: TDOMNode;
-  S: string;
 begin
   Report.Clear;
 
@@ -303,7 +303,6 @@ end;
 
 procedure Tfr3Reader.LoadPages(Node: TDOMNode);
 var
-  Page: TfrPage;
   i: Integer;
 begin
   Node := Node.FirstChild;

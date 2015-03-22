@@ -399,6 +399,8 @@ function TCompOptBuildMacrosFrame.GetNodeInfo(Node: TTreeNode;
       case ParentType of
       cbmntBuildMacro:
         Result:=cbmntValue;
+      else
+        Result:=cbmntNone;
       end;
     end;
   end;

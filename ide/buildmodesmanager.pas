@@ -517,8 +517,10 @@ begin
     CurMode:=fBuildModes[i];
     Identifier:=BuildModesStringGrid.Cells[fModeNameCol,i+1];
   end
-  else
+  else begin
     CurMode:=nil;
+    Identifier:='';
+  end;
   // Dialog caption
   if Project1<>nil then
     Caption:=Format(dlgProjectOptionsFor,[Project1.GetTitleOrName])

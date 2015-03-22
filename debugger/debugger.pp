@@ -1862,7 +1862,7 @@ end;
 
 function TIDEBreakPointGroupList.Add(const AGroup: TIDEBreakPointGroup): Integer;
 begin
-  if (AGroup = nil) or (IndexOf(AGroup) >= 0) then exit;
+  if (AGroup = nil) or (IndexOf(AGroup) >= 0) then exit(-1);
   Result := FList.Add(AGroup);
   AGroup.AddReference(Self);
   FOwner.DoChanged;

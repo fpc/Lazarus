@@ -823,6 +823,7 @@ function TCustomFormEditor.CreateNonFormForm(LookupRoot: TComponent): TCustomNon
 var
   MediatorClass: TDesignerMediatorClass;
 begin
+  Result := Nil;
   if FindNonFormFormNode(LookupRoot) <> nil then
     RaiseException(lisCFETCustomFormEditorCreateNonFormFormAlreadyExists);
   if LookupRoot is TComponent then

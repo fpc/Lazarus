@@ -387,7 +387,8 @@ begin
   else if Sender=InsertAsChildIfDefMenuItem then DefAction:=da_IfDef
   else if Sender=InsertAsChildIfNotDefMenuItem then DefAction:=da_IfNDef
   else if Sender=InsertAsChildElseIfMenuItem then DefAction:=da_ElseIf
-  else if Sender=InsertAsChildElseMenuItem then DefAction:=da_Else;
+  else if Sender=InsertAsChildElseMenuItem then DefAction:=da_Else
+  else DefAction:=da_None;
   InsertNewNode(Behind,DefAction);
 end;
 
@@ -539,7 +540,8 @@ begin
   else if Sender=ConvertActionToIfDefMenuItem then NewAction:=da_IfDef
   else if Sender=ConvertActionToIfNotDefMenuItem then NewAction:=da_IfNDef
   else if Sender=ConvertActionToElseIfMenuItem then NewAction:=da_ElseIf
-  else if Sender=ConvertActionToElseMenuItem then NewAction:=da_Else;
+  else if Sender=ConvertActionToElseMenuItem then NewAction:=da_Else
+  else NewAction:=da_None;
   SelDefNode.Action:=NewAction;
   SetNodeImages(SelTreeNode,false);
   SetTypeLabel;

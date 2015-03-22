@@ -1630,6 +1630,8 @@ var BackupFilename, CounterFilename: string;
   IsPartOfProject: boolean;
 begin
   Result:=mrOk;
+  SubDir:='';
+  BackupFilename:='';
   if not (FileExistsUTF8(Filename)) then exit;
   // check if file in lpi
   IsPartOfProject:=(Project1<>nil)

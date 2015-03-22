@@ -213,7 +213,7 @@ end;
 
 function THyphen.BreakWord(Word: string): string;
 var
-  i, j: cardinal;
+  i: cardinal;
   hyphens: PChar;
   rep: PPChar;
   pos: Pointer;
@@ -234,10 +234,8 @@ begin
   pos := nil;
   cut := nil;
   try
-    if hnj_hyphen_hyphenate2(pdict^, PChar(word), Len, hyphens, nil,
-      rep, pos, cut) = 0 then
+    if hnj_hyphen_hyphenate2(pdict^, PChar(word), Len, hyphens, nil, rep, pos, cut) = 0 then
     begin
-      j := 0;
       for i := 1 to length(hyphens)-1  do
         if Odd(Ord(hyphens[i])) then begin
           result := result + chr(i+1);

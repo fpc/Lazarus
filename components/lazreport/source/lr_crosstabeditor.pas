@@ -238,7 +238,6 @@ end;
 procedure TlrCrossViewDataSetProperty.GetValues(Proc: TGetStrProc);
 var
   I: Integer;
-  Values: TStringList;
 var
   Lst : TStringList;
 begin

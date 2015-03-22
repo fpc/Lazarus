@@ -3008,7 +3008,7 @@ begin
   end;
 
   { ------------- Search Paths ---------------- }
-
+  CurOutputDir:='';
   if not (ccloNoMacroParams in Flags) then
   begin
     // include path
@@ -3043,8 +3043,7 @@ begin
       CurOutputDir:=ParsedOpts.GetParsedValue(pcosOutputDir);
       if not (ccloAbsolutePaths in Flags) then
         CurOutputDir:=CreateRelativePath(CurOutputDir,BaseDirectory,true);
-    end else
-      CurOutputDir:='';
+    end;
     if CurOutputDir<>'' then
       switches := switches + ' '+PrepareCmdLineOption('-FU'+CurOutputDir);
   end;

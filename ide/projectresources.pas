@@ -778,13 +778,12 @@ function TProjectResources.Save(SaveToTestDir: string): Boolean;
     CodeBuf: TCodeBuffer;
     TestFilename: String;
   begin
+    Result := True;
     CodeBuf := CodeToolBoss.FindFile(Filename);
-    if (CodeBuf = nil) or CodeBuf.IsDeleted then
-      Exit(True);
+    if (CodeBuf = nil) or CodeBuf.IsDeleted then Exit;
     if not CodeBuf.IsVirtual then
-    begin
-      Result := SaveCodeBuffer(CodeBuf) in [mrOk,mrIgnore];
-    end else if SaveToTestDir<>'' then
+      Result := SaveCodeBuffer(CodeBuf) in [mrOk,mrIgnore]
+    else if SaveToTestDir<>'' then
     begin
       TestFilename := AppendPathDelim(SaveToTestDir) + CodeBuf.Filename;
       Result := SaveCodeBufferToFile(CodeBuf, TestFilename) in [mrOk, mrIgnore];

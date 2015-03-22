@@ -713,7 +713,7 @@ end;
 
 function TLazPkgGraphBuildItem.Add(Tool: TAbstractExternalTool): integer;
 begin
-  if Tool=nil then exit;
+  if Tool=nil then exit(-1);
   Tool.Reference(Self,'TLazPkgGraphBuildItem.Add');
   if Tool.Data is TLazPkgGraphExtToolData then
     TLazPkgGraphExtToolData(Tool.Data).BuildItem:=Self;

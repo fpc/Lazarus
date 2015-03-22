@@ -179,6 +179,7 @@ var
   HasChanged: boolean;
   li: TListItem;
 begin
+  HasChanged:=False;
   NewEncoding:=NormalizeEncoding(NewEncodingComboBox.Text);
   PreviewListView.BeginUpdate;
   PreviewListView.Items.Clear;
