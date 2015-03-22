@@ -430,8 +430,9 @@ var
   Count: Integer;
 begin
   Count := 0;
+  Result := 0;
   if MyFile.Count < 0 then
-    exit(0);
+    exit;
   for I := 0 to MyFile.Count -1 do begin
     // find start of TYPE
     if pos('TYPE', uppercase(MyFile[i])) > 0 then begin
@@ -458,7 +459,6 @@ end;
 function TFrmComponentMan.GetComponent(I: Integer): String;
 var
   K, J: integer;
-  TempStr: String;
   Count: Integer;
 begin
   Result := '';

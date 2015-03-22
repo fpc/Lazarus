@@ -2127,7 +2127,10 @@ end;
 function TWidgetSet.SystemParametersInfo(uiAction: DWord; uiParam: DWord; pvParam: Pointer; fWinIni: DWord): LongBool;
 begin
   case uiAction of
-    SPI_GETWHEELSCROLLLINES: PDword(pvPAram)^ := 3; // default value
+    SPI_GETWHEELSCROLLLINES: begin
+      PDword(pvPAram)^ := 3; // default value
+      Result := True;
+    end;
   else
     Result := False;
   end

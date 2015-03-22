@@ -1677,6 +1677,7 @@ begin
   MapID.Wnd := Wnd;
   MapID.nIDEvent := nIdEvent;
 
+  InfoPtr := nil;
   Existing := MTimerMap.GetData(MapID, ID);
   if Existing
   then begin

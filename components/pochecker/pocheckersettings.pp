@@ -345,10 +345,12 @@ begin
 end;
 
 function TPoCheckerSettings.LoadLangPath: String;
+{$IFDEF POCHECKERSTANDALONE}
 var
   SL: TStringList;
   i: Integer;
   S: String;
+{$ENDIF}
 begin
   {$IFDEF POCHECKERSTANDALONE}
   //allow override on commandline
@@ -378,7 +380,7 @@ begin
     Result := FConfig.GetValue(pLangPath+'Value','');
   {$ELSE}
   Result := '';
-  {$eNDIF}
+  {$ENDIF}
 end;
 
 

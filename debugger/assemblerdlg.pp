@@ -422,8 +422,8 @@ end;
 
 function TAssemblerDlg.GetBreakpointFor(AnAsmDlgLineEntry: TAsmDlgLineEntry): TIDEBreakPoint;
 begin
-  if BreakPoints = nil then exit;
   Result := nil;
+  if BreakPoints = nil then exit;
   case AnAsmDlgLineEntry.State of
     lmsStatement: Result := BreakPoints.Find(AnAsmDlgLineEntry.Addr);
     lmsSource:    Result := BreakPoints.Find(AnAsmDlgLineEntry.FullFileName, AnAsmDlgLineEntry.SourceLine);

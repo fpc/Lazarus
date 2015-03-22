@@ -3310,10 +3310,9 @@ function TIdeWatchValue.GetValue: String;
 var
   i: Integer;
 begin
-  if not Watch.Enabled then begin
-    Result := '<disabled>';
-    exit;
-  end;
+  Result := '';
+  if not Watch.Enabled then
+    exit('<disabled>');
   i := DbgStateChangeCounter;  // workaround for state changes during TWatchValue.GetValue
   if Validity = ddsUnknown then begin
     Result := '<evaluating>';

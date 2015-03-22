@@ -2964,6 +2964,7 @@ var
     ObjectName := '';
     ObjectType := parser.TokenString;
     ParserNextToken;
+    ChildPos := 0;
     if parser.Token = ':' then begin
       ParserNextToken;
       parser.CheckToken(toSymbol);
@@ -3541,8 +3542,7 @@ begin
   end;
 end;
 
-function FloatToLFMStr(const Value: extended; Precision, Digits: Integer
-  ): string;
+function FloatToLFMStr(const Value: extended; Precision, Digits: Integer): string;
 var
   P: Integer;
   TooSmall, TooLarge: Boolean;
@@ -3552,7 +3552,11 @@ begin
   If (Precision = -1) or (Precision > 15) then Precision := 15;
 
   TooSmall := (Abs(Value) < 0.00001) and (Value>0.0);
-  if not TooSmall then begin
+  if TooSmall then begin
+    P := 0;
+    TooLarge := False;
+  end
+  else begin
     Str(Value:digits:precision, Result);
     P := Pos('.', Result);
     TooLarge :=(P > Precision + 1) or (Pos('E', Result)<>0);

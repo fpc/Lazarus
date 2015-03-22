@@ -761,7 +761,9 @@ begin
           SearchObj.SearchOptions:= TheOptions;
         end;
         NewTreeView.Skipped:=0;
-      end;//if
+      end
+      else
+        NewTreeView:=nil;
       Result:= Pages[PageIndex];
       SearchInListEdit.Text:='';
       SearchInListEdit.Filter:='';
