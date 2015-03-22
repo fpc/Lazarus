@@ -1378,6 +1378,9 @@ Descendent classes can override this method to provide a different result.
       <element name="TMenuItem.Add">
         <short>
           <var>Add</var> - an item to the menu</short>
+        <descr>
+           <var>Add</var> - an item to the menu.
+           Be aware that adding an item to a TMenuItem that is a Separator, may crash your computer on non-Windows platforms.
         <descr/>
         <errors/>
         <seealso/>
