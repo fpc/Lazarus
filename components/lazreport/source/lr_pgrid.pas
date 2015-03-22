@@ -373,6 +373,7 @@ begin
     FReportDataSet.Free;
     FColumnDataSet.Free;
   end;
+  // ToDo: invert this assignment. Now SaveDesign is only assigned but not used.
   SaveDesign:=frDesigner;
 end;
 

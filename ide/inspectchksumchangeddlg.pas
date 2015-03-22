@@ -351,8 +351,7 @@ begin
           APackage:=PackageEditingInterface.FindPackageWithName(OwnerName);
           if APackage<>nil then begin
             if APackage.IsVirtual then begin
-              s:=Format(lisCheckTheTargetOSCPULCLWidgetTypeMaybeYouHaveToReco, [
-                s]);
+              s:=Format(lisCheckTheTargetOSCPULCLWidgetTypeMaybeYouHaveToReco, [s]);
             end else begin
               s:=Format(lisMaybeYouHaveToRecompileThePackage, [s]);
             end;
@@ -363,6 +362,7 @@ begin
       end;
     end;
     if PPUCount>1 then begin
+      // ToDo: Fix uninitialized FileNode. It is initialized inside a loop, this is outside of the loop.
       InfoTreeView.Items.AddChild(FileNode,
         lisDuplicatePpuFilesDeleteOneOrMakeSureAllSearchPaths);
     end;

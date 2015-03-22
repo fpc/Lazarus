@@ -1838,6 +1838,7 @@ begin
   AProject:=LazarusIDE.ActiveProject;
 
   // virtual files belong to the project
+  // ToDo: Path is not initialized!
   if not FilenameIsAbsolute(Path) then begin
     Result:=AProject;
     exit;

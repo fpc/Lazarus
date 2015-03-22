@@ -1840,6 +1840,7 @@ var
   Code: TCodeBuffer;
 begin
   // update project resource
+  // ToDo: Fix uninitialized Result.
   Project1.ProjResources.Regenerate(Project1.MainFileName, False, True, TestDir);
   AnUnitInfo := Project1.FirstPartOfProject;
   while AnUnitInfo<>nil do 

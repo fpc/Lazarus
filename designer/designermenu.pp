@@ -1588,6 +1588,7 @@ begin
         UpdateMenu(fMenu.Items, tempdesignermenuitem, 1, 3);
       end else
       begin
+        // ToDo: tempdesignermenuitem is not initialized here.
         tempdesignermenuitem:=AddNewItemAfter(Root, tempdesignermenuitem.ID);
         SetCoordinates(POSITION_LEFT,POSITION_TOP,0,Root);
         ChangeCaption(tempdesignermenuitem,XMLConfig.GetValue(templatesubmenuitem + '/Name/Value',''));

@@ -658,7 +658,7 @@ begin
   end;
   if Result = nil then // should never happen
     Result := AnUnitInfo.OpenEditorInfo[0]
-  else begin
+  else begin           // ToDo: replace uninitialized 'j' with something.
     if (WantedTopLine>0)
     and (AnUnitInfo.OpenEditorInfo[j].EditorComponent<>nil) then
       AnUnitInfo.OpenEditorInfo[j].EditorComponent.TopLine:=WantedTopLine;
