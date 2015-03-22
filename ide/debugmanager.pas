@@ -1349,8 +1349,10 @@ begin
       SrcLine := -1;
     end;
   end
-  else
+  else begin
+    NewSource := Nil;
     SrcLine := -1;
+  end;
 
   ReleaseRefAndNil(CurrentSourceUnitInfo);
 
@@ -1368,10 +1370,8 @@ begin
   end;
 
   Editor := nil;
-  if SourceEditorManager <> nil then
-    Editor := SourceEditorManager.SourceEditorIntfWithFilename(NewSource.Filename)
-  else
-    NewSource := Nil;
+  if SourceEditorManager <> nil
+  then Editor := SourceEditorManager.SourceEditorIntfWithFilename(NewSource.Filename);
 
   // jump editor to execution line
   Flags := [jfAddJumpPoint, jfSearchVirtualFullPath];
