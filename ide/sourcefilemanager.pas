@@ -656,14 +656,15 @@ begin
     if Result <> nil then
       break;
   end;
-  if Result = nil then // should never happen
-    Result := AnUnitInfo.OpenEditorInfo[0]
-  else begin           // ToDo: replace uninitialized 'j' with something.
+  if Result = nil then
+    // should never happen
+    Result := AnUnitInfo.OpenEditorInfo[0];
+  if Result<>nil then begin
+    // WantedTopLine
     if (WantedTopLine>0)
-    and (AnUnitInfo.OpenEditorInfo[j].EditorComponent<>nil) then
-      AnUnitInfo.OpenEditorInfo[j].EditorComponent.TopLine:=WantedTopLine;
+    and (Result.EditorComponent<>nil) then
+      Result.EditorComponent.TopLine:=WantedTopLine;
   end;
-  // ToDo: WantedTopLine
 end;
 
 function TFileOpener.OpenResource: TModalResult;
