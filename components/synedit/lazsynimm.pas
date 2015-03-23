@@ -339,6 +339,9 @@ var
   imc: HIMC;
 begin
   //debugln(['TCustomSynEdit.WMImeStartComposition ']);
+  if SelectionObj.SelAvail and (not SelectionObj.Persistent) and (eoOverwriteBlock in TSynEdit(FriendEdit).Options2) then
+    SelectionObj.SelText := '';
+
   imc := ImmGetContext(FriendEdit.Handle);
   if (imc <> 0) then begin
     UpdateImeWinFont(imc);
@@ -698,6 +701,9 @@ end;
 procedure LazSynImeFull.WMImeStartComposition(var Msg: TMessage);
 begin
   //debugln(['TCustomSynEdit.WMImeStartComposition ']);
+  if SelectionObj.SelAvail and (not SelectionObj.Persistent) and (eoOverwriteBlock in TSynEdit(FriendEdit).Options2) then
+    SelectionObj.SelText := '';
+
   FImeBlockSelection.StartLineBytePos := CaretObj.LineBytePos;
   FInCompose := True;
   Msg.Result := 1;
