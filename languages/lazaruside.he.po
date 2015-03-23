@@ -168,6 +168,14 @@ msgstr "סטנדרטי, כל הפעולות (נקודת עצירה, קיפול) 
 msgid "Extended, Actions (breakpoint, fold) on mouse up. Selection on mouse down and move"
 msgstr "מורחב, פעולות (נקודת עצירה, קפול) כשלחצן העכבר למעלה.בחירה כשלחצן העכבר לחוץ והעכבר זז"
 
+#: lazarusidestrconsts.dlfmousesimplegutterleftupright
+msgid "Extended, Actions, right gutter half only"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimplegutterlines
+msgid "Use line numers to select lines"
+msgstr ""
+
 #: lazarusidestrconsts.dlfmousesimpleguttersect
 msgctxt "lazarusidestrconsts.dlfmousesimpleguttersect"
 msgid "Gutter"
@@ -1244,6 +1252,10 @@ msgstr "סמן מדלג על טאבים"
 msgid "User defined extension (.pp.xxx)"
 msgstr "הרחבה של המשתמש (pp.xxx.)"
 
+#: lazarusidestrconsts.dlgdcifiledci
+msgid "DCI file (*.dci)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgdebugoptionspatheditordlgcaption
 msgid "Path Editor"
 msgstr "נתיב העורך"
@@ -1604,6 +1616,10 @@ msgstr "השתמש בקובץ סמלים חצוני של מנפה השגיאות
 msgid "File extensions"
 msgstr "הרחבות לקובץ"
 
+#: lazarusidestrconsts.dlgfiles
+msgid "%s files"
+msgstr ""
+
 #: lazarusidestrconsts.dlgfindtextatcursor
 msgid "Find text at cursor"
 msgstr "מצא טקסט במוקום הסמן"
@@ -1804,11 +1820,6 @@ msgstr ""
 #| msgid "&From Cursor"
 msgid "&From cursor"
 msgstr "סמן טפסים"
-
-#: lazarusidestrconsts.dlgfropts
-msgctxt "lazarusidestrconsts.dlgfropts"
-msgid "Options"
-msgstr "אפשרויות"
 
 #: lazarusidestrconsts.dlggetposition
 msgid "Get position"
@@ -2564,6 +2575,10 @@ msgctxt "lazarusidestrconsts.dlgmouseoptnodegutter"
 msgid "Gutter"
 msgstr "קוו עזר"
 
+#: lazarusidestrconsts.dlgmouseoptnodegutterchanges
+msgid "Line Changes"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmouseoptnodegutterfold
 msgid "Fold Tree"
 msgstr "קפל עץ"
@@ -2618,6 +2633,14 @@ msgstr "עדיפות"
 msgctxt "lazarusidestrconsts.dlgmsgs"
 msgid "Messages"
 msgstr "הודעות"
+
+#: lazarusidestrconsts.dlgmulticaretcolumnmode
+msgid "Multi-caret (column-select) move with cursor"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmulticaretmode
+msgid "Multi-caret move with cursor"
+msgstr ""
 
 #: lazarusidestrconsts.dlgmulticaretoncolumnselection
 msgid "Enable multi caret for column selection"
@@ -2704,11 +2727,6 @@ msgstr "גובה הפריט"
 msgctxt "lazarusidestrconsts.dlgoimiscellaneous"
 msgid "Miscellaneous"
 msgstr "שונות"
-
-#: lazarusidestrconsts.dlgoioptions
-msgctxt "lazarusidestrconsts.dlgoioptions"
-msgid "Options"
-msgstr "אפשרויות"
 
 #: lazarusidestrconsts.dlgoispeedsettings
 msgid "Speed settings"
@@ -3481,7 +3499,7 @@ msgid "Use launching application"
 msgstr "השתמש ביישום משגר"
 
 #: lazarusidestrconsts.dlguseminimumime
-msgid "Ime handled by System"
+msgid "IME handled by System"
 msgstr ""
 
 #: lazarusidestrconsts.dlguserschemeerror
@@ -5588,10 +5606,6 @@ msgstr "השלמת מחלקה"
 msgid "Classes and properties exist. Values were not checked."
 msgstr "המחלקה והתכונות קיימות. הערכים לא בדוקים."
 
-#: lazarusidestrconsts.lisclassesppunotfoundcheckyourfpccfg
-msgid "classes.ppu not found. Check your fpc.cfg."
-msgstr ""
-
 #: lazarusidestrconsts.lisclassisnotaregisteredcomponentclassunabletopaste
 #, fuzzy
 #| msgid "Class %s%s%s is not a registered component class.%sUnable to paste."
@@ -6501,7 +6515,7 @@ msgid "Compile"
 msgstr "הדר"
 
 #: lazarusidestrconsts.liscompilewithvdformoredetailscheckforduplicates
-msgid "%s -> Compile with -vd for more details. Check for duplicates."
+msgid "Compile with -vd for more details. Check for duplicates."
 msgstr ""
 
 #: lazarusidestrconsts.liscompiling
@@ -8627,7 +8641,7 @@ msgid "Error in the \"unit output directory\":"
 msgstr "שגיאה בתיקיית הפלט של היחידה:"
 
 #: lazarusidestrconsts.liserrorinvalidbuildmode
-msgid "ERROR: invalid build mode \"%s\""
+msgid "Error: (lazarus) invalid build mode \"%s\""
 msgstr ""
 
 #: lazarusidestrconsts.liserrorloadingfile
@@ -11473,6 +11487,10 @@ msgstr ""
 msgid "Manage Source Editors ..."
 msgstr ""
 
+#: lazarusidestrconsts.lismaximumnumberofthreadsforcompilinginparalleldefaul
+msgid "Maximum number of threads for compiling in parallel. Default is 0, which guesses the number of cores in the system."
+msgstr ""
+
 #: lazarusidestrconsts.lismaximumparallelprocesses0meansdefault
 msgid "Maximum parallel processes, 0 means default (%s)"
 msgstr ""
@@ -13534,6 +13552,12 @@ msgstr ""
 msgid "Open XML"
 msgstr ""
 
+#: lazarusidestrconsts.lisoptions
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisoptions"
+msgid "Options"
+msgstr "אפשרויות"
+
 #: lazarusidestrconsts.lisoptionschangedrecompilingcleanwithb
 msgid "Options changed, recompiling clean with -B"
 msgstr "אפשרויות השתנו, הדר (נקי) מחדש עם הפרמטר  -B"
@@ -15138,6 +15162,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisppuinwrongdirectory
 msgid "ppu in wrong directory=%s."
+msgstr ""
+
+#: lazarusidestrconsts.lisppunotfoundcheckyourfpccfg
+msgid "%s.ppu not found. Check your fpc.cfg."
 msgstr ""
 
 #: lazarusidestrconsts.lisprecedingword
@@ -17678,6 +17706,30 @@ msgstr "נתיב:"
 msgid "Toggle showing filenames with full path or with relative path"
 msgstr "החלף בין תצוגה עם נתיב מלא לבין נתיב יחסי"
 
+#: lazarusidestrconsts.listoolbaroptions
+msgid "Toolbar"
+msgstr ""
+
+#: lazarusidestrconsts.listoolbaroptionshighlight
+msgid "Highlight toolbars buttons"
+msgstr ""
+
+#: lazarusidestrconsts.listoolbaroptionsraise
+msgid "Raise toolbars"
+msgstr ""
+
+#: lazarusidestrconsts.listoolbaroptionsstandardvisible
+msgid "Standard toolbar visible"
+msgstr ""
+
+#: lazarusidestrconsts.listoolbaroptionstoolbarsvisible
+msgid "Toolbars visible"
+msgstr ""
+
+#: lazarusidestrconsts.listoolbaroptionsviewdebugvisible
+msgid "Debug toolbar visible"
+msgstr ""
+
 #: lazarusidestrconsts.listoolhasnoexecutable
 msgid "tool \"%s\" has no executable"
 msgstr ""
@@ -19305,6 +19357,10 @@ msgstr "מאקרויים"
 msgid "Text marker commands"
 msgstr "פקודות של סימון טקסט"
 
+#: lazarusidestrconsts.srkmcatmulticaret
+msgid "Multi caret commands"
+msgstr ""
+
 #: lazarusidestrconsts.srkmcatpackagemenu
 msgid "Package menu commands"
 msgstr "פקודות של תפריט \"חבילה\""
@@ -20037,6 +20093,30 @@ msgstr "הדבק מלוח הגזירים למיקום הנוכחי"
 msgid "pause program"
 msgstr "השהה תוכנה"
 
+#: lazarusidestrconsts.srkmecpluginmulticaretclearall
+msgid "Clear all extra carets"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecpluginmulticaretmodecancelonmove
+msgid "Cursor keys clear all extra carets"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecpluginmulticaretmodemoveall
+msgid "Cursor keys move all extra carets"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecpluginmulticaretsetcaret
+msgid "Add extra caret"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecpluginmulticarettogglecaret
+msgid "Toggle extra caret"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecpluginmulticaretunsetcaret
+msgid "Remove extra caret"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecprevbookmark
 msgid "Previous Bookmark"
 msgstr "סמנייה קודמת"
@@ -20635,6 +20715,10 @@ msgstr "הזז את הסמן מילה אחת ימינה"
 msgid "Edit keys of command"
 msgstr "ערוך מקשים של פקודה"
 
+#: lazarusidestrconsts.synfcontinuewithnextmouseupaction
+msgid "Continue with next mouse up action"
+msgstr ""
+
 #: lazarusidestrconsts.synffoldcomments
 msgid "Fold comments"
 msgstr ""
@@ -20666,6 +20750,26 @@ msgstr ""
 #: lazarusidestrconsts.synfhidecommentsinselection
 msgid "Hide comments in selection"
 msgstr "הסתר הערות בזמן הבחירה"
+
+#: lazarusidestrconsts.synfmatchactionbuttonofmousedown
+msgid "Match action button of mouse down"
+msgstr ""
+
+#: lazarusidestrconsts.synfmatchactionlineofmousedown
+msgid "Match action line of mouse down"
+msgstr ""
+
+#: lazarusidestrconsts.synfmatchactionmodifiersofmousedown
+msgid "Match action modifiers of mouse down"
+msgstr ""
+
+#: lazarusidestrconsts.synfmatchactionposofmousedown
+msgid "Match action pos of mouse down"
+msgstr ""
+
+#: lazarusidestrconsts.synfsearchallactionofmousedown
+msgid "Search all action of mouse down"
+msgstr ""
 
 #: lazarusidestrconsts.synfunfoldactiveifdef
 msgid "Unfold active Ifdef"

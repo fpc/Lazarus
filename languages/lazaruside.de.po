@@ -164,6 +164,14 @@ msgstr "Standard, Alle Aktionen (Haltepunkte, Faltung) beim Drücken der Maustas
 msgid "Extended, Actions (breakpoint, fold) on mouse up. Selection on mouse down and move"
 msgstr "Erweitert, Aktionen (Haltepunkte, Falten) beim Loslassen der Maustaste. Auswahl beim Drücken und Bewegen"
 
+#: lazarusidestrconsts.dlfmousesimplegutterleftupright
+msgid "Extended, Actions, right gutter half only"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimplegutterlines
+msgid "Use line numers to select lines"
+msgstr ""
+
 #: lazarusidestrconsts.dlfmousesimpleguttersect
 msgctxt "lazarusidestrconsts.dlfmousesimpleguttersect"
 msgid "Gutter"
@@ -1182,6 +1190,10 @@ msgstr "Cursor überspringt Tabulatoren"
 msgid "User defined extension (.pp.xxx)"
 msgstr "Benutzerdefinierte Erweiterung (.pp.xxx)"
 
+#: lazarusidestrconsts.dlgdcifiledci
+msgid "DCI file (*.dci)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgdebugoptionspatheditordlgcaption
 msgid "Path Editor"
 msgstr "Pfadeditor"
@@ -1529,6 +1541,10 @@ msgstr "Externe Datei mit gdb-Debugsymbolen nutzen"
 msgid "File extensions"
 msgstr "Dateiendungen"
 
+#: lazarusidestrconsts.dlgfiles
+msgid "%s files"
+msgstr ""
+
 #: lazarusidestrconsts.dlgfindtextatcursor
 msgid "Find text at cursor"
 msgstr "Text am Cursor suchen"
@@ -1727,11 +1743,6 @@ msgstr "Vom B&eginn"
 #: lazarusidestrconsts.dlgfromcursor
 msgid "&From cursor"
 msgstr "Ab &Cursorposition"
-
-#: lazarusidestrconsts.dlgfropts
-msgctxt "lazarusidestrconsts.dlgfropts"
-msgid "Options"
-msgstr "Einstellungen"
 
 #: lazarusidestrconsts.dlggetposition
 msgid "Get position"
@@ -2449,6 +2460,10 @@ msgctxt "lazarusidestrconsts.dlgmouseoptnodegutter"
 msgid "Gutter"
 msgstr "Randleiste"
 
+#: lazarusidestrconsts.dlgmouseoptnodegutterchanges
+msgid "Line Changes"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmouseoptnodegutterfold
 msgid "Fold Tree"
 msgstr "Falt-Baum"
@@ -2500,6 +2515,14 @@ msgstr "Priorität"
 msgctxt "lazarusidestrconsts.dlgmsgs"
 msgid "Messages"
 msgstr "Meldungen"
+
+#: lazarusidestrconsts.dlgmulticaretcolumnmode
+msgid "Multi-caret (column-select) move with cursor"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmulticaretmode
+msgid "Multi-caret move with cursor"
+msgstr ""
 
 #: lazarusidestrconsts.dlgmulticaretoncolumnselection
 msgid "Enable multi caret for column selection"
@@ -2578,11 +2601,6 @@ msgstr "Höhe des Eintrags"
 msgctxt "lazarusidestrconsts.dlgoimiscellaneous"
 msgid "Miscellaneous"
 msgstr "Verschiedenes"
-
-#: lazarusidestrconsts.dlgoioptions
-msgctxt "lazarusidestrconsts.dlgoioptions"
-msgid "Options"
-msgstr "Einstellungen"
 
 #: lazarusidestrconsts.dlgoispeedsettings
 msgid "Speed settings"
@@ -3283,7 +3301,9 @@ msgid "Use launching application"
 msgstr "Startprogramm verwenden"
 
 #: lazarusidestrconsts.dlguseminimumime
-msgid "Ime handled by System"
+#, fuzzy
+#| msgid "Ime handled by System"
+msgid "IME handled by System"
 msgstr "IME vom System gehandhabt"
 
 #: lazarusidestrconsts.dlguserschemeerror
@@ -5233,10 +5253,6 @@ msgstr "Klassenvervollständigung"
 msgid "Classes and properties exist. Values were not checked."
 msgstr "Klassen und Eigenschaften existieren. Werte wurden nicht geprüft."
 
-#: lazarusidestrconsts.lisclassesppunotfoundcheckyourfpccfg
-msgid "classes.ppu not found. Check your fpc.cfg."
-msgstr "classes.ppu nicht gefunden. Prüfen Sie ihre fpc.cfg."
-
 #: lazarusidestrconsts.lisclassisnotaregisteredcomponentclassunabletopaste
 msgid "Class \"%s\" is not a registered component class.%sUnable to paste."
 msgstr "Klasse \"%s\" ist keine registrierte Komponentenklasse.%sKann keine Übernahme durchführen."
@@ -6102,7 +6118,7 @@ msgid "Compile"
 msgstr "Kompilieren"
 
 #: lazarusidestrconsts.liscompilewithvdformoredetailscheckforduplicates
-msgid "%s -> Compile with -vd for more details. Check for duplicates."
+msgid "Compile with -vd for more details. Check for duplicates."
 msgstr ""
 
 #: lazarusidestrconsts.liscompiling
@@ -6890,7 +6906,6 @@ msgid "Cursor row in current editor"
 msgstr "Cursor-Zeile im aktuellem Editor"
 
 #: lazarusidestrconsts.liscustomopthint
-#| msgid "These options are passed to the compiler after comments are deleted and macros are replaced."
 msgid "These options are passed to the compiler after macros are replaced."
 msgstr "Diese Einstellungen werden direkt an den Compiler geleitet. Makros werden ersetzt und Zeilenumbrüche durch einzelne Leerzeichen ersetzt."
 
@@ -8127,7 +8142,9 @@ msgid "Error in the \"unit output directory\":"
 msgstr "Fehler im \"unit output directory\":"
 
 #: lazarusidestrconsts.liserrorinvalidbuildmode
-msgid "ERROR: invalid build mode \"%s\""
+#, fuzzy
+#| msgid "ERROR: invalid build mode \"%s\""
+msgid "Error: (lazarus) invalid build mode \"%s\""
 msgstr "Fehler: Ungültiger Erstellmodus \"%s\""
 
 #: lazarusidestrconsts.liserrorloadingfile
@@ -10843,6 +10860,10 @@ msgstr ""
 msgid "Manage Source Editors ..."
 msgstr "Quelltexteditoren verwalten ..."
 
+#: lazarusidestrconsts.lismaximumnumberofthreadsforcompilinginparalleldefaul
+msgid "Maximum number of threads for compiling in parallel. Default is 0, which guesses the number of cores in the system."
+msgstr ""
+
 #: lazarusidestrconsts.lismaximumparallelprocesses0meansdefault
 msgid "Maximum parallel processes, 0 means default (%s)"
 msgstr "Maximale Anzahl paralleler Prozesse, 0 bedeutet Vorgabe (%s)"
@@ -12656,6 +12677,12 @@ msgstr "URL öffnen"
 msgid "Open XML"
 msgstr "XML öffnen"
 
+#: lazarusidestrconsts.lisoptions
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisoptions"
+msgid "Options"
+msgstr "Einstellungen"
+
 #: lazarusidestrconsts.lisoptionschangedrecompilingcleanwithb
 msgid "Options changed, recompiling clean with -B"
 msgstr "Einstellungen geändert, sauberes Neucompilieren mit -B"
@@ -14094,6 +14121,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisppuinwrongdirectory
 msgid "ppu in wrong directory=%s."
+msgstr ""
+
+#: lazarusidestrconsts.lisppunotfoundcheckyourfpccfg
+msgid "%s.ppu not found. Check your fpc.cfg."
 msgstr ""
 
 #: lazarusidestrconsts.lisprecedingword
@@ -16406,6 +16437,30 @@ msgstr "Pfad:"
 msgid "Toggle showing filenames with full path or with relative path"
 msgstr "Umschalten der Anzeige der Dateinamen zwischen voller/relativer Pfad"
 
+#: lazarusidestrconsts.listoolbaroptions
+msgid "Toolbar"
+msgstr ""
+
+#: lazarusidestrconsts.listoolbaroptionshighlight
+msgid "Highlight toolbars buttons"
+msgstr ""
+
+#: lazarusidestrconsts.listoolbaroptionsraise
+msgid "Raise toolbars"
+msgstr ""
+
+#: lazarusidestrconsts.listoolbaroptionsstandardvisible
+msgid "Standard toolbar visible"
+msgstr ""
+
+#: lazarusidestrconsts.listoolbaroptionstoolbarsvisible
+msgid "Toolbars visible"
+msgstr ""
+
+#: lazarusidestrconsts.listoolbaroptionsviewdebugvisible
+msgid "Debug toolbar visible"
+msgstr ""
+
 #: lazarusidestrconsts.listoolhasnoexecutable
 msgid "tool \"%s\" has no executable"
 msgstr "Werkzeug \"%s\" hat keine ausführbare Datei"
@@ -16655,7 +16710,6 @@ msgid "Included by:"
 msgstr "Eingebunden von:"
 
 #: lazarusidestrconsts.lisuidinproject
-#| msgid "in Project:"
 msgid "In project:"
 msgstr "im Projekt:"
 
@@ -17932,6 +17986,10 @@ msgstr "Makros"
 msgid "Text marker commands"
 msgstr "Textmarkierungsbefehle"
 
+#: lazarusidestrconsts.srkmcatmulticaret
+msgid "Multi caret commands"
+msgstr ""
+
 #: lazarusidestrconsts.srkmcatpackagemenu
 msgid "Package menu commands"
 msgstr "Befehle aus dem Menü 'Package'"
@@ -18618,6 +18676,30 @@ msgstr "Einfügen der Zwischenablage an die aktuelle Stelle"
 msgid "pause program"
 msgstr "Programmpause"
 
+#: lazarusidestrconsts.srkmecpluginmulticaretclearall
+msgid "Clear all extra carets"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecpluginmulticaretmodecancelonmove
+msgid "Cursor keys clear all extra carets"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecpluginmulticaretmodemoveall
+msgid "Cursor keys move all extra carets"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecpluginmulticaretsetcaret
+msgid "Add extra caret"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecpluginmulticarettogglecaret
+msgid "Toggle extra caret"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecpluginmulticaretunsetcaret
+msgid "Remove extra caret"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecprevbookmark
 msgid "Previous Bookmark"
 msgstr "Vorheriges Lesezeichen setzen"
@@ -19186,6 +19268,10 @@ msgstr "Cursor ein Wort nach rechts bewegen"
 msgid "Edit keys of command"
 msgstr "Taste für Befehl bearbeiten"
 
+#: lazarusidestrconsts.synfcontinuewithnextmouseupaction
+msgid "Continue with next mouse up action"
+msgstr ""
+
 #: lazarusidestrconsts.synffoldcomments
 msgid "Fold comments"
 msgstr "Kommentare falten"
@@ -19217,6 +19303,26 @@ msgstr "Kommentare verbergen"
 #: lazarusidestrconsts.synfhidecommentsinselection
 msgid "Hide comments in selection"
 msgstr "Kommentare in Auswahl verbergen"
+
+#: lazarusidestrconsts.synfmatchactionbuttonofmousedown
+msgid "Match action button of mouse down"
+msgstr ""
+
+#: lazarusidestrconsts.synfmatchactionlineofmousedown
+msgid "Match action line of mouse down"
+msgstr ""
+
+#: lazarusidestrconsts.synfmatchactionmodifiersofmousedown
+msgid "Match action modifiers of mouse down"
+msgstr ""
+
+#: lazarusidestrconsts.synfmatchactionposofmousedown
+msgid "Match action pos of mouse down"
+msgstr ""
+
+#: lazarusidestrconsts.synfsearchallactionofmousedown
+msgid "Search all action of mouse down"
+msgstr ""
 
 #: lazarusidestrconsts.synfunfoldactiveifdef
 msgid "Unfold active Ifdef"

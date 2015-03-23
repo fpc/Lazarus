@@ -169,6 +169,14 @@ msgstr ""
 msgid "Extended, Actions (breakpoint, fold) on mouse up. Selection on mouse down and move"
 msgstr ""
 
+#: lazarusidestrconsts.dlfmousesimplegutterleftupright
+msgid "Extended, Actions, right gutter half only"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimplegutterlines
+msgid "Use line numers to select lines"
+msgstr ""
+
 #: lazarusidestrconsts.dlfmousesimpleguttersect
 msgctxt "lazarusidestrconsts.dlfmousesimpleguttersect"
 msgid "Gutter"
@@ -1191,6 +1199,10 @@ msgstr ""
 msgid "User defined extension (.pp.xxx)"
 msgstr ""
 
+#: lazarusidestrconsts.dlgdcifiledci
+msgid "DCI file (*.dci)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgdebugoptionspatheditordlgcaption
 msgid "Path Editor"
 msgstr ""
@@ -1538,6 +1550,10 @@ msgstr ""
 msgid "File extensions"
 msgstr ""
 
+#: lazarusidestrconsts.dlgfiles
+msgid "%s files"
+msgstr ""
+
 #: lazarusidestrconsts.dlgfindtextatcursor
 msgid "Find text at cursor"
 msgstr ""
@@ -1735,11 +1751,6 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgfromcursor
 msgid "&From cursor"
-msgstr ""
-
-#: lazarusidestrconsts.dlgfropts
-msgctxt "lazarusidestrconsts.dlgfropts"
-msgid "Options"
 msgstr ""
 
 #: lazarusidestrconsts.dlggetposition
@@ -2457,6 +2468,10 @@ msgctxt "lazarusidestrconsts.dlgmouseoptnodegutter"
 msgid "Gutter"
 msgstr ""
 
+#: lazarusidestrconsts.dlgmouseoptnodegutterchanges
+msgid "Line Changes"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmouseoptnodegutterfold
 msgid "Fold Tree"
 msgstr ""
@@ -2507,6 +2522,14 @@ msgstr ""
 #: lazarusidestrconsts.dlgmsgs
 msgctxt "lazarusidestrconsts.dlgmsgs"
 msgid "Messages"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmulticaretcolumnmode
+msgid "Multi-caret (column-select) move with cursor"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmulticaretmode
+msgid "Multi-caret move with cursor"
 msgstr ""
 
 #: lazarusidestrconsts.dlgmulticaretoncolumnselection
@@ -2586,11 +2609,6 @@ msgstr ""
 msgctxt "lazarusidestrconsts.dlgoimiscellaneous"
 msgid "Miscellaneous"
 msgstr "متفرّقات"
-
-#: lazarusidestrconsts.dlgoioptions
-msgctxt "lazarusidestrconsts.dlgoioptions"
-msgid "Options"
-msgstr "خيارات"
 
 #: lazarusidestrconsts.dlgoispeedsettings
 msgid "Speed settings"
@@ -3295,7 +3313,7 @@ msgid "Use launching application"
 msgstr ""
 
 #: lazarusidestrconsts.dlguseminimumime
-msgid "Ime handled by System"
+msgid "IME handled by System"
 msgstr ""
 
 #: lazarusidestrconsts.dlguserschemeerror
@@ -5251,10 +5269,6 @@ msgstr ""
 msgid "Classes and properties exist. Values were not checked."
 msgstr ""
 
-#: lazarusidestrconsts.lisclassesppunotfoundcheckyourfpccfg
-msgid "classes.ppu not found. Check your fpc.cfg."
-msgstr ""
-
 #: lazarusidestrconsts.lisclassisnotaregisteredcomponentclassunabletopaste
 msgid "Class \"%s\" is not a registered component class.%sUnable to paste."
 msgstr ""
@@ -6122,7 +6136,7 @@ msgid "Compile"
 msgstr ""
 
 #: lazarusidestrconsts.liscompilewithvdformoredetailscheckforduplicates
-msgid "%s -> Compile with -vd for more details. Check for duplicates."
+msgid "Compile with -vd for more details. Check for duplicates."
 msgstr ""
 
 #: lazarusidestrconsts.liscompiling
@@ -8149,7 +8163,7 @@ msgid "Error in the \"unit output directory\":"
 msgstr ""
 
 #: lazarusidestrconsts.liserrorinvalidbuildmode
-msgid "ERROR: invalid build mode \"%s\""
+msgid "Error: (lazarus) invalid build mode \"%s\""
 msgstr ""
 
 #: lazarusidestrconsts.liserrorloadingfile
@@ -10852,6 +10866,10 @@ msgstr ""
 msgid "Manage Source Editors ..."
 msgstr ""
 
+#: lazarusidestrconsts.lismaximumnumberofthreadsforcompilinginparalleldefaul
+msgid "Maximum number of threads for compiling in parallel. Default is 0, which guesses the number of cores in the system."
+msgstr ""
+
 #: lazarusidestrconsts.lismaximumparallelprocesses0meansdefault
 msgid "Maximum parallel processes, 0 means default (%s)"
 msgstr ""
@@ -12667,6 +12685,12 @@ msgstr ""
 msgid "Open XML"
 msgstr ""
 
+#: lazarusidestrconsts.lisoptions
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisoptions"
+msgid "Options"
+msgstr "خيارات"
+
 #: lazarusidestrconsts.lisoptionschangedrecompilingcleanwithb
 msgid "Options changed, recompiling clean with -B"
 msgstr ""
@@ -14105,6 +14129,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisppuinwrongdirectory
 msgid "ppu in wrong directory=%s."
+msgstr ""
+
+#: lazarusidestrconsts.lisppunotfoundcheckyourfpccfg
+msgid "%s.ppu not found. Check your fpc.cfg."
 msgstr ""
 
 #: lazarusidestrconsts.lisprecedingword
@@ -16423,6 +16451,30 @@ msgstr ""
 msgid "Toggle showing filenames with full path or with relative path"
 msgstr ""
 
+#: lazarusidestrconsts.listoolbaroptions
+msgid "Toolbar"
+msgstr ""
+
+#: lazarusidestrconsts.listoolbaroptionshighlight
+msgid "Highlight toolbars buttons"
+msgstr ""
+
+#: lazarusidestrconsts.listoolbaroptionsraise
+msgid "Raise toolbars"
+msgstr ""
+
+#: lazarusidestrconsts.listoolbaroptionsstandardvisible
+msgid "Standard toolbar visible"
+msgstr ""
+
+#: lazarusidestrconsts.listoolbaroptionstoolbarsvisible
+msgid "Toolbars visible"
+msgstr ""
+
+#: lazarusidestrconsts.listoolbaroptionsviewdebugvisible
+msgid "Debug toolbar visible"
+msgstr ""
+
 #: lazarusidestrconsts.listoolhasnoexecutable
 msgid "tool \"%s\" has no executable"
 msgstr ""
@@ -17951,6 +18003,10 @@ msgstr ""
 msgid "Text marker commands"
 msgstr ""
 
+#: lazarusidestrconsts.srkmcatmulticaret
+msgid "Multi caret commands"
+msgstr ""
+
 #: lazarusidestrconsts.srkmcatpackagemenu
 msgid "Package menu commands"
 msgstr ""
@@ -18641,6 +18697,30 @@ msgstr ""
 msgid "pause program"
 msgstr ""
 
+#: lazarusidestrconsts.srkmecpluginmulticaretclearall
+msgid "Clear all extra carets"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecpluginmulticaretmodecancelonmove
+msgid "Cursor keys clear all extra carets"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecpluginmulticaretmodemoveall
+msgid "Cursor keys move all extra carets"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecpluginmulticaretsetcaret
+msgid "Add extra caret"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecpluginmulticarettogglecaret
+msgid "Toggle extra caret"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecpluginmulticaretunsetcaret
+msgid "Remove extra caret"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecprevbookmark
 msgid "Previous Bookmark"
 msgstr ""
@@ -19205,6 +19285,10 @@ msgstr ""
 msgid "Edit keys of command"
 msgstr ""
 
+#: lazarusidestrconsts.synfcontinuewithnextmouseupaction
+msgid "Continue with next mouse up action"
+msgstr ""
+
 #: lazarusidestrconsts.synffoldcomments
 msgid "Fold comments"
 msgstr ""
@@ -19235,6 +19319,26 @@ msgstr ""
 
 #: lazarusidestrconsts.synfhidecommentsinselection
 msgid "Hide comments in selection"
+msgstr ""
+
+#: lazarusidestrconsts.synfmatchactionbuttonofmousedown
+msgid "Match action button of mouse down"
+msgstr ""
+
+#: lazarusidestrconsts.synfmatchactionlineofmousedown
+msgid "Match action line of mouse down"
+msgstr ""
+
+#: lazarusidestrconsts.synfmatchactionmodifiersofmousedown
+msgid "Match action modifiers of mouse down"
+msgstr ""
+
+#: lazarusidestrconsts.synfmatchactionposofmousedown
+msgid "Match action pos of mouse down"
+msgstr ""
+
+#: lazarusidestrconsts.synfsearchallactionofmousedown
+msgid "Search all action of mouse down"
 msgstr ""
 
 #: lazarusidestrconsts.synfunfoldactiveifdef

@@ -165,6 +165,14 @@ msgstr "Standardní, všechny akce (body přerušení, složení) při stisknut�
 msgid "Extended, Actions (breakpoint, fold) on mouse up. Selection on mouse down and move"
 msgstr "Rozšířené, akce (body přerušení, složení) při uvolnění tlačítka myši. Výběr při současném stisknutí tlačítka myši a pohybu"
 
+#: lazarusidestrconsts.dlfmousesimplegutterleftupright
+msgid "Extended, Actions, right gutter half only"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimplegutterlines
+msgid "Use line numers to select lines"
+msgstr ""
+
 #: lazarusidestrconsts.dlfmousesimpleguttersect
 msgctxt "lazarusidestrconsts.dlfmousesimpleguttersect"
 msgid "Gutter"
@@ -1183,6 +1191,10 @@ msgstr "Kurzor přeskakuje tabulátory"
 msgid "User defined extension (.pp.xxx)"
 msgstr "Uživatelsky definované rozšíření (.pp.xxx)"
 
+#: lazarusidestrconsts.dlgdcifiledci
+msgid "DCI file (*.dci)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgdebugoptionspatheditordlgcaption
 msgid "Path Editor"
 msgstr "Editor cest"
@@ -1530,6 +1542,10 @@ msgstr "Používat externí soubor ladících symbolů GDB."
 msgid "File extensions"
 msgstr "Přípony souboru"
 
+#: lazarusidestrconsts.dlgfiles
+msgid "%s files"
+msgstr ""
+
 #: lazarusidestrconsts.dlgfindtextatcursor
 msgid "Find text at cursor"
 msgstr "Najít text od kurzoru"
@@ -1728,11 +1744,6 @@ msgstr "Od začátku"
 #: lazarusidestrconsts.dlgfromcursor
 msgid "&From cursor"
 msgstr "&Od kurzoru"
-
-#: lazarusidestrconsts.dlgfropts
-msgctxt "lazarusidestrconsts.dlgfropts"
-msgid "Options"
-msgstr "Volby"
 
 #: lazarusidestrconsts.dlggetposition
 msgid "Get position"
@@ -2450,6 +2461,10 @@ msgctxt "lazarusidestrconsts.dlgmouseoptnodegutter"
 msgid "Gutter"
 msgstr "Žlábek"
 
+#: lazarusidestrconsts.dlgmouseoptnodegutterchanges
+msgid "Line Changes"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmouseoptnodegutterfold
 msgid "Fold Tree"
 msgstr "Svinout strom"
@@ -2501,6 +2516,14 @@ msgstr "Priorita"
 msgctxt "lazarusidestrconsts.dlgmsgs"
 msgid "Messages"
 msgstr "Zprávy"
+
+#: lazarusidestrconsts.dlgmulticaretcolumnmode
+msgid "Multi-caret (column-select) move with cursor"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmulticaretmode
+msgid "Multi-caret move with cursor"
+msgstr ""
 
 #: lazarusidestrconsts.dlgmulticaretoncolumnselection
 msgid "Enable multi caret for column selection"
@@ -2579,11 +2602,6 @@ msgstr "Výška položky"
 msgctxt "lazarusidestrconsts.dlgoimiscellaneous"
 msgid "Miscellaneous"
 msgstr "Různé"
-
-#: lazarusidestrconsts.dlgoioptions
-msgctxt "lazarusidestrconsts.dlgoioptions"
-msgid "Options"
-msgstr "Volby"
 
 #: lazarusidestrconsts.dlgoispeedsettings
 msgid "Speed settings"
@@ -3290,7 +3308,9 @@ msgid "Use launching application"
 msgstr "Použít spouštěcí aplikaci"
 
 #: lazarusidestrconsts.dlguseminimumime
-msgid "Ime handled by System"
+#, fuzzy
+#| msgid "Ime handled by System"
+msgid "IME handled by System"
 msgstr "Ime obsluhováno systémem"
 
 #: lazarusidestrconsts.dlguserschemeerror
@@ -5261,10 +5281,6 @@ msgstr "Dokončení třídy"
 msgid "Classes and properties exist. Values were not checked."
 msgstr "Třídy a vlastnosti existují. Hodnoty nebyly zkontrolovány."
 
-#: lazarusidestrconsts.lisclassesppunotfoundcheckyourfpccfg
-msgid "classes.ppu not found. Check your fpc.cfg."
-msgstr "classes.ppu nenalezen. Zkontrolujte Váš fpc.cfg."
-
 #: lazarusidestrconsts.lisclassisnotaregisteredcomponentclassunabletopaste
 msgid "Class \"%s\" is not a registered component class.%sUnable to paste."
 msgstr "Třída \"%s\" není třídou registrované komponenty.%sNelze vložit."
@@ -6130,7 +6146,9 @@ msgid "Compile"
 msgstr "Přeložit"
 
 #: lazarusidestrconsts.liscompilewithvdformoredetailscheckforduplicates
-msgid "%s -> Compile with -vd for more details. Check for duplicates."
+#, fuzzy,badformat
+#| msgid "%s -> Compile with -vd for more details. Check for duplicates."
+msgid "Compile with -vd for more details. Check for duplicates."
 msgstr "%s-> Kompilujte s -vd pro více detailů. Kontrolujte na duplicity."
 
 #: lazarusidestrconsts.liscompiling
@@ -8163,7 +8181,9 @@ msgid "Error in the \"unit output directory\":"
 msgstr "Chyba v \"výstupní adresář jednotek\":"
 
 #: lazarusidestrconsts.liserrorinvalidbuildmode
-msgid "ERROR: invalid build mode \"%s\""
+#, fuzzy
+#| msgid "ERROR: invalid build mode \"%s\""
+msgid "Error: (lazarus) invalid build mode \"%s\""
 msgstr "CHYBA: neplatný sestavovací mód \"%s\""
 
 #: lazarusidestrconsts.liserrorloadingfile
@@ -10894,6 +10914,10 @@ msgstr ""
 msgid "Manage Source Editors ..."
 msgstr "Spravovat editory zdrojových kódů ..."
 
+#: lazarusidestrconsts.lismaximumnumberofthreadsforcompilinginparalleldefaul
+msgid "Maximum number of threads for compiling in parallel. Default is 0, which guesses the number of cores in the system."
+msgstr ""
+
 #: lazarusidestrconsts.lismaximumparallelprocesses0meansdefault
 msgid "Maximum parallel processes, 0 means default (%s)"
 msgstr ""
@@ -12713,6 +12737,12 @@ msgstr ""
 msgid "Open XML"
 msgstr "Otevřít XML"
 
+#: lazarusidestrconsts.lisoptions
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisoptions"
+msgid "Options"
+msgstr "Volby"
+
 #: lazarusidestrconsts.lisoptionschangedrecompilingcleanwithb
 msgid "Options changed, recompiling clean with -B"
 msgstr "Volby změněny, čisté překládání s -B"
@@ -14180,6 +14210,10 @@ msgstr "%s (pozice vně zdroje"
 
 #: lazarusidestrconsts.lisppuinwrongdirectory
 msgid "ppu in wrong directory=%s."
+msgstr ""
+
+#: lazarusidestrconsts.lisppunotfoundcheckyourfpccfg
+msgid "%s.ppu not found. Check your fpc.cfg."
 msgstr ""
 
 #: lazarusidestrconsts.lisprecedingword
@@ -16535,6 +16569,30 @@ msgstr "Cesta:"
 msgid "Toggle showing filenames with full path or with relative path"
 msgstr "Přepnout zobrazení názvů souborů s plnou cestou nebo s relativní cestou"
 
+#: lazarusidestrconsts.listoolbaroptions
+msgid "Toolbar"
+msgstr ""
+
+#: lazarusidestrconsts.listoolbaroptionshighlight
+msgid "Highlight toolbars buttons"
+msgstr ""
+
+#: lazarusidestrconsts.listoolbaroptionsraise
+msgid "Raise toolbars"
+msgstr ""
+
+#: lazarusidestrconsts.listoolbaroptionsstandardvisible
+msgid "Standard toolbar visible"
+msgstr ""
+
+#: lazarusidestrconsts.listoolbaroptionstoolbarsvisible
+msgid "Toolbars visible"
+msgstr ""
+
+#: lazarusidestrconsts.listoolbaroptionsviewdebugvisible
+msgid "Debug toolbar visible"
+msgstr ""
+
 #: lazarusidestrconsts.listoolhasnoexecutable
 msgid "tool \"%s\" has no executable"
 msgstr "nástroj \"%s\" nemá spustitelný soubor"
@@ -18072,6 +18130,10 @@ msgstr "Makra"
 msgid "Text marker commands"
 msgstr "Příkazy označení textu"
 
+#: lazarusidestrconsts.srkmcatmulticaret
+msgid "Multi caret commands"
+msgstr ""
+
 #: lazarusidestrconsts.srkmcatpackagemenu
 msgid "Package menu commands"
 msgstr "Příkazy menu Balíček"
@@ -18758,6 +18820,30 @@ msgstr "Vložit schránku na aktuální pozici"
 msgid "pause program"
 msgstr "pozastavit program"
 
+#: lazarusidestrconsts.srkmecpluginmulticaretclearall
+msgid "Clear all extra carets"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecpluginmulticaretmodecancelonmove
+msgid "Cursor keys clear all extra carets"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecpluginmulticaretmodemoveall
+msgid "Cursor keys move all extra carets"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecpluginmulticaretsetcaret
+msgid "Add extra caret"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecpluginmulticarettogglecaret
+msgid "Toggle extra caret"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecpluginmulticaretunsetcaret
+msgid "Remove extra caret"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecprevbookmark
 msgid "Previous Bookmark"
 msgstr "Předchozí značka"
@@ -19326,6 +19412,10 @@ msgstr "Přesunout ukazatel o slovo doprava"
 msgid "Edit keys of command"
 msgstr "Upravit klávesy povelů"
 
+#: lazarusidestrconsts.synfcontinuewithnextmouseupaction
+msgid "Continue with next mouse up action"
+msgstr ""
+
 #: lazarusidestrconsts.synffoldcomments
 msgid "Fold comments"
 msgstr "Složit komentáře"
@@ -19357,6 +19447,26 @@ msgstr "Skrýt komentáře"
 #: lazarusidestrconsts.synfhidecommentsinselection
 msgid "Hide comments in selection"
 msgstr "Skrýt komentáře ve výběru"
+
+#: lazarusidestrconsts.synfmatchactionbuttonofmousedown
+msgid "Match action button of mouse down"
+msgstr ""
+
+#: lazarusidestrconsts.synfmatchactionlineofmousedown
+msgid "Match action line of mouse down"
+msgstr ""
+
+#: lazarusidestrconsts.synfmatchactionmodifiersofmousedown
+msgid "Match action modifiers of mouse down"
+msgstr ""
+
+#: lazarusidestrconsts.synfmatchactionposofmousedown
+msgid "Match action pos of mouse down"
+msgstr ""
+
+#: lazarusidestrconsts.synfsearchallactionofmousedown
+msgid "Search all action of mouse down"
+msgstr ""
 
 #: lazarusidestrconsts.synfunfoldactiveifdef
 msgid "Unfold active Ifdef"

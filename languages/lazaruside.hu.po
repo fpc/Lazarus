@@ -163,6 +163,14 @@ msgstr "Szabványos, minden művelet (töréspont, összecsukás) egérgomb leny
 msgid "Extended, Actions (breakpoint, fold) on mouse up. Selection on mouse down and move"
 msgstr "Kibővített, műveletek (töréspont, összecsukás) egérgomb felengedésére. Kijelölés egérgomb lenyomására és mozgatás"
 
+#: lazarusidestrconsts.dlfmousesimplegutterleftupright
+msgid "Extended, Actions, right gutter half only"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimplegutterlines
+msgid "Use line numers to select lines"
+msgstr ""
+
 #: lazarusidestrconsts.dlfmousesimpleguttersect
 msgctxt "lazarusidestrconsts.dlfmousesimpleguttersect"
 msgid "Gutter"
@@ -1181,6 +1189,10 @@ msgstr "A kurzor átugrik a tab-okon"
 msgid "User defined extension (.pp.xxx)"
 msgstr "Felhasználó által megadott kiterjesztés (.pp.xxx)"
 
+#: lazarusidestrconsts.dlgdcifiledci
+msgid "DCI file (*.dci)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgdebugoptionspatheditordlgcaption
 msgid "Path Editor"
 msgstr "Útvonalszerkesztő"
@@ -1528,6 +1540,10 @@ msgstr "Külső GDB hibakereső szimbólum fájl használata"
 msgid "File extensions"
 msgstr "Fájlkiterjesztések"
 
+#: lazarusidestrconsts.dlgfiles
+msgid "%s files"
+msgstr ""
+
 #: lazarusidestrconsts.dlgfindtextatcursor
 msgid "Find text at cursor"
 msgstr "Kurzornál lévő szöveg keresése"
@@ -1726,11 +1742,6 @@ msgstr "&Elejétől"
 #: lazarusidestrconsts.dlgfromcursor
 msgid "&From cursor"
 msgstr "Kurzortól"
-
-#: lazarusidestrconsts.dlgfropts
-msgctxt "lazarusidestrconsts.dlgfropts"
-msgid "Options"
-msgstr "Beállítások"
 
 #: lazarusidestrconsts.dlggetposition
 msgid "Get position"
@@ -2448,6 +2459,10 @@ msgctxt "lazarusidestrconsts.dlgmouseoptnodegutter"
 msgid "Gutter"
 msgstr "Hasábköz"
 
+#: lazarusidestrconsts.dlgmouseoptnodegutterchanges
+msgid "Line Changes"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmouseoptnodegutterfold
 msgid "Fold Tree"
 msgstr "Összecsukható fa"
@@ -2499,6 +2514,14 @@ msgstr "Prioritás"
 msgctxt "lazarusidestrconsts.dlgmsgs"
 msgid "Messages"
 msgstr "Üzenetek"
+
+#: lazarusidestrconsts.dlgmulticaretcolumnmode
+msgid "Multi-caret (column-select) move with cursor"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmulticaretmode
+msgid "Multi-caret move with cursor"
+msgstr ""
 
 #: lazarusidestrconsts.dlgmulticaretoncolumnselection
 msgid "Enable multi caret for column selection"
@@ -2577,11 +2600,6 @@ msgstr "Elem magassága"
 msgctxt "lazarusidestrconsts.dlgoimiscellaneous"
 msgid "Miscellaneous"
 msgstr "Egyéb"
-
-#: lazarusidestrconsts.dlgoioptions
-msgctxt "lazarusidestrconsts.dlgoioptions"
-msgid "Options"
-msgstr "Beállítások"
 
 #: lazarusidestrconsts.dlgoispeedsettings
 msgid "Speed settings"
@@ -3282,7 +3300,9 @@ msgid "Use launching application"
 msgstr "Futtató alkalmazás használata"
 
 #: lazarusidestrconsts.dlguseminimumime
-msgid "Ime handled by System"
+#, fuzzy
+#| msgid "Ime handled by System"
+msgid "IME handled by System"
 msgstr "A rendszer kezeli az írásjelek bevitelét"
 
 #: lazarusidestrconsts.dlguserschemeerror
@@ -5232,10 +5252,6 @@ msgstr "Osztály kiegészítés"
 msgid "Classes and properties exist. Values were not checked."
 msgstr "Az osztály és a tulajdonságok léteznek, Az értékek nem lettek ellenőrizve."
 
-#: lazarusidestrconsts.lisclassesppunotfoundcheckyourfpccfg
-msgid "classes.ppu not found. Check your fpc.cfg."
-msgstr "A classes.ppu nem található. Ellenőrizze az fpc.cfg fájlt!"
-
 #: lazarusidestrconsts.lisclassisnotaregisteredcomponentclassunabletopaste
 msgid "Class \"%s\" is not a registered component class.%sUnable to paste."
 msgstr "A(z) \"%s\" osztály nem egy regisztrált komponens osztály.%sNem lehet beilleszteni."
@@ -6101,7 +6117,9 @@ msgid "Compile"
 msgstr "Fordítás"
 
 #: lazarusidestrconsts.liscompilewithvdformoredetailscheckforduplicates
-msgid "%s -> Compile with -vd for more details. Check for duplicates."
+#, fuzzy,badformat
+#| msgid "%s -> Compile with -vd for more details. Check for duplicates."
+msgid "Compile with -vd for more details. Check for duplicates."
 msgstr "%s -> A részletekért -vd használatával kell újrafordítani. Másolatokat kell keresni!"
 
 #: lazarusidestrconsts.liscompiling
@@ -8127,7 +8145,9 @@ msgid "Error in the \"unit output directory\":"
 msgstr "Hiba az \"unitok kimeneti könytára\" útvonalában:"
 
 #: lazarusidestrconsts.liserrorinvalidbuildmode
-msgid "ERROR: invalid build mode \"%s\""
+#, fuzzy
+#| msgid "ERROR: invalid build mode \"%s\""
+msgid "Error: (lazarus) invalid build mode \"%s\""
 msgstr "HIBA: Érvénytelen építési mód: \"%s\""
 
 #: lazarusidestrconsts.liserrorloadingfile
@@ -10843,6 +10863,10 @@ msgstr ""
 msgid "Manage Source Editors ..."
 msgstr "Forráskódszerkesztők kezelése ..."
 
+#: lazarusidestrconsts.lismaximumnumberofthreadsforcompilinginparalleldefaul
+msgid "Maximum number of threads for compiling in parallel. Default is 0, which guesses the number of cores in the system."
+msgstr ""
+
 #: lazarusidestrconsts.lismaximumparallelprocesses0meansdefault
 msgid "Maximum parallel processes, 0 means default (%s)"
 msgstr "Párhuzamos folyamatok maximális száma, a 0 az alapértelmezést jelenti (%s)"
@@ -12664,6 +12688,12 @@ msgstr "URL megnyitása"
 msgid "Open XML"
 msgstr "XML megnyitása"
 
+#: lazarusidestrconsts.lisoptions
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisoptions"
+msgid "Options"
+msgstr "Beállítások"
+
 #: lazarusidestrconsts.lisoptionschangedrecompilingcleanwithb
 msgid "Options changed, recompiling clean with -B"
 msgstr "A beállítások megváltoztak, tiszta újrafordítás -B használatával"
@@ -14102,6 +14132,10 @@ msgstr "%s (a pozíció a forráson kívül van)"
 
 #: lazarusidestrconsts.lisppuinwrongdirectory
 msgid "ppu in wrong directory=%s."
+msgstr ""
+
+#: lazarusidestrconsts.lisppunotfoundcheckyourfpccfg
+msgid "%s.ppu not found. Check your fpc.cfg."
 msgstr ""
 
 #: lazarusidestrconsts.lisprecedingword
@@ -16414,6 +16448,30 @@ msgstr "Útvonal:"
 msgid "Toggle showing filenames with full path or with relative path"
 msgstr "Teljes/Részleges elérési út megjelenítésének átkapcsolása fájlneveknél"
 
+#: lazarusidestrconsts.listoolbaroptions
+msgid "Toolbar"
+msgstr ""
+
+#: lazarusidestrconsts.listoolbaroptionshighlight
+msgid "Highlight toolbars buttons"
+msgstr ""
+
+#: lazarusidestrconsts.listoolbaroptionsraise
+msgid "Raise toolbars"
+msgstr ""
+
+#: lazarusidestrconsts.listoolbaroptionsstandardvisible
+msgid "Standard toolbar visible"
+msgstr ""
+
+#: lazarusidestrconsts.listoolbaroptionstoolbarsvisible
+msgid "Toolbars visible"
+msgstr ""
+
+#: lazarusidestrconsts.listoolbaroptionsviewdebugvisible
+msgid "Debug toolbar visible"
+msgstr ""
+
 #: lazarusidestrconsts.listoolhasnoexecutable
 msgid "tool \"%s\" has no executable"
 msgstr "a(z) \"%s\" eszköz nem tartalmaz futtatható állományt"
@@ -17941,6 +17999,10 @@ msgstr "Makrók"
 msgid "Text marker commands"
 msgstr "Szöveg megjelölési parancsai"
 
+#: lazarusidestrconsts.srkmcatmulticaret
+msgid "Multi caret commands"
+msgstr ""
+
 #: lazarusidestrconsts.srkmcatpackagemenu
 msgid "Package menu commands"
 msgstr "Csomag menü parancsai"
@@ -18627,6 +18689,30 @@ msgstr "Vágólap tartalmának beillesztése a jelenlegi pozícióba"
 msgid "pause program"
 msgstr "program szüneteltetése"
 
+#: lazarusidestrconsts.srkmecpluginmulticaretclearall
+msgid "Clear all extra carets"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecpluginmulticaretmodecancelonmove
+msgid "Cursor keys clear all extra carets"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecpluginmulticaretmodemoveall
+msgid "Cursor keys move all extra carets"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecpluginmulticaretsetcaret
+msgid "Add extra caret"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecpluginmulticarettogglecaret
+msgid "Toggle extra caret"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecpluginmulticaretunsetcaret
+msgid "Remove extra caret"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecprevbookmark
 msgid "Previous Bookmark"
 msgstr "Előző könyvjelző"
@@ -19195,6 +19281,10 @@ msgstr "Kurzor mozgatása szavanként jobbra"
 msgid "Edit keys of command"
 msgstr "Parancs billentyűinek szerkesztése"
 
+#: lazarusidestrconsts.synfcontinuewithnextmouseupaction
+msgid "Continue with next mouse up action"
+msgstr ""
+
 #: lazarusidestrconsts.synffoldcomments
 msgid "Fold comments"
 msgstr "Megjegyzések összecsukása"
@@ -19226,6 +19316,26 @@ msgstr "Megjegyzések elrejtése"
 #: lazarusidestrconsts.synfhidecommentsinselection
 msgid "Hide comments in selection"
 msgstr "Megjegyzések elrejtése a kijelölésben"
+
+#: lazarusidestrconsts.synfmatchactionbuttonofmousedown
+msgid "Match action button of mouse down"
+msgstr ""
+
+#: lazarusidestrconsts.synfmatchactionlineofmousedown
+msgid "Match action line of mouse down"
+msgstr ""
+
+#: lazarusidestrconsts.synfmatchactionmodifiersofmousedown
+msgid "Match action modifiers of mouse down"
+msgstr ""
+
+#: lazarusidestrconsts.synfmatchactionposofmousedown
+msgid "Match action pos of mouse down"
+msgstr ""
+
+#: lazarusidestrconsts.synfsearchallactionofmousedown
+msgid "Search all action of mouse down"
+msgstr ""
 
 #: lazarusidestrconsts.synfunfoldactiveifdef
 msgid "Unfold active Ifdef"
