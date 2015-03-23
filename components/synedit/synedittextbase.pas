@@ -217,6 +217,7 @@ type
     procedure Clear;
     procedure Lock;
     function PopItem: TSynEditUndoGroup;
+    function PeekItem: TSynEditUndoGroup;
     procedure Unlock;
     function IsLocked: Boolean;
     procedure MarkTopAsUnmodified;
@@ -505,6 +506,13 @@ begin
     if fUnModifiedItem>fItems.Count then
       fUnModifiedItem:=-1;
   end;
+end;
+
+function TSynEditUndoList.PeekItem: TSynEditUndoGroup;
+begin
+  Result := nil;
+  if fItems.Count > 0 then
+    Result := TSynEditUndoGroup(fItems[fItems.Count - 1]);
 end;
 
 procedure TSynEditUndoList.SetMaxUndoActions(Value: integer);

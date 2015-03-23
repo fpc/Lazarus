@@ -3,13 +3,16 @@ unit LazSynIMM;
 {$mode objfpc}{$H+}
 
 {off $DEFINE WinIMEDebug}
+{off $DEFINE WinIMEFullDeferOverwrite} // In Full IME do "overwrite selecton" when IME finishes (normally done at start)
+{off $DEFINE WinIMEFullOverwriteSkipUndo} // In Full IME undo "overwrite selecton", if IME cancelled
 
 interface
 
 uses
-  windows, imm, Classes, SysUtils, Controls, LazLoggerBase, LCLType, LazUTF8,
-  Graphics, SynEditMiscClasses, SynTextDrawer, SynEditPointClasses, SynEditMarkupSelection,
-  SynEditMarkup, SynEditTypes, SynEditKeyCmds, LazSynEditText;
+  windows, imm, Classes, SysUtils, Controls, LazLoggerBase, LCLType, LazUTF8, Graphics,
+  SynEditMiscClasses, SynTextDrawer, SynEditPointClasses, SynEditMarkupSelection,
+  SynEditMarkup, SynEditTypes, SynEditKeyCmds, LazSynEditText, SynEditTextBase,
+  SynEditMiscProcs;
 
 {$IFDEF WINCE} {$IF (FPC_FULLVERSION < 20700)}
 function ImmSetCompositionFontA(_himc:HIMC; lplf:LPLOGFONT):BOOL; external ImmDLL name 'ImmSetCompositionFontA';
@@ -26,7 +29,7 @@ type
   protected
     FInCompose: Boolean;
     procedure InvalidateLines(FirstLine, LastLine: integer);
-    procedure StopIme(Success: Boolean);
+    procedure StopIme(Success: Boolean); virtual;
   public
     constructor Create(AOwner: TSynEditBase); reintroduce;
     procedure WMImeRequest(var Msg: TMessage); virtual;
@@ -73,6 +76,13 @@ type
     FImeBlockSelection, FImeBlockSelection2: TSynEditSelection;
     FImeMarkupSelection, FImeMarkupSelection2: TSynEditMarkupSelection;
     FInImeMsg: Boolean;
+    {$IFnDEF WinIMEFullOverwriteSkipUndo}
+    FUndoStamp1, FUndoStamp2: TSynEditUndoGroup;
+    FNeedUndoOnCancel: Boolean;
+    {$ENDIF}
+    {$IFDEF WinIMEFullDeferOverwrite}
+    FHasPersistLock: Boolean;
+    {$ENDIF}
     procedure SetImeTempText(const s: string);
     procedure DoOnCommand(Sender: TObject; AfterProcessing: boolean; var Handled: boolean;
       var Command: TSynEditorCommand; var AChar: TUTF8Char; Data: pointer;
@@ -80,6 +90,8 @@ type
     procedure DoOnMouse(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X,
       Y: Integer);
     procedure DoStatusChanged(Sender: TObject; Changes: TSynStatusChanges);
+  protected
+    procedure StopIme(Success: Boolean); override;
   public
     constructor Create(AOwner: TSynEditBase);
     destructor Destroy; override;
@@ -383,6 +395,16 @@ begin
   StopIme(True);
 end;
 
+procedure LazSynImeFull.StopIme(Success: Boolean);
+begin
+  inherited StopIme(Success);
+  {$IFDEF WinIMEFullDeferOverwrite}
+  if FHasPersistLock then
+    SelectionObj.DecPersistentLock;
+  FHasPersistLock := False;
+  {$ENDIF}
+end;
+
 procedure LazSynImeFull.SetImeTempText(const s: string);
 var
   p1, p2: TPoint;
@@ -554,6 +576,10 @@ var
   ImeCount: LongWord;
   x, i: Integer;
   xy: TPoint;
+  grp: Boolean;
+  {$IFDEF WinIMEFullDeferOverwrite}
+  sel, sel2: Boolean;
+  {$ENDIF}
 begin
   {$IFDEF WinIMEDebug}
   s := '';
@@ -592,18 +618,36 @@ begin
       if ImeCount > 0 then begin
         GetMem(p, ImeCount + 2);
         try
+          SetImeTempText('');
           CaretObj.LineBytePos := FImeBlockSelection.StartLineBytePos;
+          grp := ViewedTextBuffer.UndoList.GroupUndo;
+          ViewedTextBuffer.UndoList.GroupUndo := True;
           TCustomSynEdit(FriendEdit).BeginUpdate;
+          ViewedTextBuffer.UndoList.CurrentReason := ecImeStr;
+          {$IFDEF WinIMEFullDeferOverwrite}
+          if FHasPersistLock then
+            SelectionObj.DecPersistentLock;
+          FHasPersistLock := False;
+          if SelectionObj.SelAvail and (not SelectionObj.Persistent) and (eoOverwriteBlock in TSynEdit(FriendEdit).Options2)
+          then begin
+            SelectionObj.SelText := '';
+            FImeBlockSelection.StartLineBytePos := SelectionObj.StartLineBytePos;
+          end;
+          {$ENDIF}
+          CaretObj.LineBytePos := FImeBlockSelection.StartLineBytePos;
           ImmGetCompositionStringW(imc, GCS_RESULTSTR, p, ImeCount + 2);
           p[ImeCount] := #0;
           p[ImeCount+1] := #0;
-          SetImeTempText('');
           FImeBlockSelection.SelText := UTF16ToUTF8(PWCHAR(p));
           FImeBlockSelection.StartLineBytePos := FImeBlockSelection.EndLineBytePos;
           CaretObj.LineBytePos := FImeBlockSelection.StartLineBytePos;
+          {$IFnDEF WinIMEFullOverwriteSkipUndo}
+          FNeedUndoOnCancel := False;
+          {$ENDIF}
           Msg.Result := 1;
         finally
           TCustomSynEdit(FriendEdit).EndUpdate;
+          ViewedTextBuffer.UndoList.GroupUndo := grp;
           FreeMem(p, ImeCount + 2);
         end;
       end;
@@ -622,7 +666,15 @@ begin
           ImmGetCompositionStringW(imc, GCS_COMPSTR, p, ImeCount + 2);
           p[ImeCount] := #0;
           p[ImeCount+1] := #0;
+          {$IFDEF WinIMEFullDeferOverwrite}
+          sel := (not SelectionObj.IsBackwardSel) and (CompareCarets(SelectionObj.EndLineBytePos, FImeBlockSelection.StartLineBytePos) = 0);
+          sel2 := SelectionObj.IsBackwardSel and (CompareCarets(SelectionObj.EndLineBytePos, FImeBlockSelection.EndLineBytePos) = 0);
+          {$ENDIF}
           SetImeTempText(UTF16ToUTF8(PWCHAR(p)));
+          {$IFDEF WinIMEFullDeferOverwrite}
+          if sel then SelectionObj.EndLineBytePos := FImeBlockSelection.StartLineBytePos;
+          if sel2 then SelectionObj.EndLineBytePos := FImeBlockSelection.EndLineBytePos;
+          {$ENDIF}
           Msg.Result := 1;
         finally
           FreeMem(p, ImeCount + 2);
@@ -701,8 +753,31 @@ end;
 procedure LazSynImeFull.WMImeStartComposition(var Msg: TMessage);
 begin
   //debugln(['TCustomSynEdit.WMImeStartComposition ']);
-  if SelectionObj.SelAvail and (not SelectionObj.Persistent) and (eoOverwriteBlock in TSynEdit(FriendEdit).Options2) then
+  {$IFnDEF WinIMEFullDeferOverwrite}
+  if SelectionObj.SelAvail and (not SelectionObj.Persistent) and (eoOverwriteBlock in TSynEdit(FriendEdit).Options2)
+  then begin
+    {$IFnDEF WinIMEFullOverwriteSkipUndo}
+    ViewedTextBuffer.UndoList.ForceGroupEnd;
+    FUndoStamp1 := ViewedTextBuffer.UndoList.PeekItem;
+    {$ENDIF}
+    TCustomSynEdit(FriendEdit).BeginUpdate;
+    ViewedTextBuffer.UndoList.CurrentReason := ecImeStr;
     SelectionObj.SelText := '';
+    TCustomSynEdit(FriendEdit).EndUpdate;
+  {$IFnDEF WinIMEFullOverwriteSkipUndo}
+    FUndoStamp2 := ViewedTextBuffer.UndoList.PeekItem;
+    FNeedUndoOnCancel := FUndoStamp1 <> FUndoStamp2;
+  end
+  else begin
+    FNeedUndoOnCancel := False
+  {$ENDIF}
+  end;
+  {$ENDIF}
+  {$IFDEF WinIMEFullDeferOverwrite}
+  if not FHasPersistLock then
+    SelectionObj.IncPersistentLock;
+  FHasPersistLock := True;
+  {$ENDIF}
 
   FImeBlockSelection.StartLineBytePos := CaretObj.LineBytePos;
   FInCompose := True;
@@ -714,6 +789,18 @@ begin
   //debugln(['TCustomSynEdit.WMImeEndComposition ']);
   SetImeTempText('');
   CaretObj.LineBytePos := FImeBlockSelection.LastLineBytePos;
+  {$IFnDEF WinIMEFullDeferOverwrite}
+  {$IFnDEF WinIMEFullOverwriteSkipUndo}
+  if FNeedUndoOnCancel and (ViewedTextBuffer.UndoList.PeekItem = FUndoStamp2) then
+    TSynEdit(FriendEdit).Undo;
+  {$ENDIF}
+  {$ENDIF}
+  {$IFDEF WinIMEFullDeferOverwrite}
+  if FHasPersistLock then
+    SelectionObj.DecPersistentLock;
+  FHasPersistLock := False;
+  {$ENDIF}
+
   FImeBlockSelection.StartLineBytePos := CaretObj.LineBytePos;
   FImeBlockSelection2.StartLineBytePos := CaretObj.LineBytePos;
   FInCompose := False;
