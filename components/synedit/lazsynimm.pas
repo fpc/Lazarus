@@ -313,9 +313,12 @@ begin
           GetMem(p, ImeCount + 2);
           try
             TCustomSynEdit(FriendEdit).BeginUpdate;
+            if SelectionObj.SelAvail and (not SelectionObj.Persistent) and (eoOverwriteBlock in TSynEdit(FriendEdit).Options2) then
+              SelectionObj.SelText := '';
             ImmGetCompositionStringW(imc, GCS_RESULTSTR, p, ImeCount + 2);
             p[ImeCount] := #0;
             p[ImeCount+1] := #0;
+            FImeBlockSelection.StartLineBytePos := CaretObj.LineBytePos;
             FImeBlockSelection.SelText := UTF16ToUTF8(PWCHAR(p));
             FImeBlockSelection.StartLineBytePos := FImeBlockSelection.EndLineBytePos;
             CaretObj.LineBytePos := FImeBlockSelection.StartLineBytePos;
@@ -339,9 +342,6 @@ var
   imc: HIMC;
 begin
   //debugln(['TCustomSynEdit.WMImeStartComposition ']);
-  if SelectionObj.SelAvail and (not SelectionObj.Persistent) and (eoOverwriteBlock in TSynEdit(FriendEdit).Options2) then
-    SelectionObj.SelText := '';
-
   imc := ImmGetContext(FriendEdit.Handle);
   if (imc <> 0) then begin
     UpdateImeWinFont(imc);
