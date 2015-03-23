@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2015-03-06 00:09+0300\n"
+"PO-Revision-Date: 2015-03-24 01:17+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -487,8 +487,8 @@ msgid "Quick Paste Selection"
 msgstr "Быстрая вставка выделенного"
 
 #: syneditstrconst.syns_emcpluginmulticaretselectiontocarets
-msgid "Set CArets at EOL in selected lines"
-msgstr ""
+msgid "Set carets at EOL in selected lines"
+msgstr "Устанавливать курсоры на концах выделенных строк"
 
 #: syneditstrconst.syns_emcpluginmulticarettogglecaret
 msgid "Toggle extra caret"
@@ -523,8 +523,8 @@ msgid "Drag Selection"
 msgstr "Перетаскивание выделенного"
 
 #: syneditstrconst.syns_emcstartdragmove_opt
-msgid "Caret on up if not dragged, No Caret on up if not dragged"
-msgstr ""
+msgid "\"Caret on up if not dragged\",yes,no"
+msgstr "\"Курсор при отпускании кнопки мыши без перетаскивания\",да,нет"
 
 #: syneditstrconst.syns_emcstartlineselections
 msgid "Line Selection"
@@ -532,7 +532,7 @@ msgstr "Выбор строки"
 
 #: syneditstrconst.syns_emcstartlineselectionsnoneempty
 msgid "Line Selection (select immediate)"
-msgstr ""
+msgstr "Выделение строки (немедленное)"
 
 #: syneditstrconst.syns_emcstartselection
 msgid "Selection"

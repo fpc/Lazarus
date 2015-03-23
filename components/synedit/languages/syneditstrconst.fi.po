@@ -481,7 +481,7 @@ msgid "Quick Paste Selection"
 msgstr "Pika-liitä valinta"
 
 #: syneditstrconst.syns_emcpluginmulticaretselectiontocarets
-msgid "Set CArets at EOL in selected lines"
+msgid "Set carets at EOL in selected lines"
 msgstr ""
 
 #: syneditstrconst.syns_emcpluginmulticarettogglecaret
@@ -517,7 +517,7 @@ msgid "Drag Selection"
 msgstr "Vedä valinta"
 
 #: syneditstrconst.syns_emcstartdragmove_opt
-msgid "Caret on up if not dragged, No Caret on up if not dragged"
+msgid "\"Caret on up if not dragged\",yes,no"
 msgstr ""
 
 #: syneditstrconst.syns_emcstartlineselections

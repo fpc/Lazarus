@@ -412,7 +412,7 @@ resourcestring
   SYNS_emcPasteSelection           = 'Quick Paste Selection';
   SYNS_emcMouseLink                = 'Source Link';
   SYNS_emcMouseLink_opt            = 'Underline,yes, no';
-  SYNS_emcStartDragMove_opt        = 'Caret on up if not dragged, No Caret on up if not dragged';
+  SYNS_emcStartDragMove_opt        = '"Caret on up if not dragged",yes,no';
   SYNS_emcContextMenu              = 'Popup Menu';
   SYNS_emcBreakPointToggle         = 'Toggle Breakpoint';
   SYNS_emcCodeFoldCollaps          = 'Fold Code';
@@ -438,7 +438,7 @@ resourcestring
   SYNS_emcWheelScroll_opt          = 'Speed,"System settings",Lines,Pages,"Pages (less one line)"';
 
   SYNS_emcPluginMultiCaretToggleCaret = 'Toggle extra caret';
-  SYNS_emcPluginMultiCaretSelectionToCarets = 'Set CArets at EOL in selected lines';
+  SYNS_emcPluginMultiCaretSelectionToCarets = 'Set carets at EOL in selected lines';
 implementation
 
 end.
