@@ -2359,6 +2359,9 @@ begin
   FreeAndNil(FRightGutterArea);
   FreeAndNil(FTextArea);
   FreeAndNil(fTSearch);
+  {$IFDEF WinIME}
+  FreeAndNil(FImeHandler);
+  {$ENDIF}
   FreeAndNil(fMarkupManager);
   FreeAndNil(fBookMarkOpt);
   FreeAndNil(fKeyStrokes);
@@ -2371,9 +2374,6 @@ begin
   FreeAndNil(FRightGutter);
   FreeAndNil(FPaintLineColor);
   FreeAndNil(FPaintLineColor2);
-  {$IFDEF WinIME}
-  FreeAndNil(FImeHandler);
-  {$ENDIF}
   FreeAndNil(fTextDrawer);
   FreeAndNil(fFontDummy);
   DestroyMarkList; // before detach from FLines
