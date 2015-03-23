@@ -464,7 +464,11 @@ begin
   TCustomSynEdit(FriendEdit).UnregisterBeforeMouseDownHandler(@DoOnMouse);
   TCustomSynEdit(FriendEdit).UnregisterCommandHandler(@DoOnCommand);
   TCustomSynEdit(FriendEdit).UnRegisterStatusChangedHandler(@DoStatusChanged);
+  TSynEditMarkupManager(MarkupMgr).RemoveMarkUp(FImeMarkupSelection);
+  TSynEditMarkupManager(MarkupMgr).RemoveMarkUp(FImeMarkupSelection2);
 
+  FreeAndNil(FImeMarkupSelection);
+  FreeAndNil(FImeMarkupSelection2);
   FreeAndNil(FImeBlockSelection);
   FreeAndNil(FImeBlockSelection2);
   inherited Destroy;
