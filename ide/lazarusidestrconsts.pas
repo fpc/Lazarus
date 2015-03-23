@@ -296,6 +296,7 @@ resourcestring
   lisMenuSelectAll = 'Select All';
   lisCheckAll = 'Check All';
   lisUncheckAll = 'Uncheck All';
+  dlgFiles = '%s files';
   lisSAMAbstractMethodsNotYetOverridden = 'Abstract Methods - not yet overridden';
   lisMenuSelectToBrace = 'Select to Brace';
   lisMenuSelectCodeBlock = 'Select Code Block';
@@ -1438,6 +1439,7 @@ resourcestring
   dlgDelTemplate = 'Delete template ';
   dlgChsCodeTempl = 'Choose code template file (*.dci)';
   dlgAllFiles = 'All files';
+  dlgDCIFileDci = 'DCI file (*.dci)';
   lisCodetoolsTemplateFile = 'CodeTools template file';
   lisExecutable = 'Executable';
   lisEditorFileTypes = 'Editor file types';

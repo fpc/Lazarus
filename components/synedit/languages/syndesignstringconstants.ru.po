@@ -35,5 +35,5 @@ msgstr "Сбросить действия мыши"
 
 #: syndesignstringconstants.syndsseparator
 msgid "Separator"
-msgstr "Линия отделения поля (лев)"
+msgstr "Линия отделения поля слева"
 

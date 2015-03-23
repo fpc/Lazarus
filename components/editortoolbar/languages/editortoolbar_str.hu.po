@@ -71,6 +71,10 @@ msgstr "Szerkesztő eszköztár"
 msgid "Editor Toolbar Configuration"
 msgstr "Szerkesztő eszköztár beállítása"
 
+#: editortoolbar_str.rshelp
+msgid "Help"
+msgstr ""
+
 #: editortoolbar_str.rshelp1
 msgid "The \"Add\" button inserts a Menu Item before the selected Item of the Toolbar."
 msgstr "A \"Hozzáadás\" gomb beszúrja a menüelemet az eszköztár kijelölt eleme elé."
@@ -174,3 +178,4 @@ msgstr "Felülre"
 #: editortoolbar_str.serrcouldnotfind
 msgid "Could not find <%s>"
 msgstr "Nem található: <%s>"
+

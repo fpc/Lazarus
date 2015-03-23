@@ -72,6 +72,10 @@ msgstr "Barra strumenti dell'editor"
 msgid "Editor Toolbar Configuration"
 msgstr "Editor di configurazione toolbar"
 
+#: editortoolbar_str.rshelp
+msgid "Help"
+msgstr ""
+
 #: editortoolbar_str.rshelp1
 msgid "The \"Add\" button inserts a Menu Item before the selected Item of the Toolbar."
 msgstr "Il bottone \"Aggiungi\" inserisce una voce prima di quella selezionata nella Barra Strumenti."

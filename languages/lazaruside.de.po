@@ -1178,6 +1178,10 @@ msgstr "Cursor überspringt Tabulatoren"
 msgid "User defined extension (.pp.xxx)"
 msgstr "Benutzerdefinierte Erweiterung (.pp.xxx)"
 
+#: lazarusidestrconsts.dlgdcifiledci
+msgid "DCI file (*.dci)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgdebugoptionspatheditordlgcaption
 msgid "Path Editor"
 msgstr "Pfadeditor"
@@ -1524,6 +1528,10 @@ msgstr "Externe Datei mit gdb-Debugsymbolen nutzen"
 #: lazarusidestrconsts.dlgfileexts
 msgid "File extensions"
 msgstr "Dateiendungen"
+
+#: lazarusidestrconsts.dlgfiles
+msgid "%s files"
+msgstr ""
 
 #: lazarusidestrconsts.dlgfindtextatcursor
 msgid "Find text at cursor"
@@ -3271,7 +3279,9 @@ msgid "Use launching application"
 msgstr "Startprogramm verwenden"
 
 #: lazarusidestrconsts.dlguseminimumime
-msgid "Ime handled by System"
+#, fuzzy
+#| msgid "Ime handled by System"
+msgid "IME handled by System"
 msgstr "IME vom System gehandhabt"
 
 #: lazarusidestrconsts.dlguserschemeerror
@@ -5221,10 +5231,6 @@ msgstr "Klassenvervollständigung"
 msgid "Classes and properties exist. Values were not checked."
 msgstr "Klassen und Eigenschaften existieren. Werte wurden nicht geprüft."
 
-#: lazarusidestrconsts.lisclassesppunotfoundcheckyourfpccfg
-msgid "classes.ppu not found. Check your fpc.cfg."
-msgstr "classes.ppu nicht gefunden. Prüfen Sie ihre fpc.cfg."
-
 #: lazarusidestrconsts.lisclassisnotaregisteredcomponentclassunabletopaste
 msgid "Class \"%s\" is not a registered component class.%sUnable to paste."
 msgstr "Klasse \"%s\" ist keine registrierte Komponentenklasse.%sKann keine Übernahme durchführen."
@@ -6090,7 +6096,7 @@ msgid "Compile"
 msgstr "Kompilieren"
 
 #: lazarusidestrconsts.liscompilewithvdformoredetailscheckforduplicates
-msgid "%s -> Compile with -vd for more details. Check for duplicates."
+msgid "Compile with -vd for more details. Check for duplicates."
 msgstr ""
 
 #: lazarusidestrconsts.liscompiling
@@ -14071,6 +14077,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisppuinwrongdirectory
 msgid "ppu in wrong directory=%s."
+msgstr ""
+
+#: lazarusidestrconsts.lisppunotfoundcheckyourfpccfg
+msgid "%s.ppu not found. Check your fpc.cfg."
 msgstr ""
 
 #: lazarusidestrconsts.lisprecedingword

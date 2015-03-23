@@ -1178,6 +1178,10 @@ msgstr "Le curseur saute les tabulations"
 msgid "User defined extension (.pp.xxx)"
 msgstr "Extension utilisateur (.pp.xxx)"
 
+#: lazarusidestrconsts.dlgdcifiledci
+msgid "DCI file (*.dci)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgdebugoptionspatheditordlgcaption
 msgid "Path Editor"
 msgstr "Editeur de chemin"
@@ -1524,6 +1528,10 @@ msgstr "Utiliser un fichier de symboles de débogage externe pour gdb"
 #: lazarusidestrconsts.dlgfileexts
 msgid "File extensions"
 msgstr "Extensions de fichier"
+
+#: lazarusidestrconsts.dlgfiles
+msgid "%s files"
+msgstr ""
 
 #: lazarusidestrconsts.dlgfindtextatcursor
 msgid "Find text at cursor"
@@ -3277,7 +3285,9 @@ msgid "Use launching application"
 msgstr "Utiliser une application de démarrage"
 
 #: lazarusidestrconsts.dlguseminimumime
-msgid "Ime handled by System"
+#, fuzzy
+#| msgid "Ime handled by System"
+msgid "IME handled by System"
 msgstr "\"Ime\" géré par le système"
 
 #: lazarusidestrconsts.dlguserschemeerror
@@ -5230,10 +5240,6 @@ msgstr "Complétion de classe"
 msgid "Classes and properties exist. Values were not checked."
 msgstr "Les classes et les propriétés existent. Les valeurs n'ont pas été vérifiées."
 
-#: lazarusidestrconsts.lisclassesppunotfoundcheckyourfpccfg
-msgid "classes.ppu not found. Check your fpc.cfg."
-msgstr "classes.ppu non trouvé. Vérifiez votre fpc.cfg."
-
 #: lazarusidestrconsts.lisclassisnotaregisteredcomponentclassunabletopaste
 msgid "Class \"%s\" is not a registered component class.%sUnable to paste."
 msgstr "La classe \"%s\" n'est pas une classe de composants répertoriée. %sInpossible de coller."
@@ -6099,7 +6105,9 @@ msgid "Compile"
 msgstr "Compiler"
 
 #: lazarusidestrconsts.liscompilewithvdformoredetailscheckforduplicates
-msgid "%s -> Compile with -vd for more details. Check for duplicates."
+#, fuzzy,badformat
+#| msgid "%s -> Compile with -vd for more details. Check for duplicates."
+msgid "Compile with -vd for more details. Check for duplicates."
 msgstr "%s -> Compilez avec -vd pour plus de détails Attention aux duplications."
 
 #: lazarusidestrconsts.liscompiling
@@ -14064,6 +14072,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisppuinwrongdirectory
 msgid "ppu in wrong directory=%s."
+msgstr ""
+
+#: lazarusidestrconsts.lisppunotfoundcheckyourfpccfg
+msgid "%s.ppu not found. Check your fpc.cfg."
 msgstr ""
 
 #: lazarusidestrconsts.lisprecedingword

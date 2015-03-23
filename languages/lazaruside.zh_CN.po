@@ -1230,6 +1230,10 @@ msgstr ""
 msgid "User defined extension (.pp.xxx)"
 msgstr "用户定义后缀 (.pp.xxx)"
 
+#: lazarusidestrconsts.dlgdcifiledci
+msgid "DCI file (*.dci)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgdebugoptionspatheditordlgcaption
 msgid "Path Editor"
 msgstr "路径编辑器"
@@ -1586,6 +1590,10 @@ msgstr "使用外部gdb调试语法文件"
 #: lazarusidestrconsts.dlgfileexts
 msgid "File extensions"
 msgstr "文件后缀:"
+
+#: lazarusidestrconsts.dlgfiles
+msgid "%s files"
+msgstr ""
 
 #: lazarusidestrconsts.dlgfindtextatcursor
 msgid "Find text at cursor"
@@ -3445,7 +3453,7 @@ msgid "Use launching application"
 msgstr "使用运行的应用程序"
 
 #: lazarusidestrconsts.dlguseminimumime
-msgid "Ime handled by System"
+msgid "IME handled by System"
 msgstr ""
 
 #: lazarusidestrconsts.dlguserschemeerror
@@ -5529,10 +5537,6 @@ msgstr ""
 msgid "Classes and properties exist. Values were not checked."
 msgstr ""
 
-#: lazarusidestrconsts.lisclassesppunotfoundcheckyourfpccfg
-msgid "classes.ppu not found. Check your fpc.cfg."
-msgstr ""
-
 #: lazarusidestrconsts.lisclassisnotaregisteredcomponentclassunabletopaste
 #, fuzzy,badformat
 #| msgid "Class %s%s%s is not a registered component class.%sUnable to paste."
@@ -6432,7 +6436,7 @@ msgid "Compile"
 msgstr "编译"
 
 #: lazarusidestrconsts.liscompilewithvdformoredetailscheckforduplicates
-msgid "%s -> Compile with -vd for more details. Check for duplicates."
+msgid "Compile with -vd for more details. Check for duplicates."
 msgstr ""
 
 #: lazarusidestrconsts.liscompiling
@@ -14894,6 +14898,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisppuinwrongdirectory
 msgid "ppu in wrong directory=%s."
+msgstr ""
+
+#: lazarusidestrconsts.lisppunotfoundcheckyourfpccfg
+msgid "%s.ppu not found. Check your fpc.cfg."
 msgstr ""
 
 #: lazarusidestrconsts.lisprecedingword

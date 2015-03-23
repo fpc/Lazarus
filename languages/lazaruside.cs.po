@@ -1179,6 +1179,10 @@ msgstr "Kurzor přeskakuje tabulátory"
 msgid "User defined extension (.pp.xxx)"
 msgstr "Uživatelsky definované rozšíření (.pp.xxx)"
 
+#: lazarusidestrconsts.dlgdcifiledci
+msgid "DCI file (*.dci)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgdebugoptionspatheditordlgcaption
 msgid "Path Editor"
 msgstr "Editor cest"
@@ -1525,6 +1529,10 @@ msgstr "Používat externí soubor ladících symbolů GDB."
 #: lazarusidestrconsts.dlgfileexts
 msgid "File extensions"
 msgstr "Přípony souboru"
+
+#: lazarusidestrconsts.dlgfiles
+msgid "%s files"
+msgstr ""
 
 #: lazarusidestrconsts.dlgfindtextatcursor
 msgid "Find text at cursor"
@@ -3278,7 +3286,9 @@ msgid "Use launching application"
 msgstr "Použít spouštěcí aplikaci"
 
 #: lazarusidestrconsts.dlguseminimumime
-msgid "Ime handled by System"
+#, fuzzy
+#| msgid "Ime handled by System"
+msgid "IME handled by System"
 msgstr "Ime obsluhováno systémem"
 
 #: lazarusidestrconsts.dlguserschemeerror
@@ -5249,10 +5259,6 @@ msgstr "Dokončení třídy"
 msgid "Classes and properties exist. Values were not checked."
 msgstr "Třídy a vlastnosti existují. Hodnoty nebyly zkontrolovány."
 
-#: lazarusidestrconsts.lisclassesppunotfoundcheckyourfpccfg
-msgid "classes.ppu not found. Check your fpc.cfg."
-msgstr "classes.ppu nenalezen. Zkontrolujte Váš fpc.cfg."
-
 #: lazarusidestrconsts.lisclassisnotaregisteredcomponentclassunabletopaste
 msgid "Class \"%s\" is not a registered component class.%sUnable to paste."
 msgstr "Třída \"%s\" není třídou registrované komponenty.%sNelze vložit."
@@ -6118,7 +6124,9 @@ msgid "Compile"
 msgstr "Přeložit"
 
 #: lazarusidestrconsts.liscompilewithvdformoredetailscheckforduplicates
-msgid "%s -> Compile with -vd for more details. Check for duplicates."
+#, fuzzy,badformat
+#| msgid "%s -> Compile with -vd for more details. Check for duplicates."
+msgid "Compile with -vd for more details. Check for duplicates."
 msgstr "%s-> Kompilujte s -vd pro více detailů. Kontrolujte na duplicity."
 
 #: lazarusidestrconsts.liscompiling
@@ -14156,6 +14164,10 @@ msgstr "%s (pozice vně zdroje"
 
 #: lazarusidestrconsts.lisppuinwrongdirectory
 msgid "ppu in wrong directory=%s."
+msgstr ""
+
+#: lazarusidestrconsts.lisppunotfoundcheckyourfpccfg
+msgid "%s.ppu not found. Check your fpc.cfg."
 msgstr ""
 
 #: lazarusidestrconsts.lisprecedingword

@@ -1196,6 +1196,10 @@ msgstr "Курсор пропускає Таби"
 msgid "User defined extension (.pp.xxx)"
 msgstr "Розширення користувача (.pp.xxx)"
 
+#: lazarusidestrconsts.dlgdcifiledci
+msgid "DCI file (*.dci)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgdebugoptionspatheditordlgcaption
 msgid "Path Editor"
 msgstr "Редактор Шляху"
@@ -1544,6 +1548,10 @@ msgstr "Використовувати зовнішній файл налаго�
 #: lazarusidestrconsts.dlgfileexts
 msgid "File extensions"
 msgstr "Файлові розширення"
+
+#: lazarusidestrconsts.dlgfiles
+msgid "%s files"
+msgstr ""
 
 #: lazarusidestrconsts.dlgfindtextatcursor
 msgid "Find text at cursor"
@@ -3313,7 +3321,9 @@ msgid "Use launching application"
 msgstr "Використовувати програму для запуску"
 
 #: lazarusidestrconsts.dlguseminimumime
-msgid "Ime handled by System"
+#, fuzzy
+#| msgid "Ime handled by System"
+msgid "IME handled by System"
 msgstr "Ime обробляються Системою"
 
 #: lazarusidestrconsts.dlguserschemeerror
@@ -5348,10 +5358,6 @@ msgstr "Завершення Класу"
 msgid "Classes and properties exist. Values were not checked."
 msgstr "Класи та властивості існують. Значення не були перевірені."
 
-#: lazarusidestrconsts.lisclassesppunotfoundcheckyourfpccfg
-msgid "classes.ppu not found. Check your fpc.cfg."
-msgstr "classes.ppu не знайдено. Перевірте ваш fpc.cfg."
-
 #: lazarusidestrconsts.lisclassisnotaregisteredcomponentclassunabletopaste
 #, fuzzy,badformat
 #| msgid "Class %s%s%s is not a registered component class.%sUnable to paste."
@@ -6233,7 +6239,7 @@ msgid "Compile"
 msgstr "Компіл."
 
 #: lazarusidestrconsts.liscompilewithvdformoredetailscheckforduplicates
-msgid "%s -> Compile with -vd for more details. Check for duplicates."
+msgid "Compile with -vd for more details. Check for duplicates."
 msgstr ""
 
 #: lazarusidestrconsts.liscompiling
@@ -14417,6 +14423,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisppuinwrongdirectory
 msgid "ppu in wrong directory=%s."
+msgstr ""
+
+#: lazarusidestrconsts.lisppunotfoundcheckyourfpccfg
+msgid "%s.ppu not found. Check your fpc.cfg."
 msgstr ""
 
 #: lazarusidestrconsts.lisprecedingword

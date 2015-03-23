@@ -1179,6 +1179,10 @@ msgstr "カーソルはタブをスキップ"
 msgid "User defined extension (.pp.xxx)"
 msgstr "ユーザー定義拡張子(.pp.xxx)"
 
+#: lazarusidestrconsts.dlgdcifiledci
+msgid "DCI file (*.dci)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgdebugoptionspatheditordlgcaption
 msgid "Path Editor"
 msgstr "パスエディタ"
@@ -1526,6 +1530,10 @@ msgstr "外部のgdbデバッグシンボルファイルを使用"
 #: lazarusidestrconsts.dlgfileexts
 msgid "File extensions"
 msgstr "ファイルの拡張子"
+
+#: lazarusidestrconsts.dlgfiles
+msgid "%s files"
+msgstr ""
 
 #: lazarusidestrconsts.dlgfindtextatcursor
 msgid "Find text at cursor"
@@ -3281,7 +3289,9 @@ msgid "Use launching application"
 msgstr "アプリケーション起動を使用"
 
 #: lazarusidestrconsts.dlguseminimumime
-msgid "Ime handled by System"
+#, fuzzy
+#| msgid "Ime handled by System"
+msgid "IME handled by System"
 msgstr "システムに操作されたIME"
 
 #: lazarusidestrconsts.dlguserschemeerror
@@ -5300,10 +5310,6 @@ msgstr "クラス補完"
 msgid "Classes and properties exist. Values were not checked."
 msgstr "クラスとプロパティが存在します。値はまだチェックされていません。"
 
-#: lazarusidestrconsts.lisclassesppunotfoundcheckyourfpccfg
-msgid "classes.ppu not found. Check your fpc.cfg."
-msgstr "クラス.ppuが見つかりません。fpc.cfgをチェックしてください"
-
 #: lazarusidestrconsts.lisclassisnotaregisteredcomponentclassunabletopaste
 #, fuzzy,badformat
 #| msgid "Class %s%s%s is not a registered component class.%sUnable to paste."
@@ -6175,7 +6181,7 @@ msgid "Compile"
 msgstr "コンパイル"
 
 #: lazarusidestrconsts.liscompilewithvdformoredetailscheckforduplicates
-msgid "%s -> Compile with -vd for more details. Check for duplicates."
+msgid "Compile with -vd for more details. Check for duplicates."
 msgstr ""
 
 #: lazarusidestrconsts.liscompiling
@@ -14326,6 +14332,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisppuinwrongdirectory
 msgid "ppu in wrong directory=%s."
+msgstr ""
+
+#: lazarusidestrconsts.lisppunotfoundcheckyourfpccfg
+msgid "%s.ppu not found. Check your fpc.cfg."
 msgstr ""
 
 #: lazarusidestrconsts.lisprecedingword

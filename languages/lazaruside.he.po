@@ -1240,6 +1240,10 @@ msgstr "סמן מדלג על טאבים"
 msgid "User defined extension (.pp.xxx)"
 msgstr "הרחבה של המשתמש (pp.xxx.)"
 
+#: lazarusidestrconsts.dlgdcifiledci
+msgid "DCI file (*.dci)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgdebugoptionspatheditordlgcaption
 msgid "Path Editor"
 msgstr "נתיב העורך"
@@ -1599,6 +1603,10 @@ msgstr "השתמש בקובץ סמלים חצוני של מנפה השגיאות
 #: lazarusidestrconsts.dlgfileexts
 msgid "File extensions"
 msgstr "הרחבות לקובץ"
+
+#: lazarusidestrconsts.dlgfiles
+msgid "%s files"
+msgstr ""
 
 #: lazarusidestrconsts.dlgfindtextatcursor
 msgid "Find text at cursor"
@@ -3469,7 +3477,7 @@ msgid "Use launching application"
 msgstr "השתמש ביישום משגר"
 
 #: lazarusidestrconsts.dlguseminimumime
-msgid "Ime handled by System"
+msgid "IME handled by System"
 msgstr ""
 
 #: lazarusidestrconsts.dlguserschemeerror
@@ -5576,10 +5584,6 @@ msgstr "השלמת מחלקה"
 msgid "Classes and properties exist. Values were not checked."
 msgstr "המחלקה והתכונות קיימות. הערכים לא בדוקים."
 
-#: lazarusidestrconsts.lisclassesppunotfoundcheckyourfpccfg
-msgid "classes.ppu not found. Check your fpc.cfg."
-msgstr ""
-
 #: lazarusidestrconsts.lisclassisnotaregisteredcomponentclassunabletopaste
 #, fuzzy
 #| msgid "Class %s%s%s is not a registered component class.%sUnable to paste."
@@ -6489,7 +6493,7 @@ msgid "Compile"
 msgstr "הדר"
 
 #: lazarusidestrconsts.liscompilewithvdformoredetailscheckforduplicates
-msgid "%s -> Compile with -vd for more details. Check for duplicates."
+msgid "Compile with -vd for more details. Check for duplicates."
 msgstr ""
 
 #: lazarusidestrconsts.liscompiling
@@ -15114,6 +15118,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisppuinwrongdirectory
 msgid "ppu in wrong directory=%s."
+msgstr ""
+
+#: lazarusidestrconsts.lisppunotfoundcheckyourfpccfg
+msgid "%s.ppu not found. Check your fpc.cfg."
 msgstr ""
 
 #: lazarusidestrconsts.lisprecedingword

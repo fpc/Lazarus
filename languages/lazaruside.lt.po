@@ -1198,6 +1198,10 @@ msgstr "Žymeklis nepaiso tabuliavimų"
 msgid "User defined extension (.pp.xxx)"
 msgstr "Naudotojo nurodytas plėtinys (.pp.xxx)"
 
+#: lazarusidestrconsts.dlgdcifiledci
+msgid "DCI file (*.dci)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgdebugoptionspatheditordlgcaption
 msgid "Path Editor"
 msgstr "Kelio rengyklė"
@@ -1546,6 +1550,10 @@ msgstr "Naudoti išorinį „gdb“ derinimo simbolių failą"
 #: lazarusidestrconsts.dlgfileexts
 msgid "File extensions"
 msgstr "Failų plėtiniai"
+
+#: lazarusidestrconsts.dlgfiles
+msgid "%s files"
+msgstr ""
 
 #: lazarusidestrconsts.dlgfindtextatcursor
 msgid "Find text at cursor"
@@ -3315,7 +3323,9 @@ msgid "Use launching application"
 msgstr "Naudoti paleidžiančiąją programą"
 
 #: lazarusidestrconsts.dlguseminimumime
-msgid "Ime handled by System"
+#, fuzzy
+#| msgid "Ime handled by System"
+msgid "IME handled by System"
 msgstr "IME apdoroja sistema"
 
 #: lazarusidestrconsts.dlguserschemeerror
@@ -5356,10 +5366,6 @@ msgstr "Klasės užbaigimas"
 msgid "Classes and properties exist. Values were not checked."
 msgstr "Klasės ir savybės yra. Vertės nebuvo tikrintos."
 
-#: lazarusidestrconsts.lisclassesppunotfoundcheckyourfpccfg
-msgid "classes.ppu not found. Check your fpc.cfg."
-msgstr "Nerastas „classes.ppu“. Patikrinkite ar geras „fpc.cfg“."
-
 #: lazarusidestrconsts.lisclassisnotaregisteredcomponentclassunabletopaste
 #, fuzzy,badformat
 #| msgid "Class %s%s%s is not a registered component class.%sUnable to paste."
@@ -6239,7 +6245,7 @@ msgid "Compile"
 msgstr "Kompiliuojama"
 
 #: lazarusidestrconsts.liscompilewithvdformoredetailscheckforduplicates
-msgid "%s -> Compile with -vd for more details. Check for duplicates."
+msgid "Compile with -vd for more details. Check for duplicates."
 msgstr ""
 
 #: lazarusidestrconsts.liscompiling
@@ -14430,6 +14436,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisppuinwrongdirectory
 msgid "ppu in wrong directory=%s."
+msgstr ""
+
+#: lazarusidestrconsts.lisppunotfoundcheckyourfpccfg
+msgid "%s.ppu not found. Check your fpc.cfg."
 msgstr ""
 
 #: lazarusidestrconsts.lisprecedingword

@@ -1170,6 +1170,10 @@ msgstr "Kursori ohittaa tabulaattorit"
 msgid "User defined extension (.pp.xxx)"
 msgstr "Käyttäjän määrittämä tarkennin (.pp.xxx)"
 
+#: lazarusidestrconsts.dlgdcifiledci
+msgid "DCI file (*.dci)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgdebugoptionspatheditordlgcaption
 msgid "Path Editor"
 msgstr "Polkujen muokkain"
@@ -1515,6 +1519,10 @@ msgstr "Käytä ulkoista gdb-symbolitiedostoa"
 #: lazarusidestrconsts.dlgfileexts
 msgid "File extensions"
 msgstr "Tiedostopäätteet"
+
+#: lazarusidestrconsts.dlgfiles
+msgid "%s files"
+msgstr ""
 
 #: lazarusidestrconsts.dlgfindtextatcursor
 msgid "Find text at cursor"
@@ -3259,7 +3267,9 @@ msgid "Use launching application"
 msgstr "Käytä käynnistävää ohjelmaa"
 
 #: lazarusidestrconsts.dlguseminimumime
-msgid "Ime handled by System"
+#, fuzzy
+#| msgid "Ime handled by System"
+msgid "IME handled by System"
 msgstr "Järjestelmän hoitama Ime"
 
 #: lazarusidestrconsts.dlguserschemeerror
@@ -5200,10 +5210,6 @@ msgstr "Luokan täydennys"
 msgid "Classes and properties exist. Values were not checked."
 msgstr "Luokkia ja ominaisuuksia on. Arvoja ei tarkistettu."
 
-#: lazarusidestrconsts.lisclassesppunotfoundcheckyourfpccfg
-msgid "classes.ppu not found. Check your fpc.cfg."
-msgstr "classes.ppu ei löytynyt. Tarkista fpc.cfg."
-
 #: lazarusidestrconsts.lisclassisnotaregisteredcomponentclassunabletopaste
 msgid "Class \"%s\" is not a registered component class.%sUnable to paste."
 msgstr "Luokka \"%s\" ei ole rekisteröity komponentti-luokka.%sLiittäminen ei onnistu."
@@ -6063,7 +6069,9 @@ msgid "Compile"
 msgstr "Käännä"
 
 #: lazarusidestrconsts.liscompilewithvdformoredetailscheckforduplicates
-msgid "%s -> Compile with -vd for more details. Check for duplicates."
+#, fuzzy,badformat
+#| msgid "%s -> Compile with -vd for more details. Check for duplicates."
+msgid "Compile with -vd for more details. Check for duplicates."
 msgstr "%s -> Käännä -vd option kanssa lisätietoa varten. Tarkista duplikaatit."
 
 #: lazarusidestrconsts.liscompiling
@@ -13974,6 +13982,10 @@ msgstr "%s (sijainti lähdekoodin ulkopuolella)"
 
 #: lazarusidestrconsts.lisppuinwrongdirectory
 msgid "ppu in wrong directory=%s."
+msgstr ""
+
+#: lazarusidestrconsts.lisppunotfoundcheckyourfpccfg
+msgid "%s.ppu not found. Check your fpc.cfg."
 msgstr ""
 
 #: lazarusidestrconsts.lisprecedingword

@@ -1170,6 +1170,10 @@ msgstr ""
 msgid "User defined extension (.pp.xxx)"
 msgstr ""
 
+#: lazarusidestrconsts.dlgdcifiledci
+msgid "DCI file (*.dci)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgdebugoptionspatheditordlgcaption
 msgid "Path Editor"
 msgstr ""
@@ -1515,6 +1519,10 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgfileexts
 msgid "File extensions"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfiles
+msgid "%s files"
 msgstr ""
 
 #: lazarusidestrconsts.dlgfindtextatcursor
@@ -3263,7 +3271,7 @@ msgid "Use launching application"
 msgstr ""
 
 #: lazarusidestrconsts.dlguseminimumime
-msgid "Ime handled by System"
+msgid "IME handled by System"
 msgstr ""
 
 #: lazarusidestrconsts.dlguserschemeerror
@@ -5213,10 +5221,6 @@ msgstr ""
 msgid "Classes and properties exist. Values were not checked."
 msgstr ""
 
-#: lazarusidestrconsts.lisclassesppunotfoundcheckyourfpccfg
-msgid "classes.ppu not found. Check your fpc.cfg."
-msgstr ""
-
 #: lazarusidestrconsts.lisclassisnotaregisteredcomponentclassunabletopaste
 msgid "Class \"%s\" is not a registered component class.%sUnable to paste."
 msgstr ""
@@ -6082,7 +6086,7 @@ msgid "Compile"
 msgstr ""
 
 #: lazarusidestrconsts.liscompilewithvdformoredetailscheckforduplicates
-msgid "%s -> Compile with -vd for more details. Check for duplicates."
+msgid "Compile with -vd for more details. Check for duplicates."
 msgstr ""
 
 #: lazarusidestrconsts.liscompiling
@@ -14032,6 +14036,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisppuinwrongdirectory
 msgid "ppu in wrong directory=%s."
+msgstr ""
+
+#: lazarusidestrconsts.lisppunotfoundcheckyourfpccfg
+msgid "%s.ppu not found. Check your fpc.cfg."
 msgstr ""
 
 #: lazarusidestrconsts.lisprecedingword

@@ -1243,6 +1243,10 @@ msgstr "Cursor salta tabulaciones"
 msgid "User defined extension (.pp.xxx)"
 msgstr "Extensión definida por usuario (.pp.xxx)"
 
+#: lazarusidestrconsts.dlgdcifiledci
+msgid "DCI file (*.dci)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgdebugoptionspatheditordlgcaption
 msgid "Path Editor"
 msgstr "Ruta del editor"
@@ -1601,6 +1605,10 @@ msgstr "Usar archivo externo de símbolos de depuración para gdb"
 #: lazarusidestrconsts.dlgfileexts
 msgid "File extensions"
 msgstr "Extensiones de archivo"
+
+#: lazarusidestrconsts.dlgfiles
+msgid "%s files"
+msgstr ""
 
 #: lazarusidestrconsts.dlgfindtextatcursor
 msgid "Find text at cursor"
@@ -3469,7 +3477,9 @@ msgid "Use launching application"
 msgstr "Usar al lanzar aplicación"
 
 #: lazarusidestrconsts.dlguseminimumime
-msgid "Ime handled by System"
+#, fuzzy
+#| msgid "Ime handled by System"
+msgid "IME handled by System"
 msgstr "Ime manejados por el Sistema"
 
 #: lazarusidestrconsts.dlguserschemeerror
@@ -5558,10 +5568,6 @@ msgstr "Completado de Clases"
 msgid "Classes and properties exist. Values were not checked."
 msgstr "Las clases y propiedades ya existen. Los valores no fueron verificados."
 
-#: lazarusidestrconsts.lisclassesppunotfoundcheckyourfpccfg
-msgid "classes.ppu not found. Check your fpc.cfg."
-msgstr "classes.ppu no encontrada. Chequea tu fpc.cfg."
-
 #: lazarusidestrconsts.lisclassisnotaregisteredcomponentclassunabletopaste
 #, fuzzy
 #| msgid "Class %s%s%s is not a registered component class.%sUnable to paste."
@@ -6461,7 +6467,7 @@ msgid "Compile"
 msgstr "Compilar"
 
 #: lazarusidestrconsts.liscompilewithvdformoredetailscheckforduplicates
-msgid "%s -> Compile with -vd for more details. Check for duplicates."
+msgid "Compile with -vd for more details. Check for duplicates."
 msgstr ""
 
 #: lazarusidestrconsts.liscompiling
@@ -15059,6 +15065,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisppuinwrongdirectory
 msgid "ppu in wrong directory=%s."
+msgstr ""
+
+#: lazarusidestrconsts.lisppunotfoundcheckyourfpccfg
+msgid "%s.ppu not found. Check your fpc.cfg."
 msgstr ""
 
 #: lazarusidestrconsts.lisprecedingword

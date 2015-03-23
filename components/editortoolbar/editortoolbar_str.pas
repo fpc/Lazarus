@@ -13,6 +13,7 @@ resourcestring
   rsJumpTo = 'Jump To';
   rsEditorToolbarConfigForm = 'Editor Toolbar Configuration';
   rsOK                      = 'OK';
+  rsHelp                    = 'Help';
   rsCancel                  = 'Cancel';
   rsToolbar                 = 'Toolbar Items';
   rsMenuTree                = 'Available Menu Items';

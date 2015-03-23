@@ -1177,6 +1177,10 @@ msgstr "A kurzor átugrik a tab-okon"
 msgid "User defined extension (.pp.xxx)"
 msgstr "Felhasználó által megadott kiterjesztés (.pp.xxx)"
 
+#: lazarusidestrconsts.dlgdcifiledci
+msgid "DCI file (*.dci)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgdebugoptionspatheditordlgcaption
 msgid "Path Editor"
 msgstr "Útvonalszerkesztő"
@@ -1523,6 +1527,10 @@ msgstr "Külső GDB hibakereső szimbólum fájl használata"
 #: lazarusidestrconsts.dlgfileexts
 msgid "File extensions"
 msgstr "Fájlkiterjesztések"
+
+#: lazarusidestrconsts.dlgfiles
+msgid "%s files"
+msgstr ""
 
 #: lazarusidestrconsts.dlgfindtextatcursor
 msgid "Find text at cursor"
@@ -3270,7 +3278,9 @@ msgid "Use launching application"
 msgstr "Futtató alkalmazás használata"
 
 #: lazarusidestrconsts.dlguseminimumime
-msgid "Ime handled by System"
+#, fuzzy
+#| msgid "Ime handled by System"
+msgid "IME handled by System"
 msgstr "A rendszer kezeli az írásjelek bevitelét"
 
 #: lazarusidestrconsts.dlguserschemeerror
@@ -5220,10 +5230,6 @@ msgstr "Osztály kiegészítés"
 msgid "Classes and properties exist. Values were not checked."
 msgstr "Az osztály és a tulajdonságok léteznek, Az értékek nem lettek ellenőrizve."
 
-#: lazarusidestrconsts.lisclassesppunotfoundcheckyourfpccfg
-msgid "classes.ppu not found. Check your fpc.cfg."
-msgstr "A classes.ppu nem található. Ellenőrizze az fpc.cfg fájlt!"
-
 #: lazarusidestrconsts.lisclassisnotaregisteredcomponentclassunabletopaste
 msgid "Class \"%s\" is not a registered component class.%sUnable to paste."
 msgstr "A(z) \"%s\" osztály nem egy regisztrált komponens osztály.%sNem lehet beilleszteni."
@@ -6089,7 +6095,9 @@ msgid "Compile"
 msgstr "Fordítás"
 
 #: lazarusidestrconsts.liscompilewithvdformoredetailscheckforduplicates
-msgid "%s -> Compile with -vd for more details. Check for duplicates."
+#, fuzzy,badformat
+#| msgid "%s -> Compile with -vd for more details. Check for duplicates."
+msgid "Compile with -vd for more details. Check for duplicates."
 msgstr "%s -> A részletekért -vd használatával kell újrafordítani. Másolatokat kell keresni!"
 
 #: lazarusidestrconsts.liscompiling
@@ -14078,6 +14086,10 @@ msgstr "%s (a pozíció a forráson kívül van)"
 
 #: lazarusidestrconsts.lisppuinwrongdirectory
 msgid "ppu in wrong directory=%s."
+msgstr ""
+
+#: lazarusidestrconsts.lisppunotfoundcheckyourfpccfg
+msgid "%s.ppu not found. Check your fpc.cfg."
 msgstr ""
 
 #: lazarusidestrconsts.lisprecedingword

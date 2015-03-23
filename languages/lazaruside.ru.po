@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2015-03-03 01:13+0300\n"
+"PO-Revision-Date: 2015-03-24 02:15+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -37,7 +37,7 @@ msgstr "Сбросить все параметры"
 
 #: lazarusidestrconsts.dlfmouseresetgutter
 msgid "Reset all gutter settings"
-msgstr "Сбросить все параметры поля (лев)"
+msgstr "Сбросить все параметры поля слева"
 
 #: lazarusidestrconsts.dlfmouseresettext
 msgid "Reset all text settings"
@@ -152,20 +152,20 @@ msgstr "Общие"
 
 #: lazarusidestrconsts.dlfmousesimplegutterleftdown
 msgid "Standard, All actions (breakpoint, fold) on mouse down"
-msgstr "Стандартное, все действия - при нажимании кнопки мыши"
+msgstr "Стандартное, все действия - при нажатии кнопки мыши"
 
 #: lazarusidestrconsts.dlfmousesimplegutterleftup
 msgid "Extended, Actions (breakpoint, fold) on mouse up. Selection on mouse down and move"
-msgstr "Расширенное, действия - при отпускании кнопки мыши. Выделение - при нажимании и перемещении"
+msgstr "Расширенное, действия - при отпускании кнопки мыши. Выделение - при нажатии и перемещении"
 
 #: lazarusidestrconsts.dlfmousesimpleguttersect
 msgctxt "lazarusidestrconsts.dlfmousesimpleguttersect"
 msgid "Gutter"
-msgstr "Поле (лев)"
+msgstr "Поле слева"
 
 #: lazarusidestrconsts.dlfmousesimplerightmovecaret
 msgid "Right mouse includes caret move"
-msgstr "Перемещать курсор по правой кнопке мыши"
+msgstr "Перемещать курсор правой кнопкой мыши"
 
 #: lazarusidestrconsts.dlfmousesimpletextsect
 msgctxt "lazarusidestrconsts.dlfmousesimpletextsect"
@@ -423,7 +423,7 @@ msgstr "Глобальные"
 #: lazarusidestrconsts.dlgaddhiattrgroupgutter
 msgctxt "lazarusidestrconsts.dlgaddhiattrgroupgutter"
 msgid "Gutter"
-msgstr "Поле (лев)"
+msgstr "Поле слева"
 
 #: lazarusidestrconsts.dlgaddhiattrgroupifdef
 msgctxt "lazarusidestrconsts.dlgaddhiattrgroupifdef"
@@ -450,7 +450,7 @@ msgstr "Текст"
 
 #: lazarusidestrconsts.dlgaddhiattrgutterseparator
 msgid "Gutter Separator"
-msgstr "Линия отделения поля (лев)"
+msgstr "Линия отделения поля слева"
 
 #: lazarusidestrconsts.dlgaddhiattrhighlightall
 msgid "Incremental others"
@@ -1176,6 +1176,10 @@ msgstr "Курсор пропускает ТАБы"
 msgid "User defined extension (.pp.xxx)"
 msgstr "Расширение пользователя (.pp.xxx)"
 
+#: lazarusidestrconsts.dlgdcifiledci
+msgid "DCI file (*.dci)"
+msgstr "Файл DCI (*.dci)"
+
 #: lazarusidestrconsts.dlgdebugoptionspatheditordlgcaption
 msgid "Path Editor"
 msgstr "Редактор путей"
@@ -1523,6 +1527,10 @@ msgstr "Использовать внешний файл отладочных с
 msgid "File extensions"
 msgstr "Расширения файлов"
 
+#: lazarusidestrconsts.dlgfiles
+msgid "%s files"
+msgstr "Файлов: %s"
+
 #: lazarusidestrconsts.dlgfindtextatcursor
 msgid "Find text at cursor"
 msgstr "Поиск текста под курсором"
@@ -1805,7 +1813,7 @@ msgstr "Когда компонент выровнен по горизонтал
 #: lazarusidestrconsts.dlggutter
 msgctxt "lazarusidestrconsts.dlggutter"
 msgid "Gutter"
-msgstr "Поле (лев)"
+msgstr "Поле слева"
 
 #: lazarusidestrconsts.dlgguttercollapsedcolor
 msgid "Collapsed"
@@ -1813,15 +1821,15 @@ msgstr "Свёрнутый"
 
 #: lazarusidestrconsts.dlgguttercolor
 msgid "Gutter Color"
-msgstr "Цвет поля (лев)"
+msgstr "Цвет поля слева"
 
 #: lazarusidestrconsts.dlggutteredgecolor
 msgid "Gutter Edge Color"
-msgstr "Цвет границы поля (лев)"
+msgstr "Цвет границы поля слева"
 
 #: lazarusidestrconsts.dlggutterseparatorindex
 msgid "Gutter separator index"
-msgstr "Положение отделителя поля (лев)"
+msgstr "Положение отделителя поля слева"
 
 #: lazarusidestrconsts.dlghalfpagescroll
 msgid "Half page scroll"
@@ -2441,7 +2449,7 @@ msgstr "Все"
 #: lazarusidestrconsts.dlgmouseoptnodegutter
 msgctxt "lazarusidestrconsts.dlgmouseoptnodegutter"
 msgid "Gutter"
-msgstr "Поле (лев)"
+msgstr "Поле слева"
 
 #: lazarusidestrconsts.dlgmouseoptnodegutterfold
 msgid "Fold Tree"
@@ -3009,7 +3017,7 @@ msgstr "Показывать общие сведения"
 
 #: lazarusidestrconsts.dlgshowgutterhints
 msgid "Show gutter hints"
-msgstr "Всплывающие подсказки поля (лев)"
+msgstr "Всплывающие подсказки поля слева"
 
 #: lazarusidestrconsts.dlgshowhint
 msgctxt "lazarusidestrconsts.dlgshowhint"
@@ -3269,7 +3277,7 @@ msgid "Use launching application"
 msgstr "Использовать приложение для запуска"
 
 #: lazarusidestrconsts.dlguseminimumime
-msgid "Ime handled by System"
+msgid "IME handled by System"
 msgstr "Системный редактор метода ввода"
 
 #: lazarusidestrconsts.dlguserschemeerror
@@ -3307,7 +3315,7 @@ msgstr "Подробность вывода при компиляции"
 
 #: lazarusidestrconsts.dlgvisiblegutter
 msgid "Visible gutter"
-msgstr "Видимое поле (лев)"
+msgstr "Видимое поле слева"
 
 #: lazarusidestrconsts.dlgvisiblerightmargin
 msgid "Visible right margin"
@@ -5219,10 +5227,6 @@ msgstr "Завершение классов"
 msgid "Classes and properties exist. Values were not checked."
 msgstr "Классы и свойства существуют. Значения не проверялись."
 
-#: lazarusidestrconsts.lisclassesppunotfoundcheckyourfpccfg
-msgid "classes.ppu not found. Check your fpc.cfg."
-msgstr "не найден classes.ppu. Проверьте, что файл fpc.cfg корректен."
-
 #: lazarusidestrconsts.lisclassisnotaregisteredcomponentclassunabletopaste
 msgid "Class \"%s\" is not a registered component class.%sUnable to paste."
 msgstr "Класс \"%s\" не является зарегистрированным классом компонента.%sНевозможно вставить."
@@ -6085,8 +6089,8 @@ msgid "Compile"
 msgstr "компиляции"
 
 #: lazarusidestrconsts.liscompilewithvdformoredetailscheckforduplicates
-msgid "%s -> Compile with -vd for more details. Check for duplicates."
-msgstr "%s -> Соберите с параметром -vd для получения подробностей. Убедитесь в отсутствии дубликатов."
+msgid "Compile with -vd for more details. Check for duplicates."
+msgstr "Соберите с параметром -vd для получения подробностей. Убедитесь в отсутствии дубликатов."
 
 #: lazarusidestrconsts.liscompiling
 msgid "%s (compiling ...)"
@@ -14076,6 +14080,10 @@ msgstr "%s (положение вне границ исходного кода)"
 msgid "ppu in wrong directory=%s."
 msgstr "PPU в неверном каталоге=%s."
 
+#: lazarusidestrconsts.lisppunotfoundcheckyourfpccfg
+msgid "%s.ppu not found. Check your fpc.cfg."
+msgstr "%s.ppu не найден. Проверьте файл fpc.cfg."
+
 #: lazarusidestrconsts.lisprecedingword
 msgid "Preceding word"
 msgstr "Предыдущее слово"
@@ -15266,7 +15274,7 @@ msgstr "Показывать значки для"
 
 #: lazarusidestrconsts.lisshowgutterinobjectinspector
 msgid "Show gutter"
-msgstr "Показывать поле (лев)"
+msgstr "Показывать поле слева"
 
 #: lazarusidestrconsts.lisshowhelp
 msgid "Show help"
