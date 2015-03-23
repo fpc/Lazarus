@@ -445,7 +445,7 @@ begin
   FImeMarkupSelection.MarkupInfo.FramePriority := 999;
   FImeMarkupSelection.MarkupInfo.FrameColor := clDefault;
   FImeMarkupSelection.MarkupInfo.FrameStyle := slsDotted;
-  FImeMarkupSelection.MarkupInfo.FrameEdges := sfeAround;
+  FImeMarkupSelection.MarkupInfo.FrameEdges := sfeBottom;
 
   FImeMarkupSelection2.MarkupInfo.Clear;
   FImeMarkupSelection2.MarkupInfo.FramePriority := 999+1;
