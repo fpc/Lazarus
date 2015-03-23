@@ -968,6 +968,7 @@ type
     function AddText(AText: string): TvText;
     function AddField(AKind : TvFieldKind): TvField;
     function AddRasterImage: TvRasterImage;
+    function AddEmbeddedVectorialDoc: TvEmbeddedVectorialDoc;
     procedure CalculateBoundingBox(ADest: TFPCustomCanvas; var ALeft, ATop, ARight, ABottom: Double); override;
     function TryToSelect(APos: TPoint; var ASubpart: Cardinal): TvFindEntityResult; override;
     procedure Render(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
@@ -1178,6 +1179,7 @@ type
   TvEmbeddedVectorialDoc = class(TvEntity)
   public
     Document: TvVectorialDocument;
+    Width, Height: Double;
     constructor create(APage : TvPage); override;
     destructor destroy; override;
     procedure CalculateBoundingBox(ADest: TFPCustomCanvas; var ALeft, ATop, ARight, ABottom: Double); override;
@@ -5811,6 +5813,12 @@ end;
 function TvParagraph.AddRasterImage: TvRasterImage;
 begin
   Result := TvRasterImage.Create(FPage);
+  AddEntity(Result);
+end;
+
+function TvParagraph.AddEmbeddedVectorialDoc: TvEmbeddedVectorialDoc;
+begin
+  Result := TvEmbeddedVectorialDoc.Create(FPage);
   AddEntity(Result);
 end;
 

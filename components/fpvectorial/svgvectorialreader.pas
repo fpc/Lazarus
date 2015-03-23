@@ -107,7 +107,6 @@ type
     function IsAttributeFromStyle(AStr: string): Boolean;
     procedure ApplyLayerStyles(ADestEntity: TvEntity);
     function ReadSpaceSeparatedFloats(AInput: string; AOtherSeparators: string): TDoubleArray;
-    function ReadSpaceSeparatedStrings(AInput: string; AOtherSeparators: string): TStringList;
     procedure ReadSVGTransformationMatrix(AMatrix: string; out AA, AB, AC, AD, AE, AF: Double);
     //
     procedure ReadDefsFromNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument);
@@ -153,6 +152,7 @@ type
     Destructor Destroy; override;
     procedure ReadFromStream(AStream: TStream; AData: TvVectorialDocument); override;
     procedure ReadFromXML(Doc: TXMLDocument; AData: TvVectorialDocument); override;
+    class function ReadSpaceSeparatedStrings(AInput: string; AOtherSeparators: string): TStringList;
   end;
 
 implementation
@@ -1214,7 +1214,7 @@ begin
   end;
 end;
 
-function TvSVGVectorialReader.ReadSpaceSeparatedStrings(AInput: string;
+class function TvSVGVectorialReader.ReadSpaceSeparatedStrings(AInput: string;
   AOtherSeparators: string): TStringList;
 var
   i: Integer;

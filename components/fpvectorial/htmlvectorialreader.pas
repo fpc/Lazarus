@@ -43,6 +43,7 @@ type
     Destructor Destroy; override;
     procedure ReadFromStrings(AStrings: TStrings; AData: TvVectorialDocument); override;
     procedure ReadFromXML(Doc: TXMLDocument; AData: TvVectorialDocument);
+    class function IsSupportedRasterImage(AFileName: string): Boolean;
   end;
 
 implementation
@@ -129,8 +130,16 @@ var
   lNodeName, lNodeValue, lAttrName, lAttrValue: DOMString;
   lCurAttr: TDOMNode;
   lRasterImage: TvRasterImage;
+  lEmbVecImg: TvEmbeddedVectorialDoc = nil;
   i: Integer;
   lWidth, lHeight: Double;
+  // xlink:href
+  lx, ly, lw, lh: Double;
+  lImageDataParts: TStringList;
+  lImageDataBase64: string;
+  lImageData: array of Byte;
+  lImageDataStream: TMemoryStream;
+  lImageReader: TFPCustomImageReader;
 begin
   ADest.Style := ADoc.StyleTextBody;
 
@@ -154,6 +163,7 @@ begin
     'img', 'image':
     begin
       lRasterImage := nil;
+      lEmbVecImg := nil;
       lWidth := -1;
       lHeight := -1;
       for i := 0 to lCurNode.Attributes.Length - 1 do
@@ -167,25 +177,46 @@ begin
           lAttrValue := lCurAttr.NodeValue;
           lAttrValue := ExtractFilePath(FFilename) + lAttrValue;
 
-          if TvVectorialDocument.GetFormatFromExtension(lAttrValue, False) = vfUnknown then
+          if TvHTMLVectorialReader.IsSupportedRasterImage(lAttrValue) then
           begin
             if not FileExists(lAttrValue) then Continue;
 
             lRasterImage := ADest.AddRasterImage();
             lRasterImage.CreateImageFromFile(lAttrValue);
           end
-          else
+          else if TvVectorialDocument.GetFormatFromExtension(lAttrValue, False) <> vfUnknown then
           begin
-            {lRasterImage := ADest.AddRasterImage()
-            lRasterImage.CreateImageFromFile(lAttrValue);}
+            lEmbVecImg := ADest.AddEmbeddedVectorialDoc();
+            lEmbVecImg.Document.ReadFromFile(lAttrValue);
           end;
         end;
         'xlink:href':
         begin
-          {lAttrValue := lCurAttr.NodeValue;
           lRasterImage := ADest.AddRasterImage();
-          lAttrValue := ExtractFilePath(FFilename) + lAttrValue;
-          lRasterImage.CreateImageFromFile(lAttrValue);}
+          lImageDataParts := TvSVGVectorialReader.ReadSpaceSeparatedStrings(lNodeValue, ':;,');
+          try
+            if (lImageDataParts.Strings[0] = 'data') and
+               (lImageDataParts.Strings[1] = 'image/png') and
+               (lImageDataParts.Strings[2] = 'base64') then
+            begin
+              lImageReader := TFPReaderPNG.Create;
+              lImageDataStream := TMemoryStream.Create;
+              try
+                lImageDataBase64 := lImageDataParts.Strings[3];
+                DecodeBase64(lImageDataBase64, lImageDataStream);
+                lImageDataStream.Position := 0;
+                lRasterImage.CreateRGB888Image(10, 10);
+                lRasterImage.RasterImage.LoadFromStream(lImageDataStream, lImageReader);
+              finally
+                lImageDataStream.Free;
+                lImageReader.Free;
+              end;
+            end
+            else
+              raise Exception.Create('[TvSVGVectorialReader.ReadImageFromNode] Unimplemented image format');
+          finally
+            lImageDataParts.Free;
+          end;
         end;
         'width':
         begin
@@ -198,17 +229,21 @@ begin
         end;
       end;
 
-      if lWidth <= 0 then
-        lWidth := lRasterImage.RasterImage.Width;
-      if lHeight <= 0 then
-        lHeight := lRasterImage.RasterImage.Height;
-
       if lRasterImage <> nil then
       begin
+        if lWidth <= 0 then
+          lWidth := lRasterImage.RasterImage.Width;
+        if lHeight <= 0 then
+          lHeight := lRasterImage.RasterImage.Height;
+
         lRasterImage.Width := lWidth;
         lRasterImage.Height := lHeight;
+      end
+      else if (lEmbVecImg <> nil) and (lWidth > 0) and (lHeight > 0) then
+      begin
+        lEmbVecImg.Width := lWidth;
+        lEmbVecImg.Height := lHeight;
       end;
-
     end;
     end;
 
@@ -427,6 +462,18 @@ begin
     end;
 
     lCurNode := lCurNode.NextSibling;
+  end;
+end;
+
+class function TvHTMLVectorialReader.IsSupportedRasterImage(AFileName: string): Boolean;
+var
+  lExt: string;
+begin
+  Result := False;
+  lExt := LowerCase(ExtractFileExt(AFileName));
+  case lExt of
+  '.png', '.jpg', '.jpeg', '.bmp', '.xpm':
+    Result := True
   end;
 end;
 
