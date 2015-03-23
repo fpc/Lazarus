@@ -591,6 +591,7 @@ var
   i: integer;
 begin
   Caption               := rsEditorToolbarConfigForm;
+  btnHelp.Caption       := rsHelp;
   btnOK.Caption         := rsOK;
   btnCancel.Caption     := rsCancel;
   lblMenuTree.Caption   := rsMenuTree;

@@ -71,6 +71,10 @@ msgstr ""
 msgid "Editor Toolbar Configuration"
 msgstr "Rengyklės įrankių juostos sąranka"
 
+#: editortoolbar_str.rshelp
+msgid "Help"
+msgstr ""
+
 #: editortoolbar_str.rshelp1
 msgid "The \"Add\" button inserts a Menu Item before the selected Item of the Toolbar."
 msgstr ""

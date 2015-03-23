@@ -69,6 +69,10 @@ msgstr "Инструментальная панель редактора"
 msgid "Editor Toolbar Configuration"
 msgstr "Настройка инструментальной панели редактора"
 
+#: editortoolbar_str.rshelp
+msgid "Help"
+msgstr "Справка"
+
 #: editortoolbar_str.rshelp1
 msgid "The \"Add\" button inserts a Menu Item before the selected Item of the Toolbar."
 msgstr "Кнопка \"Добавить\" вставляет элемент из меню перед выбранным элементом инструментальной панели."
