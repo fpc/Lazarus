@@ -1038,9 +1038,7 @@ begin
     CharWidthsArr := FLines.GetPhysicalCharWidths(Pchar(L), length(L), FLinePos-1);
     LogLen        := Length(CharWidthsArr);
     if LogLen > 0 then
-      CharWidths := @CharWidthsArr[0]
-    else
-      CharWidths := nil;
+      CharWidths := @CharWidthsArr[0];
   end;
 
   ScreenPos := 1;
@@ -1524,7 +1522,8 @@ function TSynEditSelection.GetSelText : string;
     end;
   end;
 
-  procedure CopyAndForward(const S: string; Index, Count: Integer; var P: PChar);
+  procedure CopyAndForward(const S: string; Index, Count: Integer; var P:
+    PChar);
   var
     pSrc: PChar;
     SrcLen: Integer;
@@ -1541,7 +1540,8 @@ function TSynEditSelection.GetSelText : string;
     end;
   end;
 
-  procedure CopyPaddedAndForward(const S: string; Index, Count: Integer; var P: PChar);
+  procedure CopyPaddedAndForward(const S: string; Index, Count: Integer;
+    var P: PChar);
   var
     OldP: PChar;
     Len: Integer;
@@ -1563,9 +1563,9 @@ var
   Col, Len: array of Integer;
 
 begin
-  Result := '';
-  if SelAvail then
-  begin
+  if not SelAvail then
+    Result := ''
+  else begin
     if IsBackwardSel then begin
       ColFrom := FEndBytePos;
       First := FEndLinePos - 1;
@@ -2009,7 +2009,6 @@ var
     begin
       // Insert string at current position
       Result := 0;
-      Str := '';
       Start := PChar(Value);
       repeat
         P := GetEOL(Start);
@@ -3003,7 +3002,7 @@ begin
   if (not FCanPaint) and FIsDrawn then begin
     AddAfterPaint([psCleanOld, psRemoveTimer]);
     FIsDrawn := False;
-    exit(False);
+    exit(True);
   end;
 
   FOwner.PaintTimer.RemoveHandler(@DoTimer);
@@ -3014,7 +3013,7 @@ end;
 
 function TSynEditScreenCaretPainterInternal.ShowCaret: Boolean;
 begin
-  if Showing then exit(False);
+  if Showing then exit(True);
   inherited ShowCaret;
   Exclude(FState, psRemoveTimer);
 //  Exclude(FState, psCleanOld); // only if not moved

@@ -1582,9 +1582,7 @@ begin
   if (y1 < 0) or (y1 > Editor.LinesInWindow + 1) then
     y := -1; // not visible
   if y > 1 then
-    y2 := Editor.RowToScreenRow(y-1)
-  else
-    y2 := 0;
+    y2 := Editor.RowToScreenRow(y-1);
 
   if (y > 0) and (y1 <> y2) or (y=1) then begin
     if Carets.Visual[Result] = nil then
@@ -1635,9 +1633,7 @@ begin
     end;
 
     if y > 1 then
-      y2 := Editor.RowToScreenRow(y-1)
-    else
-      y2 := 0;
+      y2 := Editor.RowToScreenRow(y-1);
 
     if (y1 <> y2) or (y=1) then begin
       if Carets.Visual[i] = nil then

@@ -3287,13 +3287,7 @@ begin
     exit;
 
   if AFilter.FoldGroup  in [0, FOLDGROUP_REGION, FOLDGROUP_IFDEF] then
-    inf := TSynHighlighterPasRangeList(CurrentRanges).PasRangeInfo[ALineIndex]
-  else begin
-    inf.EndLevelIfDef := 0;
-    inf.MinLevelIfDef := 0;
-    inf.EndLevelRegion := 0;
-    inf.MinLevelRegion := 0;
-  end;
+    inf := TSynHighlighterPasRangeList(CurrentRanges).PasRangeInfo[ALineIndex];
 
   if AFilter.FoldGroup  in [0, FOLDGROUP_PASCAL] then begin
     // All or Pascal
@@ -3343,13 +3337,7 @@ begin
     exit;
 
   if AFilter.FoldGroup  in [0, FOLDGROUP_REGION, FOLDGROUP_IFDEF] then
-    inf := TSynHighlighterPasRangeList(CurrentRanges).PasRangeInfo[ALineIndex]
-  else begin
-    inf.EndLevelIfDef := 0;
-    inf.MinLevelIfDef := 0;
-    inf.EndLevelRegion := 0;
-    inf.MinLevelRegion := 0;
-  end;
+    inf := TSynHighlighterPasRangeList(CurrentRanges).PasRangeInfo[ALineIndex];
 
   if AFilter.FoldGroup  in [0, FOLDGROUP_PASCAL] then begin
     // All or Pascal
@@ -3860,9 +3848,7 @@ var
   nd: PSynFoldNodeInfo;
 begin
   if FCatchNodeInfo then
-    i := FCatchNodeInfoList.CountAll
-  else
-    i := 0;
+    i := FCatchNodeInfoList.CountAll;
   EndPascalCodeFoldBlock;
   if FAtLineStart then begin
     // If we are not at linestart, new folds could have been opened => handle as normal close

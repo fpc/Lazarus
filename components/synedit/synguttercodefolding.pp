@@ -494,15 +494,13 @@ var
 begin
   AliasMode := Canvas.AntialiasingMode;
   Canvas.AntialiasingMode:=amOff;
-  OdlCosmetic := False;
+  OdlCosmetic := Canvas.Pen.Cosmetic;
   if nsoLostHl in SubType then begin
     Canvas.Pen.Style := psDot;
-    OdlCosmetic := Canvas.Pen.Cosmetic;
     Canvas.Pen.Cosmetic := False;
   end;
   if nsoBlockSel in SubType then begin
     Canvas.Pen.Style := psDash;
-    OdlCosmetic := Canvas.Pen.Cosmetic;
     Canvas.Pen.Cosmetic := False;
   end;
   Canvas.Rectangle(Rect);

@@ -869,7 +869,6 @@ begin
   {$ENDIF}
   PrepareWidthsForLine(AIndex);
 
-  Result := 0;
   dec(ABytePos);
   if ABytePos < FCurrentWidthsLen then begin
     if (FCurrentWidths[ABytePos] and PCWMask) = 0 then begin

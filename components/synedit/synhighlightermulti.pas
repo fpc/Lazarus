@@ -1169,7 +1169,6 @@ begin
       else begin
         // Find new start of a Scheme
         NewSearchPos := -1;
-        j := 0;
         for i := 0 to Schemes.Count - 1 do begin
           TmpSearchPos := Schemes.Items[i].FindStartPosInLine(SearchPos);
           if (NewSearchPos < 0) or ((TmpSearchPos > 0) and (TmpSearchPos < NewSearchPos)) then begin

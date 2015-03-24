@@ -805,7 +805,6 @@ end;
 
 function TSynBeautifierPascal.GetMatchStartColForIdx(AIndex: Integer): Integer;
 begin
-  Result := -1;
   if ToPos(AIndex) = GetFirstCommentLine then begin
     // Match on FirstLine
     case FMatchMode[FWorkFoldType] of
@@ -1749,7 +1748,6 @@ var
   FoundLine: LongInt;
 begin
   Result := 1;
-  Temp := '';
   FCurrentLines := Lines; // for GetCurrentIndent
   BackCounter := ACaret.LinePos - 1;
   if BackCounter > 0 then

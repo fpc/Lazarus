@@ -1551,6 +1551,7 @@ var
           LineBufferLen := Len + ATokenInfo.ExpandedExtraBytes + 1 + 128;
           ReAllocMem(LineBuffer, LineBufferLen);
         end;
+        pl := LineBuffer;
       end;
 
       // Prepare FETOBuf
@@ -1563,9 +1564,8 @@ var
       end
       else
         c := 0;
+        e := 0;
 
-      pl := LineBuffer;
-      e := 0;
       CWLen := Length(CharWidths);
 
       // Copy to LineBuffer (and maybe FetoBuf

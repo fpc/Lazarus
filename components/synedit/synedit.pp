@@ -1895,9 +1895,7 @@ begin
     if eoFoldedCopyPaste in fOptions2 then
       FInfo := FFoldedLinesView.GetFoldDescription(
         FBlockSelection.FirstLineBytePos.Y - 1, FBlockSelection.FirstLineBytePos.X,
-        FBlockSelection.LastLineBytePos.Y - 1,  FBlockSelection.LastLineBytePos.X)
-    else
-      FInfo := '';
+        FBlockSelection.LastLineBytePos.Y - 1,  FBlockSelection.LastLineBytePos.X);
     DoCopyToClipboard(SelText, FInfo);
   end;
 end;
@@ -1910,9 +1908,7 @@ begin
     if eoFoldedCopyPaste in fOptions2 then
       FInfo := FFoldedLinesView.GetFoldDescription(
         FBlockSelection.FirstLineBytePos.Y - 1, FBlockSelection.FirstLineBytePos.X,
-        FBlockSelection.LastLineBytePos.Y - 1,  FBlockSelection.LastLineBytePos.X)
-    else
-      FInfo := '';
+        FBlockSelection.LastLineBytePos.Y - 1,  FBlockSelection.LastLineBytePos.X);
     DoCopyToClipboard(SelText, FInfo);
     SetSelTextExternal('');
   end;

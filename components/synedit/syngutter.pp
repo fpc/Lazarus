@@ -227,7 +227,6 @@ end;
 
 function TSynGutter.CreatePartList: TSynGutterPartListBase;
 begin
-  Result := nil;
   case Side of
     gsLeft:
       begin
