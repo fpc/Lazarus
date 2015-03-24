@@ -740,7 +740,9 @@ begin
     Insert(i, LMarks);
   end;
   if  i >= 0 then
-    Result := Items[i];
+    Result := Items[i]
+  else
+    Result := nil;
 end;
 
 procedure TSynGutterLOvLineMarksList.SetItemHeight(const AValue: Integer);

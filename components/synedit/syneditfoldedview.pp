@@ -2680,6 +2680,7 @@ begin
   if not OnlyNested then
     RemoveNode(ANode.fData);
 
+  NestedLine := 0;
   If ANode.fData.Nested <> nil then
   begin
     (*Todo: should we mark the tree as NO balancing needed ???*)
@@ -4923,6 +4924,7 @@ var
   EndLvl, CurLvl: Array of integer;
   i, c, t, n, o: Integer;
   nd: TSynFoldNodeInfo;
+
   procedure GetEndLvl(l: Integer);
   var i: integer;
   begin
@@ -4939,11 +4941,18 @@ var
       CurLvl[0] := EndLvl[0];
     end;
   end;
+
 begin
   hl := TSynCustomFoldHighlighter(HighLighter);
   if not assigned(hl) then
-    exit;
+    exit;  // ToDo: Initialize Result
 
+  nd.LogXStart := 0;
+  nd.LogXEnd := 0;
+  nd.FoldAction := [];
+  nd.FoldType := Nil;
+  nd.FoldGroup := 0;
+  n := 0;
   if AType <> 0 then
     TypeCnt := 1
   else

@@ -1370,6 +1370,8 @@ var
   o: TSynSearchTerm;
   MatchBegin: PChar;
 begin
+  Len := 0;
+  MatchBegin := nil;
   while MatchIdx >= 0 do begin
     o := FTermDict[MatchIdx];
 

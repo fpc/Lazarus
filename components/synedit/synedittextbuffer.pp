@@ -1275,6 +1275,7 @@ function TSynEditStringList.EditDelete(LogX, LogY, ByteLen: Integer): String;
 var
   s: string;
 begin
+  Result := '';
   if ByteLen <= 0 then
     exit;
   IncIsInEditAction;
@@ -1440,6 +1441,7 @@ begin
       FModifiedNotifyOldCount := FModifiedNotifyOldCount + i;
     end;
 
+    oldcount := 0;
     if AReason = senrLineCount then begin
       if aCount < 0 then begin
         oldcount := -aCount;

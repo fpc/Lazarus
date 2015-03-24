@@ -227,6 +227,7 @@ end;
 
 function TSynGutter.CreatePartList: TSynGutterPartListBase;
 begin
+  Result := nil;
   case Side of
     gsLeft:
       begin
@@ -312,7 +313,9 @@ var
 begin
   MouseDownPart := PixelToPartIndex(AnInfo.MouseX);
   if MouseDownPart < PartCount then
-    Result := Parts[MouseDownPart].MaybeHandleMouseAction(AnInfo, HandleActionProc);
+    Result := Parts[MouseDownPart].MaybeHandleMouseAction(AnInfo, HandleActionProc)
+  else
+    Result := False;
   if not Result then
     Result := inherited MaybeHandleMouseAction(AnInfo, HandleActionProc);
 end;

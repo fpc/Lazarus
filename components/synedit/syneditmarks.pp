@@ -826,7 +826,7 @@ end;
 function TSynEditMarkLineList.RemoveMark(Item: TSynEditMark): Integer;
 begin
   if Item.MarkLine = nil then
-    exit;
+    exit(-1);
   Result := Item.MarkLine.GetSizesBeforeSum;
   Result := Result + Item.MarkLine.Remove(Item);
 end;

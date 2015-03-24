@@ -1038,7 +1038,9 @@ begin
     CharWidthsArr := FLines.GetPhysicalCharWidths(Pchar(L), length(L), FLinePos-1);
     LogLen        := Length(CharWidthsArr);
     if LogLen > 0 then
-      CharWidths := @CharWidthsArr[0];
+      CharWidths := @CharWidthsArr[0]
+    else
+      CharWidths := nil;
   end;
 
   ScreenPos := 1;
@@ -1522,8 +1524,7 @@ function TSynEditSelection.GetSelText : string;
     end;
   end;
 
-  procedure CopyAndForward(const S: string; Index, Count: Integer; var P:
-    PChar);
+  procedure CopyAndForward(const S: string; Index, Count: Integer; var P: PChar);
   var
     pSrc: PChar;
     SrcLen: Integer;
@@ -1540,8 +1541,7 @@ function TSynEditSelection.GetSelText : string;
     end;
   end;
 
-  procedure CopyPaddedAndForward(const S: string; Index, Count: Integer;
-    var P: PChar);
+  procedure CopyPaddedAndForward(const S: string; Index, Count: Integer; var P: PChar);
   var
     OldP: PChar;
     Len: Integer;
@@ -1563,9 +1563,9 @@ var
   Col, Len: array of Integer;
 
 begin
-  if not SelAvail then
-    Result := ''
-  else begin
+  Result := '';
+  if SelAvail then
+  begin
     if IsBackwardSel then begin
       ColFrom := FEndBytePos;
       First := FEndLinePos - 1;
@@ -2009,6 +2009,7 @@ var
     begin
       // Insert string at current position
       Result := 0;
+      Str := '';
       Start := PChar(Value);
       repeat
         P := GetEOL(Start);
@@ -2701,7 +2702,9 @@ function TSynEditScreenCaretPainterSystem.HideCaret: Boolean;
 begin
   inherited HideCaret;
   if HandleAllocated then
-    Result := LCLIntf.HideCaret(Handle);
+    Result := LCLIntf.HideCaret(Handle)
+  else
+    Result := False;
 end;
 
 function TSynEditScreenCaretPainterSystem.ShowCaret: Boolean;
@@ -3000,7 +3003,7 @@ begin
   if (not FCanPaint) and FIsDrawn then begin
     AddAfterPaint([psCleanOld, psRemoveTimer]);
     FIsDrawn := False;
-    exit;
+    exit(False);
   end;
 
   FOwner.PaintTimer.RemoveHandler(@DoTimer);
@@ -3011,7 +3014,7 @@ end;
 
 function TSynEditScreenCaretPainterInternal.ShowCaret: Boolean;
 begin
-  if Showing then exit;
+  if Showing then exit(False);
   inherited ShowCaret;
   Exclude(FState, psRemoveTimer);
 //  Exclude(FState, psCleanOld); // only if not moved

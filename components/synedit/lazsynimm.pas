@@ -738,7 +738,7 @@ begin
       {$IFDEF WinIMEDebug}
       DebugLn(['--- GCS_CURSORPOS ', dbgs(ImeCount)]);
       {$ENDIF}
-      if ImeCount >= 0 then begin
+      if ImeCount >= 0 then begin    // ToDo: Comparison is always True.
         ImeCount := ImeCount and $ffff;
         x := FImeBlockSelection.StartBytePos;
         x := x + CharToByte(x, ImeCount);

@@ -1125,6 +1125,7 @@ var
   Len: Integer;
   SaveByteLen: LongInt;
 begin
+  Result := '';
   if (not fEnabled) or (ByteLen <= 0) then begin
     fSynStrings.EditDelete(LogX, LogY, ByteLen);
     exit;
@@ -1140,7 +1141,6 @@ begin
   IncIsInEditAction;
   FlushNotificationCache;
   SaveByteLen := ByteLen;
-  Result := '';
 
   IgnoreSendNotification(senrEditAction, True);
   // Delete uncommited spaces (could also be ByteLen too big, due to past EOL)

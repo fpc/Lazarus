@@ -2769,7 +2769,7 @@ end;
 function TSynHTMLSyn.StartHtmlNodeCodeFoldBlock(ABlockType: THtmlCodeFoldBlockType;
   OpenPos: Integer; AName: String): TSynCustomCodeFoldBlock;
 begin
-  if not FFoldConfig[ord(cfbtHtmlNode)].Enabled then exit;
+  if not FFoldConfig[ord(cfbtHtmlNode)].Enabled then exit(nil);
   Result := inherited StartXmlNodeCodeFoldBlock(ord(ABlockType), OpenPos, AName);
 end;
 

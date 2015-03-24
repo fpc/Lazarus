@@ -433,6 +433,7 @@ var
   cCol: integer;
   iIdentChars: TSynIdentChars;
 begin
+  Result := '';
   iString := CurrentEditor.LineText;
   if (CurrentEditor.CaretX > 1) and
     (CurrentEditor.CaretX -1 <= Length(iString)) then

@@ -2245,6 +2245,8 @@ function TRegExpr.ParseAtom (out flagp : integer) : PRegExprChar;
  begin
   Result := nil;
   flagp := WORST; // Tentatively.
+  RangeBeg := #0;
+  ret := nil;
 
   inc (regparse);
   case (regparse - 1)^ of
@@ -3545,6 +3547,7 @@ function TRegExpr.ExecNext : boolean;
 
 function TRegExpr.GetInputString : RegExprString;
  begin
+  Result := '';
   if not Assigned (fInputString) then begin
     Error (reeGetInputStringWithoutInputString);
     EXIT;
@@ -3695,6 +3698,7 @@ var
   end;
 
 begin
+  Result := '';
   // Check programm and input string
   if not IsProgrammOk
    then EXIT;
@@ -3704,10 +3708,8 @@ begin
    end;
   // Prepare for working
   TemplateLen := length (ATemplate);
-  if TemplateLen = 0 then begin // prevent nil pointers
-    Result := '';
+  if TemplateLen = 0 then  // prevent nil pointers
     EXIT;
-   end;
   TemplateBeg := pointer (ATemplate);
   TemplateEnd := TemplateBeg + TemplateLen;
   // Count result length for speed optimization.
@@ -3896,6 +3898,7 @@ function TRegExpr.Replace (AInputStr : RegExprString;
 function TRegExpr.DumpOp (op : TREOp) : RegExprString;
 // printable representation of opcode
  begin
+  Result := '';
   case op of
     BOL:          Result := 'BOL';
     EOL:          Result := 'EOL';
@@ -3962,11 +3965,11 @@ function TRegExpr.Dump : RegExprString;
   Ch : REChar;
 {$ENDIF}
  begin
+  Result := '';
   if not IsProgrammOk //###0.929
    then EXIT;
 
   op := EXACTLY;
-  Result := '';
   s := programm + REOpSz;
   while op <> EEND do begin // While that wasn't END last time...
      op := s^;

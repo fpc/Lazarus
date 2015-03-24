@@ -1551,7 +1551,6 @@ var
           LineBufferLen := Len + ATokenInfo.ExpandedExtraBytes + 1 + 128;
           ReAllocMem(LineBuffer, LineBufferLen);
         end;
-        pl := LineBuffer;
       end;
 
       // Prepare FETOBuf
@@ -1561,9 +1560,12 @@ var
         FEtoBuf := FTextDrawer.Eto;
         FEtoBuf.SetMinLength(Len + ATokenInfo.ExpandedExtraBytes + 1);
         c := FTextDrawer.GetCharWidth;
-        e := 0;
-      end;
+      end
+      else
+        c := 0;
 
+      pl := LineBuffer;
+      e := 0;
       CWLen := Length(CharWidths);
 
       // Copy to LineBuffer (and maybe FetoBuf

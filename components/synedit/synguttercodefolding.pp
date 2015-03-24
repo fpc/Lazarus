@@ -494,6 +494,7 @@ var
 begin
   AliasMode := Canvas.AntialiasingMode;
   Canvas.AntialiasingMode:=amOff;
+  OdlCosmetic := False;
   if nsoLostHl in SubType then begin
     Canvas.Pen.Style := psDot;
     OdlCosmetic := Canvas.Pen.Cosmetic;

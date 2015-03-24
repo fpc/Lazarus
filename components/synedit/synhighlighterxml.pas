@@ -962,7 +962,7 @@ end;
 function TSynXMLSyn.StartXmlNodeCodeFoldBlock(ABlockType: TXmlCodeFoldBlockType;
   OpenPos: Integer; AName: String): TSynCustomCodeFoldBlock;
 begin
-  if not FFoldConfig[ord(cfbtXmlNode)].Enabled then exit;
+  if not FFoldConfig[ord(cfbtXmlNode)].Enabled then exit(nil);
   Result := inherited StartXmlNodeCodeFoldBlock(ord(ABlockType), OpenPos, AName);
 end;
 
