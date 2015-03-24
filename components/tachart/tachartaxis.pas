@@ -586,6 +586,8 @@ begin
   with FHelper do begin
     FValueMin := GetTransform.AxisToGraph(axisMin);
     FValueMax := GetTransform.AxisToGraph(axisMax);
+    FMinForMarks := GetTransform.AxisToGraph(d.FMin);
+    FMaxForMarks := GetTransform.AxisToGraph(d.FMax);
   end;
   if Inverted and (Length(FMarkValues) > 0) then
     for i := 0 to High(FMarkValues) div 2 do begin
