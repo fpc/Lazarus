@@ -244,7 +244,9 @@ var
   lItemIndex: Integer;
 begin
   if (FFlagGetCaretIndex <> 0) and (GetCount = 0) then
-    lItemIndex := SendMessage(FWin32List, FFlagGetCaretIndex, 0, 0);
+    lItemIndex := SendMessage(FWin32List, FFlagGetCaretIndex, 0, 0)
+  else
+    lItemIndex := -1;
 
   FLastInsertedIndex := Index;
   if FSorted then
@@ -281,6 +283,7 @@ var
   AData: Pointer;
 begin
   // remember selection
+  lSelected := False;
   lItemIndex := -1;
   if FFlagGetSelected <> 0 then
   begin
@@ -304,10 +307,8 @@ begin
     RestoreData(Index, AData);
 
   if lSelected then
-  begin
     if (FFlagSetSelected = 0) or (SendMessage(FWin32List, FFlagSetSelected, Windows.WParam(true), lItemIndex) = -1) then
       SendMessage(FWin32List, FFlagSetItemIndex, lItemIndex, 0);
-  end;
 end;
     
 {------------------------------------------------------------------------------

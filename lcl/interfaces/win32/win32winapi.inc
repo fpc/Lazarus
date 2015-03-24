@@ -1560,6 +1560,7 @@ const
 var
   I: Integer;
 begin
+  // ToDo: Fix Result and the loop. "I" is not used for anything.
   for I := 0 to FrameWidth - 1 do
     Result := Boolean(DrawEdge(DC, ARect, Edge[Style], BF_RECT or BF_ADJUST));
 end;
@@ -1944,8 +1945,10 @@ begin
       lpmi^.dwFlags := LocalInfo.dwFlags;
       PMonitorInfoEx(lpmi)^.szDevice := UTF16ToUTF8(LocalInfo.szDevice);
     end
-    else
+    else begin
       PMonitorInfoEx(lpmi)^.szDevice := AnsiToUtf8(PMonitorInfoEx(lpmi)^.szDevice);
+      Result := True;
+    end;
   end
   else
   {$ENDIF}
@@ -3634,6 +3637,7 @@ begin
   // check if the Src has an alpha channel
   Bmp := Windows.GetCurrentObject(SrcDC, OBJ_BITMAP);
   // get info
+  // ToDo: WinBmp is not initialized at all. Should it be initialized from Bmp?
   HasAlpha := (Windows.GetObject(bmp, SizeOf(WinBmp), @WinBmp) <> 0)
           and (WinBmp.bmBitsPixel = 32)
           and CreatePremultipliedBitmap(WinBmp, Bmp, AlphaBmp);
@@ -3648,6 +3652,9 @@ begin
     Blend.BlendFlags := 0;
     Blend.SourceConstantAlpha := 255;
     Blend.AlphaFormat := AC_SRC_ALPHA;
+  end
+  else begin
+    // ToDo: Initialize AlphaDC, AlphaObj and Blend.
   end;
 
   Windows.SetBrushOrgEx(DestDC, 0, 0, nil);

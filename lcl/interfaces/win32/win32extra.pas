@@ -530,6 +530,7 @@ begin
   Info.Colors[1] := $00FF00; {le-green}
   Info.Colors[2] := $0000FF; {le-blue}
 
+  Result := False;
   StretchSrc := (nWidthDest <> nWidthSrc) or (nHeightDest <> nHeightSrc);
   if StretchSrc
   then begin
@@ -608,6 +609,7 @@ begin
     end
     else begin
       CleanupAlpha := False;
+      AlphaBmp := INVALID_HANDLE_VALUE;
     end;
 
     // create new srcbmp
@@ -690,6 +692,7 @@ begin
   Inc(SrcLinePtr, nXOriginSrc * SrcPixelBytes + nYOriginSrc * SrcRowStride);
   DstLinePtr := DstBytesPtr;
 
+  SrcAlpha := nil;
   if blendFunction.AlphaFormat = AC_SRC_ALPHA
   then begin
     if AlphaBytesPtr <> nil

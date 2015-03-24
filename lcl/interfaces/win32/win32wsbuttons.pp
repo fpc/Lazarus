@@ -295,6 +295,7 @@ var
       EndBufferedPaint(PaintBuffer, True);
     NewBitmap := SelectObject(hdcNewBitmap, OldBitmapHandle);
   end;
+
 var
   RGBA: PRGBAQuad;
   AlphaDraw: Boolean;
@@ -321,6 +322,8 @@ begin
     srcWidth := 0;
     srcHeight := 0;
   end;
+  newWidth := 0;
+  newHeight := 0;
   BitBtnLayout := BidiAdjustButtonLayout(BitBtn.UseRightToLeftReading, BitBtn.Layout);
   BitBtnDC := GetDC(BitBtnHandle);
   hdcNewBitmap := CreateCompatibleDC(BitBtnDC);

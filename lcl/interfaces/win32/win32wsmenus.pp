@@ -873,7 +873,8 @@ function IsFlatMenus: Boolean; inline;
 var
   IsFlatMenu: Windows.BOOL;
 begin
-  Result := (WindowsVersion >= wvXP) and ((SystemParametersInfo(SPI_GETFLATMENU, 0, @IsFlatMenu, 0)) and IsFlatMenu);
+  Result := (WindowsVersion >= wvXP) and
+      (SystemParametersInfo(SPI_GETFLATMENU, 0, @IsFlatMenu, 0) and IsFlatMenu);
 end;
 
 function BackgroundColorMenu(const ItemState: UINT; const aIsInMenuBar: boolean): COLORREF;

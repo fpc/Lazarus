@@ -1186,7 +1186,8 @@ begin
   
   FullScanLine := Win32Platform = VER_PLATFORM_WIN32_WINDOWS;
   if FullScanLine
-  then ScanLine := GetMem(AWinBmp.bmWidthBytes);
+  then ScanLine := GetMem(AWinBmp.bmWidthBytes)
+  else ScanLine := nil;
 
   FillChar(Info.Header, sizeof(Windows.TBitmapInfoHeader), 0);
   Info.Header.biSize := sizeof(Windows.TBitmapInfoHeader);

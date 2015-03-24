@@ -502,7 +502,7 @@ function OpenFileDialogCallBack(Wnd: HWND; uMsg: UINT; wParam: WPARAM;
 var
   OpenFileNotify: LPOFNOTIFY;
   OpenFileName: Windows.POPENFILENAME;
-  DialogRec: POpenFileDialogRec;
+  DlgRec: POpenFileDialogRec;
 
   procedure Reposition(ADialogWnd: Handle);
   var
@@ -533,10 +533,11 @@ var
   procedure ExtractDataFromNotify;
   begin
     OpenFileName := OpenFileNotify^.lpOFN;
-    DialogRec := POpenFileDialogRec(OpenFileName^.lCustData);
+    DlgRec := POpenFileDialogRec(OpenFileName^.lCustData);
     UpdateStorage(Wnd, OpenFileName);
     UpdateFileProperties(OpenFileName);
   end;
+
 begin
   Result := 0;
   if uMsg = WM_INITDIALOG then
@@ -556,24 +557,24 @@ begin
       CDN_INITDONE:
       begin
         ExtractDataFromNotify;
-        TOpenDialog(DialogRec^.Dialog).DoShow;
+        TOpenDialog(DlgRec^.Dialog).DoShow;
       end;
       CDN_SELCHANGE:
       begin
         ExtractDataFromNotify;
-        TOpenDialog(DialogRec^.Dialog).DoSelectionChange;
+        TOpenDialog(DlgRec^.Dialog).DoSelectionChange;
       end;
       CDN_FOLDERCHANGE:
       begin
         ExtractDataFromNotify;
-        TOpenDialog(DialogRec^.Dialog).DoFolderChange;
+        TOpenDialog(DlgRec^.Dialog).DoFolderChange;
       end;
       CDN_FILEOK:
         ExtractDataFromNotify;
       CDN_TYPECHANGE:
       begin
         ExtractDataFromNotify;
-        DialogRec^.Dialog.IntfFileTypeChanged(OpenFileNotify^.lpOFN^.nFilterIndex);
+        DlgRec^.Dialog.IntfFileTypeChanged(OpenFileNotify^.lpOFN^.nFilterIndex);
       end;
     end;
   end;
@@ -979,7 +980,9 @@ begin
       Dialog._AddRef;
       SetupVistaFileDialog(Dialog, TOpenDialog(ACommonDialog));
       Result := THandle(Dialog);
-    end;
+    end
+    else
+      Result := INVALID_HANDLE_VALUE;
   end
   else
   {$endif}
@@ -1062,12 +1065,15 @@ begin
   if CanUseVistaDialogs(TOpenDialog(ACommonDialog)) then
   //if (WindowsVersion >= wvVista) and ThemeServices.ThemesEnabled then
   begin
-    if Succeeded(CoCreateInstance(CLSID_FileSaveDialog, nil, CLSCTX_INPROC_SERVER, IFileSaveDialog, Dialog)) and Assigned(Dialog) then
+    if Succeeded(CoCreateInstance(CLSID_FileSaveDialog, nil, CLSCTX_INPROC_SERVER, IFileSaveDialog, Dialog))
+    and Assigned(Dialog) then
     begin
       Dialog._AddRef;
       TWin32WSOpenDialog.SetupVistaFileDialog(Dialog, TOpenDialog(ACommonDialog));
       Result := THandle(Dialog);
-    end;
+    end
+    else
+      Result := INVALID_HANDLE_VALUE;
   end
   else
   {$endif}
@@ -1327,8 +1333,8 @@ var
   {$endif}
   DirName: string;
 begin
+  DirName := '';
   InitialDir := TSelectDirectoryDialog(ACommonDialog).FileName;
-
   Options := TSelectDirectoryDialog(ACommonDialog).Options;
 
   if length(InitialDir)=0 then

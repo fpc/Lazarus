@@ -522,7 +522,7 @@ var
   nSize, BytesCount: DWORD;
   RgnData: PRgnData;
   WindowOrg: Windows.POINT;
-  XFORM: TXFORM;
+  XFRM: TXFORM;
   MirroredPaintRgn: HRGN;
 begin
   // winnt returns in screen coordinates
@@ -549,11 +549,12 @@ begin
     //Method 2 - Create a mirrored region based on the one we have
     nSize := GetRegionData(PaintRegion, 0, nil);
     RgnData := GetMem(nSize);
-    XForm.eDx:=0;   XForm.eDy:=0;
-    XForm.eM11:=-1; XForm.eM12:=0;
-    XForm.eM21:=0;  XForm.eM22:=1;
+    XFRM.eDx:=0;   XFRM.eDy:=0;
+    XFRM.eM11:=-1; XFRM.eM12:=0;
+    XFRM.eM21:=0;  XFRM.eM22:=1;
 
-    MirroredPaintRgn := ExtCreateRegion(@XForm, BytesCount, RgnData^);
+    // ToDo: BytesCount is not initialized.
+    MirroredPaintRgn := ExtCreateRegion(@XFRM, BytesCount, RgnData^);
     Windows.SelectClipRgn(CurDoubleBuffer.DC, MirroredPaintRgn);
     Windows.DeleteObject(MirroredPaintRgn);
     Freemem(RgnData);
@@ -2353,7 +2354,7 @@ begin
 
   case Msg of
     WM_ACTIVATEAPP: DoMsgActivateApp;
-    WM_MOVE:        if DoMsgMove then Exit;
+    WM_MOVE:        if DoMsgMove then Exit(0);
     WM_SIZE:        DoMsgSize;
     BM_SETCHECK:
     begin
@@ -2686,6 +2687,7 @@ begin
     begin
       // free our own data associated with window
       DisposeWindowInfo(Window);
+      Result := 0;
     end;
   else
     if UnicodeEnabledOS

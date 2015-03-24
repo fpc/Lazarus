@@ -530,7 +530,9 @@ var
   B: Boolean;
 begin
   if ALV.CheckBoxes then
-    B := AItem.Checked;
+    B := AItem.Checked
+  else
+    B := False;
   ItemSetText(ALV, AIndex, AItem, 0, AItem.Caption);
   for i := 0 to AItem.SubItems.Count - 1 do
     ItemSetText(ALV, AIndex, AItem, i + 1, AItem.SubItems[i]);

@@ -54,7 +54,7 @@ function TWin32WidgetSet.AddPipeEventHandler(AHandle: THandle;
 var
   lHandler: PPipeEventInfo;
 begin
-  if AEventHandler = nil then exit;
+  if AEventHandler = nil then exit(nil);
   New(lHandler);
   lHandler^.Handle := AHandle;
   lHandler^.UserData := AData;
@@ -72,7 +72,7 @@ function TWin32WidgetSet.AddProcessEventHandler(AHandle: THandle;
 var
   lProcessEvent: PProcessEvent;
 begin
-  if AEventHandler = nil then exit;
+  if AEventHandler = nil then exit(nil);
   New(lProcessEvent);
   lProcessEvent^.Handle := AHandle;
   lProcessEvent^.UserData := AData;
@@ -1121,7 +1121,9 @@ var
 begin
   OverlayWindow := GetWin32WindowInfo(Window)^.Overlay;
   if OverlayWindow <> 0 then
-    Result := Windows.ReleaseDC(OverlayWindow, DC);
+    Result := Windows.ReleaseDC(OverlayWindow, DC)
+  else
+    Result := 0;
 end;
 
 procedure TWin32WidgetSet.RemoveEventHandler(var AHandler: PEventHandler);

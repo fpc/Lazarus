@@ -440,7 +440,9 @@ begin
           // does the job very well too.
           // Note: this may produce trouble with embedded controls (e.g. progress bars).
           if WParam <> 0 then
-            Result := CallDefaultWindowProc(Window, Msg, WParam, LParam) or WVR_REDRAW;
+            Result := CallDefaultWindowProc(Window, Msg, WParam, LParam) or WVR_REDRAW
+          else
+            Result := 1;
         end;
       WM_ERASEBKGND:
         begin
@@ -904,7 +906,7 @@ begin
                   TBCD_CHANNEL:
                     begin
                       // Retrieve the bounding box for the thumb.
-                      SendMessage(AWinControl.Handle, TBM_GETTHUMBRECT, 0, Integer(@R));
+                      SendMessage(AWinControl.Handle, TBM_GETTHUMBRECT, 0, PtrInt(@R));
                       // Extend this rectangle to the top/bottom or left/right border, respectively.
                       Offset := 0;
                       if TCustomTrackBar(Control).Orientation = trHorizontal then
