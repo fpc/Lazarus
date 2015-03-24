@@ -495,7 +495,6 @@ end;
 }
 procedure TPSTokenizer.ReadFromStream(AStream: TStream);
 var
-  i: Integer;
   CurChar: Char;
   CurLine: Integer = 1;
   State: TPostScriptScannerState = ssSearchingToken;
@@ -504,7 +503,6 @@ var
   ExpressionToken: TExpressionToken;
   ArrayToken, NewArrayToken: TArrayToken;
   DictionaryToken: TDictionaryToken;
-  Len: Integer;
   lReturnState: TStack; // of TPostScriptScannerState
   lExpressionStateReturn: TPostScriptScannerState;
   lIsEndOfLine: Boolean;
@@ -1092,8 +1090,6 @@ end;
 
 procedure TvEPSVectorialReader.ExecuteOperatorToken(AToken: TExpressionToken;
   AData: TvVectorialPage; ADoc: TvVectorialDocument; ANextToken: TPSToken);
-var
-  Param1, Param2: TPSToken;
 begin
   if AToken.StrValue = '' then
   begin

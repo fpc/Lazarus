@@ -245,7 +245,7 @@ const
   TEXT_ANCHORS: array[TvTextAnchor] of string = ('start', 'middle', 'end');
   TEXT_DECO: array[0..3] of string = ('none', 'underline', 'line-through', 'line-through,underline');
 var
-  i, j, FontSize: Integer;
+  FontSize: Integer;
   TextStr: String;
   PtX, PtY: double;
 begin
@@ -327,7 +327,7 @@ procedure TvSVGVectorialWriter.WriteEntities(AStrings: TStrings;
   AData: TvVectorialPage; ADoc: TvVectorialDocument);
 var
   lEntity: TvEntity;
-  i, j: Integer;
+  i: Integer;
 begin
   for i := 0 to AData.GetEntitiesCount() - 1 do
   begin

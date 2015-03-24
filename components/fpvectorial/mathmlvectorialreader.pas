@@ -13,9 +13,9 @@ unit mathmlvectorialreader;
 interface
 
 uses
-  Classes, SysUtils, math,
+  Classes, SysUtils,
   laz2_xmlread, laz2_dom,
-  fpvectorial, fpvutils, lazutf8;
+  fpvectorial;
 
 type
   { TvMathMLVectorialReader }

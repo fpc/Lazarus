@@ -1659,9 +1659,9 @@ var
   lTextStr: string = '';
   lx, ly: double;
   lText: TvText;
-  i: Integer;
-  lNodeName, lNodeValue: DOMString;
-  lCurNode: TDOMNode;
+  //i: Integer;
+  //lNodeName, lNodeValue: DOMString;
+  //lCurNode: TDOMNode;
 begin
   lx := 0.0;
   ly := 0.0;

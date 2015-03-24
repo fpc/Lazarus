@@ -554,7 +554,6 @@ end;
 procedure TvODGVectorialReader.ApplyGraphicAttributeToPenAndBrush(ANodeName,
   ANodeValue: string; var APen: TvPen; var ABrush: TvBrush);
 var
-  i: Integer;
   lColor: TFPColor;
 begin
   case ANodeName of
@@ -920,10 +919,9 @@ end;
 procedure TvODGVectorialReader.ConvertPathStringToTPath(AStr: string;
   AData: TvVectorialPage; ADest: TPath; ADeltaX, ADeltaY: Double; AInfo: TCustomShapeInfo);
 var
-  x1, y1, x2, y2, lCurX, lCurY: double;
+  x1, y1, x2, y2: double;
   t1, t2, lSrcX, lSrcY, lDestX, lDestY: Double;
   j: Integer;
-  lNodeName, lNodeValue: string;
   lTokenizer: TSVGPathTokenizer;
   CurToken: TSVGToken;
 begin
@@ -931,8 +929,6 @@ begin
   y1 := 0.0;
   x2 := 0.0;
   y2 := 0.0;
-  lCurX := 0.0;
-  lCurY := 0.0;
 
   lTokenizer := TSVGPathTokenizer.Create;
   try
@@ -1091,7 +1087,7 @@ var
   x1, y1, x2, y2, lWidth, lHeight: double;
   i: Integer;
   lNodeName, lNodeValue: string;
-  lCurNode, lTextNode, lEnhancedGeometryNode, lDrawTypeAttrib: TDOMNode;
+  lCurNode: TDOMNode;
   lSkewX, lSkewY, lRotate, lTranslateX, lTranslateY: Double;
   // various possible custom shape types
   lGroup: TvEntityWithSubEntities;
@@ -1673,7 +1669,6 @@ function TvODGVectorialReader.ReadSVGColor(AValue: string): TFPColor;
 var
   lValue, lStr: string;
   lStrings: TStringList;
-  i: Integer;
 begin
   Result := colBlack;
   lValue := Trim(LowerCase(AValue));
@@ -2302,7 +2297,6 @@ procedure TvODGVectorialReader.ReadFromStylesXMLDocument(
 var
   DocStylesNode, AutomaticStylesNode, MasterStylesNode, ElementNode: TDOMNode;
   CurPage: TvVectorialPage;
-  i: Integer;
   lNodeName: String;
 begin
   DocStylesNode := AXMLDocument.DocumentElement;//.FindNode('office:document-styles');

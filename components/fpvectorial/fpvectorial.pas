@@ -1802,7 +1802,7 @@ procedure TvTable.CalculateColWidths(ADest: TFPCustomCanvas);
 var
   CurRow: TvTableRow;
   CurCell: TvTableCell;
-  lLeft, lTop, lRight, lBottom, lWidth: Double;
+  lWidth: Double;
   col, row, i: Integer;
   //DebugStr: string;
   OriginalColWidthsInMM: array of Double;
@@ -1868,7 +1868,7 @@ var
   col, row: Integer;
   CurRow: TvTableRow;
   CurCell: TvTableCell;
-  lCellHeight, lRowHeight: Double;
+  lCellHeight: Double;
 begin
   TableHeight := 0;
 
@@ -1986,7 +1986,7 @@ procedure TvTable.Render(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo;
   end;
 
 var
-  row, col: Integer;
+  row: Integer;
   CurRow: TvTableRow;
   lEntityRenderInfo: TvRenderInfo;
 begin
@@ -2442,7 +2442,7 @@ end;
 
 procedure T2DEllipticalArcSegment.CalculateCenter;
 var
-  XStart, YStart, lT1, lT2: Double;
+  XStart, YStart, lT1: Double;
   CX1, CY1, CX2, CY2, LeftMostX, LeftMostY, RightMostX, RightMostY: Double;
   RotatedCenter: T3DPoint;
 begin
@@ -2537,7 +2537,6 @@ end;
 procedure T2DEllipticalArcSegment.CalculateEllipseBoundingBox(ADest: TFPCustomCanvas;
   var ALeft, ATop, ARight, ABottom: Double);
 var
-  MajorAxis, MinorAxis: Double;
   t1, t2, t3: Double;
   x1, x2, x3: Double;
   y1, y2, y3: Double;
@@ -3035,7 +3034,6 @@ function TvEntityWithPenAndBrush.GenerateDebugTree(
   ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer;
 var
   lStr: string;
-  lCurPathSeg: TPathSegment;
 begin
   lStr := Format('[%s] Name=%s X=%f Y=%f Pen.Color=%s Pen.Style=%s Brush.Color=%s Brush.Style=%s %s',
     [Self.ClassName, Self.Name, X, Y,
@@ -3065,12 +3063,9 @@ end;
 procedure TvEntityWithPenBrushAndFont.ApplyFontToCanvas(ADest: TFPCustomCanvas;
   ARenderInfo: TvRenderInfo; AFont: TvFont; AMulX: Double);
 var
-  i: Integer;
   {$ifdef USE_LCL_CANVAS}
   ALCLDest: TCanvas absolute ADest;
   {$endif}
-  //
-  LowerDim: T3DPoint;
 begin
   ADest.Font.Size := Round(AmulX * AFont.Size);
   ADest.Font.Bold := AFont.Bold;
@@ -3119,7 +3114,6 @@ function TvEntityWithPenBrushAndFont.GenerateDebugTree(
   ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer;
 var
   lStr: string;
-  lCurPathSeg: TPathSegment;
 begin
   Result := inherited GenerateDebugTree(ADestRoutine, APageItem);
   // Add the font debug info in a sub-item
@@ -3455,7 +3449,7 @@ procedure TPath.Render(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo; AD
   end;
 
 var
-  j, k: Integer;
+  j: Integer;
   PosX, PosY: Double; // Not modified by ADestX, etc
   CoordX, CoordY: Integer;
   CurSegment: TPathSegment;
@@ -3463,10 +3457,8 @@ var
   Cur2DBSegment: T2DBezierSegment absolute CurSegment;
   Cur2DArcSegment: T2DEllipticalArcSegment absolute CurSegment;
   // For bezier
-  CurX, CurY: Integer; // Not modified by ADestX, etc
   CoordX2, CoordY2, CoordX3, CoordY3, CoordX4, CoordY4: Integer;
-  CurveLength: Integer;
-  t: Double;
+  //t: Double;
   // For polygons
   lPoints: array of TPoint;
   // for elliptical arcs
@@ -3705,7 +3697,7 @@ procedure TPath.RenderInternalPolygon(ADest: TFPCustomCanvas;
   end;
 
 var
-  j, k: Integer;
+  j: Integer;
   CoordX, CoordY: Integer;
   CurSegment: TPathSegment;
   Cur2DSegment: T2DSegment absolute CurSegment;
@@ -4229,7 +4221,6 @@ function TvRectangle.GenerateDebugTree(ADestRoutine: TvDebugAddItemProc;
   APageItem: Pointer): Pointer;
 var
   lStr: string;
-  lCurPathSeg: TPathSegment;
 begin
   Result := inherited GenerateDebugTree(ADestRoutine, APageItem);
   // Add the font debug info in a sub-item
@@ -4405,7 +4396,6 @@ function TvAlignedDimension.GenerateDebugTree(ADestRoutine: TvDebugAddItemProc;
   APageItem: Pointer): Pointer;
 var
   lStr: string;
-  lCurPathSeg: TPathSegment;
 begin
   Result := inherited GenerateDebugTree(ADestRoutine, APageItem);
   // Add the font debug info in a sub-item
@@ -4515,7 +4505,6 @@ function TvRadialDimension.GenerateDebugTree(ADestRoutine: TvDebugAddItemProc;
   APageItem: Pointer): Pointer;
 var
   lStr, lIsDiameterStr: string;
-  lCurPathSeg: TPathSegment;
 begin
   Result := inherited GenerateDebugTree(ADestRoutine, APageItem);
   // Add the font debug info in a sub-item
@@ -4547,7 +4536,6 @@ procedure TvArcDimension.Render(ADest: TFPCustomCanvas;
 
 var
   Points: array of TPoint;
-  lAngleLeft, lAngleRight: Double;
   lTriangleCenter, lTriangleCorner: T3DPoint;
   {$ifdef USE_LCL_CANVAS}
   ALCLDest: TCanvas absolute ADest;
@@ -4632,8 +4620,7 @@ end;
 function TvArcDimension.GenerateDebugTree(ADestRoutine: TvDebugAddItemProc;
   APageItem: Pointer): Pointer;
 var
-  lStr, lIsDiameterStr: string;
-  lCurPathSeg: TPathSegment;
+  lStr: string;
 begin
   Result := inherited GenerateDebugTree(ADestRoutine, APageItem);
   // Add the font debug info in a sub-item
@@ -5395,7 +5382,7 @@ const
   var
     lToken: TvFormulaElement;
     lStr: string;
-    FPointSeparator, FCommaSeparator: TFormatSettings;
+    FPointSeparator: TFormatSettings;
   begin
     FPointSeparator := DefaultFormatSettings;
     FPointSeparator.DecimalSeparator := '.';
@@ -5426,7 +5413,7 @@ var
   i: Integer;
   lTmpStr: string = '';
   lState: Integer;
-  lFirstTmpStrChar, lCurChar: Char;
+  lCurChar: Char;
 begin
   lState := 0;
 
@@ -5557,7 +5544,6 @@ procedure TvFormula.PositionSubparts(ADest: TFPCustomCanvas; ABaseX, ABaseY: Dou
 var
   lElement: TvFormulaElement;
   lPosX: Double = 0;
-  lPosY: Double = 0;
   lMaxHeight: Double = 0;
 begin
   CalculateHeight(ADest);
@@ -5855,7 +5841,6 @@ end;
 procedure TvInsert.Render(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo; ADestX: Integer;
   ADestY: Integer; AMulX: Double; AMulY: Double);
 var
-  lEntity: TvEntity;
   OldForceRenderBlock: Boolean;
 begin
   inherited Render(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMulY);
@@ -6334,8 +6319,6 @@ end;
 { TvVectorialPage }
 
 procedure TvVectorialPage.ClearTmpPath;
-var
-  segment, oldsegment: TPathSegment;
 begin
   FTmpPath.Points := nil;
   FTmpPath.PointsEnd := nil;
@@ -6537,7 +6520,7 @@ end;
 function TvVectorialPage.AddPathCopyMem(APath: TPath; AOnlyCreate: Boolean = False): TPath;
 var
   lPath: TPath;
-  Len: Integer;
+  //Len: Integer;
 begin
   lPath := TPath.Create(Self);
   lPath.Assign(APath);
@@ -7117,6 +7100,7 @@ end;
 function TvTextPageSequence.RemoveEntity(AEntity: TvEntity;
   AFreeAfterRemove: Boolean): Boolean;
 begin
+  Result := True;
   MainText.Clear;
 end;
 

@@ -9,10 +9,7 @@ interface
 {$endif}
 
 uses
-  Classes, SysUtils, Math,
-  fpcanvas,
-  fpimage,
-  fpvectorial, fpvutils;
+  fpcanvas, fpvectorial;
 
 procedure DrawFPVectorialToCanvas(ASource: TvVectorialPage;
   ADest: TFPCustomCanvas;
