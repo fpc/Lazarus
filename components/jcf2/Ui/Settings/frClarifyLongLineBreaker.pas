@@ -30,8 +30,7 @@ unit frClarifyLongLineBreaker;
 interface
 
 uses
-  { delphi }
-  Classes, Controls, Forms, StdCtrls, ExtCtrls, Spin,
+  Classes, StdCtrls, ExtCtrls, Spin,
   IDEOptionsIntf;
 
 type
@@ -58,7 +57,7 @@ implementation
 {$R *.lfm}
 
 uses 
-  JcfSettings, SetReturns, JcfHelp, jcfuiconsts;
+  JcfSettings, SetReturns, jcfuiconsts;
 
 
 constructor TfClarifyLongLineBreaker.Create(AOwner: TComponent);

@@ -160,14 +160,12 @@ implementation
 
 uses
 {$ifdef MSWINDOWS}
-  Windows, ShellApi
+  //Windows, ShellApi
 {$endif}
 {$ifdef Unix}
-  Unix
+  //Unix
 {$endif}
-{$ifdef fpc}
-  , LCLIntf, fileutil
-{$endif};
+  LCLIntf, fileutil;
 
 {$IFNDEF DELPHI12}
 {$IFNDEF DELPHI14}

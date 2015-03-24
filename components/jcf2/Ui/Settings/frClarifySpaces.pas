@@ -30,9 +30,7 @@ unit frClarifySpaces;
 interface
 
 uses
-  { delphi }
-  Classes, Controls, Forms, StdCtrls, ExtCtrls, Spin,
-  { local}
+  Classes, StdCtrls, ExtCtrls, Spin,
   IDEOptionsIntf;
 
 type
@@ -98,7 +96,7 @@ implementation
 {$R *.lfm}
 
 uses
-  JcfHelp, JcfSettings, SetSpaces, SettingsTypes, jcfuiconsts;
+  JcfSettings, SettingsTypes, jcfuiconsts;
 
 constructor TfClarifySpaces.Create(AOwner: TComponent);
 begin

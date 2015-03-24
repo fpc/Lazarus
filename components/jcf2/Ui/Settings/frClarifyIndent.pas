@@ -30,8 +30,7 @@ See http://www.gnu.org/licenses/gpl.html
 interface
 
 uses
-  { delphi }
-  Classes, Controls, Forms, StdCtrls, Spin,
+  Classes, StdCtrls, Spin,
   IDEOptionsIntf;
 
 type
@@ -73,7 +72,7 @@ implementation
 {$R *.lfm}
 
 uses
-  JcfHelp, JcfSettings, SetIndent, jcfuiconsts;
+  JcfSettings, jcfuiconsts;
 
 constructor TfClarifyIndent.Create(AOwner: TComponent);
 begin

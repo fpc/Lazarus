@@ -29,9 +29,7 @@ unit frBlankLines;
 interface
 
 uses
-  { delphi }
-  Classes, Controls, Forms, StdCtrls, Spin,
-  { local}
+  Classes, Math, StdCtrls, Spin,
   IDEOptionsIntf;
 
 
@@ -68,10 +66,7 @@ implementation
 {$R *.lfm}
 
 uses
-  { delphi }
-  Math,
-  { local }
-  JcfSettings, SetReturns, JcfHelp, jcfuiconsts;
+  JcfSettings, jcfuiconsts;
 
 constructor TfBlankLines.Create(AOwner: TComponent);
 begin

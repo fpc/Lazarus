@@ -30,9 +30,7 @@ unit frReservedCapsSettings;
 interface
 
 uses
-  { delphi }
-  Classes, Controls, Forms, StdCtrls, ExtCtrls,
-  { local }
+  Classes, StdCtrls, ExtCtrls,
   IDEOptionsIntf;
 
 type
@@ -63,7 +61,7 @@ implementation
 {$R *.lfm}
 
 uses 
-  SettingsTypes, JcfHelp, JcfSettings, jcfuiconsts;
+  SettingsTypes, JcfSettings, jcfuiconsts;
 
 constructor TfrReservedCapsSettings.Create(AOwner: TComponent);
 begin

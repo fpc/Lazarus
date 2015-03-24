@@ -30,9 +30,7 @@ See http://www.gnu.org/licenses/gpl.html
 interface
 
 uses
-  { delphi }
-  Classes, Controls, Forms, StdCtrls,
-  { local }
+  Classes, StdCtrls,
   IDEOptionsIntf;
 
 type
@@ -69,7 +67,7 @@ implementation
 {$R *.lfm}
 
 uses
-  JcfHelp, JcfSettings, jcfuiconsts;
+  JcfSettings, jcfuiconsts;
 
 constructor TfUses.Create(AOwner: TComponent);
 begin

@@ -30,8 +30,7 @@ See http://www.gnu.org/licenses/gpl.html
 interface
 
 uses
-  Classes, Graphics, Controls, Forms, StdCtrls, ExtCtrls,
-  { local }
+  Classes, StdCtrls, ExtCtrls,
   IDEOptionsIntf;
 
 type
@@ -64,7 +63,7 @@ implementation
 {$R *.lfm}
 
 uses 
-  SettingsTypes, JcfSettings, JcfHelp, SetTransform, jcfuiconsts;
+  SettingsTypes, JcfSettings, SetTransform, jcfuiconsts;
 
 constructor TfTransform.Create(AOwner: TComponent);
 begin

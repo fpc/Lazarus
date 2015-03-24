@@ -30,9 +30,7 @@ unit frClarifyCaseBlocks;
 interface
 
 uses
-  { delphi }
-  Classes, Controls, Forms, StdCtrls, ExtCtrls,
-  { local}
+  Classes, StdCtrls, ExtCtrls,
   IDEOptionsIntf;
 
 type
@@ -63,7 +61,7 @@ implementation
 {$R *.lfm}
 
 uses
-  JcfSettings, SettingsTypes, JcfHelp, jcfuiconsts;
+  JcfSettings, SettingsTypes, jcfuiconsts;
 
 procedure TfClarifyCaseBlocks.FrameResize(Sender:TObject);
 begin

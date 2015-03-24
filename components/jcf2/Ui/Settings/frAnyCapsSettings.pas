@@ -30,9 +30,7 @@ unit frAnyCapsSettings;
 interface
 
 uses
-  { delphi }
-  Classes, Controls, Forms, StdCtrls,
-  { local }
+  Classes, StdCtrls,
   IDEOptionsIntf;
 
 type
@@ -60,7 +58,7 @@ implementation
 {$R *.lfm}
 
 uses 
-  JcfHelp, JcfSettings, jcfuiconsts;
+  JcfSettings, jcfuiconsts;
 
 constructor TfrAnyCapsSettings.Create(AOwner: TComponent);
 begin

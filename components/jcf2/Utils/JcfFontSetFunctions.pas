@@ -40,10 +40,8 @@ procedure SetObjectFontToSystemFont(
 implementation
 
 uses
-  { delphi }
-  StdCtrls, ComCtrls, Graphics, TypInfo,
-  { local }
-  JcfStringUtils, JcfSystemUtils;
+  StdCtrls, Graphics, TypInfo,
+  JcfSystemUtils;
 
 procedure SetCaptionFont(const AObjectFont: TFont);
 begin

@@ -30,9 +30,7 @@ unit frClarify;
 interface
 
 uses
-  { delphi }
-  Classes, Controls, Forms, StdCtrls, ExtCtrls,
-  { local}
+  Classes, StdCtrls, ExtCtrls,
   IDEOptionsIntf;
 
 type
@@ -59,7 +57,7 @@ implementation
 {$R *.lfm}
 
 uses
-  JcfSettings, JcfHelp, SetClarify, jcfuiconsts;
+  JcfSettings, SetClarify, jcfuiconsts;
 
 constructor TfClarify.Create(AOwner: TComponent);
 begin

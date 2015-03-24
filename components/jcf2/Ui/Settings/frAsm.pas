@@ -30,9 +30,7 @@ See http://www.gnu.org/licenses/gpl.html
 interface
 
 uses
-  Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, ExtCtrls, Spin,
-  { local}
+  SysUtils, StdCtrls, ExtCtrls, Spin,
   IDEOptionsIntf;
 
 type
@@ -68,7 +66,7 @@ implementation
 
 uses
   { jcf }
-  JcfHelp, JcfSettings, jcfuiconsts,
+  JcfSettings, jcfuiconsts,
   { local }
   Capitalisation, SettingsTypes, SetAsm;
 

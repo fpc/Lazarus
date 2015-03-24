@@ -30,9 +30,7 @@ unit frClarifyReturns;
 interface
 
 uses
-  { delphi }
-  Classes, Controls, Forms, StdCtrls, ExtCtrls,
-  { local}
+  Classes, StdCtrls, ExtCtrls,
   IDEOptionsIntf;
 
 type
@@ -67,7 +65,7 @@ implementation
 {$R *.lfm}
 
 uses
-  SettingsTypes, JcfSettings, SetReturns, JcfHelp, jcfuiconsts;
+  SettingsTypes, JcfSettings, jcfuiconsts;
 
 procedure TfClarifyReturns.FrameResize(Sender:TObject);
 begin

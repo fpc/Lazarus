@@ -30,9 +30,7 @@ unit frObfuscateSettings;
 interface
 
 uses
-  { delphi }
-  Classes, Controls, Forms, StdCtrls, ExtCtrls,
-  { local }
+  Classes, StdCtrls, ExtCtrls,
   IDEOptionsIntf;
 
 type
@@ -61,7 +59,7 @@ implementation
 {$R *.lfm}
 
 uses
-  JcfSettings, SettingsTypes, JcfHelp, SetObfuscate, jcfuiconsts;
+  JcfSettings, SettingsTypes, jcfuiconsts;
 
 { TfObfuscateSettings }
 

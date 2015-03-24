@@ -30,9 +30,7 @@ unit frClarifyAlign;
 interface
 
 uses
-  { delphi }
-  Classes, Controls, Forms, StdCtrls, Spin,
-  { local}
+  Classes, StdCtrls, Spin,
   IDEOptionsIntf;
 
 type
@@ -78,7 +76,7 @@ implementation
 {$R *.lfm}
 
 uses
-  JcfSettings, JcfHelp, SetAlign, jcfuiconsts;
+  JcfSettings, jcfuiconsts;
 
 constructor TfClarifyAlign.Create(AOwner: TComponent);
 begin

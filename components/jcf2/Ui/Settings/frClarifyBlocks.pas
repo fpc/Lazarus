@@ -30,8 +30,7 @@ unit frClarifyBlocks;
 interface
 
 uses
-  { delphi }
-  Classes, Controls, Forms, StdCtrls, ExtCtrls,
+  Classes, StdCtrls, ExtCtrls,
   IDEOptionsIntf;
 
 type
@@ -61,7 +60,7 @@ implementation
 {$R *.lfm}
 
 uses
-  JcfSettings, SettingsTypes, JcfHelp, jcfuiconsts;
+  JcfSettings, SettingsTypes, jcfuiconsts;
 
 procedure TfClarifyBlocks.FrameResize(Sender:TObject);
 begin

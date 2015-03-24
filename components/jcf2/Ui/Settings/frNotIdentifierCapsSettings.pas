@@ -30,8 +30,7 @@ unit frNotIdentifierCapsSettings;
 interface
 
 uses
-  { delphi }
-  Classes, Controls, Forms, StdCtrls,
+  Classes, StdCtrls,
   IDEOptionsIntf;
 
 type
@@ -59,7 +58,7 @@ implementation
 {$R *.lfm}
 
 uses 
-  JcfHelp, JcfSettings, jcfuiconsts;
+  JcfSettings, jcfuiconsts;
 
 constructor TfNotIdentifierCapsSettings.Create(AOwner: TComponent);
 begin
