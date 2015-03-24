@@ -133,6 +133,7 @@ var
   lEmbVecImg: TvEmbeddedVectorialDoc = nil;
   i: Integer;
   lWidth, lHeight: Double;
+  lAltText: string;
   // xlink:href
   lx, ly, lw, lh: Double;
   lImageDataParts: TStringList;
@@ -166,12 +167,18 @@ begin
       lEmbVecImg := nil;
       lWidth := -1;
       lHeight := -1;
+      lAltText := '';
+
       for i := 0 to lCurNode.Attributes.Length - 1 do
       begin
         lAttrName := lCurNode.Attributes.Item[i].NodeName;
         lAttrValue := lCurNode.Attributes.Item[i].NodeValue;
 
         case lAttrName of
+        'alt':
+        begin
+          lAltText := lAttrValue;
+        end;
         'src':
         begin
           lAttrValue := lCurAttr.NodeValue;
@@ -238,6 +245,7 @@ begin
 
         lRasterImage.Width := lWidth;
         lRasterImage.Height := lHeight;
+        lRasterImage.AltText := lAltText;
       end
       else if (lEmbVecImg <> nil) and (lWidth > 0) and (lHeight > 0) then
       begin
@@ -300,10 +308,45 @@ var
   CurRow: TvTableRow;
   Caption_Cell: TvTableCell;
   CurCellPara: TvParagraph;
+  // attributes
+  i, lBorderNr: Integer;
+  lAttrName, lAttrValue: DOMString;
 begin
   Result := nil;
   CurTable := AData.AddTable();
 
+  // table attributes
+  for i := 0 to ANode.Attributes.Length - 1 do
+  begin
+    lAttrName := ANode.Attributes.Item[i].NodeName;
+    lAttrValue := ANode.Attributes.Item[i].NodeValue;
+
+    case lAttrName of
+    'border':
+    begin
+      lBorderNr := StrToInt(lAttrValue);
+
+      CurTable.Borders.Left.Width := lBorderNr;
+      CurTable.Borders.Right.Width := lBorderNr;
+      CurTable.Borders.Top.Width := lBorderNr;
+      CurTable.Borders.Bottom.Width := lBorderNr;
+      CurTable.Borders.InsideHoriz.Width := lBorderNr;
+      CurTable.Borders.InsideVert.Width := lBorderNr;
+
+      if lBorderNr = 0 then
+      begin
+        CurTable.Borders.Left.LineType := tbtNone;
+        CurTable.Borders.Right.LineType := tbtNone;
+        CurTable.Borders.Top.LineType := tbtNone;
+        CurTable.Borders.Bottom.LineType := tbtNone;
+        CurTable.Borders.InsideHoriz.LineType := tbtNone;
+        CurTable.Borders.InsideVert.LineType := tbtNone;
+      end;
+    end;
+    end;
+  end;
+
+  // table child nodes
   lCurNode := ANode.FirstChild;
   while Assigned(lCurNode) do
   begin

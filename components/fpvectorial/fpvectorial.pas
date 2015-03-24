@@ -716,6 +716,7 @@ type
   public
     RasterImage: TFPCustomImage;
     Width, Height: Double;
+    AltText: string;
     destructor Destroy; override;
     procedure CalculateBoundingBox(ADest: TFPCustomCanvas; var ALeft, ATop, ARight, ABottom: Double); override;
     procedure CreateRGB888Image(AWidth, AHeight: Cardinal);
@@ -1014,7 +1015,8 @@ type
 
   // Forward reference as Table Cells are TvRichText which in turn
   // can also contain tables...
-  TvTable = Class;
+  TvTable = class;
+  TvTableRow = class;
 (*
   TvImage = Class;
 *)
@@ -1079,11 +1081,12 @@ type
   // Horizontal alignment taken from Paragraph Style
 
   TvTableCell = Class(TvRichText)
-  Public
+  public
     // MJT to Felipe:  It may be that Borders can be
     // added to TvRichText if odt supports paragraph
     // borders, in which case we can refactor a little and
     // rename TvTableBorders
+    Row: TvTableRow;
     Borders: TvTableBorders;                  // Defaults to be ignored (tbtDefault)
     PreferredWidth: TvDimension;              // Optional
     VerticalAlignment: TvVerticalAlignment;   // Defaults to vaTop
@@ -1092,6 +1095,13 @@ type
                                               // See diagram above TvTable Class
 
     constructor Create(APage: TvPage); override;
+    function GetEffectiveBorder(): TvTableBorders;
+    class procedure DrawBorder(ABorder: TvTableBorders;
+      AX, AY, AWidth, AHeight: double;
+      ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
+      ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0);
+    procedure Render(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
+      ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
   end;
 
   { TvTableRow }
@@ -1114,6 +1124,7 @@ type
     function AddCell: TvTableCell;
     function GetCellCount: Integer;
     function GetCell(AIndex: Integer): TvTableCell;
+    function GetCellColNr(ACell: TvTableCell): Integer;
     function CalculateMaxCellSpacing_Y(): Double;
     //
     procedure CalculateBoundingBox(ADest: TFPCustomCanvas; var ALeft, ATop, ARight, ABottom: Double); override;
@@ -1131,13 +1142,15 @@ type
       Second row should only have 2 cells. Second cell spans 2 columns.
       Third row should have 3 cells.  Each cell only spans 1 column (default)
 
-       +-----+------+---------+
+   X,Y +-----+------+---------+
        |            |         |
        +-----+----------------+
        |     |                |
        +-----+------+---------+
        |     |      |         |
        +-----+------+---------+
+
+       The table draws at X,Y and downwards
   *)
 
   // TvTable.Style should be a Table Style, not a Paragraph Style
@@ -1146,7 +1159,7 @@ type
   private
     Rows: TFPList;
     ColWidthsInMM: array of Double;   // calculated during Render
-    TableWidth: Double;               // in mm; calculated during Render
+    TableWidth, TableHeight: Double;  // in mm; calculated during Render
     procedure CalculateColWidths(ADest: TFPCustomCanvas);
     procedure CalculateRowHeights(ADest: TFPCustomCanvas);
   public
@@ -1688,6 +1701,100 @@ begin
   SpannedCols := 1;
 end;
 
+function TvTableCell.GetEffectiveBorder(): TvTableBorders;
+begin
+  Result := Borders;
+  if (Row <> nil) and (Row.Table <> nil) then
+  begin
+    if Borders.Left.LineType = tbtDefault then
+      Result.Left := Row.Table.Borders.Left;
+    if Borders.Right.LineType = tbtDefault then
+      Result.Right := Row.Table.Borders.Right;
+    if Borders.Top.LineType = tbtDefault then
+      Result.Top := Row.Table.Borders.Top;
+    if Borders.Bottom.LineType = tbtDefault then
+      Result.Bottom := Row.Table.Borders.Bottom;
+  end;
+end;
+
+class procedure TvTableCell.DrawBorder(ABorder: TvTableBorders;
+  AX, AY, AWidth, AHeight: double;
+  ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
+  ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0);
+
+  function CoordToCanvasX(ACoord: Double): Integer;
+  begin
+    Result := Round(ADestX + AmulX * ACoord);
+  end;
+
+  function CoordToCanvasY(ACoord: Double): Integer;
+  begin
+    Result := Round(ADestY + AmulY * ACoord);
+  end;
+
+begin
+  ADest.Pen.Style := psSolid;
+  ADest.Pen.FPColor := colBlack;
+  if ABorder.Left.LineType <> tbtNone then
+  begin
+    ADest.Pen.Width := Round(ABorder.Left.Width * AMulX);
+    ADest.Line(
+      ADestX + CoordToCanvasX(AX),
+      ADestY + CoordToCanvasY(AY),
+      ADestX + CoordToCanvasX(AX),
+      ADestY + CoordToCanvasY(AY+AHeight));
+  end;
+  if ABorder.Right.LineType <> tbtNone then
+  begin
+    ADest.Pen.Width := Round(ABorder.Right.Width * AMulX);
+    ADest.Line(
+      ADestX + CoordToCanvasX(AX+AWidth),
+      ADestY + CoordToCanvasY(AY),
+      ADestX + CoordToCanvasX(AX+AWidth),
+      ADestY + CoordToCanvasY(AY+AHeight));
+  end;
+  if ABorder.Top.LineType <> tbtNone then
+  begin
+    ADest.Pen.Width := Round(ABorder.Top.Width * AMulX);
+    ADest.Line(
+      ADestX + CoordToCanvasX(AX),
+      ADestY + CoordToCanvasY(AY),
+      ADestX + CoordToCanvasX(AX+AWidth),
+      ADestY + CoordToCanvasY(AY));
+  end;
+  if ABorder.Bottom.LineType <> tbtNone then
+  begin
+    ADest.Pen.Width := Round(ABorder.Bottom.Width * AMulX);
+    ADest.Line(
+      ADestX + CoordToCanvasX(AX),
+      ADestY + CoordToCanvasY(AY+AHeight),
+      ADestX + CoordToCanvasX(AX+AWidth),
+      ADestY + CoordToCanvasY(AY+AHeight));
+  end;
+end;
+
+procedure TvTableCell.Render(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
+  ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0);
+var
+  lBorders: TvTableBorders;
+  CellWidth, CellHeight: Double;
+  lColNr: Integer;
+begin
+  // draw borders
+  if (Row <> nil) and (Row.Table <> nil) then
+  begin
+    lBorders := GetEffectiveBorder();
+    lColNr := Row.GetCellColNr(Self);
+    CellWidth := Row.Table.ColWidthsInMM[lColNr];
+    CellHeight := Row.Height;
+
+    TvTableCell.DrawBorder(lBorders, X, Y, CellWidth, CellHeight,
+      ADest, ARenderInfo, ADestX, ADestY, AMulX, AMulY);
+  end;
+
+  inherited Render(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMulY);
+end;
+
 { TvTable }
 
 // Returns the table width
@@ -1763,6 +1870,8 @@ var
   CurCell: TvTableCell;
   lCellHeight, lRowHeight: Double;
 begin
+  TableHeight := 0;
+
   for row := 0 to GetRowCount()-1 do
   begin
     CurRow := GetRow(row);
@@ -1776,7 +1885,12 @@ begin
     end;
 
     CurRow.Height := CurRow.Height + CurRow.CalculateMaxCellSpacing_Y();
+    TableHeight := TableHeight + CellSpacing;
+    CurRow.Y := TableHeight;
+    TableHeight := TableHeight + CurRow.Height;
   end;
+
+  TableHeight := TableHeight + CellSpacing;
 end;
 
 constructor TvTable.create(APage: TvPage);
@@ -1784,6 +1898,13 @@ begin
   inherited Create(APage);
 
   Rows := TFPList.Create;
+
+  Borders.Left.Width := 1;
+  Borders.Right.Width := 1;
+  Borders.Top.Width := 1;
+  Borders.Bottom.Width := 1;
+  Borders.InsideHoriz.Width := 1;
+  Borders.InsideVert.Width := 1;
 end;
 
 destructor TvTable.destroy;
@@ -1867,7 +1988,6 @@ procedure TvTable.Render(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo;
 var
   row, col: Integer;
   CurRow: TvTableRow;
-  CurY: Integer;
   lEntityRenderInfo: TvRenderInfo;
 begin
   ARenderInfo.EntityCanvasMinXY := Point(-1, -1);
@@ -1879,14 +1999,20 @@ begin
   // Now calculate the row heights
   CalculateRowHeights(ADest);
 
+  // Draw the table border
+  TvTableCell.DrawBorder(Borders, X, Y, TableWidth, TableHeight,
+    ADest, ARenderInfo, ADestX, ADestY, AMulX, AMulY);
+
   // Now draw the table
-  CurY := CoordToCanvasY(Y);
   for row := 0 to GetRowCount()-1 do
   begin
     CurRow := GetRow(row);
-    CurRow.Render(ADest, lEntityRenderInfo, ADestX, CurY, AMulX, AMulY);
+
+    // changes from pos relative inside table (calculated in CalculateRowHeights) to absolute pos
+    CurRow.Y := Y + CurRow.Y;
+
+    CurRow.Render(ADest, lEntityRenderInfo, ADestX, ADestY, AMulX, AMulY);
     MergeRenderInfo(lEntityRenderInfo, ARenderInfo);
-    CurY := ARenderInfo.EntityCanvasMaxXY.Y + DeltaToCanvasY(CurRow.Height);
   end;
 end;
 
@@ -2199,6 +2325,7 @@ end;
 function TvTableRow.AddCell : TvTableCell;
 begin
   Result := TvTableCell.Create(FPage);
+  Result.Row := Self;
   Cells.Add(Result);
 end;
 
@@ -2210,6 +2337,11 @@ end;
 function TvTableRow.GetCell(AIndex: Integer): TvTableCell;
 begin
   Result := TvTableCell(Cells[AIndex]);
+end;
+
+function TvTableRow.GetCellColNr(ACell: TvTableCell): Integer;
+begin
+  Result := Cells.IndexOf(Pointer(ACell));
 end;
 
 function TvTableRow.CalculateMaxCellSpacing_Y(): Double;
@@ -2255,13 +2387,21 @@ begin
   ARenderInfo.EntityCanvasMinXY := Point(-1, -1);
   ARenderInfo.EntityCanvasMaxXY := Point(-1, -1);
 
+  if (Table <> nil) then
+    CurX := Table.CellSpacing;
+
   for i := 0 to GetCellCount()-1 do
   begin
     CurCell := GetCell(i);
     CurCell.X := CurX;
+    CurCell.Y := Y;
     CurCell.Render(ADest, lEntityRenderInfo, ADestX, ADestY, AMulX, AMulY);
-    if (Table <> nil) and (Length(Table.ColWidthsInMM) > i) then
-      CurX := CurX + Table.ColWidthsInMM[i];
+    if (Table <> nil) then
+    begin
+      if (Length(Table.ColWidthsInMM) > i) then
+        CurX := CurX + Table.ColWidthsInMM[i];
+      CurX := CurX + Table.CellSpacing;
+    end;
 
     MergeRenderInfo(lEntityRenderInfo, ARenderInfo);
   end;
@@ -4685,10 +4825,8 @@ begin
   // Add the debug info in a sub-item
   if RasterImage <> nil then
   begin
-    lStr := Format('[TvRasterImage] Width=%f Height=%f RasterImage.Width=%d RasterImage.Height=%d',
-      [Width, Height,
-       RasterImage.Width, RasterImage.Height
-      ]);
+    lStr := Format('[TvRasterImage] Width=%f Height=%f RasterImage.Width=%d RasterImage.Height=%d AltText=%s',
+      [Width, Height, RasterImage.Width, RasterImage.Height, AltText]);
     ADestRoutine(lStr, Result);
   end;
 end;
@@ -5883,6 +6021,7 @@ var
   lFirstText: Boolean = True;
   lResetOldStyle: Boolean = False;
   lEntityRenderInfo: TvRenderInfo;
+  CurX: Integer;
 begin
   ARenderInfo.EntityCanvasMinXY := Point(-1, -1);
   ARenderInfo.EntityCanvasMaxXY := Point(-1, -1);
@@ -5910,13 +6049,14 @@ begin
 
       OldTextX := lText.X;
       OldTextY := lText.Y;
-      lText.X := CoordToCanvasX(lText.X + X + lCurWidth);
+      lText.X := 0;
+      CurX := ADestX + CoordToCanvasX(lText.X + X + lCurWidth);
       lText.Y := lText.Y + Y;
       lText.Render_Use_NextText_X := not lFirstText;
       if lText.Render_Use_NextText_X then
         lText.Render_NextText_X := lPrevText.Render_NextText_X;
 
-      lText.Render(ADest, lEntityRenderInfo, ADestX, ADestY, AMulX, AMuly);
+      lText.Render(ADest, lEntityRenderInfo, CurX, ADestY, AMulX, AMuly);
       lText.CalculateBoundingBox(ADest, lLeft, lTop, lRight, lBottom);
       lCurWidth := lCurWidth + Abs(lRight - lLeft);
       lFirstText := False;
