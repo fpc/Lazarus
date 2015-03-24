@@ -320,7 +320,7 @@ begin
       begin
         FloatValue := GetFloatProp(Instance, PropInfo);
         if (DefInstance <> nil) then
-         DefFloatValue := GetFloatProp(DefInstance, PropInfo);
+          DefFloatValue := GetFloatProp(DefInstance, PropInfo);
         if (DefInstance <> nil)  and (DefFloatValue = FloatValue) then
           DeleteValue(Path)
         else
