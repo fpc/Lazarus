@@ -30,6 +30,7 @@ components/tdbcalendar.png
 components/tdbcheckbox.png
 components/tdbcombobox.png
 components/tdbedit.png
+components/tdbdateedit.png
 components/tdbgrid.png
 components/tdbgroupbox.png
 components/tdbimage.png
