@@ -102,7 +102,6 @@ type
     FPageControl: TPageControl;
     FOnOpenPackage: TNotifyEvent;
     FOnOpenUnit: TNotifyEvent;
-    FOnClassSelected: TNotifyEvent;
     FSelectionMode: TComponentSelectionMode;
     fUnregisteredIcon: TCustomBitmap;
     fSelectButtonIcon: TCustomBitmap;
@@ -145,7 +144,6 @@ type
     property SelectionMode: TComponentSelectionMode read FSelectionMode write FSelectionMode;
     property OnOpenPackage: TNotifyEvent read FOnOpenPackage write FOnOpenPackage;
     property OnOpenUnit: TNotifyEvent read FOnOpenUnit write FOnOpenUnit;
-    property OnClassSelected: TNotifyEvent read FOnClassSelected write FOnClassSelected;
   end;
 
 function CompareControlsWithTag(Control1, Control2: Pointer): integer;

@@ -443,6 +443,8 @@ begin
     IDEComponentPalette.Selected := AComponent;
     FKeepSelected := True;
     Close;
+    if Assigned(IDEComponentPalette.OnClassSelected) then
+      IDEComponentPalette.OnClassSelected(Self);
   end;
 end;
 

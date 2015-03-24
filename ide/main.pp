@@ -1557,7 +1557,7 @@ begin
   Application.AddOnEndSessionHandler(@OnApplicationEndSession);
   Screen.AddHandlerRemoveForm(@OnScreenRemoveForm);
   Screen.AddHandlerActiveFormChanged(@OnScreenChangedForm);
-  TComponentPalette(IDEComponentPalette).OnClassSelected := @ComponentPaletteClassSelected;
+  IDEComponentPalette.OnClassSelected := @ComponentPaletteClassSelected;
   SetupHints;
   SetupIDEWindowsLayout;
   RestoreIDEWindows;

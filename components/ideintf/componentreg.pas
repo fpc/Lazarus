@@ -211,6 +211,7 @@ type
     fUpdateLock: integer;
     fChanged: boolean;
     fChangeStamp: integer;
+    fOnClassSelected: TNotifyEvent;
     procedure AddHandler(HandlerType: TComponentPaletteHandlerType;
                          const AMethod: TMethod; AsLast: boolean = false);
     procedure RemoveHandler(HandlerType: TComponentPaletteHandlerType;
@@ -268,6 +269,7 @@ type
     property Selected: TRegisteredComponent read GetSelected write SetSelected;
     // User ordered + original pages and components.
     property UserOrder: TCompPaletteUserOrder read fUserOrder;
+    property OnClassSelected: TNotifyEvent read fOnClassSelected write fOnClassSelected;
   end;
   
 
