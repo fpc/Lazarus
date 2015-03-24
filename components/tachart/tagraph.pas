@@ -82,6 +82,7 @@ type
     function IsEmpty: Boolean; virtual; abstract;
     procedure MovePoint(var AIndex: Integer; const ANewPos: TPoint); overload; inline;
     procedure MovePoint(var AIndex: Integer; const ANewPos: TDoublePoint); overload; virtual;
+    procedure UpdateBiDiMode; virtual;
 
     property Active: Boolean read FActive write SetActive default true;
     property Depth: TChartDistance read FDepth write SetDepth default 0;
@@ -139,6 +140,7 @@ type
     procedure Clear;
     function Count: Integer;
     function GetEnumerator: TBasicChartSeriesEnumerator;
+    procedure UpdateBiDiMode;
   public
     property Items[AIndex: Integer]: TBasicChartSeries read GetItem; default;
     property List: TIndexedComponentList read FList;
@@ -986,6 +988,11 @@ end;
 
 function TChart.GetAxisByAlign(AAlign: TChartAxisAlignment): TChartAxis;
 begin
+  if (BidiMode <> bdLeftToRight) then
+    case AAlign of
+      calLeft: AAlign := calRight;
+      calRight: AAlign := calLeft;
+    end;
   Result := FAxisList.GetAxisByAlign(AAlign);
 end;
 
@@ -1418,6 +1425,7 @@ begin
     Legend.UpdateBidiMode;
     Title.UpdateBidiMode;
     Foot.UpdateBidiMode;
+    Series.UpdateBiDiMode;
   end;
 end;
 
@@ -1749,6 +1757,11 @@ begin
   MovePoint(AIndex, FChart.ImageToGraph(ANewPos));
 end;
 
+procedure TBasicChartSeries.UpdateBiDiMode;
+begin
+  // normally nothing to do. Override, e.g., to flip arrows
+end;
+
 procedure TBasicChartSeries.UpdateMargins(
   ADrawer: IChartDrawer; var AMargins: TRect);
 begin
@@ -1802,6 +1815,14 @@ end;
 function TChartSeriesList.GetItem(AIndex: Integer): TBasicChartSeries;
 begin
   Result := TBasicChartSeries(FList.Items[AIndex]);
+end;
+
+procedure TChartSeriesList.UpdateBiDiMode;
+var
+  s: TBasicChartseries;
+begin
+  for s in self do
+    s.UpdateBiDiMode;
 end;
 
 { TBasicChartTool }

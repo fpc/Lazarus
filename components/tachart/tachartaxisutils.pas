@@ -172,6 +172,7 @@ type
     destructor Destroy; override;
   public
     procedure Assign(ASource: TPersistent); override;
+    function IsFlipped: Boolean; virtual;
     function TryApplyStripes(
       ADrawer: IChartDrawer; var AIndex: Cardinal): Boolean;
 
@@ -349,16 +350,28 @@ end;
 
 procedure TAxisDrawHelper.InternalAxisLine(
   APen: TChartPen; const AStart, AEnd: TPoint; AAngle: Double);
+var
+  arrowBase: TPoint;
+  arrowFlipped: boolean;
 begin
   if not APen.Visible and not FAxis.Arrow.Visible then exit;
   FDrawer.Pen := APen;
   if APen.Visible then
     LineZ(AStart, AEnd);
-  if FAxis.Arrow.Visible then
-    if FAxis.Arrow.Inverted then
-      FAxis.Arrow.Draw(FDrawer, AStart - FZOffset, AAngle, APen)
-    else
-      FAxis.Arrow.Draw(FDrawer, AEnd + FZOffset, AAngle, APen);
+  if FAxis.Arrow.Visible then begin
+    arrowFlipped := FAxis.IsFlipped;
+    if arrowFlipped <> FAxis.Arrow.Inverted then arrowFlipped := not arrowFlipped;
+    if FAxis.IsFlipped then begin
+      arrowBase := AStart - FZOffset;
+      if not arrowFlipped then
+        arrowBase -= RotatePointX(-FDrawer.Scale(FAxis.Arrow.Length), AAngle);
+    end else begin
+      arrowBase := AEnd + FZOffset;
+      if arrowFlipped then
+        arrowBase += RotatePointX(-FDrawer.Scale(FAxis.Arrow.Length), AAngle);
+    end;
+    FAxis.Arrow.Draw(FDrawer, arrowBase, AAngle, APen)
+  end;
 end;
 
 function TAxisDrawHelper.IsInClipRange(ACoord: Integer): Boolean;
@@ -391,7 +404,7 @@ procedure TAxisDrawHelperX.DrawAxisLine(APen: TChartPen; AFixedCoord: Integer);
 var
   p: TPoint;
 begin
-  if FAxis.Arrow.Inverted then begin
+  if FAxis.IsFlipped then begin
     p := Point(FClipRect^.Left, AFixedCoord);
     if FAxis.Arrow.Visible then
       p.X -= FDrawer.Scale(FAxis.Arrow.Length);
@@ -456,7 +469,7 @@ procedure TAxisDrawHelperY.DrawAxisLine(APen: TChartPen; AFixedCoord: Integer);
 var
   p: TPoint;
 begin
-  if FAxis.Arrow.Inverted then begin
+  if FAxis.IsFlipped then begin
     p := Point(AFixedCoord, FClipRect^.Bottom);
     if FAxis.Arrow.Visible then
       p.Y += FDrawer.Scale(FAxis.Arrow.Length);
@@ -694,6 +707,11 @@ end;
 function TChartBasicAxis.GetIntervals: TChartAxisIntervalParams;
 begin
   Result := Marks.DefaultSource.Params;
+end;
+
+function TChartBasicAxis.IsFlipped: Boolean;
+begin
+  Result := false;
 end;
 
 procedure TChartBasicAxis.SetArrow(AValue: TChartArrow);

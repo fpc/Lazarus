@@ -147,6 +147,7 @@ type
     function GetChart: TCustomChart; inline;
     function GetTransform: TChartAxisTransformations;
     function IsDefaultPosition: Boolean;
+    function IsFlipped: Boolean; override;
     function IsPointInside(const APoint: TPoint): Boolean;
     function IsVertical: Boolean; inline;
     procedure Measure(
@@ -551,7 +552,7 @@ const
   INVERTED_NAME: array [Boolean] of String = ('', ' Inverted');
 begin
   Result :=
-    SIDE_NAME[Alignment] + VISIBLE_NAME[Visible] + INVERTED_NAME[Inverted] +
+    SIDE_NAME[Alignment] + VISIBLE_NAME[Visible] + INVERTED_NAME[IsFlipped] +
     FormatIfNotEmpty(' (%s)', Title.Caption);
 end;
 
@@ -589,12 +590,6 @@ begin
     FMinForMarks := GetTransform.AxisToGraph(d.FMin);
     FMaxForMarks := GetTransform.AxisToGraph(d.FMax);
   end;
-  if Inverted and (Length(FMarkValues) > 0) then
-    for i := 0 to High(FMarkValues) div 2 do begin
-      t := FMarkValues[i];
-      FMarkValues[i] := FMarkValues[High(FMarkValues) - i];
-      FMarkValues[High(FMarkValues) - i] := t;
-    end;
 
   if Assigned(FOnMarkToText) then
     for i := 0 to High(FMarkValues) do
@@ -621,6 +616,18 @@ end;
 function TChartAxis.IsDefaultPosition: Boolean;
 begin
   Result := (PositionUnits = cuPercent) and (Position = 0);
+end;
+
+function TChartAxis.IsFlipped: Boolean;
+{ Returns drawing direction of the axis:
+  FALSE - left to right, or bottom to tip
+  TRUE  - right to left, or top to bottom }
+begin
+  Result := FInverted;
+  if (FAlignment in [calBottom, calTop]) and
+     (GetChart.BiDiMode <> bdLeftToRight)
+  then
+    Result := not Result;
 end;
 
 function TChartAxis.IsPointInside(const APoint: TPoint): Boolean;
@@ -745,7 +752,7 @@ begin
   if Arrow.Visible then
     with AMeasureData do begin
       FSize := Max(d.Scale(Arrow.Width), FSize);
-      if Arrow.Inverted then
+      if IsFlipped then
         FFirstMark := Max(d.Scale(Arrow.Length), FFirstMark)
       else
         FLastMark := Max(d.Scale(Arrow.Length), FLastMark);
@@ -823,6 +830,7 @@ procedure TChartAxis.SetInverted(AValue: Boolean);
 begin
   if FInverted = AValue then exit;
   FInverted := AValue;
+  if Arrow <> nil then Arrow.Inverted := IsFlipped;
   StyleChanged(Self);
 end;
 
@@ -936,12 +944,8 @@ begin
         Alignment := calLeft;
         Title.LabelFont.Orientation := -Title.LabelFont.Orientation;
       end;
-    calBottom,
-    calTop:
-      begin
-        Inverted := not Inverted;
-        if Arrow <> nil then Arrow.Inverted := not Arrow.Inverted;
-      end;
+    calBottom, calTop:
+      if Arrow <> nil then Arrow.Inverted := IsFlipped;
   end;
 end;
 
@@ -1183,7 +1187,7 @@ end;
 function TAxisCoeffHelper.CalcScale(ASign: Integer): Double;
 begin
   if (FMax^ = FMin^) or (Sign(FHi - FLo) <> ASign) then exit(1.0);
-  if (FAxis <> nil) and FAxis.Inverted then
+  if (FAxis <> nil) and FAxis.IsFlipped then
     Exchange(FLo, FHi);
   Result := (FHi - FLo) / (FMax^ - FMin^);
 end;
@@ -1197,7 +1201,7 @@ procedure TAxisCoeffHelper.UpdateMinMax(AConv: TAxisConvFunc);
 begin
   FMin^ := AConv(FImageLo);
   FMax^ := AConv(FImageHi);
-  if (FAxis <> nil) and FAxis.Inverted then
+  if (FAxis <> nil) and FAxis.IsFlipped then
     Exchange(FMin^, FMax^);
 end;
 
