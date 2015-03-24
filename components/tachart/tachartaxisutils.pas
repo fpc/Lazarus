@@ -219,6 +219,8 @@ type
     FTransf: ICoordTransformer;
     FValueMax: Double;
     FValueMin: Double;
+    FMaxForMarks: Double;
+    FMinForMarks: Double;
     FZOffset: TPoint;
 
     procedure BeginDrawing; virtual;
@@ -328,7 +330,8 @@ begin
   if
     not IsInClipRange(coord) or
     ((FValueMax >= FValueMin) and not InRangeUlps(AMark, FValueMin, FValueMax, 2)) or
-    ((FValueMax < FValueMin) and not InRangeUlps(AMark, FValueMax, FValueMin, 2))
+    ((FValueMax < FValueMin) and not InRangeUlps(AMark, FValueMax, FValueMin, 2)) or
+    (not inRangeUlps(AMark, FMinForMarks, FMaxForMarks, 2))
   then exit;
 
   if FAxis.Grid.Visible then begin
