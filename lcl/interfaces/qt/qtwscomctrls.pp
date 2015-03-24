@@ -1426,6 +1426,7 @@ var
   AImages: TCustomImageList;
   AMetric: Integer;
   ASizeHint: TSize;
+  AIconWidth: Integer;
 begin
   if not WSCheckHandleAllocated(ALV, 'ItemInsert') then
     Exit;
@@ -1461,6 +1462,15 @@ begin
 
     QtTreeWidget.setItemData(TWI, 0, AItem);
 
+    if Assigned(TCustomListViewHack(ALV).SmallImages) then
+      AIconWidth := TCustomListViewHack(ALV).SmallImages.Width
+    else
+      AIconWidth := 0;
+
+    {issue #27696 for autosized columns we must provide sizehint}
+    if (ALV.ColumnCount > 0) and (ALV.Column[0].AutoSize) then
+      QtTreeWidget.SetItemSizeHint(TWI, 0, Str, AIconWidth);
+
     // issue #27043
     if (ALV.Items[AIndex].ImageIndex = -1) then
     begin
@@ -1488,6 +1498,9 @@ begin
         Str := GetUtf8String(AItem.Subitems.Strings[i]);
         QtTreeWidget.setItemText(TWI, i + 1, Str, AAlignment);
         QtTreeWidget.setItemData(TWI, i + 1, AItem);
+        {issue #27696 for autosized columns we must provide sizehint}
+        if (i + 1 < ALV.ColumnCount) and (ALV.Column[i + 1].AutoSize) then
+          QtTreeWidget.SetItemSizeHint(TWI, i + 1, Str, AIconWidth);
       end;
     end;
 
@@ -1509,6 +1522,7 @@ var
   TWI: QTreeWidgetItemH;
   Str: WideString;
   AAlignment: QtAlignment;
+  AIconWidth: integer;
 begin
   if not WSCheckHandleAllocated(ALV, 'ItemSetText') then
     Exit;
@@ -1532,6 +1546,15 @@ begin
       if (TCustomListViewHack(ALV).Columns.Count > 0) and (ASubIndex < TCustomListViewHack(ALV).Columns.Count)  then
         AAlignment := AlignmentToQtAlignmentMap[ALV.Column[ASubIndex].Alignment]  or QtAlignVCenter;
       QtTreeWidget.setItemText(TWI, ASubIndex, Str, AAlignment);
+      {issue #27696 for autosized columns we must provide sizehint}
+      if ALV.Column[ASubIndex].AutoSize then
+      begin
+        if Assigned(TCustomListViewHack(ALV).SmallImages) then
+          AIconWidth := TCustomListViewHack(ALV).SmallImages.Width
+        else
+          AIconWidth := 0;
+        QtTreeWidget.SetItemSizeHint(TWI, ASubIndex, Str, AIconWidth);
+      end;
     end;
   end;
 end;
@@ -1579,7 +1602,7 @@ var
   TWI: QTreeWidgetItemH;
   Size: TSize;
   AIcon: QIconH;
-  IconRect: TRect;
+  IconRect, ChkBoxRect: TRect;
   i: Integer;
   APixelMetric: Integer;
 begin
@@ -1664,7 +1687,7 @@ begin
       try
         QTreeWidgetItem_icon(TWI, AIcon, ASubItem);
         if QIcon_isNull(AIcon) then
-          IconRect := Rect(Result.Left, Result.Top, Result.Right, Result.Bottom)
+          IconRect := Rect(0, 0, 0, 0)
         else
         begin
           Size.cx := 0;
@@ -1685,23 +1708,40 @@ begin
       end;
     end;
 
-    APixelMetric := QStyle_pixelMetric(QApplication_style(), QStylePM_FocusFrameHMargin, nil, QtTreeWidget.Widget);
-    IconRect.Left += APixelMetric;
-    IconRect.Right += APixelMetric;
+    ChkBoxRect := Rect(0, 0, 0, 0);
+    if QtTreeWidget.Checkable then
+    begin
+      APixelMetric := QStyle_pixelMetric(QApplication_style(), QStylePM_IndicatorWidth, nil, QtTreeWidget.Widget);
+      APixelMetric += QStyle_pixelMetric(QApplication_style(), QStylePM_CheckBoxLabelSpacing, nil, QtTreeWidget.Widget);
+      ChkBoxRect := Rect(0, 0, APixelMetric, APixelMetric);
+      if (ChkBoxRect.Bottom > Result.Bottom - Result.Top) then
+        ChkBoxRect.Bottom := Result.Bottom - Result.Top;
+    end;
 
+    APixelMetric := QStyle_pixelMetric(QApplication_style(), QStylePM_FocusFrameHMargin, nil, QtTreeWidget.Widget);
     if ACode = drLabel then
     begin
-      inc(Result.Left, APixelMetric + (IconRect.Right - IconRect.Left));
+      inc(Result.Left, APixelMetric + (IconRect.Right - IconRect.Left) + (ChkBoxRect.Right - ChkBoxRect.Left));
       if (IconRect.Right - IconRect.Left > 0) then
         Result.Left += APixelMetric;
     end else
     if ACode = drSelectBounds then
     begin
-      Result.Left += APixelMetric;
+      Result.Left += APixelMetric + (ChkBoxRect.Right - ChkBoxRect.Left);
       Result.Right := Result.Left + (QtTreeWidget.ColWidth[ASubItem] - APixelMetric);
     end else
     if ACode in [drIcon] then
+    begin
+      if IsRectEmpty(IconRect) and Assigned(TCustomListViewHack(ALV).SmallImages) and
+        (QtTreeWidget.OwnerData or QtTreeWidget.OwnerDrawn) then
+      begin
+        IconRect := Rect(0, 0, TCustomListViewHack(ALV).SmallImages.Width, TCustomListViewHack(ALV).SmallImages.Height);
+        OffsetRect(IconRect, Result.Left, Result.Top + APixelMetric);
+      end;
+      IconRect.Left += APixelMetric + (ChkBoxRect.Right - ChkBoxRect.Left);
+      IconRect.Right += APixelMetric;
       Result := IconRect;
+    end;
   end;
 end;
 
