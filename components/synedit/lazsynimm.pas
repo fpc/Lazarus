@@ -26,10 +26,15 @@ type
   LazSynIme = class(TSynEditFriend)
   private
     FInvalidateLinesMethod: TInvalidateLines;
+    FOnIMEEnd: TNotifyEvent;
+    FOnIMEStart: TNotifyEvent;
+    FIMEActive: Boolean;
   protected
     FInCompose: Boolean;
     procedure InvalidateLines(FirstLine, LastLine: integer);
     procedure StopIme(Success: Boolean); virtual;
+    procedure DoIMEStarted;
+    procedure DoIMEEnded;
   public
     constructor Create(AOwner: TSynEditBase); reintroduce;
     procedure WMImeRequest(var Msg: TMessage); virtual;
@@ -39,6 +44,8 @@ type
     procedure WMImeEndComposition(var Msg: TMessage); virtual;
     procedure FocusKilled; virtual;
     property InvalidateLinesMethod : TInvalidateLines write FInvalidateLinesMethod;
+    property OnIMEStart: TNotifyEvent read FOnIMEStart write FOnIMEStart;
+    property OnIMEEnd: TNotifyEvent read FOnIMEEnd write FOnIMEEnd;
   end;
 
   { LazSynImeSimple }
@@ -127,6 +134,25 @@ begin
       ImmNotifyIME(imc, NI_COMPOSITIONSTR, CPS_CANCEL, 0);
     ImmReleaseContext(FriendEdit.Handle, imc);
   end;
+  DoIMEEnded;
+end;
+
+procedure LazSynIme.DoIMEStarted;
+begin
+  if FIMEActive then
+    exit;
+  FIMEActive := True;
+  if FOnIMEStart <> nil then
+    FOnIMEStart(FriendEdit);
+end;
+
+procedure LazSynIme.DoIMEEnded;
+begin
+  if not FIMEActive then
+    exit;
+  FIMEActive := False;
+  if FOnIMEEnd <> nil then
+    FOnIMEEnd(FriendEdit);
 end;
 
 constructor LazSynIme.Create(AOwner: TSynEditBase);
@@ -362,11 +388,13 @@ begin
   end;
   FInCompose := True;
   FImeBlockSelection.StartLineBytePos := CaretObj.LineBytePos;
+  DoIMEStarted;
 end;
 
 procedure LazSynImeSimple.WMImeEndComposition(var Msg: TMessage);
 begin
   FInCompose := False;
+  DoIMEEnded;
 end;
 
 procedure LazSynImeSimple.FocusKilled;
@@ -845,6 +873,7 @@ begin
   FImeBlockSelection.StartLineBytePos := CaretObj.LineBytePos;
   FInCompose := True;
   Msg.Result := 1;
+  DoIMEStarted;
 end;
 
 procedure LazSynImeFull.WMImeEndComposition(var Msg: TMessage);
@@ -868,6 +897,7 @@ begin
   FImeBlockSelection2.StartLineBytePos := CaretObj.LineBytePos;
   FInCompose := False;
   Msg.Result := 1;
+  DoIMEEnded;
 end;
 
 procedure LazSynImeFull.FocusKilled;
