@@ -3637,7 +3637,6 @@ begin
   // check if the Src has an alpha channel
   Bmp := Windows.GetCurrentObject(SrcDC, OBJ_BITMAP);
   // get info
-  // ToDo: WinBmp is not initialized at all. Should it be initialized from Bmp?
   HasAlpha := (Windows.GetObject(bmp, SizeOf(WinBmp), @WinBmp) <> 0)
           and (WinBmp.bmBitsPixel = 32)
           and CreatePremultipliedBitmap(WinBmp, Bmp, AlphaBmp);
