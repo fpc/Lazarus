@@ -1838,11 +1838,8 @@ begin
   AProject:=LazarusIDE.ActiveProject;
 
   // virtual files belong to the project
-  // ToDo: Path is not initialized!
-  if not FilenameIsAbsolute(Path) then begin
-    Result:=AProject;
-    exit;
-  end;
+  if not FilenameIsAbsolute(FPDocFile.Filename) then
+    exit(AProject);
 
   // check if in the doc path of the project
   if (AProject<>nil) and (AProject.FPDocPaths<>'')
