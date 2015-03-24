@@ -184,6 +184,8 @@ type
     function DeliverMessage(var Msg; const AIsInputEvent: Boolean = False): LRESULT; virtual;
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
     function getAcceptDropFiles: Boolean; virtual;
+    {precise measure of text with widget''s current font when canvas.handle isn''t available}
+    function measureText(AText: WideString; AFlags: cardinal): TRect;
     procedure SetNoMousePropagation(Sender: QWidgetH; const ANoMousePropagation: Boolean); virtual;
     procedure SetLCLFont(AFont: TQtFont);
     procedure SlotShow(vShow: Boolean); cdecl;
@@ -1370,6 +1372,8 @@ type
     function getResizeMode(AIndex: Integer): QHeaderViewResizeMode;
     procedure setResizeMode(AResizeMode: QHeaderViewResizeMode); overload;
     procedure setResizeMode(AIndex: Integer; AResizeMode: QHeaderViewResizeMode); overload;
+    function sectionSize(AIndex: Integer): Integer;
+    function sectionSizeHint(AIndex: Integer): Integer;
     procedure moveSection(AFromIndex: Integer; AToIndex: Integer);
     procedure resizeSection(ASection: Integer; ASize: Integer);
     procedure setHighlightSections(AValue: Boolean);
@@ -1455,6 +1459,8 @@ type
     function currentItem: QTreeWidgetItemH;
     procedure setCurrentItem(AItem: QTreeWidgetItemH);
 
+    function SetItemSizeHint(AItem: QTreeWidgetItemH;
+      AColumn: integer; AText: widestring; AIconSize: integer): boolean;
     function getRow(AItem: QTreeWidgetItemH): integer;
     function headerItem: QTreeWidgetItemH;
     function itemAt(APoint: TPoint): QTreeWidgetItemH; overload;
@@ -2701,6 +2707,25 @@ begin
   Form := GetParentForm(LCLObject);
   if Assigned(Form) and (Form.HandleAllocated) then
     Result := TQtMainWindow(Form.Handle).getAcceptDropFiles;
+end;
+
+function TQtWidget.measureText(AText: WideString; AFlags: cardinal): TRect;
+var
+  AMetrics: QFontMetricsH;
+  AFont: QFontH;
+begin
+  Result := Rect(0, 0, 0, 0);
+  if Assigned(LCLObject) and Assigned(LCLObject.Font) and
+    LCLObject.Font.HandleAllocated then
+      AFont := TQtFont(LCLObject.Font.Reference.Handle).FHandle
+  else
+    AFont := QWidget_font(Widget);
+  AMetrics := QFontMetrics_create(AFont);
+  try
+    QFontMetrics_boundingRect(AMetrics, @Result, @AText);
+  finally
+    QFontMetrics_destroy(AMetrics);
+  end;
 end;
 
 procedure TQtWidget.SetNoMousePropagation(Sender: QWidgetH;
@@ -13123,7 +13148,7 @@ end;
   Params:  None
   Returns: Nothing
  ------------------------------------------------------------------------------}
-procedure TQtHeaderView.SignalSectionClicked(logicalIndex: Integer) cdecl;
+procedure TQtHeaderView.SignalSectionClicked(logicalIndex: Integer); cdecl;
 var
   Msg: TLMNotify;
   NMLV: TNMListView;
@@ -13161,6 +13186,16 @@ procedure TQtHeaderView.setResizeMode(AIndex: Integer;
   AResizeMode: QHeaderViewResizeMode);
 begin
   QHeaderView_setResizeMode(QHeaderViewH(Widget), AIndex, AResizeMode);
+end;
+
+function TQtHeaderView.sectionSize(AIndex: Integer): Integer;
+begin
+  Result := QHeaderView_sectionSize(QHeaderViewH(Widget), AIndex);
+end;
+
+function TQtHeaderView.sectionSizeHint(AIndex: Integer): Integer;
+begin
+  Result := QHeaderView_sectionSizeHint(QHeaderViewH(Widget), AIndex);
 end;
 
 procedure TQtHeaderView.moveSection(AFromIndex: Integer; AToIndex: Integer);
@@ -14066,8 +14101,7 @@ end;
 
 procedure TQtTreeWidget.setMinColSize(ACol: Integer; const AValue: Integer);
 begin
-  // QTreeWidgetItem_setSizeHint(headerItem, @Size, ACol);
-  {$note QSizeH implementation missing for TQtTreeWidget.setMinColSize}
+  QHeaderView_setMinimumSectionSize(QTreeView_header(QTreeViewH(Widget)), AValue);
 end;
 
 {------------------------------------------------------------------------------
@@ -14115,6 +14149,32 @@ end;
 procedure TQtTreeWidget.setCurrentItem(AItem: QTreeWidgetItemH);
 begin
   QTreeWidget_setCurrentItem(QTreeWidgetH(Widget), AItem);
+end;
+
+function TQtTreeWidget.SetItemSizeHint(AItem: QTreeWidgetItemH;
+  AColumn: integer; AText: widestring; AIconSize: integer): boolean;
+var
+  R: TRect;
+  ATextWidth: Integer;
+  AMargin: Integer;
+  i: Integer;
+  ASizeHint: TSize;
+begin
+  Result := False;
+  R := measureText(AText, 0);
+  ATextWidth := R.Right - R.Left;
+  if AIconSize > 0 then
+  begin
+    AMargin := QStyle_pixelMetric(QApplication_style(), QStylePM_ButtonMargin, nil, Widget);
+    if AColumn = 0 then
+      ATextWidth += AIconSize + (AMargin * 2)
+    else
+      ATextWidth += AMargin;
+  end;
+  QTreeWidgetItem_sizeHint(AItem, @ASizeHint, AColumn);
+  ASizeHint.cx := ATextWidth;
+  QTreeWidgetItem_setSizeHint(AItem, AColumn, @ASizeHint);
+  Result := True;
 end;
 
 function TQtTreeWidget.getRow(AItem: QTreeWidgetItemH): integer;

@@ -1426,6 +1426,7 @@ var
   AImages: TCustomImageList;
   AMetric: Integer;
   ASizeHint: TSize;
+  AIconWidth: Integer;
 begin
   if not WSCheckHandleAllocated(ALV, 'ItemInsert') then
     Exit;
@@ -1461,6 +1462,15 @@ begin
 
     QtTreeWidget.setItemData(TWI, 0, AItem);
 
+    if Assigned(TCustomListViewHack(ALV).SmallImages) then
+      AIconWidth := TCustomListViewHack(ALV).SmallImages.Width
+    else
+      AIconWidth := 0;
+
+    {issue #27696 for autosized columns we must provide sizehint}
+    if (ALV.ColumnCount > 0) and (ALV.Column[0].AutoSize) then
+      QtTreeWidget.SetItemSizeHint(TWI, 0, Str, AIconWidth);
+
     // issue #27043
     if (ALV.Items[AIndex].ImageIndex = -1) then
     begin
@@ -1488,6 +1498,9 @@ begin
         Str := GetUtf8String(AItem.Subitems.Strings[i]);
         QtTreeWidget.setItemText(TWI, i + 1, Str, AAlignment);
         QtTreeWidget.setItemData(TWI, i + 1, AItem);
+        {issue #27696 for autosized columns we must provide sizehint}
+        if (i + 1 < ALV.ColumnCount) and (ALV.Column[i + 1].AutoSize) then
+          QtTreeWidget.SetItemSizeHint(TWI, i + 1, Str, AIconWidth);
       end;
     end;
 
@@ -1509,6 +1522,7 @@ var
   TWI: QTreeWidgetItemH;
   Str: WideString;
   AAlignment: QtAlignment;
+  AIconWidth: integer;
 begin
   if not WSCheckHandleAllocated(ALV, 'ItemSetText') then
     Exit;
@@ -1532,6 +1546,15 @@ begin
       if (TCustomListViewHack(ALV).Columns.Count > 0) and (ASubIndex < TCustomListViewHack(ALV).Columns.Count)  then
         AAlignment := AlignmentToQtAlignmentMap[ALV.Column[ASubIndex].Alignment]  or QtAlignVCenter;
       QtTreeWidget.setItemText(TWI, ASubIndex, Str, AAlignment);
+      {issue #27696 for autosized columns we must provide sizehint}
+      if ALV.Column[ASubIndex].AutoSize then
+      begin
+        if Assigned(TCustomListViewHack(ALV).SmallImages) then
+          AIconWidth := TCustomListViewHack(ALV).SmallImages.Width
+        else
+          AIconWidth := 0;
+        QtTreeWidget.SetItemSizeHint(TWI, ASubIndex, Str, AIconWidth);
+      end;
     end;
   end;
 end;
