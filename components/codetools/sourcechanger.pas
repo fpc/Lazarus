@@ -762,6 +762,7 @@ function TSourceChangeCache.IndentBlock(FromPos, ToPos, IndentDiff: integer): bo
 var
   p: LongInt;
 begin
+  Result:=false;
   if ToPos<1 then ToPos:=1;
   if (IndentDiff=0) or (FromPos>=ToPos) then exit;
   if MainScanner=nil then begin
@@ -1817,6 +1818,7 @@ var
   KeyWordPos: LongInt;
   Level: Integer;
 begin
+  Result:='';
   p:=1;
   ProcLen:=length(AProcCode);
   // read proc keyword 'procedure', 'function', ...

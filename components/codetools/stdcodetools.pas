@@ -1916,10 +1916,13 @@ begin
     InitializationNode:=FindInitializationNode;
     if InitializationNode=nil then exit;
     LinkIndex:=Scanner.LinkIndexAtCleanPos(InitializationNode.StartPos);
-  end else
+  end else begin
+    InitializationNode:=nil;
     inc(LinkIndex);
+  end;
   if (LinkIndex<0) or (LinkIndex>=Scanner.LinkCount) then exit;
   StartCode:=TCodeBuffer(Scanner.Links[LinkIndex].Code);
+  // ToDo: Fix the test for InitializationNode, it can be Nil.
   while (LinkIndex<Scanner.LinkCount)
   and (Scanner.Links[LinkIndex].CleanedPos<InitializationNode.EndPos) do begin
     Result:=TCodeBuffer(Scanner.Links[LinkIndex].Code);
@@ -2078,6 +2081,7 @@ begin
   IncludeEnd:=Scanner.Links[LinkIndex].CleanedPos;
   IncludeStart:=IncludeEnd-1;
   if IncludeStart<1 then exit;
+  FileEnd:=0;
   case Src[IncludeStart] of
     '}':
       begin
@@ -2475,13 +2479,14 @@ var
       VariableTypeName:='';
       if (ChildContext.Node.Desc=ctnVarDefinition) then begin
         DefinitionNode:=ChildContext.Tool.FindTypeNodeOfDefinition(ChildContext.Node);
-        if DefinitionNode<>nil then begin
+        if DefinitionNode<>nil then
           VariableTypeName:=ChildContext.Tool.ExtractDefinitionNodeType(ChildContext.Node);
-        end;
       end else if (ChildContext.Node.Desc=ctnProperty) then begin
         DefinitionNode:=ChildContext.Node;
         VariableTypeName:=ChildContext.Tool.ExtractPropType(ChildContext.Node,false,false);
-      end;
+      end
+      else
+        DefinitionNode:=nil;
       if DefinitionNode=nil then begin
         LFMTree.AddError(lfmeObjectIncompatible,LFMObject,
                          LFMObjectName+' is not a variable'
@@ -5469,6 +5474,7 @@ var
   var
     p: LongInt;
   begin
+    Result:=false;
     if NewCode='' then exit(true);
     // try to avoid changing current line
     if (FrontGap=gtEmptyLine) then begin

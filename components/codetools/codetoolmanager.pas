@@ -3922,17 +3922,14 @@ var
     InFilename:='';
     aFilename:=CodeToolBoss.DirectoryCachePool.FindUnitSourceInCompletePath(
                                '',TheUnitName,InFilename,true);
-    if aFilename<>'' then
-      exit(true);
-
-    // user search
-    if Assigned(OnFindSource) then begin
-      OnFindSource(Self,ctnUnit,TheUnitName,aFilename);
-      Result:=aFilename<>'';
-    end else if Assigned(OnFindFPCMangledSource) then begin
-      OnFindFPCMangledSource(Self,ctnUnit,TheUnitName,aFilename);
-      Result:=aFilename<>'';
+    if aFilename='' then begin
+      // user search
+      if Assigned(OnFindSource) then
+        OnFindSource(Self,ctnUnit,TheUnitName,aFilename)
+      else if Assigned(OnFindFPCMangledSource) then
+        OnFindFPCMangledSource(Self,ctnUnit,TheUnitName,aFilename)
     end;
+    Result:=aFilename<>'';
   end;
 
   function FindProgram(TheSrcName: string; out aFilename: string): boolean;
@@ -5667,7 +5664,9 @@ begin
   if CompareFileExt(AFilename,'.ppu',false)=0 then
     Result:=GetPPUSrcPathForDirectory(ExtractFilePath(AFilename))
   else if CompareFileExt(AFilename,'.dcu',false)=0 then
-    Result:=GetDCUSrcPathForDirectory(ExtractFilePath(AFilename));
+    Result:=GetDCUSrcPathForDirectory(ExtractFilePath(AFilename))
+  else
+    Result:='';
   if Result='' then
     Result:=GetCompiledSrcPathForDirectory(ExtractFilePath(AFilename));
 end;

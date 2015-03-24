@@ -2790,7 +2790,8 @@ function TH2PasTool.CreatePascalNameFromCCode(const CCode: string;
 
   function Add(var PascalName: string; const Addition: string): boolean;
   begin
-    if Addition='' then exit(true);
+    Result:=true;
+    if Addition='' then exit;
     if length(PascalName)+length(Addition)>DefaultMaxPascalIdentLen then
       exit(false);
     PascalName:=PascalName+Addition;

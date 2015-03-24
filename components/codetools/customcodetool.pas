@@ -2162,6 +2162,7 @@ var
   LastPos: Integer;
 begin
   ErrorPosition:=CursorPos;
+  Msg:='';
   // check position in code buffer
   if CursorPos.Code=nil then
     Msg:='cursor position without code buffer'

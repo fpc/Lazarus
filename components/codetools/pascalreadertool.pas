@@ -1749,6 +1749,7 @@ begin
   if StartPos>SrcLen then exit;
   if EndPos>SrcLen then EndPos:=SrcLen+1;
   if StartPos>=EndPos then exit;
+  Range:=epriInCode;
   p:=@Src[StartPos];
   EndP:=p+EndPos-StartPos;
   while p<EndP do begin

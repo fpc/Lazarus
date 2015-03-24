@@ -1865,6 +1865,7 @@ var
   CloseBracket: Char;
   StartPos: LongInt;
 begin
+  Result:=false;
   case Src[AtomStart] of
   '{': CloseBracket:='}';
   '[': CloseBracket:=']';
@@ -1873,7 +1874,7 @@ begin
   else
     if ExceptionOnNotFound then
       RaiseExpectedButAtomFound('(');
-    exit(false);
+    exit;
   end;
   StartPos:=AtomStart;
   {$IFOPT R+}{$DEFINE RangeChecking}{$ENDIF}
@@ -2227,7 +2228,7 @@ begin
   MoveCursorToNode(FuncNode);
   repeat
     ReadNextAtom;
-    if AtomStart>SrcLen then exit;
+    if AtomStart>SrcLen then exit(false);
     if AtomIs('(') then exit(true);
     if (IsIdentStartChar[Src[AtomStart]])
     or (AtomIs('*')) then begin

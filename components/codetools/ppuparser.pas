@@ -1898,6 +1898,9 @@ begin
      2-3 - amount of bytes for line
      4-5 - amount of bytes for column
   }
+  fileindex:=0;
+  line:=0;
+  column:=0;
   info:=ReadEntryByte;
   case (info and $03) of
     0 : fileindex:=ReadEntryByte;

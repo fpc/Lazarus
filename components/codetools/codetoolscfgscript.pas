@@ -1248,7 +1248,7 @@ procedure TCTCfgScriptVariables.Define(Name: PChar; const Value: string);
   var
     p: PChar;
   begin
-    if Value='' then exit;
+    if Value='' then exit(false);
     p:=PChar(Value);
     if p^='-' then inc(p);
     while (p^ in ['0'..'9']) do inc(p);
@@ -2420,6 +2420,7 @@ begin
       inc(Column);
     end;
   end;
+  Result:=true;
 end;
 
 function TCTConfigScriptEngine.PosToStr(p: PChar): string;

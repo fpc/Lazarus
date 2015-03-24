@@ -2579,6 +2579,7 @@ begin
       end;
     end;
   cdnEnd: exit(false);
+  else exit(false);
   end;
 end;
 

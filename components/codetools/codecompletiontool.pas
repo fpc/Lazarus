@@ -478,7 +478,7 @@ function TCodeCompletionCodeTool.OnTopLvlIdentifierFound(
 var
   TrimmedIdentifier: string;
 begin
-  if not (fdfTopLvlResolving in Params.Flags) then exit;
+  if not (fdfTopLvlResolving in Params.Flags) then exit(ifrProceedSearch);
   with Params do begin
     case NewNode.Desc of
     ctnTypeDefinition,ctnVarDefinition,ctnConstDefinition,ctnGenericType:
@@ -1041,6 +1041,7 @@ begin
 
   // find the level and find sections in front
   Node:=Tree.Root;
+  CursorNode:=nil;
   VarSectionNode:=nil;
   OtherSectionNode:=nil;
   HeaderNode:=nil;
@@ -3623,7 +3624,7 @@ begin
       case ReferingType of
       ctnTypeDefinition: NewSection:='type';
       ctnConstDefinition: NewSection:='const';
-      ctnProcedure: NewSrc:='';
+      ctnProcedure: NewSection:=''; // Changed from NewSrc to NewSection. Is it correct? Juha
       else NewSection:='bug';
       end;
 
@@ -6929,6 +6930,8 @@ var
       AccessParam:=copy(Src,Parts[ppRead].StartPos,
                         Parts[ppRead].EndPos-Parts[ppRead].StartPos)
     else begin
+      AccessParam:=''; // This was missing
+      // ToDo: Fix this test. AccessParam is now empty.
       if (Parts[ppParamList].StartPos>0) or (Parts[ppIndexWord].StartPos>0)
       or (SysUtils.CompareText(AccessParamPrefix,
               LeftStr(AccessParam,length(AccessParamPrefix)))=0)
@@ -6951,8 +6954,7 @@ var
       if Parts[ppReadWord].StartPos>0 then begin
         // 'read' keyword exists -> insert read identifier behind
         InsertPos:=Parts[ppReadWord].EndPos;
-        FSourceChangeCache.Replace(gtSpace,gtNone,InsertPos,InsertPos,
-           AccessParam);
+        FSourceChangeCache.Replace(gtSpace,gtNone,InsertPos,InsertPos,AccessParam);
       end else begin
         // 'read' keyword does not exist -> insert behind index and type
         if Parts[ppIndex].StartPos>0 then
@@ -8600,10 +8602,10 @@ var
         // Try to insert new proc behind existing methods
 
         // find last method (go to last brother and search backwards)
-        if (StartSearchProc<>nil)
-        and (StartSearchProc.Parent<>nil) then begin
-          NearestProcNode:=StartSearchProc.Parent.LastChild;
-        end;
+        if (StartSearchProc<>nil) and (StartSearchProc.Parent<>nil) then
+          NearestProcNode:=StartSearchProc.Parent.LastChild
+        else
+          NearestProcNode:=nil;
         while (NearestProcNode<>nil) and (not NodeIsMethodBody(NearestProcNode)) do
           NearestProcNode:=NearestProcNode.PriorBrother;
         if NearestProcNode<>nil then begin

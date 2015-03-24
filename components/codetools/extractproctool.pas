@@ -1376,6 +1376,7 @@ var
     StartPos: Integer;
   begin
     // enclose all $ELSE code in WITH blocks
+    Result:=false;
     WithHeader:='';
     WithFooter:='';
     p:=Max(StatementNode.StartPos,BeginKeyWord.EndPos);

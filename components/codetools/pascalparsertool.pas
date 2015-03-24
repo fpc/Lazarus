@@ -1128,6 +1128,7 @@ function TPascalParserTool.KeyWordFuncClassClass: boolean;
     class var
 }
 begin
+  Result:=false;
   ReadNextAtom;
   if UpAtomIs('PROCEDURE') or UpAtomIs('FUNCTION') or UpAtomIs('CONSTRUCTOR')
   or UpAtomIs('DESTRUCTOR') or UpAtomIs('OPERATOR') then begin
@@ -2045,6 +2046,7 @@ function TPascalParserTool.ReadRequiresSection(ExceptionOnError: boolean): boole
     requires name1, name2, name3;
 }
 begin
+  Result:=false;
   CreateChildNode;
   CurNode.Desc:=ctnRequiresSection;
   repeat

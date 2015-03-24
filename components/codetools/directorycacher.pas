@@ -913,6 +913,7 @@ var
   i: Integer;
 begin
   Result:='';
+  i:=0;
   if ShortFilename='' then exit;
   if Directory<>'' then begin
     case FileCase of
@@ -1128,9 +1129,10 @@ begin
       if IsAbsolute then begin
         CurPath:=AppendPathDelim(CurPath);
         Result:=Pool.FindUnitInDirectory(CurPath,AUnitName,AnyCase);
-      end else if (CurPath='.') and (Directory='') then begin
-        Result:=Pool.FindVirtualUnit(AUnitname);
-      end;
+      end else if (CurPath='.') and (Directory='') then
+        Result:=Pool.FindVirtualUnit(AUnitname)
+      else
+        Result:='';
       if Result<>'' then exit;
     end;
     StartPos:=p+1;

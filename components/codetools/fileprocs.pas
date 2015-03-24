@@ -1403,8 +1403,9 @@ var
   p: Integer;
   StartPos: integer;
 begin
+  Result:='';
   if BeginsWith='' then
-    exit('');
+    exit;
   p:=1;
   while ReadNextFPCParameter(CmdLine,p,StartPos) do begin
     Param:=ExtractFPCParameter(CmdLine,StartPos);
@@ -1445,6 +1446,7 @@ var
   ShortFile: String;
   FileInfo: TSearchRec;
 begin
+  Result:='';
   Base:=AppendPathDelim(BaseDirectory);
   ShortFile:=Filename;
   if System.Pos(PathDelim,ShortFile)>0 then begin
@@ -1472,7 +1474,6 @@ begin
   ctsfcAllCase:
     begin
       // search file
-      Result:='';
       Base:=FindDiskFilename(Base);
       if FindFirstUTF8(Base+FileMask,faAnyFile,FileInfo)=0 then
       begin

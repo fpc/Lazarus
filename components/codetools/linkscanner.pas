@@ -3554,6 +3554,7 @@ var
   IncFilename: string;
   DynamicExtension: Boolean;
 begin
+  Result:=false;
   if StoreDirectives then
     FDirectives[FDirectivesCount-1].Kind:=lsdkInclude;
   inc(SrcPos);

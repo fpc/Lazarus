@@ -3669,11 +3669,10 @@ begin
   if (ExprType.Desc=xtContext) then
     Result:=ExprType.Context
   else begin
+    Result:=CleanFindContext;
     if fdfExceptionOnNotFound in Params.Flags then begin
       MoveCursorToCleanPos(EndPos);
       RaiseException(ctsNoContextNodeFoundAtCursor);
-    end else begin
-      Result:=CleanFindContext;
     end;
   end;
 end;
@@ -6049,7 +6048,9 @@ begin
   OldExtractedOperand:=Params.ExtractedOperand;
   WithVarExpr:=FindExpressionTypeOfTerm(WithVarNode.StartPos,-1,Params,true);
   if fdfExtractOperand in Params.Flags then
-    NewExtractedOperand:=Params.ExtractedOperand+'.';
+    NewExtractedOperand:=Params.ExtractedOperand+'.'
+  else
+    NewExtractedOperand:='';
   if (WithVarExpr.Desc<>xtContext)
   or (WithVarExpr.Context.Node=nil)
   or (WithVarExpr.Context.Node=OldInput.ContextNode)
