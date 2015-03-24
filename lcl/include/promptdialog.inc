@@ -660,6 +660,7 @@ begin
   reqHeight:= TextBox.Bottom;
   if (FBitmap <> nil) and (FBitmap.Height > reqHeight) then
     reqHeight := FBitmap.Height;
+  // ToDo: CurBtnSize may not be initialized.
   inc(reqHeight, CurBtnSize.Y + 3 * cLabelSpacing);
 
   // calculate the text position

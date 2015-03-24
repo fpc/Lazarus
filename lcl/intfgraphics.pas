@@ -5529,6 +5529,7 @@ begin
   Progress(psStarting, 0, False, Rect(0,0,0,0), '', FContinue);
   FImage := TheImage as TLazIntfImage;
   FIgnoreAlpha := True;
+  Depth := 0;
   InternalReadHead;
   
   if FUpdateDescription

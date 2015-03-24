@@ -5458,7 +5458,10 @@ end;
 
 function TCustomPropertiesGrid.GetTIObject: TPersistent;
 begin
-  if PropertyEditorHook<>nil then Result:=PropertyEditorHook.LookupRoot;
+  if PropertyEditorHook<>nil then
+    Result:=PropertyEditorHook.LookupRoot
+  else
+    Result:=Nil;
 end;
 
 procedure TCustomPropertiesGrid.SetAutoFreeHook(const AValue: boolean);

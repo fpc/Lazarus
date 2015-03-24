@@ -657,6 +657,7 @@ begin
     ATTRIBUTE_NODE, PROCESSING_INSTRUCTION_NODE, COMMENT_NODE, TEXT_NODE,
       CDATA_SECTION_NODE, ENTITY_REFERENCE_NODE:
       Result := Node.NodeValue;
+    else Result := '';
   end;
   // !!!: What to do with 'namespace nodes'?
 end;

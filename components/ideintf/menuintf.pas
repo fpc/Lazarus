@@ -1383,6 +1383,7 @@ procedure TIDEMenuSection.Remove(AnItem: TIDEMenuItem);
 var
   OldVisibleActive: Boolean;
 begin
+  OldVisibleActive:=False;
   if not (imssClearing in FStates) then begin
     OldVisibleActive:=AnItem.VisibleActive;
     FItems.Delete(AnItem.SectionIndex);

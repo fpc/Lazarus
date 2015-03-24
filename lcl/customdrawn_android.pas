@@ -532,6 +532,7 @@ end;
 
 function TCDDrawerAndroid.GetMeasures(AMeasureID: Integer): Integer;
 begin
+  Result := 0;
   case AMeasureID of
 {  TCDEDIT_LEFT_TEXT_SPACING: Result := 4;
   TCDEDIT_RIGHT_TEXT_SPACING: Result := 3;

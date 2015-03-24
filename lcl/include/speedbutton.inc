@@ -1051,7 +1051,9 @@ begin
       Result := FGlyph.Draw(ACanvas, AClient, point(AOffset.x + 1, AOffset.y + 1), AState, ATransparent, BiDiFlags)
     else
       Result := FGlyph.Draw(ACanvas, AClient, AOffset, AState, ATransparent, BiDiFlags);
-  end;
+  end
+  else
+    Result := Rect(0,0,0,0);
 end;
 
 {------------------------------------------------------------------------------

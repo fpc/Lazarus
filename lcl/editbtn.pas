@@ -2445,6 +2445,7 @@ begin
     doYMD : B:=TryEncodeDate(N1,N2,N3,Result);
     doMDY : B:=TryEncodeDate(N3,N1,N2,Result);
     doDMY : B:=TryEncodeDate(N3,N2,N1,Result);
+    else B:=false;
   end;
   If not B then // Not sure if TryEncodeDate touches Result.
     Result:=Def;

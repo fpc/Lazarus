@@ -2163,7 +2163,7 @@ begin
   if FormStyle = fsMDIForm then
   begin
     // Query children forms whether we can close
-    if not Check(Self) then exit;
+    if not Check(Self) then exit(False);
     // TODO: mdi logic
   end;
   Result := True;

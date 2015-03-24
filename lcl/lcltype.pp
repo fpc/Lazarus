@@ -3211,6 +3211,7 @@ begin
     FCS_ISO_8859_9:       result := 'FCS_ISO_8859_9';
     FCS_ISO_8859_10:      result := 'FCS_ISO_8859_10';
     FCS_ISO_8859_15:      result := 'FCS_ISO_8859_15';
+    else result := '';
   end;
 end;
 

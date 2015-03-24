@@ -311,6 +311,7 @@ var
   MaxState: THeaderSectionState;
   P: TPoint;
 begin
+  MaxState := hsNormal;
   Index := -1;
   if Enabled then
     if FDown then

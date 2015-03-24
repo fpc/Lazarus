@@ -485,6 +485,7 @@ function TFieldsComponentEditor.GetVerb(Index: Integer): string;
 begin
   case Index of
     0: Result := fesFeTitle;
+    else Result := '';
   end;
 end;
 

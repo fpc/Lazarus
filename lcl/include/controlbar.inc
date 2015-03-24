@@ -375,6 +375,7 @@ begin
   end;
   if i < aCount then begin
     { attempt to stick band by some existing band }
+    k := 0;
     if not bR2L then begin
       aLimit := ClientWidth - aBevel - cFullGrabber;
       j := 0;
@@ -934,6 +935,12 @@ begin
         aLeftMost := Math.min(aLeftMost, FVisiBands[i].Left);
         aRightMost := Math.max(aRightMost, FVisiBands[i].Right);
       end;
+    end
+    else begin
+      aBevel := 0;
+      aBound := 0;
+      aLeftMost := 0;
+      aRightMost := 0;
     end;
     if not bR2L then begin
       if (aRightMost > aBound) and (aLeftMost > aBevel) then begin

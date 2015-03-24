@@ -5967,6 +5967,7 @@ begin
 end;
 
 procedure TCustomGrid.DoOPDeleteColRow(IsColumn: Boolean; index: Integer);
+
   procedure doDeleteColumn;
   var
     tmpIndex: Integer;
@@ -5996,6 +5997,7 @@ procedure TCustomGrid.DoOPDeleteColRow(IsColumn: Boolean; index: Integer);
 
     FixPosition(True, Index);
   end;
+
   procedure doDeleteRow;
   begin
     CheckFixedCount(ColCount, RowCount-1, FFixedCols, FFixedRows);
@@ -6015,6 +6017,7 @@ procedure TCustomGrid.DoOPDeleteColRow(IsColumn: Boolean; index: Integer);
     If FRowAutoInserted And (Index=FixedRows+(RowCount-1)) Then
       FRowAutoInserted := False;
   end;
+
 begin
   CheckIndex(IsColumn,Index);
   if IsColumn then begin
@@ -6032,8 +6035,6 @@ end;
 function TCustomGrid.EditorByStyle(Style: TColumnButtonStyle): TWinControl;
 begin
   case Style of
-    cbsNone, cbsCheckboxColumn, cbsButtonColumn:
-      Result := nil;
     cbsEllipsis:
       Result := FButtonStringEditor;
     cbsButton:
@@ -6041,9 +6042,9 @@ begin
     cbsPicklist:
       Result := FPicklistEditor;
     cbsAuto:
-      begin
-        Result := FStringEditor;
-      end;
+      Result := FStringEditor;
+    else {cbsNone, cbsCheckboxColumn, cbsButtonColumn:}
+      Result := nil;
   end;
 end;
 
@@ -8357,6 +8358,7 @@ var
       (CCol<=ColCount-1)and(CCol>=FixedCols)and
       (CRow<=RowCount-1)and(CRow>=FixedRows);
   end;
+
 begin
   ACol := FCol;
   ARow := FRow;
@@ -8470,7 +8472,9 @@ begin
     ScrollInfo.fMask := SIF_POS;
     GetScrollInfo(Handle, Which, ScrollInfo);
     Result:=ScrollInfo.nPos;
-  end;
+  end
+  else
+    Result:=0;
 end;
 
 function TCustomGrid.GetDefaultColumnWidth(Column: Integer): Integer;

@@ -2466,6 +2466,7 @@ begin
   if High(ASkipTo) >= 0
   then begin
     idx := 0;
+    Match := '';
     HasEscape := False;
     if AnIgnoreCase
     then S := UpperCase(Source)

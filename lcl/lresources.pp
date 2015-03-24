@@ -1938,6 +1938,7 @@ function TDelphiReader.ReadString: string;
 var
   L: Integer;
 begin
+  Result := '';
   if NextValue in [dvaWString, dvaUTF8String] then begin
     ReadError('TDelphiReader.ReadString: WideString and UTF8String are not implemented yet');
     //Result := ReadWideString;
@@ -2279,6 +2280,7 @@ procedure LRSObjectBinaryToText(Input, Output: TStream);
           Result := SmallInt(w);
         end;
       vaInt32: Result := ReadLRSInteger(Input);
+      else Result := 0;
     end;
   end;
 
@@ -2536,6 +2538,7 @@ procedure LRSObjectBinaryToText(Input, Output: TStream);
     ObjClassName, ObjName: String;
     ChildPos: LongInt;
   begin
+    ChildPos := 0;
     // Check for FilerFlags
     b := Input.ReadByte;
     if (b and $f0) = $f0 then begin

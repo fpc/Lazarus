@@ -461,6 +461,7 @@ type
     if (Side in CurAnchors) then begin
       // this side is anchored
       SiblingData:=ChildData.Sides[Side].CtrlData;
+      NewDist:=0;
       if (SiblingData=nil) or (SiblingData=Self) then begin
         // this side is anchored to parent
         // Note: SiblingData=nil can happen, if the reference control
@@ -583,7 +584,7 @@ type
         end;
         if FoundSides=[] then begin
           ChildData.Sides[Side].DistanceState[Direction]:=assdfUncomputable;
-          exit;
+          exit(crSuccess);
         end;
 
         // this side is anchored to a sibling and some needed sibling sides are valid
@@ -5845,6 +5846,7 @@ function TWinControl.SendDialogChar(var Message : TLMKey): Boolean;
 var
   ParentForm: TCustomForm;
 begin
+  Result := False;
   ParentForm := GetParentForm(Self);
   if ParentForm <> nil then
   begin

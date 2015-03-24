@@ -553,8 +553,10 @@ begin
   aStartIndex := 0;
   //set all Bands in row to uniform height
   aRowEnd := True;
+  aLeft := aBorderLeft;
   for i := 0 to aCountM1 do begin
-    if aRowEnd or FVisiBands[i].Break then aLeft := aBorderLeft;
+    if aRowEnd or FVisiBands[i].Break then
+      aLeft := aBorderLeft;
     aBandHeight := Max(aBandHeight, FVisiBands[i].CalcPreferredHeight);
     aRowEnd := (i = aCountM1);
     inc(aLeft, FVisiBands[i].Width);
@@ -580,7 +582,8 @@ begin
   aRowEnd := True;
   include(FWinControlFlags, wcfAligningControls);
   for i := 0 to aCountM1 do begin
-    if aRowEnd or FVisiBands[i].Break then aLeft := aBorderLeft;
+    if aRowEnd or FVisiBands[i].Break then
+      aLeft := aBorderLeft;
     if not FRightToLeft or Vertical then
       FVisiBands[i].FLeft := aLeft
     else
@@ -1152,8 +1155,8 @@ begin
   end;
   aCountM1 := length(FVisiBands)-1;
   if aCountM1 >= 0 then begin
-    if FBandBorderStyle = bsSingle then
-      aRaisedBevel := ((EdgeInner = esLowered) and (EdgeOuter = esRaised));
+    aRaisedBevel := (FBandBorderStyle = bsSingle) and
+                    (EdgeInner = esLowered) and (EdgeOuter = esRaised);
     aRowEnd := False;
     aGrabStyle := GrabStyle;
     if Vertical then

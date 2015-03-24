@@ -1203,6 +1203,7 @@ begin
   begin
     // for each string in lrt/rst list check if it's already in PO
     // if not add it
+    MultilinedValue := false;
     Value := '';
     Identifier := '';
     i := 0;

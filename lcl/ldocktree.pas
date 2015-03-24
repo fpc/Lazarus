@@ -311,7 +311,8 @@ begin
   end;
 end;
 
-class function TDockHeader.FindPart(AHeaderRect: TRect; APoint: TPoint; AOrientation: TDockOrientation): TLazDockHeaderPart;
+class function TDockHeader.FindPart(AHeaderRect: TRect; APoint: TPoint;
+  AOrientation: TDockOrientation): TLazDockHeaderPart;
 var
   SubRect: TRect;
 begin
@@ -727,6 +728,7 @@ var
   LeftTopControl: TControl;
 begin
   Result:=TFPList.Create;
+  LeftTopControl:=nil;
 
   // find the Parent
   if (ARect[akLeft]=ARect[akRight]) and (ARect[akLeft] is TWinControl) then

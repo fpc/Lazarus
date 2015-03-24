@@ -1581,6 +1581,7 @@ begin
   lVisibleStr := LazUTF8.UTF8Copy(lVisibleStr, FEditState.VisibleTextStart.X, Length(lVisibleStr));
   lStrLen := LazUTF8.UTF8Length(lVisibleStr);
   lPos := FDrawer.GetMeasures(TCDEDIT_LEFT_TEXT_SPACING);
+  lBestMatch := 0;
   for i := 0 to lStrLen do
   begin
     lCurDiff := X - lPos;
@@ -2350,6 +2351,7 @@ var
 begin
   inherited KeyDown(Key, Shift);
 
+  NewPosition := 0;
   if (Key = VK_LEFT) or (Key = VK_DOWN) then
     NewPosition := FPosition - FSmallChange;
   if (Key = VK_UP) or (Key = VK_RIGHT) then

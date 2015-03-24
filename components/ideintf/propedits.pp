@@ -4416,9 +4416,8 @@ var
   Persistent: TPersistent;
 begin
   if NewValue=GetValue then exit;
-  if (NewValue = '') or (NewValue=oisNone) then
-    Persistent := nil
-  else begin
+  Persistent := nil;
+  if (NewValue <> '') and (NewValue<>oisNone) then begin
     if Assigned(PropertyHook) then begin
       Persistent := PropertyHook.GetComponent(NewValue);
       if not (Persistent is GetTypeData(GetPropType)^.ClassType) then begin
@@ -4590,6 +4589,7 @@ begin
     else
       Intf := nil;
   end;
+  // ToDo: Intf is either Nil or uninitialized. JuMa
   SetIntfValue(Intf);
 end;
 
@@ -5301,6 +5301,7 @@ begin
   case Index of
     0: s := oisSetMaxConstraints;
     1: s := oisSetMinConstraints;
+    else s := '';
   end;
   c := GetComponent(0) as TControl;
   Result := Format(s, [c.Height, c.Width]);

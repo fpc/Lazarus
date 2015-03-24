@@ -73,7 +73,9 @@ end;
 function GetApplicationName: string;
 begin
   if Assigned(Application) then
-    Result := Application.Title;
+    Result := Application.Title
+  else
+    Result := '';
 end;
 
 {------------------------------------------------------------------------------

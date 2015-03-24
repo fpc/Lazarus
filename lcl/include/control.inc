@@ -3848,15 +3848,14 @@ begin
   if lMode = lapDefault then lMode := Application.LayoutAdjustmentPolicy;
 
   // X-axis adjustment proportion
+  lXProportion := 1.0;
   if lMode = lapAutoAdjustWithoutHorizontalScrolling then
   begin
-    if AOldFormWidth > 0 then lXProportion := ANewFormWidth / AOldFormWidth
-    else lXProportion := 1.0;
+    if AOldFormWidth > 0 then lXProportion := ANewFormWidth / AOldFormWidth;
   end
   else if lMode = lapAutoAdjustForDPI then
   begin
-    if AFromDPI > 0 then lXProportion := AToDPI / AFromDPI
-    else lXProportion := 1.0;
+    if AFromDPI > 0 then lXProportion := AToDPI / AFromDPI;
   end;
 
   // y-axis adjustment proportion
@@ -3864,8 +3863,7 @@ begin
   else lYProportion := 1.0;
 
   // Apply the changes
-  if (lMode = lapAutoAdjustWithoutHorizontalScrolling) or
-   (lMode = lapAutoAdjustForDPI) then
+  if lMode in [lapAutoAdjustWithoutHorizontalScrolling, lapAutoAdjustForDPI] then
   begin
     if ShouldAutoAdjustLeftAndTop then
     begin

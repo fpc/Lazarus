@@ -251,10 +251,11 @@ begin
     if Style = tbsDropDown then
     begin
       DropDownButtonRect := ButtonRect;
-      DropDownButtonRect.Left :=
-                        Max(0, DropDownButtonRect.Right - FToolBar.FDropDownWidth);
+      DropDownButtonRect.Left := Max(0, DropDownButtonRect.Right-FToolBar.FDropDownWidth);
       ButtonRect.Right := DropDownButtonRect.Left;
-    end;
+    end
+    else
+      DropDownButtonRect := Rect(0,0,0,0);
 
     // calculate text size
     TextSize.cx:=0;

@@ -929,6 +929,7 @@ begin
         Result:='initialization'+LE+'  {$I '+ResourceFilename+'}'+LE+LE;
       end;
     rtRes: Result := '{$R *.lfm}'+LE+LE;
+    else Result:='';
   end;
 end;
 

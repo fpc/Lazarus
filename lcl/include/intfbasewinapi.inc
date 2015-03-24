@@ -298,6 +298,7 @@ var
 begin
   if uType = DFC_BUTTON then
   begin
+    ButtonDetail := tbButtonDontCare;
     case (uState and $1F) of
       DFCS_BUTTONCHECK:
         if uState and DFCS_CHECKED <> 0 then

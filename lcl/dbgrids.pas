@@ -1331,6 +1331,7 @@ begin
   			[ClassName, SbCodeToStr(Message.ScrollCode), dbgs(Message.Pos), Dbgs(FOldPosition)]);
   {$endif}
 
+  aPos := 0;
   IsSeq := FDatalink.DataSet.IsSequenced and not FDataLink.DataSet.Filtered;
   case Message.ScrollCode of
     SB_TOP:
@@ -2815,11 +2816,11 @@ function TCustomDBGrid.GetEditText(aCol, aRow: Longint): string;
 var
   aField: TField;
 begin
+  Result := '';
   if FDataLink.Active then begin
     aField := GetFieldFromGridColumn(aCol);
-    if aField<>nil then begin
+    if aField<>nil then
       Result := aField.Text;
-    end;
   end;
 end;
 
@@ -3072,15 +3073,18 @@ end;
 procedure TCustomDBGrid.DrawIndicator(ACanvas: TCanvas; R: TRect;
   Opt: TDataSetState; MultiSel: boolean);
 var
-  dx,dy, x, y: Integer;
+  dx, dy, x, y: Integer;
+
   procedure CenterY;
   begin
     y := R.Top + (R.Bottom-R.Top) div 2;
   end;
+
   procedure CenterX;
   begin
     X := R.Left + (R.Right-R.Left) div 2;
   end;
+
   procedure DrawEdit(clr: Tcolor);
   begin
     ACanvas.Pen.Color := clr;
@@ -3093,9 +3097,12 @@ var
     ACanvas.MoveTo(X-2, Y+Dy);
     ACanvas.LineTo(X+3, Y+Dy);
   end;
+
 begin
   dx := 6;
   dy := 6;
+  x := 0;
+  y := 0;
   case Opt of
     dsBrowse:
       begin //
@@ -3558,7 +3565,10 @@ end;
 function TComponentDataLink.GetFields(Index: Integer): TField;
 begin
   {$ifdef dbgGrid}DebugLn('%s.GetFields Index=%d',[ClassName, Index]); {$endif}
-  if (index>=0)and(index<DataSet.FieldCount) then result:=DataSet.Fields[index];
+  if (index>=0) and (index<DataSet.FieldCount) then
+    result:=DataSet.Fields[index]
+  else
+    result:=nil;
 end;
 
 function TComponentDataLink.GetDataSetName: string;

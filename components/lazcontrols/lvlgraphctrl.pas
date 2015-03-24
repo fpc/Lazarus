@@ -2378,7 +2378,7 @@ begin
     for j:=0 to Level.Count-1 do
       if Level[j].Visible then
         LevelTxtWidths[i]:=Max(LevelTxtWidths[i], Canvas.TextWidth(Level[j].Caption));
-
+    p:=0; // Prevent compiler warning.
     if i=0 then begin
       // first level
       case NodeStyle.CaptionPosition of
@@ -3349,6 +3349,7 @@ begin
     Gap:=0;
     DrawHeight:=HardMaxTotal;
     for j:=0 to Level.Count-1 do begin
+      // ToDo: Node is probably uninitialized.
       LvlWeight+=Max(Node.InWeight,Node.OutWeight);
       Gap+=NodeGapAbove+NodeGapBelow;
     end;

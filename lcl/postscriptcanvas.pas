@@ -826,7 +826,7 @@ end;
 
 //Init the style of line
 procedure TPostScriptPrinterCanvas.UpdateLineStyle;
-Var st : string;
+Var St : string;
 begin
   if (Pen.Style<>fcPenStyle) and (Pen.Style<>psClear) then
   begin
@@ -836,6 +836,7 @@ begin
       psDot        : St:='[1 3] 0';
       psDashDot    : St:='[5 2 2 2] 0';
       psDashDotDot : St:='[5 2 2 2 2 2] 0';
+      else St:='';
     end;
     
     Write(Format('%s setdash',[St]));
@@ -2659,9 +2660,13 @@ var
       LeftPos: longint;
     begin
       if LeftOffset <> DT_LEFT then
-        Points[0] := TextExtent(theLine);
+        Points[0] := TextExtent(theLine)
+      else begin
+        Points[0].cx := 0;
+        Points[0].cy := 0;
+      end;
 
-       case LeftOffset of
+      case LeftOffset of
         DT_LEFT:
           LeftPos := theRect.Left;
         DT_CENTER:
@@ -2669,6 +2674,8 @@ var
             2 - Points[0].cX div 2;
         DT_RIGHT:
           LeftPos := theRect.Right - Points[0].cX;
+        else
+          LeftPos := 0;
       end;
 
       Pt := Point(0, 0);
@@ -2677,7 +2684,7 @@ var
       begin
         Pt.X := SavedRect.Left;
         Pt.Y := SavedRect.Top;
-         CalculateOffsetWithAngle(Font.Orientation, Pt.X, Pt.Y);
+        CalculateOffsetWithAngle(Font.Orientation, Pt.X, Pt.Y);
       end;
       TextOut(LeftPos + Pt.X, TopPos + Pt.Y, theLine);
     end;
@@ -2700,6 +2707,8 @@ var
             2 - Points[0].cX div 2;
         DT_RIGHT:
           LeftPos := theRect.Right - Points[0].cX;
+        else
+          LeftPos := 0;
       end;
 
       Pt := Point(0, 0);

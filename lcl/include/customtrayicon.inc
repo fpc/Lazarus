@@ -90,7 +90,7 @@ end;
 *******************************************************************}
 function TCustomTrayIcon.Hide: Boolean;
 begin
-  if not FVisible then Exit;
+  if not FVisible then Exit(True);
 
   FVisible := False;
 
@@ -139,10 +139,8 @@ end;
 *******************************************************************}
 function TCustomTrayIcon.Show: Boolean;
 begin
-  if FVisible then Exit;
-
+  if FVisible then Exit(True);
   FVisible := True;
-
   if not(csDesigning in ComponentState) then
     Result := InternalShow
   else
