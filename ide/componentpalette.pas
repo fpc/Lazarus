@@ -753,7 +753,8 @@ begin
   PopupMenu:=TPopupMenu.Create(nil);
   PopupMenu.OnPopup:=@PopupMenuPopup;
   PopupMenu.Name:='ComponentPopupMenu';
-  
+  PopupMenu.Images:=IDEImages.Images_16;
+
   OpenPackageMenuItem:=TMenuItem.Create(PopupMenu);
   with OpenPackageMenuItem do begin
     Name:='OpenPackageMenuItem';
@@ -777,6 +778,15 @@ begin
     Name:='ComponentListMenuItem';
     Caption:=lisCompPalComponentList;
     OnClick:=@ComponentListClicked;
+  end;
+  PopupMenu.Items.Add(MenuItem);
+
+  MenuItem:=TMenuItem.Create(PopupMenu);
+  with MenuItem do begin
+    Name:='OptionsMenuItem';
+    Caption:=lisOptions;
+    OnClick:=@OptionsClicked;
+    ImageIndex := IDEImages.LoadImage(16, 'menu_environment_options');
   end;
   PopupMenu.Items.Add(MenuItem);
 end;
