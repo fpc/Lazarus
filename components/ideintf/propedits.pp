@@ -1509,6 +1509,7 @@ type
     FShiftState: TShiftState;
     FCheckBoxes: array[TShiftStateEnum] of TCheckBox;
     FGrabForm: TForm;
+    function GetKey: Word;
     function GetShiftCheckBox(Shift: TShiftStateEnum): TCheckBox;
     procedure SetAllowedShifts(const AValue: TShiftState);
     procedure SetKey(const AValue: Word);
@@ -1528,7 +1529,7 @@ type
     constructor Create(TheOwner: TComponent); override;
     function GetDefaultShiftButtons: TShiftState;
     property ShiftState: TShiftState read FShiftState write SetShiftState;
-    property Key: Word read FKey write SetKey;
+    property Key: Word read GetKey write SetKey;
     property ShiftButtons: TShiftState read FShiftButtons write SetShiftButtons;
     property AllowedShifts: TShiftState read FAllowedShifts write SetAllowedShifts;
     property KeyComboBox: TComboBox read FKeyComboBox;
@@ -6713,6 +6714,13 @@ end;
 function TCustomShortCutGrabBox.GetShiftCheckBox(Shift: TShiftStateEnum): TCheckBox;
 begin
   Result:=FCheckBoxes[Shift];
+end;
+
+function TCustomShortCutGrabBox.GetKey: Word;
+begin
+  Result:=FKey;
+  if (FKey = 0) then
+    FShiftState:=[];
 end;
 
 procedure TCustomShortCutGrabBox.SetAllowedShifts(const AValue: TShiftState);
