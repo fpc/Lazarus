@@ -744,9 +744,13 @@ begin
   end;
   if not Title.PositionOnMarks then
     FTitlePos := (rmin + rmax) div 2
-  else if minc < MaxInt then
+  else if minc < MaxInt then begin
+    c := FHelper.GraphToImage(FHelper.FMaxForMarks);
+    if c < maxc then maxc := c;
+    c := FHelper.GraphToImage(FHelper.FMinForMarks);
+    if c > minc then minc := c;
     FTitlePos := (maxc + minc) div 2
-  else
+  end else
     FTitlePos := MaxInt;
 
   if Arrow.Visible then
