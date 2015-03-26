@@ -283,6 +283,16 @@ var
   aKernResult: kern_return_t;
   old_StateCnt: mach_msg_Type_number_t;
 begin
+  if ID<0 then
+    begin
+    // The ID is set to -1 when the debugger does not have sufficient rights.
+    // In that case just return zero's, so that the debuggee wil just run without
+    // any problems/exceptions in the debugger.
+    FillByte(FThreadState32, SizeOf(FThreadState32),0);
+    FillByte(FThreadState64, SizeOf(FThreadState64),0);
+    result := true;
+    exit;
+    end;
   if Process.Mode=dm32 then
     begin
     old_StateCnt:=x86_THREAD_STATE32_COUNT;
@@ -341,6 +351,8 @@ var
   new_StateCnt: mach_msg_Type_number_t;
 begin
   result := true;
+  if ID<0 then
+    Exit;
 
   if Process.Mode=dm32 then
     begin
@@ -410,6 +422,8 @@ var
   i: integer;
 begin
   result := -1;
+  if ID<0 then
+    Exit;
   if not ReadDebugState then
     exit;
 
@@ -470,6 +484,8 @@ function TDbgDarwinThread.RemoveWatchpoint(AnId: integer): boolean;
 
 begin
   result := false;
+  if ID<0 then
+    Exit;
   if not ReadDebugState then
     exit;
 
@@ -484,6 +500,8 @@ var
   dr6: DWord;
 begin
   result := -1;
+  if ID<0 then
+    Exit;
   if ReadDebugState then
     begin
     if Process.Mode=dm32 then
@@ -627,10 +645,7 @@ end;
 function TDbgDarwinProcess.CreateThread(AthreadIdentifier: THandle; out IsMainThread: boolean): TDbgThread;
 begin
   IsMainThread:=true;
-  if AthreadIdentifier>-1 then
-    result := TDbgDarwinThread.Create(Self, AthreadIdentifier, AthreadIdentifier)
-  else
-    result := nil;
+  result := TDbgDarwinThread.Create(Self, AthreadIdentifier, AthreadIdentifier)
 end;
 
 constructor TDbgDarwinProcess.Create(const AName: string; const AProcessID,
@@ -920,9 +935,8 @@ begin
     if aKernResult <> KERN_SUCCESS then
       begin
       Log('Failed to call task_threads. Mach error: '+mach_error_string(aKernResult));
-      end;
-
-    if act_listCtn>0 then
+      end
+    else if act_listCtn>0 then
       ThreadIdentifier := act_list^[0];
     end
 end;
