@@ -1547,7 +1547,9 @@ begin
         AAlignment := AlignmentToQtAlignmentMap[ALV.Column[ASubIndex].Alignment]  or QtAlignVCenter;
       QtTreeWidget.setItemText(TWI, ASubIndex, Str, AAlignment);
       {issue #27696 for autosized columns we must provide sizehint}
-      if ALV.Column[ASubIndex].AutoSize then
+      if (TCustomListViewHack(ALV).Columns.Count > 0) and (ASubIndex >= 0) and
+        (ASubIndex < TCustomListViewHack(ALV).Columns.Count) and
+        ALV.Column[ASubIndex].AutoSize then
       begin
         if Assigned(TCustomListViewHack(ALV).SmallImages) then
           AIconWidth := TCustomListViewHack(ALV).SmallImages.Width
