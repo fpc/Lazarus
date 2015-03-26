@@ -80,6 +80,8 @@ type
 
   LazSynImeFull = class(LazSynIme)
   private
+    FAdjustLeftCharForTargets: Boolean;
+    FLeftPosForTarget, FRightPosForTarget: Integer;
     FImeBlockSelection, FImeBlockSelection2, FImeBlockSelection3: TSynEditSelection; // TODO: create a custom markup
     FImeMarkupSelection, FImeMarkupSelection2, FImeMarkupSelection3: TSynEditMarkupSelection;
     FInImeMsg: Boolean;
@@ -97,6 +99,7 @@ type
     procedure DoOnMouse(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X,
       Y: Integer);
     procedure DoStatusChanged(Sender: TObject; Changes: TSynStatusChanges);
+    procedure EnsureLeftChar;
   protected
     procedure StopIme(Success: Boolean); override;
   public
@@ -108,6 +111,8 @@ type
     procedure WMImeStartComposition(var Msg: TMessage); override;
     procedure WMImeEndComposition(var Msg: TMessage); override;
     procedure FocusKilled; override;
+  public
+    property AdjustLeftCharForTargets: Boolean read FAdjustLeftCharForTargets write FAdjustLeftCharForTargets;
   end;
 
 implementation
@@ -423,6 +428,23 @@ begin
   StopIme(True);
 end;
 
+procedure LazSynImeFull.EnsureLeftChar;
+var
+  r: Integer;
+begin
+  if (FLeftPosForTarget < 1) or not FAdjustLeftCharForTargets then
+    exit;
+
+  r := FRightPosForTarget - TSynEdit(FriendEdit).CharsInWindow;
+
+  if (TSynEdit(FriendEdit).LeftChar < r) then
+    TSynEdit(FriendEdit).LeftChar := r;
+
+  if (TSynEdit(FriendEdit).LeftChar > FLeftPosForTarget) then
+    TSynEdit(FriendEdit).LeftChar := FLeftPosForTarget;
+
+end;
+
 procedure LazSynImeFull.StopIme(Success: Boolean);
 begin
   inherited StopIme(Success);
@@ -457,6 +479,7 @@ end;
 constructor LazSynImeFull.Create(AOwner: TSynEditBase);
 begin
   inherited Create(AOwner);
+  FAdjustLeftCharForTargets := True;
 
   FImeBlockSelection := TSynEditSelection.Create(ViewedTextBuffer, False);
   FImeBlockSelection.InvalidateLinesMethod := @InvalidateLines;
@@ -725,11 +748,12 @@ begin
 
     if ((Msg.LParam and GCS_COMPATTR) <> 0) then begin
   //ATTR_INPUT               = $00;  // dotted undurline
-  //ATTR_TARGET_CONVERTED    = $01;  // full underline
-  //ATTR_CONVERTED           = $02;  // light underline
+  //ATTR_TARGET_CONVERTED    = $01;  // full underline (bold underline / double width line)
+  //ATTR_CONVERTED           = $02;  // light underline (single width line)
   //ATTR_TARGET_NOTCONVERTED = $03;  // Show as selected ?
   //ATTR_INPUT_ERROR         = $04;  // ? none
   //ATTR_FIXEDCONVERTED      = $05;  // ? none
+  //            low confidence => green underline.
       if imc = 0 then
         imc := ImmGetContext(FriendEdit.Handle);
       ImeCount := ImmGetCompositionStringW(imc, GCS_COMPATTR, nil, 0);
@@ -737,6 +761,8 @@ begin
       DebugLn(['***** GCS_COMPATTR  ', dbgHex(ImeCount)]);
       {$ENDIF}
       if ImeCount > 0 then begin
+        FLeftPosForTarget := -1;
+        FRightPosForTarget := -1;
         xy := FImeBlockSelection.StartLineBytePos;
         FImeBlockSelection2.StartLineBytePos := xy;
         FImeBlockSelection2.EndLineBytePos := xy;
@@ -752,6 +778,8 @@ begin
               x := FImeBlockSelection.StartBytePos;
               xy.x := x + CharToByte(x, i);
               FImeBlockSelection2.StartLineBytePos := xy;
+              if (FLeftPosForTarget < 0) or (FLeftPosForTarget > xy.x) then
+                FLeftPosForTarget := xy.x;
               inc(i);
               while longword(i) < ImeCount do begin
                 if (ord(p[i]) <> ATTR_TARGET_CONVERTED) or (i = ImeCount-1) then begin
@@ -759,6 +787,8 @@ begin
                     inc(i);
                   xy.x := x + CharToByte(x, i);
                   FImeBlockSelection2.EndLineBytePos := xy;
+                  if (FRightPosForTarget < 0) or (FRightPosForTarget > xy.x) then
+                    FRightPosForTarget := xy.x;
                   break;
                 end;
                 inc(i);
@@ -769,6 +799,8 @@ begin
             if ord(p[i]) = ATTR_TARGET_NOTCONVERTED then begin
               x := FImeBlockSelection.StartBytePos;
               xy.x := x + CharToByte(x, i);
+              if (FLeftPosForTarget < 0) or (FLeftPosForTarget > xy.x) then
+                FLeftPosForTarget := xy.x;
               FImeBlockSelection3.StartLineBytePos := xy;
               inc(i);
               while longword(i) < ImeCount do begin
@@ -777,6 +809,8 @@ begin
                     inc(i);
                   xy.x := x + CharToByte(x, i);
                   FImeBlockSelection3.EndLineBytePos := xy;
+                  if (FRightPosForTarget < 0) or (FRightPosForTarget > xy.x) then
+                    FRightPosForTarget := xy.x;
                   break;
                 end;
                 inc(i);
@@ -790,6 +824,14 @@ begin
           Msg.Result := 1;
         finally
           FreeMem(p, ImeCount + 2);
+        end;
+
+        if (FLeftPosForTarget > 0) and FAdjustLeftCharForTargets then begin
+          FLeftPosForTarget := ViewedTextBuffer.LogicalToPhysicalPos
+            (Point(FLeftPosForTarget, FImeBlockSelection.FirstLineBytePos.Y)).x;
+          FRightPosForTarget := ViewedTextBuffer.LogicalToPhysicalPos
+            (Point(FRightPosForTarget, FImeBlockSelection.FirstLineBytePos.Y)).x;
+          EnsureLeftChar;
         end;
       end;
     end;
@@ -822,13 +864,15 @@ DebugLn(dbgMemRange(PByte( p), ImeCount));
 
       ImeCount := ImmGetCompositionStringW(imc, GCS_CURSORPOS, nil, 0);
       {$IFDEF WinIMEDebug}
-      DebugLn(['--- GCS_CURSORPOS ', dbgs(ImeCount)]);
+      DebugLn(['--- GCS_CURSORPOS ', dbgs(ImeCount), '  FLeftPosForTarget=',FLeftPosForTarget]);
       {$ENDIF}
       if ImeCount >= 0 then begin    // ToDo: Comparison is always True.
         ImeCount := ImeCount and $ffff;
         x := FImeBlockSelection.StartBytePos;
         x := x + CharToByte(x, ImeCount);
         CaretObj.CharPos := ViewedTextBuffer.LogicalToPhysicalPos(Point(x, FImeBlockSelection.StartLinePos)).x;
+        // TODO: this causes full repaints
+        EnsureLeftChar;
       end;
     end;
 
