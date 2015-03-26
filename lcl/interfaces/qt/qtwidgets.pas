@@ -14157,10 +14157,11 @@ var
   R: TRect;
   ATextWidth: Integer;
   AMargin: Integer;
-  i: Integer;
   ASizeHint: TSize;
 begin
   Result := False;
+  if AIconSize = 0 then
+    exit;
   R := measureText(AText, 0);
   ATextWidth := R.Right - R.Left;
   if AIconSize > 0 then
