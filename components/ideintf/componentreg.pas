@@ -176,11 +176,17 @@ type
     cphtSelectionChanged
     );
 
+  TComponentSelectionMode = (
+    csmSingle, // reset selection on component add
+    csmMulty   // don't reset selection on component add
+  );
+
   TEndUpdatePaletteEvent = procedure(Sender: TObject; PaletteChanged: boolean) of object;
   TGetComponentClassEvent = procedure(const AClass: TComponentClass) of object;
   TUpdateCompVisibleEvent = procedure(AComponent: TRegisteredComponent;
                       var VoteVisible: integer { Visible>0 }  ) of object;
   TPaletteHandlerEvent = procedure of object;
+  //TComponentAddedEvent = procedure(ALookupRoot, AComponent: TComponent; ARegisteredComponent: TRegisteredComponent) of object;
   RegisterUnitComponentProc = procedure(const Page, UnitName: ShortString;
                                         ComponentClass: TComponentClass);
   TBaseComponentPageList = specialize TFPGList<TBaseComponentPage>;
@@ -207,6 +213,7 @@ type
     fHandlers: array[TComponentPaletteHandlerType] of TMethodList;
     fComponentPageClass: TBaseComponentPageClass;
     fSelected: TRegisteredComponent;
+    fSelectionMode: TComponentSelectionMode;
     fHideControls: boolean;
     fUpdateLock: integer;
     fChanged: boolean;
@@ -223,7 +230,9 @@ type
     procedure DoPageRemovedComponent(Component: TRegisteredComponent);
     function VoteCompVisibility(AComponent: TRegisteredComponent): Boolean;
     function GetSelected: TRegisteredComponent;
+    function GetMultiSelect: boolean;
     procedure SetSelected(const AValue: TRegisteredComponent);
+    procedure SetMultiSelect(AValue: boolean);
   public
     constructor Create(EnvPaletteOptions: TCompPaletteOptions);
     destructor Destroy; override;
@@ -244,6 +253,7 @@ type
     function CreateNewClassName(const Prefix: string): string;
     procedure Update({%H-}ForceUpdateAll: Boolean); virtual;
     procedure IterateRegisteredClasses(Proc: TGetComponentClassEvent);
+    procedure SetSelectedComp(AComponent: TRegisteredComponent; AMulti: Boolean);
     // Registered handlers
     procedure DoAfterComponentAdded;
     procedure DoAfterSelectionChanged;
@@ -267,6 +277,8 @@ type
     property ChangeStamp: integer read fChangeStamp;
     property HideControls: boolean read FHideControls write FHideControls;
     property Selected: TRegisteredComponent read GetSelected write SetSelected;
+    property MultiSelect: boolean read GetMultiSelect write SetMultiSelect;
+    property SelectionMode: TComponentSelectionMode read FSelectionMode write FSelectionMode;
     // User ordered + original pages and components.
     property UserOrder: TCompPaletteUserOrder read fUserOrder;
     property OnClassSelected: TNotifyEvent read fOnClassSelected write fOnClassSelected;
@@ -655,6 +667,7 @@ end;
 
 constructor TBaseComponentPalette.Create(EnvPaletteOptions: TCompPaletteOptions);
 begin
+  fSelectionMode:=csmSingle;
   fPages:=TBaseComponentPageList.Create;
   fComps:=TRegisteredComponentList.Create;
   fOrigPagePriorities:=TPagePriorityList.Create;
@@ -848,6 +861,11 @@ begin
   Result := fSelected;
 end;
 
+function TBaseComponentPalette.GetMultiSelect: boolean;
+begin
+  Result := FSelectionMode = csmMulty;
+end;
+
 procedure TBaseComponentPalette.SetSelected(const AValue: TRegisteredComponent);
 begin
   if fSelected=AValue then exit;
@@ -859,6 +877,14 @@ begin
       fSelected:=nil;
   end;
   DoAfterSelectionChanged;
+end;
+
+procedure TBaseComponentPalette.SetMultiSelect(AValue: boolean);
+begin
+  if AValue then
+    FSelectionMode := csmMulty
+  else
+    FSelectionMode := csmSingle;
 end;
 
 procedure TBaseComponentPalette.AddHandler(HandlerType: TComponentPaletteHandlerType;
@@ -1033,6 +1059,12 @@ var
 begin
   for i:=0 to Comps.Count-1 do
     Proc(Comps[i].ComponentClass);
+end;
+
+procedure TBaseComponentPalette.SetSelectedComp(AComponent: TRegisteredComponent; AMulti: Boolean);
+begin
+  MultiSelect := AMulti;
+  Selected := AComponent;
 end;
 
 // Execute handlers

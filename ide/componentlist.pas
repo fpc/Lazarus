@@ -378,7 +378,7 @@ var
 begin
   AComponent:=GetSelectedComponent;
   if AComponent<>nil then
-    IDEComponentPalette.Selected:=AComponent;
+    IDEComponentPalette.SetSelectedComp(AComponent, ssShift in GetKeyShiftState);
   UpdateButtonState;
 end;
 

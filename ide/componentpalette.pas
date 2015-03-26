@@ -48,11 +48,6 @@ const
   CompPalSelectionToolBtnPrefix = 'PaletteSelectBtn';
   CompPaletteCompBtnPrefix = 'PaletteBtn';
 type
-  TComponentSelectionMode = (
-    csmSingle, // reset selection on component add
-    csmMulty   // don't reset selection on component add
-  );
-
   { TComponentPage }
 
   TComponentPage = class(TBaseComponentPage)
@@ -102,7 +97,6 @@ type
     FPageControl: TPageControl;
     FOnOpenPackage: TNotifyEvent;
     FOnOpenUnit: TNotifyEvent;
-    FSelectionMode: TComponentSelectionMode;
     fUnregisteredIcon: TCustomBitmap;
     fSelectButtonIcon: TCustomBitmap;
     fUpdatingPageControl: boolean;
@@ -141,7 +135,6 @@ type
     procedure Update(ForceUpdateAll: Boolean); override;
   public
     property PageControl: TPageControl read FPageControl write SetPageControl;
-    property SelectionMode: TComponentSelectionMode read FSelectionMode write FSelectionMode;
     property OnOpenPackage: TNotifyEvent read FOnOpenPackage write FOnOpenPackage;
     property OnOpenUnit: TNotifyEvent read FOnOpenUnit write FOnOpenUnit;
   end;
@@ -832,7 +825,6 @@ end;
 constructor TComponentPalette.Create;
 begin
   inherited Create(EnvironmentOptions.ComponentPaletteOptions);
-  FSelectionMode:=csmSingle;
   fComponentButtons:=TComponentButtonMap.Create;
   fComponentButtons.Sorted:=True;
   OnComponentIsInvisible:=@CheckComponentDesignerVisible;
