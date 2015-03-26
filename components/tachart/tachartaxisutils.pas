@@ -208,6 +208,7 @@ type
     procedure LineZ(AP1, AP2: TPoint); inline;
     function TryApplyStripes: Boolean; inline;
   public
+    FAtDataOnly: Boolean;
     FAxis: TChartBasicAxis;
     FAxisTransf: TTransformFunc;
     FClipRangeDelta: Integer;
@@ -402,19 +403,20 @@ end;
 
 procedure TAxisDrawHelperX.DrawAxisLine(APen: TChartPen; AFixedCoord: Integer);
 var
-  p: TPoint;
+  p1, p2: TPoint;
 begin
   if FAxis.IsFlipped then begin
-    p := Point(FClipRect^.Left, AFixedCoord);
+    p1 := Point(IfThen(FAtDataOnly, GraphToImage(FMaxForMarks), FClipRect^.Left), AFixedCoord);
+    p2 := Point(IfThen(FAtDataOnly, GraphToImage(FMinForMarks), FClipRect^.Right), AFixedCoord);
     if FAxis.Arrow.Visible then
-      p.X -= FDrawer.Scale(FAxis.Arrow.Length);
-    InternalAxisLine(APen, p, Point(FClipRect^.Right, AFixedCoord), 0);
+      p1.X -= FDrawer.Scale(FAxis.Arrow.Length);
   end else begin
-    p := Point(FClipRect^.Right, AFixedCoord);
+    p1 := Point(IfThen(FAtDataOnly, GraphToImage(FMinForMarks), FClipRect^.Left), AFixedCoord);
+    p2 := Point(IfThen(FAtDataOnly, GraphToImage(FMaxForMarks), FClipRect^.Right), AFixedCoord);
     if FAxis.Arrow.Visible then
-      p.X += FDrawer.Scale(FAxis.Arrow.Length);
-    InternalAxisLine(APen, Point(FClipRect^.Left, AFixedCoord), p, 0);
+      p2.X += FDrawer.Scale(FAxis.Arrow.Length);
   end;
+  InternalAxisLine(APen, p1, p2, 0);
 end;
 
 procedure TAxisDrawHelperX.DrawLabelAndTick(
@@ -467,19 +469,20 @@ end;
 
 procedure TAxisDrawHelperY.DrawAxisLine(APen: TChartPen; AFixedCoord: Integer);
 var
-  p: TPoint;
+  p1, p2: TPoint;
 begin
   if FAxis.IsFlipped then begin
-    p := Point(AFixedCoord, FClipRect^.Bottom);
+    p1 := Point(AFixedCoord, IfThen(FAtDataOnly, GraphToImage(FMaxForMarks), FClipRect^.Bottom));
+    p2 := Point(AFixedCoord, IfThen(FAtDataOnly, GraphToImage(FMinForMarks), FClipRect^.Top));
     if FAxis.Arrow.Visible then
-      p.Y += FDrawer.Scale(FAxis.Arrow.Length);
-    InternalAxisLine(APen, p, Point(AFixedCoord, FClipRect^.Top), -Pi / 2);
+      p1.Y += FDrawer.Scale(FAxis.Arrow.Length);
   end else begin
-    p := Point(AFixedCoord, FClipRect^.Top);
+    p1 := Point(AFixedCoord, IfThen(FAtDataOnly, GraphToImage(FMinForMarks), FClipRect^.Bottom));
+    p2 := Point(AFixedCoord, IfThen(FAtDataOnly, GraphToImage(FMaxForMarks), FClipRect^.Top));
     if FAxis.Arrow.Visible then
-      p.Y -= FDrawer.Scale(FAxis.Arrow.Length);
-    InternalAxisLine(APen, Point(AFixedCoord, FClipRect^.Bottom), p, -Pi / 2);
+      p2.Y -= FDrawer.Scale(FAxis.Arrow.Length);
   end;
+  InternalAxisLine(APen, p1, p2, -Pi / 2);
 end;
 
 procedure TAxisDrawHelperY.DrawLabelAndTick(

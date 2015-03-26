@@ -87,7 +87,8 @@ type
     FMarkValues: TChartValueTextArray;
     FTitlePos: Integer;
     procedure GetMarkValues;
-    procedure VisitSource(ASource: TCustomChartSource; var AData);
+//    procedure VisitSource(ASource: TCustomChartSource; var AData);
+    procedure VisitSource_Extent(ASource: TCustomChartSource; var AData);
   private
     FAxisRect: TRect;
     FGroupIndex: Integer;
@@ -95,6 +96,7 @@ type
     function MakeValuesInRangeParams(AMin, AMax: Double): TValuesInRangeParams;
   strict private
     FAlignment: TChartAxisAlignment;
+    FAtDataOnly: Boolean;
     FAxisPen: TChartAxisPen;
     FGroup: Integer;
     FHelper: TAxisDrawHelper;
@@ -115,6 +117,7 @@ type
     function GetValue(AIndex: Integer): TChartValueText; inline;
     function GetValueCount: Integer; inline;
     function PositionIsStored: Boolean;
+    procedure SetAtDataOnly(AValue: Boolean);
     procedure SetAxisPen(AValue: TChartAxisPen);
     procedure SetGroup(AValue: Integer);
     procedure SetInverted(AValue: Boolean);
@@ -164,6 +167,7 @@ type
   published
     property Alignment default calLeft;
     property Arrow;
+    property AtDataOnly: Boolean read FAtDataOnly write SetAtDataOnly default false;
     property AxisPen: TChartAxisPen read FAxisPen write SetAxisPen;
     property Group: Integer read FGroup write SetGroup default 0;
     // Inverts the axis scale from increasing to decreasing.
@@ -566,8 +570,9 @@ var
   i: Integer;
   d: TValuesInRangeParams;
   vis: TChartOnVisitSources;
-  t: TChartValueText;
   axisMin, axisMax: Double;
+  ex: TDoubleRect;
+  v: Boolean;
 begin
   with FHelper do begin
     axisMin := GetTransform.GraphToAxis(FValueMin);
@@ -579,16 +584,26 @@ begin
   SetLength(FMarkValues, 0);
   vis := TChartAxisList(Collection).OnVisitSources;
   if Marks.AtDataOnly and Assigned(vis) then begin
-    vis(@VisitSource, Self, d);
+//    vis(@VisitSource, Self, d);
     // FIXME: Intersect axisMin/Max with the union of series extents.
-  end
-  else
-    Marks.SourceDef.ValuesInRange(d, FMarkValues);
+
+    v := IsVertical;
+    ex := EmptyExtent;
+    vis(@VisitSource_Extent, self, ex);
+    UpdateBounds(TDoublePointBoolArr(ex.a)[v], TDoublePointBoolArr(ex.b)[v]);
+    d.FMin := TDoublePointBoolArr(ex.a)[IsVertical];
+    d.FMax := TDoublePointBoolArr(ex.b)[IsVertical];
+    if IsNaN(d.FMin) or IsNaN(d.FMax) then begin
+      d.FMax := 1.0; d.FMin := 0.0;
+    end else
+      if (d.FMin = d.FMax) then d.FMax := d.FMin + 1.0;
+  end;
+  Marks.SourceDef.ValuesInRange(d, FMarkValues);
   with FHelper do begin
     FValueMin := GetTransform.AxisToGraph(axisMin);
     FValueMax := GetTransform.AxisToGraph(axisMax);
-    FMinForMarks := GetTransform.AxisToGraph(d.FMin);
-    FMaxForMarks := GetTransform.AxisToGraph(d.FMax);
+    FMinForMarks := Min(FMinForMarks, GetTransform.AxisToGraph(d.FMin));
+    FMaxForMarks := Max(FMaxForMarks, GetTransform.AxisToGraph(d.FMax));
   end;
 
   if Assigned(FOnMarkToText) then
@@ -808,6 +823,9 @@ begin
   FHelper.FTransf := ATransf;
   FHelper.FZOffset.Y := Min(ZPosition, AMaxZPosition);
   FHelper.FZOffset.X := -FHelper.FZOffset.Y;
+  FHelper.FAtDataOnly := AtDataOnly;
+  FHelper.FMaxForMarks := -infinity;
+  FHelper.FMinForMarks := infinity;
 end;
 
 procedure TChartAxis.SetAlignment(AValue: TChartAxisAlignment);
@@ -815,6 +833,13 @@ begin
   if FAlignment = AValue then exit;
   FAlignment := AValue;
   StyleChanged(Self);
+end;
+
+procedure TChartAxis.SetAtDataOnly(AValue: Boolean);
+begin
+  if FAtDataOnly = AValue then exit;
+  FAtDataOnly := AValue;
+  StyleChanged(self);
 end;
 
 procedure TChartAxis.SetAxisPen(AValue: TChartAxisPen);
@@ -963,6 +988,7 @@ begin
   end;
 end;
 
+{
 procedure TChartAxis.VisitSource(ASource: TCustomChartSource; var AData);
 var
   ext: TDoubleRect;
@@ -973,6 +999,23 @@ begin
   p.FMin := Max(TDoublePointBoolArr(ext.a)[IsVertical], p.FMin);
   p.FMax := Min(TDoublePointBoolArr(ext.b)[IsVertical], p.FMax);
   Marks.SourceDef.ValuesInRange(p, FMarkValues);
+end;
+}
+
+procedure TChartAxis.VisitSource_Extent(ASource: TCustomChartSource; var AData);
+var
+  ex: TDoubleRect;
+begin
+  ex := ASource.Extent;
+  if IsInfinite(ex.a.x) or IsInfinite(ex.a.y) or
+     IsInfinite(ex.b.x) or IsInfinite(ex.b.y)
+  then
+    exit;
+
+  TDoubleRect(AData).a.x := Min(ex.a.x, TDoubleRect(AData).a.x);
+  TDoubleRect(AData).b.x := Max(ex.b.x, TDoubleRect(AData).b.x);
+  TDoubleRect(AData).a.y := Min(ex.a.y, TDoubleRect(AData).a.y);
+  TDoubleRect(AData).b.y := Max(ex.b.y, TDoubleRect(AData).b.y);
 end;
 
 { TChartAxisList }
