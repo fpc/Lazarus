@@ -1850,6 +1850,7 @@ var
   MissingPkg: TIDEPackage;
   MissingPkgName: String;
   MissingPkgFile: TLazPackageFile;
+  FPCUnitFilename: String;
 begin
   if MsgLine.Urgency<mluError then exit;
   if not IsMsgID(MsgLine,FPCMsgIDCantFindUnitUsedBy,fMsgItemCantFindUnitUsedBy)
@@ -1955,6 +1956,11 @@ begin
       {$ENDIF}
       PPUFilename:=CodeToolBoss.DirectoryCachePool.FindCompiledUnitInCompletePath(
                         ExtractFilePath(CodeBuf.Filename),MissingUnitname);
+      if (PPUFilename<>'') then begin
+        FPCUnitFilename:=CodeToolBoss.DirectoryCachePool.FindUnitInUnitSet(
+          ExtractFilePath(CodeBuf.Filename),MissingUnitName);
+      end else
+        FPCUnitFilename:='';
       {$IFDEF VerboseFPCMsgUnitNotFound}
       debugln(['TIDEFPCParser.ImproveMsgUnitNotFound PPUFilename=',PPUFilename,' IsFileInIDESrcDir=',IsFileInIDESrcDir(CodeBuf.Filename)]);
       {$ENDIF}
@@ -1970,12 +1976,12 @@ begin
       {$IFDEF VerboseFPCMsgUnitNotFound}
       debugln(['TIDEFPCParser.ImproveMsgUnitNotFound MissingUnitPkg=',MissingPkgName]);
       {$ENDIF}
+      s:=Format(lisCannotFind, [MissingUnitname]);
+      if UsedByUnit<>'' then
+        s+=Format(lisUsedBy, [UsedByUnit]);
       if PPUFiles.Count>0 then begin
-        // there is a ppu file, but the compiler didn't like it
-        // => change message
-        s:=Format(lisCannotFind, [MissingUnitname]);
-        if UsedByUnit<>'' then
-          s+=Format(lisUsedBy, [UsedByUnit]);
+        // there is a ppu file in a package output directory, but the compiler
+        // didn't like it => change message
         if PPUFilename='' then
           PPUFilename:=PPUFiles[0];
         s+=Format(lisIncompatiblePpu, [PPUFilename]);
@@ -1989,15 +1995,15 @@ begin
             s+=TIDEPackage(PPUFiles.Objects[i]).Name;
           end;
         end;
-      end else begin
-        // there is no ppu file in the ppu path (it might be in the source path)
-        {$IFDEF VerboseFPCMsgUnitNotFound}
-        debugln(['TIDEFPCParser.ImproveMsgUnitNotFound PPUFilename=',PPUFilename,' PPUFiles.Count=',PPUFiles.Count]);
-        {$ENDIF}
-        s:=Format(lisCannotFindUnit, [MissingUnitname]);
-        if UsedByUnit<>'' then
-          s+=Format(lisUsedBy, [UsedByUnit]);
-        if PPUFilename<>'' then begin
+      end else if PPUFilename<>'' then begin
+        if CompareFilenames(PPUFilename,FPCUnitFilename)=0 then begin
+          // there is ppu in the FPC units, but the compiler does not like it
+          // => a) using a wrong compiler version (wrong fpc.cfg)
+          //    b) user units in fpc.cfg
+          //    c) fpc units not compiled with -Ur
+          //    d) wrong target platform
+          s+=', ppu='+PPUFilename+', check your fpc.cfg';
+        end else begin
           // there is a ppu file in the source path
           if (MissingPkg<>nil) and (MissingPkg.LazCompilerOptions.UnitOutputDirectory='')
           then
@@ -2007,32 +2013,34 @@ begin
           s+=' '+Format(lisPpuInWrongDirectory, [PPUFilename]);
           if MissingPkgName<>'' then
             s+=' '+Format(lisCleanUpPackage, [MissingPkgName]);
-        end
-        else if (UsedByPkg<>nil)
-        and (CompareTextCT(UsedByPkg.Name,MissingPkgName)=0) then
-        begin
-          // two units of a package cannot find each other
-          s+=Format(lisCheckSearchPathPackageTryACleanRebuildCheckImpleme, [
-            UsedByPkg.Name]);
-        end else if (MissingPkgName<>'')
-        and (OnlyInstalled
-          or ((UsedByOwner<>nil)
-             and PackageEditingInterface.IsOwnerDependingOnPkg(UsedByOwner,MissingPkgName,DepOwner)))
-        then begin
-          // ppu file of an used package is missing
-          if (MissingPkgFile<>nil) and (not MissingPkgFile.InUses) then
-            s+=Format(lisEnableFlagUseUnitOfUnitInPackage, [MissingUnitName, MissingPkgName])
-          else
-            s+=Format(lisCheckIfPackageCreatesPpuCheckNothingDeletesThisFil, [
-              MissingPkgName, MissingUnitName]);
-        end else begin
-          if MissingPkgName<>'' then
-            s+=Format(lisCheckIfPackageIsInTheDependencies, [MissingPkgName]);
-          if UsedByOwner is TLazProject then
-            s+=lisOfTheProjectInspector
-          else if UsedByPkg<>nil then
-            s+=Format(lisOfPackage, [UsedByPkg.Name]);
+          s+='.';
         end;
+      end
+      else if (UsedByPkg<>nil) and (CompareTextCT(UsedByPkg.Name,MissingPkgName)=0)
+      then begin
+        // two units of a package cannot find each other
+        s+=Format(lisCheckSearchPathPackageTryACleanRebuildCheckImpleme, [
+          UsedByPkg.Name]);
+        s+='.';
+      end else if (MissingPkgName<>'')
+      and (OnlyInstalled
+        or ((UsedByOwner<>nil)
+           and PackageEditingInterface.IsOwnerDependingOnPkg(UsedByOwner,MissingPkgName,DepOwner)))
+      then begin
+        // ppu file of an used package is missing
+        if (MissingPkgFile<>nil) and (not MissingPkgFile.InUses) then
+          s+=Format(lisEnableFlagUseUnitOfUnitInPackage, [MissingUnitName, MissingPkgName])
+        else
+          s+=Format(lisCheckIfPackageCreatesPpuCheckNothingDeletesThisFil, [
+            MissingPkgName, MissingUnitName]);
+        s+='.';
+      end else begin
+        if MissingPkgName<>'' then
+          s+=Format(lisCheckIfPackageIsInTheDependencies, [MissingPkgName]);
+        if UsedByOwner is TLazProject then
+          s+=lisOfTheProjectInspector
+        else if UsedByPkg<>nil then
+          s+=Format(lisOfPackage, [UsedByPkg.Name]);
         s+='.';
       end;
       MsgLine.Msg:=s;
