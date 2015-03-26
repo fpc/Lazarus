@@ -33,6 +33,7 @@ unit SynEditTextDoubleWidthChars;
 interface
 
 uses
+  {$ifdef windows}{$IFDEF SynForceDoubeWidthHack} Windows, {$endif}{$endif}
   Classes, SysUtils, LazSynEditText;
 
 type
@@ -60,6 +61,32 @@ begin
 
   dec(Line);
   dec(PWidths);
+
+  {$IFDEF SynForceDoubeWidthHack}
+  {$IF FPC_FULLVERSION>=20701}
+  if DefaultSystemCodePage = 932{Japanese}
+  {$ELSE}
+  if GetACP = 932{Japanese}
+  {$ENDIF}
+  then begin
+    for i := 0 to LineLen - 1 do begin
+      inc(Line);
+      inc(PWidths);
+      if PWidths^ = 0 then continue;
+      PWidths^:=2;
+      case Line^ of
+        #$01..#$7F: PWidths^ := 1;
+        #$80..#$BF: PWidths^ := 0;
+        #$EF: begin
+          if (Line[1] = #$bd) and (Line[2] in [#$A1..#$bf]) then PWidths^ := 1;
+          if (Line[1] = #$be) and (Line[2] in [#$80..#$9f]) then PWidths^ := 1;
+        end;
+      end;
+    end;
+    exit;
+  end;
+  {$ENDIF}
+
   for i := 0 to LineLen - 1 do begin
     inc(Line);
     inc(PWidths);
