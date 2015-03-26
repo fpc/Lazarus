@@ -497,13 +497,21 @@ begin
   TSynEditMarkupManager(MarkupMgr).AddMarkUp(FImeMarkupSelection3);
 
   FImeMarkupSelection.MarkupInfo.Clear;
-  FImeMarkupSelection.MarkupInfo.FramePriority := 999;
+  FImeMarkupSelection.MarkupInfo.FramePriority := MaxInt-1;
   FImeMarkupSelection.MarkupInfo.FrameColor := clDefault;
   FImeMarkupSelection.MarkupInfo.FrameStyle := slsDotted;
   FImeMarkupSelection.MarkupInfo.FrameEdges := sfeBottom;
 
+  // TODO: prevent any other frame in the active IME (as it distracts from IME underlines
+  // this includes left/right frame edges (can not currently be prevented)
+
+  // prevent any underline
+  FImeMarkupSelection.MarkupInfo.StylePriority[fsUnderline] := MaxInt;
+  FImeMarkupSelection.MarkupInfo.Style:= [];
+  FImeMarkupSelection.MarkupInfo.StyleMask:= [fsUnderline];
+
   FImeMarkupSelection2.MarkupInfo.Clear;
-  FImeMarkupSelection2.MarkupInfo.FramePriority := 999+1;
+  FImeMarkupSelection2.MarkupInfo.FramePriority := MaxInt;
   FImeMarkupSelection2.MarkupInfo.FrameColor := clDefault;
   FImeMarkupSelection2.MarkupInfo.FrameStyle := slsSolid;
   FImeMarkupSelection2.MarkupInfo.FrameEdges := sfeBottom;
