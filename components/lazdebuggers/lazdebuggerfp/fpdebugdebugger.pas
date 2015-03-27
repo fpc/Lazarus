@@ -50,7 +50,8 @@ type
 
   { TFpDbgLogMessage }
 
-  TFpDbgLogMessage = record
+  TFpDbgLogMessage = class
+  public
     SyncLogMessage: string;
     SyncLogLevel: TFPDLogLevel;
   end;
@@ -84,7 +85,7 @@ type
     FFpDebugThread: TFpDebugThread;
     FQuickPause: boolean;
     FRaiseExceptionBreakpoint: FpDbgClasses.TDBGBreakPoint;
-    FDbgLogMessageList: array of TFpDbgLogMessage;
+    FDbgLogMessageList: TFPObjectList;
     FLogCritSection: TRTLCriticalSection;
     FMemConverter: TFpDbgMemConvertorLittleEndian;
     FMemReader: TDbgMemReader;
@@ -1266,23 +1267,36 @@ end;
 procedure TFpDebugDebugger.DoLog(Data: PtrInt);
 var
   AMessage: TFpDbgLogMessage;
+  AnObjList: TFPObjectList;
+  i: Integer;
 begin
   FLogAsyncQueued:=false;
-  EnterCriticalsection(FLogCritSection);
-  try
-    if length(FDbgLogMessageList) = 0 then
-      Exit;
-    AMessage := FDbgLogMessageList[0];
-    move(FDbgLogMessageList[1], FDbgLogMessageList[0], SizeOf(TFpDbgLogMessage)*high(FDbgLogMessageList));
-    SetLength(FDbgLogMessageList, high(FDbgLogMessageList));
-  finally
-    LeaveCriticalsection(FLogCritSection);
-  end;
 
-  case AMessage.SyncLogLevel of
-    dllDebug: DebugLn(AMessage.SyncLogMessage);
-    dllInfo:  ShowMessage(AMessage.SyncLogMessage);
-    dllError: raise exception.Create(AMessage.SyncLogMessage);
+  AnObjList:=TFPObjectList.Create(false);
+  try
+    EnterCriticalsection(FLogCritSection);
+    try
+      while FDbgLogMessageList.Count > 0 do
+        begin
+        AnObjList.Add(FDbgLogMessageList[0]);
+        FDbgLogMessageList.Delete(0);
+        end;
+    finally
+      LeaveCriticalsection(FLogCritSection);
+    end;
+
+    for i := 0 to AnObjList.Count-1 do
+      begin
+      AMessage := TFpDbgLogMessage(AnObjList[i]);
+      case AMessage.SyncLogLevel of
+        dllDebug: DebugLn(AMessage.SyncLogMessage);
+        dllInfo:  ShowMessage(AMessage.SyncLogMessage);
+        dllError: raise exception.Create(AMessage.SyncLogMessage);
+      end; {case}
+      AMessage.Free;
+      end;
+  finally
+    AnObjList.Free;
   end;
 end;
 
@@ -1561,12 +1575,12 @@ begin
   // This function could be running in a thread. Add the log-message to an
   // array and queue the processing in the main thread. Not an ideal
   // implementation. But good enough for now.
+  AMessage := TFpDbgLogMessage.Create;
   AMessage.SyncLogLevel:=ALogLevel;
   AMessage.SyncLogMessage:=AString;
   EnterCriticalsection(FLogCritSection);
   try
-    setlength(FDbgLogMessageList, length(FDbgLogMessageList)+1);
-    FDbgLogMessageList[high(FDbgLogMessageList)] := AMessage;
+    FDbgLogMessageList.Add(AMessage);
   finally
     LeaveCriticalsection(FLogCritSection);
   end;
@@ -1736,6 +1750,7 @@ begin
   inherited Create(AExternalDebugger);
   FWatchEvalList := TFPList.Create;
   FPrettyPrinter := TFpPascalPrettyPrinter.Create(sizeof(pointer));
+  FDbgLogMessageList := TFPObjectList.Create(false);
   InitCriticalSection(FLogCritSection);
   FMemReader := TFpDbgMemReader.Create(self);
   FMemConverter := TFpDbgMemConvertorLittleEndian.Create;
@@ -1763,6 +1778,7 @@ begin
   FreeAndNil(FMemManager);
   FreeAndNil(FMemConverter);
   FreeAndNil(FMemReader);
+  FreeAndNil(FDbgLogMessageList);
   DoneCriticalsection(FLogCritSection);
   inherited Destroy;
 end;
