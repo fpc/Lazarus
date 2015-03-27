@@ -1008,6 +1008,8 @@ begin
         Invalidate;
       end;
     end;
+    if Assigned(FOnChange) then
+      FOnChange(Self);
   end;
   FDragBand := dbNone;
 end;
