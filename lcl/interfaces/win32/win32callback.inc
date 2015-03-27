@@ -2644,6 +2644,7 @@ var
   Owner: TWinControl;
   Control: TControl;
   P: TPoint;
+  LRect: Windows.RECT;
 begin
   case Msg of
     WM_ERASEBKGND:
@@ -2688,6 +2689,15 @@ begin
       // free our own data associated with window
       DisposeWindowInfo(Window);
       Result := 0;
+    end;
+    WM_MOVE:
+    begin
+      if (Int16(LoWord(LParam)) <> 0) or (Int16(HiWord(LParam)) <> 0) then
+      begin
+        Parent := Windows.GetParent(Window);
+        Windows.GetClientRect(Parent, LRect);
+        Windows.SetWindowPos(Window, HWND_TOP, 0, 0, LRect.Right, LRect.Bottom, 0);
+      end;
     end;
   else
     if UnicodeEnabledOS
