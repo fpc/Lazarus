@@ -195,7 +195,7 @@ type
     property UseNoneMiRunCommands;
     property DisableLoadSymbolsForLibraries;
     property DisableForcedBreakpoint;
-    property WarnOnSetBreakpointError;
+    //property WarnOnSetBreakpointError;
   end;
 
   TGDBMIDebugger = class;
@@ -5336,16 +5336,16 @@ begin
     end
     else CanContinue := True;
 
-    if FTheDebugger.DebuggerFlags * [dfSetBreakFailed, dfSetBreakPending] <> [] then begin
-      if FTheDebugger.OnFeedback
-         (self, Format(synfTheDebuggerWasUnableToSetAllBreakpointsDuringIniti,
-              [LineEnding]), '', ftWarning, [frOk, frStop]) = frStop
-      then begin
-        StateStopped := True;
-        SetDebuggerState(dsStop);
-        exit;
-      end;
-    end;
+    //if FTheDebugger.DebuggerFlags * [dfSetBreakFailed, dfSetBreakPending] <> [] then begin
+    //  if FTheDebugger.OnFeedback
+    //     (self, Format(synfTheDebuggerWasUnableToSetAllBreakpointsDuringIniti,
+    //          [LineEnding]), '', ftWarning, [frOk, frStop]) = frStop
+    //  then begin
+    //    StateStopped := True;
+    //    SetDebuggerState(dsStop);
+    //    exit;
+    //  end;
+    //end;
 
     if StoppedAtEntryPoint and CanContinue and (FContinueCommand = nil) then begin
       // try to step to pascal code

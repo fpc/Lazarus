@@ -76,6 +76,7 @@ type
     property InternalStartBreak;
     property UseNoneMiRunCommands;
     property DisableLoadSymbolsForLibraries;
+    //property WarnOnSetBreakpointError;
   end;
 
 procedure Register;
