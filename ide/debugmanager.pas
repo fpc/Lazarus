@@ -1870,34 +1870,28 @@ begin
                and (pfRunnable in Project1.Flags)
               );
     // Run
-    RunSpeedButton.Enabled := CanRun and (not DebuggerIsValid
+    itmRunMenuRun.Enabled := CanRun and (not DebuggerIsValid
             or (dcRun in FDebugger.Commands) or (FDebugger.State = dsIdle));
-    itmRunMenuRun.Enabled := RunSpeedButton.Enabled;
     // Pause
-    PauseSpeedButton.Enabled := CanRun and DebuggerIsValid
+    itmRunMenuPause.Enabled := CanRun and DebuggerIsValid
             and (dcPause in FDebugger.Commands);
-    itmRunMenuPause.Enabled := PauseSpeedButton.Enabled;
     // Show execution point
     itmRunMenuShowExecutionPoint.Enabled := CanRun and DebuggerIsValid
             and (FDebugger.State = dsPause);
     // Step into
-    StepIntoSpeedButton.Enabled := CanRun and (not DebuggerIsValid
+    itmRunMenuStepInto.Enabled := CanRun and (not DebuggerIsValid
             or (dcStepInto in FDebugger.Commands) or (FDebugger.State = dsIdle));
-    itmRunMenuStepInto.Enabled := StepIntoSpeedButton.Enabled;
     // Step over
-    StepOverSpeedButton.Enabled := CanRun and (not DebuggerIsValid
+    itmRunMenuStepOver.Enabled := CanRun and (not DebuggerIsValid
             or (dcStepOver in FDebugger.Commands)  or (FDebugger.State = dsIdle));
-    itmRunMenuStepOver.Enabled := StepOverSpeedButton.Enabled;
     // Step out
-    StepOutSpeedButton.Enabled := CanRun and DebuggerIsValid
+    itmRunMenuStepOut.Enabled := CanRun and DebuggerIsValid
             and (dcStepOut in FDebugger.Commands) and (FDebugger.State = dsPause);
-    itmRunMenuStepOut.Enabled := StepOutSpeedButton.Enabled;
     // Run to cursor
     itmRunMenuRunToCursor.Enabled := CanRun and DebuggerIsValid
             and (dcRunTo in FDebugger.Commands);
     // Stop
     itmRunMenuStop.Enabled := CanRun and DebuggerIsValid;
-    StopSpeedButton.Enabled := itmRunMenuStop.Enabled;
 
     //Attach / Detach
     itmRunMenuAttach.Enabled := (not DebuggerIsValid) or (dcAttach in FDebugger.Commands);

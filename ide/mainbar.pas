@@ -39,61 +39,30 @@ uses
   MemCheck,
 {$ENDIF}
   Classes, SysUtils, LCLProc, Forms, Controls, Buttons, Menus,
-  ComCtrls, ExtCtrls, Dialogs, LMessages,
+  ComCtrls, ExtCtrls, LMessages,
   // IDEIntf
   ProjectIntf, NewItemIntf, MenuIntf, LazIDEIntf, LazFileCache,
-  EnvironmentOpts, LazarusIDEStrConsts;
+  EnvironmentOpts, LazarusIDEStrConsts, IDEImagesIntf;
 
 type
   { TMainIDEBar }
 
-  TSplitterEx = class(TSplitter)
-  published
-    property OnMouseDown;
-    property OnMouseMove;
-    property OnMouseUp;
-    property OnDblClick;
-  end;
 
   TMainIDEBar = class(TForm)
-  
-    // the speedbuttons panel for frequently used IDE functions
-    pnlSpeedButtons      : TPanel;
-    tbStandard           : TToolBar;
-      NewUnitSpeedBtn      : TToolButton;
-      NewFormSpeedBtn      : TToolButton;
-      tbDivider1           : TToolButton;
-      OpenFileSpeedBtn     : TToolButton;
-      OpenFilePopUpMenu    : TPopupMenu;
-      SaveSpeedBtn         : TToolButton;
-      SaveAllSpeedBtn      : TToolButton;
-      tbDivider2           : TToolButton;
-      ToggleFormSpeedBtn   : TToolButton;
-    tbViewDebug            : TToolBar;
-      ViewUnitsSpeedBtn    : TToolButton;
-      ViewFormsSpeedBtn    : TToolButton;
-      tbDivider3           : TToolButton;
-      BuildModeSpeedButton : TToolButton;
-      RunSpeedButton       : TToolButton;
-      SetBuildModePopupMenu: TPopupMenu;
-      PauseSpeedButton     : TToolButton;
-      StopSpeedButton      : TToolButton;
-      StepIntoSpeedButton  : TToolButton;
-      StepOverSpeedButton  : TToolButton;
-      StepOutSpeedButton   : TToolButton;
-    pnStandard: TPanel;
-      spStandard: TSplitterEx;
-    pnViewDebug: TPanel;
-      spViewDebug: TSplitterEx;
+    //Coolbar and PopUpMenus
+    CoolBar: TCoolBar;
     pmOptions: TPopupMenu;
-      miOptions: TMenuItem;
+    miOptions: TMenuItem;
+    OpenFilePopUpMenu: TPopupMenu;
+    SetBuildModePopupMenu: TPopupMenu;
+    NewUnitFormPopupMenu: TPopupMenu;
+    NewUFSetDefaultMenuItem: TMenuItem;
 
-    NewUnitFormPopupMenu : TPopupMenu;
-      NewUFSetDefaultMenuItem: TMenuItem;
+    //splitter between the Coolbar and MainMenu
+    MainSplitter: TSplitter;
 
     // MainMenu
     mnuMainMenu: TMainMenu;
-
     //mnuMain: TIDEMenuSection;
 
     // file menu
@@ -292,6 +261,7 @@ type
         itmProjectViewUnits: TIDEMenuCommand;
         itmProjectViewForms: TIDEMenuCommand;
         itmProjectViewSource: TIDEMenuCommand;
+        itmProjectBuildMode: TIDEMenuCommand;
 
     // run menu
     //mnuRun: TIDEMenuSection;
@@ -390,36 +360,24 @@ type
     GlobalMouseSpeedButton: TSpeedButton;
     procedure MainIDEBarDropFiles(Sender: TObject;
       const FileNames: array of String);
-    procedure SplitterMouseDown(Sender: TObject; Button: TMouseButton;
-      {%H-}Shift: TShiftState; X, Y: Integer);
-    procedure SplitterMouseUp(Sender: TObject; {%H-}Button: TMouseButton;
-      {%H-}Shift: TShiftState; {%H-}X, {%H-}Y: Integer);
-    procedure SplitterMouseMove(Sender: TObject; {%H-}Shift: TShiftState; X, Y: Integer);
-    procedure pnlSpeedButtonsMouseDown(Sender: TObject; Button: TMouseButton;
-      {%H-}Shift: TShiftState; {%H-}X, {%H-}Y: Integer);
+    procedure CoolBarOnChange(Sender: TObject);
+    procedure MainSplitterMoved(Sender: TObject);
   private
     FOldWindowState: TWindowState;
     FOnActive: TNotifyEvent;
-    FToolBarsVisibleCount: Integer;
-    FdX, FdY: Integer;
-    FDragging: Boolean;
     procedure NewUFDefaultClick(Sender: TObject);
     procedure NewUnitFormPopupMenuPopup(Sender: TObject);
-    procedure SortToolbars(var Row: array of TPanel);
-    procedure SetPosition(var Row: array of TPanel; const PanelTop: Integer);
   protected
     procedure DoActive;
     procedure WndProc(var Message: TLMessage); override;
   public
-    property ToolBarsVisibleCount: Integer read FToolBarsVisibleCount
-                                              write FToolBarsVisibleCount;
     constructor Create(TheOwner: TComponent); override;
     procedure HideIDE;
     procedure UnhideIDE;
     procedure CreatePopupMenus(TheOwner: TComponent);
     property OnActive: TNotifyEvent read FOnActive write FOnActive;
     procedure UpdateDockCaption({%H-}Exclude: TControl); override;
-    procedure SetToolbarsPositions;
+    procedure RefreshCoolbar;
   end;
 
 var
@@ -470,7 +428,7 @@ var
 begin
   Category:=NewIDEItems.FindCategoryByPath(FileDescGroupName,true);
   // find default template name
-  if NewUnitFormPopupMenu.PopupComponent=NewUnitSpeedBtn then begin
+  if NewUnitFormPopupMenu.PopupComponent.Name = 'itmFileNewUnit' then begin
     TemplateName:=EnvironmentOptions.NewUnitTemplate;
     if (TemplateName='') or (Category.FindTemplateByName(TemplateName)=nil) then
       TemplateName:=FileDescNamePascalUnit;
@@ -558,136 +516,89 @@ begin
   NewUnitFormPopupMenu:=TPopupMenu.Create(TheOwner);
   NewUnitFormPopupMenu.Name:='NewUnitFormPopupMenu';
   NewUnitFormPopupMenu.OnPopup:=@NewUnitFormPopupMenuPopup;
-  NewUnitSpeedBtn.PopupMenu := NewUnitFormPopupMenu;
-  NewFormSpeedBtn.PopupMenu := NewUnitFormPopupMenu;
+
   NewUFSetDefaultMenuItem:=TMenuItem.Create(TheOwner);
   NewUFSetDefaultMenuItem.Name:='NewUFSetDefaultMenuItem';
   NewUFSetDefaultMenuItem.Caption:=lisSetDefault;
   NewUnitFormPopupMenu.Items.Add(NewUFSetDefaultMenuItem);
-end;
 
-procedure TMainIDEBar.SplitterMouseDown(Sender: TObject; Button: TMouseButton;
-  Shift: TShiftState; X, Y: Integer);
-begin
-  if Button = mbLeft then
+  pmOptions := TPopupMenu.Create(TheOwner);
+  pmOptions.Images := IDEImages.Images_16;
+  miOptions := TMenuItem.Create(TheOwner);
+  with MainIDEBar.miOptions do
   begin
-    if ToolBarsVisibleCount <= 1 then
-      Exit;
-    (Sender as TSplitterEx).Cursor  := crDrag;
-    (Sender as TSplitterEx).Parent.BringToFront;
-    FdX := X;
-    FdY := Y;
-    FDragging := True;
-  end;
-  if Button = mbRight then
-    pmOptions.PopUp;
+     Name := 'miToolbarOption';
+     Caption := lisOptions;
+     Enabled := True;
+     Visible := True;
+     ImageIndex := IDEImages.LoadImage(16, 'menu_environment_options');
+   end;
+  MainIDEBar.pmOptions.Items.Add(MainIDEBar.miOptions);
 end;
 
-procedure TMainIDEBar.SplitterMouseMove(Sender: TObject; Shift: TShiftState; X,
-  Y: Integer);
-begin
-  if FDragging then
-  begin
-    with ((Sender as TSplitterEx).Parent as TControl) do
-    begin
-      Left := X - FdX + Left;
-      Top  := Y - FdY + Top;
-      if (X - FdX + Left >= -5) and (X - FdX + Left <= pnlSpeedButtons.Width - 100)  and
-           (Y - FdY + Top >= -5) and (X - FdY + Top <= pnlSpeedButtons.Height) then
-      begin
-        (Sender as TSplitterEx).Cursor := crDrag;
-        pnlSpeedButtons.AutoSize := True;
-      end
-      else
-      begin
-       (Sender as TSplitterEx).Cursor := crNoDrop;
-       pnlSpeedButtons.AutoSize := False;
-      end;
-    end;
-  end;
-end;
-
-procedure TMainIDEBar.SplitterMouseUp(Sender: TObject; Button: TMouseButton;
-  Shift: TShiftState; X, Y: Integer);
-begin
-  if FDragging then
-  begin
-    FDragging := False;
-    SetToolbarsPositions;
-    pnlSpeedButtons.AutoSize := True;
-    (Sender as TSplitterEx).Cursor  := crDefault;
-  end;
-end;
-
-procedure TMainIDEBar.pnlSpeedButtonsMouseDown(Sender: TObject;
-  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-begin
-  if Button = mbRight then
-    pmOptions.PopUp;
-end;
-
-procedure TMainIDEBar.SortToolbars(var Row: array of TPanel);
+procedure TMainIDEBar.RefreshCoolbar;
 var
-  I: Integer;
+  I, J: Integer;
+  CoolBand: TCoolBand;
 begin
-  for I := Low(Row) to High(Row)  do
+  EnvironmentOptions.IDEToolBarList.Sort;
+  //read general settings
+  if not (EnvironmentOptions.IDECoolBarGrabStyle in [0..5]) then
+    EnvironmentOptions.IDECoolBarGrabStyle := 4;
+  Coolbar.GrabStyle := TGrabStyle(EnvironmentOptions.IDECoolBarGrabStyle);
+  if not (EnvironmentOptions.IDECoolBarGrabWidth in [1..50]) then
+    EnvironmentOptions.IDECoolBarGrabWidth := 5;
+  Coolbar.GrabWidth := EnvironmentOptions.IDECoolBarGrabWidth;
+  Coolbar.BandBorderStyle := TBorderStyle(EnvironmentOptions.IDECoolBarBorderStyle);
+  //read toolbars
+  CoolBar.Bands.Clear;
+  for I := 0 to EnvironmentOptions.IDEToolBarList.Count - 1 do
   begin
-    (Row[I] as TPanel).Top := Top;
-    if I = 0 then
-      (Row[I] as TPanel).Left := 0
-    else
-      (Row[I] as TPanel).Left :=  (Row[I - 1] as TPanel).Left + (Row[I - 1] as TPanel).Width + 1;
+    CoolBand := CoolBar.Bands.Add;
+    CoolBand.Break := EnvironmentOptions.IDEToolBarList.Items[I].Break;
+    CoolBand.Control := EnvironmentOptions.IDEToolBarList.Items[I].Toolbar;
+    CoolBand.MinWidth := 25;
+    CoolBand.MinHeight := 22;
+    CoolBand.FixedSize := True;
+    EnvironmentOptions.IDEToolBarList.Items[I].ClearToolbar;
+    for J := 0 to EnvironmentOptions.IDEToolBarList.Items[I].ButtonNames.Count - 1 do
+      EnvironmentOptions.IDEToolBarList.Items[I].AddCustomItems(J);
   end;
+  CoolBar.AutosizeBands;
+
+  CoolBar.Visible := EnvironmentOptions.IDECoolBarVisible;
+  itmViewIDESpeedButtons.Checked := CoolBar.Visible;
+  MainSplitter.Align := alLeft;
+  MainSplitter.Visible := MainIDEBar.Coolbar.Visible and
+                          MainIDEBar.ComponentPageControl.Visible;
+
 end;
 
-procedure TMainIDEBar.SetPosition(var Row: array of TPanel; const PanelTop: Integer);
-var
-  I: Integer;
+procedure TMainIDEBar.MainSplitterMoved(Sender: TObject);
 begin
-  for I := Low(Row) to High(Row)  do
-  begin
-    (Row[I] as TPanel).Top := PanelTop;
-    if I = 0 then
-      (Row[I] as TPanel).Left := 0
-    else
-      (Row[I] as TPanel).Left := (Row[I - 1] as TPanel).Left + (Row[I - 1] as TPanel).Width + 1;
-  end;
+  EnvironmentOptions.IDECoolBarWidth  := CoolBar.Width;
 end;
 
-procedure TMainIDEBar.SetToolbarsPositions;
+procedure TMainIDEBar.CoolBarOnChange(Sender: TObject);
 var
-  I: Integer;
-  Len: Integer;
-  TopRow, BottomRow: array of TPanel;
+  I, J: integer;
+  ToolBar: TToolBar;
 begin
-  TopRow := nil;
-  BottomRow := nil;
-  for I := 0 to pnlSpeedButtons.ControlCount - 1  do
+  for I := 0 to Coolbar.Bands.Count - 1 do
   begin
-    if not (pnlSpeedButtons.Controls[I] is TPanel) then
+    if Coolbar.Bands[I].Control = nil then
       Continue;
-    if pnlSpeedButtons.Controls[I].Top <= pnlSpeedButtons.Controls[I].Height div 2 then
+    ToolBar := (Coolbar.Bands[I].Control as TToolBar);
+    J := EnvironmentOptions.IDEToolBarList.FindByToolBar(ToolBar);
+    if J <> -1 then
     begin
-      Len := Length(TopRow);
-      SetLength(TopRow, Len + 1);
-      TopRow[Len] := (pnlSpeedButtons.Controls[I] as TPanel);
-    end
-    else
-    begin
-      Len := Length(BottomRow);
-      SetLength(BottomRow, Len + 1);
-      BottomRow[Len] := (pnlSpeedButtons.Controls[I] as TPanel);
+      EnvironmentOptions.IDEToolBarList.Items[J].Position := Coolbar.Bands[I].Index;
+      EnvironmentOptions.IDEToolBarList.Items[J].Break := Coolbar.Bands[I].Break;
     end
   end;
-  SortToolbars(TopRow);
-  SortToolbars(BottomRow);
-  SetPosition(TopRow, 0);
-  SetPosition(BottomRow, 26);
-  EnvironmentOptions.ToolBarStandardLeft := pnStandard.Left;
-  EnvironmentOptions.ToolBarStandardTop := pnStandard.Top;
-  EnvironmentOptions.ToolBarViewDebugLeft := pnViewDebug.Left;
-  EnvironmentOptions.ToolBarViewDebugTop := pnViewDebug.Top;
+  EnvironmentOptions.IDEToolBarList.Sort;
 end;
+
 
 end.
 

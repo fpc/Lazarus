@@ -5886,6 +5886,59 @@ resourcestring
     ;
   lisUpdateInfo = 'Update info';
 
+  //Coolbar
+  lisCoolbarOptions = 'CoolBar Options';
+  lisCoolbarDeleteToolBar = 'Are you sure you want to delete the selected toolbar?';
+  lisCoolbarSelectToolBar = 'Please select a toolbar first!';
+  lisCoolbarAddSelected = 'Add selected item to toolbar';
+  lisCoolbarRemoveSelected = 'Remove selected item from toolbar';
+  lisCoolbarMoveSelectedUp = 'Move selected toolbar item up';
+  lisCoolbarMoveSelectedDown = 'Move selected toolbar item down';
+  lisCoolbarAddDivider = 'Add Divider';
+  lisCoolbarClearSelection = 'Clear selection';
+  lisCoolbarHelp1 = 'The "Add" button inserts a Menu Item before the ' +
+                    'selected Item of the Toolbar.';
+  lisCoolbarHelp2 = 'If none is selected, the Item will be appended at the end ' +
+                    'of the Toolbar.';
+  lisCoolbarHelp3 = 'You may rearrange Toolbar Items with "Move Up" and '+
+                    '"Move Down" buttons.';
+  lisCoolbarHelp4 = 'Hint: to append an Item at the end, use "Clear selection"';
+  lisEditorToolbarConfigForm = 'Toolbar Configuration';
+  lisCoolbarOK = 'OK';
+  lisCoolbarCancel = 'Cancel';
+  lisCoolbarMenuTree = 'Available Menu Items';
+  lisCoolbarToolbar = 'Toolbar Items';
+  lisCoolbarIDEMainMenu = 'IDE Main Menu';
+  lisCoolbarSourceTab = 'Source Tab';
+  lisCoolbarSourceEditor = 'Source Editor';
+  lisCoolbarMessages = 'Messages';
+  lisCoolbarCodeExplorer = 'Code Explorer';
+  lisCoolbarCodeTemplates = 'Code Templates';
+  lisCoolbarDesigner = 'Designer';
+  lisCoolbarPackageEditor = 'Package Editor';
+  lisCoolbarPackageEditorFiles = 'Package Editor Files';
+  lisCoolbarAddConfigDelete = 'Add/Config/Delete Toolbar(s)';
+  lisCoolbarGeneralSettings = 'General Coolbar Settings';
+  lisCoolbarAdd = 'Add';
+  lisCoolbarConfig = 'Config';
+  lisCoolbarDelete = 'Delete';
+  lisCoolbarVisible = 'Coolbar is visible';
+  lisCoolbarGrabStyle = 'Toolbars Grab Style';
+  lisCoolbarGrabStyleItem0 = 'Simple';
+  lisCoolbarGrabStyleItem1 = 'Double';
+  lisCoolbarGrabStyleItem2 = 'HorLines';
+  lisCoolbarGrabStyleItem3 = 'VerLines';
+  lisCoolbarGrabStyleItem4 = 'Gripper';
+  lisCoolbarGrabStyleItem5 = 'Button';
+  lisCoolbarGrabWidth = 'Grab width';
+  lisCoolbarBorderStyle = 'Toolbars Border Style';
+  lisCoolbarBorderStyleItem0 = 'None';
+  lisCoolbarBorderStyleItem1 = 'Single';
+  lisCoolbarDefault = 'Default';
+  lisCoolbarResetDefaults = 'Reset to default values?';
+  lisCoolbarDeleteWarning = 'There must be at least one toolbar!';
+  lismiToolbar = 'Options';
+
   //Debugger Attaching dialog
   lisDADRunningProcesses = 'Running Processes';
   lisDADImageName = 'Image Name';

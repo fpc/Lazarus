@@ -770,7 +770,7 @@ begin
     CreateMenuItem(ParentMI,itmViewComponentPalette,'itmViewComponentPalette',lisMenuViewComponentPalette, '',
       true, EnvironmentOptions.ComponentPaletteVisible);
     CreateMenuItem(ParentMI,itmViewIDESpeedButtons,'itmViewIDESpeedButtons',lisMenuViewIDESpeedButtons, '',
-      true, EnvironmentOptions.ToolbarVisible);
+      true, EnvironmentOptions.IDECoolBarVisible);
   end;
 end;
 
@@ -891,6 +891,7 @@ begin
     CreateMenuItem(ParentMI,itmProjectViewUnits,'itmProjectViewUnits',lisMenuViewUnits, 'menu_view_units');
     CreateMenuItem(ParentMI,itmProjectViewForms,'itmProjectViewForms',lisMenuViewForms, 'menu_view_forms');
     CreateMenuItem(ParentMI,itmProjectViewSource,'itmProjectViewSource',lisMenuViewProjectSource, 'menu_project_viewsource');
+    CreateMenuItem(ParentMI,itmProjectBuildMode,'itmProjectBuildMode',lisChangeBuildMode, 'menu_compiler_options');
   end;
 end;
 
