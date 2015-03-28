@@ -17,7 +17,7 @@
  *   Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.        *
  *                                                                         *
  ***************************************************************************
- Author: Balazs Szekely
+ Author: Balázs Székely
  Abstract:
   Frame for toolbar options.
 }
@@ -52,13 +52,12 @@ type
     dbAddConfigDelete: TDividerBevel;
     dbGeneralSettings: TDividerBevel;
     lbGrabWidth: TLabel;
-    MenuItem1: TMenuItem;
-    pnBottom: TPanel;
     pnTop: TPanel;
+    pnBottom: TPanel;
     pnButtons: TPanel;
     sbCoolBar: TScrollBox;
     spGrabWidth: TSpinEdit;
-    Splitter1: TSplitter;
+    tmWait: TTimer;
     procedure bAddClick(Sender: TObject);
     procedure bConfigClick(Sender: TObject);
     procedure bDefaultGeneralClick(Sender: TObject);
@@ -69,8 +68,8 @@ type
     procedure CoolBarMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: integer);
     procedure CoolbarResize(Sender: TObject);
-    procedure CoolbarStartDrag(Sender: TObject; var DragObject: TDragObject);
     procedure spGrabWidthChange(Sender: TObject);
+    procedure tmWaitTimer(Sender: TObject);
   private
     FTempList: TIDEToolBarList;
     procedure SelectBand(const ID: integer);
@@ -106,10 +105,10 @@ procedure TToolbarOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
   dbAddConfigDelete.Caption := lisCoolbarAddConfigDelete;
   dbGeneralSettings.Caption := lisCoolbarGeneralSettings;
-  bDefaultToolbar.Caption := lisCoolbarDefault;
-  bAdd.Caption := lisCoolbarAdd;
-  bConfig.Caption := lisCoolbarConfig;
-  bDelete.Caption := lisCoolbarDelete;
+  bDefaultToolbar.Caption := lisCoolbarRestoreDefaults;
+  bAdd.Caption := lisBtnAdd;
+  bConfig.Caption := lisCoolbarConfigure;
+  bDelete.Caption := lisBtnDelete;
   cbToolBarVisible.Caption := lisCoolbarVisible;
   gbGrabStyle.Caption := lisCoolbarGrabStyle;
   cbGrabStyle.Items.Strings[0] := lisCoolbarGrabStyleItem0;
@@ -122,7 +121,7 @@ begin
   gbBorderStyle.Caption := lisCoolbarBorderStyle;
   cbBorderStyle.Items.Strings[0] := lisCoolbarBorderStyleItem0;
   cbBorderStyle.Items.Strings[1] := lisCoolbarBorderStyleItem1;
-  bDefaultGeneral.Caption := lisCoolbarDefault;
+  bDefaultGeneral.Caption := lisCoolbarRestoreDefaults;
 end;
 
 procedure TToolbarOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
@@ -228,14 +227,17 @@ end;
 
 procedure TToolbarOptionsFrame.CoolbarResize(Sender: TObject);
 begin
-  Coolbar.AutosizeBands;
+  if tmWait.Enabled then
+    Exit;
+  tmWait.Enabled := True;
 end;
 
-procedure TToolbarOptionsFrame.CoolbarStartDrag(Sender: TObject;
-  var DragObject: TDragObject);
+procedure TToolbarOptionsFrame.tmWaitTimer(Sender: TObject);
 begin
-  Caption := 'Dragging';
+  Coolbar.AutosizeBands;
+  tmWait.Enabled := False;
 end;
+
 
 procedure TToolbarOptionsFrame.spGrabWidthChange(Sender: TObject);
 begin
@@ -320,10 +322,10 @@ begin
   CoolBar.Bands.Clear;
   for I := 0 to FTempList.Count - 1 do
   begin
-    //Balazs
     CoolBand := CoolBar.Bands.Add;
     CoolBand.Break := FTempList.Items[I].Break;
     CoolBand.Control := FTempList.Items[I].Toolbar;
+    FTempList.Items[I].Toolbar.Enabled := False;
     CoolBand.Visible := True;
     CoolBand.MinWidth := 25;
     CoolBand.MinHeight := 22;
@@ -362,12 +364,11 @@ begin
   CoolBand := CoolBar.Bands.Add;
   CoolBand.Break := True;
   CoolBand.Control := IDEToolbar.Toolbar;
+  IDEToolbar.Toolbar.Enabled := False;
   CoolBand.Visible := True;
   CoolBand.MinWidth := 25;
   CoolBand.MinHeight := 22;
   CoolBand.FixedSize := True;
-
-//  AddBand(True, IDEToolbar.Toolbar);
   SelectBand(CoolBand.Index);
   EnableButtons;
 end;
@@ -384,7 +385,7 @@ begin
     MessageDlg(lisCoolbarSelectToolBar, mtInformation, [mbOk], 0);
     Exit;
   end;
-  fToolBarConfig := TfToolBarConfig.Create(Self);
+  fToolBarConfig := TToolBarConfig.Create(Self);
   try
     ToolBar := (Coolbar.Bands.Items[ToConfig].Control as TToolBar);
     if ToolBar <> nil then
@@ -438,54 +439,48 @@ end;
 
 procedure TToolbarOptionsFrame.bDefaultGeneralClick(Sender: TObject);
 begin
-  if MessageDlg(lisCoolbarResetDefaults, mtConfirmation, [mbYes, mbNo], 0) = mrYes then
-  begin
-    cbGrabStyle.ItemIndex := 4;
-    spGrabWidth.Value := 5;
-    BiDiMode := bdLeftToRight;
-    cbBorderStyle.ItemIndex := 1;
-    Coolbar.GrabStyle := TGrabStyle(4);
-    Coolbar.GrabWidth := 5;
-    Coolbar.BandBorderStyle := bsSingle;
-  end;
+  cbGrabStyle.ItemIndex := 4;
+  spGrabWidth.Value := 5;
+  BiDiMode := bdLeftToRight;
+  cbBorderStyle.ItemIndex := 1;
+  Coolbar.GrabStyle := TGrabStyle(4);
+  Coolbar.GrabWidth := 5;
+  Coolbar.BandBorderStyle := bsSingle;
 end;
 
 procedure TToolbarOptionsFrame.bDefaultToolbarClick(Sender: TObject);
 var
   IDEToolBar: TIDEToolBar;
 begin
-  if MessageDlg(lisCoolbarResetDefaults, mtConfirmation, [mbYes, mbNo], 0) = mrYes then
-  begin
-    FTempList.Clear;
-    //standard
-    IDEToolBar := FTempList.Add;
-    IDEToolBar.Position := 0;
-    IDEToolBar.Break := False;
-    IDEToolBar.ButtonNames.Add('IDEMainMenu/File/itmFileNew/itmFileNewForm');
-    IDEToolBar.ButtonNames.Add('IDEMainMenu/File/itmFileNew/itmFileNewUnit');
-    IDEToolBar.ButtonNames.Add('---------------');
-    IDEToolBar.ButtonNames.Add('IDEMainMenu/File/itmFileOpenSave/itmFileOpen');
-    IDEToolBar.ButtonNames.Add('IDEMainMenu/File/itmFileOpenSave/itmFileSave');
-    IDEToolBar.ButtonNames.Add('IDEMainMenu/File/itmFileOpenSave/itmFileSaveAll');
-    IDEToolBar.ButtonNames.Add('---------------');
-    IDEToolBar.ButtonNames.Add('IDEMainMenu/View/itmViewMainWindows/itmViewToggleFormUnit');
+  FTempList.Clear;
+  //standard
+  IDEToolBar := FTempList.Add;
+  IDEToolBar.Position := 0;
+  IDEToolBar.Break := False;
+  IDEToolBar.ButtonNames.Add('IDEMainMenu/File/itmFileNew/itmFileNewForm');
+  IDEToolBar.ButtonNames.Add('IDEMainMenu/File/itmFileNew/itmFileNewUnit');
+  IDEToolBar.ButtonNames.Add('---------------');
+  IDEToolBar.ButtonNames.Add('IDEMainMenu/File/itmFileOpenSave/itmFileOpen');
+  IDEToolBar.ButtonNames.Add('IDEMainMenu/File/itmFileOpenSave/itmFileSave');
+  IDEToolBar.ButtonNames.Add('IDEMainMenu/File/itmFileOpenSave/itmFileSaveAll');
+  IDEToolBar.ButtonNames.Add('---------------');
+  IDEToolBar.ButtonNames.Add('IDEMainMenu/View/itmViewMainWindows/itmViewToggleFormUnit');
 
-    //debug
-    IDEToolBar := FTempList.Add;
-    IDEToolBar.Position := 1;
-    IDEToolBar.Break := True;
-    IDEToolBar.ButtonNames.Add('IDEMainMenu/Project/itmProjectAddRemoveSection/itmProjectViewUnits');
-    IDEToolBar.ButtonNames.Add('IDEMainMenu/Project/itmProjectAddRemoveSection/itmProjectViewForms');
-    IDEToolBar.ButtonNames.Add('---------------');
-    IDEToolBar.ButtonNames.Add('IDEMainMenu/Project/itmProjectAddRemoveSection/itmProjectBuildMode');
-    IDEToolBar.ButtonNames.Add('IDEMainMenu/Run/itmRunnning/itmRunMenuRun');
-    IDEToolBar.ButtonNames.Add('IDEMainMenu/Run/itmRunnning/itmRunMenuPause');
-    IDEToolBar.ButtonNames.Add('IDEMainMenu/Run/itmRunnning/itmRunMenuStop');
-    IDEToolBar.ButtonNames.Add('IDEMainMenu/Run/itmRunnning/itmRunMenuStepOver');
-    IDEToolBar.ButtonNames.Add('IDEMainMenu/Run/itmRunnning/itmRunMenuStepInto');
-    IDEToolBar.ButtonNames.Add('IDEMainMenu/Run/itmRunnning/itmRunMenuStepOut');
-    PopulateToolBar;
-  end;
+  //debug
+  IDEToolBar := FTempList.Add;
+  IDEToolBar.Position := 1;
+  IDEToolBar.Break := True;
+  IDEToolBar.ButtonNames.Add('IDEMainMenu/Project/itmProjectAddRemoveSection/itmProjectViewUnits');
+  IDEToolBar.ButtonNames.Add('IDEMainMenu/Project/itmProjectAddRemoveSection/itmProjectViewForms');
+  IDEToolBar.ButtonNames.Add('---------------');
+  IDEToolBar.ButtonNames.Add('IDEMainMenu/Project/itmProjectAddRemoveSection/itmProjectBuildMode');
+  IDEToolBar.ButtonNames.Add('IDEMainMenu/Run/itmRunnning/itmRunMenuRun');
+  IDEToolBar.ButtonNames.Add('IDEMainMenu/Run/itmRunnning/itmRunMenuPause');
+  IDEToolBar.ButtonNames.Add('IDEMainMenu/Run/itmRunnning/itmRunMenuStop');
+  IDEToolBar.ButtonNames.Add('IDEMainMenu/Run/itmRunnning/itmRunMenuStepOver');
+  IDEToolBar.ButtonNames.Add('IDEMainMenu/Run/itmRunnning/itmRunMenuStepInto');
+  IDEToolBar.ButtonNames.Add('IDEMainMenu/Run/itmRunnning/itmRunMenuStepOut');
+  PopulateToolBar;
 end;
 
 

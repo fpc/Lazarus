@@ -8,63 +8,61 @@ object ToolbarOptionsFrame: TToolbarOptionsFrame
   TabOrder = 0
   DesignLeft = 798
   DesignTop = 305
-  object pnTop: TPanel
+  object pnBottom: TPanel
     Left = 0
-    Height = 218
-    Top = 25
+    Height = 221
+    Top = 230
     Width = 520
-    Align = alTop
+    Align = alClient
     BevelOuter = bvNone
-    ClientHeight = 218
+    ClientHeight = 221
     ClientWidth = 520
     Constraints.MinHeight = 115
-    TabOrder = 0
+    TabOrder = 1
     object pnButtons: TPanel
       Left = 0
       Height = 40
-      Top = 178
+      Top = 181
       Width = 520
       Align = alBottom
       BevelOuter = bvNone
       ClientHeight = 40
       ClientWidth = 520
       Constraints.MinHeight = 35
-      TabOrder = 0
+      TabOrder = 1
       object bAdd: TBitBtn
-        Left = 247
+        Left = 15
         Height = 24
         Top = 0
         Width = 85
-        Anchors = [akTop, akRight]
         Caption = 'Add'
         OnClick = bAddClick
         TabOrder = 0
       end
       object bDelete: TBitBtn
-        Left = 421
+        Left = 189
         Height = 24
         Top = 0
         Width = 85
-        Anchors = [akTop, akRight]
         Caption = 'Delete'
         OnClick = bDeleteClick
-        TabOrder = 1
-      end
-      object bConfig: TBitBtn
-        Left = 334
-        Height = 24
-        Top = 0
-        Width = 85
-        Anchors = [akTop, akRight]
-        Caption = 'Config'
-        OnClick = bConfigClick
         TabOrder = 2
       end
-      object bDefaultToolbar: TBitBtn
-        Left = 8
+      object bConfig: TBitBtn
+        Left = 102
         Height = 24
         Top = 0
         Width = 85
+        Caption = 'Config'
+        OnClick = bConfigClick
+        TabOrder = 1
+      end
+      object bDefaultToolbar: TBitBtn
+        Left = 377
+        Height = 24
+        Top = 0
+        Width = 127
+        Anchors = [akTop, akRight]
         Caption = 'Default'
         OnClick = bDefaultToolbarClick
         TabOrder = 3
@@ -72,17 +70,17 @@ object ToolbarOptionsFrame: TToolbarOptionsFrame
     end
     object sbCoolBar: TScrollBox
       Left = 0
-      Height = 178
+      Height = 158
       Top = 0
       Width = 520
       HorzScrollBar.Page = 75
       VertScrollBar.Page = 25
-      Align = alClient
+      Anchors = [akTop, akLeft, akRight, akBottom]
       BorderStyle = bsNone
-      ClientHeight = 178
+      ClientHeight = 158
       ClientWidth = 520
       Constraints.MinHeight = 75
-      TabOrder = 1
+      TabOrder = 0
       object Coolbar: TCoolBar
         Left = 0
         Height = 25
@@ -102,33 +100,23 @@ object ToolbarOptionsFrame: TToolbarOptionsFrame
         ShowText = False
         OnMouseDown = CoolbarMouseDown
         OnResize = CoolbarResize
-        OnStartDrag = CoolbarStartDrag
       end
     end
   end
-  object Splitter1: TSplitter
-    Cursor = crVSplit
-    Left = 0
-    Height = 5
-    Top = 243
-    Width = 520
-    Align = alTop
-    MinSize = 50
-    ResizeAnchor = akTop
-  end
-  object pnBottom: TPanel
+  object pnTop: TPanel
     Left = 0
     Height = 203
-    Top = 248
+    Top = 0
     Width = 520
-    Align = alClient
+    Align = alTop
     BevelOuter = bvNone
     ClientHeight = 203
     ClientWidth = 520
-    TabOrder = 2
+    Constraints.MinWidth = 350
+    TabOrder = 0
     object dbGeneralSettings: TDividerBevel
       Left = 0
-      Height = 15
+      Height = 17
       Top = 5
       Width = 520
       Caption = 'General Toolbars Settings'
@@ -145,14 +133,14 @@ object ToolbarOptionsFrame: TToolbarOptionsFrame
       Top = 64
       Width = 188
       Caption = 'Grab Style'
-      ClientHeight = 69
+      ClientHeight = 68
       ClientWidth = 184
-      TabOrder = 0
+      TabOrder = 1
       object lbGrabWidth: TLabel
         Left = 12
-        Height = 15
+        Height = 17
         Top = 43
-        Width = 63
+        Width = 69
         Caption = 'Grab Width:'
         ParentColor = False
       end
@@ -161,12 +149,12 @@ object ToolbarOptionsFrame: TToolbarOptionsFrame
         AnchorSideTop.Side = asrCenter
         Left = 118
         Height = 23
-        Top = 39
+        Top = 40
         Width = 50
         MaxValue = 50
         MinValue = 1
         OnChange = spGrabWidthChange
-        TabOrder = 0
+        TabOrder = 1
         Value = 5
       end
       object cbGrabStyle: TComboBox
@@ -174,7 +162,7 @@ object ToolbarOptionsFrame: TToolbarOptionsFrame
         Height = 23
         Top = 5
         Width = 157
-        ItemHeight = 15
+        ItemHeight = 17
         ItemIndex = 4
         Items.Strings = (
           'gsSimple'
@@ -186,27 +174,27 @@ object ToolbarOptionsFrame: TToolbarOptionsFrame
         )
         OnChange = cbGrabStyleChange
         Style = csDropDownList
-        TabOrder = 1
+        TabOrder = 0
         Text = 'gsGripper'
       end
     end
     object bDefaultGeneral: TBitBtn
-      Left = 6
+      Left = 376
       Height = 24
-      Top = 167
-      Width = 85
-      Anchors = [akLeft, akBottom]
+      Top = 168
+      Width = 127
+      Anchors = [akRight, akBottom]
       Caption = 'Default'
       OnClick = bDefaultGeneralClick
-      TabOrder = 1
+      TabOrder = 3
     end
     object cbToolBarVisible: TCheckBox
       Left = 12
-      Height = 19
+      Height = 22
       Top = 32
-      Width = 108
+      Width = 119
       Caption = 'Toolbar is visible'
-      TabOrder = 2
+      TabOrder = 0
     end
     object gbBorderStyle: TGroupBox
       Left = 216
@@ -214,15 +202,15 @@ object ToolbarOptionsFrame: TToolbarOptionsFrame
       Top = 64
       Width = 188
       Caption = 'Band Border Style'
-      ClientHeight = 69
+      ClientHeight = 68
       ClientWidth = 184
-      TabOrder = 3
+      TabOrder = 2
       object cbBorderStyle: TComboBox
         Left = 11
         Height = 23
         Top = 5
         Width = 157
-        ItemHeight = 15
+        ItemHeight = 17
         ItemIndex = 1
         Items.Strings = (
           'None'
@@ -237,8 +225,8 @@ object ToolbarOptionsFrame: TToolbarOptionsFrame
   end
   object dbAddConfigDelete: TDividerBevel
     Left = 0
-    Height = 15
-    Top = 5
+    Height = 17
+    Top = 208
     Width = 520
     Caption = 'Add/Config/Delete Toolbar(s)'
     Align = alTop
@@ -250,6 +238,13 @@ object ToolbarOptionsFrame: TToolbarOptionsFrame
   end
   object imButtons: TImageList
     left = 464
+    top = 96
+  end
+  object tmWait: TTimer
+    Enabled = False
+    Interval = 100
+    OnTimer = tmWaitTimer
+    left = 408
     top = 96
   end
 end

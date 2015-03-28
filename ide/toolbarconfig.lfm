@@ -1,9 +1,9 @@
-object fToolBarConfig: TfToolBarConfig
+object ToolBarConfig: TToolBarConfig
   Left = 713
   Height = 457
   Top = 329
   Width = 772
-  Caption = 'fToolBarConfig'
+  Caption = 'ToolBarConfig'
   ClientHeight = 457
   ClientWidth = 772
   OnCreate = FormCreate
@@ -13,10 +13,10 @@ object fToolBarConfig: TfToolBarConfig
   object lblMenuTree: TLabel
     AnchorSideLeft.Control = TV
     AnchorSideLeft.Side = asrCenter
-    Left = 171
-    Height = 15
+    Left = 170
+    Height = 17
     Top = 14
-    Width = 71
+    Width = 73
     Caption = 'lblMenuTree'
     ParentColor = False
   end
@@ -24,10 +24,10 @@ object fToolBarConfig: TfToolBarConfig
     AnchorSideLeft.Control = lvToolbar
     AnchorSideLeft.Side = asrCenter
     AnchorSideTop.Control = lblMenuTree
-    Left = 574
-    Height = 15
+    Left = 573
+    Height = 17
     Top = 14
-    Width = 56
+    Width = 58
     Caption = 'lblToolbar'
     ParentColor = False
   end
@@ -37,7 +37,7 @@ object fToolBarConfig: TfToolBarConfig
     AnchorSideTop.Side = asrBottom
     Left = 415
     Height = 26
-    Top = 116
+    Top = 118
     Width = 22
     BorderSpacing.Top = 1
     Enabled = False
@@ -51,7 +51,7 @@ object fToolBarConfig: TfToolBarConfig
     AnchorSideTop.Control = TV
     Left = 415
     Height = 26
-    Top = 89
+    Top = 91
     Width = 22
     BorderSpacing.Left = 6
     BorderSpacing.Top = 25
@@ -66,7 +66,7 @@ object fToolBarConfig: TfToolBarConfig
     AnchorSideTop.Side = asrBottom
     Left = 415
     Height = 26
-    Top = 167
+    Top = 169
     Width = 22
     BorderSpacing.Top = 25
     Enabled = False
@@ -80,7 +80,7 @@ object fToolBarConfig: TfToolBarConfig
     AnchorSideTop.Side = asrBottom
     Left = 415
     Height = 26
-    Top = 194
+    Top = 196
     Width = 22
     BorderSpacing.Top = 1
     Enabled = False
@@ -88,96 +88,19 @@ object fToolBarConfig: TfToolBarConfig
     ShowHint = True
     ParentShowHint = False
   end
-  object pnlButtons: TPanel
-    Left = 0
-    Height = 42
-    Top = 415
-    Width = 772
-    Align = alBottom
-    BevelOuter = bvNone
-    ClientHeight = 42
-    ClientWidth = 772
-    Color = clGreen
-    ParentColor = False
-    TabOrder = 2
-    object Bevel1: TBevel
-      Left = 0
-      Height = 2
-      Top = 0
-      Width = 772
-      Align = alTop
-    end
-    object btnOK: TButton
-      AnchorSideRight.Control = btnCancel
-      AnchorSideBottom.Control = pnlButtons
-      AnchorSideBottom.Side = asrBottom
-      Left = 604
-      Height = 25
-      Top = 11
-      Width = 75
-      Anchors = [akRight, akBottom]
-      AutoSize = True
-      BorderSpacing.Right = 6
-      BorderSpacing.Bottom = 6
-      BorderSpacing.InnerBorder = 4
-      Caption = 'btnOK'
-      Constraints.MaxHeight = 25
-      Constraints.MinHeight = 25
-      Constraints.MinWidth = 75
-      ModalResult = 1
-      TabOrder = 0
-    end
-    object btnCancel: TButton
-      AnchorSideRight.Control = pnlButtons
-      AnchorSideRight.Side = asrBottom
-      AnchorSideBottom.Control = pnlButtons
-      AnchorSideBottom.Side = asrBottom
-      Left = 685
-      Height = 25
-      Top = 11
-      Width = 81
-      Anchors = [akRight, akBottom]
-      AutoSize = True
-      BorderSpacing.Right = 6
-      BorderSpacing.Bottom = 6
-      BorderSpacing.InnerBorder = 4
-      Cancel = True
-      Caption = 'btnCancel'
-      Constraints.MaxHeight = 25
-      Constraints.MinHeight = 25
-      Constraints.MinWidth = 75
-      ModalResult = 2
-      TabOrder = 1
-    end
-    object btnHelp: TBitBtn
-      AnchorSideBottom.Control = pnlButtons
-      AnchorSideBottom.Side = asrBottom
-      Left = 16
-      Height = 25
-      Top = 11
-      Width = 75
-      Anchors = [akLeft, akBottom]
-      BorderSpacing.Bottom = 6
-      Caption = 'Help'
-      OnClick = btnHelpClick
-      TabOrder = 2
-    end
-  end
   object TV: TTreeView
     AnchorSideLeft.Control = FilterEdit
     AnchorSideTop.Control = FilterEdit
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Splitter1
-    AnchorSideBottom.Control = pnlButtons
     Left = 16
-    Height = 345
-    Top = 64
+    Height = 343
+    Top = 66
     Width = 381
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Top = 6
     BorderSpacing.Right = 3
     BorderSpacing.Bottom = 6
-    DefaultItemHeight = 18
     ReadOnly = True
     ScrollBars = ssAutoBoth
     TabOrder = 1
@@ -187,7 +110,7 @@ object fToolBarConfig: TfToolBarConfig
   object FilterEdit: TTreeFilterEdit
     AnchorSideTop.Side = asrBottom
     Left = 16
-    Height = 21
+    Height = 23
     Top = 37
     Width = 192
     UseFormActivate = True
@@ -207,8 +130,8 @@ object fToolBarConfig: TfToolBarConfig
     AnchorSideBottom.Control = TV
     AnchorSideBottom.Side = asrBottom
     Left = 400
-    Height = 345
-    Top = 64
+    Height = 343
+    Top = 66
     Width = 9
     Align = alNone
     Anchors = [akTop, akBottom]
@@ -217,10 +140,9 @@ object fToolBarConfig: TfToolBarConfig
     AnchorSideLeft.Control = btnAdd
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = TV
-    AnchorSideBottom.Control = pnlButtons
     Left = 443
-    Height = 314
-    Top = 64
+    Height = 312
+    Top = 66
     Width = 318
     Anchors = [akTop, akLeft, akBottom]
     BorderSpacing.Left = 6
@@ -229,7 +151,7 @@ object fToolBarConfig: TfToolBarConfig
       item
         AutoSize = True
         Caption = 'Name'
-        Width = 316
+        Width = 100
       end    
       item
         AutoSize = True
@@ -239,7 +161,7 @@ object fToolBarConfig: TfToolBarConfig
       end>
     ScrollBars = ssAutoBoth
     ShowColumnHeaders = False
-    TabOrder = 4
+    TabOrder = 3
     ViewStyle = vsReport
     OnSelectItem = lvToolbarSelectItem
   end
@@ -249,7 +171,7 @@ object fToolBarConfig: TfToolBarConfig
     AnchorSideTop.Side = asrBottom
     Left = 415
     Height = 26
-    Top = 270
+    Top = 272
     Width = 22
     BorderSpacing.Top = 50
     OnClick = btnAddDividerClick
@@ -261,10 +183,10 @@ object fToolBarConfig: TfToolBarConfig
     AnchorSideTop.Control = FilterEdit
     AnchorSideRight.Control = lvToolbar
     AnchorSideRight.Side = asrBottom
-    Left = 713
-    Height = 15
+    Left = 715
+    Height = 17
     Top = 37
-    Width = 48
+    Width = 46
     Anchors = [akTop, akRight]
     Caption = 'lbSelect'
     ParentColor = False
@@ -283,5 +205,29 @@ object fToolBarConfig: TfToolBarConfig
     OnClick = btnClearClick
     ShowHint = True
     ParentShowHint = False
+  end
+  object pnlButtons: TButtonPanel
+    Left = 6
+    Height = 37
+    Top = 414
+    Width = 760
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
+    TabOrder = 4
+    ShowButtons = [pbOK, pbCancel, pbHelp]
+    ShowGlyphs = [pbOK, pbCancel, pbHelp]
+    object Bevel1: TBevel
+      Left = 0
+      Height = 2
+      Top = 0
+      Width = 760
+      Align = alTop
+    end
   end
 end

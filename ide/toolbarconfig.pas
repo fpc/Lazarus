@@ -25,7 +25,7 @@ interface
 uses
   Classes, SysUtils, Forms, Graphics, Dialogs, ExtCtrls, Buttons, StdCtrls,
   ComCtrls, Menus, TreeFilterEdit, LazarusIDEStrConsts,
-  MenuIntf, IDEImagesIntf, LCLProc;
+  MenuIntf, IDEImagesIntf, LCLProc, ButtonPanel;
 
 type
   { TLvItem }
@@ -34,9 +34,9 @@ type
     LvIndex: Integer;
   end;
 
-  { TfToolBarConfig }
+  { TToolBarConfig }
 
-  TfToolBarConfig = class(TForm)
+  TToolBarConfig = class(TForm)
     Bevel1: TBevel;
     btnHelp: TBitBtn;
     btnAdd: TSpeedButton;
@@ -54,7 +54,7 @@ type
     miDebug: TMenuItem;
     miHTML: TMenuItem;
     miCustom: TMenuItem;
-    pnlButtons: TPanel;
+    pnlButtons: TButtonPanel;
     FilterEdit: TTreeFilterEdit;
     sbAddDivider: TSpeedButton;
     btnClear: TSpeedButton;
@@ -98,7 +98,7 @@ type
   end;
 
 var
-  fToolBarConfig: TfToolBarConfig;
+  fToolBarConfig: TToolBarConfig;
 
 implementation
 
@@ -110,9 +110,9 @@ uses
 const
   cDivider = '---------------';
 
-{ TfToolBarConfig }
+{ TToolBarConfig }
 
-procedure TfToolBarConfig.FormCreate(Sender: TObject);
+procedure TToolBarConfig.FormCreate(Sender: TObject);
 begin
   inherited;
   pnlButtons.Color := clBtnFace;
@@ -123,9 +123,7 @@ begin
   btnMoveUp.LoadGlyphFromResourceName(HInstance, 'arrow_up');
   btnMoveDown.LoadGlyphFromResourceName(HInstance, 'arrow_down');
   btnClear.LoadGlyphFromResourceName(HINSTANCE,'menu_close');
-  btnHelp.LoadGlyphFromResourceName(HINSTANCE, 'menu_help');
   sbAddDivider.LoadGlyphFromResourceName(HINSTANCE, 'menu_divider16');
-
 
   btnAdd.Hint      := lisCoolBarAddSelected;
   btnRemove.Hint   := lisCoolBarRemoveSelected;
@@ -144,37 +142,38 @@ begin
   MainList := TStringList.Create;
   MainList.OwnsObjects:= True; // it should be the default, but just to make sure...
 
+  pnlButtons.Helpbutton.OnClick := @btnHelpClick;
   SetupCaptions;
   LoadCategories;
 end;
 
-procedure TfToolBarConfig.FormDestroy(Sender: TObject);
+procedure TToolBarConfig.FormDestroy(Sender: TObject);
 begin
   MainList.Free;
 end;
 
-procedure TfToolBarConfig.btnClearClick(Sender: TObject);
+procedure TToolBarConfig.btnClearClick(Sender: TObject);
 begin
   lvToolbar.Selected := nil;
 end;
 
-procedure TfToolBarConfig.btnHelpClick(Sender: TObject);
+procedure TToolBarConfig.btnHelpClick(Sender: TObject);
 begin
   ShowMessageFmt('%s%s%s%s%s%s%s', [lisCoolBarHelp1, LineEnding, lisCoolBarHelp2, LineEnding,
                                     lisCoolBarHelp3, LineEnding, lisCoolBarHelp4]);
 end;
 
-procedure TfToolBarConfig.btnShowClick(Sender: TObject);
+procedure TToolBarConfig.btnShowClick(Sender: TObject);
 begin
   lvToolbar.Columns[1].Visible:= true;
 end;
 
-procedure TfToolBarConfig.btnHideClick(Sender: TObject);
+procedure TToolBarConfig.btnHideClick(Sender: TObject);
 begin
   lvToolbar.Columns[1].Visible:= false;
 end;
 
-procedure TfToolBarConfig.lbToolbarSelectionChange(Sender: TObject);
+procedure TToolBarConfig.lbToolbarSelectionChange(Sender: TObject);
 var
   i: Integer;
 begin
@@ -184,7 +183,7 @@ begin
   btnMoveDown.Enabled := (i > -1) and (i < lvToolbar.Items.Count-1);
 end;
 
-procedure TfToolBarConfig.TVSelectionChanged(Sender: TObject);
+procedure TToolBarConfig.TVSelectionChanged(Sender: TObject);
 var
   n: TTreeNode;
 begin
@@ -192,7 +191,7 @@ begin
   btnAdd.Enabled := (Assigned(n) and Assigned(n.Data));
 end;
 
-function TfToolBarConfig.GetMainListIndex(Item: TListItem): Integer;
+function TToolBarConfig.GetMainListIndex(Item: TListItem): Integer;
 var
   I: Integer;
 begin
@@ -205,7 +204,7 @@ begin
   Result := -1;
 end;
 
-procedure TfToolBarConfig.InsertMainListItem(Item,NextItem: TListItem);
+procedure TToolBarConfig.InsertMainListItem(Item,NextItem: TListItem);
 var
   I,J: Integer;
   aMainListItem: TLvItem;
@@ -225,7 +224,7 @@ begin
   end;
 end;
 
-procedure TfToolBarConfig.RemoveMainListItem(Item: TListItem);
+procedure TToolBarConfig.RemoveMainListItem(Item: TListItem);
 var
   I,J: Integer;
   aMainListItem: TLvItem;
@@ -240,7 +239,7 @@ begin
   end;
 end;
 
-procedure TfToolBarConfig.ExchangeMainListItem(Item1, Item2: TListItem);
+procedure TToolBarConfig.ExchangeMainListItem(Item1, Item2: TListItem);
 var
   MainIndex1,MainIndex2: Integer;
   aMainListItem: TLvItem;
@@ -254,7 +253,7 @@ begin
   aMainListItem.LvIndex:= Item2.Index;
 end;
 
-procedure TfToolBarConfig.btnAddClick(Sender: TObject);
+procedure TToolBarConfig.btnAddClick(Sender: TObject);
 var
   n: TTreeNode;
   ACaption: string;
@@ -295,7 +294,7 @@ begin
   end;
 end;
 
-procedure TfToolBarConfig.btnRemoveClick(Sender: TObject);
+procedure TToolBarConfig.btnRemoveClick(Sender: TObject);
 Var
   mi: TIDEMenuItem;
   n: TTreeNode;
@@ -319,7 +318,7 @@ begin
   end;
 end;
 
-procedure TfToolBarConfig.lvToolbarSelectItem(Sender: TObject;
+procedure TToolBarConfig.lvToolbarSelectItem(Sender: TObject;
   Item: TListItem; Selected: Boolean);
 begin
   lbToolbarSelectionChange(Sender);
@@ -328,7 +327,7 @@ begin
   btnRemove.Enabled:= btnClear.Enabled;
 end;
 
-procedure TfToolBarConfig.btnAddDividerClick(Sender: TObject);
+procedure TToolBarConfig.btnAddDividerClick(Sender: TObject);
 var
   lvItem: TListItem;
   anIndex: Integer;
@@ -346,7 +345,7 @@ begin
     InsertMainListItem(lvItem,Nil);
 end;
 
-procedure TfToolBarConfig.btnMoveDownClick(Sender: TObject);
+procedure TToolBarConfig.btnMoveDownClick(Sender: TObject);
 var
   Index1,Index2: Integer;
 begin
@@ -364,7 +363,7 @@ begin
     end;
 end;
 
-procedure TfToolBarConfig.btnMoveUpClick(Sender: TObject);
+procedure TToolBarConfig.btnMoveUpClick(Sender: TObject);
 var
   Index1,Index2: Integer;
 begin
@@ -382,16 +381,14 @@ begin
   end;
 end;
 
-procedure TfToolBarConfig.SetupCaptions;
+procedure TToolBarConfig.SetupCaptions;
 begin
-  Caption               := lisEditorToolbarConfigForm;
-  btnOK.Caption         := lisCoolbarOK;
-  btnCancel.Caption     := lisCoolbarCancel;
-  lblMenuTree.Caption   := lisCoolbarMenuTree;
-  lblToolbar.Caption    := lisCoolbarToolbar;
+  Caption               := lisToolbarConfiguration;
+  lblMenuTree.Caption   := lisCoolbarAvailableCommands;
+  lblToolbar.Caption    := lisCoolbarToolbarCommands;
 end;
 
-procedure TfToolBarConfig.LoadCategories;
+procedure TToolBarConfig.LoadCategories;
 var
   i: integer;
 begin
@@ -405,7 +402,7 @@ begin
   end;
 end;
 
-procedure TfToolBarConfig.AddMenuItem(ParentNode: TTreeNode; Item: TIDEMenuItem; Level: Integer);
+procedure TToolBarConfig.AddMenuItem(ParentNode: TTreeNode; Item: TIDEMenuItem; Level: Integer);
 var
   n: TTreeNode;
   i: integer;
@@ -448,7 +445,7 @@ begin
   end;
 end;
 
-function TfToolBarConfig.RootNodeCaption(Item: TIDEMenuItem): string;
+function TToolBarConfig.RootNodeCaption(Item: TIDEMenuItem): string;
 var
   AName: string;
 begin
@@ -467,7 +464,7 @@ begin
   end;
 end;
 
-procedure TfToolBarConfig.AddListItem(Item: TIDEMenuItem; PMask: Integer);
+procedure TToolBarConfig.AddListItem(Item: TIDEMenuItem; PMask: Integer);
 var
   aListItem: TLvItem;
 begin
@@ -482,7 +479,7 @@ begin
   end;
 end;
 
-procedure TfToolBarConfig.AddToolBarItem(Item: TIDEMenuItem; PMask: Integer);
+procedure TToolBarConfig.AddToolBarItem(Item: TIDEMenuItem; PMask: Integer);
 Var
   n: TTreeNode;
   ACaption: string;
@@ -505,7 +502,7 @@ begin
   end;
 end;
 
-procedure TfToolBarConfig.AddDivider(PMask: Integer);
+procedure TToolBarConfig.AddDivider(PMask: Integer);
 var
   lvItem: TListItem;
 begin
@@ -515,7 +512,7 @@ begin
 //  lvItem.SubItems.Add(IntToStr(PMask));
 end;
 
-procedure TfToolBarConfig.FillToolBar;
+procedure TToolBarConfig.FillToolBar;
 var
   I: Integer;
   aListItem: TLvItem;
@@ -535,7 +532,7 @@ begin
   end;
 end;
 
-procedure TfToolBarConfig.LoadSettings(const SL: TStringList);
+procedure TToolBarConfig.LoadSettings(const SL: TStringList);
 var
   I: Integer;
   Value: string;
@@ -558,7 +555,7 @@ begin
   FillToolBar;
 end;
 
-procedure TfToolBarConfig.SaveSettings(SL: TStringList);
+procedure TToolBarConfig.SaveSettings(SL: TStringList);
 var
   lvItem: TLvItem;
   I: Integer;
