@@ -2,7 +2,7 @@
 {**************************************************************
 Implementation for carbonprinter
 ***************************************************************}
-Uses InterfaceBase, LCLIntf, CarbonProc, LCLProc;
+Uses InterfaceBase, LCLIntf, CarbonProc, LCLProc, dl;
 
 
 { TCarbonPrinterContext }
@@ -335,19 +335,51 @@ begin
   Validate;
 end;
 
+type
+ TPMPrinterGetOutputResolution = function( printer: PMPrinter;
+   printSettings: PMPrintSettings;
+   var resolutionP: PMResolution ): OSStatus; cdecl;
+
+var
+ _PMPrinterGetOutputResolution: TPMPrinterGetOutputResolution =  nil;
+ _PMPrinterGetOutputResolutionLoaded: Boolean;
+
 function TCarbonPrinter.GetOutputResolution: PMResolution;
 var
   res: OSStatus;
+  r  : PMresolution;
   prn: PMPrinter;
   cnt: UInt32;
+  i  : Integer;
 begin
   prn := GetCurrentPrinter;
-  PMPrinterGetPrinterResolutionCount(prn, cnt);
-  if cnt>0 then
-    //todo: get the first one or the highest one?
-    res:=PMPrinterGetIndexedPrinterResolution(prn, 1, Result)
+
+  if not _PMPrinterGetOutputResolutionLoaded then
+  begin
+    // loading in run-time, because the function isn't available on OSX 10.4
+    _PMPrinterGetOutputResolutionLoaded := true;
+    _PMPrinterGetOutputResolution := TPMPrinterGetOutputResolution(dlsym(RTLD_DEFAULT,'PMPrinterGetOutputResolution'));
+  end;
+  if Assigned(_PMPrinterGetOutputResolution) then
+    // the function might return kPMKeyNotFound, see function description in MacOSAll
+    res := _PMPrinterGetOutputResolution(prn,  PrintSettings, Result{%H-})
   else
-    res:=noErr+1;
+    res := noErr+1;
+
+  if res <> noErr then
+  begin
+   res := PMPrinterGetPrinterResolutionCount(prn, cnt{%H-});
+   if res = noErr then
+   begin
+     PMPrinterGetIndexedPrinterResolution(prn, 1, Result);
+     for i := 2 to cnt do
+     begin
+       if PMPrinterGetIndexedPrinterResolution(prn, i, r{%H-}) = noErr then
+         if (r.hRes > Result.hRes) and (r.vRes > Result.vRes) then
+           Result := r;
+     end;
+   end;
+  end;
 
   if res<>noErr then
   begin
