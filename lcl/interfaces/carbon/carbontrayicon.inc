@@ -426,7 +426,7 @@ var
 begin
   AMenuItem := NSMenuItem.CreateWithHandle(lobjc.id(_cmd));
   LCLMenu := TMenuItem(PtrInt(AMenuItem.Tag()));
-  if (LCLMenu <> nil) and Assigned(LCLMenu.OnClick) then LCLMenu.OnClick(LCLMenu);
+  if (LCLMenu <> nil) then LCLMenu.Click;
 end;
 
 class procedure TPrivateCocoaCarbonTrayIcon.HandleMenuWillOpen(_self: lobjc.id;
