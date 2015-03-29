@@ -514,8 +514,10 @@ Var
 
 procedure Register;
 begin
+{$IFDEF HASIBCONNECTION}
   RegisterPropertyEditor(TypeInfo(AnsiString),
     TIBConnection, 'DatabaseName', TSQLFirebirdFileNamePropertyEditor);
+{$ENDIF}
   RegisterPropertyEditor(TypeInfo(AnsiString),
     TSQLConnector, 'ConnectorType', TSQLDBConnectorTypePropertyEditor);
 {$IFDEF HASLIBLOADER}
