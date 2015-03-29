@@ -35,9 +35,14 @@ const
   DEF_SHADOW_OFFSET = 8;
   DEF_SHADOW_TRANSPARENCY = 128;
 
+  // Constants for Chart.Notify commands
+  CMD_QUERY_SERIESEXTENT = 0;
+
+
 type
   TCustomChart = class(TCustomControl)
   public
+    procedure Notify(ACommand: Integer; AParam1, AParam2: Pointer; var Data); virtual; abstract;
     procedure StyleChanged(Sender: TObject); virtual; abstract;
     procedure ZoomFull(AImmediateRecalc: Boolean = false); virtual; abstract;
   end;

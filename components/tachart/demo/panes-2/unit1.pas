@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, FileUtil, TAGraph, TASources, TASeries, TATransformations,
   Forms, Controls, Graphics, Dialogs, ExtCtrls, StdCtrls, ComCtrls, types,
-  TACustomSeries, TATools;
+  TACustomSeries, TATools, TAFuncSeries;
 
 type
 
@@ -18,6 +18,7 @@ type
     Chart1ConstantLine2: TConstantLine;
     Chart1ConstantLine3: TConstantLine;
     Chart1ConstantLine4: TConstantLine;
+    Chart1FuncSeries2: TFuncSeries;
     Chart2ConstantLine1: TConstantLine;
     Chart2ConstantLine2: TConstantLine;
     Chart2ConstantLine3: TConstantLine;
@@ -26,6 +27,7 @@ type
     Chart1LineSeries2: TLineSeries;
     Chart1LineSeries3: TLineSeries;
     Chart1LineSeries4: TLineSeries;
+    Chart2FuncSeries2: TFuncSeries;
     Chart2LineSeries1: TLineSeries;
     Chart2LineSeries2: TLineSeries;
     Chart2LineSeries3: TLineSeries;
@@ -53,8 +55,10 @@ type
     CbUseMin: TCheckBox;
     CbGrouped: TCheckBox;
     CbShowFrame: TCheckBox;
+    CheckBox1: TCheckBox;
     Label1: TLabel;
     Label2: TLabel;
+    LblXExtentIgnored: TLabel;
     PageControl1: TPageControl;
     Panel1: TPanel;
     RandomChartSource11: TRandomChartSource;
@@ -71,14 +75,18 @@ type
     procedure CbGroupedChange(Sender: TObject);
     procedure CbUseMaxChange(Sender: TObject);
     procedure CbUseMinChange(Sender: TObject);
-    procedure DataPointDragTool_AfterMouseMove(ATool: TChartTool;
-      APoint: TPoint);
+    procedure Chart1FuncSeries2Calculate(const AX: Double; out AY: Double);
+    procedure Chart2FuncSeries2Calculate(const AX: Double; out AY: Double);
+    procedure CheckBox1Change(Sender: TObject);
+    procedure DataPointDragTool_AfterMouseMove(ATool: TChartTool; APoint: TPoint);
     procedure CbLineAtDataOnlyChange(Sender: TObject);
     procedure CbShowGridChange(Sender: TObject);
     procedure CbShowArrowChange(Sender: TObject);
     procedure CbInvertedChange(Sender: TObject);
     procedure CbBiDiModeChange(Sender: TObject);
     procedure CbMarksAtDataOnlyChange(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+    procedure PageControl1Change(Sender: TObject);
     procedure PageControl1Changing(Sender: TObject; var AllowChange: Boolean);
   private
     { private declarations }
@@ -97,27 +105,6 @@ uses
   Math, TAChartUtils;
 
 { TForm1 }
-
-{ The autoscale transformations are shared between both pages. Before changing
-  to the new page we make sure that the constant lines series which indicate the
-  pane limits are at the correct position. }
-procedure TForm1.PageControl1Changing(Sender: TObject; var AllowChange: Boolean);
-begin
-  case PageControl1.ActivePageIndex of
-    0: begin
-         Chart2ConstantLine1.Position := ChartAxisTransformations1AutoScaleAxisTransform1.Maxvalue;
-         Chart2ConstantLine2.Position := ChartAxisTransformations2AutoScaleAxisTransform1.MinValue;
-         Chart2ConstantLine3.Position := ChartAxisTransformations2AutoScaleAxisTransform1.Maxvalue;
-         Chart2ConstantLine4.Position := ChartAxisTransformations3AutoScaleAxisTransform1.Minvalue;
-       end;
-    1: begin
-         Chart1ConstantLine1.Position := ChartAxisTransformations1AutoScaleAxisTransform1.Maxvalue;
-         Chart1ConstantLine2.Position := ChartAxisTransformations2AutoScaleAxisTransform1.MinValue;
-         Chart1ConstantLine3.Position := ChartAxisTransformations2AutoScaleAxisTransform1.Maxvalue;
-         Chart1ConstantLine4.Position := ChartAxisTransformations3AutoScaleAxisTransform1.Minvalue;
-       end;
-  end;
-end;
 
 procedure TForm1.CbLineAtDataOnlyChange(Sender: TObject);
 var
@@ -172,6 +159,24 @@ begin
   end;
 end;
 
+procedure TForm1.Chart1FuncSeries2Calculate(const AX: Double; out AY: Double);
+begin
+  AY := sin(5 * AX);
+end;
+
+procedure TForm1.Chart2FuncSeries2Calculate(const AX: Double; out AY: Double);
+begin
+  AY := sin(5*AX)*0.5 + 0.5;
+end;
+
+procedure TForm1.CheckBox1Change(Sender: TObject);
+begin
+  Chart1FuncSeries2.Active := Checkbox1.Checked;
+  Chart1LineSeries2.Active := not Checkbox1.Checked;
+  Chart2FuncSeries2.Active := Checkbox1.Checked;
+  Chart2LineSeries2.Active := not Checkbox1.Checked;
+end;
+
 // This code is used by both ChartToolSets, for Chart1 and Chart2.
 procedure TForm1.DataPointDragTool_AfterMouseMove(ATool: TChartTool;
   APoint: TPoint);
@@ -184,6 +189,8 @@ var
   ex: TDoubleRect;
   ls: array[1..4] of TConstantLine;
 begin
+  UnUsed(APoint);
+
   ser := TConstantLine(TDataPointDragTool(ATool).Series);
   if ser = nil then
     exit;
@@ -204,7 +211,7 @@ begin
   end;
 
   if ser = ls[1] then begin
-    prevPos := ex.a.y + MIN_SIZE;
+    prevPos := TDoublePointBoolArr(ex.a)[PageControl1.ActivepageIndex=0] + MIN_SIZE;
     nextPos := ls[2].Position - MIN_DISTANCE;
     ser.Position := EnsureRange(pos, prevPos, nextPos);
     ChartAxisTransformations1AutoscaleAxisTransform1.MaxValue := ser.Position;
@@ -223,7 +230,7 @@ begin
   end else
   if ser = ls[4] then begin
     prevPos := ls[3].Position + MIN_DISTANCE;
-    nextPos := ex.b.y - MIN_SIZE;
+    nextPos := TDoublePointBoolArr(ex.b)[PageControl1.ActivepageIndex=0] - MIN_SIZE;
     ser.Position := EnsureRange(pos, prevPos, nextPos);
     ChartAxisTransformations3AutoscaleAxisTransform1.MinValue := ser.Position;
   end;
@@ -277,6 +284,38 @@ begin
   for i:=0 to 3 do begin
     Chart1.AxisList[i].Marks.AtDataOnly := CbMarksAtDataOnly.Checked;
     Chart2.AxisList[i].Marks.AtDataOnly := CbMarksAtDataOnly.Checked;
+  end;
+end;
+
+procedure TForm1.FormCreate(Sender: TObject);
+begin
+  PageControl1.ActivePageIndex := 0;
+end;
+
+procedure TForm1.PageControl1Change(Sender: TObject);
+begin
+  LblXExtentIgnored.Visible := PageControl1.ActivePageIndex = 1;
+end;
+
+{ The autoscale transformations are shared between both pages. Before changing
+  to the new page we make sure that the constant lines series which indicate the
+  pane limits are at the correct position. }
+procedure TForm1.PageControl1Changing(Sender: TObject; var AllowChange: Boolean);
+begin
+  UnUsed(AllowChange);
+  case PageControl1.ActivePageIndex of
+    0: begin
+         Chart2ConstantLine1.Position := ChartAxisTransformations1AutoScaleAxisTransform1.Maxvalue;
+         Chart2ConstantLine2.Position := ChartAxisTransformations2AutoScaleAxisTransform1.MinValue;
+         Chart2ConstantLine3.Position := ChartAxisTransformations2AutoScaleAxisTransform1.Maxvalue;
+         Chart2ConstantLine4.Position := ChartAxisTransformations3AutoScaleAxisTransform1.Minvalue;
+       end;
+    1: begin
+         Chart1ConstantLine1.Position := ChartAxisTransformations1AutoScaleAxisTransform1.Maxvalue;
+         Chart1ConstantLine2.Position := ChartAxisTransformations2AutoScaleAxisTransform1.MinValue;
+         Chart1ConstantLine3.Position := ChartAxisTransformations2AutoScaleAxisTransform1.Maxvalue;
+         Chart1ConstantLine4.Position := ChartAxisTransformations3AutoScaleAxisTransform1.Minvalue;
+       end;
   end;
 end;
 

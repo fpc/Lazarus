@@ -88,7 +88,6 @@ type
     FTitlePos: Integer;
     procedure GetMarkValues;
 //    procedure VisitSource(ASource: TCustomChartSource; var AData);
-    procedure VisitSource_Extent(ASource: TCustomChartSource; var AData);
   private
     FAxisRect: TRect;
     FGroupIndex: Integer;
@@ -569,10 +568,9 @@ procedure TChartAxis.GetMarkValues;
 var
   i: Integer;
   d: TValuesInRangeParams;
-  vis: TChartOnVisitSources;
+//  vis: TChartOnVisitSources;
   axisMin, axisMax: Double;
-  ex: TDoubleRect;
-  v: Boolean;
+  rng: TDoubleInterval;
 begin
   with FHelper do begin
     axisMin := GetTransform.GraphToAxis(FValueMin);
@@ -582,17 +580,15 @@ begin
   Marks.Range.Intersect(axisMin, axisMax);
   d := MakeValuesInRangeParams(axisMin, axisMax);
   SetLength(FMarkValues, 0);
-  vis := TChartAxisList(Collection).OnVisitSources;
-  if Marks.AtDataOnly and Assigned(vis) then begin
-//    vis(@VisitSource, Self, d);
+//  vis := TChartAxisList(Collection).OnVisitSources;
+  if Marks.AtDataOnly {and Assigned(vis)} then begin
+    // vis(@VisitSource, Self, d);
     // FIXME: Intersect axisMin/Max with the union of series extents.
-
-    v := IsVertical;
-    ex := EmptyExtent;
-    vis(@VisitSource_Extent, self, ex);
-    UpdateBounds(TDoublePointBoolArr(ex.a)[v], TDoublePointBoolArr(ex.b)[v]);
-    d.FMin := TDoublePointBoolArr(ex.a)[IsVertical];
-    d.FMax := TDoublePointBoolArr(ex.b)[IsVertical];
+    // wp: - I think this is fixed in what follows...
+    GetChart.Notify(CMD_QUERY_SERIESEXTENT, self, nil, rng{%H-});
+    UpdateBounds(rng.FStart, rng.FEnd);
+    d.FMin := rng.FStart;
+    d.FMax := rng.FEnd;
     if IsNaN(d.FMin) or IsNaN(d.FMax) then begin
       d.FMax := 1.0; d.FMin := 0.0;
     end else
@@ -1001,22 +997,6 @@ begin
   Marks.SourceDef.ValuesInRange(p, FMarkValues);
 end;
 }
-
-procedure TChartAxis.VisitSource_Extent(ASource: TCustomChartSource; var AData);
-var
-  ex: TDoubleRect;
-begin
-  ex := ASource.Extent;
-  if IsInfinite(ex.a.x) or IsInfinite(ex.a.y) or
-     IsInfinite(ex.b.x) or IsInfinite(ex.b.y)
-  then
-    exit;
-
-  TDoubleRect(AData).a.x := Min(ex.a.x, TDoubleRect(AData).a.x);
-  TDoubleRect(AData).b.x := Max(ex.b.x, TDoubleRect(AData).b.x);
-  TDoubleRect(AData).a.y := Min(ex.a.y, TDoubleRect(AData).a.y);
-  TDoubleRect(AData).b.y := Max(ex.b.y, TDoubleRect(AData).b.y);
-end;
 
 { TChartAxisList }
 

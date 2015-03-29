@@ -87,6 +87,7 @@ type
     function AxisToGraphY(AY: Double): Double; override;
     function GetAxisX: TChartAxis;
     function GetAxisY: TChartAxis;
+    function GetAxisBounds(AAxis: TChartAxis; out AMin, AMax: Double): Boolean; override;
     function GetGraphBounds: TDoubleRect; override;
     function GraphToAxis(APoint: TDoublePoint): TDoublePoint;
     function GraphToAxisX(AX: Double): Double; override;
@@ -353,6 +354,29 @@ begin
   FreeAndNil(FLegend);
   FreeAndNil(FShadow);
   inherited;
+end;
+
+function TCustomChartSeries.GetAxisBounds(AAxis: TChartAxis;
+  out AMin, AMax: Double): Boolean;
+var
+  ex: TDoubleRect;
+begin
+  if (AAxis.Index = AxisIndexX) or (AAxis.Index = AxisIndexY) then begin
+    ex := EmptyExtent;
+    GetBounds(ex);
+    with ex do begin
+      UpdateBoundsByAxisRange(FChart.AxisList, AxisIndexX, a.X, b.X);
+      UpdateBoundsByAxisRange(FChart.AxisList, AxisIndexY, a.Y, b.Y);
+      if IsRotated then begin
+        Exchange(a.X, a.Y);
+        Exchange(b.X, b.Y);
+      end;
+    end;
+    AMin := TDoublePointBoolArr(ex.a)[AAxis.IsVertical];
+    AMax := TDoublePointBoolArr(ex.b)[AAxis.IsVertical];
+    Result := true;
+  end else
+    Result := false;
 end;
 
 function TCustomChartSeries.GetAxisX: TChartAxis;

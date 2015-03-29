@@ -40,7 +40,6 @@
       <Unit0>
         <Filename Value="project1.lpr"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="project1"/>
       </Unit0>
       <Unit1>
         <Filename Value="unit1.pas"/>
