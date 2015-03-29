@@ -54,6 +54,8 @@ var
 begin
   Result := gtk_false; // stop this timer
 
+  AStrings.FTimerMove:=0; // to know if this timer is active when destroyed
+
   if AStrings.FQueueCursorMove = -1 then
   begin
     // always scroll so the cursor is visible
@@ -78,7 +80,9 @@ var
   EndIter: TGtkTextIter;
   Offset: Integer;
 begin
-  Result := gtk_false; // stop this timer
+  Result := gtk_false; // stop this timer ;
+
+  AStrings.FTimerSel:=0; // so we don't try to remove it if it's not used.
 
   TextMark := gtk_text_buffer_get_insert(AStrings.FGtkBuf);
   gtk_text_buffer_get_iter_at_mark(AStrings.FGtkBuf, @StartIter, TextMark);
@@ -155,8 +159,10 @@ end;
 
 destructor TGtk2MemoStrings.Destroy;
 begin
-  gtk_timeout_remove(FTimerSel);
-  gtk_timeout_remove(FTimerMove);
+  if FTimerSel <> 0 then
+    gtk_timeout_remove(FTimerSel);
+  if FTimerMove <> 0 then
+    gtk_timeout_remove(FTimerMove);
   // don't destroy the widgets
   inherited Destroy;
 end;
