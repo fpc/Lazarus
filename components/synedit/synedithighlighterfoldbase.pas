@@ -165,8 +165,8 @@ type
     procedure ClearData;
     procedure ClearFilteredList;
     procedure DoFilter(MinIndex: Integer = -1);
-    procedure SetLine(ALine: TLineIdx);
-    procedure SetLineClean(ALine: TLineIdx);
+    procedure SetLine(ALine: TLineIdx); // Does not clear anything, if line has not changed.
+    procedure SetLineClean(ALine: TLineIdx); // Does not clear anything, if line has not changed.
     property  HighLighter: TSynCustomFoldHighlighter read FHighLighter write FHighLighter;
   public
     // used by HighLighters to add data
@@ -301,6 +301,7 @@ type
     fRanges: TSynCustomHighlighterRanges;
     FRootCodeFoldBlock: TSynCustomCodeFoldBlock;
     FFoldNodeInfoList: TLazSynFoldNodeInfoList;
+    procedure ClearFoldNodeList;
   protected
     // "Range"
     function GetRangeClass: TSynCustomHighlighterRangeClass; virtual;
@@ -379,6 +380,9 @@ type
     procedure SetLine(const NewValue: String;
                       LineNumber:Integer // 0 based
                       ); override;
+    procedure DoCurrentLinesChanged; override;
+    function PerformScan(StartIndex, EndIndex: Integer; ForceEndIndex: Boolean =
+      False): Integer; override;
   public
     property FoldConfig[Index: Integer]: TSynCustomFoldConfig
       read GetFoldConfig write SetFoldConfig;
@@ -920,6 +924,19 @@ begin
   FCodeFoldRange.MinimumCodeFoldBlockLevel := FCodeFoldRange.FCodeFoldStackSize;
 end;
 
+procedure TSynCustomFoldHighlighter.DoCurrentLinesChanged;
+begin
+  inherited DoCurrentLinesChanged;
+  ClearFoldNodeList;
+end;
+
+function TSynCustomFoldHighlighter.PerformScan(StartIndex, EndIndex: Integer;
+  ForceEndIndex: Boolean): Integer;
+begin
+  ClearFoldNodeList;
+  Result := inherited PerformScan(StartIndex, EndIndex, ForceEndIndex);
+end;
+
 function TSynCustomFoldHighlighter.CurrentCodeFoldBlockLevel: integer;
 begin
   assert(FCodeFoldRange <> nil, 'MinimumCodeFoldBlockLevel requires FCodeFoldRange');
@@ -1028,6 +1045,16 @@ begin
   DefHighlightChange(self);
 end;
 
+procedure TSynCustomFoldHighlighter.ClearFoldNodeList;
+begin
+  if FFoldNodeInfoList <> nil then begin
+    if (FFoldNodeInfoList.RefCount > 1) then
+      ReleaseRefAndNil(FFoldNodeInfoList)
+    else
+      FFoldNodeInfoList.Clear;
+  end;
+end;
+
 function TSynCustomFoldHighlighter.GetFoldNodeInfo(Line: TLineIdx
   ): TLazSynFoldNodeInfoList;
 begin
@@ -1038,7 +1065,11 @@ begin
     FFoldNodeInfoList := CreateFoldNodeInfoList;
     FFoldNodeInfoList.AddReference;
     FFoldNodeInfoList.HighLighter := Self;
-  end;
+  end
+  else
+  if (CurrentRanges <> nil) and (CurrentRanges.NeedsReScanStartIndex >= 0) then
+    ClearFoldNodeList;
+
 
   Result := FFoldNodeInfoList;
   Result.SetLineClean(Line);
