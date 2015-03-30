@@ -760,9 +760,9 @@ end;
 procedure TlrCodeReport.DrawBarCode(X, Y, W, H: double; Code: string;
   Style: TlrBarCodeStyle);
 var
-  ABarCode: TfrBarCodeView;
+  ABarCode: TfrCustomBarCodeView;
 begin
-  ABarCode := TfrBarCodeView.Create(nil);
+  ABarCode := TfrCustomBarCodeView.Create(nil);
   ABarCode.Left := X * XRatio;
   ABarCode.Top := Y * YRatio;
   ABarCode.Width := W * XRatio;

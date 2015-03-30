@@ -243,7 +243,7 @@ begin
   if View.FillColor <> clNone then
     St := St + 'background-color:' + ColorToCSS(View.FillColor) + ';';
 
-  if ExportImages and ((View is TfrPictureView) or (View is TfrBarCodeView)) then
+  if ExportImages and ((View is TfrPictureView) or (View is TfrCustomBarCodeView)) then
   begin
     WriteString(Format(HTML_IMG1, [St]));
     Inc(FImgCnt);
@@ -257,9 +257,9 @@ begin
       CS := TChunkStream.Create(Stream);
       B64 := TBase64EncodingStream.Create(CS);
     end;
-    if View is TfrBarCodeView then
+    if View is TfrCustomBarCodeView then
     begin
-      BCBmp := TfrBarCodeView(View).GenerateBitmap;
+      BCBmp := TfrCustomBarCodeView(View).GenerateBitmap;
       Png.Assign(BCBmp);
       BCBmp.Free;
     end

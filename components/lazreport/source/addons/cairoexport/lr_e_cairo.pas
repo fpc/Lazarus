@@ -68,7 +68,7 @@ type
     procedure Frame(View: TfrView; x, y, h, w: integer);
     procedure ShowFrame(View: TfrView; x, y, h, w: integer);
     procedure Line(View: TfrView; x1,y1, x2,y2: Integer);
-    procedure ShowBarCode(View: TfrBarCodeView; x, y, h, w: integer);
+    procedure ShowBarCode(View: TfrCustomBarCodeView; x, y, h, w: integer);
     procedure ShowPicture(View: TfrPictureView; x, y, h, w: integer);
     procedure ShowRoundRect(View: TfrRoundRectView; x, y, h, w: integer);
     procedure ShowShape(View: TfrShapeView; x, y, h, w: integer);
@@ -158,18 +158,18 @@ procedure TlrCairoExportFilter.DefaultShowView(View: TfrView; nx, ny, ndy,
   ndx: Integer);
 begin
   if (View.FillColor <> clNone)
-     and not (View is TfrBarCodeView)
+     and not (View is TfrCustomBarCodeView)
      and not ((View is TfrPictureView) and
               TfrPictureView(View).Stretched and not TfrPictureView(View).KeepAspect)
   then
     ShowBackGround(View, nx, ny, ndy, ndx);
 
-  if View is TfrBarCodeView then
-      ShowBarCode(TfrBarCodeView(View), nx, ny, ndy, ndx)
+  if View is TfrCustomBarCodeView then
+      ShowBarCode(TfrCustomBarCodeView(View), nx, ny, ndy, ndx)
   else if View is TfrPictureView then
       ShowPicture(TfrPictureView(View), nx, ny, ndy, ndx);
 
-  if (View.Frames<>[]) and not (View is TfrBarCodeView) then
+  if (View.Frames<>[]) and not (View is TfrCustomBarCodeView) then
      ShowFrame(View, nx, ny, ndy, ndx);
 end;
 
@@ -370,7 +370,7 @@ end;
 {$NOTES ON}
 {$HINTS ON}
 
-procedure TlrCairoExportFilter.ShowBarCode(View: TfrBarCodeView; x, y, h,
+procedure TlrCairoExportFilter.ShowBarCode(View: TfrCustomBarCodeView; x, y, h,
   w: integer);
 const
   cbDefaultText = '12345678';

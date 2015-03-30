@@ -66,9 +66,9 @@ type
     cAngle    : Double;
   end;
 
-  { TfrBarCodeView }
+  { TfrCustomBarCodeView }
 
-  TfrBarCodeView = class(TfrView)
+  TfrCustomBarCodeView = class(TfrView)
   private
     BarC: TBarCode;
     FText: string;
@@ -92,21 +92,29 @@ type
     constructor Create(AOwnerPage:TfrPage);override;
     destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
-    function GenerateBitmap: TBitmap;
+    function GenerateBitmap: TBitmap; virtual;
     procedure LoadFromStream(Stream: TStream); override;
     procedure SaveToStream(Stream: TStream); override;
     procedure Draw(aCanvas: TCanvas); override;
     procedure Print(Stream: TStream); override;
     procedure DefinePopupMenu({%H-}Popup: TPopupMenu); override;
-    
     procedure LoadFromXML(XML: TLrXMLConfig; const Path: String); override;
     procedure SaveToXML(XML: TLrXMLConfig; const Path: String); override;
-  published
+
     property CheckSum : Boolean read GetCheckSum write SetCheckSum;
     property BarType : TBarcodeType read GetBarType write SetBarType;
     property ShowText : Boolean read GetShowText write SetShowText;
     property Zoom : Double read GetZoom write SetZoom;
     property Angle: Double read GetAngle write SetAngle;
+  end;
+
+  TfrBarcodeView = class(TfrCustomBarcodeView)
+  published
+    property CheckSum;
+    property BarType;
+    property ShowText;
+    property Zoom;
+    property Angle;
     property Memo;
     property Frames;
     property FrameColor;
@@ -205,32 +213,32 @@ end;
 {$NOTES ON}
 {$HINTS ON}
 
-function TfrBarCodeView.GetBarType: TBarcodeType;
+function TfrCustomBarCodeView.GetBarType: TBarcodeType;
 begin
   Result:=Param.cBarType;
 end;
 
-function TfrBarCodeView.GetAngle: Double;
+function TfrCustomBarCodeView.GetAngle: Double;
 begin
   Result := Param.cAngle;
 end;
 
-function TfrBarCodeView.GetCheckSum: Boolean;
+function TfrCustomBarCodeView.GetCheckSum: Boolean;
 begin
   Result:=Param.cCheckSum;
 end;
 
-function TfrBarCodeView.GetShowText: Boolean;
+function TfrCustomBarCodeView.GetShowText: Boolean;
 begin
   Result:=Param.cShowText;
 end;
 
-function TfrBarCodeView.GetZoom: Double;
+function TfrCustomBarCodeView.GetZoom: Double;
 begin
   Result:=Param.cRatio;
 end;
 
-procedure TfrBarCodeView.SetAngle(AValue: Double);
+procedure TfrCustomBarCodeView.SetAngle(AValue: Double);
 begin
   if (Param.cAngle<>AValue) and
      ((AValue=0.0) or (AValue=90.0) or (AValue=180.0) or (AValue=270.0)) then
@@ -241,7 +249,7 @@ begin
   end;
 end;
 
-procedure TfrBarCodeView.SetBarType(const AValue: TBarcodeType);
+procedure TfrCustomBarCodeView.SetBarType(const AValue: TBarcodeType);
 begin
   if Param.cBarType<>AValue then
   begin
@@ -251,7 +259,7 @@ begin
   end;
 end;
 
-procedure TfrBarCodeView.SetCheckSum(const AValue: Boolean);
+procedure TfrCustomBarCodeView.SetCheckSum(const AValue: Boolean);
 begin
   if Param.cCheckSum<>AValue then
   begin
@@ -261,7 +269,7 @@ begin
   end;
 end;
 
-procedure TfrBarCodeView.SetShowText(const AValue: Boolean);
+procedure TfrCustomBarCodeView.SetShowText(const AValue: Boolean);
 begin
   if Param.cShowText<>AValue then
   begin
@@ -271,7 +279,7 @@ begin
   end;
 end;
 
-procedure TfrBarCodeView.SetZoom(const AValue: Double);
+procedure TfrCustomBarCodeView.SetZoom(const AValue: Double);
 begin
   if (Param.cRatio<>AValue) and
      ((AValue>=1.0)and(Avalue<=4.0)) then
@@ -282,7 +290,7 @@ begin
   end;
 end;
 
-function TfrBarCodeView.CreateBarcode: TBitmap;
+function TfrCustomBarCodeView.CreateBarcode: TBitmap;
 begin
 
   Result := nil;
@@ -387,7 +395,7 @@ begin
 
 end;
 
-function TfrBarCodeView.CreateLabelFont(aCanvas: TCanvas) :TFont;
+function TfrCustomBarCodeView.CreateLabelFont(aCanvas: TCanvas) :TFont;
 begin
   with aCanvas do
   begin
@@ -413,7 +421,7 @@ begin
 end;
 
 
-procedure TfrBarCodeView.DrawLabel(aCanvas: TCanvas; R: TRect);
+procedure TfrCustomBarCodeView.DrawLabel(aCanvas: TCanvas; R: TRect);
 var fs: integer;
 begin
   if Param.cShowText then
@@ -462,7 +470,7 @@ begin
 
 end;
 
-constructor TfrBarCodeView.Create(AOwnerPage: TfrPage);
+constructor TfrCustomBarCodeView.Create(AOwnerPage: TfrPage);
 begin
   inherited Create(AOwnerPage);
 
@@ -479,20 +487,20 @@ begin
   BaseName := 'Bar';
 end;
 
-destructor TfrBarCodeView.Destroy;
+destructor TfrCustomBarCodeView.Destroy;
 begin
   BarC.Free;
   inherited Destroy;
 end;
 
-procedure TfrBarCodeView.Assign(Source: TPersistent);
+procedure TfrCustomBarCodeView.Assign(Source: TPersistent);
 begin
   inherited Assign(Source);
-  if Source is TfrBarCodeView then
-    Param := TfrBarCodeView(Source).Param;
+  if Source is TfrCustomBarCodeView then
+    Param := TfrCustomBarCodeView(Source).Param;
 end;
 
-function TfrBarCodeView.GenerateBitmap: TBitmap;
+function TfrCustomBarCodeView.GenerateBitmap: TBitmap;
 var
   R: TRect;
   barcodeFont: TFont;
@@ -511,19 +519,19 @@ begin
   end;
 end;
 
-procedure TfrBarCodeView.LoadFromStream(Stream:TStream);
+procedure TfrCustomBarCodeView.LoadFromStream(Stream:TStream);
 begin
   inherited LoadFromStream(Stream);
   Stream.Read(Param, SizeOf(Param));
 end;
 
-procedure TfrBarCodeView.SaveToStream(Stream:TStream);
+procedure TfrCustomBarCodeView.SaveToStream(Stream:TStream);
 begin
   inherited SaveToStream(Stream);
   Stream.Write(Param, SizeOf(Param));
 end;
 
-procedure TfrBarCodeView.Draw(aCanvas:TCanvas);
+procedure TfrCustomBarCodeView.Draw(aCanvas:TCanvas);
 var
   Bmp : TBitMap;
   R: TRect;
@@ -598,7 +606,7 @@ begin
   end;
 end;
 
-procedure TfrBarCodeView.Print(Stream: TStream);
+procedure TfrCustomBarCodeView.Print(Stream: TStream);
 begin
   BeginDraw(Canvas);
   Memo1.Assign(Memo);
@@ -614,12 +622,12 @@ begin
   SaveToStream(Stream);
 end;
 
-procedure TfrBarCodeView.DefinePopupMenu(Popup: TPopupMenu);
+procedure TfrCustomBarCodeView.DefinePopupMenu(Popup: TPopupMenu);
 begin
   // no specific items in popup menu
 end;
 
-procedure TfrBarCodeView.LoadFromXML(XML: TLrXMLConfig; const Path: String);
+procedure TfrCustomBarCodeView.LoadFromXML(XML: TLrXMLConfig; const Path: String);
 begin
   inherited LoadFromXML(XML, Path);
   
@@ -630,7 +638,7 @@ begin
   RestoreProperty('Angle',XML.GetValue(Path+'BarCode/Angle','0'));
 end;
 
-procedure TfrBarCodeView.SaveToXML(XML: TLrXMLConfig; const Path: String);
+procedure TfrCustomBarCodeView.SaveToXML(XML: TLrXMLConfig; const Path: String);
 begin
   inherited SaveToXML(XML, Path);
   

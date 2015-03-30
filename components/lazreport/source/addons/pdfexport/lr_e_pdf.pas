@@ -58,7 +58,7 @@ type
         procedure ShowBackGround(View: TfrView; x, y, h, w: integer);
         procedure Frame(View: TfrView; x, y, h, w: integer);
         procedure ShowFrame(View: TfrView; x, y, h, w: integer);
-        procedure ShowBarCode(View: TfrBarCodeView; x, y, h, w: integer);
+        procedure ShowBarCode(View: TfrCustomBarCodeView; x, y, h, w: integer);
         procedure ShowPicture(View: TfrPictureView; x, y, h, w: integer);
         procedure ShowRoundRect(View: TfrRoundRectView; x, y, h, w: integer);
         procedure ShowShape(View: TfrShapeView; x, y, h, w: integer);
@@ -137,17 +137,17 @@ procedure TfrTNPDFExportFilter.DefaultShowView(View: TfrView;
   nx, ny, ndy, ndx: Integer);
 begin
   if (View.FillColor <> clNone)
-     and not (View is TfrBarCodeView)
+     and not (View is TfrCustomBarCodeView)
      and not (View is TfrPictureView)
   then
     ShowBackGround(View, nx, ny, ndy, ndx);
 
-  if View is TfrBarCodeView then
-      ShowBarCode(TfrBarCodeView(View), nx, ny, ndy, ndx)
+  if View is TfrCustomBarCodeView then
+      ShowBarCode(TfrCustomBarCodeView(View), nx, ny, ndy, ndx)
   else if View is TfrPictureView then
       ShowPicture(TfrPictureView(View), nx, ny, ndy, ndx);
 
-  if (View.Frames<>[]) and not (View is TfrBarCodeView) then
+  if (View.Frames<>[]) and not (View is TfrCustomBarCodeView) then
      ShowFrame(View, nx, ny, ndy, ndx);
 end;
 
@@ -262,7 +262,7 @@ begin
   end;
 end;
 
-procedure TfrTNPDFExportFilter.ShowBarCode(View: TfrBarCodeView; x, y, h, w:
+procedure TfrTNPDFExportFilter.ShowBarCode(View: TfrCustomBarCodeView; x, y, h, w:
     integer);
 var
     Bitmap: TBitmap;
@@ -274,7 +274,7 @@ begin
     View.x := 0;
     View.y := 0;
 
-    Bitmap := TfrBarCodeView(View).GenerateBitmap;
+    Bitmap := TfrCustomBarCodeView(View).GenerateBitmap;
     try
         w := trunc(Bitmap.Width * PDFEscx + 1.5) ;
         h := trunc(Bitmap.Height * PDFEscy + 1.5) ;
