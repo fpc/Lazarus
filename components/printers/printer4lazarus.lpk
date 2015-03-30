@@ -30,7 +30,7 @@
     <License Value="LGPL
 "/>
     <Version Minor="5"/>
-    <Files Count="36">
+    <Files Count="37">
       <Item1>
         <Filename Value="printersdlgs.pp"/>
         <HasRegisterProc Value="True"/>
@@ -186,6 +186,10 @@
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="cupslcl"/>
       </Item36>
+      <Item37>
+        <Filename Value="carbon\ppdresolution.pas"/>
+        <UnitName Value="ppdresolution"/>
+      </Item37>
     </Files>
     <RequiredPkgs Count="1">
       <Item1>

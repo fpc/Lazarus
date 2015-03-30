@@ -2,20 +2,20 @@
   This source is only used to compile and install the package.
  }
 
-unit Printer4Lazarus; 
+unit Printer4Lazarus;
 
 interface
 
 uses
-  PrintersDlgs, OSPrinters, LazarusPackageIntf;
+  PrintersDlgs, OSPrinters, ppdresolution, LazarusPackageIntf;
 
 implementation
 
-procedure Register; 
+procedure Register;
 begin
-  RegisterUnit('PrintersDlgs', @PrintersDlgs.Register); 
-end; 
+  RegisterUnit('PrintersDlgs', @PrintersDlgs.Register);
+end;
 
 initialization
-  RegisterPackage('Printer4Lazarus', @Register); 
+  RegisterPackage('Printer4Lazarus', @Register);
 end.

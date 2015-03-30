@@ -3006,6 +3006,7 @@ components/printers/carbon/carbonprinters_h.inc svneol=native#text/pascal
 components/printers/carbon/carbonprinting.pas svneol=native#text/pascal
 components/printers/carbon/carbonprndialogs.inc svneol=native#text/pascal
 components/printers/carbon/issues.xml svneol=native#text/xml
+components/printers/carbon/ppdresolution.pas svneol=native#text/pascal
 components/printers/cocoa/cocoaprinters.inc svneol=native#text/plain
 components/printers/cocoa/cocoaprinters_h.inc svneol=native#text/plain
 components/printers/cocoa/cocoaprndialogs.inc svneol=native#text/plain

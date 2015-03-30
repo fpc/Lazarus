@@ -1,7 +1,7 @@
 {%MainUnit ../osprinters.pas}
 uses
   MacOSAll,
-  Classes, SysUtils, Printers, LCLType, CarbonCanvas, CarbonPrinting;
+  Classes, SysUtils, Printers, LCLType, CarbonCanvas, CarbonPrinting, ppdresolution;
 
 type
   { TCarbonPrinterContext }
@@ -12,6 +12,11 @@ type
   public
     procedure Release;
     procedure Reset; override;
+  end;
+
+  TPrinterResolution = record
+    Valid: boolean;
+    HorzRes, VertRes: Integer;
   end;
 
   { TCarbonPrinter }
@@ -27,6 +32,7 @@ type
     FPrinterArray: CFArrayRef;
     FPaperArray: CFArrayRef;
     FDefaultPrinter: String;
+    FDefaultResolution: TPrinterResolution;
     
     procedure CreatePrintSession;
     procedure CreatePrintSettings;

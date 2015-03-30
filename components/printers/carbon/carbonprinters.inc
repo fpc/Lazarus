@@ -360,9 +360,15 @@ begin
     _PMPrinterGetOutputResolutionLoaded := true;
     _PMPrinterGetOutputResolution := TPMPrinterGetOutputResolution(dlsym(RTLD_DEFAULT,'PMPrinterGetOutputResolution'));
   end;
-  if Assigned(_PMPrinterGetOutputResolution) then
+  if Assigned(_PMPrinterGetOutputResolution) then begin
     // the function might return kPMKeyNotFound, see function description in MacOSAll
-    res := _PMPrinterGetOutputResolution(prn,  PrintSettings, Result{%H-})
+    res := _PMPrinterGetOutputResolution(prn,  PrintSettings, Result{%H-});
+    if (res=kPMKeyNotFound) and (FDefaultResolution.Valid) then begin
+      res := noErr;
+      Result.hRes := fDefaultResolution.HorzRes;
+      Result.vRes := fDefaultResolution.VertRes;
+    end;
+  end
   else
     res := noErr+1;
 
@@ -567,6 +573,7 @@ function TCarbonPrinter.DoSetPrinter(aName: string): Integer;
 var
   S: TStringList;
   P: PMPrinter;
+  ResCount: UInt32;
 begin
   S := TStringList.Create;
   BeginEnumPrinters(S);
@@ -581,6 +588,13 @@ begin
       if OSError(PMSessionSetCurrentPMPrinter(PrintSession, P),
         Self, 'DoSetPrinter', 'PMSessionSetCurrentPMPrinter') then
           raise EPrinter.CreateFmt('The system is unable to select printer "%s"!', [AName]);
+      //
+      with FDefaultResolution do
+      begin
+        Valid := (PMPrinterGetPrinterResolutionCount(P, ResCount)=noErr) and (ResCount>1);
+        if Valid then
+          Valid := GetDefaultPPDResolution(P, HorzRes, VertRes);
+      end;
     end;
   finally
     EndEnumPrinters;
