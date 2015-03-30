@@ -2413,6 +2413,7 @@ const
 begin
   TheTestText := TestText1;
   txl := length(TheTestText)-1;
+  NextTestSetSelection := nextSel(0,0, 0,0);
 
   PushBaseName('Find single line term ');
     PushBaseName('no match ');
