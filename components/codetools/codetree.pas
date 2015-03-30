@@ -85,12 +85,13 @@ const
 
   ctnClass              = 30;
   ctnClassInterface     = 31;
-  ctnObject             = 32;
-  ctnObjCClass          = 33;
-  ctnObjCCategory       = 34;
-  ctnObjCProtocol       = 35;
-  ctnCPPClass           = 36;
-  ctnDispinterface      = 37;
+  ctnDispinterface      = 32;
+  ctnObject             = 33;
+  ctnObjCClass          = 34;
+  ctnObjCCategory       = 35;
+  ctnObjCProtocol       = 36;
+  ctnCPPClass           = 37;
+  ctnTypeHelper         = 38;
 
   ctnClassAbstract      = 40;
   ctnClassSealed        = 41;
@@ -166,7 +167,7 @@ const
      [ctnConstSection, ctnTypeSection, ctnVarSection, ctnClassClassVar];
   AllClassSections =
     AllClassBaseSections+AllClassSubSections;
-  AllClassInterfaces = [ctnClassInterface,ctnDispinterface,ctnObjCProtocol];
+  AllClassInterfaces = [ctnClassInterface,ctnDispinterface,ctnObjCProtocol,ctnTypeHelper];
   AllClassObjects = [ctnClass,ctnObject,ctnRecordType,
                      ctnObjCClass,ctnObjCCategory,ctnCPPClass];
   AllClasses = AllClassObjects+AllClassInterfaces;
@@ -365,6 +366,7 @@ begin
   ctnObjCCategory: Result:='ObjCCategory';
   ctnObjCProtocol: Result:='ObjCProtocol';
   ctnCPPClass: Result:='CPPClass';
+  ctnTypeHelper: Result:='Type Helper';
 
   ctnClassInheritance: Result:='Class inheritance';
   ctnClassGUID: Result:='GUID';
