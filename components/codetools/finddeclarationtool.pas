@@ -5842,7 +5842,7 @@ begin
 
   Params:=TFindDeclarationParams.Create;
   try
-    Params.Flags:=fdfDefaultForExpressions-[fdfSearchInAncestors];
+    Params.Flags:=fdfDefaultForExpressions;
     Params.ContextNode:=IdentifierNode;
     if CurPos.Flag in [cafRoundBracketClose,cafComma] then begin
       // simple identifier
