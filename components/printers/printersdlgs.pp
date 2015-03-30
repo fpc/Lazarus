@@ -78,7 +78,7 @@ implementation
     {$IFDEF LCLCarbon}
       {$IFNDEF NativePrint}
         // add units as needed for carbon, for the moment use cups ones.
-        uses Controls, udlgSelectPrinter, udlgPropertiesPrinter, FileUtil;
+        uses Controls, udlgSelectPrinter, udlgPropertiesPrinter, udlgPageSetup, FileUtil;
         {$I cupsprndialogs.inc}
       {$ELSE}
         uses Controls, Math, CarbonProc, MacOSAll, LCLProc;
@@ -92,6 +92,10 @@ implementation
     {$IFDEF LCLQt}
       uses Controls, qtobjects, qt4, qtint, FileUtil;
       {$I qtprndialogs.inc}
+    {$ENDIF}
+    {$IFDEF LCLGtk2}
+      uses Controls, udlgSelectPrinter, udlgPropertiesPrinter, udlgPageSetup, FileUtil;
+      {$I cupsprndialogs.inc}
     {$ENDIF}
   {$ELSE}
     {$IFDEF LCLQt}

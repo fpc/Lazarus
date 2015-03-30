@@ -44,6 +44,9 @@ interface
     {$IFDEF LCLQt}
       {$I qtprinters_h.inc}
     {$ENDIF}
+    {$IFDEF LCLGtk2}
+      {$I cupsprinters_h.inc}
+    {$ENDIF}
   {$ELSE}
     {$IFDEF LCLQt}
       {$I qtprinters_h.inc}
@@ -77,6 +80,9 @@ implementation
     {$ENDIF}
     {$IFDEF LCLQt}
       {$I qtprinters.inc}
+    {$ENDIF}
+    {$IFDEF LCLGtk2}
+      {$I cupsprinters.inc}
     {$ENDIF}
   {$ELSE}
     {$IFDEF LCLQt}
