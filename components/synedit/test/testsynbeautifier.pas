@@ -71,6 +71,7 @@ type
     procedure IndentCallBack;
 
     procedure IndentPasComment;
+
   end;
 
 
@@ -79,8 +80,8 @@ implementation
 { TTestSynBeautifier }
 
 var SkipGroupUndo: Boolean;
-procedure TTestSynBeautifier.TestRedoUndo(Name: String; Text: Array of String;
-  X, Y: Integer; Data: array of const; SelX: Integer = -1; SelY: Integer = -1);
+procedure TTestSynBeautifier.TestRedoUndo(Name: String; Text: array of String; X, Y: Integer;
+  Data: array of const; SelX: Integer; SelY: Integer);
 
   function data2txt(n: Integer): String;
   begin
@@ -519,6 +520,18 @@ procedure TTestSynBeautifier.DefaultUnIndent;
   begin
     Result := LinesToText(LinesReplace(TestText, rpl))
   end;
+  function TestText2: TStringArray;
+  begin
+    SetLength(Result, 4);
+    Result[0] := '      a;';
+    Result[1] := '    b';
+    Result[2] := '      ';
+    Result[3] := '';
+  end;
+  function ExpText2(rpl: array of const): String;
+  begin
+    Result := LinesToText(LinesReplace(TestText2, rpl))
+  end;
 begin
   SkipGroupUndo := False;
   ReCreateEdit;
@@ -591,6 +604,14 @@ begin
   TestRedoUndo('unindent (persist selection)', TestText,  5,2, [ VK_BACK, 3,2, ExpText([ 2, '  b']) ],  1,2);
   SynEdit.Options2  := SynEdit.Options2 - [eoPersistentBlock];
 
+
+  BaseTestName := 'UnIndent, with 1st line indended most';
+  SynEdit.Options  := SynEdit.Options - [eoTrimTrailingSpaces{, eoScrollPastEol}];
+  SynEdit.Options2  := SynEdit.Options2 - [eoPersistentBlock];
+  TestRedoUndo('extra indent on first', TestText2,  7,3,
+               [ VK_BACK, 5,3, ExpText2([ 3, '    ']),
+                 VK_BACK, 1,3, ExpText2([ 3, ''])
+               ]  );
 
 end;
 
