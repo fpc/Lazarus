@@ -21,7 +21,8 @@ program finddeclarationtest;
 
 uses
   Classes, sysutils, consoletestrunner, dom, fpcunit, CodeToolManager,
-  CodeToolsConfig, LazLogger, fdtbase, fdt_classhelper, fdt_nestedclasses;
+  CodeToolsConfig, LazLogger, fdtbase, fdt_classhelper, fdt_nestedclasses,
+  fdt_basic;
 
 const
   ConfigFilename = 'codetools.config';

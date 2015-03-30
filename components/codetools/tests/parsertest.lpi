@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <ProjectOptions>
     <Version Value="9"/>
@@ -41,17 +41,21 @@
         <PackageName Value="fpcunitconsolerunner"/>
       </Item2>
     </RequiredPackages>
-    <Units Count="2">
+    <Units Count="3">
       <Unit0>
         <Filename Value="parsertest.lpr"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="parsertest"/>
       </Unit0>
       <Unit1>
         <Filename Value="parsertbase.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="parsertbase"/>
+        <UnitName Value="ParserTBase"/>
       </Unit1>
+      <Unit2>
+        <Filename Value="pt_thlp2.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="pt_thlp2"/>
+      </Unit2>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
@@ -63,12 +67,6 @@
       <IncludeFiles Value="$(ProjOutDir)"/>
       <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
-    <Other>
-      <CompilerMessages>
-        <MsgFileName Value=""/>
-      </CompilerMessages>
-      <CompilerPath Value="$(CompPath)"/>
-    </Other>
   </CompilerOptions>
   <Debugging>
     <Exceptions Count="3">

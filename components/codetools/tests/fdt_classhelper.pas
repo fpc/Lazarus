@@ -25,7 +25,7 @@ var
   sl: TStringList;
 begin
   sl:=TStringList{declaration:Classes.TStringList}.Create;
-  writeln('DoIt ',sl.MyVar{declaration-classhelper:fdt_classhelper.TStringsClassHelper.MyVar});
+  writeln('DoIt ',sl.MyVar{declaration:fdt_classhelper.TStringsClassHelper.MyVar});
   sl.Free;
 end;
 

@@ -21,7 +21,7 @@ program parsertest;
 
 uses
   Classes, sysutils, consoletestrunner, dom, fpcunit,
-  CodeToolManager, CodeToolsConfig, parsertbase;
+  CodeToolManager, CodeToolsConfig, ParserTBase;
 
 const
   ConfigFilename = 'codetools.config';

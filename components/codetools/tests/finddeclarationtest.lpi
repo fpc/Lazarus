@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <ProjectOptions>
     <Version Value="9"/>
@@ -41,11 +41,10 @@
         <PackageName Value="fpcunitconsolerunner"/>
       </Item2>
     </RequiredPackages>
-    <Units Count="4">
+    <Units Count="5">
       <Unit0>
         <Filename Value="finddeclarationtest.lpr"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="finddeclarationtest"/>
       </Unit0>
       <Unit1>
         <Filename Value="fdtbase.pas"/>
@@ -62,6 +61,11 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="fdt_nestedclasses"/>
       </Unit3>
+      <Unit4>
+        <Filename Value="fdt_basic.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="fdt_basic"/>
+      </Unit4>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
@@ -73,12 +77,6 @@
       <IncludeFiles Value="$(ProjOutDir)"/>
       <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
-    <Other>
-      <CompilerMessages>
-        <MsgFileName Value=""/>
-      </CompilerMessages>
-      <CompilerPath Value="$(CompPath)"/>
-    </Other>
   </CompilerOptions>
   <Debugging>
     <Exceptions Count="3">
