@@ -29,7 +29,7 @@ interface
 
 uses
   MacOSAll,
-  Classes, SysUtils, Types, LCLType, LCLProc,
+  Classes, SysUtils, DateUtils, Types, LCLType, LCLProc,
   Controls, Forms, Graphics, Math, GraphType;
 
 const
@@ -105,6 +105,8 @@ function GetCarbonRect(Left, Top, Width, Height: Integer): MacOSAll.Rect;
 function GetCarbonRect(const ARect: TRect): MacOSAll.Rect;
 function ParamsToCarbonRect(const AParams: TCreateParams): MacOSAll.Rect;
 function ParamsToRect(const AParams: TCreateParams): TRect;
+
+function CFDateRefToDateTime(dateRef: CFDateRef): TDateTime;
 
 type
   CGRectArray = Array of CGRect;
@@ -916,6 +918,28 @@ begin
   Result.Top := AParams.Y;
   Result.Right := AParams.X + AParams.Width;
   Result.Bottom := AParams.Y + AParams.Height;
+end;
+
+function CFDateRefToDateTime(dateRef: CFDateRef): TDateTime;
+var
+  absTime: CFAbsoluteTime;
+  gDate: CFGregorianDate;
+  tz: CFTimeZoneRef;
+  aTime: TDateTime;
+  ok: boolean;
+begin
+  absTime := CFDateGetAbsoluteTime(dateRef);
+  tz := CFTimeZoneCopySystem;
+  gDate := CFAbsoluteTimeGetGregorianDate(absTime, tz);
+  CFRelease(tz);
+
+  with gDate do
+    if not TryEncodeDateTime(
+              trunc(year), trunc(month), trunc(day),
+              trunc(hour), trunc(minute), trunc(second), 0, result)
+    then
+      result := 0;
+
 end;
 
 {------------------------------------------------------------------------------
