@@ -182,6 +182,7 @@ type
     function CleanPosToCaretAndTopLine(CleanPos: integer;
         out Caret:TCodeXYPosition; out NewTopLine: integer): boolean; // true=ok, false=invalid CleanPos
     function CleanPosToStr(CleanPos: integer; WithFilename: boolean = false): string;
+    function CodeXYToStr(const CodePos: TCodeXYPosition; WithFilename: boolean = false): string;
     function CleanPosToRelativeStr(CleanPos: integer;
         const BaseFilename: string): string;
     procedure GetCleanPosInfo(CodePosInFront, CleanPos: integer;
@@ -2704,12 +2705,18 @@ var
   CodePos: TCodeXYPosition;
 begin
   if CleanPosToCaret(CleanPos,CodePos) then begin
-    Result:='';
-    if WithFilename then
-      Result:=ExtractRelativepath(ExtractFilePath(MainFilename),CodePos.Code.Filename)+',';
-    Result:=Result+'line '+IntToStr(CodePos.Y)+', column '+IntToStr(CodePos.X);
+    Result:=CodeXYToStr(CodePos,WithFilename);
   end else
     Result:='outside scan range, pos='+IntToStr(CleanPos)+'('+dbgstr(copy(Src,CleanPos-5,5)+'|'+copy(Src,CleanPos,5))+')';
+end;
+
+function TCustomCodeTool.CodeXYToStr(const CodePos: TCodeXYPosition;
+  WithFilename: boolean): string;
+begin
+  Result:='';
+  if WithFilename then
+    Result:=ExtractRelativepath(ExtractFilePath(MainFilename),CodePos.Code.Filename)+',';
+  Result:=Result+'line '+IntToStr(CodePos.Y)+', column '+IntToStr(CodePos.X);
 end;
 
 function TCustomCodeTool.CleanPosToRelativeStr(CleanPos: integer;
