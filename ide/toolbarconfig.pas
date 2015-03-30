@@ -519,7 +519,6 @@ var
   aCaption: string;
   aPMask: Integer;
   mi: TIDEMenuItem;
-  canShow: Boolean;
 begin
   for I:= 0 to MainList.Count -1 do
   begin

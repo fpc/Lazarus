@@ -132,7 +132,7 @@ type
     fPrevSelectedPath: string;
     // Missing units that are commented automatically in all units.
     fAllCommentedUnits: TStringList;
-    function DoMissingUnits(AUsedUnitsTool: TUsedUnitsTool): integer; virtual;
+    function DoMissingUnits({%H-}AUsedUnitsTool: TUsedUnitsTool): integer; virtual;
     function GetCachedUnitPath(const AUnitName: string): string;
   protected
     function EndConvert(AStatus: TModalResult): Boolean;
@@ -200,7 +200,7 @@ type
     function ExtractOptionsFromDelphiSource: TModalResult; virtual; abstract;
     // Abstract base for the fake Project / Package virtual methods.
     function GetMainName: string; virtual; abstract;
-    function SaveAndMaybeClose(aFilename: string): TModalResult; virtual;
+    function SaveAndMaybeClose({%H-}aFilename: string): TModalResult; virtual;
     function ContainsFile(aFileName: string): Boolean; virtual; abstract;
     function FindDependencyByName(const PackageName: string): TPkgDependency; virtual; abstract;
   public
