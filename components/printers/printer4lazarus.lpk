@@ -188,6 +188,7 @@
       </Item36>
       <Item37>
         <Filename Value="carbon\ppdresolution.pas"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="ppdresolution"/>
       </Item37>
     </Files>
