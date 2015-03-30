@@ -1526,7 +1526,7 @@ begin
       Dec(BackCounter);
     end;
   end;
-  if SpaceCount2 = SpaceCount1 then
+  if SpaceCount2 >= SpaceCount1 then
     SpaceCount2 := 0;
   // remove visible spaces
   LogSpacePos := FCurrentLines.PhysicalToLogicalCol(Line, ACaret.LinePos-1, SpaceCount2 + 1);
