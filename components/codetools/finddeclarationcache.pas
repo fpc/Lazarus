@@ -46,7 +46,7 @@ type
     1. interface cache: (unit interfaces, not class interfaces)
       Every FindIdentifierInInterface call is cached
         - stores: Identifier -> Node+CleanPos
-        - cache must be deleted, everytime the codetree is rebuild
+        - cache must be deleted, everytime the codetree is rebuilt
            this is enough update, because it does only store internals
        -> This improves search time for interface requests
   }
@@ -198,10 +198,9 @@ type
     Node- and BaseTypeCache depends on their codetool and the
     node- and basetypecaches of other codetools (=used codetools). The used
     codetools dependencies are saved in the TCodeToolDependencies, which is
-    simple an TAVLTree of codetools. This allows one to decide, wether the cache of
-    a codetools must be rebuild.
+    simply an TAVLTree of codetools. This allows one to decide, wether the cache of
+    a codetools must be rebuilt.
   }
-
 
   //----------------------------------------------------------------------------
 type
@@ -267,7 +266,7 @@ type
   end;
 
   //----------------------------------------------------------------------------
-  // stacks for circle checking
+  // stacks for cycle checking
 const
   CodeTreeNodeFixedItemCount = 12;
 type
