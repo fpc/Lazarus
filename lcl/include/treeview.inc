@@ -1135,10 +1135,10 @@ function TTreeNode.GetIndex: Integer;
 var
   ANode: TTreeNode;
 begin
-  if FIndex>=0 then begin
-    Result:=FIndex;
-    exit;
-  end;
+  if self = nil then
+    exit(-1);
+  if FIndex>=0 then
+    exit(FIndex);
   // many algorithms uses the last sibling, so we check that first for speed
   if (Parent<>nil) and (Parent[Parent.Count-1]=Self) then begin
     Result:=Parent.Count-1;
