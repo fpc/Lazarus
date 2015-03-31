@@ -433,6 +433,7 @@ resourcestring
     +'control "%s" to new parent "%s".%s%s';
   oisAddCollectionItem = '&Add Item';
   oisChangeClass = 'Change Class ...';
+  oisChangeParent = 'Change Parent';
   lisUnableToFindParserForTool = 'Unable to find parser for tool "%s"';
 
   // Dbgrid Columns editor

@@ -590,6 +590,7 @@ type
     PastePopupmenuItem: TMenuItem;
     DeletePopupmenuItem: TMenuItem;
     ChangeClassPopupmenuItem: TMenuItem;
+    ChangeParentPopupmenuItem: TMenuItem;
     FindDeclarationPopupmenuItem: TMenuItem;
     OptionsSeparatorMenuItem: TMenuItem;
     OptionsSeparatorMenuItem2: TMenuItem;
@@ -683,6 +684,7 @@ type
     FOnNodeGetImageIndex: TOnOINodeGetImageEvent;
     procedure CreateTopSplitter;
     procedure CreateBottomSplitter;
+    function GetChangeParentCandidates: TFPList;
     function GetGridControl(Page: TObjectInspectorPage): TOICustomPropertyGrid;
     procedure SetComponentEditor(const AValue: TBaseComponentEditor);
     procedure SetFavorites(const AValue: TOIFavoriteProperties);
@@ -701,6 +703,7 @@ type
     procedure ShowNextPage(Delta: integer);
     procedure RestrictedPaint(
       ABox: TPaintBox; const ARestrictions: TWidgetSetRestrictionsArray);
+    procedure DoChangeParentItemClick(Sender: TObject);
     procedure DoComponentEditorVerbMenuItemClick(Sender: TObject);
     procedure DoCollectionAddItem(Sender: TObject);
     procedure DoZOrderItemClick(Sender: TObject);
@@ -3972,6 +3975,9 @@ begin
   AddPopupMenuItem(ChangeClassPopupMenuItem,nil,'ChangeClassPopupMenuItem',
      oisChangeClass,'Change Class of component', '',
      @OnChangeClassPopupmenuItemClick,false,true,true);
+  AddPopupMenuItem(ChangeParentPopupMenuItem,nil,'ChangeParentPopupMenuItem',
+     oisChangeParent,'Change Parent of component', '',
+     Nil,false,true,true);
   OptionsSeparatorMenuItem3 := AddSeparatorMenuItem(nil, 'OptionsSeparatorMenuItem3', true);
 
   AddPopupMenuItem(ShowComponentTreePopupMenuItem,nil
@@ -5100,6 +5106,56 @@ begin
 end;
 // ---
 
+function TObjectInspectorDlg.GetChangeParentCandidates: TFPList;
+var
+  i, j: Integer;
+  CurSelected: TPersistent;
+  Candidate: TWinControl;
+begin
+  Result := TFPList.Create;
+  if not (FPropertyEditorHook.LookupRoot is TWinControl) then
+    exit; // only LCL controls are supported at the moment
+
+  // check if any selected control can be moved
+  i := Selection.Count-1;
+  while i >= 0 do
+  begin
+    if (Selection[i] is TControl)
+    and (TControl(Selection[i]).Owner = FPropertyEditorHook.LookupRoot)
+    then
+      // this one can be moved
+      break;
+    dec(i);
+  end;
+  if i < 0 then Exit;
+
+  // find possible new parents
+  for i := 0 to TWinControl(FPropertyEditorHook.LookupRoot).ComponentCount-1 do
+  begin
+    Candidate := TWinControl(TWinControl(FPropertyEditorHook.LookupRoot).Components[i]);
+    if not (Candidate is TWinControl) then continue;
+    j := Selection.Count-1;
+    while j >= 0 do
+    begin
+      CurSelected := Selection[j];
+      if CurSelected is TControl then begin
+        if CurSelected = Candidate then break;
+        if (CurSelected is TWinControl) and
+           (TWinControl(CurSelected) = Candidate.Parent) then
+          break;
+        if not ControlAcceptsStreamableChildComponent(Candidate,
+                 TComponentClass(CurSelected.ClassType), FPropertyEditorHook.LookupRoot)
+        then
+          break;
+      end;
+      dec(j);
+    end;
+    if j < 0 then
+      Result.Add(Candidate);
+  end;
+  Result.Add(FPropertyEditorHook.LookupRoot);
+end;
+
 procedure TObjectInspectorDlg.OnMainPopupMenuPopup(Sender: TObject);
 const
   PropertyEditorMIPrefix = 'PropertyEditorVerbMenuItem';
@@ -5216,8 +5272,30 @@ var
     MainPopupMenu.Items.Insert(ZItem.MenuIndex + 1, Item);
   end;
 
+  function AddChangeParentMenuItems: Boolean;
+  var
+    Item: TMenuItem;
+    Candidates: TFPList;
+    i: Integer;
+  begin
+    Result := False;
+    Candidates := GetChangeParentCandidates;
+    try
+      if Candidates.Count = 0 then Exit;
+      for i := 0 to Candidates.Count-1 do
+      begin
+        Item := NewItem(TWinControl(Candidates[i]).Name, 0, False, True,
+                        @DoChangeParentItemClick, 0, '');
+        ChangeParentPopupmenuItem.Add(Item);
+      end;
+      Result := True;
+    finally
+      Candidates.Free;
+    end;
+  end;
+
 var
-  b, ExactlyOneComp, AtLeastOneComp: Boolean;
+  b, AtLeastOneComp, CanChangeClass, HasParentCandidates: Boolean;
   CurRow: TOIPropertyGridRow;
   Persistent: TPersistent;
 begin
@@ -5225,8 +5303,9 @@ begin
   RemoveComponentEditorMenuItems;
   ShowHintsPopupMenuItem.Checked := PropertyGrid.ShowHint;
   Persistent := GetSelectedPersistent;
-  ExactlyOneComp := False;
   AtLeastOneComp := False;
+  CanChangeClass := False;
+  HasParentCandidates := False;
   // show component editors only for component treeview
   if MainPopupMenu.PopupComponent = ComponentTree then
   begin
@@ -5241,19 +5320,24 @@ begin
       else if Persistent is TCollectionItem then
         AddCollectionEditorMenuItems(TCollectionItem(Persistent).Collection);
     end;
-    ExactlyOneComp := (Selection.Count = 1) and (Selection[0] is TComponent);
     AtLeastOneComp := (Selection.Count > 0) and (Selection[0] is TComponent);
+    CanChangeClass := (Selection.Count = 1) and (Selection[0] is TComponent)
+                  and (Selection[0] <> FPropertyEditorHook.LookupRoot);
     // add Z-Order menu
     if (Selection.Count = 1) and (Selection[0] is TControl) then
       AddZOrderMenuItems;
+    // add Change Parent menu
+    if AtLeastOneComp then
+      HasParentCandidates := AddChangeParentMenuItems;
   end;
   CutPopupMenuItem.Visible := AtLeastOneComp;
   CopyPopupMenuItem.Visible := AtLeastOneComp;
   PastePopupMenuItem.Visible := AtLeastOneComp;
   DeletePopupMenuItem.Visible := AtLeastOneComp;
   OptionsSeparatorMenuItem2.Visible := AtLeastOneComp;
-  ChangeClassPopupmenuItem.Visible := ExactlyOneComp;
-  OptionsSeparatorMenuItem3.Visible := ExactlyOneComp;
+  ChangeClassPopupmenuItem.Visible := CanChangeClass;
+  ChangeParentPopupmenuItem.Visible := HasParentCandidates;
+  OptionsSeparatorMenuItem3.Visible := CanChangeClass or HasParentCandidates;
 
   // The editors can do menu actions, for example set defaults and constraints
   CurRow := GetActivePropertyRow;
@@ -5305,6 +5389,48 @@ end;
 procedure TObjectInspectorDlg.DoViewRestricted;
 begin
   if Assigned(FOnViewRestricted) then FOnViewRestricted(Self);
+end;
+
+procedure TObjectInspectorDlg.DoChangeParentItemClick(Sender: TObject);
+var
+  i: Integer;
+  Control: TControl;
+  NewParent: TPersistent;
+  NewSelection: TPersistentSelectionList;
+begin
+  if not (Sender is TMenuItem) or (Selection.Count < 1) then Exit;
+  if TMenuItem(Sender).Caption = TWinControl(FPropertyEditorHook.LookupRoot).Name then
+    NewParent := FPropertyEditorHook.LookupRoot
+  else
+    NewParent := TWinControl(FPropertyEditorHook.LookupRoot).FindComponent(TMenuItem(Sender).Caption);
+
+  if not (NewParent is TWinControl) then Exit;
+
+  for i := 0 to Selection.Count-1 do
+  begin
+    if not (Selection[i] is TControl) then Continue;
+    Control := TControl(Selection[i]);
+    if Control.Parent = nil then Continue;
+    Control.Parent := TWinControl(NewParent);
+  end;
+
+  // Following code taken from DoZOrderItemClick();
+  // Ensure the order of controls in the OI now reflects the new ZOrder
+  NewSelection := TPersistentSelectionList.Create;
+  try
+    NewSelection.ForceUpdate:=True;
+    NewSelection.Add(Control.Parent);
+    SetSelection(NewSelection);
+
+    NewSelection.Clear;
+    NewSelection.ForceUpdate:=True;
+    NewSelection.Add(Control);
+    SetSelection(NewSelection);
+  finally
+    NewSelection.Free;
+  end;
+
+  DoModified(Self);
 end;
 
 procedure TObjectInspectorDlg.DoComponentEditorVerbMenuItemClick(Sender: TObject);
