@@ -72,10 +72,13 @@ type
     procedure btnMoveDownClick(Sender: TObject);
     procedure btnMoveUpClick(Sender: TObject);
     procedure btnRemoveClick(Sender: TObject);
+    procedure lvToolbarDrawItem(Sender: TCustomListView; AItem: TListItem;
+      ARect: TRect; AState: TOwnerDrawState);
     procedure lvToolbarSelectItem(Sender: TObject; Item: TListItem;
       Selected: Boolean);
     procedure TVSelectionChanged(Sender: TObject);
   private
+    Image: TBitMap;
     defImageIndex: integer;
     divImageIndex: Integer;
     // Main list related entries
@@ -116,7 +119,6 @@ procedure TToolBarConfig.FormCreate(Sender: TObject);
 begin
   inherited;
   pnlButtons.Color := clBtnFace;
-
   // load button images
   btnAdd.LoadGlyphFromResourceName(HInstance, 'arrow_right');
   btnRemove.LoadGlyphFromResourceName(HInstance, 'arrow_left');
@@ -141,7 +143,7 @@ begin
 
   MainList := TStringList.Create;
   MainList.OwnsObjects:= True; // it should be the default, but just to make sure...
-
+  Image := TBitmap.Create;
   pnlButtons.Helpbutton.OnClick := @btnHelpClick;
   SetupCaptions;
   LoadCategories;
@@ -150,6 +152,7 @@ end;
 procedure TToolBarConfig.FormDestroy(Sender: TObject);
 begin
   MainList.Free;
+  Image.Free;
 end;
 
 procedure TToolBarConfig.btnClearClick(Sender: TObject);
@@ -172,6 +175,7 @@ procedure TToolBarConfig.btnHideClick(Sender: TObject);
 begin
   lvToolbar.Columns[1].Visible:= false;
 end;
+
 
 procedure TToolBarConfig.lbToolbarSelectionChange(Sender: TObject);
 var
@@ -255,7 +259,7 @@ end;
 
 procedure TToolBarConfig.btnAddClick(Sender: TObject);
 var
-  n: TTreeNode;
+  n, nNext: TTreeNode;
   ACaption: string;
   lvItem: TListItem;
   anIndex: Integer;
@@ -267,18 +271,18 @@ begin
     anIndex:= lvToolbar.ItemIndex;
     ACaption:= TIDEMenuItem(n.Data).Caption;
     DeleteAmpersands(ACaption);
-    if anIndex > -1 then begin
-      lvItem            := lvToolbar.Items.Insert(lvToolbar.ItemIndex);
-    end
-    else begin
+    if anIndex > -1 then
+      lvItem            := lvToolbar.Items.Insert(lvToolbar.ItemIndex)
+    else
       lvItem            := lvToolbar.Items.Add;
-    end;
     lvItem.Caption      := ACaption;
     lvItem.Data         := n.Data;
+    {
     if n.ImageIndex > -1 then
       lvItem.ImageIndex   := n.ImageIndex
     else
       lvItem.ImageIndex   := defImageIndex;
+    }
     if anIndex > -1 then begin
       // clear previous selection to avoid double sel in Qt
       lvToolbar.Selected := nil;
@@ -286,11 +290,14 @@ begin
       InsertMainListItem(lvItem,lvToolbar.Items[anIndex]);
     end
     else begin
-      lvToolbar.ItemIndex := lvToolbar.Items.Count-1;
+     // lvToolbar.ItemIndex := lvToolbar.Items.Count-1;
       InsertMainListItem(lvItem,Nil);
     end;
     lbToolbarSelectionChange(lblToolbar);
+    nNext := TV.Selected.GetNext;
     TV.Selected.Visible:= False;
+    if nNext <> nil then
+      TV.Selected := nNext;
   end;
 end;
 
@@ -318,6 +325,46 @@ begin
   end;
 end;
 
+procedure TToolBarConfig.lvToolbarDrawItem(Sender: TCustomListView;
+  AItem: TListItem; ARect: TRect; AState: TOwnerDrawState);
+var
+  ImageIndex: integer;
+begin
+  with Sender.Canvas do
+  begin
+    if AItem.Selected then
+    begin
+      Brush.Color := clHighlight;
+      Font.Color := clHighlightText;
+    end
+    else begin
+      Brush.Color := clDefault;
+      Font.Color := clDefault;
+    end;
+    FillRect(ARect);
+
+    if AItem.Caption = cDivider then
+      ImageIndex := divImageIndex
+    else
+    begin
+      if Assigned(AItem.Data) then
+      begin
+        if TIDEMenuItem(AItem.Data).ImageIndex > -1 then
+          ImageIndex := TIDEMenuItem(AItem.Data).ImageIndex
+        else
+          ImageIndex := defImageIndex;
+      end
+      else
+        ImageIndex := defImageIndex;
+    end;
+    Image.Clear;
+    lvToolBar.SmallImages.GetBitmap(ImageIndex, Image);
+    Draw(ARect.Left + 2, ARect.Top + 2, Image);
+
+    TextOut(ARect.Left + 21, ARect.Top + 2, AItem.Caption);
+  end;
+end;
+
 procedure TToolBarConfig.lvToolbarSelectItem(Sender: TObject;
   Item: TListItem; Selected: Boolean);
 begin
@@ -326,6 +373,7 @@ begin
   btnClear.Enabled:= lvToolbar.Selected <> nil;
   btnRemove.Enabled:= btnClear.Enabled;
 end;
+
 
 procedure TToolBarConfig.btnAddDividerClick(Sender: TObject);
 var
@@ -337,8 +385,9 @@ begin
     lvItem := lvToolbar.Items.Insert(anIndex)
   else
     lvItem := lvToolbar.Items.Add;
+  lvItem.Selected := False;
   lvItem.Caption:= cDivider;
-  lvItem.ImageIndex:= divImageIndex;
+  //lvItem.ImageIndex:= divImageIndex;
   if lvToolbar.ItemIndex > -1 then
     InsertMainListItem(lvItem,lvToolbar.Items[anIndex])
   else
@@ -492,10 +541,10 @@ begin
     lvItem := lvToolbar.Items.Add;
     lvItem.Caption:= ACaption;
     lvItem.Data:= Item;
-    if Item.ImageIndex > -1 then
+    {if Item.ImageIndex > -1 then
       lvItem.ImageIndex:= Item.ImageIndex
     else
-      lvItem.ImageIndex:= defImageIndex;
+      lvItem.ImageIndex:= defImageIndex;}
    // lvItem.SubItems.Add(IntToStr(PMask));
     n:= TV.Items.FindNodeWithData(Item);
     n.Visible:= False;
@@ -508,8 +557,8 @@ var
 begin
   lvItem := lvToolbar.Items.Add;
   lvItem.Caption:= cDivider;
-  lvItem.ImageIndex:= divImageIndex;
-//  lvItem.SubItems.Add(IntToStr(PMask));
+  //lvItem.ImageIndex:= divImageIndex;
+  //  lvItem.SubItems.Add(IntToStr(PMask));
 end;
 
 procedure TToolBarConfig.FillToolBar;
@@ -525,8 +574,10 @@ begin
     aListItem := TLvItem(MainList.Objects[I]);
     mi := aListItem.Item;
     aCaption  := MainList.Strings[I];
-    if aCaption = cDivider then AddDivider(aPMask)
-    else AddToolBarItem(mi,aPMask);
+    if aCaption = cDivider then
+      AddDivider(aPMask)
+    else
+      AddToolBarItem(mi, aPMask);
     aListItem.LvIndex:= lvToolbar.Items.Count - 1;
   end;
 end;

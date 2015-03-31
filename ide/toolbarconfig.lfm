@@ -13,10 +13,10 @@ object ToolBarConfig: TToolBarConfig
   object lblMenuTree: TLabel
     AnchorSideLeft.Control = TV
     AnchorSideLeft.Side = asrCenter
-    Left = 170
-    Height = 17
+    Left = 173
+    Height = 15
     Top = 14
-    Width = 73
+    Width = 67
     Caption = 'lblMenuTree'
     ParentColor = False
   end
@@ -24,10 +24,10 @@ object ToolBarConfig: TToolBarConfig
     AnchorSideLeft.Control = lvToolbar
     AnchorSideLeft.Side = asrCenter
     AnchorSideTop.Control = lblMenuTree
-    Left = 573
-    Height = 17
+    Left = 575
+    Height = 15
     Top = 14
-    Width = 58
+    Width = 54
     Caption = 'lblToolbar'
     ParentColor = False
   end
@@ -101,6 +101,7 @@ object ToolBarConfig: TToolBarConfig
     BorderSpacing.Top = 6
     BorderSpacing.Right = 3
     BorderSpacing.Bottom = 6
+    DefaultItemHeight = 18
     ReadOnly = True
     ScrollBars = ssAutoBoth
     TabOrder = 1
@@ -141,7 +142,7 @@ object ToolBarConfig: TToolBarConfig
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = TV
     Left = 443
-    Height = 312
+    Height = 343
     Top = 66
     Width = 318
     Anchors = [akTop, akLeft, akBottom]
@@ -151,18 +152,16 @@ object ToolBarConfig: TToolBarConfig
       item
         AutoSize = True
         Caption = 'Name'
-        Width = 100
-      end    
-      item
-        AutoSize = True
-        Caption = 'Profile'
-        Visible = False
-        Width = 0
+        Width = 314
       end>
+    HideSelection = False
+    OwnerDraw = True
+    ReadOnly = True
     ScrollBars = ssAutoBoth
     ShowColumnHeaders = False
     TabOrder = 3
     ViewStyle = vsReport
+    OnDrawItem = lvToolbarDrawItem
     OnSelectItem = lvToolbarSelectItem
   end
   object sbAddDivider: TSpeedButton
@@ -183,10 +182,10 @@ object ToolBarConfig: TToolBarConfig
     AnchorSideTop.Control = FilterEdit
     AnchorSideRight.Control = lvToolbar
     AnchorSideRight.Side = asrBottom
-    Left = 715
-    Height = 17
+    Left = 720
+    Height = 15
     Top = 37
-    Width = 46
+    Width = 41
     Anchors = [akTop, akRight]
     Caption = 'lbSelect'
     ParentColor = False
@@ -198,7 +197,7 @@ object ToolBarConfig: TToolBarConfig
     AnchorSideBottom.Side = asrBottom
     Left = 415
     Height = 26
-    Top = 352
+    Top = 383
     Width = 23
     Anchors = [akLeft, akBottom]
     Enabled = False
@@ -208,8 +207,8 @@ object ToolBarConfig: TToolBarConfig
   end
   object pnlButtons: TButtonPanel
     Left = 6
-    Height = 37
-    Top = 414
+    Height = 34
+    Top = 417
     Width = 760
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
