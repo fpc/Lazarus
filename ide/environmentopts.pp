@@ -941,7 +941,7 @@ begin
   FIDEToolBarList := TIDEToolBarList.Create;
   FIDECoolBarVisible := True;
   FIDECoolBarWidth := 230;
-  FIDECoolBarGrabStyle := 4;
+  FIDECoolBarGrabStyle := 1;
   FIDECoolBarGrabWidth := 5;
   FIDECoolBarBorderStyle := 1;
   //standard toolbar defaults
@@ -1278,7 +1278,7 @@ begin
       SubPath := Path + 'Desktop/IDECoolBar/';
       FIDECoolBarVisible := XMLConfig.GetValue(SubPath + 'Visible/Value', True);
       FIDECoolBarWidth := XMLConfig.GetValue(SubPath + 'Width/Value', 230);
-      FIDECoolBarGrabStyle := XMLConfig.GetValue(SubPath + 'GrabStyle/Value', 4);
+      FIDECoolBarGrabStyle := XMLConfig.GetValue(SubPath + 'GrabStyle/Value', 1);
       FIDECoolBarGrabWidth := XMLConfig.GetValue(SubPath + 'GrabWidth/Value', 5);
       FIDECoolBarBorderStyle := XMLConfig.GetValue(SubPath + 'BorderStyle/Value', 5);
       IDEToolbarCount := XMLConfig.GetValue(SubPath + 'ToolBarCount/Value', 0);
@@ -1741,7 +1741,7 @@ begin
        XMLConfig.SetDeleteValue(SubPath + 'Width/Value',
                                 FIDECoolBarWidth, 0);
        XMLConfig.SetDeleteValue(SubPath + 'GrabStyle/Value',
-                                FIDECoolBarGrabStyle, 4);
+                                FIDECoolBarGrabStyle, 1);
        XMLConfig.SetDeleteValue(SubPath + 'GrabWidth/Value',
                                 FIDECoolBarGrabWidth, 5);
        XMLConfig.SetDeleteValue(SubPath + 'BorderStyle/Value',
