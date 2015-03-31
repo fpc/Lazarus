@@ -58,7 +58,7 @@ type
     function RowColToCharIndex(RowCol: TPoint): integer;                        //as 2000-11-09
     procedure Append(const Value: String);
     procedure Clear;
-  end;
+  end deprecated 'use SynEdit instead';
 
   TSynMemo = class(TCustomSynMemo)
 {begin}                                                                         //mh 2000-09-23

@@ -81,7 +81,11 @@ end;
 
 procedure RegisterSynMemo;
 begin
+  {$IfDef WithSynMemo}
   RegisterComponents('SynEdit',[TSynMemo]);
+  {$Else}
+  RegisterNoIcon([TSynMemo]);
+  {$EndIF}
 end;
 
 procedure RegisterSynHighlighterPas;

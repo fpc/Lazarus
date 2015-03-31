@@ -860,7 +860,7 @@ type
     function DoOnReplaceText(const ASearch, AReplace: string;
       Line, Column: integer): TSynReplaceAction; virtual;
     procedure DoOnStatusChange(Changes: TSynStatusChanges); virtual;
-    property LastMouseCaret: TPoint read FLastMouseCaret write SetLastMouseCaret;
+    property LastMouseCaret: TPoint read FLastMouseCaret write SetLastMouseCaret; // TODO: deprecate? see MouseMove
     function GetSelEnd: integer;                                                 //L505
     function GetSelStart: integer;
     procedure SetSelEnd(const Value: integer);
@@ -995,6 +995,15 @@ type
     function PhysicalToLogicalCol(const Line: string;
                                   Index, PhysicalPos: integer): integer;
     function PhysicalLineLength(Line: String; Index: integer): integer;
+
+    (* from SynMemo - NOT recommended to use - Extremly slow code
+       SynEdit (and SynMemo) is a Linebased Editor and not meant to be accessed as a contineous text
+       Warning: This ignoces trailing spaces (same as in SynMemo). Result may be incorrect.
+       If the caret must be adjusted use      SetTextBetweenPoints()
+    *)
+    function CharIndexToRowCol(Index: integer): TPoint;   experimental; deprecated 'SynMemo compatibility - very slow / SynEdit operates on x/y';
+    function RowColToCharIndex(RowCol: TPoint): integer;  experimental; deprecated 'SynMemo compatibility - very slow / SynEdit operates on x/y';
+    // End "from SynMemo"
 
     // Pixel
     function ScreenColumnToXValue(Col: integer): integer;  // map screen column to screen pixel
@@ -3524,7 +3533,7 @@ begin
     FRightGutter.MouseMove(Shift, X, Y);
 
   FLastMousePoint := Point(X,Y);
-  LastMouseCaret := PixelsToRowColumn(Point(X,Y));
+  LastMouseCaret := PixelsToRowColumn(Point(X,Y)); // TODO: Used for ctrl-Link => Use LastMousePoint, and calculate only, if modifier is down
   UpdateCursor;
 
   if (sfWaitForMouseSelecting in fStateFlags) and MouseCapture and
@@ -9196,6 +9205,51 @@ end;
 function TCustomSynEdit.PhysicalLineLength(Line: String; Index: integer): integer;
 begin
   Result:=LogicalToPhysicalCol(Line, Index, length(Line)+1) - 1
+end;
+
+(* from SynMemo - NOT recommended to use - Extremly slow code
+   SynEdit (and SynMemo) is a Linebased Editor and not meant to be accessed as a contineous text
+*)
+function TCustomSynEdit.CharIndexToRowCol(Index: integer): TPoint;
+var
+  x, y, Chars: integer;
+  e: string;
+  LineEndLen: Integer;
+begin
+  x := 0;
+  y := 0;
+  e:=LineEnding;
+  LineEndLen:=length(e);
+  Chars := 0;
+  while y < TextBuffer.Count do begin
+    x := Length(TextBuffer[y]);
+    if Chars + x + LineEndLen > Index then begin
+      x := Index - Chars;
+      break;
+    end;
+    Inc(Chars, x + LineEndLen);
+    x := 0;
+    Inc(y);
+  end;
+  Result := Point(x + 1, y + 1);
+end;
+
+(* from SynMemo - NOT recommended to use - Extremly slow code
+   SynEdit (and SynMemo) is a Linebased Editor and not meant to be accessed as a contineous text
+*)
+function TCustomSynEdit.RowColToCharIndex(RowCol: TPoint): integer;
+var
+  i: integer;
+  e: string;
+  LineEndLen: Integer;
+begin
+  Result := 0;
+  RowCol.y := Min(TextBuffer.Count, RowCol.y) - 1;
+  e:=LineEnding;
+  LineEndLen:=length(e);
+  for i := 0 to RowCol.y - 1 do
+    Result := Result + Length(TextBuffer[i]) + LineEndLen;
+  Result := Result + RowCol.x;
 end;
 
 function TCustomSynEdit.PhysicalToLogicalPos(const p: TPoint): TPoint;
