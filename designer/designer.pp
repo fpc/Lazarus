@@ -214,7 +214,6 @@ type
 
     procedure DoShowAnchorEditor;
     procedure DoShowTabOrderEditor;
-    procedure DoShowChangeClassDialog;
     procedure DoShowObjectInspector;
     procedure DoChangeZOrder(TheAction: Integer);
 
@@ -282,6 +281,8 @@ type
     function InsertFromStream(s: TStream; Parent: TWinControl;
                               PasteFlags: TComponentPasteSelectionFlags): Boolean; override;
     function InvokeComponentEditor(AComponent: TComponent): boolean; override;
+    function ChangeClass: boolean; override;
+
     procedure DoProcessCommand(Sender: TObject; var Command: word;
                                var Handled: boolean);
 
@@ -1404,12 +1405,6 @@ begin
     FOnShowTabOrderEditor(Self);
 end;
 
-procedure TDesigner.DoShowChangeClassDialog;
-begin
-  if (ControlSelection.Count=1) and (not ControlSelection.LookupRootSelected) then
-    ShowChangeClassDialog(Self,ControlSelection[0].Persistent);
-end;
-
 procedure TDesigner.DoShowObjectInspector;
 begin
   if Assigned(FOnShowObjectInspector) then
@@ -1546,6 +1541,14 @@ begin
       DebugLn('TDesigner.InvokeComponentEditor ERROR freeing component editor: ',E.Message);
     end;
   end;
+end;
+
+function TDesigner.ChangeClass: boolean;
+begin
+  if (ControlSelection.Count=1) and (not ControlSelection.LookupRootSelected) then
+    Result:=ShowChangeClassDialog(Self,ControlSelection[0].Persistent)=mrOK
+  else
+    Result:=false;
 end;
 
 procedure TDesigner.DoProcessCommand(Sender: TObject; var Command: word;
@@ -3183,7 +3186,7 @@ end;
 
 procedure TDesigner.OnChangeClassMenuClick(Sender: TObject);
 begin
-  DoShowChangeClassDialog;
+  ChangeClass;
 end;
 
 procedure TDesigner.OnChangeParentMenuClick(Sender: TObject);

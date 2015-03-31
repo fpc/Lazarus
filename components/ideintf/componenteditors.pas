@@ -77,6 +77,7 @@ type
     function InvokeComponentEditor(AComponent: TComponent;
                                    {%H-}MenuIndex: integer): boolean; deprecated;
     function InvokeComponentEditor(AComponent: TComponent): boolean; virtual; abstract;
+    function ChangeClass: boolean; virtual; abstract;
 
     function CanUndo: Boolean; virtual; abstract;
     function CanRedo: Boolean; virtual; abstract;

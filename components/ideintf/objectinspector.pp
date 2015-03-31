@@ -587,11 +587,13 @@ type
     ViewRestrictedPropertiesPopupMenuItem: TMenuItem;
     CopyPopupmenuItem: TMenuItem;
     CutPopupmenuItem: TMenuItem;
+    PastePopupmenuItem: TMenuItem;
     DeletePopupmenuItem: TMenuItem;
+    ChangeClassPopupmenuItem: TMenuItem;
     FindDeclarationPopupmenuItem: TMenuItem;
     OptionsSeparatorMenuItem: TMenuItem;
     OptionsSeparatorMenuItem2: TMenuItem;
-    PastePopupmenuItem: TMenuItem;
+    OptionsSeparatorMenuItem3: TMenuItem;
     RemoveFromFavoritesPopupMenuItem: TMenuItem;
     ShowComponentTreePopupMenuItem: TMenuItem;
     ShowHintsPopupMenuItem: TMenuItem;
@@ -634,6 +636,7 @@ type
     procedure OnCopyPopupmenuItemClick(Sender: TObject);
     procedure OnPastePopupmenuItemClick(Sender: TObject);
     procedure OnDeletePopupmenuItemClick(Sender: TObject);
+    procedure OnChangeClassPopupmenuItemClick(Sender: TObject);
     procedure OnShowComponentTreePopupMenuItemClick(Sender: TObject);
     procedure OnShowHintPopupMenuItemClick(Sender: TObject);
     procedure OnShowInfoBoxPopupMenuItemClick(Sender: TObject);
@@ -3965,6 +3968,12 @@ begin
      @OnDeletePopupmenuItemClick,false,true,true);
   OptionsSeparatorMenuItem2 := AddSeparatorMenuItem(nil, 'OptionsSeparatorMenuItem2', true);
 
+  // Change class of the component. ToDo: create a 'change_class' icon resource
+  AddPopupMenuItem(ChangeClassPopupMenuItem,nil,'ChangeClassPopupMenuItem',
+     oisChangeClass,'Change Class of component', '',
+     @OnChangeClassPopupmenuItemClick,false,true,true);
+  OptionsSeparatorMenuItem3 := AddSeparatorMenuItem(nil, 'OptionsSeparatorMenuItem3', true);
+
   AddPopupMenuItem(ShowComponentTreePopupMenuItem,nil
      ,'ShowComponentTreePopupMenuItem',oisShowComponentTree, '', ''
      ,@OnShowComponentTreePopupMenuItemClick,FShowComponentTree,true,true);
@@ -4648,6 +4657,18 @@ begin
   end;
 end;
 
+procedure TObjectInspectorDlg.OnChangeClassPopupmenuItemClick(Sender: TObject);
+var
+  ADesigner: TIDesigner;
+begin
+  if (Selection.Count = 1) then
+  begin
+    ADesigner := FindRootDesigner(Selection[0]);
+    if ADesigner is TComponentEditorDesigner then
+      TComponentEditorDesigner(ADesigner).ChangeClass;
+  end;
+end;
+
 procedure TObjectInspectorDlg.OnGridModified(Sender: TObject);
 begin
   DoModified(Self);
@@ -5196,7 +5217,7 @@ var
   end;
 
 var
-  b, AtLeastOneComponent, CanBeDeleted: Boolean;
+  b, ExactlyOneComp, AtLeastOneComp: Boolean;
   CurRow: TOIPropertyGridRow;
   Persistent: TPersistent;
 begin
@@ -5204,6 +5225,8 @@ begin
   RemoveComponentEditorMenuItems;
   ShowHintsPopupMenuItem.Checked := PropertyGrid.ShowHint;
   Persistent := GetSelectedPersistent;
+  ExactlyOneComp := False;
+  AtLeastOneComp := False;
   // show component editors only for component treeview
   if MainPopupMenu.PopupComponent = ComponentTree then
   begin
@@ -5218,26 +5241,19 @@ begin
       else if Persistent is TCollectionItem then
         AddCollectionEditorMenuItems(TCollectionItem(Persistent).Collection);
     end;
-
+    ExactlyOneComp := (Selection.Count = 1) and (Selection[0] is TComponent);
+    AtLeastOneComp := (Selection.Count > 0) and (Selection[0] is TComponent);
     // add Z-Order menu
     if (Selection.Count = 1) and (Selection[0] is TControl) then
       AddZOrderMenuItems;
-    AtLeastOneComponent:=(Selection.Count > 0) and (Selection[0] is TComponent);
-    CanBeDeleted:=AtLeastOneComponent;
-    CutPopupMenuItem.Visible := CanBeDeleted;
-    CopyPopupMenuItem.Visible := AtLeastOneComponent;
-    PastePopupMenuItem.Visible := AtLeastOneComponent;
-    DeletePopupMenuItem.Visible := CanBeDeleted;
-    OptionsSeparatorMenuItem2.Visible := AtLeastOneComponent;
-  end
-  else
-  begin
-    CutPopupMenuItem.Visible := False;
-    CopyPopupMenuItem.Visible := False;
-    PastePopupMenuItem.Visible := False;
-    DeletePopupMenuItem.Visible := False;
-    OptionsSeparatorMenuItem2.Visible := False;
   end;
+  CutPopupMenuItem.Visible := AtLeastOneComp;
+  CopyPopupMenuItem.Visible := AtLeastOneComp;
+  PastePopupMenuItem.Visible := AtLeastOneComp;
+  DeletePopupMenuItem.Visible := AtLeastOneComp;
+  OptionsSeparatorMenuItem2.Visible := AtLeastOneComp;
+  ChangeClassPopupmenuItem.Visible := ExactlyOneComp;
+  OptionsSeparatorMenuItem3.Visible := ExactlyOneComp;
 
   // The editors can do menu actions, for example set defaults and constraints
   CurRow := GetActivePropertyRow;
