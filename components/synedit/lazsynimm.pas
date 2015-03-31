@@ -351,7 +351,7 @@ begin
           GetMem(p, ImeCount + 2);
           try
             TCustomSynEdit(FriendEdit).BeginUpdate;
-            if SelectionObj.SelAvail and (not SelectionObj.Persistent) and (eoOverwriteBlock in TSynEdit(FriendEdit).Options2) then
+            if SelectionObj.SelAvail and (not SelectionObj.Persistent) and (eoOverwriteBlock in TCustomSynEdit(FriendEdit).Options2) then
               SelectionObj.SelText := '';
             ImmGetCompositionStringW(imc, GCS_RESULTSTR, p, ImeCount + 2);
             p[ImeCount] := #0;
@@ -485,7 +485,7 @@ begin
   FImeMarkupSelection2.MarkupInfo.FrameStyle := slsSolid;
   FImeMarkupSelection2.MarkupInfo.FrameEdges := sfeBottom;
 
-  FImeMarkupSelection3.MarkupInfo.Assign(TSynEdit(FriendEdit).SelectedColor);
+  FImeMarkupSelection3.MarkupInfo.Assign(TCustomSynEdit(FriendEdit).SelectedColor);
 
   TCustomSynEdit(FriendEdit).RegisterStatusChangedHandler(@DoStatusChanged, [scCaretX, scCaretY, scModified]);
   TCustomSynEdit(FriendEdit).RegisterCommandHandler(@DoOnCommand, nil, [hcfInit]);
@@ -669,7 +669,7 @@ begin
           if FHasPersistLock then
             SelectionObj.DecPersistentLock;
           FHasPersistLock := False;
-          if SelectionObj.SelAvail and (not SelectionObj.Persistent) and (eoOverwriteBlock in TSynEdit(FriendEdit).Options2)
+          if SelectionObj.SelAvail and (not SelectionObj.Persistent) and (eoOverwriteBlock in TCustomSynEdit(FriendEdit).Options2)
           then begin
             SelectionObj.SelText := '';
             FImeBlockSelection.StartLineBytePos := SelectionObj.StartLineBytePos;
@@ -844,7 +844,7 @@ procedure LazSynImeFull.WMImeStartComposition(var Msg: TMessage);
 begin
   //debugln(['TCustomSynEdit.WMImeStartComposition ']);
   {$IFnDEF WinIMEFullDeferOverwrite}
-  if SelectionObj.SelAvail and (not SelectionObj.Persistent) and (eoOverwriteBlock in TSynEdit(FriendEdit).Options2)
+  if SelectionObj.SelAvail and (not SelectionObj.Persistent) and (eoOverwriteBlock in TCustomSynEdit(FriendEdit).Options2)
   then begin
     {$IFnDEF WinIMEFullOverwriteSkipUndo}
     ViewedTextBuffer.UndoList.ForceGroupEnd;
@@ -869,7 +869,7 @@ begin
   FHasPersistLock := True;
   {$ENDIF}
 
-  FImeMarkupSelection3.MarkupInfo.Assign(TSynEdit(FriendEdit).SelectedColor);
+  FImeMarkupSelection3.MarkupInfo.Assign(TCustomSynEdit(FriendEdit).SelectedColor);
   FImeBlockSelection.StartLineBytePos := CaretObj.LineBytePos;
   FInCompose := True;
   Msg.Result := 1;
@@ -884,7 +884,7 @@ begin
   {$IFnDEF WinIMEFullDeferOverwrite}
   {$IFnDEF WinIMEFullOverwriteSkipUndo}
   if FNeedUndoOnCancel and (ViewedTextBuffer.UndoList.PeekItem = FUndoStamp2) then
-    TSynEdit(FriendEdit).Undo;
+    TCustomSynEdit(FriendEdit).Undo;
   {$ENDIF}
   {$ENDIF}
   {$IFDEF WinIMEFullDeferOverwrite}
