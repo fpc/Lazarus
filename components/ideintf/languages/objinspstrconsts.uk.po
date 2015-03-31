@@ -421,6 +421,14 @@ msgstr "Категорія"
 msgid "Delete?"
 msgstr "Видалити?"
 
+#: objinspstrconsts.oischangeclass
+msgid "Change Class ..."
+msgstr ""
+
+#: objinspstrconsts.oischangeparent
+msgid "Change Parent"
+msgstr ""
+
 #: objinspstrconsts.oischar
 msgid "Char"
 msgstr "Символ"
