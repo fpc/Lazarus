@@ -55,7 +55,6 @@ type
    protected
      procedure AddButton(AMenuItem: TIDEMenuItem);
      procedure PositionAtEnd(AToolbar: TToolbar; AButton: TToolButton);
-     procedure Reload;
    public
      constructor Create;
      destructor Destroy; override;
@@ -235,13 +234,6 @@ begin
   end;
   AButton.Parent := AToolbar;
 end;
-
-procedure TIDEToolBar.Reload;
-begin
-  ClearToolbar;
- // AddCustomItems;
-end;
-
 
 procedure TIDEToolBar.AddCustomItems(Index: Integer);
 const
