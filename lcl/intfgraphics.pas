@@ -5049,11 +5049,11 @@ var
   BFH: TBitMapFileHeader;
 begin
   Stream.Read(BFH, SizeOf(BFH));
-  Result := ({$ifdef FPC_LITTLE_ENDIAN}LEtoN{$endif}(BFH.bfType) = BMmagic); // Just check magic number
+  Result := BFH.bfType = BMmagic; // Just check magic number
 
   // store the data offset
   if Result and (BFH.bfOffBits <> 0)
-  then FDataOffset := Stream.Position + {$ifdef FPC_LITTLE_ENDIAN}LEtoN{$endif}(BFH.bfOffBits) - SizeOf(BFH);
+  then FDataOffset := Stream.Position + BFH.bfOffBits - SizeOf(BFH);
 end;
 
 procedure TLazReaderBMP.InternalReadHead;
