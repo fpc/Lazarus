@@ -12705,7 +12705,7 @@ msgstr "Paniikki"
 
 #: lazarusidestrconsts.lisparsed
 msgid ", parsed "
-msgstr ", jäsennetty"
+msgstr ", jäsennetty "
 
 #: lazarusidestrconsts.lisparser
 msgid "parser \"%s\": %s"
