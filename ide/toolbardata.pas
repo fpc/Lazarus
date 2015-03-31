@@ -41,7 +41,7 @@ type
   TIDEToolBar = class
    private
      FToolBar: TToolbar;
-     FButtonList: TList;
+     FButtonList: TFPList;
      FButtonNames: TStringList;
      FUpdateTimer: TTimer;
      FPosition: integer;
@@ -72,7 +72,7 @@ type
   { TIDEToolBarList }
   TIDEToolBarList = class
   private
-    FToolBarList: TList;
+    FToolBarList: TFPList;
     function GetItems(Index: integer): TIDEToolBar;
     function GetCount: Integer;
   public
@@ -158,7 +158,7 @@ begin
     ShowHint := True;
     OnClick := @DoToolBarClick;
   end;
-  FButtonList := TList.Create;
+  FButtonList := TFPList.Create;
   FButtonNames := TStringList.Create;
 
   FUpdateTimer := TTimer.Create(nil);
@@ -312,7 +312,7 @@ end;
 constructor TIDEToolBarList.Create;
 begin
   inherited Create;
-  FToolBarList := TList.Create;
+  FToolBarList := TFPList.Create;
 end;
 
 destructor TIDEToolBarList.Destroy;
