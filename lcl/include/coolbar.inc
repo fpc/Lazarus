@@ -702,7 +702,7 @@ begin
   FLockCursor := True;
   if ABand then begin
     if not AGrabber then
-      Cursor := crDrag
+      Cursor := crDefault
     else
       if not Vertical then
         Cursor := crHSplit
@@ -894,6 +894,9 @@ begin
           FVisiBands[FDraggedBandIndex-1].Width :=
             Y-FDragInitPos-FVisiBands[FDraggedBandIndex-1].FLeft
       end;
+      dbMove: begin
+        Cursor := crDrag;
+      end;
     end;
   end;
 end;
@@ -1008,6 +1011,7 @@ begin
         Invalidate;
       end;
     end;
+    Cursor := crDefault;
     if Assigned(FOnChange) then
       FOnChange(Self);
   end;
