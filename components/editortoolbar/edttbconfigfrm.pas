@@ -83,8 +83,9 @@ type
     procedure btnMoveUpClick(Sender: TObject);
     procedure btnOKClick(Sender: TObject);
     procedure btnRemoveClick(Sender: TObject);
-    procedure lvToolbarSelectItem(Sender: TObject; Item: TListItem;
-      Selected: Boolean);
+    procedure lvToolbarDrawItem(Sender: TCustomListView; AItem: TListItem;
+      ARect: TRect; AState: TOwnerDrawState);
+    procedure lvToolbarSelectItem(Sender: TObject; Item: TListItem; Selected: Boolean);
     procedure miAllClick(Sender: TObject);
     procedure miCustomClick(Sender: TObject);
     procedure miDebugClick(Sender: TObject);
@@ -95,6 +96,7 @@ type
   private
     FToolBarPos: string;
     FToolBarShow: boolean;
+    Image: TBitMap;
     defImageIndex: integer;
     divImageIndex: Integer;
     // Main list related entries
@@ -134,21 +136,6 @@ implementation
 
 uses
   editortoolbar_impl, LazConfigStorage, BaseIDEIntf, LazIDEIntf, IDEImagesIntf,LCLProc;
-
-{
-Function IndexFromLocalized (var AValue: string): Integer;
-var
-  i:Integer;
-begin
- for i:= 0 to 3 do begin
-   if AValue = sLocalizedPosValues[i] then begin
-    Result := I;
-    exit;
-   end;
- end;
- Result := 0; // default is Top
-end;
-}
 
 Function IndexFromEnglish (var AValue: string): Integer;
 var
@@ -195,7 +182,7 @@ begin
 
   MainList := TStringList.Create;
   MainList.OwnsObjects:= True; // it should be the default, but just to make sure...
-
+  Image := TBitmap.Create;
   SetupCaptions;
   LoadStyleSettings;
   LoadCategories;
@@ -204,6 +191,7 @@ end;
 
 procedure TEdtTbConfigForm.FormDestroy(Sender: TObject);
 begin
+  Image.Free;
   MainList.Free;
 end;
 
@@ -334,7 +322,7 @@ end;
 
 procedure TEdtTbConfigForm.btnAddClick(Sender: TObject);
 var
-  n: TTreeNode;
+  n, nNext: TTreeNode;
   ACaption: string;
   lvItem: TListItem;
   anIndex: Integer;
@@ -354,10 +342,6 @@ begin
     end;
     lvItem.Caption      := ACaption;
     lvItem.Data         := n.Data;
-    if n.ImageIndex > -1 then
-      lvItem.ImageIndex   := n.ImageIndex
-    else
-      lvItem.ImageIndex   := defImageIndex;
     lvItem.SubItems.Add(IntToStr(CurrProfile));
     if anIndex > -1 then begin
       // clear previous selection to avoid double sel in Qt
@@ -366,11 +350,13 @@ begin
       InsertMainListItem(lvItem,lvToolbar.Items[anIndex]);
     end
     else begin
-      lvToolbar.ItemIndex := lvToolbar.Items.Count-1;
       InsertMainListItem(lvItem,Nil);
     end;
     lbToolbarSelectionChange(lblToolbar, False);
+    nNext := TV.Selected.GetNext;
     TV.Selected.Visible:= False;
+    if nNext <> nil then
+      TV.Selected := nNext;
   end;
 end;
 
@@ -395,6 +381,46 @@ begin
       n.Visible:= True;
     end;
     TVSelectionChanged(TV);
+  end;
+end;
+
+procedure TEdtTbConfigForm.lvToolbarDrawItem(Sender: TCustomListView;
+  AItem: TListItem; ARect: TRect; AState: TOwnerDrawState);
+var
+  ImageIndex: integer;
+begin
+  with Sender.Canvas do
+  begin
+    if AItem.Selected then
+    begin
+      Brush.Color := clHighlight;
+      Font.Color := clHighlightText;
+    end
+    else begin
+      Brush.Color := clDefault;
+      Font.Color := clDefault;
+    end;
+    FillRect(ARect);
+
+    if AItem.Caption = cDivider then
+      ImageIndex := divImageIndex
+    else
+    begin
+      if Assigned(AItem.Data) then
+      begin
+        if TIDEMenuItem(AItem.Data).ImageIndex > -1 then
+          ImageIndex := TIDEMenuItem(AItem.Data).ImageIndex
+        else
+          ImageIndex := defImageIndex;
+      end
+      else
+        ImageIndex := defImageIndex;
+    end;
+    Image.Clear;
+    lvToolBar.SmallImages.GetBitmap(ImageIndex, Image);
+    Draw(ARect.Left + 2, ARect.Top + 2, Image);
+
+    TextOut(ARect.Left + 21, ARect.Top + 2, AItem.Caption);
   end;
 end;
 
@@ -536,8 +562,8 @@ begin
     lvItem := lvToolbar.Items.Insert(anIndex)
   else
     lvItem := lvToolbar.Items.Add;
+  lvItem.Selected := False;
   lvItem.Caption:= cDivider;
-  lvItem.ImageIndex:= divImageIndex;
   lvItem.SubItems.Add(IntToStr(CurrProfile));
   if lvToolbar.ItemIndex > -1 then
     InsertMainListItem(lvItem,lvToolbar.Items[anIndex])
@@ -687,7 +713,6 @@ begin
     value         := cfg.GetValue('Profile',iAll);
     CurrProfile   := value;
     value         := GetProfileIndex(value);
-    //cbProfile.ItemIndex:= value;
     cbProfile.Text:= sLocalizedProfileNames[value];
   finally
     cfg.Free;
@@ -816,10 +841,6 @@ begin
     lvItem := lvToolbar.Items.Add;
     lvItem.Caption:= ACaption;
     lvItem.Data:= Item;
-    if Item.ImageIndex > -1 then
-      lvItem.ImageIndex:= Item.ImageIndex
-    else
-      lvItem.ImageIndex:= defImageIndex;
     lvItem.SubItems.Add(IntToStr(PMask));
     n:= TV.Items.FindNodeWithData(Item);
     n.Visible:= False;
@@ -832,7 +853,6 @@ var
 begin
   lvItem := lvToolbar.Items.Add;
   lvItem.Caption:= cDivider;
-  lvItem.ImageIndex:= divImageIndex;
   lvItem.SubItems.Add(IntToStr(PMask));
 end;
 
@@ -887,7 +907,6 @@ begin
   finally
     frm.Free;
   end;
-
 end;
 
 class procedure TEdtTbConfigForm.UpdateVisible(NewStatus: Boolean);
@@ -901,7 +920,6 @@ begin
   finally
     frm.Free;
   end;
-
 end;
 
 end.
