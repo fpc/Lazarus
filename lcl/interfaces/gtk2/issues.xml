@@ -40,5 +40,11 @@
 		<issue name="TListView.Columns">
 			<short>Multiple columns then ViewStyle=vsList is not supported</short>
 		</issue>		
+		<issue name="TStatusPanel.Alignment">
+			<short>not supported</short>
+		</issue>		
+		<issue name="TStatusPanel.Bevel">
+			<short>not supported</short>
+		</issue>		
 	</widgetset>
 </package>
