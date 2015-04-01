@@ -2605,6 +2605,9 @@ procedure TCustomForm.Loaded;
 var
   Control: TWinControl;
 begin
+  {$IF defined(CHECK_POSITION) or defined(VerboseFormUpdateShowing) or defined(VerboseShowing)}
+  debugln(['[TCustomForm.Loaded] START ',DbgSName(Self),' Pos=',Left,',',Top,' Visible=',Visible,' Showing=',Showing]);
+  {$ENDIF}
   DisableAlign;
   try
     inherited Loaded;
@@ -2661,7 +2664,7 @@ procedure TCustomForm.UpdateShowing;
 begin
   if csLoading in ComponentState then exit;
   {$IF defined(CHECK_POSITION) or defined(VerboseFormUpdateShowing) or defined(VerboseShowing)}
-  DebugLn(['[TCustomForm.UpdateShowing] STAR  ',DbgSName(Self),' Pos=',Left,',',Top,' Visible=',Visible,' Showing=',Showing]);
+  DebugLn(['[TCustomForm.UpdateShowing] START ',DbgSName(Self),' Pos=',Left,',',Top,' Visible=',Visible,' Showing=',Showing]);
   {$ENDIF}
   // If the the form is about to show, calculate its metrics
   if Visible and (not (csDestroying in ComponentState)) then
