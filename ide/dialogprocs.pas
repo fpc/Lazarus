@@ -65,9 +65,9 @@ var
 
 function BackupFileInteractive(const Filename: string): TModalResult;
 function RenameFileWithErrorDialogs(const SrcFilename, DestFilename: string;
-                                    ExtraButtons: TMsgDlgButtons): TModalResult;
+                                    ExtraButtons: TMsgDlgButtons = []): TModalResult;
 function CopyFileWithErrorDialogs(const SrcFilename, DestFilename: string;
-                                  ExtraButtons: TMsgDlgButtons): TModalResult;
+                                  ExtraButtons: TMsgDlgButtons = []): TModalResult;
 function LoadCodeBuffer(out ACodeBuffer: TCodeBuffer; const AFilename: string;
                         Flags: TLoadBufferFlags; ShowAbort: boolean): TModalResult;
 function SaveCodeBuffer(ACodeBuffer: TCodeBuffer): TModalResult;
