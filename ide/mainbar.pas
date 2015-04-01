@@ -42,7 +42,7 @@ uses
   ComCtrls, ExtCtrls, LMessages,
   // IDEIntf
   ProjectIntf, NewItemIntf, MenuIntf, LazIDEIntf, LazFileCache,
-  EnvironmentOpts, LazarusIDEStrConsts, IDEImagesIntf;
+  EnvironmentOpts, LazarusIDEStrConsts, IDEImagesIntf, ToolbarData;
 
 type
   { TMainIDEBar }
@@ -540,33 +540,35 @@ procedure TMainIDEBar.RefreshCoolbar;
 var
   I, J: Integer;
   CoolBand: TCoolBand;
+  CoolBarOpts: TIDECoolBarOptions;
 begin
-  EnvironmentOptions.IDEToolBarList.Sort;
+  CoolBarOpts := EnvironmentOptions.IDECoolBarOptions;
+  IDECoolBar.Sort;
   //read general settings
-  if not (EnvironmentOptions.IDECoolBarGrabStyle in [0..5]) then
-    EnvironmentOptions.IDECoolBarGrabStyle := 4;
-  Coolbar.GrabStyle := TGrabStyle(EnvironmentOptions.IDECoolBarGrabStyle);
-  if not (EnvironmentOptions.IDECoolBarGrabWidth in [1..50]) then
-    EnvironmentOptions.IDECoolBarGrabWidth := 5;
-  Coolbar.GrabWidth := EnvironmentOptions.IDECoolBarGrabWidth;
-  Coolbar.BandBorderStyle := TBorderStyle(EnvironmentOptions.IDECoolBarBorderStyle);
+  if not (CoolBarOpts.IDECoolBarGrabStyle in [0..5]) then
+    CoolBarOpts.IDECoolBarGrabStyle := 4;
+  Coolbar.GrabStyle := TGrabStyle(CoolBarOpts.IDECoolBarGrabStyle);
+  if not (CoolBarOpts.IDECoolBarGrabWidth in [1..50]) then
+    CoolBarOpts.IDECoolBarGrabWidth := 5;
+  Coolbar.GrabWidth := CoolBarOpts.IDECoolBarGrabWidth;
+  Coolbar.BandBorderStyle := TBorderStyle(CoolBarOpts.IDECoolBarBorderStyle);
   //read toolbars
   CoolBar.Bands.Clear;
-  for I := 0 to EnvironmentOptions.IDEToolBarList.Count - 1 do
+  for I := 0 to IDECoolBar.ToolBars.Count - 1 do
   begin
     CoolBand := CoolBar.Bands.Add;
-    CoolBand.Break := EnvironmentOptions.IDEToolBarList.Items[I].Break;
-    CoolBand.Control := EnvironmentOptions.IDEToolBarList.Items[I].Toolbar;
+    CoolBand.Break := IDECoolBar.ToolBars[I].Break;
+    CoolBand.Control := IDECoolBar.ToolBars[I].Toolbar;
     CoolBand.MinWidth := 25;
     CoolBand.MinHeight := 22;
     CoolBand.FixedSize := True;
-    EnvironmentOptions.IDEToolBarList.Items[I].ClearToolbar;
-    for J := 0 to EnvironmentOptions.IDEToolBarList.Items[I].ButtonNames.Count - 1 do
-      EnvironmentOptions.IDEToolBarList.Items[I].AddCustomItems(J);
+    IDECoolBar.ToolBars[I].ClearToolbar;
+    for J := 0 to IDECoolBar.ToolBars[I].ButtonNames.Count - 1 do
+      IDECoolBar.ToolBars[I].AddCustomItems(J);
   end;
   CoolBar.AutosizeBands;
 
-  CoolBar.Visible := EnvironmentOptions.IDECoolBarVisible;
+  CoolBar.Visible := CoolBarOpts.IDECoolBarVisible;
   itmViewIDESpeedButtons.Checked := CoolBar.Visible;
   MainSplitter.Align := alLeft;
   MainSplitter.Visible := MainIDEBar.Coolbar.Visible and
@@ -576,7 +578,7 @@ end;
 
 procedure TMainIDEBar.MainSplitterMoved(Sender: TObject);
 begin
-  EnvironmentOptions.IDECoolBarWidth  := CoolBar.Width;
+  EnvironmentOptions.IDECoolBarOptions.IDECoolBarWidth := CoolBar.Width;
 end;
 
 procedure TMainIDEBar.CoolBarOnChange(Sender: TObject);
@@ -589,14 +591,14 @@ begin
     if Coolbar.Bands[I].Control = nil then
       Continue;
     ToolBar := (Coolbar.Bands[I].Control as TToolBar);
-    J := EnvironmentOptions.IDEToolBarList.FindByToolBar(ToolBar);
+    J := IDECoolBar.FindByToolBar(ToolBar);
     if J <> -1 then
     begin
-      EnvironmentOptions.IDEToolBarList.Items[J].Position := Coolbar.Bands[I].Index;
-      EnvironmentOptions.IDEToolBarList.Items[J].Break := Coolbar.Bands[I].Break;
+      IDECoolBar.ToolBars[J].Position := Coolbar.Bands[I].Index;
+      IDECoolBar.ToolBars[J].Break := Coolbar.Bands[I].Break;
     end
   end;
-  EnvironmentOptions.IDEToolBarList.Sort;
+  IDECoolBar.Sort;
 end;
 
 

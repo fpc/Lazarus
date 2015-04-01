@@ -72,7 +72,7 @@ type
     procedure spGrabWidthChange(Sender: TObject);
     procedure tmWaitTimer(Sender: TObject);
   private
-    FTempList: TIDEToolBarList;
+    FTempCoolBar: TIDECoolBar;
     procedure SelectBand(const ID: integer);
     function GetSelectedBand: Integer;
     procedure ToolBarClick(Sender: TObject);
@@ -130,7 +130,7 @@ var
   I, J: integer;
   IDEToolBar: TIDEToolBar;
 begin
-  with AOptions as TEnvironmentOptions do
+  with (AOptions as TEnvironmentOptions).IDECoolBarOptions do
   begin
      //read toolbar settings
     cbToolBarVisible.Checked := IDECoolBarVisible;
@@ -152,16 +152,16 @@ begin
     EnableDisableButtons(0);
 
     //read toolbars
-    FTempList.Clear;
-    for I := 0 to IDEToolbarList.Count - 1  do
+    FTempCoolBar.ToolBars.Clear;
+    for I := 0 to IDECoolBar.ToolBars.Count - 1  do
     begin
-      IDEToolBar := FTempList.Add;
-      IDEToolBar.Position := IDEToolbarList.Items[I].Position;
-      IDEToolBar.Break := IDEToolbarList.Items[I].Break;
-      for J := 0 to IDEToolbarList.Items[I].ButtonNames.Count - 1 do
-        IDEToolBar.ButtonNames.Add(IDEToolbarList.Items[I].ButtonNames.Strings[J]);
+      IDEToolBar := FTempCoolBar.Add;
+      IDEToolBar.Position := IDECoolBar.ToolBars[I].Position;
+      IDEToolBar.Break := IDECoolBar.ToolBars[I].Break;
+      for J := 0 to IDECoolBar.ToolBars[I].ButtonNames.Count - 1 do
+        IDEToolBar.ButtonNames.Add(IDECoolBar.ToolBars[I].ButtonNames.Strings[J]);
     end;
-    FTempList.Sort;
+    FTempCoolBar.Sort;
 
     PopulateToolBar;
   end;
@@ -173,7 +173,7 @@ var
   IDEToolBar: TIDEToolBar;
   ToolBar: TToolBar;
 begin
-  with AOptions as TEnvironmentOptions do
+  with (AOptions as TEnvironmentOptions).IDECoolBarOptions do
   begin
     //write toolbar settings
     IDECoolBarVisible := cbToolBarVisible.Checked;
@@ -187,23 +187,23 @@ begin
       if Coolbar.Bands[I].Control = nil then
         Continue;
       ToolBar := (Coolbar.Bands[I].Control as TToolBar);
-      J := FTempList.FindByToolBar(ToolBar);
+      J := FTempCoolBar.FindByToolBar(ToolBar);
       if J <> -1 then
       begin
-        FTempList.Items[J].Position := Coolbar.Bands[I].Index;
-        FTempList.Items[J].Break := Coolbar.Bands[I].Break;
+        FTempCoolBar.ToolBars[J].Position := Coolbar.Bands[I].Index;
+        FTempCoolBar.ToolBars[J].Break := Coolbar.Bands[I].Break;
       end;
     end;
-    FTempList.Sort;
+    FTempCoolBar.Sort;
 
-    IDEToolbarList.Clear;
-    for I := 0 to FTempList.Count - 1  do
+    IDECoolBar.ToolBars.Clear;
+    for I := 0 to FTempCoolBar.ToolBars.Count - 1  do
     begin
-      IDEToolBar := IDEToolbarList.Add;
-      IDEToolBar.Position := FTempList.Items[I].Position;
-      IDEToolBar.Break := FTempList.Items[I].Break;
-      for J := 0 to FTempList.Items[I].ButtonNames.Count - 1 do
-        IDEToolBar.ButtonNames.Add(FTempList.Items[I].ButtonNames.Strings[J]);
+      IDEToolBar := IDECoolBar.Add;
+      IDEToolBar.Position := FTempCoolBar.ToolBars[I].Position;
+      IDEToolBar.Break := FTempCoolBar.ToolBars[I].Break;
+      for J := 0 to FTempCoolBar.ToolBars[I].ButtonNames.Count - 1 do
+        IDEToolBar.ButtonNames.Add(FTempCoolBar.ToolBars[I].ButtonNames.Strings[J]);
     end;
   end;
   MainIDEBar.RefreshCoolbar;
@@ -325,12 +325,12 @@ procedure TToolbarOptionsFrame.EnableDisableButtons(const bType: Integer);
     IDEToolBar1: TIDEToolBar;
   begin
     Result := True;
-    if FTempList.Count <> 2 then
+    if FTempCoolBar.ToolBars.Count <> 2 then
       Exit;
-    if (FTempList.Items[0].ButtonNames.Count <> 8) or (FTempList.Items[1].ButtonNames.Count <> 10) then
+    if (FTempCoolBar.ToolBars[0].ButtonNames.Count <> 8) or (FTempCoolBar.ToolBars[1].ButtonNames.Count <> 10) then
       Exit;
-    IDEToolBar0 := FTempList.Items[0];
-    IDEToolBar1 := FTempList.Items[1];
+    IDEToolBar0 := FTempCoolBar.ToolBars[0];
+    IDEToolBar1 := FTempCoolBar.ToolBars[1];
     Result := (IDEToolBar0.ButtonNames[0] <> 'IDEMainMenu/File/itmFileNew/itmFileNewForm') or
               (IDEToolBar0.ButtonNames[1] <> 'IDEMainMenu/File/itmFileNew/itmFileNewUnit') or
               (IDEToolBar0.ButtonNames[2] <> '---------------') or
@@ -383,19 +383,19 @@ var
   I, J: Integer;
 begin
   CoolBar.Bands.Clear;
-  for I := 0 to FTempList.Count - 1 do
+  for I := 0 to FTempCoolBar.ToolBars.Count - 1 do
   begin
     CoolBand := CoolBar.Bands.Add;
-    CoolBand.Break := FTempList.Items[I].Break;
-    CoolBand.Control := FTempList.Items[I].Toolbar;
-    FTempList.Items[I].Toolbar.Enabled := False;
+    CoolBand.Break := FTempCoolBar.ToolBars[I].Break;
+    CoolBand.Control := FTempCoolBar.ToolBars[I].Toolbar;
+    FTempCoolBar.ToolBars[I].Toolbar.Enabled := False;
     CoolBand.Visible := True;
     CoolBand.MinWidth := 25;
     CoolBand.MinHeight := 22;
     CoolBand.FixedSize := True;
-    FTempList.Items[I].ClearToolbar;
-    for J := 0 to FTempList.Items[I].ButtonNames.Count - 1 do
-      FTempList.Items[I].AddCustomItems(J);
+    FTempCoolBar.ToolBars[I].ClearToolbar;
+    for J := 0 to FTempCoolBar.ToolBars[I].ButtonNames.Count - 1 do
+      FTempCoolBar.ToolBars[I].AddCustomItems(J);
   end;
   if CoolBar.Bands.Count > 0 then
     SelectBand(0);
@@ -406,12 +406,12 @@ end;
 constructor TToolbarOptionsFrame.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FTempList := TIDEToolBarList.Create;
+  FTempCoolBar := TIDEcoolBar.Create(Nil);
 end;
 
 destructor TToolbarOptionsFrame.Destroy;
 begin
-  FreeAndNil(FTempList);
+  FreeAndNil(FTempCoolBar);
   inherited Destroy;
 end;
 
@@ -420,7 +420,7 @@ var
   CoolBand: TCoolBand;
   IDEToolbar: TIDEToolBar;
 begin
-  IDEToolbar := FTempList.Add;
+  IDEToolbar := FTempCoolBar.Add;
   IDEToolbar.Break := False;
   IDEToolbar.OnToolBarClick := @ToolBarClick;
 
@@ -453,16 +453,16 @@ begin
     ToolBar := (Coolbar.Bands.Items[ToConfig].Control as TToolBar);
     if ToolBar <> nil then
     begin
-      ToConfig := FTempList.FindByToolBar(ToolBar);
+      ToConfig := FTempCoolBar.FindByToolBar(ToolBar);
       if ToConfig <> -1 then
       begin
-        fToolBarConfig.LoadSettings(FTempList.Items[ToConfig].ButtonNames);
+        fToolBarConfig.LoadSettings(FTempCoolBar.ToolBars[ToConfig].ButtonNames);
         if fToolBarConfig.ShowModal  = mrOK then
         begin
-          FTempList.Items[ToConfig].ClearToolbar;
-          fToolBarConfig.SaveSettings(FTempList.Items[ToConfig].ButtonNames);
-          for I := 0 to FTempList.Items[ToConfig].ButtonNames.Count - 1 do
-            FTempList.Items[ToConfig].AddCustomItems(I);
+          FTempCoolBar.ToolBars[ToConfig].ClearToolbar;
+          fToolBarConfig.SaveSettings(FTempCoolBar.ToolBars[ToConfig].ButtonNames);
+          for I := 0 to FTempCoolBar.ToolBars[ToConfig].ButtonNames.Count - 1 do
+            FTempCoolBar.ToolBars[ToConfig].AddCustomItems(I);
         end;
       end;
     end;
@@ -492,9 +492,9 @@ begin
         SelectBand(ToDelete + 1)
       else if ToDelete - 1 >= 0 then
         SelectBand(ToDelete - 1);
-      I := FTempList.FindByToolBar((CoolBar.Bands.Items[ToDelete].Control as TToolBar));
+      I := FTempCoolBar.FindByToolBar((CoolBar.Bands.Items[ToDelete].Control as TToolBar));
       if I <> -1 then
-        FTempList.Delete(I);
+        FTempCoolBar.ToolBars.Delete(I);
       CoolBar.Bands.Delete(ToDelete);
     end;
   end;
@@ -517,9 +517,9 @@ procedure TToolbarOptionsFrame.bDefaultToolbarClick(Sender: TObject);
 var
   IDEToolBar: TIDEToolBar;
 begin
-  FTempList.Clear;
+  FTempCoolBar.ToolBars.Clear;
   //standard
-  IDEToolBar := FTempList.Add;
+  IDEToolBar := FTempCoolBar.Add;
   IDEToolBar.Position := 0;
   IDEToolBar.Break := False;
   IDEToolBar.ButtonNames.Add('IDEMainMenu/File/itmFileNew/itmFileNewForm');
@@ -532,7 +532,7 @@ begin
   IDEToolBar.ButtonNames.Add('IDEMainMenu/View/itmViewMainWindows/itmViewToggleFormUnit');
 
   //debug
-  IDEToolBar := FTempList.Add;
+  IDEToolBar := FTempCoolBar.Add;
   IDEToolBar.Position := 1;
   IDEToolBar.Break := True;
   IDEToolBar.ButtonNames.Add('IDEMainMenu/Project/itmProjectAddRemoveSection/itmProjectViewUnits');

@@ -291,25 +291,8 @@ type
     FCompletionWindowWidth: Integer;
     FCompletionWindowHeight: Integer;
 
-    //toolbars
-    FToolbarVisible: Boolean;
-    FToolBarStandardVisible: Boolean;
-    FToolBarStandardLeft: Integer;
-    FToolBarStandardTop: Integer;
-    FToolBarViewDebugVisible: Boolean;
-    FToolBarViewDebugLeft: Integer;
-    FToolBarViewDebugTop: Integer;
-    FToolBarHighlight: Boolean;
-    FToolBarRaised: Boolean;
-
-    //coolbar
-    FIDEToolBarList: TIDEToolBarList;
-    FIDECoolBarVisible: Boolean;
-    FIDECoolBarWidth: Integer;
-    FIDECoolBarGrabStyle: Integer;
-    FIDECoolBarGrabWidth: Integer;
-    FIDECoolBarBorderStyle: Integer;
-
+    // IDE Coolbar
+    FIDECoolBarOptions: TIDECoolBarOptions;
     // component palette
     FComponentPaletteOptions: TCompPaletteOptions;
 
@@ -540,18 +523,8 @@ type
     property IDENameForDesignedFormList: boolean read FIDENameForDesignedFormList
                                                write FIDENameForDesignedFormList;
 
-    //coolbar
-    property IDEToolBarList: TIDEToolBarList read FIDEToolBarList;
-    property IDECoolBarVisible: Boolean read FIDECoolBarVisible
-                                       write FIDECoolBarVisible;
-    property IDECoolBarWidth: Integer read FIDECoolBarWidth
-                                      write FIDECoolBarWidth;
-    property IDECoolBarGrabStyle: Integer read FIDECoolBarGrabStyle
-                                      write FIDECoolBarGrabStyle;
-    property IDECoolBarGrabWidth: Integer read FIDECoolBarGrabWidth
-                                      write FIDECoolBarGrabWidth;
-    property IDECoolBarBorderStyle: Integer read FIDECoolBarBorderStyle
-                                           write FIDECoolBarBorderStyle;
+    // IDE Coolbar
+    property IDECoolBarOptions: TIDECoolBarOptions read FIDECoolBarOptions;
     // component palette
     property ComponentPaletteOptions: TCompPaletteOptions read FComponentPaletteOptions;
 
@@ -866,7 +839,6 @@ constructor TEnvironmentOptions.Create;
 var
   o: TEnvOptParseType;
   c: TMsgWndColor;
-  IDEToolBar: TIDEToolBar;
 begin
   inherited Create;
   for o:=low(FParseValues) to high(FParseValues) do
@@ -927,50 +899,8 @@ begin
   FCompletionWindowWidth := 320;
   FCompletionWindowHeight := 6;
 
-  FToolbarVisible := False;
-  FToolBarStandardVisible := False;
-  FToolBarStandardLeft := 0;
-  FToolBarStandardTop := 0;
-  FToolBarViewDebugVisible := False;
-  FToolBarViewDebugLeft := 0;
-  FToolBarViewDebugTop := 26;
-  FToolBarHighlight := False;
-  FToolBarRaised := False;
-
-  //coolbar
-  FIDEToolBarList := TIDEToolBarList.Create;
-  FIDECoolBarVisible := True;
-  FIDECoolBarWidth := 230;
-  FIDECoolBarGrabStyle := 1;
-  FIDECoolBarGrabWidth := 5;
-  FIDECoolBarBorderStyle := 1;
-  //standard toolbar defaults
-  IDEToolBar := FIDEToolBarList.Add;
-  IDEToolBar.Position := 0;
-  IDEToolBar.Break := False;
-  IDEToolBar.ButtonNames.Add('IDEMainMenu/File/itmFileNew/itmFileNewForm');
-  IDEToolBar.ButtonNames.Add('IDEMainMenu/File/itmFileNew/itmFileNewUnit');
-  IDEToolBar.ButtonNames.Add('---------------');
-  IDEToolBar.ButtonNames.Add('IDEMainMenu/File/itmFileOpenSave/itmFileOpen');
-  IDEToolBar.ButtonNames.Add('IDEMainMenu/File/itmFileOpenSave/itmFileSave');
-  IDEToolBar.ButtonNames.Add('IDEMainMenu/File/itmFileOpenSave/itmFileSaveAll');
-  IDEToolBar.ButtonNames.Add('---------------');
-  IDEToolBar.ButtonNames.Add('IDEMainMenu/View/itmViewMainWindows/itmViewToggleFormUnit');
-  //debug toolbar defaults
-  IDEToolBar := FIDEToolBarList.Add;
-  IDEToolBar.Position := 1;
-  IDEToolBar.Break := True;
-  IDEToolBar.ButtonNames.Add('IDEMainMenu/Project/itmProjectAddRemoveSection/itmProjectViewUnits');
-  IDEToolBar.ButtonNames.Add('IDEMainMenu/Project/itmProjectAddRemoveSection/itmProjectViewForms');
-  IDEToolBar.ButtonNames.Add('---------------');
-  IDEToolBar.ButtonNames.Add('IDEMainMenu/Project/itmProjectAddRemoveSection/itmProjectBuildMode');
-  IDEToolBar.ButtonNames.Add('IDEMainMenu/Run/itmRunnning/itmRunMenuRun');
-  IDEToolBar.ButtonNames.Add('IDEMainMenu/Run/itmRunnning/itmRunMenuPause');
-  IDEToolBar.ButtonNames.Add('IDEMainMenu/Run/itmRunnning/itmRunMenuStop');
-  IDEToolBar.ButtonNames.Add('IDEMainMenu/Run/itmRunnning/itmRunMenuStepOver');
-  IDEToolBar.ButtonNames.Add('IDEMainMenu/Run/itmRunnning/itmRunMenuStepInto');
-  IDEToolBar.ButtonNames.Add('IDEMainMenu/Run/itmRunnning/itmRunMenuStepOut');
-
+  // IDE Coolbar
+  FIDECoolBarOptions:=TIDECoolBarOptions.Create;
   // component palette
   FComponentPaletteOptions:=TCompPaletteOptions.Create;
 
@@ -1079,7 +1009,7 @@ begin
   FreeAndNil(FRecentPackageFiles);
   FreeAndNil(FObjectInspectorOptions);
   FreeAndNil(FComponentPaletteOptions);
-  FreeAndNil(FIDEToolBarList);
+  FreeAndNil(FIDECoolBarOptions);
   FreeAndNil(FLazarusDirHistory);
   FreeAndNil(FCompilerFileHistory);
   FreeAndNil(FFPCSourceDirHistory);
@@ -1205,10 +1135,6 @@ var
   EventType: TDBGEventType;
   NodeName: String;
   mwc: TMsgWndColor;
-  IDEToolBar: TIDEToolBar;
-  IDEToolBarCount: Integer;
-  IDEToolBarButtonsCount: Integer;
-  IDEToolBarButtonsName: string;
 begin
   Cfg:=nil;
   try
@@ -1273,58 +1199,6 @@ begin
       // Window menu
       FIDENameForDesignedFormList:=XMLConfig.GetValue(
         Path+'Desktop/IDENameForDesignedFormList/Value',false);
-
-      //Coolbar
-      SubPath := Path + 'Desktop/IDECoolBar/';
-      FIDECoolBarVisible := XMLConfig.GetValue(SubPath + 'Visible/Value', True);
-      FIDECoolBarWidth := XMLConfig.GetValue(SubPath + 'Width/Value', 230);
-      FIDECoolBarGrabStyle := XMLConfig.GetValue(SubPath + 'GrabStyle/Value', 1);
-      FIDECoolBarGrabWidth := XMLConfig.GetValue(SubPath + 'GrabWidth/Value', 5);
-      FIDECoolBarBorderStyle := XMLConfig.GetValue(SubPath + 'BorderStyle/Value', 5);
-      IDEToolbarCount := XMLConfig.GetValue(SubPath + 'ToolBarCount/Value', 0);
-      if IDEToolBarCount > 0 then
-      begin
-        FIDEToolBarList.Clear;
-        SubPath := SubPath + 'ToolBar';
-        for I := 0 to IDEToolbarCount - 1 do
-        begin
-          IDEToolBar := FIDEToolBarList.Add;
-          IDEToolBar.Position := I;
-          IDEToolBar.Break := XMLConfig.GetValue(
-            SubPath + IntToStr(I) + '/Break/Value', False);
-          IDEToolBarButtonsCount := XMLConfig.GetValue(
-           SubPath + IntToStr(I) + '/ButtonCount/Value', 0);
-          for J := 0 to IDEToolBarButtonsCount - 1 do
-          begin
-            IDEToolBarButtonsName := XMLConfig.GetValue(
-              SubPath + IntToStr(I) +  '/Buttons/Name' + IntToStr(J) + '/Value', '');
-            if Trim(IDEToolBarButtonsName) <> '' then
-              IDEToolBar.ButtonNames.Add(IDEToolBarButtonsName);
-          end;
-        end;
-      end;
-
-      // Toolbar
-      FToolBarStandardVisible := XMLConfig.GetValue(
-        Path+'Desktop/Toolbars/Standarad/ToolBarStandardVisible/Value', True);
-      FToolBarStandardLeft := XMLConfig.GetValue(
-        Path+'Desktop/Toolbars/Standarad/ToolBarStandardLeft/Value', 0);
-      FToolBarStandardTop := XMLConfig.GetValue(
-        Path+'Desktop/Toolbars/Standarad/ToolBarStandardTop/Value', 0);
-
-      FToolBarViewDebugVisible :=XMLConfig.GetValue(
-        Path+'Desktop/Toolbars/ViewDebug/ToolBarViewDebugVisible/Value', True);
-      FToolBarViewDebugLeft := XMLConfig.GetValue(
-        Path+'Desktop/Toolbars/Standarad/ToolBarViewDebugLeft/Value', 0);
-      FToolBarViewDebugTop := XMLConfig.GetValue(
-        Path+'Desktop/Toolbars/Standarad/ToolBarViewDebugTop/Value', 26);
-
-      FToolbarVisible := XMLConfig.GetValue(
-        Path+'Desktop/Toolbars/Common/ToolbarVisible/Value', True);
-      FToolBarHighlight := XMLConfig.GetValue(
-        Path+'Desktop/Toolbars/Common/ToolBarHighlight/Value', False);
-      FToolBarRaised := XMLConfig.GetValue(
-        Path+'Desktop/Toolbars/Common/ToolBarRaised/Value', False);
 
       // form editor
       FShowGrid:=XMLConfig.GetValue(
@@ -1581,6 +1455,8 @@ begin
       FLowercaseDefaultFilename:=XMLConfig.GetValue(
         Path+'LowercaseDefaultFilename/Value',true);
 
+      // IDE Coolbar
+      FIDECoolBarOptions.Load(XMLConfig);
       // component palette
       FComponentPaletteOptions.Load(XMLConfig);
 
@@ -1709,61 +1585,6 @@ begin
       // Window menu
       XMLConfig.SetDeleteValue(Path+'Desktop/IDENameForDesignedFormList/Value',
                                FIDENameForDesignedFormList,false);
-
-      // toolbar
-      XMLConfig.SetDeleteValue(Path+'Desktop/Toolbars/Standarad/ToolBarStandardVisible/Value',
-                               FToolBarStandardVisible, True);
-      XMLConfig.SetDeleteValue(Path+'Desktop/Toolbars/Standarad/ToolBarStandardLeft/Value',
-                               FToolBarStandardLeft, 0);
-      XMLConfig.SetDeleteValue(Path+'Desktop/Toolbars/Standarad/ToolBarStandardTop/Value',
-                               FToolBarStandardTop, 0);
-
-      XMLConfig.SetDeleteValue(Path+'Desktop/Toolbars/ViewDebug/ToolBarViewDebugVisible/Value',
-                               FToolBarViewDebugVisible, True);
-      XMLConfig.SetDeleteValue(Path+'Desktop/Toolbars/Standarad/ToolBarViewDebugLeft/Value',
-                               FToolBarViewDebugLeft, 0);
-      XMLConfig.SetDeleteValue(Path+'Desktop/Toolbars/Standarad/ToolBarViewDebugTop/Value',
-                               FToolBarViewDebugTop, 26);
-
-      XMLConfig.SetDeleteValue(Path+'Desktop/Toolbars/Common/ToolbarVisible/Value',
-                               FToolbarVisible, True);
-      XMLConfig.SetDeleteValue(Path+'Desktop/Toolbars/Common/ToolBarHighlight/Value',
-                               FToolBarHighlight, False);
-      XMLConfig.SetDeleteValue(Path+'Desktop/Toolbars/Common/ToolBarRaised/Value',
-                              FToolBarRaised, False);
-
-
-      //coolbar
-       SubPath := Path + 'Desktop/IDECoolBar/';
-       XMLConfig.DeletePath(SubPath);
-       XMLConfig.SetDeleteValue(SubPath + 'Visible/Value',
-                                      FIDECoolBarVisible, True);
-       XMLConfig.SetDeleteValue(SubPath + 'Width/Value',
-                                FIDECoolBarWidth, 0);
-       XMLConfig.SetDeleteValue(SubPath + 'GrabStyle/Value',
-                                FIDECoolBarGrabStyle, 1);
-       XMLConfig.SetDeleteValue(SubPath + 'GrabWidth/Value',
-                                FIDECoolBarGrabWidth, 5);
-       XMLConfig.SetDeleteValue(SubPath + 'BorderStyle/Value',
-                                FIDECoolBarBorderStyle, 5);
-       if FIDEToolBarList.Count > 0 then
-       begin
-         XMLConfig.SetDeleteValue(SubPath + 'ToolBarCount/Value',
-                                  FIDEToolbarList.Count, 0);
-         SubPath := SubPath + 'ToolBar';
-         for I := 0 to FIDEToolbarList.Count - 1 do
-         begin
-           XMLConfig.SetDeleteValue(SubPath + IntToStr(I) + '/Break/Value',
-                                    FIDEToolbarList.Items[I].Break, False);
-           XMLConfig.SetDeleteValue(SubPath + IntToStr(I) + '/ButtonCount/Value',
-                                    FIDEToolbarList.Items[I].ButtonNames.Count, 0);
-           for J := 0 to FIDEToolbarList.Items[I].ButtonNames.Count - 1 do
-           begin
-             XMLConfig.SetDeleteValue(SubPath + IntToStr(I) +  '/Buttons/Name' + IntToStr(J) + '/Value',
-                                      FIDEToolbarList.Items[I].ButtonNames.Strings[J], '');
-           end;
-         end;
-       end;
 
       // form editor
       XMLConfig.SetDeleteValue(Path+'FormEditor/ShowBorderSpacing',
@@ -1998,6 +1819,8 @@ begin
       XMLConfig.SetDeleteValue(Path+'LowercaseDefaultFilename/Value',
                                FLowercaseDefaultFilename,true);
 
+      // IDE Coolbar
+      FIDECoolBarOptions.Save(XMLConfig);
       // component palette
       FComponentPaletteOptions.Save(XMLConfig);
 

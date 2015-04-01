@@ -94,7 +94,7 @@ uses
   // help manager
   IDEContextHelpEdit, IDEHelpIntf, IDEHelpManager, CodeHelp, HelpOptions,
   // designer
-  JITForms, ComponentPalette, ComponentList, CompPagesPopup,
+  JITForms, ComponentPalette, ComponentList, CompPagesPopup, ToolbarData,
   ObjInspExt, Designer, FormEditor, CustomFormEditor, lfmUnitResource,
   ControlSelection, AnchorEditor, TabOrderDlg, MenuEditorForm,
   // LRT stuff
@@ -1631,6 +1631,7 @@ begin
     TComponentPalette(IDEComponentPalette).PageControl:=nil;
   FreeThenNil(PkgBoss);
   FreeThenNil(IDEComponentPalette);
+  FreeThenNil(IDECoolBar);
   FreeThenNil(HelpBoss);
   FreeThenNil(DebugBoss);
   FreeThenNil(TheCompiler);
@@ -2025,18 +2026,15 @@ begin
   if EnvironmentOptions.ComponentPaletteVisible then
   begin
     MainIDEBar.CoolBar.Align := alLeft;
-    MainIDEBar.CoolBar.Width := EnvironmentOptions.IDECoolBarWidth;
+    MainIDEBar.CoolBar.Width := EnvironmentOptions.IDECoolBarOptions.IDECoolBarWidth;
   end
   else
     MainIDEBar.CoolBar.Align := alClient;
-  MainIDEBar.CoolBar.Vertical := False;
-  MainIDEBar.CoolBar.HorizontalSpacing := 1;
-  MainIDEBar.CoolBar.VerticalSpacing := 3;
-  MainIDEBar.CoolBar.FixedSize := True;
-  MainIDEBar.CoolBar.DoubleBuffered := True;
-  MainIDEBar.CoolBar.EdgeInner := esNone;
-  MainIDEBar.CoolBar.EdgeOuter := esNone;
-  MainIDEBar.CoolBar.Visible := EnvironmentOptions.IDECoolBarVisible;
+  // IDE Coolbar object wraps MainIDEBar.CoolBar.
+  IDECoolBar:=TIDECoolBar.Create(MainIDEBar.CoolBar);
+  IDECoolBar.SetCoolBarDefaults;
+  IDECoolBar.CreateDefaultToolbars;
+  MainIDEBar.CoolBar.Visible := EnvironmentOptions.IDECoolBarOptions.IDECoolBarVisible;
   MainIDEBar.CoolBar.OnChange := @MainIDEBar.CoolBarOnChange;
 
   MainIDEBar.CreatePopupMenus(OwningComponent);
@@ -3715,7 +3713,7 @@ begin
     if MainIDEBar.CoolBar.Align = alClient then
     begin
       MainIDEBar.CoolBar.Width := 230;
-      EnvironmentOptions.IDECoolBarWidth := 230;
+      EnvironmentOptions.IDECoolBarOptions.IDECoolBarWidth := 230;
     end;
     MainIDEBar.CoolBar.Align := alLeft;
     MainIDEBar.CoolBar.Vertical := False;
@@ -3735,7 +3733,7 @@ begin
   MainIDEBar.itmViewIDESpeedButtons.Checked := SpeedButtonsVisible;
   MainIDEBar.CoolBar.Visible := SpeedButtonsVisible;
   MainIDEBar.MainSplitter.Visible := SpeedButtonsVisible;
-  EnvironmentOptions.IDECoolBarVisible := SpeedButtonsVisible;
+  EnvironmentOptions.IDECoolBarOptions.IDECoolBarVisible := SpeedButtonsVisible;
   MainIDEBar.MainSplitter.Visible := MainIDEBar.Coolbar.Visible and
                                      MainIDEBar.ComponentPageControl.Visible;
 end;
