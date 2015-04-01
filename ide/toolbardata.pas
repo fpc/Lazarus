@@ -257,11 +257,11 @@ begin
   FToolbarVisible := XMLConfig.GetValue(BasePath+'Toolbars/Common/Visible/Value', True);
   FToolBarHighlight := XMLConfig.GetValue(BasePath+'Toolbars/Common/Highlight/Value', False);
   FToolBarRaised := XMLConfig.GetValue(BasePath+'Toolbars/Common/Raised/Value', False);
+  Result:=True;
 end;
 
 function TIDECoolBarOptions.Save(XMLConfig: TXMLConfig): boolean;
 var
-  ToolBarOpt: TIDEToolBarOptions;
   SubPath: String;
   I, J: Integer;
 begin
@@ -299,6 +299,7 @@ begin
                                  FToolBars[I].ButtonNames[J], '');
     end;
   end;
+  Result:=True;
 end;
 
 { TIDEToolBar }
