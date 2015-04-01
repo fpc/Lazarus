@@ -466,8 +466,8 @@
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TEditButton.AutoSize" link="#LCL.Controls.TControl.AutoSize">
-        <short/>
+      <element name="TEditButton.AutoSize">
+        <short>TEditButton default is True</short>
         <descr/>
         <seealso/>
       </element>
@@ -2628,6 +2628,8 @@
 only a file name, without path.</p>
 <remark>This may be useful if application allows user to select files from a fixed directory with a long path.</remark>
         </descr>
+      </element>
+    <element name="TCustomEditButton.Autosize"><short>TCustomEditBtn sets default to True</short>
       </element>
     </module>
     <!-- EditBtn -->

@@ -646,6 +646,8 @@
       <element name="TButtonPanel.AutoSize" link="#LCL.Controls.TControl.AutoSize"/>
       <element name="TButtonPanel.OnUTF8KeyPress" link="#LCL.Controls.TWinControl.OnUTF8KeyPress"/>
       <element name="TButtonPanel.Visible" link="#LCL.Controls.TControl.Visible"/>
+    <element name="TCustomButtonPanel.AutoSize"><short>TCustomButtonPanel default is True</short>
+      </element>
     </module>
     <!-- ButtonPanel -->
   </package>
