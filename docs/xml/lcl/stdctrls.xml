@@ -1353,7 +1353,8 @@
         </seealso>
       </element>
       <!-- property Visibility: public -->
-      <element name="TCustomComboBox.AutoSize"/>
+      <element name="TCustomComboBox.AutoSize"><short>TCustomComboBox default is True</short>
+      </element>
       <element name="TCustomComboBox.Canvas"/>
       <element name="TCustomComboBox.CharCase">
         <short>Indicates how text is converted during input (upper, lower, or as entered).</short>
@@ -2729,7 +2730,7 @@ Qt and Carbon have not implemented it.</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomEdit.AutoSize">
-        <short>Allows to adjust the control to the extent of the contained text.</short>
+        <short>TCustomEdit defaults to True</short>
         <descr>
         </descr>
         <seealso>
@@ -4074,7 +4075,8 @@ Qt and Carbon have not implemented it.</descr>
       <element name="TCheckBox.Align" link="#LCL.Controls.TControl.Align"/>
       <element name="TCheckBox.AllowGrayed" link="#LCL.StdCtrls.TCustomCheckBox.AllowGrayed"/>
       <element name="TCheckBox.Anchors" link="#LCL.Controls.TControl.Anchors"/>
-      <element name="TCheckBox.AutoSize" link="#LCL.Controls.TControl.AutoSize"/>
+      <element name="TCheckBox.AutoSize"><short>TCheckBox default is True</short>
+      </element>
       <element name="TCheckBox.BidiMode" link="#LCL.Controls.TControl.BiDiMode"/>
       <element name="TCheckBox.BorderSpacing" link="#LCL.Controls.TControl.BorderSpacing"/>
       <element name="TCheckBox.Caption" link="#LCL.Controls.TControl.Caption"/>
@@ -4235,7 +4237,8 @@ Qt and Carbon have not implemented it.</descr>
       <!-- property Visibility: published -->
       <element name="TRadioButton.Align" link="#LCL.Controls.TControl.Align"/>
       <element name="TRadioButton.Anchors" link="#LCL.Controls.TControl.Anchors"/>
-      <element name="TRadioButton.AutoSize" link="#LCL.Controls.TControl.AutoSize"/>
+      <element name="TRadioButton.AutoSize" link="#LCL.Controls.TControl.AutoSize"><short>TRadioButton default is True</short>
+      </element>
       <element name="TRadioButton.BidiMode" link="#LCL.Controls.TControl.BiDiMode"/>
       <element name="TRadioButton.BorderSpacing" link="#LCL.Controls.TControl.BorderSpacing"/>
       <element name="TRadioButton.Caption" link="#LCL.Controls.TControl.Caption"/>
@@ -4553,7 +4556,8 @@ Qt and Carbon have not implemented it.</descr>
         <seealso><link id="TCustomLabel.Layout"/>
         </seealso>
       </element>
-      <element name="TCustomLabel.AutoSize" link="#LCL.Controls.TControl.AutoSize"/>
+      <element name="TCustomLabel.AutoSize" link="#LCL.Controls.TControl.AutoSize"><short>TCustomLabel default is True</short>
+      </element>
       <!-- property Visibility: public -->
       <element name="TCustomLabel.Color" link="#LCL.Controls.TControl.Color"/>
       <!-- property Visibility: protected -->
