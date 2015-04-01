@@ -54,12 +54,12 @@ uses
   CodeToolManager,
   // IDEIntf
   LazIDEIntf, IDEMsgIntf, IDEHelpIntf, IDEImagesIntf, IDEWindowIntf, IDEDialogs,
-  PackageIntf, IDEExternToolIntf,
+  PackageIntf, IDEExternToolIntf, IDEOptionsIntf,
   // IDE
   LazarusIDEStrConsts, TransferMacros, LazConf, IDEProcs, DialogProcs,
-  MainBar, ExtToolEditDlg, EnvironmentOpts,
+  MainBar, EnvironmentOpts,
   ApplicationBundle, ModeMatrixOpts, CompilerOptions, BuildProfileManager,
-  GenericListEditor, GenericCheckList, IDECmdLine, PackageSystem, PackageDefs;
+  GenericListEditor, GenericCheckList, PackageSystem, PackageDefs;
 
 type
 
@@ -749,15 +749,19 @@ begin
     // always delete the lazarus.new exe, so that users/startlazarus are not
     // confused which one is the newest
     if FileExistsUTF8(AltFilename) then begin
-      if DeleteFileUTF8(AltFilename) then
-        debugln(['Note: (lazarus) deleted file "',AltFilename,'"'])
-      else
+      case DeleteFileInteractive(AltFilename,[mbIgnore]) of
+      mrIgnore:
         debugln(['Warning: (lazarus) unable to delete file "',AltFilename,'"']);
+      mrOk:
+        debugln(['Note: (lazarus) deleted file "',AltFilename,'"']);
+      else
+        exit;
+      end;
     end;
 
     // try to rename the old exe
     BackupFilename:=GetBackupExeFilename(fTargetFilename);
-    if FileExistsUTF8(BackupFilename) then
+    if FileExistsUTF8(BackupFilename) then begin
       if DeleteFileUTF8(BackupFilename) then begin
         debugln(['Note: (lazarus) deleted backup "',BackupFilename,'"']);
       end else begin
@@ -765,23 +769,30 @@ begin
         // => try to backup the backup
         Backup2Filename:=LeftStr(fTargetFilename,length(fTargetFilename)-length(Ext))+'.old2'+Ext;
         if FileExistsUTF8(Backup2Filename) then begin
-          if DeleteFileUTF8(Backup2Filename) then
+          case DeleteFileInteractive(Backup2Filename) of
+          mrOk:
             debugln(['Note: (lazarus) deleted backup "',Backup2Filename,'"'])
           else
             debugln(['Warning: (lazarus) unable to delete old backup file "'+Backup2Filename+'"']);
+          end;
         end;
         if not FileExistsUTF8(Backup2Filename) then begin
-          if RenameFileUTF8(BackupFilename,Backup2Filename) then
+          case RenameFileWithErrorDialogs(BackupFilename,Backup2Filename) of
+          mrOk:
             debugln(['Note: (lazarus) renamed old backup file "'+BackupFilename+'" to "',Backup2Filename,'"'])
           else
             debugln(['Warning: (lazarus) unable to rename old backup file "'+BackupFilename+'" to "',Backup2Filename,'"']);
+          end;
+        end;
       end;
     end;
     if not FileExistsUTF8(BackupFilename) then begin
-      if RenameFileUTF8(fTargetFilename,BackupFilename) then
+      case RenameFileWithErrorDialogs(fTargetFilename,BackupFilename) of
+      mrOk:
         debugln(['Note: (lazarus) renamed file "'+fTargetFilename+'" to "',BackupFilename,'"'])
       else
         debugln(['Warning: (lazarus) unable to rename file "'+fTargetFilename+'" to "',BackupFilename,'"']);
+      end;
     end;
   end;
   if (not (blfReplaceExe in Flags)) and FileExistsUTF8(fTargetFilename) then
