@@ -374,13 +374,13 @@
       <element name="TStatusPanel.Alignment">
         <short>
           <var>Alignment</var> - whether left- or right-justified or centered</short>
-        <descr/>
+        <descr>Only supported on Windows.</descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TStatusPanel.Bevel">
         <short>The type of <var>Bevel</var> for the display</short>
-        <descr/>
+        <descr>Only supported on Windows.</descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
