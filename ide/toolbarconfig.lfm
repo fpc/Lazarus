@@ -155,7 +155,6 @@ object ToolBarConfig: TToolBarConfig
         Width = 314
       end>
     HideSelection = False
-    OwnerDraw = True
     ReadOnly = True
     ScrollBars = ssAutoBoth
     ShowColumnHeaders = False

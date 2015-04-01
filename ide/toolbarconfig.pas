@@ -118,6 +118,10 @@ const
 procedure TToolBarConfig.FormCreate(Sender: TObject);
 begin
   inherited;
+  //we have to ownerdraw the listview on qt
+  {$IFDEF LCLQT}
+  lvToolbar.OwnerDraw := True;
+  {$ENDIF}
   pnlButtons.Color := clBtnFace;
   // load button images
   btnAdd.LoadGlyphFromResourceName(HInstance, 'arrow_right');
@@ -277,12 +281,13 @@ begin
       lvItem            := lvToolbar.Items.Add;
     lvItem.Caption      := ACaption;
     lvItem.Data         := n.Data;
-    {
+    {$IF not DEFINED(LCLQt)}
     if n.ImageIndex > -1 then
       lvItem.ImageIndex   := n.ImageIndex
     else
       lvItem.ImageIndex   := defImageIndex;
-    }
+    {$ENDIF}
+    //lvItem.SubItems.Add(IntToStr(CurrProfile));
     if anIndex > -1 then begin
       // clear previous selection to avoid double sel in Qt
       lvToolbar.Selected := nil;
@@ -387,7 +392,10 @@ begin
     lvItem := lvToolbar.Items.Add;
   lvItem.Selected := False;
   lvItem.Caption:= cDivider;
-  //lvItem.ImageIndex:= divImageIndex;
+  {$IF not DEFINED(LCLQt)}
+  lvItem.ImageIndex:= divImageIndex;
+  {$ENDIF}
+  //lvItem.SubItems.Add(IntToStr(CurrProfile));
   if lvToolbar.ItemIndex > -1 then
     InsertMainListItem(lvItem,lvToolbar.Items[anIndex])
   else
@@ -541,10 +549,12 @@ begin
     lvItem := lvToolbar.Items.Add;
     lvItem.Caption:= ACaption;
     lvItem.Data:= Item;
-    {if Item.ImageIndex > -1 then
+    {$IF not DEFINED(LCLQt)}
+    if Item.ImageIndex > -1 then
       lvItem.ImageIndex:= Item.ImageIndex
     else
-      lvItem.ImageIndex:= defImageIndex;}
+      lvItem.ImageIndex:= defImageIndex;
+    {$ENDIF}
    // lvItem.SubItems.Add(IntToStr(PMask));
     n:= TV.Items.FindNodeWithData(Item);
     n.Visible:= False;
@@ -557,7 +567,9 @@ var
 begin
   lvItem := lvToolbar.Items.Add;
   lvItem.Caption:= cDivider;
-  //lvItem.ImageIndex:= divImageIndex;
+  {$IF not DEFINED(LCLQt)}
+  lvItem.ImageIndex:= divImageIndex;
+  {$ENDIF}
   //  lvItem.SubItems.Add(IntToStr(PMask));
 end;
 
