@@ -18389,7 +18389,8 @@ If Images.HasOverlays then it is fetched from Images via Images.Overlay(Node.Ove
         <short>
           <var>AutoHint</var> - if True, a hint is automatically shown when mouse hovers over status bar. Default False</short>
       </element>
-      <element name="TStatusBar.AutoSize" link="#LCL.Controls.TControl.AutoSize"/>
+      <element name="TStatusBar.AutoSize" link="#LCL.Controls.TControl.AutoSize"><short>TStatusBar has AutoSize True</short>
+      </element>
       <element name="TStatusBar.Constraints" link="#LCL.Controls.TControl.Constraints"/>
       <element name="TStatusBar.DragCursor" link="#LCL.Controls.TControl.DragCursor"/>
       <element name="TStatusBar.DragKind" link="#LCL.Controls.TControl.DragKind"/>
