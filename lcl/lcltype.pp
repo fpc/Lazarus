@@ -1264,7 +1264,7 @@ type
 
 
   PBitmapCoreHeader = ^TBitmapCoreHeader;
-  tagBITMAPCOREHEADER = record
+  tagBITMAPCOREHEADER = packed record // use packed, this is the .bmp file format
     bcSize: DWORD;
     bcWidth: Word;
     bcHeight: Word;
@@ -1276,7 +1276,7 @@ type
 
 
   PBitmapInfoHeader = ^TBitmapInfoHeader;
-  tagBITMAPINFOHEADER = record
+  tagBITMAPINFOHEADER = packed record // use packed, this is the .bmp file format
     biSize : DWORD;
     biWidth : Longint;
     biHeight : Longint;
