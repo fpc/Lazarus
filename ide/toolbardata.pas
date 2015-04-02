@@ -46,6 +46,9 @@ type
   private
     Break: Boolean;
     ButtonNames: TStringList;
+  public
+    constructor Create;
+    destructor Destroy; override;
   end;
 
   TIDEToolBarOptionList = specialize TFPGObjectList<TIDEToolBarOptions>;
@@ -163,6 +166,20 @@ uses MainBar;
 
 const
   BasePath = 'IDECoolBarOptions/';
+
+{ TIDEToolBarOptions }
+
+constructor TIDEToolBarOptions.Create;
+begin
+  inherited Create;
+  ButtonNames := TStringList.Create;
+end;
+
+destructor TIDEToolBarOptions.Destroy;
+begin
+  ButtonNames.Free;
+  inherited Destroy;
+end;
 
 { TIDECoolBarOptions }
 
