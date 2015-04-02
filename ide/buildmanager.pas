@@ -2565,7 +2565,7 @@ begin
   end else if Sender is TLazPackage then begin
     Result:=TLazPackage(Sender).Name;
   end else
-    Result:='#';
+    Result:=BuildMatrixIDEName;
   //debugln(['TBuildManager.GetModeMatrixTarget ',DbgSName(Sender),' Target="',Result,'"']);
 end;
 
