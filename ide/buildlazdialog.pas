@@ -565,6 +565,7 @@ var
   LazDir, TargetLCLPlatform: string;
   DefaultTargetFilename: String;
   IsCrossCompiling: Boolean;
+  s: String;
 begin
   Result:=mrOk;
   fOutputDirRedirected:=False;
@@ -591,10 +592,13 @@ begin
       AppendExtraOption('-dWIN9XPLATFORM');
     {$ENDIF}
 
-    AppendExtraOption(fProfile.ExtraOptions,false);
-
+    // append profile and global custom options
+    s:=fProfile.ExtraOptions;
     if OnAppendCustomOption<>nil then
-      OnAppendCustomOption(Self,fExtraOptions,[bmgtEnvironment]);
+      OnAppendCustomOption(Self,s,[bmgtEnvironment]);
+
+    GlobalMacroList.SubstituteStr(s);
+    AppendExtraOption(s,false);
   end;
 
   // set target filename and target directory:
