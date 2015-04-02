@@ -31,6 +31,7 @@ uses
 
 const
   BuildMatrixProjectName = '#project';
+  BuildMatrixIDEName = '#ide';
 type
   TBuildMatrixOptionType = (
     bmotCustom,  // append fpc parameters in Value
