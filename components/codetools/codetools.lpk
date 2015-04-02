@@ -2,6 +2,7 @@
 <CONFIG>
   <Package Version="4">
     <Name Value="CodeTools"/>
+    <Type Value="RunAndDesignTime"/>
     <Author Value="Mattias Gaertner"/>
     <CompilerOptions>
       <Version Value="11"/>
@@ -15,14 +16,7 @@
         </SyntaxOptions>
       </Parsing>
       <Other>
-        <Verbosity>
-          <ShowHints Value="False"/>
-        </Verbosity>
-        <CompilerMessages>
-          <UseMsgFile Value="True"/>
-        </CompilerMessages>
         <CustomOptions Value="$(IDEBuildOptions)"/>
-        <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
     <Description Value="Tools and functions to parse, browse and edit pascal sources"/>
@@ -277,7 +271,7 @@
       </Item61>
       <Item62>
         <Filename Value="codetoolgdbtracer.pas"/>
-        <UnitName Value="codetoolgdbtracer"/>
+        <UnitName Value="CodetoolGDBTracer"/>
       </Item62>
     </Files>
     <LazDoc Paths="docs"/>
@@ -285,7 +279,6 @@
       <EnableI18N Value="True"/>
       <OutDir Value="languages"/>
     </i18n>
-    <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="1">
       <Item1>
         <PackageName Value="LazUtils"/>
