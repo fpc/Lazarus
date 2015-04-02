@@ -206,7 +206,7 @@ begin
 
   FSections := TStringList.Create;
   FSections.Sorted := True;
-  //FSections.Duplicates := dupError;
+  FSections.Duplicates := dupAccept;
   FSections.CaseSensitive := False;
 
   for i := 0 to fFile.sections.Count - 1 do begin
