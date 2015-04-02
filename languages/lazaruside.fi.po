@@ -3267,10 +3267,8 @@ msgid "Use launching application"
 msgstr "Käytä käynnistävää ohjelmaa"
 
 #: lazarusidestrconsts.dlguseminimumime
-#, fuzzy
-#| msgid "Ime handled by System"
 msgid "IME handled by System"
-msgstr "Järjestelmän hoitama Ime"
+msgstr "Järjestelmän hoitama IME"
 
 #: lazarusidestrconsts.dlguserschemeerror
 msgid "Failed to load user-scheme file %s"
@@ -6069,10 +6067,8 @@ msgid "Compile"
 msgstr "Käännä"
 
 #: lazarusidestrconsts.liscompilewithvdformoredetailscheckforduplicates
-#, fuzzy,badformat
-#| msgid "%s -> Compile with -vd for more details. Check for duplicates."
 msgid "Compile with -vd for more details. Check for duplicates."
-msgstr "%s -> Käännä -vd option kanssa lisätietoa varten. Tarkista duplikaatit."
+msgstr "Käännä -vd option kanssa lisätietoa varten. Tarkista duplikaatit."
 
 #: lazarusidestrconsts.liscompiling
 msgid "%s (compiling ...)"
@@ -12670,7 +12666,7 @@ msgstr "Paniikki"
 
 #: lazarusidestrconsts.lisparsed
 msgid ", parsed "
-msgstr ", jäsennetty"
+msgstr ", jäsennetty "
 
 #: lazarusidestrconsts.lisparser
 msgid "parser \"%s\": %s"
@@ -16498,11 +16494,11 @@ msgstr "Etsitään tiedostosta: %s"
 
 #: lazarusidestrconsts.lisuesearchstringcontinuebeg
 msgid "Continue search from the beginning?"
-msgstr ""
+msgstr "Jatka etsimistä alusta?"
 
 #: lazarusidestrconsts.lisuesearchstringcontinueend
 msgid "Continue search from the end?"
-msgstr ""
+msgstr "Jatka etsimistä lopusta?"
 
 #: lazarusidestrconsts.lisuesearchstringnotfound
 msgid "Search string '%s' not found!"
@@ -16525,8 +16521,6 @@ msgid "Included by:"
 msgstr "Luettu käännösyksiköihin:"
 
 #: lazarusidestrconsts.lisuidinproject
-#, fuzzy
-#| msgid "in Project:"
 msgid "In project:"
 msgstr "Projektissa:"
 
