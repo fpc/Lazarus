@@ -87,7 +87,7 @@ type
     FMarkValues: TChartValueTextArray;
     FTitlePos: Integer;
     procedure GetMarkValues;
-    procedure VisitSource(ASource: TCustomChartSource; var AData);
+//    procedure VisitSource(ASource: TCustomChartSource; var AData);
   private
     FAxisRect: TRect;
     FGroupIndex: Integer;
@@ -95,6 +95,7 @@ type
     function MakeValuesInRangeParams(AMin, AMax: Double): TValuesInRangeParams;
   strict private
     FAlignment: TChartAxisAlignment;
+    FAtDataOnly: Boolean;
     FAxisPen: TChartAxisPen;
     FGroup: Integer;
     FHelper: TAxisDrawHelper;
@@ -115,6 +116,7 @@ type
     function GetValue(AIndex: Integer): TChartValueText; inline;
     function GetValueCount: Integer; inline;
     function PositionIsStored: Boolean;
+    procedure SetAtDataOnly(AValue: Boolean);
     procedure SetAxisPen(AValue: TChartAxisPen);
     procedure SetGroup(AValue: Integer);
     procedure SetInverted(AValue: Boolean);
@@ -147,6 +149,7 @@ type
     function GetChart: TCustomChart; inline;
     function GetTransform: TChartAxisTransformations;
     function IsDefaultPosition: Boolean;
+    function IsFlipped: Boolean; override;
     function IsPointInside(const APoint: TPoint): Boolean;
     function IsVertical: Boolean; inline;
     procedure Measure(
@@ -163,6 +166,7 @@ type
   published
     property Alignment default calLeft;
     property Arrow;
+    property AtDataOnly: Boolean read FAtDataOnly write SetAtDataOnly default false;
     property AxisPen: TChartAxisPen read FAxisPen write SetAxisPen;
     property Group: Integer read FGroup write SetGroup default 0;
     // Inverts the axis scale from increasing to decreasing.
@@ -551,7 +555,7 @@ const
   INVERTED_NAME: array [Boolean] of String = ('', ' Inverted');
 begin
   Result :=
-    SIDE_NAME[Alignment] + VISIBLE_NAME[Visible] + INVERTED_NAME[Inverted] +
+    SIDE_NAME[Alignment] + VISIBLE_NAME[Visible] + INVERTED_NAME[IsFlipped] +
     FormatIfNotEmpty(' (%s)', Title.Caption);
 end;
 
@@ -564,9 +568,9 @@ procedure TChartAxis.GetMarkValues;
 var
   i: Integer;
   d: TValuesInRangeParams;
-  vis: TChartOnVisitSources;
-  t: TChartValueText;
+//  vis: TChartOnVisitSources;
   axisMin, axisMax: Double;
+  rng: TDoubleInterval;
 begin
   with FHelper do begin
     axisMin := GetTransform.GraphToAxis(FValueMin);
@@ -576,25 +580,27 @@ begin
   Marks.Range.Intersect(axisMin, axisMax);
   d := MakeValuesInRangeParams(axisMin, axisMax);
   SetLength(FMarkValues, 0);
-  vis := TChartAxisList(Collection).OnVisitSources;
-  if Marks.AtDataOnly and Assigned(vis) then begin
-    vis(@VisitSource, Self, d);
+//  vis := TChartAxisList(Collection).OnVisitSources;
+  if Marks.AtDataOnly {and Assigned(vis)} then begin
+    // vis(@VisitSource, Self, d);
     // FIXME: Intersect axisMin/Max with the union of series extents.
-  end
-  else
-    Marks.SourceDef.ValuesInRange(d, FMarkValues);
+    // wp: - I think this is fixed in what follows...
+    GetChart.Notify(CMD_QUERY_SERIESEXTENT, self, nil, rng{%H-});
+    UpdateBounds(rng.FStart, rng.FEnd);
+    d.FMin := rng.FStart;
+    d.FMax := rng.FEnd;
+    if IsNaN(d.FMin) or IsNaN(d.FMax) then begin
+      d.FMax := 1.0; d.FMin := 0.0;
+    end else
+      if (d.FMin = d.FMax) then d.FMax := d.FMin + 1.0;
+  end;
+  Marks.SourceDef.ValuesInRange(d, FMarkValues);
   with FHelper do begin
     FValueMin := GetTransform.AxisToGraph(axisMin);
     FValueMax := GetTransform.AxisToGraph(axisMax);
-    FMinForMarks := GetTransform.AxisToGraph(d.FMin);
-    FMaxForMarks := GetTransform.AxisToGraph(d.FMax);
+    FMinForMarks := Min(FMinForMarks, GetTransform.AxisToGraph(d.FMin));
+    FMaxForMarks := Max(FMaxForMarks, GetTransform.AxisToGraph(d.FMax));
   end;
-  if Inverted and (Length(FMarkValues) > 0) then
-    for i := 0 to High(FMarkValues) div 2 do begin
-      t := FMarkValues[i];
-      FMarkValues[i] := FMarkValues[High(FMarkValues) - i];
-      FMarkValues[High(FMarkValues) - i] := t;
-    end;
 
   if Assigned(FOnMarkToText) then
     for i := 0 to High(FMarkValues) do
@@ -621,6 +627,18 @@ end;
 function TChartAxis.IsDefaultPosition: Boolean;
 begin
   Result := (PositionUnits = cuPercent) and (Position = 0);
+end;
+
+function TChartAxis.IsFlipped: Boolean;
+{ Returns drawing direction of the axis:
+  FALSE - left to right, or bottom to tip
+  TRUE  - right to left, or top to bottom }
+begin
+  Result := FInverted;
+  if (FAlignment in [calBottom, calTop]) and
+     (GetChart.BiDiMode <> bdLeftToRight)
+  then
+    Result := not Result;
 end;
 
 function TChartAxis.IsPointInside(const APoint: TPoint): Boolean;
@@ -737,15 +755,19 @@ begin
   end;
   if not Title.PositionOnMarks then
     FTitlePos := (rmin + rmax) div 2
-  else if minc < MaxInt then
+  else if minc < MaxInt then begin
+    c := FHelper.GraphToImage(FHelper.FMaxForMarks);
+    if c < maxc then maxc := c;
+    c := FHelper.GraphToImage(FHelper.FMinForMarks);
+    if c > minc then minc := c;
     FTitlePos := (maxc + minc) div 2
-  else
+  end else
     FTitlePos := MaxInt;
 
   if Arrow.Visible then
     with AMeasureData do begin
       FSize := Max(d.Scale(Arrow.Width), FSize);
-      if Arrow.Inverted then
+      if IsFlipped then
         FFirstMark := Max(d.Scale(Arrow.Length), FFirstMark)
       else
         FLastMark := Max(d.Scale(Arrow.Length), FLastMark);
@@ -797,6 +819,9 @@ begin
   FHelper.FTransf := ATransf;
   FHelper.FZOffset.Y := Min(ZPosition, AMaxZPosition);
   FHelper.FZOffset.X := -FHelper.FZOffset.Y;
+  FHelper.FAtDataOnly := AtDataOnly;
+  FHelper.FMaxForMarks := -infinity;
+  FHelper.FMinForMarks := infinity;
 end;
 
 procedure TChartAxis.SetAlignment(AValue: TChartAxisAlignment);
@@ -804,6 +829,13 @@ begin
   if FAlignment = AValue then exit;
   FAlignment := AValue;
   StyleChanged(Self);
+end;
+
+procedure TChartAxis.SetAtDataOnly(AValue: Boolean);
+begin
+  if FAtDataOnly = AValue then exit;
+  FAtDataOnly := AValue;
+  StyleChanged(self);
 end;
 
 procedure TChartAxis.SetAxisPen(AValue: TChartAxisPen);
@@ -823,6 +855,7 @@ procedure TChartAxis.SetInverted(AValue: Boolean);
 begin
   if FInverted = AValue then exit;
   FInverted := AValue;
+  if Arrow <> nil then Arrow.Inverted := IsFlipped;
   StyleChanged(Self);
 end;
 
@@ -936,12 +969,8 @@ begin
         Alignment := calLeft;
         Title.LabelFont.Orientation := -Title.LabelFont.Orientation;
       end;
-    calBottom,
-    calTop:
-      begin
-        Inverted := not Inverted;
-        if Arrow <> nil then Arrow.Inverted := not Arrow.Inverted;
-      end;
+    calBottom, calTop:
+      if Arrow <> nil then Arrow.Inverted := IsFlipped;
   end;
 end;
 
@@ -955,6 +984,7 @@ begin
   end;
 end;
 
+{
 procedure TChartAxis.VisitSource(ASource: TCustomChartSource; var AData);
 var
   ext: TDoubleRect;
@@ -966,6 +996,7 @@ begin
   p.FMax := Min(TDoublePointBoolArr(ext.b)[IsVertical], p.FMax);
   Marks.SourceDef.ValuesInRange(p, FMarkValues);
 end;
+}
 
 { TChartAxisList }
 
@@ -1183,7 +1214,7 @@ end;
 function TAxisCoeffHelper.CalcScale(ASign: Integer): Double;
 begin
   if (FMax^ = FMin^) or (Sign(FHi - FLo) <> ASign) then exit(1.0);
-  if (FAxis <> nil) and FAxis.Inverted then
+  if (FAxis <> nil) and FAxis.IsFlipped then
     Exchange(FLo, FHi);
   Result := (FHi - FLo) / (FMax^ - FMin^);
 end;
@@ -1197,7 +1228,7 @@ procedure TAxisCoeffHelper.UpdateMinMax(AConv: TAxisConvFunc);
 begin
   FMin^ := AConv(FImageLo);
   FMax^ := AConv(FImageHi);
-  if (FAxis <> nil) and FAxis.Inverted then
+  if (FAxis <> nil) and FAxis.IsFlipped then
     Exchange(FMin^, FMax^);
 end;
 

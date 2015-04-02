@@ -1708,8 +1708,8 @@ begin
     ADrawer.SetPenParams(psClear, clTAColor);
   end;
 
-  if StepX > 1 then scaled_stepX := Max(1, ADrawer.Scale(StepX));
-  if StepY > 1 then scaled_stepY := Max(1, ADrawer.Scale(StepY));
+  scaled_stepX := IfThen(StepX > 1, Max(1, ADrawer.Scale(StepX)), 1);
+  scaled_stepY := IfThen(StepY > 1, Max(1, ADrawer.Scale(StepY)), 1);
 
   try
     pt.Y := (r.Top div scaled_stepY - 1) * scaled_stepY + offset.Y mod scaled_stepY;

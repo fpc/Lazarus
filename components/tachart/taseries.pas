@@ -289,6 +289,7 @@ type
       out AResults: TNearestPointResults): Boolean; override;
     function IsEmpty: Boolean; override;
     procedure MovePoint(var AIndex: Integer; const ANewPos: TDoublePoint); override;
+    procedure UpdateBiDiMode; override;
 
   published
     property Active default true;
@@ -892,6 +893,12 @@ begin
   if FUseBounds = AValue then exit;
   FUseBounds := AValue;
   UpdateParentChart;
+end;
+
+procedure TConstantLine.UpdateBiDiMode;
+begin
+  if LineStyle = lsHorizontal then
+    Arrow.Inverted := not Arrow.Inverted;
 end;
 
 { TBarSeries }

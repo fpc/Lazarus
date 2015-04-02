@@ -171,7 +171,7 @@ procedure TDrawFuncHelper.ForEachPoint(
   AXg, AXMax: Double; AOnMoveTo, AOnLineTo: TOnPoint);
 var
   hint: Integer;
-  xa, xg1, xa1: Double;
+  xa, xg1, xa1, dx: Double;
 begin
   if FGraphStep = 0 then exit;
 
@@ -183,8 +183,9 @@ begin
   if AXg < AXMax then
     AOnMoveTo(AXg, xa);
 
+  dx := abs(FGraphStep);
   while AXg < AXMax do begin
-    xg1 := AXg + FGraphStep;
+    xg1 := AXg + dx;
     xa1 := FGraphToAxisXr(xg1);
     if FDomainExclusions.Intersect(xa, xa1, hint) then begin
       AOnLineTo(FAxisToGraphXr(xa), xa);

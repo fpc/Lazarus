@@ -78,10 +78,12 @@ type
 
   public
     procedure Draw(ADrawer: IChartDrawer); virtual; abstract;
+    function GetAxisBounds(AAxis: TChartAxis; out AMin, AMax: Double): boolean; virtual; abstract;
     function GetGraphBounds: TDoubleRect; virtual; abstract;
     function IsEmpty: Boolean; virtual; abstract;
     procedure MovePoint(var AIndex: Integer; const ANewPos: TPoint); overload; inline;
     procedure MovePoint(var AIndex: Integer; const ANewPos: TDoublePoint); overload; virtual;
+    procedure UpdateBiDiMode; virtual;
 
     property Active: Boolean read FActive write SetActive default true;
     property Depth: TChartDistance read FDepth write SetDepth default 0;
@@ -139,6 +141,7 @@ type
     procedure Clear;
     function Count: Integer;
     function GetEnumerator: TBasicChartSeriesEnumerator;
+    procedure UpdateBiDiMode;
   public
     property Items[AIndex: Integer]: TBasicChartSeries read GetItem; default;
     property List: TIndexedComponentList read FList;
@@ -274,6 +277,7 @@ type
     procedure MouseUp(
       AButton: TMouseButton; AShift: TShiftState; AX, AY: Integer); override;
   protected
+    function GetAxisBounds(AAxis: TChartAxis): TDoubleInterval;
     function GetAxisByAlign(AAlign: TChartAxisAlignment): TChartAxis;
     procedure SetAxisByAlign(AAlign: TChartAxisAlignment; AValue: TChartAxis); inline;
   protected
@@ -318,6 +322,7 @@ type
     procedure EnableRedrawing;
     function GetFullExtent: TDoubleRect;
     function GetLegendItems(AIncludeHidden: Boolean = false): TChartLegendItems;
+    procedure Notify(ACommand: Integer; AParam1, AParam2: Pointer; var AData); override;
     procedure PaintOnAuxCanvas(ACanvas: TCanvas; ARect: TRect);
     procedure PaintOnCanvas(ACanvas: TCanvas; ARect: TRect);
     procedure Prepare;
@@ -984,8 +989,27 @@ begin
   AClass := nil;
 end;
 
+function TChart.GetAxisBounds(AAxis: TChartAxis): TDoubleInterval;
+var
+  s: TBasicChartSeries;
+  mn, mx: Double;
+begin
+  Result.FStart := Infinity;
+  Result.FEnd := NegInfinity;
+  for s in Series do
+    if s.Active and s.GetAxisBounds(AAxis, mn, mx) then begin
+      Result.FStart := Min(Result.FStart, mn);
+      Result.FEnd := Max(Result.FEnd, mx);
+    end;
+end;
+
 function TChart.GetAxisByAlign(AAlign: TChartAxisAlignment): TChartAxis;
 begin
+  if (BidiMode <> bdLeftToRight) then
+    case AAlign of
+      calLeft: AAlign := calRight;
+      calRight: AAlign := calLeft;
+    end;
   Result := FAxisList.GetAxisByAlign(AAlign);
 end;
 
@@ -1231,6 +1255,20 @@ begin
   inherited Notification(AComponent, AOperation);
 end;
 
+{ Notifies the chart of something which is specified by ACommand and both
+  parameters. Needed for example by the axis to query the extent covered by
+  all series using this axis (cannot be called directly because TAChartAxis
+  does not "use" TACustomSeries. }
+procedure TChart.Notify(ACommand: Integer; AParam1, AParam2: Pointer; var AData);
+begin
+  UnUsed(AParam2);
+  case ACommand of
+    CMD_QUERY_SERIESEXTENT:
+      TDoubleInterval(AData) := GetAxisBounds(TChartAxis(AParam1));
+  end;
+end;
+
+
 procedure TChart.Paint;
 var
   defaultDrawing: Boolean = true;
@@ -1418,6 +1456,7 @@ begin
     Legend.UpdateBidiMode;
     Title.UpdateBidiMode;
     Foot.UpdateBidiMode;
+    Series.UpdateBiDiMode;
   end;
 end;
 
@@ -1749,6 +1788,11 @@ begin
   MovePoint(AIndex, FChart.ImageToGraph(ANewPos));
 end;
 
+procedure TBasicChartSeries.UpdateBiDiMode;
+begin
+  // normally nothing to do. Override, e.g., to flip arrows
+end;
+
 procedure TBasicChartSeries.UpdateMargins(
   ADrawer: IChartDrawer; var AMargins: TRect);
 begin
@@ -1802,6 +1846,14 @@ end;
 function TChartSeriesList.GetItem(AIndex: Integer): TBasicChartSeries;
 begin
   Result := TBasicChartSeries(FList.Items[AIndex]);
+end;
+
+procedure TChartSeriesList.UpdateBiDiMode;
+var
+  s: TBasicChartseries;
+begin
+  for s in self do
+    s.UpdateBiDiMode;
 end;
 
 { TBasicChartTool }
