@@ -1139,6 +1139,8 @@ begin
   try
     InputHistories.ApplyFileDialogSettings(SaveDialog);
     SaveDialog.Title:=Format(lisPkgMangSavePackageLpk, [APackage.IDAsString]);
+    SaveDialog.Filter:=lisLazarusPackage+' (*.lpk)|*.lpk'
+                     +'|'+dlgAllFiles+' ('+FileMask+')|'+FileMask;
     if APackage.HasDirectory then
       SaveDialog.InitialDir:=APackage.Directory;
 
