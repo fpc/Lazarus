@@ -156,7 +156,7 @@ uses
   UseUnitDlg, FindOverloadsDlg, EditorFileManager,
   CleanDirDlg, CodeContextForm, AboutFrm, CompatibilityRestrictions,
   RestrictionBrowser, ProjectWizardDlg, IDECmdLine, IDEGuiCmdLine, CodeExplOpts,
-  EditorMacroListViewer, SourceFileManager, ToolWin,
+  EditorMacroListViewer, SourceFileManager,
   // main ide
   MainBar, MainIntf, MainBase;
 
