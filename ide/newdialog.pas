@@ -71,7 +71,7 @@ type
     function IndexOf(const CategoryName: string): integer; override;
     function FindByName(const CategoryName: string): TNewIDEItemCategory; override;
     procedure RegisterItem(const Paths: string; NewItem: TNewIDEItemTemplate); override;
-    procedure UnregisterItem(NewItem: TNewIDEItemTemplate); override;
+    procedure UnregisterItem({%H-}NewItem: TNewIDEItemTemplate); override;
     function FindCategoryByPath(const Path: string;
       ErrorOnNotFound: boolean): TNewIDEItemCategory; override;
   end;

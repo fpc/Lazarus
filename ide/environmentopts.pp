@@ -1127,7 +1127,6 @@ var
 
 var
   Path: String;
-  SubPath: String;
   CurPath: String;
   i, j: Integer;
   Rec: PIDEOptionsGroupRec;
@@ -1525,7 +1524,6 @@ var
 
 var
   Path: String;
-  SubPath: String;
   i, j: Integer;
   NodeName: String;
   Rec: PIDEOptionsGroupRec;

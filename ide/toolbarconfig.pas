@@ -73,9 +73,9 @@ type
     procedure btnMoveUpClick(Sender: TObject);
     procedure btnRemoveClick(Sender: TObject);
     procedure lvToolbarDrawItem(Sender: TCustomListView; AItem: TListItem;
-      ARect: TRect; AState: TOwnerDrawState);
-    procedure lvToolbarSelectItem(Sender: TObject; Item: TListItem;
-      Selected: Boolean);
+      ARect: TRect; {%H-}AState: TOwnerDrawState);
+    procedure lvToolbarSelectItem(Sender: TObject; {%H-}Item: TListItem;
+      {%H-}Selected: Boolean);
     procedure TVSelectionChanged(Sender: TObject);
   private
     Image: TBitMap;
@@ -91,9 +91,9 @@ type
     procedure LoadCategories;
     procedure AddMenuItem(ParentNode: TTreeNode; Item: TIDEMenuItem; Level: Integer);
     function RootNodeCaption(Item: TIDEMenuItem): string;
-    procedure AddListItem(Item: TIDEMenuItem; PMask: Integer);
-    procedure AddToolBarItem(Item: TIDEMenuItem; PMask: Integer);
-    procedure AddDivider(PMask: Integer);
+    procedure AddListItem(Item: TIDEMenuItem);
+    procedure AddToolBarItem(Item: TIDEMenuItem);
+    procedure AddDivider;
     procedure FillToolBar;
   public
     procedure LoadSettings(const SL: TStringList);
@@ -521,7 +521,7 @@ begin
   end;
 end;
 
-procedure TToolBarConfig.AddListItem(Item: TIDEMenuItem; PMask: Integer);
+procedure TToolBarConfig.AddListItem(Item: TIDEMenuItem);
 var
   aListItem: TLvItem;
 begin
@@ -536,7 +536,7 @@ begin
   end;
 end;
 
-procedure TToolBarConfig.AddToolBarItem(Item: TIDEMenuItem; PMask: Integer);
+procedure TToolBarConfig.AddToolBarItem(Item: TIDEMenuItem);
 Var
   n: TTreeNode;
   ACaption: string;
@@ -561,7 +561,7 @@ begin
   end;
 end;
 
-procedure TToolBarConfig.AddDivider(PMask: Integer);
+procedure TToolBarConfig.AddDivider;
 var
   lvItem: TListItem;
 begin
@@ -578,7 +578,6 @@ var
   I: Integer;
   aListItem: TLvItem;
   aCaption: string;
-  aPMask: Integer;
   mi: TIDEMenuItem;
 begin
   for I:= 0 to MainList.Count -1 do
@@ -587,9 +586,9 @@ begin
     mi := aListItem.Item;
     aCaption  := MainList.Strings[I];
     if aCaption = cDivider then
-      AddDivider(aPMask)
+      AddDivider
     else
-      AddToolBarItem(mi, aPMask);
+      AddToolBarItem(mi);
     aListItem.LvIndex:= lvToolbar.Items.Count - 1;
   end;
 end;
@@ -607,11 +606,11 @@ begin
     begin
       if Value = cDivider then
       begin
-        AddListItem(nil, 0);
+        AddListItem(nil);
         Continue;
       end;
       MI := IDEMenuRoots.FindByPath(Value, false);
-      AddListItem(MI, 0);
+      AddListItem(MI);
     end;
   end;
   FillToolBar;

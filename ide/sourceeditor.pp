@@ -292,7 +292,7 @@ type
     procedure UpdateIfDefNodeStates(Force: Boolean = False);
   protected
     procedure DoMultiCaretBeforeCommand(Sender: TObject; ACommand: TSynEditorCommand;
-      var AnAction: TSynMultiCaretCommandAction; var AFlags: TSynMultiCaretCommandFlags);
+      var AnAction: TSynMultiCaretCommandAction; var {%H-}AFlags: TSynMultiCaretCommandFlags);
     procedure ProcessCommand(Sender: TObject;
        var Command: TSynEditorCommand; var AChar: TUTF8Char; {%H-}Data: pointer);
     procedure ProcessUserCommand(Sender: TObject;

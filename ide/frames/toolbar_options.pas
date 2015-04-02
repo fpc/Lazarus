@@ -66,8 +66,8 @@ type
     procedure cbBorderStyleChange(Sender: TObject);
     procedure cbGrabStyleChange(Sender: TObject);
     procedure cbToolBarVisibleClick(Sender: TObject);
-    procedure CoolBarMouseDown(Sender: TObject; Button: TMouseButton;
-      Shift: TShiftState; X, Y: integer);
+    procedure CoolBarMouseDown(Sender: TObject; {%H-}Button: TMouseButton;
+      {%H-}Shift: TShiftState; X, Y: integer);
     procedure CoolbarResize(Sender: TObject);
     procedure spGrabWidthChange(Sender: TObject);
     procedure tmWaitTimer(Sender: TObject);
@@ -82,7 +82,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     function GetTitle: string; override;
-    procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
+    procedure Setup({%H-}ADialog: TAbstractOptionsEditorDialog); override;
     procedure ReadSettings(AOptions: TAbstractIDEOptions); override;
     procedure WriteSettings(AOptions: TAbstractIDEOptions); override;
     class function SupportedOptionsClass: TAbstractIDEOptionsClass; override;
