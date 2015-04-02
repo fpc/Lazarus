@@ -14,7 +14,7 @@ procedure TDBDateEdit.DataChange(Sender: TObject);
 begin
   if FDataLink.Field <> nil then begin
      Self.Date := FDataLink.Field.AsDateTime;
-     if AutoSelect then SelectAll;
+     if Focused and AutoSelect then SelectAll;
   end
   else
     Text := '';
