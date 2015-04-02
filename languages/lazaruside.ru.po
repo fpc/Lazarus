@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2015-03-24 01:23+0300\n"
+"PO-Revision-Date: 2015-04-02 02:59+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -1314,6 +1314,7 @@ msgid "Sub directory"
 msgstr "Подкаталог"
 
 #: lazarusidestrconsts.dlgedcodetempl
+msgctxt "lazarusidestrconsts.dlgedcodetempl"
 msgid "Code Templates"
 msgstr "Шаблоны кода"
 
@@ -2253,6 +2254,7 @@ msgid "Mouse Action"
 msgstr "Реакция на действия мышью"
 
 #: lazarusidestrconsts.dlgmouseoptbtn1
+msgctxt "lazarusidestrconsts.dlgmouseoptbtn1"
 msgid "Single"
 msgstr "Одинарный"
 
@@ -4595,7 +4597,7 @@ msgstr "Удалить %s файлов исходного кода%s%s"
 
 #: lazarusidestrconsts.lisccdchangeclassof
 msgid "Change Class of %s"
-msgstr "Изменить класс %s"
+msgstr "Сменить класс %s"
 
 #: lazarusidestrconsts.lisccdnoclass
 msgid "no class"
@@ -5060,7 +5062,7 @@ msgstr "Сменить режим сборки"
 
 #: lazarusidestrconsts.lischangeclass
 msgid "Change Class"
-msgstr "Изменить класс"
+msgstr "Сменить класс"
 
 #: lazarusidestrconsts.lischangedscoordofsfromdtodinsides
 msgid "Changed %s coord of %s from \"%d\" to \"%d\" inside %s."
@@ -6633,6 +6635,178 @@ msgstr "Неизвестные свойства"
 #: lazarusidestrconsts.lisconvuserselectedtoendconversion
 msgid "User selected to end conversion with file %s"
 msgstr "Пользователь запросил завершение преобразования на файле %s"
+
+#: lazarusidestrconsts.liscoolbaraddconfigdelete
+msgid "Add/Config/Delete Toolbar(s)"
+msgstr "Добавление/настройка/удаление инструментальных панелей"
+
+#: lazarusidestrconsts.liscoolbaradddivider
+msgid "Add Divider"
+msgstr "Добавить разделитель"
+
+#: lazarusidestrconsts.liscoolbaraddselected
+msgid "Add selected item to toolbar"
+msgstr "Добавить выбранный элемент на панель"
+
+#: lazarusidestrconsts.liscoolbaravailablecommands
+msgid "Available commands"
+msgstr "Доступные команды"
+
+#: lazarusidestrconsts.liscoolbarborderstyle
+msgid "Toolbars border style"
+msgstr "Граница инструментальной панели"
+
+#: lazarusidestrconsts.liscoolbarborderstyleitem0
+msgctxt "lazarusidestrconsts.liscoolbarborderstyleitem0"
+msgid "None"
+msgstr "Нет"
+
+#: lazarusidestrconsts.liscoolbarborderstyleitem1
+msgctxt "lazarusidestrconsts.liscoolbarborderstyleitem1"
+msgid "Single"
+msgstr "Одинарная"
+
+#: lazarusidestrconsts.liscoolbarclearselection
+msgid "Clear selection"
+msgstr "Снять выбор"
+
+#: lazarusidestrconsts.liscoolbarcodeexplorer
+msgctxt "lazarusidestrconsts.liscoolbarcodeexplorer"
+msgid "Code Explorer"
+msgstr "Обозреватель кода"
+
+#: lazarusidestrconsts.liscoolbarcodetemplates
+msgctxt "lazarusidestrconsts.liscoolbarcodetemplates"
+msgid "Code Templates"
+msgstr "Шаблоны кода"
+
+#: lazarusidestrconsts.liscoolbarconfigure
+msgid "&Configure"
+msgstr "&Настроить"
+
+#: lazarusidestrconsts.liscoolbardeletetoolbar
+msgid "Are you sure you want to delete the selected toolbar?"
+msgstr "Вы действительно хотите удалить эту панель?"
+
+#: lazarusidestrconsts.liscoolbardeletewarning
+msgid "There must be at least one toolbar!"
+msgstr "Должна иметься хотя бы одна панель!"
+
+#: lazarusidestrconsts.liscoolbardesigner
+msgid "Designer"
+msgstr "Дизайнер"
+
+#: lazarusidestrconsts.liscoolbargeneralsettings
+msgid "General Coolbar Settings"
+msgstr "Общие параметры инструментальных панелей"
+
+#: lazarusidestrconsts.liscoolbargrabstyle
+msgid "Toolbars grab style"
+msgstr "Стиль узла захвата"
+
+#: lazarusidestrconsts.liscoolbargrabstyleitem0
+msgid "Simple"
+msgstr "Простой"
+
+#: lazarusidestrconsts.liscoolbargrabstyleitem1
+msgctxt "lazarusidestrconsts.liscoolbargrabstyleitem1"
+msgid "Double"
+msgstr "Двойной"
+
+#: lazarusidestrconsts.liscoolbargrabstyleitem2
+msgid "HorLines"
+msgstr "Горизонтальные линии"
+
+#: lazarusidestrconsts.liscoolbargrabstyleitem3
+msgid "VerLines"
+msgstr "Вертикальные линии"
+
+#: lazarusidestrconsts.liscoolbargrabstyleitem4
+msgid "Gripper"
+msgstr "Рельефный"
+
+#: lazarusidestrconsts.liscoolbargrabstyleitem5
+msgctxt "lazarusidestrconsts.liscoolbargrabstyleitem5"
+msgid "Button"
+msgstr "Кнопка"
+
+#: lazarusidestrconsts.liscoolbargrabwidth
+msgid "Grab width"
+msgstr "Ширина"
+
+#: lazarusidestrconsts.liscoolbarhelp1
+msgid "The \"Add\" button inserts a command before the selected Item of the Toolbar."
+msgstr "Кнопка \"Добавить\" вставляет команду перед выбранным элементом инструментальной панели."
+
+#: lazarusidestrconsts.liscoolbarhelp2
+msgid "If none is selected, the Item will be appended at the end of the Toolbar."
+msgstr "Если ничего не было выбрано, добавление будет произведено в конец панели."
+
+#: lazarusidestrconsts.liscoolbarhelp3
+msgid "You may rearrange Toolbar Items with \"Move Up\" and \"Move Down\" buttons."
+msgstr "Элементы панели можно упорядочивать при помощи кнопок \"Переместить вверх\" и \"Переместить вниз\"."
+
+#: lazarusidestrconsts.liscoolbarhelp4
+msgid "Hint: to append an Item at the end, use \"Clear selection\""
+msgstr "Подсказка: чтобы добавить элемент в конец, воспользуйтесь кнопкой \"Снять выбор\""
+
+#: lazarusidestrconsts.liscoolbaridemainmenu
+msgid "IDE Main Menu"
+msgstr "Главное меню IDE"
+
+#: lazarusidestrconsts.liscoolbarmessages
+msgctxt "lazarusidestrconsts.liscoolbarmessages"
+msgid "Messages"
+msgstr "Сообщения"
+
+#: lazarusidestrconsts.liscoolbarmoveselecteddown
+msgid "Move selected toolbar item down"
+msgstr "Переместить выбранный элемент вниз"
+
+#: lazarusidestrconsts.liscoolbarmoveselectedup
+msgid "Move selected toolbar item up"
+msgstr "Переместить выбранный элемент вверх"
+
+#: lazarusidestrconsts.liscoolbaroptions
+msgid "IDE CoolBar"
+msgstr "Инструментальные панели IDE"
+
+#: lazarusidestrconsts.liscoolbarpackageeditor
+msgid "Package Editor"
+msgstr "Редактор пакетов"
+
+#: lazarusidestrconsts.liscoolbarpackageeditorfiles
+msgid "Package Editor Files"
+msgstr "Файлы в редакторе пакетов"
+
+#: lazarusidestrconsts.liscoolbarremoveselected
+msgid "Remove selected item from toolbar"
+msgstr "Удалить выбранный элемент с панели"
+
+#: lazarusidestrconsts.liscoolbarrestoredefaults
+msgid "Restore defaults"
+msgstr "Сбросить"
+
+#: lazarusidestrconsts.liscoolbarselecttoolbar
+msgid "Please select a toolbar first!"
+msgstr "Сначала выберите панель!"
+
+#: lazarusidestrconsts.liscoolbarsourceeditor
+msgctxt "lazarusidestrconsts.liscoolbarsourceeditor"
+msgid "Source Editor"
+msgstr "Редактор исходного кода"
+
+#: lazarusidestrconsts.liscoolbarsourcetab
+msgid "Source Tab"
+msgstr "Вкладка редактора исходного кода"
+
+#: lazarusidestrconsts.liscoolbartoolbarcommands
+msgid "Toolbar commands"
+msgstr "Элементы панели"
+
+#: lazarusidestrconsts.liscoolbarvisible
+msgid "Coolbar is &visible"
+msgstr "&Показывать инструментальные панели"
 
 #: lazarusidestrconsts.liscopy
 msgctxt "lazarusidestrconsts.liscopy"
@@ -16436,6 +16610,10 @@ msgstr "Путь:"
 #: lazarusidestrconsts.listoggleshowingfilenameswithfullpathorwithrelativepa
 msgid "Toggle showing filenames with full path or with relative path"
 msgstr "Переключение режимов показа имён файлов с полным или относительным путём"
+
+#: lazarusidestrconsts.listoolbarconfiguration
+msgid "Toolbar Configuration"
+msgstr "Настройка инструментальной панели"
 
 #: lazarusidestrconsts.listoolbaroptions
 msgid "Toolbar"
