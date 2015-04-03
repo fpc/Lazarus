@@ -37,7 +37,6 @@ type
   { TToolBarConfig }
 
   TToolBarConfig = class(TForm)
-    Bevel1: TBevel;
     btnHelp: TBitBtn;
     btnAdd: TSpeedButton;
     btnMoveDown: TSpeedButton;

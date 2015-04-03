@@ -220,12 +220,5 @@ object ToolBarConfig: TToolBarConfig
     TabOrder = 4
     ShowButtons = [pbOK, pbCancel, pbHelp]
     ShowGlyphs = [pbOK, pbCancel, pbHelp]
-    object Bevel1: TBevel
-      Left = 0
-      Height = 2
-      Top = 0
-      Width = 760
-      Align = alTop
-    end
   end
 end
