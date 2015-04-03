@@ -172,6 +172,9 @@ type
     function ReadInt32: LongInt; override;
     function ReadInt64: Int64; override;
     function ReadSet(EnumType: Pointer): Integer; override;
+    {$IF FPC_FULLVERSION >= 30101}
+    procedure ReadSignature; override;
+    {$ENDIF}
     function ReadStr: String; override;
     function ReadString(StringType: TValueType): String; override;
     function ReadWideString: WideString; override;
@@ -269,6 +272,9 @@ type
     procedure BeginCollection; override;{ Ends with the next "EndList" }
     procedure BeginComponent(Component: TComponent; Flags: TFilerFlags;
       ChildPos: Integer); override; { Ends after the second "EndList" }
+    {$IF FPC_FULLVERSION >= 30101}
+    procedure WriteSignature; override;
+    {$ENDIF}
     procedure BeginList; override;
     procedure EndList; override;
     procedure BeginProperty(const PropName: String); override;
@@ -4218,6 +4224,12 @@ begin
   end;
 end;
 
+{$IF FPC_FULLVERSION >= 30101}
+procedure TLRSObjectReader.ReadSignature;
+begin
+end;
+{$ENDIF}
+
 function TLRSObjectReader.ReadStr: String;
 var
   b: Byte;
@@ -4500,7 +4512,7 @@ begin
   FBufPos := 0;
 end;
 
-procedure TLRSObjectWriter.Write(const Buffer; Count: LongInt);
+procedure TLRSObjectWriter.Write(const Buffer; Count: Longint);
 var
   Item: PLRSOWStackItem;
 begin
@@ -4745,6 +4757,12 @@ begin
 
   EndHeader;
 end;
+
+{$IF FPC_FULLVERSION >= 30101}
+procedure TLRSObjectWriter.WriteSignature;
+begin
+end;
+{$ENDIF}
 
 procedure TLRSObjectWriter.BeginList;
 begin
