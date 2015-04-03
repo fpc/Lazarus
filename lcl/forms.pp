@@ -1917,7 +1917,7 @@ end;
 function GetParentForm(Control: TControl; TopForm: Boolean): TCustomForm;
 begin
   //For Delphi compatibility if Control is a TCustomForm with no parent, the function returns the TCustomForm itself
-  while Control.Parent <> nil do
+  while (Control <> nil) and (Control.Parent <> nil) do
   begin
     if (not TopForm) and (Control is TCustomForm) then
       Break;
