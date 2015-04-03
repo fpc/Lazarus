@@ -2030,10 +2030,12 @@ begin
   end
   else
     MainIDEBar.CoolBar.Align := alClient;
+
   // IDE Coolbar object wraps MainIDEBar.CoolBar.
-  IDECoolBar:=TIDECoolBar.Create(MainIDEBar.CoolBar);
+  IDECoolBar := TIDECoolBar.Create(MainIDEBar.CoolBar);
   IDECoolBar.SetCoolBarDefaults;
-  IDECoolBar.CreateDefaultToolbars;
+  IDECoolBar.SetToolBarDefaults;
+  IDECoolBar.IsVisible := EnvironmentOptions.IDECoolBarOptions.IDECoolBarVisible;;
   MainIDEBar.CoolBar.Visible := EnvironmentOptions.IDECoolBarOptions.IDECoolBarVisible;
   MainIDEBar.CoolBar.OnChange := @MainIDEBar.CoolBarOnChange;
 

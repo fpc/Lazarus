@@ -543,7 +543,6 @@ var
   CoolBarOpts: TIDECoolBarOptions;
 begin
   CoolBarOpts := EnvironmentOptions.IDECoolBarOptions;
-  IDECoolBar.Sort;
   //read general settings
   if not (CoolBarOpts.IDECoolBarGrabStyle in [0..5]) then
     CoolBarOpts.IDECoolBarGrabStyle := 4;
@@ -554,6 +553,8 @@ begin
   Coolbar.BandBorderStyle := TBorderStyle(CoolBarOpts.IDECoolBarBorderStyle);
   //read toolbars
   CoolBar.Bands.Clear;
+  IDECoolBar.CopyFromOptions(CoolBarOpts);
+  IDECoolBar.Sort;
   for I := 0 to IDECoolBar.ToolBars.Count - 1 do
   begin
     CoolBand := CoolBar.Bands.Add;
@@ -573,7 +574,6 @@ begin
   MainSplitter.Align := alLeft;
   MainSplitter.Visible := MainIDEBar.Coolbar.Visible and
                           MainIDEBar.ComponentPageControl.Visible;
-
 end;
 
 procedure TMainIDEBar.MainSplitterMoved(Sender: TObject);
@@ -585,7 +585,9 @@ procedure TMainIDEBar.CoolBarOnChange(Sender: TObject);
 var
   I, J: integer;
   ToolBar: TToolBar;
+  CoolBarOpts: TIDECoolBarOptions;
 begin
+  CoolBarOpts := EnvironmentOptions.IDECoolBarOptions;
   for I := 0 to Coolbar.Bands.Count - 1 do
   begin
     if Coolbar.Bands[I].Control = nil then
@@ -599,6 +601,7 @@ begin
     end
   end;
   IDECoolBar.Sort;
+  IDECoolBar.CopyToOptions(CoolBarOpts);
 end;
 
 
