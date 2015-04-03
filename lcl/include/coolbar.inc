@@ -843,6 +843,11 @@ var aBand: Integer;
     aGrabber: Boolean;
 begin
   inherited MouseDown(Button, Shift, X, Y);
+  if Button = mbRight then
+  begin
+    Cursor := crDefault;
+    Exit;
+  end;
   MouseToBandPos(X, Y, aBand, aGrabber);
   FDraggedBandIndex := aBand;
   if (aBand >= 0) and (length(FVisiBands) > 1) then begin  //hit any Band
