@@ -157,8 +157,7 @@ type
   private
   protected
   published
-    class function  CreateHandle(const AWinControl: TWinControl;
-          const AParams: TCreateParams): HWND; override;
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): HWND; override;
     class procedure DestroyHandle(const AWinControl: TWinControl); override;
   end;
 
@@ -182,6 +181,9 @@ type
   end;
 
 implementation
+
+uses
+  fpg_panel;
 
 { TFpGuiWSCustomTrayIcon }
 
@@ -215,10 +217,20 @@ end;
 
 { TFpGuiWSCustomPanel }
 
-class function TFpGuiWSCustomPanel.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): HWND;
+class function TFpGuiWSCustomPanel.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): HWND;
+var
+  lPanel: TfpgPanel;
 begin
   Result := TLCLIntfHandle(TFPGUIPrivateCustomPanel.Create(AWinControl, AParams));
+
+  lPanel := TFPGUIPrivateCustomPanel(Result).Panel;
+  case TCustomPanel(AWinControl).BevelOuter of
+    bvLowered:  lPanel.Style := bsLowered;
+    bvRaised:   lPanel.Style := bsRaised;
+    bvNone,
+    bvSpace:    lPanel.Style := bsFlat;
+  end
+
 end;
 
 class procedure TFpGuiWSCustomPanel.DestroyHandle(const AWinControl: TWinControl);
