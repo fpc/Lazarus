@@ -416,6 +416,7 @@ type
     function  HasStaticText: Boolean; override;
   public
     { Other methods }
+    procedure SetText(const AText: String); override;
     function Panel: TfpgPanel;
   end;
 
@@ -1676,6 +1677,12 @@ end;
 function TFPGUIPrivateCustomPanel.HasStaticText: Boolean;
 begin
   Result:=false;
+end;
+
+procedure TFPGUIPrivateCustomPanel.SetText(const AText: String);
+begin
+  inherited SetText(AText);
+  Panel.Text := AText;
 end;
 
 function TFPGUIPrivateCustomPanel.Panel: TfpgPanel;
