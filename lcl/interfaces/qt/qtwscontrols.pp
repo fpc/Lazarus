@@ -123,7 +123,9 @@ const
  { True  } QtRightToLeft
   );
 implementation
-
+{$IFDEF VerboseQtResize}
+uses LCLProc;
+{$ENDIF}
 {------------------------------------------------------------------------------
   Method: TQtWSCustomControl.CreateHandle
   Params:  None
