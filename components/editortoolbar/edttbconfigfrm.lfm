@@ -1,21 +1,24 @@
 object EdtTbConfigForm: TEdtTbConfigForm
-  Left = 375
+  Left = 676
   Height = 457
-  Top = 200
+  Top = 302
   Width = 772
   Caption = 'EdtTbConfigForm'
   ClientHeight = 457
   ClientWidth = 772
+  Constraints.MinHeight = 375
+  Constraints.MinWidth = 450
   OnCreate = FormCreate
   OnDestroy = FormDestroy
+  Position = poScreenCenter
   LCLVersion = '1.5'
   object lblMenuTree: TLabel
     AnchorSideLeft.Control = TV
     AnchorSideLeft.Side = asrCenter
-    Left = 170
-    Height = 17
+    Left = 173
+    Height = 15
     Top = 14
-    Width = 73
+    Width = 67
     Caption = 'lblMenuTree'
     ParentColor = False
   end
@@ -23,10 +26,10 @@ object EdtTbConfigForm: TEdtTbConfigForm
     AnchorSideLeft.Control = lvToolbar
     AnchorSideLeft.Side = asrCenter
     AnchorSideTop.Control = lblMenuTree
-    Left = 573
-    Height = 17
+    Left = 572
+    Height = 15
     Top = 14
-    Width = 58
+    Width = 54
     Caption = 'lblToolbar'
     ParentColor = False
   end
@@ -110,7 +113,7 @@ object EdtTbConfigForm: TEdtTbConfigForm
       AnchorSideRight.Control = btnCancel
       AnchorSideBottom.Control = pnlButtons
       AnchorSideBottom.Side = asrBottom
-      Left = 609
+      Left = 597
       Height = 25
       Top = 11
       Width = 75
@@ -132,10 +135,10 @@ object EdtTbConfigForm: TEdtTbConfigForm
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Control = pnlButtons
       AnchorSideBottom.Side = asrBottom
-      Left = 690
+      Left = 678
       Height = 25
       Top = 11
-      Width = 76
+      Width = 88
       Anchors = [akRight, akBottom]
       AutoSize = True
       BorderSpacing.Right = 6
@@ -173,7 +176,7 @@ object EdtTbConfigForm: TEdtTbConfigForm
       Width = 100
       Anchors = [akLeft, akBottom]
       BorderSpacing.Bottom = 6
-      ItemHeight = 17
+      ItemHeight = 15
       ItemIndex = 0
       Items.Strings = (
         'All'
@@ -191,10 +194,10 @@ object EdtTbConfigForm: TEdtTbConfigForm
       AnchorSideTop.Control = cbProfile
       AnchorSideTop.Side = asrCenter
       AnchorSideRight.Control = cbProfile
-      Left = 288
-      Height = 17
-      Top = 12
-      Width = 38
+      Left = 292
+      Height = 15
+      Top = 13
+      Width = 34
       Anchors = [akTop, akRight]
       BorderSpacing.Right = 10
       Caption = 'Profile'
@@ -215,6 +218,7 @@ object EdtTbConfigForm: TEdtTbConfigForm
     BorderSpacing.Top = 6
     BorderSpacing.Right = 3
     BorderSpacing.Bottom = 6
+    DefaultItemHeight = 18
     ReadOnly = True
     ScrollBars = ssAutoBoth
     TabOrder = 1
@@ -243,13 +247,13 @@ object EdtTbConfigForm: TEdtTbConfigForm
     AnchorSideRight.Control = lvToolbar
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = pnlButtons
-    Left = 661
+    Left = 655
     Height = 23
     Top = 386
     Width = 100
     Anchors = [akRight, akBottom]
     BorderSpacing.Bottom = 6
-    ItemHeight = 17
+    ItemHeight = 15
     ItemIndex = 0
     Items.Strings = (
       'Top'
@@ -266,10 +270,10 @@ object EdtTbConfigForm: TEdtTbConfigForm
     AnchorSideTop.Control = cbPos
     AnchorSideTop.Side = asrCenter
     AnchorSideRight.Control = cbPos
-    Left = 620
-    Height = 17
-    Top = 389
-    Width = 35
+    Left = 617
+    Height = 15
+    Top = 390
+    Width = 32
     Anchors = [akTop, akRight]
     BorderSpacing.Right = 6
     Caption = 'lblpos'
@@ -296,15 +300,15 @@ object EdtTbConfigForm: TEdtTbConfigForm
     Left = 443
     Height = 312
     Top = 66
-    Width = 318
-    Anchors = [akTop, akLeft, akBottom]
+    Width = 312
+    Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Left = 6
     BorderSpacing.Bottom = 37
     Columns = <    
       item
         AutoSize = True
         Caption = 'Name'
-        Width = 314
+        Width = 308
       end    
       item
         AutoSize = True
@@ -328,8 +332,9 @@ object EdtTbConfigForm: TEdtTbConfigForm
     AnchorSideTop.Side = asrBottom
     Left = 415
     Height = 26
-    Top = 272
+    Top = 320
     Width = 22
+    Anchors = [akLeft, akBottom]
     BorderSpacing.Top = 50
     OnClick = btnAddDividerClick
     ShowHint = True
@@ -340,10 +345,10 @@ object EdtTbConfigForm: TEdtTbConfigForm
     AnchorSideTop.Control = FilterEdit
     AnchorSideRight.Control = lvToolbar
     AnchorSideRight.Side = asrBottom
-    Left = 715
-    Height = 17
+    Left = 714
+    Height = 15
     Top = 37
-    Width = 46
+    Width = 41
     Anchors = [akTop, akRight]
     Caption = 'lbSelect'
     ParentColor = False
@@ -356,7 +361,7 @@ object EdtTbConfigForm: TEdtTbConfigForm
     Left = 415
     Height = 26
     Top = 352
-    Width = 23
+    Width = 22
     Anchors = [akLeft, akBottom]
     Enabled = False
     OnClick = btnClearClick

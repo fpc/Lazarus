@@ -1,11 +1,13 @@
 object ToolBarConfig: TToolBarConfig
-  Left = 713
+  Left = 707
   Height = 457
-  Top = 329
-  Width = 772
+  Top = 263
+  Width = 696
   Caption = 'ToolBarConfig'
   ClientHeight = 457
-  ClientWidth = 772
+  ClientWidth = 696
+  Constraints.MinHeight = 350
+  Constraints.MinWidth = 500
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   Position = poScreenCenter
@@ -13,7 +15,7 @@ object ToolBarConfig: TToolBarConfig
   object lblMenuTree: TLabel
     AnchorSideLeft.Control = TV
     AnchorSideLeft.Side = asrCenter
-    Left = 173
+    Left = 153
     Height = 15
     Top = 14
     Width = 67
@@ -24,7 +26,7 @@ object ToolBarConfig: TToolBarConfig
     AnchorSideLeft.Control = lvToolbar
     AnchorSideLeft.Side = asrCenter
     AnchorSideTop.Control = lblMenuTree
-    Left = 575
+    Left = 514
     Height = 15
     Top = 14
     Width = 54
@@ -35,7 +37,7 @@ object ToolBarConfig: TToolBarConfig
     AnchorSideLeft.Control = btnAdd
     AnchorSideTop.Control = btnAdd
     AnchorSideTop.Side = asrBottom
-    Left = 415
+    Left = 375
     Height = 26
     Top = 118
     Width = 22
@@ -49,7 +51,7 @@ object ToolBarConfig: TToolBarConfig
     AnchorSideLeft.Control = Splitter1
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = TV
-    Left = 415
+    Left = 375
     Height = 26
     Top = 91
     Width = 22
@@ -64,7 +66,7 @@ object ToolBarConfig: TToolBarConfig
     AnchorSideLeft.Control = btnRemove
     AnchorSideTop.Control = btnRemove
     AnchorSideTop.Side = asrBottom
-    Left = 415
+    Left = 375
     Height = 26
     Top = 169
     Width = 22
@@ -78,7 +80,7 @@ object ToolBarConfig: TToolBarConfig
     AnchorSideLeft.Control = btnMoveUp
     AnchorSideTop.Control = btnMoveUp
     AnchorSideTop.Side = asrBottom
-    Left = 415
+    Left = 375
     Height = 26
     Top = 196
     Width = 22
@@ -96,7 +98,7 @@ object ToolBarConfig: TToolBarConfig
     Left = 16
     Height = 343
     Top = 66
-    Width = 381
+    Width = 341
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Top = 6
     BorderSpacing.Right = 3
@@ -130,7 +132,7 @@ object ToolBarConfig: TToolBarConfig
     AnchorSideTop.Control = TV
     AnchorSideBottom.Control = TV
     AnchorSideBottom.Side = asrBottom
-    Left = 400
+    Left = 360
     Height = 343
     Top = 66
     Width = 9
@@ -141,18 +143,18 @@ object ToolBarConfig: TToolBarConfig
     AnchorSideLeft.Control = btnAdd
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = TV
-    Left = 443
+    Left = 403
     Height = 343
     Top = 66
-    Width = 318
-    Anchors = [akTop, akLeft, akBottom]
+    Width = 277
+    Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Left = 6
     BorderSpacing.Bottom = 37
     Columns = <    
       item
         AutoSize = True
         Caption = 'Name'
-        Width = 314
+        Width = 253
       end>
     HideSelection = False
     ReadOnly = True
@@ -167,10 +169,11 @@ object ToolBarConfig: TToolBarConfig
     AnchorSideLeft.Control = btnAdd
     AnchorSideTop.Control = btnMoveDown
     AnchorSideTop.Side = asrBottom
-    Left = 415
+    Left = 375
     Height = 26
-    Top = 272
+    Top = 352
     Width = 22
+    Anchors = [akLeft, akBottom]
     BorderSpacing.Top = 50
     OnClick = btnAddDividerClick
     ShowHint = True
@@ -181,7 +184,7 @@ object ToolBarConfig: TToolBarConfig
     AnchorSideTop.Control = FilterEdit
     AnchorSideRight.Control = lvToolbar
     AnchorSideRight.Side = asrBottom
-    Left = 720
+    Left = 639
     Height = 15
     Top = 37
     Width = 41
@@ -194,10 +197,10 @@ object ToolBarConfig: TToolBarConfig
     AnchorSideLeft.Control = btnAdd
     AnchorSideBottom.Control = lvToolbar
     AnchorSideBottom.Side = asrBottom
-    Left = 415
+    Left = 375
     Height = 26
     Top = 383
-    Width = 23
+    Width = 22
     Anchors = [akLeft, akBottom]
     Enabled = False
     OnClick = btnClearClick
@@ -208,7 +211,7 @@ object ToolBarConfig: TToolBarConfig
     Left = 6
     Height = 34
     Top = 417
-    Width = 760
+    Width = 684
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
     HelpButton.Name = 'HelpButton'
