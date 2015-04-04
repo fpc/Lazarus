@@ -24,7 +24,7 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, ExtCtrls,
-  Buttons, StdCtrls, ComCtrls, Menus, MenuIntf, editortoolbar_str,
+  Buttons, StdCtrls, ComCtrls, Menus, ButtonPanel, MenuIntf, editortoolbar_str,
   TreeFilterEdit;
 
 type
@@ -38,13 +38,9 @@ type
   { TEdtTbConfigForm }
 
   TEdtTbConfigForm = class(TForm)
-    Bevel1: TBevel;
-    btnHelp: TBitBtn;
     btnAdd: TSpeedButton;
     btnMoveDown: TSpeedButton;
     btnMoveUp: TSpeedButton;
-    btnOK: TButton;
-    btnCancel: TButton;
     btnRemove: TSpeedButton;
     btnShow: TButton;
     btnHide: TButton;
@@ -61,27 +57,26 @@ type
     miDebug: TMenuItem;
     miHTML: TMenuItem;
     miCustom: TMenuItem;
-    pnlButtons: TPanel;
     FilterEdit: TTreeFilterEdit;
+    pnlButtons: TButtonPanel;
     puMenuItems: TPopupMenu;
     sbAddDivider: TSpeedButton;
     btnClear: TSpeedButton;
     Splitter1: TSplitter;
     TV: TTreeView;
     procedure btnClearClick(Sender: TObject);
-    procedure btnHelpClick(Sender: TObject);
     procedure btnShowClick(Sender: TObject);
     procedure btnHideClick(Sender: TObject);
     procedure cbPosChange(Sender: TObject);
     procedure cbProfileChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
+    procedure HelpButtonClick(Sender: TObject);
     procedure lbToolbarSelectionChange(Sender: TObject; User: boolean);
     procedure btnAddClick(Sender: TObject);
     procedure btnAddDividerClick(Sender: TObject);
     procedure btnMoveDownClick(Sender: TObject);
     procedure btnMoveUpClick(Sender: TObject);
-    procedure btnOKClick(Sender: TObject);
     procedure btnRemoveClick(Sender: TObject);
     procedure lvToolbarDrawItem(Sender: TCustomListView; AItem: TListItem;
       ARect: TRect; AState: TOwnerDrawState);
@@ -91,6 +86,8 @@ type
     procedure miDebugClick(Sender: TObject);
     procedure miDesignClick(Sender: TObject);
     procedure miHTMLClick(Sender: TObject);
+    procedure OKButtonClick(Sender: TObject);
+    procedure pnlButtonsResize(Sender: TObject);
     procedure puMenuItemsPopup(Sender: TObject);
     procedure TVSelectionChanged(Sender: TObject);
   private
@@ -159,7 +156,6 @@ begin
   {$IFDEF LCLQT}
   lvToolbar.OwnerDraw := True;
   {$ENDIF}
-  pnlButtons.Color := clBtnFace;
 
   // load button images
   btnAdd.LoadGlyphFromResourceName(HInstance, 'arrow_right');
@@ -167,7 +163,6 @@ begin
   btnMoveUp.LoadGlyphFromResourceName(HInstance, 'arrow_up');
   btnMoveDown.LoadGlyphFromResourceName(HInstance, 'arrow_down');
   btnClear.LoadGlyphFromResourceName(HINSTANCE,'menu_close');
-  btnHelp.LoadGlyphFromResourceName(HINSTANCE, 'menu_help');
   sbAddDivider.LoadGlyphFromResourceName(HINSTANCE, 'menu_divider16');
 
   btnAdd.Hint      := rsAddSelected;
@@ -220,7 +215,7 @@ begin
   lvToolbar.Selected := nil;
 end;
 
-procedure TEdtTbConfigForm.btnHelpClick(Sender: TObject);
+procedure TEdtTbConfigForm.HelpButtonClick(Sender: TObject);
 begin
   ShowMessageFmt('%s%s%s%s%s%s%s', [rsHelp1,LineEnding,rsHelp2,LineEnding,rsHelp3,LineEnding,rsHelp4]);
 end;
@@ -620,23 +615,29 @@ begin
   end;
 end;
 
-procedure TEdtTbConfigForm.btnOKClick(Sender: TObject);
+procedure TEdtTbConfigForm.OKButtonClick(Sender: TObject);
 begin
   SaveSettings;
+end;
+
+procedure TEdtTbConfigForm.pnlButtonsResize(Sender: TObject);
+begin
+  cbProfile.Left := (pnlButtons.Width - cbProfile.Width) div 2;
+  lblProfile.Left := cbProfile.Left - lblProfile.Width - 10;
 end;
 
 procedure TEdtTbConfigForm.SetupCaptions;
 var
   i: integer;
 begin
-  Caption               := rsEditorToolbarConfigForm;
-  btnHelp.Caption       := rsHelp;
-  btnOK.Caption         := rsOK;
-  btnCancel.Caption     := rsCancel;
-  lblMenuTree.Caption   := rsMenuTree;
-  lblToolbar.Caption    := rsToolbar;
-  lblpos.Caption        := rsPosition;
-  lblProfile.Caption    := rsProfile;
+  Caption                         := rsEditorToolbarConfigForm;
+  pnlButtons.HelpButton.Caption   := rsHelp;
+  pnlButtons.OKButton.Caption     := rsOK;
+  pnlButtons.CancelButton.Caption := rsCancel;
+  lblMenuTree.Caption             := rsMenuTree;
+  lblToolbar.Caption              := rsToolbar;
+  lblpos.Caption                  := rsPosition;
+  lblProfile.Caption              := rsProfile;
 
   sLocalizedPosValues[0] := rsTop;
   sLocalizedPosValues[1] := rsBottom;

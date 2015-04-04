@@ -7,7 +7,7 @@ object EdtTbConfigForm: TEdtTbConfigForm
   ClientHeight = 457
   ClientWidth = 772
   Constraints.MinHeight = 375
-  Constraints.MinWidth = 450
+  Constraints.MinWidth = 500
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   Position = poScreenCenter
@@ -90,126 +90,11 @@ object EdtTbConfigForm: TEdtTbConfigForm
     ShowHint = True
     ParentShowHint = False
   end
-  object pnlButtons: TPanel
-    Left = 0
-    Height = 42
-    Top = 415
-    Width = 772
-    Align = alBottom
-    BevelOuter = bvNone
-    ClientHeight = 42
-    ClientWidth = 772
-    Color = clGreen
-    ParentColor = False
-    TabOrder = 2
-    object Bevel1: TBevel
-      Left = 0
-      Height = 2
-      Top = 0
-      Width = 772
-      Align = alTop
-    end
-    object btnOK: TButton
-      AnchorSideRight.Control = btnCancel
-      AnchorSideBottom.Control = pnlButtons
-      AnchorSideBottom.Side = asrBottom
-      Left = 597
-      Height = 25
-      Top = 11
-      Width = 75
-      Anchors = [akRight, akBottom]
-      AutoSize = True
-      BorderSpacing.Right = 6
-      BorderSpacing.Bottom = 6
-      BorderSpacing.InnerBorder = 4
-      Caption = 'btnOK'
-      Constraints.MaxHeight = 25
-      Constraints.MinHeight = 25
-      Constraints.MinWidth = 75
-      ModalResult = 1
-      OnClick = btnOKClick
-      TabOrder = 0
-    end
-    object btnCancel: TButton
-      AnchorSideRight.Control = pnlButtons
-      AnchorSideRight.Side = asrBottom
-      AnchorSideBottom.Control = pnlButtons
-      AnchorSideBottom.Side = asrBottom
-      Left = 678
-      Height = 25
-      Top = 11
-      Width = 88
-      Anchors = [akRight, akBottom]
-      AutoSize = True
-      BorderSpacing.Right = 6
-      BorderSpacing.Bottom = 6
-      BorderSpacing.InnerBorder = 4
-      Cancel = True
-      Caption = 'btnCancel'
-      Constraints.MaxHeight = 25
-      Constraints.MinHeight = 25
-      Constraints.MinWidth = 75
-      ModalResult = 2
-      TabOrder = 1
-    end
-    object btnHelp: TBitBtn
-      AnchorSideBottom.Control = pnlButtons
-      AnchorSideBottom.Side = asrBottom
-      Left = 16
-      Height = 25
-      Top = 11
-      Width = 75
-      Anchors = [akLeft, akBottom]
-      BorderSpacing.Bottom = 6
-      Caption = 'Help'
-      OnClick = btnHelpClick
-      TabOrder = 2
-    end
-    object cbProfile: TComboBox
-      AnchorSideLeft.Control = pnlButtons
-      AnchorSideLeft.Side = asrCenter
-      AnchorSideBottom.Control = pnlButtons
-      AnchorSideBottom.Side = asrCenter
-      Left = 336
-      Height = 23
-      Top = 9
-      Width = 100
-      Anchors = [akLeft, akBottom]
-      BorderSpacing.Bottom = 6
-      ItemHeight = 15
-      ItemIndex = 0
-      Items.Strings = (
-        'All'
-        'Design'
-        'Debug'
-        'HTML'
-        'Custom'
-        ''
-      )
-      OnChange = cbProfileChange
-      TabOrder = 3
-      Text = 'All'
-    end
-    object lblProfile: TLabel
-      AnchorSideTop.Control = cbProfile
-      AnchorSideTop.Side = asrCenter
-      AnchorSideRight.Control = cbProfile
-      Left = 292
-      Height = 15
-      Top = 13
-      Width = 34
-      Anchors = [akTop, akRight]
-      BorderSpacing.Right = 10
-      Caption = 'Profile'
-      ParentColor = False
-    end
-  end
   object TV: TTreeView
     AnchorSideLeft.Control = FilterEdit
     AnchorSideTop.Control = FilterEdit
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Splitter1
-    AnchorSideBottom.Control = pnlButtons
     Left = 16
     Height = 343
     Top = 66
@@ -246,7 +131,6 @@ object EdtTbConfigForm: TEdtTbConfigForm
     AnchorSideTop.Side = asrCenter
     AnchorSideRight.Control = lvToolbar
     AnchorSideRight.Side = asrBottom
-    AnchorSideBottom.Control = pnlButtons
     Left = 655
     Height = 23
     Top = 386
@@ -262,7 +146,7 @@ object EdtTbConfigForm: TEdtTbConfigForm
       'Left'
     )
     OnChange = cbPosChange
-    TabOrder = 3
+    TabOrder = 2
     Text = 'Top'
   end
   object lblpos: TLabel
@@ -296,7 +180,6 @@ object EdtTbConfigForm: TEdtTbConfigForm
     AnchorSideLeft.Control = btnAdd
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = TV
-    AnchorSideBottom.Control = pnlButtons
     Left = 443
     Height = 312
     Top = 66
@@ -321,7 +204,7 @@ object EdtTbConfigForm: TEdtTbConfigForm
     ReadOnly = True
     ScrollBars = ssAutoBoth
     ShowColumnHeaders = False
-    TabOrder = 5
+    TabOrder = 4
     ViewStyle = vsReport
     OnDrawItem = lvToolbarDrawItem
     OnSelectItem = lvToolbarSelectItem
@@ -375,7 +258,7 @@ object EdtTbConfigForm: TEdtTbConfigForm
     Width = 50
     Caption = 'Show'
     OnClick = btnShowClick
-    TabOrder = 6
+    TabOrder = 5
     Visible = False
   end
   object btnHide: TButton
@@ -385,8 +268,62 @@ object EdtTbConfigForm: TEdtTbConfigForm
     Width = 50
     Caption = 'Hide'
     OnClick = btnHideClick
-    TabOrder = 7
+    TabOrder = 6
     Visible = False
+  end
+  object pnlButtons: TButtonPanel
+    Left = 6
+    Height = 34
+    Top = 417
+    Width = 760
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    OKButton.OnClick = OKButtonClick
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    HelpButton.OnClick = HelpButtonClick
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
+    TabOrder = 7
+    OnResize = pnlButtonsResize
+    ShowButtons = [pbOK, pbCancel, pbHelp]
+    ShowGlyphs = [pbOK, pbCancel, pbHelp]
+    object cbProfile: TComboBox
+      AnchorSideLeft.Side = asrCenter
+      AnchorSideBottom.Side = asrCenter
+      Left = 336
+      Height = 23
+      Top = 9
+      Width = 100
+      Anchors = [akRight, akBottom]
+      BorderSpacing.Bottom = 6
+      ItemHeight = 15
+      ItemIndex = 0
+      Items.Strings = (
+        'All'
+        'Design'
+        'Debug'
+        'HTML'
+        'Custom'
+        ''
+      )
+      OnChange = cbProfileChange
+      TabOrder = 4
+      Text = 'All'
+    end
+    object lblProfile: TLabel
+      AnchorSideTop.Side = asrCenter
+      Left = 292
+      Height = 15
+      Top = 13
+      Width = 34
+      Anchors = [akLeft, akBottom]
+      BorderSpacing.Right = 10
+      Caption = 'Profile'
+      ParentColor = False
+    end
   end
   object puMenuItems: TPopupMenu
     OnPopup = puMenuItemsPopup
