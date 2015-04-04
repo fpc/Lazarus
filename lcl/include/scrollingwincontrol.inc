@@ -99,6 +99,26 @@ begin
   Result := not (AutoSize or (DockSite and UseDockManager));
 end;
 
+procedure TScrollingWinControl.CalculateAutoRanges;
+var
+  NeededClientW: Integer;
+  NeededClientH: Integer;
+  FrameWidth: integer;
+  FrameHeight: integer;
+begin
+  NeededClientW:=0;
+  NeededClientH:=0;
+  GetPreferredSize(NeededClientW,NeededClientH,true,false);
+  GetPreferredSizeClientFrame(FrameWidth,FrameHeight);
+  if NeededClientW>0 then
+    NeededClientW-=FrameWidth;
+  if NeededClientH>0 then
+    NeededClientH-=FrameHeight;
+
+  HorzScrollBar.InternalSetRange(NeededClientW);
+  VertScrollBar.InternalSetRange(NeededClientH);
+end;
+
 class function TScrollingWinControl.GetControlClassDefaultSize: TSize;
 begin
   Result.CX := 150;
@@ -171,22 +191,8 @@ procedure TScrollingWinControl.ComputeScrollbars;
 var
   ClientW: Integer;
   ClientH: Integer;
-  NeededClientW: Integer;
-  NeededClientH: Integer;
-  FrameWidth: integer;
-  FrameHeight: integer;
 begin
-  NeededClientW:=0;
-  NeededClientH:=0;
-  GetPreferredSize(NeededClientW,NeededClientH,true,false);
-  GetPreferredSizeClientFrame(FrameWidth,FrameHeight);
-  if NeededClientW>0 then
-    NeededClientW-=FrameWidth;
-  if NeededClientH>0 then
-    NeededClientH-=FrameHeight;
-
-  HorzScrollBar.InternalSetRange(NeededClientW);
-  VertScrollBar.InternalSetRange(NeededClientH);
+  CalculateAutoRanges;
 
   ClientW:=VertScrollBar.ClientSizeWithoutBar;
   ClientH:=HorzScrollBar.ClientSizeWithoutBar;
