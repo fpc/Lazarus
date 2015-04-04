@@ -461,7 +461,7 @@ end;
 procedure TDiffDlg.SaveSettings;
 begin
   InputHistories.DiffFlags:=GetDiffOptions;
-  if fSelectedFile2<>nil then begin
+  if (fSelectedFile2<>nil) and (fSelectedFile2.fFile<>nil) then begin
     InputHistories.DiffText2:=fSelectedFile2.fFile.Name;
     InputHistories.DiffText2OnlySelection:=Text2OnlySelectionCheckBox.Checked;
   end else begin
