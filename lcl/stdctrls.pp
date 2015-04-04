@@ -1322,6 +1322,7 @@ type
     constructor Create(TheOwner: TComponent); override;
   published
     property AllowGrayed;
+    property Align;
     property Anchors;
     property AutoSize;
     property BidiMode;
