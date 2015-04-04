@@ -5047,13 +5047,21 @@ end;
 function TLazReaderBMP.InternalCheck(Stream: TStream): boolean;
 var
   BFH: TBitMapFileHeader;
+  offbits: DWORD;
 begin
   Stream.Read(BFH, SizeOf(BFH));
-  Result := BFH.bfType = BMmagic; // Just check magic number
+  Result := BFH.bfType = LEtoN(BMmagic); // Just check magic number
 
-  // store the data offset
+  { Store the data offset. BFH is poorly aligned (dictated by the .bmp file
+    format), which can cause problems for architectures such as SPARC and some
+    ARM implementations which have strict alignment requirements. That is why
+    the code below uses an intermediate variable, rather than a direct call to
+    LEtoN(BFH.bfOffBits) which will try to pass a misaligned parameter.        }
   if Result and (BFH.bfOffBits <> 0)
-  then FDataOffset := Stream.Position + BFH.bfOffBits - SizeOf(BFH);
+  then begin
+    offbits := BFH.bfOffBits;
+    FDataOffset := Stream.Position + LEtoN(offbits) - SizeOf(BFH)
+  end
 end;
 
 procedure TLazReaderBMP.InternalReadHead;

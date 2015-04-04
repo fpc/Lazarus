@@ -127,18 +127,21 @@ begin
   begin
     FillChar(Header, SizeOf(Header), 0);
 
+{ Create a BMP header ordered as it would be on disc, noting that if the CPU
+  is big-endian this will be the "wrong way round" for numeric operations.      }
+
+    {$IFNDEF ENDIAN_BIG}
     Header.bfType := $4d42;
     Header.bfSize := SizeOf(Header) + ASize;
+    {$ELSE}
+    Header.bfType := $424d;
+    Header.bfSize := swap(SizeOf(Header) + ASize);
+    {$ENDIF} 
     //Header.bfOffBits := 0; //data imediately follows
-    {$IFDEF ENDIAN_BIG}
-    swap(Header.bfType);
-    swap(Header.bfSize);
-    //swap(Header.bfOffBits);
-    {$ENDIF}
 
     S := THeaderStream.Create(AStream, @Header, SizeOf(Header));
     try
-      inherited LoadFromStream(S, Header.bfSize);
+      inherited LoadFromStream(S, SizeOf(Header) + ASize);
     finally
       S.Free;
     end;
