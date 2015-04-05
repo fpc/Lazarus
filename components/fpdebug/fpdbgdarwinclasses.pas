@@ -141,7 +141,6 @@ type
     class function StartInstance(AFileName: string; AParams, AnEnvironment: TStrings; AWorkingDirectory, AConsoleTty: string; AOnLog: TOnLog; ReDirectOutput: boolean): TDbgProcess; override;
     constructor Create(const AName: string; const AProcessID, AThreadID: Integer; AOnLog: TOnLog); override;
     destructor Destroy; override;
-    procedure LoadInfo; override;
 
     function ReadData(const AAdress: TDbgPtr; const ASize: Cardinal; out AData): Boolean; override;
     function WriteData(const AAdress: TDbgPtr; const ASize: Cardinal; const AData): Boolean; override;
@@ -692,12 +691,6 @@ destructor TDbgDarwinProcess.Destroy;
 begin
   FProcProcess.Free;
   inherited Destroy;
-end;
-
-procedure TDbgDarwinProcess.LoadInfo;
-begin
-  inherited LoadInfo;
-
 end;
 
 class function TDbgDarwinProcess.StartInstance(AFileName: string; AParams, AnEnvironment: TStrings; AWorkingDirectory, AConsoleTty: string; AOnLog: TOnLog; ReDirectOutput: boolean): TDbgProcess;
