@@ -190,13 +190,13 @@ type
     FName: String;
     FProcess: TDbgProcess;
     FSymbolTableInfo: TFpSymbolInfo;
-    FLoader: TDbgImageLoader;
+    FLoaderList: TDbgImageLoaderList;
 
   protected
     FDbgInfo: TDbgInfo;
-    function InitializeLoader: TDbgImageLoader; virtual;
+    procedure InitializeLoaders; virtual;
     procedure SetName(const AValue: String);
-    property Loader: TDbgImageLoader read FLoader write FLoader;
+    property LoaderList: TDbgImageLoaderList read FLoaderList write FLoaderList;
   public
     constructor Create(const AProcess: TDbgProcess); virtual;
     destructor Destroy; override;
@@ -577,12 +577,13 @@ end;
 
 function TDbgInstance.AddrOffset: Int64;
 begin
-  Result := FLoader.ImageBase;
+  Result := FLoaderList.ImageBase;
 end;
 
 constructor TDbgInstance.Create(const AProcess: TDbgProcess);
 begin
   FProcess := AProcess;
+  FLoaderList := TDbgImageLoaderList.Create(True);
 
   inherited Create;
 end;
@@ -591,7 +592,7 @@ destructor TDbgInstance.Destroy;
 begin
   FreeAndNil(FDbgInfo);
   FreeAndNil(FSymbolTableInfo);
-  FreeAndNil(FLoader);
+  FreeAndNil(FLoaderList);
   inherited;
 end;
 
@@ -604,14 +605,14 @@ end;
 
 procedure TDbgInstance.LoadInfo;
 begin
-  FLoader := InitializeLoader;
-  if FLoader.Image64Bit then
+  InitializeLoaders;
+  if FLoaderList.Image64Bit then
     FMode:=dm64
   else
     FMode:=dm32;
-  FDbgInfo := TFpDwarfInfo.Create(FLoader);
+  FDbgInfo := TFpDwarfInfo.Create(FLoaderList);
   TFpDwarfInfo(FDbgInfo).LoadCompilationUnits;
-  FSymbolTableInfo := TFpSymbolInfo.Create(FLoader);
+  FSymbolTableInfo := TFpSymbolInfo.Create(FLoaderList);
 end;
 
 function TDbgInstance.RemoveBreak(const AFileName: String; ALine: Cardinal): Boolean;
@@ -630,9 +631,9 @@ begin
   FName := AValue;
 end;
 
-function TDbgInstance.InitializeLoader: TDbgImageLoader;
+procedure TDbgInstance.InitializeLoaders;
 begin
-  result := nil;
+  // Do nothing;
 end;
 
 { TDbgLibrary }

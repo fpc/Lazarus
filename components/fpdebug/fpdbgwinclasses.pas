@@ -93,7 +93,7 @@ type
   protected
     function GetHandle: THandle; override;
     function GetLastEventProcessIdentifier: THandle; override;
-    function InitializeLoader: TDbgImageLoader; override;
+    procedure InitializeLoaders; override;
   public
     destructor Destroy; override;
 
@@ -131,7 +131,7 @@ type
   private
     FInfo: TLoadDLLDebugInfo;
   protected
-    function InitializeLoader: TDbgImageLoader; override;
+    procedure InitializeLoaders; override;
   public
     constructor Create(const AProcess: TDbgProcess; const ADefaultName: String;
       const AModuleHandle: THandle; const ABaseAddr: TDbgPtr; AInfo: TLoadDLLDebugInfo);
@@ -245,9 +245,9 @@ end;
 
 { tDbgWinLibrary }
 
-function tDbgWinLibrary.InitializeLoader: TDbgImageLoader;
+procedure tDbgWinLibrary.InitializeLoaders;
 begin
-  result := TDbgImageLoader.Create(FInfo.hFile);
+  LoaderList.Add(TDbgImageLoader.Create(FInfo.hFile));
 end;
 
 constructor tDbgWinLibrary.Create(const AProcess: TDbgProcess;
@@ -278,9 +278,9 @@ begin
   Result:= MDebugEvent.LoadDll.hFile;
 end;
 
-function TDbgWinProcess.InitializeLoader: TDbgImageLoader;
+procedure TDbgWinProcess.InitializeLoaders;
 begin
-  result := TDbgImageLoader.Create(FInfo.hFile);
+  LoaderList.Add(TDbgImageLoader.Create(FInfo.hFile));
 end;
 
 destructor TDbgWinProcess.Destroy;

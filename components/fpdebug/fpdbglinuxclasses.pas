@@ -253,7 +253,7 @@ type
     procedure OnForkEvent(Sender : TObject);
     {$endif}
   protected
-    function InitializeLoader: TDbgImageLoader; override;
+    procedure InitializeLoaders; override;
     function CreateThread(AthreadIdentifier: THandle; out IsMainThread: boolean): TDbgThread; override;
     function AnalyseDebugEvent(AThread: TDbgThread): TFPDEvent; override;
   public
@@ -555,9 +555,9 @@ end;
 
 { TDbgLinuxProcess }
 
-function TDbgLinuxProcess.InitializeLoader: TDbgImageLoader;
+procedure TDbgLinuxProcess.InitializeLoaders;
 begin
-  result := TDbgImageLoader.Create(Name);
+  LoaderList.Add(TDbgImageLoader.Create(Name));
 end;
 
 function TDbgLinuxProcess.CreateThread(AthreadIdentifier: THandle; out IsMainThread: boolean): TDbgThread;

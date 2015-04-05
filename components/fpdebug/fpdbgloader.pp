@@ -43,7 +43,7 @@ uses
   LCLType,
   FpImgReaderBase, FpImgReaderWinPE, FpImgReaderElf, FpImgReaderMacho,
   fpDbgSymTable,
-  Classes, SysUtils;
+  Classes, SysUtils, contnrs;
 
 type
 
@@ -78,9 +78,53 @@ type
     property Section[const AName: String]: PDbgImageSection read GetSection;
   end;
 
+  { TDbgImageLoaderList }
 
+  TDbgImageLoaderList = class(TFPObjectList)
+  private
+    function GetImage64Bit: Boolean;
+    function GetImageBase: QWord;
+    function GetItem(Index: Integer): TDbgImageLoader;
+    procedure SetItem(Index: Integer; AValue: TDbgImageLoader);
+  public
+    property Items[Index: Integer]: TDbgImageLoader read GetItem write SetItem; default;
+    property ImageBase: QWord read GetImageBase;
+    Property Image64Bit: Boolean read GetImage64Bit;
+  end;
 
 implementation
+
+{ TDbgImageLoaderList }
+
+function TDbgImageLoaderList.GetImage64Bit: Boolean;
+begin
+  if Count<0 then
+    result := Items[0].Image64Bit
+  else
+    {$ifdef CPU64}
+    result := true
+    {$else}
+    result := false;
+    {$endif}
+end;
+
+function TDbgImageLoaderList.GetImageBase: QWord;
+begin
+  if Count<0 then
+    result := Items[0].ImageBase
+  else
+    result := 0;
+end;
+
+function TDbgImageLoaderList.GetItem(Index: Integer): TDbgImageLoader;
+begin
+  result := TDbgImageLoader(inherited GetItem(Index));
+end;
+
+procedure TDbgImageLoaderList.SetItem(Index: Integer; AValue: TDbgImageLoader);
+begin
+  inherited SetItem(Index, AValue);
+end;
 
 { TDbgImageLoader }
 

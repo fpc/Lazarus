@@ -455,12 +455,26 @@ type
   end;
 {%endregion Base classes for handling Symbols in unit FPDbgDwarf}
 
+  TDwarfSectionInfo = record
+    Section: TDwarfSection;
+    VirtualAddress: QWord;
+    Size: QWord; // the virtual size
+    RawData: Pointer;
+  end;
+  PDwarfSectionInfo = ^TDwarfSectionInfo;
+
+  TDwarfDebugFile = record
+    Sections: array[TDwarfSection] of TDwarfSectionInfo;
+  end;
+  PDwarfDebugFile = ^TDwarfDebugFile;
+
   { TDwarfCompilationUnit }
 
   TDwarfCompilationUnitClass = class of TDwarfCompilationUnit;
   TDwarfCompilationUnit = class
   private
     FOwner: TFpDwarfInfo;
+    FDebugFile: PDwarfDebugFile;
     FDwarfSymbolClassMap: TFpDwarfSymbolClassMapClass;
     FValid: Boolean; // set if the compilationunit has compile unit tag.
   
@@ -532,7 +546,7 @@ type
     function ReadValue(AAttribute: Pointer; AForm: Cardinal; out AValue: TByteDynArray): Boolean;
 
   public
-    constructor Create(AOwner: TFpDwarfInfo; ADataOffset: QWord; ALength: QWord; AVersion: Word; AAbbrevOffset: QWord; AAddressSize: Byte; AIsDwarf64: Boolean); virtual;
+    constructor Create(AOwner: TFpDwarfInfo; ADebugFile: PDwarfDebugFile; ADataOffset: QWord; ALength: QWord; AVersion: Word; AAbbrevOffset: QWord; AAddressSize: Byte; AIsDwarf64: Boolean); virtual;
     destructor Destroy; override;
     procedure ScanAllEntries; inline;
     function GetDefinition(AAbbrevPtr: Pointer; out ADefinition: TDwarfAbbrev): Boolean; inline;
@@ -552,6 +566,7 @@ type
     property AddressSize: Byte read FAddressSize;  // the address size of the target in bytes
     property IsDwarf64: Boolean read FIsDwarf64; // Set if the dwarf info in this unit is 64bit
     property Owner: TFpDwarfInfo read FOwner;
+    property DebugFile: PDwarfDebugFile read FDebugFile;
 
     property DwarfSymbolClassMap: TFpDwarfSymbolClassMapClass read FDwarfSymbolClassMap;
     property FirstScope: TDwarfScopeInfo read FScope;
@@ -566,28 +581,19 @@ type
   
   { TFpDwarfInfo }
 
-  TDwarfSectionInfo = record
-    Section: TDwarfSection;
-    VirtualAddress: QWord;
-    Size: QWord; // the virtual size
-    RawData: Pointer;
-  end;
-  PDwarfSectionInfo = ^TDwarfSectionInfo;
-
   TFpDwarfInfo = class(TDbgInfo)
   private
     FCompilationUnits: TList;
     FImageBase: QWord;
     FMemManager: TFpDbgMemManager;
-    FSections: array[TDwarfSection] of TDwarfSectionInfo;
+    FFiles: array of TDwarfDebugFile;
     function GetCompilationUnit(AIndex: Integer): TDwarfCompilationUnit;
-    function GetSections(AIndex: TDwarfSection): TDwarfSectionInfo;
   protected
     function GetCompilationUnitClass: TDwarfCompilationUnitClass; virtual;
     function FindCompilationUnitByOffs(AOffs: QWord): TDwarfCompilationUnit;
     function FindProcSymbol(AAddress: TDbgPtr): TDbgDwarfSymbolBase;
   public
-    constructor Create(ALoader: TDbgImageLoader); override;
+    constructor Create(ALoaderList: TDbgImageLoaderList); override;
     destructor Destroy; override;
     function FindContext(AThreadId, AStackFrame: Integer; AAddress: TDbgPtr = 0): TFpDbgInfoContext; override;
     function FindContext(AAddress: TDbgPtr): TFpDbgInfoContext; override;
@@ -597,12 +603,10 @@ type
     function GetLineAddressMap(const AFileName: String): PDWarfLineMap;
     function LoadCompilationUnits: Integer;
     function PointerFromRVA(ARVA: QWord): Pointer;
-    function PointerFromVA(ASection: TDwarfSection; AVA: QWord): Pointer;
     function CompilationUnitsCount: Integer;
     property CompilationUnits[AIndex: Integer]: TDwarfCompilationUnit read GetCompilationUnit;
     property MemManager: TFpDbgMemManager read FMemManager write FMemManager;
 
-    property Sections [AIndex: TDwarfSection]: TDwarfSectionInfo read GetSections;
     property ImageBase: QWord read FImageBase;
   end;
 
@@ -1406,7 +1410,6 @@ begin
   SetCapacity(AInfoLen div 16 + 1);
   {$Endif}
   SetLength(FDefinitions, 256);
-  //LoadAbbrevs(FOwner.PointerFromVA(dsAbbrev, FAbbrevOffset));
   LoadAbbrevs(AnAbbrData + AnAbbrevOffset);
   {$IFnDEF USE_ABBREV_TMAP}
   Finish;
@@ -2677,7 +2680,7 @@ begin
     Result := FCompUnit.ReadValue(InfoData, Form, Offs);
     if not Result then
       exit;
-    AValue := FCompUnit.FOwner.FSections[dsInfo].RawData + Offs;
+    AValue := FCompUnit.DebugFile^.Sections[dsInfo].RawData + Offs;
     if (AValue >= FCompUnit.FInfoData) and (AValue < FCompUnit.FInfoData + FCompUnit.FLength) then
       ACompUnit := FCompUnit
     else
@@ -2803,22 +2806,28 @@ end;
 
 { TFpDwarfInfo }
 
-constructor TFpDwarfInfo.Create(ALoader: TDbgImageLoader);
+constructor TFpDwarfInfo.Create(ALoaderList: TDbgImageLoaderList);
 var
   Section: TDwarfSection;
   p: PDbgImageSection;
+  i: Integer;
 begin
-  inherited Create(ALoader);
+  inherited Create(ALoaderList);
   FCompilationUnits := TList.Create;
-  FImageBase := ALoader.ImageBase;
-  for Section := Low(Section) to High(Section) do
+  FImageBase := ALoaderList.ImageBase;
+
+  SetLength(FFiles, ALoaderList.Count);
+  for i := 0 to ALoaderList.Count-1 do
   begin
-    p := ALoader.Section[DWARF_SECTION_NAME[Section]];
-    if p = nil then Continue;
-    FSections[Section].Section := Section;
-    FSections[Section].RawData := p^.RawData;
-    FSections[Section].Size := p^.Size;
-    FSections[Section].VirtualAddress := p^.VirtualAddress;
+    for Section := Low(Section) to High(Section) do
+    begin
+      p := ALoaderList[i].Section[DWARF_SECTION_NAME[Section]];
+      if p = nil then Continue;
+      FFiles[i].Sections[Section].Section := Section;
+      FFiles[i].Sections[Section].RawData := p^.RawData;
+      FFiles[i].Sections[Section].Size := p^.Size;
+      FFiles[i].Sections[Section].VirtualAddress := p^.VirtualAddress;
+    end;
   end;
 end;
 
@@ -2862,11 +2871,6 @@ begin
   Result := TDwarfCompilationUnit(FCompilationUnits[Aindex]);
 end;
 
-function TFpDwarfInfo.GetSections(AIndex: TDwarfSection): TDwarfSectionInfo;
-begin
-  Result := FSections[AIndex];
-end;
-
 function TFpDwarfInfo.GetCompilationUnitClass: TDwarfCompilationUnitClass;
 begin
   Result := TDwarfCompilationUnit;
@@ -2878,10 +2882,10 @@ var
   p: Pointer;
 begin
   Result := nil;
-  p := FSections[dsInfo].RawData + AOffs;
   l := 0;
   h := FCompilationUnits.Count - 1;
   while h > l do begin
+    p := TDwarfCompilationUnit(FCompilationUnits[m]).DebugFile^.Sections[dsInfo].RawData + AOffs;
     m := (h + l + 1) div 2;
     if TDwarfCompilationUnit(FCompilationUnits[m]).FInfoData <= p
     then l := m
@@ -2988,41 +2992,47 @@ var
   CU: TDwarfCompilationUnit;
   CUClass: TDwarfCompilationUnitClass;
   inf: TDwarfSectionInfo;
+  i: integer;
 begin
   CUClass := GetCompilationUnitClass;
-  inf := FSections[dsInfo];
-  p := FSections[dsInfo].RawData;
-  pe := inf.RawData + inf.Size;
-  while (p <> nil) and (p < pe) do
+  for i := 0 to high(FFiles) do
   begin
-    if CU64^.Signature = DWARF_HEADER64_SIGNATURE
-    then begin
-      if CU64^.Version < 3 then
-        DebugLn(FPDBG_DWARF_WARNINGS, ['Unexpected 64 bit signature found for DWARF version 2']); // or version 1...
-      CU := CUClass.Create(
-              Self,
-              PtrUInt(CU64 + 1) - PtrUInt(FSections[dsInfo].RawData),
-              CU64^.Length - SizeOf(CU64^) + SizeOf(CU64^.Signature) + SizeOf(CU64^.Length),
-              CU64^.Version,
-              CU64^.AbbrevOffset,
-              CU64^.AddressSize,
-              True);
-      p := Pointer(@CU64^.Version) + CU64^.Length;
-    end
-    else begin
-      if CU32^.Length = 0 then Break;
-      CU := CUClass.Create(
-              Self,
-              PtrUInt(CU32 + 1) - PtrUInt(FSections[dsInfo].RawData),
-              CU32^.Length - SizeOf(CU32^) + SizeOf(CU32^.Length),
-              CU32^.Version,
-              CU32^.AbbrevOffset,
-              CU32^.AddressSize,
-              False);
-      p := Pointer(@CU32^.Version) + CU32^.Length;
+    inf := FFiles[i].Sections[dsInfo];
+    p := inf.RawData;
+    pe := inf.RawData + inf.Size;
+    while (p <> nil) and (p < pe) do
+    begin
+      if CU64^.Signature = DWARF_HEADER64_SIGNATURE
+      then begin
+        if CU64^.Version < 3 then
+          DebugLn(FPDBG_DWARF_WARNINGS, ['Unexpected 64 bit signature found for DWARF version 2']); // or version 1...
+        CU := CUClass.Create(
+                Self,
+                @FFiles[i],
+                PtrUInt(CU64 + 1) - PtrUInt(inf.RawData),
+                CU64^.Length - SizeOf(CU64^) + SizeOf(CU64^.Signature) + SizeOf(CU64^.Length),
+                CU64^.Version,
+                CU64^.AbbrevOffset,
+                CU64^.AddressSize,
+                True);
+        p := Pointer(@CU64^.Version) + CU64^.Length;
+      end
+      else begin
+        if CU32^.Length = 0 then Break;
+        CU := CUClass.Create(
+                Self,
+                @FFiles[i],
+                PtrUInt(CU32 + 1) - PtrUInt(inf.RawData),
+                CU32^.Length - SizeOf(CU32^) + SizeOf(CU32^.Length),
+                CU32^.Version,
+                CU32^.AbbrevOffset,
+                CU32^.AddressSize,
+                False);
+        p := Pointer(@CU32^.Version) + CU32^.Length;
+      end;
+      FCompilationUnits.Add(CU);
+      if CU.Valid then SetHasInfo;
     end;
-    FCompilationUnits.Add(CU);
-    if CU.Valid then SetHasInfo;
   end;
   Result := FCompilationUnits.Count;
 end;
@@ -3030,11 +3040,6 @@ end;
 function TFpDwarfInfo.PointerFromRVA(ARVA: QWord): Pointer;
 begin
   Result := Pointer(PtrUInt(FImageBase + ARVA));
-end;
-
-function TFpDwarfInfo.PointerFromVA(ASection: TDwarfSection; AVA: QWord): Pointer;
-begin
-  Result := FSections[ASection].RawData + AVA - FImageBase - FSections[ASection].VirtualAddress;
 end;
 
 function TFpDwarfInfo.CompilationUnitsCount: Integer;
@@ -3462,7 +3467,7 @@ begin
   FAddressMapBuild := True;
 end;
 
-constructor TDwarfCompilationUnit.Create(AOwner: TFpDwarfInfo; ADataOffset: QWord; ALength: QWord; AVersion: Word; AAbbrevOffset: QWord; AAddressSize: Byte; AIsDwarf64: Boolean);
+constructor TDwarfCompilationUnit.Create(AOwner: TFpDwarfInfo; ADebugFile: PDwarfDebugFile; ADataOffset: QWord; ALength: QWord; AVersion: Word; AAbbrevOffset: QWord; AAddressSize: Byte; AIsDwarf64: Boolean);
   procedure FillLineInfo(AData: Pointer);
   var
     LNP32: PDwarfLNPHeader32 absolute AData;
@@ -3567,15 +3572,16 @@ begin
   //DebugLn(FPDBG_DWARF_VERBOSE, ['----------------------']);
   inherited Create;
   FOwner := AOwner;
-  FInfoData := FOwner.FSections[dsInfo].RawData + ADataOffset;
+  FDebugFile := ADebugFile;
+  FInfoData := ADebugFile^.Sections[dsInfo].RawData + ADataOffset;
   FLength := ALength;
   FVersion := AVersion;
   FAbbrevOffset := AAbbrevOffset;
   // check for address as offset
-  if FAbbrevOffset > FOwner.FSections[dsAbbrev].Size
+  if FAbbrevOffset > ADebugFile^.Sections[dsAbbrev].Size
   then begin
-    Offs := FAbbrevOffset - FOwner.FImageBase - FOwner.FSections[dsAbbrev].VirtualAddress;
-    if (Offs >= 0) and (Offs < FOwner.FSections[dsAbbrev].Size)
+    Offs := FAbbrevOffset - FOwner.FImageBase - ADebugFile^.Sections[dsAbbrev].VirtualAddress;
+    if (Offs >= 0) and (Offs < ADebugFile^.Sections[dsAbbrev].Size)
     then begin
       DebugLn(FPDBG_DWARF_WARNINGS, ['WARNING: Got Abbrev offset as address, adjusting..']);
       FAbbrevOffset := Offs;
@@ -3585,8 +3591,8 @@ begin
   FAddressSize := AAddressSize;
   FIsDwarf64 := AIsDwarf64;
 
-  FAbbrevList := TDwarfAbbrevList.Create(FOwner.FSections[dsAbbrev].RawData,
-    FOwner.FSections[dsAbbrev].RawData + FOwner.FSections[dsAbbrev].Size,
+  FAbbrevList := TDwarfAbbrevList.Create(ADebugFile^.Sections[dsAbbrev].RawData,
+    ADebugFile^.Sections[dsAbbrev].RawData + ADebugFile^.Sections[dsAbbrev].Size,
     FAbbrevOffset, FLength);
 
   // use internally 64 bit target pointer
@@ -3631,16 +3637,16 @@ begin
   and ReadValue(Attrib, Form, StatementListOffs)
   then begin
     // check for address as offset
-    if StatementListOffs < FOwner.FSections[dsLine].Size
+    if StatementListOffs < ADebugFile^.Sections[dsLine].Size
     then begin
-      FillLineInfo(FOwner.FSections[dsLine].RawData + StatementListOffs);
+      FillLineInfo(ADebugFile^.Sections[dsLine].RawData + StatementListOffs);
     end
     else begin
-      Offs := StatementListOffs - FOwner.FImageBase - FOwner.FSections[dsLine].VirtualAddress;
-      if (Offs >= 0) and (Offs < FOwner.FSections[dsLine].Size)
+      Offs := StatementListOffs - FOwner.FImageBase - ADebugFile^.Sections[dsLine].VirtualAddress;
+      if (Offs >= 0) and (Offs < ADebugFile^.Sections[dsLine].Size)
       then begin
         DebugLn(FPDBG_DWARF_WARNINGS, ['WARNING: Got Lineinfo offset as address, adjusting..']);
-        FillLineInfo(FOwner.FSections[dsLine].RawData + Offs);
+        FillLineInfo(ADebugFile^.Sections[dsLine].RawData + Offs);
       end;
     end;
   end;
@@ -4097,7 +4103,7 @@ begin
       AValue := PChar(AAttribute);
     end;
     DW_FORM_strp:   begin
-      AValue := pchar(PtrUInt(FOwner.Sections[dsStr].RawData)+PDWord(AAttribute)^);
+      AValue := pchar(PtrUInt(FDebugFile^.Sections[dsStr].RawData)+PDWord(AAttribute)^);
     end;
   else
     Result := False;
@@ -4149,7 +4155,7 @@ begin
       AValue := PChar(AAttribute);
     end;
     DW_FORM_strp:   begin
-      AValue := PChar(PtrUInt(FOwner.Sections[dsStr].RawData)+PDWord(AAttribute)^);
+      AValue := PChar(PtrUInt(FDebugFile^.Sections[dsStr].RawData)+PDWord(AAttribute)^);
     end;
   else
     Result := False;

@@ -42,7 +42,7 @@ type
     FContext: TFpSymbolContext;
     FImage64Bit: boolean;
   public
-    constructor Create(ALoader: TDbgImageLoader); override;
+    constructor Create(ALoaderList: TDbgImageLoaderList); override;
     destructor Destroy; override;
     function FindContext(AThreadId, AStackFrame: Integer; AAddress: TDbgPtr = 0): TFpDbgInfoContext; override;
     function FindContext(AAddress: TDbgPtr): TFpDbgInfoContext; override;
@@ -104,15 +104,18 @@ end;
 
 { TFpSymbolInfo }
 
-constructor TFpSymbolInfo.Create(ALoader: TDbgImageLoader);
+constructor TFpSymbolInfo.Create(ALoaderList: TDbgImageLoaderList);
 
+var
+  i: Integer;
 begin
-  inherited Create(ALoader);
+  inherited Create(ALoaderList);
   FContext := TFpSymbolContext.Create(self);
 
   FSymbolList := TfpSymbolList.Create;
-  ALoader.ParseSymbolTable(FSymbolList);
-  FImage64Bit := ALoader.Image64Bit;
+  for i := 0 to ALoaderList.Count-1 do
+    ALoaderList[i].ParseSymbolTable(FSymbolList);
+  FImage64Bit := ALoaderList.Image64Bit;
 end;
 
 destructor TFpSymbolInfo.Destroy;
