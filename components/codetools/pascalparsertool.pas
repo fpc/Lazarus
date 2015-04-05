@@ -2938,7 +2938,7 @@ begin
     RaiseUnknownBlockType;
   repeat
     ReadPriorAtom;
-    if (CurPos.StartPos<1) then begin
+    if (CurPos.EndPos<=1) then begin
       SaveRaiseExceptionFmt(ctsWordNotFound,['begin']);
     end else if WordIsBlockKeyWord.DoIdentifier(@Src[CurPos.StartPos]) then begin
       if (CurPos.Flag=cafEND) or (UpAtomIs('UNTIL')) then begin

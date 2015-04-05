@@ -1530,7 +1530,7 @@ begin
             dec(CurPos.StartPos);
             while (CurPos.StartPos>=1) do begin
               if (Src[CurPos.StartPos]=#3) and (CurPos.StartPos>1)
-              and (Src[CurPos.StartPos-1]='}') then begin
+              and (Src[CurPos.StartPos-1]='{') then begin
                 dec(CurPos.StartPos,2);
                 break;
               end;
