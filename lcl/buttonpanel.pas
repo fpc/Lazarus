@@ -620,6 +620,7 @@ begin
     CtrlPrefWidth:=0;
     CtrlPrefHeight:=0;
     AControl.GetPreferredSize(CtrlPrefWidth,CtrlPrefHeight);
+    //debugln(['TCustomButtonPanel.CalculatePreferredSize ',DbgSName(AControl),' ',CtrlPrefHeight]);
     if Align in [alLeft,alRight] then
     begin
       inc(MinHeight,CtrlPrefHeight);
@@ -642,8 +643,8 @@ begin
     else
       inc(MinHeight,FBevel.Height+Spacing);
   end;
-  PreferredWidth:=Max(PreferredWidth,MinWidth);
-  PreferredHeight:=Max(PreferredHeight,MinHeight);
+  PreferredWidth:=MinWidth;
+  PreferredHeight:=MinHeight;
   //debugln(['TCustomButtonPanel.CalculatePreferredSize ',DbgSName(Self),' ',PreferredWidth,'x',PreferredHeight]);
 end;
 

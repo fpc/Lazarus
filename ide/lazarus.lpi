@@ -23,7 +23,7 @@
       <UseVersionInfo Value="True"/>
       <MajorVersionNr Value="1"/>
       <MinorVersionNr Value="4"/>
-      <BuildNr Value="3"/>
+      <BuildNr Value="4"/>
       <CharSet Value="04B0"/>
       <StringTable ProductName="Lazarus IDE" ProductVersion=""/>
     </VersionInfo>
@@ -70,6 +70,7 @@
       <Unit0>
         <Filename Value="lazarus.pp"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="Lazarus"/>
       </Unit0>
       <Unit1>
         <Filename Value="frames/oi_options.pas"/>
@@ -302,7 +303,6 @@
       <Unit38>
         <Filename Value="main.pp"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="Main"/>
       </Unit38>
       <Unit39>
         <Filename Value="../designer/designer.pp"/>
