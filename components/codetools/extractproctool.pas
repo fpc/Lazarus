@@ -856,7 +856,7 @@ var
 
   function InsertProcIntf(IntfInsertPos, IntfIndent: integer;
     const CompleteParamList, BaseParamList, ProcCode: string;
-    const ProcClassName: string; ProcClassNode: TCodeTreeNode): boolean;
+    ProcClassNode: TCodeTreeNode): boolean;
   var
     ProcHeader: String;
     FrontGap: TGapTyp;
@@ -1061,7 +1061,7 @@ begin
     if not CreateProcBody(ProcClassName,CompleteParamList,
                           VarSection,BeginEndCode,ProcCode) then exit;
     if not InsertProcIntf(IntfInsertPos,IntfIndent,CompleteParamList,
-                  BaseParamList,ProcCode,ProcClassName,ProcClassNode) then exit;
+                  BaseParamList,ProcCode,ProcClassNode) then exit;
     if not InsertProcBody(InsertPos,Indent,ProcCode) then exit;
     if not CreatePathForNewProc(InsertPos,ProcClassName,BaseParamList,
                                 NewProcPath) then exit;
