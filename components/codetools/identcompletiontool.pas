@@ -50,7 +50,7 @@ uses
   {$ENDIF}
   Classes, SysUtils, typinfo, FileProcs, CodeTree, CodeAtom, CodeCache,
   CustomCodeTool, CodeToolsStrConsts, KeywordFuncLists, BasicCodeTools,
-  LinkScanner, AvgLvlTree, AVL_Tree, CodeToolMemManager, DefineTemplates, SourceChanger,
+  LinkScanner, AvgLvlTree, AVL_Tree, DefineTemplates, SourceChanger,
   FindDeclarationTool, PascalReaderTool, PascalParserTool, CodeToolsStructs,
   ExprEval;
   
@@ -815,7 +815,7 @@ var
   SamePos: Integer;
   l: Integer;
 begin
-  Result:=Prefix;
+  Result:=OldPrefix;
   FoundFirst:=false;
   AnAVLNode:=FItems.FindLowest;
   while AnAVLNode<>nil do begin
@@ -1292,6 +1292,7 @@ var
   p: PChar;
 begin
   if not (ilcfStartOfOperand in CurrentIdentifierList.ContextFlags) then exit;
+  if CleanPos=0 then ;
 
   if Context.Node.Desc in AllPascalStatements then begin
     // see fpc/compiler/psystem.pp
@@ -3980,7 +3981,7 @@ end;
 function TCodeContextInfo.CalcMemSize: PtrUInt;
 begin
   Result:=PtrUInt(InstanceSize)
-    +PtrUInt(TCodeContextInfoItem)*SizeOf(FItems.Count)
+    +{%H-}PtrUInt(TCodeContextInfoItem)*SizeOf(FItems.Count)
     +MemSizeString(FProcName);
 end;
 
