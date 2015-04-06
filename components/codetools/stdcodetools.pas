@@ -118,11 +118,9 @@ type
           SourceChangeCache: TSourceChangeCache;
           AsLast: boolean = false; CheckSpecialUnits: boolean = true): boolean;
     function UnitExistsInUsesSection(UsesSection: TUsesSection;
-          const AnUnitName: string;
-          SourceChangeCache: TSourceChangeCache): boolean;
+          const AnUnitName: string): boolean;
     function UnitExistsInUsesSection(UsesNode: TCodeTreeNode;
-                                const AnUnitName: string;
-                                SourceChangeCache: TSourceChangeCache): boolean;
+                                const AnUnitName: string): boolean;
     function RemoveUnitFromUsesSection(UsesNode: TCodeTreeNode;
                                 const AnUnitName: string;
                                 SourceChangeCache: TSourceChangeCache): boolean;
@@ -1052,7 +1050,7 @@ begin
 end;
 
 function TStandardCodeTool.UnitExistsInUsesSection(UsesSection: TUsesSection;
-  const AnUnitName: string; SourceChangeCache: TSourceChangeCache): boolean;
+  const AnUnitName: string): boolean;
 var
   UsesNode: TCodeTreeNode;
 begin
@@ -1063,16 +1061,15 @@ begin
     BuildTree(lsrMainUsesSectionEnd)
   else
     BuildTree(lsrImplementationUsesSectionEnd);
-  SourceChangeCache.MainScanner:=Scanner;
   case UsesSection Of
     usMain: UsesNode:=FindMainUsesSection;
     usImplementation: UsesNode:=FindImplementationUsesSection;
   end;
-  Result:=UnitExistsInUsesSection(UsesNode,AnUnitName,SourceChangeCache);
+  Result:=UnitExistsInUsesSection(UsesNode,AnUnitName);
 end;
 
 function TStandardCodeTool.UnitExistsInUsesSection(UsesNode: TCodeTreeNode;
-  const AnUnitName: string; SourceChangeCache: TSourceChangeCache): boolean;
+  const AnUnitName: string): boolean;
 begin
   Result:=false;
   if (UsesNode=nil) or (not IsDottedIdentifier(AnUnitName)) then
@@ -2204,6 +2201,7 @@ var
         {$IFDEF VerboseCheckLFM}
         debugln('FindNonPublishedDefineProperty Path=',LFMNode.GetPath,' NO DEFINE PROPERTIES');
         {$ENDIF}
+        if DefaultErrorPosition=0 then ;
       end;
     end;
     Result:=IsDefined;
@@ -2832,10 +2830,14 @@ begin
   then exit;
   BuildTree(lsrEnd);
   Beauty:=SourceChangeCache.BeautifyCodeOptions;
-  MainBeginNode:=FindMainBeginEndNode;
-  if MainBeginNode=nil then exit;
+  if StartPos<1 then begin
+    MainBeginNode:=FindMainBeginEndNode;
+    if MainBeginNode=nil then exit;
+    StartPos:=MainBeginNode.StartPos;
+    if StartPos<1 then exit;
+  end;
   FromPos:=-1;
-  if FindCreateFormStatement(MainBeginNode.StartPos,OldClassName,
+  if FindCreateFormStatement(StartPos,OldClassName,
     OldVarName,OldPosition)=-1 then begin
     // does not exist
     if OnlyIfExists then begin
