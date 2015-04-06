@@ -193,7 +193,7 @@ type
     // keyword lists
     procedure BuildDefaultKeyWordFunctions; override;
     function ParseType(StartPos: integer): boolean;
-    function ParseInnerClass(StartPos, WordLen: integer): boolean;
+    function ParseInnerClass(StartPos: integer): boolean;
     function UnexpectedKeyWord: boolean;
     function EndOfSourceExpected: boolean;
     // read functions
@@ -435,7 +435,7 @@ begin
   Result:=KeyWordFuncTypeDefault;
 end;
 
-function TPascalParserTool.ParseInnerClass(StartPos, WordLen: integer
+function TPascalParserTool.ParseInnerClass(StartPos: integer
   ): boolean;
 // KeyWordFunctions for parsing in a class/object/record/interface
 var
@@ -3179,13 +3179,17 @@ function TPascalParserTool.ReadOnStatement(ExceptionOnError,
 var
   NeedUndo: Boolean;
 begin
+  Result:=false;
   if CreateNodes then begin
     CreateChildNode;
     CurNode.Desc:=ctnOnBlock;
   end;
   // read variable name
   ReadNextAtom;
-  AtomIsIdentifierSaveE;
+  if ExceptionOnError then
+    AtomIsIdentifierSaveE
+  else if not AtomIsIdentifier then
+    exit;
   if CreateNodes then begin
     // ctnOnIdentifier for the variable or the type
     CreateChildNode;
@@ -3198,7 +3202,10 @@ begin
     if CreateNodes then
       CurNode.Desc:=ctnVarDefinition;
     ReadNextAtom;
-    AtomIsIdentifierSaveE;
+    if ExceptionOnError then
+      AtomIsIdentifierSaveE
+    else if not AtomIsIdentifier then
+      exit;
     if CreateNodes then begin
       // ctnIdentifier for the type
       CreateChildNode;
@@ -3211,7 +3218,10 @@ begin
     // for example: on Unit.Exception do ;
     // or: on E:Unit.Exception do ;
     ReadNextAtom;
-    AtomIsIdentifierSaveE;
+    if ExceptionOnError then
+      AtomIsIdentifierSaveE
+    else if not AtomIsIdentifier then
+      exit;
     if CreateNodes then begin
       CurNode.EndPos:=CurPos.EndPos;
     end;
@@ -3228,13 +3238,16 @@ begin
   end;
   // read 'do'
   if not UpAtomIs('DO') then
-    SaveRaiseStringExpectedButAtomFound('DO');
+    if ExceptionOnError then
+      SaveRaiseStringExpectedButAtomFound('DO')
+    else
+      exit;
   // ctnOnStatement
   if CreateNodes then begin
     CreateChildNode;
     CurNode.Desc:=ctnOnStatement;
   end;
-  ReadTilStatementEnd(true,CreateNodes);
+  ReadTilStatementEnd(ExceptionOnError,CreateNodes);
   if CreateNodes then begin
     CurNode.EndPos:=CurPos.EndPos;
     EndChildNode; // ctnOnStatement
@@ -3250,7 +3263,7 @@ begin
   if UpAtomIs('ELSE') then begin
     // for example: on E: Exception do else ;
     ReadNextAtom;
-    ReadTilStatementEnd(true,CreateNodes);
+    ReadTilStatementEnd(ExceptionOnError,CreateNodes);
     NeedUndo:=false;
   end;
   if NeedUndo then
@@ -4126,7 +4139,7 @@ begin
     if CurPos.Flag<>cafSemicolon then begin
       // parse till "end" of interface/dispinterface/objcprotocol
       repeat
-        if not ParseInnerClass(CurPos.StartPos,CurPos.EndPos-CurPos.StartPos) then
+        if not ParseInnerClass(CurPos.StartPos) then
         begin
           if CurPos.Flag<>cafEnd then
             SaveRaiseStringExpectedButAtomFound('end');
@@ -4352,7 +4365,7 @@ begin
     // parse till "end" of class/object
     repeat
       //DebugLn(['TPascalParserTool.KeyWordFuncTypeClass Atom=',GetAtom,' ',CurPos.StartPos>=ClassNode.EndPos]);
-      if not ParseInnerClass(CurPos.StartPos,CurPos.EndPos-CurPos.StartPos) then
+      if not ParseInnerClass(CurPos.StartPos) then
       begin
         if CurPos.Flag<>cafEnd then
           SaveRaiseStringExpectedButAtomFound('end');
@@ -5113,6 +5126,7 @@ begin
     exit;
   end;
   ExtractMemStream.Position:=ExtractMemStream.Position-1;
+  c:=#0;
   ExtractMemStream.Read(c,1);
   Result:=IsIdentChar[c];
 end;
