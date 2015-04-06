@@ -676,7 +676,7 @@ type
     function FindSetOfEnumerationType(EnumNode: TCodeTreeNode): TCodeTreeNode;
     function FindPointerOfIdentifier(TypeNode: TCodeTreeNode): TCodeTreeNode;
     function FindExprTypeAsString(const ExprType: TExpressionType;
-      TermCleanPos: integer; Params: TFindDeclarationParams;
+      TermCleanPos: integer;
       AliasType: PFindContext = nil): string;
   protected
     function CheckSrcIdentifier(Params: TFindDeclarationParams;
@@ -10303,7 +10303,7 @@ begin
     ExprType.Desc:=xtContext;
     ExprType.Context:=AliasType;
   end;
-  Result:=FindExprTypeAsString(ExprType,TermPos.StartPos,Params);
+  Result:=FindExprTypeAsString(ExprType,TermPos.StartPos);
 end;
 
 function TFindDeclarationTool.FindForInTypeAsString(TermPos: TAtomPosition;
@@ -10345,7 +10345,7 @@ begin
     DebugLn(['TFindDeclarationTool.FindForInTypeAsString Operator=',ExprTypeToString(OperatorExprType)]);
     {$ENDIF}
     ExprType:=OperatorExprType;
-    Result:=FindExprTypeAsString(ExprType,TermPos.StartPos,Params);
+    Result:=FindExprTypeAsString(ExprType,TermPos.StartPos);
     exit;
   end;
 
@@ -10360,7 +10360,7 @@ begin
               TermExprType.Context.Node,true,ExprType,@AliasType)
             then
               RaiseTermHasNoIterator;
-            Result:=FindExprTypeAsString(ExprType,TermPos.StartPos,Params,@AliasType);
+            Result:=FindExprTypeAsString(ExprType,TermPos.StartPos,@AliasType);
           end;
         ctnEnumerationType:
           begin
@@ -10373,13 +10373,13 @@ begin
                                   TermExprType.Context.Node,ExprType.Context)
           then begin
             ExprType.Desc:=xtContext;
-            Result:=FindExprTypeAsString(ExprType,TermPos.StartPos,Params);
+            Result:=FindExprTypeAsString(ExprType,TermPos.StartPos);
           end;
         ctnRangedArrayType,ctnOpenArrayType:
           if TermExprType.Context.Tool.FindElementTypeOfArrayType(
                                   TermExprType.Context.Node,ExprType)
           then begin
-            Result:=FindExprTypeAsString(ExprType,TermPos.StartPos,Params);
+            Result:=FindExprTypeAsString(ExprType,TermPos.StartPos);
           end;
         else
           RaiseTermHasNoIterator;
@@ -10975,7 +10975,7 @@ end;
 
 function TFindDeclarationTool.FindExprTypeAsString(
   const ExprType: TExpressionType; TermCleanPos: integer;
-  Params: TFindDeclarationParams; AliasType: PFindContext): string;
+  AliasType: PFindContext): string;
 
   procedure RaiseTermNotSimple;
   begin

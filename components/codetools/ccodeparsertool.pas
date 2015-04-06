@@ -111,8 +111,8 @@ uses
   MemCheck,
   {$ENDIF}
   Classes, SysUtils, FileProcs, CodeToolsStructs, BasicCodeTools,
-  KeywordFuncLists, LinkScanner, CodeAtom, CodeCache, AVL_Tree,
-  CodeToolsStrConsts, CodeTree, NonPascalCodeTools;
+  KeywordFuncLists, LinkScanner, CodeCache, AVL_Tree,
+  CodeTree, NonPascalCodeTools;
 
 type
   TCCodeNodeDesc = word;

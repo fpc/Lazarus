@@ -2711,7 +2711,7 @@ begin
       //DebugLn(['TCodeCompletionCodeTool.CreateParamListFromStatement Param=',copy(Src,ExprStartPos,ExprEndPos-ExprStartPos)]);
       // get type
       ParamExprType:=ExprList.Items[i];
-      ParamType:=FindExprTypeAsString(ParamExprType,ExprStartPos,Params);
+      ParamType:=FindExprTypeAsString(ParamExprType,ExprStartPos);
       // create a nice parameter name
       ParamName:=CreateParamName(ExprStartPos,ExprEndPos,ParamType);
       //DebugLn(['TCodeCompletionCodeTool.CreateParamListFromStatement ',i,' ',ParamName,':',ParamType]);

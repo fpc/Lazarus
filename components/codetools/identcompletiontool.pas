@@ -219,7 +219,7 @@ type
     FIdentSearchItem: TIdentifierListSearchItem;
     FPrefix: string;
     FStartContext: TFindContext;
-    function CompareIdentListItems(Tree: TAvgLvlTree; Data1, Data2: Pointer): integer;
+    function CompareIdentListItems({%H-}Tree: TAvgLvlTree; Data1, Data2: Pointer): integer;
     procedure SetHistory(const AValue: TIdentifierHistoryList);
     procedure SetSortForHistory(AValue: boolean);
     procedure SetSortForScope(AValue: boolean);
