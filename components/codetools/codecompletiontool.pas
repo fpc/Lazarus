@@ -1936,7 +1936,7 @@ var
     DebugLn('  CompleteLocalIdentifierByParameter.AddProcedure: jumping to new method body...');
     {$ENDIF}
     // jump to new method body
-    if not JumpToMethod(AMethodDefinition,AMethodAttr,NewPos,NewTopLine,false)
+    if not JumpToMethod(AMethodDefinition,AMethodAttr,NewPos,NewTopLine)
     then
       RaiseException('CompleteLocalIdentifierByParameter.AddProcedure JumpToMethod failed');
   end;
@@ -2050,7 +2050,7 @@ begin
   DebugLn('  CompleteEventAssignment: jumping to new method body...');
   {$ENDIF}
   // jump to new method body
-  if not JumpToMethod(AMethodDefinition,AMethodAttr,NewPos,NewTopLine,false)
+  if not JumpToMethod(AMethodDefinition,AMethodAttr,NewPos,NewTopLine)
   then
     RaiseException('CompleteEventAssignment Internal Error 2');
 
@@ -2158,7 +2158,7 @@ function TCodeCompletionCodeTool.CompleteLocalIdentifierByParameter(
     DebugLn('  CompleteLocalIdentifierByParameter.AddMethod: jumping to new method body...');
     {$ENDIF}
     // jump to new method body
-    if not JumpToMethod(AMethodDefinition,AMethodAttr,NewPos,NewTopLine,false)
+    if not JumpToMethod(AMethodDefinition,AMethodAttr,NewPos,NewTopLine)
     then
       RaiseException('CompleteLocalIdentifierByParameter.AddMethod JumpToMethod failed');
   end;
@@ -2184,7 +2184,7 @@ function TCodeCompletionCodeTool.CompleteLocalIdentifierByParameter(
     DebugLn('  CompleteLocalIdentifierByParameter.AddProcedure: jumping to new method body...');
     {$ENDIF}
     // jump to new method body
-    if not JumpToMethod(AMethodDefinition,AMethodAttr,NewPos,NewTopLine,false)
+    if not JumpToMethod(AMethodDefinition,AMethodAttr,NewPos,NewTopLine)
     then
       RaiseException('CompleteLocalIdentifierByParameter.AddProcedure JumpToMethod failed');
   end;

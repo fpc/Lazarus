@@ -40,7 +40,7 @@ uses
   {$IFDEF MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, FileProcs, CodeTree, CodeAtom, PascalParserTool,
+  Classes, SysUtils, FileProcs, CodeTree, PascalParserTool,
   StdCodeTools, CodeTemplatesTool, KeywordFuncLists, BasicCodeTools,
   LinkScanner, CodeCache, AVL_Tree;
 
@@ -69,8 +69,7 @@ type
     function FindFirstDifferenceNode(SearchForNodes, SearchInNodes: TAVLTree;
         var DiffTxtPos: integer): TAVLTreeNode;
     function JumpToMethod(const ProcHead: string; Attr: TProcHeadAttributes;
-        var NewPos: TCodeXYPosition; var NewTopLine: integer;
-        IgnoreJumpCentered: boolean): boolean;
+        var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
     function FindNodeExtInTree(ATree: TAVLTree;
         const UpperCode: string): TCodeTreeNodeExtension;
     function CreateSubProcPath(StartNode: TCodeTreeNode;
@@ -1209,8 +1208,7 @@ end;
 
 function TMethodJumpingCodeTool.JumpToMethod(const ProcHead: string;
   Attr: TProcHeadAttributes;
-  var NewPos: TCodeXYPosition; var NewTopLine: integer;
-  IgnoreJumpCentered: boolean): boolean;
+  var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
 var SectionNode, CurProcNode: TCodeTreeNode;
   CurProcHead: string;
 begin
