@@ -489,7 +489,7 @@ function Dbgs(const p: TCodePosition): string;
 var
   CodeXYPosition: TCodeXYPosition;
 begin
-  FillChar(CodeXYPosition,SizeOf(TCodeXYPosition),0);
+  FillChar(CodeXYPosition{%H-},SizeOf(TCodeXYPosition),0);
   CodeXYPosition.Code:=p.Code;
   if CodeXYPosition.Code<>nil then begin
     CodeXYPosition.Code.AbsoluteToLineCol(p.P,CodeXYPosition.Y,CodeXYPosition.X);

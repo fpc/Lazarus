@@ -427,8 +427,7 @@ type
     procedure HandleDirective;
     procedure UpdateCleanedSource(NewCopiedSrcPos: integer);
     function ReturnFromIncludeFile: boolean;
-    function ParseKeyWord(StartPos, WordLen: integer; LastTokenType: TLSTokenType
-                          ): boolean;
+    function ParseKeyWord(StartPos: integer; LastTokenType: TLSTokenType): boolean;
     function DoEndToken: boolean; inline;
     function DoSourceTypeToken: boolean; inline;
     function DoInterfaceToken: boolean; inline;
@@ -1836,7 +1835,7 @@ begin
         //debugln(['TLinkScanner.Scan Token ',dbgstr(Src,TokenStart,SrcPos-TokenStart)]);
         ReadNextToken;
         if TokenType=lsttWord then
-          ParseKeyWord(TokenStart,SrcPos-TokenStart,LastTokenType);
+          ParseKeyWord(TokenStart,LastTokenType);
 
         //writeln('TLinkScanner.Scan G "',copy(Src,TokenStart,SrcPos-TokenStart),'" LastTokenType=',LastTokenType,' TokenType=',TokenType);
         if (LastTokenType=lsttEnd) and (TokenType=lsttPoint) then begin
@@ -2621,8 +2620,8 @@ function TLinkScanner.GuessMisplacedIfdefEndif(StartCursorPos: integer;
     IfStack:=nil;
   end;
   
-  function InitGuessMisplaced(var CurToken: TToken; ACode: Pointer;
-    var ASrc: string; var ASrcLen: integer): boolean;
+  function InitGuessMisplaced(out CurToken: TToken; ACode: Pointer;
+    out ASrc: string; out ASrcLen: integer): boolean;
   var
     ASrcLog: TSourceLog;
   begin
@@ -2698,7 +2697,6 @@ function TLinkScanner.GuessMisplacedIfdefEndif(StartCursorPos: integer;
   end;
 
   function GuessMisplacedIfdefEndifInCode(ACode: Pointer;
-    StartCursorPos: integer; StartCode: Pointer;
     var EndCursorPos: integer; var EndCode: Pointer): boolean;
   var
     ASrc: string;
@@ -2798,7 +2796,7 @@ begin
   try
     while LinkId<LinkCount do begin
       Result:=GuessMisplacedIfdefEndifInCode(FLinks[LinkID].Code,
-        StartCursorPos,StartCode,EndCursorPos,EndCode);
+        EndCursorPos,EndCode);
       if Result then exit;
       // search next code
       LastCode:=FLinks[LinkID].Code;
@@ -4103,7 +4101,7 @@ begin
   Result:=SrcPos<=SrcLen;
 end;
 
-function TLinkScanner.ParseKeyWord(StartPos, WordLen: integer;
+function TLinkScanner.ParseKeyWord(StartPos: integer;
   LastTokenType: TLSTokenType): boolean;
 var
   p: PChar;
@@ -4491,6 +4489,7 @@ begin
     exit;
   end;
   ACode:=FLinks[LinkIndex].Code;
+  CodeIsReadOnly:=false;
   FOnGetSourceStatus(Self,ACode,CodeIsReadOnly);
   if CodeIsReadOnly then begin
     EditError(ctsfileIsReadOnly, ACode);
