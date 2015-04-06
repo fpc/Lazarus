@@ -43,7 +43,7 @@ interface
 
 uses
   Classes, SysUtils, FileProcs, CodeToolsStrConsts, CodeCache, BasicCodeTools,
-  typinfo, LinkScanner, AVL_Tree, CodeBeautifier, KeywordFuncLists;
+  typinfo, LinkScanner, AVL_Tree, KeywordFuncLists;
   
 type
   // Insert policy types for class parts (properties, variables, method defs)
@@ -131,7 +131,7 @@ type
     procedure SetTabWidth(AValue: integer);
     procedure SetUseTabs(AValue: boolean);
     procedure StartComment(p: integer);
-    function EndComment(CommentStart: char; p: integer): boolean;
+    function EndComment(CommentStart: char; {%H-}p: integer): boolean;
   public
     LineLength: integer;
     LineEnd: string;

@@ -582,8 +582,8 @@ type
                     out ACleanPos: integer): integer; // 0=valid CleanPos
                           //-1=CursorPos was skipped, CleanPos between two links
                           // 1=CursorPos beyond scanned code
-    function CleanedPosToCursor(ACleanedPos: integer; var ACursorPos: integer;
-                                var ACode: Pointer): boolean;
+    function CleanedPosToCursor(ACleanedPos: integer; out ACursorPos: integer;
+                                out ACode: Pointer): boolean;
     function CleanedPosToStr(ACleanedPos: integer): string;
     function LastErrorIsInFrontOfCleanedPos(ACleanedPos: integer): boolean;
     procedure RaiseLastErrorIfInFrontOfCleanedPos(ACleanedPos: integer);
@@ -4392,8 +4392,8 @@ begin
     Result:=1; // default: CursorPos beyond/outside scanned code
 end;
 
-function TLinkScanner.CleanedPosToCursor(ACleanedPos: integer;
-  var ACursorPos: integer; var ACode: Pointer): boolean;
+function TLinkScanner.CleanedPosToCursor(ACleanedPos: integer; out
+  ACursorPos: integer; out ACode: Pointer): boolean;
 
   procedure ConsistencyCheckI(i: integer);
   begin
@@ -4449,6 +4449,8 @@ begin
     end;
     ConsistencyCheckI(1);
   end;
+  ACode:=nil;
+  ACursorPos:=0;
 end;
 
 function TLinkScanner.CleanedPosToStr(ACleanedPos: integer): string;
