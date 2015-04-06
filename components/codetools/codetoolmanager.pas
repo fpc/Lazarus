@@ -163,14 +163,14 @@ type
     procedure DoOnFABGetExamples(Sender: TObject; Code: TCodeBuffer;
       Step: integer; var CodeBuffers: TFPList; var ExpandedFilenames: TStrings);
     procedure DoOnLoadFileForTool(Sender: TObject; const ExpandedFilename: string;
-                                out Code: TCodeBuffer; var Abort: boolean);
+                                out Code: TCodeBuffer; var {%H-}Abort: boolean);
     function DoOnGetCodeToolForBuffer(Sender: TObject;
       Code: TCodeBuffer; GoToMainCode: boolean): TFindDeclarationTool;
     function DoOnGetDirectoryCache(const ADirectory: string): TCTDirectoryCache;
     procedure DoOnToolSetWriteLock(Lock: boolean);
     procedure DoOnToolGetChangeSteps(out SourcesChangeStep, FilesChangeStep: int64;
                                    out InitValuesChangeStep: integer);
-    function DoOnParserProgress(Tool: TCustomCodeTool): boolean;
+    function DoOnParserProgress({%H-}Tool: TCustomCodeTool): boolean;
     procedure DoOnToolTreeChange(Tool: TCustomCodeTool; NodesDeleting: boolean);
     function DoOnScannerProgress(Sender: TLinkScanner): boolean;
     function GetResourceTool: TResourceCodeTool;
@@ -325,11 +325,11 @@ type
     function GetPPUSrcPathForDirectory(const Directory: string): string;
     function GetDCUSrcPathForDirectory(const Directory: string): string;
     function GetCompiledSrcPathForDirectory(const Directory: string;
-                                            UseCache: boolean = true): string;
+                                            {%H-}UseCache: boolean = true): string;
     function GetNestedCommentsFlagForFile(const Filename: string): boolean;
     function GetPascalCompilerForDirectory(const Directory: string): TPascalCompiler;
     function GetCompilerModeForDirectory(const Directory: string): TCompilerMode;
-    function GetCompiledSrcExtForDirectory(const Directory: string): string;
+    function GetCompiledSrcExtForDirectory(const {%H-}Directory: string): string;
     function FindUnitInUnitLinks(const Directory, AUnitName: string): string;
     function GetUnitLinksForDirectory(const Directory: string;
                                       UseCache: boolean = false): string;
@@ -721,7 +721,7 @@ type
           const NewFilename: string; KeepPath: boolean): boolean;// in cleaned source
     procedure DefaultFindDefinePropertyForContext(Sender: TObject;
                        const ClassContext, AncestorClassContext: TFindContext;
-                       LFMNode: TLFMTreeNode;
+                       {%H-}LFMNode: TLFMTreeNode;
                        const IdentName: string; var IsDefined: boolean);
 
     // register proc
@@ -4713,8 +4713,8 @@ begin
   CursorPos.X:=SelectionStart.X;
   CursorPos.Y:=SelectionStart.Y;
   CursorPos.Code:=Code;
-  EndPos.X:=SelectionStart.X;
-  EndPos.Y:=SelectionStart.Y;
+  EndPos.X:=SelectionEnd.X;
+  EndPos.Y:=SelectionEnd.Y;
   EndPos.Code:=Code;
   try
     Result:=FCurCodeTool.InsertCodeTemplate(CursorPos,EndPos,TopLine,
@@ -6003,6 +6003,7 @@ end;
 function TCodeToolManager.GetDirectivesToolForSource(Code: TCodeBuffer;
   ExceptionOnError: boolean): TCompilerDirectivesTree;
 begin
+  if ExceptionOnError then ;
   Result:=FindDirectivesToolForSource(Code);
   if Result=nil then begin
     Result:=TDirectivesTool.Create;
