@@ -1955,7 +1955,7 @@ begin
   if Result='' then
   begin
     // the compiler cuts off the source extension
-    TargetFilename:=ExtractFileNameOnly(GetDefaultMainSourceFileName);
+    Result:=ExtractFileNameOnly(GetDefaultMainSourceFileName);
   end else begin
     if Assigned(ParsedOpts.OnLocalSubstitute) then
     begin
