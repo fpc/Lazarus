@@ -132,7 +132,7 @@ type
     function GetLevel: integer;
     function DescAsString(CTool: TCCodeParserTool = nil): string; virtual; abstract;
     procedure ConsistencyCheck; virtual;
-    procedure WriteDebugReport(const Prefix: string; WithChilds: boolean;
+    procedure WriteDebugReport(const Prefix: string; WithChildren: boolean;
                                CTool: TCCodeParserTool = nil); virtual;
   end;
 
@@ -186,7 +186,7 @@ type
     procedure MoveChildsInFront(ANode: TH2PBaseNode);
     function ContainsNode(ANode: TH2PBaseNode): boolean;
     procedure ConsistencyCheck;
-    procedure WriteDebugReport(WithChilds: boolean);
+    procedure WriteDebugReport(WithChildren: boolean);
   end;
   
 
@@ -3271,11 +3271,11 @@ begin
     raise Exception.Create('RealNodeCount<>FNodeCount');
 end;
 
-procedure TH2PTree.WriteDebugReport(WithChilds: boolean);
+procedure TH2PTree.WriteDebugReport(WithChildren: boolean);
 begin
   DebugLn('[TH2PTree.WriteDebugReport] Root=',dbgs(Root<>nil));
   if Root<>nil then
-    Root.WriteDebugReport(' ',true);
+    Root.WriteDebugReport(' ',WithChildren);
   ConsistencyCheck;
 end;
 
@@ -3388,12 +3388,12 @@ begin
 end;
 
 procedure TH2PBaseNode.WriteDebugReport(const Prefix: string;
-  WithChilds: boolean; CTool: TCCodeParserTool);
+  WithChildren: boolean; CTool: TCCodeParserTool);
 var
   Node: TH2PBaseNode;
 begin
   DebugLn([Prefix,DescAsString(CTool)]);
-  if WithChilds then begin
+  if WithChildren then begin
     Node:=FirstChild;
     while Node<>nil do begin
       Node.WriteDebugReport(Prefix+'  ',true,CTool);
