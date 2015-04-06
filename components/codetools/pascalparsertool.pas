@@ -43,7 +43,7 @@ uses
   MemCheck,
   {$ENDIF}
   Classes, SysUtils, FileProcs, CodeToolsStrConsts, CodeTree, CodeAtom, ExprEval,
-  CustomCodeTool, MultiKeyWordListTool, KeywordFuncLists, BasicCodeTools,
+  CustomCodeTool, MultiKeyWordListTool, KeywordFuncLists,
   CodeToolsStructs, LinkScanner, CodeCache, AVL_Tree;
 
 type
@@ -143,7 +143,7 @@ type
     FLastDefineStatic: Boolean;
     FLastDefineEmbedded: Boolean;
     FLastDefineTargetCPU: String;
-    procedure FetchScannerSource(Range: TLinkScannerRange); override;
+    procedure FetchScannerSource; override;
     // sections
     function KeyWordFuncSection: boolean;
     function KeyWordFuncEndPoint: boolean;
@@ -5177,7 +5177,7 @@ begin
   ReadNextAtom;
 end;
 
-procedure TPascalParserTool.FetchScannerSource(Range: TLinkScannerRange);
+procedure TPascalParserTool.FetchScannerSource;
 var
   AllChanged: Boolean;
   NewSrc: String;

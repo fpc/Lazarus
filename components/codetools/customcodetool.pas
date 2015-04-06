@@ -133,7 +133,7 @@ type
     procedure RaiseLastError;
     procedure DoProgress; inline;
     procedure NotifyAboutProgress;
-    procedure FetchScannerSource(Range: TLinkScannerRange); virtual;
+    procedure FetchScannerSource; virtual;
     function InternalAtomIsIdentifier: boolean; inline;
   public
     Tree: TCodeTree;
@@ -494,7 +494,7 @@ begin
   end;
 end;
 
-procedure TCustomCodeTool.FetchScannerSource(Range: TLinkScannerRange);
+procedure TCustomCodeTool.FetchScannerSource;
 begin
   // update scanned code
   if FLastScannerChangeStep=Scanner.ChangeStep then begin
@@ -1983,7 +1983,7 @@ begin
   // scan
   FLastProgressPos:=0;
   Scanner.Scan(Range,CheckFilesOnDisk);
-  FetchScannerSource(Range);
+  FetchScannerSource;
   // init parsing values
   CurPos:=StartAtomPosition;
   LastAtoms.Clear;
