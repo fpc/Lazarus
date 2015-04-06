@@ -611,8 +611,6 @@ type
                 const AClassName: string; out CodeTool: TCodeTool): boolean;
 
     // insert/replace
-    function ReplaceCode(Code: TCodeBuffer; StartX, StartY: integer;
-          EndX, EndY: integer; const NewCode: string): boolean;
     function InsertStatements(InsertPos: TInsertStatementPosDescription;
           const Statements: string): boolean;
 
@@ -2995,30 +2993,6 @@ begin
     end;
   except
     on e: Exception do Result:=HandleException(e);
-  end;
-end;
-
-function TCodeToolManager.ReplaceCode(Code: TCodeBuffer; StartX,
-  StartY: integer; EndX, EndY: integer; const NewCode: string): boolean;
-var
-  StartCursorPos, EndCursorPos: TCodeXYPosition;
-begin
-  Result:=false;
-  {$IFDEF CTDEBUG}
-  DebugLn('TCodeToolManager.ReplaceCode A ',Code.Filename);
-  {$ENDIF}
-  if not InitCurCodeTool(Code) then exit;
-  StartCursorPos.X:=StartX;
-  StartCursorPos.Y:=StartY;
-  StartCursorPos.Code:=Code;
-  EndCursorPos.X:=EndX;
-  EndCursorPos.Y:=EndY;
-  EndCursorPos.Code:=Code;
-  try
-    Result:=FCurCodeTool.ReplaceCode(StartCursorPos,EndCursorPos,NewCode,
-                                     SourceChangeCache);
-  except
-    on e: Exception do HandleException(e);
   end;
 end;
 

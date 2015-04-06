@@ -52,7 +52,7 @@ uses
   {$ENDIF}
   Classes, SysUtils, TypInfo, CodeToolsStrConsts, FileProcs, CodeTree, CodeAtom,
   FindDeclarationTool, IdentCompletionTool, PascalReaderTool, PascalParserTool,
-  CodeBeautifier, ExprEval, KeywordFuncLists, BasicCodeTools, LinkScanner,
+  ExprEval, KeywordFuncLists, BasicCodeTools, LinkScanner,
   CodeCache, AVL_Tree, LFMTrees, SourceChanger,
   CustomCodeTool, CodeToolsStructs, LazFileUtils;
 
@@ -305,9 +305,6 @@ type
     function GetStringConstBounds(const CursorPos: TCodeXYPosition;
           out StartPos, EndPos: TCodeXYPosition;
           ResolveComments: boolean): boolean;
-    function ReplaceCode(const StartPos, EndPos: TCodeXYPosition;
-          const NewCode: string;
-          SourceChangeCache: TSourceChangeCache): boolean;
     function GetStringConstAsFormatString(StartPos, EndPos: integer;
           out FormatStringConstant, FormatParameters: string;
           out StartInStringConst, EndInStringConst: boolean): boolean;
@@ -3543,13 +3540,6 @@ begin
   Result:=true;
 end;
 
-function TStandardCodeTool.ReplaceCode(const StartPos, EndPos: TCodeXYPosition;
-  const NewCode: string; SourceChangeCache: TSourceChangeCache): boolean;
-begin
-  Result:=false;
-  RaiseException('TStandardCodeTool.ReplaceCode not implemented yet');
-end;
-
 function TStandardCodeTool.GetStringConstAsFormatString(StartPos,
   EndPos: integer; out FormatStringConstant, FormatParameters: string;
   out StartInStringConst, EndInStringConst: boolean): boolean;
@@ -4317,7 +4307,7 @@ begin
     NearestNode:=CursorTool.FindNearestIdentifierNode(CursorPos,IdentTree);
     if NearestNode=nil then exit;
     // convert node to cleanpos
-    NearestCleanPos:=PtrUInt(NearestNode.Data)-PtrUInt(@SectionTool.Src[1])+1;
+    NearestCleanPos:={%H-}PtrUInt(NearestNode.Data)-{%H-}PtrUInt(@SectionTool.Src[1])+1;
     // convert cleanpos to caret
     CleanPosToCaret(NearestCleanPos,NearestPos);
   finally
@@ -5419,7 +5409,7 @@ var
 
   procedure InitStack(out Stack: TBlockStack);
   begin
-    FillByte(Stack,SizeOf(Stack),0);
+    FillByte(Stack{%H-},SizeOf(Stack),0);
     Stack.Top:=-1;
   end;
 
@@ -6055,7 +6045,7 @@ var
     Result:=true;
   end;
 
-  function CompleteClassSection(var Stack: TBlockStack): Boolean;
+  function CompleteClassSection: Boolean;
   {  type
        TMyClass = class
          |
@@ -6117,7 +6107,7 @@ var
       Result:=true;
   end;
 
-  function CompleteClassInterface(var Stack: TBlockStack): Boolean;
+  function CompleteClassInterface: Boolean;
   {  type
        TMyClass = interface
          |
@@ -6149,7 +6139,7 @@ var
     Result:=true;
   end;
 
-  function CompleteRecord(var Stack: TBlockStack): Boolean;
+  function CompleteRecord: Boolean;
   {  type
        TMyClass = record
          |
@@ -6186,6 +6176,7 @@ var
 begin
   Result:=false;
   NewPos:=CursorPos;
+  NewTopLine:=-1;
   BuildTreeAndGetCleanPos(trTillCursor,lsrEnd,CursorPos,CleanCursorPos,
                           [btSetIgnoreErrorPos]);
   StartNode:=FindDeepestNodeAtPos(CleanCursorPos,true);
@@ -6208,13 +6199,13 @@ begin
     else if (StartNode.Desc in AllClassSections)
     or ((StartNode.Desc in AllClassSubSections) and (StartNode.Parent.Desc in AllClassSections))
     then begin
-      if not CompleteClassSection(Stack) then exit;
+      if not CompleteClassSection then exit;
     end
     else if StartNode.Desc in AllClassInterfaces then begin
-      if not CompleteClassInterface(Stack) then exit;
+      if not CompleteClassInterface then exit;
     end
     else if StartNode.Desc=ctnRecordType then begin
-      if not CompleteRecord(Stack) then exit;
+      if not CompleteRecord then exit;
     end;
   finally
     FreeStack(Stack);
