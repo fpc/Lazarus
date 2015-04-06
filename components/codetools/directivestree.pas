@@ -734,6 +734,7 @@ begin
         if AtomIs(')') then begin
           ToPos:=SrcPos;
           DebugLn(['TCompilerDirectivesTree.CheckAndImproveExpr_Brackets removing unneeded brackets']);
+          Changed:=true;
           Replace(FromPos,ToPos,GetIdentifier(@Src[NameStart]));
           MoveCursorToPos(FromPos);
         end;
@@ -1830,7 +1831,7 @@ procedure TCompilerDirectivesTree.ReduceCompilerDirectives(
   end;
   
   procedure CheckMacroInExpression(Node: TCodeTreeNode; NameStart: integer;
-    Complex: boolean; var Changed: boolean);
+    Complex: boolean; var {%H-}Changed: boolean);
   var
     MacroNode: TCompilerMacroStats;
   begin
@@ -2313,7 +2314,10 @@ var
 begin
   if Code=nil then
     exit('P='+IntToStr(p));
-  Result:=Code.Filename;
+  if WithFilename then
+    Result:=Code.Filename
+  else
+    Result:='';
   Code.AbsoluteToLineCol(p,Line,Column);
   Result+='('+IntToStr(Line)+','+IntToStr(Column)+')';
 end;
