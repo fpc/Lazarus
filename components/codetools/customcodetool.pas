@@ -43,7 +43,7 @@ uses
   {$IFDEF MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, math, FileProcs, CodeToolsStrConsts, CodeTree, CodeAtom,
+  Classes, SysUtils, FileProcs, CodeToolsStrConsts, CodeTree, CodeAtom,
   KeywordFuncLists, BasicCodeTools, LinkScanner, CodeCache,
   AVL_Tree;
 
@@ -309,8 +309,7 @@ type
       const ErrorCleanPos: integer;
       const ErrorNiceCleanPos: TCodeXYPosition
       ): TCodeTreeNodeParseError;
-    procedure RaiseNodeParserError(Node: TCodeTreeNode;
-      CheckIgnoreErrorPos: boolean = true);
+    procedure RaiseNodeParserError(Node: TCodeTreeNode);
     procedure RaiseCursorOutsideCode(CursorPos: TCodeXYPosition);
     property OnParserProgress: TOnParserProgress
       read FOnParserProgress write FOnParserProgress;
@@ -2135,8 +2134,7 @@ begin
   Result.NicePos:=ErrorNiceCleanPos;
 end;
 
-procedure TCustomCodeTool.RaiseNodeParserError(Node: TCodeTreeNode;
-  CheckIgnoreErrorPos: boolean);
+procedure TCustomCodeTool.RaiseNodeParserError(Node: TCodeTreeNode);
 var
   NodeError: TCodeTreeNodeParseError;
 begin
@@ -2272,7 +2270,7 @@ var NewPos: integer;
 begin
   if Src='' then
     RaiseSrcEmpty;
-  NewPos:=PtrInt(PtrUInt(ACleanPos))-PtrInt(PtrUInt(@Src[1]))+1;
+  NewPos:=PtrInt({%H-}PtrUInt(ACleanPos))-PtrInt({%H-}PtrUInt(@Src[1]))+1;
   if (NewPos<1) or (NewPos>SrcLen) then
     RaiseNotInSrc;
   MoveCursorToCleanPos(NewPos);
