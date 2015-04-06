@@ -121,6 +121,8 @@ type
         Attr: TProcHeadAttributes): string;
     function ExtractProcHead(ProcNode: TCodeTreeNode;
         Attr: TProcHeadAttributes): string;
+    function ExtractProcedureHeader(CursorPos: TCodeXYPosition;
+      Attributes: TProcHeadAttributes; var ProcHead: string): boolean;
     function ExtractClassNameOfProcNode(ProcNode: TCodeTreeNode;
         AddParentClasses: boolean = true): string;
     function ProcNodeHasSpecifier(ProcNode: TCodeTreeNode;
@@ -651,6 +653,24 @@ begin
   if ([phpWithoutSemicolon,phpDoNotAddSemicolon]*Attr=[])
   and (Result<>'') and (Result[length(Result)]<>';') then
     Result:=Result+';';
+end;
+
+function TPascalReaderTool.ExtractProcedureHeader(CursorPos: TCodeXYPosition;
+  Attributes: TProcHeadAttributes; var ProcHead: string): boolean;
+var
+  CleanCursorPos: integer;
+  ANode: TCodeTreeNode;
+begin
+  Result:=false;
+  ProcHead:='';
+  BuildTreeAndGetCleanPos(trTillCursor,lsrEnd,CursorPos,CleanCursorPos,
+    [btSetIgnoreErrorPos,btCursorPosOutAllowed]);
+  ANode:=FindDeepestNodeAtPos(CleanCursorPos,True);
+  while (ANode<>nil) and (ANode.Desc<>ctnProcedure) do
+    ANode:=ANode.Parent;
+  if ANode=nil then exit;
+  ProcHead:=ExtractProcHead(ANode,Attributes);
+  Result:=true;
 end;
 
 function TPascalReaderTool.ExtractClassName(Node: TCodeTreeNode;

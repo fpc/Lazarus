@@ -41,7 +41,7 @@ uses
   MemCheck,
   {$ENDIF}
   Classes, SysUtils, FileProcs, CodeTree, PascalParserTool,
-  StdCodeTools, CodeTemplatesTool, KeywordFuncLists, BasicCodeTools,
+  StdCodeTools, KeywordFuncLists, BasicCodeTools,
   LinkScanner, CodeCache, AVL_Tree;
 
 
@@ -49,7 +49,7 @@ type
 
   { TMethodJumpingCodeTool }
 
-  TMethodJumpingCodeTool = class(TCodeTemplatesTool)
+  TMethodJumpingCodeTool = class(TStandardCodeTool)
   protected
     procedure RemoveCorrespondingProcNodes(Tree1, Tree2: TAVLTree;
         KeepTree1: boolean);

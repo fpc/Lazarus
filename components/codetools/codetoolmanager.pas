@@ -49,7 +49,7 @@ uses
   PPUCodeTools, LFMTrees, DirectivesTree, CodeCompletionTemplater,
   PascalParserTool, CodeToolsConfig, CustomCodeTool, FindDeclarationTool,
   IdentCompletionTool, StdCodeTools, ResourceCodeTool, CodeToolsStructs,
-  CTUnitGraph, CodeTemplatesTool, ExtractProcTool;
+  CTUnitGraph, ExtractProcTool;
 
 type
   TCodeToolManager = class;
@@ -639,14 +639,6 @@ type
           out InheritedDeclContext: TFindContext;
           ProcName: string = '' // default: Assign
           ): boolean;
-
-    // code templates
-    function InsertCodeTemplate(Code: TCodeBuffer;
-          SelectionStart, SelectionEnd: TPoint;
-          TopLine: integer;
-          CodeTemplate: TCodeToolTemplate;
-          var NewCode: TCodeBuffer;
-          var NewX, NewY, NewTopLine: integer): boolean;
 
     // source name  e.g. 'unit AUnitName;'
     function GetSourceName(Code: TCodeBuffer; SearchMainCode: boolean): string;
@@ -4691,39 +4683,6 @@ begin
     Result:=FCurCodeTool.FindAssignMethod(CodePos,ClassNode,
            AssignDeclNode,MemberNodeExts,AssignBodyNode,
            InheritedDeclContext,ProcName);
-  except
-    on e: Exception do Result:=HandleException(e);
-  end;
-end;
-
-function TCodeToolManager.InsertCodeTemplate(Code: TCodeBuffer;
-  SelectionStart, SelectionEnd: TPoint; TopLine: integer;
-  CodeTemplate: TCodeToolTemplate; var NewCode: TCodeBuffer; var NewX, NewY,
-  NewTopLine: integer): boolean;
-var
-  CursorPos: TCodeXYPosition;
-  EndPos: TCodeXYPosition;
-  NewPos: TCodeXYPosition;
-begin
-  {$IFDEF CTDEBUG}
-  DebugLn('TCodeToolManager.InsertCodeTemplate A ',Code.Filename);
-  {$ENDIF}
-  Result:=false;
-  if not InitCurCodeTool(Code) then exit;
-  CursorPos.X:=SelectionStart.X;
-  CursorPos.Y:=SelectionStart.Y;
-  CursorPos.Code:=Code;
-  EndPos.X:=SelectionEnd.X;
-  EndPos.Y:=SelectionEnd.Y;
-  EndPos.Code:=Code;
-  try
-    Result:=FCurCodeTool.InsertCodeTemplate(CursorPos,EndPos,TopLine,
-                              CodeTemplate,NewPos,NewTopLine,SourceChangeCache);
-    if Result then begin
-      NewX:=NewPos.X;
-      NewY:=NewPos.Y;
-      NewCode:=NewPos.Code;
-    end;
   except
     on e: Exception do Result:=HandleException(e);
   end;
