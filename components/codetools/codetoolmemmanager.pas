@@ -55,7 +55,7 @@ type
     FAllocatedCount: int64;
     FFreedCount: int64;
     {$ENDIF}
-    procedure DisposeItem(AnItem: PCodeToolMemManagerItem);
+    procedure DisposeItem({%H-}AnItem: PCodeToolMemManagerItem);
     function NewItem: PCodeToolMemManagerItem;
     procedure FreeFirstItem; virtual;
   public
