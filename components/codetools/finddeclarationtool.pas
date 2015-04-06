@@ -615,7 +615,7 @@ type
     // node caches
     procedure DoDeleteNodes(StartNode: TCodeTreeNode); override;
     function CheckDependsOnNodeCaches(CheckedTools: TAVLTree = nil): boolean;
-    procedure ClearNodeCaches(Force: boolean);
+    procedure ClearNodeCaches;
     procedure ClearDependentNodeCaches;
     procedure ClearDependsOnToolRelationships;
     procedure AddToolDependency(DependOnTool: TFindDeclarationTool);
@@ -667,7 +667,7 @@ type
       out ExprType: TExpressionType): boolean;
     function CheckOperatorEnumerator(Params: TFindDeclarationParams;
       const FoundContext: TFindContext): TIdentifierFoundResult;
-    function CheckModifierEnumeratorCurrent(Params: TFindDeclarationParams;
+    function CheckModifierEnumeratorCurrent({%H-}Params: TFindDeclarationParams;
       const FoundContext: TFindContext): TIdentifierFoundResult;
     function IsTermEdgedBracket(TermPos: TAtomPosition;
       out EdgedBracketsStartPos: integer): boolean;
@@ -691,7 +691,7 @@ type
       FindClassContext, ExceptionOnNotFound: boolean): TCodeTreeNode;
     function FindClassMember(aClassNode: TCodeTreeNode; Identifier: PChar): TCodeTreeNode;
     function FindForwardIdentifier(Params: TFindDeclarationParams;
-      var IsForward: boolean): boolean;
+      out IsForward: boolean): boolean;
     function FindNonForwardClass(ForwardNode: TCodeTreeNode): TCodeTreeNode;
     function FindNonForwardClass(Params: TFindDeclarationParams): boolean;
     function FindCodeToolForUsedUnit(const AnUnitName, AnUnitInFilename: string;
@@ -729,7 +729,7 @@ type
       out ParameterIndex: integer): boolean;
     procedure OnFindUsedUnitIdentifier(Sender: TPascalParserTool;
       IdentifierCleanPos: integer; Range: TEPRIRange;
-      Node: TCodeTreeNode; Data: Pointer; var Abort: boolean);
+      Node: TCodeTreeNode; Data: Pointer; var {%H-}Abort: boolean);
   protected
   public
     constructor Create;
@@ -5139,6 +5139,8 @@ var
     MoveCursorToCleanPos(StartPos);
     repeat
       ReadNextAtom;
+      if not SkipComments then
+        ; // ToDo
       if UpAtomIs(UpperUnitName)
       and not LastAtomIs(0,'.') then begin
         if CleanPosToCaret(CurPos.StartPos,ReferencePos) then begin
@@ -5946,7 +5948,7 @@ begin
 end;
 
 function TFindDeclarationTool.FindForwardIdentifier(
-  Params: TFindDeclarationParams; var IsForward: boolean): boolean;
+  Params: TFindDeclarationParams; out IsForward: boolean): boolean;
 { first search the identifier in the normal way via FindIdentifierInContext
   then search the other direction }
 var
@@ -7653,8 +7655,6 @@ var
       ExprType.Context.Tool.RaiseExceptionFmt(ctsStrExpectedButAtomFound,
                                               [ctsIdentifier,GetAtom]);
     end;
-  const
-    EdgedBracketContexts = xtAllStringTypes+[xtNone];
   begin
     {$IFDEF ShowExprEval}
     debugln(['  FindExpressionTypeOfTerm ResolveEdgedBracketOpen']);
@@ -9734,7 +9734,7 @@ end;
 
 procedure TFindDeclarationTool.DoDeleteNodes(StartNode: TCodeTreeNode);
 begin
-  ClearNodeCaches(true);
+  ClearNodeCaches;
   if FInterfaceIdentifierCache<>nil then begin
     FInterfaceIdentifierCache.Clear;
     FInterfaceIdentifierCache.Complete:=false;
@@ -9798,7 +9798,7 @@ begin
     {$ENDIF}
     FCheckingNodeCacheDependencies:=false;
     if FreeCheckedTools then FreeAndNil(CheckedTools);
-    if Result then ClearNodeCaches(true);
+    if Result then ClearNodeCaches;
   end;
 end;
 
@@ -9817,7 +9817,7 @@ begin
   inherited Destroy;
 end;
 
-procedure TFindDeclarationTool.ClearNodeCaches(Force: boolean);
+procedure TFindDeclarationTool.ClearNodeCaches;
 var
   NodeCache: TCodeTreeNodeCache;
   BaseTypeCache: TBaseTypeCache;
@@ -9869,7 +9869,7 @@ begin
     ANode:=FDependentCodeTools.FindLowest;
     while ANode<>nil do begin
       DependentTool:=TFindDeclarationTool(ANode.Data);
-      DependentTool.ClearNodeCaches(true);
+      DependentTool.ClearNodeCaches;
       ANode:=FDependentCodeTools.FindSuccessor(ANode);
     end;
     FDependentCodeTools.Clear;

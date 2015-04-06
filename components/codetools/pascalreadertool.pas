@@ -39,7 +39,7 @@ uses
   {$ENDIF}
   Classes, SysUtils, FileProcs, CodeToolsStrConsts, CodeTree, CodeCache,
   CodeAtom, CustomCodeTool, PascalParserTool, KeywordFuncLists, BasicCodeTools,
-  SourceChanger, LinkScanner, AVL_Tree;
+  LinkScanner, AVL_Tree;
 
 type
   TPascalHintModifier = (
@@ -70,7 +70,7 @@ type
   public
     // comments
     function CleanPosIsInComment(CleanPos, CleanCodePosInFront: integer;
-        var CommentStart, CommentEnd: integer;
+        out CommentStart, CommentEnd: integer;
         OuterCommentBounds: boolean = true): boolean;
 
     // general extraction
@@ -276,13 +276,15 @@ begin
 end;
 
 function TPascalReaderTool.CleanPosIsInComment(CleanPos,
-  CleanCodePosInFront: integer; var CommentStart, CommentEnd: integer;
+  CleanCodePosInFront: integer; out CommentStart, CommentEnd: integer;
   OuterCommentBounds: boolean): boolean;
 var CommentLvl, CurCommentPos: integer;
   CurEnd: Integer;
   CurCommentInnerEnd: Integer;
 begin
   Result:=false;
+  CommentStart:=0;
+  CommentEnd:=0;
   if CleanPos>SrcLen then exit;
   if CleanCodePosInFront>CleanPos then
     RaiseException(
