@@ -60,7 +60,7 @@ type
     procedure Unbind;
     procedure AddChild(ANode: TLFMTreeNode);
     function GetIdentifier: string;
-    procedure FindIdentifier(var IdentStart, IdentEnd: integer);
+    procedure FindIdentifier(out IdentStart, IdentEnd: integer);
     function GetPath: string;
     function Next(SkipChildren: Boolean = False): TLFMTreeNode;
   end;
@@ -878,7 +878,7 @@ begin
   Result:=copy(Tree.LFMBuffer.Source,IdentStart,IdentEnd-IdentStart);
 end;
 
-procedure TLFMTreeNode.FindIdentifier(var IdentStart, IdentEnd: integer);
+procedure TLFMTreeNode.FindIdentifier(out IdentStart, IdentEnd: integer);
 var
   Src: String;
   SrcLen: Integer;
