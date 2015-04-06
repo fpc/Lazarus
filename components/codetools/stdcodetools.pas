@@ -260,7 +260,7 @@ type
     function GuessMisplacedIfdefEndif(const CursorPos: TCodeXYPosition;
           out NewPos: TCodeXYPosition; out NewTopLine: integer): boolean;
     function FindEnclosingIncludeDirective(const CursorPos: TCodeXYPosition;
-          out NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
+          out NewPos: TCodeXYPosition; out NewTopLine: integer): boolean;
     function FindModeDirective(DoBuildTree: boolean;
           out ACleanPos: integer): boolean;
     function FindResourceDirective(DoBuildTree: boolean;
@@ -6256,12 +6256,14 @@ begin
 end;
 
 function TStandardCodeTool.FindEnclosingIncludeDirective(
-  const CursorPos: TCodeXYPosition; out NewPos: TCodeXYPosition;
-  var NewTopLine: integer): boolean;
+  const CursorPos: TCodeXYPosition; out NewPos: TCodeXYPosition; out
+  NewTopLine: integer): boolean;
 var
   CleanCursorPos, LinkIndex, NewCleanPos: integer;
 begin
   Result:=false;
+  NewPos:=CleanCodeXYPosition;
+  NewTopLine:=-1;
   try
     BuildTreeAndGetCleanPos(trTillCursor,lsrEnd,CursorPos,CleanCursorPos,
                             [btSetIgnoreErrorPos]);
