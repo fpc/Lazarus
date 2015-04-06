@@ -343,7 +343,7 @@ type
                         ContextLearn: boolean = true // true = learn policies from Source
                         ): boolean;
     procedure GetDefaultSrcIndent(const Source: string; CleanPos: integer;
-                               NewNestedComments: boolean;
+                               {%H-}NewNestedComments: boolean;
                                out Indent: TFABIndentationPolicy);
     procedure GetDefaultIndentPolicy(Typ, SubTyp: TFABBlockType;
                                   out Indent: TFABIndentationPolicy);

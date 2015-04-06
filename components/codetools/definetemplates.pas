@@ -601,7 +601,7 @@ type
     // Kylix templates
     function CreateKylixCompilerDefinesTemplate(KylixVersion: integer;
                                                Owner: TObject): TDefineTemplate;
-    function CreateKylixSrcPath(KylixVersion: integer;
+    function CreateKylixSrcPath({%H-}KylixVersion: integer;
                                 const PathPrefix: string): string;
     function CreateKylixDirectoryTemplate(const KylixDirectory: string;
                         KylixVersion: integer; Owner: TObject): TDefineTemplate;
@@ -976,7 +976,7 @@ function GetDefaultSrcOSForTargetOS(const TargetOS: string): string;
 function GetDefaultSrcOS2ForTargetOS(const TargetOS: string): string;
 function GetDefaultSrcCPUForTargetCPU(const TargetCPU: string): string;
 procedure SplitLazarusCPUOSWidgetCombo(const Combination: string;
-  var CPU, OS, WidgetSet: string);
+  out CPU, OS, WidgetSet: string);
 function GetCompiledFPCVersion: integer;
 function GetCompiledTargetOS: string;
 function GetCompiledTargetCPU: string;
@@ -1063,7 +1063,7 @@ procedure SaveFPCCacheToFile(Filename: string;
 
 procedure ReadMakefileFPC(const Filename: string; List: TStrings);
 procedure ParseMakefileFPC(const Filename, SrcOS: string;
-                           var Dirs, SubDirs: string);
+                           out Dirs, SubDirs: string);
 
 function CompareFPCSourceRulesViaFilename(Rule1, Rule2: Pointer): integer;
 function CompareFPCTargetConfigCacheItems(CacheItem1, CacheItem2: Pointer): integer;
@@ -2571,7 +2571,7 @@ begin
 end;
 
 procedure ParseMakefileFPC(const Filename, SrcOS: string;
-  var Dirs, SubDirs: string);
+  out Dirs, SubDirs: string);
 
   function MakeSearchPath(const s: string): string;
   var
@@ -2783,7 +2783,7 @@ begin
 end;
 
 procedure SplitLazarusCPUOSWidgetCombo(const Combination: string;
-  var CPU, OS, WidgetSet: string);
+  out CPU, OS, WidgetSet: string);
 var
   StartPos, EndPos: integer;
 begin
@@ -5406,7 +5406,7 @@ function TDefinePool.GetFPCVerFromFPCTemplate(Template: TDefineTemplate; out
 var
   p: Integer;
 
-  function ReadInt(const VarName: string; var AnInteger: integer): boolean;
+  function ReadInt(const VarName: string; out AnInteger: integer): boolean;
   var
     StartPos: Integer;
   begin
