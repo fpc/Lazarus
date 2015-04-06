@@ -720,11 +720,11 @@ type
     function ReadEntryAInt(const Msg: string): int64;
     function ReadEntryASizeInt: int64;
     function ReadEntryASizeInt(const Msg: string): int64;
-    procedure ReadEntrySmallSet(var s);
-    procedure ReadEntryNormalSet(var s);
+    procedure ReadEntrySmallSet(out s);
+    procedure ReadEntryNormalSet(out s);
     procedure ReadUsedUnits;
     procedure ReadModuleOptions;
-    procedure ReadLinkContainer(Nr: byte);
+    procedure ReadLinkContainer(aContainerType: byte);
     procedure ReadResources;
     procedure ReadImportSymbols;
     procedure ReadDerefData;
@@ -1078,7 +1078,7 @@ end;
 function PPULinkContainerFlagToStr(Flags: longint): string;
 const
   { link options }
-  link_none    = $0;
+  //link_none    = $0;
   link_always  = $1;
   link_static  = $2;
   link_smart   = $4;
@@ -1427,7 +1427,9 @@ end;
 
 procedure TPPU.ReadDefinitions;
 type
+  {
   tsettype  = (normset,smallset,varset);
+
   tordtype = (
     uvoid,
     u8bit,u16bit,u32bit,u64bit,
@@ -1448,6 +1450,7 @@ type
   tvarianttype = (
     vt_normalvariant,vt_olevariant
   );
+  }
 
   tprocinfoflag=(
     {# procedure uses asm }
@@ -1461,7 +1464,7 @@ type
     {# procedure contains data which needs to be finalized }
     pi_needs_implicit_finally
   );
-  tprocinfoflags=set of tprocinfoflag;
+  //tprocinfoflags=set of tprocinfoflag;
 
   tsystemcpu=
   (
@@ -1598,7 +1601,7 @@ begin
 end;
 
 procedure TPPU.ReadSymbols;
-type
+{type
   pguid = ^tguid;
   tguid = packed record
     D1: LongWord;
@@ -1623,7 +1626,7 @@ type
     constresourcestring,
     constwstring,
     constguid
-    );
+    );}
 var
   EntryNr: Byte;
 begin
@@ -2283,26 +2286,26 @@ begin
   debugln([Msg,Result]);
 end;
 
-procedure TPPU.ReadEntrySmallSet(var s);
+procedure TPPU.ReadEntrySmallSet(out s);
 var
   i: longint;
 begin
   if FEntryPos+4>FEntry.size then
     Error('TPPU.ReadEntryLongint: out of bytes');
-  System.Move(PByte(FEntryBuf+FEntryPos)^,s,4);
+  System.Move(PByte(FEntryBuf+FEntryPos)^,s{%H-},4);
   inc(FEntryPos,4);
   if fChangeEndian then
     for i:=0 to 3 do
       Pbyte(@s)[i]:=reverse_byte(Pbyte(@s)[i]);
 end;
 
-procedure TPPU.ReadEntryNormalSet(var s);
+procedure TPPU.ReadEntryNormalSet(out s);
 var
   i: longint;
 begin
   if FEntryPos+32>FEntry.size then
     Error('TPPU.ReadEntryLongint: out of bytes');
-  System.Move(PByte(FEntryBuf+FEntryPos)^,s,32);
+  System.Move(PByte(FEntryBuf+FEntryPos)^,s{%H-},32);
   inc(FEntryPos,32);
   if fChangeEndian then
     for i:=0 to 31 do
@@ -2346,11 +2349,12 @@ type
     mo_has_deprecated_msg
   );
   tmoduleoptions = set of tmoduleoption;
+{$IFDEF VerbosePPUParser}
+type
   tmoduleopt=record
     mask : tmoduleoption;
     str  : string[30];
   end;
-{$IFDEF VerbosePPUParser}
 const
   moduleopts=6;
   moduleopt : array[1..moduleopts] of tmoduleopt=(
@@ -2391,7 +2395,7 @@ begin
   end;
 end;
 
-procedure TPPU.ReadLinkContainer(Nr: byte);
+procedure TPPU.ReadLinkContainer(aContainerType: byte);
 {$IFDEF VerbosePPUParser}
 var
   Desc: String;
@@ -2400,6 +2404,9 @@ var
   Flags: LongInt;
 {$ENDIF}
 begin
+  {$IFNDEF VerbosePPUParser}
+  if aContainerType=0 then ;
+  {$ENDIF}
   while not EndOfEntry do begin
     {$IFDEF VerbosePPUParser}Filename:={$ENDIF}ReadEntryShortstring;
     {$IFDEF VerbosePPUParser}Flags:={$ENDIF}ReadEntryLongint;
