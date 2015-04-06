@@ -87,7 +87,7 @@ unit CodeCompletionTemplater;
 interface
 
 uses
-  Classes, SysUtils, laz2_DOM, laz2_XMLRead, LazFileUtils, LazUTF8Classes,
+  Classes, SysUtils, laz2_DOM, laz2_XMLRead, LazFileUtils,
   CodeCache, FileProcs;
 
 type
@@ -190,7 +190,7 @@ begin
   Template := FindTemplate(TemplateName);
   if Template = nil then
     raise Exception.Create('Template "' + TemplateName + '" not found in TemplateExpander.');
-  Result := ExpandTemplate(Template, #13#10, '  ', ArgName, ArgVal);
+  Result := ExpandTemplate(Template, LineEnd, Indent, ArgName, ArgVal);
 end;
 
 function TTemplateExpander.ExpandTemplate(Template: TDOMNode; LineEnd,
@@ -218,7 +218,7 @@ begin
   raise Exception.Create('ExpandTemplate could not find Argument named "' + Name + '"');
 end;
 
-function GetBoolArgValue(Name : String; Index : Integer = -1): Boolean;
+function GetBoolArgValue(Name : String): Boolean;
 var
   I : Integer;
 begin
