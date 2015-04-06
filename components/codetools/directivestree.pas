@@ -38,7 +38,7 @@ uses
   MemCheck,
   {$ENDIF}
   Classes, SysUtils, FileProcs, CodeToolsStructs, BasicCodeTools,
-  KeywordFuncLists, LinkScanner, CodeAtom, CodeCache, AVL_Tree,
+  KeywordFuncLists, LinkScanner, CodeCache, AVL_Tree,
   ExprEval, CodeTree;
 
 type

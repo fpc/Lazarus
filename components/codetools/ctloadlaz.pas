@@ -273,7 +273,9 @@ end;
 
 procedure TCTLazarusModule.LoadFromConfig(Cfg: TXMLConfig);
 begin
-
+  if Cfg=nil then ;
+  // ToDo
+  RaiseCatchableException('not implemented yet');
 end;
 
 { TCTLazarusManager }

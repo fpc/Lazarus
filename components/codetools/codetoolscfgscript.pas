@@ -231,8 +231,8 @@ type
     function GetOperatorLevel(P: PChar): integer;
     function IsKeyWord(P: PChar): boolean;
     function IsFunction(P: PChar): boolean;
-    function IsCustomFunction(FunctionName: PChar): boolean; virtual;
-    procedure RunCustomSimpleFunction(FunctionName: PChar; Value: PCTCfgScriptVariable); virtual;
+    function IsCustomFunction({%H-}FunctionName: PChar): boolean; virtual;
+    procedure RunCustomSimpleFunction({%H-}FunctionName: PChar; {%H-}Value: PCTCfgScriptVariable); virtual;
   public
     Src: PChar;
     AtomStart: PChar;
