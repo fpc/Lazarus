@@ -1102,7 +1102,7 @@ var
   var
     p: Pointer;
   begin
-    p:=Pointer(PtrUInt(CleanPos));
+    p:={%H-}Pointer(PtrUInt(CleanPos));
     if WithIdentifiers=nil then WithIdentifiers:=TAVLTree.Create;
     if WithIdentifiers.Find(p)<>nil then exit;
     {$IFDEF CTDEBUG}
@@ -1339,7 +1339,7 @@ var
 
       AVLNode:=WithIdentifiers.FindLowest;
       while AVLNode<>nil do begin
-        CleanPos:=integer(PtrUInt(AVLNode.Data));
+        CleanPos:=integer({%H-}PtrUInt(AVLNode.Data));
         //debugln(['Replace Prefix identifier: ',GetIdentifier(@Src[CleanPos])]);
         if not SourceChangeCache.Replace(gtNone,gtNone,CleanPos,CleanPos,WithVar)
         then

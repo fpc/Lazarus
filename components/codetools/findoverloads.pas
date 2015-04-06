@@ -33,7 +33,7 @@ unit FindOverloads;
 interface
 
 uses
-  Classes, SysUtils, FileProcs, BasicCodeTools, CodeAtom, CodeTree, CodeGraph,
+  Classes, SysUtils, FileProcs, BasicCodeTools, CodeTree, CodeGraph,
   CodeCache, FindDeclarationTool, AVL_Tree, FindDeclarationCache, StdCodeTools;
 
 type

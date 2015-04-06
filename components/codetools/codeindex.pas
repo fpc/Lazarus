@@ -30,7 +30,7 @@ unit CodeIndex;
 interface
 
 uses
-  Classes, SysUtils, AVL_Tree, CodeAtom, CodeTree, CodeCache,
+  Classes, SysUtils, AVL_Tree, CodeTree, CodeCache,
   FileProcs, StdCodeTools, CodeToolsStructs;
 
 type

@@ -86,7 +86,10 @@ uses
   CodeCache, CustomCodeTool, PascalParserTool, MethodJumpTool,
   FindDeclarationTool, KeywordFuncLists, CodeToolsStructs, BasicCodeTools,
   LinkScanner, SourceChanger, CodeGraph, AVL_Tree, contnrs,
-  CodeCompletionTemplater, StdCodeTools;
+  {$IFDEF EnableCodeCompleteTemplates}
+  CodeCompletionTemplater,
+  {$ENDIF}
+  StdCodeTools;
 
 type
   TNewClassPart = (ncpPrivateProcs, ncpPrivateVars,
