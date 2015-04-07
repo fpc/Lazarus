@@ -2576,6 +2576,7 @@ var
   i: Integer;
 begin
   Result:=nil;
+  if IsGlobal then ;
   if Check(PascalName,Result) then exit;
   i:=1;
   while not Check(PascalName+'_'+IntToStr(i),Result) do
@@ -2604,6 +2605,7 @@ var
   SubCNode: TCodeTreeNode;
 begin
   Result:=nil;
+  if CreateIfNotExists then ;
   if (CNode.Desc=ccnDefinition) and (CNode.FirstChild<>nil) then begin
     SubCNode:=CNode.FirstChild;
     if SubCNode.Desc=ccnName then
