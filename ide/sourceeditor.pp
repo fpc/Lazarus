@@ -66,6 +66,7 @@ uses
   IDEOptionDefs, IDEHelpManager, MacroPromptDlg, TransferMacros,
   CodeContextForm, SrcEditHintFrm, etMessagesWnd, etSrcEditMarks, InputHistory,
   CodeMacroPrompt, CodeTemplatesDlg, CodeToolsOptions,
+  editor_general_options,
   SortSelectionDlg, EncloseSelectionDlg, ConDef, InvertAssignTool,
   SourceEditProcs, SourceMarks, CharacterMapDlg, SearchFrm,
   FPDocHints, EditorMacroListViewer,
@@ -1105,7 +1106,6 @@ type
     FOnCloseClicked: TOnCloseSrcEditor;
     FOnDeleteLastJumpPoint: TNotifyEvent;
     FOnEditorMoved: TNotifyEvent;
-    FOnEditorPropertiesClicked: TNotifyEvent;
     FOnFindDeclarationClicked: TNotifyEvent;
     FOnGetIndent: TOnGetIndentEvent;
     FOnGotoBookmark: TBookMarkActionEvent;
@@ -1140,8 +1140,6 @@ type
              read FOnDeleteLastJumpPoint write FOnDeleteLastJumpPoint;
     property OnEditorMoved: TNotifyEvent
              read FOnEditorMoved write FOnEditorMoved;
-    property OnEditorPropertiesClicked: TNotifyEvent
-             read FOnEditorPropertiesClicked write FOnEditorPropertiesClicked;
     property OnFindDeclarationClicked: TNotifyEvent
              read FOnFindDeclarationClicked write FOnFindDeclarationClicked;
     property OnInitIdentCompletion: TOnInitIdentCompletion
@@ -10500,8 +10498,7 @@ end;
 
 procedure TSourceEditorManager.EditorPropertiesClicked(Sender: TObject);
 begin
-  if Assigned(OnEditorPropertiesClicked) then
-    OnEditorPropertiesClicked(Sender);
+  LazarusIDE.DoOpenIDEOptions(TEditorGeneralOptionsFrame);
 end;
 
 initialization

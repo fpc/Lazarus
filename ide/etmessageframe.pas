@@ -32,14 +32,19 @@ unit etMessageFrame;
 interface
 
 uses
-  Math, strutils, Classes, SysUtils, UTF8Process, FileProcs, LazFileCache,
+  Math, strutils, Classes, SysUtils,
+  UTF8Process, FileProcs, LazFileCache,
   LazUTF8Classes, LazFileUtils, LazUTF8, AvgLvlTree, SynEdit,
-  SynEditMarks, LResources, Forms, Buttons, ExtCtrls, Controls, LMessages,
+  LResources, Forms, Buttons, ExtCtrls, Controls, LMessages,
   LCLType, Graphics, LCLIntf, Themes, ImgList, GraphType, Menus, Clipbrd,
-  Dialogs, StdCtrls, IDEExternToolIntf, IDEImagesIntf, MenuIntf, PackageIntf,
-  IDECommands, IDEDialogs, ProjectIntf, CompOptsIntf,
+  Dialogs, StdCtrls,
+  SynEditMarks,
+  // IDEIntf
+  IDEExternToolIntf, IDEImagesIntf, MenuIntf, PackageIntf,
+  IDECommands, IDEDialogs, ProjectIntf, CompOptsIntf, LazIDEIntf,
+  // IDE
   LazarusIDEStrConsts, EnvironmentOpts, HelpFPCMessages, etSrcEditMarks,
-  etQuickFixes, ExtTools, IDEOptionDefs, CompilerOptions;
+  MsgWnd_Options, etQuickFixes, ExtTools, IDEOptionDefs, CompilerOptions;
 
 const
   CustomViewCaption = '------------------------------';
@@ -330,6 +335,7 @@ type
     procedure FilterMsgOfTypeMenuItemClick(Sender: TObject);
     procedure FilterUrgencyMenuItemClick(Sender: TObject);
     procedure HideSearchSpeedButtonClick(Sender: TObject);
+    procedure MoreOptionsMenuItemClick(Sender: TObject);
     procedure MsgCtrlPopupMenuPopup(Sender: TObject);
     procedure OnSelectFilterClick(Sender: TObject);
     procedure OpenToolsOptionsMenuItemClick(Sender: TObject);
@@ -445,6 +451,7 @@ var
       MsgFileStyleFullMenuItem: TIDEMenuCommand;
     MsgTranslateMenuItem: TIDEMenuCommand;
     MsgShowIDMenuItem: TIDEMenuCommand;
+    MsgMoreOptionsMenuItem: TIDEMenuCommand;
 
 procedure RegisterStandardMessagesViewMenuItems;
 
@@ -556,6 +563,8 @@ begin
       lisTranslateTheEnglishMessages);
     MsgShowIDMenuItem:=RegisterIDEMenuCommand(Parent, 'ShowID',
       lisShowMessageTypeID);
+    MsgMoreOptionsMenuItem:=RegisterIDEMenuCommand(Parent, 'More Options',
+      lisMore2);
 end;
 
 {$R *.lfm}
@@ -2878,6 +2887,7 @@ begin
     MsgTranslateMenuItem.OnClick:=@TranslateMenuItemClick;
     MsgShowIDMenuItem.Checked:=mcoShowMessageID in MessagesCtrl.Options;
     MsgShowIDMenuItem.OnClick:=@ShowIDMenuItemClick;
+    MsgMoreOptionsMenuItem.OnClick:=@MoreOptionsMenuItemClick;
 
     UpdateRemoveCompOptHideMsgItems;
     UpdateRemoveMsgTypeFilterItems;
@@ -3150,6 +3160,11 @@ end;
 procedure TMessagesFrame.HideSearchSpeedButtonClick(Sender: TObject);
 begin
   HideSearch;
+end;
+
+procedure TMessagesFrame.MoreOptionsMenuItemClick(Sender: TObject);
+begin
+  LazarusIDE.DoOpenIDEOptions(TMsgWndOptionsFrame);
 end;
 
 procedure TMessagesFrame.CopyFilenameMenuItemClick(Sender: TObject);

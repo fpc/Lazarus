@@ -365,7 +365,6 @@ type
 
     // options menu
     procedure mnuEnvGeneralOptionsClicked(Sender: TObject);
-    procedure mnuEnvEditorOptionsClicked(Sender: TObject);
     procedure mnuEnvCodeTemplatesClicked(Sender: TObject);
     procedure mnuEnvCodeToolsDefinesEditorClicked(Sender: TObject);
     procedure mnuEnvRescanFPCSrcDirClicked(Sender: TObject);
@@ -2145,7 +2144,6 @@ begin
   SourceEditorManager.OnClearBookmarkId := @OnSrcNotebookEditorClearBookmarkId;
   SourceEditorManager.OnSetBookmark := @OnSrcNotebookEditorDoSetBookmark;
   SourceEditorManager.OnGotoBookmark := @OnSrcNotebookEditorDoGotoBookmark;
-  SourceEditorManager.OnEditorPropertiesClicked := @mnuEnvEditorOptionsClicked;
   SourceEditorManager.OnFindDeclarationClicked := @OnSrcNotebookFindDeclaration;
   SourceEditorManager.OnInitIdentCompletion :=@OnSrcNotebookInitIdentCompletion;
   SourceEditorManager.OnShowCodeContext :=@OnSrcNotebookShowCodeContext;
@@ -5088,11 +5086,6 @@ begin
     DlgCompPagesPopup.Show;
   end else
     DlgCompPagesPopup.Close;
-end;
-
-procedure TMainIDE.mnuEnvEditorOptionsClicked(Sender: TObject);
-begin
-  DoOpenIDEOptions(TEditorGeneralOptionsFrame);
 end;
 
 procedure TMainIDE.mnuEnvCodeTemplatesClicked(Sender: TObject);

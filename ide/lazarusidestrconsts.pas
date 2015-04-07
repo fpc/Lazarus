@@ -560,6 +560,7 @@ resourcestring
   lisFull = 'Full';
   lisTranslateTheEnglishMessages = 'Translate the English Messages';
   lisShowMessageTypeID = 'Show Message Type ID';
+  lisMore2 = 'More ...';
   lisToolStoppedWithExitCodeUseContextMenuToGetMoreInfo = 'tool stopped with '
     +'exit code %s. Use context menu to get more information.';
   lisErrors2 = ', Errors: %s';
