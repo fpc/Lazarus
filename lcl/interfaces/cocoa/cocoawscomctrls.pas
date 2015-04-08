@@ -52,6 +52,8 @@ type
   { TCocoaWSCustomTabControl }
 
   TCocoaWSCustomTabControl = class(TWSCustomTabControl)
+  private
+    class function LCLTabPosToNSTabStyle(AShowTabs: Boolean; ABorderWidth: Integer; ATabPos: TTabPosition): NSTabViewType;
   published
     class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
 
@@ -64,8 +66,8 @@ type
     //class function GetPageRealIndex(const ATabControl: TCustomTabControl; AIndex: Integer): Integer; override;
     class function GetTabIndexAtPos(const ATabControl: TCustomTabControl; const AClientPos: TPoint): integer; override;
     class procedure SetPageIndex(const ATabControl: TCustomTabControl; const AIndex: integer); override;
-    //class procedure SetTabPosition(const ATabControl: TCustomTabControl; const ATabPosition: TTabPosition); override;
-    //class procedure ShowTabs(const ATabControl: TCustomTabControl; AShowTabs: boolean); override;
+    class procedure SetTabPosition(const ATabControl: TCustomTabControl; const ATabPosition: TTabPosition); override;
+    class procedure ShowTabs(const ATabControl: TCustomTabControl; AShowTabs: boolean); override;
   end;
 
   { TCocoaWSPageControl }
@@ -330,11 +332,39 @@ end;
 
 { TCocoaWSCustomTabControl }
 
+class function TCocoaWSCustomTabControl.LCLTabPosToNSTabStyle(AShowTabs: Boolean; ABorderWidth: Integer; ATabPos: TTabPosition): NSTabViewType;
+begin
+  Result := NSTopTabsBezelBorder;
+  if AShowTabs then
+  begin
+    case ATabPos of
+    tpTop:    Result := NSTopTabsBezelBorder;
+    tpBottom: Result := NSBottomTabsBezelBorder;
+    tpLeft:   Result := NSLeftTabsBezelBorder;
+    tpRight:  Result := NSRightTabsBezelBorder;
+    end;
+  end
+  else
+  begin
+    if ABorderWidth = 0 then
+      Result := NSNoTabsNoBorder
+    else if ABorderWidth = 1 then
+      Result := NSNoTabsLineBorder
+    else
+      Result := NSNoTabsBezelBorder;
+  end;
+end;
+
 class function TCocoaWSCustomTabControl.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
 var
   lControl: TCocoaTabControl;
+  lTabControl: TCustomTabControl = nil;
+  lTabStyle: NSTabViewType = NSTopTabsBezelBorder;
 begin
+  lTabControl := TCustomTabControl(AWinControl);
   lControl := TCocoaTabControl.alloc.lclInitWithCreateParams(AParams);
+  lTabStyle := LCLTabPosToNSTabStyle(lTabControl.ShowTabs, lTabControl.BorderWidth, lTabControl.TabPosition);
+  lControl.setTabViewType(lTabStyle);
   Result := TLCLIntfHandle(lControl);
   if Result <> 0 then
   begin
@@ -426,6 +456,32 @@ begin
   if (AIndex < 0) or (AIndex >= lTabCount) then Exit;
 
   lTabControl.selectTabViewItemAtIndex(AIndex);
+end;
+
+class procedure TCocoaWSCustomTabControl.SetTabPosition(const ATabControl: TCustomTabControl; const ATabPosition: TTabPosition);
+var
+  lTabControl: TCocoaTabControl = nil;
+  lOldTabStyle, lTabStyle: NSTabViewType;
+begin
+  if not Assigned(ATabControl) or not ATabControl.HandleAllocated then Exit;
+  lTabControl := TCocoaTabControl(ATabControl.Handle);
+
+  lOldTabStyle := lTabControl.tabViewType();
+  lTabStyle := LCLTabPosToNSTabStyle(ATabControl.ShowTabs, ATabControl.BorderWidth, ATabPosition);
+  lTabControl.setTabViewType(lTabStyle);
+end;
+
+class procedure TCocoaWSCustomTabControl.ShowTabs(const ATabControl: TCustomTabControl; AShowTabs: boolean);
+var
+  lTabControl: TCocoaTabControl = nil;
+  lOldTabStyle, lTabStyle: NSTabViewType;
+begin
+  if not Assigned(ATabControl) or not ATabControl.HandleAllocated then Exit;
+  lTabControl := TCocoaTabControl(ATabControl.Handle);
+
+  lOldTabStyle := lTabControl.tabViewType();
+  lTabStyle := LCLTabPosToNSTabStyle(AShowTabs, ATabControl.BorderWidth, ATabControl.TabPosition);
+  lTabControl.setTabViewType(lTabStyle);
 end;
 
 { TCocoaWSCustomListView }
