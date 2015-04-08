@@ -6280,6 +6280,7 @@ lcl/colorbox.pas svneol=native#text/pascal
 lcl/comboex.pas svneol=native#text/pascal
 lcl/comctrls.pp svneol=native#text/pascal
 lcl/controls.pp svneol=native#text/pascal
+lcl/cursor_hourglass.res -text
 lcl/cursors.res -text
 lcl/customdrawn_android.pas svneol=native#text/plain
 lcl/customdrawn_common.pas svneol=native#text/pascal
@@ -6347,6 +6348,7 @@ lcl/images/buttons/build.bat svneol=native#text/x-msdos-program
 lcl/images/cursors/build.bat svneol=native#text/x-msdos-program
 lcl/images/cursors/cur_1.cur -text svneol=unset#image/x-cursor
 lcl/images/cursors/cur_10.cur -text svneol=unset#image/x-cursor
+lcl/images/cursors/cur_11.cur -text
 lcl/images/cursors/cur_12.cur -text svneol=unset#image/x-cursor
 lcl/images/cursors/cur_13.cur -text svneol=unset#image/x-cursor
 lcl/images/cursors/cur_14.cur -text svneol=unset#image/x-cursor
