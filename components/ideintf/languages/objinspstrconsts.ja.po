@@ -716,6 +716,10 @@ msgstr "お気に入りから削除"
 msgid "Restricted"
 msgstr "制限"
 
+#: objinspstrconsts.oisreverttoinherited
+msgid "Revert to inherited"
+msgstr ""
+
 #: objinspstrconsts.oissamplemasks
 msgid "Sample Masks:"
 msgstr "サンプルマスク:"

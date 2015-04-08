@@ -747,6 +747,10 @@ msgstr "从常用移除"
 msgid "Restricted"
 msgstr "限制"
 
+#: objinspstrconsts.oisreverttoinherited
+msgid "Revert to inherited"
+msgstr ""
+
 #: objinspstrconsts.oissamplemasks
 msgid "Sample Masks:"
 msgstr "掩码样例:"

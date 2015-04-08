@@ -710,6 +710,10 @@ msgstr "Eltávolítás a kedvencek közül"
 msgid "Restricted"
 msgstr "Korlátozások"
 
+#: objinspstrconsts.oisreverttoinherited
+msgid "Revert to inherited"
+msgstr ""
+
 #: objinspstrconsts.oissamplemasks
 msgid "Sample Masks:"
 msgstr "Mintamaszkok:"

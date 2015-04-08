@@ -79,9 +79,9 @@ type
                                     ): TAvgLvlTreeNode;
     procedure FrameCompGetCreationClass(Sender: TObject;
       var NewComponentClass: TComponentClass);
+    function OnPropHookGetAncestorInstProp(const InstProp: TInstProp;
+                                      out AncestorInstProp: TInstProp): boolean;
   protected
-    FComponentToAncestorInstanceTree: TAvgLvlTree; // tree of TComponent to TComponent
-    FComponentToInheritedInstancesListTree: TAvgLvlTree; // tree of TComponent to TFPList (of TComponent)
     FNonFormForms: TAvgLvlTree; // tree of TNonControlDesignerForm sorted for LookupRoot
     procedure SetSelection(const ASelection: TPersistentSelectionList);
     procedure OnObjectInspectorModified(Sender: TObject);
@@ -464,8 +464,6 @@ begin
   FDesignerMediatorClasses:=TFPList.Create;
   for l:=Low(StandardDesignerBaseClasses) to High(StandardDesignerBaseClasses) do
     FDesignerBaseClasses.Add(StandardDesignerBaseClasses[l]);
-  FComponentToAncestorInstanceTree:=TAvgLvlTree.Create;
-  FComponentToInheritedInstancesListTree:=TAvgLvlTree.Create;
 
   JITFormList := TJITForms.Create(nil);
   InitJITList(JITFormList);
@@ -478,6 +476,8 @@ begin
   FormEditingHook:=Self;
 
   RegisterDesignerBaseClass(TAbstractIDEOptionsEditor);
+
+  GlobalDesignHook.AddHandlerGetAncestorInstProp(@OnPropHookGetAncestorInstProp);
 end;
 
 destructor TCustomFormEditor.Destroy;
@@ -490,9 +490,6 @@ begin
   end;
   FreeAndNil(JITFormList);
   FreeAndNil(JITNonFormList);
-  FreeAndNil(FComponentToAncestorInstanceTree);
-  FComponentToInheritedInstancesListTree.FreeAndClear;
-  FreeAndNil(FComponentToInheritedInstancesListTree);
   FreeAndNil(FDesignerMediatorClasses);
   FreeAndNil(FDesignerBaseClasses);
   FreeAndNil(FSelection);
@@ -1646,9 +1643,12 @@ begin
   end else begin
     // child component
     aRoot:=GetAncestorInstance(AComponent.Owner);
-    if aRoot=nil then exit;
-    Result:=aRoot.FindComponent(AComponent.Name);
+    if aRoot<>nil then
+      Result:=aRoot.FindComponent(AComponent.Name);
   end;
+  {$IFDEF VerboseFormEditor}
+  debugln(['TCustomFormEditor.GetAncestorInstance ',DbgSName(AComponent),' csAncestor=',csAncestor in AComponent.ComponentState,' Result=',DbgSName(Result)]);
+  {$ENDIF}
 end;
 
 function TCustomFormEditor.RegisterDesignerBaseClass(AClass: TComponentClass
@@ -2191,6 +2191,23 @@ procedure TCustomFormEditor.FrameCompGetCreationClass(Sender: TObject;
 begin
   if Assigned(OnSelectFrame) then
     OnSelectFrame(Sender,NewComponentClass);
+end;
+
+function TCustomFormEditor.OnPropHookGetAncestorInstProp(
+  const InstProp: TInstProp; out AncestorInstProp: TInstProp): boolean;
+var
+  aComponent: TComponent;
+begin
+  Result:=false;
+  if (InstProp.Instance=nil) or (InstProp.PropInfo=nil) then exit;
+  if InstProp.Instance is TComponent then begin
+    aComponent:=TComponent(InstProp.Instance);
+    AncestorInstProp.Instance:=GetAncestorInstance(aComponent);
+    if AncestorInstProp.Instance=nil then exit;
+    AncestorInstProp.PropInfo:=GetPropInfo(AncestorInstProp.Instance,InstProp.PropInfo^.Name);
+    if AncestorInstProp.PropInfo<>InstProp.PropInfo then exit;
+    Result:=true;
+  end;
 end;
 
 function TCustomFormEditor.GetPropertyEditorHook: TPropertyEditorHook;

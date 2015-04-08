@@ -703,6 +703,10 @@ msgstr "Poista suosikeista"
 msgid "Restricted"
 msgstr "Rajoitettu"
 
+#: objinspstrconsts.oisreverttoinherited
+msgid "Revert to inherited"
+msgstr ""
+
 #: objinspstrconsts.oissamplemasks
 msgid "Sample Masks:"
 msgstr "Näytemaskeja:"

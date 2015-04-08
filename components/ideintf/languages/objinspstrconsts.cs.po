@@ -729,6 +729,10 @@ msgstr "Odebrat z oblíbených"
 msgid "Restricted"
 msgstr "Omezené"
 
+#: objinspstrconsts.oisreverttoinherited
+msgid "Revert to inherited"
+msgstr ""
+
 #: objinspstrconsts.oissamplemasks
 msgid "Sample Masks:"
 msgstr "Ukázková maska:"

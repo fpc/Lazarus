@@ -59,6 +59,7 @@ resourcestring
   oisOrderForwardOne = 'Forward One';
   oisOrderBackOne = 'Back One';
   oisSetToDefault = 'Set to default: %s';
+  oisRevertToInherited = 'Revert to inherited';
   oisSetToDefaultHint = 'Set property value to Default';
   oisSetMaxConstraints = 'Set MaxHeight=%d, MaxWidth=%d';
   oisSetMinConstraints = 'Set MinHeight=%d, MinWidth=%d';

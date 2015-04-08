@@ -736,6 +736,10 @@ msgstr "הסר ממועדפים"
 msgid "Restricted"
 msgstr "מוגבל"
 
+#: objinspstrconsts.oisreverttoinherited
+msgid "Revert to inherited"
+msgstr ""
+
 #: objinspstrconsts.oissamplemasks
 msgid "Sample Masks:"
 msgstr "מסכות לדוגמא"

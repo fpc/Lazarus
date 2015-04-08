@@ -727,6 +727,10 @@ msgstr "Verwijder van favorieten"
 msgid "Restricted"
 msgstr ""
 
+#: objinspstrconsts.oisreverttoinherited
+msgid "Revert to inherited"
+msgstr ""
+
 #: objinspstrconsts.oissamplemasks
 msgid "Sample Masks:"
 msgstr "Voorbeeld masker:"

@@ -746,6 +746,10 @@ msgstr "Odstrániť z Obľúbených"
 msgid "Restricted"
 msgstr "Obmedzenia"
 
+#: objinspstrconsts.oisreverttoinherited
+msgid "Revert to inherited"
+msgstr ""
+
 #: objinspstrconsts.oissamplemasks
 msgid "Sample Masks:"
 msgstr "Vzorové masky:"

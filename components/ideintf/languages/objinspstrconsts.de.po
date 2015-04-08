@@ -732,6 +732,10 @@ msgstr "Von Favoriten entfernen"
 msgid "Restricted"
 msgstr "Bedingte Eigenschaften"
 
+#: objinspstrconsts.oisreverttoinherited
+msgid "Revert to inherited"
+msgstr ""
+
 #: objinspstrconsts.oissamplemasks
 msgid "Sample Masks:"
 msgstr "Beispielmasken:"

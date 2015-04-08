@@ -11,11 +11,6 @@
     A Property Editor is the interface between a row of the object inspector
     and a property in the RTTI.
     For more information see the big comment part below.
-
-  ToDo:
-    -TIntegerSet missing -> taking my own
-
-    -many more... see XXX
 }
 unit PropEdits;
 
@@ -251,13 +246,14 @@ type
     paHasDefaultValue,
     paCustomDrawn
     );
-  TPropertyAttributes=set of TPropertyAttribute;
+  TPropertyAttributes = set of TPropertyAttribute;
 
-  TPropertyEditor=class;
+  TPropertyEditor = class;
 
-  TInstProp=record
-    Instance:TPersistent;
-    PropInfo:PPropInfo;
+  TInstProp = record
+    Instance: TPersistent;
+    PropInfo: PPropInfo;
+    // ToDo: add list of parent instances, e.g. Label1.Font.Color: Font needs Label1
   end;
   PInstProp = ^TInstProp;
 
@@ -343,6 +339,7 @@ type
     procedure GetValues({%H-}Proc: TGetStrProc); virtual;
     procedure Initialize; virtual;
     procedure Revert; virtual;
+    procedure RevertToInherited; virtual;
     procedure SetValue(const {%H-}NewValue: ansistring); virtual;
     procedure SetPropEntry(Index: Integer; AnInstance: TPersistent;
                            APropInfo: PPropInfo);
@@ -374,9 +371,10 @@ type
     function SubPropertiesNeedsUpdate: boolean; virtual;
     function IsDefaultValue: boolean; virtual;
     function IsNotDefaultValue: boolean; virtual;
+    function IsRevertableToInherited: boolean; virtual;
     // These are used for the popup menu in OI
     function GetVerbCount: Integer; virtual;
-    function GetVerb({%H-}Index: Integer): string; virtual;
+    function GetVerb(Index: Integer): string; virtual;
     procedure PrepareItem({%H-}Index: Integer; const {%H-}AnItem: TMenuItem); virtual;
     procedure ExecuteVerb({%H-}Index: Integer); virtual;
   public
@@ -1185,6 +1183,8 @@ type
   TPropHookGetComponentNames = procedure(TypeData: PTypeData;
                                          Proc: TGetStrProc) of object;
   TPropHookGetRootClassName = function:ShortString of object;
+  TPropHookGetAncestorInstProp = function(const InstProp: TInstProp;
+                            out AncestorInstProp: TInstProp): boolean of object;
   TPropHookAddClicked = function(ADesigner: TIDesigner;
                             MouseDownComponent: TComponent; Button: TMouseButton;
                             Shift: TShiftState; X, Y: Integer;
@@ -1237,6 +1237,7 @@ type
     htGetComponentName,
     htGetComponentNames,
     htGetRootClassName,
+    htGetAncestorInstProp,
     htAddClicked, // user selected a component class and clicked on a form to add a component
     htComponentRenamed,
     // persistent selection
@@ -1306,6 +1307,8 @@ type
     function GetComponentName(AComponent: TComponent): ShortString;
     procedure GetComponentNames(TypeData: PTypeData; const Proc: TGetStrProc);
     function GetRootClassName: ShortString;
+    function GetAncestorInstance(const InstProp: TInstProp;
+                                 out AncestorInstProp: TInstProp): boolean;
     function AddClicked(ADesigner: TIDesigner;
                         MouseDownComponent: TComponent; Button: TMouseButton;
                         Shift: TShiftState; X, Y: Integer;
@@ -1399,6 +1402,10 @@ type
                            const OnGetRootClassName: TPropHookGetRootClassName);
     procedure RemoveHandlerGetRootClassName(
                            const OnGetRootClassName: TPropHookGetRootClassName);
+    procedure AddHandlerGetAncestorInstProp(
+                     const OnGetAncestorInstProp: TPropHookGetAncestorInstProp);
+    procedure RemoveHandlerGetAncestorInstProp(
+                     const OnGetAncestorInstProp: TPropHookGetAncestorInstProp);
     // component create, delete, rename
     procedure AddHandlerComponentRenamed(
                            const OnComponentRenamed: TPropHookComponentRenamed);
@@ -1892,8 +1899,6 @@ var
 type
   PPropertyClassRec=^TPropertyClassRec;
   TPropertyClassRec=record
-    // XXX
-    //Group:Integer;
     PropertyType:PTypeInfo;
     PropertyName:shortstring;
     PersistentClass:TClass;
@@ -1902,8 +1907,6 @@ type
 
   PPropertyEditorMapperRec=^TPropertyEditorMapperRec;
   TPropertyEditorMapperRec=record
-    // XXX
-    //Group:Integer;
     Mapper:TPropertyEditorMapperFunc;
   end;
 
@@ -2072,12 +2075,9 @@ begin
   if PropertyClassList=nil then
     PropertyClassList:=TList.Create;
   New(P);
-  // XXX
-  //P^.Group:=CurrentGroup;
   P^.PropertyType:=PropertyType;
   P^.PersistentClass:=PersistentClass;
   P^.PropertyName:=PropertyName;
-  //if Assigned(PersistentClass) then P^.PropertyName:=PropertyName;
   P^.EditorClass:=EditorClass;
   PropertyClassList.Insert(0,P);
 end;
@@ -2089,8 +2089,6 @@ begin
   if PropertyEditorMapperList=nil then
     PropertyEditorMapperList:=TList.Create;
   New(P);
-  // XXX
-  //P^.Group:=CurrentGroup;
   P^.Mapper:=Mapper;
   PropertyEditorMapperList.Insert(0,P);
 end;
@@ -2174,7 +2172,7 @@ var
   I, J, SelCount: Integer;
   ClassTyp: TClass;
   Candidates: TPropInfoList;
-  PropLists: TList;
+  PropLists: TFPList;
   PropEditor: TPropertyEditor;
   EdClass: TPropertyEditorClass;
   PropInfo: PPropInfo;
@@ -2223,7 +2221,7 @@ begin
       PropEditor.Free;
     end;
 
-    PropLists := TList.Create;
+    PropLists := TFPList.Create;
     try
       PropLists.Count := SelCount;
       // Create a property info list for each component in the selection
@@ -2425,7 +2423,7 @@ function TPropertyEditor.GetPropTypeUnitName(Index: Integer): string;
 type
   PPropData = ^TPropData;
 var
-  AComponent: TPersistent;
+  aPersistent: TPersistent;
   CurPropInfo: PPropInfo;
   hp: PTypeData;
   pd: PPropData;
@@ -2436,10 +2434,10 @@ var
   ThePropType: PTypeInfo;
 begin
   Result:='';
-  AComponent:=GetComponent(Index);
+  aPersistent:=GetComponent(Index);
   UpperName:=UpCase(GetName);
   ThePropType:=GetPropType;
-  ATypeInfo:=PTypeInfo(AComponent.ClassInfo);
+  ATypeInfo:=PTypeInfo(aPersistent.ClassInfo);
   while Assigned(ATypeInfo) do begin
     // skip the name
     hp:=GetTypeData(ATypeInfo);
@@ -2474,11 +2472,10 @@ begin
   Result:=GetFloatValueAt(0);
 end;
 
-Procedure SetIndexValues (P: PPRopInfo; Var Index, IValue : Longint);
-
+procedure SetIndexValues(P: PPRopInfo; var Index, IValue : Longint);
 begin
   Index:=((P^.PropProcs shr 6) and 1);
-  If Index<>0 then
+  if Index<>0 then
     IValue:=P^.Index
   else
     IValue:=0;
@@ -2691,11 +2688,11 @@ end;
 function TPropertyEditor.GetDefaultValue: ansistring;
 begin
   if not (paHasDefaultValue in GetAttributes) then
-    raise EPropertyError.Create('No default property available');
+    raise EPropertyError.Create('No property default available');
   Result:='';
 end;
 
-function TPropertyEditor.GetVisualValue:ansistring;
+function TPropertyEditor.GetVisualValue: ansistring;
 begin
   if AllEqual then
     Result:=GetValue
@@ -2891,6 +2888,111 @@ begin
       with FPropList^[I] do PropertyHook.Revert(Instance,PropInfo);
 end;
 
+procedure TPropertyEditor.RevertToInherited;
+var
+  i: Integer;
+  AncestorInstProp: TInstProp;
+  Changed: Boolean;
+  InstProp: TInstProp;
+  NewOrdValue, OldOrdValue: Int64;
+  OldStr, NewStr: String;
+  OldWideStr, NewWideStr: WideString;
+  OldUString, NewUString: UnicodeString;
+  OldFloat, NewFloat: Extended;
+  OldObj, NewObj: TObject;
+  OldMethod, NewMethod: TMethod;
+  OldInterface, NewInterface: IInterface;
+begin
+  if PropertyHook=nil then exit;
+  Changed:=false;
+  try
+    for i:=0 to FPropCount-1 do
+    begin
+      InstProp:=FPropList^[i];
+      if not PropertyHook.GetAncestorInstance(InstProp,AncestorInstProp) then
+        continue;
+
+      case InstProp.PropInfo^.PropType^.Kind of
+      tkInteger,tkChar,tkEnumeration,tkBool,tkInt64,tkQWord:
+        begin
+          OldOrdValue:=GetOrdProp(InstProp.Instance,InstProp.PropInfo);
+          NewOrdValue:=GetOrdProp(AncestorInstProp.Instance,AncestorInstProp.PropInfo);
+          if OldOrdValue=NewOrdValue then continue;
+          Changed:=true;
+          SetOrdProp(InstProp.Instance,InstProp.PropInfo,NewOrdValue);
+        end;
+      tkSet:
+        begin
+          OldStr:=GetSetProp(InstProp.Instance,InstProp.PropInfo,false);
+          NewStr:=GetSetProp(AncestorInstProp.Instance,AncestorInstProp.PropInfo,false);
+          if OldStr=NewStr then continue;
+          Changed:=true;
+          SetSetProp(InstProp.Instance,InstProp.PropInfo,NewStr);
+        end;
+      tkString,tkLString,tkAString:
+        begin
+          OldStr:=GetStrProp(InstProp.Instance,InstProp.PropInfo);
+          NewStr:=GetStrProp(AncestorInstProp.Instance,AncestorInstProp.PropInfo);
+          if OldStr=NewStr then continue;
+          Changed:=true;
+          SetStrProp(InstProp.Instance,InstProp.PropInfo,NewStr);
+        end;
+      tkWString:
+        begin
+          OldWideStr:=GetWideStrProp(InstProp.Instance,InstProp.PropInfo);
+          NewWideStr:=GetWideStrProp(AncestorInstProp.Instance,AncestorInstProp.PropInfo);
+          if OldWideStr=NewWideStr then continue;
+          Changed:=true;
+          SetWideStrProp(InstProp.Instance,InstProp.PropInfo,NewWideStr);
+        end;
+      tkUString:
+        begin
+          OldUString:=GetUnicodeStrProp(InstProp.Instance,InstProp.PropInfo);
+          NewUString:=GetUnicodeStrProp(AncestorInstProp.Instance,AncestorInstProp.PropInfo);
+          if OldUString=NewUString then continue;
+          Changed:=true;
+          SetUnicodeStrProp(InstProp.Instance,InstProp.PropInfo,NewUString);
+        end;
+      tkFloat:
+        begin
+          OldFloat:=GetFloatProp(InstProp.Instance,InstProp.PropInfo);
+          NewFloat:=GetFloatProp(AncestorInstProp.Instance,AncestorInstProp.PropInfo);
+          if OldFloat=NewFloat then continue;
+          Changed:=true;
+          SetFloatProp(InstProp.Instance,InstProp.PropInfo,NewFloat);
+        end;
+      tkClass:
+        begin
+          OldObj:=GetObjectProp(InstProp.Instance,InstProp.PropInfo);
+          NewObj:=GetObjectProp(AncestorInstProp.Instance,AncestorInstProp.PropInfo);
+          if OldObj=NewObj then continue;
+          Changed:=true;
+          SetObjectProp(InstProp.Instance,InstProp.PropInfo,NewObj);
+        end;
+      tkMethod:
+        begin
+          OldMethod:=GetMethodProp(InstProp.Instance,InstProp.PropInfo);
+          NewMethod:=GetMethodProp(AncestorInstProp.Instance,AncestorInstProp.PropInfo);
+          if CompareMethods(OldMethod,NewMethod) then continue;
+          Changed:=true;
+          SetMethodProp(InstProp.Instance,InstProp.PropInfo,NewMethod);
+        end;
+      tkInterface:
+        begin
+          OldInterface:=GetInterfaceProp(InstProp.Instance,InstProp.PropInfo);
+          NewInterface:=GetInterfaceProp(AncestorInstProp.Instance,AncestorInstProp.PropInfo);
+          if OldInterface=NewInterface then continue;
+          Changed:=true;
+          SetInterfaceProp(InstProp.Instance,InstProp.PropInfo,NewInterface);
+        end;
+      end;
+    end;
+  finally
+    if Changed then
+      Modified;
+  end;
+end;
+
 procedure TPropertyEditor.SetValue(const NewValue:ansistring);
 begin
 end;
@@ -3058,17 +3160,51 @@ begin
       and (GetDefaultValue<>GetVisualValue);
 end;
 
+function TPropertyEditor.IsRevertableToInherited: boolean;
+begin
+  Result:=(paRevertable in GetAttributes) and (GetComponent(0) is TComponent)
+    and (csAncestor in TComponent(GetComponent(0)).ComponentState)
+    and (PropertyHook<>nil)
+    and (FPropList^[0].PropInfo^.PropType^.Kind in
+      [tkInteger,tkChar,tkEnumeration,tkBool,tkInt64,tkQWord,
+       tkSet,
+       tkString,tkLString,tkAString,
+       tkWString,
+       tkUString,
+       tkFloat,
+       tkClass,
+       tkMethod,
+       tkInterface]);
+end;
+
 function TPropertyEditor.GetVerbCount: Integer;
 begin
+  Result:=0;
   if paHasDefaultValue in GetAttributes then
-    Result := 1 // Show a menu item for default value only if there is default value
-  else
-    Result := 0;
+    inc(Result); // show a menu item for default value only if there is default value
+  if IsRevertableToInherited then
+    inc(Result); // show a menu item for 'Revert to inherited'
 end;
 
 function TPropertyEditor.GetVerb(Index: Integer): string;
+var
+  i: Integer;
 begin
-  Result := Format(oisSetToDefault, [GetDefaultValue]);
+  i:=-1;
+  if paHasDefaultValue in GetAttributes then begin
+    inc(i);
+    if i=Index then begin
+      Result := Format(oisSetToDefault, [GetDefaultValue]);
+      exit;
+    end;
+  end;
+  if IsRevertableToInherited then begin
+    inc(i);
+    if i=Index then begin
+      Result := oisRevertToInherited;
+      exit;
+    end;
+  end;
 end;
 
 procedure TPropertyEditor.PrepareItem(Index: Integer; const AnItem: TMenuItem);
@@ -3077,8 +3213,24 @@ begin
 end;
 
 procedure TPropertyEditor.ExecuteVerb(Index: Integer);
+var
+  i: Integer;
 begin
-  SetValue(GetDefaultValue);
+  i:=-1;
+  if paHasDefaultValue in GetAttributes then begin
+    inc(i);
+    if i=Index then begin
+      SetValue(GetDefaultValue);
+      exit;
+    end;
+  end;
+  if IsRevertableToInherited then begin
+    inc(i);
+    if i=Index then begin
+      RevertToInherited;
+      exit;
+    end;
+  end;
 end;
 
 { TOrdinalPropertyEditor }
@@ -3475,7 +3627,6 @@ begin
   FElement := AElement;
 end;
 
-// XXX
 // The IntegerSet (a set of size of an integer)
 // don't know if this is always valid
 type
@@ -5615,6 +5766,22 @@ begin
     Result := LookupRoot.ClassName;
 end;
 
+function TPropertyEditorHook.GetAncestorInstance(const InstProp: TInstProp; out
+  AncestorInstProp: TInstProp): boolean;
+var
+  i: Integer;
+  Handler: TPropHookGetAncestorInstProp;
+begin
+  Result:=false;
+  if (InstProp.Instance=nil) or (InstProp.PropInfo=nil) then exit;
+  i := GetHandlerCount(htGetAncestorInstProp);
+  while GetNextHandlerIndex(htGetAncestorInstProp, i) and (not Result) do
+  begin
+    Handler := TPropHookGetAncestorInstProp(FHandlers[htGetAncestorInstProp][i]);
+    Result := Handler(InstProp,AncestorInstProp);
+  end;
+end;
+
 function TPropertyEditorHook.AddClicked(ADesigner: TIDesigner;
   MouseDownComponent: TComponent; Button: TMouseButton; Shift: TShiftState; X,
   Y: Integer; var AComponentClass: TComponentClass; var NewParent: TComponent
@@ -6115,6 +6282,18 @@ procedure TPropertyEditorHook.RemoveHandlerGetRootClassName(
   const OnGetRootClassName: TPropHookGetRootClassName);
 begin
   RemoveHandler(htGetRootClassName,TMethod(OnGetRootClassName));
+end;
+
+procedure TPropertyEditorHook.AddHandlerGetAncestorInstProp(
+  const OnGetAncestorInstProp: TPropHookGetAncestorInstProp);
+begin
+  AddHandler(htGetAncestorInstProp,TMethod(OnGetAncestorInstProp));
+end;
+
+procedure TPropertyEditorHook.RemoveHandlerGetAncestorInstProp(
+  const OnGetAncestorInstProp: TPropHookGetAncestorInstProp);
+begin
+  RemoveHandler(htGetAncestorInstProp,TMethod(OnGetAncestorInstProp));
 end;
 
 procedure TPropertyEditorHook.AddHandlerBeforeAddPersistent(

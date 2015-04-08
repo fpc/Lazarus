@@ -735,6 +735,10 @@ msgstr "Išmesti iš mėgstamiausiųjų sąrašo"
 msgid "Restricted"
 msgstr "Apribota"
 
+#: objinspstrconsts.oisreverttoinherited
+msgid "Revert to inherited"
+msgstr ""
+
 #: objinspstrconsts.oissamplemasks
 msgid "Sample Masks:"
 msgstr "Kaukių pavyzdžiai:"
