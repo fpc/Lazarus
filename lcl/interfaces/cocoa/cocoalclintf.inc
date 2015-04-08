@@ -29,7 +29,7 @@
 function TCocoaWidgetSet.CreateStandardCursor(ACursor: SmallInt): HCursor;
 begin
   case ACursor of
-    crArrow       : Result := HCursor(TCocoaCursor.CreateStandard(NSCursor.arrowCursor));
+    crArrow, crDefault: Result := HCursor(TCocoaCursor.CreateStandard(NSCursor.arrowCursor));
     crCross       : Result := HCursor(TCocoaCursor.CreateStandard(NSCursor.crosshairCursor));
     crIBeam       : Result := HCursor(TCocoaCursor.CreateStandard(NSCursor.IBeamCursor));
     crSizeNS,
