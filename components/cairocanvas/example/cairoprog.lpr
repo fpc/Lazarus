@@ -19,6 +19,9 @@ begin
     PrinterCanvas.Font.Name := 'Arial'; // Font properties must be set, does not work otherwise.
     PrinterCanvas.Font.Height := 24;
     PrinterCanvas.TextOut(50, 150, 'abcdefghijklmnopqrstuvwxyzåäö');
+    PrinterCanvas.TextOut(50, 220, 'ฉันหิวแล้ว');
+    PrinterCanvas.TextOut(50, 290, 'К нам в око́шко застучи́т');
+    PrinterCanvas.TextOut(50, 360, 'لا أتَكَلّمُ الْعَرَبيّة');
     WriteLn('Written file ' + PrinterCanvas.OutputFileName);
   finally
     PrinterCanvas.Free;
