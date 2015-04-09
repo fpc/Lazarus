@@ -86,6 +86,8 @@ begin
 
     if lDialogResult = NSOKButton then // NSCancelButton for Cancel
     begin
+      Result := True;
+
       PrintSettings := PrintPanelInfo.PMPrintSettings();
 
       B := Collate;

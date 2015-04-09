@@ -115,7 +115,7 @@ procedure TCocoaPrinter.BeginPage;
 {var
   PaperRect: PMRect;  }
 begin
- { if FBeginDocumentStatus = noErr then
+  {if FBeginDocumentStatus = noErr then
   begin
     FNewPageStatus := PMSessionBeginPage(PrintSession, nil, nil);
     OSError(FNewPageStatus, Self, 'BeginPage', 'PMSessionBeginPage', '', kPMCancel);
@@ -264,7 +264,6 @@ var
   FPaper: PMPaper = nil;
   lCFString: CFStringRef = nil;
 begin
-  Result := DoDoGetPaperName(FPrintInfo.PMPageFormat());
   Result := '';
   if APageFormat = nil then APageFormat := GetPageFormat();
   if PMGetPageFormatPaper(APageFormat, FPaper) <> noErr then Exit;
