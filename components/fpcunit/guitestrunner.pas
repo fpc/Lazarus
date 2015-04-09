@@ -20,6 +20,7 @@
     Graeme Geldenhuys <graemeg@gmail.com>
     Darius Blaszijk <dhkblaszyk@zeelandnet.nl>
     Reinier Olislagers <reinierolislagers@gmail.com>
+    Serguei Tarassov <serge@arbinada.com>
 }
 
 unit GuiTestRunner;
@@ -118,9 +119,10 @@ type
     barColor: TColor;
     testSuite: TTest;
     FFirstFailure: TTreeNode; // reference to first failed test
-    FINI: TINIFile;
+    FConfStore: TIniFile;
     procedure BuildTree(rootNode: TTreeNode; aSuite: TTestSuite);
     function  FindNode(aTest: TTest): TTreeNode;
+    function MakeTestPath(Node: TTreeNode): string;
     procedure ResetNodeColors;
     procedure PaintNodeError(aNode: TTreeNode);
     procedure PaintNodeFailure(aNode: TTreeNode);
@@ -129,6 +131,8 @@ type
     procedure PaintNodeBusy(aNode: TTreeNode);
     procedure MemoLog(LogEntry: string);
     procedure EnableRunActions(AValue: boolean);
+    procedure RestoreTree;
+    procedure SaveTree;
   public
     procedure AddFailure(ATest: TTest; AFailure: TTestFailure);
     procedure AddError(ATest: TTest; AError: TTestFailure);
@@ -173,7 +177,7 @@ resourcestring
   sactCheckAll = 'Check all Tests';
   sactUncheckAll = 'Uncheck all tests';
   sactRunHighlightedTest = 'Run highlighted test';
-  smiRunTest = '  &Run all selected (checked) tests';
+  smiRunTest = '&Run all selected (checked) tests';
   smiShowfail= 'Copy message to clipboard';
   smiCopy = '&Copy';
   smiCut = 'C&ut';
@@ -186,6 +190,7 @@ implementation
 uses
   xmlwrite
   ;
+
 const
   // TestTreeImageList indexes:
   imgGreenBall = 0; //success result
@@ -236,12 +241,43 @@ begin
   XMLSynEdit.Lines.Clear;
 end;
 
+function TGUITestRunner.MakeTestPath(Node: TTreeNode): string;
+begin
+  Result := '';
+  while Node <> nil do
+  begin
+    Result := Node.Text + '_' + Result;
+    Node := Node.Parent;
+  end;
+end;
+
+procedure TGUITestRunner.SaveTree;
+var
+  i: integer;
+begin
+  for i := 0 to TestTree.Items.Count - 1 do
+    FConfStore.WriteBool('Tests', MakeTestPath(TestTree.Items[i]), TestTree.Items[i].StateIndex = Ord(tsChecked));
+end;
+
+procedure TGUITestRunner.RestoreTree;
+var
+  i: integer;
+begin
+  for i := 0 to TestTree.Items.Count - 1 do
+    if FConfStore.ReadBool('Tests', MakeTestPath(TestTree.Items[i]), true) then
+      TestTree.Items[i].StateIndex := Ord(tsChecked)
+    else
+      TestTree.Items[i].StateIndex := Ord(tsUnChecked);
+end;
+
 procedure TGUITestRunner.GUITestRunnerCreate(Sender: TObject);
 begin
+  FConfStore := TIniFile.Create(ExtractFileNameOnly(ParamStr(0)) + '.fpcunit.ini'); // Prevent ini file names conflict if tests are embedded in application
   barColor := clGreen;
   TestTree.Items.Clear;
   BuildTree(TestTree.Items.AddObject(nil, rsAllTests, GetTestRegistry),
     GetTestRegistry);
+  RestoreTree;
   PageControl1.ActivePage := tsTestTree;
   //
   BtnRun.Caption:= sbtnRun;
@@ -271,8 +307,6 @@ begin
     TestTree.Items.SelectOnlyThis(TestTree.Items[0]);
     TestTree.Items[0].Expand(False);
   end;
-
-  FINI := TINIFile.Create(ExtractFileNameOnly(ParamStr(0))+ '.ini');
 end;
 
 procedure TGUITestRunner.RunExecute(Sender: TObject);
@@ -349,11 +383,11 @@ end;
 procedure TGUITestRunner.FormDestroy(Sender: TObject);
 begin
   // store window position and size
-  FINI.WriteInteger('WindowState', 'Left', Left);
-  FINI.WriteInteger('WindowState', 'Top', Top);
-  FINI.WriteInteger('WindowState', 'Width', Width);
-  FINI.WriteInteger('WindowState', 'Height', Height);
-  FINI.Free;
+  FConfStore.WriteInteger('WindowState', 'Left', Left);
+  FConfStore.WriteInteger('WindowState', 'Top', Top);
+  FConfStore.WriteInteger('WindowState', 'Width', Width);
+  FConfStore.WriteInteger('WindowState', 'Height', Height);
+  FConfStore.Free;
 end;
 
 procedure TGUITestRunner.GUITestRunnerShow(Sender: TObject);
@@ -361,10 +395,10 @@ begin
   if (ParamStrUTF8(1) = '--now') or (ParamStrUTF8(1) = '-n') then
     RunExecute(Self);
   // restore last used position and size
-  Left := FINI.ReadInteger('WindowState', 'Left', Left);
-  Top := FINI.ReadInteger('WindowState', 'Top', Top);
-  Width := FINI.ReadInteger('WindowState', 'Width', Width);
-  Height := FINI.ReadInteger('WindowState', 'Height', Height);
+  Left := FConfStore.ReadInteger('WindowState', 'Left', Left);
+  Top := FConfStore.ReadInteger('WindowState', 'Top', Top);
+  Width := FConfStore.ReadInteger('WindowState', 'Width', Width);
+  Height := FConfStore.ReadInteger('WindowState', 'Height', Height);
 end;
 
 procedure TGUITestRunner.MenuItem3Click(Sender: TObject);
@@ -820,6 +854,7 @@ var
   m: TMemoryStream;
 
 begin
+  SaveTree;
   barcolor := clGreen;
   ResetNodeColors;
   failureCounter := 0;

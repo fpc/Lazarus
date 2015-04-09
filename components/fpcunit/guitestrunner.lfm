@@ -1850,16 +1850,22 @@ object GUITestRunner: TGUITestRunner
     top = 176
     object RunAction: TAction
       Category = 'Run'
-      Caption = '  &Run'
+      Caption = '&Run'
       Hint = 'Run all checked test(s)'
       ImageIndex = 3
       OnExecute = RunExecute
+      SecondaryShortCuts.Strings = (
+        'F9'
+      )
       ShortCut = 16466
     end
     object ActCloseForm: TAction
       Caption = 'Quit'
       Hint = 'Quit Testing'
       OnExecute = ActCloseFormExecute
+      SecondaryShortCuts.Strings = (
+        'Esc'
+      )
       ShortCut = 16451
     end
     object actCopyErrorMsg: TAction
@@ -1897,6 +1903,7 @@ object GUITestRunner: TGUITestRunner
       ImageIndex = 4
       OnExecute = ActRunHighlightedTestExecute
       OnUpdate = ActRunHighLightedTestUpdate
+      ShortCut = 119
     end
   end
   object PopupMenu3: TPopupMenu
@@ -1905,7 +1912,8 @@ object GUITestRunner: TGUITestRunner
     top = 240
     object miRunTest: TMenuItem
       Action = RunAction
-      Caption = '  &Run all selected (checked) tests'
+      Caption = '&Run all selected (checked) tests'
+      ShortCutKey2 = 120
       OnClick = RunExecute
     end
     object MenuItem4: TMenuItem
