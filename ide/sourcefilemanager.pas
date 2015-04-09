@@ -4021,13 +4021,13 @@ function TLazSourceFileManager.BuildManyModes(): Boolean;
 var
   ModeCnt: Integer;
 
-  function BuildOneMode: Boolean;
+  function BuildOneMode(LastMode: boolean): Boolean;
   begin
     Inc(ModeCnt);
     DebugLn('');
     DebugLn(Format('Building mode %d: %s ...', [ModeCnt, Project1.ActiveBuildMode.Identifier]));
     DebugLn('');
-    Result := MainIDE.DoBuildProject(crBuild,[]) = mrOK;
+    Result := MainIDE.DoBuildProject(crBuild, [], LastMode) = mrOK;
   end;
 
 var
@@ -4035,6 +4035,7 @@ var
   md, ActiveMode: TProjectBuildMode;
   BuildActiveMode: Boolean;
   i: Integer;
+  LastMode: boolean;
 begin
   Result := False;
   ModeCnt := 0;
@@ -4057,12 +4058,16 @@ begin
     end;
     // Build first the active mode so we don't have to switch many times.
     if BuildActiveMode then
-      if not BuildOneMode then Exit;
+    begin
+      LastMode := (ModeList.Count=0);
+      if not BuildOneMode(LastMode) then Exit;
+    end;
     // Build rest of the modes.
     for i := 0 to ModeList.Count-1 do
     begin
+      LastMode := (i=(ModeList.Count-1));
       Project1.ActiveBuildMode := TProjectBuildMode(ModeList[i]);
-      if not BuildOneMode then Exit;
+      if not BuildOneMode(LastMode) then Exit;
     end;
     // Switch back to original mode.
     Project1.ActiveBuildMode := ActiveMode;

@@ -775,7 +775,8 @@ type
     function DoWarnAmbiguousFiles: TModalResult;
     function DoSaveForBuild(AReason: TCompileReason): TModalResult; override;
     function DoBuildProject(const AReason: TCompileReason;
-                            Flags: TProjectBuildFlags): TModalResult; override;
+                            Flags: TProjectBuildFlags;
+                            FinalizeResources: boolean = True): TModalResult; override;
     function UpdateProjectPOFile(AProject: TProject): TModalResult;
     function DoAbortBuild(Interactive: boolean): TModalResult;
     procedure DoCompile;
@@ -6487,7 +6488,7 @@ begin
 end;
 
 function TMainIDE.DoBuildProject(const AReason: TCompileReason;
-  Flags: TProjectBuildFlags): TModalResult;
+  Flags: TProjectBuildFlags; FinalizeResources: boolean): TModalResult;
 var
   SrcFilename: string;
   ToolBefore: TProjectCompilationToolOptions;
@@ -6784,7 +6785,8 @@ begin
       end;
     end;
 
-    Project1.ProjResources.DoAfterBuild(AReason, Project1.IsVirtual);
+    if FinalizeResources then
+      Project1.ProjResources.DoAfterBuild(AReason, Project1.IsVirtual);
   finally
     // check sources
     DoCheckFilesOnDisk;

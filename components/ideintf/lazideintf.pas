@@ -247,7 +247,8 @@ type
     function DoPublishProject(Flags: TSaveFlags;
                               ShowDialog: boolean): TModalResult; virtual; abstract;
     function DoBuildProject(const AReason: TCompileReason;
-                            Flags: TProjectBuildFlags): TModalResult; virtual; abstract;
+                            Flags: TProjectBuildFlags;
+                            FinalizeResources: boolean): TModalResult; virtual; abstract;
     function GetProjectFileForProjectEditor(AEditor: TSourceEditorInterface): TLazProjectFile; virtual; abstract;
     function DoCallProjectChangedHandler(HandlerType: TLazarusIDEHandlerType;
                                          AProject: TLazProject): TModalResult;
