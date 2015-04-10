@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2015-04-02 02:59+0300\n"
+"PO-Revision-Date: 2015-04-11 00:34+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -12269,6 +12269,10 @@ msgstr "&Изменить"
 msgctxt "lazarusidestrconsts.lismore"
 msgid "More"
 msgstr "Подробнее"
+
+#: lazarusidestrconsts.lismore2
+msgid "More ..."
+msgstr "Прочие ..."
 
 #: lazarusidestrconsts.lismoresub
 msgctxt "lazarusidestrconsts.lismoresub"

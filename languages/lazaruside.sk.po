@@ -12912,6 +12912,10 @@ msgctxt "lazarusidestrconsts.lismore"
 msgid "More"
 msgstr "Viac"
 
+#: lazarusidestrconsts.lismore2
+msgid "More ..."
+msgstr ""
+
 #: lazarusidestrconsts.lismoresub
 #, fuzzy
 #| msgid "More ..."

@@ -12228,6 +12228,10 @@ msgctxt "lazarusidestrconsts.lismore"
 msgid "More"
 msgstr ""
 
+#: lazarusidestrconsts.lismore2
+msgid "More ..."
+msgstr ""
+
 #: lazarusidestrconsts.lismoresub
 msgctxt "lazarusidestrconsts.lismoresub"
 msgid "More >>"
