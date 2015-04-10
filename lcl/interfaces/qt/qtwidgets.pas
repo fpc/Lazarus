@@ -932,6 +932,7 @@ type
     FCurrentChangedHook: QTabWidget_hookH;
     FCloseRequestedHook: QTabWidget_hookH;
     FStackedWidgetHook: QObject_hookH;
+    FSwitchTabsByKeyboard: boolean;
     FTabBar: TQtTabBar;
     FStackWidget: QWidgetH;
     function getShowTabs: Boolean;
@@ -970,6 +971,7 @@ type
     property ShowTabs: Boolean read getShowTabs write setShowTabs;
     property TabBar: TQtTabBar read getTabBar;
     property StackWidget: QWidgetH read getStackWidget;
+    property SwitchTabsByKeyboard: boolean read FSwitchTabsByKeyboard write FSwitchTabsByKeyboard;
   end;
 
   { TQtComboBox }
@@ -9664,6 +9666,14 @@ begin
 end;
 
 function TQtTabBar.EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
+
+  function StopShortcutEvent: boolean;
+  begin
+    Result := Assigned(FOwner) and (FOwner.ChildOfComplexWidget <> ccwTTabControl) and
+      not TQtTabWidget(FOwner).FSwitchTabsByKeyboard and (QKeyEvent_matches(QKeyEventH(Event), QKeySequenceNextChild) or
+      QKeyEvent_matches(QKeyEventH(Event), QKeySequencePreviousChild));
+  end;
+
 {$IFDEF QT_ENABLE_LCL_PAINT_TABS}
 var
   R: TRect;
@@ -9694,6 +9704,7 @@ begin
           QEvent_ignore(Event);
         end;
       {$ENDIF}
+      QEventShortcutOverride: Result := StopShortcutEvent;
       QEventKeyPress,
       QEventKeyRelease:
       begin
@@ -9703,6 +9714,8 @@ begin
         if (LCLObject = nil) or
           ((LCLObject <> nil) and not LCLObject.HandleAllocated) then
           Result := True;
+        if not Result then
+          Result := StopShortcutEvent;
       end;
       QEventMouseButtonPress,
       QEventMouseButtonRelease,
@@ -9796,6 +9809,7 @@ begin
   {$ifdef VerboseQt}
     WriteLn('TQtTabWidget.Create');
   {$endif}
+  FSwitchTabsByKeyboard := False; {shortcuts are enabled by default under qt, but not under LCL}
   FWidgetNeedFontColorInitialization := True;
   if AParams.WndParent <> 0 then
     Parent := TQtWidget(AParams.WndParent).GetContainerWidget
