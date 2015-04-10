@@ -6696,13 +6696,25 @@ begin
       if Screen.ActiveForm <> nil then
         NewParent := TQtWidget(Screen.ActiveForm.Handle).Widget;
     pmExplicit:
+    begin
       // parent is FPopupParent
       if FPopupParent <> nil then
-        NewParent := FPopupParent;
+        NewParent := FPopupParent
+      {$IFDEF HASX11}
+      else
+      begin
+        if not IsMainForm then
+        begin
+          NewParent := TQtMainWindow(Application.MainForm.Handle).Widget;
+          setWindowFlags(windowFlags or QtSheet);
+        end;
+      end;
+      {$ENDIF}
+    end;
   end;
-  if (NewParent = nil) and not FShowOnTaskBar and not IsMainForm then
-    NewParent := TQtMainWindow(Application.MainForm.Handle).Widget;
-
+  if (NewParent = nil) and (FPopupMode <> pmNone) and
+    not FShowOnTaskBar and not IsMainForm then
+      NewParent := TQtMainWindow(Application.MainForm.Handle).Widget;
   ChangeParent(NewParent);
 end;
 
