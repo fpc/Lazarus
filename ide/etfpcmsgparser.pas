@@ -766,11 +766,15 @@ begin
         Item.Free;
         FFiles.Delete(i);
       end else begin
-        debugln(['TFPCMsgFilePool.Destroy file still used: ',Item.Filename]);
+        if ExitCode=0 then
+          debugln(['TFPCMsgFilePool.Destroy file still used: ',Item.Filename]);
       end;
     end;
-    if FFiles.Count>0 then
+    if FFiles.Count>0 then begin
+      if ExitCode<>0 then
+        exit;
       raise Exception.Create('TFPCMsgFilePool.Destroy some files are still used');
+    end;
     FreeAndNil(FFiles);
     if FPCMsgFilePool=Self then
       FPCMsgFilePool:=nil;

@@ -1505,7 +1505,7 @@ begin
       exit;
     end;
 
-    // Add package to list of to be installed packages)
+    // Add package to list of to be installed packages
     if HasOption('add-package') then begin
       AddPackage:=true;
       if ConsoleVerbosity>=0 then
