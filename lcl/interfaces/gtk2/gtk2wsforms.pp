@@ -775,6 +775,16 @@ begin
             gtk_window_set_keep_above(GtkWindow, True);
       end;
     end;
+
+    if AWinControl.HandleObjectShouldBeVisible and
+      not (csDesigning in AForm.ComponentState) and
+      not (AForm.FormStyle in fsAllStayOnTop) and
+      not (fsModal in AForm.FormState) and
+      (AForm.PopupMode = pmExplicit) and
+      (AForm.PopupParent = nil) then
+    begin
+      SetPopupParent(AForm, AForm.PopupMode, AForm.PopupParent);
+    end;
     {$ENDIF}
 
     Gtk2WidgetSet.SetVisible(AWinControl, AForm.HandleObjectShouldBeVisible);
@@ -846,7 +856,11 @@ begin
     pmAuto:
       PopupParent := Screen.ActiveForm;
     pmExplicit:
+    begin
       PopupParent := APopupParent;
+      if PopupParent = nil then
+        PopupParent := Application.MainForm;
+    end;
   end;
   if PopupParent <> nil then
     gtk_window_set_transient_for({%H-}PGtkWindow(ACustomForm.Handle), {%H-}PGtkWindow(PopupParent.Handle))
