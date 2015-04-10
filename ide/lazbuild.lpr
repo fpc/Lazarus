@@ -31,7 +31,7 @@ uses
   Classes, SysUtils, math,
   Interfaces, // this includes the NoGUI widgetset
   CustApp, LCLProc, Dialogs, Forms, Controls,
-  FileUtil, Masks, InterfaceBase, UTF8Process, LConvEncoding,
+  FileUtil, Masks, InterfaceBase, LConvEncoding,
   // codetools
   CodeCache, CodeToolManager, DefineTemplates, FileProcs, Laz2_XMLCfg, LazUTF8,
   // IDEIntf
@@ -40,7 +40,7 @@ uses
   // IDE
   IDEProcs, InitialSetupProc, ExtTools, CompilerOptions, ApplicationBundle,
   TransferMacros, EnvironmentOpts, IDETranslations, LazarusIDEStrConsts,
-  IDECmdLine, ExtToolDialog, MiscOptions, Project, LazConf, PackageDefs,
+  IDECmdLine, MiscOptions, Project, LazConf, PackageDefs,
   PackageLinks, PackageSystem, InterPkgConflictFiles, BuildLazDialog,
   BuildProfileManager, BuildManager, BaseBuildManager, ModeMatrixOpts;
   
