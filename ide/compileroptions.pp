@@ -1952,17 +1952,11 @@ var
   Dir: String;
 begin
   Result:=TargetFilename;
-  if Result='' then
+  if Assigned(ParsedOpts.OnLocalSubstitute) then
   begin
-    // the compiler cuts off the source extension
-    Result:=ExtractFileNameOnly(GetDefaultMainSourceFileName);
+    Result:=ParsedOpts.OnLocalSubstitute(Result,false);
   end else begin
-    if Assigned(ParsedOpts.OnLocalSubstitute) then
-    begin
-      Result:=ParsedOpts.OnLocalSubstitute(Result,false);
-    end else begin
-      Result:=ParseString(ParsedOpts,Result,false);
-    end;
+    Result:=ParseString(ParsedOpts,Result,false);
   end;
   if (Result<>'') and FilenameIsAbsolute(Result) then begin
     // fully specified target filename
