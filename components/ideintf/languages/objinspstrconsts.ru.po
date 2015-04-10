@@ -5,7 +5,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2015-04-02 01:56+0300\n"
+"PO-Revision-Date: 2015-04-11 00:22+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 
@@ -735,7 +735,7 @@ msgstr "Ограничения"
 
 #: objinspstrconsts.oisreverttoinherited
 msgid "Revert to inherited"
-msgstr ""
+msgstr "Возвратить к унаследованному"
 
 #: objinspstrconsts.oissamplemasks
 msgid "Sample Masks:"
