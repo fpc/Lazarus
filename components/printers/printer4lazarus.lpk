@@ -30,7 +30,7 @@
     <License Value="LGPL
 "/>
     <Version Minor="5"/>
-    <Files Count="37">
+    <Files Count="38">
       <Item1>
         <Filename Value="printersdlgs.pp"/>
         <HasRegisterProc Value="True"/>
@@ -191,6 +191,11 @@
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="ppdresolution"/>
       </Item37>
+      <Item38>
+        <Filename Value="cocoa\cocoaprintcanvas.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="cocoaprintcanvas"/>
+      </Item38>
     </Files>
     <RequiredPkgs Count="1">
       <Item1>

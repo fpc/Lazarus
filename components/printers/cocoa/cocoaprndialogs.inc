@@ -115,6 +115,11 @@ begin
 
       PMCopyPrintSettings(PrintSettings, CocoaPrinter.PrintSettings);
       CocoaPrinter.PrintInfo.updateFromPMPrintSettings();
+
+      CocoaPrinter.PrintView.PageMin := PMin;
+      CocoaPrinter.PrintView.PageMax := PMax;
+      CocoaPrinter.PrintView.PageFrom := FromPage;
+      CocoaPrinter.PrintView.PageTo := ToPage;
     end;
   finally
   end;
