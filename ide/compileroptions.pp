@@ -1923,7 +1923,7 @@ function TBaseCompilerOptions.CreateTargetFilename: string;
     PathName: String;
     CurTargetOS: String;
     aSrcOS: String;
- begin
+  begin
     //debugln ( 'Filename result is ',Result, ' in PrependDefaultType' );
     if (ExtractFileName(Result)='') or
     (CompareText(copy(ExtractFileName(Result),1,3), 'lib') = 0) then exit;
