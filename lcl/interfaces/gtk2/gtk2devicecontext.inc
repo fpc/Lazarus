@@ -527,7 +527,7 @@ begin
   FWidget := AWidget;
   FPixbuf := nil;
 
-  if (AWidget = nil) or not GTK_WIDGET_MAPPED(AWidget) then
+  if (AWidget = nil) then
   begin
     // screen: ToDo: multiple desktops
     FDrawable := gdk_screen_get_root_window(gdk_screen_get_default);
@@ -573,6 +573,8 @@ begin
 
       FDrawable := AWindow;
       // GC is created on demand
+      if (FDrawable = nil) and not GTK_WIDGET_MAPPED(AWidget) then
+        FDrawable := gdk_screen_get_root_window(gdk_screen_get_default);
     end;
   end;
 
