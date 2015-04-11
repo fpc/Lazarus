@@ -18261,8 +18261,10 @@ end;
 function TQtFilePreviewDialog.CreateWidget(parent: QWidgetH; f: QtWindowFlags
   ): QWidgetH;
 begin
+  {$ifndef QT_NATIVE_DIALOGS}
   FPreviewWidget := nil;
   FTextWidget := nil;
+  {$endif}
   Result := inherited CreateWidget(parent, f);
 end;
 
