@@ -211,6 +211,8 @@ type
   { TShellListView }
 
   TShellListView = class(TCustomShellListView)
+  public
+    property Columns;
   published
     { TCustomListView properties
       The same as TListView excluding data properties }
@@ -221,7 +223,6 @@ type
     property BorderWidth;
 //    property Checkboxes;
     property Color default clWindow;
-//    property Columns;
 //    property ColumnClick;
     property Constraints;
     property DragCursor;
