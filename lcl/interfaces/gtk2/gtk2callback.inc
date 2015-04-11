@@ -2405,9 +2405,11 @@ begin
       FixListViewRubberBand(Widget);
     end;
 
-    ReleaseMouseCapture;
     if DesignOnlySignal or (not ControlGetsMouseUpBefore(TControl(Data))) then
+    begin
+      ReleaseMouseCapture;
       Exit;
+    end;
   end else
   begin
     // stop the signal, so that the widget does not auto react
@@ -2419,6 +2421,7 @@ begin
   end;
   if DeliverMouseUpMessage(Widget, Event, TWinControl(Data)) then
   begin
+    ReleaseMouseCapture;
     if not DragManager.IsDragging then
       Result := not CallBackDefaultReturn
     else
@@ -2433,7 +2436,8 @@ begin
           gtk_button_clicked(PGtkButton(Widget));
       end;
     end;
-  end;
+  end else
+    ReleaseMouseCapture;
 end;
 
 {-------------------------------------------------------------------------------
