@@ -661,6 +661,7 @@ components/chmhelp/lhelp/images/lhelp32.png -text
 components/chmhelp/lhelp/images/table_close.png -text
 components/chmhelp/lhelp/images/table_item.png -text
 components/chmhelp/lhelp/images/table_open.png -text
+components/chmhelp/lhelp/languages/lhelp.fi.po svneol=native#text/plain
 components/chmhelp/lhelp/languages/lhelp.hu.po svneol=native#text/plain
 components/chmhelp/lhelp/languages/lhelp.po svneol=native#text/plain
 components/chmhelp/lhelp/languages/lhelp.ru.po svneol=native#text/plain
@@ -698,6 +699,7 @@ components/chmhelp/packages/idehelp/chmlangref.pas svneol=native#text/plain
 components/chmhelp/packages/idehelp/chmlcl.pas svneol=native#text/plain
 components/chmhelp/packages/idehelp/chmprog.pas svneol=native#text/plain
 components/chmhelp/packages/idehelp/languages/lazchmhelp.de.po svneol=native#text/plain
+components/chmhelp/packages/idehelp/languages/lazchmhelp.fi.po svneol=native#text/plain
 components/chmhelp/packages/idehelp/languages/lazchmhelp.hu.po svneol=native#text/plain
 components/chmhelp/packages/idehelp/languages/lazchmhelp.it.po svneol=native#text/plain
 components/chmhelp/packages/idehelp/languages/lazchmhelp.po svneol=native#text/plain
