@@ -1860,7 +1860,7 @@ begin
   i4e := FPixEndFinalizationLine;
   if not(TSynEdit(SynEdit).Highlighter is TIDESynPasSyn) then begin
     FInterfaceLine := -1;
-    FInterfaceLine := -1;
+    FImplementationLine := -1;
     FInitializationLine := -1;
     FFinalizationLine := -1;
   end else begin
