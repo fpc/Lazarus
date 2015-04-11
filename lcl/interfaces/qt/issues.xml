@@ -13,6 +13,9 @@
 		<issue name="TMemo.HideSelection">
 			<short>HideSelection property is not supported</short>
 		</issue>
+		<issue name="TMenuItem.RightJustify">
+			<short>RightJustify property is not supported</short>
+		</issue>		
 		<issue name="TPageControl.MultiLine">
 			<short>MultiLine property is not supported</short>
 		</issue>
