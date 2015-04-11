@@ -368,6 +368,7 @@ function QtObjectFromWidgetH(const WidgetH: QWidgetH): TQtWidget;
 var
   V: QVariantH;
   Ok: Boolean;
+  Obj: TObject;
   QtWg: TQtWidget;
 begin
   Result := nil;
@@ -382,13 +383,17 @@ begin
     begin
       //Write('Got a valid variant .. ');
       {$IFDEF CPU32}
-      QtWg := TQtWidget(QVariant_toUint(V, @Ok));
+      Obj := TObject(QVariant_toUint(V, @Ok));
       {$ENDIF}
       {$IFDEF CPU64}
-      QtWg := TQtWidget(QVariant_toULongLong(V, @Ok));
+      Obj := TObject(QVariant_toULongLong(V, @Ok));
       {$ENDIF}
       if OK then
       begin
+        if not (Obj is TQtWidget) then
+          raise Exception.Create('QtObjectFromWidgetH: QObject_property returned '
+                    + 'a variant which is not TQtWidget.');
+        QtWg := TQtWidget(Obj);
         //Write('Converted successfully, Control=');
         if QtWg<>nil then
         begin

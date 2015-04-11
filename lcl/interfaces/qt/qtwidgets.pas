@@ -2201,6 +2201,9 @@ end;
 procedure TQtWidget.Release;
 begin
   LCLObject := nil;
+  {always hide widget since we use QObject_deleteLater(). issue #27781}
+  if (Widget <> nil) then
+    Hide;
   inherited Release;
 end;
 
