@@ -503,5 +503,6 @@ end;
 class procedure TQtWSCustomTabControl.UpdateProperties(const ATabControl: TCustomTabControl);
 begin
   TQtTabWidget(ATabControl.Handle).setTabsClosable(nboShowCloseButtons in ATabControl.Options);
+  TQtTabWidget(ATabControl.Handle).SwitchTabsByKeyboard := nboKeyboardTabSwitch in ATabControl.Options;
 end;
 
