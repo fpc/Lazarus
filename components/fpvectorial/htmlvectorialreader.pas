@@ -74,6 +74,8 @@ begin
   end;
 end;
 
+// if something is returned, it will be added to the base document
+// if nothing is returned, either nothing was written, or it was already added
 function TvHTMLVectorialReader.ReadEntityFromNode(ANode: TDOMNode;
   AData: TvTextPageSequence; ADoc: TvVectorialDocument): TvEntity;
 var
@@ -93,7 +95,11 @@ begin
     'svg': Result := ReadSVGFromNode(ANode, AData, ADoc);
     'math': Result := ReadMathFromNode(ANode, AData, ADoc);
     'table': Result := ReadTableFromNode(ANode, AData, ADoc);
-    'br': Result := AData.AddParagraph().AddText(LineEnding);
+    'br':
+    begin
+      AData.AddParagraph().AddText(LineEnding);
+      Result := nil;
+    end;
   end;
 end;
 
@@ -314,6 +320,8 @@ var
 begin
   Result := nil;
   CurTable := AData.AddTable();
+  CurTable.CellSpacingLeft := 3;
+  CurTable.CellSpacingTop := 2;
 
   // table attributes
   for i := 0 to ANode.Attributes.Length - 1 do
@@ -357,6 +365,10 @@ begin
     begin
       CurRow := CurTable.AddRow();
       Caption_Cell := CurRow.AddCell();
+      {Caption_Cell.Borders.Left.LineType := tbtNone;
+      Caption_Cell.Borders.Top.LineType := tbtNone;
+      Caption_Cell.Borders.Right.LineType := tbtNone;
+      Caption_Cell.Borders.Bottom.LineType := tbtNone;}
       CurCellPara := Caption_Cell.AddParagraph();
       CurCellPara.Style := ADoc.StyleTextBodyCentralized;
       CurCellPara.AddText(GetTextContentFromNode(lCurNode));
