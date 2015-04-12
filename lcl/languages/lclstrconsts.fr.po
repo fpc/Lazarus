@@ -1,16 +1,15 @@
 msgid ""
 msgstr ""
 "Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
-"PO-Revision-Date: 2015-03-02 14:02+0100\n"
+"PO-Revision-Date: 2015-04-12 18:41+0100\n"
 "Language-Team: Laurent Jacques <wile64@gmail.com>\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "MIME-Version: 1.0\n"
 "POT-Creation-Date: \n"
 "Project-Id-Version: \n"
-"X-Poedit-Bookmarks: -1,190,-1,-1,-1,-1,-1,-1,-1,-1\n"
 "Language: fr\n"
-"X-Generator: Poedit 1.7.4\n"
+"X-Generator: Poedit 1.7.5\n"
 
 #: lclstrconsts.hhshelpbrowsernotexecutable
 msgid "Browser \"%s\" not executable."
@@ -54,7 +53,7 @@ msgstr "Accepter"
 
 #: lclstrconsts.ifsvk_apps
 msgid "application key"
-msgstr "Touche Application"
+msgstr "touche application"
 
 #: lclstrconsts.ifsvk_back
 msgid "Backspace"
@@ -102,7 +101,7 @@ msgstr "Fin"
 
 #: lclstrconsts.ifsvk_escape
 msgid "Escape"
-msgstr "Echappement"
+msgstr "Échappement"
 
 #: lclstrconsts.ifsvk_execute
 msgid "Execute"
@@ -217,11 +216,11 @@ msgstr "Touche Windows droite"
 
 #: lclstrconsts.ifsvk_scroll
 msgid "Scroll"
-msgstr "Défilement"
+msgstr "Défiler"
 
 #: lclstrconsts.ifsvk_select
 msgid "Select"
-msgstr "Sélectionner"
+msgstr "Choisir"
 
 #: lclstrconsts.ifsvk_shift
 msgid "Shift"
@@ -276,7 +275,7 @@ msgstr "Bord actif"
 
 #: lclstrconsts.rsactivecaptioncolorcaption
 msgid "Active Caption"
-msgstr "Etiquette active"
+msgstr "Étiquette active"
 
 #: lclstrconsts.rsallfiles
 msgid "All files (%s)|%s|%s"
@@ -288,7 +287,7 @@ msgstr "Espace d'application"
 
 #: lclstrconsts.rsaquacolorcaption
 msgid "Aqua"
-msgstr "Eau"
+msgstr "Aqua"
 
 #: lclstrconsts.rsbackgroundcolorcaption
 msgid "Desktop"
@@ -345,7 +344,7 @@ msgstr "Impossible de focaliser"
 
 #: lclstrconsts.rscanvasdoesnotallowdrawing
 msgid "Canvas does not allow drawing"
-msgstr "Dessin sur le \"Canvas\" non autorisé"
+msgstr "Dessin sur le canevas non autorisé"
 
 #: lclstrconsts.rscaptiontextcolorcaption
 msgid "Caption Text"
@@ -357,11 +356,11 @@ msgstr "Respecter la casse"
 
 #: lclstrconsts.rscontrolclasscantcontainchildclass
 msgid "Control of class '%s' can't have control of class '%s' as a child"
-msgstr "Le contrôle de la classe '%s' ne peut pas contenir un contrôle de la classe '%s' comme enfant"
+msgstr "Le contrôle de la classe \"%s\" ne peut pas contenir un contrôle de la classe \"%s\" comme enfant"
 
 #: lclstrconsts.rscontrolhasnoparentwindow
 msgid "Control '%s' has no parent window"
-msgstr "Le contrôle '%s' n'a pas de fenêtre parent"
+msgstr "Le contrôle \"%s\" n'a pas de fenêtre parent"
 
 #: lclstrconsts.rscontrolisnotaparent
 msgid "'%s' is not a parent of '%s'"
@@ -373,7 +372,7 @@ msgstr "Crème"
 
 #: lclstrconsts.rscreatinggdbcatchableerror
 msgid "Creating gdb catchable error:"
-msgstr "Création d'une erreur capturable de gdb :"
+msgstr "Création d'une erreur capturable de \"gdb\" :"
 
 #: lclstrconsts.rscursor
 msgid "Cursor"
@@ -393,7 +392,7 @@ msgstr "permissions utilisateur groupe taille date heure"
 
 #: lclstrconsts.rsdeleterecord
 msgid "Delete record?"
-msgstr "Supprimer l'enregistrement ?"
+msgstr "Voulez-vous supprimer l'enregistrement ?"
 
 #: lclstrconsts.rsdeleterecordhint
 msgctxt "lclstrconsts.rsdeleterecordhint"
@@ -418,7 +417,7 @@ msgstr "Dupliquer le format d'icône."
 
 #: lclstrconsts.rseditrecordhint
 msgid "Edit"
-msgstr "Editer"
+msgstr "Éditer"
 
 #: lclstrconsts.rsentirescope
 msgid "Search entire file"
@@ -487,7 +486,7 @@ msgstr "Ouvrir un fichier existant"
 
 #: lclstrconsts.rsfdoverwritefile
 msgid "Overwrite file ?"
-msgstr "Ecraser le fichier ?"
+msgstr "Voulez-vous écraser le fichier ?"
 
 #: lclstrconsts.rsfdpathmustexist
 msgid "Path must exist"
@@ -640,7 +639,7 @@ msgstr "--gtk-module module   Charger le module indiqué au démarrage."
 
 #: lclstrconsts.rsgtkoptionname
 msgid "--name programe       Set program name to \"progname\". If not specified, program name will be set to ParamStrUTF8(0)."
-msgstr "--name programme     Fixer le nom du programme à \"progname\". Si non spécifié, le nom du programme sera fixé à ParamStrUTF8(0)."
+msgstr "--name programme     Définir le nom du programme à \"progname\". Si non spécifié, le nom du programme sera fixé à ParamStrUTF8(0)."
 
 #: lclstrconsts.rsgtkoptionnodebug
 msgid "--gtk-no-debug flags  Turn off specific Gtk+ trace/debug messages."
@@ -793,12 +792,12 @@ msgstr "Bord inactif"
 #: lclstrconsts.rsinactivecaptioncolorcaption
 msgctxt "lclstrconsts.rsinactivecaptioncolorcaption"
 msgid "Inactive Caption"
-msgstr "Etiquette inactive"
+msgstr "Légende inactive"
 
 #: lclstrconsts.rsinactivecaptiontext
 msgctxt "lclstrconsts.rsinactivecaptiontext"
 msgid "Inactive Caption"
-msgstr "Etiquette inactive"
+msgstr "Légende inactive"
 
 #: lclstrconsts.rsindexoutofbounds
 msgid "%s Index %d out of bounds 0 .. %d"
@@ -1328,7 +1327,7 @@ msgstr "Création d'action incorrecte"
 
 #: lclstrconsts.sinvalidactionenumeration
 msgid "Invalid action enumeration"
-msgstr "Enumération d'action incorrecte"
+msgstr "Énumération d'action incorrecte"
 
 #: lclstrconsts.sinvalidactionregistration
 msgid "Invalid action registration"
@@ -1360,7 +1359,7 @@ msgstr "Index de menu hors limites"
 
 #: lclstrconsts.smenuitemisnil
 msgid "MenuItem is nil"
-msgstr "MenuItem n'est pas assigné (nil)"
+msgstr "\"MenuItem\" n'est pas assigné (nil)"
 
 #: lclstrconsts.smenunotfound
 msgid "Sub-menu is not in menu"
@@ -1398,7 +1397,7 @@ msgstr "Entrée"
 
 #: lclstrconsts.smkcesc
 msgid "Esc"
-msgstr "Echap"
+msgstr "Échap"
 
 #: lclstrconsts.smkchome
 msgctxt "lclstrconsts.smkchome"
