@@ -3,11 +3,13 @@ msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: Beuselinck Vincent <vincent@beuselinck.fr>\n"
+"Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: fr\n"
+"X-Generator: Poedit 1.7.5\n"
 
 #: todoliststrconsts.dlgfropts
 msgid "Options"
@@ -19,7 +21,7 @@ msgstr "Rafraîchir"
 
 #: todoliststrconsts.lisctinsertmacro
 msgid "Insert Macro"
-msgstr "Insère Macro"
+msgstr "Insérer une macro"
 
 #: todoliststrconsts.lispkgfiletypetext
 msgid "Text"
@@ -31,11 +33,11 @@ msgstr "Imprimer"
 
 #: todoliststrconsts.listddinserttodo
 msgid "Insert ToDo"
-msgstr "insère un ToDo"
+msgstr "Insérer dans le pense-bêtes"
 
 #: todoliststrconsts.listodoexport
 msgid "Export"
-msgstr "Export"
+msgstr "Exporter"
 
 #: todoliststrconsts.listodogoto
 msgid "Goto"
@@ -55,25 +57,23 @@ msgstr "Module"
 
 #: todoliststrconsts.listodolist
 msgid "ToDo List"
-msgstr "Liste ToDo"
+msgstr "Liste des éléments du pense-bêtes"
 
 #: todoliststrconsts.listodolistgotoline
 msgid "Goto selected source line"
-msgstr "Aller à la ligne de la source sélectionnée"
+msgstr "Aller à la ligne du code source sélectionné"
 
 #: todoliststrconsts.listodolistoptions
-#, fuzzy
-#| msgid "ToDo options..."
 msgid "ToDo options ..."
-msgstr "Options ToDo..."
+msgstr "Options du pense-bêtes..."
 
 #: todoliststrconsts.listodolistprintlist
 msgid "Print todo items"
-msgstr "imprimer les éléments ToDo"
+msgstr "Imprimer les éléments du pense-bêtes"
 
 #: todoliststrconsts.listodolistrefresh
 msgid "Refresh todo items"
-msgstr "Rafraîchir les éléments ToDo"
+msgstr "Rafraîchir les éléments du pense-bêtes"
 
 #: todoliststrconsts.listodolline
 msgid "Line"
@@ -93,5 +93,5 @@ msgstr "Catégorie"
 
 #: todoliststrconsts.lisviewtodolist
 msgid "View ToDo List"
-msgstr "Voir la liste ToDo"
+msgstr "Afficher la liste des éléments du pense-bêtes"
 
