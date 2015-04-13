@@ -2,15 +2,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-12-03 10:45+0100\n"
-"Last-Translator: Laurent Jacques <wile64@gmail.com>\n"
+"PO-Revision-Date: 2015-04-13 21:43+0100\n"
+"Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Poedit-Language: French\n"
-"X-Poedit-Country: FRANCE\n"
 "X-Poedit-SourceCharset: utf-8\n"
+"Language: fr_FR\n"
+"X-Generator: Poedit 1.7.5\n"
 
 #: objinspstrconsts.cactionlisteditorallcategory
 msgid "(All)"
@@ -37,7 +37,7 @@ msgstr "Dialogue"
 #: objinspstrconsts.cactionlisteditoreditcategory
 msgctxt "objinspstrconsts.cactionlisteditoreditcategory"
 msgid "Edit"
-msgstr "Editer"
+msgstr "Éditer"
 
 #: objinspstrconsts.cactionlisteditorfilecategory
 msgid "File"
@@ -84,15 +84,15 @@ msgstr "(Inconnu)"
 
 #: objinspstrconsts.cgcheckduplicate
 msgid "On Add, Check for Duplicate in Items"
-msgstr "Sur ajouter, vérifier la reproduction dans les éléments"
+msgstr "Sur ajout, vérifier les doublons d'éléments"
 
 #: objinspstrconsts.cgcheckduplicatemsg
 msgid "The \"%s\" Item is already listed. Add it anyway?"
-msgstr "L'élément \"%s\" est déjà énuméré. L'ajouter quand même ?"
+msgstr "L'élément \"%s\" est déjà énuméré. Voulez-vous l'ajouter quand même ?"
 
 #: objinspstrconsts.cgcheckgroupeditor
 msgid "CheckGroup Editor"
-msgstr "Editeur groupe de contrôle"
+msgstr "Éditeur groupe de contrôles"
 
 #: objinspstrconsts.cgcolumns
 msgid "Columns:"
@@ -100,15 +100,15 @@ msgstr "Colonnes :"
 
 #: objinspstrconsts.cgdisable
 msgid "Popup to disable/enable items"
-msgstr "Le popup désactive/active des éléments"
+msgstr "Fenêtre surgissante pour désactiver/activer des éléments"
 
 #: objinspstrconsts.clbadd
 msgid "Add new Item"
-msgstr "Insérer un nouvel élément"
+msgstr "Ajouter un nouvel élément"
 
 #: objinspstrconsts.clbchecklistboxeditor
 msgid "CheckListBox Editor"
-msgstr "Editeur Boîte de liste de contrôle"
+msgstr "Éditeur Boîte de liste de contrôles"
 
 #: objinspstrconsts.clbdeletehint
 msgid "Delete the Item"
@@ -116,7 +116,7 @@ msgstr "Supprimer l'élément"
 
 #: objinspstrconsts.clbdeletequest
 msgid "Delete the Item %d \"%s\"?"
-msgstr "Supprimer l'élément %d \"%s\"?"
+msgstr "Voulez-vous supprimer l'élément %d \"%s\"?"
 
 #: objinspstrconsts.clbdown
 msgctxt "objinspstrconsts.clbdown"
@@ -134,31 +134,31 @@ msgstr "Haut"
 
 #: objinspstrconsts.dceaddfields
 msgid "Add Fields"
-msgstr ""
+msgstr "Ajouter des champs"
 
 #: objinspstrconsts.dcecolumneditor
 msgid "DBGrid Columns Editor"
-msgstr ""
+msgstr "Éditeur de colonnes de \"DBGrid\""
 
 #: objinspstrconsts.dcedeleteall
 msgid "Delete All"
-msgstr ""
+msgstr "Tout supprimer"
 
 #: objinspstrconsts.dcefetchlabels
 msgid "Fetch Labels"
-msgstr ""
+msgstr "Chercher les étiquettes"
 
 #: objinspstrconsts.dceoktodelete
 msgid "This will delete all columns. Continue?"
-msgstr ""
+msgstr "Toutes les colonnes vont être supprimées. Voulez-vous continuer ?"
 
 #: objinspstrconsts.dcewillreplacecontinue
 msgid "This will replace all captions from dataset. Continue?"
-msgstr ""
+msgstr "Toutes les légendes vont être remplacées depuis l'ensemble de données. Voulez-vous continuer ?"
 
 #: objinspstrconsts.fescalculated
 msgid "&Calculated"
-msgstr ""
+msgstr "&Calculé"
 
 #: objinspstrconsts.fescancelbtn
 msgctxt "objinspstrconsts.fescancelbtn"
@@ -167,72 +167,68 @@ msgstr "Annuler"
 
 #: objinspstrconsts.fescheckdset
 msgid "Check dataset settings"
-msgstr "Vérifiez les paramètres de données"
+msgstr "Vérifier les paramètres de données"
 
 #: objinspstrconsts.fesdata
 msgid "&Data"
-msgstr ""
+msgstr "&Donnée"
 
 #: objinspstrconsts.fesdataset
 msgid "&Dataset:"
-msgstr ""
+msgstr "&Ensemble de données"
 
 #: objinspstrconsts.fesfetitle
-#, fuzzy
-#| msgid "Edit Fields..."
 msgid "Edit Fields ..."
-msgstr "Editer des champs"
+msgstr "Éditer les champs..."
 
 #: objinspstrconsts.fesfieldcantbec
 msgid "Field %s cannot be created!"
-msgstr ""
+msgstr "Le champ %s ne peut pas être créé !"
 
 #: objinspstrconsts.fesfieldprops
 msgid "Field properties"
-msgstr ""
+msgstr "Propriétés du champ"
 
 #: objinspstrconsts.fesfieldtype
 msgid "Field Type"
-msgstr ""
+msgstr "Type de champ"
 
 #: objinspstrconsts.fesfltitle
 msgid "FieldDefs"
-msgstr "Définition du champ"
+msgstr "Définitions de champs"
 
 #: objinspstrconsts.fesformcaption
-#, fuzzy
-#| msgid "New fileld"
 msgctxt "objinspstrconsts.fesformcaption"
 msgid "New field"
-msgstr "Dialogue"
+msgstr "Nouveau champ"
 
 #: objinspstrconsts.feskeyfield
 msgid "&Key fields:"
-msgstr ""
+msgstr "Champs de &clé :"
 
 #: objinspstrconsts.feslookup
 msgid "&Lookup"
-msgstr ""
+msgstr "&Chercher (\"Lookup\")"
 
 #: objinspstrconsts.feslookupdef
 msgid "Lookup definition"
-msgstr ""
+msgstr "Définition de recherche"
 
 #: objinspstrconsts.feslookupkeys
 msgid "L&ookup keys:"
-msgstr ""
+msgstr "C&lés de recherche :"
 
 #: objinspstrconsts.fesname
 msgid "&Name:"
-msgstr ""
+msgstr "&Nom :"
 
 #: objinspstrconsts.fesnofields
 msgid "It was not possible to get the dataset field's list"
-msgstr "Impossible d'obtenir les données de la liste de champs"
+msgstr "Impossible d'obtenir les données de la liste des champs"
 
 #: objinspstrconsts.fesnofieldsnote
 msgid "Field's list is not available, can't check for duplicates"
-msgstr "Champs de liste indisponible, impossible de vérifier les doublons"
+msgstr "Liste des champs indisponible : impossible de vérifier les doublons"
 
 #: objinspstrconsts.fesokbtn
 msgctxt "objinspstrconsts.fesokbtn"
@@ -241,19 +237,19 @@ msgstr "OK"
 
 #: objinspstrconsts.fespersistentcompname
 msgid "Co&mponent Name:"
-msgstr ""
+msgstr "Nom du co&mposant :"
 
 #: objinspstrconsts.fesresultfield
 msgid "&Result Fields:"
-msgstr ""
+msgstr "&Champs de résultat :"
 
 #: objinspstrconsts.fessize
 msgid "&Size:"
-msgstr ""
+msgstr "&Taille :"
 
 #: objinspstrconsts.festype
 msgid "&Type:"
-msgstr ""
+msgstr "&Type :"
 
 #: objinspstrconsts.ilesadd
 msgctxt "objinspstrconsts.ilesadd"
@@ -262,75 +258,63 @@ msgstr "Ajouter"
 
 #: objinspstrconsts.itcssearchandreplace
 msgid "Search and replace"
-msgstr ""
+msgstr "Chercher et remplacer"
 
 #: objinspstrconsts.liisaddvalue
 msgid "Add value"
-msgstr ""
+msgstr "Ajouter une valeur"
 
 #: objinspstrconsts.liiselse
 msgid "Else"
-msgstr ""
+msgstr "Sinon"
 
 #: objinspstrconsts.liiselseif
 msgid "ElseIf"
-msgstr ""
+msgstr "\"ElseIf\""
 
 #: objinspstrconsts.liisif
 msgid "If"
-msgstr ""
+msgstr "Si"
 
 #: objinspstrconsts.liisifdef
 msgid "IfDef"
-msgstr ""
+msgstr "\"IfDef\""
 
 #: objinspstrconsts.liisifndef
 msgid "IfNDef"
-msgstr ""
+msgstr "\"IfNDef\""
 
 #: objinspstrconsts.liissetvalue
 msgid "Set value"
-msgstr ""
+msgstr "Définir une valeur"
 
 #: objinspstrconsts.lisunabletofindparserfortool
 msgid "Unable to find parser for tool \"%s\""
-msgstr ""
+msgstr "Impossible de trouver un analyseur pour l'outil \"%s\""
 
 #: objinspstrconsts.nbcesaddpage
-#, fuzzy
-#| msgid "Add page"
 msgid "Add Page"
-msgstr "&Ajouter une page"
+msgstr "Ajouter une page"
 
 #: objinspstrconsts.nbcesdeletepage
-#, fuzzy
-#| msgid "Delete page"
 msgid "Delete Page"
-msgstr "&Supprimer la page"
+msgstr "Supprimer la page"
 
 #: objinspstrconsts.nbcesinsertpage
-#, fuzzy
-#| msgid "Insert page"
 msgid "Insert Page"
-msgstr "&Insérer une page"
+msgstr "Insérer une page"
 
 #: objinspstrconsts.nbcesmovepageleft
-#, fuzzy
-#| msgid "Move page left"
 msgid "Move Page Left"
 msgstr "Déplacer la page vers la gauche"
 
 #: objinspstrconsts.nbcesmovepageright
-#, fuzzy
-#| msgid "Move page right"
 msgid "Move Page Right"
 msgstr "Déplacer la page vers la droite"
 
 #: objinspstrconsts.nbcesshowpage
-#, fuzzy
-#| msgid "Show page ..."
 msgid "Show Page"
-msgstr "Afficher la page..."
+msgstr "Afficher la page"
 
 #: objinspstrconsts.oicoleditadd
 msgctxt "objinspstrconsts.oicoleditadd"
@@ -349,7 +333,7 @@ msgstr "Bas"
 
 #: objinspstrconsts.oicoleditediting
 msgid "Editing"
-msgstr "Edition"
+msgstr "Édition"
 
 #: objinspstrconsts.oicoleditup
 msgctxt "objinspstrconsts.oicoleditup"
@@ -370,29 +354,27 @@ msgstr "Action"
 
 #: objinspstrconsts.oisactionlistcomponenteditor
 msgid "Action&List Editor ..."
-msgstr ""
+msgstr "Éditeur de &listes d'actions"
 
 #: objinspstrconsts.oisactionlisteditor
-#, fuzzy
-#| msgid "Action List Editor"
 msgid "ActionList Editor"
-msgstr "Editeur de listes d'actions"
+msgstr "Éditeur de listes d'actions"
 
 #: objinspstrconsts.oisaddcollectionitem
 msgid "&Add Item"
-msgstr ""
+msgstr "&Ajouter un élément"
 
 #: objinspstrconsts.oisaddfields
 msgid "&Add fields"
-msgstr ""
+msgstr "&Ajouter des champs"
 
 #: objinspstrconsts.oisaddfieldsfromfielddefs
 msgid "Add fields from FieldDefs"
-msgstr ""
+msgstr "Ajouter des champs depuis \"FieldDefs\""
 
 #: objinspstrconsts.oisaddtofavorites
 msgid "Add to Favorites"
-msgstr "Ajouter au favories"
+msgstr "Ajouter au favoris"
 
 #: objinspstrconsts.oisallfiles
 msgid "All files"
@@ -408,22 +390,20 @@ msgstr "Booléen"
 
 #: objinspstrconsts.oisbtncomponents
 msgid "Co&mponents"
-msgstr ""
+msgstr "Co&mposants"
 
 #: objinspstrconsts.oisbtnproperties
 msgid "&Properties"
-msgstr ""
+msgstr "&Propriétés"
 
 #: objinspstrconsts.oiscadd
 msgid "&Add"
 msgstr "&Ajouter"
 
 #: objinspstrconsts.oiscancel
-#, fuzzy
-#| msgid "&Cancel"
 msgctxt "objinspstrconsts.oiscancel"
 msgid "Cancel"
-msgstr "&Annuler"
+msgstr "Annuler"
 
 #: objinspstrconsts.oiscategory
 msgid "Category"
@@ -431,15 +411,15 @@ msgstr "Catégorie"
 
 #: objinspstrconsts.oiscdelete
 msgid "Delete?"
-msgstr ""
+msgstr "Faut-il supprimer ?"
 
 #: objinspstrconsts.oischangeclass
 msgid "Change Class ..."
-msgstr ""
+msgstr "Modifier la classe..."
 
 #: objinspstrconsts.oischangeparent
 msgid "Change Parent"
-msgstr ""
+msgstr "Modifier le parent"
 
 #: objinspstrconsts.oischar
 msgid "Char"
@@ -462,25 +442,21 @@ msgid "Clear picture"
 msgstr "Effacer l'image"
 
 #: objinspstrconsts.oiscomponentnameisnotavalididentifier
-#, fuzzy
-#| msgid "Component name %s%s%s is not a valid identifier"
 msgid "Component name \"%s\" is not a valid identifier"
-msgstr "Le nom du composant %s%s%s n'est pas un identificateur valide"
+msgstr "Le nom du composant \"%s\" n'est pas un identificateur correct"
 
 #: objinspstrconsts.oiscomponentrestrictions
 msgid "Component restrictions: "
-msgstr "Restrictions des composants"
+msgstr "Restrictions des composants : "
 
 #: objinspstrconsts.oisconfirmdelete
 msgid "Confirm delete"
-msgstr "Confirmez la suppression"
+msgstr "Confirmer la suppression"
 
 #: objinspstrconsts.oiscopycomponents
-#, fuzzy
-#| msgid "Copy components"
 msgctxt "objinspstrconsts.oiscopycomponents"
 msgid "&Copy"
-msgstr "Copier les composants"
+msgstr "&Copier"
 
 #: objinspstrconsts.oiscreateanewpascalunit
 msgid "Create a new pascal unit."
@@ -488,18 +464,16 @@ msgstr "Créer une nouvelle unité Pascal."
 
 #: objinspstrconsts.oiscreatedefaultevent
 msgid "Create default event"
-msgstr "Création d'un évènement par défaut"
+msgstr "Création d'un événement par défaut"
 
 #: objinspstrconsts.oiscreatenewfieldandadditatcurrentposition
 msgid "Create new field and add it at current position"
-msgstr ""
+msgstr "Créer un nouveau champ et l'ajouter à la position en cours"
 
 #: objinspstrconsts.oiscutcomponents
-#, fuzzy
-#| msgid "Cut components"
 msgctxt "objinspstrconsts.oiscutcomponents"
 msgid "Cu&t"
-msgstr "Couper les composants"
+msgstr "Co&uper"
 
 #: objinspstrconsts.oisdelete
 msgctxt "objinspstrconsts.oisdelete"
@@ -507,21 +481,17 @@ msgid "Delete"
 msgstr "Supprimer"
 
 #: objinspstrconsts.oisdeletecomponents
-#, fuzzy
-#| msgid "Delete components"
 msgctxt "objinspstrconsts.oisdeletecomponents"
 msgid "&Delete"
-msgstr "Supprimer les composants"
+msgstr "&Supprimer"
 
 #: objinspstrconsts.oisdeleteitem
-#, fuzzy
-#| msgid "Delete item %s%s%s?"
 msgid "Delete item \"%s\"?"
-msgstr "Supprimer l'élément %s%s%s ?"
+msgstr "Voulez-vous supprimer l'élément \"%s\" ?"
 
 #: objinspstrconsts.oisdeleteselectedfields
 msgid "Delete selected field(s)"
-msgstr ""
+msgstr "Supprimer le(s) champ(s) sélectionné(s)"
 
 #: objinspstrconsts.oisdlinesdchars
 msgid "%d lines, %d chars"
@@ -529,7 +499,7 @@ msgstr "%d lignes, %d caractères"
 
 #: objinspstrconsts.oisenumeration
 msgid "Enumeration"
-msgstr "Enumération"
+msgstr "Énumération"
 
 #: objinspstrconsts.oiserror
 msgid "Error"
@@ -537,25 +507,23 @@ msgstr "Erreur"
 
 #: objinspstrconsts.oiserrordeletingaction
 msgid "Error deleting action"
-msgstr ""
+msgstr "Erreur lors de la suppression"
 
 #: objinspstrconsts.oiserrorloadingimage
 msgid "Error loading image"
 msgstr "Erreur au chargement de l'image"
 
 #: objinspstrconsts.oiserrorloadingimage2
-#, fuzzy
-#| msgid "Error loading image %s%s%s:%s%s"
 msgid "Error loading image \"%s\":%s%s"
-msgstr "Erreur au chargement de l'image %s%s%s:%s%s"
+msgstr "Erreur au chargement de l'image \"%s\" :%s%s"
 
 #: objinspstrconsts.oiserrorwhiledeletingaction
 msgid "Error while deleting action:%s%s"
-msgstr ""
+msgstr "Erreur lors de la suppression : %s%s"
 
 #: objinspstrconsts.oisevents
 msgid "Events"
-msgstr "Evénements"
+msgstr "Événements"
 
 #: objinspstrconsts.oisfavorites
 msgid "Favorites"
@@ -571,11 +539,11 @@ msgstr "Virgule flottante"
 
 #: objinspstrconsts.oishelp
 msgid "&Help"
-msgstr ""
+msgstr "&Aide"
 
 #: objinspstrconsts.oisimagelistcomponenteditor
 msgid "I&mageList Editor ..."
-msgstr ""
+msgstr "Éditeur de liste d'i&mages..."
 
 #: objinspstrconsts.oisincompatibleidentifier
 msgid "Incompatible Identifier"
@@ -587,7 +555,7 @@ msgstr "Méthode incompatible"
 
 #: objinspstrconsts.oisinputmask
 msgid "Input Mask:"
-msgstr "Masque d'entrée :"
+msgstr "Masque de saisie :"
 
 #: objinspstrconsts.oisint64
 msgid "Int64"
@@ -607,7 +575,7 @@ msgstr "Valeur de propriété incorrecte"
 
 #: objinspstrconsts.oisisnotavalidmethodname
 msgid "\"%s\" is not a valid method name."
-msgstr ""
+msgstr "\"%s\" n'est pas un nom de méthode correct."
 
 #: objinspstrconsts.oisitemsselected
 msgid "%u items selected"
@@ -615,7 +583,7 @@ msgstr "%u éléments sélectionnés"
 
 #: objinspstrconsts.oisjumptodeclarationof
 msgid "Jump to declaration of %s"
-msgstr ""
+msgstr "Aller à la déclaration de %s"
 
 #: objinspstrconsts.oisload
 msgid "&Load"
@@ -623,17 +591,15 @@ msgstr "&Charger"
 
 #: objinspstrconsts.oisloadimagedialog
 msgid "Load Image Dialog"
-msgstr "Chargement d'une image"
+msgstr "Dialogue de chargement d'image"
 
 #: objinspstrconsts.oisloadpicture
 msgid "Load picture"
 msgstr "Charger une image"
 
 #: objinspstrconsts.oismasks
-#, fuzzy
-#| msgid "Masks..."
 msgid "Masks ..."
-msgstr "Masques…"
+msgstr "Masques."
 
 #: objinspstrconsts.oismethod
 msgid "Method"
@@ -641,32 +607,32 @@ msgstr "Méthode"
 
 #: objinspstrconsts.oismixed
 msgid "(Mixed)"
-msgstr ""
+msgstr "(Mélangé)"
 
 #: objinspstrconsts.oismovedown
 msgid "Move &Down"
-msgstr ""
+msgstr "Déplacer vers le &bas"
 
 #: objinspstrconsts.oismovedownhint
 msgid "Move field down"
-msgstr ""
+msgstr "Déplacer le champ vers le bas"
 
 #: objinspstrconsts.oismoveup
 msgctxt "objinspstrconsts.oismoveup"
 msgid "Move &Up"
-msgstr ""
+msgstr "Déplacer vers le &haut"
 
 #: objinspstrconsts.oismoveuphint
 msgid "Move field up"
-msgstr ""
+msgstr "Déplacer le champ vers le haut"
 
 #: objinspstrconsts.oisnew
 msgid "&New"
-msgstr ""
+msgstr "&Nouveau"
 
 #: objinspstrconsts.oisnone
 msgid "(none)"
-msgstr "(Aucun)"
+msgstr "(aucun)"
 
 #: objinspstrconsts.oisobject
 msgid "Object"
@@ -674,7 +640,7 @@ msgstr "Objet"
 
 #: objinspstrconsts.oisobjectinspector
 msgid "Object Inspector"
-msgstr "Inspecteur d'objets"
+msgstr "Inspecteur d'objet"
 
 #: objinspstrconsts.oisok
 msgid "&OK"
@@ -682,11 +648,11 @@ msgstr "&OK"
 
 #: objinspstrconsts.oisok2
 msgid "Ok"
-msgstr "OK"
+msgstr "Ok"
 
 #: objinspstrconsts.oisopenmaskfile
 msgid "Open masks file (*.dem)"
-msgstr "Ouvrir un fichier de masques (*.dem)"
+msgstr "Ouvrir un fichier de masques (\"*.dem\")"
 
 #: objinspstrconsts.oisoptions
 msgid "Options"
@@ -694,26 +660,24 @@ msgstr "Options"
 
 #: objinspstrconsts.oisorderbackone
 msgid "Back One"
-msgstr ""
+msgstr "En arrière (un)"
 
 #: objinspstrconsts.oisorderforwardone
 msgid "Forward One"
-msgstr ""
+msgstr "En avant (un)"
 
 #: objinspstrconsts.oisordermovetoback
 msgid "Move to Back"
-msgstr ""
+msgstr "Déplacer vers l'arrière"
 
 #: objinspstrconsts.oisordermovetofront
 msgid "Move to Front"
-msgstr ""
+msgstr "Déplacer vers l'avant"
 
 #: objinspstrconsts.oispastecomponents
-#, fuzzy
-#| msgid "Paste components"
 msgctxt "objinspstrconsts.oispastecomponents"
 msgid "&Paste"
-msgstr "Coller les composants"
+msgstr "&Coller"
 
 #: objinspstrconsts.oispeopenimagefile
 msgid "Open image file"
@@ -741,19 +705,19 @@ msgstr "Enregistrement"
 
 #: objinspstrconsts.oisremovefromfavorites
 msgid "Remove from Favorites"
-msgstr "Retirer des favories"
+msgstr "Retirer des favoris"
 
 #: objinspstrconsts.oisrestricted
 msgid "Restricted"
-msgstr "Restrictions"
+msgstr "Restreint"
 
 #: objinspstrconsts.oisreverttoinherited
 msgid "Revert to inherited"
-msgstr ""
+msgstr "Restaurer vers \"inherited\""
 
 #: objinspstrconsts.oissamplemasks
 msgid "Sample Masks:"
-msgstr "Masque d'exemple :"
+msgstr "Exemples de masques :"
 
 #: objinspstrconsts.oissave
 msgid "&Save"
@@ -769,51 +733,51 @@ msgstr "Enregistrer l'image"
 
 #: objinspstrconsts.oisselectafile
 msgid "Select a file"
-msgstr "Choisissez un fichier"
+msgstr "Choisir un fichier"
 
 #: objinspstrconsts.oisselectall
 msgid "&Select all"
-msgstr ""
+msgstr "Tout &sélectionner"
 
 #: objinspstrconsts.oisselectallhint
 msgid "Select All Fields"
-msgstr ""
+msgstr "Sélectionner tous les champs"
 
 #: objinspstrconsts.oisselectedproperties
 msgid "&Selected Properties"
-msgstr ""
+msgstr "Propriétés &sélectionnées"
 
 #: objinspstrconsts.oisselectshortcut
 msgid "Select short cut"
-msgstr "Sélectionnez raccourci"
+msgstr "Choisir un raccourci"
 
 #: objinspstrconsts.oisset
 msgid "Set"
-msgstr "Ensemble"
+msgstr "Définir"
 
 #: objinspstrconsts.oissetmaxconstraints
 msgid "Set MaxHeight=%d, MaxWidth=%d"
-msgstr ""
+msgstr "Définir \"MaxHeight\" à %d et \"MaxWidth\" à %d"
 
 #: objinspstrconsts.oissetmaxconstraintshint
 msgid "Use current size as Max Constraints"
-msgstr ""
+msgstr "Utiliser la taille en cours comme contraintes maximales"
 
 #: objinspstrconsts.oissetminconstraints
 msgid "Set MinHeight=%d, MinWidth=%d"
-msgstr ""
+msgstr "Définir \"MinHeight\" à %d et \"MinWidth\" à %d"
 
 #: objinspstrconsts.oissetminconstraintshint
 msgid "Use current size as Min Constraints"
-msgstr ""
+msgstr "Utiliser la taille en cours comme contraintes minimales"
 
 #: objinspstrconsts.oissettodefault
 msgid "Set to default: %s"
-msgstr "Mis à  la valeur par défaut: %s"
+msgstr "Définir par défaut : %s"
 
 #: objinspstrconsts.oissettodefaulthint
 msgid "Set property value to Default"
-msgstr ""
+msgstr "Définir la valeur de la propriété à celle par défaut"
 
 #: objinspstrconsts.oisshowcomponenttree
 msgid "Show Component Tree"
@@ -825,11 +789,11 @@ msgstr "Afficher les conseils"
 
 #: objinspstrconsts.oisshowinfobox
 msgid "Show Information Box"
-msgstr ""
+msgstr "Afficher la boîte d'information"
 
 #: objinspstrconsts.oisshowstatusbar
 msgid "Show Status Bar"
-msgstr ""
+msgstr "Montrer la barre des tâches"
 
 #: objinspstrconsts.oissort
 msgid "Sort"
@@ -837,11 +801,11 @@ msgstr "Trier"
 
 #: objinspstrconsts.oisstdactionlisteditor
 msgid "Standard Action Classes"
-msgstr "Classes standard d'action"
+msgstr "Classes standards d'actions"
 
 #: objinspstrconsts.oisstdactionlisteditorclass
 msgid "Available Action Classes:"
-msgstr "Classes disponibles d'action :"
+msgstr "Classes d'actions disponibles  :"
 
 #: objinspstrconsts.oisstring
 msgid "String"
@@ -852,10 +816,8 @@ msgid "Strings Editor Dialog"
 msgstr "Dialogue d'éditeur de chaînes"
 
 #: objinspstrconsts.oistdactcolorselect1headline
-#, fuzzy
-#| msgid "Select &Color..."
 msgid "Select &Color ..."
-msgstr "Choisir une &couleur"
+msgstr "Choisir une &couleur..."
 
 #: objinspstrconsts.oistdactcolorselecthint
 msgid "Color Select"
@@ -883,12 +845,12 @@ msgstr "Supprimer"
 
 #: objinspstrconsts.oistdactdataseteditheadline
 msgid "&Edit"
-msgstr "&Edition"
+msgstr "&Éditer"
 
 #: objinspstrconsts.oistdactdatasetedithint
 msgctxt "objinspstrconsts.oistdactdatasetedithint"
 msgid "Edit"
-msgstr "Editer"
+msgstr "Éditer"
 
 #: objinspstrconsts.oistdactdatasetfirstheadline
 msgid "&First"
@@ -1004,7 +966,7 @@ msgstr "Coller"
 
 #: objinspstrconsts.oistdacteditselectallheadline
 msgid "Select &All"
-msgstr "&Tout sélectionner..."
+msgstr "&Tout sélectionner"
 
 #: objinspstrconsts.oistdacteditselectallshortcut
 msgid "Ctrl+A"
@@ -1036,10 +998,8 @@ msgid "Exit"
 msgstr "Quitter"
 
 #: objinspstrconsts.oistdactfileopenheadline
-#, fuzzy
-#| msgid "&Open..."
 msgid "&Open ..."
-msgstr "&Ouvrir"
+msgstr "&Ouvrir..."
 
 #: objinspstrconsts.oistdactfileopenhint
 msgctxt "objinspstrconsts.oistdactfileopenhint"
@@ -1051,18 +1011,14 @@ msgid "Ctrl+O"
 msgstr "Ctrl+O"
 
 #: objinspstrconsts.oistdactfileopenwithheadline
-#, fuzzy
-#| msgid "Open with..."
 msgid "Open with ..."
-msgstr "Ouvrir avec ..."
+msgstr "Ouvrir avec..."
 
 #: objinspstrconsts.oistdactfileopenwithhint
 msgid "Open with"
-msgstr "Ouviri avec "
+msgstr "Ouvrir avec"
 
 #: objinspstrconsts.oistdactfilesaveasheadline
-#, fuzzy
-#| msgid "Save &As..."
 msgid "Save &As ..."
 msgstr "Enregistrer &sous..."
 
@@ -1071,14 +1027,12 @@ msgid "Save As"
 msgstr "Enregistrer sous"
 
 #: objinspstrconsts.oistdactfonteditheadline
-#, fuzzy
-#| msgid "Select &Font..."
 msgid "Select &Font ..."
-msgstr "Choisir une &fonte"
+msgstr "Choisir une &police..."
 
 #: objinspstrconsts.oistdactfontedithint
 msgid "Font Select"
-msgstr "Choisir une fonte"
+msgstr "Choisir une police"
 
 #: objinspstrconsts.oistdacthelpcontentsheadline
 msgid "&Contents"
@@ -1086,7 +1040,7 @@ msgstr "&Contenus"
 
 #: objinspstrconsts.oistdacthelpcontentshint
 msgid "Help Contents"
-msgstr "Table des matières d'aide"
+msgstr "Table des matières de l'aide"
 
 #: objinspstrconsts.oistdacthelphelphelpheadline
 msgid "&Help on Help"
@@ -1106,15 +1060,13 @@ msgstr "Recherche de matière"
 
 #: objinspstrconsts.oistdactsearchfindfirstheadline
 msgid "F&ind First"
-msgstr "Chercher la &premiere occurrence"
+msgstr "Chercher la &première occurrence"
 
 #: objinspstrconsts.oistdactsearchfindfirsthint
 msgid "Find first"
-msgstr "Chercher la premiere occurrence"
+msgstr "Chercher la première occurrence"
 
 #: objinspstrconsts.oistdactsearchfindheadline
-#, fuzzy
-#| msgid "&Find..."
 msgid "&Find ..."
 msgstr "&Chercher..."
 
@@ -1147,36 +1099,28 @@ msgid "Replace"
 msgstr "Remplacer"
 
 #: objinspstrconsts.oistestdialog
-#, fuzzy
-#| msgid "Test dialog..."
 msgid "Test dialog ..."
-msgstr "Tester le dialogue"
+msgstr "Tester le dialogue..."
 
 #: objinspstrconsts.oistestinput
 msgid "Test Input"
 msgstr "Examiner l'entrée"
 
 #: objinspstrconsts.oistheidentifierisnotamethodpresscanceltoundopressign
-#, fuzzy
-#| msgid "The identifier %s%s%s is not a method.%sPress Cancel to undo,%spress Ignore to force it."
 msgid "The identifier \"%s\" is not a method.%sPress Cancel to undo,%spress Ignore to force it."
-msgstr "L'identificateur %s%s%s n'est pas une méthode.%s Appuyez sur Annuler pour annuler, appuyez sur %s Ignorer pour le forcer."
+msgstr "L'identificateur \"%s\" n'est pas une méthode.%s Appuyez sur \"Annuler\" pour annuler ; %sappuyez sur \"Ignorer\" pour le forcer."
 
 #: objinspstrconsts.oisthemethodisincompatibletothiseventpresscanceltound
-#, fuzzy
-#| msgid "The method %s%s%s is incompatible to this event (%s).%sPress Cancel to undo,%spress Ignore to force it."
 msgid "The method \"%s\" is incompatible to this event (%s).%sPress Cancel to undo,%spress Ignore to force it."
-msgstr "La méthode %s%s%s est incompatible avec cet événement (%s). %s Appuyez sur Annuler pour annuler, %s Appuyer sur Ignorer pour la forcer."
+msgstr "La méthode \"%s\"est incompatible avec cet événement (%s). %sAppuyez sur \"Annuler\" pour annuler ; %sappuyez sur \"Ignorer\" pour la forcer."
 
 #: objinspstrconsts.oisthemethodisnotpublishedpresscanceltoundopressignor
-#, fuzzy
-#| msgid "The method %s%s%s is not published.%sPress Cancel to undo,%spress Ignore to force it."
 msgid "The method \"%s\" is not published.%sPress Cancel to undo,%spress Ignore to force it."
-msgstr "La méthode %s%s%s n'est pas publié.%s Appuyer sur Annuler pour annuler, appuyez sur %s Ignorer et la forcer."
+msgstr "La méthode \"%s\" n'est pas publiée.%s Appuyez sur \"Annuler\" pour annuler ; %sappuyez sur \"Ignorer\" pour la forcer."
 
 #: objinspstrconsts.oisunabletochangeparentofcontroltonewparent
 msgid "Unable to change parent of control \"%s\" to new parent \"%s\".%s%s"
-msgstr ""
+msgstr "Impossible de changer le parent du contrôle \"%s\" en \"%s\".%s%s"
 
 #: objinspstrconsts.oisundo
 msgctxt "objinspstrconsts.oisundo"
@@ -1190,15 +1134,15 @@ msgstr "Inconnu"
 
 #: objinspstrconsts.oisunselectall
 msgid "&Unselect all"
-msgstr ""
+msgstr "&Tout déselectionner"
 
 #: objinspstrconsts.oisunselectallhint
 msgid "Unselect All"
-msgstr ""
+msgstr "Tout déselectionner"
 
 #: objinspstrconsts.oisvalue
 msgid "Value:"
-msgstr "Valeur:"
+msgstr "Valeur :"
 
 #: objinspstrconsts.oisvariant
 msgid "Variant"
@@ -1206,11 +1150,11 @@ msgstr "Variant"
 
 #: objinspstrconsts.oisviewrestrictedproperties
 msgid "View restricted properties"
-msgstr "Afficher les propiétés restreintes"
+msgstr "Afficher les propriétés restreintes"
 
 #: objinspstrconsts.oiswidgetsetrestrictions
 msgid "General widget set restrictions: "
-msgstr "Restrictions générales des Widgets"
+msgstr "Restrictions générales des ensembles graphiques : "
 
 #: objinspstrconsts.oisword
 msgid "Word"
@@ -1218,7 +1162,7 @@ msgstr "Mot"
 
 #: objinspstrconsts.oiszorder
 msgid "Z-order"
-msgstr ""
+msgstr "Ordre Z"
 
 #: objinspstrconsts.pefilter
 msgid "Filter"
@@ -1226,7 +1170,7 @@ msgstr "Filtre"
 
 #: objinspstrconsts.pefiltereditor
 msgid "Filter editor"
-msgstr "Editeur de filtre"
+msgstr "Éditeur de filtre"
 
 #: objinspstrconsts.pefiltername
 msgid "Filter name"
@@ -1234,7 +1178,7 @@ msgstr "Filtrer par nom"
 
 #: objinspstrconsts.pirsunit
 msgid "Pascal unit"
-msgstr ""
+msgstr "Unité Pascal"
 
 #: objinspstrconsts.rscdalignment
 msgid "Alignment"
@@ -1250,7 +1194,7 @@ msgstr "Légende"
 
 #: objinspstrconsts.rscdcolumneditor
 msgid "Column Editor"
-msgstr "Editeur de colonne"
+msgstr "Éditeur de colonne"
 
 #: objinspstrconsts.rscdinvalidnumericvalue
 msgid "Invalid numeric Value"
@@ -1289,50 +1233,42 @@ msgstr "Largeur"
 
 #: objinspstrconsts.sccshceditsections
 msgid "Sections Editor ..."
-msgstr "Editeur de sections"
+msgstr "Éditeur de sections..."
 
 #: objinspstrconsts.sccsiledtadd
-#, fuzzy
-#| msgid "Add ..."
 msgid "&Add ..."
-msgstr "Ajouter..."
+msgstr "&Ajouter..."
 
 #: objinspstrconsts.sccsiledtadjustment
 msgid "Adjustment"
 msgstr "Ajustement"
 
 #: objinspstrconsts.sccsiledtapply
-#, fuzzy
-#| msgid "Apply"
 msgctxt "objinspstrconsts.sccsiledtapply"
 msgid "&Apply"
-msgstr "Appliquer"
+msgstr "&Appliquer"
 
 #: objinspstrconsts.sccsiledtcaption
 msgid "ImageList Editor"
-msgstr "Editeur de listes d'images"
+msgstr "Éditeur de listes d'images"
 
 #: objinspstrconsts.sccsiledtcenter
 msgid "Center"
 msgstr "Centrer"
 
 #: objinspstrconsts.sccsiledtclear
-#, fuzzy
-#| msgid "Clear"
 msgctxt "objinspstrconsts.sccsiledtclear"
 msgid "&Clear"
-msgstr "Effacer"
+msgstr "&Effacer"
 
 #: objinspstrconsts.sccsiledtcrop
 msgid "Crop"
 msgstr "Rogner"
 
 #: objinspstrconsts.sccsiledtdelete
-#, fuzzy
-#| msgid "Delete"
 msgctxt "objinspstrconsts.sccsiledtdelete"
 msgid "&Delete"
-msgstr "Supprimer"
+msgstr "&Supprimer"
 
 #: objinspstrconsts.sccsiledtgrplcaption
 msgid "Images"
@@ -1340,21 +1276,17 @@ msgstr "Images"
 
 #: objinspstrconsts.sccsiledtgrprcaption
 msgid "Selected Image"
-msgstr "Image sélectionné:"
+msgstr "Image sélectionnée :"
 
 #: objinspstrconsts.sccsiledtmovedown
-#, fuzzy
-#| msgid "Move Down"
 msgctxt "objinspstrconsts.sccsiledtmovedown"
 msgid "Move D&own"
-msgstr "Déplacer vers le bas"
+msgstr "Déplacer vers le &bas"
 
 #: objinspstrconsts.sccsiledtmoveup
-#, fuzzy
-#| msgid "Move Up"
 msgctxt "objinspstrconsts.sccsiledtmoveup"
 msgid "Move &Up"
-msgstr "Déplacer vers le haut"
+msgstr "Déplacer vers le &haut"
 
 #: objinspstrconsts.sccsiledtnone
 msgid "None"
@@ -1362,22 +1294,18 @@ msgstr "Aucun"
 
 #: objinspstrconsts.sccsiledtopendialog
 msgid "Add Images"
-msgstr "&Ajouter des images"
+msgstr "Ajouter des images"
 
 #: objinspstrconsts.sccsiledtransparentcolor
 msgid "Transparent Color:"
-msgstr "Couleur transparente :"
+msgstr "Couleur de transparence :"
 
 #: objinspstrconsts.sccsiledtsave
-#, fuzzy
-#| msgid "Save ..."
 msgctxt "objinspstrconsts.sccsiledtsave"
 msgid "&Save ..."
-msgstr "Enregistrer..."
+msgstr "&Enregistrer..."
 
 #: objinspstrconsts.sccsiledtsaveall
-#, fuzzy
-#| msgid "Save All..."
 msgid "Save All ..."
 msgstr "Tout enregistrer..."
 
@@ -1387,18 +1315,16 @@ msgstr "Enregistrer l'image"
 
 #: objinspstrconsts.sccsiledtstretch
 msgid "Stretch"
-msgstr "Etirer"
+msgstr "Étirer"
 
 #: objinspstrconsts.sccslvcoledt
 msgid "Edit Columns ..."
-msgstr "Editer les colonnes"
+msgstr "Éditer les colonnes..."
 
 #: objinspstrconsts.sccslvedt
-#, fuzzy
-#| msgid "Edit Items..."
 msgctxt "objinspstrconsts.sccslvedt"
 msgid "Edit Items ..."
-msgstr "Editer les éléments du ListView..."
+msgstr "Éditer les éléments..."
 
 #: objinspstrconsts.sccslvedtapply
 msgctxt "objinspstrconsts.sccslvedtapply"
@@ -1407,7 +1333,7 @@ msgstr "Appliquer"
 
 #: objinspstrconsts.sccslvedtcaption
 msgid "ListView Items Editor"
-msgstr "Editeur d'éléments ListView..."
+msgstr "Éditeur d'éléments \"ListView\"..."
 
 #: objinspstrconsts.sccslvedtdelete
 msgctxt "objinspstrconsts.sccslvedtdelete"
@@ -1417,7 +1343,7 @@ msgstr "Supprimer"
 #: objinspstrconsts.sccslvedtgrplcaption
 msgctxt "objinspstrconsts.sccslvedtgrplcaption"
 msgid "Items"
-msgstr "Eléments"
+msgstr "Éléments"
 
 #: objinspstrconsts.sccslvedtgrprcaption
 msgctxt "objinspstrconsts.sccslvedtgrprcaption"
@@ -1427,7 +1353,7 @@ msgstr "Propriétés de l'élément"
 #: objinspstrconsts.sccslvedtitem
 msgctxt "objinspstrconsts.sccslvedtitem"
 msgid "Item"
-msgstr "Elément"
+msgstr "Élément"
 
 #: objinspstrconsts.sccslvedtlabelcaption
 msgid "Caption:"
@@ -1436,12 +1362,12 @@ msgstr "Légende :"
 #: objinspstrconsts.sccslvedtlabelimageindex
 msgctxt "objinspstrconsts.sccslvedtlabelimageindex"
 msgid "Image Index:"
-msgstr "Index images :"
+msgstr "Index d'image :"
 
 #: objinspstrconsts.sccslvedtlabelstateindex
 msgctxt "objinspstrconsts.sccslvedtlabelstateindex"
 msgid "State Index:"
-msgstr "Etat de l'index :"
+msgstr "État de l'index :"
 
 #: objinspstrconsts.sccslvedtnewitem
 msgctxt "objinspstrconsts.sccslvedtnewitem"
@@ -1451,21 +1377,19 @@ msgstr "Nouvel élément"
 #: objinspstrconsts.sccslvedtnewsubitem
 msgctxt "objinspstrconsts.sccslvedtnewsubitem"
 msgid "New SubItem"
-msgstr "Nouvel sous-élément"
+msgstr "Nouveau sous-élément"
 
 #: objinspstrconsts.sccsmaskeditor
 msgid "Edit Mask Editor ..."
-msgstr ""
+msgstr "Éditeur de masque d'édition..."
 
 #: objinspstrconsts.sccssbeditpanels
 msgid "Panels Editor ..."
-msgstr "Editeur de panels"
+msgstr "Éditeur de panneaux..."
 
 #: objinspstrconsts.sccssgedt
-#, fuzzy
-#| msgid "Edit StringGrid..."
 msgid "Edit StringGrid ..."
-msgstr "Editer la grille de chaines"
+msgstr "Éditer la grille de chaînes"
 
 #: objinspstrconsts.sccssgedtapply
 msgctxt "objinspstrconsts.sccssgedtapply"
@@ -1474,7 +1398,7 @@ msgstr "Appliquer"
 
 #: objinspstrconsts.sccssgedtcaption
 msgid "StringGrid Editor"
-msgstr "Editeur de tableau"
+msgstr "Éditeur de grille de chaînes"
 
 #: objinspstrconsts.sccssgedtclean
 msgid "Clean"
@@ -1482,17 +1406,15 @@ msgstr "Nettoyer"
 
 #: objinspstrconsts.sccssgedtgrp
 msgid "String Grid"
-msgstr "Grille de chaîne"
+msgstr "Grille de chaînes"
 
 #: objinspstrconsts.sccssgedtload
-#, fuzzy
-#| msgid "Load..."
 msgid "Load ..."
 msgstr "Charger..."
 
 #: objinspstrconsts.sccssgedtmoverowscols
 msgid "Move Rows/Cols"
-msgstr "Déplacer les Rangées/Colonnes"
+msgstr "Déplacer les rangées/colonnes"
 
 #: objinspstrconsts.sccssgedtopendialog
 msgctxt "objinspstrconsts.sccssgedtopendialog"
@@ -1500,8 +1422,6 @@ msgid "Open"
 msgstr "Ouvrir"
 
 #: objinspstrconsts.sccssgedtsave
-#, fuzzy
-#| msgid "Save..."
 msgctxt "objinspstrconsts.sccssgedtsave"
 msgid "Save ..."
 msgstr "Enregistrer..."
@@ -1512,11 +1432,9 @@ msgid "Save"
 msgstr "Enregistrer"
 
 #: objinspstrconsts.sccstredt
-#, fuzzy
-#| msgid "Edit Items..."
 msgctxt "objinspstrconsts.sccstredt"
 msgid "Edit Items ..."
-msgstr "Editer les éléments du TreeView..."
+msgstr "Éditer les éléments..."
 
 #: objinspstrconsts.sccstredtapply
 msgctxt "objinspstrconsts.sccstredtapply"
@@ -1525,7 +1443,7 @@ msgstr "Appliquer"
 
 #: objinspstrconsts.sccstredtcaption
 msgid "TreeView Items Editor"
-msgstr "Editeur d'éléments TreeView"
+msgstr "Éditeur d'éléments \"TreeView\""
 
 #: objinspstrconsts.sccstredtdelete
 msgctxt "objinspstrconsts.sccstredtdelete"
@@ -1535,7 +1453,7 @@ msgstr "Supprimer"
 #: objinspstrconsts.sccstredtgrplcaption
 msgctxt "objinspstrconsts.sccstredtgrplcaption"
 msgid "Items"
-msgstr "Eléments"
+msgstr "Éléments"
 
 #: objinspstrconsts.sccstredtgrprcaption
 msgctxt "objinspstrconsts.sccstredtgrprcaption"
@@ -1545,7 +1463,7 @@ msgstr "Propriétés des éléments"
 #: objinspstrconsts.sccstredtitem
 msgctxt "objinspstrconsts.sccstredtitem"
 msgid "Item"
-msgstr "Elément"
+msgstr "Élément"
 
 #: objinspstrconsts.sccstredtlabelimageindex
 msgctxt "objinspstrconsts.sccstredtlabelimageindex"
@@ -1554,7 +1472,7 @@ msgstr "Index d'image :"
 
 #: objinspstrconsts.sccstredtlabelselindex
 msgid "Selected Index:"
-msgstr "Indexe sélectionné:"
+msgstr "Index sélectionné :"
 
 #: objinspstrconsts.sccstredtlabelstateindex
 msgctxt "objinspstrconsts.sccstredtlabelstateindex"
@@ -1563,7 +1481,7 @@ msgstr "Index d'état :"
 
 #: objinspstrconsts.sccstredtlabeltext
 msgid "Text:"
-msgstr "Texte:"
+msgstr "Texte :"
 
 #: objinspstrconsts.sccstredtload
 msgid "Load"
@@ -1572,7 +1490,7 @@ msgstr "Charger"
 #: objinspstrconsts.sccstredtnewitem
 msgctxt "objinspstrconsts.sccstredtnewitem"
 msgid "New Item"
-msgstr "Ajouter un élément"
+msgstr "Nouvel élément"
 
 #: objinspstrconsts.sccstredtnewsubitem
 msgctxt "objinspstrconsts.sccstredtnewsubitem"
@@ -1600,7 +1518,7 @@ msgstr "Touche d'accroche"
 
 #: objinspstrconsts.s_addassingle
 msgid "Add as single"
-msgstr "Ajouter comme simple"
+msgstr "Ajouter comme unique"
 
 #: objinspstrconsts.s_splitimage
 msgid "Split image"
@@ -1612,37 +1530,37 @@ msgstr "Voulez-vous dédoubler l'image ?"
 
 #: objinspstrconsts.tbcenewbutton
 msgid "New Button"
-msgstr ""
+msgstr "Nouveau bouton"
 
 #: objinspstrconsts.tbcenewcheckbutton
 msgid "New CheckButton"
-msgstr ""
+msgstr "Nouveau bouton à cocher"
 
 #: objinspstrconsts.tbcenewdivider
 msgid "New Divider"
-msgstr ""
+msgstr "Nouveau diviseur"
 
 #: objinspstrconsts.tbcenewseparator
 msgid "New Separator"
-msgstr ""
+msgstr "Nouveau séparateur"
 
 #: objinspstrconsts.tccesaddtab
 msgid "Add tab"
-msgstr "Ajouter Tab"
+msgstr "Ajouter un onglet"
 
 #: objinspstrconsts.tccesdeletetab
 msgid "Delete tab"
-msgstr "Supprimer une Tabulation"
+msgstr "Supprimer un onglet"
 
 #: objinspstrconsts.tccesinserttab
 msgid "Insert tab"
-msgstr "Insérer une tabulation"
+msgstr "Insérer un onglet"
 
 #: objinspstrconsts.tccesmovetableft
 msgid "Move tab left"
-msgstr "Déplacer la tabulation vers la gauche"
+msgstr "Déplacer l'onglet vers la gauche"
 
 #: objinspstrconsts.tccesmovetabright
 msgid "Move tab right"
-msgstr "Déplacer la tabulation vers la droite"
+msgstr "Déplacer l'onglet vers la droite"
 

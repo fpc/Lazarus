@@ -2,24 +2,24 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-07-09 08:47+0100\n"
-"Last-Translator: Laurent Jacques <wile64@gmail.com>\n"
+"PO-Revision-Date: 2015-04-13 11:26+0100\n"
+"Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: fr\n"
+"X-Generator: Poedit 1.7.5\n"
 
 #: idetemplateproject.snewfromtemplate
 msgid "New project from template"
 msgstr "Nouveau projet depuis un modèle"
 
 #: idetemplateproject.sprojecttemplatesettings
-#, fuzzy
-#| msgid "Project templates options"
 msgid "Project templates options ..."
-msgstr "Options modèle de projet"
+msgstr "Options des modèles de projet..."
 
 #: idetemplateproject.stemplatecategory
 msgid "Template projects"
-msgstr ""
+msgstr "Projets modèles"
 

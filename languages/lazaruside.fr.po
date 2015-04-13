@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: lazaruside\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2015-04-12 17:51+0100\n"
+"PO-Revision-Date: 2015-04-13 22:03+0100\n"
 "Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
 "Language-Team: français\n"
 "MIME-Version: 1.0\n"
@@ -9611,9 +9611,8 @@ msgid "Initialize Local Variable"
 msgstr "Initialiser la variable locale"
 
 #: lazarusidestrconsts.lisinordertocreateacleancopyoftheprojectpackageallfil
-#, fuzzy,badformat
 msgid "In order to create a clean copy of the project/package, all files in the following directory will be deleted and all its content will be lost.%sDelete all files in \"%s\"?"
-msgstr "Afin de créer une copie propre du projet/paquet, tous les fichiers du répertoire suivant seront supprimés et tout son contenu sera perdu.%Voulez-vous supprimer tous les fichiers de \"%s\" ?"
+msgstr "Afin de créer une copie propre du projet/paquet, tous les fichiers du répertoire suivant seront supprimés et tout son contenu sera perdu.%sVoulez-vous supprimer tous les fichiers de \"%s\" ?"
 
 #: lazarusidestrconsts.lisinsert
 msgctxt "lazarusidestrconsts.lisinsert"
@@ -14173,9 +14172,8 @@ msgid "%s%sUnit Name: \"%s\""
 msgstr "%s%sNom d'unité : \"%s\""
 
 #: lazarusidestrconsts.lispkgsysunitwasnotfoundinthelpkfileprobablythislpkfilewasn
-#, fuzzy,badformat
 msgid "Unit \"%s\" was not found in the lpk file.%sProbably this lpk file was not used for building this IDE. Or the package misuses the procedure RegisterUnit."
-msgstr "L'unité \"%s\" n'a pas été trouvée dans le fichier \"lpk\". Il est possible que ce fichier \"lpk\" n'ait pas été utilisé pour créer cet EDI ou que le paquet fait un mauvais usage de la procédure \"RegisterUnit\"."
+msgstr "L'unité \"%s\" n'a pas été trouvée dans le fichier \"lpk\".%sIl est possible que ce fichier \"lpk\" n'ait pas été utilisé pour créer cet EDI ou que le paquet fasse un mauvais usage de la procédure \"RegisterUnit\"."
 
 #: lazarusidestrconsts.lispkgsysunitwasremovedfrompackagelpk
 msgctxt "lazarusidestrconsts.lispkgsysunitwasremovedfrompackagelpk"
@@ -14587,9 +14585,8 @@ msgid "Project %s raised exception class '%s' with message:%s%s"
 msgstr "Le projet %s a levé une classe d'exception \"%s\"' avec le message :%s%s"
 
 #: lazarusidestrconsts.lisprojectsraisedexceptioninfileaddress
-#, fuzzy,badformat
 msgid "%0:s%0:s In file '%1:s' at address %2:x"
-msgstr "%0:s%0:s dans le fichier '\"1:s\" à l'adresse %2:x"
+msgstr "%0:s%0:s dans le fichier \"%1:s\" à l'adresse %2:x"
 
 #: lazarusidestrconsts.lisprojectsraisedexceptioninfileline
 msgid "%0:s%0:s In file '%1:s' at line %2:d"

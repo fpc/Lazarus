@@ -5,13 +5,15 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: \n"
-"Last-Translator: paulatreides <lesudiste11@gmail.com>\n"
+"PO-Revision-Date: 2015-03-12 11:53+0100\n"
+"Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
 "Language-Team: \n"
+"Language: fr\n"
+"X-Generator: Poedit 1.7.5\n"
 
 #: maincalleditor.ceractivereport
 msgid "Active report: %s"
-msgstr "Rapport Actif: %s"
+msgstr "Rapport actif : %s"
 
 #: maincalleditor.cerappcaption
 msgctxt "maincalleditor.cerappcaption"
@@ -21,12 +23,12 @@ msgstr "Suite de tests LazReport "
 #: maincalleditor.cercomposite
 msgctxt "maincalleditor.cercomposite"
 msgid "Composite"
-msgstr ""
+msgstr "Composite"
 
 #: maincalleditor.cereditreport
 msgctxt "maincalleditor.cereditreport"
 msgid "Edit Report"
-msgstr "Edite Rapport"
+msgstr "Éditer el rapport"
 
 #: maincalleditor.cerhintcloseapp
 msgid "Close application"
@@ -34,11 +36,11 @@ msgstr "Fermer l'application"
 
 #: maincalleditor.cerhintcomposite
 msgid "This Action will Load and Preview a composite Report"
-msgstr ""
+msgstr "Cette action chargera un rapport composite et en fournira un aperçu"
 
 #: maincalleditor.cerhinteditreport
 msgid "Edit active report"
-msgstr "Edite Rapport Actif"
+msgstr "Éditer le rapport actif"
 
 #: maincalleditor.cerhintnewreport
 msgid "Create and edit a empty report"
@@ -46,23 +48,23 @@ msgstr "Créer et éditer  à partir d'un rapport vide"
 
 #: maincalleditor.cerhintopenreport
 msgid "Open an existing report"
-msgstr "Ouvre un rapport existant"
+msgstr "Ouvrir un rapport existant"
 
 #: maincalleditor.cerhintprevgrid
 msgid "Print preview current DbGrid content"
-msgstr "Affiche l'aperçu du contenu du composant DbGrid en cours"
+msgstr "Afficher l'aperçu du contenu de la \"DbGrid\" en cours"
 
 #: maincalleditor.cerhintprevreport
 msgid "Preview active report"
-msgstr "Aperçu Rapport Actif"
+msgstr "Aperçu du rapport actif"
 
 #: maincalleditor.cerhintprnreport
 msgid "Print directly the active report (i.e. without preview)"
-msgstr "Imprime directement le rapport actif (c.a.d. sans aperçu)"
+msgstr "Imprimer directement le rapport actif (sans aperçu)"
 
 #: maincalleditor.cerhintthumbnails
 msgid "This Action will Load and Preview a thumbnails Report"
-msgstr "Cette action va charger et donner l'aperçu d'un rapport sous forme de vignettes"
+msgstr "Cette action va charger un rapport et en donner l'aperçu sous forme de vignettes"
 
 #: maincalleditor.cerindex
 msgctxt "maincalleditor.cerindex"
@@ -71,11 +73,11 @@ msgstr "Index"
 
 #: maincalleditor.cerindexfields
 msgid "Index Fields: %s"
-msgstr "Champ indexé: %s"
+msgstr "Champs indexés : %s"
 
 #: maincalleditor.cernewreport
 msgid "New report"
-msgstr "Créer Rapport"
+msgstr "Créer un rapport"
 
 #: maincalleditor.cernone
 msgid "none"
@@ -87,27 +89,27 @@ msgstr "Cette fonctionalité n'est pas encore implémentée"
 
 #: maincalleditor.ceropenreport
 msgid "Open report"
-msgstr "Ouvrir Rapport"
+msgstr "Ouvrir un rapport"
 
 #: maincalleditor.ceropenreportfirst
 msgid "Open report first"
-msgstr "Ouvrir Rapport en premier"
+msgstr "Ouvrir un rapport en premier"
 
 #: maincalleditor.cerpreparefailed
 msgid "PrepareReport Failed!"
-msgstr "Echec PrepareReport!"
+msgstr "Échec de \"PrepareReport\" !"
 
 #: maincalleditor.cerpreviewreport
 msgid "Preview report"
-msgstr "Aperçu Rapport"
+msgstr "Aperçu du rapport"
 
 #: maincalleditor.cerprintgrid
 msgid "Print grid"
-msgstr "Aperçu DBGrid"
+msgstr "Imprimer la grille"
 
 #: maincalleditor.cerprintreport
 msgid "Print report"
-msgstr "Imprime Rapport"
+msgstr "Imprimer le rapport"
 
 #: maincalleditor.certhumbnails
 msgctxt "maincalleditor.certhumbnails"
@@ -116,12 +118,12 @@ msgstr "Vignettes"
 
 #: tfrmcustompreview.frmcustompreview.caption
 msgid "frmCustomPreview"
-msgstr ""
+msgstr "frmCustomPreview"
 
 #: tfrmcustompreview.frpreview1.caption
 msgctxt "TFRMCUSTOMPREVIEW.FRPREVIEW1.CAPTION"
 msgid "frPreview1"
-msgstr ""
+msgstr "frPreview1"
 
 #: tfrmmain.accclose.caption
 msgctxt "TFRMMAIN.ACCCLOSE.CAPTION"
@@ -131,16 +133,16 @@ msgstr "Quitter"
 #: tfrmmain.acccomposite.caption
 msgctxt "TFRMMAIN.ACCCOMPOSITE.CAPTION"
 msgid "Composite"
-msgstr ""
+msgstr "Composite"
 
 #: tfrmmain.acccustompreview.caption
 msgid "Custom Preview"
-msgstr ""
+msgstr "Aperçu personnalisé"
 
 #: tfrmmain.acceditreport.caption
 msgctxt "TFRMMAIN.ACCEDITREPORT.CAPTION"
 msgid "Edit Report"
-msgstr "Edite Rapport"
+msgstr "Édite le rapport"
 
 #: tfrmmain.accexporttocsv.caption
 msgctxt "TFRMMAIN.ACCEXPORTTOCSV.CAPTION"
@@ -149,12 +151,12 @@ msgstr "Exporter vers CSV"
 
 #: tfrmmain.accexporttodbg.caption
 msgid "Export Debug"
-msgstr ""
+msgstr "Débogage de l'exportation"
 
 #: tfrmmain.accexporttohtml.caption
 msgctxt "TFRMMAIN.ACCEXPORTTOHTML.CAPTION"
 msgid "Export to html"
-msgstr "Exporter vers html"
+msgstr "Exporter vers HTML"
 
 #: tfrmmain.accexporttotext.caption
 msgctxt "TFRMMAIN.ACCEXPORTTOTEXT.CAPTION"
@@ -163,23 +165,23 @@ msgstr "Exporter vers texte"
 
 #: tfrmmain.accnewreport.caption
 msgid "New Report"
-msgstr "Conception Rapport"
+msgstr "Nouveau rapport"
 
 #: tfrmmain.accopenreport.caption
 msgid "Open Report"
-msgstr "Ouvrir Rapport"
+msgstr "Ouvrir le rapport"
 
 #: tfrmmain.accpreviewreport.caption
 msgid "Preview Report"
-msgstr "Aperçu Rapport"
+msgstr "Aperçu du rapport"
 
 #: tfrmmain.accprintgrid.caption
 msgid "Print Grid"
-msgstr "Aperçu DBGrid"
+msgstr "Imprimer la \"DBGrid\""
 
 #: tfrmmain.accprintreport.caption
 msgid "Print Report"
-msgstr "Imprime Rapport"
+msgstr "Imprimer le rapport"
 
 #: tfrmmain.accthumbnails.caption
 msgctxt "TFRMMAIN.ACCTHUMBNAILS.CAPTION"
@@ -188,11 +190,11 @@ msgstr "Vignettes"
 
 #: tfrmmain.btnexportlast.caption
 msgid "Repeat Export"
-msgstr ""
+msgstr "Répéter l'exportation"
 
 #: tfrmmain.btnmasterdetail.caption
 msgid "Master-Detail Test"
-msgstr ""
+msgstr "Test maître-détails"
 
 #: tfrmmain.caption
 msgctxt "tfrmmain.caption"
@@ -201,7 +203,7 @@ msgstr "Suite de tests LazReport "
 
 #: tfrmmain.lblexpr.caption
 msgid "Expression"
-msgstr ""
+msgstr "Expression"
 
 #: tfrmmain.lblindex.caption
 msgctxt "TFRMMAIN.LBLINDEX.CAPTION"
