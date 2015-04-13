@@ -144,11 +144,13 @@ type
     constructor Create(AnOwner: TControlSelection; APersistent: TPersistent);
     destructor Destroy; override;
     procedure SetBounds(ALeft, ATop, AWidth, AHeight: integer);
+    function GetBounds: TRect;
     procedure SetFormRelativeBounds(ALeft, ATop, AWidth, AHeight: integer);
     procedure GetFormRelativeBounds(out ALeft, ATop, AWidth, AHeight: integer;
                                     StoreAsUsed: boolean = false);
     procedure SetUsedBounds(ALeft, ATop, AWidth, AHeight: integer);
     procedure SaveBounds;
+    function BoundsHaveChangedSinceLastResize: boolean;
     function IsTopLvl: boolean;
     function ChildInSelection: boolean;
     function ParentInSelection: boolean;
@@ -426,7 +428,8 @@ type
     function IsResizing: boolean;
     procedure BeginResizing(IsStartUndo: boolean);
     procedure EndResizing(ApplyUserBounds, ActionIsProcess: boolean);
-    procedure SaveBounds;
+    procedure SaveBounds(OnlyIfChanged: boolean = true); // store current bounds as base for resizing
+    function BoundsHaveChangedSinceLastResize: boolean;
     procedure UpdateBounds;
     procedure RestoreBounds;
 
@@ -642,6 +645,24 @@ begin
   end;
 end;
 
+function TSelectedControl.GetBounds: TRect;
+var
+  aLeft: integer;
+  aTop: integer;
+  aWidth: integer;
+  aHeight: integer;
+begin
+  if FIsTComponent then begin
+    if Owner.Mediator<>nil then begin
+      Owner.Mediator.GetBounds(TComponent(FPersistent),Result);
+    end else begin
+      GetComponentBounds(TComponent(FPersistent),aLeft,aTop,aWidth,aHeight);
+      Result:=Bounds(aLeft,aTop,aWidth,aHeight);
+    end;
+  end else
+    Result:=Rect(0,0,0,0);
+end;
+
 procedure TSelectedControl.SetFormRelativeBounds(ALeft, ATop, AWidth,
   AHeight: integer);
 var
@@ -740,6 +761,14 @@ begin
                        FOldLeft,FOldTop,FOldWidth,FOldHeight);
     FOldFormRelativeLeftTop:=GetParentFormRelativeTopLeft(TComponent(FPersistent));
   end;
+end;
+
+function TSelectedControl.BoundsHaveChangedSinceLastResize: boolean;
+var
+  r: TRect;
+begin
+  r:=GetBounds;
+  Result:=not CompareRect(@r,@FMovedResizedBounds);
 end;
 
 function TSelectedControl.IsTopLvl: boolean;
@@ -2138,13 +2167,15 @@ begin
   FControls[Index]:=ASelectedControl;
 end;
 
-procedure TControlSelection.SaveBounds;
+procedure TControlSelection.SaveBounds(OnlyIfChanged: boolean);
 var
   i: integer;
   g: TGrabIndex;
 begin
   if cssDoNotSaveBounds in FStates then exit;
   //debugln('TControlSelection.SaveBounds');
+  if OnlyIfChanged and not BoundsHaveChangedSinceLastResize then exit;
+
   if FUpdateLock > 0 then
   begin
     Include(FStates, cssBoundsNeedsSaving);
@@ -2158,6 +2189,16 @@ begin
   FOldWidth := FRealWidth;
   FOldHeight := FRealHeight;
   Exclude(FStates, cssBoundsNeedsSaving);
+end;
+
+function TControlSelection.BoundsHaveChangedSinceLastResize: boolean;
+var
+  i: Integer;
+begin
+  for i:=0 to FControls.Count-1 do
+    if Items[i].BoundsHaveChangedSinceLastResize then
+      exit(true);
+  Result:=false;
 end;
 
 function TControlSelection.IsResizing: boolean;
