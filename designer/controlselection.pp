@@ -627,12 +627,12 @@ end;
 
 procedure TSelectedControl.SetBounds(ALeft, ATop, AWidth, AHeight: integer);
 begin
+  FCachedLeft:=ALeft;
+  FCachedTop:=ATop;
+  FCachedWidth:=AWidth;
+  FCachedHeight:=AHeight;
   if FIsTControl then begin
     TControl(FPersistent).SetBounds(ALeft, ATop, AWidth, AHeight);
-    FCachedLeft:=ALeft;
-    FCachedTop:=ATop;
-    FCachedWidth:=AWidth;
-    FCachedHeight:=AHeight;
   end else if FIsNonVisualComponent then begin
     if (Left<>ALeft) or (Top<>ATop) then begin
       //debugln(['TSelectedControl.SetBounds Old=',Left,',',Top,' New=',ALeft,',',ATop]);
@@ -643,10 +643,6 @@ begin
       //debugln(['TSelectedControl.SetBounds Now=',Left,',',Top,' Expected=',ALeft,',',ATop]);
     end;
   end else if (Owner.Mediator<>nil) and FIsTComponent then begin
-    FCachedLeft:=ALeft;
-    FCachedTop:=ATop;
-    FCachedWidth:=AWidth;
-    FCachedHeight:=AHeight;
     Owner.Mediator.SetBounds(TComponent(FPersistent),Bounds(ALeft,ATop,AWidth,AHeight));
   end;
 end;
@@ -1347,6 +1343,7 @@ begin
           and (not ComponentBoundsDesignable(TComponent(Item.Persistent))) then
             continue;
           OldLeftTop:=Items[i].OldFormRelativeLeftTop;
+          //if i=0 then debugln(['TControlSelection.DoApplyUserBounds OldLeftTop=',dbgs(OldLeftTop),' FWidth=',FWidth,' FHeight=',FHeight]);
           NewLeft:=FLeft + round((single(OldLeftTop.X-FOldLeft) * single(FWidth))/single(FOldWidth));
           NewTop:=FTop + round((single(OldLeftTop.Y-FOldTop) * single(FHeight))/single(FOldHeight));
           NewWidth:=round(single(Item.OldWidth*FWidth)/single(FOldWidth));
