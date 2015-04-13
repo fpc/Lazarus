@@ -1,18 +1,16 @@
 msgid ""
 msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: \n"
-"POT-Creation-Date: \n"
+"POT-Creation-Date: 2015-03-12 11:53+0100\n"
 "PO-Revision-Date: 2015-03-12 11:53+0100\n"
-"\n"
 "Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=iso-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: fr\n"
 "X-Generator: Poedit 1.7.5\n"
 
-#: synunireg.sedituni
-msgid "Edit ..."
-msgstr "Éditer..."
-
+#: lazcstrconsts.lcgnuprojectcandccompiler
+msgid "GNU project C and C++ compiler"
+msgstr "Compilateur C et C++ - Projet GNU"
