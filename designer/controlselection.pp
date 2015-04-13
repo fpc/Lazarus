@@ -111,11 +111,6 @@ type
 
   TSelectedControl = class
   private
-    FCachedFormRelativeLeftTop: TPoint;
-    FCachedHeight: integer;
-    FCachedLeft: integer;
-    FCachedTop: integer;
-    FCachedWidth: integer;
     FDesignerForm: TCustomForm;
     FFlags: TSelectedControlFlags;
     FIsNonVisualComponent: boolean;
@@ -131,7 +126,6 @@ type
     FOldWidth: integer;
     FOwner: TControlSelection;
     FPersistent: TPersistent;
-    FUseCache: boolean;
     FUsedHeight: integer;
     FUsedLeft: integer;
     FUsedTop: integer;
@@ -142,7 +136,6 @@ type
     function GetTop: integer;
     procedure SetTop(ATop: integer);
     function GetWidth: integer;
-    procedure SetUseCache(const AValue: boolean);
     procedure SetWidth(AWidth: integer);
     function GetHeight: integer;
     procedure SetHeight(AHeight: integer);
@@ -155,7 +148,6 @@ type
                                     StoreAsUsed: boolean = false);
     procedure SetUsedBounds(ALeft, ATop, AWidth, AHeight: integer);
     procedure SaveBounds;
-    procedure UpdateCache;
     function IsTopLvl: boolean;
     function ChildInSelection: boolean;
     function ParentInSelection: boolean;
@@ -178,7 +170,6 @@ type
     property UsedWidth: integer read FUsedWidth write FUsedWidth;
     property UsedHeight: integer read FUsedHeight write FUsedHeight;
     property Flags: TSelectedControlFlags read FFlags write FFlags;
-    property UseCache: boolean read FUseCache write SetUseCache;
     property IsVisible: boolean read FIsVisible;
     property IsTComponent: boolean read FIsTComponent;
     property IsTControl: boolean read FIsTControl;
@@ -627,10 +618,6 @@ end;
 
 procedure TSelectedControl.SetBounds(ALeft, ATop, AWidth, AHeight: integer);
 begin
-  FCachedLeft:=ALeft;
-  FCachedTop:=ATop;
-  FCachedWidth:=AWidth;
-  FCachedHeight:=AHeight;
   if FIsTControl then begin
     TControl(FPersistent).SetBounds(ALeft, ATop, AWidth, AHeight);
   end else if FIsNonVisualComponent then begin
@@ -749,14 +736,6 @@ begin
   end;
 end;
 
-procedure TSelectedControl.UpdateCache;
-begin
-  if not FIsTComponent then exit;
-  GetComponentBounds(TComponent(FPersistent),
-                     FCachedLeft,FCachedTop,FCachedWidth,FCachedHeight);
-  FCachedFormRelativeLeftTop:= GetParentFormRelativeTopLeft(TComponent(FPersistent));
-end;
-
 function TSelectedControl.IsTopLvl: boolean;
 begin
   Result:=(not FIsTComponent)
@@ -805,9 +784,7 @@ function TSelectedControl.GetLeft: integer;
 var
   r: TRect;
 begin
-  if FUseCache then
-    Result:=FCachedLeft
-  else if FIsTComponent then begin
+  if FIsTComponent then begin
     if Owner.Mediator<>nil then begin
       Owner.Mediator.GetBounds(TComponent(FPersistent),r);
       Result:=r.Left;
@@ -836,17 +813,12 @@ begin
       TComponent(FPersistent).DesignInfo := LeftTopToDesignInfo(ALeft, Top);
     end;
   end;
-     
-  FCachedLeft := ALeft;
 end;
 
 function TSelectedControl.GetTop: integer;
 var
   r: TRect;
 begin
-  if FUseCache then
-    Result := FCachedTop
-  else 
   if FIsTComponent then begin
     if Owner.Mediator<>nil then begin
       Owner.Mediator.GetBounds(TComponent(FPersistent),r);
@@ -876,8 +848,6 @@ begin
       TComponent(FPersistent).DesignInfo := LeftTopToDesignInfo(Left, ATop);
     end;
   end;
-    
-  FCachedTop := ATop;
 end;
 
 function TSelectedControl.GetWidth: integer;
@@ -885,9 +855,6 @@ var
   r: TRect;
 begin
   Result := 0;
-  if FUseCache then
-    Result := FCachedWidth
-  else 
   if FIsTComponent then begin
     if Owner.Mediator<>nil then begin
       Owner.Mediator.GetBounds(TComponent(FPersistent),r);
@@ -896,13 +863,6 @@ begin
       Result := GetComponentWidth(TComponent(FPersistent));
     end;
   end;
-end;
-
-procedure TSelectedControl.SetUseCache(const AValue: boolean);
-begin
-  if FUseCache=AValue then exit;
-  FUseCache:=AValue;
-  if FUseCache then UpdateCache;
 end;
 
 procedure TSelectedControl.SetWidth(AWidth: integer);
@@ -916,16 +876,12 @@ begin
     r.Right:=r.Left+AWidth;
     Owner.Mediator.SetBounds(TComponent(FPersistent),r);
   end;
-  FCachedWidth:=AWidth;
 end;
 
 function TSelectedControl.GetHeight: integer;
 var
   r: TRect;
 begin
-  if FUseCache then
-    Result := FCachedHeight
-  else 
   if FIsTComponent then begin
     if Owner.Mediator<>nil then begin
       Owner.Mediator.GetBounds(TComponent(FPersistent),r);
@@ -948,7 +904,6 @@ begin
     r.Bottom:=r.Top+AHeight;
     Owner.Mediator.SetBounds(TComponent(FPersistent),r);
   end;
-  FCachedHeight:=AHeight;
 end;
 
 
