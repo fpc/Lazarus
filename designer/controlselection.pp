@@ -119,6 +119,7 @@ type
     FIsTWinControl: boolean;
     FIsVisible: boolean;
     FMarkerPaintedBounds: TRect;
+    FMovedResizedBounds: TRect;
     FOldFormRelativeLeftTop: TPoint;
     FOldHeight: integer;
     FOldLeft: integer;
@@ -155,20 +156,26 @@ type
 
     property Persistent: TPersistent read FPersistent;
     property Owner: TControlSelection read FOwner;
+    // current bounds
     property Left: integer read GetLeft write SetLeft;
     property Top: integer read GetTop write SetTop;
     property Width: integer read GetWidth write SetWidth;
     property Height: integer read GetHeight write SetHeight;
+    // bounds at start of moving/resizing
     property OldLeft:integer read FOldLeft write FOldLeft;
     property OldTop:integer read FOldTop write FOldTop;
     property OldWidth:integer read FOldWidth write FOldWidth;
     property OldHeight:integer read FOldHeight write FOldHeight;
     property OldFormRelativeLeftTop: TPoint read FOldFormRelativeLeftTop
                                             write FOldFormRelativeLeftTop;
+    property MovedResizedBounds: TRect read FMovedResizedBounds write FMovedResizedBounds;
+    // bounds last used for painting helpers, e.g. guidelines
     property UsedLeft: integer read FUsedLeft write FUsedLeft;// form relative (not Left)
     property UsedTop: integer read FUsedTop write FUsedTop;// form relative (not Top)
     property UsedWidth: integer read FUsedWidth write FUsedWidth;
     property UsedHeight: integer read FUsedHeight write FUsedHeight;
+    property MarkerPaintedBounds: TRect read FMarkerPaintedBounds write FMarkerPaintedBounds;
+
     property Flags: TSelectedControlFlags read FFlags write FFlags;
     property IsVisible: boolean read FIsVisible;
     property IsTComponent: boolean read FIsTComponent;
@@ -176,7 +183,6 @@ type
     property IsTWinControl: boolean read FIsTWinControl;
     property IsNonVisualComponent: boolean read GetIsNonVisualComponent;
     property DesignerForm: TCustomForm read FDesignerForm;
-    property MarkerPaintedBounds: TRect read FMarkerPaintedBounds write FMarkerPaintedBounds;
   end;
 
 
@@ -618,7 +624,11 @@ end;
 
 procedure TSelectedControl.SetBounds(ALeft, ATop, AWidth, AHeight: integer);
 begin
-  if FIsTControl then begin
+  FMovedResizedBounds:=Bounds(ALeft,ATop,AWidth,AHeight);
+  if Owner.Mediator<>nil then begin
+    Owner.Mediator.SetBounds(TComponent(FPersistent),FMovedResizedBounds);
+  end
+  else if FIsTControl then begin
     TControl(FPersistent).SetBounds(ALeft, ATop, AWidth, AHeight);
   end else if FIsNonVisualComponent then begin
     if (Left<>ALeft) or (Top<>ATop) then begin
@@ -629,8 +639,6 @@ begin
       InvalidateNonVisualPersistent;
       //debugln(['TSelectedControl.SetBounds Now=',Left,',',Top,' Expected=',ALeft,',',ATop]);
     end;
-  end else if (Owner.Mediator<>nil) and FIsTComponent then begin
-    Owner.Mediator.SetBounds(TComponent(FPersistent),Bounds(ALeft,ATop,AWidth,AHeight));
   end;
 end;
 
@@ -645,16 +653,14 @@ begin
   begin
     if Owner.Mediator.ComponentIsIcon(TComponent(FPersistent)) then
     begin
-      Owner.Mediator.SetBounds(TComponent(FPersistent),
-                               Bounds(ALeft, ATop, AWidth, AHeight));
+      SetBounds(ALeft, ATop, AWidth, AHeight);
     end
     else begin
       Owner.Mediator.GetBounds(TComponent(FPersistent),OldBounds);
       ParentOffset:=Owner.Mediator.GetComponentOriginOnForm(TComponent(FPersistent));
       dec(ParentOffset.X,OldBounds.Left);
       dec(ParentOffset.Y,OldBounds.Top);
-      Owner.Mediator.SetBounds(TComponent(FPersistent),
-        Bounds(ALeft-ParentOffset.X,ATop-ParentOffset.Y,AWidth,AHeight));
+      SetBounds(ALeft-ParentOffset.X,ATop-ParentOffset.Y,AWidth,AHeight);
     end;
   end 
   else 
@@ -795,7 +801,7 @@ begin
     Result:=0;
 end;
 
-procedure TSelectedControl.SetLeft(ALeft: Integer);
+procedure TSelectedControl.SetLeft(ALeft: integer);
 var
   r: TRect;
 begin
