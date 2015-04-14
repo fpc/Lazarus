@@ -858,14 +858,14 @@ begin
       end else begin
         SetFixedLeftTop(ChildData,Side,Child.GetSidePosition(Side)-MoveDiff);
       end;
-    end else if (Child.Align=alNone) and (Side in Child.Anchors) then begin
+    {end else if (Child.Align=alNone) and (Side in Child.Anchors) then begin
       // e.g. Align=alNone, Anchors=[akLeft,akTop,akRight]
       if FindMinimum then begin
         // no auto move
       end else begin
         // don't move, but use them for bounds computation
         SetFixedLeftTop(ChildData,Side,Child.GetSidePosition(Side));
-      end;
+      end;}
     end else if (Child.Align=alCustom)
     and (Side in AnchorAlign[alCustom]) then begin
       if FindMinimum then begin
