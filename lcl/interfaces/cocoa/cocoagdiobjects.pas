@@ -9,7 +9,7 @@ interface
 
 uses
   MacOSAll, // for CGContextRef
-  LCLtype, LCLProc, Graphics, Controls,
+  LCLtype, LCLProc, Graphics, Controls, fpcanvas,
   CocoaAll, CocoaProc, CocoaUtils,
   {$ifndef CocoaUseHITheme}
   customdrawndrawers, customdrawn_mac,
@@ -135,6 +135,8 @@ type
     constructor CreateDefault(const AGlobal: Boolean = False);
     constructor Create(const ALogBrush: TLogBrush; const AGlobal: Boolean = False);
     constructor Create(const AColor: NSColor; const AGlobal: Boolean = False);
+    constructor Create(const AColor: TColor; AStyle: TFPBrushStyle; APattern: TBrushPattern;
+      AGlobal: Boolean = False);
     destructor Destroy; override;
     procedure Apply(ADC: TCocoaContext; UseROP2: Boolean = True);
 
@@ -169,6 +171,9 @@ type
     constructor Create(dwPenStyle, dwWidth: DWord; const lplb: TLogBrush; dwStyleCount: DWord; lpStyle: PDWord);
     constructor Create(const ABrush: TCocoaBrush; const AGlobal: Boolean = False);
     constructor Create(const AColor: TColor; AGlobal: Boolean);
+    constructor Create(const AColor: TColor; AStyle: TFPPenStyle; ACosmetic: Boolean;
+      AWidth: Integer; AMode: TFPPenMode; AEndCap: TFPPenEndCap;
+      AJoinStyle: TFPPenJoinStyle; AGlobal: Boolean = False);
     procedure Apply(ADC: TCocoaContext; UseROP2: Boolean = True);
 
     property Width: Integer read FWidth;
@@ -2632,6 +2637,49 @@ begin
   Dashes := nil;
 end;
 
+constructor TCocoaPen.Create(const AColor: TColor; AStyle: TFPPenStyle;
+  ACosmetic: Boolean; AWidth: Integer; AMode: TFPPenMode; AEndCap: TFPPenEndCap;
+  AJoinStyle: TFPPenJoinStyle; AGlobal: Boolean);
+begin
+  inherited Create(AColor, True, AGlobal);
+
+  case AStyle of
+    psSolid:       FStyle := PS_SOLID;
+    psDash:        FStyle := PS_DASH;
+    psDot:         FStyle := PS_DOT;
+    psDashDot:     FStyle := PS_DASHDOT;
+    psDashDotDot:  FStyle := PS_DASHDOTDOT;
+    psinsideFrame: FStyle := PS_INSIDEFRAME;
+    psPattern:     FStyle := PS_USERSTYLE;
+    psClear:       FStyle := PS_NULL;
+  end;
+
+  if ACosmetic then
+  begin
+    FWidth := 1;
+    FIsGeometric := False;
+  end
+  else
+  begin
+    FIsGeometric := True;
+
+    case AJoinStyle of
+      pjsRound: FJoinStyle := kCGLineJoinRound;
+      pjsBevel: FJoinStyle := kCGLineJoinBevel;
+      pjsMiter: FJoinStyle := kCGLineJoinMiter;
+    end;
+
+    case AEndCap of
+      pecRound: FEndCap := kCGLineCapRound;
+      pecSquare: FEndCap := kCGLineCapSquare;
+      pecFlat: FEndCap := kCGLineCapButt;
+    end;
+    FWidth := Max(1, AWidth);
+  end;
+  FIsExtPen := False;
+  Dashes := nil;
+end;
+
 { TCocoaBrush }
 
 procedure DrawBitmapPattern(info: UnivPtr; c: CGContextRef); MWPascal;
@@ -2791,6 +2839,22 @@ begin
     end
     else
       inherited Create(0, True, AGlobal);
+  end;
+end;
+
+constructor TCocoaBrush.Create(const AColor: TColor; AStyle: TFPBrushStyle; APattern: TBrushPattern;
+  AGlobal: Boolean);
+begin
+  case AStyle of
+  bsSolid:
+  begin
+    inherited Create(AColor, True, AGlobal);
+  end;
+  // bsHorizontal, bsVertical, bsFDiagonal,
+  // bsBDiagonal, bsCross, bsDiagCross,
+  // bsImage, bsPattern
+  else // bsClear
+    inherited Create(AColor, False, AGlobal);
   end;
 end;
 
