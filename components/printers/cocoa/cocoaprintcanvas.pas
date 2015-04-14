@@ -137,8 +137,13 @@ end;
 { TCanvasOperation_Pen_Brush }
 
 procedure TCanvasOperation_Pen_Brush.DrawTo(const ADest: TCocoaContext);
+var
+  lCocoaBrush: TCocoaBrush;
 begin
   inherited DrawTo(ADest);
+  lCocoaBrush := TCocoaBrush.Create(Brush_Color, Brush_Style, Brush_Pattern);
+  lCocoaBrush.Apply(ADest);
+  lCocoaBrush.Free;
 end;
 
 { TCanvasOperation_Ellipse }
@@ -431,6 +436,10 @@ begin
   Changing;
   RequiredState([csHandleValid, csPenValid, csBrushValid]);
   lEllipse := TCanvasOperation_Ellipse.Create;
+  lEllipse.X1 := X1;
+  lEllipse.Y1 := Y1;
+  lEllipse.X2 := X2;
+  lEllipse.Y2 := Y2;
   SetPenAndBrush(lEllipse);
   FCurRecording.Add(lEllipse);
   Changed;

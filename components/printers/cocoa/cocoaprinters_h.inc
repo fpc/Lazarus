@@ -19,7 +19,6 @@ type
   TCocoaPrinterView = objcclass(NSView)
   public
     //Image: NSImage;
-    Size: NSSize;
     Canvas: TCocoaPrinterCanvas;
     // TPrintDialog info
     PageMin, PageMax, PageFrom, PageTo: Integer;
@@ -32,6 +31,7 @@ type
     function rectForPage(page: NSInteger): NSRect; override;
     function calculatePrintHeight: Double; message 'calculatePrintHeight';
     function calculatePrintWidth: Double; message 'calculatePrintWidth';
+    function updateSize(ADoSetFrame: Boolean): NSRect; message 'updateSize:';
   end;
 
   { TCocoaPrinter }

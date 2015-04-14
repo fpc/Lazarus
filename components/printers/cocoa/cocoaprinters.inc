@@ -12,8 +12,11 @@ const
 
 function TCocoaPrinterView.initWithFrame(frameRect: NSRect): id;
 begin
+  PageMin := 1;
+  PageMax := 1;
+  PageFrom := 1;
+  PageTo := 1;
   Result:=inherited initWithFrame(frameRect);
-  //Size := NSMakeSize(200, 200);
   //Image := NSImage.alloc.initWithSize(Size);
 end;
 
@@ -26,6 +29,7 @@ end;
 procedure TCocoaPrinterView.drawRect(dirtyRect: NSRect);
 var
   pageHeight: Double;
+  lRect: NSRect;
   lCurPage: Integer;
 begin
   // image page printing alternative
@@ -34,33 +38,34 @@ begin
   if Canvas = nil then Exit;
 
   pageHeight := calculatePrintHeight();
-  Size.height := pageHeight * (PageTo - PageFrom);
-  Size.width := calculatePrintWidth();
-  Self.setFrameSize(Size);
+  lRect := updateSize(False);
 
   // figure out which page this is
-  lCurPage := Round((Size.height - dirtyRect.origin.y) / pageHeight);
+  lCurPage := Round((lRect.size.height - dirtyRect.origin.y) / pageHeight);
 
-  Canvas.DrawRecording(Self, dirtyRect, lCurPage);
+  Canvas.DrawRecording(Self, dirtyRect, lCurPage - PageFrom);
 end;
 
 // Return the number of pages available for printing
 function TCocoaPrinterView.knowsPageRange(range: NSRangePointer): Boolean;
 begin
+  updateSize(True);
   range^.location := PageFrom;
-  range^.length := PageTo;
+  range^.length := PageTo - PageFrom + 1;
   Result := True;
 end;
 
 function TCocoaPrinterView.rectForPage(page: NSInteger): NSRect;
 var
   lBounds: NSRect;
-  pageHeight: Double;
+  pageHeight, pageWidth: Double;
 begin
-  lBounds := self.bounds;
   pageHeight := calculatePrintHeight();
-  Result := NSMakeRect(NSMinX(bounds), NSMaxY(bounds) - page * pageHeight,
-    NSWidth(bounds), pageHeight);
+  pageWidth := calculatePrintWidth();
+  // page Y starting pos is Bottom-Left of page 1 - (pagenr-zero-based) * pageHeight, so:
+  // pageHeight * ((PageTo - PageFrom) - (page - PageFrom)), which simplifies to:
+  Result := NSMakeRect(0, pageHeight * (PageTo - page),
+    pageWidth, pageHeight);
 end;
 
 // Calculate the vertical size of the view that fits on a single page
@@ -98,6 +103,18 @@ begin
   // Convert height to the scaled view
   scale := pi.dictionary.objectForKey(NSPrintScalingFactor).floatValue;
   Result := pageWidth / scale;
+end;
+
+function TCocoaPrinterView.updateSize(ADoSetFrame: Boolean): NSRect;
+var
+  Size: NSSize;
+begin
+  Size.height := calculatePrintHeight();
+  Size.height := Size.height * (PageTo - PageFrom + 1);
+  Size.width := calculatePrintWidth();
+  if ADoSetFrame then
+    Self.setFrameSize(Size);
+  Result := NSMakeRect(0, 0, Size.width, Size.height);
 end;
 
 { TCocoaPrinter }
@@ -252,7 +269,7 @@ var
 begin
   inherited Create;
 
-  FPrintViewRect := GetNSRect(0, 0, 800, 800);
+  FPrintViewRect := GetNSRect(0, 0, 1000, 1000);
   FPrintView := TCocoaPrinterView.alloc.initWithFrame(FPrintViewRect);
   FPrintView.Canvas := Canvas as TCocoaPrinterCanvas;
 
