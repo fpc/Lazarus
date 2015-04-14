@@ -34,6 +34,8 @@ type
     Pen_Mode: TFPPenMode;
     Pen_EndCap: TFPPenEndCap;
     Pen_JoinStyle: TFPPenJoinStyle;
+    //
+    DisablePen: Boolean; // for descendents to disable pen setting in DrawTo
     procedure DrawTo(const ADest: TCocoaContext); override;
   end;
 
@@ -47,11 +49,32 @@ type
     procedure DrawTo(const ADest: TCocoaContext); override;
   end;
 
+  TCanvasOperation_Font = class(TCanvasOperation_Pen_Brush)
+  public
+    procedure DrawTo(const ADest: TCocoaContext); override;
+  end;
+
   { TCanvasOperation_Ellipse }
 
   TCanvasOperation_Ellipse = class(TCanvasOperation_Pen_Brush)
   public
     X1, Y1, X2, Y2: Integer;
+    constructor Create(AX1, AY1, AX2, AY2: Integer);
+    procedure DrawTo(const ADest: TCocoaContext); override;
+  end;
+
+  TCanvasOperation_Rectangle = class(TCanvasOperation_Pen_Brush)
+  public
+    X1, Y1, X2, Y2: Integer;
+    constructor Create(AX1, AY1, AX2, AY2: Integer);
+    procedure DrawTo(const ADest: TCocoaContext); override;
+  end;
+
+  TCanvasOperation_TextOut = class(TCanvasOperation_Font)
+  public
+    X, Y: Integer;
+    Text: string;
+    constructor Create(AX, AY: Integer; AText: string);
     procedure DrawTo(const ADest: TCocoaContext); override;
   end;
 
@@ -67,8 +90,9 @@ type
     function GetOperation(ANum: Integer): TCanvasOperation;
     procedure SetPenProperties(ADest: TCanvasOperation_Pen);
     procedure SetBrushProperties(ADest: TCanvasOperation_Pen_Brush);
-    procedure SetFontProperties;
+    procedure SetFontProperties(ADest: TCanvasOperation_Font);
     procedure SetPenAndBrush(ADest: TCanvasOperation_Pen_Brush);
+    procedure SetFontAndBrush(ADest: TCanvasOperation_Font);
   protected
     ScaleX, ScaleY, FontScale: Double;
     procedure SetLazClipRect(r: TRect);
@@ -128,6 +152,8 @@ procedure TCanvasOperation_Pen.DrawTo(const ADest: TCocoaContext);
 var
   lCocoaPen: TCocoaPen;
 begin
+  if DisablePen then Exit;
+
   lCocoaPen := TCocoaPen.Create(Pen_Color, Pen_Style, Pen_Cosmetic,
     Pen_Width, Pen_Mode, Pen_EndCap, Pen_JoinStyle);
   lCocoaPen.Apply(ADest);
@@ -146,12 +172,62 @@ begin
   lCocoaBrush.Free;
 end;
 
+{ TCanvasOperation_Font }
+
+procedure TCanvasOperation_Font.DrawTo(const ADest: TCocoaContext);
+begin
+  inherited DrawTo(ADest);
+end;
+
 { TCanvasOperation_Ellipse }
+
+constructor TCanvasOperation_Ellipse.Create(AX1, AY1, AX2, AY2: Integer);
+begin
+  inherited Create;
+  X1 := AX1;
+  Y1 := AY1;
+  X2 := AX2;
+  Y2 := AY2;
+end;
 
 procedure TCanvasOperation_Ellipse.DrawTo(const ADest: TCocoaContext);
 begin
   inherited DrawTo(ADest); // apply pen and brush
   ADest.Ellipse(X1, Y1, X2, Y2);
+end;
+
+{ TCanvasOperation_Rectangle }
+
+constructor TCanvasOperation_Rectangle.Create(AX1, AY1, AX2, AY2: Integer);
+begin
+  inherited Create;
+  X1 := AX1;
+  Y1 := AY1;
+  X2 := AX2;
+  Y2 := AY2;
+end;
+
+procedure TCanvasOperation_Rectangle.DrawTo(const ADest: TCocoaContext);
+begin
+  inherited DrawTo(ADest); // apply pen and brush
+  ADest.Rectangle(X1, Y1, X2, Y2, True, nil);
+end;
+
+{ TCanvasOperation_TextOut }
+
+constructor TCanvasOperation_TextOut.Create(AX, AY: Integer; AText: string);
+begin
+  inherited Create;
+  DisablePen := True;
+  X := AX;
+  Y := AY;
+  Text := AText;
+end;
+
+procedure TCanvasOperation_TextOut.DrawTo(const ADest: TCocoaContext);
+begin
+  inherited DrawTo(ADest); // apply pen and brush
+  ADest.TextOut(X, Y, 0, nil, PChar(Text), Length(Text), nil);
 end;
 
 { TCocoaPrinterCanvas }
@@ -192,7 +268,7 @@ begin
   ADest.Brush_Pattern := Brush.Pattern;
 end;
 
-procedure TCocoaPrinterCanvas.SetFontProperties;
+procedure TCocoaPrinterCanvas.SetFontProperties(ADest: TCanvasOperation_Font);
 begin
 end;
 
@@ -200,6 +276,12 @@ procedure TCocoaPrinterCanvas.SetPenAndBrush(ADest: TCanvasOperation_Pen_Brush);
 begin
   SetPenProperties(ADest);
   SetBrushProperties(ADest);
+end;
+
+procedure TCocoaPrinterCanvas.SetFontAndBrush(ADest: TCanvasOperation_Font);
+begin
+  SetBrushProperties(ADest);
+  SetFontProperties(ADest);
 end;
 
 procedure TCocoaPrinterCanvas.DoLineTo(X1, Y1: Integer);
@@ -380,13 +462,15 @@ begin
 end;
 
 procedure TCocoaPrinterCanvas.Rectangle(X1, Y1, X2, Y2: Integer);
+var
+  lRect: TCanvasOperation_Rectangle;
 begin
-  {Changing;
-  RequiredState([csHandleValid, csBrushValid, csPenValid]);
-  SetPenProperties;
-  cairo_rectangle(cr, SX(X1), SY(Y1), SX2(X2-X1), SY2(Y2-Y1));
-  FillAndStroke;
-  Changed;}
+  Changing;
+  RequiredState([csHandleValid, csPenValid, csBrushValid]);
+  lRect := TCanvasOperation_Rectangle.Create(X1, Y1, X2, Y2);
+  SetPenAndBrush(lRect);
+  FCurRecording.Add(lRect);
+  Changed;
 end;
 
 //1 point rectangle in _Brush_ color
@@ -435,11 +519,7 @@ var
 begin
   Changing;
   RequiredState([csHandleValid, csPenValid, csBrushValid]);
-  lEllipse := TCanvasOperation_Ellipse.Create;
-  lEllipse.X1 := X1;
-  lEllipse.Y1 := Y1;
-  lEllipse.X2 := X2;
-  lEllipse.Y2 := Y2;
+  lEllipse := TCanvasOperation_Ellipse.Create(X1, Y1, X2, Y2);
   SetPenAndBrush(lEllipse);
   FCurRecording.Add(lEllipse);
   Changed;
@@ -519,11 +599,15 @@ begin
 end;
 
 procedure TCocoaPrinterCanvas.TextOut(X, Y: Integer; const Text: String);
+var
+  lText: TCanvasOperation_TextOut;
 begin
-  {Changing;
-  RequiredState([csHandleValid, csFontValid, csBrushValid]);
-  SelectFont;
-  Changed;}
+  Changing;
+  RequiredState([csHandleValid, csPenValid, csBrushValid]);
+  lText := TCanvasOperation_TextOut.Create(X, Y, Text);
+  SetFontAndBrush(lText);
+  FCurRecording.Add(lText);
+  Changed;
 end;
 
 procedure TCocoaPrinterCanvas.TextRect(ARect: TRect; X1, Y1: integer; const Text: string; const Style: TTextStyle);
