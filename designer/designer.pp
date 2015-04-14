@@ -2595,7 +2595,7 @@ begin
         begin
           if not (dfHasSized in FFlags) then
           begin
-            ControlSelection.SaveBounds;
+            ControlSelection.SaveBounds(false);
             Include(FFlags, dfHasSized);
           end;
           // skip snapping when Alt is pressed
@@ -2626,7 +2626,7 @@ begin
         begin // move selection
           if not (dfHasSized in FFlags) then
           begin
-            ControlSelection.SaveBounds;
+            ControlSelection.SaveBounds(false);
             Include(FFlags, dfHasSized);
           end;
           //debugln('TDesigner.MouseMoveOnControl Move MouseDownComponent=',dbgsName(MouseDownComponent),' OldMouseMovePos=',dbgs(OldMouseMovePos),' MouseMovePos',dbgs(LastMouseMovePos),' MouseDownPos=',dbgs(MouseDownPos));
