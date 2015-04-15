@@ -51,6 +51,16 @@ type
 
   TCanvasOperation_Font = class(TCanvasOperation_Pen_Brush)
   public
+    Font_Name: string;
+    Font_Size: integer;
+    Font_Bold: boolean;
+    Font_Italic: boolean;
+    Font_Underline: boolean;
+    Font_StrikeThrough: boolean;
+    Font_Orientation: Integer;
+    //
+    Font_Pitch: TFontPitch;
+    Font_Quality: TFontQuality;
     procedure DrawTo(const ADest: TCocoaContext); override;
   end;
 
@@ -175,7 +185,41 @@ end;
 { TCanvasOperation_Font }
 
 procedure TCanvasOperation_Font.DrawTo(const ADest: TCocoaContext);
+const
+  LF_BOOL: array[Boolean] of Byte = (0, 255);
+  LF_WEIGHT: array[Boolean] of Integer = (FW_NORMAL, FW_BOLD);
+  LF_QUALITY: array[TFontQuality] of Integer = (DEFAULT_QUALITY,
+    DRAFT_QUALITY, PROOF_QUALITY, NONANTIALIASED_QUALITY, ANTIALIASED_QUALITY,
+    CLEARTYPE_QUALITY, CLEARTYPE_NATURAL_QUALITY);
+var
+  lLogFont: TLogFont;
+  lCocoaFont: TCocoaFont;
 begin
+  lLogFont.lfHeight := Font_Size;
+  lLogFont.lfWidth := 0;
+  lLogFont.lfEscapement := Font_Orientation;
+  lLogFont.lfOrientation := Font_Orientation;
+  lLogFont.lfWeight := LF_WEIGHT[Font_Bold];
+  lLogFont.lfItalic := LF_BOOL[Font_Italic];
+  lLogFont.lfUnderline := LF_BOOL[Font_Underline];
+  lLogFont.lfStrikeOut := LF_BOOL[Font_StrikeThrough];
+  lLogFont.lfCharSet := DEFAULT_CHARSET;
+  lLogFont.lfOutPrecision := OUT_DEFAULT_PRECIS;
+  lLogFont.lfClipPrecision := CLIP_DEFAULT_PRECIS;
+  lLogFont.lfQuality := LF_QUALITY[Font_Quality];
+  case Font_Pitch of
+    fpVariable: lLogFont.lfPitchAndFamily := VARIABLE_PITCH;
+    fpFixed:    lLogFont.lfPitchAndFamily := FIXED_PITCH;
+  else
+    lLogFont.lfPitchAndFamily := DEFAULT_PITCH;
+  end;
+
+  lLogFont.lfFaceName := Font_Name;
+
+  {lCocoaFont := TCocoaFont.Create(lLogFont, Font_Name);
+  ADest.Font.Free;
+  ADest.Font := lCocoaFont;}
+
   inherited DrawTo(ADest);
 end;
 
