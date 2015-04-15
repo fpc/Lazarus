@@ -174,4 +174,3 @@ msgstr "    Utilisation : lhelp [[filename] [--context id] [--hide] [--ipcname l
 #: lhelpstrconsts.slhelp_view
 msgid "&View"
 msgstr "&Afficher"
-

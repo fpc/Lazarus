@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
-"PO-Revision-Date: 2015-04-13 18:33+0100\n"
+"PO-Revision-Date: 2015-04-14 07:54+0100\n"
 "Language-Team:  <fr@li.org>\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -446,9 +446,8 @@ msgid "unexpected end of file (identifier expected)"
 msgstr "fin de fichier inattendue (identificateur attendu)"
 
 #: codetoolsstrconsts.ctsidentexpectedbutkeywordfound
-#, fuzzy,badformat
 msgid "identifier expected, but keyword %s found"
-msgstr "Identificateur attendu, mais mot-clé % trouvé"
+msgstr "Identificateur attendu, mais mot-clé %s trouvé"
 
 #: codetoolsstrconsts.ctsidentifier
 msgid "identifier"
@@ -955,4 +954,3 @@ msgstr "Répertoire des éléments graphiques (\"widgets\")"
 #: codetoolsstrconsts.ctswordnotfound
 msgid "\"%s\" not found"
 msgstr "\"%s\" non trouvé"
-
