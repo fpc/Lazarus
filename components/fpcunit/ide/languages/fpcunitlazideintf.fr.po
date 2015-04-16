@@ -1,0 +1,40 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: 2015-04-16 07:54+0100\n"
+"PO-Revision-Date: 2015-04-16 13:33+0100\n"
+"Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: fr\n"
+"X-Generator: Poedit 1.7.5\n"
+
+#: fpcunitlazideintf.sfpcunconsoletestapp
+msgid "FPCUnit Console Test Application"
+msgstr "Unité FPC - Application console de test"
+
+#: fpcunitlazideintf.sfpcunconsoletestdesc
+msgid "FPCUnit Console Test Application%sAn application to run FPCUnit test cases in console mode.%sThe application source is automatically maintained by Lazarus."
+msgstr "Unité FPC - Application console de test%sUne application pour exécuter les tests des unités FPC en mode console.%sLe code source de l'application est automatiquement mis à jour par Lazarus."
+
+#: fpcunitlazideintf.sfpcuntestapp
+msgid "FPCUnit Test Application"
+msgstr "Unités FPC - Application de test"
+
+#: fpcunitlazideintf.sfpcuntestappdesc
+msgid "FPCUnit Test Application%sAn application to run FPCUnit test cases.%sThe application source is automatically maintained by Lazarus."
+msgstr "Unité FPC - Application de test%sUne application pour exécuter les tests des unités de FPC.%sLe code source de l'application est automatiquement mis à jour par Lazarus."
+
+#: fpcunitlazideintf.sfpcuntestcase
+msgid "FPCUnit Test Case"
+msgstr "Unité de FPC - Cas de test"
+
+#: fpcunitlazideintf.sfpcuntestcasedesc
+msgid "FPCUnit Test Case%sA unit containing a FPCUnit Test Case."
+msgstr "Unité de FPC - Cas de test%sUne unité contenant un cas de test des unités FPC."
+
+#: fpcunitlazideintf.swriteyourowntest
+msgid "Write your own test"
+msgstr "Écrivez votre propre test"

@@ -1,0 +1,150 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: 2015-04-16 07:54+0100\n"
+"PO-Revision-Date: 2015-04-16 07:54+0100\n"
+"Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: fr\n"
+"X-Generator: Poedit 1.7.5\n"
+
+#: guitestrunner.rsalltests
+msgid "All Tests"
+msgstr "Tous les tests"
+
+#: guitestrunner.rserrors
+msgid "%s    Errors: %s"
+msgstr "%s Erreurs : %s"
+
+#: guitestrunner.rsexception
+msgid "Exception: %s"
+msgstr "Exception : %s"
+
+#: guitestrunner.rsexceptioncla
+msgid "Exception class: %s"
+msgstr "Classe d'exception : %s"
+
+#: guitestrunner.rsexceptionmes
+msgid "Exception message: %s"
+msgstr "Message d'exception : %s"
+
+#: guitestrunner.rsfailures
+msgid "%s     Failures: %s"
+msgstr "%s    Échecs : %s"
+
+#: guitestrunner.rslinenumber
+msgid "Line number: %s"
+msgstr "Numéro de ligne : %s"
+
+#: guitestrunner.rsmessage
+msgid "Message: %s"
+msgstr "Message : %s"
+
+#: guitestrunner.rsmethodname
+msgid "Method name: %s"
+msgstr "Nom de la méthode : %s"
+
+#: guitestrunner.rsnumberofexec
+msgid "Number of executed tests: %s  Time elapsed: %s"
+msgstr "Nombre de tests exécutés : %s  Temps écoulé : %s"
+
+#: guitestrunner.rsrun
+msgid "Run "
+msgstr "Exécuter"
+
+#: guitestrunner.rsrunning
+msgid "Running %s"
+msgstr "%s en cours d'exécution"
+
+#: guitestrunner.rsruns
+msgid "Runs: %s/%s"
+msgstr "Exécutions : %s%s"
+
+#: guitestrunner.rsunitname
+msgid "Unit name: %s"
+msgstr "Nom de l'unité : %s"
+
+#: guitestrunner.sactcheckall
+msgid "Check all Tests"
+msgstr "Cocher tous les tests"
+
+#: guitestrunner.sactcheckcurrentsuite
+msgid "Check the Current Suite"
+msgstr "Cocher l'ensemble en cours"
+
+#: guitestrunner.sactcloseform
+msgid "Quit"
+msgstr "Quitter"
+
+#: guitestrunner.sactcloseformh
+msgid "Quit Testting"
+msgstr "Arrêter les tests"
+
+#: guitestrunner.sactrunaction
+msgid "&Run"
+msgstr "&Exécuter"
+
+#: guitestrunner.sactrunactionh
+msgid "Run all checked test(s)"
+msgstr "Exécuter tous les tests cochés"
+
+#: guitestrunner.sactrunhighlightedtest
+msgctxt "guitestrunner.sactrunhighlightedtest"
+msgid "Run highlighted test"
+msgstr "Exécuter le test en surbrillance"
+
+#: guitestrunner.sactuncheckall
+msgid "Uncheck all tests"
+msgstr "Décocher tous les tests"
+
+#: guitestrunner.sactuncheckcurrentsuite
+msgid "Uncheck the Current Suite"
+msgstr "Décocher l'ensemble en cours"
+
+#: guitestrunner.sbtnclose
+msgid "Close"
+msgstr "Fermer"
+
+#: guitestrunner.sbtnrun
+msgid "Run"
+msgstr "Exécuter"
+
+#: guitestrunner.sbtnrunh
+msgctxt "guitestrunner.sbtnrunh"
+msgid "Run highlighted test"
+msgstr "Exécuter le test en surbrillance"
+
+#: guitestrunner.sfrmguitest
+msgid "FPCUnit - run unit test"
+msgstr "Unité FPC - exécuter le test de l'unité"
+
+#: guitestrunner.smicopy
+msgid "&Copy"
+msgstr "&Copier"
+
+#: guitestrunner.smicopyclipbrd
+msgid "Copy to clipboard"
+msgstr "Copier dans le presse-papier"
+
+#: guitestrunner.smicut
+msgid "C&ut"
+msgstr "Co&uper"
+
+#: guitestrunner.smiruntest
+msgid "  &Run all selected (checked) tests"
+msgstr "&Exécuter les tests choisis (cochés)"
+
+#: guitestrunner.smishowfail
+msgid "Copy message to clipboard"
+msgstr "Copier le message dans le presse-papier"
+
+#: guitestrunner.stshresults
+msgid "Results XML"
+msgstr "XML des résultats"
+
+#: guitestrunner.stshtree
+msgid "Testcase tree"
+msgstr "Arbre des tests"
