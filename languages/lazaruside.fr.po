@@ -3,13 +3,13 @@ msgstr ""
 "Project-Id-Version: lazaruside\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2015-04-13 22:03+0100\n"
+"PO-Revision-Date: 2015-04-16 15:22+0100\n"
 "Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
 "Language-Team: français\n"
+"Language: fr_FR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: fr_FR\n"
 "X-Generator: Poedit 1.7.5\n"
 
 #: lazarusidestrconsts.dbgbreakgroupdlgcaption
@@ -6643,183 +6643,175 @@ msgstr "Utilisateur choisi pour terminer la conversion avec le fichier %s"
 
 #: lazarusidestrconsts.liscoolbaraddconfigdelete
 msgid "Add/Config/Delete Toolbar(s)"
-msgstr ""
+msgstr "Ajouter/Configurer/Supprimer une/des barre(s) d'outils"
 
 #: lazarusidestrconsts.liscoolbaradddivider
 msgid "Add Divider"
-msgstr ""
+msgstr "Ajouter un diviseur"
 
 #: lazarusidestrconsts.liscoolbaraddselected
 msgid "Add selected item to toolbar"
-msgstr ""
+msgstr "Ajouter l'élément sélectionné à la barre d'outils"
 
 #: lazarusidestrconsts.liscoolbaravailablecommands
 msgid "Available commands"
-msgstr ""
+msgstr "Commandes disponibles"
 
 #: lazarusidestrconsts.liscoolbarborderstyle
 msgid "Toolbars border style"
-msgstr ""
+msgstr "Style de bordure des barres d'outils"
 
 #: lazarusidestrconsts.liscoolbarborderstyleitem0
-#, fuzzy
 msgctxt "lazarusidestrconsts.liscoolbarborderstyleitem0"
 msgid "None"
 msgstr "Aucun"
 
 #: lazarusidestrconsts.liscoolbarborderstyleitem1
-#, fuzzy
 msgctxt "lazarusidestrconsts.liscoolbarborderstyleitem1"
 msgid "Single"
 msgstr "Simple"
 
 #: lazarusidestrconsts.liscoolbarclearselection
 msgid "Clear selection"
-msgstr ""
+msgstr "Effacer la sélection"
 
 #: lazarusidestrconsts.liscoolbarcodeexplorer
-#, fuzzy
 msgctxt "lazarusidestrconsts.liscoolbarcodeexplorer"
 msgid "Code Explorer"
 msgstr "Explorateur de code"
 
 #: lazarusidestrconsts.liscoolbarcodetemplates
-#, fuzzy
 msgctxt "lazarusidestrconsts.liscoolbarcodetemplates"
 msgid "Code Templates"
 msgstr "Modèles de code"
 
 #: lazarusidestrconsts.liscoolbarconfigure
 msgid "&Configure"
-msgstr ""
+msgstr "&Configurer"
 
 #: lazarusidestrconsts.liscoolbardeletetoolbar
 msgid "Are you sure you want to delete the selected toolbar?"
-msgstr ""
+msgstr "Voulez-vous vraiment supprimer la barre d'outils sélectionnée ?"
 
 #: lazarusidestrconsts.liscoolbardeletewarning
 msgid "There must be at least one toolbar!"
-msgstr ""
+msgstr "Il doit y avoir au moins une barre d'outils !"
 
 #: lazarusidestrconsts.liscoolbardesigner
 msgid "Designer"
-msgstr ""
+msgstr "Concepteur"
 
 #: lazarusidestrconsts.liscoolbargeneralsettings
 msgid "General Coolbar Settings"
-msgstr ""
+msgstr "Paramètres généraux des barres d'outils"
 
 #: lazarusidestrconsts.liscoolbargrabstyle
 msgid "Toolbars grab style"
-msgstr ""
+msgstr "Style de saisie d'une barre d'outils"
 
 #: lazarusidestrconsts.liscoolbargrabstyleitem0
 msgid "Simple"
-msgstr ""
+msgstr "Simple"
 
 #: lazarusidestrconsts.liscoolbargrabstyleitem1
-#, fuzzy
 msgctxt "lazarusidestrconsts.liscoolbargrabstyleitem1"
 msgid "Double"
 msgstr "Double"
 
 #: lazarusidestrconsts.liscoolbargrabstyleitem2
 msgid "HorLines"
-msgstr ""
+msgstr "Lignes horizontales"
 
 #: lazarusidestrconsts.liscoolbargrabstyleitem3
 msgid "VerLines"
-msgstr ""
+msgstr "Lignes verticales"
 
 #: lazarusidestrconsts.liscoolbargrabstyleitem4
 msgid "Gripper"
-msgstr ""
+msgstr "Pince"
 
 #: lazarusidestrconsts.liscoolbargrabstyleitem5
-#, fuzzy
 msgctxt "lazarusidestrconsts.liscoolbargrabstyleitem5"
 msgid "Button"
 msgstr "Bouton"
 
 #: lazarusidestrconsts.liscoolbargrabwidth
 msgid "Grab width"
-msgstr ""
+msgstr "Largeur de saisie"
 
 #: lazarusidestrconsts.liscoolbarhelp1
 msgid "The \"Add\" button inserts a command before the selected Item of the Toolbar."
-msgstr ""
+msgstr "Le bouton \"Ajouter\" insère une commande avant l'élément sélectionné de la barre d'outils."
 
 #: lazarusidestrconsts.liscoolbarhelp2
 msgid "If none is selected, the Item will be appended at the end of the Toolbar."
-msgstr ""
+msgstr "Si rien n'est sélectionné, l'élément sera ajouté à la fin de la barre d'outils."
 
 #: lazarusidestrconsts.liscoolbarhelp3
 msgid "You may rearrange Toolbar Items with \"Move Up\" and \"Move Down\" buttons."
-msgstr ""
+msgstr "Vous pouvez modifier l'arrangement des éléments de la barre d'outils avec les boutons \"Déplacer vers le haut\" et \"Déplacer vers le bas\"."
 
 #: lazarusidestrconsts.liscoolbarhelp4
 msgid "Hint: to append an Item at the end, use \"Clear selection\""
-msgstr ""
+msgstr "Conseil : afin d'ajouter un élément à la fin, utilisez \"Mettre à zéro la sélection\""
 
 #: lazarusidestrconsts.liscoolbaridemainmenu
 msgid "IDE Main Menu"
-msgstr ""
+msgstr "Menu principal de l'EDI"
 
 #: lazarusidestrconsts.liscoolbarmessages
-#, fuzzy
 msgctxt "lazarusidestrconsts.liscoolbarmessages"
 msgid "Messages"
 msgstr "Messages"
 
 #: lazarusidestrconsts.liscoolbarmoveselecteddown
 msgid "Move selected toolbar item down"
-msgstr ""
+msgstr "Déplacer l'élément choisi de la barre d'outils vers le bas"
 
 #: lazarusidestrconsts.liscoolbarmoveselectedup
 msgid "Move selected toolbar item up"
-msgstr ""
+msgstr "Déplacer l'élément choisi de la barre d'outils vers le haut"
 
 #: lazarusidestrconsts.liscoolbaroptions
 msgid "IDE CoolBar"
-msgstr ""
+msgstr "Barre de l'EDI"
 
 #: lazarusidestrconsts.liscoolbarpackageeditor
 msgid "Package Editor"
-msgstr ""
+msgstr "Éditeur de paquet"
 
 #: lazarusidestrconsts.liscoolbarpackageeditorfiles
 msgid "Package Editor Files"
-msgstr ""
+msgstr "Fichiers de l'éditeur de paquet"
 
 #: lazarusidestrconsts.liscoolbarremoveselected
 msgid "Remove selected item from toolbar"
-msgstr ""
+msgstr "Retirer l'élément sélectionné de la barre d'outils"
 
 #: lazarusidestrconsts.liscoolbarrestoredefaults
 msgid "Restore defaults"
-msgstr ""
+msgstr "Rétablir les valeurs par défaut"
 
 #: lazarusidestrconsts.liscoolbarselecttoolbar
 msgid "Please select a toolbar first!"
-msgstr ""
+msgstr "Veuillez d'abord sélectionner une barre d'outils !"
 
 #: lazarusidestrconsts.liscoolbarsourceeditor
-#, fuzzy
 msgctxt "lazarusidestrconsts.liscoolbarsourceeditor"
 msgid "Source Editor"
 msgstr "Éditeur de source"
 
 #: lazarusidestrconsts.liscoolbarsourcetab
 msgid "Source Tab"
-msgstr ""
+msgstr "Onglet Source"
 
 #: lazarusidestrconsts.liscoolbartoolbarcommands
 msgid "Toolbar commands"
-msgstr ""
+msgstr "Commandes de la barre d'outils"
 
 #: lazarusidestrconsts.liscoolbarvisible
 msgid "Coolbar is &visible"
-msgstr ""
+msgstr "La barre est &visible"
 
 #: lazarusidestrconsts.liscopy
 msgctxt "lazarusidestrconsts.liscopy"
@@ -11305,7 +11297,7 @@ msgstr "Exemple de projets..."
 
 #: lazarusidestrconsts.lismenuextractproc
 msgid "Extract Procedure ..."
-msgstr "Extraire la procédure ..."
+msgstr "Extraire la procédure..."
 
 #: lazarusidestrconsts.lismenufile
 msgid "&File"
@@ -11338,7 +11330,7 @@ msgstr "Chercher les références  de l'identificateur..."
 
 #: lazarusidestrconsts.lismenufindinfiles
 msgid "Find &in Files ..."
-msgstr "Chercher dans les &fichiers ..."
+msgstr "Chercher dans les &fichiers..."
 
 #: lazarusidestrconsts.lismenufindnext
 msgid "Find &Next"
@@ -11460,7 +11452,7 @@ msgstr "Saut vers l'arrière"
 
 #: lazarusidestrconsts.lismenujumpforward
 msgid "Jump Forward"
-msgstr "Saut ver l'avant"
+msgstr "Saut vers l'avant"
 
 #: lazarusidestrconsts.lismenujumpto
 msgid "Jump to"
@@ -11593,7 +11585,7 @@ msgstr "Nouveau composant paquet"
 #: lazarusidestrconsts.lismenuprocedurelist
 msgctxt "lazarusidestrconsts.lismenuprocedurelist"
 msgid "Procedure List ..."
-msgstr "Liste de procédures..."
+msgstr "Liste des procédures..."
 
 #: lazarusidestrconsts.lismenuproject
 msgid "&Project"
@@ -11739,11 +11731,11 @@ msgstr "S&ource"
 
 #: lazarusidestrconsts.lismenustepinto
 msgid "Step In&to"
-msgstr "Pas à pas &dans"
+msgstr "Pas à pas : &dans"
 
 #: lazarusidestrconsts.lismenustepintocontext
 msgid "Step Into (Context)"
-msgstr "Pas à pas dans (Contexte)"
+msgstr "Pas à pas dans (contexte)"
 
 #: lazarusidestrconsts.lismenustepintoinstr
 msgctxt "lazarusidestrconsts.lismenustepintoinstr"
@@ -12290,7 +12282,7 @@ msgstr "Plus"
 
 #: lazarusidestrconsts.lismore2
 msgid "More ..."
-msgstr ""
+msgstr "Plus..."
 
 #: lazarusidestrconsts.lismoresub
 msgctxt "lazarusidestrconsts.lismoresub"
@@ -15742,7 +15734,7 @@ msgstr "Le dossier source  \"%s\" n'existe pas."
 
 #: lazarusidestrconsts.lissourceeditorwindowmanager
 msgid "Source Editor Window Manager"
-msgstr "Gestionnaire de fenêtre de l'éditeur de source"
+msgstr "Gestionnaire de fenêtres de l'éditeur de source"
 
 #: lazarusidestrconsts.lissourcemodified
 msgid "Source modified"
@@ -16635,7 +16627,7 @@ msgstr "Commuter l'affichage des noms de fichiers (chemins absolus ou relatifs)"
 
 #: lazarusidestrconsts.listoolbarconfiguration
 msgid "Toolbar Configuration"
-msgstr ""
+msgstr "Configuration de la barre d'outils"
 
 #: lazarusidestrconsts.listoolbaroptions
 msgid "Toolbar"
@@ -19346,7 +19338,7 @@ msgstr "Inverser le mode"
 
 #: lazarusidestrconsts.srkmectoggleobjectinsp
 msgid "View Object Inspector"
-msgstr "Afficher l'inspecteur d'objets"
+msgstr "Afficher l'inspecteur d'objet"
 
 #: lazarusidestrconsts.srkmectoggleregisters
 msgid "View registers"
