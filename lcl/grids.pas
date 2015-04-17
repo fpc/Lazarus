@@ -4577,9 +4577,9 @@ end;
 
 procedure TCustomGrid.WMKillFocus(var message: TLMKillFocus);
 begin
+  if csDestroying in ComponentState then
+    exit;
   {$ifdef dbgGrid}
-  if csDestroying in ComponentState then exit;
-
   DbgOut('*** grid.WMKillFocus, FocusedWnd=%x WillFocus=',[Message.FocusedWnd]);
   if EditorMode and (Message.FocusedWnd = FEditor.Handle) then
     DebugLn('Editor')
