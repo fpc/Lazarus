@@ -3268,8 +3268,11 @@ begin
         begin
           if assigned(fMarkupCtrlMouse) and fMarkupCtrlMouse.IsMouseOverLink and
              assigned(FOnClickLink)
-          then
-            FOnClickLink(Self, SynMouseButtonBackMap[AnInfo.Button], AnInfo.Shift, AnInfo.MouseX, AnInfo.MouseY)
+          then begin
+            if AnAction.MoveCaret then
+              MoveCaret;
+            FOnClickLink(Self, SynMouseButtonBackMap[AnInfo.Button], AnInfo.Shift, AnInfo.MouseX, AnInfo.MouseY);
+          end
           else
             Result := False;
         end;
