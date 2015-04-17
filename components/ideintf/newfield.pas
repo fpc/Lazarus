@@ -278,11 +278,14 @@ begin
       0: begin //Create data field
         fldType := TFieldType(PtrUInt(SelectType.Items.Objects[SelectType.ItemIndex]));
         NewField := CreateField(fldType, CheckName(EditName.Text));
-        NewField.Calculated := False;
-        NewField.FieldKind := fkData;
+        if NewField<>nil then begin
+          NewField.Calculated := False;
+          NewField.FieldKind := fkData;
 
-        FDesigner.PropertyEditorHook.PersistentAdded(NewField, True);
-        FDesigner.Modified;
+          FDesigner.PropertyEditorHook.PersistentAdded(NewField, True);
+          FDesigner.Modified;
+        end else
+          ShowMessage(Format(fesFieldCanTBeC, [EditName.Text]));
       end;
       1: begin //Create calc field
         fldType := TFieldType(PtrUInt(SelectType.Items.Objects[SelectType.ItemIndex]));
