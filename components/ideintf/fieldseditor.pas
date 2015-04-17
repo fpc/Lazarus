@@ -87,6 +87,9 @@ type
     LinkDataset: TDataset;
     FDesigner: TComponentEditorDesigner;
     FComponentEditor: TFieldsComponentEditor;
+    FUpdateSelectionCount: Integer;
+    procedure BeginUpdateSelection;
+    procedure EndUpdateSelection;
     procedure ExchangeItems(const fFirst, fSecond: integer);
     procedure RefreshFieldsListBox(SelectAllNew: boolean);
     function FindChild(ACandidate: TPersistent; out AIndex: Integer): Boolean;
@@ -194,8 +197,9 @@ begin
   LinkDataSet.Active := False;
   if FieldsListBox.SelCount = 0 then
     exit;
+  BeginUpdateSelection;
   FDesigner.DeleteSelection;
-  SelectionChanged;
+  EndUpdateSelection;
   if PreActive then
     LinkDataSet.Active := True;
 end;
@@ -398,6 +402,8 @@ end;
 procedure TDSFieldsEditorFrm.SelectionChanged(AOrderChanged: Boolean = false);
 var SelList: TPersistentSelectionList;
 begin
+  if FUpdateSelectionCount>0 then
+    exit;
   GlobalDesignHook.RemoveHandlerSetSelection(@OnSetSelection);
   try
     SelList := TPersistentSelectionList.Create;
@@ -472,6 +478,18 @@ begin
        with FieldsListBox do
          Selected[Items.AddObject(fld.FieldName, fld)] := Select;
   end;
+end;
+
+procedure TDSFieldsEditorFrm.BeginUpdateSelection;
+begin
+  Inc(FUpdateSelectionCount);
+end;
+
+procedure TDSFieldsEditorFrm.EndUpdateSelection;
+begin
+  dec(FUpdateSelectionCount);
+  if FUpdateSelectionCount=0 then
+    SelectionChanged;
 end;
 
 { TFieldsComponentEditor }
