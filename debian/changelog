@@ -1,3 +1,9 @@
+lazarus (1.4.0) stable; urgency=low
+
+  * Release building.
+
+ -- Mattias Gaertner <mattias@freepascal.org>  Sat, 18 Apr 2015 10:35:12 +0200
+
 lazarus (1.4RC3-0) unstable; urgency=low
 
   * Snapshot building.
