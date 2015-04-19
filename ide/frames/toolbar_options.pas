@@ -52,11 +52,13 @@ type
     dbAddConfigDelete: TDividerBevel;
     dbGeneralSettings: TDividerBevel;
     lbGrabWidth: TLabel;
+    lbCoolBarWidth: TLabel;
     pnTop: TPanel;
     pnBottom: TPanel;
     pnButtons: TPanel;
     sbCoolBar: TScrollBox;
     spGrabWidth: TSpinEdit;
+    spCoolBarWidth: TSpinEdit;
     tmWait: TTimer;
     procedure bAddClick(Sender: TObject);
     procedure bConfigClick(Sender: TObject);
@@ -66,18 +68,24 @@ type
     procedure cbBorderStyleChange(Sender: TObject);
     procedure cbGrabStyleChange(Sender: TObject);
     procedure cbCoolBarVisibleClick(Sender: TObject);
+    procedure CoolbarChange(Sender: TObject);
     procedure CoolBarMouseDown(Sender: TObject; {%H-}Button: TMouseButton;
       {%H-}Shift: TShiftState; X, Y: integer);
     procedure CoolbarResize(Sender: TObject);
+    procedure spCoolBarWidthChange(Sender: TObject);
     procedure spGrabWidthChange(Sender: TObject);
     procedure tmWaitTimer(Sender: TObject);
   private
     FTempCoolBar: TIDECoolBar;
+    FTempCoolBarOptions: TIDECoolBarOptions;
+    // Used for assigning and testing the default configuration.
+    FDefaultOptions: TDefaultCoolBarOptions;
     procedure SelectBand(const ID: integer);
     function GetSelectedBand: Integer;
     procedure ToolBarClick(Sender: TObject);
     procedure PopulateToolBar;
     procedure EnableDisableButtons(const bType: Integer);
+    //function OptionsChanged(OldOptions: TIDECoolBarOptions): boolean;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -111,6 +119,7 @@ begin
   bConfig.Caption := lisCoolbarConfigure;
   bDelete.Caption := lisBtnDelete;
   cbCoolBarVisible.Caption := lisCoolbarVisible;
+  lbCoolBarWidth.Caption := lisCoolbarWidth;
   gbGrabStyle.Caption := lisCoolbarGrabStyle;
   cbGrabStyle.Items.Strings[0] := lisCoolbarGrabStyleItem0;
   cbGrabStyle.Items.Strings[1] := lisCoolbarGrabStyleItem1;
@@ -126,30 +135,38 @@ begin
 end;
 
 procedure TToolbarOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
+var
+  Opts: TIDECoolBarOptions;
 begin
-  with (AOptions as TEnvironmentOptions).IDECoolBarOptions do
-  begin
-    cbCoolBarVisible.Checked := IDECoolBarVisible;
-    FTempCoolBar.IsVisible := IDECoolBarVisible;
+  Opts := (AOptions as TEnvironmentOptions).IDECoolBarOptions;
+  cbCoolBarVisible.Checked := Opts.IDECoolBarVisible;
+  FTempCoolBar.IsVisible := Opts.IDECoolBarVisible;
 
-    if not (IDECoolBarGrabStyle in [0..5]) then
-      IDECoolBarGrabStyle := 1;
-    cbGrabStyle.ItemIndex := IDECoolBarGrabStyle;
-    Coolbar.GrabStyle := TGrabStyle(IDECoolBarGrabStyle);
+  spCoolBarWidth.Value := Opts.IDECoolBarWidth;
+  FTempCoolBar.Width := Opts.IDECoolBarWidth;
 
-    if not (IDECoolBarGrabWidth in [1..50]) then
-      IDECoolBarGrabWidth := 5;
-    spGrabWidth.Value := IDECoolBarGrabWidth;
-    Coolbar.GrabWidth := IDECoolBarGrabWidth;
+  if not (Opts.IDECoolBarGrabStyle in [0..5]) then
+    Opts.IDECoolBarGrabStyle := 1;
+  cbGrabStyle.ItemIndex := Opts.IDECoolBarGrabStyle;
+  Coolbar.GrabStyle := TGrabStyle(Opts.IDECoolBarGrabStyle);
 
-    if not (IDECoolBarBorderStyle in [0..1]) then
-      IDECoolBarBorderStyle := 1;
-    cbBorderStyle.ItemIndex := IDECoolBarBorderStyle;
-    Coolbar.BandBorderStyle := TBorderStyle(IDECoolBarBorderStyle);
-    EnableDisableButtons(0);
-  end;
+  if not (Opts.IDECoolBarGrabWidth in [1..50]) then
+    Opts.IDECoolBarGrabWidth := 5;
+  spGrabWidth.Value := Opts.IDECoolBarGrabWidth;
+  Coolbar.GrabWidth := Opts.IDECoolBarGrabWidth;
 
-  FTempCoolBar.CopyFromOptions((AOptions as TEnvironmentOptions).IDECoolBarOptions);
+  if not (Opts.IDECoolBarBorderStyle in [0..1]) then
+    Opts.IDECoolBarBorderStyle := 1;
+  cbBorderStyle.ItemIndex := Opts.IDECoolBarBorderStyle;
+  Coolbar.BandBorderStyle := TBorderStyle(Opts.IDECoolBarBorderStyle);
+  EnableDisableButtons(0);
+
+  // ToDo: More tests?
+  if Opts.IDECoolBarToolBars.Count = 0 then
+    FTempCoolBar.CopyFromOptions(FDefaultOptions)
+  else
+    FTempCoolBar.CopyFromOptions(Opts);
+
   PopulateToolBar;
 end;
 
@@ -157,15 +174,9 @@ procedure TToolbarOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 var
   I, J: integer;
   ToolBar: TToolBar;
+  Opts: TIDECoolBarOptions;
 begin
-  with (AOptions as TEnvironmentOptions).IDECoolBarOptions do
-  begin
-    IDECoolBarVisible := cbCoolBarVisible.Checked;
-    IDECoolBarGrabStyle := cbGrabStyle.ItemIndex;
-    IDECoolBarGrabWidth := spGrabWidth.Value;
-    IDECoolBarBorderStyle := cbBorderStyle.ItemIndex;
-  end;
-
+  Opts := (AOptions as TEnvironmentOptions).IDECoolBarOptions;
   for I := 0 to Coolbar.Bands.Count - 1 do
   begin
     if Coolbar.Bands[I].Control = nil then
@@ -179,7 +190,12 @@ begin
     end;
   end;
   FTempCoolBar.Sort;
-  FTempCoolBar.CopyToOptions((AOptions as TEnvironmentOptions).IDECoolBarOptions);
+  FTempCoolBar.CopyToOptions(Opts);
+  Opts.IDECoolBarVisible := cbCoolBarVisible.Checked;
+  Opts.IDECoolBarWidth := FTempCoolBar.Width;
+  Opts.IDECoolBarGrabStyle := cbGrabStyle.ItemIndex;
+  Opts.IDECoolBarGrabWidth := spGrabWidth.Value;
+  Opts.IDECoolBarBorderStyle := cbBorderStyle.ItemIndex;
   MainIDEBar.RefreshCoolbar;
 end;
 
@@ -208,6 +224,12 @@ begin
   tmWait.Enabled := True;
 end;
 
+procedure TToolbarOptionsFrame.spCoolBarWidthChange(Sender: TObject);
+begin
+  FTempCoolBar.Width := spCoolBarWidth.Value;
+  EnableDisableButtons(0);
+end;
+
 procedure TToolbarOptionsFrame.tmWaitTimer(Sender: TObject);
 begin
   Coolbar.AutosizeBands;
@@ -232,6 +254,11 @@ procedure TToolbarOptionsFrame.cbCoolBarVisibleClick(Sender: TObject);
 begin
   FTempCoolBar.IsVisible := cbCoolBarVisible.Checked;
   EnableDisableButtons(0);
+end;
+
+procedure TToolbarOptionsFrame.CoolbarChange(Sender: TObject);
+begin
+  EnableDisableButtons(1);
 end;
 
 procedure TToolbarOptionsFrame.cbBorderStyleChange(Sender: TObject);
@@ -293,23 +320,25 @@ var
   Selected: Boolean;
 begin
   case bType of
-    0: begin
-         bDefaultGeneral.Enabled := not FTempCoolBar.IsDefaultCoolbar;
-       end;
-    1: begin
-         Selected := False;
-         for I := 0 to Coolbar.Bands.Count - 1 do
-         begin
-           if Coolbar.Bands[I].Color = clHighlight then
-           begin
-             Selected := True;
-             Break;
-           end;
-         end;
-         bConfig.Enabled := Selected;
-         bDelete.Enabled := Selected;
-         bDefaultToolbar.Enabled := not FTempCoolBar.IsDefaultToolbar;
-       end;
+    0:
+    begin
+      bDefaultGeneral.Enabled := not FTempCoolBar.IsDefaultCoolbar;
+    end;
+    1:
+    begin
+      Selected := False;
+      for I := 0 to Coolbar.Bands.Count - 1 do
+      begin
+        if Coolbar.Bands[I].Color = clHighlight then
+        begin
+          Selected := True;
+          Break;
+        end;
+      end;
+      bConfig.Enabled := Selected;
+      bDelete.Enabled := Selected;
+      bDefaultToolbar.Enabled := not FTempCoolBar.IsDefaultToolbar;
+    end;
   end;
 end;
 
@@ -343,12 +372,14 @@ constructor TToolbarOptionsFrame.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FTempCoolBar := TIDEcoolBar.Create(Coolbar);
-  FTempCoolBar.SetCoolBarDefaults;
-  FTempCoolBar.SetToolBarDefaults;
+  FTempCoolBarOptions := TIDECoolBarOptions.Create;
+  FDefaultOptions := TDefaultCoolBarOptions.Create;
 end;
 
 destructor TToolbarOptionsFrame.Destroy;
 begin
+  FreeAndNil(FDefaultOptions);
+  FreeAndNil(FTempCoolBarOptions);
   FreeAndNil(FTempCoolBar);
   inherited Destroy;
 end;
@@ -443,6 +474,8 @@ procedure TToolbarOptionsFrame.bDefaultGeneralClick(Sender: TObject);
 begin
   cbCoolBarVisible.Checked := True;
   FTempCoolBar.IsVisible := True;
+  spCoolBarWidth.Value := 230;
+  FTempCoolBar.Width := 230;
   cbGrabStyle.ItemIndex := 1;
   spGrabWidth.Value := 5;
   BiDiMode := bdLeftToRight;

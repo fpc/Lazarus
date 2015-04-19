@@ -4529,6 +4529,7 @@ resourcestring
   lisCoolbarGeneralSettings = 'General Coolbar Settings';
   lisCoolbarConfigure = '&Configure';
   lisCoolbarVisible = 'Coolbar is &visible';
+  lisCoolbarWidth = 'Coolbar width';
   lisCoolbarGrabStyle = 'Toolbars grab style';
   lisCoolbarGrabStyleItem0 = 'Simple';
   lisCoolbarGrabStyleItem1 = 'Double';

@@ -551,6 +551,7 @@ begin
     CoolBarOpts.IDECoolBarGrabWidth := 5;
   Coolbar.GrabWidth := CoolBarOpts.IDECoolBarGrabWidth;
   Coolbar.BandBorderStyle := TBorderStyle(CoolBarOpts.IDECoolBarBorderStyle);
+  Coolbar.Width := CoolBarOpts.IDECoolBarWidth;
   //read toolbars
   CoolBar.Bands.Clear;
   IDECoolBar.CopyFromOptions(CoolBarOpts);
@@ -583,11 +584,9 @@ end;
 
 procedure TMainIDEBar.CoolBarOnChange(Sender: TObject);
 var
-  I, J: integer;
+  I, J: Integer;
   ToolBar: TToolBar;
-  CoolBarOpts: TIDECoolBarOptions;
 begin
-  CoolBarOpts := EnvironmentOptions.IDECoolBarOptions;
   for I := 0 to Coolbar.Bands.Count - 1 do
   begin
     if Coolbar.Bands[I].Control = nil then
@@ -601,7 +600,7 @@ begin
     end
   end;
   IDECoolBar.Sort;
-  IDECoolBar.CopyToOptions(CoolBarOpts);
+  IDECoolBar.CopyToOptions(EnvironmentOptions.IDECoolBarOptions);
 end;
 
 

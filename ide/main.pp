@@ -2033,10 +2033,7 @@ begin
 
   // IDE Coolbar object wraps MainIDEBar.CoolBar.
   IDECoolBar := TIDECoolBar.Create(MainIDEBar.CoolBar);
-  IDECoolBar.SetCoolBarDefaults;
-  IDECoolBar.SetToolBarDefaults;
   IDECoolBar.IsVisible := EnvironmentOptions.IDECoolBarOptions.IDECoolBarVisible;;
-  MainIDEBar.CoolBar.Visible := EnvironmentOptions.IDECoolBarOptions.IDECoolBarVisible;
   MainIDEBar.CoolBar.OnChange := @MainIDEBar.CoolBarOnChange;
 
   MainIDEBar.CreatePopupMenus(OwningComponent);
@@ -3709,7 +3706,7 @@ begin
   MainIDEBar.itmViewComponentPalette.Checked:=ComponentPaletteVisible;
   MainIDEBar.ComponentPageControl.Visible:=ComponentPaletteVisible;
   EnvironmentOptions.ComponentPaletteVisible:=ComponentPaletteVisible;
-     if ComponentPaletteVisible then
+  if ComponentPaletteVisible then
   begin
     if MainIDEBar.CoolBar.Align = alClient then
     begin
