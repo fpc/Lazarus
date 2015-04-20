@@ -434,7 +434,6 @@ msgid "Whitespace"
 msgstr "Trenn-/Leerzeichen"
 
 #: syneditstrconst.syns_duplicateshortcutmsg
-#| msgid "Shortcut already exists"
 msgid "The keystroke \"%s\" is already assigned to another editor command. (%s)"
 msgstr "Der Tastendruck »%s« ist bereits einer anderen Editorfunktion zugewiesen. (%s)"
 
