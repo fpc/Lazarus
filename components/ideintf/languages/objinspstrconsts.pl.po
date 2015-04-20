@@ -508,7 +508,7 @@ msgid "&Delete"
 msgstr "Usuń komponenty"
 
 #: objinspstrconsts.oisdeleteitem
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Delete item %s%s%s?"
 msgid "Delete item \"%s\"?"
 msgstr "Usuń element %s%s%s?"
@@ -538,7 +538,7 @@ msgid "Error loading image"
 msgstr "Błąd ładowania obrazu"
 
 #: objinspstrconsts.oiserrorloadingimage2
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Error loading image %s%s%s:%s%s"
 msgid "Error loading image \"%s\":%s%s"
 msgstr "Błąd ładowania obrazu %s%s%s:%s%s"

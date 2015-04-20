@@ -1,4 +1,4 @@
-﻿msgid ""
+msgid ""
 msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -176,7 +176,6 @@ msgid "&Dataset:"
 msgstr "&Dataset:"
 
 #: objinspstrconsts.fesfetitle
-#| msgid "Edit Fields..."
 msgid "Edit Fields ..."
 msgstr "Editar Campos ..."
 
@@ -197,7 +196,6 @@ msgid "FieldDefs"
 msgstr "Definições Campos"
 
 #: objinspstrconsts.fesformcaption
-#| msgid "New fileld"
 msgctxt "objinspstrconsts.fesformcaption"
 msgid "New field"
 msgstr "Novo campo"
@@ -293,32 +291,26 @@ msgid "Unable to find parser for tool \"%s\""
 msgstr ""
 
 #: objinspstrconsts.nbcesaddpage
-#| msgid "Add page"
 msgid "Add Page"
 msgstr "Adicionar página"
 
 #: objinspstrconsts.nbcesdeletepage
-#| msgid "Delete page"
 msgid "Delete Page"
 msgstr "Excluir página"
 
 #: objinspstrconsts.nbcesinsertpage
-#| msgid "Insert page"
 msgid "Insert Page"
 msgstr "Inserir página"
 
 #: objinspstrconsts.nbcesmovepageleft
-#| msgid "Move page left"
 msgid "Move Page Left"
 msgstr "Mover página a esquerda"
 
 #: objinspstrconsts.nbcesmovepageright
-#| msgid "Move page right"
 msgid "Move Page Right"
 msgstr "Mover página a direita"
 
 #: objinspstrconsts.nbcesshowpage
-#| msgid "Show page ..."
 msgid "Show Page"
 msgstr "Exibir página"
 
@@ -359,12 +351,10 @@ msgid "Action"
 msgstr "Ação"
 
 #: objinspstrconsts.oisactionlistcomponenteditor
-#| msgid "Action&List Editor..."
 msgid "Action&List Editor ..."
 msgstr "Editor Lista &Ações ..."
 
 #: objinspstrconsts.oisactionlisteditor
-#| msgid "Action List Editor"
 msgid "ActionList Editor"
 msgstr "Editor Lista Ações"
 
@@ -409,7 +399,6 @@ msgid "&Add"
 msgstr "&Adicionar"
 
 #: objinspstrconsts.oiscancel
-#| msgid "&Cancel"
 msgctxt "objinspstrconsts.oiscancel"
 msgid "Cancel"
 msgstr "Cancelar"
@@ -451,7 +440,7 @@ msgid "Clear picture"
 msgstr "Limpar figura"
 
 #: objinspstrconsts.oiscomponentnameisnotavalididentifier
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Component name %s%s%s is not a valid identifier"
 msgid "Component name \"%s\" is not a valid identifier"
 msgstr "Nome do componente %s%s%s não é um identificador válido"
@@ -465,7 +454,6 @@ msgid "Confirm delete"
 msgstr "Confirmar exclusão"
 
 #: objinspstrconsts.oiscopycomponents
-#| msgid "Copy components"
 msgctxt "objinspstrconsts.oiscopycomponents"
 msgid "&Copy"
 msgstr "&Copiar"
@@ -483,7 +471,6 @@ msgid "Create new field and add it at current position"
 msgstr "Criar novo campo e adicioná-lo na posição atual"
 
 #: objinspstrconsts.oiscutcomponents
-#| msgid "Cut components"
 msgctxt "objinspstrconsts.oiscutcomponents"
 msgid "Cu&t"
 msgstr "Recor&tar"
@@ -494,13 +481,12 @@ msgid "Delete"
 msgstr "Excluir"
 
 #: objinspstrconsts.oisdeletecomponents
-#| msgid "Delete components"
 msgctxt "objinspstrconsts.oisdeletecomponents"
 msgid "&Delete"
 msgstr "&Excluir"
 
 #: objinspstrconsts.oisdeleteitem
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Delete item %s%s%s?"
 msgid "Delete item \"%s\"?"
 msgstr "Excluir item %s%s%s?"
@@ -530,7 +516,7 @@ msgid "Error loading image"
 msgstr "Erro ao carregar imagem"
 
 #: objinspstrconsts.oiserrorloadingimage2
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Error loading image %s%s%s:%s%s"
 msgid "Error loading image \"%s\":%s%s"
 msgstr "Erro carregando imagem %s%s%s:%s%s"
@@ -560,7 +546,6 @@ msgid "&Help"
 msgstr "&Ajuda"
 
 #: objinspstrconsts.oisimagelistcomponenteditor
-#| msgid "I&mageList Editor..."
 msgid "I&mageList Editor ..."
 msgstr "Editor Lista I&magens ..."
 
@@ -593,7 +578,7 @@ msgid "Invalid property value"
 msgstr "Valor de propriedade inválido"
 
 #: objinspstrconsts.oisisnotavalidmethodname
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "%s%s%s is not a valid method name."
 msgid "\"%s\" is not a valid method name."
 msgstr "%s%s%s não é um nome de método válido."
@@ -619,7 +604,6 @@ msgid "Load picture"
 msgstr "Carregar figura"
 
 #: objinspstrconsts.oismasks
-#| msgid "Masks..."
 msgid "Masks ..."
 msgstr "Máscaras ..."
 
@@ -697,7 +681,6 @@ msgid "Move to Front"
 msgstr "Mover para Frente"
 
 #: objinspstrconsts.oispastecomponents
-#| msgid "Paste components"
 msgctxt "objinspstrconsts.oispastecomponents"
 msgid "&Paste"
 msgstr "C&olar"
@@ -839,7 +822,6 @@ msgid "Strings Editor Dialog"
 msgstr "Diálogo Editor Sequência Caracteres"
 
 #: objinspstrconsts.oistdactcolorselect1headline
-#| msgid "Select &Color..."
 msgid "Select &Color ..."
 msgstr "Selecionar &Cor ..."
 
@@ -1022,7 +1004,6 @@ msgid "Exit"
 msgstr "Sair"
 
 #: objinspstrconsts.oistdactfileopenheadline
-#| msgid "&Open..."
 msgid "&Open ..."
 msgstr "&Abrir ..."
 
@@ -1036,7 +1017,6 @@ msgid "Ctrl+O"
 msgstr "Ctrl+O"
 
 #: objinspstrconsts.oistdactfileopenwithheadline
-#| msgid "Open with..."
 msgid "Open with ..."
 msgstr "&Abrir com ..."
 
@@ -1045,7 +1025,6 @@ msgid "Open with"
 msgstr "Abrir com"
 
 #: objinspstrconsts.oistdactfilesaveasheadline
-#| msgid "Save &As..."
 msgid "Save &As ..."
 msgstr "Salvar &Como ..."
 
@@ -1054,7 +1033,6 @@ msgid "Save As"
 msgstr "Salvar Como"
 
 #: objinspstrconsts.oistdactfonteditheadline
-#| msgid "Select &Font..."
 msgid "Select &Font ..."
 msgstr "Selecionar &Fonte ..."
 
@@ -1095,7 +1073,6 @@ msgid "Find first"
 msgstr "Localizar primeiro"
 
 #: objinspstrconsts.oistdactsearchfindheadline
-#| msgid "&Find..."
 msgid "&Find ..."
 msgstr "&Localizar ..."
 
@@ -1128,7 +1105,6 @@ msgid "Replace"
 msgstr "Substituir"
 
 #: objinspstrconsts.oistestdialog
-#| msgid "Test dialog..."
 msgid "Test dialog ..."
 msgstr "Testar caixa diálogo ..."
 
@@ -1137,25 +1113,25 @@ msgid "Test Input"
 msgstr "Testar Entrada"
 
 #: objinspstrconsts.oistheidentifierisnotamethodpresscanceltoundopressign
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The identifier %s%s%s is not a method.%sPress Cancel to undo,%spress Ignore to force it."
 msgid "The identifier \"%s\" is not a method.%sPress Cancel to undo,%spress Ignore to force it."
 msgstr "O identificador %s%s%s não é um método.%sPressione Cancelar para desfazer,%sIgnorar para forçá-lo."
 
 #: objinspstrconsts.oisthemethodisincompatibletothiseventpresscanceltound
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The method %s%s%s is incompatible to this event (%s).%sPress Cancel to undo,%spress Ignore to force it."
 msgid "The method \"%s\" is incompatible to this event (%s).%sPress Cancel to undo,%spress Ignore to force it."
 msgstr "O método %s%s%s é incompatível com este evento (%s).%sPressione Cancelar para desfazer,%sIgnorar para forçá-lo."
 
 #: objinspstrconsts.oisthemethodisnotpublishedpresscanceltoundopressignor
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The method %s%s%s is not published.%sPress Cancel to undo,%spress Ignore to force it."
 msgid "The method \"%s\" is not published.%sPress Cancel to undo,%spress Ignore to force it."
 msgstr "O método %s%s%s não é publicado.%sPressione Cancelar para desfazer,%sIgnorar para forçá-lo."
 
 #: objinspstrconsts.oisunabletochangeparentofcontroltonewparent
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Unable to change parent of control %s%s%s to new parent %s%s%s.%s%s"
 msgid "Unable to change parent of control \"%s\" to new parent \"%s\".%s%s"
 msgstr "Impossível mudar pai do controle %s%s%s para novo pai %s%s%s.%s%s"
@@ -1215,7 +1191,6 @@ msgid "Filter name"
 msgstr "Nome filtro"
 
 #: objinspstrconsts.pirsunit
-#| msgid "Unit"
 msgid "Pascal unit"
 msgstr "Unidade Pascal"
 
@@ -1275,7 +1250,6 @@ msgid "Sections Editor ..."
 msgstr "Editor Seções ..."
 
 #: objinspstrconsts.sccsiledtadd
-#| msgid "Add ..."
 msgid "&Add ..."
 msgstr "&Adicionar ..."
 
@@ -1284,7 +1258,6 @@ msgid "Adjustment"
 msgstr "Ajuste"
 
 #: objinspstrconsts.sccsiledtapply
-#| msgid "Apply"
 msgctxt "objinspstrconsts.sccsiledtapply"
 msgid "&Apply"
 msgstr "&Aplicar"
@@ -1298,7 +1271,6 @@ msgid "Center"
 msgstr "Centro"
 
 #: objinspstrconsts.sccsiledtclear
-#| msgid "Clear"
 msgctxt "objinspstrconsts.sccsiledtclear"
 msgid "&Clear"
 msgstr "&Limpar"
@@ -1308,7 +1280,6 @@ msgid "Crop"
 msgstr "Aparar"
 
 #: objinspstrconsts.sccsiledtdelete
-#| msgid "Delete"
 msgctxt "objinspstrconsts.sccsiledtdelete"
 msgid "&Delete"
 msgstr "&Excluir"
@@ -1322,13 +1293,11 @@ msgid "Selected Image"
 msgstr "Imagem Selecionada"
 
 #: objinspstrconsts.sccsiledtmovedown
-#| msgid "Move Down"
 msgctxt "objinspstrconsts.sccsiledtmovedown"
 msgid "Move D&own"
 msgstr "Mover A&baixo"
 
 #: objinspstrconsts.sccsiledtmoveup
-#| msgid "Move Up"
 msgctxt "objinspstrconsts.sccsiledtmoveup"
 msgid "Move &Up"
 msgstr "Mover A&cima"
@@ -1346,13 +1315,11 @@ msgid "Transparent Color:"
 msgstr "Cor Transparente:"
 
 #: objinspstrconsts.sccsiledtsave
-#| msgid "Save ..."
 msgctxt "objinspstrconsts.sccsiledtsave"
 msgid "&Save ..."
 msgstr "&Salvar ..."
 
 #: objinspstrconsts.sccsiledtsaveall
-#| msgid "Save All..."
 msgid "Save All ..."
 msgstr "Salvar tudo ..."
 
@@ -1369,7 +1336,6 @@ msgid "Edit Columns ..."
 msgstr "Editar Colunas ..."
 
 #: objinspstrconsts.sccslvedt
-#| msgid "Edit Items..."
 msgctxt "objinspstrconsts.sccslvedt"
 msgid "Edit Items ..."
 msgstr "Editar Itens \"ListView\" ..."
@@ -1428,7 +1394,6 @@ msgid "New SubItem"
 msgstr "Novo sub-item"
 
 #: objinspstrconsts.sccsmaskeditor
-#| msgid "Edit Mask Editor..."
 msgid "Edit Mask Editor ..."
 msgstr "Editor Máscaras edição ..."
 
@@ -1437,7 +1402,6 @@ msgid "Panels Editor ..."
 msgstr "Editor Painéis ..."
 
 #: objinspstrconsts.sccssgedt
-#| msgid "Edit StringGrid..."
 msgid "Edit StringGrid ..."
 msgstr "Editar \"StringGrid\" ..."
 
@@ -1459,7 +1423,6 @@ msgid "String Grid"
 msgstr "\"String Grid\""
 
 #: objinspstrconsts.sccssgedtload
-#| msgid "Load..."
 msgid "Load ..."
 msgstr "Carregar ..."
 
@@ -1473,7 +1436,6 @@ msgid "Open"
 msgstr "Abrir"
 
 #: objinspstrconsts.sccssgedtsave
-#| msgid "Save..."
 msgctxt "objinspstrconsts.sccssgedtsave"
 msgid "Save ..."
 msgstr "Salvar ..."
@@ -1484,7 +1446,6 @@ msgid "Save"
 msgstr "Salvar"
 
 #: objinspstrconsts.sccstredt
-#| msgid "Edit Items..."
 msgctxt "objinspstrconsts.sccstredt"
 msgid "Edit Items ..."
 msgstr "Editar Itens \"TreeView\" ..."

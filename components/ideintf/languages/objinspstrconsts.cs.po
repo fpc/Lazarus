@@ -177,7 +177,6 @@ msgid "&Dataset:"
 msgstr "&Datová sada"
 
 #: objinspstrconsts.fesfetitle
-#| msgid "Edit Fields..."
 msgid "Edit Fields ..."
 msgstr "Upravit pole ..."
 
@@ -293,32 +292,26 @@ msgid "Unable to find parser for tool \"%s\""
 msgstr ""
 
 #: objinspstrconsts.nbcesaddpage
-#| msgid "Add page"
 msgid "Add Page"
 msgstr "Přidat stránku"
 
 #: objinspstrconsts.nbcesdeletepage
-#| msgid "Delete page"
 msgid "Delete Page"
 msgstr "Smazat stránku"
 
 #: objinspstrconsts.nbcesinsertpage
-#| msgid "Insert page"
 msgid "Insert Page"
 msgstr "Vložit stránku"
 
 #: objinspstrconsts.nbcesmovepageleft
-#| msgid "Move page left"
 msgid "Move Page Left"
 msgstr "Přesunout stránku vlevo"
 
 #: objinspstrconsts.nbcesmovepageright
-#| msgid "Move page right"
 msgid "Move Page Right"
 msgstr "Přesunout stránku vpravo"
 
 #: objinspstrconsts.nbcesshowpage
-#| msgid "Show page ..."
 msgid "Show Page"
 msgstr "Ukázat stránku"
 
@@ -359,7 +352,6 @@ msgid "Action"
 msgstr "Akce"
 
 #: objinspstrconsts.oisactionlistcomponenteditor
-#| msgid "Action&List Editor..."
 msgid "Action&List Editor ..."
 msgstr "Editor &ActionList ..."
 
@@ -408,7 +400,6 @@ msgid "&Add"
 msgstr "&Přidat"
 
 #: objinspstrconsts.oiscancel
-#| msgid "&Cancel"
 msgctxt "objinspstrconsts.oiscancel"
 msgid "Cancel"
 msgstr "&Zrušit"
@@ -450,7 +441,7 @@ msgid "Clear picture"
 msgstr "Vyčistit obrázek"
 
 #: objinspstrconsts.oiscomponentnameisnotavalididentifier
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Component name %s%s%s is not a valid identifier"
 msgid "Component name \"%s\" is not a valid identifier"
 msgstr "Jméno komponenty %s%s%s není platný identifikátor"
@@ -496,7 +487,7 @@ msgid "&Delete"
 msgstr "&Smazat"
 
 #: objinspstrconsts.oisdeleteitem
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Delete item %s%s%s?"
 msgid "Delete item \"%s\"?"
 msgstr "Smazat položku %s%s%s?"
@@ -526,7 +517,7 @@ msgid "Error loading image"
 msgstr "Chyba načítání obrázku"
 
 #: objinspstrconsts.oiserrorloadingimage2
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Error loading image %s%s%s:%s%s"
 msgid "Error loading image \"%s\":%s%s"
 msgstr "Chyba načítání obrázku %s%s%s:%s%s"
@@ -556,7 +547,6 @@ msgid "&Help"
 msgstr "&Pomoc"
 
 #: objinspstrconsts.oisimagelistcomponenteditor
-#| msgid "I&mageList Editor..."
 msgid "I&mageList Editor ..."
 msgstr "Editor I&mageList ..."
 
@@ -589,7 +579,7 @@ msgid "Invalid property value"
 msgstr "Neplatná hodnota vlastnosti"
 
 #: objinspstrconsts.oisisnotavalidmethodname
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "%s%s%s is not a valid method name."
 msgid "\"%s\" is not a valid method name."
 msgstr "%s%s%s není platné jméno metody"
@@ -615,7 +605,6 @@ msgid "Load picture"
 msgstr "Načíst obrázek"
 
 #: objinspstrconsts.oismasks
-#| msgid "Masks..."
 msgid "Masks ..."
 msgstr "Masky ..."
 
@@ -834,7 +823,6 @@ msgid "Strings Editor Dialog"
 msgstr "Dialog editoru řetězců"
 
 #: objinspstrconsts.oistdactcolorselect1headline
-#| msgid "Select &Color..."
 msgid "Select &Color ..."
 msgstr "Vybrat barvu ..."
 
@@ -1017,7 +1005,6 @@ msgid "Exit"
 msgstr "Odejít"
 
 #: objinspstrconsts.oistdactfileopenheadline
-#| msgid "&Open..."
 msgid "&Open ..."
 msgstr "&Otevřít ..."
 
@@ -1031,7 +1018,6 @@ msgid "Ctrl+O"
 msgstr "Ctrl+O"
 
 #: objinspstrconsts.oistdactfileopenwithheadline
-#| msgid "Open with..."
 msgid "Open with ..."
 msgstr "Otevřít s ..."
 
@@ -1040,7 +1026,6 @@ msgid "Open with"
 msgstr "Otevřít s"
 
 #: objinspstrconsts.oistdactfilesaveasheadline
-#| msgid "Save &As..."
 msgid "Save &As ..."
 msgstr "Uložit jako ..."
 
@@ -1049,7 +1034,6 @@ msgid "Save As"
 msgstr "Uložit jako"
 
 #: objinspstrconsts.oistdactfonteditheadline
-#| msgid "Select &Font..."
 msgid "Select &Font ..."
 msgstr "Vybrat &písmo ..."
 
@@ -1090,7 +1074,6 @@ msgid "Find first"
 msgstr "Hledat první"
 
 #: objinspstrconsts.oistdactsearchfindheadline
-#| msgid "&Find..."
 msgid "&Find ..."
 msgstr "&Hledat ..."
 
@@ -1123,7 +1106,6 @@ msgid "Replace"
 msgstr "Nahradit"
 
 #: objinspstrconsts.oistestdialog
-#| msgid "Test dialog..."
 msgid "Test dialog ..."
 msgstr "Zkušební dialog ..."
 
@@ -1132,25 +1114,25 @@ msgid "Test Input"
 msgstr "Zkušební vstup"
 
 #: objinspstrconsts.oistheidentifierisnotamethodpresscanceltoundopressign
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The identifier %s%s%s is not a method.%sPress Cancel to undo,%spress Ignore to force it."
 msgid "The identifier \"%s\" is not a method.%sPress Cancel to undo,%spress Ignore to force it."
 msgstr "Identifikátor %s%s%s není metoda.%sStiskněte Zrušit k návratu zpět,%sstiskněte Ignorovat k vynucení."
 
 #: objinspstrconsts.oisthemethodisincompatibletothiseventpresscanceltound
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The method %s%s%s is incompatible to this event (%s).%sPress Cancel to undo,%spress Ignore to force it."
 msgid "The method \"%s\" is incompatible to this event (%s).%sPress Cancel to undo,%spress Ignore to force it."
 msgstr "Metoda %s%s%s není kompatibilní s touto událostí (%s).%sStiskněte Zrušit pro návrat zpět, %sstiskněte Ignorovat pro vynucení."
 
 #: objinspstrconsts.oisthemethodisnotpublishedpresscanceltoundopressignor
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The method %s%s%s is not published.%sPress Cancel to undo,%spress Ignore to force it."
 msgid "The method \"%s\" is not published.%sPress Cancel to undo,%spress Ignore to force it."
 msgstr "Metoda %s%s%s není zveřejněná.%sStiskněte Zrušit pro návrat zpět,%sstiskněte Ignorovat pro vynucení."
 
 #: objinspstrconsts.oisunabletochangeparentofcontroltonewparent
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Unable to change parent of control %s%s%s to new parent %s%s%s.%s%s"
 msgid "Unable to change parent of control \"%s\" to new parent \"%s\".%s%s"
 msgstr "Nelze změnit rodiče ovládacího prvku %s%s%s na nového rodiče %s%s%s.%s%s"
@@ -1210,7 +1192,6 @@ msgid "Filter name"
 msgstr "Jméno filtru"
 
 #: objinspstrconsts.pirsunit
-#| msgid "Unit"
 msgid "Pascal unit"
 msgstr "Jednotka pascal"
 
@@ -1270,7 +1251,6 @@ msgid "Sections Editor ..."
 msgstr "Editor výběru..."
 
 #: objinspstrconsts.sccsiledtadd
-#| msgid "Add ..."
 msgid "&Add ..."
 msgstr "Přidat ..."
 
@@ -1279,7 +1259,6 @@ msgid "Adjustment"
 msgstr "Seřízení"
 
 #: objinspstrconsts.sccsiledtapply
-#| msgid "Apply"
 msgctxt "objinspstrconsts.sccsiledtapply"
 msgid "&Apply"
 msgstr "Použít"
@@ -1293,7 +1272,6 @@ msgid "Center"
 msgstr "Vystředit"
 
 #: objinspstrconsts.sccsiledtclear
-#| msgid "Clear"
 msgctxt "objinspstrconsts.sccsiledtclear"
 msgid "&Clear"
 msgstr "Vyčistit"
@@ -1303,7 +1281,6 @@ msgid "Crop"
 msgstr "Oříznout"
 
 #: objinspstrconsts.sccsiledtdelete
-#| msgid "Delete"
 msgctxt "objinspstrconsts.sccsiledtdelete"
 msgid "&Delete"
 msgstr "Odstranit"
@@ -1317,13 +1294,11 @@ msgid "Selected Image"
 msgstr "Vybraný obrázek"
 
 #: objinspstrconsts.sccsiledtmovedown
-#| msgid "Move Down"
 msgctxt "objinspstrconsts.sccsiledtmovedown"
 msgid "Move D&own"
 msgstr "Přesunout d&olů"
 
 #: objinspstrconsts.sccsiledtmoveup
-#| msgid "Move Up"
 msgctxt "objinspstrconsts.sccsiledtmoveup"
 msgid "Move &Up"
 msgstr "Přesunout nahor&u"
@@ -1341,13 +1316,11 @@ msgid "Transparent Color:"
 msgstr "Průhledná barva:"
 
 #: objinspstrconsts.sccsiledtsave
-#| msgid "Save ..."
 msgctxt "objinspstrconsts.sccsiledtsave"
 msgid "&Save ..."
 msgstr "&Uložit ..."
 
 #: objinspstrconsts.sccsiledtsaveall
-#| msgid "Save All..."
 msgid "Save All ..."
 msgstr "Uložit vše ..."
 
@@ -1364,7 +1337,6 @@ msgid "Edit Columns ..."
 msgstr "Editovat sloupce..."
 
 #: objinspstrconsts.sccslvedt
-#| msgid "Edit Items..."
 msgctxt "objinspstrconsts.sccslvedt"
 msgid "Edit Items ..."
 msgstr "Upravit položky ..."
@@ -1423,7 +1395,6 @@ msgid "New SubItem"
 msgstr "Nová podpoložka"
 
 #: objinspstrconsts.sccsmaskeditor
-#| msgid "Edit Mask Editor..."
 msgid "Edit Mask Editor ..."
 msgstr "Upravit editor masky ..."
 
@@ -1432,7 +1403,6 @@ msgid "Panels Editor ..."
 msgstr "Editor panelů..."
 
 #: objinspstrconsts.sccssgedt
-#| msgid "Edit StringGrid..."
 msgid "Edit StringGrid ..."
 msgstr "Editovat StringGrid ..."
 
@@ -1454,7 +1424,6 @@ msgid "String Grid"
 msgstr "Řetězcová mřížka"
 
 #: objinspstrconsts.sccssgedtload
-#| msgid "Load..."
 msgid "Load ..."
 msgstr "Načít ..."
 
@@ -1468,7 +1437,6 @@ msgid "Open"
 msgstr "Otevřít"
 
 #: objinspstrconsts.sccssgedtsave
-#| msgid "Save..."
 msgctxt "objinspstrconsts.sccssgedtsave"
 msgid "Save ..."
 msgstr "Uložit ..."
@@ -1479,7 +1447,6 @@ msgid "Save"
 msgstr "Uložit"
 
 #: objinspstrconsts.sccstredt
-#| msgid "Edit Items..."
 msgctxt "objinspstrconsts.sccstredt"
 msgid "Edit Items ..."
 msgstr "Upravit položky ..."

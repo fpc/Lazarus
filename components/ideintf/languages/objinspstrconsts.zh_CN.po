@@ -462,7 +462,7 @@ msgid "Clear picture"
 msgstr "清除图片"
 
 #: objinspstrconsts.oiscomponentnameisnotavalididentifier
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Component name %s%s%s is not a valid identifier"
 msgid "Component name \"%s\" is not a valid identifier"
 msgstr "组件 %s%s%s 不是一个有效的标识符"
@@ -514,7 +514,7 @@ msgid "&Delete"
 msgstr "删除组件"
 
 #: objinspstrconsts.oisdeleteitem
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Delete item %s%s%s?"
 msgid "Delete item \"%s\"?"
 msgstr "删除项目 %s%s%s?"
@@ -544,7 +544,7 @@ msgid "Error loading image"
 msgstr "装载图片时错误"
 
 #: objinspstrconsts.oiserrorloadingimage2
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Error loading image %s%s%s:%s%s"
 msgid "Error loading image \"%s\":%s%s"
 msgstr "装载图片 %s%s%s:%s%s 时错误"
