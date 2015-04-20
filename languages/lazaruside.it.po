@@ -2523,6 +2523,76 @@ msgctxt "lazarusidestrconsts.dlgmsgs"
 msgid "Messages"
 msgstr "Messaggi"
 
+#: lazarusidestrconsts.dlgmsgwincolorurgentdebug
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgmsgwincolorurgentdebug"
+msgid "Debug"
+msgstr "Debug"
+
+#: lazarusidestrconsts.dlgmsgwincolorurgenterror
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgmsgwincolorurgenterror"
+msgid "Error"
+msgstr "Errore"
+
+#: lazarusidestrconsts.dlgmsgwincolorurgentfatal
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgmsgwincolorurgentfatal"
+msgid "Fatal"
+msgstr "Fatale"
+
+#: lazarusidestrconsts.dlgmsgwincolorurgenthint
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgmsgwincolorurgenthint"
+msgid "Hint"
+msgstr "Consiglio"
+
+#: lazarusidestrconsts.dlgmsgwincolorurgentimportant
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgmsgwincolorurgentimportant"
+msgid "Important"
+msgstr "Importante"
+
+#: lazarusidestrconsts.dlgmsgwincolorurgentnone
+msgid "Normal"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmsgwincolorurgentnote
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgmsgwincolorurgentnote"
+msgid "Note"
+msgstr "Nota"
+
+#: lazarusidestrconsts.dlgmsgwincolorurgentpanic
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgmsgwincolorurgentpanic"
+msgid "Panic"
+msgstr "Panico"
+
+#: lazarusidestrconsts.dlgmsgwincolorurgentprogress
+msgid "Time and statistics"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmsgwincolorurgentverbose
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgmsgwincolorurgentverbose"
+msgid "Verbose"
+msgstr "Prolisso"
+
+#: lazarusidestrconsts.dlgmsgwincolorurgentverbose2
+msgid "Verbose 2"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmsgwincolorurgentverbose3
+msgid "Verbose 3"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmsgwincolorurgentwarning
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgmsgwincolorurgentwarning"
+msgid "Warning"
+msgstr "Attenzione:"
+
 #: lazarusidestrconsts.dlgmulticaretcolumnmode
 msgid "Multi-caret (column-select) move with cursor"
 msgstr ""
@@ -4734,6 +4804,7 @@ msgid "unusual characters"
 msgstr "caratteri insoliti"
 
 #: lazarusidestrconsts.lisccowarningcaption
+msgctxt "lazarusidestrconsts.lisccowarningcaption"
 msgid "Warning"
 msgstr "Attenzione:"
 
@@ -8635,6 +8706,7 @@ msgid "Failed to save file."
 msgstr "Salvataggio file fallito."
 
 #: lazarusidestrconsts.lisfatal
+msgctxt "lazarusidestrconsts.lisfatal"
 msgid "Fatal"
 msgstr "Fatale"
 
@@ -9212,6 +9284,10 @@ msgstr "Cresci fino al più grande"
 msgid "Has Help"
 msgstr "Ha aiuto"
 
+#: lazarusidestrconsts.lisheadercolors
+msgid "Header colors"
+msgstr ""
+
 #: lazarusidestrconsts.lisheadercommentforclass
 msgid "Header comment for class"
 msgstr "Intestazione commento per classe"
@@ -9262,6 +9338,7 @@ msgid "Hide with project option (-vm%s)"
 msgstr "Nascondi con l'opzione di progetto (-vm%s)"
 
 #: lazarusidestrconsts.lishint
+msgctxt "lazarusidestrconsts.lishint"
 msgid "Hint"
 msgstr "Consiglio"
 
@@ -9528,6 +9605,7 @@ msgid "Import"
 msgstr "Importare"
 
 #: lazarusidestrconsts.lisimportant
+msgctxt "lazarusidestrconsts.lisimportant"
 msgid "Important"
 msgstr "Importante"
 
@@ -12369,6 +12447,10 @@ msgstr "Spostare queste units è incoerente con la loro sezione \"uses\". Vedi l
 msgid "(ms)"
 msgstr "(ms)"
 
+#: lazarusidestrconsts.lismsgcolors
+msgid "Message colors"
+msgstr ""
+
 #: lazarusidestrconsts.lismultipledirectoriesareseparatedwithsemicolons
 msgid "Multiple directories are separated with semicolons"
 msgstr "Cartelle multiple sono separate da punto e virgola"
@@ -12581,6 +12663,7 @@ msgid "Not a valid Pascal identifier"
 msgstr "Non è in identificatore Pascal valido"
 
 #: lazarusidestrconsts.lisnote
+msgctxt "lazarusidestrconsts.lisnote"
 msgid "Note"
 msgstr "Nota"
 
@@ -13009,6 +13092,7 @@ msgid "Page name \"%s\" already exists. Not added."
 msgstr "Il nome della pagina \"%s\" esiste già. Non agggiunta."
 
 #: lazarusidestrconsts.lispanic
+msgctxt "lazarusidestrconsts.lispanic"
 msgid "Panic"
 msgstr "Panico"
 
@@ -17542,6 +17626,7 @@ msgid "Variable"
 msgstr "Variabile"
 
 #: lazarusidestrconsts.lisverbose
+msgctxt "lazarusidestrconsts.lisverbose"
 msgid "Verbose"
 msgstr "Prolisso"
 

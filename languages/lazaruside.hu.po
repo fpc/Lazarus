@@ -2517,6 +2517,76 @@ msgctxt "lazarusidestrconsts.dlgmsgs"
 msgid "Messages"
 msgstr "Üzenetek"
 
+#: lazarusidestrconsts.dlgmsgwincolorurgentdebug
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgmsgwincolorurgentdebug"
+msgid "Debug"
+msgstr "Hibakeresés"
+
+#: lazarusidestrconsts.dlgmsgwincolorurgenterror
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgmsgwincolorurgenterror"
+msgid "Error"
+msgstr "Hiba"
+
+#: lazarusidestrconsts.dlgmsgwincolorurgentfatal
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgmsgwincolorurgentfatal"
+msgid "Fatal"
+msgstr "Végzetes"
+
+#: lazarusidestrconsts.dlgmsgwincolorurgenthint
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgmsgwincolorurgenthint"
+msgid "Hint"
+msgstr "Tipp"
+
+#: lazarusidestrconsts.dlgmsgwincolorurgentimportant
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgmsgwincolorurgentimportant"
+msgid "Important"
+msgstr "Fontos"
+
+#: lazarusidestrconsts.dlgmsgwincolorurgentnone
+msgid "Normal"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmsgwincolorurgentnote
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgmsgwincolorurgentnote"
+msgid "Note"
+msgstr "Megjegyzés"
+
+#: lazarusidestrconsts.dlgmsgwincolorurgentpanic
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgmsgwincolorurgentpanic"
+msgid "Panic"
+msgstr "Pánik"
+
+#: lazarusidestrconsts.dlgmsgwincolorurgentprogress
+msgid "Time and statistics"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmsgwincolorurgentverbose
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgmsgwincolorurgentverbose"
+msgid "Verbose"
+msgstr "Egyéb"
+
+#: lazarusidestrconsts.dlgmsgwincolorurgentverbose2
+msgid "Verbose 2"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmsgwincolorurgentverbose3
+msgid "Verbose 3"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmsgwincolorurgentwarning
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgmsgwincolorurgentwarning"
+msgid "Warning"
+msgstr "Figyelmeztetés"
+
 #: lazarusidestrconsts.dlgmulticaretcolumnmode
 msgid "Multi-caret (column-select) move with cursor"
 msgstr ""
@@ -4722,6 +4792,7 @@ msgid "unusual characters"
 msgstr "szokatlan karaktereket"
 
 #: lazarusidestrconsts.lisccowarningcaption
+msgctxt "lazarusidestrconsts.lisccowarningcaption"
 msgid "Warning"
 msgstr "Figyelmeztetés"
 
@@ -8620,6 +8691,7 @@ msgid "Failed to save file."
 msgstr "A fájl mentése nem sikerült."
 
 #: lazarusidestrconsts.lisfatal
+msgctxt "lazarusidestrconsts.lisfatal"
 msgid "Fatal"
 msgstr "Végzetes"
 
@@ -9197,6 +9269,10 @@ msgstr "Megnövelés a legnagyobbra"
 msgid "Has Help"
 msgstr "Van súgja"
 
+#: lazarusidestrconsts.lisheadercolors
+msgid "Header colors"
+msgstr ""
+
 #: lazarusidestrconsts.lisheadercommentforclass
 msgid "Header comment for class"
 msgstr "Fejléc megjegyzés az osztályhoz"
@@ -9247,6 +9323,7 @@ msgid "Hide with project option (-vm%s)"
 msgstr "Elrejtés projektbeállítással (-vm%s)"
 
 #: lazarusidestrconsts.lishint
+msgctxt "lazarusidestrconsts.lishint"
 msgid "Hint"
 msgstr "Tipp"
 
@@ -9511,6 +9588,7 @@ msgid "Import"
 msgstr "Importálás"
 
 #: lazarusidestrconsts.lisimportant
+msgctxt "lazarusidestrconsts.lisimportant"
 msgid "Important"
 msgstr "Fontos"
 
@@ -12351,6 +12429,10 @@ msgstr "Ezen unitok áthelyezése törést okoz a uses szakaszokban. Lásd az Ü
 msgid "(ms)"
 msgstr "(ms)"
 
+#: lazarusidestrconsts.lismsgcolors
+msgid "Message colors"
+msgstr ""
+
 #: lazarusidestrconsts.lismultipledirectoriesareseparatedwithsemicolons
 msgid "Multiple directories are separated with semicolons"
 msgstr "Több könyvtárat pontosvesszővel kell elválasztani"
@@ -12563,6 +12645,7 @@ msgid "Not a valid Pascal identifier"
 msgstr "Nem érvényes pascal azonosító"
 
 #: lazarusidestrconsts.lisnote
+msgctxt "lazarusidestrconsts.lisnote"
 msgid "Note"
 msgstr "Megjegyzés"
 
@@ -12991,6 +13074,7 @@ msgid "Page name \"%s\" already exists. Not added."
 msgstr "Már létezik \"%s\" nevű lap. Nem lett hozzáadva."
 
 #: lazarusidestrconsts.lispanic
+msgctxt "lazarusidestrconsts.lispanic"
 msgid "Panic"
 msgstr "Pánik"
 
@@ -17521,6 +17605,7 @@ msgid "Variable"
 msgstr "Változó"
 
 #: lazarusidestrconsts.lisverbose
+msgctxt "lazarusidestrconsts.lisverbose"
 msgid "Verbose"
 msgstr "Egyéb"
 

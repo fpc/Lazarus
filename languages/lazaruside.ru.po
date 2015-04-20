@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2015-04-20 23:37+0300\n"
+"PO-Revision-Date: 2015-04-21 02:31+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -2516,6 +2516,67 @@ msgctxt "lazarusidestrconsts.dlgmsgs"
 msgid "Messages"
 msgstr "Сообщения"
 
+#: lazarusidestrconsts.dlgmsgwincolorurgentdebug
+msgctxt "lazarusidestrconsts.dlgmsgwincolorurgentdebug"
+msgid "Debug"
+msgstr "Отладочное"
+
+#: lazarusidestrconsts.dlgmsgwincolorurgenterror
+msgctxt "lazarusidestrconsts.dlgmsgwincolorurgenterror"
+msgid "Error"
+msgstr "Ошибка"
+
+#: lazarusidestrconsts.dlgmsgwincolorurgentfatal
+msgctxt "lazarusidestrconsts.dlgmsgwincolorurgentfatal"
+msgid "Fatal"
+msgstr "Фатальная ошибка"
+
+#: lazarusidestrconsts.dlgmsgwincolorurgenthint
+msgctxt "lazarusidestrconsts.dlgmsgwincolorurgenthint"
+msgid "Hint"
+msgstr "Подсказка"
+
+#: lazarusidestrconsts.dlgmsgwincolorurgentimportant
+msgctxt "lazarusidestrconsts.dlgmsgwincolorurgentimportant"
+msgid "Important"
+msgstr "Важное"
+
+#: lazarusidestrconsts.dlgmsgwincolorurgentnone
+msgid "Normal"
+msgstr "Обычное"
+
+#: lazarusidestrconsts.dlgmsgwincolorurgentnote
+msgctxt "lazarusidestrconsts.dlgmsgwincolorurgentnote"
+msgid "Note"
+msgstr "Замечание"
+
+#: lazarusidestrconsts.dlgmsgwincolorurgentpanic
+msgctxt "lazarusidestrconsts.dlgmsgwincolorurgentpanic"
+msgid "Panic"
+msgstr "Чрезвычайное"
+
+#: lazarusidestrconsts.dlgmsgwincolorurgentprogress
+msgid "Time and statistics"
+msgstr "Время и статистика"
+
+#: lazarusidestrconsts.dlgmsgwincolorurgentverbose
+msgctxt "lazarusidestrconsts.dlgmsgwincolorurgentverbose"
+msgid "Verbose"
+msgstr "Подробное"
+
+#: lazarusidestrconsts.dlgmsgwincolorurgentverbose2
+msgid "Verbose 2"
+msgstr "Подробное 2"
+
+#: lazarusidestrconsts.dlgmsgwincolorurgentverbose3
+msgid "Verbose 3"
+msgstr "Подробное 3"
+
+#: lazarusidestrconsts.dlgmsgwincolorurgentwarning
+msgctxt "lazarusidestrconsts.dlgmsgwincolorurgentwarning"
+msgid "Warning"
+msgstr "Предупреждение"
+
 #: lazarusidestrconsts.dlgmulticaretcolumnmode
 msgid "Multi-caret (column-select) move with cursor"
 msgstr "Перемещать все курсоры за основным при выделении столбца"
@@ -4721,6 +4782,7 @@ msgid "unusual characters"
 msgstr "необычные символы"
 
 #: lazarusidestrconsts.lisccowarningcaption
+msgctxt "lazarusidestrconsts.lisccowarningcaption"
 msgid "Warning"
 msgstr "Предупреждение"
 
@@ -8606,6 +8668,7 @@ msgid "Failed to save file."
 msgstr "Не удалось сохранить файл."
 
 #: lazarusidestrconsts.lisfatal
+msgctxt "lazarusidestrconsts.lisfatal"
 msgid "Fatal"
 msgstr "Фатальная ошибка"
 
@@ -9183,6 +9246,10 @@ msgstr "Увеличить до наибольшего"
 msgid "Has Help"
 msgstr "Имеет справку"
 
+#: lazarusidestrconsts.lisheadercolors
+msgid "Header colors"
+msgstr "Цвета заголовков"
+
 #: lazarusidestrconsts.lisheadercommentforclass
 msgid "Header comment for class"
 msgstr "Комментарий перед заголовком класса"
@@ -9233,6 +9300,7 @@ msgid "Hide with project option (-vm%s)"
 msgstr "Скрыть с помощью параметра проекта (-vm%s)"
 
 #: lazarusidestrconsts.lishint
+msgctxt "lazarusidestrconsts.lishint"
 msgid "Hint"
 msgstr "Подсказка"
 
@@ -9497,6 +9565,7 @@ msgid "Import"
 msgstr "Импортировать"
 
 #: lazarusidestrconsts.lisimportant
+msgctxt "lazarusidestrconsts.lisimportant"
 msgid "Important"
 msgstr "Важное"
 
@@ -12339,6 +12408,10 @@ msgstr "Перемещение этих модулей приведёт в не�
 msgid "(ms)"
 msgstr "(мс)"
 
+#: lazarusidestrconsts.lismsgcolors
+msgid "Message colors"
+msgstr "Цвета сообщений"
+
 #: lazarusidestrconsts.lismultipledirectoriesareseparatedwithsemicolons
 msgid "Multiple directories are separated with semicolons"
 msgstr "Разделителем каталогов является точка с запятой"
@@ -12551,6 +12624,7 @@ msgid "Not a valid Pascal identifier"
 msgstr "Некорректный идентификатор Паскаля"
 
 #: lazarusidestrconsts.lisnote
+msgctxt "lazarusidestrconsts.lisnote"
 msgid "Note"
 msgstr "Замечание"
 
@@ -12978,6 +13052,7 @@ msgid "Page name \"%s\" already exists. Not added."
 msgstr "Вкладка с именем \"%s\" уже имеется. Добавление отменено."
 
 #: lazarusidestrconsts.lispanic
+msgctxt "lazarusidestrconsts.lispanic"
 msgid "Panic"
 msgstr "Чрезвычайное"
 
@@ -17508,6 +17583,7 @@ msgid "Variable"
 msgstr "Переменная"
 
 #: lazarusidestrconsts.lisverbose
+msgctxt "lazarusidestrconsts.lisverbose"
 msgid "Verbose"
 msgstr "Подробное"
 

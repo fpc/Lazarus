@@ -2636,6 +2636,71 @@ msgctxt "lazarusidestrconsts.dlgmsgs"
 msgid "Messages"
 msgstr "הודעות"
 
+#: lazarusidestrconsts.dlgmsgwincolorurgentdebug
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgmsgwincolorurgentdebug"
+msgid "Debug"
+msgstr "נפה שגיאות"
+
+#: lazarusidestrconsts.dlgmsgwincolorurgenterror
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgmsgwincolorurgenterror"
+msgid "Error"
+msgstr "שגיאה"
+
+#: lazarusidestrconsts.dlgmsgwincolorurgentfatal
+msgctxt "lazarusidestrconsts.dlgmsgwincolorurgentfatal"
+msgid "Fatal"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmsgwincolorurgenthint
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgmsgwincolorurgenthint"
+msgid "Hint"
+msgstr "טיפ"
+
+#: lazarusidestrconsts.dlgmsgwincolorurgentimportant
+msgctxt "lazarusidestrconsts.dlgmsgwincolorurgentimportant"
+msgid "Important"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmsgwincolorurgentnone
+msgid "Normal"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmsgwincolorurgentnote
+msgctxt "lazarusidestrconsts.dlgmsgwincolorurgentnote"
+msgid "Note"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmsgwincolorurgentpanic
+msgctxt "lazarusidestrconsts.dlgmsgwincolorurgentpanic"
+msgid "Panic"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmsgwincolorurgentprogress
+msgid "Time and statistics"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmsgwincolorurgentverbose
+msgctxt "lazarusidestrconsts.dlgmsgwincolorurgentverbose"
+msgid "Verbose"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmsgwincolorurgentverbose2
+msgid "Verbose 2"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmsgwincolorurgentverbose3
+msgid "Verbose 3"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmsgwincolorurgentwarning
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgmsgwincolorurgentwarning"
+msgid "Warning"
+msgstr "אזהרה"
+
 #: lazarusidestrconsts.dlgmulticaretcolumnmode
 msgid "Multi-caret (column-select) move with cursor"
 msgstr ""
@@ -5047,6 +5112,7 @@ msgid "unusual characters"
 msgstr "תוווים מיוחדים"
 
 #: lazarusidestrconsts.lisccowarningcaption
+msgctxt "lazarusidestrconsts.lisccowarningcaption"
 msgid "Warning"
 msgstr "אזהרה"
 
@@ -7748,9 +7814,10 @@ msgid "Disable/Enable updates for the entire window"
 msgstr "נטרל/אפשר עידכון של כל החלון"
 
 #: lazarusidestrconsts.lisdebug
+#, fuzzy
 msgctxt "lazarusidestrconsts.lisdebug"
 msgid "Debug"
-msgstr ""
+msgstr "נפה שגיאות"
 
 #: lazarusidestrconsts.lisdebugger
 msgctxt "lazarusidestrconsts.lisdebugger"
@@ -9140,6 +9207,7 @@ msgid "Failed to save file."
 msgstr ""
 
 #: lazarusidestrconsts.lisfatal
+msgctxt "lazarusidestrconsts.lisfatal"
 msgid "Fatal"
 msgstr ""
 
@@ -9733,6 +9801,10 @@ msgstr "הגדל לגדול ביותר"
 msgid "Has Help"
 msgstr "יש לו עזרה"
 
+#: lazarusidestrconsts.lisheadercolors
+msgid "Header colors"
+msgstr ""
+
 #: lazarusidestrconsts.lisheadercommentforclass
 msgid "Header comment for class"
 msgstr "הערת כותרת למחלקה"
@@ -9785,6 +9857,7 @@ msgid "Hide with project option (-vm%s)"
 msgstr ""
 
 #: lazarusidestrconsts.lishint
+msgctxt "lazarusidestrconsts.lishint"
 msgid "Hint"
 msgstr "טיפ"
 
@@ -10054,6 +10127,7 @@ msgid "Import"
 msgstr ""
 
 #: lazarusidestrconsts.lisimportant
+msgctxt "lazarusidestrconsts.lisimportant"
 msgid "Important"
 msgstr ""
 
@@ -13196,6 +13270,10 @@ msgstr ""
 msgid "(ms)"
 msgstr "(ms)"
 
+#: lazarusidestrconsts.lismsgcolors
+msgid "Message colors"
+msgstr ""
+
 #: lazarusidestrconsts.lismultipledirectoriesareseparatedwithsemicolons
 msgid "Multiple directories are separated with semicolons"
 msgstr ""
@@ -13421,6 +13499,7 @@ msgid "Not a valid Pascal identifier"
 msgstr "זה אינו מזהה פסקל חוקי"
 
 #: lazarusidestrconsts.lisnote
+msgctxt "lazarusidestrconsts.lisnote"
 msgid "Note"
 msgstr ""
 
@@ -13871,6 +13950,7 @@ msgid "Page name \"%s\" already exists. Not added."
 msgstr ""
 
 #: lazarusidestrconsts.lispanic
+msgctxt "lazarusidestrconsts.lispanic"
 msgid "Panic"
 msgstr ""
 
@@ -18869,6 +18949,7 @@ msgid "Variable"
 msgstr "משתנה"
 
 #: lazarusidestrconsts.lisverbose
+msgctxt "lazarusidestrconsts.lisverbose"
 msgid "Verbose"
 msgstr ""
 

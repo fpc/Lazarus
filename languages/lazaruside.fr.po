@@ -2519,6 +2519,76 @@ msgctxt "lazarusidestrconsts.dlgmsgs"
 msgid "Messages"
 msgstr "Messages"
 
+#: lazarusidestrconsts.dlgmsgwincolorurgentdebug
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgmsgwincolorurgentdebug"
+msgid "Debug"
+msgstr "Déboguer"
+
+#: lazarusidestrconsts.dlgmsgwincolorurgenterror
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgmsgwincolorurgenterror"
+msgid "Error"
+msgstr "Erreur"
+
+#: lazarusidestrconsts.dlgmsgwincolorurgentfatal
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgmsgwincolorurgentfatal"
+msgid "Fatal"
+msgstr "Fatal"
+
+#: lazarusidestrconsts.dlgmsgwincolorurgenthint
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgmsgwincolorurgenthint"
+msgid "Hint"
+msgstr "Conseil"
+
+#: lazarusidestrconsts.dlgmsgwincolorurgentimportant
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgmsgwincolorurgentimportant"
+msgid "Important"
+msgstr "Important"
+
+#: lazarusidestrconsts.dlgmsgwincolorurgentnone
+msgid "Normal"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmsgwincolorurgentnote
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgmsgwincolorurgentnote"
+msgid "Note"
+msgstr "Note"
+
+#: lazarusidestrconsts.dlgmsgwincolorurgentpanic
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgmsgwincolorurgentpanic"
+msgid "Panic"
+msgstr "Panique"
+
+#: lazarusidestrconsts.dlgmsgwincolorurgentprogress
+msgid "Time and statistics"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmsgwincolorurgentverbose
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgmsgwincolorurgentverbose"
+msgid "Verbose"
+msgstr "Verbeux"
+
+#: lazarusidestrconsts.dlgmsgwincolorurgentverbose2
+msgid "Verbose 2"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmsgwincolorurgentverbose3
+msgid "Verbose 3"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmsgwincolorurgentwarning
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgmsgwincolorurgentwarning"
+msgid "Warning"
+msgstr "Attention"
+
 #: lazarusidestrconsts.dlgmulticaretcolumnmode
 msgid "Multi-caret (column-select) move with cursor"
 msgstr "Les curseurs multiples (sélection de colonne) se déplacent avec le curseur principal"
@@ -4724,6 +4794,7 @@ msgid "unusual characters"
 msgstr "caractères insolites"
 
 #: lazarusidestrconsts.lisccowarningcaption
+msgctxt "lazarusidestrconsts.lisccowarningcaption"
 msgid "Warning"
 msgstr "Attention"
 
@@ -8612,6 +8683,7 @@ msgid "Failed to save file."
 msgstr "L'enregistrement de fichier a échoué."
 
 #: lazarusidestrconsts.lisfatal
+msgctxt "lazarusidestrconsts.lisfatal"
 msgid "Fatal"
 msgstr "Fatal"
 
@@ -9190,6 +9262,10 @@ msgstr "Agrandir au plus grand"
 msgid "Has Help"
 msgstr "Comprend une aide"
 
+#: lazarusidestrconsts.lisheadercolors
+msgid "Header colors"
+msgstr ""
+
 #: lazarusidestrconsts.lisheadercommentforclass
 msgid "Header comment for class"
 msgstr "Commentaire d'en-tête pour la classe"
@@ -9240,6 +9316,7 @@ msgid "Hide with project option (-vm%s)"
 msgstr "Cacher avec l'option du projet (\"-vm%s\")"
 
 #: lazarusidestrconsts.lishint
+msgctxt "lazarusidestrconsts.lishint"
 msgid "Hint"
 msgstr "Conseil"
 
@@ -9504,6 +9581,7 @@ msgid "Import"
 msgstr "Importer"
 
 #: lazarusidestrconsts.lisimportant
+msgctxt "lazarusidestrconsts.lisimportant"
 msgid "Important"
 msgstr "Important"
 
@@ -12350,6 +12428,10 @@ msgstr "Déplacer ces unités brisera la logique des sections \"uses\". Consulte
 msgid "(ms)"
 msgstr "(ms)"
 
+#: lazarusidestrconsts.lismsgcolors
+msgid "Message colors"
+msgstr ""
+
 #: lazarusidestrconsts.lismultipledirectoriesareseparatedwithsemicolons
 msgid "Multiple directories are separated with semicolons"
 msgstr "Les différents répertoires sont séparés par des points-virgules"
@@ -12562,6 +12644,7 @@ msgid "Not a valid Pascal identifier"
 msgstr "N'est pas un identificateur Pascal valide"
 
 #: lazarusidestrconsts.lisnote
+msgctxt "lazarusidestrconsts.lisnote"
 msgid "Note"
 msgstr "Note"
 
@@ -12989,6 +13072,7 @@ msgid "Page name \"%s\" already exists. Not added."
 msgstr "Le nom de page \"%s\" existe déjà. Non ajouté."
 
 #: lazarusidestrconsts.lispanic
+msgctxt "lazarusidestrconsts.lispanic"
 msgid "Panic"
 msgstr "Panique"
 
@@ -17519,6 +17603,7 @@ msgid "Variable"
 msgstr "Variable"
 
 #: lazarusidestrconsts.lisverbose
+msgctxt "lazarusidestrconsts.lisverbose"
 msgid "Verbose"
 msgstr "Verbeux"
 
