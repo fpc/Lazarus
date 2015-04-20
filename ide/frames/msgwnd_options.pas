@@ -177,7 +177,7 @@ procedure TMsgWndOptionsFrame.MsgColorListBoxSelectionChange(Sender: TObject; Us
 begin
   if not (fReady and User) then
     Exit;
-  MsgColorBox.Selected := MWColorListBox.Selected;
+  MsgColorBox.Selected := MsgColorListBox.Selected;
 end;
 
 procedure TMsgWndOptionsFrame.MWColorListBoxSelectionChange(Sender: TObject;

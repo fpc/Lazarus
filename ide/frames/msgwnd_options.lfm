@@ -149,7 +149,7 @@ object MsgWndOptionsFrame: TMsgWndOptionsFrame
     Height = 174
     Top = 26
     Width = 495
-    PageIndex = 1
+    PageIndex = 0
     Anchors = [akTop, akLeft, akRight]
     TabOrder = 5
     TabStop = True
