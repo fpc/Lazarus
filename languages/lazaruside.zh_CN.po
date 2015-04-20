@@ -7174,6 +7174,10 @@ msgstr ""
 msgid "Coolbar is &visible"
 msgstr ""
 
+#: lazarusidestrconsts.liscoolbarwidth
+msgid "Coolbar width"
+msgstr ""
+
 #: lazarusidestrconsts.liscopy
 msgctxt "lazarusidestrconsts.liscopy"
 msgid "Copy"

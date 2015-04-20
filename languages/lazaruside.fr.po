@@ -6813,6 +6813,10 @@ msgstr "Commandes de la barre d'outils"
 msgid "Coolbar is &visible"
 msgstr "La barre est &visible"
 
+#: lazarusidestrconsts.liscoolbarwidth
+msgid "Coolbar width"
+msgstr ""
+
 #: lazarusidestrconsts.liscopy
 msgctxt "lazarusidestrconsts.liscopy"
 msgid "Copy"
