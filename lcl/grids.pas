@@ -27,6 +27,7 @@ email: jesusrmx@yahoo.com.mx
 unit Grids;
 
 {$mode objfpc}{$H+}
+{$modeswitch nestedprocvars}
 {$define NewCols}
 
 interface
@@ -35,7 +36,7 @@ uses
   Types, Classes, SysUtils, Math, Maps, LCLStrConsts, LCLProc, LCLType, LCLIntf,
   FileUtil, FPCanvas, Controls, GraphType, Graphics, Forms, DynamicArray,
   LMessages, StdCtrls, LResources, MaskEdit, Buttons, Clipbrd, Themes,
-  LazUTF8, LazUtf8Classes, Laz2_XMLCfg; // <-- replaces XMLConf (part of FPC libs)
+  LazUTF8, LazUtf8Classes, Laz2_XMLCfg, LCSVUtils; // <-- replaces XMLConf (part of FPC libs)
 
 const
   //GRIDFILEVERSION = 1; // Original
@@ -10721,129 +10722,69 @@ end;
 
 procedure TCustomStringGrid.LoadFromCSVStream(AStream: TStream;
   ADelimiter: Char=','; WithHeader: boolean=true);
-  Procedure ParseDelimitedText(const AValue: string; const ADelimiter, AQuoteChar: Char; TS: TStrings);
-  { Helper function for LoadFromCSVFile
-    Adapted from TStrings.SetDelimitedText
-    - Only ADelimiter is used for separating the fields and not other whitespace
-    - If a field is quoted and it contains AQuoteChar, this occurrence is treated as a literal part of the field
-    - As per RFC4180 whitespace is considered to be part of the field, even if the field is not quoted
-    - Trailing spaces of a quoted field are trimmed
-    Example with ADelimiter = ',' and AQuoteChar = '"'
-    AValue = '111,2,22,333' -> 111|2|22|333
-    AValue = '111,"2,22",333' -> 111|2,22|333
-    AValue = '111,  222  ,333' -> 111|   222   |333
-  }
-  var i,j:integer;
-      aNotFirst:boolean;
-  begin
-    TS.BeginUpdate;
-    i:=1;
-    j:=1;
-    aNotFirst:=false;
-    try
-      TS.Clear;
-      while i<=length(AValue) do
-      begin
-        // skip delimiter
-        if aNotFirst and (i<=length(AValue)) and (AValue[i]=ADelimiter) then inc(i);
-        // read next string
-        if i<=length(AValue) then
-        begin
-          if AValue[i]=AQuoteChar then
-          begin
-            // next string is quoted
-            j:=i+1;
-             while (j<=length(AValue)) and
-                   ( (AValue[j]<>AQuoteChar) or
-                   ( (j+1<=length(AValue)) and (AValue[j+1]=AQuoteChar) ) ) do
-             begin
-               if (j<=length(AValue)) and (AValue[j]=AQuoteChar) then
-                 inc(j,2)
-               else
-                 inc(j);
-             end;
-             // j is position of closing quote
-             TS.Add( StringReplace (Copy(AValue,i+1,j-i-1),
-                             AQuoteChar+AQuoteChar,AQuoteChar, [rfReplaceAll]));
-             i:=j+1;
-          end
-          else
-          begin
-            // next string is not quoted
-            j:=i;
-            while (j<=length(AValue)) and
-                  //basically any other character means some invalid text
-                  ((Ord(AValue[j])>=Ord(' ')) or (AValue[j] in [#10,#13,#9,#0])) and
-                  (AValue[j]<>ADelimiter) do inc(j);
-            TS.Add(Copy(AValue,i,j-i));
-            i:=j;
-          end;
-       end
-       else
-       begin
-        if aNotFirst then TS.Add('');
-       end;
-       // skip trailing spaces of a quoted field
-       // not really sure if that is RFC4180 compliant
-       while (i<=length(AValue)) and (Ord(AValue[i])<=Ord(' ')) and (AValue[i] <> ADelimiter) do inc(i);
-       aNotFirst:=true;
-      end; //end of string
-    finally
-     TS.EndUpdate;
-    end;
-  end;//ParseDelimitedText
-
-
 var
-  Lines, HeaderL: TStringList;
-  i, j, StartRow: Integer;
+  MaxCols: Integer = 0;
+  MaxRows: Integer = 0;
+
+  procedure NewRecord(Fields:TStringlist);
+  var
+    i, aRow: Integer;
+  begin
+    if Fields.Count=0 then
+      exit;
+
+    Inc(MaxRows);
+    if (MaxRows=1) then
+      // first record
+      if not WithHeader then
+        exit; // ... no header wanted
+
+    // make sure we have enough columns
+    if MaxCols<Fields.Count then
+      MaxCols := Fields.Count;
+    if Columns.Enabled then begin
+      while Columns.VisibleCount<MaxCols do
+          Columns.Add;
+    end
+    else begin
+      if ColCount<MaxCols then
+        ColCount := MaxCols;
+    end;
+
+    // and rows ...
+    if RowCount<MaxRows then
+      RowCount := RowCount + 20;
+
+    // setup columns captions of custom columns if they are enabled
+    if (MaxRows=1) and withHeader and Columns.Enabled then begin
+      for i:=0 to Fields.Count-1 do
+        Columns[i].Title.Caption:=Fields[i];
+    end;
+
+    if not WithHeader then
+      aRow := FixedRows + (MaxRows-2)   // MaxRows is 1 based, 2nd one is our first row
+    else begin
+      aRow := FixedRows-1;
+      if aRow<0 then
+        aRow := 0;
+      aRow := aRow + (MaxRows-1);
+    end;
+
+    for i:=0 to Fields.Count-1 do
+      Cells[i, aRow] := Fields[i];
+  end;
+
 begin
-  Lines := TStringList.Create;
-  HeaderL := TStringList.Create;
   BeginUpdate;
   try
-    Lines.LoadFromStream(AStream);
-    // check for empty lines
-    for i:=Lines.Count-1 downto 0 do
-      if Trim(Lines[i])='' then
-        Lines.Delete(i);
-    if Lines.Count>0 then begin
-      ParseDelimitedText(Lines[0], ADelimiter, '"', HeaderL);
-      // Set Columns count based on loaded data
-      if Columns.Enabled then begin
-        while Columns.VisibleCount<>HeaderL.Count do
-          if Columns.VisibleCount<HeaderL.Count then
-            Columns.Add
-          else
-            Columns.Delete(Columns.Count-1);
-      end
-      else
-        ColCount := HeaderL.Count;          // New column count
-      // Rest of the lines are for rows
-      if WithHeader and (FixedRows=0) then
-        RowCount := Lines.Count
-      else
-        RowCount := FixedRows + Lines.Count-1;
-      // Set column captions and set StartRow for the following rows
-      if WithHeader then begin
-        if (FixedRows>0) and Columns.Enabled then
-          for i:=0 to Columns.Count-1 do
-            Columns[i].Title.Caption:=HeaderL[i];
-        StartRow := Max(FixedRows-1, 0);
-        j := 0;
-      end else begin
-        StartRow := FixedRows;
-        j := 1;
-      end;
-      // Store the row data
-      for i:=StartRow to RowCount-1 do begin
-        Rows[i].Delimiter := ADelimiter;
-        ParseDelimitedText(Lines[i-StartRow+j], ADelimiter, '"', Rows[i]);
-      end;
-    end;
+    LCSVUtils.LoadFromCSVStream(AStream, @NewRecord, ADelimiter);
+    RowCount := MaxRows;
+    if not Columns.Enabled then
+      ColCount := MaxCols
+    else
+      while Columns.Count > MaxCols do
+        Columns.Delete(Columns.Count-1);
   finally
-    HeaderL.Free;
-    Lines.Free;
     EndUpdate;
   end;
 end;

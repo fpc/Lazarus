@@ -2784,6 +2784,7 @@ components/lazutils/lazutils.lpk svneol=native#text/plain
 components/lazutils/lazutils.pas svneol=native#text/pascal
 components/lazutils/lazutilsstrconsts.pas svneol=native#text/pascal
 components/lazutils/lconvencoding.pas svneol=native#text/pascal
+components/lazutils/lcsvutils.pas svneol=native#text/pascal
 components/lazutils/masks.pas svneol=native#text/pascal
 components/lazutils/paswstring.pas svneol=native#text/pascal
 components/lazutils/ttcache.pas svneol=native#text/pascal
