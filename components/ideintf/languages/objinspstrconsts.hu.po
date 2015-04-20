@@ -467,7 +467,7 @@ msgstr "Alapértelmezett esemény létrehozása"
 
 #: objinspstrconsts.oiscreatenewfieldandadditatcurrentposition
 msgid "Create new field and add it at current position"
-msgstr "Mező létrehozása és a jelenlegi helyhez adása"
+msgstr "Mező létrehozása és hozzáadása az aktuális helyhez"
 
 #: objinspstrconsts.oiscutcomponents
 msgctxt "objinspstrconsts.oiscutcomponents"

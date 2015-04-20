@@ -153,7 +153,7 @@ msgstr ""
 
 #: gdbmistringconstants.synffailedtoloadapplicationexecutable
 msgid "Failed to load application executable"
-msgstr ""
+msgstr "Nem sikerült betölteni a futtatható alkalmazást"
 
 #: gdbmistringconstants.synfthedebuggerwasunabletosetallbreakpointsduringiniti
 msgid "The debugger was unable to set all breakpoints during initialization.%0:sYou may wish to check if all sources were compiled with debug-info.%0:sPress OK to ignore this and continue."

@@ -378,11 +378,11 @@ msgstr "NAMECASE(<Karakterlánc>)/A <Karakterlánc> jeleit kisbetűssé alakítj
 
 #: lr_const.sdescriptionnewcolumn
 msgid "NEWCOLUMN/Create new column on page for current report."
-msgstr "NEWCOLUMN/Új oszlopot hoz létre az oldalon az aktuális jelentés számára."
+msgstr "NEWCOLUMN/Új oszlopot hoz létre az oldalon a jelentésben."
 
 #: lr_const.sdescriptionnewpage
 msgid "NEWPAGE/Create new page for current report."
-msgstr "NEWPAGE/Új oldalt hoz létre a jelenlegi jelentés számára."
+msgstr "NEWPAGE/Új oldalt hoz létre a jelentésben."
 
 #: lr_const.sdescriptionpos
 msgid "POS(<SubString>, <String>)/Returns position of substring in given string."
@@ -707,7 +707,7 @@ msgstr "&Kis-/nagybetű számít"
 #: lr_const.sfindtextcurrentpg
 msgctxt "lr_const.sfindtextcurrentpg"
 msgid "Current &page"
-msgstr "Jelenlegi oldal"
+msgstr "Aktuális oldal"
 
 #: lr_const.sfindtextfirstpg
 msgid "&1st page"
@@ -732,7 +732,7 @@ msgstr "Keresendő szöveg"
 
 #: lr_const.sfirstpass
 msgid "Performing 1st pass:"
-msgstr "1. menet végrehajtása"
+msgstr "1. menet végrehajtása:"
 
 #: lr_const.sfmtformdecid
 msgid "&Decimal digits"
@@ -2251,7 +2251,7 @@ msgstr "Másolatok:"
 #: lr_const.sprintformcurpg
 msgctxt "lr_const.sprintformcurpg"
 msgid "Current &page"
-msgstr "Jelenlegi oldal"
+msgstr "Aktuális oldal"
 
 #: lr_const.sprintforminfo
 msgid "Enter page numbers and/or page ranges, separated by commas. For example, 1,3,5-12"
@@ -2533,7 +2533,7 @@ msgstr "Oszlop#"
 
 #: lr_const.svar8
 msgid "Current line#"
-msgstr "Jelenlegi sor#"
+msgstr "Aktuális sor#"
 
 #: lr_const.svar9
 msgid "TotalPages"
@@ -2596,4 +2596,3 @@ msgstr "Sortörés"
 #: lr_const.syes
 msgid "Yes"
 msgstr "Igen"
-

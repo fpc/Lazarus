@@ -1,15 +1,15 @@
 msgid ""
 msgstr ""
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
 "Last-Translator: Péter Gábor <ptrg@freemail.hu>\n"
 "Language-Team: Magyar (Hungarian)\n"
-"X-Generator: Poedit 1.5.4\n"
 "Language: hu\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.5.4\n"
 
 #: editortoolbar_str.rsadddivider
 msgid "Add Divider"
@@ -73,7 +73,7 @@ msgstr "Szerkesztő eszköztár beállítása"
 
 #: editortoolbar_str.rshelp
 msgid "Help"
-msgstr ""
+msgstr "Súgó"
 
 #: editortoolbar_str.rshelp1
 msgid "The \"Add\" button inserts a Menu Item before the selected Item of the Toolbar."
@@ -178,4 +178,3 @@ msgstr "Felülre"
 #: editortoolbar_str.serrcouldnotfind
 msgid "Could not find <%s>"
 msgstr "Nem található: <%s>"
-
