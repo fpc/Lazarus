@@ -1756,10 +1756,26 @@ resourcestring
   dlgUseSchemeLocal    = 'Use local scheme settings';
   dlgColor = 'Color';
   dlgColors = 'Colors';
+  lisHeaderColors = 'Header colors';
+  lisMsgColors = 'Message colors:';
   lisSetAllColors = 'Set all colors:';
   lisLazarusDefault = 'Lazarus Default';
   dlgColorNotModified = 'Not modified';
   dlgPriorities = 'Priorities';
+
+  dlgMsgWinColorUrgentNone      = 'Normal';
+  dlgMsgWinColorUrgentProgress  = 'time and statistics';
+  dlgMsgWinColorUrgentDebug     = 'Debug';
+  dlgMsgWinColorUrgentVerbose3  = 'Verbose 3';
+  dlgMsgWinColorUrgentVerbose2  = 'Verbose 2';
+  dlgMsgWinColorUrgentVerbose   = 'Verbose';
+  dlgMsgWinColorUrgentHint      = 'Hint';
+  dlgMsgWinColorUrgentNote      = 'Note';
+  dlgMsgWinColorUrgentWarning   = 'Warning';
+  dlgMsgWinColorUrgentImportant = 'Important';
+  dlgMsgWinColorUrgentError     = 'Error';
+  dlgMsgWinColorUrgentFatal     = 'Fatal';
+  dlgMsgWinColorUrgentPanic     = 'Panic';
 
   dlgForecolor = 'Foreground';
   dlgFrameColor = 'Text-mark';

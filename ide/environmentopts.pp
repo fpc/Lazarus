@@ -347,6 +347,7 @@ type
     FMsgViewAlwaysDrawFocused: boolean;
     FMsgViewFilenameStyle: TMsgWndFileNameStyle;
     fMsgViewColors: array[TMsgWndColor] of TColor;
+    fMsgColors: array[TMessageLineUrgency] of TColor;
     FShowCompileDialog: Boolean;       // show dialog during compile
     FAutoCloseCompileDialog: Boolean;  // auto close dialog after succesed compile
     FMsgViewFilters: TLMsgViewFilters;
@@ -429,6 +430,7 @@ type
     function GetFPDocPaths: string;
     function GetLazarusDirectory: string;
     function GetMakeFilename: string;
+    function GetMsgColors(u: TMessageLineUrgency): TColor;
     function GetMsgViewColors(c: TMsgWndColor): TColor;
     function GetTestBuildDirectory: string;
     procedure SetCompilerFilename(const AValue: string);
@@ -441,6 +443,7 @@ type
     procedure SetDebuggerFilename(AValue: string);
     procedure SetFPCSourceDirectory(const AValue: string);
     procedure SetLazarusDirectory(const AValue: string);
+    procedure SetMsgColors(u: TMessageLineUrgency; AValue: TColor);
     procedure SetMsgViewColors(c: TMsgWndColor; AValue: TColor);
     procedure SetParseValue(o: TEnvOptParseType; const NewValue: string);
 
@@ -717,6 +720,7 @@ type
                        write FMsgViewFilenameStyle;
     property MsgViewColors[c: TMsgWndColor]: TColor read GetMsgViewColors write SetMsgViewColors;
     property MsgViewFilters: TLMsgViewFilters read FMsgViewFilters;
+    property MsgColors[u: TMessageLineUrgency]: TColor read GetMsgColors write SetMsgColors;
 
     // glyphs
     property ShowButtonGlyphs: TApplicationShowGlyphs read FShowButtonGlyphs write FShowButtonGlyphs;
@@ -759,6 +763,7 @@ const
   );
 
 function dbgs(o: TEnvOptParseType): string; overload;
+function dbgs(u: TMessageLineUrgency): string; overload;
 
 implementation
 
@@ -833,12 +838,18 @@ begin
   Result:=EnvOptParseTypeNames[o];
 end;
 
+function dbgs(u: TMessageLineUrgency): string;
+begin
+  WriteStr(Result, u);
+end;
+
 { TEnvironmentOptions }
 
 constructor TEnvironmentOptions.Create;
 var
   o: TEnvOptParseType;
   c: TMsgWndColor;
+  u: TMessageLineUrgency;
 begin
   inherited Create;
   for o:=low(FParseValues) to high(FParseValues) do
@@ -930,6 +941,8 @@ begin
   FMsgViewFilenameStyle:=mwfsShort;
   for c:=low(TMsgWndColor) to high(TMsgWndColor) do
     fMsgViewColors[c]:=MsgWndDefaultColors[c];
+  for u:=low(TMessageLineUrgency) to high(TMessageLineUrgency) do
+    fMsgColors[u] := clDefault;
   FMsgViewFilters:=TLMsgViewFilters.Create(nil);
 
   // glyphs
@@ -1134,6 +1147,7 @@ var
   EventType: TDBGEventType;
   NodeName: String;
   mwc: TMsgWndColor;
+  u: TMessageLineUrgency;
 begin
   Cfg:=nil;
   try
@@ -1389,6 +1403,9 @@ begin
       for mwc:=low(TMsgWndColor) to high(TMsgWndColor) do
         fMsgViewColors[mwc]:=XMLConfig.GetValue(
           Path+'MsgView/Colors/'+MsgWndColorNames[mwc],MsgWndDefaultColors[mwc]);
+      for u:=low(TMessageLineUrgency) to high(TMessageLineUrgency) do
+        fMsgColors[u] := XMLConfig.GetValue(
+          Path+'MsgView/MsgColors/'+dbgs(u),clDefault);
       MsgViewFilters.LoadFromXMLConfig(XMLConfig,'MsgView/Filters/');
 
       // glyphs
@@ -1532,6 +1549,7 @@ var
   CurLazDir: String;
   BaseDir: String;
   mwc: TMsgWndColor;
+  u: TMessageLineUrgency;
 begin
   Cfg:=nil;
   try
@@ -1774,6 +1792,9 @@ begin
       for mwc:=low(TMsgWndColor) to high(TMsgWndColor) do
         XMLConfig.SetDeleteValue(Path+'MsgView/Colors/'+MsgWndColorNames[mwc],
         fMsgViewColors[mwc],MsgWndDefaultColors[mwc]);
+      for u:=low(TMessageLineUrgency) to high(TMessageLineUrgency) do
+        XMLConfig.SetDeleteValue(Path+'MsgView/MsgColors/'+dbgs(u),
+        fMsgColors[u],clDefault);
       MsgViewFilters.SaveToXMLConfig(XMLConfig,'MsgView/Filters/');
 
       // glyphs
@@ -2236,6 +2257,11 @@ begin
   SetParseValue(eopLazarusDirectory,NewValue);
 end;
 
+procedure TEnvironmentOptions.SetMsgColors(u: TMessageLineUrgency; AValue: TColor);
+begin
+  fMsgColors[u] := AValue;
+end;
+
 procedure TEnvironmentOptions.SetMsgViewColors(c: TMsgWndColor; AValue: TColor);
 begin
   fMsgViewColors[c]:=AValue;
@@ -2310,6 +2336,11 @@ end;
 function TEnvironmentOptions.GetMakeFilename: string;
 begin
   Result:=FParseValues[eopMakeFilename].UnparsedValue;
+end;
+
+function TEnvironmentOptions.GetMsgColors(u: TMessageLineUrgency): TColor;
+begin
+  Result:=fMsgColors[u];
 end;
 
 function TEnvironmentOptions.GetMsgViewColors(c: TMsgWndColor): TColor;

@@ -1598,9 +1598,9 @@ begin
         inc(NodeRect.Left,Images.Width+2);
       end;
       // message text
-      col:=TextColor;
+      col:=UrgencyStyles[Line.Urgency].Color;
       if col=clDefault then
-        col:=UrgencyStyles[Line.Urgency].Color;
+        col:=TextColor;
       DrawText(NodeRect,GetLineText(Line),IsSelected,col);
       inc(y,ItemHeight);
       inc(j);
@@ -1629,9 +1629,9 @@ begin
       if (y+ItemHeight>0) and (y<ClientHeight) then begin
         // progress text
         NodeRect:=Rect(Indent,y,ClientWidth,y+ItemHeight);
-        col:=TextColor;
+        col:=UrgencyStyles[View.ProgressLine.Urgency].Color;
         if col=clDefault then
-          col:=UrgencyStyles[View.ProgressLine.Urgency].Color;
+          col:=TextColor;
         DrawText(NodeRect,View.ProgressLine.Msg,
           (fSelectedView=View) and (FSelectedLine=View.Lines.Count),col);
       end;
@@ -3439,22 +3439,31 @@ begin
     Align:=alClient;
     Parent:=Self;
 
-    UrgencyStyles[mluNone].SetValues('?',ImgIDInfo,clDefault);
-    UrgencyStyles[mluProgress].SetValues(lisPDProgress, ImgIDInfo, clDefault);
-    UrgencyStyles[mluDebug].SetValues(lisDebug, ImgIDInfo, clDefault);
+    UrgencyStyles[mluNone].SetValues('?',ImgIDInfo,EnvironmentOptions.MsgColors[mluNone]);
+    UrgencyStyles[mluProgress].SetValues(lisPDProgress, ImgIDInfo,
+      EnvironmentOptions.MsgColors[mluProgress]);
+    UrgencyStyles[mluDebug].SetValues(lisDebug, ImgIDInfo,
+      EnvironmentOptions.MsgColors[mluDebug]);
     UrgencyStyles[mluVerbose3].SetValues(lisExtremelyVerbose, ImgIDInfo,
-      clDefault);
-    UrgencyStyles[mluVerbose2].SetValues(lisVeryVerbose, ImgIDInfo, clDefault);
-    UrgencyStyles[mluVerbose].SetValues(lisVerbose, ImgIDInfo, clDefault);
-    UrgencyStyles[mluHint].SetValues(lisHint, ImgIDHint, clDefault);
-    UrgencyStyles[mluNote].SetValues(lisNote, ImgIDNote, clDefault);
+      EnvironmentOptions.MsgColors[mluVerbose3]);
+    UrgencyStyles[mluVerbose2].SetValues(lisVeryVerbose, ImgIDInfo,
+      EnvironmentOptions.MsgColors[mluVerbose2]);
+    UrgencyStyles[mluVerbose].SetValues(lisVerbose, ImgIDInfo,
+      EnvironmentOptions.MsgColors[mluVerbose]);
+    UrgencyStyles[mluHint].SetValues(lisHint, ImgIDHint,
+      EnvironmentOptions.MsgColors[mluHint]);
+    UrgencyStyles[mluNote].SetValues(lisNote, ImgIDNote,
+      EnvironmentOptions.MsgColors[mluNote]);
     UrgencyStyles[mluWarning].SetValues(lisCCOWarningCaption, ImgIDWarning,
-      clDefault);
-    UrgencyStyles[mluImportant].SetValues(lisImportant, ImgIDInfo, clDefault);
-    UrgencyStyles[mluError].SetValues(lisCCOErrorCaption, ImgIDError, clDefault
-      );
-    UrgencyStyles[mluFatal].SetValues(lisFatal, ImgIDFatal, clDefault);
-    UrgencyStyles[mluPanic].SetValues(lisPanic, ImgIDFatal, clDefault);
+      EnvironmentOptions.MsgColors[mluWarning]);
+    UrgencyStyles[mluImportant].SetValues(lisImportant, ImgIDInfo,
+      EnvironmentOptions.MsgColors[mluImportant]);
+    UrgencyStyles[mluError].SetValues(lisCCOErrorCaption, ImgIDError,
+      EnvironmentOptions.MsgColors[mluError]);
+    UrgencyStyles[mluFatal].SetValues(lisFatal, ImgIDFatal,
+      EnvironmentOptions.MsgColors[mluFatal]);
+    UrgencyStyles[mluPanic].SetValues(lisPanic, ImgIDFatal,
+      EnvironmentOptions.MsgColors[mluPanic]);
     Images:=IDEImages.Images_12;
     PopupMenu:=MsgCtrlPopupMenu;
   end;

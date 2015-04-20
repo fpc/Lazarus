@@ -31,7 +31,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, LazLoggerBase, SynEdit, Forms,
-  Controls, Graphics, Dialogs, StdCtrls, ColorBox, ExtCtrls, Spin,
+  Controls, Graphics, Dialogs, StdCtrls, ColorBox, ExtCtrls, Spin, ComCtrls,
   IDEOptionsIntf, IDEExternToolIntf,
   LazarusIDEStrConsts, EnvironmentOpts, editor_general_options, EditorOptions;
 
@@ -40,6 +40,9 @@ type
   { TMsgWndOptionsFrame }
 
   TMsgWndOptionsFrame = class(TAbstractIDEOptionsEditor)
+    MsgColorBox: TColorBox;
+    MsgColorListBox: TColorListBox;
+    MsgColorGroupBox: TGroupBox;
     MWAlwaysDrawFocusedCheckBox: TCheckBox;
     MWFocusCheckBox: TCheckBox;
     MWSetPastelColorsButton: TButton;
@@ -55,6 +58,17 @@ type
     MWSetDefaultColorsButton: TButton;
     MWSetEditorColorsButton: TButton;
     MWSpeedSetColorsGroupBox: TGroupBox;
+    Notebook1: TNotebook;
+    PageHeader: TPage;
+    PageMsg: TPage;
+    ToolBar1: TToolBar;
+    BtnHeaderColor: TToolButton;
+    BtnMsgColor: TToolButton;
+    procedure BtnHeaderColorClick(Sender: TObject);
+    procedure BtnMsgColorClick(Sender: TObject);
+    procedure MsgColorBoxChange(Sender: TObject);
+    procedure MsgColorListBoxGetColors(Sender: TCustomColorListBox; Items: TStrings);
+    procedure MsgColorListBoxSelectionChange(Sender: TObject; User: boolean);
     procedure MWColorBoxChange(Sender: TObject);
     procedure MWColorListBoxGetColors(Sender: TCustomColorListBox;
       Items: TStrings);
@@ -103,6 +117,67 @@ begin
   if not fReady or (i < 0) then
     exit;
   MWColorListBox.Colors[i]:=MWColorBox.Selected;
+end;
+
+procedure TMsgWndOptionsFrame.BtnHeaderColorClick(Sender: TObject);
+begin
+  Notebook1.PageIndex := 0;
+end;
+
+procedure TMsgWndOptionsFrame.BtnMsgColorClick(Sender: TObject);
+begin
+  Notebook1.PageIndex := 1;
+end;
+
+procedure TMsgWndOptionsFrame.MsgColorBoxChange(Sender: TObject);
+var
+  i: Integer;
+begin
+  i:=MsgColorListBox.ItemIndex;
+  if not fReady or (i < 0) then
+    exit;
+  MsgColorListBox.Colors[i]:=MsgColorBox.Selected;
+end;
+
+procedure TMsgWndOptionsFrame.MsgColorListBoxGetColors(Sender: TCustomColorListBox;
+  Items: TStrings);
+begin
+(*
+    mluNone,
+    mluProgress,  // time and statistics about the run
+    mluDebug,     // extreme verbosity, only useful for tool authors
+    mluVerbose3,  // all infos
+    mluVerbose2,  // almost all infos
+    mluVerbose,   // extra infos
+    mluHint,      // tool found something unusual
+    mluNote,      // maybe wrong or unnecessary
+    mluWarning,   // probably something is wrong
+    mluImportant, // message has no urgency level, but should be shown
+    mluError,     // tool could not finish, some tools can still continue
+    mluFatal,     // critical error in input, tool had to abort
+    mluPanic      // bug in tool
+*)
+
+  Items.Add(dlgMsgWinColorUrgentNone);
+  Items.Add(dlgMsgWinColorUrgentProgress);
+  Items.Add(dlgMsgWinColorUrgentDebug);
+  Items.Add(dlgMsgWinColorUrgentVerbose3);
+  Items.Add(dlgMsgWinColorUrgentVerbose2);
+  Items.Add(dlgMsgWinColorUrgentVerbose);
+  Items.Add(dlgMsgWinColorUrgentHint);
+  Items.Add(dlgMsgWinColorUrgentNote);
+  Items.Add(dlgMsgWinColorUrgentWarning);
+  Items.Add(dlgMsgWinColorUrgentImportant);
+  Items.Add(dlgMsgWinColorUrgentError);
+  Items.Add(dlgMsgWinColorUrgentFatal);
+  Items.Add(dlgMsgWinColorUrgentPanic);
+end;
+
+procedure TMsgWndOptionsFrame.MsgColorListBoxSelectionChange(Sender: TObject; User: boolean);
+begin
+  if not (fReady and User) then
+    Exit;
+  MsgColorBox.Selected := MWColorListBox.Selected;
 end;
 
 procedure TMsgWndOptionsFrame.MWColorListBoxSelectionChange(Sender: TObject;
@@ -160,7 +235,10 @@ begin
   inherited Create(AOwner);
 
   MWOptionsLabel.Caption:=lisOptions;
+  BtnHeaderColor.Caption := lisHeaderColors;
+  BtnMsgColor.Caption := lisMsgColors;
   MWColorsGroupBox.Caption:=dlgColors;
+  MsgColorGroupBox.Caption:=dlgColors;
   MWSpeedSetColorsGroupBox.Caption:=lisSetAllColors;
   MWSetDefaultColorsButton.Caption:=lisLazarusDefault;
   MWSetPastelColorsButton.Caption:=lisPastelColors;
@@ -172,6 +250,7 @@ begin
   MWFocusCheckBox.Caption:=dlgEOFocusMessagesAfterCompilation;
   MWMaxProcsLabel.Caption:=Format(lisMaximumParallelProcesses0MeansDefault, [
     IntToStr(DefaultMaxProcessCount)]);
+  Notebook1.PageIndex := 0;
 end;
 
 function TMsgWndOptionsFrame.GetTitle: String;
@@ -190,10 +269,13 @@ procedure TMsgWndOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 var
   o: TEnvironmentOptions;
   c: TMsgWndColor;
+  u: TMessageLineUrgency;
 begin
   o:=(AOptions as TEnvironmentOptions);
   for c in TMsgWndColor do
     MWColorListBox.Colors[ord(c)] := o.MsgViewColors[c];
+  for u in TMessageLineUrgency do
+    MsgColorListBox.Colors[ord(u)] := o.MsgColors[u];
   MWShowIconsCheckBox.Checked := o.ShowMessagesIcons;
   MWAlwaysDrawFocusedCheckBox.Checked := o.MsgViewAlwaysDrawFocused;
   MWFocusCheckBox.Checked := o.MsgViewFocus;
@@ -205,10 +287,13 @@ procedure TMsgWndOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 var
   o: TEnvironmentOptions;
   c: TMsgWndColor;
+  u: TMessageLineUrgency;
 begin
   o:=(AOptions as TEnvironmentOptions);
   for c in TMsgWndColor do
     o.MsgViewColors[c] := MWColorListBox.Colors[ord(c)];
+  for u in TMessageLineUrgency do
+    o.MsgColors[u] := MsgColorListBox.Colors[ord(u)];
   o.ShowMessagesIcons := MWShowIconsCheckBox.Checked;
   o.MsgViewAlwaysDrawFocused := MWAlwaysDrawFocusedCheckBox.Checked;
   o.MsgViewFocus := MWFocusCheckBox.Checked;
