@@ -1757,14 +1757,14 @@ resourcestring
   dlgColor = 'Color';
   dlgColors = 'Colors';
   lisHeaderColors = 'Header colors';
-  lisMsgColors = 'Message colors:';
+  lisMsgColors = 'Message colors';
   lisSetAllColors = 'Set all colors:';
   lisLazarusDefault = 'Lazarus Default';
   dlgColorNotModified = 'Not modified';
   dlgPriorities = 'Priorities';
 
   dlgMsgWinColorUrgentNone      = 'Normal';
-  dlgMsgWinColorUrgentProgress  = 'time and statistics';
+  dlgMsgWinColorUrgentProgress  = 'Time and statistics';
   dlgMsgWinColorUrgentDebug     = 'Debug';
   dlgMsgWinColorUrgentVerbose3  = 'Verbose 3';
   dlgMsgWinColorUrgentVerbose2  = 'Verbose 2';
