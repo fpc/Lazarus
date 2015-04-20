@@ -6717,6 +6717,11 @@ begin
   if (NewParent = nil) and (FPopupMode <> pmNone) and
     not FShowOnTaskBar and not IsMainForm then
       NewParent := TQtMainWindow(Application.MainForm.Handle).Widget;
+  {$IFDEF MSWINDOWS}
+  if (NewParent = nil) and (FPopupMode = pmNone) and
+    not FShowOnTaskBar and not IsMainForm then
+      NewParent := TQtMainWindow(Application.MainForm.Handle).Widget;
+  {$ENDIF}
   ChangeParent(NewParent);
 end;
 
