@@ -179,7 +179,7 @@ msgstr "Elem hivatkozás szerkesztése"
 
 #: lazdemsg.shintfileclose
 msgid "Close current file"
-msgstr "A jelenlegi fájl bezárása"
+msgstr "Az aktuális fájl bezárása"
 
 #: lazdemsg.shintfileexit
 msgid "Close doc editor"

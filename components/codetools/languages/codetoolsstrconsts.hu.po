@@ -96,7 +96,6 @@ msgid "class node without parent node"
 msgstr "osztálycsomópont szülő csomópont nélkül"
 
 #: codetoolsstrconsts.ctsclassnotfound
-#| msgid "class %s%s%s not found"
 msgid "class \"%s\" not found"
 msgstr "Az osztály nem található: \"%s\""
 
@@ -551,12 +550,10 @@ msgid "interface directory"
 msgstr "felület könyvtára"
 
 #: codetoolsstrconsts.ctsinvalidclassname
-#| msgid "invalid class name=%s%s%s"
 msgid "invalid class name=\"%s\""
 msgstr "érvénytelen osztálynév=\"%s\""
 
 #: codetoolsstrconsts.ctsinvalidclassname2
-#| msgid "invalid class name %s%s%s"
 msgid "invalid class name \"%s\""
 msgstr "érvénytelen osztálynév: \"%s\""
 
@@ -585,14 +582,12 @@ msgid "invalid type"
 msgstr "érvénytelen típus"
 
 #: codetoolsstrconsts.ctsinvalidvariablename
-#| msgid "invalid variable name %s%s%s"
 msgid "invalid variable name \"%s\""
-msgstr "érvénytelen változónév \"%s\""
+msgstr "érvénytelen változónév: \"%s\""
 
 #: codetoolsstrconsts.ctsinvalidvariabletype
-#| msgid "invalid variable type %s%s%s"
 msgid "invalid variable type \"%s\""
-msgstr "érvénytelen változótípus \"%s\""
+msgstr "érvénytelen változótípus: \"%s\""
 
 #: codetoolsstrconsts.ctsjitformdirectory
 msgid "JITForm Directory"

@@ -21,7 +21,7 @@ msgstr "Assign metódus hozzáadása ..."
 
 #: codystrconsts.crsaddawithblock
 msgid "Add a \"With\" Block"
-msgstr "Egy \"With\" blokk hozzáadása"
+msgstr "\"With\" blokk hozzáadása"
 
 #: codystrconsts.crsaddunittoimplementationusessection
 msgctxt "codystrconsts.crsaddunittoimplementationusessection"
@@ -208,7 +208,7 @@ msgstr "Szám"
 #: codystrconsts.crscousespath
 msgctxt "codystrconsts.crscousespath"
 msgid "Uses path"
-msgstr "Uses útvonal"
+msgstr "Használat útvonala"
 
 #: codystrconsts.crscuallfiles
 msgid "%s|All files (%s)|%s"
@@ -280,7 +280,7 @@ msgstr "Hiba: %s"
 
 #: codystrconsts.crsexplodeawithblock
 msgid "Explode a \"With\" Block"
-msgstr "A \"With\" blokk megszüntetése"
+msgstr "\"With\" blokk megszüntetése"
 
 #: codystrconsts.crsexpression
 msgid "Expression"
@@ -340,7 +340,7 @@ msgstr "&Súgó"
 
 #: codystrconsts.crshideunitsofotherprojects
 msgid "Hide units of other projects"
-msgstr "Már projektek unit-jainak elrejtése"
+msgstr "Más projektek unit-jainak elrejtése"
 
 #: codystrconsts.crsideintegration
 msgid "IDE Integration"
@@ -449,7 +449,7 @@ msgstr "<nincs projekt>"
 
 #: codystrconsts.crsnotethenameoftheformmustbeavalidpascalidentifieran
 msgid "Note: The name of the form must be a valid pascal identifier and unique across the whole IDE, which includes all packages. Prepend the name with an abbreviation of your package. The prefixes \"IDE\", \"Laz\", \"Pkg\" are already used by the IDE itself."
-msgstr "Megjegszés: A for nevének érvényes pascal azonosítónak kell lennie valamint egyedinek az egész IDE tekintetében, beleértve a csomagokat is. A név elején használja a csomag nevének rövidítését. Az \"IDE\", \"Laz\", \"Pkg\" előtagokat már az IDE használja."
+msgstr "Megjegszés: A form nevének érvényes pascal azonosítónak kell lennie valamint egyedinek az egész IDE tekintetében, beleértve a csomagokat is. A név elején használja a csomag nevének rövidítését. Az \"IDE\", \"Laz\", \"Pkg\" előtagokat már az IDE használja."
 
 #: codystrconsts.crsnounitselected
 msgid "No unit selected"
@@ -661,7 +661,7 @@ msgstr "Már be van töltve egy csomag azonos névvel.%sNyitott csomag: %s%sÚj 
 
 #: codystrconsts.crsthetargetunithasthesamenameasthecurrentunitfreepas
 msgid "The target unit has the same name as the current unit.%s Free Pascal does not support that."
-msgstr "A cél-unit neve megegyezik a jelenlegi unit nevével.%sA Free Pascal nem támogatja ezt."
+msgstr "A cél-unit neve megegyezik az aktuális unit nevével.%sA Free Pascal nem támogatja ezt."
 
 #: codystrconsts.crstheunitispartofitcannotuseanotherpackagewiththesam
 msgid "The unit \"%s\"%sis part of \"%s\".%sIt can not use another package with the same name:%s\"%s\""
@@ -725,7 +725,7 @@ msgstr "Unit statikus függvénytárai"
 
 #: codystrconsts.crsusedby
 msgid "Used by"
-msgstr "Használója:"
+msgstr "Használat helye"
 
 #: codystrconsts.crsuseidentifier
 msgid "&Use identifier"
@@ -733,7 +733,7 @@ msgstr "Azonosító használata"
 
 #: codystrconsts.crsuses
 msgid "Uses"
-msgstr "Uses"
+msgstr "Használt unit-ok"
 
 #: codystrconsts.crsvirtualunit
 msgid "Virtual Unit"
