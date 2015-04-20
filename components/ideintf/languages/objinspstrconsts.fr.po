@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2015-04-13 21:43+0100\n"
+"PO-Revision-Date: 2015-04-20 18:46+0100\n"
 "Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -88,7 +88,7 @@ msgstr "Sur ajout, vérifier les doublons d'éléments"
 
 #: objinspstrconsts.cgcheckduplicatemsg
 msgid "The \"%s\" Item is already listed. Add it anyway?"
-msgstr "L'élément \"%s\" est déjà énuméré. Voulez-vous l'ajouter quand même ?"
+msgstr "L'élément \"%s\" est déjà énuméré. Voulez-vous l'ajouter malgré tout ?"
 
 #: objinspstrconsts.cgcheckgroupeditor
 msgid "CheckGroup Editor"
@@ -108,7 +108,7 @@ msgstr "Ajouter un nouvel élément"
 
 #: objinspstrconsts.clbchecklistboxeditor
 msgid "CheckListBox Editor"
-msgstr "Éditeur Boîte de liste de contrôles"
+msgstr "Éditeur de \"CheckListBox\""
 
 #: objinspstrconsts.clbdeletehint
 msgid "Delete the Item"
@@ -1381,7 +1381,7 @@ msgstr "Nouveau sous-élément"
 
 #: objinspstrconsts.sccsmaskeditor
 msgid "Edit Mask Editor ..."
-msgstr "Éditeur de masque d'édition..."
+msgstr "Éditer le masque d'édition..."
 
 #: objinspstrconsts.sccssbeditpanels
 msgid "Panels Editor ..."
@@ -1563,4 +1563,3 @@ msgstr "Déplacer l'onglet vers la gauche"
 #: objinspstrconsts.tccesmovetabright
 msgid "Move tab right"
 msgstr "Déplacer l'onglet vers la droite"
-

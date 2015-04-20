@@ -5,7 +5,7 @@ msgstr ""
 "POT-Creation-Date: 2015-04-14 07:54+0100\n"
 "PO-Revision-Date: 2015-04-14 07:54+0100\n"
 "Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
-"Language-Team: \n"
+"Language-Team: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: fr\n"
@@ -621,7 +621,7 @@ msgstr "Afficher seulement les identificateurs commençant par le texte de filtr
 
 #: codystrconsts.crsshowunitidentifierdictionary
 msgid "Show Unit / Identifier Dictionary ..."
-msgstr "Afficher l'unité/le dictionnaire des identificateurs"
+msgstr "Afficher le dictionnaire des unités/identificateurs"
 
 #: codystrconsts.crsshowusedppufiles
 msgid "Show Used .ppu Files ..."

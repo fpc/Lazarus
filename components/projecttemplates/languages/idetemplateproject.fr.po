@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2015-04-13 11:26+0100\n"
+"PO-Revision-Date: 2015-04-20 18:02+0100\n"
 "Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -21,5 +21,4 @@ msgstr "Options des modèles de projet..."
 
 #: idetemplateproject.stemplatecategory
 msgid "Template projects"
-msgstr "Projets modèles"
-
+msgstr "Projets de modèles"
