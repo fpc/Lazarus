@@ -3,8 +3,8 @@ msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
-"Language-Team: \n"
+"Last-Translator: Yann Mérignac <yann.merignac@laposte.net>\n"
+"Language-Team: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -33,7 +33,7 @@ msgstr "Imprimer"
 
 #: todoliststrconsts.listddinserttodo
 msgid "Insert ToDo"
-msgstr "Insérer dans le pense-bêtes"
+msgstr "Insérer une note dans le pense-bête (\"ToDo\")"
 
 #: todoliststrconsts.listodoexport
 msgid "Export"
@@ -57,7 +57,7 @@ msgstr "Module"
 
 #: todoliststrconsts.listodolist
 msgid "ToDo List"
-msgstr "Liste des éléments du pense-bêtes"
+msgstr "Pense-bête"
 
 #: todoliststrconsts.listodolistgotoline
 msgid "Goto selected source line"
@@ -65,15 +65,15 @@ msgstr "Aller à la ligne du code source sélectionné"
 
 #: todoliststrconsts.listodolistoptions
 msgid "ToDo options ..."
-msgstr "Options du pense-bêtes..."
+msgstr "Options du pense-bête..."
 
 #: todoliststrconsts.listodolistprintlist
 msgid "Print todo items"
-msgstr "Imprimer les éléments du pense-bêtes"
+msgstr "Imprimer le pense-bête"
 
 #: todoliststrconsts.listodolistrefresh
 msgid "Refresh todo items"
-msgstr "Rafraîchir les éléments du pense-bêtes"
+msgstr "Rafraîchir le pense-bête"
 
 #: todoliststrconsts.listodolline
 msgid "Line"
@@ -93,5 +93,5 @@ msgstr "Catégorie"
 
 #: todoliststrconsts.lisviewtodolist
 msgid "View ToDo List"
-msgstr "Afficher la liste des éléments du pense-bêtes"
+msgstr "Afficher le pense-bête"
 

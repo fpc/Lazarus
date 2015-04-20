@@ -1,0 +1,25 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Yann Mérignac <yann.merignac@laposte.net>\n"
+"Language-Team: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: fr_FR\n"
+"X-Generator: Poedit 1.7.5\n"
+
+#: leakinfo.calltraceprefix
+msgid "Call trace for block "
+msgstr "Appeler la trace pour le bloc "
+
+#: leakinfo.rawtraceprefix
+msgid "Stack trace:"
+msgstr "Trace de la pile :"
+
+#: leakinfo.rsstacktrace
+msgid "Stack trace"
+msgstr "Trace de la pile"
