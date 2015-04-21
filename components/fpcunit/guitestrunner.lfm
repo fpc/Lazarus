@@ -84,7 +84,7 @@ object GUITestRunner: TGUITestRunner
       Left = 7
       Height = 36
       Top = 7
-      Width = 71
+      Width = 65
       Action = RunAction
       AutoSize = True
       BorderSpacing.Around = 6
@@ -267,10 +267,10 @@ object GUITestRunner: TGUITestRunner
       AnchorSideLeft.Control = BtnRun
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = Panel1
-      Left = 84
+      Left = 78
       Height = 34
       Top = 7
-      Width = 169
+      Width = 174
       Action = ActRunHighlightedTest
       AutoSize = True
       BorderSpacing.Around = 6
@@ -395,6 +395,7 @@ object GUITestRunner: TGUITestRunner
           ScrollBars = ssAutoBoth
           StateImages = ilNodeStates
           TabOrder = 0
+          OnChange = TestTreeChange
           OnCreateNodeClass = TestTreeCreateNodeClass
           OnMouseDown = TestTreeMouseDown
           OnSelectionChanged = TestTreeSelectionChanged
@@ -851,7 +852,6 @@ object GUITestRunner: TGUITestRunner
             end>
           VisibleSpecialChars = [vscSpace, vscTabAtLast]
           ReadOnly = True
-          SelectedColor.FrameEdges = sfeAround
           SelectedColor.BackPriority = 50
           SelectedColor.ForePriority = 50
           SelectedColor.FramePriority = 50
@@ -859,23 +859,17 @@ object GUITestRunner: TGUITestRunner
           SelectedColor.ItalicPriority = 50
           SelectedColor.UnderlinePriority = 50
           SelectedColor.StrikeOutPriority = 50
-          IncrementColor.FrameEdges = sfeAround
-          HighlightAllColor.FrameEdges = sfeAround
           BracketHighlightStyle = sbhsBoth
           BracketMatchColor.Background = clNone
           BracketMatchColor.Foreground = clNone
-          BracketMatchColor.FrameEdges = sfeAround
           BracketMatchColor.Style = [fsBold]
           FoldedCodeColor.Background = clNone
           FoldedCodeColor.Foreground = clGray
           FoldedCodeColor.FrameColor = clGray
-          FoldedCodeColor.FrameEdges = sfeAround
           MouseLinkColor.Background = clNone
           MouseLinkColor.Foreground = clBlue
-          MouseLinkColor.FrameEdges = sfeAround
           LineHighlightColor.Background = clNone
           LineHighlightColor.Foreground = clNone
-          LineHighlightColor.FrameEdges = sfeAround
           inline TSynGutterPartList
             object TSynGutterMarks
               Width = 24
@@ -886,7 +880,6 @@ object GUITestRunner: TGUITestRunner
               MouseActions = <>
               MarkupInfo.Background = clBtnFace
               MarkupInfo.Foreground = clNone
-              MarkupInfo.FrameEdges = sfeAround
               DigitCount = 2
               ShowOnlyLineNumbersMultiplesOf = 1
               ZeroStart = False
@@ -903,7 +896,6 @@ object GUITestRunner: TGUITestRunner
               MouseActions = <>
               MarkupInfo.Background = clWhite
               MarkupInfo.Foreground = clGray
-              MarkupInfo.FrameEdges = sfeAround
             end
             object TSynGutterCodeFolding
               MouseActions = <              
@@ -934,7 +926,6 @@ object GUITestRunner: TGUITestRunner
                 end>
               MarkupInfo.Background = clNone
               MarkupInfo.Foreground = clGray
-              MarkupInfo.FrameEdges = sfeAround
               MouseActionsExpanded = <              
                 item
                   ClickCount = ccAny
@@ -2010,19 +2001,6 @@ object GUITestRunner: TGUITestRunner
   object SynXMLSyn1: TSynXMLSyn
     DefaultFilter = 'XML Document (*.xml,*.xsd,*.xsl,*.xslt,*.dtd)|*.xml;*.xsd;*.xsl;*.xslt;*.dtd'
     Enabled = False
-    ElementAttri.FrameEdges = sfeAround
-    AttributeAttri.FrameEdges = sfeAround
-    NamespaceAttributeAttri.FrameEdges = sfeAround
-    AttributeValueAttri.FrameEdges = sfeAround
-    NamespaceAttributeValueAttri.FrameEdges = sfeAround
-    TextAttri.FrameEdges = sfeAround
-    CDATAAttri.FrameEdges = sfeAround
-    EntityRefAttri.FrameEdges = sfeAround
-    ProcessingInstructionAttri.FrameEdges = sfeAround
-    CommentAttri.FrameEdges = sfeAround
-    DocTypeAttri.FrameEdges = sfeAround
-    SpaceAttri.FrameEdges = sfeAround
-    SymbolAttri.FrameEdges = sfeAround
     WantBracesParsed = False
     left = 80
     top = 176

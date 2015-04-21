@@ -101,6 +101,7 @@ type
     procedure GUITestRunnerShow(Sender: TObject);
     procedure MenuItem3Click(Sender: TObject);
     procedure SaveAsToolButtonClick(Sender: TObject);
+    procedure TestTreeChange(Sender: TObject; Node: TTreeNode);
     procedure TestTreeCreateNodeClass(Sender: TCustomTreeView;
       var NodeClass: TTreeNodeClass);
     procedure TestTreeMouseDown(Sender: TOBject; Button: TMouseButton;
@@ -444,6 +445,13 @@ procedure TGUITestRunner.SaveAsToolButtonClick(Sender: TObject);
 begin
   if SaveDialog.Execute then
     XMLSynEdit.Lines.SaveToFile(SaveDialog.FileName);
+end;
+
+procedure TGUITestRunner.TestTreeChange(Sender: TObject; Node: TTreeNode);
+begin
+  if not Assigned(Node) then
+    Exit;
+  Memo1.Lines.Text := TMessageTreeNode(Node).Message;
 end;
 
 procedure TGUITestRunner.TestTreeCreateNodeClass(Sender: TCustomTreeView;
