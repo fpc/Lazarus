@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2015-03-21 17:57+0100\n"
+"PO-Revision-Date: 2015-04-19 22:09+0100\n"
 "Last-Translator: Swen Heinig <swen@heinig.email>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -166,11 +166,11 @@ msgstr "Erweitert, Aktionen (Haltepunkte, Falten) beim Loslassen der Maustaste. 
 
 #: lazarusidestrconsts.dlfmousesimplegutterleftupright
 msgid "Extended, Actions, right gutter half only"
-msgstr ""
+msgstr "Erweitert, Aktionen, nur rechte Randhälfte"
 
 #: lazarusidestrconsts.dlfmousesimplegutterlines
 msgid "Use line numers to select lines"
-msgstr ""
+msgstr "Zeilennummern verwenden zur Zeilenauswahl"
 
 #: lazarusidestrconsts.dlfmousesimpleguttersect
 msgctxt "lazarusidestrconsts.dlfmousesimpleguttersect"
@@ -1192,7 +1192,7 @@ msgstr "Benutzerdefinierte Erweiterung (.pp.xxx)"
 
 #: lazarusidestrconsts.dlgdcifiledci
 msgid "DCI file (*.dci)"
-msgstr ""
+msgstr "DCI-Datei (*.dci)"
 
 #: lazarusidestrconsts.dlgdebugoptionspatheditordlgcaption
 msgid "Path Editor"
@@ -1544,7 +1544,7 @@ msgstr "Dateiendungen"
 
 #: lazarusidestrconsts.dlgfiles
 msgid "%s files"
-msgstr ""
+msgstr "%s Dateien"
 
 #: lazarusidestrconsts.dlgfindtextatcursor
 msgid "Find text at cursor"
@@ -2464,7 +2464,7 @@ msgstr "Randleiste"
 
 #: lazarusidestrconsts.dlgmouseoptnodegutterchanges
 msgid "Line Changes"
-msgstr ""
+msgstr "Zeilenänderungen"
 
 #: lazarusidestrconsts.dlgmouseoptnodegutterfold
 msgid "Fold Tree"
@@ -2517,72 +2517,6 @@ msgstr "Priorität"
 msgctxt "lazarusidestrconsts.dlgmsgs"
 msgid "Messages"
 msgstr "Meldungen"
-
-#: lazarusidestrconsts.dlgmsgwincolorurgentdebug
-#, fuzzy
-msgctxt "lazarusidestrconsts.dlgmsgwincolorurgentdebug"
-msgid "Debug"
-msgstr "Debug"
-
-#: lazarusidestrconsts.dlgmsgwincolorurgenterror
-#, fuzzy
-msgctxt "lazarusidestrconsts.dlgmsgwincolorurgenterror"
-msgid "Error"
-msgstr "Fehler"
-
-#: lazarusidestrconsts.dlgmsgwincolorurgentfatal
-msgctxt "lazarusidestrconsts.dlgmsgwincolorurgentfatal"
-msgid "Fatal"
-msgstr ""
-
-#: lazarusidestrconsts.dlgmsgwincolorurgenthint
-#, fuzzy
-msgctxt "lazarusidestrconsts.dlgmsgwincolorurgenthint"
-msgid "Hint"
-msgstr "Hinweis"
-
-#: lazarusidestrconsts.dlgmsgwincolorurgentimportant
-#, fuzzy
-msgctxt "lazarusidestrconsts.dlgmsgwincolorurgentimportant"
-msgid "Important"
-msgstr "Wichtig"
-
-#: lazarusidestrconsts.dlgmsgwincolorurgentnone
-msgid "Normal"
-msgstr ""
-
-#: lazarusidestrconsts.dlgmsgwincolorurgentnote
-msgctxt "lazarusidestrconsts.dlgmsgwincolorurgentnote"
-msgid "Note"
-msgstr ""
-
-#: lazarusidestrconsts.dlgmsgwincolorurgentpanic
-msgctxt "lazarusidestrconsts.dlgmsgwincolorurgentpanic"
-msgid "Panic"
-msgstr ""
-
-#: lazarusidestrconsts.dlgmsgwincolorurgentprogress
-msgid "Time and statistics"
-msgstr ""
-
-#: lazarusidestrconsts.dlgmsgwincolorurgentverbose
-msgctxt "lazarusidestrconsts.dlgmsgwincolorurgentverbose"
-msgid "Verbose"
-msgstr ""
-
-#: lazarusidestrconsts.dlgmsgwincolorurgentverbose2
-msgid "Verbose 2"
-msgstr ""
-
-#: lazarusidestrconsts.dlgmsgwincolorurgentverbose3
-msgid "Verbose 3"
-msgstr ""
-
-#: lazarusidestrconsts.dlgmsgwincolorurgentwarning
-#, fuzzy
-msgctxt "lazarusidestrconsts.dlgmsgwincolorurgentwarning"
-msgid "Warning"
-msgstr "Warnung"
 
 #: lazarusidestrconsts.dlgmulticaretcolumnmode
 msgid "Multi-caret (column-select) move with cursor"
@@ -3369,7 +3303,6 @@ msgid "Use launching application"
 msgstr "Startprogramm verwenden"
 
 #: lazarusidestrconsts.dlguseminimumime
-#, fuzzy
 #| msgid "Ime handled by System"
 msgid "IME handled by System"
 msgstr "IME vom System gehandhabt"
@@ -4791,7 +4724,6 @@ msgid "unusual characters"
 msgstr "ungewöhnliche Zeichen"
 
 #: lazarusidestrconsts.lisccowarningcaption
-msgctxt "lazarusidestrconsts.lisccowarningcaption"
 msgid "Warning"
 msgstr "Warnung"
 
@@ -6712,7 +6644,7 @@ msgstr ""
 
 #: lazarusidestrconsts.liscoolbaraddconfigdelete
 msgid "Add/Config/Delete Toolbar(s)"
-msgstr ""
+msgstr "Symbolleiste(n) hinzufügen/konfigurieren/löschen"
 
 #: lazarusidestrconsts.liscoolbaradddivider
 msgid "Add Divider"
@@ -6724,47 +6656,43 @@ msgstr ""
 
 #: lazarusidestrconsts.liscoolbaravailablecommands
 msgid "Available commands"
-msgstr ""
+msgstr "Verfügbare Kommandos"
 
 #: lazarusidestrconsts.liscoolbarborderstyle
 msgid "Toolbars border style"
-msgstr ""
+msgstr "Symbolleisten-Umrandungsstil"
 
 #: lazarusidestrconsts.liscoolbarborderstyleitem0
-#, fuzzy
 msgctxt "lazarusidestrconsts.liscoolbarborderstyleitem0"
 msgid "None"
 msgstr "Keine"
 
 #: lazarusidestrconsts.liscoolbarborderstyleitem1
-#, fuzzy
 msgctxt "lazarusidestrconsts.liscoolbarborderstyleitem1"
 msgid "Single"
 msgstr "Einfach"
 
 #: lazarusidestrconsts.liscoolbarclearselection
 msgid "Clear selection"
-msgstr ""
+msgstr "Auswahl löschen"
 
 #: lazarusidestrconsts.liscoolbarcodeexplorer
-#, fuzzy
 msgctxt "lazarusidestrconsts.liscoolbarcodeexplorer"
 msgid "Code Explorer"
 msgstr "Code-Explorer"
 
 #: lazarusidestrconsts.liscoolbarcodetemplates
-#, fuzzy
 msgctxt "lazarusidestrconsts.liscoolbarcodetemplates"
 msgid "Code Templates"
 msgstr "Quelltextvorlagen"
 
 #: lazarusidestrconsts.liscoolbarconfigure
 msgid "&Configure"
-msgstr ""
+msgstr "Konfigurieren"
 
 #: lazarusidestrconsts.liscoolbardeletetoolbar
 msgid "Are you sure you want to delete the selected toolbar?"
-msgstr ""
+msgstr "Wollen Sie die ausgewählte Symbolleiste wirklich löschen?"
 
 #: lazarusidestrconsts.liscoolbardeletewarning
 msgid "There must be at least one toolbar!"
@@ -6776,7 +6704,7 @@ msgstr ""
 
 #: lazarusidestrconsts.liscoolbargeneralsettings
 msgid "General Coolbar Settings"
-msgstr ""
+msgstr "Allgemeine Coolbar-Einstellungen"
 
 #: lazarusidestrconsts.liscoolbargrabstyle
 msgid "Toolbars grab style"
@@ -6787,7 +6715,6 @@ msgid "Simple"
 msgstr ""
 
 #: lazarusidestrconsts.liscoolbargrabstyleitem1
-#, fuzzy
 msgctxt "lazarusidestrconsts.liscoolbargrabstyleitem1"
 msgid "Double"
 msgstr "Doppelt"
@@ -6805,7 +6732,6 @@ msgid "Gripper"
 msgstr ""
 
 #: lazarusidestrconsts.liscoolbargrabstyleitem5
-#, fuzzy
 msgctxt "lazarusidestrconsts.liscoolbargrabstyleitem5"
 msgid "Button"
 msgstr "Schaltfläche"
@@ -6832,10 +6758,9 @@ msgstr ""
 
 #: lazarusidestrconsts.liscoolbaridemainmenu
 msgid "IDE Main Menu"
-msgstr ""
+msgstr "IDE-Hauptmenü"
 
 #: lazarusidestrconsts.liscoolbarmessages
-#, fuzzy
 msgctxt "lazarusidestrconsts.liscoolbarmessages"
 msgid "Messages"
 msgstr "Meldungen"
@@ -6850,7 +6775,7 @@ msgstr ""
 
 #: lazarusidestrconsts.liscoolbaroptions
 msgid "IDE CoolBar"
-msgstr ""
+msgstr "IDE-CoolBar"
 
 #: lazarusidestrconsts.liscoolbarpackageeditor
 msgid "Package Editor"
@@ -6866,14 +6791,13 @@ msgstr ""
 
 #: lazarusidestrconsts.liscoolbarrestoredefaults
 msgid "Restore defaults"
-msgstr ""
+msgstr "Vorgaben wiederherstellen"
 
 #: lazarusidestrconsts.liscoolbarselecttoolbar
 msgid "Please select a toolbar first!"
-msgstr ""
+msgstr "Bitte wählen Sie zunächst eine Symbolleiste aus!"
 
 #: lazarusidestrconsts.liscoolbarsourceeditor
-#, fuzzy
 msgctxt "lazarusidestrconsts.liscoolbarsourceeditor"
 msgid "Source Editor"
 msgstr "Quelltexteditor"
@@ -6884,15 +6808,11 @@ msgstr ""
 
 #: lazarusidestrconsts.liscoolbartoolbarcommands
 msgid "Toolbar commands"
-msgstr ""
+msgstr "Symbolleisten-Kommandos"
 
 #: lazarusidestrconsts.liscoolbarvisible
 msgid "Coolbar is &visible"
-msgstr ""
-
-#: lazarusidestrconsts.liscoolbarwidth
-msgid "Coolbar width"
-msgstr ""
+msgstr "Coolbar ist sichtbar"
 
 #: lazarusidestrconsts.liscopy
 msgctxt "lazarusidestrconsts.liscopy"
@@ -7364,10 +7284,9 @@ msgid "Disable/Enable updates for the entire window"
 msgstr "Aktualisierungen für das ganze Fenster de-/aktivieren"
 
 #: lazarusidestrconsts.lisdebug
-#, fuzzy
 msgctxt "lazarusidestrconsts.lisdebug"
 msgid "Debug"
-msgstr "Debug"
+msgstr ""
 
 #: lazarusidestrconsts.lisdebugger
 msgctxt "lazarusidestrconsts.lisdebugger"
@@ -8396,7 +8315,6 @@ msgid "Error in the \"unit output directory\":"
 msgstr "Fehler im \"unit output directory\":"
 
 #: lazarusidestrconsts.liserrorinvalidbuildmode
-#, fuzzy
 #| msgid "ERROR: invalid build mode \"%s\""
 msgid "Error: (lazarus) invalid build mode \"%s\""
 msgstr "Fehler: Ungültiger Erstellmodus \"%s\""
@@ -8691,7 +8609,6 @@ msgid "Failed to save file."
 msgstr "Speichern der Datei fehlgeschlagen."
 
 #: lazarusidestrconsts.lisfatal
-msgctxt "lazarusidestrconsts.lisfatal"
 msgid "Fatal"
 msgstr ""
 
@@ -9269,10 +9186,6 @@ msgstr "Zum größten hin wachsen"
 msgid "Has Help"
 msgstr "Besitzt Onlinehilfe"
 
-#: lazarusidestrconsts.lisheadercolors
-msgid "Header colors"
-msgstr ""
-
 #: lazarusidestrconsts.lisheadercommentforclass
 msgid "Header comment for class"
 msgstr "Header-Kommentar für die Klasse"
@@ -9323,7 +9236,6 @@ msgid "Hide with project option (-vm%s)"
 msgstr "Verbergen mit Projekt-Einstellung (-vm%s)"
 
 #: lazarusidestrconsts.lishint
-msgctxt "lazarusidestrconsts.lishint"
 msgid "Hint"
 msgstr "Hinweis"
 
@@ -9588,7 +9500,6 @@ msgid "Import"
 msgstr "Import ..."
 
 #: lazarusidestrconsts.lisimportant
-msgctxt "lazarusidestrconsts.lisimportant"
 msgid "Important"
 msgstr "Wichtig"
 
@@ -12421,10 +12332,6 @@ msgstr ""
 msgid "(ms)"
 msgstr "(ms)"
 
-#: lazarusidestrconsts.lismsgcolors
-msgid "Message colors"
-msgstr ""
-
 #: lazarusidestrconsts.lismultipledirectoriesareseparatedwithsemicolons
 msgid "Multiple directories are separated with semicolons"
 msgstr "Mehrfache Verzeichnisse werden mit Semikolons getrennt"
@@ -12637,7 +12544,6 @@ msgid "Not a valid Pascal identifier"
 msgstr "Kein gültiger Pascal-Bezeichner"
 
 #: lazarusidestrconsts.lisnote
-msgctxt "lazarusidestrconsts.lisnote"
 msgid "Note"
 msgstr ""
 
@@ -12948,7 +12854,6 @@ msgid "Open XML"
 msgstr "XML öffnen"
 
 #: lazarusidestrconsts.lisoptions
-#, fuzzy
 msgctxt "lazarusidestrconsts.lisoptions"
 msgid "Options"
 msgstr "Einstellungen"
@@ -13031,7 +12936,7 @@ msgstr "Name des Packages enthält ..."
 
 #: lazarusidestrconsts.lispackageneedsanoutputdirectory
 msgid "Package needs an output directory."
-msgstr ""
+msgstr "Package benötigt ein Ausgabeverzeichnis."
 
 #: lazarusidestrconsts.lispackageneedsinstallation
 msgid "Package needs installation"
@@ -13066,7 +12971,6 @@ msgid "Page name \"%s\" already exists. Not added."
 msgstr "Seitenname \"%s\" existiert bereits. Nicht hinzugefügt."
 
 #: lazarusidestrconsts.lispanic
-msgctxt "lazarusidestrconsts.lispanic"
 msgid "Panic"
 msgstr ""
 
@@ -13179,11 +13083,11 @@ msgstr ""
 
 #: lazarusidestrconsts.lispckeditaddfiles
 msgid "Add files from the file system"
-msgstr ""
+msgstr "Dateien aus dem Dateisystem hinzufügen"
 
 #: lazarusidestrconsts.lispckeditaddotheritems
 msgid "Add other items"
-msgstr ""
+msgstr "Andere Elemente hinzufügen"
 
 #: lazarusidestrconsts.lispckeditaddtoproject
 msgctxt "lazarusidestrconsts.lispckeditaddtoproject"
@@ -16710,11 +16614,11 @@ msgstr "Umschalten der Anzeige der Dateinamen zwischen voller/relativer Pfad"
 
 #: lazarusidestrconsts.listoolbarconfiguration
 msgid "Toolbar Configuration"
-msgstr ""
+msgstr "Symbolleisten-Konfiguration"
 
 #: lazarusidestrconsts.listoolbaroptions
 msgid "Toolbar"
-msgstr ""
+msgstr "Symbolleiste"
 
 #: lazarusidestrconsts.listoolbaroptionshighlight
 msgid "Highlight toolbars buttons"
@@ -17597,7 +17501,6 @@ msgid "Variable"
 msgstr "Variable"
 
 #: lazarusidestrconsts.lisverbose
-msgctxt "lazarusidestrconsts.lisverbose"
 msgid "Verbose"
 msgstr ""
 
@@ -18708,13 +18611,11 @@ msgid "Guess Misplaced $IFDEF"
 msgstr "Falsch gesetzte $IFDEF raten"
 
 #: lazarusidestrconsts.srkmechalfwordleft
-#, fuzzy
 #| msgid "Move cursor half-word left"
 msgid "Move cursor part-word left (e.g. CamelCase)"
 msgstr "Cursor halbes Wort nach links"
 
 #: lazarusidestrconsts.srkmechalfwordright
-#, fuzzy
 #| msgid "Move cursor half-word right"
 msgid "Move cursor part-word right (e.g. CamelCase)"
 msgstr "Cursor halbes Wort nach rechts"
@@ -19083,13 +18984,11 @@ msgid "Select Goto XY"
 msgstr "Bis zu Position auswählen"
 
 #: lazarusidestrconsts.srkmecselhalfwordleft
-#, fuzzy
 #| msgid "Select half-word left"
 msgid "Select part-word left (e.g. CamelCase)"
 msgstr "Halbwort links markieren"
 
 #: lazarusidestrconsts.srkmecselhalfwordright
-#, fuzzy
 #| msgid "Select half-word right"
 msgid "Select part-word right (e.g. CamelCase)"
 msgstr "Halbwort rechts markieren"
