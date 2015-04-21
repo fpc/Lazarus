@@ -387,6 +387,7 @@ begin
   FConfStore.WriteInteger('WindowState', 'Top', Top);
   FConfStore.WriteInteger('WindowState', 'Width', Width);
   FConfStore.WriteInteger('WindowState', 'Height', Height);
+  SaveTree;
   FConfStore.Free;
 end;
 
@@ -854,7 +855,6 @@ var
   m: TMemoryStream;
 
 begin
-  SaveTree;
   barcolor := clGreen;
   ResetNodeColors;
   failureCounter := 0;
