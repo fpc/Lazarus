@@ -142,7 +142,9 @@ msgid "C&ut"
 msgstr "Rec&ortar"
 
 #: guitestrunner.smiruntest
-msgid "  &Run all selected (checked) tests"
+#, fuzzy
+#| msgid "  &Run all selected (checked) tests"
+msgid "&Run all selected (checked) tests"
 msgstr "  &Executar todos os testes selecionados"
 
 #: guitestrunner.smishowfail
