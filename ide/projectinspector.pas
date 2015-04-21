@@ -1151,8 +1151,7 @@ begin
     Result:=TPkgDependency(Item);
 end;
 
-function TProjectInspectorForm.TreeViewToInspector(TV: TTreeView
-  ): TProjectInspectorForm;
+function TProjectInspectorForm.TreeViewToInspector(TV: TTreeView): TProjectInspectorForm;
 begin
   if TV=ItemsTreeView then
     Result:=Self
@@ -1185,14 +1184,12 @@ begin
     ProjInspector:=nil;
 end;
 
-function TProjectInspectorForm.ExtendIncSearchPath(NewIncPaths: string
-  ): boolean;
+function TProjectInspectorForm.ExtendIncSearchPath(NewIncPaths: string): boolean;
 begin
   Result:=MainIDEInterface.ExtendProjectIncSearchPath(LazProject,NewIncPaths);
 end;
 
-function TProjectInspectorForm.ExtendUnitSearchPath(NewUnitPaths: string
-  ): boolean;
+function TProjectInspectorForm.ExtendUnitSearchPath(NewUnitPaths: string): boolean;
 begin
   Result:=MainIDEInterface.ExtendProjectUnitSearchPath(LazProject,NewUnitPaths);
 end;

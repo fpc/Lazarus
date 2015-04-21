@@ -1990,10 +1990,8 @@ begin
   WasVirtual:=AnUnitInfo.IsVirtual;
   WasPascalSource:=FilenameIsPascalSource(AnUnitInfo.Filename);
 
-  // if this file is part of the project and the project is virtual then save
-  // project first
-  if (not (sfProjectSaving in Flags)) and Project1.IsVirtual
-  and AnUnitInfo.IsPartOfProject then
+  // if this file is part of a virtual project then save the project first
+  if (not (sfProjectSaving in Flags)) and Project1.IsVirtual and AnUnitInfo.IsPartOfProject then
   begin
     SaveProjectFlags:=Flags*[sfSaveToTestDir];
     if AnUnitInfo=Project1.MainUnitInfo then
@@ -2020,10 +2018,8 @@ begin
       MacroListViewer.UpdateDisplay;
       AnUnitInfo.ClearModifieds;
       AEditor.Modified:=false;
-      Result := mrOK;
-      exit;
     end;
-    // unknown internal file => skip
+    // otherwise unknown internal file => skip
     exit(mrOk);
   end;
 
@@ -2058,8 +2054,7 @@ begin
   end;
 
   // check if file is writable on disk
-  if (not AnUnitInfo.IsVirtual)
-  and FileExistsUTF8(AnUnitInfo.Filename) then
+  if (not AnUnitInfo.IsVirtual) and FileExistsUTF8(AnUnitInfo.Filename) then
     AnUnitInfo.FileReadOnly:=not FileIsWritable(AnUnitInfo.Filename)
   else
     AnUnitInfo.FileReadOnly:=false;
@@ -2159,8 +2154,7 @@ begin
     NewUnitName:=AnUnitInfo.ParseUnitNameFromSource(true);
   NewFilename:=AnUnitInfo.Filename;
   if (NewUnitName<>'')
-  and  ((OldUnitName<>NewUnitName)
-        or (CompareFilenames(OldFilename,NewFilename)<>0))
+  and ((OldUnitName<>NewUnitName) or (CompareFilenames(OldFilename,NewFilename)<>0))
   then begin
     if EnvironmentOptions.UnitRenameReferencesAction<>urraNever then
     begin
@@ -7477,10 +7471,11 @@ var
   OnlyEditorFiles: Boolean;
   aFilename: String;
 begin
-  if (CompareFilenames(OldFilename,NewFilename)=0)
-  and (OldUnitName=NewUnitName) then // compare unitnames case sensitive, maybe only the case changed
+  // compare unitnames case sensitive, maybe only the case changed
+  if (CompareFilenames(OldFilename,NewFilename)=0) and (OldUnitName=NewUnitName) then
     exit(mrOk);
-  OnlyEditorFiles:=not FilenameIsAbsolute(OldFilename); // this was a new file, files on disk can not refer to it
+  // this was a new file, files on disk can not refer to it
+  OnlyEditorFiles:=not FilenameIsAbsolute(OldFilename);
 
   OwnerList:=nil;
   OldCode:=nil;
