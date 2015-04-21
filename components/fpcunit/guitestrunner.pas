@@ -425,13 +425,14 @@ end;
 
 procedure TGUITestRunner.GUITestRunnerShow(Sender: TObject);
 begin
-  if (ParamStrUTF8(1) = '--now') or (ParamStrUTF8(1) = '-n') then
-    RunExecute(Self);
   // restore last used position and size
   Left := FConfStore.ReadInteger('WindowState', 'Left', Left);
   Top := FConfStore.ReadInteger('WindowState', 'Top', Top);
   Width := FConfStore.ReadInteger('WindowState', 'Width', Width);
   Height := FConfStore.ReadInteger('WindowState', 'Height', Height);
+
+  if (ParamStrUTF8(1) = '--now') or (ParamStrUTF8(1) = '-n') then
+    RunExecute(Self);
 end;
 
 procedure TGUITestRunner.MenuItem3Click(Sender: TObject);
