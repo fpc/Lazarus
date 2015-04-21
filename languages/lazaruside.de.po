@@ -2518,6 +2518,72 @@ msgctxt "lazarusidestrconsts.dlgmsgs"
 msgid "Messages"
 msgstr "Meldungen"
 
+#: lazarusidestrconsts.dlgmsgwincolorurgentdebug
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgmsgwincolorurgentdebug"
+msgid "Debug"
+msgstr "Debug"
+
+#: lazarusidestrconsts.dlgmsgwincolorurgenterror
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgmsgwincolorurgenterror"
+msgid "Error"
+msgstr "Fehler"
+
+#: lazarusidestrconsts.dlgmsgwincolorurgentfatal
+msgctxt "lazarusidestrconsts.dlgmsgwincolorurgentfatal"
+msgid "Fatal"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmsgwincolorurgenthint
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgmsgwincolorurgenthint"
+msgid "Hint"
+msgstr "Hinweis"
+
+#: lazarusidestrconsts.dlgmsgwincolorurgentimportant
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgmsgwincolorurgentimportant"
+msgid "Important"
+msgstr "Wichtig"
+
+#: lazarusidestrconsts.dlgmsgwincolorurgentnone
+msgid "Normal"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmsgwincolorurgentnote
+msgctxt "lazarusidestrconsts.dlgmsgwincolorurgentnote"
+msgid "Note"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmsgwincolorurgentpanic
+msgctxt "lazarusidestrconsts.dlgmsgwincolorurgentpanic"
+msgid "Panic"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmsgwincolorurgentprogress
+msgid "Time and statistics"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmsgwincolorurgentverbose
+msgctxt "lazarusidestrconsts.dlgmsgwincolorurgentverbose"
+msgid "Verbose"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmsgwincolorurgentverbose2
+msgid "Verbose 2"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmsgwincolorurgentverbose3
+msgid "Verbose 3"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmsgwincolorurgentwarning
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgmsgwincolorurgentwarning"
+msgid "Warning"
+msgstr "Warnung"
+
 #: lazarusidestrconsts.dlgmulticaretcolumnmode
 msgid "Multi-caret (column-select) move with cursor"
 msgstr ""
@@ -3303,7 +3369,6 @@ msgid "Use launching application"
 msgstr "Startprogramm verwenden"
 
 #: lazarusidestrconsts.dlguseminimumime
-#| msgid "Ime handled by System"
 msgid "IME handled by System"
 msgstr "IME vom System gehandhabt"
 
@@ -4724,6 +4789,7 @@ msgid "unusual characters"
 msgstr "ungewöhnliche Zeichen"
 
 #: lazarusidestrconsts.lisccowarningcaption
+msgctxt "lazarusidestrconsts.lisccowarningcaption"
 msgid "Warning"
 msgstr "Warnung"
 
@@ -6814,6 +6880,10 @@ msgstr "Symbolleisten-Kommandos"
 msgid "Coolbar is &visible"
 msgstr "Coolbar ist sichtbar"
 
+#: lazarusidestrconsts.liscoolbarwidth
+msgid "Coolbar width"
+msgstr ""
+
 #: lazarusidestrconsts.liscopy
 msgctxt "lazarusidestrconsts.liscopy"
 msgid "Copy"
@@ -8315,7 +8385,6 @@ msgid "Error in the \"unit output directory\":"
 msgstr "Fehler im \"unit output directory\":"
 
 #: lazarusidestrconsts.liserrorinvalidbuildmode
-#| msgid "ERROR: invalid build mode \"%s\""
 msgid "Error: (lazarus) invalid build mode \"%s\""
 msgstr "Fehler: Ungültiger Erstellmodus \"%s\""
 
@@ -8609,6 +8678,7 @@ msgid "Failed to save file."
 msgstr "Speichern der Datei fehlgeschlagen."
 
 #: lazarusidestrconsts.lisfatal
+msgctxt "lazarusidestrconsts.lisfatal"
 msgid "Fatal"
 msgstr ""
 
@@ -9186,6 +9256,10 @@ msgstr "Zum größten hin wachsen"
 msgid "Has Help"
 msgstr "Besitzt Onlinehilfe"
 
+#: lazarusidestrconsts.lisheadercolors
+msgid "Header colors"
+msgstr ""
+
 #: lazarusidestrconsts.lisheadercommentforclass
 msgid "Header comment for class"
 msgstr "Header-Kommentar für die Klasse"
@@ -9236,6 +9310,7 @@ msgid "Hide with project option (-vm%s)"
 msgstr "Verbergen mit Projekt-Einstellung (-vm%s)"
 
 #: lazarusidestrconsts.lishint
+msgctxt "lazarusidestrconsts.lishint"
 msgid "Hint"
 msgstr "Hinweis"
 
@@ -9500,6 +9575,7 @@ msgid "Import"
 msgstr "Import ..."
 
 #: lazarusidestrconsts.lisimportant
+msgctxt "lazarusidestrconsts.lisimportant"
 msgid "Important"
 msgstr "Wichtig"
 
@@ -12332,6 +12408,10 @@ msgstr ""
 msgid "(ms)"
 msgstr "(ms)"
 
+#: lazarusidestrconsts.lismsgcolors
+msgid "Message colors"
+msgstr ""
+
 #: lazarusidestrconsts.lismultipledirectoriesareseparatedwithsemicolons
 msgid "Multiple directories are separated with semicolons"
 msgstr "Mehrfache Verzeichnisse werden mit Semikolons getrennt"
@@ -12544,6 +12624,7 @@ msgid "Not a valid Pascal identifier"
 msgstr "Kein gültiger Pascal-Bezeichner"
 
 #: lazarusidestrconsts.lisnote
+msgctxt "lazarusidestrconsts.lisnote"
 msgid "Note"
 msgstr ""
 
@@ -12971,6 +13052,7 @@ msgid "Page name \"%s\" already exists. Not added."
 msgstr "Seitenname \"%s\" existiert bereits. Nicht hinzugefügt."
 
 #: lazarusidestrconsts.lispanic
+msgctxt "lazarusidestrconsts.lispanic"
 msgid "Panic"
 msgstr ""
 
@@ -17501,6 +17583,7 @@ msgid "Variable"
 msgstr "Variable"
 
 #: lazarusidestrconsts.lisverbose
+msgctxt "lazarusidestrconsts.lisverbose"
 msgid "Verbose"
 msgstr ""
 
@@ -18611,12 +18694,10 @@ msgid "Guess Misplaced $IFDEF"
 msgstr "Falsch gesetzte $IFDEF raten"
 
 #: lazarusidestrconsts.srkmechalfwordleft
-#| msgid "Move cursor half-word left"
 msgid "Move cursor part-word left (e.g. CamelCase)"
 msgstr "Cursor halbes Wort nach links"
 
 #: lazarusidestrconsts.srkmechalfwordright
-#| msgid "Move cursor half-word right"
 msgid "Move cursor part-word right (e.g. CamelCase)"
 msgstr "Cursor halbes Wort nach rechts"
 
@@ -18984,12 +19065,10 @@ msgid "Select Goto XY"
 msgstr "Bis zu Position auswählen"
 
 #: lazarusidestrconsts.srkmecselhalfwordleft
-#| msgid "Select half-word left"
 msgid "Select part-word left (e.g. CamelCase)"
 msgstr "Halbwort links markieren"
 
 #: lazarusidestrconsts.srkmecselhalfwordright
-#| msgid "Select half-word right"
 msgid "Select part-word right (e.g. CamelCase)"
 msgstr "Halbwort rechts markieren"
 
