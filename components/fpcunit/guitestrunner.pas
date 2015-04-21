@@ -638,10 +638,6 @@ begin
       aNode.Expand(True);
     end;
     aNode := aNode.Parent;
-    if Assigned(aNode) and
-      ((aNode.ImageIndex in [imgGreenBall, imgPurpleBall, imgGrayBall, imgBlueBall]) or
-      (ANode.ImageIndex = -1)) then
-      PaintNodeError(aNode);
   end;
 end;
 
@@ -660,9 +656,6 @@ begin
       end;
     end;
     aNode := aNode.Parent;
-    if Assigned(aNode) and ((aNode.ImageIndex in [imgGreenBall, imgGrayBall, imgBlueBall]) or
-      (ANode.ImageIndex = -1)) then
-      PaintNodeFailure(aNode);
   end;
 end;
 
