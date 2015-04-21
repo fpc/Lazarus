@@ -255,6 +255,7 @@ procedure TGUITestRunner.SaveTree;
 var
   i: integer;
 begin
+  FConfStore.EraseSection('Tests');
   for i := 0 to TestTree.Items.Count - 1 do
     FConfStore.WriteBool('Tests', MakeTestPath(TestTree.Items[i]), TestTree.Items[i].StateIndex = Ord(tsChecked));
 end;
