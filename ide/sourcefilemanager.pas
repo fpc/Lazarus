@@ -4968,7 +4968,8 @@ var
   OldFileExisted: Boolean;
   ConvTool: TConvDelphiCodeTool;
 begin
-  Project1.BeginUpdate(false);
+  // Project is marked as changed already here. ToDo: Mark changed only if really renamed.
+  Project1.BeginUpdate(true);
   try
     OldFilename:=AnUnitInfo.Filename;
     OldFilePath:=ExtractFilePath(OldFilename);

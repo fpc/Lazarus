@@ -603,10 +603,12 @@ begin
   ;
 end;
 
-procedure TBuildModesForm.BuildModesStringGridDrawCell(Sender: TObject; aCol,
-  aRow: Integer; aRect: TRect; aState: TGridDrawState);
+procedure TBuildModesForm.BuildModesStringGridDrawCell(Sender: TObject;
+  aCol, aRow: Integer; aRect: TRect; aState: TGridDrawState);
 begin
-  if (aCol=1) and (aRow=1) then
+  Assert(aCol <> -1, 'TBuildModesForm.BuildModesStringGridDrawCell: aCol = -1');
+  // Hide InSession field of the first BuildMode by drawing an empty rect on it.
+  if (aCol=fModeInSessionCol) and (aRow=1) then
     (Sender as TStringGrid).Canvas.FillRect(aRect);
 end;
 
