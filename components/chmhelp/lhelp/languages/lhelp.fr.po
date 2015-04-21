@@ -3,7 +3,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: 2015-04-12 15:04+0100\n"
-"PO-Revision-Date: 2015-04-12 15:04+0100\n"
+"PO-Revision-Date: 2015-04-20 23:19+0100\n"
 "Last-Translator: Yann Mérignac <yann.merignac@laposte.net>\n"
 "Language-Team: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -101,7 +101,7 @@ msgstr "  Options de LHelp :"
 
 #: lhelpstrconsts.slhelp_loadedinms
 msgid "Loaded: %s in %sms"
-msgstr "Chargé : %s en %sms"
+msgstr "%s chargé en %sms"
 
 #: lhelpstrconsts.slhelp_loading
 msgid "Loading: %s"
@@ -129,7 +129,7 @@ msgstr "Récemment ouvert"
 
 #: lhelpstrconsts.slhelp_openurl
 msgid "Open &URL ..."
-msgstr "Ouvrir l'URL..."
+msgstr "Ouvrir l'&URL..."
 
 #: lhelpstrconsts.slhelp_pagecannotbefound
 msgid "Page cannot be found!"
