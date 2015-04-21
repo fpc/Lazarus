@@ -1901,6 +1901,17 @@ object GUITestRunner: TGUITestRunner
     Images = ResultsXMLImageList
     left = 368
     top = 240
+    object miCollapseNodes: TMenuItem
+      Caption = 'Collapse Nodes'
+      OnClick = miCollapseNodesClick
+    end
+    object miExpandNodes: TMenuItem
+      Caption = 'Expand Nodes'
+      OnClick = miExpandNodesClick
+    end
+    object MenuItem9: TMenuItem
+      Caption = '-'
+    end
     object miRunTest: TMenuItem
       Action = RunAction
       Caption = '&Run all selected (checked) tests'

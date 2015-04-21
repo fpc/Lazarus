@@ -53,11 +53,14 @@ type
     btnRunHighlighted: TBitBtn;
     ilNodeStates: TImageList;
     Memo1: TMemo;
+    miExpandNodes: TMenuItem;
+    miCollapseNodes: TMenuItem;
     MenuItem4: TMenuItem;
     MenuItem5: TMenuItem;
     MenuItem6: TMenuItem;
     MenuItem7: TMenuItem;
     MenuItem8: TMenuItem;
+    MenuItem9: TMenuItem;
     miRunTest: TMenuItem;
     miShowfailureMsg: TMenuItem;
     pbBar: TPaintBox;
@@ -96,6 +99,8 @@ type
     procedure ActRunHighLightedTestUpdate(Sender: TObject);
     procedure ActUncheckCurrentSuiteExecute(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
+    procedure miCollapseNodesClick(Sender: TObject);
+    procedure miExpandNodesClick(Sender: TObject);
     procedure RunExecute(Sender: TObject);
     procedure GUITestRunnerCreate(Sender: TObject);
     procedure GUITestRunnerShow(Sender: TObject);
@@ -422,6 +427,20 @@ begin
   FConfStore.WriteInteger('WindowState', 'Height', Height);
   SaveTree;
   FConfStore.Free;
+end;
+
+procedure TGUITestRunner.miCollapseNodesClick(Sender: TObject);
+begin
+  if not Assigned(TestTree.Selected) then
+    Exit;
+  TestTree.Selected.Collapse(True);
+end;
+
+procedure TGUITestRunner.miExpandNodesClick(Sender: TObject);
+begin
+  if not Assigned(TestTree.Selected) then
+    Exit;
+  TestTree.Selected.Expand(True);
 end;
 
 procedure TGUITestRunner.GUITestRunnerShow(Sender: TObject);
