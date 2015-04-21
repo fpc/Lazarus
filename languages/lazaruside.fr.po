@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: lazaruside\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2015-04-20 17:29+0100\n"
+"PO-Revision-Date: 2015-04-21 00:13+0100\n"
 "Last-Translator: Yann Mérignac <yann.merignac@laposte.net>\n"
 "Language-Team: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
 "Language: fr_FR\n"
@@ -607,7 +607,7 @@ msgstr "Ajouter les nouvelles fiches à celles créées automatiquement"
 
 #: lazarusidestrconsts.dlgautodel
 msgid "Auto delete file"
-msgstr "Supprimer le fichier automatiquement"
+msgstr "Supprimer automatiquement"
 
 #: lazarusidestrconsts.dlgautodisplayfuncproto
 msgid "Auto Display Function Prototypes"
@@ -1473,11 +1473,11 @@ msgstr "Demander"
 
 #: lazarusidestrconsts.dlgenvbackuphelpnote
 msgid "Notes: Project files are all files in the project directory"
-msgstr "Note : les fichiers du projet sont tous ceux figurant dans son répertoire"
+msgstr "Remarque : les fichiers du projet sont tous ceux figurant dans son répertoire"
 
 #: lazarusidestrconsts.dlgenvbckup
 msgid "Backup"
-msgstr "Sauvegarder"
+msgstr "Sauvegarde"
 
 #: lazarusidestrconsts.dlgenvfiles
 msgid "Files"
@@ -1724,7 +1724,7 @@ msgstr "Préserver l'ordre des procédures"
 
 #: lazarusidestrconsts.dlgfpcexecutable
 msgid "Compiler executable (e.g. %s)"
-msgstr "Exécutable du compilateur (par exemple %s)"
+msgstr "Exécutable du compilateur (par exemple \"%s\")"
 
 #: lazarusidestrconsts.dlgfpcsrcpath
 msgid "FPC source directory"
@@ -2664,7 +2664,7 @@ msgstr "Ne pas couper la ligne devant"
 #: lazarusidestrconsts.dlgobjinsp
 msgctxt "lazarusidestrconsts.dlgobjinsp"
 msgid "Object Inspector"
-msgstr "Inspecteur d'objet"
+msgstr "Inspecteur d'objets"
 
 #: lazarusidestrconsts.dlgoiitemheight
 msgid "Item height"
@@ -3004,7 +3004,7 @@ msgstr "Seulement les fichiers de ce projet."
 
 #: lazarusidestrconsts.dlgscope
 msgid "Scope"
-msgstr "&Portée"
+msgstr "Portée"
 
 #: lazarusidestrconsts.dlgscrollbyoneless
 msgid "Scroll by one less"
@@ -3197,7 +3197,7 @@ msgstr "Espace"
 
 #: lazarusidestrconsts.dlgspbhints
 msgid "Hints for main speed buttons (open, save, ...)"
-msgstr "Conseils pour les principaux boutons rapides (ouvrir, enregistrer...) "
+msgstr "Conseils pour les principaux boutons rapides (ouvrir, enregistrer...)"
 
 #: lazarusidestrconsts.dlgsrcedit
 msgctxt "lazarusidestrconsts.dlgsrcedit"
@@ -3206,7 +3206,7 @@ msgstr "Éditeur de source"
 
 #: lazarusidestrconsts.dlgsrorigin
 msgid "Origin"
-msgstr "&Origine"
+msgstr "Origine"
 
 #: lazarusidestrconsts.dlgstacksize
 msgid "Stack size"
@@ -3880,7 +3880,7 @@ msgstr "À propos de Lazarus"
 
 #: lazarusidestrconsts.lisaboutlazarusmsg
 msgid "License: GPL/LGPL. See Lazarus and Free Pascal sources for license details.%sLazarus is an IDE to create graphical and console applications with Free Pascal. Free Pascal is Pascal and Object Pascal compiler that runs on Windows, Linux, Mac OS X, FreeBSD and more.%sLazarus is the missing part of the puzzle that will allow you to develop programs for all of the above platforms in a Delphi like environment. The IDE is a RAD tool that includes a form designer.%sAs Lazarus is growing we need more developers."
-msgstr "License : GPL/LGPL. Voir les sources Lazarus et Free Pascal pour les détails de la licence.%sLazarus est un EDI pour créer des applications (graphiques et consoles) avec Free Pascal. Free Pascal est un compilateur Pascal et Pascal Objet fonctionnant sous Windows, Linux, Mac OS X, FreeBSD et plus.%sLazarus est le chaînon manquant pour le développement d'applications multiplateformes dans un environnement proche de celui de Delphi, mais non limité à Windows. À l'image de Delphi, cet EDI (Environnement de Développement Intégré) est un outil de \"Développement Rapide d'Applications\" (ou RAD en anglais) doté d'un concepteur de fiches.%sComme le projet Lazarus est en expansion, nous avons besoin de plus de développeurs."
+msgstr "License : GPL/LGPL. Voir les sources Lazarus et Free Pascal pour les détails de la licence.%sLazarus est un EDI (Environnement de Développement Intégré) qui permet de créer des applications (graphiques et consoles) avec Free Pascal. Ce dernier est un compilateur Pascal et Pascal Objet fonctionnant sous Windows, Linux, Mac OS X, FreeBSD et autres.%sLazarus est le chaînon manquant pour le développement d'applications multiplateformes dans un environnement proche de celui de Delphi, mais non limité à Windows. À l'image de Delphi, cet EDI est un outil de \"Développement Rapide d'Applications\" (ou RAD en anglais) doté d'un concepteur de fiches.%sComme le projet Lazarus est en pleine expansion, nous avons besoin de développeurs plus nombreux."
 
 #: lazarusidestrconsts.lisaboutnocontributors
 msgid "Cannot find contributors list."
@@ -3888,7 +3888,7 @@ msgstr "La liste des contributeurs est introuvable."
 
 #: lazarusidestrconsts.lisaboutofficial
 msgid "Official:"
-msgstr "Officiel :"
+msgstr "Site officiel :"
 
 #: lazarusidestrconsts.lisacannotholdtcontrolsyoucanonlyputnonvisualcomponen
 msgid "A %s cannot hold TControls.%sYou can only put non visual components on it."
@@ -4354,7 +4354,7 @@ msgstr "Complétion et conseils"
 
 #: lazarusidestrconsts.lisautoshowobjectinspector
 msgid "Auto show"
-msgstr "Afficher automatiquement l'inspecteur d'objet"
+msgstr "Afficher automatiquement l'inspecteur d'objets"
 
 #: lazarusidestrconsts.lisavailableforinstallation
 msgid "Available for installation"
@@ -4515,7 +4515,7 @@ msgstr "&Remplacer"
 #: lazarusidestrconsts.lisbuild
 msgctxt "lazarusidestrconsts.lisbuild"
 msgid "Build"
-msgstr "Créer"
+msgstr "Création"
 
 #: lazarusidestrconsts.lisbuildallfilesofprojectpackageide
 msgid "build all files of project/package/IDE"
@@ -4524,7 +4524,7 @@ msgstr "Créer tous les fichiers du projet/paquet/EDI"
 #: lazarusidestrconsts.lisbuildcaption
 msgctxt "lazarusidestrconsts.lisbuildcaption"
 msgid "Build"
-msgstr "Créer"
+msgstr "Création"
 
 #: lazarusidestrconsts.lisbuildfollowingmodes
 msgid "Build the following modes"
@@ -4532,7 +4532,7 @@ msgstr "Construire les modes suivants"
 
 #: lazarusidestrconsts.lisbuildide
 msgid "Build IDE"
-msgstr "Construire l'EDI"
+msgstr "Création de l'EDI"
 
 #: lazarusidestrconsts.lisbuildidewithpackages
 msgid "build IDE with packages"
@@ -4577,7 +4577,7 @@ msgstr "Numéro de création"
 #: lazarusidestrconsts.lisbuildstage
 msgctxt "lazarusidestrconsts.lisbuildstage"
 msgid "Build"
-msgstr "Créer"
+msgstr "Création"
 
 #: lazarusidestrconsts.lisbusy
 msgid "Busy"
@@ -4957,7 +4957,7 @@ msgstr "Procédures"
 #: lazarusidestrconsts.lisceproperties
 msgctxt "lazarusidestrconsts.lisceproperties"
 msgid "Properties"
-msgstr "Propriétés "
+msgstr "Propriétés"
 
 #: lazarusidestrconsts.liscepublishedpropertywithoutdefault
 msgid "Published properties without default"
@@ -5492,7 +5492,7 @@ msgstr "Pages"
 
 #: lazarusidestrconsts.liscmprestoredefaults
 msgid "&Restore defaults"
-msgstr "&Rétablir les valeurs par défaut"
+msgstr "&Valeurs par défaut"
 
 #: lazarusidestrconsts.liscoambiguousadditionalcompilerconfigfile
 msgid "Ambiguous additional compiler config file"
@@ -6150,7 +6150,7 @@ msgstr "Compiler"
 
 #: lazarusidestrconsts.liscompileproject
 msgid "Compile Project"
-msgstr "Compiler le projet"
+msgstr "Compilation du projet"
 
 #: lazarusidestrconsts.liscompiler
 msgid "Compiler"
@@ -6862,7 +6862,7 @@ msgstr "Retirer l'élément sélectionné de la barre d'outils"
 
 #: lazarusidestrconsts.liscoolbarrestoredefaults
 msgid "Restore defaults"
-msgstr "Rétablir les valeurs par défaut"
+msgstr "Valeurs par défaut"
 
 #: lazarusidestrconsts.liscoolbarselecttoolbar
 msgid "Please select a toolbar first!"
@@ -6887,7 +6887,7 @@ msgstr "La barre est &visible"
 
 #: lazarusidestrconsts.liscoolbarwidth
 msgid "Coolbar width"
-msgstr ""
+msgstr "Largeur des barres d'outils"
 
 #: lazarusidestrconsts.liscopy
 msgctxt "lazarusidestrconsts.liscopy"
@@ -8163,7 +8163,7 @@ msgstr "Paramètres :"
 
 #: lazarusidestrconsts.lisedtexttoolprogramfilename
 msgid "Program Filename:"
-msgstr "Nom de fichier du programme :"
+msgstr "Nom du programme :"
 
 #: lazarusidestrconsts.lisedtexttoolscanoutputforfreepascalcompilermessages
 msgid "Scan output for Free Pascal Compiler messages"
@@ -8448,7 +8448,7 @@ msgstr "Erreurs"
 
 #: lazarusidestrconsts.liserrors2
 msgid ", Errors: %s"
-msgstr ", Erreurs : %s"
+msgstr " - Erreurs : %s"
 
 #: lazarusidestrconsts.liserrorsavingto
 msgid "Error saving %s to%s%s%s%s"
@@ -9334,7 +9334,7 @@ msgstr "Suggestion : vérifiez si deux paquets contiennent une unité du même n
 
 #: lazarusidestrconsts.lishints
 msgid ", Hints: %s"
-msgstr ", conseils : %s"
+msgstr " - Conseils : %s"
 
 #: lazarusidestrconsts.lishintsaveall
 msgid "Save all"
@@ -10021,7 +10021,7 @@ msgstr "Commandes du concepteur"
 
 #: lazarusidestrconsts.liskeycatobjinspector
 msgid "Object Inspector commands"
-msgstr "Commandes de l'inspecteur d'objet"
+msgstr "Commandes de l'inspecteur d'objets"
 
 #: lazarusidestrconsts.liskeyor2keysequence
 msgid "Key (or 2 key sequence)"
@@ -10504,7 +10504,7 @@ msgstr "Commuter la vue des messages"
 
 #: lazarusidestrconsts.liskmtoggleviewobjectinspector
 msgid "Toggle view Object Inspector"
-msgstr "Commuter la vue de l'inspecteur d'objet"
+msgstr "Commuter la vue de l'inspecteur d'objets"
 
 #: lazarusidestrconsts.liskmtoggleviewpseudoterminal
 msgctxt "lazarusidestrconsts.liskmtoggleviewpseudoterminal"
@@ -10554,7 +10554,7 @@ msgstr "Lancement de l'application incorrecte"
 
 #: lazarusidestrconsts.lislaunchingcmdline
 msgid "Launching target command line"
-msgstr "Lancement de la cible avec la ligne de commande"
+msgstr "Lancement de la ligne de commande de la cible"
 
 #: lazarusidestrconsts.lislazarus
 msgctxt "lazarusidestrconsts.lislazarus"
@@ -10611,7 +10611,7 @@ msgstr "lazarus [options] <ficher-projet>"
 
 #: lazarusidestrconsts.lislazarusotherfile
 msgid "Lazarus other file"
-msgstr "Autre fichier Lazarus"
+msgstr "Autres fichiers Lazarus"
 
 #: lazarusidestrconsts.lislazaruspackage
 msgid "Lazarus package"
@@ -10772,11 +10772,11 @@ msgstr "Répertoire cible :"
 
 #: lazarusidestrconsts.lislazbuildtargetos
 msgid "Target OS:"
-msgstr "OS de destination :"
+msgstr "OS cible :"
 
 #: lazarusidestrconsts.lislazbuildunabletowritefile
 msgid "Unable to write file \"%s\":%s"
-msgstr "Impossible d'écrire le fichier \"%s\":%s"
+msgstr "Impossible d'écrire le fichier \"%s\" : %s"
 
 #: lazarusidestrconsts.lislazbuildupdaterevinc
 msgctxt "lazarusidestrconsts.lislazbuildupdaterevinc"
@@ -10872,7 +10872,7 @@ msgstr "Fichier \"LFM\" corrompu"
 
 #: lazarusidestrconsts.lislfmisok
 msgid "LFM is ok"
-msgstr "\"LFM\" est correct"
+msgstr "Fichier \"LFM\" correct"
 
 #: lazarusidestrconsts.lislgplnotice
 msgid ""
@@ -11122,7 +11122,7 @@ msgstr "Nombre maximum de tâches à compiler en parallèle. Le nombre par défa
 
 #: lazarusidestrconsts.lismaximumparallelprocesses0meansdefault
 msgid "Maximum parallel processes, 0 means default (%s)"
-msgstr "Nombre maximum de processus parallèles ; 0 signifie \"par défaut\" (%s)"
+msgstr "Nombre maximum de processus parallèles - 0 signifie \"par défaut\" (%s)"
 
 #: lazarusidestrconsts.lismaxs
 msgid "Max %d"
@@ -12004,7 +12004,7 @@ msgstr "Messages"
 #: lazarusidestrconsts.lismenuviewobjectinspector
 msgctxt "lazarusidestrconsts.lismenuviewobjectinspector"
 msgid "Object Inspector"
-msgstr "Inspecteur d'objet"
+msgstr "Inspecteur d'objets"
 
 #: lazarusidestrconsts.lismenuviewprojectsource
 msgid "&View Project Source"
@@ -12073,7 +12073,7 @@ msgstr "Fe&nêtre "
 #: lazarusidestrconsts.lismeother
 msgctxt "lazarusidestrconsts.lismeother"
 msgid "Other tabs"
-msgstr "Autre onglets"
+msgstr "Autres onglets"
 
 #: lazarusidestrconsts.lismeprojects
 msgid "Projects"
@@ -12097,7 +12097,7 @@ msgstr "répertoire manquant \"%s\""
 
 #: lazarusidestrconsts.lismissingevents
 msgid "Missing Events"
-msgstr "Evénements manquants"
+msgstr "Événements manquants"
 
 #: lazarusidestrconsts.lismissingexecutable
 msgid "missing executable \"%s\""
@@ -12719,7 +12719,7 @@ msgstr "Nombre de fichiers à convertir : %s"
 
 #: lazarusidestrconsts.lisobjectinspectorbecomesvisible
 msgid "Object Inspector becomes visible when components are selected in designer."
-msgstr "L'inspecteur d'objet devient visible quand des composants sont sélectionnés dans le concepteur de fiche."
+msgstr "L'inspecteur d'objets est rendu visible quand des composants sont sélectionnés dans le concepteur de fiche."
 
 #: lazarusidestrconsts.lisobjectpascaldefault
 msgid "Object Pascal - default"
@@ -12731,7 +12731,7 @@ msgstr "chemin du code objet"
 
 #: lazarusidestrconsts.lisofeswitchtoobjectinspectorfavoritestab
 msgid "Switch to Object Inspector Favorites tab"
-msgstr "Basculer vers l'onglet des favoris de l'inspecteur d'objet"
+msgstr "Basculer vers l'onglet des favoris de l'inspecteur d'objets"
 
 #: lazarusidestrconsts.lisoff
 msgid "? (Off)"
@@ -13384,7 +13384,7 @@ msgstr "Enregistrer le nom de fichier comme par défaut pour cette dépendance"
 
 #: lazarusidestrconsts.lispckeditstorefilenameaspreferredforthisdependency
 msgid "Store file name as preferred for this dependency"
-msgstr "Enregistrer le nom de fichier en favoris pour cette dépendance"
+msgstr "Enregistrer le nom de fichier comme favori pour cette dépendance"
 
 #: lazarusidestrconsts.lispckeditthemaximumversionisnotavalidpackageversion
 msgid "The maximum version \"%s\" is not a valid package version.%s(good example 1.2.3.4)"
@@ -15989,7 +15989,7 @@ msgstr "Basculer les paramètres de filtre"
 
 #: lazarusidestrconsts.lisswitchtofavoritestabafterasking
 msgid "Switch to Favorites tab after asking for component name."
-msgstr "Basculer vers le volet Favoris après avoir demandé le nom du composant."
+msgstr "Basculer vers l'onglet \"Favoris\" après avoir demandé le nom du composant."
 
 #: lazarusidestrconsts.lissyntaxmode
 msgid "Syntax mode"
@@ -16037,7 +16037,7 @@ msgstr "Cible :"
 
 #: lazarusidestrconsts.listarget2
 msgid ", Target: %s"
-msgstr ", Cible : %s"
+msgstr " - Cible : %s "
 
 #: lazarusidestrconsts.listargetcpu
 msgid "Target CPU"
@@ -17595,7 +17595,7 @@ msgstr "Valeurs"
 
 #: lazarusidestrconsts.lisvaluesthatarechangedfromdefault
 msgid "Values that are changed from the default are stored in .lfm file and are shown differently in Object Inspector."
-msgstr "Les valeurs qui sont différentes des valeurs par défaut sont stockées dans le fichier \".lfm\" et affichées de manière particulière par l'inspecteur d'objet."
+msgstr "Les valeurs qui sont différentes des valeurs par défaut sont stockées dans le fichier \".lfm\" et affichées de manière particulière par l'inspecteur d'objets."
 
 #: lazarusidestrconsts.lisvariable
 msgctxt "lazarusidestrconsts.lisvariable"
@@ -17659,7 +17659,7 @@ msgstr "Avertissement : fichier équivoque trouvé : \"%s\". Le fichier de code 
 
 #: lazarusidestrconsts.liswarnings
 msgid ", Warnings: %s"
-msgstr ", Avertissements : %s"
+msgstr " - Avertissements : %s"
 
 #: lazarusidestrconsts.liswarningthisisthemainunitthenewmainunitwillbepas
 msgid "%sWarning: This is the main unit. The new main unit will be %s.pas."
@@ -17744,7 +17744,7 @@ msgstr "Quand le curseur de l'éditeur se déplace, montrer le nœud courant dan
 
 #: lazarusidestrconsts.liswindowmenuwithnamefordesignedform
 msgid "Window menu shows designed form's name instead of caption"
-msgstr "Le menu Fenêtre montre le nom de la fiche au lieu du titre"
+msgstr "Le menu \"Fenêtre\" montre le nom de la fiche au lieu du titre"
 
 #: lazarusidestrconsts.liswindowmenuwithnamefordesignedformhint
 msgid "Useful especially if the caption is left empty."
@@ -19428,7 +19428,7 @@ msgstr "Inverser le mode"
 
 #: lazarusidestrconsts.srkmectoggleobjectinsp
 msgid "View Object Inspector"
-msgstr "Afficher l'inspecteur d'objet"
+msgstr "Afficher l'inspecteur d'objets"
 
 #: lazarusidestrconsts.srkmectoggleregisters
 msgid "View registers"

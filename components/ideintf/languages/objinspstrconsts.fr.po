@@ -2,9 +2,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2015-04-20 18:46+0100\n"
+"PO-Revision-Date: 2015-04-20 23:51+0100\n"
 "Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
-"Language-Team: \n"
+"Language-Team: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -632,7 +632,7 @@ msgstr "&Nouveau"
 
 #: objinspstrconsts.oisnone
 msgid "(none)"
-msgstr "(aucun)"
+msgstr "(aucune)"
 
 #: objinspstrconsts.oisobject
 msgid "Object"
@@ -640,7 +640,7 @@ msgstr "Objet"
 
 #: objinspstrconsts.oisobjectinspector
 msgid "Object Inspector"
-msgstr "Inspecteur d'objet"
+msgstr "Inspecteur d'objets"
 
 #: objinspstrconsts.oisok
 msgid "&OK"
@@ -709,7 +709,7 @@ msgstr "Retirer des favoris"
 
 #: objinspstrconsts.oisrestricted
 msgid "Restricted"
-msgstr "Restreint"
+msgstr "Restrictions"
 
 #: objinspstrconsts.oisreverttoinherited
 msgid "Revert to inherited"
@@ -1563,4 +1563,3 @@ msgstr "Déplacer l'onglet vers la gauche"
 #: objinspstrconsts.tccesmovetabright
 msgid "Move tab right"
 msgstr "Déplacer l'onglet vers la droite"
-
