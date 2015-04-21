@@ -189,6 +189,7 @@ implementation
 
 uses
   xmlwrite
+  ,strutils
   ;
 
 const
@@ -243,8 +244,10 @@ end;
 
 function TGUITestRunner.MakeTestPath(Node: TTreeNode): string;
 begin
-  Result := '';
-  while Node <> nil do
+  Result := Node.Text;
+  Node := Node.Parent;
+  // We can now skip the unnecessary "All Tests" text
+  while Node.Parent <> nil do
   begin
     Result := Node.Text + '.' + Result;
     Node := Node.Parent;
@@ -255,20 +258,48 @@ procedure TGUITestRunner.SaveTree;
 var
   i: integer;
 begin
-  FConfStore.EraseSection('Tests');
-  for i := 0 to TestTree.Items.Count - 1 do
-    FConfStore.WriteBool('Tests', MakeTestPath(TestTree.Items[i]), TestTree.Items[i].StateIndex = Ord(tsChecked));
+  FConfStore.EraseSection('DisabledTests');
+  for i := 0 to TestTree.Items.Count-1 do
+  begin
+    if TestTree.Items[i].StateIndex = ord(tsUnChecked) then
+      FConfStore.WriteBool('DisabledTests', MakeTestPath(TestTree.Items[i]), True);
+  end;
 end;
 
 procedure TGUITestRunner.RestoreTree;
 var
-  i: integer;
+  i, j: integer;
+  c: integer;
+  t: string;
+  n: TTreeNode;
+  sl: TStringList;
 begin
-  for i := 0 to TestTree.Items.Count - 1 do
-    if FConfStore.ReadBool('Tests', MakeTestPath(TestTree.Items[i]), true) then
-      TestTree.Items[i].StateIndex := Ord(tsChecked)
-    else
-      TestTree.Items[i].StateIndex := Ord(tsUnChecked);
+  if not FConfStore.SectionExists('DisabledTests') then
+    Exit;
+  sl := TStringList.Create;
+  FConfStore.ReadSection('DisabledTests', sl);
+  try
+    for i := 0 to sl.Count-1 do
+    begin
+      c := WordCount(sl[i], ['.']);
+      n := TestTree.Items.GetFirstNode;
+      for j := 1 to c do
+      begin
+        t := ExtractWord(j,sl[i],['.']);
+        if Assigned(n) then
+        begin
+          if n.Text = t then
+            continue
+          else
+            n := n.FindNode(t);
+        end;
+      end;
+      if Assigned(n) and (n.Text = t) then  // we have a node and it matches the last text found
+        n.StateIndex := ord(tsUnChecked);
+    end;
+  finally
+    sl.Free;
+  end;
 end;
 
 procedure TGUITestRunner.GUITestRunnerCreate(Sender: TObject);
