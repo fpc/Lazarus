@@ -713,14 +713,14 @@ begin
     end;
   end;
   if Assigned(aNode.Parent) then
-    if aNode.Index = aNode.Parent.Count -1 then
+    if aNode.Index = aNode.Parent.Count -1 then   // is aNode the last child
     begin
     aNode := aNode.Parent;
     noFailedSibling := true;
     for i := 0 to aNode.Count -2 do
     begin
       if aNode.Items[i].ImageIndex <> imgGreenBall then
-        noFailedSibling := false;;
+        noFailedSibling := false;
     end;
     if (aNode.ImageIndex = imgBlueBall) and
       noFailedSibling then
@@ -748,10 +748,9 @@ begin
       for i := 0 to aNode.Count -2 do
       begin
         if aNode.Items[i].ImageIndex <> imgGreenBall then
-          BusySibling := false;;
+          BusySibling := false;
       end;
-      if (aNode.ImageIndex = imgBlueBall) and
-        BusySibling then
+      if (aNode.ImageIndex = imgBlueBall) and BusySibling then
         PaintNodeBusy(aNode);
     end;
   end;
@@ -968,6 +967,8 @@ begin
 end;
 
 procedure TGUITestRunner.EndTestSuite(ATestSuite: TTestSuite);
+var
+  n: TTreeNode;
 begin
   // scroll treeview to first failed test
   if Assigned(FFirstFailure) then
@@ -975,6 +976,10 @@ begin
     TestTree.Selected := FFirstFailure;
     TestTree.MakeSelectionVisible;
   end;
+
+  n := FindNode(ATestSuite);
+  if Assigned(n) then
+    PaintNodeNonFailed(n);
 end;
 
 procedure TranslateResStrings;
