@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2015-03-21 17:57+0100\n"
+"PO-Revision-Date: 2015-04-19 22:09+0100\n"
 "Last-Translator: Swen Heinig <swen@heinig.email>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -1180,7 +1180,7 @@ msgstr "Benutzerdefinierte Erweiterung (.pp.xxx)"
 
 #: lazarusidestrconsts.dlgdcifiledci
 msgid "DCI file (*.dci)"
-msgstr ""
+msgstr "DCI-Datei (*.dci)"
 
 #: lazarusidestrconsts.dlgdebugoptionspatheditordlgcaption
 msgid "Path Editor"
@@ -1304,6 +1304,7 @@ msgid "Sub directory"
 msgstr "Unterverzeichnis"
 
 #: lazarusidestrconsts.dlgedcodetempl
+msgctxt "lazarusidestrconsts.dlgedcodetempl"
 msgid "Code Templates"
 msgstr "Quelltextvorlagen"
 
@@ -1531,7 +1532,7 @@ msgstr "Dateiendungen"
 
 #: lazarusidestrconsts.dlgfiles
 msgid "%s files"
-msgstr ""
+msgstr "%s Dateien"
 
 #: lazarusidestrconsts.dlgfindtextatcursor
 msgid "Find text at cursor"
@@ -2248,6 +2249,7 @@ msgid "Mouse Action"
 msgstr "Mausaktion"
 
 #: lazarusidestrconsts.dlgmouseoptbtn1
+msgctxt "lazarusidestrconsts.dlgmouseoptbtn1"
 msgid "Single"
 msgstr "Einfach"
 
@@ -3279,8 +3281,6 @@ msgid "Use launching application"
 msgstr "Startprogramm verwenden"
 
 #: lazarusidestrconsts.dlguseminimumime
-#, fuzzy
-#| msgid "Ime handled by System"
 msgid "IME handled by System"
 msgstr "IME vom System gehandhabt"
 
@@ -4701,6 +4701,7 @@ msgid "unusual characters"
 msgstr "ungewöhnliche Zeichen"
 
 #: lazarusidestrconsts.lisccowarningcaption
+msgctxt "lazarusidestrconsts.lisccowarningcaption"
 msgid "Warning"
 msgstr "Warnung"
 
@@ -7089,9 +7090,10 @@ msgid "Disable/Enable updates for the entire window"
 msgstr "Aktualisierungen für das ganze Fenster de-/aktivieren"
 
 #: lazarusidestrconsts.lisdebug
+#, fuzzy
 msgctxt "lazarusidestrconsts.lisdebug"
 msgid "Debug"
-msgstr ""
+msgstr "Debug"
 
 #: lazarusidestrconsts.lisdebugger
 msgctxt "lazarusidestrconsts.lisdebugger"
@@ -8413,6 +8415,7 @@ msgid "Failed to save file."
 msgstr "Speichern der Datei fehlgeschlagen."
 
 #: lazarusidestrconsts.lisfatal
+msgctxt "lazarusidestrconsts.lisfatal"
 msgid "Fatal"
 msgstr ""
 
@@ -9040,6 +9043,7 @@ msgid "Hide with project option (-vm%s)"
 msgstr "Verbergen mit Projekt-Einstellung (-vm%s)"
 
 #: lazarusidestrconsts.lishint
+msgctxt "lazarusidestrconsts.lishint"
 msgid "Hint"
 msgstr "Hinweis"
 
@@ -9304,6 +9308,7 @@ msgid "Import"
 msgstr "Import ..."
 
 #: lazarusidestrconsts.lisimportant
+msgctxt "lazarusidestrconsts.lisimportant"
 msgid "Important"
 msgstr "Wichtig"
 
@@ -12332,6 +12337,7 @@ msgid "Not a valid Pascal identifier"
 msgstr "Kein gültiger Pascal-Bezeichner"
 
 #: lazarusidestrconsts.lisnote
+msgctxt "lazarusidestrconsts.lisnote"
 msgid "Note"
 msgstr ""
 
@@ -12719,7 +12725,7 @@ msgstr "Name des Packages enthält ..."
 
 #: lazarusidestrconsts.lispackageneedsanoutputdirectory
 msgid "Package needs an output directory."
-msgstr ""
+msgstr "Package benötigt ein Ausgabeverzeichnis."
 
 #: lazarusidestrconsts.lispackageneedsinstallation
 msgid "Package needs installation"
@@ -12754,6 +12760,7 @@ msgid "Page name \"%s\" already exists. Not added."
 msgstr "Seitenname \"%s\" existiert bereits. Nicht hinzugefügt."
 
 #: lazarusidestrconsts.lispanic
+msgctxt "lazarusidestrconsts.lispanic"
 msgid "Panic"
 msgstr ""
 
@@ -12862,11 +12869,11 @@ msgstr ""
 
 #: lazarusidestrconsts.lispckeditaddfiles
 msgid "Add files from the file system"
-msgstr ""
+msgstr "Dateien aus dem Dateisystem hinzufügen"
 
 #: lazarusidestrconsts.lispckeditaddotheritems
 msgid "Add other items"
-msgstr ""
+msgstr "Andere Elemente hinzufügen"
 
 #: lazarusidestrconsts.lispckeditaddtoproject
 msgctxt "lazarusidestrconsts.lispckeditaddtoproject"
@@ -17244,6 +17251,7 @@ msgid "Variable"
 msgstr "Variable"
 
 #: lazarusidestrconsts.lisverbose
+msgctxt "lazarusidestrconsts.lisverbose"
 msgid "Verbose"
 msgstr ""
 
