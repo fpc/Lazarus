@@ -765,8 +765,12 @@ begin
         Format(rsException, [AFailure.ExceptionClassName])) as TMessageTreeNode;
       node.ImageIndex := imgWarningSign;
       node.SelectedIndex := imgWarningSign;
+      {$IFDEF VER2_6}
       node := TestTree.Items.AddChild(FailureNode,
         Format('at line %d in <%s>', [AFailure.LineNumber, AFailure.UnitName])) as TMessageTreeNode;
+      {$ELSE}
+      node := TestTree.Items.AddChild(FailureNode, 'at ' + AFailure.LocationInfo) as TMessageTreeNode;
+      {$ENDIF}
       node.ImageIndex := imgWarningSign;
       node.SelectedIndex := imgWarningSign;
       PaintNodeFailure(FailureNode);
@@ -815,23 +819,18 @@ begin
       AError.ExceptionClassName]));
     node.ImageIndex := imgWarningSign;
     node.SelectedIndex := imgWarningSign;
-    if (AError.SourceUnitName <> '') and
-      (AError.FailedMethodName <> '')
-    then
-    begin
-      node := TestTree.Items.AddChild(ErrorNode, Format(rsUnitName, [
-        AError.SourceUnitName]));
-      node.ImageIndex := imgInfoSign;
-      node.SelectedIndex := imgInfoSign;
-      node := TestTree.Items.AddChild(ErrorNode, Format(rsMethodName, [
-        AError.FailedMethodName]));
-      node.ImageIndex := imgInfoSign;
-      node.SelectedIndex := imgInfoSign;
-      node := TestTree.Items.AddChild(ErrorNode, Format(rsLineNumber, [IntToStr(
-        AError.LineNumber)]));
-      node.ImageIndex := imgInfoSign;
-      node.SelectedIndex := imgInfoSign;
-    end;
+    // line info details
+    {$IFDEF VER2_6}
+    node := TestTree.Items.AddChild(ErrorNode,
+      Format('at line %d in <%s>', [AError.LineNumber, AError.UnitName])) as TMessageTreeNode;
+
+    {$ELSE}
+    node := TestTree.Items.AddChild(ErrorNode, 'at ' + AError.LocationInfo);
+    {$ENDIF}
+    node.ImageIndex := imgInfoSign;
+    node.SelectedIndex := imgInfoSign;
+    // TODO : add stack trace info
+
     PaintNodeError(ErrorNode);
   end;
   Inc(errorCounter);
