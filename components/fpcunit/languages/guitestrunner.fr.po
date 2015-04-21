@@ -134,7 +134,9 @@ msgid "C&ut"
 msgstr "Co&uper"
 
 #: guitestrunner.smiruntest
-msgid "  &Run all selected (checked) tests"
+#, fuzzy
+#| msgid "  &Run all selected (checked) tests"
+msgid "&Run all selected (checked) tests"
 msgstr "&Exécuter les tests choisis (cochés)"
 
 #: guitestrunner.smishowfail
@@ -148,3 +150,4 @@ msgstr "XML des résultats"
 #: guitestrunner.stshtree
 msgid "Testcase tree"
 msgstr "Arbre des tests"
+
