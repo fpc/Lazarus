@@ -246,7 +246,7 @@ begin
   Result := '';
   while Node <> nil do
   begin
-    Result := Node.Text + '_' + Result;
+    Result := Node.Text + '.' + Result;
     Node := Node.Parent;
   end;
 end;
