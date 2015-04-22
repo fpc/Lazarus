@@ -2431,6 +2431,7 @@ end;
 procedure TMessagesCtrl.ApplyEnvironmentOptions;
 var
   NewOptions: TMsgCtrlOptions;
+  u: TMessageLineUrgency;
 
   procedure SetOption(Option: TMsgCtrlOption; State: boolean);
   begin
@@ -2441,19 +2442,8 @@ var
   end;
 
 begin
-  UrgencyStyles[mluNone].Color      := EnvironmentOptions.MsgColors[mluNone];
-  UrgencyStyles[mluProgress].Color  := EnvironmentOptions.MsgColors[mluProgress];
-  UrgencyStyles[mluDebug].Color     := EnvironmentOptions.MsgColors[mluDebug];
-  UrgencyStyles[mluVerbose3].Color  := EnvironmentOptions.MsgColors[mluVerbose3];
-  UrgencyStyles[mluVerbose2].Color  := EnvironmentOptions.MsgColors[mluVerbose2];
-  UrgencyStyles[mluVerbose].Color   := EnvironmentOptions.MsgColors[mluVerbose];
-  UrgencyStyles[mluHint].Color      := EnvironmentOptions.MsgColors[mluHint];
-  UrgencyStyles[mluNote].Color      := EnvironmentOptions.MsgColors[mluNote];
-  UrgencyStyles[mluWarning].Color   := EnvironmentOptions.MsgColors[mluWarning];
-  UrgencyStyles[mluImportant].Color := EnvironmentOptions.MsgColors[mluImportant];
-  UrgencyStyles[mluError].Color     := EnvironmentOptions.MsgColors[mluError];
-  UrgencyStyles[mluFatal].Color     := EnvironmentOptions.MsgColors[mluFatal];
-  UrgencyStyles[mluPanic].Color     := EnvironmentOptions.MsgColors[mluPanic];
+  for u in TMessageLineUrgency do
+    UrgencyStyles[u].Color := EnvironmentOptions.MsgColors[u];
   BackgroundColor:=EnvironmentOptions.MsgViewColors[mwBackground];
   AutoHeaderBackground:=EnvironmentOptions.MsgViewColors[mwAutoHeader];
   HeaderBackground[lmvtsRunning]:=EnvironmentOptions.MsgViewColors[mwRunning];
