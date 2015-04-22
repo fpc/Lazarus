@@ -784,7 +784,7 @@ begin
         Format(rsException, [AFailure.ExceptionClassName])) as TMessageTreeNode;
       node.ImageIndex := imgWarningSign;
       node.SelectedIndex := imgWarningSign;
-      {$IFDEF VER2_6}
+      {$IF FPC_FULLVERSION <= 30001}
       node := TestTree.Items.AddChild(FailureNode,
         Format('at line %d in <%s>', [AFailure.LineNumber, AFailure.UnitName])) as TMessageTreeNode;
       {$ELSE}
@@ -839,7 +839,7 @@ begin
     node.ImageIndex := imgWarningSign;
     node.SelectedIndex := imgWarningSign;
     // line info details
-    {$IFDEF VER2_6}
+    {$IF FPC_FULLVERSION <= 30001}
     node := TestTree.Items.AddChild(ErrorNode,
       Format('at line %d in <%s>', [AError.LineNumber, AError.UnitName])) as TMessageTreeNode;
 
