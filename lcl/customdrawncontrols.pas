@@ -603,6 +603,31 @@ type
     property ViewStyle: TViewStyle read FViewStyle write SetViewStyle default vsList;
   end;
 
+  { TCDToolBar }
+
+  TCDToolBar = class(TCDControl)
+  private
+    // fields
+    FShowCaptions: Boolean;
+    FItems: TFPList;
+    procedure SetShowCaptions(AValue: Boolean);
+  protected
+    FTBState: TCDToolBarStateEx;
+    function GetControlId: TCDControlID; override;
+    procedure CreateControlStateEx; override;
+    procedure PrepareControlStateEx; override;
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+    function InsertItem(AKind: TCDToolbarItemKind; AIndex: Integer): TCDToolBarItem;
+    function AddItem(AKind: TCDToolbarItemKind): TCDToolBarItem;
+    procedure DeleteItem(AIndex: Integer);
+    function GetItem(AIndex: Integer): TCDToolBarItem;
+  published
+    property ShowCaptions: Boolean read FShowCaptions write SetShowCaptions;
+    property DrawStyle;
+  end;
+
   { TCDTabControl }
 
   { TCDCustomTabControl }
@@ -2841,6 +2866,80 @@ begin
   FColumns.Free;
   FListItems.Free;
   inherited Destroy;
+end;
+
+{ TCDToolBar }
+
+procedure TCDToolBar.SetShowCaptions(AValue: Boolean);
+begin
+  if FShowCaptions = AValue then Exit;
+  FShowCaptions := AValue;
+  if not (csLoading in ComponentState) then Invalidate;
+end;
+
+function TCDToolBar.GetControlId: TCDControlID;
+begin
+  Result := cidToolBar;
+end;
+
+procedure TCDToolBar.CreateControlStateEx;
+begin
+  FTBState := TCDToolBarStateEx.Create;
+  FStateEx := FTBState;
+end;
+
+procedure TCDToolBar.PrepareControlStateEx;
+begin
+  inherited PrepareControlStateEx;
+  FTBState.ShowCaptions := FShowCaptions;
+  FTBState.Items := FItems;
+  FTBState.ToolBarHeight := Height;
+end;
+
+constructor TCDToolBar.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  Height := 26;
+  Align := alTop;
+  FItems := TFPList.Create();
+  TabStop := False;
+end;
+
+destructor TCDToolBar.Destroy;
+begin
+  while FItems.Count > 0 do
+    DeleteItem(0);
+  FItems.Free;
+  inherited Destroy;
+end;
+
+function TCDToolBar.InsertItem(AKind: TCDToolbarItemKind; AIndex: Integer): TCDToolBarItem;
+var
+  lNewItem: TCDToolBarItem;
+begin
+  lNewItem := TCDToolBarItem.Create;
+  lNewItem.Kind := AKind;
+  FItems.Insert(AIndex, lNewItem);
+  Result := lNewItem;
+end;
+
+function TCDToolBar.AddItem(AKind: TCDToolbarItemKind): TCDToolBarItem;
+begin
+  Result := InsertItem(AKind, FItems.Count);
+  Result.Width := 23;
+end;
+
+procedure TCDToolBar.DeleteItem(AIndex: Integer);
+begin
+  if (AIndex < 0) or (AIndex >= FItems.Count) then Exit;
+  FItems.Delete(AIndex);
+end;
+
+function TCDToolBar.GetItem(AIndex: Integer): TCDToolBarItem;
+begin
+  Result := nil;
+  if (AIndex < 0) or (AIndex >= FItems.Count) then Exit;
+  Result := TCDToolBarItem(FItems.Items[AIndex]);
 end;
 
 { TCDTabSheet }

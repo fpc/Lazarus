@@ -1026,6 +1026,14 @@ components/customdrawn/customdrawnimages/build.bat svneol=native#text/plain
 components/customdrawn/customdrawnimages/windows7.res -text
 components/customdrawn/customdrawnimages/windows7_button.bmp -text
 components/customdrawn/customdrawnlcldrawers.pas svneol=native#text/plain
+components/customdrawn/examples/controls/cdcontrolstest.ico -text
+components/customdrawn/examples/controls/cdcontrolstest.lpi svneol=native#text/plain
+components/customdrawn/examples/controls/cdcontrolstest.lpr svneol=native#text/plain
+components/customdrawn/examples/controls/cdcontrolstest.res -text
+components/customdrawn/examples/controls/mainform.lfm svneol=native#text/plain
+components/customdrawn/examples/controls/mainform.pas svneol=native#text/plain
+components/customdrawn/examples/controls/toolbartest.lfm svneol=native#text/plain
+components/customdrawn/examples/controls/toolbartest.pas svneol=native#text/plain
 components/customdrawn/paletteimg.res -text
 components/customdrawn/resources/build.bat svneol=native#text/pascal
 components/customdrawn/resources/paletteimg.txt svneol=native#text/pascal

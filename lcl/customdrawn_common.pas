@@ -109,6 +109,12 @@ type
       AState: TCDControlState; AStateEx: TCDListViewStateEx); override;
     procedure DrawReportListViewItem(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
       ACurItem: TCDListItems; AState: TCDControlState; AStateEx: TCDListViewStateEx); override;
+    // TCDToolBar
+    procedure DrawToolBar(ADest: TCanvas; ASize: TSize;
+      AState: TCDControlState; AStateEx: TCDToolBarStateEx); override;
+    procedure DrawToolBarItem(ADest: TCanvas; ASize: TSize;
+      ACurItem: TCDToolBarItem; AX, AY: Integer;
+      AState: TCDControlState; AStateEx: TCDToolBarStateEx); override;
     // TCDCustomTabControl
     procedure DrawCTabControl(ADest: TCanvas; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDCTabControlStateEx); override;
@@ -224,6 +230,8 @@ begin
   TCDLISTVIEW_COLUMN_TEXT_LEFT_SPACING:  Result := 5;
   TCDLISTVIEW_LINE_TOP_SPACING: Result := 3;
   TCDLISTVIEW_LINE_BOTTOM_SPACING: Result := 3;
+  //
+  TCDTOOLBAR_ITEM_SPACING: Result := 2;
   //
   TCDCTABCONTROL_CLOSE_TAB_BUTTON_WIDTH: Result := 10;
   TCDCTABCONTROL_CLOSE_TAB_BUTTON_EXTRA_SPACING: Result := 10;
@@ -1609,6 +1617,45 @@ begin
     ADestPos.X+GetMeasures(TCDLISTVIEW_COLUMN_TEXT_LEFT_SPACING),
     ADestPos.Y+GetMeasures(TCDLISTVIEW_LINE_TOP_SPACING),
     ACurItem.Caption);
+end;
+
+procedure TCDDrawerCommon.DrawToolBar(ADest: TCanvas; ASize: TSize;
+  AState: TCDControlState; AStateEx: TCDToolBarStateEx);
+var
+  lX, lY: Integer;
+  lItemSize: TSize;
+  i: Integer;
+  lCurItem: TCDToolBarItem;
+begin
+  // Background
+  ADest.Pen.Style := psSolid;
+  ADest.Pen.Color := AStateEx.ParentRGBColor;
+  ADest.Brush.Style := bsSolid;
+  ADest.Brush.Color := AStateEx.ParentRGBColor;
+  ADest.Rectangle(0, 0, ASize.cx, ASize.cy);
+
+  // Items
+  lX := GetMeasures(TCDTOOLBAR_ITEM_SPACING);
+  lY := GetMeasures(TCDTOOLBAR_ITEM_SPACING);
+  lItemSize.CY := AStateEx.ToolBarHeight - GetMeasures(TCDTOOLBAR_ITEM_SPACING) * 2;
+  for i := 0 to AStateEx.Items.Count-1 do
+  begin
+    lCurItem := TCDToolBarItem(AStateEx.Items[i]);
+    lItemSize.CX := lCurItem.Width;
+    DrawToolBarItem(ADest, lItemSize, lCurItem, lX, lY, AState, AStateEx);
+    lX := lX + lCurItem.Width;
+  end;
+end;
+
+procedure TCDDrawerCommon.DrawToolBarItem(ADest: TCanvas; ASize: TSize;
+  ACurItem: TCDToolBarItem; AX, AY: Integer; AState: TCDControlState; AStateEx: TCDToolBarStateEx);
+begin
+  // Background
+  ADest.Pen.Style := psSolid;
+  ADest.Pen.Color := AStateEx.ParentRGBColor;
+  ADest.Brush.Style := bsSolid;
+  ADest.Brush.Color := clWhite;
+  ADest.Rectangle(AX, AY, ASize.cx, ASize.cy);
 end;
 
 procedure TCDDrawerCommon.DrawCTabControl(ADest: TCanvas;

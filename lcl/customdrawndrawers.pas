@@ -42,6 +42,8 @@ const
   TCDLISTVIEW_LINE_TOP_SPACING     = $1203;
   TCDLISTVIEW_LINE_BOTTOM_SPACING  = $1204;
 
+  TCDTOOLBAR_ITEM_SPACING = $1300;
+
   TCDCTABCONTROL_CLOSE_TAB_BUTTON_WIDTH = $2600;
   TCDCTABCONTROL_CLOSE_TAB_BUTTON_EXTRA_SPACING = $2601;
 
@@ -210,6 +212,25 @@ type
     ShowColumnHeader: Boolean;
   end;
 
+  // ToolBar Start
+
+  TCDToolbarItemKind = (tikButton, tikCheckButton, tikSeparator, tikDivider);
+
+  TCDToolBarItem = class
+    Kind: TCDToolbarItemKind;
+    Image: TBitmap;
+    Caption: string;
+    Width: Integer;
+  end;
+
+  TCDToolBarStateEx = class(TCDControlStateEx)
+    ShowCaptions: Boolean;
+    Items: TFPList; // of TCDToolBarItem
+    ToolBarHeight: Integer;
+  end;
+
+  // ToolBar End
+
   TCDCTabControlStateEx = class(TCDControlStateEx)
   public
     LeftmostTabVisibleIndex: Integer;
@@ -238,7 +259,7 @@ type
     // Additional
     cidStaticText,
     // Common Controls
-    cidTrackBar, cidProgressBar, cidListView, cidCTabControl
+    cidTrackBar, cidProgressBar, cidListView, cidToolBar, cidCTabControl
     );
 
   { TCDColorPalette }
@@ -371,6 +392,12 @@ type
       AState: TCDControlState; AStateEx: TCDListViewStateEx); virtual; abstract;
     procedure DrawReportListViewItem(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
       ACurItem: TCDListItems; AState: TCDControlState; AStateEx: TCDListViewStateEx); virtual; abstract;
+    // TCDToolBar
+    procedure DrawToolBar(ADest: TCanvas; ASize: TSize;
+      AState: TCDControlState; AStateEx: TCDToolBarStateEx); virtual; abstract;
+    procedure DrawToolBarItem(ADest: TCanvas; ASize: TSize;
+      ACurItem: TCDToolBarItem; AX, AY: Integer;
+      AState: TCDControlState; AStateEx: TCDToolBarStateEx); virtual; abstract;
     // TCDCustomTabControl
     procedure DrawCTabControl(ADest: TCanvas; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDCTabControlStateEx); virtual; abstract;
@@ -672,6 +699,7 @@ begin
   cidTrackBar:   DrawTrackBar(ADest, ASize, AState, TCDPositionedCStateEx(AStateEx));
   cidProgressBar:DrawProgressBar(ADest, ASize, AState, TCDProgressBarStateEx(AStateEx));
   cidListView:   DrawListView(ADest, ASize, AState, TCDListViewStateEx(AStateEx));
+  cidToolBar:    DrawToolBar(ADest, ASize, AState, TCDToolBarStateEx(AStateEx));
   cidCTabControl:DrawCTabControl(ADest, ASize, AState, TCDCTabControlStateEx(AStateEx));
   end;
 end;
