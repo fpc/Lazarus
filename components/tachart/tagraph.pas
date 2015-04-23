@@ -296,6 +296,7 @@ type
       ADrawer: IChartDrawer; var AClipRect: TRect): TChartLegendDrawingData;
     procedure SetBiDiMode(AValue: TBiDiMode); override;
     procedure SetName(const AValue: TComponentName); override;
+
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -426,7 +427,7 @@ type
     property DragMode;
     property Enabled;
     property ParentBiDiMode;
-    property ParentColor;
+    property ParentColor default false;
     property ParentShowHint;
     property PopupMenu;
     property ShowHint;
