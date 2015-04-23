@@ -51,6 +51,7 @@ type
     imButtons: TImageList;
     dbAddConfigDelete: TDividerBevel;
     dbGeneralSettings: TDividerBevel;
+    pnTopCenterLabel: TLabel;
     lbGrabWidth: TLabel;
     lbCoolBarWidth: TLabel;
     pnTop: TPanel;
