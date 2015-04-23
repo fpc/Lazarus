@@ -1,0 +1,20 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Yann Mérignac <yann.merignac@laposte.net>\n"
+"Language-Team: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: fr\n"
+"X-Generator: Poedit 1.7.5\n"
+
+#: reglazthread.sthreaddescription
+msgid "A Pascal unit with a subclass of TThread class."
+msgstr "Une unité Pascal avec un descendant de la classe \"TThread\"."
+
+#: reglazthread.sthreadname
+msgid "Thread Object"
+msgstr "Objet tâche"

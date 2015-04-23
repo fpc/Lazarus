@@ -6,8 +6,8 @@ msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: Beuselinck Vincent <vincent@beuselinck.fr>\n"
-"Language-Team: \n"
+"Last-Translator: Yann Mérignac <yann.merignac@laposte.net>\n"
+"Language-Team: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
 "Language: fr\n"
 "X-Generator: Poedit 1.7.5\n"
 
@@ -49,7 +49,7 @@ msgstr "CDATA"
 
 #: syneditstrconst.syns_attrcdatasection
 msgid "CDATA Section"
-msgstr "Section CDATA"
+msgstr "Section \"CDATA\""
 
 #: syneditstrconst.syns_attrcharacter
 msgid "Character"
@@ -105,7 +105,7 @@ msgstr "DOCTYPE"
 
 #: syneditstrconst.syns_attrdoctypesection
 msgid "DOCTYPE Section"
-msgstr "Section DOCTYPE"
+msgstr "Section \"DOCTYPE\""
 
 #: syneditstrconst.syns_attrdocumentation
 msgid "Documentation"
@@ -489,7 +489,7 @@ msgstr "Sélection rapide pour coller"
 
 #: syneditstrconst.syns_emcpluginmulticaretselectiontocarets
 msgid "Set carets at EOL in selected lines"
-msgstr ""
+msgstr "Placer les curseurs en fin de lignes dans les lignes sélectionnées"
 
 #: syneditstrconst.syns_emcpluginmulticarettogglecaret
 msgid "Toggle extra caret"
@@ -804,4 +804,3 @@ msgstr "<aucun>"
 #: syneditstrconst.syns_untitled
 msgid "Untitled"
 msgstr "Sans titre"
-

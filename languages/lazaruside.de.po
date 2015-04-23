@@ -7354,9 +7354,10 @@ msgid "Disable/Enable updates for the entire window"
 msgstr "Aktualisierungen für das ganze Fenster de-/aktivieren"
 
 #: lazarusidestrconsts.lisdebug
+#, fuzzy
 msgctxt "lazarusidestrconsts.lisdebug"
 msgid "Debug"
-msgstr ""
+msgstr "Debug"
 
 #: lazarusidestrconsts.lisdebugger
 msgctxt "lazarusidestrconsts.lisdebugger"
