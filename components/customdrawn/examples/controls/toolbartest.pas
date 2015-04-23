@@ -47,16 +47,25 @@ var
   lBmp: TBitmap;
   lItem: TCDToolBarItem;
 begin
-  lBmp := TBitmap.Create;
 
   lToolBar := TCDToolBar.Create(Self);
   lToolBar.Parent := Self;
+
+  lBmp := TBitmap.Create;
   lBmp.LoadFromFile('/usr/share/magnifier/lupa.bmp');
   lItem := lToolBar.AddItem(tikButton);
   lItem.Image := lBmp;
   lItem.Caption := 'Btn 1';
-  lToolBar.Parent := Self;
-  lToolBar.Parent := Self;
+
+  lItem := lToolBar.AddItem(tikSeparator);
+
+  lBmp := TBitmap.Create;
+  lBmp.LoadFromFile('/usr/share/magnifier/usplegal.bmp');
+  lItem := lToolBar.AddItem(tikCheckButton);
+  lItem.Image := lBmp;
+  lItem.Caption := 'Btn 2';
+
+  lItem := lToolBar.AddItem(tikDivider);
 end;
 
 procedure TFormToolBar.FormShow(Sender: TObject);

@@ -616,6 +616,12 @@ type
     function GetControlId: TCDControlID; override;
     procedure CreateControlStateEx; override;
     procedure PrepareControlStateEx; override;
+    // mouse
+    procedure MouseMove(Shift: TShiftState; X, Y: integer); override;
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
+      X, Y: integer); override;
+    procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: integer); override;
+    procedure MouseLeave; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -623,6 +629,9 @@ type
     function AddItem(AKind: TCDToolbarItemKind): TCDToolBarItem;
     procedure DeleteItem(AIndex: Integer);
     function GetItem(AIndex: Integer): TCDToolBarItem;
+    function GetItemCount(): Integer;
+    function GetItemWithMousePos(APosInControl: TPoint): TCDToolBarItem;
+    function IsPosInButton(APosInControl: TPoint; AItem: TCDToolBarItem; AItemX: Integer): Boolean;
   published
     property ShowCaptions: Boolean read FShowCaptions write SetShowCaptions;
     property DrawStyle;
@@ -2889,11 +2898,87 @@ begin
 end;
 
 procedure TCDToolBar.PrepareControlStateEx;
+var
+  i, lX: Integer;
+  lCursorPos: TPoint;
+  lCurItem: TCDToolBarItem;
 begin
   inherited PrepareControlStateEx;
   FTBState.ShowCaptions := FShowCaptions;
   FTBState.Items := FItems;
   FTBState.ToolBarHeight := Height;
+
+  // Handle mouse over items
+  lCursorPos := Mouse.CursorPos;
+  lCursorPos := ScreenToClient(lCursorPos);
+  lX := 0;
+  for i := 0 to GetItemCount()-1 do
+  begin
+    lCurItem := GetItem(i);
+    lCurItem.State := lCurItem.State - [csfMouseOver];
+    if IsPosInButton(lCursorPos, lCurItem, lX) then
+      lCurItem.State := lCurItem.State + [csfMouseOver];
+    if lCurItem.Down then
+      lCurItem.State := lCurItem.State + [csfSunken];
+    lX := lX + lCurItem.Width;
+  end;
+end;
+
+procedure TCDToolBar.MouseMove(Shift: TShiftState; X, Y: integer);
+begin
+  inherited MouseMove(Shift, X, Y);
+  Invalidate;
+end;
+
+procedure TCDToolBar.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: integer);
+var
+  lCurItem: TCDToolBarItem;
+begin
+  inherited MouseDown(Button, Shift, X, Y);
+  lCurItem := GetItemWithMousePos(Point(X, Y));
+  if lCurItem = nil then Exit;
+  if lCurItem.Kind in [tikButton, tikCheckButton] then
+  begin
+    lCurItem.State := lCurItem.State + [csfSunken];
+    Invalidate();
+  end;
+end;
+
+procedure TCDToolBar.MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: integer);
+var
+  i: Integer;
+  lCurItem: TCDToolBarItem;
+  DoInvalidate: Boolean = False;
+begin
+  inherited MouseUp(Button, Shift, X, Y);
+  lCurItem := GetItemWithMousePos(Point(X, Y));
+  if lCurItem = nil then Exit;
+
+  // click the selected checkbutton if applicable
+  if lCurItem.Kind in [tikCheckButton] then
+  begin
+    lCurItem.Down := not lCurItem.Down;
+    DoInvalidate := True;
+  end;
+
+  // up all buttons
+  for i := 0 to GetItemCount()-1 do
+  begin
+    lCurItem := GetItem(i);
+    if lCurItem.Kind in [tikButton, tikCheckButton] then
+    begin
+      lCurItem.State := lCurItem.State - [csfSunken];
+      DoInvalidate := True;
+    end;
+  end;
+
+  if DoInvalidate then Invalidate;
+end;
+
+procedure TCDToolBar.MouseLeave;
+begin
+  inherited MouseLeave;
+  Invalidate;
 end;
 
 constructor TCDToolBar.Create(AOwner: TComponent);
@@ -2940,6 +3025,38 @@ begin
   Result := nil;
   if (AIndex < 0) or (AIndex >= FItems.Count) then Exit;
   Result := TCDToolBarItem(FItems.Items[AIndex]);
+end;
+
+function TCDToolBar.GetItemCount: Integer;
+begin
+  Result := FItems.Count;
+end;
+
+function TCDToolBar.GetItemWithMousePos(APosInControl: TPoint): TCDToolBarItem;
+var
+  i, lX: Integer;
+  lCurItem: TCDToolBarItem;
+begin
+  Result := nil;
+  lX := 0;
+  for i := 0 to FItems.Count-1 do
+  begin
+    lCurItem := GetItem(i);
+    if IsPosInButton(APosInControl, lCurItem, lX) then
+      Exit(lCurItem);
+    lX := lX + lCurItem.Width;
+  end;
+end;
+
+function TCDToolBar.IsPosInButton(APosInControl: TPoint; AItem: TCDToolBarItem;
+  AItemX: Integer): Boolean;
+var
+  lSize: TSize;
+begin
+  lSize.CY := Height;
+  lSize.CX := AItem.Width;
+  Result := (APosInControl.X > AItemX) and (APosInControl.X < AItemX + lSize.CX) and
+    (APosInControl.Y > 0) and (APosInControl.Y < lSize.CY);
 end;
 
 { TCDTabSheet }

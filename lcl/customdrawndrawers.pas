@@ -221,6 +221,9 @@ type
     Image: TBitmap;
     Caption: string;
     Width: Integer;
+    Down: Boolean;
+    // filled for drawing
+    State: TCDControlState;
   end;
 
   TCDToolBarStateEx = class(TCDControlStateEx)

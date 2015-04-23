@@ -36,12 +36,12 @@
       <Unit0>
         <Filename Value="cdcontrolstest.lpr"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="cdcontrolstest"/>
       </Unit0>
       <Unit1>
         <Filename Value="mainform.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="formCDControlsTest"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="mainform"/>
       </Unit1>
@@ -49,6 +49,7 @@
         <Filename Value="toolbartest.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="FormToolBar"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="toolbartest"/>
       </Unit2>
