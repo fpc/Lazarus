@@ -18,6 +18,9 @@ type
 
   TCDDrawerMac = class(TCDDrawerCommon)
   public
+    procedure DrawExpandTriangle(ADest: TCanvas; ASize: TSize;
+      AX, AY: Integer; AFacing: TCDControlStateFlag);
+  public
     // ===================================
     // Common Controls Tab
     // ===================================
@@ -30,6 +33,54 @@ type
 implementation
 
 { TCDDrawerMac }
+
+procedure TCDDrawerMac.DrawExpandTriangle(ADest: TCanvas; ASize: TSize; AX,
+  AY: Integer; AFacing: TCDControlStateFlag);
+var
+  lPoints: array of TPoint;
+  R: TRect;
+begin
+  SetLength(lPoints, 3);
+  R := Bounds(AX, AY, ASize.CX, ASize.CY);
+
+  case AFacing of
+  csfLeftArrow:
+  begin
+    lPoints[0] := Types.Point(R.Right-1, R.Top);
+    lPoints[1] := Types.Point(R.Right-1, R.Bottom-2);
+    lPoints[2] := Types.Point(R.Left+1, (R.Top + R.Bottom-2) div 2);
+  end;
+  csfRightArrow: // face right
+  begin
+    lPoints[0] := Types.Point(R.Left+1, R.Top);
+    lPoints[1] := Types.Point(R.Left+1, R.Bottom-2);
+    lPoints[2] := Types.Point(R.Right-1, (R.Top + R.Bottom-2) div 2);
+  end;
+  csfDownArrow: // face down
+  begin
+    lPoints[0] := Types.Point(R.Left, R.Top);
+    lPoints[1] := Types.Point(R.Right-2, R.Top);
+    lPoints[2] := Types.Point((R.Left + R.Right-2) div 2, R.Bottom-2);
+  end;
+  csfUpArrow:
+  begin
+    lPoints[0] := Types.Point(R.Left, R.Bottom-2);
+    lPoints[1] := Types.Point(R.Right-2, R.Bottom-2);
+    lPoints[2] := Types.Point((R.Left + R.Right-2) div 2, R.Top);
+  end;
+  else
+    Exit;
+  end;
+
+  // select the appropriate brush & pen
+  ADest.Brush.Color := $797979;
+  ADest.Brush.Style := bsSolid;
+  ADest.Pen.Color := $797979;
+  ADest.Pen.Style := psSolid;
+
+  // Draw the triangle
+  ADest.Polygon(lPoints);
+end;
 
 procedure TCDDrawerMac.DrawToolBarItem(ADest: TCanvas; ASize: TSize;
   ACurItem: TCDToolBarItem; AX, AY: Integer; AState: TCDControlState;
@@ -47,7 +98,8 @@ var
 
 begin
   // tikDivider is centralized, tikSeparator is left-aligned
-  if ACurItem.Kind in [tikSeparator, tikDivider] then
+  case ACurItem.Kind of
+  tikSeparator, tikDivider:
   begin
     lX := AX;
     if ACurItem.Kind = tikDivider then
@@ -63,8 +115,8 @@ begin
     ADest.Pen.Style := psSolid;
     ADest.Pen.Color := $93979E;
     ADest.Line(lX+2, lY1, lX+2, lY2);
-  end
-  else
+  end;
+  tikButton, tikCheckButton, tikDropDownButton:
   begin
     if csfSunken in AState then
     begin
@@ -78,6 +130,12 @@ begin
         $E3E3E3, $F7F7F7, gdVertical);
       DrawToolBarItemBorder();
     end;
+  end;
+  tikDropDownArrow:
+  begin
+    // Centralize the arrow in the available space
+    DrawExpandTriangle(ADest, ASize, AX, AY, csfDownArrow);
+  end;
   end;
 end;
 

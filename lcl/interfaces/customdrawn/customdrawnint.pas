@@ -44,11 +44,11 @@ uses
   LazFreeTypeIntfDrawer, LazFreeType, EasyLazFreeType, IniFiles,
   {$endif}
   // Widgetset
-  customdrawnproc,
+  customdrawnproc, customdrawnthemes,
   // LCL
   customdrawn_common, customdrawncontrols, customdrawndrawers,
   lazcanvas, lazregions, lazdeviceapis,
-  InterfaceBase,
+  InterfaceBase, Themes,
   Controls,  Forms, lclproc, IntfGraphics, GraphType,
   LCLType, LMessages, Graphics, LCLStrConsts, Menus, LazLoggerBase;
 
@@ -249,7 +249,7 @@ type
     procedure CDSetFocusToControl(ALCLControl, AIntfControl: TWinControl);
   //
   protected
-    {function CreateThemeServices: TThemeServices; override;}
+    function CreateThemeServices: TThemeServices; override;
     function GetAppHandle: THandle; override; //BackendSpecific
     //procedure SetAppHandle(const AValue: THandle); override;
     //

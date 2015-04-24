@@ -43,6 +43,12 @@ const
   TCDLISTVIEW_LINE_BOTTOM_SPACING  = $1204;
 
   TCDTOOLBAR_ITEM_SPACING = $1300;
+  TCDTOOLBAR_ITEM_ARROW_WIDTH = $1301;
+  TCDTOOLBAR_ITEM_ARROW_HEIGHT = $1302;
+  TCDTOOLBAR_ITEM_BUTTON_DEFAULT_WIDTH = $1303;
+  TCDTOOLBAR_ITEM_BUTTON_PLUS_ARROW_DEFAULT_WIDTH = $1304;
+  TCDTOOLBAR_ITEM_SEPARATOR_DEFAULT_WIDTH = $1305;
+  TCDTOOLBAR_DEFAULT_HEIGHT = $1306;
 
   TCDCTABCONTROL_CLOSE_TAB_BUTTON_WIDTH = $2600;
   TCDCTABCONTROL_CLOSE_TAB_BUTTON_EXTRA_SPACING = $2601;
@@ -214,7 +220,8 @@ type
 
   // ToolBar Start
 
-  TCDToolbarItemKind = (tikButton, tikCheckButton, tikSeparator, tikDivider);
+  TCDToolbarItemKind = (tikButton, tikCheckButton, tikDropDownButton,
+    tikDropDownArrow, tikSeparator, tikDivider);
 
   TCDToolBarItem = class
     Kind: TCDToolbarItemKind;
@@ -228,6 +235,7 @@ type
 
   TCDToolBarStateEx = class(TCDControlStateEx)
     ShowCaptions: Boolean;
+    IsVertical: Boolean;
     Items: TFPList; // of TCDToolBarItem
     ToolBarHeight: Integer;
   end;

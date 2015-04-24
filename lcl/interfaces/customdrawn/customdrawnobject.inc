@@ -76,6 +76,11 @@ begin
   end;
 end;
 
+function TCDWidgetSet.CreateThemeServices: TThemeServices;
+begin
+  Result := TCDThemeServices.Create;
+end;
+
 procedure TCDWidgetSet.GenericAppInit;
 begin
   {$ifndef CD_UseNativeText}

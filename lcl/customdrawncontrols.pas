@@ -2984,7 +2984,7 @@ end;
 constructor TCDToolBar.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  Height := 26;
+  Height := GetDrawer(dsDefault).GetMeasures(TCDTOOLBAR_DEFAULT_HEIGHT);
   Align := alTop;
   FItems := TFPList.Create();
   TabStop := False;
@@ -3006,12 +3006,17 @@ begin
   lNewItem.Kind := AKind;
   FItems.Insert(AIndex, lNewItem);
   Result := lNewItem;
+  PrepareCurrentDrawer();
+  case AKind of
+  tikButton, tikCheckButton: Result.Width := FDrawer.GetMeasures(TCDTOOLBAR_ITEM_BUTTON_DEFAULT_WIDTH);
+  tikDropDownButton:         Result.Width := FDrawer.GetMeasures(TCDTOOLBAR_ITEM_BUTTON_PLUS_ARROW_DEFAULT_WIDTH);
+  tikSeparator, tikDivider:  Result.Width := FDrawer.GetMeasures(TCDTOOLBAR_ITEM_SEPARATOR_DEFAULT_WIDTH);
+  end;
 end;
 
 function TCDToolBar.AddItem(AKind: TCDToolbarItemKind): TCDToolBarItem;
 begin
   Result := InsertItem(AKind, FItems.Count);
-  Result.Width := 23;
 end;
 
 procedure TCDToolBar.DeleteItem(AIndex: Integer);
