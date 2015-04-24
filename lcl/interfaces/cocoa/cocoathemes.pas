@@ -299,10 +299,10 @@ begin
     lSize.CX := R.Right - R.Left;
     lSize.CY := R.Bottom - R.Top;
     case Details.Part of
-      TP_BUTTON:                lCDToolbarItem.Kind := tikButton;
-      TP_SPLITBUTTON:           lCDToolbarItem.Kind := tikCheckButton;
-      //TP_DROPDOWNBUTTON:      lCDToolbarItem.Kind := kThemePopupButtonSmall;
-      //TP_SPLITBUTTONDROPDOWN: lCDToolbarItem.Kind := kThemeDisclosureButton;
+      TP_BUTTON, TP_DROPDOWNBUTTON, TP_SPLITBUTTON:
+        lCDToolbarItem.Kind := tikButton;
+      TP_SPLITBUTTONDROPDOWN:
+        lCDToolbarItem.Kind := tikDropDownButtonArrow;
       //TP_SEPARATOR, TP_SEPARATORVERT, TP_DROPDOWNBUTTONGLYPH: // tikSeparator, tikDivider
     else
       Exit;

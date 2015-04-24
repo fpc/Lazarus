@@ -1602,9 +1602,9 @@ type
 
 const
   TP_BUTTON      = 1;          // Button and Check button
-  TP_DROPDOWNBUTTON = 2;       // Button with a combobox arrow on its right side to show a popup menu on click
-  TP_SPLITBUTTON = 3;          // Not utilized by the LCL
-  TP_SPLITBUTTONDROPDOWN = 4;  // Not utilized by the LCL
+  TP_DROPDOWNBUTTON = 2;       // Not utilized by the LCL
+  TP_SPLITBUTTON = 3;          // Button with a combobox arrow on its right side to show a popup menu on click
+  TP_SPLITBUTTONDROPDOWN = 4;  // This is the drop down button arrow
   TP_SEPARATOR   = 5;          // Separator, Divider when ToolBar.IsVertical is False
   TP_SEPARATORVERT = 6;        // Separator, Divider when ToolBar.IsVertical is True
   TP_DROPDOWNBUTTONGLYPH = 7;  // Not utilized by the LCL
