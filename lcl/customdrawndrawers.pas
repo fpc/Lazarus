@@ -46,7 +46,7 @@ const
   TCDTOOLBAR_ITEM_ARROW_WIDTH = $1301;
   TCDTOOLBAR_ITEM_ARROW_HEIGHT = $1302;
   TCDTOOLBAR_ITEM_BUTTON_DEFAULT_WIDTH = $1303;
-  TCDTOOLBAR_ITEM_BUTTON_PLUS_ARROW_DEFAULT_WIDTH = $1304;
+  TCDTOOLBAR_ITEM_ARROW_RESERVED_WIDTH = $1304;
   TCDTOOLBAR_ITEM_SEPARATOR_DEFAULT_WIDTH = $1305;
   TCDTOOLBAR_DEFAULT_HEIGHT = $1306;
 
@@ -221,10 +221,13 @@ type
   // ToolBar Start
 
   TCDToolbarItemKind = (tikButton, tikCheckButton, tikDropDownButton,
-    tikDropDownArrow, tikSeparator, tikDivider);
+    tikSeparator, tikDivider);
+
+  TCDToolbarItemSubpartKind = (tiskMain, tiskArrow);
 
   TCDToolBarItem = class
     Kind: TCDToolbarItemKind;
+    SubpartKind: TCDToolbarItemSubpartKind;
     Image: TBitmap;
     Caption: string;
     Width: Integer;

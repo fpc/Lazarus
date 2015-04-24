@@ -3009,7 +3009,9 @@ begin
   PrepareCurrentDrawer();
   case AKind of
   tikButton, tikCheckButton: Result.Width := FDrawer.GetMeasures(TCDTOOLBAR_ITEM_BUTTON_DEFAULT_WIDTH);
-  tikDropDownButton:         Result.Width := FDrawer.GetMeasures(TCDTOOLBAR_ITEM_BUTTON_PLUS_ARROW_DEFAULT_WIDTH);
+  tikDropDownButton:
+    Result.Width := FDrawer.GetMeasures(TCDTOOLBAR_ITEM_BUTTON_DEFAULT_WIDTH)
+      + FDrawer.GetMeasures(TCDTOOLBAR_ITEM_ARROW_RESERVED_WIDTH);
   tikSeparator, tikDivider:  Result.Width := FDrawer.GetMeasures(TCDTOOLBAR_ITEM_SEPARATOR_DEFAULT_WIDTH);
   end;
 end;

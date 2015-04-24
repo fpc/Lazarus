@@ -235,7 +235,7 @@ begin
   TCDTOOLBAR_ITEM_ARROW_WIDTH: Result := 10;
   TCDTOOLBAR_ITEM_ARROW_HEIGHT: Result := 10;
   TCDTOOLBAR_ITEM_BUTTON_DEFAULT_WIDTH: Result := 23;
-  TCDTOOLBAR_ITEM_BUTTON_PLUS_ARROW_DEFAULT_WIDTH: Result := 35;
+  TCDTOOLBAR_ITEM_ARROW_RESERVED_WIDTH: Result := 35 - 23;
   TCDTOOLBAR_ITEM_SEPARATOR_DEFAULT_WIDTH: Result := 8;
   TCDTOOLBAR_DEFAULT_HEIGHT: Result := 26;
   //
@@ -1628,7 +1628,7 @@ end;
 procedure TCDDrawerCommon.DrawToolBar(ADest: TCanvas; ASize: TSize;
   AState: TCDControlState; AStateEx: TCDToolBarStateEx);
 var
-  lX, lY: Integer;
+  lX, lY, lX2: Integer;
   lItemSize: TSize;
   i: Integer;
   lCurItem: TCDToolBarItem;
@@ -1648,8 +1648,24 @@ begin
   for i := 0 to AStateEx.Items.Count-1 do
   begin
     lCurItem := TCDToolBarItem(AStateEx.Items[i]);
-    lItemSize.CX := lCurItem.Width;
+
+    // make space for the arrow if necessary
+    if lCurItem.Kind = tikDropDownButton then
+      lItemSize.CX := lCurItem.Width - GetMeasures(TCDTOOLBAR_ITEM_ARROW_RESERVED_WIDTH)
+    else
+      lItemSize.CX := lCurItem.Width;
+
+    lCurItem.SubpartKind := tiskMain;
     DrawToolBarItem(ADest, lItemSize, lCurItem, lX, lY, lCurItem.State, AStateEx);
+
+    if lCurItem.Kind = tikDropDownButton then
+    begin
+      lCurItem.SubpartKind := tiskArrow;
+      lX2 := lX + lCurItem.Width - GetMeasures(TCDTOOLBAR_ITEM_ARROW_RESERVED_WIDTH);
+      lItemSize.CX := GetMeasures(TCDTOOLBAR_ITEM_ARROW_RESERVED_WIDTH);
+      DrawToolBarItem(ADest, lItemSize, lCurItem, lX2, lY, lCurItem.State, AStateEx);
+    end;
+
     lX := lX + lCurItem.Width;
   end;
 end;
@@ -1669,7 +1685,8 @@ var
 
 begin
   // tikDivider is centralized, tikSeparator is left-aligned
-  if ACurItem.Kind in [tikSeparator, tikDivider] then
+  case ACurItem.Kind of
+  tikSeparator, tikDivider:
   begin
     lX := AX;
     if ACurItem.Kind = tikDivider then
@@ -1685,9 +1702,18 @@ begin
     ADest.Pen.Style := psSolid;
     ADest.Pen.Color := $93979E;
     ADest.Line(lX+2, lY1, lX+2, lY2);
-  end
-  else
+  end;
+  tikButton, tikCheckButton, tikDropDownButton:
   begin
+    if ACurItem.SubpartKind = tiskArrow then
+    begin
+      // Centralize the arrow in the available space
+      lX := AX + ASize.CX div 2 - GetMeasures(TCDTOOLBAR_ITEM_ARROW_WIDTH) div 2;
+      lY1 := AY + ASize.CY div 2 - GetMeasures(TCDTOOLBAR_ITEM_ARROW_WIDTH) div 2;
+      DrawArrow(ADest, Point(lX, lY1), [csfDownArrow], GetMeasures(TCDTOOLBAR_ITEM_ARROW_WIDTH));
+      Exit;
+    end;
+
     if csfSunken in AState then
     begin
       ADest.GradientFill(Bounds(AX, AY, ASize.CX, ASize.CY),
@@ -1700,6 +1726,7 @@ begin
         $E3E3E3, $F7F7F7, gdVertical);
       DrawToolBarItemBorder();
     end;
+  end;
   end;
 end;
 

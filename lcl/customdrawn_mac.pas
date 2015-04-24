@@ -20,7 +20,6 @@ type
   public
     procedure DrawExpandTriangle(ADest: TCanvas; ASize: TSize;
       AX, AY: Integer; AFacing: TCDControlStateFlag);
-  public
     // ===================================
     // Common Controls Tab
     // ===================================
@@ -118,6 +117,15 @@ begin
   end;
   tikButton, tikCheckButton, tikDropDownButton:
   begin
+    if ACurItem.SubpartKind = tiskArrow then
+    begin
+      // Centralize the arrow in the available space
+      lX := AX - ASize.CX div 2;
+      lY1 := AY - ASize.CY div 2;
+      DrawExpandTriangle(ADest, ASize, lX, lY1, csfDownArrow);
+      Exit;
+    end;
+
     if csfSunken in AState then
     begin
       ADest.GradientFill(Bounds(AX, AY, ASize.CX, ASize.CY),
@@ -130,11 +138,6 @@ begin
         $E3E3E3, $F7F7F7, gdVertical);
       DrawToolBarItemBorder();
     end;
-  end;
-  tikDropDownArrow:
-  begin
-    // Centralize the arrow in the available space
-    DrawExpandTriangle(ADest, ASize, AX, AY, csfDownArrow);
   end;
   end;
 end;
