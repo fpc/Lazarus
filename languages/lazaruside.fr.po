@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: lazaruside\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2015-04-21 00:13+0100\n"
+"PO-Revision-Date: 2015-04-24 18:26+0100\n"
 "Last-Translator: Yann Mérignac <yann.merignac@laposte.net>\n"
 "Language-Team: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
 "Language: fr_FR\n"
@@ -1129,7 +1129,7 @@ msgstr "Dwarf2"
 
 #: lazarusidestrconsts.dlgcosymboltypedwarf2set
 msgid "Dwarf with sets"
-msgstr "Dwarf avec des ensembles"
+msgstr "Dwarf avec ensembles"
 
 #: lazarusidestrconsts.dlgcosymboltypedwarf3
 msgid "Dwarf3 (beta)"
@@ -1388,7 +1388,7 @@ msgstr "Nouvel onglet dans la fenêtre existante"
 
 #: lazarusidestrconsts.dlgeditaccessdescignlockedoldedit
 msgid "This option will use the longest unused editor for the file, even if it is locked and/or needs scrolling. The determination of the longest unused editor does not look at the order in which the windows were focused, even if this is set by the setting for \"same criteria order\". This option will always succeed, further options are never tested."
-msgstr "Cette option utilise le plus long éditeur non utilisé pour le fichier, même s'il est verrouillé et/ou a besoin de défiler. La détermination du plus long éditeur non utilisé n'examine pas l'ordre dans lequel les fenêtres ont reçu le focus, même si c'est l'option choisie par le paramètre  \"même critère d'ordre\". Cette option va toujours réussir ; les autres options ne sont jamais testées."
+msgstr "Cette option utilise le plus long éditeur non utilisé pour le fichier, même s'il est verrouillé et/ou a besoin de défiler. La détermination du plus long éditeur non utilisé n'examine pas l'ordre dans lequel les fenêtres ont reçu le focus, même si c'est l'option choisie par le paramètre \"même critère d'ordre\". Cette option va toujours réussir ; les autres options ne sont jamais testées."
 
 #: lazarusidestrconsts.dlgeditaccessdescignlockedonlyactedit
 msgid "This option will check if the current active editor has the target file and if it is, it will use the current editor, even if it is locked and/or needs scrolling."
@@ -2520,74 +2520,65 @@ msgid "Messages"
 msgstr "Messages"
 
 #: lazarusidestrconsts.dlgmsgwincolorurgentdebug
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgmsgwincolorurgentdebug"
 msgid "Debug"
 msgstr "Déboguer"
 
 #: lazarusidestrconsts.dlgmsgwincolorurgenterror
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgmsgwincolorurgenterror"
 msgid "Error"
 msgstr "Erreur"
 
 #: lazarusidestrconsts.dlgmsgwincolorurgentfatal
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgmsgwincolorurgentfatal"
 msgid "Fatal"
 msgstr "Fatal"
 
 #: lazarusidestrconsts.dlgmsgwincolorurgenthint
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgmsgwincolorurgenthint"
 msgid "Hint"
 msgstr "Conseil"
 
 #: lazarusidestrconsts.dlgmsgwincolorurgentimportant
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgmsgwincolorurgentimportant"
 msgid "Important"
 msgstr "Important"
 
 #: lazarusidestrconsts.dlgmsgwincolorurgentnone
 msgid "Normal"
-msgstr ""
+msgstr "Normal"
 
 #: lazarusidestrconsts.dlgmsgwincolorurgentnote
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgmsgwincolorurgentnote"
 msgid "Note"
 msgstr "Note"
 
 #: lazarusidestrconsts.dlgmsgwincolorurgentpanic
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgmsgwincolorurgentpanic"
 msgid "Panic"
 msgstr "Panique"
 
 #: lazarusidestrconsts.dlgmsgwincolorurgentprogress
 msgid "Time and statistics"
-msgstr ""
+msgstr "Heure et statistiques"
 
 #: lazarusidestrconsts.dlgmsgwincolorurgentverbose
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgmsgwincolorurgentverbose"
 msgid "Verbose"
 msgstr "Verbeux"
 
 #: lazarusidestrconsts.dlgmsgwincolorurgentverbose2
 msgid "Verbose 2"
-msgstr ""
+msgstr "Verbosité 2"
 
 #: lazarusidestrconsts.dlgmsgwincolorurgentverbose3
 msgid "Verbose 3"
-msgstr ""
+msgstr "Verbosité 3"
 
 #: lazarusidestrconsts.dlgmsgwincolorurgentwarning
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgmsgwincolorurgentwarning"
 msgid "Warning"
-msgstr "Attention"
+msgstr "Avertissement"
 
 #: lazarusidestrconsts.dlgmulticaretcolumnmode
 msgid "Multi-caret (column-select) move with cursor"
@@ -3880,7 +3871,7 @@ msgstr "À propos de Lazarus"
 
 #: lazarusidestrconsts.lisaboutlazarusmsg
 msgid "License: GPL/LGPL. See Lazarus and Free Pascal sources for license details.%sLazarus is an IDE to create graphical and console applications with Free Pascal. Free Pascal is Pascal and Object Pascal compiler that runs on Windows, Linux, Mac OS X, FreeBSD and more.%sLazarus is the missing part of the puzzle that will allow you to develop programs for all of the above platforms in a Delphi like environment. The IDE is a RAD tool that includes a form designer.%sAs Lazarus is growing we need more developers."
-msgstr "License : GPL/LGPL. Voir les sources Lazarus et Free Pascal pour les détails de la licence.%sLazarus est un EDI (Environnement de Développement Intégré) qui permet de créer des applications (graphiques et consoles) avec Free Pascal. Ce dernier est un compilateur Pascal et Pascal Objet fonctionnant sous Windows, Linux, Mac OS X, FreeBSD et autres.%sLazarus est le chaînon manquant pour le développement d'applications multiplateformes dans un environnement proche de celui de Delphi, mais non limité à Windows. À l'image de Delphi, cet EDI est un outil de \"Développement Rapide d'Applications\" (ou RAD en anglais) doté d'un concepteur de fiches.%sComme le projet Lazarus est en pleine expansion, nous avons besoin de développeurs plus nombreux."
+msgstr "License : GPL/LGPL. Voir les sources Lazarus et Free Pascal pour les détails de la licence.%sLazarus est un EDI (Environnement de Développement Intégré) qui permet de créer des applications (graphiques et consoles) avec Free Pascal. Ce dernier est un compilateur Pascal et Pascal Objet fonctionnant sous Windows, Linux, Mac OS X, FreeBSD et autres.%sLazarus est le chaînon manquant pour le développement d'applications multiplateformes dans un environnement proche de celui de Delphi, mais non limité à Windows. À l'image de Delphi, cet EDI est un outil de \"Développement Rapide d'Applications\" (ou \"RAD\" en anglais) doté d'un concepteur de fiches.%sComme le projet Lazarus est en pleine expansion, nous avons besoin de développeurs plus nombreux."
 
 #: lazarusidestrconsts.lisaboutnocontributors
 msgid "Cannot find contributors list."
@@ -4232,7 +4223,7 @@ msgstr "Ancrer le haut au haut du frère. Utilisez \"BorderSpacing\" pour défin
 
 #: lazarusidestrconsts.lisanerroroccuredatlaststartupwhileloadingloadthispro
 msgid "An error occured at last startup while loading %s!%sLoad this project again?"
-msgstr "Un erreur est intervenue au démarrage précédent pendant le chargement %s !%sVoulez-vous charger ce projet à nouveau ?"
+msgstr "Une erreur est survenue durant le démarrage précédent pendant le chargement de \"%s\" !%sVoulez-vous charger ce projet à nouveau ?"
 
 #: lazarusidestrconsts.lisapplicationclassname
 msgid "&Application class name"
@@ -4861,7 +4852,7 @@ msgstr "Procédures longues"
 
 #: lazarusidestrconsts.liscelongproclinecount
 msgid "Line count of procedure treated as \"long\""
-msgstr "Nombre de lignes de la procédure qualifié de \"long\""
+msgstr "Nombre de lignes d'une procédure qualifiée de \"longue\""
 
 #: lazarusidestrconsts.liscemanynestedprocedures
 msgid "Many nested procedures"
@@ -4881,7 +4872,7 @@ msgstr "Afficher les nœuds des codes sources"
 
 #: lazarusidestrconsts.liscenestedproccount
 msgid "Nested procedures count treated as \"many\""
-msgstr "Procédures imbriquées avec un nombre qualifié de \"beaucoup\""
+msgstr "Nombre de procédures imbriquées qualifié de \"beaucoup\""
 
 #: lazarusidestrconsts.liscenteralostwindow
 msgid "Center a lost window"
@@ -6683,7 +6674,7 @@ msgstr "Décalage haut"
 
 #: lazarusidestrconsts.lisconvtypereplacements
 msgid "Type Replacements"
-msgstr " Remplacements de type"
+msgstr "Remplacements de type"
 
 #: lazarusidestrconsts.lisconvtypereplhint
 msgid "Unknown types in form file (DFM/LFM)"
@@ -8933,7 +8924,7 @@ msgstr "Inclure les &sous-répertoires"
 
 #: lazarusidestrconsts.lisfindfilemultilinepattern
 msgid "&Multiline pattern"
-msgstr "&Structure lignes multiples"
+msgstr "&Structure en lignes multiples"
 
 #: lazarusidestrconsts.lisfindfileonlytextfiles
 msgid "Only text files"
@@ -8957,7 +8948,7 @@ msgstr "Rechercher dans les &répertoires"
 
 #: lazarusidestrconsts.lisfindfilewhere
 msgid "Where"
-msgstr "Où"
+msgstr "Emplacements"
 
 #: lazarusidestrconsts.lisfindkeycombination
 msgid "Find key combination"
@@ -9264,7 +9255,7 @@ msgstr "Comprend une aide"
 
 #: lazarusidestrconsts.lisheadercolors
 msgid "Header colors"
-msgstr ""
+msgstr "Couleurs des en-têtes"
 
 #: lazarusidestrconsts.lisheadercommentforclass
 msgid "Header comment for class"
@@ -10960,7 +10951,7 @@ msgstr "Locales non évaluées"
 
 #: lazarusidestrconsts.lislogcallstack
 msgid "Log Call Stack"
-msgstr "Pile d'appel du journal"
+msgstr "Enregistrer la pile d'appel"
 
 #: lazarusidestrconsts.lislogcallstacklimit
 msgid "(frames limit. 0 - no limits)"
@@ -12430,7 +12421,7 @@ msgstr "(ms)"
 
 #: lazarusidestrconsts.lismsgcolors
 msgid "Message colors"
-msgstr ""
+msgstr "Couleurs des messages"
 
 #: lazarusidestrconsts.lismultipledirectoriesareseparatedwithsemicolons
 msgid "Multiple directories are separated with semicolons"
@@ -13564,7 +13555,7 @@ msgstr "Abandon"
 
 #: lazarusidestrconsts.lispdprogress
 msgid "Progress"
-msgstr "Progrès"
+msgstr "Progression"
 
 #: lazarusidestrconsts.lispecollapsedirectory
 msgid "Collapse directory"
@@ -14321,7 +14312,7 @@ msgstr "Veuillez sélectionner du code pour extraire une nouvelle procédure/mé
 #: lazarusidestrconsts.lisplistall
 msgctxt "lazarusidestrconsts.lisplistall"
 msgid "<All>"
-msgstr "<Tout>"
+msgstr "<Tous>"
 
 #: lazarusidestrconsts.lisplistchangefont
 msgid "Change Font"
@@ -14440,7 +14431,7 @@ msgstr "Vous devez probablement installer certains paquets avant de pouvoir cont
 #: lazarusidestrconsts.lisprocedure
 msgctxt "lazarusidestrconsts.lisprocedure"
 msgid "Procedure"
-msgstr "Procédure"
+msgstr "Routines"
 
 #: lazarusidestrconsts.lisprocedurewithinterface
 msgid "Procedure with interface"
@@ -18367,7 +18358,7 @@ msgstr "Attacher au programme"
 
 #: lazarusidestrconsts.srkmecautocompletion
 msgid "Code template completion"
-msgstr "Modèle d'achèvement de code"
+msgstr "Développer un modèle de code"
 
 #: lazarusidestrconsts.srkmecblockcopy
 msgid "Copy Block"
