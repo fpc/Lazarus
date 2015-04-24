@@ -125,9 +125,91 @@ function TCDWidgetSet.PromptUser(const DialogCaption : string;
                                        ButtonCount   : LongInt;
                                        DefaultIndex  : LongInt;
                                        EscapeResult  : LongInt) : LongInt;
+var
+  i: Integer;
+  Caption: String;
+  TaskConfig: TTASKDIALOGCONFIG;
+  DialogButtons: PTASKDIALOG_BUTTON;
+  State: TApplicationState;
 begin
-  Result := 0;
-  Application.MessageBox(PChar(DialogMessage), PChar(DialogCaption), MB_OK);
+  //TaskDialogIndirect is available in Vista and up, but only if app was built with manifest.
+  //The check for the latter is done by checking for ComCtlVersionIE6 (which is set in the manifest)
+  //The availability of TaskDialogIndirect does not depend on the status of ThemeServices
+  //Issue #0027664
+  if (WindowsVersion >= wvVista) and (GetFileVersion(comctl32) >= ComCtlVersionIE6) then
+  begin
+    FillChar(TaskConfig, SizeOf(TaskConfig), 0);
+    TaskConfig.cbSize := SizeOf(TaskConfig);
+    // if we skip hwndParent our form will be a root window - with the taskbar item and icon
+    // this is unwanted
+    if Assigned(Screen.ActiveCustomForm) then
+      TaskConfig.hwndParent := Screen.ActiveCustomForm.Handle
+    else
+    if Assigned(Application.MainForm) then
+      TaskConfig.hwndParent := Application.MainFormHandle
+    else
+      TaskConfig.hwndParent := AppHandle;
+    TaskConfig.hInstance := HInstance;
+    TaskConfig.dwFlags := TDF_ALLOW_DIALOG_CANCELLATION;
+    if DialogCaption <> '' then
+      Caption := DialogCaption
+    else
+    case DialogType of
+      idDialogConfirm,
+      idDialogInfo,
+      idDialogWarning,
+      idDialogError: Caption := GetDialogCaption(DialogType);
+    else
+      Caption := Application.Title;
+    end;
+    TaskConfig.pszWindowTitle := PWideChar(UTF8ToUTF16(Caption));
+
+    case DialogType of
+      idDialogConfirm:
+        begin
+          TaskConfig.hMainIcon := Windows.LoadIcon(0, IDI_QUESTION);
+          TaskConfig.dwFlags := TaskConfig.dwFlags or TDF_USE_HICON_MAIN;
+        end;
+      idDialogInfo: TaskConfig.pszMainIcon := TD_INFORMATION_ICON;
+      idDialogWarning: TaskConfig.pszMainIcon := TD_WARNING_ICON;
+      idDialogError: TaskConfig.pszMainIcon := TD_ERROR_ICON;
+      idDialogShield: TaskConfig.pszMainIcon := TD_SHIELD_ICON;
+    else
+      TaskConfig.dwFlags := TaskConfig.dwFlags or TDF_USE_HICON_MAIN;
+    end;
+
+    TaskConfig.pszContent := PWideChar(UTF8ToUTF16(DialogMessage));
+
+    TaskConfig.cButtons := ButtonCount;
+    GetMem(DialogButtons, SizeOf(TTASKDIALOG_BUTTON) * ButtonCount);
+    for i := 0 to ButtonCount - 1 do
+    begin
+      DialogButtons[i].nButtonID := Buttons[i];
+      DialogButtons[i].pszButtonText := UTF8StringToPWideChar(GetButtonCaption(Buttons[i]));
+    end;
+    TaskConfig.pButtons := DialogButtons;
+    //we need idButtonXX value
+    if DefaultIndex < ButtonCount then
+      TaskConfig.nDefaultButton := Buttons[DefaultIndex]
+    else
+      TaskConfig.nDefaultButton := 0;
+
+    State := SaveApplicationState;
+    try
+      Result := IDCANCEL;
+      TaskDialogIndirect(@TaskConfig, @Result, nil, nil);
+      if Result = IDCANCEL then
+        Result := EscapeResult;
+    finally
+      RestoreApplicationState(State);
+      for i := 0 to ButtonCount - 1 do
+        FreeMem(DialogButtons[i].pszButtonText);
+      FreeMem(DialogButtons);
+    end;
+  end
+  else
+    Result := inherited PromptUser(DialogCaption, DialogMessage, DialogType,
+      Buttons, ButtonCount, DefaultIndex, EscapeResult);
 end;
 
 {------------------------------------------------------------------------------

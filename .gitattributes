@@ -6826,6 +6826,7 @@ lcl/interfaces/customdrawn/cocoagdiobjects.pas svneol=native#text/pascal
 lcl/interfaces/customdrawn/cocoautils.pas svneol=native#text/pascal
 lcl/interfaces/customdrawn/customdrawn_androidproc.pas svneol=native#text/pascal
 lcl/interfaces/customdrawn/customdrawn_cocoaproc.pas svneol=native#text/plain
+lcl/interfaces/customdrawn/customdrawn_winextra.pas svneol=native#text/pascal
 lcl/interfaces/customdrawn/customdrawn_winproc.pas svneol=native#text/pascal
 lcl/interfaces/customdrawn/customdrawn_x11proc.pas svneol=native#text/pascal
 lcl/interfaces/customdrawn/customdrawndefines.inc svneol=native#text/pascal

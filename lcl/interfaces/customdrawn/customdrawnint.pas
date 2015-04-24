@@ -30,7 +30,7 @@ uses
   // XML
   XMLRead, Dom,
   // Platform specific
-  {$ifdef CD_Windows}Windows, customdrawn_WinProc,{$endif}
+  {$ifdef CD_Windows}Windows, customdrawn_WinProc, customdrawn_winextra,{$endif}
   {$ifdef CD_Cocoa}MacOSAll, CocoaAll, customdrawn_cocoaproc, CocoaGDIObjects,Types,{$endif}
   {$ifdef CD_X11}X, XLib, XUtil, BaseUnix, customdrawn_x11proc,{$ifdef CD_UseNativeText}xft, fontconfig,{$endif}{$endif}
   {$ifdef CD_Android}
@@ -48,7 +48,7 @@ uses
   // LCL
   customdrawn_common, customdrawncontrols, customdrawndrawers,
   lazcanvas, lazregions, lazdeviceapis,
-  InterfaceBase, Themes,
+  InterfaceBase, Themes, Dialogs, Buttons,
   Controls,  Forms, lclproc, IntfGraphics, GraphType,
   LCLType, LMessages, Graphics, LCLStrConsts, Menus, LazLoggerBase;
 
