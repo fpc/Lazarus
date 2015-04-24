@@ -135,6 +135,7 @@ function ExtractFileRoot(FileName: String): String;
 // darwin paths
 {$IFDEF darwin}
 function GetDarwinSystemFilename(Filename: string): string;
+function GetDarwinNormalizedFilename(Filename: string; nForm:Integer=2): string;
 {$ENDIF}
 
 procedure SplitCmdLineParams(const Params: string; ParamList: TStrings;
@@ -286,6 +287,60 @@ begin
   end;
   CFRelease(s);
 end;
+
+// borrowed from CarbonProcs
+function CFStringToStr(AString: CFStringRef; Encoding: CFStringEncoding): String;
+var
+  Str: Pointer;
+  StrSize: CFIndex;
+  StrRange: CFRange;
+begin
+  if AString = nil then
+  begin
+    Result := '';
+    Exit;
+  end;
+
+  // Try the quick way first
+  Str := CFStringGetCStringPtr(AString, Encoding);
+  if Str <> nil then
+    Result := PChar(Str)
+  else
+  begin
+    // if that doesn't work this will
+    StrRange.location := 0;
+    StrRange.length := CFStringGetLength(AString);
+
+    CFStringGetBytes(AString, StrRange, Encoding,
+      Ord('?'), False, nil, 0, StrSize{%H-});
+    SetLength(Result, StrSize);
+
+    if StrSize > 0 then
+      CFStringGetBytes(AString, StrRange, Encoding,
+        Ord('?'), False, @Result[1], StrSize, StrSize);
+  end;
+end;
+
+//NForm can be one of
+//kCFStringNormalizationFormD = 0; // Canonical Decomposition
+//kCFStringNormalizationFormKD = 1; // Compatibility Decomposition
+//kCFStringNormalizationFormC = 2; // Canonical Decomposition followed by Canonical Composition
+//kCFStringNormalizationFormKC = 3; // Compatibility Decomposition followed by Canonical Composition
+function GetDarwinNormalizedFilename(Filename: string; nForm:Integer=2): string;
+var
+  theString: CFStringRef;
+  l: CFIndex;
+  Mutable: CFMutableStringRef;
+begin
+  theString:=CFStringCreateWithCString(nil, Pointer(FileName), kCFStringEncodingUTF8);
+  Mutable := CFStringCreateMutableCopy(nil, 0, theString);
+  if (NForm<0) or (NForm>3) then NForm := kCFStringNormalizationFormC;
+  CFStringNormalize(Mutable, NForm);
+  Result := CFStringToStr(Mutable,  kCFStringEncodingUTF8);
+  CFRelease(Mutable);
+  CFRelease(theString);
+end;
+
 {$ENDIF}
 
 function CompareFilenameStarts(const Filename1, Filename2: string): integer;
