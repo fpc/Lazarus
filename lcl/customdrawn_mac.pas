@@ -20,6 +20,8 @@ type
   public
     procedure DrawExpandTriangle(ADest: TCanvas; ASize: TSize;
       AX, AY: Integer; AFacing: TCDControlStateFlag);
+  public
+    function GetMeasures(AMeasureID: Integer): Integer; override;
     // ===================================
     // Common Controls Tab
     // ===================================
@@ -79,6 +81,16 @@ begin
 
   // Draw the triangle
   ADest.Polygon(lPoints);
+end;
+
+function TCDDrawerMac.GetMeasures(AMeasureID: Integer): Integer;
+begin
+  case AMeasureID of
+    //
+    TCDTOOLBAR_ITEM_ARROW_WIDTH: Result := 10;
+  else
+    Result:=inherited GetMeasures(AMeasureID);
+  end;
 end;
 
 procedure TCDDrawerMac.DrawToolBarItem(ADest: TCanvas; ASize: TSize;
