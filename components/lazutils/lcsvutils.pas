@@ -14,6 +14,8 @@ type
 
   procedure LoadFromCSVStream(AStream:TStream; AProc: TCSVRecordProc;
     ADelimiter:Char=','; CSVEncoding:TCSVEncoding=ceAuto);
+  procedure LoadFromCSVFile(aFilename: string; AProc: TCSVRecordProc;
+    ADelimiter:Char=','; CSVEncoding:TCSVEncoding=ceAuto);
 
 implementation
 
@@ -259,6 +261,19 @@ begin
   finally
     Line.Free;
     SetLength(Buffer,0);
+  end;
+end;
+
+procedure LoadFromCSVFile(aFilename: string; AProc: TCSVRecordProc;
+  ADelimiter: Char; CSVEncoding: TCSVEncoding);
+var
+  Stream: TFileStream;
+begin
+  Stream := TFileStream.Create(aFilename, fmOpenRead);
+  try
+    LoadFromCSVStream(Stream, AProc, ADelimiter, CSVEncoding);
+  finally
+    Stream.Free;
   end;
 end;
 
