@@ -1601,13 +1601,13 @@ type
   TOOLBARPARTS = longint;
 
 const
-  TP_BUTTON      = 1;
-  TP_DROPDOWNBUTTON = 2;
-  TP_SPLITBUTTON = 3;
-  TP_SPLITBUTTONDROPDOWN = 4;
-  TP_SEPARATOR   = 5;
-  TP_SEPARATORVERT = 6;
-  TP_DROPDOWNBUTTONGLYPH = 7;
+  TP_BUTTON      = 1;          // Button and Check button
+  TP_DROPDOWNBUTTON = 2;       // Button with a combobox arrow on its right side to show a popup menu on click
+  TP_SPLITBUTTON = 3;          // Not utilized by the LCL
+  TP_SPLITBUTTONDROPDOWN = 4;  // Not utilized by the LCL
+  TP_SEPARATOR   = 5;          // Separator, Divider when ToolBar.IsVertical is False
+  TP_SEPARATORVERT = 6;        // Separator, Divider when ToolBar.IsVertical is True
+  TP_DROPDOWNBUTTONGLYPH = 7;  // Not utilized by the LCL
 
 type
   TOOLBARSTYLEPARTS = TOOLBARPARTS;

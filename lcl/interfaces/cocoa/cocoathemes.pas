@@ -20,6 +20,7 @@ uses
   CocoaAll,
   // lcl
   LCLType, LCLProc, LCLIntf, Graphics, Themes, TmSchema,
+  customdrawndrawers,
   // widgetset
   CocoaProc, CocoaUtils, CocoaGDIObjects;
   
@@ -39,8 +40,8 @@ type
 (*    function DrawButtonElement(DC: TCarbonDeviceContext; Details: TThemedElementDetails; R: TRect; {%H-}ClipRect: PRect): TRect;
     function DrawComboBoxElement(DC: TCarbonDeviceContext; Details: TThemedElementDetails; R: TRect; {%H-}ClipRect: PRect): TRect;
     function DrawHeaderElement(DC: TCarbonDeviceContext; Details: TThemedElementDetails; R: TRect; {%H-}ClipRect: PRect): TRect;
-    function DrawRebarElement(DC: TCarbonDeviceContext; Details: TThemedElementDetails; R: TRect; {%H-}ClipRect: PRect): TRect;
-    function DrawToolBarElement(DC: TCarbonDeviceContext; Details: TThemedElementDetails; R: TRect; {%H-}ClipRect: PRect): TRect;*)
+    function DrawRebarElement(DC: TCarbonDeviceContext; Details: TThemedElementDetails; R: TRect; {%H-}ClipRect: PRect): TRect;*)
+    function DrawToolBarElement(DC: TCocoaContext; Details: TThemedElementDetails; R: TRect; {%H-}ClipRect: PRect): TRect;
     function DrawTreeviewElement(DC: TCocoaContext; Details: TThemedElementDetails; R: TRect; {%H-}ClipRect: PRect): TRect;
 (*    function DrawWindowElement(DC: TCarbonDeviceContext; Details: TThemedElementDetails; R: TRect; {%H-}ClipRect: PRect): TRect;
 *)
@@ -270,7 +271,7 @@ begin
   end;
   
   Result := CGRectToRect(ARect);
-end;
+end;*)
 
 {------------------------------------------------------------------------------
   Method:  TCarbonThemeServices.DrawToolBarElement
@@ -282,54 +283,57 @@ end;
 
   Draws a tool bar element with native Carbon look
  ------------------------------------------------------------------------------}
-function TCarbonThemeServices.DrawToolBarElement(DC: TCarbonDeviceContext;
+function TCocoaThemeServices.DrawToolBarElement(DC: TCocoaContext;
   Details: TThemedElementDetails; R: TRect; ClipRect: PRect): TRect;
 var
-  ButtonDrawInfo: HIThemeButtonDrawInfo;
-  LabelRect: HIRect;
+  lCanvas: TCanvas;
+  lSize: TSize;
+  lCDToolbarItem: TCDToolBarItem;
+  lCDToolbar: TCDToolBarStateEx;
+  lDrawer: TCDDrawer;
 begin
-  if Details.Part in [TP_BUTTON, TP_DROPDOWNBUTTON, TP_SPLITBUTTON, TP_SPLITBUTTONDROPDOWN] then
-  begin
-    ButtonDrawInfo.version := 0;
-    ButtonDrawInfo.State := GetDrawState(Details);
+  lCDToolbarItem := TCDToolBarItem.Create;
+  lCDToolbar := TCDToolBarStateEx.Create;
+  lCanvas := TCanvas.Create;
+  try
+    lSize.CX := R.Right - R.Left;
+    lSize.CY := R.Bottom - R.Top;
     case Details.Part of
-      TP_BUTTON, TP_SPLITBUTTON: ButtonDrawInfo.kind := kThemeBevelButtonSmall;
-      TP_DROPDOWNBUTTON: ButtonDrawInfo.kind := kThemePopupButtonSmall;
-      TP_SPLITBUTTONDROPDOWN: ButtonDrawInfo.kind := kThemeDisclosureButton;
-    end;
-
-    if Details.Part = TP_SPLITBUTTONDROPDOWN then
-    begin
-      ButtonDrawInfo.value := kThemeDisclosureDown;
-    end
+      TP_BUTTON:                lCDToolbarItem.Kind := tikButton;
+      TP_SPLITBUTTON:           lCDToolbarItem.Kind := tikCheckButton;
+      //TP_DROPDOWNBUTTON:      lCDToolbarItem.Kind := kThemePopupButtonSmall;
+      //TP_SPLITBUTTONDROPDOWN: lCDToolbarItem.Kind := kThemeDisclosureButton;
+      //TP_SEPARATOR, TP_SEPARATORVERT, TP_DROPDOWNBUTTONGLYPH: // tikSeparator, tikDivider
     else
-    begin
-      if IsChecked(Details) then
-        ButtonDrawInfo.value := kThemeButtonOn
-      else
-        ButtonDrawInfo.value := kThemeButtonOff;
+      Exit;
     end;
-    ButtonDrawInfo.adornment := kThemeAdornmentNone;
+    lCDToolbarItem.Width := lSize.CX;
+    lCDToolbarItem.Down := IsChecked(Details);
 
-    LabelRect := RectToCGRect(R);
+    lCDToolbarItem.State := [];
+    if IsHot(Details) then
+      lCDToolbarItem.State := lCDToolbarItem.State + [csfMouseOver];
+    if IsPushed(Details) then
+      lCDToolbarItem.State := lCDToolbarItem.State + [csfSunken];
+    if IsChecked(Details) then
+      lCDToolbarItem.State := lCDToolbarItem.State + [csfSunken];
+    if not IsDisabled(Details) then
+      lCDToolbarItem.State := lCDToolbarItem.State + [csfEnabled];
 
-    // if button is normal or disabled, draw it to dummy context, to eliminate borders
-    if ((ButtonDrawInfo.State = kThemeStateActive) or
-      (ButtonDrawInfo.State = kThemeStateInActive)) and
-      (ButtonDrawInfo.value = kThemeButtonOff) then
-      OSError(
-        HIThemeDrawButton(LabelRect, ButtonDrawInfo, DefaultContext.CGContext,
-          kHIThemeOrientationNormal, @LabelRect),
-        Self, 'DrawButtonElement', 'HIThemeDrawButton')
-    else
-      OSError(
-        HIThemeDrawButton(LabelRect, ButtonDrawInfo, DC.CGContext,
-          kHIThemeOrientationNormal, @LabelRect),
-        Self, 'DrawButtonElement', 'HIThemeDrawButton');
-        
-    Result := CGRectToRect(LabelRect);
+    lCDToolbar.ToolBarHeight := lSize.CY;
+
+    lDrawer := GetDrawer(dsMacOSX);
+    lCanvas.Handle := HDC(DC);
+    lDrawer.DrawToolBarItem(lCanvas, lSize, lCDToolbarItem, R.Left, R.Top, lCDToolbarItem.State, lCDToolbar);
+
+    Result := R;
+  finally
+    lCDToolbarItem.Free;
+    lCDToolbar.Free;
+    lCanvas.Handle := 0;
+    lCanvas.Free;
   end;
-end;*)
+end;
 
 function TCocoaThemeServices.DrawTreeviewElement(DC: TCocoaContext;
   Details: TThemedElementDetails; R: TRect; ClipRect: PRect): TRect;
@@ -577,8 +581,8 @@ begin
 {      teComboBox: DrawComboBoxElement(Context, Details, R, ClipRect);
       teButton: DrawButtonElement(Context, Details, R, ClipRect);
       teHeader: DrawHeaderElement(Context, Details, R, ClipRect);
-      teRebar: DrawRebarElement(Context, Details, R, ClipRect);
-      teToolBar: DrawToolBarElement(Context, Details, R, ClipRect);}
+      teRebar: DrawRebarElement(Context, Details, R, ClipRect);}
+      teToolBar: DrawToolBarElement(Context, Details, R, ClipRect);
       teTreeview: DrawTreeviewElement(Context, Details, R, ClipRect);
 //      teWindow: DrawWindowElement(Context, Details, R, ClipRect);
     else
