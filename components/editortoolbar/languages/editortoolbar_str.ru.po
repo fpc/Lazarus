@@ -110,7 +110,6 @@ msgid "Left"
 msgstr "Слева"
 
 #: editortoolbar_str.rsmenutree
-#| msgid "Menu Tree"
 msgid "Available Menu Items"
 msgstr "Доступные элементы меню"
 
@@ -167,7 +166,6 @@ msgid "Source Tab"
 msgstr "Вкладка редактора исходного кода"
 
 #: editortoolbar_str.rstoolbar
-#| msgid "Toolbar"
 msgid "Toolbar Items"
 msgstr "Элементы панели"
 

@@ -178,3 +178,4 @@ msgstr "Haut"
 #: editortoolbar_str.serrcouldnotfind
 msgid "Could not find <%s>"
 msgstr "Impossible de trouver <%s>"
+
