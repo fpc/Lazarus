@@ -16,7 +16,7 @@
     <Description Value="Useful units for Lazarus packages."/>
     <License Value="Modified LGPL-2"/>
     <Version Major="1"/>
-    <Files Count="76">
+    <Files Count="77">
       <Item1>
         <Filename Value="laz2_dom.pas"/>
         <UnitName Value="Laz2_DOM"/>
@@ -316,12 +316,16 @@
       </Item74>
       <Item75>
         <Filename Value="lazutilities.pas"/>
-        <UnitName Value="lazutilities"/>
+        <UnitName Value="LazUtilities"/>
       </Item75>
       <Item76>
+        <Filename Value="lazfglhash.pas"/>
+        <UnitName Value="lazfglhash"/>
+      </Item76>
+      <Item77>
         <Filename Value="lcsvutils.pas"/>
         <UnitName Value="lcsvutils"/>
-      </Item76>
+      </Item77>
     </Files>
     <LazDoc Paths="../../docs/xml/lazutils"/>
     <i18n>
