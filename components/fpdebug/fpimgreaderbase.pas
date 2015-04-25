@@ -78,7 +78,6 @@ type
   TDbgImageReaderClass = class of TDbgImageReader;
 
 
-function GetImageReader(const FileName: string): TDbgImageReader; overload;
 function GetImageReader(ASource: TDbgFileLoader; OwnSource: Boolean): TDbgImageReader; overload;
 procedure RegisterImageReaderClass(DataSource: TDbgImageReaderClass);
 
@@ -86,15 +85,6 @@ implementation
 
 var
   RegisteredImageReaderClasses  : TFPList;
-
-function GetImageReader(const FileName: string): TDbgImageReader;
-begin
-  try
-    Result := GetImageReader(TDbgFileLoader.Create(FileName), true);
-  except
-    Result := nil;
-  end;
-end;
 
 function GetImageReader(ASource: TDbgFileLoader; OwnSource: Boolean): TDbgImageReader;
 var
