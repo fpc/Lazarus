@@ -1005,8 +1005,14 @@ begin
   {$IF DEFINED(VerboseFocus) OR DEFINED(DebugQtFocus)}
   WriteLn('> ** TQtWidgetSet.FocusChanged: old: ', dbgHex(PtrUInt(aold)), ' new: ', dbgHex(PtrUInt(anew)));
   {$ENDIF}
-  OldWidget := GetFirstQtObjectFromWidgetH(aold);
-  NewWidget := GetFirstQtObjectFromWidgetH(anew);
+  if (AOld <> nil) and not QWidget_isVisible(AOld) then
+    OldWidget := nil
+  else
+    OldWidget := GetFirstQtObjectFromWidgetH(aold);
+  if (ANew <> nil) and not QWidget_isVisible(ANew) then
+    NewWidget := nil
+  else
+    NewWidget := GetFirstQtObjectFromWidgetH(anew);
 
   if OldWidget = NewWidget then
   begin

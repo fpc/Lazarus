@@ -392,7 +392,7 @@ begin
       begin
         if not (Obj is TQtWidget) then
           raise Exception.Create('QtObjectFromWidgetH: QObject_property returned '
-                    + 'a variant which is not TQtWidget but ' + dbgsName(Obj));
+                    + 'a variant which is not TQtWidget ' + dbgHex(PtrUInt(Obj)));
         QtWg := TQtWidget(Obj);
         //Write('Converted successfully, Control=');
         if QtWg<>nil then
