@@ -1,8 +1,8 @@
 { $Id$}
 {
  *****************************************************************************
- *                              Gtk2WSMenus.pp                               * 
- *                              --------------                               * 
+ *                              Gtk2WSMenus.pp                               *
+ *                              --------------                               *
  *                                                                           *
  *                                                                           *
  *****************************************************************************
@@ -308,7 +308,7 @@ var
 begin
   // create the menuitem widget (normal, check or radio)
   if AMenuItem.Caption = cLineCaption then // create separator
-    Widget := gtk_menu_item_new
+    Widget := gtk_separator_menu_item_new
   else
   if AMenuItem.RadioItem and not AMenuItem.HasIcon then
     Widget := gtk_radio_menu_item_new(nil)
@@ -336,8 +336,7 @@ begin
   end;
 
   // set attributes (enabled and rightjustify)
-  gtk_widget_set_sensitive(Widget,
-                     AMenuItem.Enabled and (AMenuItem.Caption <> cLineCaption));
+  gtk_widget_set_sensitive(Widget, AMenuItem.Enabled);
   if AMenuItem.RightJustify then
     gtk_menu_item_right_justify(PGtkMenuItem(Widget));
 
@@ -366,10 +365,14 @@ var
 begin
   if not WSCheckMenuItem(AMenuItem, 'SetCaption') then
     Exit;
-  MenuItemWidget:={%H-}PGtkWidget(AMenuItem.Handle);
-  UpdateInnerMenuItem(AMenuItem,MenuItemWidget);
-  gtk_widget_set_sensitive({%H-}PGtkWidget(AMenuItem.Handle),
-                           AMenuItem.Enabled and (ACaption <> cLineCaption));
+  if gtk_is_separator_menu_item(PGTKWidget(AMenuItem.Handle)) Or (ACaption = cLineCaption) then
+   AMenuItem.RecreateHandle
+  else
+   begin
+    MenuItemWidget:={%H-}PGtkWidget(AMenuItem.Handle);
+    UpdateInnerMenuItem(AMenuItem,MenuItemWidget);
+    gtk_widget_set_sensitive({%H-}PGtkWidget(AMenuItem.Handle), AMenuItem.Enabled);
+   end;
 end;
 
 class procedure TGtk2WSMenuItem.SetShortCut(const AMenuItem: TMenuItem;
@@ -381,7 +384,7 @@ class procedure TGtk2WSMenuItem.SetShortCut(const AMenuItem: TMenuItem;
   //CurShift: TShiftState;
 begin
   if not WSCheckMenuItem(AMenuItem, 'SetShortCut') then  Exit;
-  
+
   // Temporary: At least it writes the names of the shortcuts
   UpdateInnerMenuItem(AMenuItem, {%H-}PGTKWidget(AMenuItem.Handle), ShortCutK1, ShortCutK2);
 
@@ -449,8 +452,7 @@ begin
   Result := False;
   if not WSCheckMenuItem(AMenuItem, 'SetEnable') then
     Exit;
-  gtk_widget_set_sensitive({%H-}PGtkWidget(AMenuItem.Handle),
-                           Enabled and (AMenuItem.Caption <> cLineCaption));
+  gtk_widget_set_sensitive({%H-}PGtkWidget(AMenuItem.Handle), Enabled);
   Result := True;
 end;
 
