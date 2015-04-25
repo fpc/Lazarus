@@ -8,7 +8,7 @@ For example Finnish translation:
 4. Rebuild Lazarus clean. This will update most packages translations.
 5. Run 'sh localize.sh' (Linux) or 'localize.bat' (Windows) to update all remaining translations.
 6. PO files are simple text files with an easy format.
-   Edit them with programs like poEdit (www.poedit.net) or KBabel. Do not edit them manually.
+   Edit them with programs like poEdit (www.poedit.net) or Lokalize. Do not edit them manually.
 7. Check your translated PO files with PoChecker tool (lazarus/components/pochecker/) and fix all
    reported errors (you need to run only basic tests).
 8. Post updated xxx.fi.po files to bug tracker (http://bugs.freepascal.org).
