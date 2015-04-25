@@ -2435,7 +2435,7 @@ resourcestring
     +'They are also freed automatically.';
   dlgAvailableForms = 'Available forms:';
   dlgAvailableFormsHint = 'These forms must be created and freed in the program code.';
-  dlgAutoCreateNewForms = 'When creating new forms, add them to auto-created forms';
+  dlgAutoCreateNewForms = 'Auto-create new forms';
 
   dlgSaveEditorInfo = 'Save editor info for closed files';
   dlgSaveEditorInfoHint = 'The files are available in the "Open Recent" history list.';
