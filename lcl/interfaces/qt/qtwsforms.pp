@@ -395,8 +395,10 @@ const
 var
   Widget: TQtMainWindow;
   R: TRect;
+  {$IFDEF HASX11}
   ActiveWin: HWND;
   W: QWidgetH;
+  {$ENDIF}
   Flags: Cardinal;
 
   function ShowNonModalOverModal: Boolean;
