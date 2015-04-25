@@ -1169,8 +1169,14 @@ begin
       if Dir<>'' then
         SearchDirectories.Add(Dir);
     end;
-    for i:=0 to SearchDirectories.Count-1 do
-      DoSearch(AppendPathDelim(SearchDirectories[i]), 0);
+    //Search currentdirectory if ASearchPath = ''
+    if (SearchDirectories.Count=0) then
+      DoSearch('',0)
+    else
+    begin
+      for i:=0 to SearchDirectories.Count-1 do
+        DoSearch(AppendPathDelim(SearchDirectories[i]), 0);
+    end;
   finally
     SearchDirectories.Free;
     FSearching := False;
