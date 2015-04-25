@@ -1,13 +1,15 @@
 msgid ""
 msgstr ""
 "Last-Translator: Lucas Martín <codedeep@hotmail.com>\n"
-"PO-Revision-Date: 2013-05-12 21:00+0100\n"
+"PO-Revision-Date: 2015-04-25 17:45-0600\n"
 "Project-Id-Version: synedit\n"
 "Language-Team: Español\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
 "MIME-Version: 1.0\n"
+"Language: es\n"
+"X-Generator: Poedit 1.7.6\n"
 
 #: syneditstrconst.syns_attrannotation
 msgid "Annotation"
@@ -227,7 +229,7 @@ msgstr "Modo Matemático"
 
 #: syneditstrconst.syns_attrmeasurementunitvalue
 msgid "Measurement unit"
-msgstr ""
+msgstr "Unidad de medida"
 
 #: syneditstrconst.syns_attrmessage
 msgid "Message"
@@ -343,7 +345,7 @@ msgstr "Sección"
 
 #: syneditstrconst.syns_attrselectorvalue
 msgid "Selector"
-msgstr ""
+msgstr "Selector"
 
 #: syneditstrconst.syns_attrspace
 msgid "Space"
@@ -447,7 +449,7 @@ msgstr "Plegar Código"
 
 #: syneditstrconst.syns_emccodefoldcollaps_opt
 msgid "Nodes,One,All,\"At Caret\",\"Current Node\""
-msgstr "Nodos, Uno, Todos, \"en Caret (intercalación)\",\"Nodo actual\""
+msgstr "Nodos, Uno, Todos, \"En el cursor de texto\",\"Nodo actual\""
 
 #: syneditstrconst.syns_emccodefoldcontextmenu
 msgid "Fold Menu"
@@ -487,11 +489,11 @@ msgstr "Pegado Rapido de Selección"
 
 #: syneditstrconst.syns_emcpluginmulticaretselectiontocarets
 msgid "Set carets at EOL in selected lines"
-msgstr ""
+msgstr "Colocar puntos de inserción en EOL en las lineas seleccionadas"
 
 #: syneditstrconst.syns_emcpluginmulticarettogglecaret
 msgid "Toggle extra caret"
-msgstr ""
+msgstr "Intercambiar punto de inserción extra"
 
 #: syneditstrconst.syns_emcselection_opt
 msgid "Mode,Begin,Continue"
@@ -523,7 +525,7 @@ msgstr "Arrastre la selección"
 
 #: syneditstrconst.syns_emcstartdragmove_opt
 msgid "\"Caret on up if not dragged\",yes,no"
-msgstr ""
+msgstr "\"Cursor de texto hacia arriba si no es arrastrado\",si,no"
 
 #: syneditstrconst.syns_emcstartlineselections
 msgid "Line Selection"
@@ -531,7 +533,7 @@ msgstr "Selección de línea"
 
 #: syneditstrconst.syns_emcstartlineselectionsnoneempty
 msgid "Line Selection (select immediate)"
-msgstr ""
+msgstr "Selección de línea (selección inmediata)"
 
 #: syneditstrconst.syns_emcstartselection
 msgid "Selection"
@@ -800,4 +802,3 @@ msgstr "<nada>"
 #: syneditstrconst.syns_untitled
 msgid "Untitled"
 msgstr "Sin titulo"
-

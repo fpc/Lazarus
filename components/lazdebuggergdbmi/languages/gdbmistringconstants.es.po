@@ -159,7 +159,7 @@ msgstr "El depurador llegó a un inesperado %1:s%0:s%0:sPulse \"Aceptar\" para c
 
 #: gdbmistringconstants.lisnewthegnudebuggerthroughsshallowstoremotedebugviaassh
 msgid "The GNU debugger through SSH allows to remote debug via a SSH connection. See docs/RemoteDebugging.txt for details. The path must contain the SSH client. Use SSH_Startup_Options for the hostname and optional username. Use Remote_GDB_Exe for the filename of GDB on the remote computer."
-msgstr ""
+msgstr El depurador GNU a través de SSH permite depuración remota a través de una conexión SSH. Ver documentos/RemoteDebugging.txt para más detalles. La ruta debe contener el cliente SSH. Utiliza SSH_Startup_Options para el nombre de host(hostname) y opcionalmente nombre de usuario (username). Utiliza Remote_GDB para el nombre de fichero (filename) de GDB en el ordenador remoto.""
 
 #: gdbmistringconstants.lisresponsecontinue
 msgid "Response: %sContinue ?"
@@ -171,11 +171,11 @@ msgstr "Resultado inexperado:%sEl depurador finalizará ahora"
 
 #: gdbmistringconstants.synffailedtoinitializedebugger
 msgid "Failed to initialize debugger"
-msgstr ""
+msgstr "Fallo al iniciar el depurador"
 
 #: gdbmistringconstants.synffailedtoinitializethedebuggersetpascalfailed
 msgid "Failed to initialize the debugger (set pascal failed)"
-msgstr ""
+msgstr "Fallo al iniciar el depurador (fallo al ejecutar set pascal)"
 
 #: gdbmistringconstants.synffailedtoloadapplicationexecutable
 msgid "Failed to load application executable"
@@ -183,5 +183,5 @@ msgstr "Fallo al cargar el ejecutable de la aplicación"
 
 #: gdbmistringconstants.synfthedebuggerwasunabletosetallbreakpointsduringiniti
 msgid "The debugger was unable to set all breakpoints during initialization.%0:sYou may wish to check if all sources were compiled with debug-info.%0:sPress OK to ignore this and continue."
-msgstr ""
+msgstr "El depurador no pudo poner todos los puntos de interrupción durante la inicialización.%0:sVerifique que todo el código fuente haya sido compilado con información de depuración.%0:sPresione Aceptar para ignorar esto y continuar."
 

@@ -723,8 +723,6 @@ msgid "Run query"
 msgstr "Ejecutar consulta"
 
 #: lazdatadeskstr.srowsaffected
-#, fuzzy
-#| msgid "   Query executed successfully: %d rows affected."
 msgid "Query executed successfully: %d rows affected."
 msgstr "Consulta ejecutada con éxito: %d registros afectados."
 
