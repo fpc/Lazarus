@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2015-04-21 02:31+0300\n"
+"PO-Revision-Date: 2015-04-25 20:35+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -599,8 +599,8 @@ msgid "Main .lpr unit creates each form with Application.CreateForm(). They are 
 msgstr "Каждая форма создаётся в главном модуле .lpr посредством вызова Application.CreateForm(). Освобождаются формы также автоматически."
 
 #: lazarusidestrconsts.dlgautocreatenewforms
-msgid "When creating new forms, add them to auto-created forms"
-msgstr "При создании новых форм добавить их к автосоздаваемым"
+msgid "Auto-create new forms"
+msgstr "Создавать новые формы автоматически"
 
 #: lazarusidestrconsts.dlgautodel
 msgid "Auto delete file"

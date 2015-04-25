@@ -611,7 +611,9 @@ msgid "Main .lpr unit creates each form with Application.CreateForm(). They are 
 msgstr ""
 
 #: lazarusidestrconsts.dlgautocreatenewforms
-msgid "When creating new forms, add them to auto-created forms"
+#, fuzzy
+#| msgid "When creating new forms, add them to auto-created forms"
+msgid "Auto-create new forms"
 msgstr "בזמן יצירת טפסים חדשים הוסף אותם לטפסים הנוצרים אוטומטית."
 
 #: lazarusidestrconsts.dlgautodel
