@@ -15,103 +15,103 @@ msgstr "Comprobador de archivos de PO"
 
 #: pocheckerconsts.rs_lang_af_za
 msgid "Afrikaans"
-msgstr ""
+msgstr "Africaans"
 
 #: pocheckerconsts.rs_lang_all
 msgid "All languages"
-msgstr ""
+msgstr "Todos los lenguajes"
 
 #: pocheckerconsts.rs_lang_ar
 msgid "Arabic"
-msgstr ""
+msgstr "Árabe"
 
 #: pocheckerconsts.rs_lang_ca
 msgid "Catalan"
-msgstr ""
+msgstr "Catalán"
 
 #: pocheckerconsts.rs_lang_cs
 msgid "Czech"
-msgstr ""
+msgstr "Checo"
 
 #: pocheckerconsts.rs_lang_de
 msgid "German"
-msgstr ""
+msgstr "Alemán"
 
 #: pocheckerconsts.rs_lang_en
 msgid "English"
-msgstr ""
+msgstr "Inglés"
 
 #: pocheckerconsts.rs_lang_es
 msgid "Spanish"
-msgstr ""
+msgstr "Español"
 
 #: pocheckerconsts.rs_lang_fi
 msgid "Finnish"
-msgstr ""
+msgstr "Finlandés"
 
 #: pocheckerconsts.rs_lang_fr
 msgid "French"
-msgstr ""
+msgstr "Francés"
 
 #: pocheckerconsts.rs_lang_he
 msgid "Hebrew"
-msgstr ""
+msgstr "Hebreo"
 
 #: pocheckerconsts.rs_lang_hu
 msgid "Hungarian"
-msgstr ""
+msgstr "Húngaro"
 
 #: pocheckerconsts.rs_lang_id
 msgid "Indonesian"
-msgstr ""
+msgstr "Indonesio"
 
 #: pocheckerconsts.rs_lang_it
 msgid "Italian"
-msgstr ""
+msgstr "Italiano"
 
 #: pocheckerconsts.rs_lang_ja
 msgid "Japanese"
-msgstr ""
+msgstr "Japonés"
 
 #: pocheckerconsts.rs_lang_lt
 msgid "Lithuanian"
-msgstr ""
+msgstr "Lituano"
 
 #: pocheckerconsts.rs_lang_nl
 msgid "Dutch"
-msgstr ""
+msgstr "Holandés"
 
 #: pocheckerconsts.rs_lang_pl
 msgid "Polish"
-msgstr ""
+msgstr "Polaco"
 
 #: pocheckerconsts.rs_lang_pt_br
 msgid "Brazilian Portuguese"
-msgstr ""
+msgstr "Portugues Brasileño"
 
 #: pocheckerconsts.rs_lang_ru
 msgid "Russian"
-msgstr ""
+msgstr "Ruso"
 
 #: pocheckerconsts.rs_lang_sk
 msgid "Slovak"
-msgstr ""
+msgstr "Eslovaco"
 
 #: pocheckerconsts.rs_lang_tr
 msgid "Turkish"
-msgstr ""
+msgstr "Turco"
 
 #: pocheckerconsts.rs_lang_uk
 msgid "Ukrainian"
-msgstr ""
+msgstr "Ucraniano"
 
 #: pocheckerconsts.rs_lang_zh_cn
 msgid "Chinese, simplified"
-msgstr ""
+msgstr "Chino, simplificado"
 
 #: pocheckerconsts.salllanguages
 msgid "All Languages"
-msgstr ""
+msgstr "Todos los Lenguajes"
 
 #: pocheckerconsts.scannotfindmaster
 msgid ""
@@ -122,7 +122,7 @@ msgid ""
 msgstr ""
 "No se encuentra el archivo po maestro:\n"
 "%s\n"
-"para el seleccionado archivo\n"
+"para el archivo seleccionado\n"
 "%s\n"
 
 #: pocheckerconsts.scheckforduplicateuntranslatedvalues
@@ -147,11 +147,11 @@ msgstr "Compruebe el número de elementos"
 
 #: pocheckerconsts.scheckstatistics
 msgid "Check percentage of (un)translated and fuzzy strings"
-msgstr ""
+msgstr "Comprobar porcentaje de cadenas traducidas/no traducidas y confusas (fuzzy)"
 
 #: pocheckerconsts.sclearlistbox
 msgid "Clear"
-msgstr ""
+msgstr "Limpiar"
 
 #: pocheckerconsts.scopycaption
 msgid "Copy to clipboard"
@@ -159,11 +159,11 @@ msgstr "Copiar en el portapapeles"
 
 #: pocheckerconsts.screatingiconxofy
 msgid "Creating icon nr. %d of %d"
-msgstr ""
+msgstr "Creando icono nr. %d de %d"
 
 #: pocheckerconsts.scurrenttest
 msgid "Test: %s on %s"
-msgstr ""
+msgstr "Prueba: %s en %s"
 
 #: pocheckerconsts.sduplicatelinenrwithvalue
 msgid "[Line %d] %s"
@@ -179,9 +179,9 @@ msgid ""
 "%s\n"
 "Please close the program\n"
 msgstr ""
-"A ocurrido\n"
-" un error irrecuperable%s\n"
-"Por favor, cierre la program\n"
+"A ocurrido un error irrecuperable\n
+"%s\n"
+"Por favor, cierre el programa\n"
 
 #: pocheckerconsts.serroroncreate
 msgid ""
@@ -200,14 +200,15 @@ msgid ""
 "The following non-existent files were removed from the list:\n"
 "%s\n"
 msgstr ""
-
+"Los siguientes ficheros que ya no existen fueron removidos de la lista:\n"
+"%s\n"
 #: pocheckerconsts.sfuzzy
 msgid "Fuzzy"
-msgstr ""
+msgstr "Confuso"
 
 #: pocheckerconsts.sgrapstatformcaption
 msgid "Graphical summary"
-msgstr ""
+msgstr "Resumen gráfico"
 
 #: pocheckerconsts.sguipofilecheckingtool
 msgid "GUI Po-file checking tool"
@@ -219,13 +220,11 @@ msgstr "Identificador [%s] no se encuentra en %s"
 
 #: pocheckerconsts.signorefuzzytranslations
 msgid "Ignore translated strings marked as \"fuzzy\""
-msgstr ""
+msgstr "Ignorar cadenas traducidas que están marcadas como \"fuzzy\" (confusas)"
 
 #: pocheckerconsts.sincompatibleformatargs
-#, fuzzy
-#| msgid "[Line: %d] Incompatible format() arguments for:"
 msgid "[Line: %d] Incompatible and/or invalid format() arguments for:"
-msgstr "[Línea: %d] format() argumentos incompatibles para:"
+msgstr "[Línea: %d] Formato de argumentos format() Incompatible y/o no válidos para:"
 
 #: pocheckerconsts.slineinfilename
 msgid "[Line %d] in %s:"
@@ -245,7 +244,7 @@ msgstr "No se encontraron errores"
 
 #: pocheckerconsts.snofileslefttocheck
 msgid "There are no files left to check."
-msgstr ""
+msgstr "No hay ficheros restantes por revisar"
 
 #: pocheckerconsts.snotestselected
 msgid "There are no tests selected."
@@ -253,7 +252,7 @@ msgstr "No existen pruebas seleccionadas."
 
 #: pocheckerconsts.snotetranslationisfuzzy
 msgid "Note: translation is fuzzy"
-msgstr ""
+msgstr "Nota: la traducción es confusa (fuzzy)"
 
 #: pocheckerconsts.snrerrorsfound
 msgid "Found %d errors."
@@ -280,6 +279,8 @@ msgid ""
 "Unable to open file:\n"
 "\"%s\"\n"
 msgstr ""
+"No es posible abrir el fichero:\n"
+"\"%s\"\n"
 
 #: pocheckerconsts.sopenfailexternal
 msgid ""
@@ -288,10 +289,13 @@ msgid ""
 "in external editor\n"
 "\"%s\"\n"
 msgstr ""
-
+"NO es posible abrir el fichero\n"
+"\"%s\"\n"
+"en un editor externo\n"
+"\"%s\"\n"
 #: pocheckerconsts.sopenfile
 msgid "Open file %s in Ide Editor?"
-msgstr ""
+msgstr "¿Abrir fichero %s en el editor del IDE?"
 
 #: pocheckerconsts.sopenfileexternal
 msgid ""
@@ -300,22 +304,25 @@ msgid ""
 "in external editor:\n"
 "\"%s\"?\n"
 msgstr ""
-
+"¿Abrir fichero:\n"
+"\"%s\"\n"
+"en editor externo:\n"
+"\"%s\"?\n"
 #: pocheckerconsts.soriginal
 msgid "Original"
 msgstr "Original"
 
 #: pocheckerconsts.spercfuzzy
 msgid "%s: %4.1f%% fuzzy strings."
-msgstr ""
+msgstr "%s: %4.1f%% de cadenas confusas."
 
 #: pocheckerconsts.sperctranslated
 msgid "%s: %4.1f%% translated strings."
-msgstr ""
+msgstr "%s: %4.1f%% de cadenas traducidas."
 
 #: pocheckerconsts.spercuntranslated
 msgid "%s: %4.1f%% untranslated strings."
-msgstr ""
+msgstr "%s: %4.1f%% de cadenas sin traducir."
 
 #: pocheckerconsts.sresults
 msgid "Results"
@@ -339,25 +346,23 @@ msgstr ""
 
 #: pocheckerconsts.sscandir
 msgid "Scan a folder"
-msgstr ""
+msgstr "Escanear una carpeta"
 
 #: pocheckerconsts.sscanninginprogress
 msgid "Scanning in progress, please wait ..."
-msgstr ""
+msgstr "Escanéo en progreso, espere por favor ..."
 
 #: pocheckerconsts.sselectalllistbox
 msgid "Select all files"
-msgstr ""
+msgstr "Seleccionar todos los ficheros"
 
 #: pocheckerconsts.sselectalltests
 msgid "Select &All"
-msgstr ""
+msgstr "Seleccionar &Todo"
 
 #: pocheckerconsts.sselectbasictests
-#, fuzzy
-#| msgid "Select &Basic Tests"
 msgid "Select &Basic"
-msgstr "Seleccione pruebas básicas"
+msgstr "Seleccionar &Básico"
 
 #: pocheckerconsts.sselecttesttypes
 msgid "Select test types"
@@ -365,7 +370,7 @@ msgstr "Seleccione los tipos de prueba"
 
 #: pocheckerconsts.sshowstatgraph
 msgid "Show statistics graph"
-msgstr ""
+msgstr "Mostrar gráfico de estadísticas"
 
 #: pocheckerconsts.sstathint
 msgid ""
@@ -374,12 +379,13 @@ msgid ""
 "%3d Fuzzy (%3.1f%%)\n"
 "%d Error(s) in Selected Tests\n"
 msgstr ""
-
+"%3d Traducido (%3.1f%%)\n"
+"%3d No traducido (%3.1f%%)\n"
+"%3d Confuso (%3.1f%%)\n"
+"%d Error(es) en el Test Seleccionado\n"
 #: pocheckerconsts.stotalerrors
-#, fuzzy
-#| msgid "Total errors / warnings found: %d"
 msgid "Total errors found: %d"
-msgstr "Total de errores / advertencias encontraron: %d"
+msgstr "Total de errores encontrados: %d"
 
 #: pocheckerconsts.stotalwarnings
 msgid "Total warnings found: %d"
@@ -387,7 +393,7 @@ msgstr "Total de avisos encontrados: %d"
 
 #: pocheckerconsts.stranslated
 msgid "Translated"
-msgstr ""
+msgstr "Traducido"
 
 #: pocheckerconsts.stranslation
 msgid "Translation"
@@ -395,17 +401,17 @@ msgstr "Traducción"
 
 #: pocheckerconsts.stranslationstatistics
 msgid "Translation statistics per language:"
-msgstr ""
+msgstr "Estadísticas de traducción por lenguaje"
 
 #: pocheckerconsts.sunselectalltests
 msgid "&Unselect All"
-msgstr ""
+msgstr "&Deseleccionar Todo"
 
 #: pocheckerconsts.sunselectlistbox
 msgid "Unselect all files"
-msgstr ""
+msgstr "Deseleccionar todos los ficheros"
 
 #: pocheckerconsts.suntranslated
 msgid "Untranslated"
-msgstr ""
+msgstr "Sin traducción"
 

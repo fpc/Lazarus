@@ -27,11 +27,11 @@ msgstr "Añadir"
 
 #: messagecomposer.sbuttonsarrayofconst
 msgid "Buttons (array of const)"
-msgstr "Botones (array de constantes)"
+msgstr "Botones (array of const)"
 
 #: messagecomposer.sbuttonstmsgdlgbuttons
 msgid "Buttons (TMsgDlgButtons)"
-msgstr "Butones (TMsgDlgButtons)"
+msgstr "Botones (TMsgDlgButtons)"
 
 #: messagecomposer.scaseresult
 msgid "\"Case\" result"
@@ -85,7 +85,7 @@ msgstr "Compositor de mensaje"
 #: messagecomposer.smessagecomposermenucaption
 msgctxt "messagecomposer.smessagecomposermenucaption"
 msgid "Message Composer ..."
-msgstr "Compositor de mensaje..."
+msgstr "Compositor de mensaje ..."
 
 #: messagecomposer.smodalresult
 msgid "Modal result"
@@ -97,7 +97,7 @@ msgstr "El mensaje que se muestra"
 
 #: messagecomposer.snotimplementedyet
 msgid "Not implemented yet"
-msgstr "No implementado aun"
+msgstr "No implementado aún"
 
 #: messagecomposer.spromptcaption
 msgid "Text asking the user for input"

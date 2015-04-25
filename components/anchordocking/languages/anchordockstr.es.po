@@ -10,10 +10,8 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #: anchordockstr.adrsafreesideofasplittermustnotbeanchorednodetypeancho
-#, fuzzy
-#| msgid "A free side of a splitter must not be anchored: Node=%s%s%s Type=%s Anchors[%s]=%s%s%s"
 msgid "A free side of a splitter must not be anchored: Node=\"%s\" Type=%s Anchors[%s]=\"%s\""
-msgstr "No debe anclarse en un lado libre de un splitter: Nodo=%s%s%s Tipo =%s Anclajes[%s]=%s%s%s"
+msgstr "No debe anclarse en un lado libre de un splitter: Node=\"%s\" Tipo=%s Anclajes[%s]=\"%s\""
 
 #: anchordockstr.adrsallfiles
 msgid "All files"
@@ -25,31 +23,23 @@ msgstr "Cantidad de píxeles el ratón tiene que arrastrar antes del comienzo de
 
 #: anchordockstr.adrsanchordockinglayout
 msgid "Anchor Docking Layout"
-msgstr "Diseño de Acoplamiento de Anclaje"
+msgstr "Disposición de Acoplamiento de Anclaje"
 
 #: anchordockstr.adrsanchorisnotsplitternodeanchors
-#, fuzzy
-#| msgid "Anchor is not splitter: Node=%s%s%s Anchors[%s]=%s%s%s"
 msgid "Anchor is not splitter: Node=\"%s\" Anchors[%s]=\"%s\""
-msgstr "Anclaje no es divisor: Nodo=%s%s%s Anclajes[%s]=%s%s%s"
+msgstr "Anclaje no es divisor (splitter): Nodo=\"%s\" Anclajes [%s]=\"%s\""
 
 #: anchordockstr.adrsanchornotfoundnodeanchors
-#, fuzzy
-#| msgid "Anchor not found: Node=%s%s%s Anchors[%s]=%s%s%s"
 msgid "Anchor not found: Node=\"%s\" Anchors[%s]=\"%s\""
-msgstr "Anclaje no encontrado: Nodo=%s%s%s Anclajes[%s]=%s%s%s"
+msgstr "Anclaje no encontrado: Nodo=\"%s\" Anclajes[%s]=\"%s\""
 
 #: anchordockstr.adrsanchortowrongsideofsplitternodeanchors
-#, fuzzy
-#| msgid "Anchor to wrong side of splitter: Node=%s%s%s Anchors[%s]=%s%s%s"
 msgid "Anchor to wrong side of splitter: Node=\"%s\" Anchors[%s]=\"%s\""
-msgstr "Anclaje al revés de splitter: Nodo =%s%s%s Anclajes[%s]=%s%s%s"
+msgstr "Anclaje en lado incorrecto del divisor (splitter): Nodo=\"%s\" Anclajes[%s]=\"%s\""
 
 #: anchordockstr.adrsapagemustnotbeanchorednodeparentparenttypeanchors
-#, fuzzy
-#| msgid "A page must not be anchored: Node=%s%s%s Parent=%s ParentType=%s Anchors[%s]=%s%s%s"
 msgid "A page must not be anchored: Node=\"%s\" Parent=%s ParentType=%s Anchors[%s]=\"%s\""
-msgstr "No debe anclarse en una página: Nodo=%s%s%s Padres=%s Tipo de Padres=%s Anclajes[%s]=%s%s%s"
+msgstr "Una página no debe anclarse: Nodo=\"%s\" Padres=%s Tipo de Padres=%s Anclajes[%s]=\"%s\""
 
 #: anchordockstr.adrsautomatically
 msgid "Automatically"
@@ -68,10 +58,8 @@ msgid "control is already a docksite"
 msgstr "control ya es un sitio de anclaje"
 
 #: anchordockstr.adrscustomdocksitecanhaveonlyonesite
-#, fuzzy
-#| msgid "Custom dock site %s%s%s can have only one site."
 msgid "Custom dock site \"%s\" can have only one site."
-msgstr "Sitio de anclaje personalizado %s%s%s puede tener sólo un sitio."
+msgstr "Sitio de anclaje personalizado \"%s\" puede tener sólo un sitio."
 
 #: anchordockstr.adrsdockinganchordocking
 msgid "Docking / Anchordocking"
@@ -82,7 +70,6 @@ msgid "Docking options"
 msgstr "Opciones de acoplamiento"
 
 #: anchordockstr.adrsdraganddockc
-#| msgid "Use the mouse to drag and dock window \"%c\""
 msgid "Use the mouse to drag and dock window \"%s\""
 msgstr "Utilice el ratón para arrastrar y anclar ventana \"%s\""
 
@@ -116,27 +103,27 @@ msgstr "Error"
 
 #: anchordockstr.adrserrorloadingwindowlayoutfromfile
 msgid "Error loading window layout from file \"%s\"%s%s"
-msgstr "Error al cargar el diseño de ventana de archivo \"%s\"%s%s"
+msgstr "Error al cargar el diseño de ventana desde archivo \"%s\"%s%s"
 
 #: anchordockstr.adrserrorwritingwindowlayouttofile
 msgid "Error writing window layout to file \"%s\"%s%s"
-msgstr "Error al escribir archivo \"%s\"%s%s diseño de ventana"
+msgstr "Error al escribir archivo \"%s\"%s%s el diseño de ventana"
 
 #: anchordockstr.adrsfilledheaders
 msgid "Fill headers"
-msgstr ""
+msgstr "Llena los encabezados"
 
 #: anchordockstr.adrsfilledheadershint
 msgid "Fill headers of docked controls"
-msgstr ""
+msgstr "Llena los encabezados de los controles de acoplamiento"
 
 #: anchordockstr.adrsflattenheaders
 msgid "Flatten headers"
-msgstr ""
+msgstr "Aplanado de encabezados"
 
 #: anchordockstr.adrsflattenheadershint
 msgid "Flatten headers of docked controls"
-msgstr ""
+msgstr "Aplanado de encabezados en los controles acoplados"
 
 #: anchordockstr.adrsgeneraldockingoptions
 msgid "General docking options"
@@ -168,11 +155,11 @@ msgstr "izquierda"
 
 #: anchordockstr.adrsloadwindowlayoutfromfile
 msgid "Load window layout from file ..."
-msgstr "Carga de Diseño de ventana desde archivo..."
+msgstr "Carga de diseño de ventana desde archivo ..."
 
 #: anchordockstr.adrsloadwindowlayoutfromfilexml
 msgid "Load window layout from file (*.xml)"
-msgstr "Carga de Diseño de la ventana desde archivo (*.xml)"
+msgstr "Carga de diseño de la ventana desde archivo (*.xml)"
 
 #: anchordockstr.adrslocked
 msgid "Locked"
@@ -192,11 +179,11 @@ msgstr "formularios modales no pueden hacerse acoplables"
 
 #: anchordockstr.adrsmoveheadertoleftwhenwidthheight100headeralignleft
 msgid "Move header to left when (Width/Height)*100>=HeaderAlignLeft"
-msgstr "Mover encabezado a la izquierda cuando (ancho/alto)*100>=HeaderAlignLeft"
+msgstr "Mover encabezado a la izquierda cuando (Ancho/Alto)*100>=HeaderAlignLeft"
 
 #: anchordockstr.adrsmoveheadertotopwhenwidthheight100headeraligntop
 msgid "Move header to top when (Width/Height)*100<=HeaderAlignTop"
-msgstr "Mover encabezado al comienzo cuando (ancho/alto)*100<=HeaderAlignTop"
+msgstr "Mover encabezado al comienzo cuando (Ancho/Alto)*100<=HeaderAlignTop"
 
 #: anchordockstr.adrsmovepageleft
 msgid "Move page left"
@@ -219,14 +206,12 @@ msgid "No captions for floating sites"
 msgstr "No titulos para sitios flotantes"
 
 #: anchordockstr.adrsnochildrenallowedfornodetype
-#, fuzzy
-#| msgid "No children allowed for Node=%s%s%s Type=%s"
 msgid "No children allowed for Node=\"%s\" Type=%s"
-msgstr "Hijos no permitidos por Nodo=%s%s%s Tipo=%s"
+msgstr "Hijos no permitidos para Nodo=\"%s\ Tipo=%s"
 
 #: anchordockstr.adrsnotsupportedhasparent
 msgid "Not supported: %s has parent %s"
-msgstr "No compatibles: %s tiene padres %s"
+msgstr "No soportados: %s tiene padres %s"
 
 #: anchordockstr.adrsquit
 msgid "Quit %s"
@@ -246,23 +231,23 @@ msgstr "derecha"
 
 #: anchordockstr.adrssavelayoutonclose
 msgid "Save layout on close"
-msgstr ""
+msgstr "Guardar diseño al cerrar"
 
 #: anchordockstr.adrssavewindowlayoutasdefault
 msgid "Save window layout as default"
-msgstr "Guardar Diseño de ventana como predeterminado"
+msgstr "Guardar diseño de ventana como predeterminado"
 
 #: anchordockstr.adrssavewindowlayouttofile
 msgid "Save window layout to file ..."
-msgstr "Guardar Diseño de ventana a archivo ..."
+msgstr "Guardar diseño de ventana a archivo ..."
 
 #: anchordockstr.adrssavewindowlayouttofilexml
 msgid "Save window layout to file (*.xml)"
-msgstr "Guardar Diseño de ventana a archivo (*.xml)"
+msgstr "Guardar diseño de ventana a archivo (*.xml)"
 
 #: anchordockstr.adrsscaleonresize
 msgid "Scale on resize"
-msgstr "Escala al cambiar de tamaño"
+msgstr "Escalar al cambiar de tamaño"
 
 #: anchordockstr.adrsscalesubsiteswhenasiteisresized
 msgid "Scale sub sites when a site is resized"
@@ -282,11 +267,11 @@ msgstr "Mostrar encabezados"
 
 #: anchordockstr.adrssplitterthickness
 msgid "Splitter thickness"
-msgstr "Divisor grueso"
+msgstr "Divisor (splitter) grueso"
 
 #: anchordockstr.adrssplitterwidth
 msgid "Splitter width"
-msgstr "Divisor ancho"
+msgstr "Ancho de divisor (splitter)"
 
 #: anchordockstr.adrstabposition
 msgid "Tab position"
@@ -294,7 +279,7 @@ msgstr "Posición de la tabulación"
 
 #: anchordockstr.adrsthereisanotherdockmasterinstalledonlyonedockingpac
 msgid "There is another dock master installed. Only one docking package can be installed at a time. Please uninstall the other dock master %s and restart the IDE"
-msgstr "Hay otro maestro de acople instalado. Sólo un paquete de acoplamiento puede instalarse en un momento. Desinstale al otro maestro de acople %s y reiniciar el IDE"
+msgstr "Hay otro maestro de acople instalado. Sólamente se puede instalar un paquete de acoplamiento al mismo tiempo. Desinstale al otro maestro de acople %s y reinicie el IDE"
 
 #: anchordockstr.adrstop
 msgid "top"

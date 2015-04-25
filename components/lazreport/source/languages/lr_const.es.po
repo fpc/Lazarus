@@ -18,7 +18,7 @@ msgstr "Acerca de LazReport"
 
 #: lr_const.saggregatecategory
 msgid "Aggregate"
-msgstr "Múltiples"
+msgstr "Conjunto"
 
 #: lr_const.sallfiles
 msgid "All files"
@@ -26,19 +26,19 @@ msgstr "Todos los archivos"
 
 #: lr_const.sargument1
 msgid "Argument 1"
-msgstr ""
+msgstr "Argumento 1"
 
 #: lr_const.sargument2
 msgid "Argument 2"
-msgstr ""
+msgstr "Argumento 2"
 
 #: lr_const.sargument3
 msgid "Argument 3"
-msgstr ""
+msgstr "Argumento 3"
 
 #: lr_const.sarguments
 msgid "Arguments"
-msgstr ""
+msgstr "Argumentos"
 
 #: lr_const.sautosize
 msgid "Auto size"
@@ -105,15 +105,11 @@ msgid "Cross footer"
 msgstr "Pie de datos cruzados"
 
 #: lr_const.sband22
-#, fuzzy
-#| msgid "None"
 msgctxt "lr_const.sband22"
 msgid "Child"
-msgstr "Ninguno"
+msgstr "Hijo"
 
 #: lr_const.sband23
-#, fuzzy
-#| msgid "None"
 msgctxt "lr_const.sband23"
 msgid "None"
 msgstr "Ninguno"
@@ -275,15 +271,15 @@ msgstr ""
 
 #: lr_const.sdateformat2
 msgid "mm.dd.yyyy"
-msgstr ""
+msgstr "mm.dd.yy"
 
 #: lr_const.sdateformat3
 msgid "d mmm yyyy"
-msgstr ""
+msgstr "d mmm yyyy"
 
 #: lr_const.sdateformat4
 msgid "d mmmm yyyy"
-msgstr ""
+msgstr "d mmmm yyyy"
 
 #: lr_const.sdatetimecategory
 msgid "Date and time"
@@ -291,7 +287,7 @@ msgstr "Fecha y hora"
 
 #: lr_const.sdbfield
 msgid "DB field"
-msgstr ""
+msgstr "Campo de la BBDD"
 
 #: lr_const.sdefaultprinter
 msgid "Default printer"
@@ -315,7 +311,7 @@ msgstr "DAYOF(<Fecha>)/Regresa el día (1..31) de una <Fecha> dada."
 
 #: lr_const.sdescriptiondec
 msgid "DEC(<Value>)/Decrement <Value>."
-msgstr ""
+msgstr "DEC(<Value>)/Decrementar <Value>."
 
 #: lr_const.sdescriptionformatdatetime
 msgid "FORMATDATETIME(<Fmt>, <DateTime>)/Converts a <DateTime> value to a string using mask in <Fmt>."
@@ -335,7 +331,7 @@ msgstr "FRAC(<Value>)/Devuelve la parte fraccionaria de punto flotante <Value>."
 
 #: lr_const.sdescriptioninc
 msgid "INC(<Value>)/Increment <Value>."
-msgstr ""
+msgstr "INC(<Value>)/Incrementar <Value>."
 
 #: lr_const.sdescriptioninput
 msgid "INPUT(<Caption> [,Default])/Shows dialog window with title <Caption> and edit box. If [Default] parameter is set, puts this string in edit box. After user clicks OK, returns input string."
@@ -383,11 +379,11 @@ msgstr "NAMECASE(<Cadena>)/Convierte la <Cadena> a minúsculas poniendo la prime
 
 #: lr_const.sdescriptionnewcolumn
 msgid "NEWCOLUMN/Create new column on page for current report."
-msgstr ""
+msgstr "NEWCOLUMN/Crea nueva columna en la página del reporte actual"
 
 #: lr_const.sdescriptionnewpage
 msgid "NEWPAGE/Create new page for current report."
-msgstr ""
+msgstr "NEWPAGE/Crea una nueva página para el reporte actual."
 
 #: lr_const.sdescriptionpos
 msgid "POS(<SubString>, <String>)/Returns position of substring in given string."
@@ -399,15 +395,15 @@ msgstr "ROUND(<Value>)/Redondea el punto flotante <Value> al número entero más
 
 #: lr_const.sdescriptionshowband
 msgid "SHOWBAND(<BandName>)/Show <BandName> in report."
-msgstr ""
+msgstr "SHOWBAND(<BandName>)/Muestra <BandName> en el reporte."
 
 #: lr_const.sdescriptionstopreport
 msgid "STOPREPORT/Terminate report creation."
-msgstr ""
+msgstr "STOPREPORT/Finaliza la creación del reporte."
 
 #: lr_const.sdescriptionstr
 msgid "STR(<Value>)/Converts the given (numeric) <Value> in string."
-msgstr "STR(<Value>)/Convierte el (numeric) dado <Value> en cadena."
+msgstr "STR(<Value>)/Convierte el valor (númerico) <Value> dado en una cadena."
 
 #: lr_const.sdescriptionstrtodate
 msgid "STRTODATE(<String>)/Converts <String> to date."
@@ -435,7 +431,7 @@ msgstr "YEAROF(<Fecha>)/Devuelve el año de la fecha <Fecha> proporcionada."
 
 #: lr_const.sdesignreport
 msgid "Design report"
-msgstr "Diseñar report"
+msgstr "Diseñar reporte"
 
 #: lr_const.sdesoptionsform18pix
 msgid "&18 pixels (5mm)"
@@ -459,7 +455,7 @@ msgstr "&Botones coloreados"
 
 #: lr_const.sdesoptionsformcontents
 msgid "&Contents"
-msgstr "&Contenido"
+msgstr "&Contenidos"
 
 #: lr_const.sdesoptionsformdes
 msgctxt "lr_const.sdesoptionsformdes"
@@ -593,7 +589,7 @@ msgstr "Ya existe un objeto llamado \"%s\""
 
 #: lr_const.seditor
 msgid "Editor"
-msgstr ""
+msgstr "Editor"
 
 #: lr_const.seditorformbig
 msgid "&Big font"
@@ -686,7 +682,7 @@ msgstr "BDs &Disponibles"
 #: lr_const.sfieldsforminsert
 msgctxt "lr_const.sfieldsforminsert"
 msgid "Insert DB field"
-msgstr "Insertar campo DB"
+msgstr "Insertar campo de BBDD"
 
 #: lr_const.sfilenotfound
 msgid "File not found"
@@ -1137,7 +1133,7 @@ msgstr "Línea de marco superior"
 
 #: lr_const.sfrdesignerformunabletocreatetemplatedir
 msgid "Unable to create template directory"
-msgstr ""
+msgstr "Imposible crear directorio de plantilla"
 
 #: lr_const.sfrdesignerformunderline
 msgid "Underline"
@@ -1337,7 +1333,7 @@ msgstr "Variables FR"
 
 #: lr_const.sfunctioneditor
 msgid "Function editor"
-msgstr ""
+msgstr "Editor de función"
 
 #: lr_const.sfunctions
 msgid "Functions"
@@ -1367,7 +1363,7 @@ msgstr "&Ajustar"
 #: lr_const.sgroupeditorformadddbfield
 msgctxt "lr_const.sgroupeditorformadddbfield"
 msgid "Insert DB field"
-msgstr "Insertar campo DB"
+msgstr "Insertar campo de BBDD"
 
 #: lr_const.sgroupeditorformcapt
 msgid "Group"
@@ -1534,7 +1530,7 @@ msgstr "Matemáticas"
 
 #: lr_const.smemoeditor
 msgid "Memo editor"
-msgstr ""
+msgstr "Editor Memo"
 
 #: lr_const.smm
 msgid "MM"
@@ -2235,7 +2231,7 @@ msgstr "&Toda la página"
 
 #: lr_const.sprintchildifnotvisible
 msgid "Print child if not visible"
-msgstr ""
+msgstr "Imprimir hijo si no es visible"
 
 #: lr_const.sprintererror
 msgid "Selected printer is not valid"
@@ -2385,7 +2381,7 @@ msgstr "Guardar cambios"
 
 #: lr_const.sscripteditor
 msgid "Script editor"
-msgstr ""
+msgstr "Editor de Script"
 
 #: lr_const.sshape1
 msgctxt "lr_const.sshape1"
@@ -2464,19 +2460,19 @@ msgstr "Archivo de texto ASCII"
 
 #: lr_const.stimeformat1
 msgid "hh:nn:ss"
-msgstr ""
+msgstr "hh:nn:ss"
 
 #: lr_const.stimeformat2
 msgid "h:nn:ss"
-msgstr ""
+msgstr "h:nn:ss"
 
 #: lr_const.stimeformat3
 msgid "hh:nn"
-msgstr ""
+msgstr "hh:nn"
 
 #: lr_const.stimeformat4
 msgid "h:nn"
-msgstr ""
+msgstr "h:nn"
 
 #: lr_const.sto
 msgid "to"
@@ -2496,15 +2492,15 @@ msgstr "SinTítulo"
 
 #: lr_const.susefixedfontsettings
 msgid "Use fixed font settings"
-msgstr ""
+msgstr "Utilizar las configuraciones de fuente fija"
 
 #: lr_const.susememofontsettings
 msgid "Use Memo font settings"
-msgstr ""
+msgstr "Utilizar las configuracione de fuente de Memo"
 
 #: lr_const.susesyntaxhighlight
 msgid "Use syntax highlight"
-msgstr ""
+msgstr "Utilizar resaltado de sintaxis"
 
 #: lr_const.svar1
 msgid "Page#"

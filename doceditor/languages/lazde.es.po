@@ -27,7 +27,7 @@ msgstr "Seleccionar una nueva descripcion de archivo"
 
 #: lazdemsg.sadditionalparams
 msgid "Additional parameters for fpdoc"
-msgstr ""
+msgstr "Parámetros adicionales para fpdoc"
 
 #: lazdemsg.sbuild
 msgctxt "lazdemsg.sbuild"
@@ -44,7 +44,7 @@ msgstr "Documentación construida con exito."
 
 #: lazdemsg.sbuildoutput
 msgid "Build output"
-msgstr "Salido de construcción"
+msgstr "Salida de construcción"
 
 #: lazdemsg.sclose
 msgctxt "lazdemsg.sclose"
@@ -137,7 +137,7 @@ msgstr "Elemento desconocido DOM como padre para el elemento seleccionado: \"%s\
 
 #: lazdemsg.sfilemodified
 msgid "Document \"%s\" was modified, would you like to save it?"
-msgstr "Documento \"%s\" se ha modificado, te gustaría guardarlo?"
+msgstr "El documento \"%s\" ha sido modificado, ¿te gustaría guardarlo?"
 
 #: lazdemsg.sfilestructure
 msgid "Documentation structure"
@@ -157,7 +157,7 @@ msgstr "&Formato"
 
 #: lazdemsg.sformodule
 msgid " in module "
-msgstr " en modulo "
+msgstr " en módulo "
 
 #: lazdemsg.sforpackage
 msgid " in package "
@@ -167,11 +167,11 @@ msgstr " en paquete "
 #, fuzzy
 #| msgid " in topic"
 msgid " in topic "
-msgstr " en tema"
+msgstr " en tema "
 
 #: lazdemsg.shideprotectedmethods
 msgid "&Hide protected methods"
-msgstr "Esconder metodos protegidos"
+msgstr "&Esconder métodos protegidos"
 
 #: lazdemsg.shinteditelementlink
 msgid "Edit element link"
@@ -208,7 +208,7 @@ msgstr "Negrita"
 
 #: lazdemsg.shintformatcode
 msgid "Code"
-msgstr "Codigo"
+msgstr "Código"
 
 #: lazdemsg.shintformatfile
 msgid "File"
@@ -233,7 +233,7 @@ msgstr "Variable"
 #: lazdemsg.shintinsertbulletedlist
 msgctxt "lazdemsg.shintinsertbulletedlist"
 msgid "Insert bulleted list"
-msgstr ""
+msgstr "Insertar listado con viñetas"
 
 #: lazdemsg.shintinsertelement
 msgctxt "lazdemsg.shintinsertelement"
@@ -248,12 +248,12 @@ msgstr "Insertar enlace"
 #: lazdemsg.shintinsertmodule
 msgctxt "lazdemsg.shintinsertmodule"
 msgid "New module"
-msgstr "Nuevo modulo"
+msgstr "Nuevo módulo"
 
 #: lazdemsg.shintinsertnumberedlist
 msgctxt "lazdemsg.shintinsertnumberedlist"
 msgid "Insert numbered list"
-msgstr ""
+msgstr "Insertar listado numerado"
 
 #: lazdemsg.shintinsertpackage
 msgctxt "lazdemsg.shintinsertpackage"
@@ -275,8 +275,6 @@ msgid "New topic"
 msgstr "Nuevo tema"
 
 #: lazdemsg.shintmenunewfromfile
-#, fuzzy
-#| msgid "New from file..."
 msgid "New from file ..."
 msgstr "Nuevo desde archivo..."
 
@@ -308,11 +306,11 @@ msgstr "Importar archivo de contenido"
 #: lazdemsg.sinsertbulletedlist
 msgctxt "lazdemsg.sinsertbulletedlist"
 msgid "Insert bulleted list"
-msgstr ""
+msgstr "Insertar listado con viñetas"
 
 #: lazdemsg.sinsertexamplecode
 msgid "Insert example code"
-msgstr ""
+msgstr "Insertar código de ejemplo"
 
 #: lazdemsg.sinsertlink
 msgctxt "lazdemsg.sinsertlink"
@@ -322,7 +320,7 @@ msgstr "Insertar enlace"
 #: lazdemsg.sinsertnumberedlist
 msgctxt "lazdemsg.sinsertnumberedlist"
 msgid "Insert numbered list"
-msgstr ""
+msgstr "Insertar listado numerado"
 
 #: lazdemsg.sinsertprintshortlink
 msgid "Insert short description link"
@@ -335,11 +333,11 @@ msgstr "Insertar tabla"
 
 #: lazdemsg.sitemscount
 msgid "Items count"
-msgstr ""
+msgstr "Cuenta de elementos"
 
 #: lazdemsg.slazdoceditor
 msgid "Lazarus Documentation Editor"
-msgstr "Editor Documentacion Lazarus"
+msgstr "Editor Documentación Lazarus"
 
 #: lazdemsg.slinksto
 msgid " links to "
@@ -347,11 +345,11 @@ msgstr " enlace a "
 
 #: lazdemsg.slinktarget
 msgid "Link target"
-msgstr ""
+msgstr "Enlazar objetivo"
 
 #: lazdemsg.slinktext
 msgid "Link text"
-msgstr ""
+msgstr "Enlazar texto"
 
 #: lazdemsg.sload
 msgid "&Load"
@@ -363,11 +361,11 @@ msgstr "Crear nuevo documento desde archivo fuente"
 
 #: lazdemsg.smarkselection
 msgid "Mark selection %s"
-msgstr "Marcar seleccion %s"
+msgstr "Marcar selección %s"
 
 #: lazdemsg.smenucollapseall
 msgid "Collapse All"
-msgstr "Colapsar Todo"
+msgstr "Contraer Todo"
 
 #: lazdemsg.smenudelete
 msgctxt "lazdemsg.smenudelete"
@@ -407,7 +405,7 @@ msgstr "&Nuevo"
 
 #: lazdemsg.smenufilenewfromfile
 msgid "New from fi&le"
-msgstr "Nueva desde archivo"
+msgstr "Nuevo desde archivo"
 
 #: lazdemsg.smenufileopen
 msgid "&Open"
@@ -440,7 +438,7 @@ msgstr "&Negrita"
 
 #: lazdemsg.smenuformatcode
 msgid "&Code"
-msgstr "&Codigo"
+msgstr "&Código"
 
 #: lazdemsg.smenuformatfile
 msgctxt "lazdemsg.smenuformatfile"
@@ -453,7 +451,7 @@ msgstr "Cursiva"
 
 #: lazdemsg.smenuformatparagraph
 msgid "&Paragraph"
-msgstr "&Paragrafo"
+msgstr "&Párrafo"
 
 #: lazdemsg.smenuformatremark
 msgid "&Remark"
@@ -483,7 +481,7 @@ msgstr "&Insertar"
 
 #: lazdemsg.smenuinsertbulletedlist
 msgid "Bulleted list"
-msgstr ""
+msgstr "Listado viñeteado"
 
 #: lazdemsg.smenuinsertelement
 msgid "&Element"
@@ -495,15 +493,15 @@ msgstr "Enlace"
 
 #: lazdemsg.smenuinsertlist
 msgid "List"
-msgstr ""
+msgstr "Listado"
 
 #: lazdemsg.smenuinsertmodule
 msgid "&Module"
-msgstr "&Modulo"
+msgstr "&Módulo"
 
 #: lazdemsg.smenuinsertnumberedlist
 msgid "Numbered list"
-msgstr ""
+msgstr "Listado numerado"
 
 #: lazdemsg.smenuinsertpackage
 msgctxt "lazdemsg.smenuinsertpackage"
@@ -512,11 +510,11 @@ msgstr "&Paquete"
 
 #: lazdemsg.smenuinsertprintshort
 msgid "Insert short desc link"
-msgstr "Insertar acceso a descripcion corta"
+msgstr "Insertar acceso a descripción corta"
 
 #: lazdemsg.smenuinsertquicklink
 msgid "&Quick Link"
-msgstr "Acceso Rapido"
+msgstr "Acceso Rápido"
 
 #: lazdemsg.smenuinsertshortdesclink
 msgid "&Short description link"
@@ -559,7 +557,7 @@ msgstr "Nuevo archivo"
 #: lazdemsg.snewmodule
 msgctxt "lazdemsg.snewmodule"
 msgid "New module"
-msgstr "Nuevo modulo"
+msgstr "Nuevo módulo"
 
 #: lazdemsg.snewpackage
 msgctxt "lazdemsg.snewpackage"
@@ -573,7 +571,7 @@ msgstr "Nuevo tema"
 
 #: lazdemsg.snodename
 msgid "Node name"
-msgstr ""
+msgstr "Nombre de nodo"
 
 #: lazdemsg.snoelement
 msgid "No element selected"
@@ -581,7 +579,7 @@ msgstr "Ningun elemento seleccionado"
 
 #: lazdemsg.soptdlgbackupextension
 msgid "Backup extension"
-msgstr "Backup extension"
+msgstr "Extensión de Backup"
 
 #: lazdemsg.soptdlgconfirmdeletes
 msgid "C&onfirm deletes"
@@ -658,7 +656,7 @@ msgstr "Renombrar elemento"
 
 #: lazdemsg.srenamemodule
 msgid "Rename module"
-msgstr "Renombrar modulo"
+msgstr "Renombrar módulo"
 
 #: lazdemsg.srenamepackage
 msgid "Rename package"
@@ -675,7 +673,7 @@ msgstr "Guardar"
 
 #: lazdemsg.ssavebeforebuildquestion
 msgid "You have unsaved changes in \"%s\".%sThey should be saved in order to be visible in built documentation. Save them?"
-msgstr ""
+msgstr "Tienes cambios sin guardar en \"%s\".%sDebarían salvarse para que sean visibles al construir la documentación. ¿Guardarlos?"
 
 #: lazdemsg.sseealso
 msgid "See Also"
@@ -690,10 +688,8 @@ msgid "Select output file name"
 msgstr "Seleccione el nombre del archivo de salida"
 
 #: lazdemsg.sselectsometext
-#, fuzzy
-#| msgid "Select some text"
 msgid "Select some text."
-msgstr "Seleccione el texto"
+msgstr "Seleccione algo de texto."
 
 #: lazdemsg.sshortdescription
 msgid "Short"
@@ -705,11 +701,11 @@ msgstr "Mostrar metodos p&rivados"
 
 #: lazdemsg.sskelerrorwithfile
 msgid "makeskel reported an error (%d). Try to load produced file anyway ?"
-msgstr "makeskel informó de un error (%d). Tratar de cargar el archivo producido de todos modos ?"
+msgstr "makeskel informó de un error (%d). ¿Tratar de cargar el archivo producido de todos modos?"
 
 #: lazdemsg.sskelerrorwithoutfile
 msgid "makeskel reported an error (%d) and produced no file."
-msgstr "makeskel informó de un error (%d) y no se ha producido ningún archivo."
+msgstr "makeskel informó de un error (%d) y no ha generado fichero."
 
 #: lazdemsg.ssourcescapt
 msgid "Sources"
@@ -721,15 +717,15 @@ msgstr "Elemento de inicio \"%s\" no se pudo encontrar"
 
 #: lazdemsg.stablecols
 msgid "Columns"
-msgstr ""
+msgstr "Columnas"
 
 #: lazdemsg.stableheader
 msgid "Use header row"
-msgstr ""
+msgstr "Utilizar fila de cabecera"
 
 #: lazdemsg.stablerows
 msgid "Rows"
-msgstr ""
+msgstr "Filas"
 
 #: lazdemsg.stargetos
 msgid "Target OS"

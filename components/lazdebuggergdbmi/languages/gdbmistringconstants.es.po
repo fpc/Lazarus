@@ -11,7 +11,7 @@ msgstr ""
 
 #: gdbmistringconstants.dlggroupdebugger
 msgid "Debugger"
-msgstr ""
+msgstr "Depurador"
 
 #: gdbmistringconstants.gdbmibreakpointerroronruncommand
 msgctxt "gdbmistringconstants.gdbmibreakpointerroronruncommand"
@@ -34,8 +34,6 @@ msgid "The debugger failed to get the application's PID.%0:sThis may be caused b
 msgstr "El depurador no pudo conseguir PID de la aplicación.%0:sEsto puede ser causado por falta de información de depuración."
 
 #: gdbmistringconstants.gdbmicommandstartmainruntostoperror
-#, fuzzy
-#| msgid "The debugger was unable to initalize itself.%0:sThe application did run (and terminated) before the debugger could set any breakpoints. %0:sThis may be caused by missing debug info."
 msgctxt "gdbmistringconstants.gdbmicommandstartmainruntostoperror"
 msgid "The debugger was unable to initialize itself.%0:sThe application did run (and terminated) before the debugger could set any breakpoints. %0:sThis may be caused by missing debug info."
 msgstr "El depurador fue incapaz de initalizarse.%0:sLa aplicación se ha ejecutado (y terminado) antes de que el depurador puede establecer puntos de interrupción. %0:sEsto puede ser causado por falta de información de depuración."
@@ -83,46 +81,46 @@ msgstr "%0:sEl proceso GDB ha dejado de funcionar.%0:s"
 #: gdbmistringconstants.gdbmieventlogdebugoutput
 msgctxt "gdbmistringconstants.gdbmieventlogdebugoutput"
 msgid "Debug Output: %s"
-msgstr ""
+msgstr "Salida de Depurador: %s"
 
 #: gdbmistringconstants.gdbmieventloggdbinternalerror
 msgctxt "gdbmistringconstants.gdbmieventloggdbinternalerror"
 msgid "GDB has encountered an internal error: %s"
-msgstr ""
+msgstr "GDB ha encontrado un error interno: %s"
 
 #: gdbmistringconstants.gdbmieventlognosymbols
 msgctxt "gdbmistringconstants.gdbmieventlognosymbols"
 msgid "File '%s' has no debug symbols"
-msgstr ""
+msgstr "El fichero '%s' no tiene símbolos de depuración"
 
 #: gdbmistringconstants.gdbmieventlogprocessexitcode
 msgctxt "gdbmistringconstants.gdbmieventlogprocessexitcode"
 msgid "Process Exit: %s"
-msgstr ""
+msgstr "Salida de Proceso: %s"
 
 #: gdbmistringconstants.gdbmieventlogprocessexitnormally
 msgctxt "gdbmistringconstants.gdbmieventlogprocessexitnormally"
 msgid "Process Exit: normally"
-msgstr ""
+msgstr "Salida de Proceso: normalmente"
 
 #: gdbmistringconstants.gdbmieventlogprocessstart
 msgctxt "gdbmistringconstants.gdbmieventlogprocessstart"
 msgid "Process Start: %s"
-msgstr ""
+msgstr "Iniciar Proceso: %s"
 
 #: gdbmistringconstants.gdbmifailedtolaunchexternaldbg
 msgid "Failed to create process for GDB"
-msgstr ""
+msgstr "Fallo al crear proceso para GDB"
 
 #: gdbmistringconstants.gdbmifailedtoterminategdb
 msgctxt "gdbmistringconstants.gdbmifailedtoterminategdb"
 msgid "The IDE was unable to terminate the GDB process. This process may be left running outside the control of IDE.%0:sTo ensure the process is not affecting your System, you should locate and terminate it yourself."
-msgstr ""
+msgstr "El IDE fué incapaz de terminar el proceso GDB. Este proceso puede haber quedado corriendo fuera de control del IDE.%0:sPara asegurarte de que el proceso no esté afectando a tu sistema, deberías localizarlo y finalizarlo por tus medios."
 
 #: gdbmistringconstants.gdbmifailedtoterminategdbtitle
 msgctxt "gdbmistringconstants.gdbmifailedtoterminategdbtitle"
 msgid "GDB did not terminate"
-msgstr ""
+msgstr "GDB no terminó"
 
 #: gdbmistringconstants.gdbmifatalerroroccurred
 msgctxt "gdbmistringconstants.gdbmifatalerroroccurred"
@@ -132,12 +130,12 @@ msgstr "Error irrecuperable: \"%s\""
 #: gdbmistringconstants.gdbmigdbinternalerror
 msgctxt "gdbmistringconstants.gdbmigdbinternalerror"
 msgid "GDB has encountered an internal error: %0:sPress \"Ok\" to continue debugging. This may NOT be safe.%0:sPress \"Stop\" to end the debug session."
-msgstr ""
+msgstr "GDB ha encontrado un error interno: %0:sPresiona \"Aceptar\" para continuar depurando. Esto puede NO ser seguro.%0:sPress \"Detener\" para finalizar la sesión de depuración."
 
 #: gdbmistringconstants.gdbmigdbinternalerrorinfo
 msgctxt "gdbmistringconstants.gdbmigdbinternalerrorinfo"
 msgid "While executing the command: %0:s\"%2:s\"%0:sgdb reported:%0:s\"%1:s\"%0:s"
-msgstr ""
+msgstr "Mientras se ejecutaba el comando: %0:s\"%2:s\"%0:sgdb reportó:%0:s\"%1:s\"%0:s"
 
 #: gdbmistringconstants.gdbmipressignoretocontinuedebuggingthismaynotbesafepres
 msgctxt "gdbmistringconstants.gdbmipressignoretocontinuedebuggingthismaynotbesafepres"
@@ -152,7 +150,7 @@ msgstr "El depurador experimentado una condición desconocida"
 #: gdbmistringconstants.gdbmitimeoutforcmd
 msgctxt "gdbmistringconstants.gdbmitimeoutforcmd"
 msgid "Time-out for command: \"%s\""
-msgstr "Tiempo de espera para el comando: \"%s\""
+msgstr "Tiempo de espera agotado para el comando: \"%s\""
 
 #: gdbmistringconstants.gdbmiwarningunknowbreakpoint
 msgctxt "gdbmistringconstants.gdbmiwarningunknowbreakpoint"
@@ -165,11 +163,11 @@ msgstr ""
 
 #: gdbmistringconstants.lisresponsecontinue
 msgid "Response: %sContinue ?"
-msgstr ""
+msgstr "Respuesta: %s¿Continuar?"
 
 #: gdbmistringconstants.lisunexpectedresultthedebuggerwillterminate
 msgid "Unexpected result:%sThe debugger will terminate"
-msgstr ""
+msgstr "Resultado inexperado:%sEl depurador finalizará ahora"
 
 #: gdbmistringconstants.synffailedtoinitializedebugger
 msgid "Failed to initialize debugger"
@@ -181,7 +179,7 @@ msgstr ""
 
 #: gdbmistringconstants.synffailedtoloadapplicationexecutable
 msgid "Failed to load application executable"
-msgstr ""
+msgstr "Fallo al cargar el ejecutable de la aplicación"
 
 #: gdbmistringconstants.synfthedebuggerwasunabletosetallbreakpointsduringiniti
 msgid "The debugger was unable to set all breakpoints during initialization.%0:sYou may wish to check if all sources were compiled with debug-info.%0:sPress OK to ignore this and continue."

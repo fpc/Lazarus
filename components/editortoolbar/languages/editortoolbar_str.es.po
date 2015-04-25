@@ -19,11 +19,11 @@ msgstr "Añadir elemento seleccionado a la barra de herramientas"
 
 #: editortoolbar_str.rsall
 msgid "All"
-msgstr ""
+msgstr "Todo"
 
 #: editortoolbar_str.rsbottom
 msgid "Bottom"
-msgstr ""
+msgstr "Al fondo"
 
 #: editortoolbar_str.rscancel
 msgid "Cancel"
@@ -31,15 +31,15 @@ msgstr "Cancelar"
 
 #: editortoolbar_str.rsclearselection
 msgid "Clear selection"
-msgstr ""
+msgstr "Limpiar selección"
 
 #: editortoolbar_str.rscodeexplorer
 msgid "Code Explorer"
-msgstr ""
+msgstr "Explorador de código"
 
 #: editortoolbar_str.rscodetemplates
 msgid "Code Templates"
-msgstr ""
+msgstr "Plantillas de código"
 
 #: editortoolbar_str.rsconfiguretoo
 msgid "Configure Toolbar"
@@ -47,23 +47,23 @@ msgstr "Configurar la barra de herramientas"
 
 #: editortoolbar_str.rscustom
 msgid "Custom"
-msgstr ""
+msgstr "Personalizado"
 
 #: editortoolbar_str.rsdebug
 msgid "Debug"
-msgstr ""
+msgstr "Depurar"
 
 #: editortoolbar_str.rsdesign
 msgid "Design"
-msgstr ""
+msgstr "Diseño"
 
 #: editortoolbar_str.rsdesigner
 msgid "Designer"
-msgstr ""
+msgstr "Diseñador"
 
 #: editortoolbar_str.rseditortoolbar
 msgid "Editor ToolBar"
-msgstr ""
+msgstr "Barra de herramientas de edición"
 
 #: editortoolbar_str.rseditortoolbarconfigform
 msgid "Editor Toolbar Configuration"
@@ -75,31 +75,31 @@ msgstr ""
 
 #: editortoolbar_str.rshelp1
 msgid "The \"Add\" button inserts a Menu Item before the selected Item of the Toolbar."
-msgstr ""
+msgstr "El botón \"Añadir\" inserta un elemento de Menú antes del elemento seleccionado de la Barra de Herramientas."
 
 #: editortoolbar_str.rshelp2
 msgid "If none is selected, the Item will be appended at the end of the Toolbar."
-msgstr ""
+msgstr "Si no se selecciona algo, el elemento se añadirá al final de la Barra de Herramientas."
 
 #: editortoolbar_str.rshelp3
 msgid "You may rearrange Toolbar Items with \"Move Up\" and \"Move Down\" buttons."
-msgstr ""
+msgstr "Puedes reordenar los elementos de la Barra de Herramientas con los botones \"Mover Arriba\" y \"Mover Abajo\""
 
 #: editortoolbar_str.rshelp4
 msgid "Hint: to append an Item at the end, use \"Clear selection\""
-msgstr ""
+msgstr "Sugerencia: para añadir un elemento al final, utilizar \"Limpiar selección\""
 
 #: editortoolbar_str.rshint
 msgid "You may add here your favorite commands"
-msgstr ""
+msgstr "Puedes añadir aquí tus comandos favoritos"
 
 #: editortoolbar_str.rshtml
 msgid "HTML"
-msgstr ""
+msgstr "HTML"
 
 #: editortoolbar_str.rsidemainmenu
 msgid "IDE Main Menu"
-msgstr ""
+msgstr "Menú Principal del IDE"
 
 #: editortoolbar_str.rsjumpto
 msgid "Jump To"
@@ -107,27 +107,27 @@ msgstr "Saltar a"
 
 #: editortoolbar_str.rsleft
 msgid "Left"
-msgstr ""
+msgstr "Izquierda"
 
 #: editortoolbar_str.rsmenutree
 msgid "Available Menu Items"
-msgstr "Elementos de menú disponibles"
+msgstr "Elementos de Menú Disponibles"
 
 #: editortoolbar_str.rsmenuview
 msgid "View"
-msgstr ""
+msgstr "Ver"
 
 #: editortoolbar_str.rsmessages
 msgid "Messages"
-msgstr ""
+msgstr "Mensajes"
 
 #: editortoolbar_str.rsmoveselecteddown
 msgid "Move selected toolbar item down"
-msgstr "Bajar el elemento seleccionado en la barra de herramientas"
+msgstr "Bajar el elemento seleccionado en la Barra de Herramientas"
 
 #: editortoolbar_str.rsmoveselectedup
 msgid "Move selected toolbar item up"
-msgstr "Subir elemento seleccionado en la barra de herramientas"
+msgstr "Subir elemento seleccionado en la Barra de Herramientas"
 
 #: editortoolbar_str.rsok
 msgid "OK"
@@ -135,43 +135,43 @@ msgstr "OK"
 
 #: editortoolbar_str.rspackageeditor
 msgid "Package Editor"
-msgstr ""
+msgstr "Editor de Paquete"
 
 #: editortoolbar_str.rspackageeditorfiles
 msgid "Package Editor Files"
-msgstr ""
+msgstr "Editor de Ficheros de Paquete"
 
 #: editortoolbar_str.rsposition
 msgid "Position"
-msgstr ""
+msgstr "Posición"
 
 #: editortoolbar_str.rsprofile
 msgid "Profile"
-msgstr ""
+msgstr "Perfil"
 
 #: editortoolbar_str.rsremoveselected
 msgid "Remove selected item from toolbar"
-msgstr "Eliminar el elemento seleccionado de la barra de herramientas"
+msgstr "Eliminar el elemento seleccionado de la Barra de Herramientas"
 
 #: editortoolbar_str.rsright
 msgid "Right"
-msgstr ""
+msgstr "Derecha"
 
 #: editortoolbar_str.rssourceeditor
 msgid "Source Editor"
-msgstr ""
+msgstr "Editor de Fuente"
 
 #: editortoolbar_str.rssourcetab
 msgid "Source Tab"
-msgstr ""
+msgstr "Tabular Fuente"
 
 #: editortoolbar_str.rstoolbar
 msgid "Toolbar Items"
-msgstr "Elementos de la barra de herramientas"
+msgstr "Elementos de la Barra de Herramientas"
 
 #: editortoolbar_str.rstop
 msgid "Top"
-msgstr ""
+msgstr "Tope"
 
 #: editortoolbar_str.serrcouldnotfind
 msgid "Could not find <%s>"
