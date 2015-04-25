@@ -3965,7 +3965,10 @@ end;
 procedure TQtWidget.SlotMove(Event: QEventH); cdecl;
 var
   Msg: TLMMove;
-  APos, ACurrPos: TQtPoint;
+  APos: TQtPoint;
+  {$IFDEF HASX11}
+  ACurrPos: TQtPoint;
+  {$ENDIF}
   FrameRect, WindowRect: TRect;
 begin
   {$ifdef VerboseQt}
@@ -8711,6 +8714,7 @@ begin
  {$endif}
   if SliderPressed and not InUpdate then
   begin
+    Msg.Msg := 0; // shutup compiler
     FillChar(Msg, SizeOf(Msg), #0);
     Msg.Msg := LM_CHANGED;
     DeliverMessage(Msg);
@@ -11593,7 +11597,6 @@ var
   v: QVariantH;
   WStr: WideString;
   DataStr: WideString;
-  ASelected: Boolean;
   ImgList: TCustomImageList;
   AImageIndex: TImageIndex;
   Bmp: TBitmap;
@@ -13671,7 +13674,7 @@ var
   R: TRect;
   TopItem: Integer;
   i: Integer;
-  j, x: Integer;
+  j: Integer;
   ChildCount: Integer;
   VHeight: Integer; // viewport height
   RowHeight: Integer;

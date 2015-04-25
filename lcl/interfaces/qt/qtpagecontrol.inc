@@ -307,9 +307,8 @@ class procedure TQtWSCustomTabControl.MovePage(const ATabControl: TCustomTabCont
 var
   TabWidget: TQtTabWidget;
   Index: Integer;
-  Page: TQtPage;
 begin
-  Page := TQtPage(AChild.Handle);
+  AChild.HandleNeeded; {create handle if it does not exist yet}
   TabWidget := TQtTabWidget(ATabControl.Handle);
   Index := AChild.PageIndex;
   if Index < 0 then

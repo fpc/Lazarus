@@ -1437,7 +1437,7 @@ begin
     F := DTFlagsToQtFlags(Flags);
   end;
 
-  {$warning HARDCODED WORKAROUND for qt-4.7.1 QPainter bug.}
+  {Workaround for qt-4.7 QPainter bug.It's fixed in qt-4.7.4. DO NOT REMOVE}
   { Bug triggers when we try to paint multiline text which contains 1
    space. eg "Save project\nCtrl+S". In this case QPainter draws
    Save
