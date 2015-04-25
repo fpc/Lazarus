@@ -1,6 +1,7 @@
 unit FpImgReaderBase;
 
 {$mode objfpc}{$H+}
+{$modeswitch advancedrecords}
 
 interface
 
@@ -8,6 +9,7 @@ uses
   {$ifdef windows}
   Windows, // After LCLType
   {$endif}
+  fgl, lazfglhash,
   fpDbgSymTable,
   Classes, SysUtils, LazUTF8Classes;
 
@@ -25,6 +27,16 @@ type
     Loaded: Boolean;
   end;
   PDbgImageSectionEx = ^TDbgImageSectionEx;
+
+type
+  TDbgAddressMap = record
+    OrgAddr: QWord;
+    Length: QWord;
+    NewAddr: QWord;
+    class operator =(r1,r2: TDbgAddressMap) : boolean;
+  end;
+  TDbgAddressMapList = specialize TFPGList<TDbgAddressMap>;
+  TDbgAddressMapHashList = specialize TLazFPGHashTable<TDbgAddressMap>;
 
   { TDbgFileLoader }
   {$ifdef windows}
@@ -60,6 +72,8 @@ type
     FImageBase: QWord;
     FUUID: TGuid;
   protected
+    function GetSubFiles: TStrings; virtual;
+    function GetAddressMapList: TDbgAddressMapList; virtual;
     function GetSection(const AName: String): PDbgImageSection; virtual; abstract;
     procedure SetUUID(AGuid: TGuid);
     procedure SetImageBase(ABase: QWord);
@@ -68,17 +82,18 @@ type
     class function isValid(ASource: TDbgFileLoader): Boolean; virtual; abstract;
     class function UserName: AnsiString; virtual; abstract;
     procedure ParseSymbolTable(AFpSymbolInfo: TfpSymbolList); virtual;
-    constructor Create({%H-}ASource: TDbgFileLoader; {%H-}OwnSource: Boolean); virtual;
+    constructor Create({%H-}ASource: TDbgFileLoader; {%H-}ADebugMap: TObject; OwnSource: Boolean); virtual;
 
     property ImageBase: QWord read FImageBase;
     Property Image64Bit: Boolean read FImage64Bit;
     property UUID: TGuid read FUUID;
     property Section[const AName: String]: PDbgImageSection read GetSection;
+    property SubFiles: TStrings read GetSubFiles;
+    property AddressMapList: TDbgAddressMapList read GetAddressMapList;
   end;
   TDbgImageReaderClass = class of TDbgImageReader;
 
-
-function GetImageReader(ASource: TDbgFileLoader; OwnSource: Boolean): TDbgImageReader; overload;
+function GetImageReader(ASource: TDbgFileLoader; ADebugMap: TObject; OwnSource: Boolean): TDbgImageReader; overload;
 procedure RegisterImageReaderClass(DataSource: TDbgImageReaderClass);
 
 implementation
@@ -86,7 +101,12 @@ implementation
 var
   RegisteredImageReaderClasses  : TFPList;
 
-function GetImageReader(ASource: TDbgFileLoader; OwnSource: Boolean): TDbgImageReader;
+ class operator TDbgAddressMap.=(r1,r2: TDbgAddressMap) : boolean;
+ begin
+   result := (r1.OrgAddr=r2.OrgAddr) and (r1.Length=r2.Length) and (r1.NewAddr=r2.NewAddr);
+ end;
+
+function GetImageReader(ASource: TDbgFileLoader; ADebugMap: TObject; OwnSource: Boolean): TDbgImageReader;
 var
   i   : Integer;
   cls : TDbgImageReaderClass;
@@ -98,7 +118,7 @@ begin
     cls :=  TDbgImageReaderClass(RegisteredImageReaderClasses[i]);
     try
       if cls.isValid(ASource) then begin
-        Result := cls.Create(ASource, OwnSource);
+        Result := cls.Create(ASource, ADebugMap, OwnSource);
         Exit;
       end
       else
@@ -219,6 +239,16 @@ end;
 
 { TDbgImageReader }
 
+function TDbgImageReader.GetAddressMapList: TDbgAddressMapList;
+begin
+  result := nil;
+end;
+
+function TDbgImageReader.GetSubFiles: TStrings;
+begin
+  result := nil;
+end;
+
 procedure TDbgImageReader.SetUUID(AGuid: TGuid);
 begin
   FUUID := AGuid;
@@ -240,7 +270,7 @@ begin
   // platform. That's why parsing the data is done in TDbgImageReader.
 end;
 
-constructor TDbgImageReader.Create(ASource: TDbgFileLoader; OwnSource: Boolean);
+constructor TDbgImageReader.Create(ASource: TDbgFileLoader; ADebugMap: TObject; OwnSource: Boolean);
 begin
   inherited Create;
 end;
