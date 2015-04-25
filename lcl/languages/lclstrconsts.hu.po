@@ -1553,3 +1553,4 @@ msgstr "Méret"
 #: lclstrconsts.sshellctrlstype
 msgid "Type"
 msgstr "Típus"
+

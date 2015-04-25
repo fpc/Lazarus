@@ -685,7 +685,6 @@ msgid "Help context %s not found in Database \"%s\"."
 msgstr "Hilfekontext %s nicht in der Datenbank \"%s\" gefunden."
 
 #: lclstrconsts.rshelphelpdatabasedidnotfoundaviewerforahelppageoftype
-#| msgid "Help Database \"%s\" did not found a viewer for a help page of type %s"
 msgid "Help Database \"%s\" did not find a viewer for a help page of type %s"
 msgstr "Die Hilfedatenbank \"%s\" fand keinen Betrachter für eine Hilfeseite des Typs %s"
 
@@ -758,7 +757,6 @@ msgid "Hot Light"
 msgstr "Kräftig hervorgehoben"
 
 #: lclstrconsts.rsicns
-#| msgid "OSX Icon Resource"
 msgid "Mac OS X Icon"
 msgstr "OSX-Icon-Ressource"
 
