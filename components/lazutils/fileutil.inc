@@ -1156,13 +1156,13 @@ begin
       begin
         OtherDir:=SearchDirectories[i];
         if (CompareFilenames(Dir,OtherDir)=0)
-        or (FileIsInPath(Dir,OtherDir)) then
+        or (ASearchSubDirs and (FileIsInPath(Dir,OtherDir))) then
         begin
           // directory Dir is already searched
           Dir:='';
           break;
         end;
-        if FileIsInPath(OtherDir,Dir) then
+        if ASearchSubDirs and FileIsInPath(OtherDir,Dir) then
           // directory Dir includes the old directory => delete
           SearchDirectories.Delete(i);
       end;
