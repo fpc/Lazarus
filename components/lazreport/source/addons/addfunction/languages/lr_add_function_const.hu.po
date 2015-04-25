@@ -1,4 +1,3 @@
-#
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
@@ -215,3 +214,4 @@ msgstr "Egyéb"
 #: lr_add_function_const.sstringcategory
 msgid "String"
 msgstr "Karakterlánc"
+

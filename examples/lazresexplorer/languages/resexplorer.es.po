@@ -10,24 +10,20 @@ msgstr ""
 "MIME-Version: 1.0\n"
 
 #: reconstsunit.sabout
-#, fuzzy
-#| msgid "About..."
 msgid "About ..."
 msgstr "Acerca de..."
 
 #: reconstsunit.sallfilesexcutablefilesexeexedlldlldll
 msgid "All files (*.*)|*.*|Excutable files (*.exe)|*.exe|DLL (*.dll)|*.dll"
-msgstr ""
+msgstr "Todos los ficheros (*.*)|*.*|Ficheros ejecutables (*.exe)|*.exe|DLL (*.dll)|*.dll"
 
 #: reconstsunit.sallfilessharedlibsoso
 msgid "All files (*)|*|Shared libraries (*.so)|*.so"
-msgstr ""
+msgstr "Todos los ficheros (*)|*|Librerías compartidas (*.so)|*.so"
 
 #: reconstsunit.sbuilddate
-#, fuzzy
-#| msgid "Build date : "
 msgid "Build date: "
-msgstr "Fecha de Construcción : "
+msgstr "Fecha de Construcción: "
 
 #: reconstsunit.scarbonwidgetset
 msgid "Carbon widget set"
@@ -42,10 +38,8 @@ msgid "File"
 msgstr "Archivo"
 
 #: reconstsunit.sfpcversion
-#, fuzzy
-#| msgid "FPC version : "
 msgid "FPC version: "
-msgstr "Versión FPC : "
+msgstr "Versión FPC: "
 
 #: reconstsunit.sfpguiwidgetset
 msgid "FpGUI widget set"
@@ -76,8 +70,6 @@ msgid "This program is free software under GNU GPL 2 license, see COPYING file"
 msgstr "Este programa es software libre bajo licencia GNU GPL 2, ver archivo COPYING"
 
 #: reconstsunit.sopen
-#, fuzzy
-#| msgid "Open..."
 msgid "Open ..."
 msgstr "Abrir..."
 
@@ -95,29 +87,23 @@ msgstr "Explorardor de Recursos"
 
 #: reconstsunit.sresources
 msgid "Resources"
-msgstr ""
+msgstr "Recursos"
 
 #: reconstsunit.ssaveresource
-#, fuzzy
-#| msgid "Save resource..."
 msgid "Save resource ..."
-msgstr "Guardar recurso..."
+msgstr "Guardar recurso ..."
 
 #: reconstsunit.sstrings
 msgid "Strings"
 msgstr "Cadenas"
 
 #: reconstsunit.stargetcpu
-#, fuzzy
-#| msgid "Target CPU : "
 msgid "Target CPU: "
-msgstr "CPU Objetivo : "
+msgstr "CPU Objetivo: "
 
 #: reconstsunit.stargetos
-#, fuzzy
-#| msgid "Target OS : "
 msgid "Target OS: "
-msgstr "S.O. Objetivo : "
+msgstr "S.O. Objetivo: "
 
 #: reconstsunit.swin32_64widgetset
 msgid "Win32/Win64 widget set"

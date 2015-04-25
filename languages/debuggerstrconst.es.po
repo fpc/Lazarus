@@ -48,12 +48,12 @@ msgstr "Columna nombre función"
 
 #: debuggerstrconst.drscolwidthindex
 msgid "Index column"
-msgstr "Columna indice"
+msgstr "Columna índice"
 
 #: debuggerstrconst.drscolwidthline
 msgctxt "debuggerstrconst.drscolwidthline"
 msgid "Line column"
-msgstr "Columna linea"
+msgstr "Columna línea"
 
 #: debuggerstrconst.drscolwidthname
 msgid "Name column"
@@ -89,7 +89,7 @@ msgstr "Columna tiempo"
 
 #: debuggerstrconst.drsinspectcolwidthdataclass
 msgid "Data class column"
-msgstr ""
+msgstr "Columna clase dato"
 
 #: debuggerstrconst.drsinspectcolwidthdataname
 msgid "Data name column"
@@ -105,23 +105,23 @@ msgstr "Columna valor dato"
 
 #: debuggerstrconst.drsinspectcolwidthdatavisibility
 msgid "Data visibility column"
-msgstr ""
+msgstr "Columna visibilidad de datos"
 
 #: debuggerstrconst.drsinspectcolwidthmethaddress
 msgid "Method address column"
-msgstr "Columna dirección metodo"
+msgstr "Columna dirección método"
 
 #: debuggerstrconst.drsinspectcolwidthmethname
 msgid "Method name column"
-msgstr "Columna nombre metodo"
+msgstr "Columna nombre método"
 
 #: debuggerstrconst.drsinspectcolwidthmethreturns
 msgid "Method returns column"
-msgstr "Columna retornos metodo"
+msgstr "Columna retornos método"
 
 #: debuggerstrconst.drsinspectcolwidthmethtype
 msgid "Method type column"
-msgstr "Columna tipo metodo"
+msgstr "Columna tipo método"
 
 #: debuggerstrconst.drslen
 msgid "Len=%d: "
@@ -129,7 +129,7 @@ msgstr "Long=%d: "
 
 #: debuggerstrconst.drsuseinstanceclasstype
 msgid "Use Instance class type"
-msgstr "Utilice tipo instancia de clase"
+msgstr "Utilice tipo Instancia de clase"
 
 #: debuggerstrconst.drswatchsplitterinspect
 msgid "Inspect pane"
@@ -137,17 +137,17 @@ msgstr "Inspeccione panel"
 
 #: debuggerstrconst.dsrevalhistorydown
 msgid "Append result at bottom of history"
-msgstr "Anexar resultado al final de la historial"
+msgstr "Anexar resultado al final del historial"
 
 #: debuggerstrconst.dsrevalhistoryup
 msgid "Insert result at top of history"
-msgstr "Inserte resultado en la parte superior de la historial"
+msgstr "Inserte resultado en la parte superior del historial"
 
 #: debuggerstrconst.synfnewvalueisempty
 msgid "\"New value\" is empty."
-msgstr ""
+msgstr "\"El nuevo valor\" se encuentra vacío."
 
 #: debuggerstrconst.synfthedebuggerwasnotabletomodifythevalue
 msgid "The debugger was not able to modify the value."
-msgstr ""
+msgstr "El depurador no ha sido capaz de modificar el valor."
 
