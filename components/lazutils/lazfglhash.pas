@@ -80,19 +80,18 @@ var
 begin
   Result:=nil;
   continue:=True;
-  if FHashTableSize>0 then
-    for i:=0 to FHashTableSize-1 do
-      if Assigned(Chain(i)) then
-        if chain(i).Count>0 then
-          for j:=0 to Chain(i).Count-1 do
+  for i:=0 to HashTableSize-1 do
+    if Assigned(Chain(i)) then
+      if chain(i).Count>0 then
+        for j:=0 to Chain(i).Count-1 do
+          begin
+          aMethod(THTGNode(Chain(i)[j]).Data, THTGNode(Chain(i)[j]).Key, continue);
+          if not continue then
             begin
-            aMethod(THTGNode(Chain(i)[j]).Data, THTGNode(Chain(i)[j]).Key, continue);
-            if not continue then
-              begin
-              Result:=THTGNode(Chain(i)[j]);
-              Exit;
-              end;
+            Result:=THTGNode(Chain(i)[j]);
+            Exit;
             end;
+          end;
 end;
 
 function TLazFPGHashTable.Iterate(aMethod: TGIteratorMethod): T;
