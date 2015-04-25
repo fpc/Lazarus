@@ -586,8 +586,6 @@ msgid "Main .lpr unit creates each form with Application.CreateForm(). They are 
 msgstr "La unidad principal .lpr crea cada formulario con Application.CreateForm(). También los libera automáticamente."
 
 #: lazarusidestrconsts.dlgautocreatenewforms
-#, fuzzy
-#| msgid "Auto-create new forms"
 msgid "When creating new forms, add them to auto-created forms"
 msgstr "Al crear formularios nuevos, añadirlos a formularios creados automáticamente"
 
@@ -1303,7 +1301,6 @@ msgid "Sub directory"
 msgstr "Subdirectorio"
 
 #: lazarusidestrconsts.dlgedcodetempl
-msgctxt "lazarusidestrconsts.dlgedcodetempl"
 msgid "Code Templates"
 msgstr "Plantillas de Código"
 
@@ -2248,7 +2245,6 @@ msgid "Mouse Action"
 msgstr "Acción de ratón"
 
 #: lazarusidestrconsts.dlgmouseoptbtn1
-msgctxt "lazarusidestrconsts.dlgmouseoptbtn1"
 msgid "Single"
 msgstr "Simple"
 
@@ -4702,7 +4698,6 @@ msgid "unusual characters"
 msgstr "caracteres no usuales"
 
 #: lazarusidestrconsts.lisccowarningcaption
-msgctxt "lazarusidestrconsts.lisccowarningcaption"
 msgid "Warning"
 msgstr "Advertencia"
 
@@ -6097,7 +6092,7 @@ msgid "Compile"
 msgstr "Compilar"
 
 #: lazarusidestrconsts.liscompilewithvdformoredetailscheckforduplicates
-#, fuzzy,badformat
+#, fuzzy
 #| msgid "%s -> Compile with -vd for more details. Check for duplicates."
 msgid "Compile with -vd for more details. Check for duplicates."
 msgstr "%s -> compilar con -vd para más detalles. Verifica si hay duplicados."
@@ -7092,7 +7087,6 @@ msgid "Disable/Enable updates for the entire window"
 msgstr "Desactivar/Activar actualiza toda la ventana"
 
 #: lazarusidestrconsts.lisdebug
-#, fuzzy
 msgctxt "lazarusidestrconsts.lisdebug"
 msgid "Debug"
 msgstr "Depurar"
@@ -8417,7 +8411,6 @@ msgid "Failed to save file."
 msgstr "Fallo al guardar archivo."
 
 #: lazarusidestrconsts.lisfatal
-msgctxt "lazarusidestrconsts.lisfatal"
 msgid "Fatal"
 msgstr "Fatal"
 
@@ -9045,7 +9038,6 @@ msgid "Hide with project option (-vm%s)"
 msgstr "Ocultar con opción de proyecto (-vm%s)"
 
 #: lazarusidestrconsts.lishint
-msgctxt "lazarusidestrconsts.lishint"
 msgid "Hint"
 msgstr "Indicación"
 
@@ -9311,7 +9303,6 @@ msgid "Import"
 msgstr "Importar ..."
 
 #: lazarusidestrconsts.lisimportant
-msgctxt "lazarusidestrconsts.lisimportant"
 msgid "Important"
 msgstr "Importante"
 
@@ -12352,7 +12343,6 @@ msgid "Not a valid Pascal identifier"
 msgstr "Identificador Pascal no valido"
 
 #: lazarusidestrconsts.lisnote
-msgctxt "lazarusidestrconsts.lisnote"
 msgid "Note"
 msgstr "Nota"
 
@@ -12775,7 +12765,6 @@ msgid "Page name \"%s\" already exists. Not added."
 msgstr "El nombre de página  \"%s\" ya existe. No se añade."
 
 #: lazarusidestrconsts.lispanic
-msgctxt "lazarusidestrconsts.lispanic"
 msgid "Panic"
 msgstr "Pánico"
 
@@ -15655,7 +15644,7 @@ msgstr "Sugerir nombre predeterminado del nuevo archivo en minúsculas"
 
 #: lazarusidestrconsts.lissupportutf8rtl
 msgid "Support UTF-8 RTL"
-msgstr ""
+msgstr "Soporte UTF-8 RTL"
 
 #: lazarusidestrconsts.lissuspiciousincludepath
 msgid "Suspicious include path"
@@ -17272,7 +17261,6 @@ msgid "Variable"
 msgstr "Variable"
 
 #: lazarusidestrconsts.lisverbose
-msgctxt "lazarusidestrconsts.lisverbose"
 msgid "Verbose"
 msgstr "Explicativo"
 
