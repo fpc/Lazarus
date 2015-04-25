@@ -56,6 +56,8 @@ type
   private
     FFileLoader: TDbgFileLoader;
     FImgReader: TDbgImageReader;
+    function GetAddressMapList: TDbgAddressMapList;
+    function GetSubFiles: TStrings;
     function GetImage64Bit: Boolean;
     function GetUUID: TGuid;
   protected
@@ -65,7 +67,7 @@ type
     property ImgReader: TDbgImageReader read FImgReader write FImgReader;
   public
     constructor Create; virtual;
-    constructor Create(AFileName: String);
+    constructor Create(AFileName: String; ADebugMap: TObject = nil);
     procedure ParseSymbolTable(AFpSymbolInfo: TfpSymbolList);
     {$ifdef USE_WIN_FILE_MAPPING}
     constructor Create(AFileHandle: THandle);
@@ -76,6 +78,12 @@ type
     Property Image64Bit: Boolean read GetImage64Bit;
     property UUID: TGuid read GetUUID;
     property Section[const AName: String]: PDbgImageSection read GetSection;
+    // On Darwin, the Dwarf-debuginfo is not linked into the main
+    // executable, but has to be read from the object files.
+    property SubFiles: TStrings read GetSubFiles;
+    // This is to map the addresses inside the object file
+    // to their corresponding addresses in the executable. (Darwin)
+    property AddressMapList: TDbgAddressMapList read GetAddressMapList;
   end;
 
   { TDbgImageLoaderList }
@@ -140,6 +148,22 @@ begin
     result := ImgReader.Image64Bit;
 end;
 
+function TDbgImageLoader.GetAddressMapList: TDbgAddressMapList;
+begin
+  if IsValid then
+    result := FImgReader.AddressMapList
+  else
+    result := nil
+end;
+
+function TDbgImageLoader.GetSubFiles: TStrings;
+begin
+  if IsValid then
+    result := FImgReader.SubFiles
+  else
+    result := nil;
+end;
+
 function TDbgImageLoader.GetUUID: TGuid;
 begin
   if assigned(FImgReader) then
@@ -161,10 +185,10 @@ begin
   inherited Create;
 end;
 
-constructor TDbgImageLoader.Create(AFileName: String);
+constructor TDbgImageLoader.Create(AFileName: String; ADebugMap: TObject = nil);
 begin
   FFileLoader := TDbgFileLoader.Create(AFileName);
-  FImgReader := GetImageReader(FFileLoader, True);
+  FImgReader := GetImageReader(FFileLoader, ADebugMap, True);
 end;
 
 procedure TDbgImageLoader.ParseSymbolTable(AFpSymbolInfo: TfpSymbolList);

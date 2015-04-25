@@ -16,6 +16,7 @@ uses
   DbgIntfBaseTypes,
   FpDbgLinuxExtra,
   FpDbgDwarfDataClasses,
+  FpImgReaderMacho,
   FpDbgInfo,
   MacOSAll,
   FpDbgUtil,
@@ -639,9 +640,12 @@ end;
 procedure TDbgDarwinProcess.InitializeLoaders;
 var
   dSYMFilename: string;
+  PrimaryLoader: TDbgImageLoader;
   ALoader: TDbgImageLoader;
 begin
-  LoaderList.Add(TDbgImageLoader.Create(FExecutableFilename));
+  ALoader:=nil;
+  PrimaryLoader := TDbgImageLoader.Create(FExecutableFilename);
+  LoaderList.Add(PrimaryLoader);
 
   // JvdS: Mach-O binaries do not contain DWARF-debug info. Instead this info
   // is stored inside the .o files, and the executable contains a map (in stabs-
@@ -657,13 +661,23 @@ begin
   if FileExists(dSYMFilename) then
     begin
     ALoader := TDbgImageLoader.Create(dSYMFilename);
-    if GUIDToString(ALoader.UUID)<>GUIDToString(LoaderList[0].UUID) then
-      log('The unique UUID''s of the executable and the dSYM bundle with debug-info ('+dSYMFilename+') do not match. This can lead to problems during debugging.', dllInfo);
+    if GUIDToString(ALoader.UUID)<>GUIDToString(PrimaryLoader.UUID) then
+      begin
+      log('The unique UUID''s of the executable and the dSYM bundle with debug-info ('+dSYMFilename+') do not match.', dllDebug);
+      FreeAndNil(ALoader);
+      end
+    else
+      begin
+      log('Load debug-info from dSYM bundle ('+dSYMFilename+').', dllDebug);
+      LoaderList.Add(ALoader);
+      end;
+    end;
 
-    LoaderList.Add(ALoader);
-    end
-  else
-    log('No dSYM bundle ('+dSYMFilename+') found.', dllInfo);
+  if not assigned(ALoader) then
+    begin
+    log('Read debug-info from separate object files.', dllDebug);
+    TDbgMachoDataSource.LoadSubFiles(PrimaryLoader.SubFiles, LoaderList);
+    end;
 end;
 
 function TDbgDarwinProcess.CreateThread(AthreadIdentifier: THandle; out IsMainThread: boolean): TDbgThread;

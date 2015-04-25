@@ -2897,6 +2897,8 @@ begin
 
   if LocationParser.ResultKind in [lseValue] then begin
     AnAddress := TargetLoc(LocationParser.ResultData);
+    if ATag=DW_AT_location then
+      AnAddress.Address :=CompilationUnit.MapAddressToNewValue(AnAddress.Address);
     Result := True;
   end
   else

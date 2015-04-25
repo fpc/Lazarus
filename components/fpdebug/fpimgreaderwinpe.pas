@@ -60,7 +60,7 @@ type
     class function isValid(ASource: TDbgFileLoader): Boolean; override;
     class function UserName: AnsiString; override;
   public
-    constructor Create(ASource: TDbgFileLoader; OwnSource: Boolean); override;
+    constructor Create(ASource: TDbgFileLoader; ADebugMap: TObject; OwnSource: Boolean); override;
     destructor Destroy; override;
     procedure ParseSymbolTable(AfpSymbolInfo: TfpSymbolList); override;
   end;
@@ -92,7 +92,7 @@ begin
   end;
 end;
 
-constructor TPEFileSource.Create(ASource: TDbgFileLoader; OwnSource: Boolean);
+constructor TPEFileSource.Create(ASource: TDbgFileLoader; ADebugMap: TObject; OwnSource: Boolean);
 begin
   FSections := TStringList.Create;
   FSections.Sorted := True;
@@ -102,7 +102,7 @@ begin
   FFileLoader:=ASource;
   FOwnLoader:=OwnSource;
   LoadSections;
-  inherited Create(ASource, OwnSource);  
+  inherited Create(ASource, ADebugMap, OwnSource);
 end;
 
 destructor TPEFileSource.Destroy;  

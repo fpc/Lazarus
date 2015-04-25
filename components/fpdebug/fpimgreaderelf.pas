@@ -75,7 +75,7 @@ type
   public
     class function isValid(ASource: TDbgFileLoader): Boolean; override;
     class function UserName: AnsiString; override;
-    constructor Create(ASource: TDbgFileLoader; OwnSource: Boolean); override;
+    constructor Create(ASource: TDbgFileLoader; ADebugMap: TObject; OwnSource: Boolean); override;
     destructor Destroy; override;
     procedure ParseSymbolTable(AFpSymbolInfo: TfpSymbolList); override;
 
@@ -292,7 +292,7 @@ begin
   Result := 'ELF executable';
 end;
 
-constructor TElfDbgSource.Create(ASource: TDbgFileLoader; OwnSource: Boolean);
+constructor TElfDbgSource.Create(ASource: TDbgFileLoader; ADebugMap: TObject; OwnSource: Boolean);
 var
   p: PDbgImageSectionEx;
   idx: integer;
@@ -320,7 +320,7 @@ begin
     FSections.Objects[idx] := TObject(p);
   end;
   SetImage64Bit(fElfFile.Is64Bit);
-  inherited Create(ASource, OwnSource);
+  inherited Create(ASource, ADebugMap, OwnSource);
 end;
 
 destructor TElfDbgSource.Destroy;

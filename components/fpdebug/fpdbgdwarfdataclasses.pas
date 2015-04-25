@@ -465,6 +465,7 @@ type
 
   TDwarfDebugFile = record
     Sections: array[TDwarfSection] of TDwarfSectionInfo;
+    AddressMapList: TDbgAddressMapList;
   end;
   PDwarfDebugFile = ^TDwarfDebugFile;
 
@@ -544,6 +545,8 @@ type
     function ReadValue(AAttribute: Pointer; AForm: Cardinal; out AValue: String): Boolean;
     function ReadValue(AAttribute: Pointer; AForm: Cardinal; out AValue: PChar): Boolean;
     function ReadValue(AAttribute: Pointer; AForm: Cardinal; out AValue: TByteDynArray): Boolean;
+    // Read a value that contains an address. The address is evaluated using MapAddressToNewValue
+    function ReadAddressValue(AAttribute: Pointer; AForm: Cardinal; out AValue: QWord): Boolean;
 
   public
     constructor Create(AOwner: TFpDwarfInfo; ADebugFile: PDwarfDebugFile; ADataOffset: QWord; ALength: QWord; AVersion: Word; AAbbrevOffset: QWord; AAddressSize: Byte; AIsDwarf64: Boolean); virtual;
@@ -554,6 +557,9 @@ type
     function GetLineAddress(const AFileName: String; ALine: Cardinal): TDbgPtr;
     procedure BuildLineInfo(AAddressInfo: PDwarfAddressInfo; ADoAll: Boolean);
     function FullFileName(const AFileName:string): String;
+    // On Darwin it could be that the debug-information is not included into the executable by the linker.
+    // This function is to map object-file addresses into the corresponding addresses in the executable.
+    function MapAddressToNewValue(AValue: QWord): QWord;
 
     property Valid: Boolean read FValid;
     property FileName: String read FFileName;
@@ -2677,7 +2683,10 @@ begin
   end
   else
   if (Form = DW_FORM_ref_addr) then begin
-    Result := FCompUnit.ReadValue(InfoData, Form, Offs);
+    if FCompUnit.Version=2 then
+      Result := FCompUnit.ReadAddressValue(InfoData, Form, Offs)
+    else
+      Result := FCompUnit.ReadValue(InfoData, Form, Offs);
     if not Result then
       exit;
     AValue := FCompUnit.DebugFile^.Sections[dsInfo].RawData + Offs;
@@ -2819,6 +2828,7 @@ begin
   SetLength(FFiles, ALoaderList.Count);
   for i := 0 to ALoaderList.Count-1 do
   begin
+    FFiles[i].AddressMapList:=ALoaderList[i].AddressMapList;
     for Section := Low(Section) to High(Section) do
     begin
       p := ALoaderList[i].Section[DWARF_SECTION_NAME[Section]];
@@ -3191,6 +3201,7 @@ begin
               if FOwner.FLineInfo.Addr64
               then FAddress := PQWord(pbyte(FLineInfoPtr)+1)^
               else FAddress := PLongWord(pbyte(FLineInfoPtr)+1)^;
+              FAddress:=FOwner.MapAddressToNewValue(FAddress);
             end;
             DW_LNE_define_file: begin
               // don't move pb, it's done at the end by instruction length
@@ -3437,10 +3448,10 @@ begin
         if (dafHasLowAddr in AttribList.Abbrev^.flags) and
            LocateAttribute(Scope.Entry, DW_AT_low_pc, AttribList, Attrib, Form)
         then begin
-          ReadValue(Attrib, Form, Info.StartPC);
+          ReadAddressValue(Attrib, Form, Info.StartPC);
 
           if LocateAttribute(Scope.Entry, DW_AT_high_pc, AttribList, Attrib, Form)
-          then ReadValue(Attrib, Form, Info.EndPC)
+          then ReadAddressValue(Attrib, Form, Info.EndPC)
           else Info.EndPC := Info.StartPC;
 
           // TODO (dafHasName in Abbrev.flags)
@@ -3652,10 +3663,10 @@ begin
   end;
 
   if LocateAttribute(Scope.Entry, DW_AT_low_pc, AttribList, Attrib, Form)
-  then ReadValue(Attrib, Form, FMinPC);
+  then ReadAddressValue(Attrib, Form, FMinPC);
 
   if LocateAttribute(Scope.Entry, DW_AT_high_pc, AttribList, Attrib, Form)
-  then ReadValue(Attrib, Form, FMaxPC);
+  then ReadAddressValue(Attrib, Form, FMaxPC);
 
   if FMinPC = 0 then FMinPC := FMaxPC;
   if FMaxPC = 0 then FMAxPC := FMinPC;
@@ -3984,6 +3995,29 @@ begin
   if AIncPointer then inc(AData, FAddressSize);
 end;
 
+function TDwarfCompilationUnit.MapAddressToNewValue(AValue: QWord): QWord;
+var
+  i: Integer;
+  AddrMap: TDbgAddressMap;
+begin
+  result := avalue;
+  if assigned(DebugFile^.AddressMapList) then
+    for i := 0 to DebugFile^.AddressMapList.Count-1 do
+    begin
+      AddrMap:=DebugFile^.AddressMapList[i];
+      if AddrMap.OrgAddr=AValue then
+      begin
+        result:=AddrMap.NewAddr;
+        break;
+      end
+      else if (AddrMap.OrgAddr<AValue) and (AValue<=(AddrMap.OrgAddr+AddrMap.Length)) then
+      begin
+        result:=AddrMap.NewAddr + (AValue-AddrMap.OrgAddr) ;
+        break;
+      end;
+    end;
+end;
+
 function TDwarfCompilationUnit.ReadValue(AAttribute: Pointer; AForm: Cardinal; out AValue: Cardinal): Boolean;
 begin
   Result := True;
@@ -4190,6 +4224,13 @@ begin
   SetLength(AValue, Size);
   if Size > 0 then
     Move(AAttribute^, AValue[0], Size);
+end;
+
+function TDwarfCompilationUnit.ReadAddressValue(AAttribute: Pointer; AForm: Cardinal; out AValue: QWord): Boolean;
+begin
+  result := ReadValue(AAttribute, AForm, AValue);
+  if result then
+    AValue := MapAddressToNewValue(AValue);
 end;
 
 initialization
