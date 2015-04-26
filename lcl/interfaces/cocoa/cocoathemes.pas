@@ -302,7 +302,10 @@ begin
       TP_BUTTON, TP_DROPDOWNBUTTON, TP_SPLITBUTTON:
         lCDToolbarItem.Kind := tikButton;
       TP_SPLITBUTTONDROPDOWN:
-        lCDToolbarItem.Kind := tikDropDownButtonArrow;
+      begin
+        lCDToolbarItem.Kind := tikDropDownButton;
+        lCDToolbarItem.SubpartKind := tiskArrow;
+      end
       //TP_SEPARATOR, TP_SEPARATORVERT, TP_DROPDOWNBUTTONGLYPH: // tikSeparator, tikDivider
     else
       Exit;
