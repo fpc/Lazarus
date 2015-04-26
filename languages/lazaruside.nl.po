@@ -11617,7 +11617,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lismenuedit
 msgid "&Edit"
-msgstr "&Bewerken"
+msgstr "B&ewerken"
 
 #: lazarusidestrconsts.lismenueditcodetemplates
 msgid "Code Templates ..."
