@@ -103,7 +103,7 @@ begin
   // widgets do not notify when they are modified programmatically.
   if GMsg.Grid<>nil then
     with TCustomGridAccess(GMsg.Grid) do
-      EditorTextChanged(Col, Row, Ch);
+      EditorTextChanged(Col, Row, GMsg.Value);
 end;
 
 class function TWSCustomGrid.InvalidateStartY(const FixedHeight, RowOffset: Integer): Integer;
