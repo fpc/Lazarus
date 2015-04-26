@@ -77,7 +77,6 @@ type
     destructor Destroy; override;
     procedure Clear;
     function EqualToolbars(Opts: TIDECoolBarOptions): boolean;
-    procedure Assign(Source: TIDECoolBarOptions);
     function Load(XMLConfig: TXMLConfig): Boolean;
     function Save(XMLConfig: TXMLConfig): Boolean;
   public
@@ -237,20 +236,6 @@ begin
     if not FIDECoolBarToolBars[I].Equals(Opts.FIDECoolBarToolBars[I]) then Exit(False);
 end;
 
-procedure TIDECoolBarOptions.Assign(Source: TIDECoolBarOptions);
-var
-  ToolBarOpt: TIDEToolBarOptions;
-  I: Integer;
-begin
-  FIDECoolBarToolBars.Clear;
-  for I := 0 to Source.FIDECoolBarToolBars.Count-1 do
-  begin
-    ToolBarOpt := TIDEToolBarOptions.Create;
-    ToolBarOpt.Assign(Source.FIDECoolBarToolBars[I]);
-    FIDECoolBarToolBars.Add(ToolBarOpt);
-  end;
-end;
-
 procedure TIDECoolBarOptions.CreateDefaultToolbars;
 var
   ToolBarOpts: TIDEToolBarOptions;
@@ -351,12 +336,12 @@ begin
   DefaultOpts := TDefaultCoolBarOptions.Create;
   try
     XMLConfig.DeletePath(BasePath);
-    if EqualToolbars(DefaultOpts) then Exit;
     XMLConfig.SetDeleteValue(BasePath + 'Visible/Value', FIDECoolBarVisible, True);
     XMLConfig.SetDeleteValue(BasePath + 'Width/Value', FIDECoolBarWidth, 0);
     XMLConfig.SetDeleteValue(BasePath + 'GrabStyle/Value', FIDECoolBarGrabStyle, 1);
     XMLConfig.SetDeleteValue(BasePath + 'GrabWidth/Value', FIDECoolBarGrabWidth, 5);
     XMLConfig.SetDeleteValue(BasePath + 'BorderStyle/Value', FIDECoolBarBorderStyle, 1);
+    if EqualToolbars(DefaultOpts) then Exit;
     if FIDECoolBarToolBars.Count > 0 then
     begin
       XMLConfig.SetDeleteValue(BasePath + 'ToolBarCount/Value', FIDECoolBarToolBars.Count, 0);
