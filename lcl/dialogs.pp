@@ -502,6 +502,8 @@ function MessageDlg(const aCaption, aMsg: string; DlgType: TMsgDlgType;
             Buttons: TMsgDlgButtons; HelpCtx: Longint): TModalResult; overload;
 function MessageDlg(const aCaption, aMsg: string; DlgType: TMsgDlgType;
             Buttons: TMsgDlgButtons; HelpCtx: Longint; DefaultButton: TMsgDlgBtn): TModalResult; overload;
+function MessageDlg(const aMsg: string; DlgType: TMsgDlgType;
+            Buttons: TMsgDlgButtons; HelpCtx: Longint; DefaultButton: TMsgDlgBtn): TModalResult; overload;
 function MessageDlg(const aCaption, aMsg: string; DlgType: TMsgDlgType;
             Buttons: TMsgDlgButtons; const HelpKeyword: string): TModalResult; overload;
 function MessageDlgPos(const aMsg: string; DlgType: TMsgDlgType;
