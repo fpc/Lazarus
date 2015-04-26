@@ -59,7 +59,7 @@ type
     property Items: TListViewDataList read fOriginalData;
   published
     property FilteredListview: TCustomListView read fFilteredListview write SetFilteredListview;
-    property ByAllFields: Boolean read fByAllFields write fByAllFields;
+    property ByAllFields: Boolean read fByAllFields write fByAllFields default False;
   end;
 
 var
