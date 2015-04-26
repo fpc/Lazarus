@@ -61,6 +61,10 @@ implementation
 uses
   LCLIntf;
 
+type
+  TCustomGridAccess=class(TCustomGrid)
+  end;
+
 { TWSCustomGrid }
 
 class procedure TWSCustomGrid.SendCharToEditor(AEditor:TWinControl;
@@ -94,6 +98,12 @@ begin
       TCustomCombobox(AEditor).SelStart:=UTF8Length(GMsg.Value);
     end;
   end;
+
+  // make sure the grid is notified that some text is changed, some
+  // widgets do not notify when they are modified programmatically.
+  if GMsg.Grid<>nil then
+    with TCustomGridAccess(GMsg.Grid) do
+      EditorTextChanged(Col, Row, Ch);
 end;
 
 class function TWSCustomGrid.InvalidateStartY(const FixedHeight, RowOffset: Integer): Integer;
