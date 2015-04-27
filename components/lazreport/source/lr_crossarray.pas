@@ -39,11 +39,32 @@ uses
 
 type
 
+  TVariantArray = array of Variant;
+
+  { TVariantList }
+
+  TVariantList = class
+  private
+    FItems:TVariantArray;
+    FCount: integer;
+    function GetItems(AIndex: integer): Variant;
+    procedure SetItems(AIndex: integer; AValue: Variant);
+  public
+    constructor Create;
+    destructor Destroy; override;
+    function Insert(AValue:Variant):integer;
+    function Find(AValue:Variant; out Index: Integer): Boolean;
+    function AsString(AIndex: Integer):string;
+    procedure Clear;
+    property Count:integer read FCount;
+    property Items[AIndex:integer]:Variant read GetItems write SetItems;
+  end;
+
   { TExItem }
 
   TExItem = class
   private
-    FCelCol:string;
+    FCelCol:Variant;
     FValue:Variant;
     FDataset: TDataset;
     FBookmark:TBookMark;
@@ -59,7 +80,7 @@ type
 
   TExRow = class(TFPList)
   private
-    FRow:string;
+    FRow:Variant;
     function GetCell(ACol: Variant): Variant;
     function GetCellData(ACol: Variant): TExItem;
     procedure SetCell(ACol: Variant; AValue: Variant);
@@ -77,15 +98,15 @@ type
     FColCount: integer;
     FRowCount: integer;
     FRows:TFPList;
-    FColHeader:TStringList;
-    FRowHeader:TStringList;
+    FRowHeader:TVariantList;
+    FColHeader:TVariantList;
     function GetCell(ACol, ARow: variant): variant;
     function GetCellData(ACol, ARow : variant): TExItem;
     function GetColCount: integer;
-    function GetColHeader(ACol: integer): string;
+    function GetColHeader(ACol: integer): Variant;
     function GetRowCount: integer;
-    function GetRowHeader(ARow: integer): string;
-    procedure SetCell(ACol, ARow: variant; AValue: variant);
+    function GetRowHeader(ARow: integer): Variant;
+    procedure SetCell(ACol, ARow: variant; AValue: Variant);
     function Find(ARow:variant; out Index: Integer): Boolean;
   public
     constructor Create;
@@ -95,14 +116,118 @@ type
     property CellData[ACol, ARow : variant]:TExItem read GetCellData;
     property ColCount:integer read GetColCount;
     property RowCount:integer read GetRowCount;
-    property ColHeader[ACol:integer]:string read GetColHeader;
-    property RowHeader[ARow:integer]:string read GetRowHeader;
+    property ColHeader[ACol:integer]:Variant read GetColHeader;
+    property RowHeader[ARow:integer]:Variant read GetRowHeader;
   end;
 
 implementation
 uses math, variants;
 
 { TExItem }
+
+function CompareVariant(AVal1, AVAl2:Variant):integer;
+begin
+  if AVal1>AVAl2 then
+    Result := 1
+  else
+  if AVal1<AVAl2 then
+    Result := -1
+  else
+    Result :=0;
+end;
+
+{ TVariantList }
+
+function TVariantList.GetItems(AIndex: integer): Variant;
+begin
+  if (AIndex>=0) and (AIndex < Count) then
+    Result:=FItems[AIndex]
+  else
+    raise Exception.CreateFmt('Index % out of bounds %d:%d', [AIndex, 0, Count-1]);
+end;
+
+procedure TVariantList.SetItems(AIndex: integer; AValue: Variant);
+begin
+  if (AIndex>=0) and (AIndex < Count) then
+    FItems[AIndex]:=AValue
+  else
+    raise Exception.CreateFmt('Index % out of bounds %d:%d', [AIndex, 0, Count-1]);
+end;
+
+constructor TVariantList.Create;
+begin
+  inherited Create;
+  SetLength(FItems, 10);
+  FCount:=0;
+end;
+
+destructor TVariantList.Destroy;
+begin
+  Clear;
+  SetLength(FItems, 0);
+  inherited Destroy;
+end;
+
+function TVariantList.Insert(AValue: Variant): integer;
+var
+  FIndex: Integer;
+  i: Integer;
+begin
+  if Length(FItems) = FCount  then
+    SetLength(FItems, FCount + 100);
+
+  if not Find(AValue, FIndex) then
+  begin
+    for i:=FCount-1 downto FIndex do
+      FItems[i+1]:=FItems[i];
+    FItems[FIndex]:=AValue;
+    Inc(FCount);
+  end;
+end;
+
+function TVariantList.Find(AValue: Variant; out Index: Integer): Boolean;
+var
+  L: Integer;
+  R: Integer;
+  I: Integer;
+  Dir: Integer;
+begin
+  Result := false;
+  // Use binary search.
+  L := 0;
+  R := Count - 1;
+  while L<=R do
+  begin
+    I := (L+R) div 2;
+    Dir := CompareVariant(FItems[i], AValue);
+    if Dir < 0 then
+      L := I+1
+    else
+    begin
+      R := I-1;
+      if Dir = 0 then
+      begin
+        Result := true;
+        L := I;
+      end;
+    end;
+  end;
+  Index := L;
+end;
+
+function TVariantList.AsString(AIndex: Integer): string;
+begin
+  Result:=VarToStr(GetItems(AIndex));
+end;
+
+procedure TVariantList.Clear;
+var
+  i: Integer;
+begin
+  for i:=0 to FCount-1 do
+   FItems[i]:=null;
+  FCount:=0;
+end;
 
 procedure TExItem.SaveBookmark(Ds: TDataset);
 begin
@@ -165,7 +290,6 @@ end;
 function TExRow.Find(ACol: Variant; out Index: Integer): Boolean;
 var
   I,L,R,Dir: Integer;
-  S1, S2:string;
 begin
   Result := false;
   // Use binary search.
@@ -174,10 +298,7 @@ begin
   while L<=R do
   begin
     I := (L+R) div 2;
-//    Dir := CompareStr(TExItem(Items[i]).FCelCol, VarToStr(ACol));
-    S1:=TExItem(Items[i]).FCelCol;
-    S2:=VarToStr(ACol);
-    Dir := CompareStr(S1, S2);
+    Dir := CompareVariant(TExItem(Items[i]).FCelCol,ACol);
     if Dir < 0 then
       L := I+1
     else
@@ -232,12 +353,12 @@ begin
   Result:=FColHeader.Count;
 end;
 
-function TExVarArray.GetColHeader(ACol: integer): string;
+function TExVarArray.GetColHeader(ACol: integer): Variant;
 begin
   if (ACol>=0) and (ACol<FColHeader.Count) then
-    Result:=FColHeader[ACol]
+    Result:=FColHeader.Items[ACol]
   else
-    Result:='';
+    Result:=null;
 end;
 
 function TExVarArray.GetRowCount: integer;
@@ -245,15 +366,15 @@ begin
   Result:=FRowHeader.Count;
 end;
 
-function TExVarArray.GetRowHeader(ARow: integer): string;
+function TExVarArray.GetRowHeader(ARow: integer): Variant;
 begin
   if (ARow>=0) and (ARow<FRowHeader.Count) then
-    Result:=FRowHeader[ARow]
+    Result:=FRowHeader.Items[ARow]
   else
-    Result:='';
+    Result:=null;
 end;
 
-procedure TExVarArray.SetCell(ACol, ARow: variant; AValue: variant);
+procedure TExVarArray.SetCell(ACol, ARow: variant; AValue: Variant);
 var
   R:TExRow;
   i:integer;
@@ -270,32 +391,25 @@ begin
   FRowCount:=Max(FRowCount, FRows.Count);
   FColCount:=Max(FColCount, R.Count);
 
-  i:=FColHeader.IndexOf(VarToStr(ACol));
-  if i<0 then
-    FColHeader.Add(VarToStr(ACol));
+  if not FColHeader.Find(ACol, i) then
+    FColHeader.Insert(ACol);
 
-  i:=FRowHeader.IndexOf(VarToStr(ARow));
-  if i<0 then
-    FRowHeader.Add(VarToStr(ARow));
-
+  if not FRowHeader.Find(ARow, i) then
+    FRowHeader.Insert(ARow);
 end;
 
 function TExVarArray.Find(ARow: variant; out Index: Integer): Boolean;
 var
   I,L,R,Dir: Integer;
-  S1, S2:string;
 begin
   Result := false;
   // Use binary search.
   L := 0;
   R := FRows.Count - 1;
-  S2:=VarToStr(ARow);
   while L<=R do
   begin
     I := (L+R) div 2;
-//    Dir := CompareStr(TExRow(FRows[i]).FRow, VarToStr(ARow));
-    S1:=TExRow(FRows[i]).FRow;
-    Dir := CompareStr(S1, S2);
+    Dir := CompareVariant(TExRow(FRows[i]).FRow, ARow);
     if Dir < 0 then
       L := I+1
     else
@@ -316,10 +430,8 @@ constructor TExVarArray.Create;
 begin
   inherited Create;
   FRows:=TFPList.Create;
-  FColHeader:=TStringList.Create;
-  FColHeader.Sorted:=true;
-  FRowHeader:=TStringList.Create;
-  FRowHeader.Sorted:=true;
+  FColHeader:=TVariantList.Create;
+  FRowHeader:=TVariantList.Create;
 end;
 
 destructor TExVarArray.Destroy;

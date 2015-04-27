@@ -303,9 +303,9 @@ var
   FD:TField;
   FR:TField;
   FC:TField;
-  S, SR, SC: String;
+  S: String;
   P:TBookMark;
-  V, VT:Variant;
+  V, VT, SR, SC:Variant;
   FCalcTotal:boolean;
   j: Integer;
   i: Integer;
@@ -383,7 +383,7 @@ begin
     begin
       if FCalcTotal then
       begin
-        V:=FExVarArray.Cell[FC.DisplayText, FR.DisplayText];
+        V:=FExVarArray.Cell[FC.Value, FR.Value];
         if V = null then
         begin
           if FuncNo in [2,3] then
@@ -391,12 +391,12 @@ begin
           else
             V:=0;
         end;
-        FExVarArray.Cell[FC.DisplayText, FR.DisplayText]:=DoFunc(V, FD.AsFloat);
+        FExVarArray.Cell[FC.Value, FR.Value]:=DoFunc(V, FD.AsFloat);
       end
       else
-        FExVarArray.Cell[FC.DisplayText, FR.DisplayText]:=FD.DisplayText;
+        FExVarArray.Cell[FC.Value, FR.Value]:=FD.DisplayText;
 
-      ExItem:=FExVarArray.CellData[FC.DisplayText, FR.DisplayText];
+      ExItem:=FExVarArray.CellData[FC.Value, FR.Value];
       if Assigned(ExItem) then
         ExItem.SaveBookmark(FData);
       FData.Next;
@@ -545,10 +545,10 @@ end;
 
 procedure TlrCrossView.OnEnterRect(AMemo: TStringList; AView: TfrView);
 var
-  S, SC, SR: String;
+  S: String;
   ColNo: Integer;
   RecNo: Integer;
-  V : Variant;
+  V, SC, SR : Variant;
   ExItem:TExItem;
 begin
   ColNo:=FBandCrossRowRT.Parent.DataSet.RecNo;
@@ -867,7 +867,12 @@ begin
   FPage.ColCount := 1;
 
   FPage.PlayFrom := 0;
-  FPage.PlayRecList;
+  while FPage.PlayFrom < FPage.List.Count do
+  begin
+    FPage.PlayRecList;
+{    if FPage.List.Count > FPage.PlayFrom  then
+      FPage.NewPage;}
+  end;
 
   FPage.DoneReport;
   FPage.Free;

@@ -80,6 +80,7 @@ type
   end;
 
 implementation
+uses LR_Utils;
 
 // missing cairo functions to make shared images posible
 const
@@ -767,7 +768,12 @@ begin
   if fCairoPrinter.Canvas.Font.Orientation<>0 then
     fCairoPrinter.Canvas.TextRect(R, nx, R.Bottom, Text, aStyle)
   else
-    fCairoPrinter.Canvas.TextRect(R, R.Left, ny, Text, aStyle);
+  begin
+    if TfrMemoView_(View).Justify and not TfrMemoView_(View).LastLine then
+      CanvasTextRectJustify(fCairoPrinter.Canvas, R, nx, R.Right, ny, Text, true)
+    else
+      fCairoPrinter.Canvas.TextRect(R, {R.Left} nx, ny, Text, aStyle);
+  end;
 
   // restore previous clipping
   //if OldClipping then

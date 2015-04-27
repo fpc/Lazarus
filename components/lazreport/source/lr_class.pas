@@ -23,6 +23,9 @@ uses
   LazLoggerBase;
 
 const
+  lrMaxBandsInReport       = 256; //temp fix. in future need remove this limit
+
+const
 // object flags
   flStretched              = $01;
   flWordWrap               = $02;
@@ -396,8 +399,6 @@ type
   end;
 
 
-  { TfrMemoView }
-
   { TfrCustomMemoView }
 
   TfrCustomMemoView = class(TfrStretcheable)
@@ -409,6 +410,7 @@ type
     FOnClick: TfrScriptStrings;
     FOnMouseEnter: TfrScriptStrings;
     FOnMouseLeave: TfrScriptStrings;
+    FParagraphGap: integer;
 
     function GetAlignment: TAlignment;
     function GetAngle: Byte;
@@ -471,6 +473,7 @@ type
     HighlightStr: String;
     LineSpacing, CharacterSpacing: Integer;
     LastLine: boolean; // are we painting/exporting the last line?
+    FirstLine: boolean;
     
     constructor Create(AOwnerPage:TfrPage); override;
     destructor Destroy; override;
@@ -502,6 +505,7 @@ type
     property OnClick   : TfrScriptStrings read FOnClick write SetOnClick;
     property OnMouseEnter : TfrScriptStrings read FOnMouseEnter write SetOnMouseEnter;
     property OnMouseLeave : TfrScriptStrings read FOnMouseLeave write SetOnMouseLeave;
+    property ParagraphGap : integer read FParagraphGap write FParagraphGap;
   end;
 
   TfrMemoView = class(TfrCustomMemoView)
@@ -527,6 +531,7 @@ type
     property Format;
     property FormatStr;
     property Restrictions;
+    property ParagraphGap;
     property OnClick;
     property OnMouseEnter;
     property OnMouseLeave;
@@ -587,8 +592,13 @@ type
   { TfrSubReportView }
 
   TfrSubReportView = class(TfrView)
+  private
+    FSubPageIndex: Integer; //temp var for find page on load
+    FSubPage : TfrPage;
+  protected
+    procedure AfterLoad;override;
   public
-    SubPage: Integer;
+    //SubPage: Integer;
     constructor Create(AOwnerPage:TfrPage); override;
     procedure Assign(Source: TPersistent); override;
     procedure Draw(aCanvas: TCanvas); override;
@@ -597,6 +607,7 @@ type
     procedure SaveToStream(Stream: TStream); override;
     procedure SaveToXML(XML: TLrXMLConfig; const Path: String); override;
     procedure DefinePopupMenu({%H-}Popup: TPopupMenu); override;
+    property SubPage : TfrPage read FSubPage write FSubPage;
   published
     property Restrictions;
   end;
@@ -695,8 +706,7 @@ type
     Flags: Word;
     Next, Prev: TfrBand;
     SubIndex, MaxY: Integer;
-    EOFReached: Boolean;
-    EOFArr: Array[0..31] of Boolean;
+    EOFArr: Array[0..lrMaxBandsInReport - 1] of Boolean;
     Positions: Array[TfrDatasetPosition] of Integer;
     LastGroupValue: Variant;
     HeaderBand, FooterBand, LastBand: TfrBand;
@@ -729,6 +739,7 @@ type
     procedure ResetLastValues;
     function getName: string;
   public
+    EOFReached: Boolean;
     MaxDY: Integer;
 
     Typ: TfrBandType;
@@ -783,7 +794,6 @@ type
 
   TfrPage = class(TfrObject)
   private
-    Bands             : Array[TfrBandType] of TfrBand;
     fColCount         : Integer;
     fColGap           : Integer;
     fColWidth         : Integer;
@@ -799,7 +809,6 @@ type
     CurColumn         : Integer;
     LastStaticColumnY : Integer;
     XAdjust           : Integer;
-    List              : TFpList;
     LastBand          : TfrBand;
     ColPos            : Integer;
     CurPos            : Integer;
@@ -810,11 +819,15 @@ type
     procedure ClearRecList;
     procedure DrawPageFooters;
     function BandExists(b: TfrBand): Boolean;
+    function GetPageIndex: integer;
     procedure LoadFromStream(Stream: TStream);
     procedure SaveToStream(Stream: TStream);
+    procedure SetPageIndex(AValue: integer);
 
     procedure ShowBand(b: TfrBand);
   protected
+    List              : TFpList;
+    Bands             : Array[TfrBandType] of TfrBand;
     Mode              : TfrPageMode;
     PlayFrom          : Integer;
     function PlayRecList: Boolean;
@@ -878,6 +891,7 @@ type
     property Script;
     property Height;
     property Width;
+    property PageIndex:integer read GetPageIndex write SetPageIndex;
   end;
 
   TFrPageClass = Class of TfrPage;
@@ -949,8 +963,9 @@ type
     destructor Destroy; override;
 
     procedure Clear;
-    procedure Add(const aClassName : string='TfrPageReport');
+    function Add(const aClassName : string='TfrPageReport'):TfrPage;
     procedure Delete(Index: Integer);
+    procedure Move(OldIndex, NewIndex: Integer);
     procedure LoadFromStream(Stream: TStream);
     procedure LoadFromXML(XML: TLrXMLConfig; const Path: String);
     procedure SaveToStream(Stream: TStream);
@@ -1701,7 +1716,11 @@ begin
       frObj := CurReport.FindObject(FObjName);
 
     if Assigned(frObj) then
+    begin
       Result:=GetPropInfo(frObj, PropName); //Retreive property informations
+      if not Assigned(Result) then
+        IsCustomProp(PropName, PropIndex);
+    end;
 
   end;
 end;
@@ -2077,7 +2096,7 @@ begin
       DebugLn('Error: ', e.message,'. Hyphenation support will be disabled');
   end;
 end;
-
+{
 procedure CanvasTextRectJustify(const Canvas:TCanvas;
   const ARect: TRect; X1, X2, Y: integer; const Text: string;
   Trimmed: boolean);
@@ -2154,7 +2173,7 @@ begin
 
   SetLength(Arr, 0);
 end;
-
+}
 { TlrDetailReports }
 
 function TlrDetailReports.GetItems(AReportName: string): TlrDetailReport;
@@ -3296,6 +3315,7 @@ begin
   FOnMouseEnter:=TfrScriptStrings.Create;
   FOnMouseLeave:=TfrScriptStrings.Create;
   FFindHighlight:=false;
+  FParagraphGap:=0;
 
   Typ := gtMemo;
   FFont := TFont.Create;
@@ -3425,6 +3445,7 @@ begin
     FOnMouseLeave.Assign(TfrCustomMemoView(Source).FOnMouseLeave);
     FDetailReport:=TfrCustomMemoView(Source).FDetailReport;
     FCursor:=TfrCustomMemoView(Source).FCursor;
+    FParagraphGap:=TfrCustomMemoView(Source).FParagraphGap;
   end;
 end;
 
@@ -3557,6 +3578,8 @@ var
     {$ENDIF}
     SMemo.Add(str + Chr(w div 256) + Chr(w mod 256));
     Inc(size, size1);
+    //!!
+    maxWidth := dx - gapx - gapx;
   end;
 
   procedure WrapLine(const s: String);
@@ -3704,13 +3727,14 @@ var
   begin
     size := y + gapy;
     size1 := -WCanvas.Font.Height + LineSpacing;
-    maxWidth := dx - gapx - gapx;
+//    maxWidth := dx - gapx - gapx;
     {$IFDEF DebugLR}
     DebugLn('OutMemo I: Size=%d Size1=%d MaxWidth=%d DIM:%d %d %d %d gapxy:%d %d',
       [Size,Size1,MaxWidth,x,y,dx,dy,gapx,gapy]);
     {$ENDIF}
     for i := 0 to Memo1.Count - 1 do
     begin
+      maxWidth := dx - gapx - gapx - FParagraphGap;
       if (Flags and flWordWrap) <> 0 then
         WrapLine(Memo1[i])
       else
@@ -3777,6 +3801,7 @@ var
   var
     i: Integer;
     curyf, thf, linespc: double;
+    FTmpFL:boolean;
 
     function OutLine(st: String): Boolean;
     var
@@ -3803,8 +3828,12 @@ var
         SetLength(St, n - 2);
         if Length(St) > 0 then
         begin
+          FTmpFL:=false;
           if St[Length(St)] = #1 then
-            SetLength(St, Length(St) - 1)
+          begin
+            FTmpFL:=true;
+            SetLength(St, Length(St) - 1);
+          end
           else
             LastLine := false;
         end;
@@ -3847,12 +3876,27 @@ var
         if not Exporting then
         begin
           if Justify and not LastLine then
-            CanvasTextRectJustify(Canvas, DR, x+gapx, x+dx-1-gapx, round(CurYf), St, true)
+          begin
+            if FirstLine then
+              CanvasTextRectJustify(Canvas, DR, x+gapx + FParagraphGap, x+dx-1-gapx, round(CurYf), St, true)
+            else
+              CanvasTextRectJustify(Canvas, DR, x+gapx, x+dx-1-gapx, round(CurYf), St, true)
+          end
           else
-            Canvas.TextRect(DR, CurX, round(curYf), St);
+          begin
+            if FirstLine then
+              Canvas.TextRect(DR, CurX + FParagraphGap, round(curYf), St)
+            else
+              Canvas.TextRect(DR, CurX, round(curYf), St);
+          end;
         end
         else
-          CurReport.InternalOnExportText(X, round(curYf), St, Self);
+        begin
+          if FirstLine then
+            CurReport.InternalOnExportText(X + FParagraphGap, round(curYf), St, Self)
+          else
+            CurReport.InternalOnExportText(X, round(curYf), St, Self);
+        end;
 
         Inc(CurStrNo);
         Result := False;
@@ -3861,6 +3905,7 @@ var
         Result := True;
 
       curyf := curyf + thf;
+      FirstLine:=FTmpFL;
     end;
 
   begin {OutMemo}
@@ -3868,7 +3913,8 @@ var
     begin
       if Layout=tlCenter then
         y:=y+(dy-VHeight) div 2
-      else if Layout=tlBottom then
+      else
+      if Layout=tlBottom then
         y:=y+dy-VHeight;
     end;
     curyf := y + gapy;
@@ -3885,6 +3931,9 @@ var
       [curyf, thf, Canvas.Font.Height, Canvas.Textheight('H'), dbgs(DR), Memo1.Count]);
     {$ENDIF}
     CurStrNo := 0;
+
+    FirstLine:=true;
+
     for i := 0 to Memo1.Count - 1 do
       if OutLine(Memo1[i]) then
         break;
@@ -4356,6 +4405,7 @@ begin
       frReadMemo(Stream, FOnMouseEnter);
       frReadMemo(Stream, FOnMouseLeave);
       FDetailReport:=frReadString(Stream);
+      Stream.Read(FParagraphGap, SizeOf(FParagraphGap));
     end;
 
   end;
@@ -4393,6 +4443,7 @@ begin
   FOnMouseLeave.Text:= XML.GetValue(Path+'Data/OnMouseLeave/Value', '');
 
   FDetailReport:= XML.GetValue(Path+'Data/DetailReport/Value', '');
+  FParagraphGap:=XML.GetValue(Path+'Data/ParagraphGap/Value', 0);
 end;
 
 procedure TfrCustomMemoView.SaveToStream(Stream: TStream);
@@ -4433,6 +4484,7 @@ begin
     frWriteMemo(Stream, FOnMouseEnter);
     frWriteMemo(Stream, FOnMouseLeave);
     frWriteString(Stream, FDetailReport);
+    Stream.Write(FParagraphGap, SizeOf(FParagraphGap));
   end;
 end;
 
@@ -4463,6 +4515,7 @@ begin
   XML.SetValue(Path+'Data/OnMouseLeave/Value', FOnMouseLeave.Text);
 
   XML.SetValue(Path+'Data/DetailReport/Value', FDetailReport);
+  XML.SetValue(Path+'Data/ParagraphGap/Value', FParagraphGap);
 end;
 
 procedure TfrCustomMemoView.GetBlob(b: TfrTField);
@@ -5258,6 +5311,12 @@ begin
     Parent.Visible := Avalue;
 end;
 
+procedure TfrSubReportView.AfterLoad;
+begin
+  inherited AfterLoad;
+  FSubPage:= CurReport.Pages[FSubPageIndex];
+end;
+
 {----------------------------------------------------------------------------}
 constructor TfrSubReportView.Create(AOwnerPage: TfrPage);
 begin
@@ -5270,7 +5329,7 @@ procedure TfrSubReportView.Assign(Source: TPersistent);
 begin
   inherited Assign(Source);
   if Source is TfrSubReportView then
-    SubPage := TfrSubReportView(Source).SubPage;
+    FSubPage := TfrSubReportView(Source).FSubPage;
 end;
 
 procedure TfrSubReportView.Draw(aCanvas: TCanvas);
@@ -5291,8 +5350,7 @@ begin
     Brush.Color := clWhite;
     Rectangle(x, y, x + dx + 1, y + dy + 1);
     Brush.Style := bsClear;
-    TextRect(DRect, x + 2, y + 2, sSubReportOnPage + ' ' +
-      IntToStr(SubPage + 1));
+    TextRect(DRect, x + 2, y + 2, sSubReportOnPage + ' ' + IntToStr(SubPage.PageIndex + 1));
   end;
   RestoreCoord;
 end;
@@ -5305,13 +5363,13 @@ end;
 procedure TfrSubReportView.LoadFromStream(Stream: TStream);
 begin
   inherited LoadFromStream(Stream);
-  Stream.Read(SubPage, 4);
+  Stream.Read(FSubPageIndex, 4);
 end;
 
 procedure TfrSubReportView.LoadFromXML(XML: TLrXMLConfig; const Path: String);
 begin
   inherited LoadFromXML(XML, Path);
-  SubPage := XML.GetValue(Path+'SubPage/Value'{%H-}, 0); // todo chk
+  FSubPageIndex := XML.GetValue(Path+'SubPage/Value'{%H-}, 0); // todo chk
 end;
 
 procedure TfrSubReportView.SaveToStream(Stream: TStream);
@@ -5323,7 +5381,8 @@ end;
 procedure TfrSubReportView.SaveToXML(XML: TLrXMLConfig; const Path: String);
 begin
   inherited SaveToXML(XML, Path);
-  XML.SetValue(Path+'SubPage/Value'{%H-}, SubPage);
+  FSubPageIndex:=FSubPage.PageIndex;
+  XML.SetValue(Path+'SubPage/Value'{%H-}, FSubPageIndex);
 end;
 
 {----------------------------------------------------------------------------}
@@ -6220,7 +6279,7 @@ begin
     t :=TfrView(Objects[i]);
     if t is TfrSubReportView then
     begin
-      Page := CurReport.Pages[(t as TfrSubReportView).SubPage];
+      Page := (t as TfrSubReportView).SubPage;
       Page.Mode := pmBuildList;
       Page.FormPage;
       Page.CurY := y + t.y;
@@ -6247,7 +6306,7 @@ begin
         t :=TfrView(Objects[i]);
         if t is TfrSubReportView then
         begin
-          Page := CurReport.Pages[(t as TfrSubReportView).SubPage];
+          Page := (t as TfrSubReportView).SubPage;
           Page.CurY := Parent.CurY;
           Page.CurBottomY := Parent.CurBottomY;
         end;
@@ -6259,7 +6318,7 @@ begin
       t :=TfrView(Objects[i]);
       if (t is TfrSubReportView) and (not EOFArr[i - SubIndex]) then
       begin
-        Page := CurReport.Pages[(t as TfrSubReportView).SubPage];
+        Page := (t as TfrSubReportView).SubPage;
         if Page.PlayRecList then
           EOFReached := False
         else
@@ -6288,7 +6347,7 @@ begin
     t :=TfrView(Objects[i]);
     if t is TfrSubReportView then
     begin
-      Page := CurReport.Pages[(t as TfrSubReportView).SubPage];
+      Page := (t as TfrSubReportView).SubPage;
       Page.ClearRecList;
     end;
   end;
@@ -7311,7 +7370,7 @@ var
   bt, t: TfrView;
   Bnd, Bnd1: TfrBand;
   FirstBand, Flag: Boolean;
-  BArr: Array[0..31] of TfrBand;
+  BArr: Array[0..lrMaxBandsInReport - 1] of TfrBand;
   s: String;
 begin
   for i := 0 to Objects.Count - 1 do
@@ -7337,7 +7396,7 @@ begin
     t.Parent := nil;
     frInterpretator.PrepareScript(t.Script, t.Script, SMemo);
     if t.Typ = gtSubReport then
-      CurReport.Pages[(t as TfrSubReportView).SubPage].Skip := True;
+      (t as TfrSubReportView).SubPage.Skip := True;
   end;
   Flag := False;
   for i := 0 to RTObjects.Count - 1 do // search for btCrossXXX bands
@@ -7931,7 +7990,7 @@ begin
   RowStarted := result;
 end;
 
-procedure TfrPage.DoAggregate(a: Array of TfrBandType);
+procedure TfrPage.DoAggregate(a: array of TfrBandType);
 var
   i: Integer;
   procedure DoAggregate1(bt: TfrBandType);
@@ -8328,6 +8387,11 @@ begin
   Result := b.Objects.Count > 0;
 end;
 
+function TfrPage.GetPageIndex: integer;
+begin
+  Result:=CurReport.Pages.FPages.IndexOf(Self);
+end;
+
 procedure TfrPage.AfterPrint;
 var
   i: Integer;
@@ -8421,6 +8485,12 @@ begin
   end;
 end;
 
+procedure TfrPage.SetPageIndex(AValue: integer);
+begin
+  if (AValue>-1) and (AValue < CurReport.Pages.Count) and (GetPageIndex <> AValue) then
+    CurReport.Pages.Move(GetPageIndex, AValue);
+end;
+
 procedure TfrPage.SavetoXML(XML: TLrXMLConfig; const Path: String);
 begin
   Inherited SavetoXML(XML,Path);
@@ -8472,30 +8542,36 @@ begin
   FPages.Clear;
 end;
 
-procedure TfrPages.Add(const aClassName : string='TfrPageReport');
-Var Pg : TFrPage;
-    Rf : TFrPageClass;
+function TfrPages.Add(const aClassName: string): TfrPage;
+var
+  Rf : TFrPageClass;
 begin
-  Pg:=nil;
-  
+  Result := nil;
+
   Rf:=TFrPageClass(GetClass(aClassName));
   if Assigned(Rf) then
   begin
-    Pg:=Rf.CreatePage;
+    Result := Rf.CreatePage;
     
-    if Assigned(Pg) then
+    if Assigned(Result) then
     begin
-      Pg.CreateUniqueName;
-      FPages.Add(Pg);
+      Result.CreateUniqueName;
+      FPages.Add(Result);
     end;
   end
-  else showMessage(Format('Class %s not found',[aClassName]))
+  else
+    ShowMessage(Format('Class %s not found',[aClassName]))
 end;
 
 procedure TfrPages.Delete(Index: Integer);
 begin
   Pages[Index].Free;
   FPages.Delete(Index);
+end;
+
+procedure TfrPages.Move(OldIndex, NewIndex: Integer);
+begin
+  FPages.Move(OldIndex, NewIndex);
 end;
 
 procedure TfrPages.LoadFromStream(Stream: TStream);

@@ -103,7 +103,7 @@ implementation
 {$R lr_zeos_img.res}
 
 uses LR_Utils, DBPropEdits, PropEdits, LazarusPackageIntf, ZDbcIntfs, types,
-  lr_EditParams, Forms, Controls, variants, Dialogs;
+  lr_EditParams, Forms, Controls, variants, Dialogs, strutils;
 
 var
   lrBMP_ZQuery:TBitmap = nil;
@@ -316,6 +316,9 @@ end;
 procedure TLRZQuery.AfterLoad;
 var
   D:TComponent;
+  SPage: String;
+  S: String;
+  Z: TLRZConnection;
 begin
   D:=frFindComponent(OwnerForm, DataSource);
   if Assigned(D) and (D is TDataSource)then
@@ -326,6 +329,21 @@ begin
   begin
     TZQuery(DataSet).Connection:=TZConnection(D);
     DataSet.Active:=FActive;
+  end
+  else
+  if Assigned(CurReport) then
+  begin
+    S:=FDatabase;
+    if Pos('.', S)>0 then
+      SPage:=Copy2SymbDel(S, '.')
+    else
+      SPage:='';
+    Z:=CurReport.FindObject(S) as TLRZConnection;
+    if Assigned(Z) then
+    begin
+      TZQuery(DataSet).Connection:=Z.FZConnection;
+      DataSet.Active:=FActive;
+    end
   end;
 end;
 
@@ -339,7 +357,7 @@ begin
   DataSet.Active:=false;
   D:=frFindComponent(TZQuery(DataSet).Owner, FDatabase);
   if Assigned(D) and (D is TZConnection)then
-    TZQuery(DataSet).Connection:=TZConnection(D);
+    TZQuery(DataSet).Connection:=TZConnection(D)
 end;
 
 procedure TLRZQuery.ZQueryBeforeOpen(ADataSet: TDataSet);
@@ -610,9 +628,31 @@ end;
 
 { TLRZQueryDataBaseProperty }
 procedure TLRZQueryDataBaseProperty.FillValues(const Values: TStringList);
+var
+  i: Integer;
+  j: Integer;
+  S: String;
 begin
   if (GetComponent(0) is TLRZQuery) then
+  begin
     frGetComponents(nil, TZConnection, Values, nil);
+
+    if Assigned(CurReport) then
+    begin
+      for i:=0 to CurReport.Pages.Count-1 do
+        if CurReport.Pages[i] is TfrPageDialog then
+        begin
+          for j:=0 to CurReport.Pages[i].Objects.Count-1 do
+          begin
+            if TfrObject(CurReport.Pages[i].Objects[j]) is TLRZConnection then
+            begin
+              S:=CurReport.Pages[i].Name+'.'+TLRDataSetControl(CurReport.Pages[i].Objects[j]).lrDBDataSet.Name;
+              Values.Add(S);
+            end;
+          end;
+        end;
+    end;
+  end;
 end;
 
 
