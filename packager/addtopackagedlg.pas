@@ -1176,7 +1176,8 @@ begin
     ClassNameEdit.Text:=IDEComponentPalette.CreateNewClassName(
                                                  fLastNewComponentAncestorType);
   // choose the same page name
-  if (PalettePageCombobox.Text='') and (PkgComponent<>nil) then
+  if (PalettePageCombobox.Text='')
+  and (PkgComponent<>nil) and (PkgComponent.RealPage<>nil) then
     PalettePageCombobox.Text:=PkgComponent.RealPage.PageName;
   // filename
   AutoCompleteNewComponentUnitName;
