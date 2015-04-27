@@ -1009,10 +1009,11 @@ begin
     OldWidget := nil
   else
     OldWidget := GetFirstQtObjectFromWidgetH(aold);
-  if (ANew <> nil) and not QWidget_isVisible(ANew) then
-    NewWidget := nil
+
+  if (ANew <> nil) then
+    NewWidget := GetFirstQtObjectFromWidgetH(anew)
   else
-    NewWidget := GetFirstQtObjectFromWidgetH(anew);
+    NewWidget := nil;
 
   if OldWidget = NewWidget then
   begin
