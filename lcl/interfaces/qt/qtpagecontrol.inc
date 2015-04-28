@@ -69,8 +69,8 @@ begin
   if not Assigned(APage.Parent) or not APage.Parent.HandleAllocated then
     exit;
   AParent := TQtWidget(APage.Parent.Handle);
-  if AParent.ChildOfComplexWidget = ccwTTabControl then
-    exit;
+  if not (AParent is TQtTabWidget) then
+      exit;
   ATabWidget := TQtTabWidget(AParent);
 
   AColor.Alpha := 0;
