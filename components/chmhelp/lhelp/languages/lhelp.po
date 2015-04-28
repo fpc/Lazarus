@@ -49,6 +49,10 @@ msgstr ""
 msgid "&Help"
 msgstr ""
 
+#: lhelpstrconsts.slhelp_helpfileschmchmallfiles
+msgid "Help files (*.chm)|*.chm|All files (*.*)|*"
+msgstr ""
+
 #: lhelpstrconsts.slhelp_helpshowthisinformation
 msgid "    --help     :  Show this information"
 msgstr ""
@@ -111,6 +115,10 @@ msgstr ""
 
 #: lhelpstrconsts.slhelp_open
 msgid "&Open ..."
+msgstr ""
+
+#: lhelpstrconsts.slhelp_openexistingfile
+msgid "Open existing file"
 msgstr ""
 
 #: lhelpstrconsts.slhelp_openrecent

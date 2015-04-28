@@ -59,6 +59,10 @@ msgstr "Keresés"
 msgid "&Help"
 msgstr "&Súgó"
 
+#: lhelpstrconsts.slhelp_helpfileschmchmallfiles
+msgid "Help files (*.chm)|*.chm|All files (*.*)|*"
+msgstr ""
+
 #: lhelpstrconsts.slhelp_helpshowthisinformation
 msgid "    --help     :  Show this information"
 msgstr "    --help     :  Megjeleníti ezt a súgót"
@@ -123,6 +127,10 @@ msgstr "Ok"
 msgid "&Open ..."
 msgstr "&Megnyitás ..."
 
+#: lhelpstrconsts.slhelp_openexistingfile
+msgid "Open existing file"
+msgstr ""
+
 #: lhelpstrconsts.slhelp_openrecent
 msgid "Open Recent"
 msgstr "Legutóbbi megynyitása"
@@ -174,3 +182,4 @@ msgstr "    Használat: lhelp [[fájlnév] [--context azonosító] [--hide] [--i
 #: lhelpstrconsts.slhelp_view
 msgid "&View"
 msgstr "&Nézet"
+
