@@ -57,6 +57,10 @@ msgstr "Найти"
 msgid "&Help"
 msgstr "&Справка"
 
+#: lhelpstrconsts.slhelp_helpfileschmchmallfiles
+msgid "Help files (*.chm)|*.chm|All files (*.*)|*"
+msgstr "Файлы справки (*.chm)|*.chm|Все файлы (*.*)|*"
+
 #: lhelpstrconsts.slhelp_helpshowthisinformation
 msgid "    --help     :  Show this information"
 msgstr "    --help     :  Вывести данную информацию"
@@ -121,6 +125,10 @@ msgstr "ОК"
 #: lhelpstrconsts.slhelp_open
 msgid "&Open ..."
 msgstr "О&ткрыть ..."
+
+#: lhelpstrconsts.slhelp_openexistingfile
+msgid "Open existing file"
+msgstr "Открыть существующий файл"
 
 #: lhelpstrconsts.slhelp_openrecent
 msgid "Open Recent"

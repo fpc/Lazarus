@@ -59,6 +59,10 @@ msgstr "Chercher"
 msgid "&Help"
 msgstr "&Aide"
 
+#: lhelpstrconsts.slhelp_helpfileschmchmallfiles
+msgid "Help files (*.chm)|*.chm|All files (*.*)|*"
+msgstr ""
+
 #: lhelpstrconsts.slhelp_helpshowthisinformation
 msgid "    --help     :  Show this information"
 msgstr "    --help     :  Afficher cette information"
@@ -123,6 +127,10 @@ msgstr "Ok"
 msgid "&Open ..."
 msgstr "&Ouvrir..."
 
+#: lhelpstrconsts.slhelp_openexistingfile
+msgid "Open existing file"
+msgstr ""
+
 #: lhelpstrconsts.slhelp_openrecent
 msgid "Open Recent"
 msgstr "Récemment ouvert"
@@ -174,3 +182,4 @@ msgstr "    Utilisation : lhelp [[filename] [--context id] [--hide] [--ipcname l
 #: lhelpstrconsts.slhelp_view
 msgid "&View"
 msgstr "&Afficher"
+

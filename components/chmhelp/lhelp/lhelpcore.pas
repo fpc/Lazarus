@@ -328,6 +328,9 @@ begin
   HelpMenuItem.Caption := slhelp_Help;
   AboutItem.Caption := slhelp_About2;
 
+  OpenDialog1.Title := slhelp_OpenExistingFile;
+  OpenDialog1.Filter := slhelp_HelpFilesChmChmAllFiles;
+
   fContext := -1;
   // Safe default:
   fHide := false;

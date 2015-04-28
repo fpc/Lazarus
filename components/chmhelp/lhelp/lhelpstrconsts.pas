@@ -22,6 +22,8 @@ resourcestring
   slhelp_ShowContents = 'Show contents';
   slhelp_Help = '&Help';
   slhelp_About2 = '&About ...';
+  slhelp_OpenExistingFile = 'Open existing file';
+  slhelp_HelpFilesChmChmAllFiles = 'Help files (*.chm)|*.chm|All files (*.*)|*';
   slhelp_LHelp = 'LHelp';
   slhelp_LHelp2 = 'LHelp - %s';
   slhelp_CannotHandleThisTypeOfContentForUrl = 'Cannot handle this type of content. "%s" for url:%s%s';

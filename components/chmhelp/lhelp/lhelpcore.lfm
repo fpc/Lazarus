@@ -299,7 +299,7 @@ object HelpForm: THelpForm
     end
   end
   object OpenDialog1: TOpenDialog
-    Filter = 'HelpFiles(*.chm)|*.chm|All FIles(*.*)|*'
+    Filter = 'Help files (*.chm)|*.chm|All files (*.*)|*'
     FilterIndex = 0
     left = 144
     top = 80
