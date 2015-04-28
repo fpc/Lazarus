@@ -74,6 +74,10 @@ msgstr "Retroceder en el historial"
 msgid "History forward"
 msgstr "Avanzar en el historial"
 
+#: lazarusidestrconsts.dlfmousesimplebuttonmulticarettoggle
+msgid "Toggle extra Caret"
+msgstr ""
+
 #: lazarusidestrconsts.dlfmousesimplebuttonnothing
 msgctxt "lazarusidestrconsts.dlfmousesimplebuttonnothing"
 msgid "Nothing/Default"
@@ -156,6 +160,14 @@ msgstr "Estandar. Todas las acciones (punto de interrupción, plegado) al hacer 
 #: lazarusidestrconsts.dlfmousesimplegutterleftup
 msgid "Extended, Actions (breakpoint, fold) on mouse up. Selection on mouse down and move"
 msgstr "Extendido, Acciones (punto de interrupción, plegado) al soltar el ratón. Selección al hacer clic y mover"
+
+#: lazarusidestrconsts.dlfmousesimplegutterleftupright
+msgid "Extended, Actions, right gutter half only"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimplegutterlines
+msgid "Use line numers to select lines"
+msgstr ""
 
 #: lazarusidestrconsts.dlfmousesimpleguttersect
 msgctxt "lazarusidestrconsts.dlfmousesimpleguttersect"
@@ -1177,6 +1189,10 @@ msgstr "Cursor salta tabulaciones"
 msgid "User defined extension (.pp.xxx)"
 msgstr "Extensión definida por usuario (.pp.xxx)"
 
+#: lazarusidestrconsts.dlgdcifiledci
+msgid "DCI file (*.dci)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgdebugoptionspatheditordlgcaption
 msgid "Path Editor"
 msgstr "Ruta del editor"
@@ -1524,6 +1540,10 @@ msgstr "Usar archivo externo de símbolos de depuración para gdb"
 #: lazarusidestrconsts.dlgfileexts
 msgid "File extensions"
 msgstr "Extensiones de archivo"
+
+#: lazarusidestrconsts.dlgfiles
+msgid "%s files"
+msgstr ""
 
 #: lazarusidestrconsts.dlgfindtextatcursor
 msgid "Find text at cursor"
@@ -2235,6 +2255,7 @@ msgid "Mouse Action"
 msgstr "Acción de ratón"
 
 #: lazarusidestrconsts.dlgmouseoptbtn1
+msgctxt "lazarusidestrconsts.dlgmouseoptbtn1"
 msgid "Single"
 msgstr "Simple"
 
@@ -2439,6 +2460,10 @@ msgstr "Todo"
 msgctxt "lazarusidestrconsts.dlgmouseoptnodegutter"
 msgid "Gutter"
 msgstr "Columna de marcas"
+
+#: lazarusidestrconsts.dlgmouseoptnodegutterchanges
+msgid "Line Changes"
+msgstr ""
 
 #: lazarusidestrconsts.dlgmouseoptnodegutterfold
 msgid "Fold Tree"
@@ -3158,6 +3183,10 @@ msgstr "Ajustar a líneas guía"
 #: lazarusidestrconsts.dlgsnapguidelineshint
 msgid "When a control is close to being aligned with another control, it snaps to the aligned position."
 msgstr "Cuando el control está a punto de alinearse con otro control, se ajusta a la posición de alineación."
+
+#: lazarusidestrconsts.dlgsourceedittabmultiline
+msgid "Multiline tabs"
+msgstr ""
 
 #: lazarusidestrconsts.dlgspacenotcosmos
 msgctxt "lazarusidestrconsts.dlgspacenotcosmos"
@@ -4763,6 +4792,7 @@ msgid "unusual characters"
 msgstr "caracteres no usuales"
 
 #: lazarusidestrconsts.lisccowarningcaption
+msgctxt "lazarusidestrconsts.lisccowarningcaption"
 msgid "Warning"
 msgstr "Advertencia"
 
@@ -8658,6 +8688,7 @@ msgid "Failed to save file."
 msgstr "Fallo al guardar archivo."
 
 #: lazarusidestrconsts.lisfatal
+msgctxt "lazarusidestrconsts.lisfatal"
 msgid "Fatal"
 msgstr "Fatal"
 
@@ -9235,6 +9266,10 @@ msgstr "Crecer hacia el más largo"
 msgid "Has Help"
 msgstr "Tiene Ayuda"
 
+#: lazarusidestrconsts.lisheadercolors
+msgid "Header colors"
+msgstr ""
+
 #: lazarusidestrconsts.lisheadercommentforclass
 msgid "Header comment for class"
 msgstr "Comentario de cabecera para la clase"
@@ -9285,6 +9320,7 @@ msgid "Hide with project option (-vm%s)"
 msgstr "Ocultar con opción de proyecto (-vm%s)"
 
 #: lazarusidestrconsts.lishint
+msgctxt "lazarusidestrconsts.lishint"
 msgid "Hint"
 msgstr "Indicación"
 
@@ -9549,6 +9585,7 @@ msgid "Import"
 msgstr "Importar ..."
 
 #: lazarusidestrconsts.lisimportant
+msgctxt "lazarusidestrconsts.lisimportant"
 msgid "Important"
 msgstr "Importante"
 
@@ -9648,6 +9685,10 @@ msgstr "Parámetros heredados"
 msgid "Inherited project component"
 msgstr "Componente de proyecto heredado"
 
+#: lazarusidestrconsts.lisinitializelocalvariable
+msgid "Initialize Local Variable"
+msgstr ""
+
 #: lazarusidestrconsts.lisinordertocreateacleancopyoftheprojectpackageallfil
 msgid "In order to create a clean copy of the project/package, all files in the following directory will be deleted and all its content will be lost.%sDelete all files in \"%s\"?"
 msgstr "Para crear una copia limpia del proyecto/paquete, todos los archivos en el siguiente directorio seran borrados y todo su contenido se habrá perdido.%s¿Borrar todos los archivos en \"%s\"?"
@@ -9656,6 +9697,10 @@ msgstr "Para crear una copia limpia del proyecto/paquete, todos los archivos en 
 msgctxt "lazarusidestrconsts.lisinsert"
 msgid "Insert"
 msgstr "Insertar"
+
+#: lazarusidestrconsts.lisinsertassignment
+msgid "Insert Assignment %s := ..."
+msgstr ""
 
 #: lazarusidestrconsts.lisinsertdate
 msgid "insert date"
@@ -11074,6 +11119,10 @@ msgstr "Asegúrate de que todos los ficheros ppu del paquete se encuentren en su
 msgid "Manage Source Editors ..."
 msgstr "Gestionar Editores de fuente ..."
 
+#: lazarusidestrconsts.lismaximumnumberofthreadsforcompilinginparalleldefaul
+msgid "Maximum number of threads for compiling in parallel. Default is 0, which guesses the number of cores in the system."
+msgstr ""
+
 #: lazarusidestrconsts.lismaximumparallelprocesses0meansdefault
 msgid "Maximum parallel processes, 0 means default (%s)"
 msgstr "Máximos procesos paralelos, 0 significa por defecto (%s)"
@@ -12316,6 +12365,10 @@ msgctxt "lazarusidestrconsts.lismore"
 msgid "More"
 msgstr "Más"
 
+#: lazarusidestrconsts.lismore2
+msgid "More ..."
+msgstr ""
+
 #: lazarusidestrconsts.lismoresub
 msgctxt "lazarusidestrconsts.lismoresub"
 msgid "More >>"
@@ -12376,6 +12429,10 @@ msgstr "Mover estas unidades romperá su sección uses. Ver ventana de mensajes 
 #: lazarusidestrconsts.lisms
 msgid "(ms)"
 msgstr "(ms)"
+
+#: lazarusidestrconsts.lismsgcolors
+msgid "Message colors"
+msgstr ""
 
 #: lazarusidestrconsts.lismultipledirectoriesareseparatedwithsemicolons
 msgid "Multiple directories are separated with semicolons"
@@ -12589,6 +12646,7 @@ msgid "Not a valid Pascal identifier"
 msgstr "Identificador Pascal no valido"
 
 #: lazarusidestrconsts.lisnote
+msgctxt "lazarusidestrconsts.lisnote"
 msgid "Note"
 msgstr "Nota"
 
@@ -12898,6 +12956,12 @@ msgstr "Abrir URL"
 msgid "Open XML"
 msgstr "Abrir XML"
 
+#: lazarusidestrconsts.lisoptions
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisoptions"
+msgid "Options"
+msgstr "Opciones"
+
 #: lazarusidestrconsts.lisoptionschangedrecompilingcleanwithb
 msgid "Options changed, recompiling clean with -B"
 msgstr "Opciones cambiadas, recompila limpiando con -B"
@@ -13011,6 +13075,7 @@ msgid "Page name \"%s\" already exists. Not added."
 msgstr "El nombre de página  \"%s\" ya existe. No se añade."
 
 #: lazarusidestrconsts.lispanic
+msgctxt "lazarusidestrconsts.lispanic"
 msgid "Panic"
 msgstr "Pánico"
 
@@ -13042,6 +13107,10 @@ msgstr "Pegar portapapeles"
 #: lazarusidestrconsts.lispastefromclipboard
 msgid "Paste from clipboard"
 msgstr "Pegar desde el portapapeles"
+
+#: lazarusidestrconsts.lispastelcolors
+msgid "Pastel Colors"
+msgstr ""
 
 #: lazarusidestrconsts.lispath
 msgid "Path"
@@ -13723,6 +13792,10 @@ msgstr "Dependencia rota"
 msgid "Circular dependencies found"
 msgstr "Dependencia circular encontrada"
 
+#: lazarusidestrconsts.lispkgmangcompilepackage
+msgid "Compile package %s"
+msgstr ""
+
 #: lazarusidestrconsts.lispkgmangdeletefailed
 msgid "Delete failed"
 msgstr "Falló el borrado"
@@ -14329,6 +14402,10 @@ msgstr "%s (posición fuera de la fuente)"
 #: lazarusidestrconsts.lisppuinwrongdirectory
 msgid "ppu in wrong directory=%s."
 msgstr "ppu en directorio incorrecto=%s."
+
+#: lazarusidestrconsts.lisppunotfoundcheckyourfpccfg
+msgid "%s.ppu not found. Check your fpc.cfg."
+msgstr ""
 
 #: lazarusidestrconsts.lisprecedingword
 msgid "Preceding word"
@@ -15481,6 +15558,10 @@ msgstr "Seleccionar esto para traducir los mensajes del compilador a otro lengua
 msgid "(Set up default indentation)"
 msgstr "(Configurar sangría predeterminada)"
 
+#: lazarusidestrconsts.lissetutf8inrtl
+msgid "Set UTF-8 in RTL"
+msgstr ""
+
 #: lazarusidestrconsts.lisshort
 msgid "Short:"
 msgstr "Corto:"
@@ -16499,6 +16580,10 @@ msgstr "La ruta de búsqueda de Unidades de \"%s\" contiene el directorio de fue
 msgid "The working directory \"%s\" does not exist.%sPlease check the working directory in Menu > Run > Run parameters."
 msgstr "El directorio de trabajo \"%s\" no existe.%sPor favor, verifique el directorio de trabajo en el Menu > Ejecutar > Parámetros de Ejecución."
 
+#: lazarusidestrconsts.listhisbuildmodenowsetsutf8inthertlflagsareinpagesoth
+msgid "This build mode now sets UTF-8 in the RTL.%s Flags are in pages \"Other\" and \"Additions and Overrides\"."
+msgstr ""
+
 #: lazarusidestrconsts.listhiscomponentalreadycontainsaclasswiththename
 msgid "This component already contains a class with the name %s."
 msgstr "Este componente ya contiene una clase con el nombre %s."
@@ -16535,12 +16620,16 @@ msgstr "Este conjunto de opciones para construir Lazarus no es compatible con es
 msgid "This statement can not be extracted.%sPlease select some code to extract a new procedure/method."
 msgstr "Esta sentencia no puede ser extraida.%sPor favor, seleccione algo de código para extraer un nuevo procedimiento/método."
 
+#: lazarusidestrconsts.listhiswillallowchangingallbuildmodesatoncenotimpleme
+msgid "This will allow changing all build modes at once. Not implemented yet."
+msgstr ""
+
 #: lazarusidestrconsts.listhiswillcreateacirculardependency
 msgid "This will create a circular dependency."
 msgstr "Esto creará una dependencia circular."
 
 #: lazarusidestrconsts.listhiswillputalotoftextontheclipboardproceed
-#, fuzzy,badformat
+#, fuzzy
 msgid "This will put a lot of text (%s) on the clipboard.%sProceed?"
 msgstr "Esto pondrá un montón de texto (%s) en el portapapeles.%s¿Proceder?"
 
@@ -16629,6 +16718,34 @@ msgstr "Ruta:"
 #: lazarusidestrconsts.listoggleshowingfilenameswithfullpathorwithrelativepa
 msgid "Toggle showing filenames with full path or with relative path"
 msgstr "Intercambiar mostrar ruta completa o relativa para nombres de archivo"
+
+#: lazarusidestrconsts.listoolbarconfiguration
+msgid "Toolbar Configuration"
+msgstr ""
+
+#: lazarusidestrconsts.listoolbaroptions
+msgid "Toolbar"
+msgstr ""
+
+#: lazarusidestrconsts.listoolbaroptionshighlight
+msgid "Highlight toolbars buttons"
+msgstr ""
+
+#: lazarusidestrconsts.listoolbaroptionsraise
+msgid "Raise toolbars"
+msgstr ""
+
+#: lazarusidestrconsts.listoolbaroptionsstandardvisible
+msgid "Standard toolbar visible"
+msgstr ""
+
+#: lazarusidestrconsts.listoolbaroptionstoolbarsvisible
+msgid "Toolbars visible"
+msgstr ""
+
+#: lazarusidestrconsts.listoolbaroptionsviewdebugvisible
+msgid "Debug toolbar visible"
+msgstr ""
 
 #: lazarusidestrconsts.listoolhasnoexecutable
 msgid "tool \"%s\" has no executable"
@@ -17491,6 +17608,7 @@ msgid "Variable"
 msgstr "Variable"
 
 #: lazarusidestrconsts.lisverbose
+msgctxt "lazarusidestrconsts.lisverbose"
 msgid "Verbose"
 msgstr "Explicativo"
 
@@ -18155,6 +18273,10 @@ msgstr "Macros"
 #: lazarusidestrconsts.srkmcatmarker
 msgid "Text marker commands"
 msgstr "Comandos de marcas de texto"
+
+#: lazarusidestrconsts.srkmcatmulticaret
+msgid "Multi caret commands"
+msgstr ""
 
 #: lazarusidestrconsts.srkmcatpackagemenu
 msgid "Package menu commands"
@@ -18838,6 +18960,30 @@ msgstr "Pegar contenido del portapapeles en la posición actual"
 msgid "pause program"
 msgstr "pausar programa"
 
+#: lazarusidestrconsts.srkmecpluginmulticaretclearall
+msgid "Clear all extra carets"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecpluginmulticaretmodecancelonmove
+msgid "Cursor keys clear all extra carets"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecpluginmulticaretmodemoveall
+msgid "Cursor keys move all extra carets"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecpluginmulticaretsetcaret
+msgid "Add extra caret"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecpluginmulticarettogglecaret
+msgid "Toggle extra caret"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecpluginmulticaretunsetcaret
+msgid "Remove extra caret"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecprevbookmark
 msgid "Previous Bookmark"
 msgstr "Marcador Anterior"
@@ -19402,6 +19548,10 @@ msgstr "Mover cursor una palabra a la derecha"
 msgid "Edit keys of command"
 msgstr "Editar teclas de comando"
 
+#: lazarusidestrconsts.synfcontinuewithnextmouseupaction
+msgid "Continue with next mouse up action"
+msgstr ""
+
 #: lazarusidestrconsts.synffoldcomments
 msgid "Fold comments"
 msgstr "Plegar comentarios"
@@ -19433,6 +19583,26 @@ msgstr "Ocultar comentarios"
 #: lazarusidestrconsts.synfhidecommentsinselection
 msgid "Hide comments in selection"
 msgstr "Ocultar los comentarios de la selección"
+
+#: lazarusidestrconsts.synfmatchactionbuttonofmousedown
+msgid "Match action button of mouse down"
+msgstr ""
+
+#: lazarusidestrconsts.synfmatchactionlineofmousedown
+msgid "Match action line of mouse down"
+msgstr ""
+
+#: lazarusidestrconsts.synfmatchactionmodifiersofmousedown
+msgid "Match action modifiers of mouse down"
+msgstr ""
+
+#: lazarusidestrconsts.synfmatchactionposofmousedown
+msgid "Match action pos of mouse down"
+msgstr ""
+
+#: lazarusidestrconsts.synfsearchallactionofmousedown
+msgid "Search all action of mouse down"
+msgstr ""
 
 #: lazarusidestrconsts.synfunfoldactiveifdef
 msgid "Unfold active Ifdef"
