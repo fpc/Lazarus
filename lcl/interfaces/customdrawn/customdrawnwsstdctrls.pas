@@ -77,9 +77,10 @@ type
     class procedure DestroyHandle(const AWinControl: TWinControl); override;
     class procedure ShowHide(const AWinControl: TWinControl); override;
 
+    // TWSCustomComboBox
 {    class function GetDroppedDown(const ACustomComboBox: TCustomComboBox
-       ): Boolean; override;
-    class function GetItemIndex(const ACustomComboBox: TCustomComboBox): integer; override;}
+       ): Boolean; override;}
+    class function GetItemIndex(const ACustomComboBox: TCustomComboBox): integer; override;
     class function GetItems(const ACustomComboBox: TCustomComboBox): TStrings; override;
     class procedure FreeItems(var AItems: TStrings); override;
 //    class function GetMaxLength(const ACustomComboBox: TCustomComboBox): integer; override;
@@ -94,12 +95,14 @@ type
       NewTraverseList: boolean); override;
     class procedure SetDropDownCount(const ACustomComboBox: TCustomComboBox; NewCount: Integer); override;
     class procedure SetDroppedDown(const ACustomComboBox: TCustomComboBox;
-       ADroppedDown: Boolean); override;
+       ADroppedDown: Boolean); override;}
     class procedure SetItemIndex(const ACustomComboBox: TCustomComboBox; NewIndex: integer); override;
-    class procedure SetMaxLength(const ACustomComboBox: TCustomComboBox; NewLength: integer); override;
+    {class procedure SetMaxLength(const ACustomComboBox: TCustomComboBox; NewLength: integer); override;
     class procedure SetStyle(const ACustomComboBox: TCustomComboBox; NewStyle: TComboBoxStyle); override;
-
     class procedure Sort(const ACustomComboBox: TCustomComboBox; AList: TStrings; IsSorted: boolean); override;}
+
+    class function GetItemHeight(const ACustomComboBox: TCustomComboBox): Integer; override;
+    //class procedure SetItemHeight(const ACustomComboBox: TCustomComboBox; const AItemHeight: Integer); override;
   end;
 
   { TCDWSComboBox }
@@ -853,6 +856,17 @@ begin
   end;
 end;
 
+class function TCDWSCustomComboBox.GetItemIndex(
+  const ACustomComboBox: TCustomComboBox): integer;
+var
+  lCDWinControl: TCDWinControl;
+  lIntfComboBox: TCDIntfComboBox;
+begin
+  lCDWinControl := TCDWinControl(ACustomComboBox.Handle);
+  lIntfComboBox := TCDIntfComboBox(lCDWinControl.CDControl);
+  Result := lIntfComboBox.ItemIndex;
+end;
+
 class function TCDWSCustomComboBox.GetItems(
   const ACustomComboBox: TCustomComboBox): TStrings;
 var
@@ -879,15 +893,32 @@ var
   lIntfComboBox: TCDIntfComboBox;
 begin
   // ToDo: Do something to correct the combobox height when autosized, now something in the LCL seams to hardcode it to 50...
-{  lCDWinControl := TCDWinControl(AWinControl.Handle);
+  lCDWinControl := TCDWinControl(AWinControl.Handle);
   lIntfComboBox := TCDIntfComboBox(lCDWinControl.CDControl);
-  if lIntfComboBox.OriginalHeight = 0 then lIntfComboBox.OriginalHeight := AWinControl.Height;
-  PreferredHeight := lIntfComboBox.OriginalHeight;
-  //AWinControl.Height := PreferredHeight;}
+  lIntfComboBox.LCLWSCalculatePreferredSize(PreferredWidth, PreferredHeight, WithThemeSpace, False, False);
+
+  //AWinControl.Height := PreferredHeight;
 
   // The correct behavior for the LCL is not forcing any specific value for
   // TComboBox.Width, so we set it to zero to signal that here
   PreferredWidth := 0;
+end;
+
+class procedure TCDWSCustomComboBox.SetItemIndex(
+  const ACustomComboBox: TCustomComboBox; NewIndex: integer);
+var
+  lCDWinControl: TCDWinControl;
+  lIntfComboBox: TCDIntfComboBox;
+begin
+  lCDWinControl := TCDWinControl(ACustomComboBox.Handle);
+  lIntfComboBox := TCDIntfComboBox(lCDWinControl.CDControl);
+  lIntfComboBox.ItemIndex := NewIndex;
+end;
+
+class function TCDWSCustomComboBox.GetItemHeight(
+  const ACustomComboBox: TCustomComboBox): Integer;
+begin
+  Result := 25;
 end;
 
 (*{ TCDWSCustomListBox }
@@ -1773,7 +1804,7 @@ begin
   end;
 
   lCDWinControl.CDControl.LCLWSCalculatePreferredSize(
-    PreferredWidth, PreferredHeight, WithThemeSpace, AWinControl.AutoSize);
+    PreferredWidth, PreferredHeight, WithThemeSpace, AWinControl.AutoSize, False);
   DebugLn(Format('[TCDWSCustomCheckBox.GetPreferredSize] Width=%d Height=%d', [PreferredWidth, PreferredHeight]));
 end;
 
@@ -1846,7 +1877,7 @@ begin
   end;
 
   lCDWinControl.CDControl.LCLWSCalculatePreferredSize(
-    PreferredWidth, PreferredHeight, WithThemeSpace, AWinControl.AutoSize);
+    PreferredWidth, PreferredHeight, WithThemeSpace, AWinControl.AutoSize, False);
   DebugLn(Format('[TCDWSRadioButton.GetPreferredSize] Width=%d Height=%d', [PreferredWidth, PreferredHeight]));
 end;
 

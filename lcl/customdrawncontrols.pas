@@ -63,7 +63,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure LCLWSCalculatePreferredSize(var PreferredWidth,
-      PreferredHeight: integer; WithThemeSpace, AAutoSize: Boolean);
+      PreferredHeight: integer; WithThemeSpace, AAutoSize, AAllowUseOfMeasuresEx: Boolean);
     procedure EraseBackground(DC: HDC); override;
     procedure Paint; override;
     // Methods for use by LCL-CustomDrawn
@@ -810,7 +810,7 @@ begin
   PrepareControlState;
   PrepareControlStateEx;
   FDrawer.CalculatePreferredSize(Canvas, GetControlId(), FState, FStateEx,
-    PreferredWidth, PreferredHeight, WithThemeSpace);
+    PreferredWidth, PreferredHeight, WithThemeSpace, True);
 end;
 
 procedure TCDControl.SetState(const AValue: TCDControlState);
@@ -961,13 +961,13 @@ end;
 
 // A CalculatePreferredSize which is utilized by LCL-CustomDrawn
 procedure TCDControl.LCLWSCalculatePreferredSize(var PreferredWidth,
-  PreferredHeight: integer; WithThemeSpace, AAutoSize: Boolean);
+  PreferredHeight: integer; WithThemeSpace, AAutoSize, AAllowUseOfMeasuresEx: Boolean);
 begin
   PrepareControlState;
   PrepareControlStateEx;
   FStateEx.AutoSize := AAutoSize;
   FDrawer.CalculatePreferredSize(Canvas, GetControlId(), FState, FStateEx,
-    PreferredWidth, PreferredHeight, WithThemeSpace);
+    PreferredWidth, PreferredHeight, WithThemeSpace, AAllowUseOfMeasuresEx);
 end;
 
 { TCDComboBox }

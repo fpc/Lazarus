@@ -544,6 +544,8 @@ begin
   //
   TCDRADIOBUTTON_CIRCLE_HEIGHT: Result := DPIAdjustment(20); // Must be dividable by 4
   //
+  TCDCOMBOBOX_DEFAULT_HEIGHT: Result := 50;
+  //
 {  TCDSCROLLBAR_BUTTON_WIDTH: Result := 17;
   TCDSCROLLBAR_LEFT_SPACING: Result := 17;
   TCDSCROLLBAR_RIGHT_SPACING: Result := 17;

@@ -25,6 +25,8 @@ const
 
   TCDRADIOBUTTON_CIRCLE_HEIGHT = $601;
 
+  TCDCOMBOBOX_DEFAULT_HEIGHT = $801;
+
   TCDSCROLLBAR_BUTTON_WIDTH = $900;
   TCDSCROLLBAR_LEFT_SPACING = $901;   // Left and right are only read left and right for horizontal orientation
   TCDSCROLLBAR_RIGHT_SPACING= $902;   // in vertical orientation they are respectively top and bottom
@@ -327,7 +329,7 @@ type
       AState: TCDControlState; AStateEx: TCDControlStateEx): Integer; virtual; abstract;
     procedure CalculatePreferredSize(ADest: TCanvas; AControlId: TCDControlID;
       AState: TCDControlState; AStateEx: TCDControlStateEx;
-      var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean); virtual; abstract;
+      var PreferredWidth, PreferredHeight: integer; WithThemeSpace, AAllowUseOfMeasuresEx: Boolean); virtual; abstract;
     function GetColor(AColorID: Integer): TColor; virtual; abstract;
     function GetClientArea(ADest: TCanvas; ASize: TSize; AControlId: TCDControlID;
       AState: TCDControlState; AStateEx: TCDControlStateEx): TRect; virtual; abstract;

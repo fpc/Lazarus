@@ -30,7 +30,7 @@ type
       AState: TCDControlState; AStateEx: TCDControlStateEx): Integer; override;
     procedure CalculatePreferredSize(ADest: TCanvas; AControlId: TCDControlID;
       AState: TCDControlState; AStateEx: TCDControlStateEx;
-      var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean); override;
+      var PreferredWidth, PreferredHeight: integer; WithThemeSpace, AAllowUseOfMeasuresEx: Boolean); override;
     function GetColor(AColorID: Integer): TColor; override;
     function GetClientArea(ADest: TCanvas; ASize: TSize; AControlId: TCDControlID;
       AState: TCDControlState; AStateEx: TCDControlStateEx): TRect; override;
@@ -212,6 +212,8 @@ begin
   TCDCHECKBOX_SQUARE_HALF_HEIGHT: Result := Floor(GetMeasures(TCDCHECKBOX_SQUARE_HEIGHT)/2);
   TCDCHECKBOX_SQUARE_HEIGHT: Result := DPIAdjustment(15);
   //
+  TCDCOMBOBOX_DEFAULT_HEIGHT: Result := 21;
+  //
   TCDRADIOBUTTON_CIRCLE_HEIGHT: Result := 15;
   //
   TCDSCROLLBAR_BUTTON_WIDTH: Result := 17;
@@ -312,7 +314,7 @@ end;
 procedure TCDDrawerCommon.CalculatePreferredSize(ADest: TCanvas;
   AControlId: TCDControlID; AState: TCDControlState;
   AStateEx: TCDControlStateEx; var PreferredWidth, PreferredHeight: integer;
-  WithThemeSpace: Boolean);
+  WithThemeSpace, AAllowUseOfMeasuresEx: Boolean);
 begin
   PreferredWidth := 0;
   PreferredHeight := 0;
@@ -321,17 +323,24 @@ begin
   // In the LCL TEdit AutoSizes only its Height, so follow this here
   cidEdit: PreferredHeight := GetMeasuresEx(ADest, TCDCONTROL_CAPTION_HEIGHT, AState, AStateEx)+8;
   cidCheckBox, cidRadioButton:
-    begin
-      if AStateEx.AutoSize then begin
-        PreferredWidth := GetMeasures(TCDCHECKBOX_SQUARE_HEIGHT);
-        PreferredWidth := PreferredWidth
-          + GetMeasuresEx(ADest, TCDCONTROL_CAPTION_WIDTH, AState, AStateEx) + 6;
-      end;
-
-      PreferredHeight :=
-        Max(GetMeasuresEx(ADest, TCDCONTROL_CAPTION_HEIGHT, AState, AStateEx),
-         GetMeasures(TCDCHECKBOX_SQUARE_HEIGHT));
+  begin
+    if AStateEx.AutoSize then begin
+      PreferredWidth := GetMeasures(TCDCHECKBOX_SQUARE_HEIGHT);
+      PreferredWidth := PreferredWidth
+        + GetMeasuresEx(ADest, TCDCONTROL_CAPTION_WIDTH, AState, AStateEx) + 6;
     end;
+
+    PreferredHeight :=
+      Max(GetMeasuresEx(ADest, TCDCONTROL_CAPTION_HEIGHT, AState, AStateEx),
+       GetMeasures(TCDCHECKBOX_SQUARE_HEIGHT));
+  end;
+  cidComboBox:
+  begin
+    PreferredHeight := GetMeasures(TCDCOMBOBOX_DEFAULT_HEIGHT);
+    if AAllowUseOfMeasuresEx then
+      PreferredHeight := Max(GetMeasuresEx(ADest, TCDCONTROL_CAPTION_HEIGHT, AState, AStateEx),
+        PreferredHeight);
+  end;
   end;
 end;
 
