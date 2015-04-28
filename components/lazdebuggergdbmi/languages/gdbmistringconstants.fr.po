@@ -1,0 +1,150 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Philippe BOUCAULT <philbouc@users.sourceforge.net>\n"
+"Language-Team: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.7.5\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Language: fr\n"
+
+#: gdbmistringconstants.dlggroupdebugger
+msgid "Debugger"
+msgstr "Débogueur"
+
+#: gdbmistringconstants.gdbmibreakpointerroronruncommand
+msgid "The debugger encountered an error when trying to run/step the application:%0:s%0:s%1:s%0:s%0:sPress \"Ok\" to remove the breakpoints and continue debugging (paused), and correct the problem, or choose an alternative run command.%0:sPress \"Stop\" to end the debug session."
+msgstr "Le débogueur a rencontré une erreur en essayant d'exécuter l'application : %0:s%0:s%1:s%0:s%0:sAppuyez sur \"OK\" pour retirer les points d'arrêt et continuer le débogage (en pause), et corrigez le problème, ou choisissez une commande alternative. %0:sAppuyez sur \"Stop\" pour mettre fin à la session de débogage."
+
+#: gdbmistringconstants.gdbmicommandstartmainbreakerror
+msgid "The debugger could not set a breakpoint on the application's entry point.%0:sThis may be caused by missing debug info."
+msgstr "Le débogueur pourrait ne pas placer un point d'arrêt sur le point d'entrée de l'application. %0:sCeci peut être dû à l'absence des informations de débogage."
+
+#: gdbmistringconstants.gdbmicommandstartmainrunerror
+msgid "The debugger could not run the application.%0:sThis may be caused by missing debug info."
+msgstr "Le débogueur pourrait ne pas lancer l'application. %0:sCeci pourrait être dû à l'absence des informations de débogage."
+
+#: gdbmistringconstants.gdbmicommandstartmainrunnopiderror
+msgid "The debugger failed to get the application's PID.%0:sThis may be caused by missing debug info."
+msgstr "Le débogueur n'a pas pu obtenir le PID de l'application.%0:sCeci peut être dû à l'absence des informations de débogage."
+
+#: gdbmistringconstants.gdbmicommandstartmainruntostoperror
+msgid "The debugger was unable to initialize itself.%0:sThe application did run (and terminated) before the debugger could set any breakpoints. %0:sThis may be caused by missing debug info."
+msgstr "Le débogueur n'a pas été capable de s'initialiser. %0:sL'application a été lancée (et arrêté) avant que le débogueur n'ait pu mettre un point d'arrêt. %0:sCeci peut être dû à l'absence des informations de débogage."
+
+#: gdbmistringconstants.gdbmierroronruncommand
+msgid "The debugger encountered an error when trying to run/step the application:%0:s%0:s%1:s%0:s%0:sPress \"Ok\" to continue debugging (paused), and correct the problem, or choose an alternative run command.%0:sPress \"Stop\" to end the debug session."
+msgstr "Le débogueur a rencontré une erreur en essayant d'exécuter l'application : %0:s%0:s%1:s%0:s%0:sAppuyez sur \"OK\" pour continuer le débogage (en pause), et corrigez le problème, ou choisissez une commande alternative. %0:sAppuyez sur \"Stop\" pour mettre fin à la session de débogage."
+
+#: gdbmistringconstants.gdbmierroronruncommandwithwarning
+msgid "%0:s%0:sIn addition to the error the following warning was encountered:%0:s%0:s%1:s"
+msgstr "%0:s%0:sEn plus de l'erreur, l'avertissement suivant a été rencontré : %0:s%0:s%1:s"
+
+#: gdbmistringconstants.gdbmierrorstategenericinfo
+msgid "Error in: %1:s %0:s"
+msgstr "Erreur en : %1:s %0:s"
+
+#: gdbmistringconstants.gdbmierrorstateinfocommanderror
+msgid "%0:sThe GDB command:%0:s\"%1:s\"%0:sreturned the error:%0:s\"%2:s\"%0:s"
+msgstr "%0:sLa commande GDB : %0:s\"%1:s\"%0:sa renvoyé l'erreur : %0:s\"%2:s\"%0:s"
+
+#: gdbmistringconstants.gdbmierrorstateinfocommandnoresult
+msgid "%0:sThe GDB command:%0:s\"%1:s\"%0:sdid not return any result.%0:s"
+msgstr "%0:sLa commande GDB : %0:s\"%1:s\"%0:sn'a pas renvoyé de résultat. %0:s"
+
+#: gdbmistringconstants.gdbmierrorstateinfofailedread
+msgid "%0:sCould not read output from GDB.%0:s"
+msgstr "%0:sImpossible de lire la sortie de GDB. %0:s"
+
+#: gdbmistringconstants.gdbmierrorstateinfofailedwrite
+msgid "%0:sCould not send a command to GDB.%0:s"
+msgstr "%0:sImpossible d'envoyer une commande à GDB. %0:s"
+
+#: gdbmistringconstants.gdbmierrorstateinfogdbgone
+msgid "%0:sThe GDB process is no longer running.%0:s"
+msgstr "%0:sLe processus GDB n'est plus en cours d'exécution. %0:s"
+
+#: gdbmistringconstants.gdbmieventlogdebugoutput
+msgid "Debug Output: %s"
+msgstr "Sortie de débogage : %s"
+
+#: gdbmistringconstants.gdbmieventloggdbinternalerror
+msgid "GDB has encountered an internal error: %s"
+msgstr "GDB a rencontré une erreur interne : %s"
+
+#: gdbmistringconstants.gdbmieventlognosymbols
+msgid "File '%s' has no debug symbols"
+msgstr "Le fichier \"%s\" n'a pas de symbole de débogage."
+
+#: gdbmistringconstants.gdbmieventlogprocessexitcode
+msgid "Process Exit: %s"
+msgstr "Sortie du processus : %s"
+
+#: gdbmistringconstants.gdbmieventlogprocessexitnormally
+msgid "Process Exit: normally"
+msgstr "Sortie du processus : normale"
+
+#: gdbmistringconstants.gdbmieventlogprocessstart
+msgid "Process Start: %s"
+msgstr "Démarrage du processus : %s"
+
+#: gdbmistringconstants.gdbmifailedtolaunchexternaldbg
+msgid "Failed to create process for GDB"
+msgstr "Impossible de créer le processus pour GDB"
+
+#: gdbmistringconstants.gdbmifailedtoterminategdb
+msgid "The IDE was unable to terminate the GDB process. This process may be left running outside the control of IDE.%0:sTo ensure the process is not affecting your System, you should locate and terminate it yourself."
+msgstr "L'EDI a été incapable d'arrêter le processus GDB. Ce processus est peut-être resté en fonctionnement hors de contrôle de l'EDI. %0:sPour être sûr que ce processus n'affecte pas votre système, vous devez le localiser et l'arrêter vous-même."
+
+#: gdbmistringconstants.gdbmifailedtoterminategdbtitle
+msgid "GDB did not terminate"
+msgstr "GDB ne s'est pas arrêté"
+
+#: gdbmistringconstants.gdbmifatalerroroccurred
+msgid "Unrecoverable error: \"%s\""
+msgstr "Erreur irrécupérable : \"%s\""
+
+#: gdbmistringconstants.gdbmigdbinternalerror
+msgid "GDB has encountered an internal error: %0:sPress \"Ok\" to continue debugging. This may NOT be safe.%0:sPress \"Stop\" to end the debug session."
+msgstr "GDB a rencontré une erreur interne : %0:sAppuyez sur \"Ok\" pour continuer le débogage. Ceci peut ne PAS être sûr.%0:sAppuyez sur \"Stop\" pour mettre fin à la session de débogage."
+
+#: gdbmistringconstants.gdbmigdbinternalerrorinfo
+msgid "While executing the command: %0:s\"%2:s\"%0:sgdb reported:%0:s\"%1:s\"%0:s"
+msgstr "Pendant l'exécution de la commande : %0:s\"%2:s\"%0:sGDB a signalé : %0:s\"%1:s\"%0:s"
+
+#: gdbmistringconstants.gdbmipressignoretocontinuedebuggingthismaynotbesafepres
+msgid "Press \"Ignore\" to continue debugging. This may NOT be safe. Press \"Abort\" to stop the debugger.%0:sException: %1:s with message \"%2:s\"%0:sContext: %4:s. State: %5:s %0:s%0:s%3:s"
+msgstr "Appuyez sur \"Ignorer\" pour continuer le débogage. Ceci peut ne PAS être sûr. Appuyez sur \"Abandonner\" pour arrêter le débogage. %0:sException: %1:s avec le message \"%2:s\"%0:sContexte : %4:s. État : %5:s %0:s%0:s%3:s"
+
+#: gdbmistringconstants.gdbmithedebuggerexperiencedanunknowncondition
+msgid "The debugger experienced an unknown condition"
+msgstr "Le débogueur a rencontré une condition inconnue."
+
+#: gdbmistringconstants.gdbmitimeoutforcmd
+msgid "Time-out for command: \"%s\""
+msgstr "Dépassement de délai pour la commande : \"%s\""
+
+#: gdbmistringconstants.gdbmiwarningunknowbreakpoint
+msgid "The debugger reached an unexpected %1:s%0:s%0:sPress \"Ok\" to continue debugging (paused).%0:sPress \"Stop\" to end the debug session."
+msgstr "Le débogueur a atteint une situation inattendue %1:s%0:s%0:sAppuyez sur \"Ok\" pour continuer le débogage (en pause).%0:sAppuyez sur \"Stop\" pour mettre fin à la session de débogage."
+
+#: gdbmistringconstants.lisnewthegnudebuggerthroughsshallowstoremotedebugviaassh
+msgid "The GNU debugger through SSH allows to remote debug via a SSH connection. See docs/RemoteDebugging.txt for details. The path must contain the SSH client. Use SSH_Startup_Options for the hostname and optional username. Use Remote_GDB_Exe for the filename of GDB on the remote computer."
+msgstr "Le débogueur GNU via SSH permet le débogage à distance via une connexion SSH. Voir \"docs/RemoteDebugging.txt\" pour plus de détails. Le chemin doit contenir le client SSH. Utilisez \"SSH_Startup_Options\" pour le nom de l'hôte et pour le nom d'utilisateur optionnel. Utilisez \"Remote_GDB_Exe\" comme nom de fichier de GDB sur l'ordinateur distant."
+
+#: gdbmistringconstants.lisresponsecontinue
+msgid "Response: %sContinue ?"
+msgstr "Réponse : %sContinuer ?"
+
+#: gdbmistringconstants.lisunexpectedresultthedebuggerwillterminate
+msgid "Unexpected result:%sThe debugger will terminate"
+msgstr "Résultat inattendu : %sLe débogueur va s'arrêter."
+
+#: gdbmistringconstants.synffailedtoloadapplicationexecutable
+msgid "Failed to load application executable"
+msgstr "Impossible de charger l'exécutable de l'application"
+
