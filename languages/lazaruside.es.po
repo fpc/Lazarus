@@ -2245,6 +2245,7 @@ msgid "Mouse Action"
 msgstr "Acción de ratón"
 
 #: lazarusidestrconsts.dlgmouseoptbtn1
+msgctxt "lazarusidestrconsts.dlgmouseoptbtn1"
 msgid "Single"
 msgstr "Simple"
 
@@ -3276,10 +3277,8 @@ msgid "Use launching application"
 msgstr "Usar al lanzar aplicación"
 
 #: lazarusidestrconsts.dlguseminimumime
-#, fuzzy
-#| msgid "Ime handled by System"
 msgid "IME handled by System"
-msgstr "Ime manejados por el Sistema"
+msgstr "IME manejados por el Sistema"
 
 #: lazarusidestrconsts.dlguserschemeerror
 msgid "Failed to load user-scheme file %s"
@@ -3303,7 +3302,7 @@ msgstr "Usar historial cuando cierre pestañas"
 
 #: lazarusidestrconsts.dlguseunitcaption
 msgid "Add unit to Uses section"
-msgstr "Añadir unidad a la sección uses\""
+msgstr "Añadir unidad a la sección uses"
 
 #: lazarusidestrconsts.dlgvaluecolor
 msgctxt "lazarusidestrconsts.dlgvaluecolor"
@@ -4698,6 +4697,7 @@ msgid "unusual characters"
 msgstr "caracteres no usuales"
 
 #: lazarusidestrconsts.lisccowarningcaption
+msgctxt "lazarusidestrconsts.lisccowarningcaption"
 msgid "Warning"
 msgstr "Advertencia"
 
@@ -6092,10 +6092,8 @@ msgid "Compile"
 msgstr "Compilar"
 
 #: lazarusidestrconsts.liscompilewithvdformoredetailscheckforduplicates
-#, fuzzy
-#| msgid "%s -> Compile with -vd for more details. Check for duplicates."
 msgid "Compile with -vd for more details. Check for duplicates."
-msgstr "%s -> compilar con -vd para más detalles. Verifica si hay duplicados."
+msgstr "compilar con -vd para más detalles. Verifica si hay duplicados."
 
 #: lazarusidestrconsts.liscompiling
 msgid "%s (compiling ...)"
@@ -6551,7 +6549,7 @@ msgstr "Hay problemas al tratar de encontrar todas las unidades desde ficheros d
 
 #: lazarusidestrconsts.lisconvproblemsfixingincludefile
 msgid "Problems when fixing include files in file %s"
-msgstr "Problemas al reparar ficheros include en fichero %s\""
+msgstr "Problemas al reparar ficheros include en fichero %s"
 
 #: lazarusidestrconsts.lisconvproblemsrepairingformfile
 msgid "Problems when repairing form file %s"
@@ -6615,7 +6613,7 @@ msgstr "Propiedades desconocidas"
 
 #: lazarusidestrconsts.lisconvuserselectedtoendconversion
 msgid "User selected to end conversion with file %s"
-msgstr "El usuario ha elegido finalizar la conversión del fichero %s\""
+msgstr "El usuario ha elegido finalizar la conversión del fichero %s"
 
 #: lazarusidestrconsts.liscopy
 msgctxt "lazarusidestrconsts.liscopy"
@@ -8118,8 +8116,10 @@ msgid "Error in the \"unit output directory\":"
 msgstr "Error en el \"Directorio de salida de la unidad\":"
 
 #: lazarusidestrconsts.liserrorinvalidbuildmode
+#, fuzzy
+#| msgid "Error: (lazarus) invalid build mode \"%s\""
 msgid "ERROR: invalid build mode \"%s\""
-msgstr "ERROR: modo de construcción invalido \"%s\""
+msgstr "Error: (lazarus) Modo de construcción inválido \"%s\""
 
 #: lazarusidestrconsts.liserrorloadingfile
 msgid "Error loading file"
@@ -8265,7 +8265,7 @@ msgstr "Ejecutable"
 
 #: lazarusidestrconsts.lisexecutableisadirectory
 msgid "executable \"%s\" is a directory"
-msgstr "ejecutable \"%s\"\" es un directorio"
+msgstr "ejecutable \"%s\" es un directorio"
 
 #: lazarusidestrconsts.lisexecutablelacksthepermissiontorun
 msgid "executable \"%s\" lacks the permission to run"
@@ -8347,7 +8347,7 @@ msgstr "¿Extender trayectoria de busqueda de ficheros inlcuidos del paquete \"%
 
 #: lazarusidestrconsts.lisextendincludefilessearchpathofprojectwith
 msgid "Extend include files search path of project with%s\"%s\"?"
-msgstr "¿Extender trayectoria de busqueda de ficheros incluidos del proyecto con %s\"%s\"?\""
+msgstr "¿Extender trayectoria de busqueda de ficheros incluidos del proyecto con%s\"%s\"?"
 
 #: lazarusidestrconsts.lisextendincludepath
 msgid "Extend include path?"
@@ -8411,6 +8411,7 @@ msgid "Failed to save file."
 msgstr "Fallo al guardar archivo."
 
 #: lazarusidestrconsts.lisfatal
+msgctxt "lazarusidestrconsts.lisfatal"
 msgid "Fatal"
 msgstr "Fatal"
 
@@ -8759,7 +8760,7 @@ msgstr "Fichero de mensaje FPC:"
 
 #: lazarusidestrconsts.lisfpcmessagesappendix
 msgid "FPC messages: Appendix"
-msgstr "Mensajes FPC: Apéndice\""
+msgstr "Mensajes FPC: Apéndice"
 
 #: lazarusidestrconsts.lisfpcresources
 msgid "FPC resources (.res)"
@@ -9038,6 +9039,7 @@ msgid "Hide with project option (-vm%s)"
 msgstr "Ocultar con opción de proyecto (-vm%s)"
 
 #: lazarusidestrconsts.lishint
+msgctxt "lazarusidestrconsts.lishint"
 msgid "Hint"
 msgstr "Indicación"
 
@@ -9149,9 +9151,8 @@ msgid "The IDE will be recompiled and restarted during installation/uninstallati
 msgstr "Durante la instalación/desinstalación de paquetes se recompilará y reiniciará el IDE."
 
 #: lazarusidestrconsts.lisideconficurationfoundmaybelongtootherlazarus
-#, fuzzy,badformat
 msgid "Welcome to Lazarus.%0:sThe IDE configuration found was previously used by another installation of Lazarus.%0:sIf you have two or more separate installations of Lazarus, they should not share the same configuration. This may lead to conflicts, and your Lazarus installations may become unusable.%0:s%0:sIf you have only one installation and copied or moved the Lazarus executable, then you may upgrade this configuration.%0:s%1:s%0:s%0:sChoose:%0:s%0:s* Update info: Use this configuration and update it for being used with this Lazarus in future. The old installation will no longer use this.%0:s* Ignore: Use this configuration, but keep the warning. This may lead to conflicts with the other installation.%0:s* Abort: Exit now. You can then fix the problem by starting this Lazarus with the correct configuration.%0:s%0:sAdditional information:%0:sThis configuration is at: %2:s%0:sIt belongs to the Lazarus installation at: %3:s%0:sThe current IDE was started from: %4:s%0:s"
-msgstr "Bienvenido a Lazarus.%0:La configuración encontrada del IDE fue utilizada previamente por otra instalación de Lazarus.%0:sSi tienes dos o más instalaciones de Lazarus, no deberían compartir la misma configuración. Esto puede acarrear conflictos, y tus instalaciones de Lazarus pueden quedar inutilizadas.%0:s%0:sSi sólamente tienes una instalación y copias o mueves el ejecutable Lazarus, entonces puedes hacer un upgrade de la configuración.%0:s%1:s%0:s%0:sEscoge:%0:s%0:s* Información actualizada: Utiliza esta configuración y actualizala para ser utilizada con Lazarus en un futuro. La instalación antigua no la volverá a utilizar.%0:s* Ignorar: Usa esta configuración, pero mantiene la advertencia. Esto puede acarrear conflictos con la otra instalación.%0:s* Abortar: Salir ahora. Ahora puedes corregir el problema arrancando Lazarus con la configuración correcta.%0:s%0:sInformación adicional:%0:sEsta configuración está a:  %2:s%0:sEl IDE actual fue iniciado desde: %4:s%0:s"
+msgstr "Bienvenido a Lazarus.%0:sLa configuración encontrada del IDE fue utilizada previamente por otra instalación de Lazarus.%0:sSi tienes dos o más instalaciones de Lazarus, no deberían compartir la misma configuración. Esto puede acarrear conflictos, y tus instalaciones de Lazarus pueden quedar inutilizadas.%0:s%0:sSi sólamente tienes una instalación y copias o mueves el ejecutable Lazarus, entonces puedes hacer un upgrade de la configuración.%0:s%1:s%0:s%0:sEscoge:%0:s%0:s* Información actualizada: Utiliza esta configuración y actualizala para ser utilizada con Lazarus en un futuro. La instalación antigua no la volverá a utilizar.%0:s* Ignorar: Usa esta configuración, pero mantiene la advertencia. Esto puede acarrear conflictos con la otra instalación.%0:s* Abortar: Salir ahora. Ahora puedes corregir el problema arrancando Lazarus con la configuración correcta.%0:s%0:sInformación adicional:%0:sEsta configuración está en: %2:s%0:sPertenece a la instalación de Lazarus en: %3:s%:sEl IDE actual fue iniciado desde: %4:s%0:s"
 
 #: lazarusidestrconsts.lisideinfocreatingmakefileforpackage
 msgid "Creating Makefile for package %s"
@@ -9303,6 +9304,7 @@ msgid "Import"
 msgstr "Importar ..."
 
 #: lazarusidestrconsts.lisimportant
+msgctxt "lazarusidestrconsts.lisimportant"
 msgid "Important"
 msgstr "Importante"
 
@@ -10741,7 +10743,7 @@ msgstr "La unidad principal es una fuente Pascal"
 
 #: lazarusidestrconsts.lismainunitispascalsourcehint
 msgid "Assume Pascal even if it does not end with .pas/.pp suffix."
-msgstr "Asumir Pascal incluso si no finaliza con los sufijos .pas/.pp.\""
+msgstr "Asumir Pascal incluso si no finaliza con los sufijos .pas/.pp."
 
 #: lazarusidestrconsts.lismakeexe
 msgid "Make Executable"
@@ -10899,7 +10901,7 @@ msgstr "Construir Lazarus con el Perfil: %s"
 
 #: lazarusidestrconsts.lismenubuildmanymodes
 msgid "Build many Modes ..."
-msgstr "Construir Algunos Modos ..."
+msgstr "Construir Varios Modos ..."
 
 #: lazarusidestrconsts.lismenuchecklfm
 msgid "Check LFM File in Editor"
@@ -12343,6 +12345,7 @@ msgid "Not a valid Pascal identifier"
 msgstr "Identificador Pascal no valido"
 
 #: lazarusidestrconsts.lisnote
+msgctxt "lazarusidestrconsts.lisnote"
 msgid "Note"
 msgstr "Nota"
 
@@ -12765,6 +12768,7 @@ msgid "Page name \"%s\" already exists. Not added."
 msgstr "El nombre de página  \"%s\" ya existe. No se añade."
 
 #: lazarusidestrconsts.lispanic
+msgctxt "lazarusidestrconsts.lispanic"
 msgid "Panic"
 msgstr "Pánico"
 
@@ -16163,7 +16167,7 @@ msgstr "Ya existe un paquete %s en la lista"
 
 #: lazarusidestrconsts.listhereisalreadyaunitinoldnewyouhavetomakesur
 msgid "There is already a unit \"%s\" in %s%sOld: %s%sNew: %s%sYou have to make sure that the unit search path contains only one of them.%s%sContinue?"
-msgstr "Ya existe una unidad \"%s\" en %s%sAntigua: %s%sNueva: %s%sTienes que asegurarte de que el trayecto de búsqueda de unidad contiene únicamente una de ellas.%s%s¿Continuar?\""
+msgstr "Ya existe una unidad \"%s\" en %s%sAntigua: %s%sNueva: %s%sTienes que asegurarte de que el trayecto de búsqueda de unidad contiene únicamente una de ellas.%s%s¿Continuar?"
 
 #: lazarusidestrconsts.listhereisalreadyaunitwiththenamepascalidentifiersmus
 msgid "There is already a unit with the name \"%s\". Pascal identifiers must be unique."
@@ -16306,9 +16310,9 @@ msgid "This will create a circular dependency."
 msgstr "Esto creará una dependencia circular."
 
 #: lazarusidestrconsts.listhiswillputalotoftextontheclipboardproceed
-#, fuzzy,badformat
+#, fuzzy
 msgid "This will put a lot of text (%s) on the clipboard.%sProceed?"
-msgstr "Esto pondrá un montón de texto (%s) en el portapapeles.¿Proceder?"
+msgstr "Esto pondrá un montón de texto (%s) en el portapapeles.%s¿Proceder?"
 
 #: lazarusidestrconsts.listhreads
 msgctxt "lazarusidestrconsts.listhreads"
@@ -16525,9 +16529,8 @@ msgid "Scanning ..."
 msgstr "Escaneando ..."
 
 #: lazarusidestrconsts.lisudscanningunits
-#, fuzzy,badformat
 msgid "Scanning: %s units ..."
-msgstr "Escaneando: % units ..."
+msgstr "Escaneando: %s units ..."
 
 #: lazarusidestrconsts.lisudsearch
 msgid "(Search)"
@@ -16574,9 +16577,8 @@ msgid "Used by Implementations: %s"
 msgstr "Utilizado por Implementaciones: %s"
 
 #: lazarusidestrconsts.lisudusedbyimplementations2
-#, fuzzy,badformat
 msgid "used by implementations: %s"
-msgstr "utilizados por implementaciones: /s"
+msgstr "utilizados por implementaciones: %s"
 
 #: lazarusidestrconsts.lisudusedbyinterfaces
 msgid "Used by Interfaces: %s"
@@ -16647,10 +16649,8 @@ msgid "Included by:"
 msgstr "Incluido por:"
 
 #: lazarusidestrconsts.lisuidinproject
-#, fuzzy
-#| msgid "in Project:"
 msgid "In project:"
-msgstr "en Proyecto:"
+msgstr "En Proyecto:"
 
 #: lazarusidestrconsts.lisuidlines
 msgctxt "lazarusidestrconsts.lisuidlines"
@@ -17261,6 +17261,7 @@ msgid "Variable"
 msgstr "Variable"
 
 #: lazarusidestrconsts.lisverbose
+msgctxt "lazarusidestrconsts.lisverbose"
 msgid "Verbose"
 msgstr "Explicativo"
 
@@ -17513,10 +17514,9 @@ msgstr "Puede desactivar esto para formularios individuales a través de la vent
 
 #: lazarusidestrconsts.lisyoucandownloadfpcandthefpcsourcesfromhttpsourcefor
 msgid "You can download FPC and the FPC sources from http://sourceforge.net/projects/lazarus/?source=directory"
-msgstr "Puedes descargar FPC y su código fuente desde http://sourceforge.net/projects/lazarus/?source=directory\""
+msgstr "Puedes descargar FPC y su código fuente desde http://sourceforge.net/projects/lazarus/?source=directory"
 
 #: lazarusidestrconsts.lisyoucannotbuildlazaruswhiledebuggingorcompiling
-#, fuzzy
 msgctxt "lazarusidestrconsts.lisyoucannotbuildlazaruswhiledebuggingorcompiling"
 msgid "You cannot build Lazarus while debugging or compiling."
 msgstr "No puede construir lazarus mientras está depurando o compilando."
@@ -18369,12 +18369,14 @@ msgid "Guess Misplaced $IFDEF"
 msgstr "Buscar $IFDEF Fuera de Lugar"
 
 #: lazarusidestrconsts.srkmechalfwordleft
+#, fuzzy
 msgid "Move cursor half-word left"
-msgstr "Mover cursor mitad palabra izquierda"
+msgstr "Mover cursor parte de palabra a la izquierda (ej. CamelCase)"
 
 #: lazarusidestrconsts.srkmechalfwordright
+#, fuzzy
 msgid "Move cursor half-word right"
-msgstr "Mover cursor mitad palabra derecha"
+msgstr "Mover cursor parte de palabra a la derecha (ej. CamelCase)"
 
 #: lazarusidestrconsts.srkmecimestr
 msgid "Ime Str"
@@ -18716,12 +18718,14 @@ msgid "Select Goto XY"
 msgstr "Seleccionar ir a XY"
 
 #: lazarusidestrconsts.srkmecselhalfwordleft
+#, fuzzy
 msgid "Select half-word left"
-msgstr "Seleccionar mitad de palabra izquierda"
+msgstr "Seleccoinar parte de la palabra a la izquierda (ej. CamelCase)"
 
 #: lazarusidestrconsts.srkmecselhalfwordright
+#, fuzzy
 msgid "Select half-word right"
-msgstr "Seleccionar mitad de palabra derecha"
+msgstr "Seleccionar parte de la palabra a la derecha (ej. CamelCase)"
 
 #: lazarusidestrconsts.srkmecselleft
 msgid "Select Left"
@@ -19317,7 +19321,6 @@ msgid "Encoding"
 msgstr "Codificación"
 
 #: lazarusidestrconsts.uemevaluatemodify
-#, fuzzy
 msgctxt "lazarusidestrconsts.uemevaluatemodify"
 msgid "&Evaluate/Modify ..."
 msgstr "&Evaluar/Modificar ..."

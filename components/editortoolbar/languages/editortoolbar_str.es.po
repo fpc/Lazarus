@@ -71,7 +71,7 @@ msgstr "Editor de la configuración de Barra de herramientas"
 
 #: editortoolbar_str.rshelp
 msgid "Help"
-msgstr ""
+msgstr "Ayuda"
 
 #: editortoolbar_str.rshelp1
 msgid "The \"Add\" button inserts a Menu Item before the selected Item of the Toolbar."

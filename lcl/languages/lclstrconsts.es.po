@@ -688,7 +688,6 @@ msgid "Help Database \"%s\" not found"
 msgstr "Base de datos de ayuda \"%s\" no encotrada"
 
 #: lclstrconsts.rshelphelpfordirectivenotfound
-#, fuzzy
 msgctxt "lclstrconsts.rshelphelpfordirectivenotfound"
 msgid "Help for directive \"%s\" not found."
 msgstr "Ayuda para directiva \"%s\" no encontrada."
@@ -1543,6 +1542,8 @@ msgid ""
 "The selected item does not exist on disk:\n"
 "\"%s\"\n"
 msgstr ""
+"El elemento seleccionado no existe en el disco:\n"
+"\"%s\"\n"
 
 #: lclstrconsts.sshellctrlssize
 msgid "Size"

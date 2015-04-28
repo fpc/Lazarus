@@ -34,7 +34,7 @@ msgstr "CREATEDATE(<String>)/Convierte <String> cadena a cadena que contiene fec
 
 #: lr_add_function_const.sdescriptioncreatenum
 msgid "CREATENUM(<String>)/Converts <String> string to string that contains numeric value to use it in SQL clause."
-msgstr "msgid \"CREATENUM(<String>)/Convierte <String> de cadena a cadena que contiene un valor numérico para ser utilizado en una claúsula SQL."
+msgstr "CREATENUM(<String>)/Convierte <String> de cadena a cadena que contiene un valor numérico para ser utilizado en una claúsula SQL."
 
 #: lr_add_function_const.sdescriptioncreatestr
 msgid "CREATESTR(<String>)/Adds quotes to the <String> string to use it in SQL clause."
@@ -109,10 +109,8 @@ msgid "ISRANGENUM(<Number1>,<Number2>,<Number3>)/Returns True if <Number3> is be
 msgstr "ISRANGENUM(<Number1>,<Number2>,<Number3>)/Retorna True si <Number3> se encuentra entre el <Number1> y el <Number2>."
 
 #: lr_add_function_const.sdescriptioniswordpresent
-#, fuzzy
-#| msgid "ASTDAYOFPREVMONTH(<Date>)/Returns the date of last day of the previous month of date <Date>."
 msgid "ISWORDPRESENT(<Word>,<String>,<Delimiters>)/Determines if word <Word> is present in the string <String>.<Delimiters> is the list of word delimiters."
-msgstr "ASTDAYOFPREVMONTH(<Date>)/Retla fecha del última día del mes previo de la fecha <Date>."
+msgstr "ISWORDPRESENT(<Word>,<String>,<Delimiters>)/Determina si una palabra <Word> esta presente en la cadena <String>. <Delimiters> es la lista de separadores de palabras"
 
 #: lr_add_function_const.sdescriptionlastdayofprevmonth
 msgid "LASTDAYOFPREVMONTH(<Date>)/Returns the date of last day of the previous month of date <Date>."

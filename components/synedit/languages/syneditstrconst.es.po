@@ -1,13 +1,15 @@
 msgid ""
 msgstr ""
 "Last-Translator: Lucas Martín <codedeep@hotmail.com>\n"
-"PO-Revision-Date: 2013-05-12 21:00+0100\n"
+"PO-Revision-Date: 2015-04-25 17:45-0600\n"
 "Project-Id-Version: synedit\n"
 "Language-Team: Español\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
 "MIME-Version: 1.0\n"
+"Language: es\n"
+"X-Generator: Poedit 1.7.6\n"
 
 #: syneditstrconst.syns_attrannotation
 msgid "Annotation"
@@ -439,7 +441,7 @@ msgstr "Plegar Código"
 
 #: syneditstrconst.syns_emccodefoldcollaps_opt
 msgid "Nodes,One,All,\"At Caret\",\"Current Node\""
-msgstr "Nodos, Uno, Todos, \"en Caret (intercalación)\",\"Nodo actual\""
+msgstr "Nodos, Uno, Todos, \"En el cursor de texto\",\"Nodo actual\""
 
 #: syneditstrconst.syns_emccodefoldcontextmenu
 msgid "Fold Menu"
