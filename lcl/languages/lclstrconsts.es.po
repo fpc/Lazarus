@@ -226,7 +226,7 @@ msgstr "Shift"
 
 #: lclstrconsts.ifsvk_snapshot
 msgid "Snapshot"
-msgstr "Instantanea"
+msgstr "Instantánea"
 
 #: lclstrconsts.ifsvk_space
 msgid "Space key"
@@ -1513,7 +1513,7 @@ msgid ""
 msgstr ""
 "Ruta relativa no válida:\n"
 "\"%s\"\n"
-"en relación a la ruta raiz:\n"
+"en relación a la ruta raíz:\n"
 "\"%s\"\n"
 
 #: lclstrconsts.sshellctrlsinvalidroot

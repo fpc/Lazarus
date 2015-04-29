@@ -267,11 +267,11 @@ msgstr "Texto:"
 
 #: lr_const.sdateformat1
 msgid "mm.dd.yy"
-msgstr ""
+msgstr "dd-mm-yy"
 
 #: lr_const.sdateformat2
 msgid "mm.dd.yyyy"
-msgstr "mm.dd.yy"
+msgstr "dd-mm-yyyy"
 
 #: lr_const.sdateformat3
 msgid "d mmm yyyy"
