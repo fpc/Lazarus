@@ -156,7 +156,7 @@ msgid "This will replace all captions from dataset. Continue?"
 msgstr "Ez a művelet lecseréli az összes feliratot az adatkészletben találhatókra. Folytatás?"
 
 #: objinspstrconsts.dpeunabletoretrievefieldsdefinitions
-msgid "Unable to retrieve fields definition from dataset"
+msgid "Unable to retrieve fields definition from dataset."
 msgstr ""
 
 #: objinspstrconsts.fescalculated

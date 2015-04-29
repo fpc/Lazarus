@@ -157,7 +157,7 @@ msgid "This will replace all captions from dataset. Continue?"
 msgstr "Toutes les légendes vont être remplacées depuis l'ensemble de données. Voulez-vous continuer ?"
 
 #: objinspstrconsts.dpeunabletoretrievefieldsdefinitions
-msgid "Unable to retrieve fields definition from dataset"
+msgid "Unable to retrieve fields definition from dataset."
 msgstr ""
 
 #: objinspstrconsts.fescalculated

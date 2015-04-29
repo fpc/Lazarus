@@ -5,7 +5,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2015-04-11 00:22+0300\n"
+"PO-Revision-Date: 2015-04-30 00:12+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 
@@ -154,8 +154,8 @@ msgid "This will replace all captions from dataset. Continue?"
 msgstr "Это действие приведёт к замене всех заголовков набора данных. Продолжить?"
 
 #: objinspstrconsts.dpeunabletoretrievefieldsdefinitions
-msgid "Unable to retrieve fields definition from dataset"
-msgstr ""
+msgid "Unable to retrieve fields definition from dataset."
+msgstr "Невозможно извлечь определение полей из набора данных."
 
 #: objinspstrconsts.fescalculated
 msgid "&Calculated"

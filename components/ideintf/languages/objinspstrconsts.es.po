@@ -156,7 +156,7 @@ msgid "This will replace all captions from dataset. Continue?"
 msgstr "Esto reemplazará los títulos (captions) de columna actuales por los originales del dataset. ¿Desea continuar?"
 
 #: objinspstrconsts.dpeunabletoretrievefieldsdefinitions
-msgid "Unable to retrieve fields definition from dataset"
+msgid "Unable to retrieve fields definition from dataset."
 msgstr ""
 
 #: objinspstrconsts.fescalculated
