@@ -1368,7 +1368,7 @@ begin
   Result := False;
   lCDWinControl := TCDWinControl(AWinControl.Handle);
   if lCDWinControl.CDControl = nil then Exit;
-  AText := TCDIntfEdit(lCDWinControl.CDControl).Lines.Text;
+  AText := TCDIntfEdit(lCDWinControl.CDControl).Text;
   //DebugLn('[TCDWSCustomEdit.GetText] AWinControl=' + AWinControl.Name + ' AText='+AText);
   Result := True;
 end;
