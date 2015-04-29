@@ -226,7 +226,7 @@ msgstr "Shift"
 
 #: lclstrconsts.ifsvk_snapshot
 msgid "Snapshot"
-msgstr "Instantanea"
+msgstr "Instantánea"
 
 #: lclstrconsts.ifsvk_space
 msgid "Space key"
