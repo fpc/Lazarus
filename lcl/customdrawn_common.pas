@@ -331,7 +331,7 @@ begin
         + GetMeasuresEx(ADest, TCDCONTROL_CAPTION_WIDTH, AState, AStateEx) + 6;
     end;
 
-    PreferredHeight := GetMeasures(TCDCHECKBOX_SQUARE_HEIGHT)
+    PreferredHeight := GetMeasures(TCDCHECKBOX_SQUARE_HEIGHT);
     if AAllowUseOfMeasuresEx then
       PreferredHeight := Max(PreferredHeight,
         GetMeasuresEx(ADest, TCDCONTROL_CAPTION_HEIGHT, AState, AStateEx));
@@ -858,6 +858,7 @@ begin
   lLineTop := lTextTopSpacing + AStateEx.CaretPos.Y * lLineHeight;
 
   lTmpText := UTF8Copy(lControlText, AStateEx.VisibleTextStart.X, AStateEx.CaretPos.X-AStateEx.VisibleTextStart.X+1);
+  lTmpText :=  VisibleText(lTmpText, AStateEx.PasswordChar);
   lCaretPixelPos := ADest.TextWidth(lTmpText) + GetMeasures(TCDEDIT_LEFT_TEXT_SPACING)
     + AStateEx.LeftTextMargin;
   ADest.Pen.Color := clBlack;
@@ -914,6 +915,7 @@ begin
   for i := 0 to lVisibleLinesCount - 1 do
   begin
     lControlText := AStateEx.Lines.Strings[AStateEx.VisibleTextStart.Y+i];
+    lControlText :=  VisibleText(lControlText, AStateEx.PasswordChar);
     lControlTextLen := UTF8Length(lControlText);
     lLineTop := lTextTopSpacing + i * lLineHeight;
 

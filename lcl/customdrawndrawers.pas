@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, Types, fpcanvas, fpimage,
   // LCL for types
-  Controls, Graphics, ComCtrls, ExtCtrls;
+  Controls, Graphics, ComCtrls, ExtCtrls, LazUTF8;
 
 const
   CDDRAWSTYLE_COUNT = 19;
@@ -162,6 +162,7 @@ type
     MultiLine: Boolean;
     Lines: TStrings; // Just a reference, never Free
     FullyVisibleLinesCount, LineHeight: Integer; // Filled on drawing to be used in customdrawncontrols.pas
+    PasswordChar: Char;
     // customizable extra margins, zero is the base value
     LeftTextMargin, RightTextMargin: Integer;
     // For the combo box for example
@@ -321,6 +322,7 @@ type
     procedure LoadFallbackPaletteColors; virtual;
     function  PalDefaultUsesNativePalette: Boolean; virtual;
     function GetDrawStyle: TCDDrawStyle; virtual;
+    class function VisibleText(const aVisibleText: TCaption; const APasswordChar: Char): TCaption;
     // GetControlDefaultColor is used by customdrawncontrols to resolve clDefault
     function GetControlDefaultColor(AControlId: TCDControlID): TColor;
     // General
@@ -670,6 +672,14 @@ end;
 function TCDDrawer.GetDrawStyle: TCDDrawStyle;
 begin
   Result := dsCommon;
+end;
+
+class function TCDDrawer.VisibleText(const aVisibleText: TCaption; const APasswordChar: Char): TCaption;
+begin
+  if aPasswordChar = #0 then
+    result := aVisibleText
+  else
+    result := StringOfChar( aPasswordChar, UTF8Length(aVisibleText) );
 end;
 
 { Control colors can refer to their background or foreground }

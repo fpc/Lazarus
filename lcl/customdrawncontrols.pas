@@ -205,6 +205,8 @@ type
     function GetLeftTextMargin: Integer;
     function GetMultiLine: Boolean;
     function GetRightTextMargin: Integer;
+    function GetText: string;
+    function GetPasswordChar: Char;
     procedure HandleCaretTimer(Sender: TObject);
     procedure DoDeleteSelection;
     procedure DoClearSelection;
@@ -214,6 +216,8 @@ type
     procedure SetLines(AValue: TStrings);
     procedure SetMultiLine(AValue: Boolean);
     procedure SetRightTextMargin(AValue: Integer);
+    procedure SetText(AValue: string);
+    procedure SetPasswordChar(AValue: Char);
     function MousePosToCaretPos(X, Y: Integer): TPoint;
     function IsSomethingSelected: Boolean;
   protected
@@ -258,8 +262,10 @@ type
     property Enabled;
     property Lines: TStrings read FLines write SetLines;
     property MultiLine: Boolean read GetMultiLine write SetMultiLine default False;
+    property PasswordChar: Char read GetPasswordChar write SetPasswordChar default #0;
     property ReadOnly: Boolean read FReadOnly write FReadOnly default False;
     property TabStop default True;
+    property Text : string read GetText write SetText stored false; // This is already stored in Lines
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
   end;
 
@@ -1455,6 +1461,18 @@ begin
   Invalidate;
 end;
 
+procedure TCDEdit.SetText(AValue: string);
+begin
+  Lines.Text := aValue;
+end;
+
+procedure TCDEdit.SetPasswordChar(AValue: Char);
+begin
+  if AValue=FEditState.PasswordChar then Exit;
+  FEditState.PasswordChar := AValue;
+  Invalidate;
+end;
+
 function TCDEdit.GetControlId: TCDControlID;
 begin
   Result := cidEdit;
@@ -1508,6 +1526,21 @@ end;
 function TCDEdit.GetRightTextMargin: Integer;
 begin
   Result := FEditState.RightTextMargin;
+end;
+
+function TCDEdit.GetText: string;
+begin
+  if Multiline then
+    result := Lines.Text
+  else if Lines.Count = 0 then
+    result := ''
+  else
+    result := Lines[0];
+end;
+
+function TCDEdit.GetPasswordChar: Char;
+begin
+  Result := FEditState.PasswordChar;
 end;
 
 procedure TCDEdit.DoDeleteSelection;
@@ -1613,6 +1646,7 @@ begin
   Canvas.Font := Font;
   lVisibleStr := FLines.Strings[Result.Y];
   lVisibleStr := LazUTF8.UTF8Copy(lVisibleStr, FEditState.VisibleTextStart.X, Length(lVisibleStr));
+  lVisibleStr := TCDDrawer.VisibleText(lVisibleStr, FEditState.PasswordChar);
   lStrLen := LazUTF8.UTF8Length(lVisibleStr);
   lPos := FDrawer.GetMeasures(TCDEDIT_LEFT_TEXT_SPACING);
   lBestMatch := 0;
@@ -1894,7 +1928,11 @@ begin
     lKeyWasProcessed := False;
   end; // case
 
-  if lKeyWasProcessed then FEditState.EventArrived := True;
+  if lKeyWasProcessed then
+  begin
+    FEditState.EventArrived := True;
+    Key := 0;
+  end;
 end;
 
 procedure TCDEdit.KeyUp(var Key: word; Shift: TShiftState);
@@ -2001,6 +2039,7 @@ begin
   FLines := TStringList.Create;
   FEditState.VisibleTextStart := Point(1, 0);
   FEditState.Lines := FLines;
+  FEditState.PasswordChar := #0;
 
   // Caret code
   FCaretTimer := TTimer.Create(Self);
