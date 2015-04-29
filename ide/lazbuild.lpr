@@ -392,7 +392,7 @@ begin
       else
         Result:=BuildPackage(Filename)
     else if CompareFileExt(Filename,'.lpi')=0 then
-        Result:=BuildProject(Filename)
+      Result:=BuildProject(Filename)
     else if CompareFileExt(Filename,'.lpr')=0 then begin
       Filename:=ChangeFileExt(Filename,'.lpi');
       if FileExists(Filename) then
@@ -436,7 +436,9 @@ begin
     DoCreateMakefile(APackage)
   else
     CompilePackage(APackage,Flags);
-  
+
+  PkgLinks.SaveUserLinks(true);
+
   Result:=true;
 end;
 
