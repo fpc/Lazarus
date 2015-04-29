@@ -1513,7 +1513,7 @@ msgid ""
 msgstr ""
 "Ruta relativa no válida:\n"
 "\"%s\"\n"
-"en relación a la ruta raiz:\n"
+"en relación a la ruta raíz:\n"
 "\"%s\"\n"
 
 #: lclstrconsts.sshellctrlsinvalidroot
