@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Last-Translator: Philippe BOUCAULT <philbouc@users.sourceforge.net>\n"
-"PO-Revision-Date: 2015-04-20 17:42+0100\n"
+"PO-Revision-Date: 2015-04-28 16:14+0100\n"
 "Language-Team: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -9,7 +9,7 @@ msgstr ""
 "POT-Creation-Date: \n"
 "MIME-Version: 1.0\n"
 "Language: fr\n"
-"X-Generator: Poedit 1.7.6\n"
+"X-Generator: Poedit 1.7.5\n"
 
 #: registersqldb.sfirebirddatabases
 msgid "Firebird databases"
@@ -29,7 +29,7 @@ msgstr "Fichier script SQL"
 
 #: registersqldb.ssqlscriptdesc
 msgid "Create a new SQL Script file"
-msgstr "Créer un nouveau fichier script SQL"
+msgstr "Créer un nouveau fichier script SQL."
 
 #: registersqldb.ssqlsource
 msgid "Insert your SQL statements here"
@@ -37,4 +37,4 @@ msgstr "Insérez vos instructions SQL ici"
 
 #: registersqldb.ssqlstringspropertyeditordlgtitle
 msgid "Editing %s"
-msgstr "Edition de %s"
+msgstr "Édition de %s"
