@@ -36,12 +36,14 @@ interface
 
 uses
   {$IFDEF WindowsDesktop} windows,  {$endif}
-  Classes, SysUtils, Types, LazSynEditText, SynTextDrawer, LazUTF8, Controls, Graphics,
+  Classes, SysUtils,
+  {$IFDEF WindowsDesktop}
+  Types,
+  {$endif}
+  LazSynEditText, SynTextDrawer, LazUTF8, Controls, Graphics,
   LazLoggerBase;
 
 type
-
-  { TSynEditStringBidiChars }
 
   { TSynEditStringSystemWidthChars }
 
@@ -63,8 +65,10 @@ type
 
 implementation
 
+{$IFDEF WindowsDesktop}
 var
   LOG_SynSystemWidthChars: PLazLoggerLogGroup;
+{$ENDIF}
 
 { TSynEditStringSystemWidthChars }
 
@@ -157,8 +161,10 @@ end;
 {$endif}
 
 
+{$IFDEF WindowsDesktop}
 initialization
   LOG_SynSystemWidthChars := DebugLogger.RegisterLogGroup('SynSystemWidthChars' {$IFDEF SynSystemWidthChars} , True {$ENDIF} );
+{$ENDIF}
 
 end.
 
