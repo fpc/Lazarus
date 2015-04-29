@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: lazaruside\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2015-04-24 18:26+0100\n"
+"PO-Revision-Date: 2015-04-29 08:27+0100\n"
 "Last-Translator: Yann Mérignac <yann.merignac@laposte.net>\n"
 "Language-Team: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
 "Language: fr_FR\n"
@@ -602,10 +602,8 @@ msgid "Main .lpr unit creates each form with Application.CreateForm(). They are 
 msgstr "L'unité principale \".lpr\" crée toutes les fiches grâce à \"Application.CreateForm()\". Elles sont aussi libérées automatiquement."
 
 #: lazarusidestrconsts.dlgautocreatenewforms
-#, fuzzy
-#| msgid "When creating new forms, add them to auto-created forms"
 msgid "Auto-create new forms"
-msgstr "Ajouter les nouvelles fiches à celles créées automatiquement"
+msgstr "Créer automatiquement les nouvelles fiches"
 
 #: lazarusidestrconsts.dlgautodel
 msgid "Auto delete file"
@@ -12962,7 +12960,7 @@ msgstr "ou"
 
 #: lazarusidestrconsts.lisos
 msgid ", OS: %s"
-msgstr ", OS: %s"
+msgstr ", OS : %s"
 
 #: lazarusidestrconsts.lisothersourcespathofpackagecontainsdirectorywhichisa
 msgid "other sources path of package \"%s\" contains directory \"%s\", which is already in the unit search path."
@@ -14346,7 +14344,7 @@ msgstr "&Objets"
 
 #: lazarusidestrconsts.lisplistprocedurelist
 msgid "Procedure List"
-msgstr "Liste des procédures"
+msgstr "Liste des routines"
 
 #: lazarusidestrconsts.lisplisttype
 msgctxt "lazarusidestrconsts.lisplisttype"
@@ -14652,11 +14650,11 @@ msgstr "%0:s%0:s à l'adresse %1:x"
 
 #: lazarusidestrconsts.lisprojectsraisedexceptionclasss
 msgid "Project %s raised exception class '%s'."
-msgstr "Le projet %s a levé une exception de class \"%s\"."
+msgstr "Le projet %s a levé une classe d'exception \"%s\""
 
 #: lazarusidestrconsts.lisprojectsraisedexceptionclassswithmessagess
 msgid "Project %s raised exception class '%s' with message:%s%s"
-msgstr "Le projet %s a levé une classe d'exception \"%s\"' avec le message :%s%s"
+msgstr "Le projet %s a levé une classe d'exception \"%s\" avec le message : %s%s"
 
 #: lazarusidestrconsts.lisprojectsraisedexceptioninfileaddress
 msgid "%0:s%0:s In file '%1:s' at address %2:x"
@@ -14668,7 +14666,7 @@ msgstr "%0:s%0:s dans le fichier \"%1:s\" à la ligne %2:d"
 
 #: lazarusidestrconsts.lisprojectsraisedexceptioninfilelinesrc
 msgid "%0:s%0:s In file '%1:s' at line %2:d:%0:s%3:s"
-msgstr "%0:s%0:s dans le fichier \"%1:s\" à la ligne %2:d:%0:s%3:s"
+msgstr "%0:s%0:sdans le fichier \"%1:s\" à la ligne %2:d :%0:s%3:s"
 
 #: lazarusidestrconsts.lisprojectsrcpath
 msgid "Project Src Path"

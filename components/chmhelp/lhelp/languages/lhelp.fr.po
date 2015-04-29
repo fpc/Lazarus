@@ -3,7 +3,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: 2015-04-12 15:04+0100\n"
-"PO-Revision-Date: 2015-04-20 23:19+0100\n"
+"PO-Revision-Date: 2015-04-29 08:23+0100\n"
 "Last-Translator: Yann Mérignac <yann.merignac@laposte.net>\n"
 "Language-Team: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -61,7 +61,7 @@ msgstr "&Aide"
 
 #: lhelpstrconsts.slhelp_helpfileschmchmallfiles
 msgid "Help files (*.chm)|*.chm|All files (*.*)|*"
-msgstr ""
+msgstr "Fichiers d'aide (*.chm) | *. chm| Tous les fichiers (*. *) | *"
 
 #: lhelpstrconsts.slhelp_helpshowthisinformation
 msgid "    --help     :  Show this information"
@@ -129,7 +129,7 @@ msgstr "&Ouvrir..."
 
 #: lhelpstrconsts.slhelp_openexistingfile
 msgid "Open existing file"
-msgstr ""
+msgstr "Ouvrir un fichier existant"
 
 #: lhelpstrconsts.slhelp_openrecent
 msgid "Open Recent"
@@ -182,4 +182,3 @@ msgstr "    Utilisation : lhelp [[filename] [--context id] [--hide] [--ipcname l
 #: lhelpstrconsts.slhelp_view
 msgid "&View"
 msgstr "&Afficher"
-
