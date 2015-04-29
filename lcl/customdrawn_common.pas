@@ -324,22 +324,25 @@ begin
   cidEdit: PreferredHeight := GetMeasuresEx(ADest, TCDCONTROL_CAPTION_HEIGHT, AState, AStateEx)+8;
   cidCheckBox, cidRadioButton:
   begin
-    if AStateEx.AutoSize then begin
+    if AStateEx.AutoSize and AAllowUseOfMeasuresEx then
+    begin
       PreferredWidth := GetMeasures(TCDCHECKBOX_SQUARE_HEIGHT);
       PreferredWidth := PreferredWidth
         + GetMeasuresEx(ADest, TCDCONTROL_CAPTION_WIDTH, AState, AStateEx) + 6;
     end;
 
-    PreferredHeight :=
-      Max(GetMeasuresEx(ADest, TCDCONTROL_CAPTION_HEIGHT, AState, AStateEx),
-       GetMeasures(TCDCHECKBOX_SQUARE_HEIGHT));
+    PreferredHeight := GetMeasures(TCDCHECKBOX_SQUARE_HEIGHT)
+    if AAllowUseOfMeasuresEx then
+      PreferredHeight := Max(PreferredHeight,
+        GetMeasuresEx(ADest, TCDCONTROL_CAPTION_HEIGHT, AState, AStateEx));
   end;
+  // In the LCL TComboBox AutoSizes only its Height, so follow this here
   cidComboBox:
   begin
     PreferredHeight := GetMeasures(TCDCOMBOBOX_DEFAULT_HEIGHT);
     if AAllowUseOfMeasuresEx then
-      PreferredHeight := Max(GetMeasuresEx(ADest, TCDCONTROL_CAPTION_HEIGHT, AState, AStateEx),
-        PreferredHeight);
+      PreferredHeight := Max(PreferredHeight,
+        GetMeasuresEx(ADest, TCDCONTROL_CAPTION_HEIGHT, AState, AStateEx));
   end;
   end;
 end;

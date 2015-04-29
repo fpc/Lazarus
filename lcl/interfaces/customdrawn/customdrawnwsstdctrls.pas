@@ -892,16 +892,18 @@ var
   lCDWinControl: TCDWinControl;
   lIntfComboBox: TCDIntfComboBox;
 begin
-  // ToDo: Do something to correct the combobox height when autosized, now something in the LCL seams to hardcode it to 50...
   lCDWinControl := TCDWinControl(AWinControl.Handle);
   lIntfComboBox := TCDIntfComboBox(lCDWinControl.CDControl);
   lIntfComboBox.LCLWSCalculatePreferredSize(PreferredWidth, PreferredHeight, WithThemeSpace, False, False);
 
-  //AWinControl.Height := PreferredHeight;
-
   // The correct behavior for the LCL is not forcing any specific value for
-  // TComboBox.Width, so we set it to zero to signal that here
-  PreferredWidth := 0;
+  // TComboBox.Width, so widgetsets should set PreferredWidth to zero to
+  // use the user-provided value.
+  //
+  // But in LCL-CustomDrawn something strange happens (probably due to control injection)
+  // that requires setting PreferredWidth or else a default 50 will be used,
+  // this default size 50x75 is set at TControl.GetControlClassDefaultSize
+  PreferredWidth := AWinControl.Width;
 end;
 
 class procedure TCDWSCustomComboBox.SetItemIndex(
