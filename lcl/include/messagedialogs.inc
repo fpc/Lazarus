@@ -164,6 +164,13 @@ begin
   ReallocMem(Btns, 0);
 end;
 
+function MessageDlg(const aMsg: string; DlgType: TMsgDlgType;
+  Buttons: TMsgDlgButtons; HelpCtx: Longint; DefaultButton: TMsgDlgBtn
+  ): TModalResult;
+begin
+  Result := MessageDlg('', aMsg, DlgType, Buttons, HelpCtx, DefaultButton);
+end;
+
 function MessageDlg(const aCaption, aMsg: string; DlgType: TMsgDlgType;
   Buttons: TMsgDlgButtons; const HelpKeyword: string): TModalResult;
 begin
