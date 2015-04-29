@@ -449,7 +449,7 @@ resourcestring
   itcsSearchAndReplace = 'Search and replace';
 
   // DBPropedits
-  dpeUnableToRetrieveFieldsDefinitions = 'Unable to retrieve fields definition from dataset';
+  dpeUnableToRetrieveFieldsDefinitions = 'Unable to retrieve fields definition from dataset.';
 
 implementation
 
