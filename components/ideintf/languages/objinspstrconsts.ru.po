@@ -153,6 +153,10 @@ msgstr "Это действие приведёт к удалению всех с
 msgid "This will replace all captions from dataset. Continue?"
 msgstr "Это действие приведёт к замене всех заголовков набора данных. Продолжить?"
 
+#: objinspstrconsts.dpeunabletoretrievefieldsdefinitions
+msgid "Unable to retrieve fields definition from dataset"
+msgstr ""
+
 #: objinspstrconsts.fescalculated
 msgid "&Calculated"
 msgstr "&Вычисляемое"

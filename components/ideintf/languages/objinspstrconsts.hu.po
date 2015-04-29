@@ -155,6 +155,10 @@ msgstr "Ez a művelet törli az összes oszlopot. Folytatás?"
 msgid "This will replace all captions from dataset. Continue?"
 msgstr "Ez a művelet lecseréli az összes feliratot az adatkészletben találhatókra. Folytatás?"
 
+#: objinspstrconsts.dpeunabletoretrievefieldsdefinitions
+msgid "Unable to retrieve fields definition from dataset"
+msgstr ""
+
 #: objinspstrconsts.fescalculated
 msgid "&Calculated"
 msgstr "Számított"

@@ -448,6 +448,9 @@ resourcestring
   // IDE Text Converter
   itcsSearchAndReplace = 'Search and replace';
 
+  // DBPropedits
+  dpeUnableToRetrieveFieldsDefinitions = 'Unable to retrieve fields definition from dataset';
+
 implementation
 
 end.

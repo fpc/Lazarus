@@ -156,6 +156,10 @@ msgstr "Dies wird alle Spalten löschen. Fortfahren?"
 msgid "This will replace all captions from dataset. Continue?"
 msgstr "Dies wird alle Titel aus dem Dataset ersetzen. Fortfahren?"
 
+#: objinspstrconsts.dpeunabletoretrievefieldsdefinitions
+msgid "Unable to retrieve fields definition from dataset"
+msgstr ""
+
 #: objinspstrconsts.fescalculated
 msgid "&Calculated"
 msgstr "Bere&chnet"

@@ -156,6 +156,10 @@ msgstr "Toutes les colonnes vont être supprimées. Voulez-vous continuer ?"
 msgid "This will replace all captions from dataset. Continue?"
 msgstr "Toutes les légendes vont être remplacées depuis l'ensemble de données. Voulez-vous continuer ?"
 
+#: objinspstrconsts.dpeunabletoretrievefieldsdefinitions
+msgid "Unable to retrieve fields definition from dataset"
+msgstr ""
+
 #: objinspstrconsts.fescalculated
 msgid "&Calculated"
 msgstr "&Calculé"
@@ -1563,3 +1567,4 @@ msgstr "Déplacer l'onglet vers la gauche"
 #: objinspstrconsts.tccesmovetabright
 msgid "Move tab right"
 msgstr "Déplacer l'onglet vers la droite"
+

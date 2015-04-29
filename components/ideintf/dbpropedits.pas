@@ -17,9 +17,9 @@ unit DBPropEdits;
 interface
 
 uses
-  Classes, SysUtils, ObjInspStrConsts, PropEdits, PropEditUtils,
-  ComponentEditors,
-  TypInfo, DB, DbCtrls, DBGrids, Forms, DBGridColumnsPropEditForm;
+  Classes, SysUtils, ObjInspStrConsts, Dialogs, PropEdits, PropEditUtils,
+  ComponentEditors, TypInfo, DB, DbCtrls, DBGrids, Forms,
+  DBGridColumnsPropEditForm;
 
 type
   TFieldProperty = class(TStringPropertyEditor)
@@ -78,7 +78,17 @@ begin
         DataSet.GetFieldNames(List)
       else
       begin
-        DataSet.FieldDefs.Update;
+        try
+          DataSet.FieldDefs.Update;
+        except
+          // some FPC versions will fail here, but having persistent fields should
+          // actually work or else present an empty list of fields... but not crash/freeze
+          if Dataset.FieldDefs.Count=0 then begin
+            List.Clear;
+            ShowMessage(dpeUnableToRetrieveFieldsDefinitions);
+            exit;
+          end;
+        end;
         for i := 0 to DataSet.FieldDefs.Count - 1 do
           List.Add(DataSet.FieldDefs[i].Name);
       end;

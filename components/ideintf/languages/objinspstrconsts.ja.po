@@ -153,6 +153,10 @@ msgstr ""
 msgid "This will replace all captions from dataset. Continue?"
 msgstr ""
 
+#: objinspstrconsts.dpeunabletoretrievefieldsdefinitions
+msgid "Unable to retrieve fields definition from dataset"
+msgstr ""
+
 #: objinspstrconsts.fescalculated
 msgid "&Calculated"
 msgstr "計算済み(&C)"

@@ -156,6 +156,10 @@ msgstr "Verranno cancellate tutte le colonne. Continuare?"
 msgid "This will replace all captions from dataset. Continue?"
 msgstr "Questo sostituirà tutte le intestazioni dal dataset. Continuare?"
 
+#: objinspstrconsts.dpeunabletoretrievefieldsdefinitions
+msgid "Unable to retrieve fields definition from dataset"
+msgstr ""
+
 #: objinspstrconsts.fescalculated
 msgid "&Calculated"
 msgstr "&Calcolato"
