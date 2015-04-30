@@ -78,7 +78,10 @@ procedure RemoveProcessEventHandler(var AHandler: PProcessEventHandler); overrid
 
 procedure SetEventHandlerFlags(AHandler: PEventHandler; NewFlags: dword); override;
 procedure SetRubberBandRect(const ARubberBand: HWND; const ARect: TRect); override;*)
-function ShowSelectItemDialog(const AItems: TStrings): Boolean; override;
+function ShowSelectItemDialog(const AItems: TStrings; APos: TPoint): Boolean; override;
+{$ifndef CD_HasNativeSelectItemDialog}
+procedure HandleSelectItemDialogClose(ASender: TObject);
+{$endif}
 procedure ShowVirtualKeyboard();
 
 // No need to implement this one as the default is redirecting to ExtTextOut

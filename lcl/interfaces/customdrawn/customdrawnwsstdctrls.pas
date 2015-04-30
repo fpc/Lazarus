@@ -1407,8 +1407,7 @@ begin
   TQtLineEdit(ACustomEdit.Handle).setAlignment(AlignmentMap[AAlignment]);
 end;*)
 
-class function TCDWSCustomEdit.GetCaretPos(const ACustomEdit: TCustomEdit
-  ): TPoint;
+class function TCDWSCustomEdit.GetCaretPos(const ACustomEdit: TCustomEdit): TPoint;
 var
   lCDWinControl: TCDWinControl;
 begin

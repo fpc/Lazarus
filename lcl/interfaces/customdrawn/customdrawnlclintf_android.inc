@@ -272,7 +272,7 @@ begin
   ARawImage.Init;
 end;
 
-function TCDWidgetset.ShowSelectItemDialog(const AItems: TStrings): Boolean;
+function TCDWidgetset.ShowSelectItemDialog(const AItems: TStrings; APos: TPoint): Boolean;
 var
   javaAndroidAppAlertDialogBuilderClass: JClass = nil;
   javaCharSequence: JClass = nil;

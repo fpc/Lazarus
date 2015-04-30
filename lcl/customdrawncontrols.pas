@@ -1057,7 +1057,7 @@ begin
     begin
       // Call the combobox dialog
       LCLIntf.OnShowSelectItemDialogResult := @OnShowSelectItemDialogResult;
-      LCLIntf.ShowSelectItemDialog(FItems);
+      LCLIntf.ShowSelectItemDialog(FItems, Self.ClientToScreen(Point(Left, Top+Height)));
 
       Exit;
     end;
