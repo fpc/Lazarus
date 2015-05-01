@@ -1539,8 +1539,8 @@ begin
   end;
   repeat
     if not fSource.Save then begin
-      ACaption:='Write error';
-      AText:='Unable to write file "'+Filename+'"!';
+      ACaption:=lisCodeToolsDefsWriteError;
+      AText:=Format(lisUnableToWriteFile2, [Filename]);
       Result:=IDEMessageDialog(ACaption,AText,mtError,mbAbortRetryIgnore);
       if Result=mrAbort then exit;
       if Result=mrIgnore then Result:=mrOk;
@@ -1567,8 +1567,8 @@ begin
   end;
   repeat
     if not fSource.SaveToFile(AFileName) then begin
-      ACaption:='Write error';
-      AText:='Unable to write file "'+AFilename+'"!';
+      ACaption:=lisCodeToolsDefsWriteError;
+      AText:=Format(lisUnableToWriteFile2, [AFilename]);
       Result:=IDEMessageDialog(ACaption,AText,mtError,mbAbortRetryIgnore);
       if Result=mrAbort then exit;
       if Result=mrIgnore then Result:=mrOk;
