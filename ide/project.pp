@@ -46,7 +46,7 @@ uses
 {$IFDEF IDE_MEM_CHECK}
   MemCheck,
 {$ENDIF}
-  Classes, SysUtils, TypInfo, FPCAdds, LCLProc, LCLIntf, LCLType, Forms,
+  Classes, SysUtils, TypInfo, FPCAdds, LCLProc, Forms,
   FileUtil, Laz2_XMLCfg, Controls, Dialogs, maps, LazFileUtils, LazFileCache,
   LazUTF8,
   // codetools
@@ -1541,8 +1541,7 @@ begin
     if not fSource.Save then begin
       ACaption:='Write error';
       AText:='Unable to write file "'+Filename+'"!';
-      Result:=Application.MessageBox(PChar(AText),PChar(ACaption)
-         ,MB_ABORTRETRYIGNORE);
+      Result:=IDEMessageDialog(ACaption,AText,mtError,mbAbortRetryIgnore);
       if Result=mrAbort then exit;
       if Result=mrIgnore then Result:=mrOk;
     end else begin
@@ -1570,8 +1569,7 @@ begin
     if not fSource.SaveToFile(AFileName) then begin
       ACaption:='Write error';
       AText:='Unable to write file "'+AFilename+'"!';
-      Result:=Application.MessageBox(PChar(AText),PChar(ACaption)
-         ,MB_ABORTRETRYIGNORE);
+      Result:=IDEMessageDialog(ACaption,AText,mtError,mbAbortRetryIgnore);
       if Result=mrAbort then exit;
       if Result=mrIgnore then Result:=mrOk;
     end else
@@ -1594,7 +1592,7 @@ begin
     if NewSource=nil then begin
       ACaption:=lisCodeToolsDefsReadError;
       AText:=Format(lisUnableToReadFile2, [Filename]);
-      Result:=Application.MessageBox(PChar(AText),PChar(ACaption),MB_ABORTRETRYIGNORE);
+      Result:=IDEMessageDialog(ACaption,AText,mtError,mbAbortRetryIgnore);
       if Result in [mrAbort,mrIgnore] then
         exit;
     end else begin
