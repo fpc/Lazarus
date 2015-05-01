@@ -1809,7 +1809,6 @@ procedure TUnitInfo.LoadFromXMLConfig(XMLConfig: TXMLConfig;
 var
   AFilename: string;
   c, i: Integer;
-  s: String;
 begin
   // project data
   if not Merge then begin
@@ -1833,15 +1832,15 @@ begin
     if (AFilename<>'') and Assigned(fOnLoadSaveFilename) then
       fOnLoadSaveFilename(AFilename,true);
     if FilenameIsPascalSource(Filename) then begin
-      s:=ExtractFileNameOnly(Filename);
-      fSrcUnitName:=XMLConfig.GetValue(Path+'UnitName/Value',s);
+      fSrcUnitName:=XMLConfig.GetValue(Path+'UnitName/Value','');
+      if fSrcUnitName='' then
+        fSrcUnitName:=ExtractFileNameOnly(Filename);
       {$IFDEF VerboseIDESrcUnitName}
       if CompareFilenames(ExtractFileNameOnly(Filename),'interpkgconflictfiles')=0 then
         debugln(['TUnitInfo.LoadFromXMLConfig ',fSrcUnitName]);
       {$ENDIF}
-      if fSrcUnitName='' then
-        fSrcUnitName:=s;
-    end;
+    end else
+      fSrcUnitName:='';
 
     // save custom data
     LoadStringToStringTree(XMLConfig,CustomData,Path+'CustomData/');
