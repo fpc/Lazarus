@@ -613,7 +613,7 @@ begin
     end else begin
       ClassUnitInfo:=Project1.UnitWithComponentClassName(aMissingTypes[i]);
       if ClassUnitInfo<>nil then
-        NeededUnitName:=ClassUnitInfo.Unit_Name;
+        NeededUnitName:=ClassUnitInfo.GetUsesUnitName;
     end;
     if NeededUnitName<>'' then begin
       if fUsedUnitsTool.AddUnitImmediately(NeededUnitName) then

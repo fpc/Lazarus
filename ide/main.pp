@@ -10665,7 +10665,7 @@ var
     ConflictingClass: TClass;
     s: string;
   begin
-    if SysUtils.CompareText(ActiveUnitInfo.Unit_Name,AName)=0 then
+    if SysUtils.CompareText(ActiveUnitInfo.SrcUnitName,AName)=0 then
       raise Exception.Create(Format(
         lisTheUnitItselfHasAlreadyTheNamePascalIdentifiersMus, [AName]));
     if ActiveUnitInfo.IsPartOfProject then begin
@@ -11617,7 +11617,7 @@ begin
     OkToAdd:=SourceFileMgr.CheckDirIsInSearchPath(AnUnitInfo,False,False);
     if (pfMainUnitHasUsesSectionForAllUnits in Project1.Flags) then begin
       AnUnitInfo.ReadUnitNameFromSource(false);
-      ShortUnitName:=AnUnitInfo.Unit_Name;
+      ShortUnitName:=AnUnitInfo.SrcUnitName;
       if (ShortUnitName<>'') then begin
         if CodeToolBoss.AddUnitToMainUsesSectionIfNeeded(
                        Project1.MainUnitInfo.Source,ShortUnitName,'') then begin

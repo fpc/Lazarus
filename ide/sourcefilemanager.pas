@@ -435,7 +435,7 @@ begin
       if AnUnitInfo.OpenEditorInfoCount > 0 then
         AShareEditor := TSourceEditor(AnUnitInfo.OpenEditorInfo[0].EditorComponent);
       NewSrcEdit:=SrcNotebook.NewFile(
-        CreateSrcEditPageName(AnUnitInfo.Unit_Name, AFilename, AShareEditor),
+        CreateSrcEditPageName(AnUnitInfo.SrcUnitName, AFilename, AShareEditor),
         AnUnitInfo.Source, False, AShareEditor);
       NewSrcEdit.EditorComponent.BeginUpdate;
       MainIDEBar.itmFileClose.Enabled:=True;
@@ -1719,7 +1719,8 @@ begin
   end else
     NewUnitInfo:=TUnitInfo.Create(NewBuffer);
   //debugln(['TLazSourceFileManager.NewFile ',NewUnitInfo.Filename,' ',NewFilename]);
-  NewUnitInfo.ImproveUnitNameCache(NewUnitName);
+  if (CompareText(NewUnitInfo.SrcUnitName,NewUnitName)=0) then
+    NewUnitInfo.SrcUnitName:=NewUnitName;
   NewUnitInfo.BuildFileIfActive:=NewFileDescriptor.BuildFileIfActive;
   NewUnitInfo.RunFileIfActive:=NewFileDescriptor.RunFileIfActive;
 
@@ -1765,7 +1766,7 @@ begin
     if NewUnitInfo.OpenEditorInfoCount > 0 then
       AShareEditor := TSourceEditor(NewUnitInfo.OpenEditorInfo[0].EditorComponent);
     NewSrcEdit := SrcNoteBook.NewFile(
-      CreateSrcEditPageName(NewUnitInfo.Unit_Name, NewUnitInfo.Filename, AShareEditor),
+      CreateSrcEditPageName(NewUnitInfo.SrcUnitName, NewUnitInfo.Filename, AShareEditor),
       NewUnitInfo.Source, True, AShareEditor);
     MainIDEBar.itmFileClose.Enabled:=True;
     MainIDEBar.itmFileCloseAll.Enabled:=True;
@@ -2075,7 +2076,7 @@ begin
 
   OldUnitName:='';
   if WasPascalSource then
-    OldUnitName:=AnUnitInfo.ParseUnitNameFromSource(true);
+    OldUnitName:=AnUnitInfo.ReadUnitNameFromSource(true);
   OldFilename:=AnUnitInfo.Filename;
 
   if [sfSaveAs,sfSaveToTestDir]*Flags=[sfSaveAs] then begin
@@ -2151,7 +2152,7 @@ begin
   // fix all references
   NewUnitName:='';
   if FilenameIsPascalSource(AnUnitInfo.Filename) then
-    NewUnitName:=AnUnitInfo.ParseUnitNameFromSource(true);
+    NewUnitName:=AnUnitInfo.ReadUnitNameFromSource(true);
   NewFilename:=AnUnitInfo.Filename;
   if (NewUnitName<>'')
   and ((OldUnitName<>NewUnitName) or (CompareFilenames(OldFilename,NewFilename)<>0))
@@ -2245,8 +2246,8 @@ begin
         // ask user
         if AnUnitInfo.Filename<>'' then
           AText:=Format(lisFileHasChangedSave, [AnUnitInfo.Filename])
-        else if AnUnitInfo.Unit_Name<>'' then
-          AText:=Format(lisUnitHasChangedSave, [AnUnitInfo.Unit_name])
+        else if AnUnitInfo.SrcUnitName<>'' then
+          AText:=Format(lisUnitHasChangedSave, [AnUnitInfo.SrcUnitName])
         else
           AText:=Format(lisSourceOfPageHasChangedSave, [TSourceEditor(AEditor).PageName]);
         ACaption:=lisSourceModified;
@@ -2936,7 +2937,7 @@ begin
         if FileExistsCached(LFMFilename)
         and ReadLFMHeaderFromFile(LFMFilename,LFMType,LFMComponentName,LFMClassName)
         then begin
-          anUnitName:=CurUnitInfo.Unit_Name;
+          anUnitName:=CurUnitInfo.SrcUnitName;
           if anUnitName='' then
             anUnitName:=ExtractFileNameOnly(LFMFilename);
           ItemList.Add(LFMComponentName, CurUnitInfo.Filename,
@@ -3091,7 +3092,7 @@ begin
           AnUnitInfo.ResourceBaseClass:=FindLFMBaseClass(AnUnitInfo.Filename);
           if not ResourceFits(AnUnitInfo.ResourceBaseClass) then continue;
         end;
-        AddUnit(AnUnitInfo.Unit_Name,AnUnitInfo.Filename);
+        AddUnit(AnUnitInfo.SrcUnitName,AnUnitInfo.Filename);
       end;
     end else if APackage<>nil then begin
       // add package units
@@ -3157,8 +3158,8 @@ begin
     s:='"'+ActiveUnitInfo.Filename+'"'
   else
     s:='"'+ActiveSourceEditor.PageName+'"';
-  if (ActiveUnitInfo.Unit_Name<>'')
-  and (Project1.IndexOfUnitWithName(ActiveUnitInfo.Unit_Name,true,ActiveUnitInfo)>=0) then
+  if (ActiveUnitInfo.SrcUnitName<>'')
+  and (Project1.IndexOfUnitWithName(ActiveUnitInfo.SrcUnitName,true,ActiveUnitInfo)>=0) then
   begin
     IDEMessageDialog(lisInformation, Format(
       lisUnableToAddToProjectBecauseThereIsAlreadyAUnitWith, [s]),
@@ -4271,7 +4272,7 @@ function TLazSourceFileManager.NewUniqueComponentName(Prefix: string): string;
         if CompareText(AnUnitInfo.Component.ClassName,Identifier)=0 then exit;
       end else if (AnUnitInfo.ComponentName<>'')
       and ((AnUnitInfo.IsPartOfProject) or AnUnitInfo.Loaded) then begin
-        if SysUtils.CompareText(AnUnitInfo.Unit_Name,Identifier)=0 then exit;
+        if SysUtils.CompareText(AnUnitInfo.SrcUnitName,Identifier)=0 then exit;
         if SysUtils.CompareText(AnUnitInfo.ComponentName,Identifier)=0 then exit;
       end;
     end;
@@ -4367,7 +4368,7 @@ begin
   IsPascal:=FilenameIsPascalSource(AFilename);
   if IsPascal then begin
     if AnUnitInfo<>nil then
-      OldUnitName:=AnUnitInfo.ParseUnitNameFromSource(false)
+      OldUnitName:=AnUnitInfo.ReadUnitNameFromSource(false)
     else
       OldUnitName:=ExtractFileNameOnly(AFilename);
   end else
@@ -4988,8 +4989,8 @@ begin
         OldLFMFilename:=ChangeFileExt(OldFilename,'.dfm');
     end;
     if NewUnitName='' then
-      NewUnitName:=AnUnitInfo.Unit_Name;
-    debugln(['TLazSourceFileManager.RenameUnit ',AnUnitInfo.Filename,' NewUnitName=',NewUnitName,' OldUnitName=',AnUnitInfo.Unit_Name,' LFMCode=',LFMCode<>nil,' LRSCode=',LRSCode<>nil,' NewFilename="',NewFilename,'"']);
+      NewUnitName:=AnUnitInfo.SrcUnitName;
+    debugln(['TLazSourceFileManager.RenameUnit ',AnUnitInfo.Filename,' NewUnitName=',NewUnitName,' OldUnitName=',AnUnitInfo.SrcUnitName,' LFMCode=',LFMCode<>nil,' LRSCode=',LRSCode<>nil,' NewFilename="',NewFilename,'"']);
 
     // check new resource file
     NewLFMFilename:='';
@@ -5130,7 +5131,7 @@ begin
         // the code is not changed, therefore the marks are kept
 
     // change unitname in lpi and in main source file
-    AnUnitInfo.Unit_Name:=NewUnitName;
+    AnUnitInfo.SrcUnitName:=NewUnitName;
     if LRSCode<>nil then begin
       // change resource filename in the source include directive
       if not CodeToolBoss.RenameMainInclude(AnUnitInfo.Source,
@@ -5339,7 +5340,7 @@ begin
       mtConfirmation,[mrYes,mrIgnore,lisNo,mrAbort],'');
     if Result<>mrYes then exit;
   end;
-  NewUnitName:=AnUnitInfo.Unit_Name;
+  NewUnitName:=AnUnitInfo.SrcUnitName;
   if NewUnitName='' then begin
     AnUnitInfo.ReadUnitNameFromSource(false);
     NewUnitName:=AnUnitInfo.CreateUnitName;
@@ -5711,7 +5712,7 @@ begin
           FormEditor1.ClearSelection;
 
         // create JIT component
-        NewUnitName:=AnUnitInfo.Unit_Name;
+        NewUnitName:=AnUnitInfo.SrcUnitName;
         if NewUnitName='' then
           NewUnitName:=ExtractFileNameOnly(AnUnitInfo.Filename);
         DisableAutoSize:=true;
@@ -7146,7 +7147,7 @@ begin
       AFilename:='';
       // build a nice project info filename suggestion
       if UseMainSourceFile and (Project1.MainUnitID>=0) then
-        AFilename:=Project1.MainUnitInfo.Unit_Name;
+        AFilename:=Project1.MainUnitInfo.SrcUnitName;
       if AFilename='' then
         AFilename:=ExtractFileName(Project1.ProjectInfoFile);
       if AFilename='' then
@@ -7327,7 +7328,7 @@ begin
         MainUnitSrcEdit.CodeBuffer:=NewBuf;
 
       // change program name
-      MainUnitInfo.Unit_Name:=NewProgramName;
+      MainUnitInfo.SrcUnitName:=NewProgramName;
       MainUnitInfo.Modified:=true;
 
       // update source notebook page names

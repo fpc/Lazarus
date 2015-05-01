@@ -2562,7 +2562,7 @@ var
       NewHasRegisterProc:=OldPkgFile.HasRegisterProc;
       NewAddToUses:=OldPkgFile.AddToUsesPkgSection;
     end else begin
-      NewUnitName:=OldProjFile.Unit_Name;
+      NewUnitName:=OldProjFile.SrcUnitName;
       NewFileType:=FileNameToPkgFileType(OldFilename);
       NewCompPrio:=ComponentPriorityNormal;
       NewResourceBaseClass:=OldProjFile.ResourceBaseClass;
@@ -4332,7 +4332,7 @@ var
       end else begin
         ClassUnitInfo:=Project1.UnitWithComponentClassName(ComponentClassnames[i]);
         if ClassUnitInfo<>nil then
-          NewUnitName:=ClassUnitInfo.Unit_Name;
+          NewUnitName:=ClassUnitInfo.SrcUnitName;
       end;
       if (NewUnitName<>'') and (UnitNames.IndexOf(NewUnitName)<0) then begin
         // new needed unit

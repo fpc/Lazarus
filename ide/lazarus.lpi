@@ -17,7 +17,6 @@
       <XPManifest>
         <DpiAware Value="True"/>
       </XPManifest>
-      <Icon Value="-1"/>
     </General>
     <LazDoc Paths="docs/xml/ide"/>
     <VersionInfo>
@@ -70,6 +69,7 @@
       <Unit0>
         <Filename Value="lazarus.pp"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="Lazarus"/>
       </Unit0>
       <Unit1>
         <Filename Value="frames/oi_options.pas"/>
@@ -322,6 +322,7 @@
       <Unit42>
         <Filename Value="project.pp"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="Project"/>
       </Unit42>
       <Unit43>
         <Filename Value="customformeditor.pp"/>
@@ -565,6 +566,7 @@
       <Unit82>
         <Filename Value="sourcefilemanager.pas"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="SourceFileManager"/>
       </Unit82>
       <Unit83>
         <Filename Value="../packager/lpkcache.pas"/>
@@ -649,6 +651,7 @@
       <Unit97>
         <Filename Value="etquickfixes.pas"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="etQuickFixes"/>
       </Unit97>
       <Unit98>
         <Filename Value="etsrceditmarks.pas"/>
@@ -783,6 +786,7 @@
       <Unit125>
         <Filename Value="mainintf.pas"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="MainIntf"/>
       </Unit125>
       <Unit126>
         <Filename Value="mainbase.pas"/>
@@ -1223,6 +1227,7 @@
         <Filename Value="useunitdlg.pas"/>
         <IsPartOfProject Value="True"/>
         <HasResources Value="True"/>
+        <UnitName Value="UseUnitDlg"/>
       </Unit220>
       <Unit221>
         <Filename Value="keymapping.pp"/>
@@ -1317,13 +1322,11 @@
         <ComponentName Value="QFInitLocalVarDialog"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <UnitName Value="QFInitLocalVarDlg"/>
       </Unit240>
       <Unit241>
         <Filename Value="../packager/interpkgconflictfiles.pas"/>
         <IsPartOfProject Value="True"/>
         <HasResources Value="True"/>
-        <UnitName Value="InterPkgConflictFiles"/>
       </Unit241>
     </Units>
   </ProjectOptions>
@@ -1334,7 +1337,7 @@
     </Target>
     <SearchPaths>
       <IncludeFiles Value="include"/>
-      <OtherUnitFiles Value="frames;../converter;../debugger;../debugger/frames;../packager;../designer;../packager/frames;../ide;../packager"/>
+      <OtherUnitFiles Value="frames;../converter;../debugger;../debugger/frames;../packager;../designer;../packager/frames;../ide"/>
       <UnitOutputDirectory Value="$(LazarusDir)/units/$(TargetCPU)-$(TargetOS)/$(LCLWidgetType)"/>
     </SearchPaths>
     <Linking>
