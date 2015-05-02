@@ -528,6 +528,9 @@ type
   TCocoaScrollBar = objcclass(NSScroller)
   public
     callback: ICommonCallback;
+    LCLScrollBar: TCustomScrollBar;
+    procedure actionScrolling(sender: NSObject); message 'actionScrolling:';
+    function IsHorizontal: Boolean; message 'IsHorizontal';
     function acceptsFirstResponder: Boolean; override;
     function becomeFirstResponder: Boolean; override;
     function resignFirstResponder: Boolean; override;
@@ -1410,6 +1413,30 @@ begin
 end;
 
 { TCocoaScrollBar }
+
+procedure TCocoaScrollBar.actionScrolling(sender: NSObject);
+var
+  LMScroll: TLMScroll;
+  b: Boolean;
+begin
+  FillChar(LMScroll{%H-}, SizeOf(LMScroll), #0);
+  LMScroll.ScrollBar := PtrUInt(Self);
+
+  if IsHorizontal() then
+    LMScroll.Msg := LM_HSCROLL
+  else
+    LMScroll.Msg := LM_VSCROLL;
+
+  LMScroll.Pos := Round(floatValue * LCLScrollBar.Max);
+  LMScroll.ScrollCode := SIF_POS;
+
+  LCLMessageGlue.DeliverMessage(LCLScrollBar, LMScroll);
+end;
+
+function TCocoaScrollBar.IsHorizontal: Boolean;
+begin
+  Result := frame.size.width > frame.size.height;
+end;
 
 function TCocoaScrollBar.lclIsHandle: Boolean;
 begin
