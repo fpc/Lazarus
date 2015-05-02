@@ -350,6 +350,9 @@ type
     // So before every single clip operation we need to save the DC state
     // And before every single clip operator or savedc/restoredc
     // we need to restore the dc to clear the clipping region
+    //
+    // Also, because of bug 28015 FClipped cannot use ctx.Restore(Save)GraphicsState;
+    // it will use CGContextRestore(Save)GState(CGContext()); to save/restore DC instead
     FClipped: Boolean;
     FClipRegion: TCocoaRegion;
     FSavedDCList: TFPObjectList;
@@ -1262,7 +1265,7 @@ begin
     FClipRegion.Clear
   else
   begin
-    ctx.saveGraphicsState;
+    CGContextSaveGState(CGContext());
     FClipRegion.CombineWith(AClipRegion, Mode);
     FClipRegion.Apply(Self);
     FClipped := True;
@@ -1504,7 +1507,7 @@ begin
 
   if FClipped then
   begin
-    ctx.saveGraphicsState;
+    CGContextSaveGState(CGContext());
     FClipRegion.Apply(Self);
   end;
 end;
@@ -1532,7 +1535,7 @@ begin
 
   if FClipped then
   begin
-    ctx.saveGraphicsState;
+    CGContextSaveGState(CGContext());
     FClipRegion.Apply(Self);
   end;
 end;
@@ -1789,7 +1792,7 @@ procedure TCocoaContext.TextOut(X, Y: Integer; Options: Longint; Rect: PRect; UT
 var
   BrushSolid, FillBg: Boolean;
 begin
-  ctx.saveGraphicsState;
+  CGContextSaveGState(CGContext());
 
   if Assigned(Rect) then
   begin
@@ -1821,7 +1824,7 @@ begin
     FText.Draw(ctx, X, Y, FillBg, CharsDelta);
   end;
 
-  ctx.restoreGraphicsState;
+  CGContextRestoreGState(CGContext());
 end;
 
 procedure TCocoaContext.Frame(const R: TRect);
@@ -1922,7 +1925,7 @@ begin
   if FClipped  then
   begin
     Trans := CGContextGetCTM(CGContext);
-    ctx.RestoreGraphicsState;
+    CGContextRestoreGState(CGContext());
     ApplyTransform(Trans);
   end;
 end;

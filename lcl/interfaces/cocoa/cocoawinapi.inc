@@ -2299,7 +2299,6 @@ begin
 
   if Result = 1 then
     NSObject(Handle).lclScreenToLocal(P.X, P.Y);
-
 end;
 
 function TCocoaWidgetSet.SelectClipRGN(DC: hDC; RGN: HRGN): Longint;
