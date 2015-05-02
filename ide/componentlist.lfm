@@ -54,7 +54,6 @@ object ComponentListForm: TComponentListForm
           Images = imListPalette
           Indent = 25
           ReadOnly = True
-          RowSelect = True
           ShowButtons = False
           ShowLines = False
           ShowRoot = False
@@ -62,7 +61,7 @@ object ComponentListForm: TComponentListForm
           OnChange = ComponentsChange
           OnDblClick = ComponentsDblClick
           OnKeyPress = TreeKeyPress
-          Options = [tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoRowSelect, tvoToolTips]
+          Options = [tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoToolTips]
         end
       end
     end
