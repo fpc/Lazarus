@@ -4916,7 +4916,12 @@ var
         end
       else
       if not (tvoThemedDraw in Options) then
-        Canvas.Font.Color := Font.Color;
+      begin
+        //Canvas.Font.Color := Font.Color;
+        Canvas.Brush.Color := FSelectedColor;
+        Canvas.Font.Color := InvertColor(Brush.Color);
+        Canvas.FillRect(NodeRect);
+      end;
     end
     else
       Details := ThemeServices.GetElementDetails(ttItemNormal);
