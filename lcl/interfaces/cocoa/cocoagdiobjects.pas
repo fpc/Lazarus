@@ -345,6 +345,11 @@ type
     FBrush  : TCocoaBrush;
     FPen    : TCocoaPen;
     FRegion : TCocoaRegion;
+    // In Cocoa there is no way to enlarge a clip region :(
+    // see http://stackoverflow.com/questions/18648608/how-can-i-reset-or-clear-the-clipping-mask-associated-with-a-cgcontext
+    // So before every single clip operation we need to save the DC state
+    // And before every single clip operator or savedc/restoredc
+    // we need to restore the dc to clear the clipping region
     FClipped: Boolean;
     FClipRegion: TCocoaRegion;
     FSavedDCList: TFPObjectList;
@@ -1530,7 +1535,6 @@ begin
     ctx.saveGraphicsState;
     FClipRegion.Apply(Self);
   end;
-
 end;
 
 function TCocoaContext.InitDraw(width, height:Integer): Boolean;
@@ -1953,14 +1957,13 @@ var
   Bmp: TCocoaBitmap;
   MskImage: CGImageRef;
   ImgRect: CGRect;
-
 begin
   Bmp := SrcDC.Bitmap;
   if not Assigned(Bmp) then
     Exit(False);
 
   if (Msk <> nil) and (Msk.Image <> nil) then
-    begin
+  begin
     MskImage := Msk.CreateMaskImage(Bounds(XMsk, YMsk, SrcWidth, SrcHeight));
     ImgRect := CGRectMake(x, -y, SrcWidth, SrcHeight);
     CGContextSaveGState(CGContext);
@@ -1974,16 +1977,13 @@ begin
 
     CGImageRelease(MskImage);
     CGContextRestoreGState(CGContext);
-    end
-    else
-    begin
+  end
+  else
+  begin
     // convert Y coodrinate of the source bitmap
     YSrc := Bmp.Height - (SrcHeight + YSrc);
     Result := DrawImageRep(GetNSRect(X, Y, Width, Height),GetNSRect(XSrc, YSrc, SrcWidth, SrcHeight), bmp.ImageRep);
-    end;
-
-
-
+  end;
 end;
 
 {------------------------------------------------------------------------------
