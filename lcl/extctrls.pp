@@ -1082,6 +1082,7 @@ type
     property OnMouseWheel;
     property OnMouseWheelDown;
     property OnMouseWheelUp;
+    property OnPaint;
     property OnResize;
     property OnStartDock;
     property OnStartDrag;
