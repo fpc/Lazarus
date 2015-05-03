@@ -17,6 +17,11 @@
   to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
   MA 02111-1307, USA.
 }
+{
+Icons from Tango theme:
+http://tango.freedesktop.org/Tango_Icon_Library
+}
+
 unit lhelpcore;
 
 {$IFDEF LNET_VISUAL}
@@ -72,6 +77,8 @@ type
     HelpMenuItem: TMenuItem;
     AboutItem: TMenuItem;
     FileMenuOpenRecentItem: TMenuItem;
+    ViewShowStatus: TMenuItem;
+    ViewShowSepTabs: TMenuItem;
     PageControl: TPageControl;
     OpenDialog1: TOpenDialog;
     ToolBar1: TToolBar;
@@ -97,6 +104,9 @@ type
     procedure PageControlChange(Sender: TObject);
     procedure PageControlEnter(Sender: TObject);
     procedure ViewMenuContentsClick(Sender: TObject);
+    procedure ViewMenuItemClick(Sender: TObject);
+    procedure ViewShowSepTabsClick(Sender: TObject);
+    procedure ViewShowStatusClick(Sender: TObject);
   private
     { private declarations }
     // SimpleIPC server name (including unique part as per help protocol)
@@ -110,6 +120,8 @@ type
     fInputIPCTimer: TTimer;
     fContext: LongInt; // used once when we are started on the command line with --context
     fConfig: TXMLConfig;
+    fShowSepTabs: Boolean;
+    fShowStatus: Boolean;
     fHasShowed: Boolean;
     fHide: boolean; //If yes, start with content hidden. Otherwise start normally
     fUpdateCount: Integer;
@@ -311,9 +323,14 @@ end;
 
 procedure THelpForm.FormClose(Sender: TObject; var CloseAction: TCloseAction);
 begin
+  //close all tabs to avoid AV with many tabs
+  while Assigned(ActivePage) do
+    ActivePage.Free;
+  ////was before: close tab
+  ////FileMenuCloseItemClick(Sender);
+
   Visible := false;
   Application.ProcessMessages;
-  FileMenuCloseItemClick(Sender);
   StopComms;
   SavePreferences;
 end;
@@ -427,6 +444,26 @@ begin
   end;
 end;
 
+procedure THelpForm.ViewMenuItemClick(Sender: TObject);
+begin
+  ViewMenuContents.Checked :=
+    Assigned(ActivePage) and
+    (ActivePage.ContentProvider is TChmContentProvider) and
+    (ActivePage.ContentProvider as TChmContentProvider).TabsControl.Visible;
+  ViewShowSepTabs.Checked := fShowSepTabs;
+  ViewShowStatus.Checked := fShowStatus;
+end;
+
+procedure THelpForm.ViewShowSepTabsClick(Sender: TObject);
+begin
+  fShowSepTabs := not fShowSepTabs;
+end;
+
+procedure THelpForm.ViewShowStatusClick(Sender: TObject);
+begin
+  fShowStatus := not fShowStatus;
+end;
+
 procedure THelpForm.LoadPreferences(AIPCName: String);
 var
   PrefFile: String;
@@ -454,6 +491,9 @@ begin
   // downto since oldest are knocked off the list:
   for i := RecentCount-1 downto 0 do
     AddRecentFile(fConfig.GetValue('Recent/Item'+IntToStr(i)+'/Value',''));
+
+  fShowSepTabs := fConfig.GetValue('OpenSepTabs/Value', true);
+  fShowStatus := fConfig.GetValue('OpenWithStatus/Value', true);
 end;
 
 procedure THelpForm.SavePreferences;
@@ -481,6 +521,9 @@ begin
   // downto since oldest are knocked off the list:
   for i := 0 to FileMenuOpenRecentItem.Count-1 do
     fConfig.SetValue('Recent/Item'+IntToStr(i)+'/Value', TRecentMenuItem(FileMenuOpenRecentItem.Items[I]).URL);
+
+  fConfig.SetValue('OpenSepTabs/Value', fShowSepTabs);
+  fConfig.SetValue('OpenWithStatus/Value', fShowStatus);
 
   fConfig.Flush;
   fConfig.Free;
@@ -836,6 +879,7 @@ begin
    Exit;
  end;
 
+ if not fShowSepTabs then
  for I := 0 to PageControl.PageCount-1 do
  begin
    if fRealContentProvider.ClassName = TContentTab(PageControl.Pages[I]).ContentProvider.ClassName then
@@ -857,10 +901,12 @@ begin
    // no existing page that can handle this content, so create one
    fPage := TContentTab.Create(PageControl);
    fPage.ContentProvider := fRealContentProvider.Create(fPage, ImageList1);
-   fPAge.ContentProvider.OnTitleChange:=@ContentTitleChange;
+   fPage.ContentProvider.OnTitleChange := @ContentTitleChange;
    fPage.Parent := PageControl;
    SetKeyUp(fPage);
    fPage.ContentProvider.LoadPreferences(fConfig);
+   if fPage.ContentProvider is TChmContentProvider then
+     (fPage.ContentProvider as TChmContentProvider).ShowStatusbar := fShowStatus;
  end;
 
  if fUpdateCount > 0 then

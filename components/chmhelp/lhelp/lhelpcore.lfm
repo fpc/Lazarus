@@ -123,7 +123,7 @@ object HelpForm: THelpForm
         OnClick = FileMenuOpenItemClick
       end
       object FileMenuOpenRecentItem: TMenuItem
-        Caption = 'Open Recent'
+        Caption = 'Open recent'
         Enabled = False
       end
       object FileMenuOpenURLItem: TMenuItem
@@ -131,7 +131,7 @@ object HelpForm: THelpForm
         OnClick = FileMenuOpenURLItemClick
       end
       object FileMenuCloseItem: TMenuItem
-        Caption = '&Close All'
+        Caption = '&Close'
         ShortCut = 16471
         OnClick = FileMenuCloseItemClick
       end
@@ -146,12 +146,21 @@ object HelpForm: THelpForm
     end
     object ViewMenuItem: TMenuItem
       Caption = '&View'
+      OnClick = ViewMenuItemClick
       object ViewMenuContents: TMenuItem
         Caption = 'Show contents'
         Checked = True
         ShortCut = 115
         ShowAlwaysCheckable = True
         OnClick = ViewMenuContentsClick
+      end
+      object ViewShowStatus: TMenuItem
+        Caption = 'Open tabs with statusbar'
+        OnClick = ViewShowStatusClick
+      end
+      object ViewShowSepTabs: TMenuItem
+        Caption = 'Open separate tabs for files'
+        OnClick = ViewShowSepTabsClick
       end
     end
     object HelpMenuItem: TMenuItem

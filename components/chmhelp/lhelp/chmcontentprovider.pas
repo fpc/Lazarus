@@ -53,6 +53,8 @@ type
     fPopUp: TPopUpMenu;
     fStatusBar: TStatusBar;
     fContext: THelpContext;
+    function GetShowStatusbar: Boolean;
+    procedure SetShowStatusbar(AValue: Boolean);
   protected
     fIsUsingHistory: Boolean;
     fChms: TChmFileList;
@@ -114,6 +116,7 @@ type
     procedure GoForward; override;
     property TabsControl: TPageControl read fTabsControl;
     property Splitter: TSplitter read fSplitter;
+    property ShowStatusbar: Boolean read GetShowStatusbar write SetShowStatusbar;
     class function GetProperContentProvider(const {%H-}AURL: String): TBaseContentProviderClass; override;
 
     constructor Create(AParent: TWinControl; AImageList: TImageList); override;
@@ -241,6 +244,16 @@ begin
 end;
 
 { TChmContentProvider }
+
+function TChmContentProvider.GetShowStatusbar: Boolean;
+begin
+  Result := fStatusbar.Visible;
+end;
+
+procedure TChmContentProvider.SetShowStatusbar(AValue: Boolean);
+begin
+  fStatusbar.Visible := AValue;
+end;
 
 function TChmContentProvider.MakeURI ( AUrl: String; AChm: TChmReader ) : String;
 var

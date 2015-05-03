@@ -103,7 +103,6 @@
         <ComponentName Value="HelpForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <UnitName Value="lhelpcore"/>
       </Unit4>
       <Unit5>
         <Filename Value="lnethttpdataprovider.pas"/>
@@ -117,17 +116,14 @@
       <Unit7>
         <Filename Value="chmcontentprovider.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="chmcontentprovider"/>
       </Unit7>
       <Unit8>
         <Filename Value="httpcontentprovider.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="HTTPContentProvider"/>
       </Unit8>
       <Unit9>
         <Filename Value="lhelpstrconsts.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="lhelpstrconsts"/>
       </Unit9>
     </Units>
   </ProjectOptions>
