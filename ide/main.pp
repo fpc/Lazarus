@@ -1466,12 +1466,12 @@ begin
     // 2. components palette buttons = 32
     // 3. menu height provided by widgetset (varies , depends on theme)
     // so we set 22 + 32 + (borders * 2).
-    MainIDEBar.Constraints.MaxHeight := AMenuHeight +
-      22 {cmd speedbtns} + 32 {component buttons} +
+    MainIDEBar.NonClientHeight := AMenuHeight +
+      //22 {cmd speedbtns} + 32 {component buttons} +
       LCLIntf.GetSystemMetrics(SM_CYSIZEFRAME) +
       (LCLIntf.GetSystemMetrics(SM_CYBORDER) * 2) {borders};
   end else
-    MainIDEBar.Constraints.MaxHeight:=85;
+    MainIDEBar.NonClientHeight :=85;
 
   MainIDEBar.Name := NonModalIDEWindowNames[nmiwMainIDEName];
   FormCreator:=IDEWindowCreators.Add(MainIDEBar.Name);
@@ -2020,6 +2020,11 @@ begin
   MainIDEBar.MainSplitter.Align := alLeft;
   MainIDEBar.MainSplitter.MinSize := 50;
   MainIDEBar.MainSplitter.OnMoved := @MainIDEBar.MainSplitterMoved;
+
+  MainIDEBar.tmIDEHeigth := TTimer.Create(OwningComponent);
+  MainIDEBar.tmIDEHeigth.Interval := 100;
+  MainIDEBar.tmIDEHeigth.Enabled := False;
+  MainIDEBar.tmIDEHeigth.OnTimer := @MainIDEBar.OnTimer;
 
   MainIDEBar.CoolBar := TCoolBar.Create(OwningComponent);
   MainIDEBar.CoolBar.Parent := MainIDEBar;
@@ -3721,6 +3726,7 @@ begin
     MainIDEBar.CoolBar.Align := alClient;
   MainIDEBar.MainSplitter.Visible := MainIDEBar.Coolbar.Visible and
                                      MainIDEBar.ComponentPageControl.Visible;
+  MainIDEBar.SetMainIDEHeigth;
 end;
 
 procedure TMainIDE.DoToggleViewIDESpeedButtons;
@@ -3734,6 +3740,7 @@ begin
   EnvironmentOptions.IDECoolBarOptions.IDECoolBarVisible := SpeedButtonsVisible;
   MainIDEBar.MainSplitter.Visible := MainIDEBar.Coolbar.Visible and
                                      MainIDEBar.ComponentPageControl.Visible;
+  MainIDEBar.SetMainIDEHeigth;
 end;
 
 procedure TMainIDE.AllowCompilation(aAllow: Boolean);
