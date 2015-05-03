@@ -317,11 +317,25 @@ var
   // attributes
   i, lBorderNr: Integer;
   lAttrName, lAttrValue: DOMString;
+
+  procedure SetBorderLineType(AType: TvTableBorderType);
+  begin
+    CurTable.Borders.Left.LineType := AType;
+    CurTable.Borders.Right.LineType := AType;
+    CurTable.Borders.Top.LineType := AType;
+    CurTable.Borders.Bottom.LineType := AType;
+    CurTable.Borders.InsideHoriz.LineType := AType;
+    CurTable.Borders.InsideVert.LineType := AType;
+  end;
+
 begin
   Result := nil;
   CurTable := AData.AddTable();
   CurTable.CellSpacingLeft := 3;
   CurTable.CellSpacingTop := 2;
+
+  // Default to no border without "border" attribute
+  SetBorderLineType(tbtNone);
 
   // table attributes
   for i := 0 to ANode.Attributes.Length - 1 do
@@ -342,14 +356,7 @@ begin
       CurTable.Borders.InsideVert.Width := lBorderNr;
 
       if lBorderNr = 0 then
-      begin
-        CurTable.Borders.Left.LineType := tbtNone;
-        CurTable.Borders.Right.LineType := tbtNone;
-        CurTable.Borders.Top.LineType := tbtNone;
-        CurTable.Borders.Bottom.LineType := tbtNone;
-        CurTable.Borders.InsideHoriz.LineType := tbtNone;
-        CurTable.Borders.InsideVert.LineType := tbtNone;
-      end;
+        SetBorderLineType(tbtNone);
     end;
     end;
   end;
