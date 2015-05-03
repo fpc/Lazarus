@@ -34,7 +34,7 @@ uses
   {$ifdef windows}
   Windows,
   {$endif}
-  Classes, SysUtils; 
+  Classes, SysUtils;
 
 // AnsiToUTF8 and UTF8ToAnsi need a widestring manager under Linux, BSD, MacOSX
 // but normally these OS use UTF-8 as system encoding so the widestringmanager
@@ -113,6 +113,9 @@ function UTF8LeftStr(const AText: String; const ACount: Integer): String;
 function UTF8RightStr(const AText: String; const ACount: Integer): String;
 function UTF8QuotedStr(const S, Quote: string): string;
 //Utf8 version of MidStr is just Utf8Copy with same parameters, so it is not implemented here
+
+function UTF8WrapText(S, BreakStr :string; BreakChars :TSysCharSet; MaxCol: integer): string; overload;
+function UTF8WrapText(S :string; MaxCol :integer) :string; overload;
 
 type
   TUTF8TrimFlag = (
@@ -2732,6 +2735,71 @@ begin
       inc(p);
   until false;
   Result+=copy(S,CopyPos-PChar(S)+1,p-CopyPos)+Quote;
+end;
+
+function UTF8WrapText(S, BreakStr :string; BreakChars :TSysCharSet; MaxCol: integer): string;
+var
+  P :PChar;
+  CharLen :integer;
+  RightSpace : Integer = 0;
+  N :integer = 0;
+  i : Integer;
+  j : Integer;
+  Len :integer = 0;
+  ResultLen, RP :Integer;
+begin
+  Result := '';
+  if (S = '') or (BreakStr = '') or (BreakChars = []) then Exit;
+  P := PChar(S);
+  while P^ <> #0 do
+  begin
+    CharLen := UTF8CharacterLength(P);
+
+    // Result := Result + Copy(P, 1, CharLen);
+    i := 1;
+    j := 0;
+    ResultLen := Length(Result);
+    SetLength(Result, ResultLen + CharLen);
+    while i <= CharLen do
+    begin
+      /// Result := Result + (P + j)^;
+      Result[ResultLen + i] := (P + J)^;
+      ///
+      Inc(i);
+      Inc(j);
+    end;
+    //
+
+    Inc(N);
+    if P^ = {#10} BreakStr[Length(BreakStr)] then
+      N := 0;
+    if N > MaxCol then
+    begin
+      Len := Length(Result);
+
+      ///// avoiding RPos
+      RP := Len;
+      //while Result[RP] <> #32 do
+      while not (Result[RP] in BreakChars) do
+        Dec(RP);
+      /////
+
+      RightSpace := Len - RP;  //RPos(' ', Result);
+      if RightSpace > 0 then
+      begin
+        Dec(P, RightSpace);
+        SetLength(Result, Len - RightSpace);
+      end;
+      Result := Result + BreakStr;
+      N := 0;
+    end;
+    Inc(P, CharLen);
+  end;
+end;
+
+function UTF8WrapText(S :string; MaxCol: integer): string;
+begin
+  Result := UTF8WrapText(S, LineEnding, [' ', '-', #9], MaxCol);
 end;
 
 function UTF8Trim(const s: string; Flags: TUTF8TrimFlags): string;
