@@ -667,18 +667,16 @@ begin
         Item.Index:=FItems.Count;
         FItems.Add(Item);
         fSortedForID.Add(Item);
-        case Item.ID of
-        1012: fSpecialItems[fmisiFatal]:=Item;
-        1013: fSpecialItems[fmisiError]:=Item;
-        1014: fSpecialItems[fmisiWarning]:=Item;
-        1015: fSpecialItems[fmisiNote]:=Item;
-        1016: fSpecialItems[fmisiHint]:=Item;
-        end;
       end;
     end;
     inc(Line);
   end;
   CreateArray;
+  fSpecialItems[fmisiFatal]:=FindWithID(1012);
+  fSpecialItems[fmisiError]:=FindWithID(1013);
+  fSpecialItems[fmisiWarning]:=FindWithID(1014);
+  fSpecialItems[fmisiNote]:=FindWithID(1015);
+  fSpecialItems[fmisiHint]:=FindWithID(1016);
 end;
 
 procedure TFPCMsgFile.LoadFromText(s: string);
