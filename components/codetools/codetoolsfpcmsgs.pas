@@ -251,16 +251,16 @@ begin
     while MaskPos^ in ['0'..'9','A'..'Z','a'..'z','_'] do inc(MaskPos);
     // get next pattern in mask
     MaskStartPos:=MaskPos;
-    while (MaskPos^<>#0) and (MaskPos^<>'$') do inc(MaskPos);
-    if MaskPos^=#0 then begin
+    if MaskStartPos^=#0 then begin
       // variable at end of mask
       Ranges.Add(TxtPos-BaseTxtPos,length(Txt)+1);
       exit;
     end;
+    while (MaskPos^<>#0) and (MaskPos^<>'$') do inc(MaskPos);
     // search pattern in txt
     TxtEndPos:=FindEndOfNextMatch(MaskStartPos,MaskPos,TxtPos);
     if TxtEndPos=nil then exit;
-    Ranges.Add(TxtPos-BaseTxtPos,TxtEndPos-BaseTxtPos);
+    Ranges.Add(TxtPos-BaseTxtPos,TxtEndPos-BaseTxtPos-(MaskPos-MaskStartPos));
     TxtPos:=TxtEndPos;
   end;
 end;

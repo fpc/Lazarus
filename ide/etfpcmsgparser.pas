@@ -53,6 +53,8 @@ const
   FPCMsgIDMethodIdentifierExpected = 3047;
   FPCMsgIDIdentifierNotFound = 5000;
   FPCMsgIDChecksumChanged = 10028;
+  FPCMsgIDUnitNotUsed = 5023; // Unit "$1" not used in $2
+  FPCMsgIDCompilationAborted = 1018;
 
   FPCMsgAttrWorkerDirectory = 'WD';
   FPCMsgAttrMissingUnit = 'MissingUnit';
@@ -122,7 +124,9 @@ type
   public
     Pattern: string;
     MsgID: integer;
+    PatternLine: integer; // line index in a multi line pattern, starting at 0
   end;
+  PPatternToMsgID = ^TPatternToMsgID;
 
   { TPatternToMsgIDs }
 
@@ -134,9 +138,10 @@ type
     constructor Create;
     destructor Destroy; override;
     procedure Clear;
-    procedure Add(Pattern: string; MsgID: integer);
+    procedure Add(Pattern: string; MsgID: integer; PatternLine: integer = 0);
     procedure AddLines(const Lines: string; MsgID: integer);
-    function LineToMsgID(p: PChar): integer; // 0 = not found
+    function LineToMsgID(p: PChar): integer; inline; // 0 = not found
+    function LineToPattern(p: PChar): PPatternToMsgID;
     procedure WriteDebugReport;
     procedure ConsistencyCheck;
   end;
@@ -615,7 +620,8 @@ begin
   SetLength(fItems,0);
 end;
 
-procedure TPatternToMsgIDs.Add(Pattern: string; MsgID: integer);
+procedure TPatternToMsgIDs.Add(Pattern: string; MsgID: integer;
+  PatternLine: integer);
 
   procedure RaiseInvalidMsgID;
   begin
@@ -640,19 +646,23 @@ begin
   fItems[i]:=Item;
   Item.Pattern:=Pattern;
   Item.MsgID:=MsgID;
+  Item.PatternLine:=PatternLine;
 end;
 
 procedure TPatternToMsgIDs.AddLines(const Lines: string; MsgID: integer);
 var
   StartPos: PChar;
   p: PChar;
+  PatternLine: Integer;
 begin
+  PatternLine:=0;
   p:=PChar(Lines);
   while p^<>#0 do begin
     StartPos:=p;
     while not (p^ in [#0,#10,#13]) do inc(p);
     if p>StartPos then begin
-      Add(copy(Lines,StartPos-PChar(Lines)+1,p-StartPos),MsgID);
+      Add(copy(Lines,StartPos-PChar(Lines)+1,p-StartPos),MsgID,PatternLine);
+      inc(PatternLine);
     end;
     while p^ in [#10,#13] do inc(p);
   end;
@@ -660,14 +670,25 @@ end;
 
 function TPatternToMsgIDs.LineToMsgID(p: PChar): integer;
 var
+  Item: PPatternToMsgID;
+begin
+  Item:=LineToPattern(p);
+  if Item=nil then
+    Result:=0
+  else
+    Result:=Item^.MsgID;
+end;
+
+function TPatternToMsgIDs.LineToPattern(p: PChar): PPatternToMsgID;
+var
   i: Integer;
 begin
   while p^ in [' ',#9,#10,#13] do inc(p);
   i:=IndexOf(p,false);
   if i<0 then
-    Result:=0
+    Result:=nil
   else
-    Result:=fItems[i].MsgID;
+    Result:=@fItems[i];
 end;
 
 procedure TPatternToMsgIDs.WriteDebugReport;
@@ -1238,7 +1259,6 @@ function TIDEFPCParser.CheckForGeneralMessage(p: PChar): boolean;
   Error: /usr/bin/ppc386 returned an error exitcode
 }
 const
-  FPCMsgIDCompilationAborted = 1018;
   FrontEndFPCExitCodeError = 'returned an error exitcode';
 var
   MsgLine: TMessageLine;
@@ -1445,16 +1465,53 @@ begin
 end;
 
 function TIDEFPCParser.CheckForInfos(p: PChar): boolean;
+
+  function ReadFPCLogo(PatternItem: PPatternToMsgID;
+    out FPCVersionAsInt: cardinal): boolean;
+  var
+    Line: string;
+    Ranges: TFPCMsgRanges;
+    aRange: PFPCMsgRange;
+    i: SizeInt;
+    aFPCFullVersion: String;
+    FPCVersion: integer;
+    FPCRelease: integer;
+    FPCPatch: integer;
+  begin
+    Result:=false;
+    FPCVersionAsInt:=0;
+    i:=Pos('$FPCFULLVERSION',PatternItem^.Pattern);
+    if i<1 then exit;
+    Line:=p;
+    Ranges:=nil;
+    try
+      ExtractFPCMsgParameters(PatternItem^.Pattern,Line,Ranges);
+      if Ranges.Count>0 then begin
+        // first is $FPCFULLVERSION
+        aRange:=@Ranges.Ranges[0];
+        aFPCFullVersion:=copy(Line,aRange^.StartPos+1,aRange^.EndPos-aRange^.StartPos);
+        SplitFPCVersion(aFPCFullVersion,FPCVersion,FPCRelease,FPCPatch);
+        FPCVersionAsInt:=FPCVersion*10000+FPCRelease*100+FPCPatch;
+        Result:=FPCVersionAsInt>0;
+      end;
+      // second is $FPCDATE
+      // third is $FPCCPU
+    finally
+      Ranges.Free;
+    end;
+  end;
+
 var
   MsgItem: TFPCMsgItem;
   MsgLine: TMessageLine;
-  i: Integer;
   MsgType: TMessageLineUrgency;
+  PatternItem: PPatternToMsgID;
+  aFPCVersion: cardinal;
 begin
   Result:=false;
-  i:=fLineToMsgID.LineToMsgID(p);
-  if i=0 then exit;
-  fMsgID:=i;
+  PatternItem:=fLineToMsgID.LineToPattern(p);
+  if PatternItem=nil then exit;
+  fMsgID:=PatternItem^.MsgID;
   if (fMsgID=FPCMsgIDLogo) and (DirectoryStack<>nil) then begin
     // a new call of the compiler (e.g. when compiling via make)
     // => clear stack
@@ -1469,6 +1526,12 @@ begin
   MsgLine:=CreateMsgLine;
   MsgLine.SubTool:=SubToolFPC;
   MsgLine.Urgency:=MsgType;
+  if (fMsgID=FPCMsgIDLogo) and ReadFPCLogo(PatternItem,aFPCVersion) then begin
+    if aFPCVersion<>FPC_FullVersion then begin
+      // unexpected FPC version => always show
+      MsgLine.Urgency:=mluImportant;
+    end;
+  end;
   AddMsgLine(MsgLine);
 end;
 
@@ -1677,8 +1740,6 @@ procedure TIDEFPCParser.ImproveMsgUnitNotUsed(aPhase: TExtToolParserSyncPhase;
   MsgLine: TMessageLine);
 // check for Unit not used message in main sources
 // and change urgency to merely 'verbose'
-const
-  FPCMsgIDUnitNotUsed = 5023; // Unit "$1" not used in $2
 begin
   if aPhase<>etpspAfterReadLine then exit;
   if (MsgLine.Urgency<=mluVerbose) then exit;
