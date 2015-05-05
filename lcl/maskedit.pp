@@ -219,6 +219,7 @@ const
     procedure DeleteSelected;
     procedure DeleteChars(NextChar : Boolean);
   protected
+    function CanShowTextHint: Boolean; override;
     function DisableMask(const NewText: String): Boolean;
     function RestoreMask(const NewText: String): Boolean;
     procedure RealSetText(const AValue: TCaption); override;
@@ -329,6 +330,9 @@ const
     property OnUTF8KeyPress;
     property EditMask;
     property Text;
+    property TextHint;
+    property TextHintFontColor;
+    property TextHintFontStyle;
     property SpaceChar;
   end;
 
@@ -1469,6 +1473,14 @@ begin
       end;
     end;
   end;
+end;
+
+function TCustomMaskEdit.CanShowTextHint: Boolean;
+begin
+  if IsMasked then
+    Result := False
+  else
+    Result := inherited CanShowTextHint;
 end;
 
 

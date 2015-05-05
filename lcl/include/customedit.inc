@@ -80,6 +80,9 @@ begin
   AutoSize := True;
   // Accessibility
   AccessibleRole := larTextEditorSingleline;
+  FTextHint := '';
+  FTextHintFontColor := clGrayText;
+  FTextHintFontStyle := [fsItalic];
 end;
 
 {------------------------------------------------------------------------------
@@ -104,6 +107,12 @@ end;
 function TCustomEdit.GetSelText : string;
 begin
   Result := UTF8Copy(Text, SelStart + 1, SelLength)
+end;
+
+procedure TCustomEdit.Loaded;
+begin
+  inherited Loaded;
+  if (Text = '') then ShowTextHint;
 end;
 
 {------------------------------------------------------------------------------
@@ -379,6 +388,14 @@ begin
   RegisterPropertyToSkip(TCustomEdit, 'OEMConvert', 'VCL compatibility property', '');
 end;
 
+function TCustomEdit.CanShowTextHint: Boolean;
+begin
+  Result := (([csDesigning,csLoading] * ComponentState) = []) and
+            (Text = '') and
+            (FTextHint <> '') and
+            (not Focused);
+end;
+
 {------------------------------------------------------------------------------
   Method:  TCustomEdit.SetEchoMode
   Params:  Value to set FModified to
@@ -501,9 +518,18 @@ end;
 procedure TCustomEdit.RealSetText(const AValue: TCaption);
 begin
   FTextChangedByRealSetText := True;
+  if FTextHintShowing and (not FSettingTextHint) then HideTextHint;
   Modified := False;
   inherited RealSetText(AValue);
   FTextChangedByRealSetText := False;
+end;
+
+function TCustomEdit.RealGetText: TCaption;
+begin
+  if not FTextHintShowing then
+    Result := inherited RealGetText
+  else
+    Result := '';
 end;
 
 {------------------------------------------------------------------------------
@@ -518,6 +544,7 @@ var
   SStart, SLen: Integer;
 begin
   //debugln('TCustomEdit.TextChanged ',DbgSName(Self));
+  if FSettingTextHint then Exit;
   if FCharCase in [ecUppercase, ecLowercase] then
   begin
     // use a local variable to reduce amounts of widgetset calls
@@ -547,6 +574,7 @@ begin
       Change;
     end;
   end;
+  if (Text = '') and (not FTextHintShowing) then ShowTextHint;
 end;
 
 procedure TCustomEdit.Change;
@@ -563,12 +591,14 @@ begin
     if (SelText = Text) then FAutoSelected := True;
   end;//End if FAutoSelect
   inherited DoEnter;
+  if FTextHintShowing then HideTextHint;
 end;
 
 procedure TCustomEdit.DoExit;
 begin
   FAutoSelected := False;
   inherited DoExit;
+  if (Text = '') then ShowTextHint;
 end;
 
 {------------------------------------------------------------------------------
@@ -586,6 +616,65 @@ begin
   if HandleAllocated then
     fCaretPos := TWSCustomEditClass(WidgetSetClass).GetCaretPos(Self);
   Result:=fCaretPos;
+end;
+
+procedure TCustomEdit.SetTextHint(AValue: String);
+begin
+  if (FTextHint = AValue) then Exit;
+  FTextHint := AValue;
+  if FTextHintShowing and (FTextHint = '') then
+  begin
+    HideTextHint;
+  end
+  else
+  begin
+    if (Text = '') then ShowTextHint;
+  end;
+end;
+
+procedure TCustomEdit.ShowTextHint;
+var
+  OldModified: Boolean;
+begin
+  if not CanShowTextHint then Exit;
+  if not FtextHintShowing then
+  begin
+    FSavedFontColor := Font.Color;
+    FSavedFontStyle := Font.Style;
+    FSavedParentFont := ParentFont;
+  end;
+  FTextHintShowing := True;
+  OldModified := Modified;
+  FSettingTextHint := True;
+  try
+    //settint Text clears modified flag
+    inherited RealSetText(FTextHint);
+    Font.Color := FTextHintFontColor;
+    Font.Style := FTextHintFontStyle;
+  finally
+    FSettingTextHint := False;
+    Modified := OldModified;
+  end;
+end;
+
+procedure TCustomEdit.HideTextHint;
+var
+  OldModified: Boolean;
+begin
+  try
+    //settint Text clears modified flag
+    OldModified := Modified;
+    Font.Color := FSavedFontColor;
+    Font.Style := FSavedFontStyle;
+    ParentFont := FSavedParentFont;
+    FTextHintShowing := False;
+    FSettingTextHint := True;
+    inherited RealSetText('');
+    FTextHintShowing := False;
+  finally
+    FSettingTextHint := False;
+    Modified := OldModified;
+  end;
 end;
 
 procedure TCustomEdit.SetAlignment(const AValue: TAlignment);

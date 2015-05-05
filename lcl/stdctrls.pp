@@ -707,6 +707,17 @@ type
     FSelLength: integer;
     FSelStart: integer;
     FTextChangedByRealSetText: Boolean;
+    FTextHint: String;
+    FTextHintShowing: Boolean;
+    FSettingTextHint: Boolean;
+    FTextHintFontColor: TColor;
+    FTextHintFontStyle: TFontStyles;
+    FSavedFontColor: TColor;
+    FSavedFontStyle: TFontStyles;
+    FSavedParentFont: Boolean;
+    procedure SetTextHint(AValue: String);
+    procedure ShowTextHint;
+    procedure HideTextHint;
     procedure SetAlignment(const AValue: TAlignment);
     function GetCanUndo: Boolean;
     function GetModified: Boolean;
@@ -717,6 +728,7 @@ type
     procedure SetPasswordChar(const AValue: Char);
   protected
     class procedure WSRegisterClass; override;
+    function CanShowTextHint: Boolean; virtual;
     procedure CalculatePreferredSize(var PreferredWidth, PreferredHeight: integer;
                                      WithThemeSpace: Boolean); override;
     procedure CreateParams(var Params: TCreateParams); override;
@@ -731,6 +743,7 @@ type
     function GetSelLength: integer; virtual;
     function GetSelStart: integer; virtual;
     function GetSelText: string; virtual;
+    procedure Loaded; override;
     procedure SetCaretPos(const Value: TPoint); virtual;
     procedure SetEchoMode(Val: TEchoMode); virtual;
     procedure SetNumbersOnly(Value: Boolean); virtual;
@@ -742,6 +755,7 @@ type
     class function GetControlClassDefaultSize: TSize; override;
     procedure MouseUp(Button: TMouseButton; Shift:TShiftState; X, Y: Integer); override;
     procedure RealSetText(const AValue: TCaption); override;
+    function  RealGetText: TCaption; override;
     procedure KeyUpAfterInterface(var Key: Word; Shift: TShiftState); override;
     procedure WMChar(var Message: TLMChar); message LM_CHAR;
     procedure CMWantSpecialKey(var Message: TCMWantSpecialKey); message CM_WANTSPECIALKEY;
@@ -780,6 +794,9 @@ type
     property TabOrder;
     property TabStop default true;
     property Text;
+    property TextHint: String read FTextHint write SetTextHint;
+    property TextHintFontColor: TColor read FTextHintFontColor write FTextHintFontColor default clGrayText;
+    property TextHintFontStyle: TFontStyles read FTextHintFontStyle write FTextHintFontStyle default [fsItalic];
   end;
 
 
@@ -913,6 +930,9 @@ type
     property TabStop;
     property TabOrder;
     property Text;
+    property TextHint;
+    property TextHintFontColor;
+    property TextHintFontStyle;
     property Visible;
   end;
 
