@@ -509,7 +509,7 @@ end;
 
 destructor TDbgController.Destroy;
 begin
-  //FCurrentProcess.Free;
+  FMainProcess.Free;
   FProcessMap.Free;
   FParams.Free;
   FEnvironment.Free;
