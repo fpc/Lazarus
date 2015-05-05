@@ -2784,9 +2784,9 @@ begin
 
   { Assembler reading style  -Ratt = AT&T    -Rintel = Intel  -Rdirect = direct }
   case AssemblerStyle of
-    1: switches := switches + '-Rintel';
-    2: switches := switches + '-Ratt';
-    3: switches := switches + '-Rdirect';
+    1: switches := switches + ' -Rintel';
+    2: switches := switches + ' -Ratt';
+    3: switches := switches + ' -Rdirect';
   end;
 
   // Syntax Options
