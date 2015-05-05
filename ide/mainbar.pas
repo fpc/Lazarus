@@ -48,12 +48,10 @@ uses
 type
   { TMainIDEBar }
 
-
   TMainIDEBar = class(TForm)
     //Coolbar and PopUpMenus
     CoolBar: TCoolBar;
     OptionsPopupMenu: TPopupMenu;
-    IDEHeightTimer: TTimer;
     OptionsMenuItem: TMenuItem;
     OpenFilePopUpMenu: TPopupMenu;
     SetBuildModePopupMenu: TPopupMenu;
@@ -364,16 +362,21 @@ type
       const FileNames: array of String);
     procedure CoolBarOnChange(Sender: TObject);
     procedure MainSplitterMoved(Sender: TObject);
-    procedure OnTimer(Sender: TObject);
   private
     FOldWindowState: TWindowState;
     FOnActive: TNotifyEvent;
-    FNonClientHeight: Integer;
     procedure NewUnitFormDefaultClick(Sender: TObject);
     procedure NewUnitFormPopupMenuPopup(Sender: TObject);
+    function IsDefaultIDE: Boolean;
+    function CalcMainIDEHeight: Integer;
+    function CalcNonClientHeight: Integer;
   protected
     procedure DoActive;
+    procedure DoShow; override;
     procedure WndProc(var Message: TLMessage); override;
+
+    procedure DoSetMainIDEHeight(const AIDEIsMaximized: Boolean);
+    procedure Resizing(State: TWindowState); override;
   public
     constructor Create(TheOwner: TComponent); override;
     procedure HideIDE;
@@ -383,15 +386,15 @@ type
     procedure UpdateDockCaption({%H-}Exclude: TControl); override;
     procedure RefreshCoolbar;
     procedure SetMainIDEHeight;
-  public
-    property NonClientHeight: Integer read FNonClientHeight write FNonClientHeight;
   end;
-
 
 var
   MainIDEBar: TMainIDEBar = nil;
 
 implementation
+
+uses
+  LCLIntf, LCLType, InterfaceBase, Math;
 
 { TMainIDEBar }
 
@@ -474,6 +477,54 @@ procedure TMainIDEBar.DoActive;
 begin
   if Assigned(FOnActive) then
     FOnActive(Self);
+end;
+
+procedure TMainIDEBar.DoSetMainIDEHeight(const AIDEIsMaximized: Boolean);
+var
+  NewHeight: Integer;
+begin
+  if not (Showing and IsDefaultIDE) then
+    Exit;
+
+  if (AIDEIsMaximized or EnvironmentOptions.AutoAdjustIDEHeight) then
+  begin
+    NewHeight := CalcMainIDEHeight + CalcNonClientHeight;
+    if NewHeight <> Constraints.MaxHeight then
+    begin
+      Constraints.MaxHeight := NewHeight;
+      Constraints.MinHeight := Constraints.MaxHeight;
+      ClientHeight := Constraints.MaxHeight;
+    end;
+  end else
+  if Constraints.MaxHeight <> 0 then
+  begin
+    Constraints.MaxHeight := 0;
+    Constraints.MinHeight := 0;
+  end;
+end;
+
+procedure TMainIDEBar.DoShow;
+begin
+  inherited DoShow;
+  RefreshCoolbar;
+end;
+
+function TMainIDEBar.CalcNonClientHeight: Integer;
+var
+  WindowRect, WindowClientRect: TRect;
+begin
+  if Showing then
+  begin
+    LclIntf.GetWindowRect(Handle, WindowRect{%H-});
+    LclIntf.GetClientRect(Handle, WindowClientRect{%H-});
+    LclIntf.ClientToScreen(Handle, WindowClientRect.TopLeft);
+
+    Result := WindowClientRect.Top - WindowRect.Top;
+
+    if Pos('Win32', WidgetSet.ClassName) > 0 then//TWin32WidgetSet widgetset bug -> the constrained height has to be without SM_CYSIZEFRAME and SM_CYMENU (Gtk2 works fine)
+      Result := Result - (LCLIntf.GetSystemMetrics(SM_CYSIZEFRAME) + LCLIntf.GetSystemMetrics(SM_CYMENU));
+  end else
+    Result := 0;
 end;
 
 procedure TMainIDEBar.WndProc(var Message: TLMessage);
@@ -583,15 +634,61 @@ begin
   MainSplitter.Align := alLeft;
   MainSplitter.Visible := MainIDEBar.Coolbar.Visible and
                           MainIDEBar.ComponentPageControl.Visible;
-  MainIDEBar.SetMainIDEHeight;
+end;
+
+procedure TMainIDEBar.Resizing(State: TWindowState);
+begin
+  case State of
+    wsMaximized, wsNormal: DoSetMainIDEHeight(State = wsMaximized);
+  end;
+
+  inherited Resizing(State);
 end;
 
 procedure TMainIDEBar.MainSplitterMoved(Sender: TObject);
 begin
   EnvironmentOptions.IDECoolBarOptions.IDECoolBarWidth := CoolBar.Width;
-  SetMainIDEHeight
+  SetMainIDEHeight;
 end;
 
+function TMainIDEBar.CalcMainIDEHeight: Integer;
+var
+  NewHeight: Integer;
+  I: Integer;
+  ComponentScrollBox: TScrollBox;
+  SBControl: TControl;
+begin
+  Result := 0;
+  if not (Assigned(EnvironmentOptions) and Assigned(CoolBar) and Assigned(ComponentPageControl)) then
+    Exit;
+
+  if EnvironmentOptions.IDECoolBarOptions.IDECoolBarVisible then
+  begin
+    for I := 0 to CoolBar.Bands.Count-1 do
+    begin
+      NewHeight := CoolBar.Bands[I].Top + CoolBar.Bands[I].Height;
+      Result := Max(Result, NewHeight);
+    end;
+  end;
+
+  if EnvironmentOptions.ComponentPaletteVisible then
+  begin
+    for I := 0 to ComponentPageControl.PageCount-1 do
+    if (ComponentPageControl.Page[I].ControlCount > 0) and (ComponentPageControl.Page[I].Controls[0] is TScrollBox) then
+    begin
+      ComponentScrollBox := TScrollBox(ComponentPageControl.Page[I].Controls[0]);
+      if ComponentScrollBox.ControlCount > 0 then
+      begin
+        SBControl := ComponentScrollBox.Controls[0];
+        NewHeight :=
+          SBControl.Top + SBControl.Height +  //button height
+          ComponentPageControl.Height - ComponentScrollBox.ClientHeight;  //page control non-client height (tabs, borders).
+        Result := Max(Result, NewHeight);
+        Break;  //we need only one button (we calculate one line only)
+      end;
+    end;
+  end;
+end;
 
 procedure TMainIDEBar.CoolBarOnChange(Sender: TObject);
 var
@@ -617,52 +714,22 @@ end;
 
 procedure TMainIDEBar.SetMainIDEHeight;
 begin
-  if IDEHeightTimer.Enabled then
-    Exit;
-  IDEHeightTimer.Enabled := True;
+  DoSetMainIDEHeight(WindowState = wsMaximized);
 end;
 
-procedure TMainIDEBar.OnTimer(Sender: TObject);
+function TMainIDEBar.IsDefaultIDE: Boolean;
 var
-  CoolBarVisible: Boolean;
-  ComponentsVisible: Boolean;
-  CoolBarHeigth: Integer;
-  CoolBarDefHeight: Integer;
-  NewClientHeight: Integer;
+  I: Integer;
 begin
-  CoolBarVisible := EnvironmentOptions.IDECoolBarOptions.IDECoolBarVisible;
-  ComponentsVisible := EnvironmentOptions.ComponentPaletteVisible;
-  CoolBarDefHeight := CoolBar.Bands.Items[0].Height; //there is at least one band
-  CoolBarHeigth := CoolBar.Bands.Items[CoolBar.Bands.Count - 1].Top +
-                   CoolBar.Bands.Items[CoolBar.Bands.Count - 1].Height;
-
-  if (MainIDEBar.Parent=nil) and (MainIDEBar.DockManager=nil) then
+  Result := True;
+  for I := 0 to MainIDEBar.ControlCount - 1 do
   begin
-    //only the menu is visible
-    if (not CoolBarVisible) and (not ComponentsVisible) then
-      NewClientHeight := 0
-    //only the coolbar is visible
-    else if (CoolBarVisible) and (not ComponentsVisible) then
-      NewClientHeight := CoolBarHeigth
-    //only the component palette is visible
-    else if (not CoolBarVisible) and (ComponentsVisible) then
-      NewClientHeight := 2*CoolBarDefHeight
-    //both coolbar and component palette is visible
-    else if (CoolBarVisible) and (ComponentsVisible) then
+    if (MainIDEBar.Controls[I] as TControl).Tag <> 112 then
     begin
-      if CoolBarHeigth > 2*CoolBarDefHeight then
-        NewClientHeight := CoolBarHeigth
-      else
-        NewClientHeight := 2*CoolBarHeigth;
+      Result := False;
+      Break;
     end;
-
-    MainIDEBar.Constraints.MaxHeight := 0;
-    MainIDEBar.Constraints.MinHeight := 0;
-    MainIDEBar.ClientHeight := NewClientHeight;
-    MainIDEBar.Constraints.MaxHeight := NonClientHeight + NewClientHeight;
-   // MainIDEBar.Constraints.MinHeight := NonClientHeight + NewClientHeight;
   end;
-  IDEHeightTimer.Enabled := False;
 end;
 
 

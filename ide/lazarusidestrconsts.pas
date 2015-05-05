@@ -1259,6 +1259,8 @@ resourcestring
   lisIDETitleStartsWithProjectName = 'IDE title starts with project name';
   lisIDETitleShowsProjectDir = 'IDE title shows project directory';
   lisIDETitleShowsBuildMode = 'IDE title shows selected build mode';
+  lisAutoAdjustIDEHeight = 'Automatically adjust IDE main window height';
+  lisAutoAdjustIDEHeightHint = 'Applicable only when not maximized and for undocked IDE.';
   lisWindowMenuWithNameForDesignedForm = 'Window menu shows designed form''s name instead of caption';
   lisWindowMenuWithNameForDesignedFormHint = 'Useful especially if the caption is left empty.';
   dlgWinPos = 'Window positions';

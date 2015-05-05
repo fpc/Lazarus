@@ -198,6 +198,7 @@ begin
   Opts.IDECoolBarGrabWidth := spGrabWidth.Value;
   Opts.IDECoolBarBorderStyle := cbBorderStyle.ItemIndex;
   MainIDEBar.RefreshCoolbar;
+  MainIDEBar.SetMainIDEHeight;
 end;
 
 class function TToolbarOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;

@@ -287,6 +287,8 @@ type
     FSingleTaskBarButton: boolean;
     FHideIDEOnRun: boolean;
     FComponentPaletteVisible: boolean;
+    FAutoAdjustIDEHeight: boolean;
+
     // CompletionWindow
     FCompletionWindowWidth: Integer;
     FCompletionWindowHeight: Integer;
@@ -517,6 +519,7 @@ type
                                                     write FIDEProjectDirectoryInIdeTitle;
     property ComponentPaletteVisible: boolean read FComponentPaletteVisible
                                               write FComponentPaletteVisible;
+    property AutoAdjustIDEHeight: Boolean read FAutoAdjustIDEHeight write FAutoAdjustIDEHeight;
     property CompletionWindowWidth: Integer read FCompletionWindowWidth
                                             write FCompletionWindowWidth;
     property CompletionWindowHeight: Integer read FCompletionWindowHeight
@@ -878,6 +881,7 @@ begin
   FIDETitleIncludesBuildMode:=false;
   FIDEProjectDirectoryInIdeTitle:=false;
   FComponentPaletteVisible:=true;
+  FAutoAdjustIDEHeight:=true;
 
   // window menu
   FIDENameForDesignedFormList:=false;
@@ -1204,6 +1208,8 @@ begin
         Path+'Desktop/IDEProjectDirectoryInIdeTitle/Value',false);
       FComponentPaletteVisible:=XMLConfig.GetValue(
         Path+'Desktop/ComponentPaletteVisible/Value',true);
+      FAutoAdjustIDEHeight:=XMLConfig.GetValue(
+        Path+'Desktop/AutoAdjustIDEHeight/Value',true);
       FCompletionWindowWidth:=XMLConfig.GetValue(
         Path+'Desktop/CompletionWindowWidth/Value', 320);
       FCompletionWindowHeight:=XMLConfig.GetValue(
@@ -1593,6 +1599,8 @@ begin
                                FIDEProjectDirectoryInIdeTitle,false);
       XMLConfig.SetDeleteValue(Path+'Desktop/ComponentPaletteVisible/Value',
                                FComponentPaletteVisible,true);
+      XMLConfig.SetDeleteValue(Path+'Desktop/AutoAdjustIDEHeight/Value',
+                               FAutoAdjustIDEHeight,true);
       XMLConfig.SetDeleteValue(Path+'Desktop/CompletionWindowWidth/Value',
                                FCompletionWindowWidth, 320);
       XMLConfig.SetDeleteValue(Path+'Desktop/CompletionWindowHeight/Value',

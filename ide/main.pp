@@ -1412,7 +1412,6 @@ var
   FormCreator: TIDEWindowCreator;
   PkgMngr: TPkgManager;
   CompPalette: TComponentPalette;
-  AMenuHeight: Integer;
 begin
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.Create START');{$ENDIF}
   inherited Create(TheOwner);
@@ -1457,21 +1456,6 @@ begin
   // build and position the MainIDE form
   Application.CreateForm(TMainIDEBar,MainIDEBar);
   MainIDEBar.OnActive:=@OnMainBarActive;
-
-  AMenuHeight := LCLIntf.GetSystemMetrics(SM_CYMENU);
-  if AMenuHeight > 0 then
-  begin
-    // what we know:
-    // 1. cmd speedbuttons height = 22
-    // 2. components palette buttons = 32
-    // 3. menu height provided by widgetset (varies , depends on theme)
-    // so we set 22 + 32 + (borders * 2).
-    MainIDEBar.NonClientHeight := AMenuHeight +
-      //22 {cmd speedbtns} + 32 {component buttons} +
-      LCLIntf.GetSystemMetrics(SM_CYSIZEFRAME) +
-      (LCLIntf.GetSystemMetrics(SM_CYBORDER) * 2) {borders};
-  end else
-    MainIDEBar.NonClientHeight :=85;
 
   MainIDEBar.Name := NonModalIDEWindowNames[nmiwMainIDEName];
   FormCreator:=IDEWindowCreators.Add(MainIDEBar.Name);
@@ -1543,7 +1527,6 @@ begin
 
   // load package configs
   HelpBoss.LoadHelpOptions;
-  MainIDEBar.RefreshCoolbar;
 end;
 
 procedure TMainIDE.StartIDE;
@@ -2019,15 +2002,13 @@ begin
   MainIDEBar.MainSplitter.Parent := MainIDEBar;
   MainIDEBar.MainSplitter.Align := alLeft;
   MainIDEBar.MainSplitter.MinSize := 50;
+  MainIDEBar.MainSplitter.Tag := 112;
   MainIDEBar.MainSplitter.OnMoved := @MainIDEBar.MainSplitterMoved;
 
-  MainIDEBar.IDEHeightTimer := TTimer.Create(OwningComponent);
-  MainIDEBar.IDEHeightTimer.Interval := 100;
-  MainIDEBar.IDEHeightTimer.Enabled := False;
-  MainIDEBar.IDEHeightTimer.OnTimer := @MainIDEBar.OnTimer;
 
   MainIDEBar.CoolBar := TCoolBar.Create(OwningComponent);
   MainIDEBar.CoolBar.Parent := MainIDEBar;
+  MainIDEBar.CoolBar.Tag := 112;
   if EnvironmentOptions.ComponentPaletteVisible then
   begin
     MainIDEBar.CoolBar.Align := alLeft;
@@ -2036,6 +2017,7 @@ begin
   else
     MainIDEBar.CoolBar.Align := alClient;
 
+  MainIDEBar.mnuMainMenu.Tag := 112;
   // IDE Coolbar object wraps MainIDEBar.CoolBar.
   IDECoolBar := TIDECoolBar.Create(MainIDEBar.CoolBar);
   IDECoolBar.IsVisible := EnvironmentOptions.IDECoolBarOptions.IDECoolBarVisible;;
@@ -2068,6 +2050,7 @@ begin
     Align := alClient;
     Visible:=EnvironmentOptions.ComponentPaletteVisible;
     Parent := MainIDEBar;
+    Tag := 112;
   end;
 end;
 
@@ -3705,7 +3688,7 @@ end;
 
 procedure TMainIDE.DoToggleViewComponentPalette;
 var
-  ComponentPaletteVisible: boolean;
+  ComponentPaletteVisible: Boolean;
 begin
   ComponentPaletteVisible:=not MainIDEBar.ComponentPageControl.Visible;
   MainIDEBar.itmViewComponentPalette.Checked:=ComponentPaletteVisible;

@@ -1,22 +1,22 @@
 object WindowOptionsFrame: TWindowOptionsFrame
   Left = 0
-  Height = 545
+  Height = 582
   Top = 0
-  Width = 562
-  ClientHeight = 545
-  ClientWidth = 562
+  Width = 573
+  ClientHeight = 582
+  ClientWidth = 573
   TabOrder = 0
-  DesignLeft = 407
-  DesignTop = 219
+  DesignLeft = 349
+  DesignTop = 181
   object SingleTaskBarButtonCheckBox: TCheckBox
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = lblShowingWindows
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 24
-    Top = 20
-    Width = 224
+    Height = 17
+    Top = 13
+    Width = 165
     Caption = 'SingleTaskBarButtonCheckBox'
     ParentShowHint = False
     ShowHint = True
@@ -28,40 +28,36 @@ object WindowOptionsFrame: TWindowOptionsFrame
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 24
-    Top = 44
-    Width = 187
+    Height = 17
+    Top = 30
+    Width = 138
     Caption = 'HideIDEOnRunCheckBox'
     ParentShowHint = False
     ShowHint = True
     TabOrder = 1
   end
   object WindowPositionsPanel: TPanel
-    AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = lblWindowPosition
     AnchorSideTop.Side = asrBottom
-    AnchorSideRight.Control = Owner
-    AnchorSideRight.Side = asrBottom
-    AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
     Left = 0
-    Height = 354
-    Top = 191
-    Width = 562
+    Height = 423
+    Top = 154
+    Width = 570
     Anchors = [akTop, akLeft, akRight, akBottom]
-    BorderSpacing.Top = 1
+    BorderSpacing.Top = 3
     Caption = 'WindowPositionsPanel'
-    ClientHeight = 354
-    ClientWidth = 562
-    TabOrder = 2
+    ClientHeight = 423
+    ClientWidth = 570
+    TabOrder = 7
     object LeftLabel: TLabel
       AnchorSideTop.Control = LeftEdit
       AnchorSideTop.Side = asrCenter
       AnchorSideRight.Control = LeftEdit
-      Left = 281
-      Height = 20
-      Top = 238
-      Width = 61
+      Left = 306
+      Height = 13
+      Top = 231
+      Width = 44
       Anchors = [akTop, akRight]
       BorderSpacing.Right = 3
       Caption = 'LeftLabel'
@@ -71,10 +67,10 @@ object WindowOptionsFrame: TWindowOptionsFrame
       AnchorSideTop.Control = TopEdit
       AnchorSideTop.Side = asrCenter
       AnchorSideRight.Control = TopEdit
-      Left = 280
-      Height = 20
-      Top = 272
-      Width = 62
+      Left = 307
+      Height = 13
+      Top = 258
+      Width = 43
       Anchors = [akTop, akRight]
       BorderSpacing.Right = 3
       Caption = 'TopLabel'
@@ -84,10 +80,10 @@ object WindowOptionsFrame: TWindowOptionsFrame
       AnchorSideTop.Control = WidthEdit
       AnchorSideTop.Side = asrCenter
       AnchorSideRight.Control = WidthEdit
-      Left = 401
-      Height = 20
-      Top = 238
-      Width = 76
+      Left = 432
+      Height = 13
+      Top = 231
+      Width = 53
       Anchors = [akTop, akRight]
       BorderSpacing.Right = 3
       Caption = 'WidthLabel'
@@ -97,10 +93,10 @@ object WindowOptionsFrame: TWindowOptionsFrame
       AnchorSideTop.Control = HeightEdit
       AnchorSideTop.Side = asrCenter
       AnchorSideRight.Control = HeightEdit
-      Left = 396
-      Height = 20
-      Top = 272
-      Width = 81
+      Left = 429
+      Height = 13
+      Top = 258
+      Width = 56
       Anchors = [akTop, akRight]
       BorderSpacing.Right = 3
       Caption = 'HeightLabel'
@@ -114,7 +110,7 @@ object WindowOptionsFrame: TWindowOptionsFrame
       Left = 7
       Height = 120
       Top = 3
-      Width = 548
+      Width = 556
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Left = 6
       BorderSpacing.Top = 2
@@ -122,7 +118,7 @@ object WindowOptionsFrame: TWindowOptionsFrame
       ItemHeight = 0
       OnSelectionChange = WindowPositionsListBoxSelectionChange
       ParentShowHint = False
-      ScrollWidth = 300
+      ScrollWidth = 552
       ShowHint = True
       TabOrder = 0
     end
@@ -131,41 +127,41 @@ object WindowOptionsFrame: TWindowOptionsFrame
       AnchorSideTop.Control = RestoreWindowGeometryRadioButton
       AnchorSideTop.Side = asrBottom
       Left = 7
-      Height = 24
-      Top = 261
-      Width = 288
+      Height = 17
+      Top = 247
+      Width = 206
       BorderSpacing.Left = 6
       BorderSpacing.Top = 3
       Caption = 'LetWindowManagerDecideRadioButton'
       OnClick = WindowGeometryRadioButtonClick
       ParentShowHint = False
       ShowHint = True
-      TabOrder = 1
+      TabOrder = 3
     end
     object FixedDefaultRadioButton: TRadioButton
       AnchorSideLeft.Control = WindowPositionsPanel
       AnchorSideTop.Control = LetWindowManagerDecideRadioButton
       AnchorSideTop.Side = asrBottom
       Left = 7
-      Height = 24
-      Top = 288
-      Width = 191
+      Height = 17
+      Top = 267
+      Width = 140
       BorderSpacing.Left = 6
       BorderSpacing.Top = 3
       Caption = 'FixedDefaultRadioButton'
       OnClick = WindowGeometryRadioButtonClick
       ParentShowHint = False
       ShowHint = True
-      TabOrder = 2
+      TabOrder = 4
     end
     object RestoreWindowGeometryRadioButton: TRadioButton
       AnchorSideLeft.Control = WindowPositionsPanel
       AnchorSideTop.Control = SplitterPanel
       AnchorSideTop.Side = asrBottom
       Left = 7
-      Height = 24
-      Top = 234
-      Width = 277
+      Height = 17
+      Top = 227
+      Width = 202
       BorderSpacing.Left = 6
       BorderSpacing.Top = 4
       Caption = 'RestoreWindowGeometryRadioButton'
@@ -173,7 +169,7 @@ object WindowOptionsFrame: TWindowOptionsFrame
       OnClick = CustomGeometryRadioButtonClick
       ParentShowHint = False
       ShowHint = True
-      TabOrder = 3
+      TabOrder = 2
       TabStop = True
     end
     object CustomGeometryRadioButton: TRadioButton
@@ -181,42 +177,25 @@ object WindowOptionsFrame: TWindowOptionsFrame
       AnchorSideTop.Control = FixedDefaultRadioButton
       AnchorSideTop.Side = asrBottom
       Left = 7
-      Height = 24
-      Top = 315
-      Width = 222
+      Height = 17
+      Top = 287
+      Width = 162
       BorderSpacing.Left = 6
       BorderSpacing.Top = 3
       Caption = 'CustomGeometryRadioButton'
       OnClick = CustomGeometryRadioButtonClick
       ParentShowHint = False
       ShowHint = True
-      TabOrder = 4
+      TabOrder = 5
     end
     object LeftEdit: TSpinEdit
       AnchorSideTop.Control = RestoreWindowGeometryRadioButton
       AnchorSideRight.Control = WidthEdit
-      Left = 345
-      Height = 28
-      Top = 234
+      Left = 353
+      Height = 21
+      Top = 227
       Width = 75
       Anchors = [akTop, akRight]
-      BorderSpacing.Right = 60
-      MaxValue = 4096
-      MinValue = -5000
-      ParentShowHint = False
-      ShowHint = True
-      TabOrder = 5
-    end
-    object TopEdit: TSpinEdit
-      AnchorSideTop.Control = LeftEdit
-      AnchorSideTop.Side = asrBottom
-      AnchorSideRight.Control = HeightEdit
-      Left = 345
-      Height = 28
-      Top = 268
-      Width = 75
-      Anchors = [akTop, akRight]
-      BorderSpacing.Top = 6
       BorderSpacing.Right = 60
       MaxValue = 4096
       MinValue = -5000
@@ -224,29 +203,46 @@ object WindowOptionsFrame: TWindowOptionsFrame
       ShowHint = True
       TabOrder = 6
     end
+    object TopEdit: TSpinEdit
+      AnchorSideTop.Control = LeftEdit
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = HeightEdit
+      Left = 353
+      Height = 21
+      Top = 254
+      Width = 75
+      Anchors = [akTop, akRight]
+      BorderSpacing.Top = 6
+      BorderSpacing.Right = 60
+      MaxValue = 4096
+      MinValue = -5000
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 7
+    end
     object WidthEdit: TSpinEdit
       AnchorSideTop.Control = LeftEdit
       AnchorSideRight.Control = WindowPositionsPanel
       AnchorSideRight.Side = asrBottom
-      Left = 480
-      Height = 28
-      Top = 234
+      Left = 488
+      Height = 21
+      Top = 227
       Width = 75
       Anchors = [akTop, akRight]
       BorderSpacing.Right = 6
       MaxValue = 4096
       ParentShowHint = False
       ShowHint = True
-      TabOrder = 7
+      TabOrder = 8
     end
     object HeightEdit: TSpinEdit
       AnchorSideTop.Control = WidthEdit
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = WindowPositionsPanel
       AnchorSideRight.Side = asrBottom
-      Left = 480
-      Height = 28
-      Top = 268
+      Left = 488
+      Height = 21
+      Top = 254
       Width = 75
       Anchors = [akTop, akRight]
       BorderSpacing.Top = 6
@@ -254,32 +250,30 @@ object WindowOptionsFrame: TWindowOptionsFrame
       MaxValue = 4096
       ParentShowHint = False
       ShowHint = True
-      TabOrder = 8
+      TabOrder = 9
     end
     object GetWindowPositionButton: TButton
-      AnchorSideTop.Control = ApplyButton
-      AnchorSideRight.Control = ApplyButton
-      Left = 239
-      Height = 30
-      Top = 308
-      Width = 201
+      Left = 322
+      Height = 23
+      Top = 288
+      Width = 150
       Anchors = [akTop, akRight]
       AutoSize = True
       BorderSpacing.Right = 6
       Caption = 'GetWindowPositionButton'
       Constraints.MinWidth = 75
       OnClick = GetWindowPositionButtonClick
-      TabOrder = 9
+      TabOrder = 10
     end
     object ApplyButton: TButton
       AnchorSideTop.Control = HeightEdit
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = WindowPositionsPanel
       AnchorSideRight.Side = asrBottom
-      Left = 446
-      Height = 30
-      Top = 308
-      Width = 109
+      Left = 478
+      Height = 23
+      Top = 287
+      Width = 85
       Anchors = [akTop, akRight]
       AutoSize = True
       BorderSpacing.Top = 12
@@ -287,7 +281,7 @@ object WindowOptionsFrame: TWindowOptionsFrame
       Caption = 'ApplyButton'
       Constraints.MinWidth = 75
       OnClick = ApplyButtonClick
-      TabOrder = 10
+      TabOrder = 11
     end
     object SplitterPanel: TPanel
       AnchorSideLeft.Control = WindowPositionsPanel
@@ -299,8 +293,8 @@ object WindowOptionsFrame: TWindowOptionsFrame
       AnchorSideBottom.Side = asrBottom
       Left = 5
       Height = 78
-      Top = 152
-      Width = 556
+      Top = 145
+      Width = 564
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Left = 4
       BorderSpacing.Top = 3
@@ -309,8 +303,8 @@ object WindowOptionsFrame: TWindowOptionsFrame
       BorderStyle = bsSingle
       Caption = ' '
       ClientHeight = 74
-      ClientWidth = 552
-      TabOrder = 11
+      ClientWidth = 560
+      TabOrder = 1
       Visible = False
       object SplitterList: TListBox
         AnchorSideLeft.Control = SplitterPanel
@@ -325,7 +319,7 @@ object WindowOptionsFrame: TWindowOptionsFrame
         ItemHeight = 0
         OnSelectionChange = SplitterListSelectionChange
         ParentShowHint = False
-        ScrollWidth = 273
+        ScrollWidth = 271
         ShowHint = True
         TabOrder = 0
       end
@@ -333,10 +327,10 @@ object WindowOptionsFrame: TWindowOptionsFrame
         AnchorSideTop.Control = SplitEdit
         AnchorSideTop.Side = asrCenter
         AnchorSideRight.Control = SplitEdit
-        Left = 407
-        Height = 20
-        Top = 40
-        Width = 66
+        Left = 436
+        Height = 13
+        Top = 47
+        Width = 45
         Anchors = [akTop, akRight]
         BorderSpacing.Right = 3
         Caption = 'SplitLabel'
@@ -347,16 +341,16 @@ object WindowOptionsFrame: TWindowOptionsFrame
         AnchorSideRight.Side = asrBottom
         AnchorSideBottom.Control = SplitterPanel
         AnchorSideBottom.Side = asrBottom
-        Left = 476
-        Height = 28
-        Top = 36
+        Left = 484
+        Height = 21
+        Top = 43
         Width = 75
         Anchors = [akRight, akBottom]
         BorderSpacing.Bottom = 9
         MaxValue = 5000
         ParentShowHint = False
         ShowHint = True
-        TabOrder = 1
+        TabOrder = 2
       end
       object dropSplitterPlacement: TComboBox
         AnchorSideLeft.Control = SplitterList
@@ -365,16 +359,16 @@ object WindowOptionsFrame: TWindowOptionsFrame
         AnchorSideRight.Control = SplitterPanel
         AnchorSideRight.Side = asrBottom
         Left = 282
-        Height = 28
+        Height = 21
         Top = 1
-        Width = 269
+        Width = 277
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Left = 6
-        ItemHeight = 20
+        ItemHeight = 13
         ParentShowHint = False
         ShowHint = True
         Style = csDropDownList
-        TabOrder = 2
+        TabOrder = 1
       end
     end
     object lblWindowCaption: TDividerBevel
@@ -384,9 +378,9 @@ object WindowOptionsFrame: TWindowOptionsFrame
       AnchorSideRight.Control = WindowPositionsPanel
       AnchorSideRight.Side = asrBottom
       Left = 1
-      Height = 20
+      Height = 13
       Top = 129
-      Width = 560
+      Width = 568
       Caption = 'lblWindowCaption'
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Top = 6
@@ -400,52 +394,52 @@ object WindowOptionsFrame: TWindowOptionsFrame
     AnchorSideTop.Control = HideIDEOnRunCheckBox
     AnchorSideTop.Side = asrBottom
     Left = 0
-    Height = 24
-    Top = 68
-    Width = 231
+    Height = 17
+    Top = 47
+    Width = 172
     Caption = 'TitleStartsWithProjectCheckBox'
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 3
+    TabOrder = 2
   end
   object ProjectDirInIdeTitleCheckBox: TCheckBox
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = TitleStartsWithProjectCheckBox
     AnchorSideTop.Side = asrBottom
     Left = 0
-    Height = 24
-    Top = 92
-    Width = 216
+    Height = 17
+    Top = 64
+    Width = 160
     Caption = 'ProjectDirInIdeTitleCheckBox'
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 4
+    TabOrder = 3
   end
   object TitleIncludesBuildMode: TCheckBox
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = ProjectDirInIdeTitleCheckBox
     AnchorSideTop.Side = asrBottom
     Left = 0
-    Height = 24
-    Top = 116
-    Width = 180
+    Height = 17
+    Top = 81
+    Width = 128
     Caption = 'TitleIncludesBuildMode'
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 5
+    TabOrder = 4
   end
   object NameForDesignedFormList: TCheckBox
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = TitleIncludesBuildMode
     AnchorSideTop.Side = asrBottom
     Left = 0
-    Height = 24
-    Top = 140
-    Width = 204
+    Height = 17
+    Top = 98
+    Width = 147
     Caption = 'NameForDesignedFormList'
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 6
+    TabOrder = 5
   end
   object lblShowingWindows: TDividerBevel
     AnchorSideLeft.Control = Owner
@@ -453,9 +447,9 @@ object WindowOptionsFrame: TWindowOptionsFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 20
+    Height = 13
     Top = 0
-    Width = 562
+    Width = 573
     Caption = 'lblShowingWindows'
     Anchors = [akTop, akLeft, akRight]
     Font.Style = [fsBold]
@@ -463,18 +457,31 @@ object WindowOptionsFrame: TWindowOptionsFrame
   end
   object lblWindowPosition: TDividerBevel
     AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = NameForDesignedFormList
+    AnchorSideTop.Control = AutoAdjustIDEHeightCheckBox
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 20
-    Top = 170
-    Width = 562
+    Height = 13
+    Top = 138
+    Width = 573
     Caption = 'lblWindowPosition'
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 6
     Font.Style = [fsBold]
     ParentFont = False
+  end
+  object AutoAdjustIDEHeightCheckBox: TCheckBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = NameForDesignedFormList
+    AnchorSideTop.Side = asrBottom
+    Left = 0
+    Height = 17
+    Top = 115
+    Width = 169
+    Caption = 'AutoAdjustIDEHeightCheckBox'
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 6
   end
 end

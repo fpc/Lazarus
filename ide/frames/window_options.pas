@@ -39,6 +39,7 @@ type
     lblShowingWindows: TDividerBevel;
     lblWindowCaption: TDividerBevel;
     NameForDesignedFormList: TCheckBox;
+    AutoAdjustIDEHeightCheckBox: TCheckBox;
     TitleIncludesBuildMode: TCheckBox;
     dropSplitterPlacement: TComboBox;
     CustomGeometryRadioButton: TRadioButton;
@@ -122,6 +123,8 @@ begin
   TitleIncludesBuildMode.Hint:=lisBuildModeInTitleInExample;
   NameForDesignedFormList.Caption:=lisWindowMenuWithNameForDesignedForm;
   NameForDesignedFormList.Hint:=lisWindowMenuWithNameForDesignedFormHint;
+  AutoAdjustIDEHeightCheckBox.Caption:=lisAutoAdjustIDEHeight;
+  AutoAdjustIDEHeightCheckBox.Hint:=lisAutoAdjustIDEHeightHint;
   ProjectDirInIdeTitleCheckBox.Caption:=lisIDETitleShowsProjectDir;
   ProjectDirInIdeTitleCheckBox.Hint:=lisProjectDirectoryIsShowedInIdeTitleBar;
 end;
@@ -139,6 +142,7 @@ begin
     TitleStartsWithProjectCheckBox.Checked:=IDETitleStartsWithProject;
     TitleIncludesBuildMode.Checked:=IDETitleIncludesBuildMode;
     NameForDesignedFormList.Checked:=IDENameForDesignedFormList;
+    AutoAdjustIDEHeightCheckBox.Checked:=AutoAdjustIDEHeight;
     ProjectDirInIdeTitleCheckBox.Checked:=IDEProjectDirectoryInIdeTitle;
   end;
 
@@ -219,6 +223,7 @@ begin
     IDETitleStartsWithProject:=TitleStartsWithProjectCheckBox.Checked;
     IDETitleIncludesBuildMode := TitleIncludesBuildMode.Checked;
     IDENameForDesignedFormList := NameForDesignedFormList.Checked;
+    AutoAdjustIDEHeight := AutoAdjustIDEHeightCheckBox.Checked;
     IDEProjectDirectoryInIdeTitle:=ProjectDirInIdeTitleCheckBox.Checked;
   end;
 end;

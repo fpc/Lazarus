@@ -331,6 +331,7 @@ begin
       AutoScroll:=false;
       {$ENDIF}
       VertScrollBar.Increment := ComponentPaletteBtnHeight;
+      VertScrollBar.Tracking := True;
       Parent := PageComponent;
     end;
     PanelRight := TPanel.Create(PageComponent);
