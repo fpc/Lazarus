@@ -119,6 +119,9 @@ type
     function GetSpacing: Integer;
     function GetTabStop: Boolean;
     function GetText: TCaption;
+    function GetTextHint: TCaption;
+    function GetTextHintFontColor: TColor;
+    function GetTextHintFontStyle: TFontStyles;
     function IsCustomGlyph : Boolean;
 
     procedure FocusAndMaybeSelectAll;
@@ -181,6 +184,9 @@ type
     procedure SetSelText(AValue: String);
     procedure SetSpacing(const Value: integer);
     procedure SetTabStop(AValue: Boolean);
+    procedure SetTextHint(AValue: TCaption);
+    procedure SetTextHintFontColor(AValue: TColor);
+    procedure SetTextHintFontStyle(AValue: TFontStyles);
   protected
     class function GetControlClassDefaultSize: TSize; override;
     function CalcButtonVisible: Boolean; virtual;
@@ -293,6 +299,9 @@ type
     property SelText: String read GetSelText write SetSelText;
     property TabStop: Boolean read GetTabStop write SetTabStop default True;
     property Text: TCaption read GetText write SetText;
+    property TextHint: TCaption read GetTextHint write SetTextHint;
+    property TextHintFontColor: TColor read GetTextHintFontColor write SetTextHintFontColor default clGrayText;
+    property TextHintFontStyle: TFontStyles read GetTextHintFontStyle write SetTextHintFontStyle default [fsItalic];
 
     property OnChange: TNotifyEvent read FOnEditChange write FOnEditChange;
     property OnClick: TNotifyEvent read FOnEditClick write FOnEditClick;
@@ -392,6 +401,9 @@ type
     property TabOrder;
     property TabStop;
     property Text;
+    property TextHint;
+    property TextHintFontColor;
+    property TextHintFontStyle;
     property Visible;
   end;
 
@@ -631,6 +643,9 @@ type
     property OnStartDrag;
     property OnUTF8KeyPress;
     property Text;
+    property TextHint;
+    property TextHintFontColor;
+    property TextHintFontStyle;
   end;
 
 
@@ -721,6 +736,9 @@ type
     property OnStartDrag;
     property OnUTF8KeyPress;
     property Text;
+    property TextHint;
+    property TextHintFontColor;
+    property TextHintFontStyle;
   end;
 
 
@@ -837,6 +855,9 @@ type
     property Spacing;
     property Visible;
     property Text;
+    property TextHint;
+    property TextHintFontColor;
+    property TextHintFontStyle;
   end;
 
 
@@ -930,6 +951,9 @@ type
     property OnStartDrag;
     property OnUTF8KeyPress;
     property Text;
+    property TextHint;
+    property TextHintFontColor;
+    property TextHintFontStyle;
   end;
 
 
@@ -1152,6 +1176,21 @@ end;
 function TCustomEditButton.GetText: TCaption;
 begin
   Result := FEdit.Text;
+end;
+
+function TCustomEditButton.GetTextHint: TCaption;
+begin
+  Result := FEdit.TextHint;
+end;
+
+function TCustomEditButton.GetTextHintFontColor: TColor;
+begin
+  Result := FEdit.TextHintFontColor;
+end;
+
+function TCustomEditButton.GetTextHintFontStyle: TFontStyles;
+begin
+  Result := FEdit.TextHintFontStyle;
 end;
 
 function TCustomEditButton.IsCustomGlyph: Boolean;
@@ -1743,6 +1782,21 @@ procedure TCustomEditButton.SetTabStop(AValue: Boolean);
 begin
   inherited TabStop := AValue;
   FEdit.TabStop := AValue;
+end;
+
+procedure TCustomEditButton.SetTextHint(AValue: TCaption);
+begin
+  FEdit.TextHint := AValue;
+end;
+
+procedure TCustomEditButton.SetTextHintFontColor(AValue: TColor);
+begin
+  FEdit.TextHintFontColor := AValue;
+end;
+
+procedure TCustomEditButton.SetTextHintFontStyle(AValue: TFontStyles);
+begin
+  FEdit.TextHintFontStyle := AValue;
 end;
 
 constructor TCustomEditButton.Create(AOwner: TComponent);
