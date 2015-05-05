@@ -52,9 +52,9 @@ type
   TMainIDEBar = class(TForm)
     //Coolbar and PopUpMenus
     CoolBar: TCoolBar;
-    pmOptions: TPopupMenu;
-    tmIDEHeigth: TTimer;
-    miOptions: TMenuItem;
+    OptionsPopupMenu: TPopupMenu;
+    IDEHeightTimer: TTimer;
+    OptionsMenuItem: TMenuItem;
     OpenFilePopUpMenu: TPopupMenu;
     SetBuildModePopupMenu: TPopupMenu;
     NewUnitFormPopupMenu: TPopupMenu;
@@ -369,7 +369,7 @@ type
     FOldWindowState: TWindowState;
     FOnActive: TNotifyEvent;
     FNonClientHeight: Integer;
-    procedure NewUFDefaultClick(Sender: TObject);
+    procedure NewUnitFormDefaultClick(Sender: TObject);
     procedure NewUnitFormPopupMenuPopup(Sender: TObject);
   protected
     procedure DoActive;
@@ -382,7 +382,7 @@ type
     property OnActive: TNotifyEvent read FOnActive write FOnActive;
     procedure UpdateDockCaption({%H-}Exclude: TControl); override;
     procedure RefreshCoolbar;
-    procedure SetMainIDEHeigth;
+    procedure SetMainIDEHeight;
   public
     property NonClientHeight: Integer read FNonClientHeight write FNonClientHeight;
   end;
@@ -404,7 +404,7 @@ begin
   LazarusIDE.DoDropFiles(Sender,FileNames);
 end;
 
-procedure TMainIDEBar.NewUFDefaultClick(Sender: TObject);
+procedure TMainIDEBar.NewUnitFormDefaultClick(Sender: TObject);
 var
   Category: TNewIDEItemCategory;
   i: Integer;
@@ -457,7 +457,7 @@ begin
     else begin
       Item:=TMenuItem.Create(NewUFSetDefaultMenuItem);
       Item.Name:='NewUFSetDefaultMenuItem'+IntToStr(Index);
-      Item.OnClick:=@NewUFDefaultClick;
+      Item.OnClick:=@NewUnitFormDefaultClick;
       NewUFSetDefaultMenuItem.Add(Item);
     end;
     Item.Caption:=CurTemplate.LocalizedName;
@@ -530,10 +530,10 @@ begin
   NewUFSetDefaultMenuItem.Caption:=lisSetDefault;
   NewUnitFormPopupMenu.Items.Add(NewUFSetDefaultMenuItem);
 
-  pmOptions := TPopupMenu.Create(TheOwner);
-  pmOptions.Images := IDEImages.Images_16;
-  miOptions := TMenuItem.Create(TheOwner);
-  with MainIDEBar.miOptions do
+  OptionsPopupMenu := TPopupMenu.Create(TheOwner);
+  OptionsPopupMenu.Images := IDEImages.Images_16;
+  OptionsMenuItem := TMenuItem.Create(TheOwner);
+  with MainIDEBar.OptionsMenuItem do
   begin
      Name := 'miToolbarOption';
      Caption := lisOptions;
@@ -541,7 +541,7 @@ begin
      Visible := True;
      ImageIndex := IDEImages.LoadImage(16, 'menu_environment_options');
    end;
-  MainIDEBar.pmOptions.Items.Add(MainIDEBar.miOptions);
+  MainIDEBar.OptionsPopupMenu.Items.Add(MainIDEBar.OptionsMenuItem);
 end;
 
 procedure TMainIDEBar.RefreshCoolbar;
@@ -583,13 +583,13 @@ begin
   MainSplitter.Align := alLeft;
   MainSplitter.Visible := MainIDEBar.Coolbar.Visible and
                           MainIDEBar.ComponentPageControl.Visible;
-  MainIDEBar.SetMainIDEHeigth;
+  MainIDEBar.SetMainIDEHeight;
 end;
 
 procedure TMainIDEBar.MainSplitterMoved(Sender: TObject);
 begin
   EnvironmentOptions.IDECoolBarOptions.IDECoolBarWidth := CoolBar.Width;
-  SetMainIDEHeigth
+  SetMainIDEHeight
 end;
 
 
@@ -612,14 +612,14 @@ begin
   end;
   IDECoolBar.Sort;
   IDECoolBar.CopyToOptions(EnvironmentOptions.IDECoolBarOptions);
-  SetMainIDEHeigth;
+  SetMainIDEHeight;
 end;
 
-procedure TMainIDEBar.SetMainIDEHeigth;
+procedure TMainIDEBar.SetMainIDEHeight;
 begin
-  if tmIDEHeigth.Enabled then
+  if IDEHeightTimer.Enabled then
     Exit;
-  tmIDEHeigth.Enabled := True;
+  IDEHeightTimer.Enabled := True;
 end;
 
 procedure TMainIDEBar.OnTimer(Sender: TObject);
@@ -628,7 +628,7 @@ var
   ComponentsVisible: Boolean;
   CoolBarHeigth: Integer;
   CoolBarDefHeight: Integer;
-  ClientHeigth: Integer;
+  NewClientHeight: Integer;
 begin
   CoolBarVisible := EnvironmentOptions.IDECoolBarOptions.IDECoolBarVisible;
   ComponentsVisible := EnvironmentOptions.ComponentPaletteVisible;
@@ -636,30 +636,33 @@ begin
   CoolBarHeigth := CoolBar.Bands.Items[CoolBar.Bands.Count - 1].Top +
                    CoolBar.Bands.Items[CoolBar.Bands.Count - 1].Height;
 
-  //only the menu is visible
-  if (not CoolBarVisible) and (not ComponentsVisible) then
-    ClientHeigth := 0
-  //only the coolbar is visible
-  else if (CoolBarVisible) and (not ComponentsVisible) then
-    ClientHeigth := CoolBarHeigth
-  //only the component palette is visible
-  else if (not CoolBarVisible) and (ComponentsVisible) then
-    ClientHeigth := 2*CoolBarDefHeight
-  //both coolbar and component palette is visible
-  else if (CoolBarVisible) and (ComponentsVisible) then
+  if (MainIDEBar.Parent=nil) and (MainIDEBar.DockManager=nil) then
   begin
-    if CoolBarHeigth > 2*CoolBarDefHeight then
-      ClientHeigth := CoolBarHeigth
-    else
-      ClientHeigth := 2*CoolBarHeigth;
-  end;
+    //only the menu is visible
+    if (not CoolBarVisible) and (not ComponentsVisible) then
+      NewClientHeight := 0
+    //only the coolbar is visible
+    else if (CoolBarVisible) and (not ComponentsVisible) then
+      NewClientHeight := CoolBarHeigth
+    //only the component palette is visible
+    else if (not CoolBarVisible) and (ComponentsVisible) then
+      NewClientHeight := 2*CoolBarDefHeight
+    //both coolbar and component palette is visible
+    else if (CoolBarVisible) and (ComponentsVisible) then
+    begin
+      if CoolBarHeigth > 2*CoolBarDefHeight then
+        NewClientHeight := CoolBarHeigth
+      else
+        NewClientHeight := 2*CoolBarHeigth;
+    end;
 
-  MainIDEBar.Constraints.MaxHeight := 0;
-  MainIDEBar.Constraints.MinHeight := 0;
-  MainIDEBar.ClientHeight := ClientHeigth;
-  MainIDEBar.Constraints.MaxHeight := NonClientHeight + ClientHeigth;
- // MainIDEBar.Constraints.MinHeight := NonClientHeight + ClientHeigth;
-  tmIDEHeigth.Enabled := False;
+    MainIDEBar.Constraints.MaxHeight := 0;
+    MainIDEBar.Constraints.MinHeight := 0;
+    MainIDEBar.ClientHeight := NewClientHeight;
+    MainIDEBar.Constraints.MaxHeight := NonClientHeight + NewClientHeight;
+   // MainIDEBar.Constraints.MinHeight := NonClientHeight + NewClientHeight;
+  end;
+  IDEHeightTimer.Enabled := False;
 end;
 
 

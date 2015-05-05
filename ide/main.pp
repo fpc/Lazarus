@@ -2021,10 +2021,10 @@ begin
   MainIDEBar.MainSplitter.MinSize := 50;
   MainIDEBar.MainSplitter.OnMoved := @MainIDEBar.MainSplitterMoved;
 
-  MainIDEBar.tmIDEHeigth := TTimer.Create(OwningComponent);
-  MainIDEBar.tmIDEHeigth.Interval := 100;
-  MainIDEBar.tmIDEHeigth.Enabled := False;
-  MainIDEBar.tmIDEHeigth.OnTimer := @MainIDEBar.OnTimer;
+  MainIDEBar.IDEHeightTimer := TTimer.Create(OwningComponent);
+  MainIDEBar.IDEHeightTimer.Interval := 100;
+  MainIDEBar.IDEHeightTimer.Enabled := False;
+  MainIDEBar.IDEHeightTimer.OnTimer := @MainIDEBar.OnTimer;
 
   MainIDEBar.CoolBar := TCoolBar.Create(OwningComponent);
   MainIDEBar.CoolBar.Parent := MainIDEBar;
@@ -2042,8 +2042,8 @@ begin
   MainIDEBar.CoolBar.OnChange := @MainIDEBar.CoolBarOnChange;
 
   MainIDEBar.CreatePopupMenus(OwningComponent);
-  MainIDEBar.miOptions.OnClick := @ToolBarOptionsClick;
-  MainIDEBar.CoolBar.PopupMenu := MainIDEBar.pmOptions;
+  MainIDEBar.OptionsMenuItem.OnClick := @ToolBarOptionsClick;
+  MainIDEBar.CoolBar.PopupMenu := MainIDEBar.OptionsPopupMenu;
   MainIDEBar.OpenFilePopupMenu.OnPopup := @OpenFilePopupMenuPopup;
   MainIDEBar.SetBuildModePopupMenu.OnPopup := @SetBuildModePopupMenuPopup;
 end;
@@ -3726,7 +3726,7 @@ begin
     MainIDEBar.CoolBar.Align := alClient;
   MainIDEBar.MainSplitter.Visible := MainIDEBar.Coolbar.Visible and
                                      MainIDEBar.ComponentPageControl.Visible;
-  MainIDEBar.SetMainIDEHeigth;
+  MainIDEBar.SetMainIDEHeight;
 end;
 
 procedure TMainIDE.DoToggleViewIDESpeedButtons;
@@ -3740,7 +3740,7 @@ begin
   EnvironmentOptions.IDECoolBarOptions.IDECoolBarVisible := SpeedButtonsVisible;
   MainIDEBar.MainSplitter.Visible := MainIDEBar.Coolbar.Visible and
                                      MainIDEBar.ComponentPageControl.Visible;
-  MainIDEBar.SetMainIDEHeigth;
+  MainIDEBar.SetMainIDEHeight;
 end;
 
 procedure TMainIDE.AllowCompilation(aAllow: Boolean);
