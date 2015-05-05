@@ -91,6 +91,7 @@ type
     MainPopupMenu: TPopupMenu;
     procedure AddButtonClick(Sender: TObject);
     procedure DeleteButtonClick(Sender: TObject);
+    procedure FormShow(Sender: TObject);
     procedure RenameButtonClick(Sender: TObject);
     procedure FilenameButtonClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
@@ -1104,6 +1105,13 @@ begin
     end;
     ShowCurCodeTemplate;
   end;
+
+  TemplateListBox.OnSelectionChange(Self, false); //update btn state
+end;
+
+procedure TCodeTemplateDialog.FormShow(Sender: TObject);
+begin
+  TemplateListBox.OnSelectionChange(Self, true); //update btn states
 end;
 
 procedure TCodeTemplateDialog.RenameButtonClick(Sender: TObject);
@@ -1149,7 +1157,14 @@ end;
 
 procedure TCodeTemplateDialog.TemplateListBoxSelectionChange(Sender: TObject;
   User: boolean);
+var
+  en: boolean;
 begin
+  en := TemplateListBox.ItemIndex>=0;
+  DeleteButton.Enabled := en;
+  RenameButton.Enabled := en;
+  EditTemplateGroupBox.Enabled := en;
+
   SaveCurCodeTemplate;
   ShowCurCodeTemplate;
 end;
