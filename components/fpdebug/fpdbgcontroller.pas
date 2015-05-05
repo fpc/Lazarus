@@ -531,19 +531,19 @@ begin
   result := False;
   if assigned(FMainProcess) then
     begin
-    Log('The debuggee is already running');
+    Log('The debuggee is already running', dllInfo);
     Exit;
     end;
 
   if FExecutableFilename = '' then
     begin
-    Log('No filename given to execute.');
+    Log('No filename given to execute.', dllInfo);
     Exit;
     end;
 
   if not FileExists(FExecutableFilename) then
     begin
-    Log('File %s does not exist.',[FExecutableFilename]);
+    Log('File %s does not exist.',[FExecutableFilename], dllInfo);
     Exit;
     end;
 
