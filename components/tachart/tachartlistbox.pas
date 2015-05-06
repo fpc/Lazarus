@@ -470,20 +470,42 @@ procedure TChartListbox.Populate;
   OnPopulate if you don't omit special series from the listbox (RemoveSeries) }
 var
   li: TLegendItem;
+  list: TFPList;
+  ser: TCustomChartSeries;
+  i, idx: Integer;
 begin
   Items.BeginUpdate;
+  list := TFPList.Create;
   try
+    // In case of multiselect, the selected items would get lost here.
+    // Store series belonging to selected items in temporary list
+    for i:=0 to Items.Count-1 do
+      if Selected[i] then begin
+        li := TLegendItem(Items.Objects[i]);
+        if (li <> nil) and (li.Owner is TCustomChartSeries) then begin
+          ser := TCustomChartSeries(li.Owner);
+          list.Add(ser);
+        end;
+      end;
+
     Items.Clear;
     if (FChart = nil) or (FChart.Series = nil) then exit;
     FreeAndNil(FLegendItems);
     FLegendItems := CreateLegendItems;
     Chart.Legend.SortItemsByOrder(FLegendItems);
-    for li in FLegendItems do
+    for li in FLegendItems do begin
       // The caption is owner-drawn, but add it anyway for user convenience.
-      Items.AddObject(li.Text, li);
+      idx := Items.AddObject(li.Text, li);
+      // Restore selected state from temporary list
+      if (li.Owner is TCustomChartSeries) then begin
+        ser := TCustomChartSeries(li.Owner);
+        if list.IndexOf(ser) <> -1 then Selected[idx] := true;
+      end;
+    end;
     if Assigned(OnPopulate) then
       OnPopulate(Self);
   finally
+    list.Free;
     Items.EndUpdate;
   end;
 end;
