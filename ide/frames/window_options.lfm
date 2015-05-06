@@ -16,7 +16,7 @@ object WindowOptionsFrame: TWindowOptionsFrame
     Left = 0
     Height = 17
     Top = 13
-    Width = 165
+    Width = 163
     Caption = 'SingleTaskBarButtonCheckBox'
     ParentShowHint = False
     ShowHint = True
@@ -30,7 +30,7 @@ object WindowOptionsFrame: TWindowOptionsFrame
     Left = 0
     Height = 17
     Top = 30
-    Width = 138
+    Width = 136
     Caption = 'HideIDEOnRunCheckBox'
     ParentShowHint = False
     ShowHint = True
@@ -129,7 +129,7 @@ object WindowOptionsFrame: TWindowOptionsFrame
       Left = 7
       Height = 17
       Top = 247
-      Width = 206
+      Width = 204
       BorderSpacing.Left = 6
       BorderSpacing.Top = 3
       Caption = 'LetWindowManagerDecideRadioButton'
@@ -145,7 +145,7 @@ object WindowOptionsFrame: TWindowOptionsFrame
       Left = 7
       Height = 17
       Top = 267
-      Width = 140
+      Width = 138
       BorderSpacing.Left = 6
       BorderSpacing.Top = 3
       Caption = 'FixedDefaultRadioButton'
@@ -161,7 +161,7 @@ object WindowOptionsFrame: TWindowOptionsFrame
       Left = 7
       Height = 17
       Top = 227
-      Width = 202
+      Width = 200
       BorderSpacing.Left = 6
       BorderSpacing.Top = 4
       Caption = 'RestoreWindowGeometryRadioButton'
@@ -179,7 +179,7 @@ object WindowOptionsFrame: TWindowOptionsFrame
       Left = 7
       Height = 17
       Top = 287
-      Width = 162
+      Width = 160
       BorderSpacing.Left = 6
       BorderSpacing.Top = 3
       Caption = 'CustomGeometryRadioButton'
@@ -253,9 +253,11 @@ object WindowOptionsFrame: TWindowOptionsFrame
       TabOrder = 9
     end
     object GetWindowPositionButton: TButton
+      AnchorSideTop.Control = ApplyButton
+      AnchorSideRight.Control = ApplyButton
       Left = 322
       Height = 23
-      Top = 288
+      Top = 287
       Width = 150
       Anchors = [akTop, akRight]
       AutoSize = True
@@ -396,7 +398,7 @@ object WindowOptionsFrame: TWindowOptionsFrame
     Left = 0
     Height = 17
     Top = 47
-    Width = 172
+    Width = 170
     Caption = 'TitleStartsWithProjectCheckBox'
     ParentShowHint = False
     ShowHint = True
@@ -409,7 +411,7 @@ object WindowOptionsFrame: TWindowOptionsFrame
     Left = 0
     Height = 17
     Top = 64
-    Width = 160
+    Width = 158
     Caption = 'ProjectDirInIdeTitleCheckBox'
     ParentShowHint = False
     ShowHint = True
@@ -422,7 +424,7 @@ object WindowOptionsFrame: TWindowOptionsFrame
     Left = 0
     Height = 17
     Top = 81
-    Width = 128
+    Width = 126
     Caption = 'TitleIncludesBuildMode'
     ParentShowHint = False
     ShowHint = True
@@ -435,7 +437,7 @@ object WindowOptionsFrame: TWindowOptionsFrame
     Left = 0
     Height = 17
     Top = 98
-    Width = 147
+    Width = 145
     Caption = 'NameForDesignedFormList'
     ParentShowHint = False
     ShowHint = True
@@ -478,7 +480,7 @@ object WindowOptionsFrame: TWindowOptionsFrame
     Left = 0
     Height = 17
     Top = 115
-    Width = 169
+    Width = 167
     Caption = 'AutoAdjustIDEHeightCheckBox'
     ParentShowHint = False
     ShowHint = True
