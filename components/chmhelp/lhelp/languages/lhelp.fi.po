@@ -17,9 +17,9 @@ msgstr "Ei pysty hallitsemaan tämän tyyppistä sisältöä. \"%s\" url:%s%s"
 msgid "Cannot handle this type of subcontent. \"%s\" for url:%s%s"
 msgstr "Ei pysty hallitsemaan tämän tyyppistä sisältöä. \"%s\" url:%s%s"
 
-#: lhelpstrconsts.slhelp_closeall
-msgid "&Close All"
-msgstr "Sulje kaikki"
+#: lhelpstrconsts.slhelp_close
+msgid "&Close"
+msgstr ""
 
 #: lhelpstrconsts.slhelp_contents
 msgid "Contents"
@@ -119,6 +119,14 @@ msgstr "Avaa..."
 
 #: lhelpstrconsts.slhelp_openexistingfile
 msgid "Open existing file"
+msgstr ""
+
+#: lhelpstrconsts.slhelp_opennewfileinseparatetab
+msgid "Open new file in separate tab"
+msgstr ""
+
+#: lhelpstrconsts.slhelp_opennewtabwithstatusbar
+msgid "Open new tab with status bar"
 msgstr ""
 
 #: lhelpstrconsts.slhelp_openrecent

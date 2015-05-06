@@ -25,9 +25,9 @@ msgstr "Невозможно обработать данный тип содер
 msgid "Cannot handle this type of subcontent. \"%s\" for url:%s%s"
 msgstr "Невозможно обработать данный тип содержимого. \"%s\" для адреса:%s%s"
 
-#: lhelpstrconsts.slhelp_closeall
-msgid "&Close All"
-msgstr "Закрыть &всё"
+#: lhelpstrconsts.slhelp_close
+msgid "&Close"
+msgstr "&Закрыть"
 
 #: lhelpstrconsts.slhelp_contents
 msgid "Contents"
@@ -129,6 +129,14 @@ msgstr "О&ткрыть ..."
 #: lhelpstrconsts.slhelp_openexistingfile
 msgid "Open existing file"
 msgstr "Открыть существующий файл"
+
+#: lhelpstrconsts.slhelp_opennewfileinseparatetab
+msgid "Open new file in separate tab"
+msgstr "Открывать новый файл в отдельной вкладке"
+
+#: lhelpstrconsts.slhelp_opennewtabwithstatusbar
+msgid "Open new tab with status bar"
+msgstr "Открывать новую вкладку со строкой состояния"
 
 #: lhelpstrconsts.slhelp_openrecent
 msgid "Open Recent"

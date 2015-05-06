@@ -120,6 +120,7 @@
       <Unit8>
         <Filename Value="httpcontentprovider.pas"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="HTTPContentProvider"/>
       </Unit8>
       <Unit9>
         <Filename Value="lhelpstrconsts.pas"/>

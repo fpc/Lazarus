@@ -16,10 +16,12 @@ resourcestring
   slhelp_Open = '&Open ...';
   slhelp_OpenRecent = 'Open Recent';
   slhelp_OpenURL = 'Open &URL ...';
-  slhelp_CloseAll = '&Close All';
+  slhelp_Close = '&Close';
   slhelp_EXit = 'E&xit';
   slhelp_View = '&View';
   slhelp_ShowContents = 'Show contents';
+  slhelp_OpenNewTabWithStatusBar = 'Open new tab with status bar';
+  slhelp_OpenNewFileInSeparateTab = 'Open new file in separate tab';
   slhelp_Help = '&Help';
   slhelp_About2 = '&About ...';
   slhelp_OpenExistingFile = 'Open existing file';

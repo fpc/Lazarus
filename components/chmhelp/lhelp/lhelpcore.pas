@@ -341,10 +341,12 @@ begin
   FileMenuOpenItem.Caption := slhelp_Open;
   FileMenuOpenRecentItem.Caption := slhelp_OpenRecent;
   FileMenuOpenURLItem.Caption := slhelp_OpenURL;
-  FileMenuCloseItem.Caption := slhelp_CloseAll;
+  FileMenuCloseItem.Caption := slhelp_Close;
   FileMenuExitItem.Caption := slhelp_EXit;
   ViewMenuItem.Caption := slhelp_View;
   ViewMenuContents.Caption := slhelp_ShowContents;
+  ViewShowStatus.Caption := slhelp_OpenNewTabWithStatusBar;
+  ViewShowSepTabs.Caption := slhelp_OpenNewFileInSeparateTab;
   HelpMenuItem.Caption := slhelp_Help;
   AboutItem.Caption := slhelp_About2;
 
