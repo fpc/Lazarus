@@ -342,7 +342,7 @@ begin
     begin
       TCI.Mask := TCIF_TEXT or TCIF_PARAM or TCIF_IMAGE;
       // store object as extra, so we can verify we got the right page later
-      TCI.lParam := PtrUInt(AChild);
+      TCI.lParam := PtrInt(AChild);
       TCI.iImage := ATabControl.GetImageIndex(ATabControl.TabToPageIndex(AIndex));
   {$ifdef WindowsUnicodeSupport}
       if UnicodeEnabledOS then
