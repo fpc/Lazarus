@@ -127,8 +127,8 @@ type
 
 type
   TFPCMsgFileToEncoding = record
-    Filename: PChar;
-    Encoding: PChar;
+    Filename: String;
+    Encoding: String;
   end;
 const
   FPCMsgFileToEncoding: array[1..20] of TFPCMsgFileToEncoding = (
@@ -269,7 +269,7 @@ function GetDefaultFPCErrorMsgFileEncoding(Filename: string): string;
 var
   i: Integer;
 begin
-  Filename:=ExtractFileNameOnly(Filename);
+  Filename:=ExtractFileName(Filename);
   for i:=low(FPCMsgFileToEncoding) to high(FPCMsgFileToEncoding) do
     if FPCMsgFileToEncoding[i].Filename=Filename then
       exit(FPCMsgFileToEncoding[i].Encoding);
