@@ -4339,6 +4339,7 @@ doceditor/images/underline_blue24.bmp -text
 doceditor/languages/lazde.cs.po svneol=native#text/plain
 doceditor/languages/lazde.de.po svneol=native#text/plain
 doceditor/languages/lazde.es.po svneol=native#text/plain
+doceditor/languages/lazde.fr.po svneol=native#text/plain
 doceditor/languages/lazde.hu.po svneol=native#text/plain
 doceditor/languages/lazde.it.po svneol=native#text/plain
 doceditor/languages/lazde.lt.po svneol=native#text/plain
@@ -8513,6 +8514,7 @@ tools/jsonviewer/jsonviewer.res -text
 tools/jsonviewer/languages/jsonviewer.cs.po svneol=native#text/plain
 tools/jsonviewer/languages/jsonviewer.de.po svneol=native#text/plain
 tools/jsonviewer/languages/jsonviewer.es.po svneol=native#text/plain
+tools/jsonviewer/languages/jsonviewer.fr.po svneol=native#text/plain
 tools/jsonviewer/languages/jsonviewer.hu.po svneol=native#text/plain
 tools/jsonviewer/languages/jsonviewer.it.po svneol=native#text/plain
 tools/jsonviewer/languages/jsonviewer.lt.po svneol=native#text/plain

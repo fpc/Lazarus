@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: lazaruside\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2015-04-29 08:27+0100\n"
+"PO-Revision-Date: 2015-05-02 11:10+0100\n"
 "Last-Translator: Yann Mérignac <yann.merignac@laposte.net>\n"
 "Language-Team: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
 "Language: fr_FR\n"
@@ -2762,7 +2762,7 @@ msgstr "Créer un ensemble application"
 
 #: lazarusidestrconsts.dlgpodefaulticon
 msgid "Load &Default"
-msgstr "Charger par &Défaut"
+msgstr "Icône par &défaut"
 
 #: lazarusidestrconsts.dlgpodpiaware
 msgid "Enabled DPI Awareness (for Vista+)"
@@ -2799,7 +2799,7 @@ msgstr "(aucun)"
 
 #: lazarusidestrconsts.dlgpoloadicon
 msgid "&Load Icon"
-msgstr "&Charger l'icône"
+msgstr "&Charger une icône"
 
 #: lazarusidestrconsts.dlgpomisc
 msgctxt "lazarusidestrconsts.dlgpomisc"
@@ -3600,7 +3600,7 @@ msgstr "Nom d'unité équivoque"
 
 #: lazarusidestrconsts.lisa2pancestortype
 msgid "Ancestor Type"
-msgstr "Type d'ancêtre"
+msgstr "Type d'ancêtre :"
 
 #: lazarusidestrconsts.lisa2papascalunitmusthavetheextensionpporpas
 msgctxt "lazarusidestrconsts.lisa2papascalunitmusthavetheextensionpporpas"
@@ -3613,11 +3613,11 @@ msgstr "Dépendances brisées"
 
 #: lazarusidestrconsts.lisa2pclassnamealreadyexists
 msgid "Class Name already exists"
-msgstr "Nom de classe déjà existant"
+msgstr "Le nom de classe existe déjà"
 
 #: lazarusidestrconsts.lisa2pcreatenewcomp
 msgid "Create New Component"
-msgstr "Créer un nouveau composant"
+msgstr "Créer le nouveau composant"
 
 #: lazarusidestrconsts.lisa2pcreatenewfile
 msgid "Create New File"
@@ -4514,7 +4514,7 @@ msgstr "&Remplacer"
 #: lazarusidestrconsts.lisbuild
 msgctxt "lazarusidestrconsts.lisbuild"
 msgid "Build"
-msgstr "Création"
+msgstr "Créer"
 
 #: lazarusidestrconsts.lisbuildallfilesofprojectpackageide
 msgid "build all files of project/package/IDE"
@@ -11375,7 +11375,7 @@ msgstr "É&valuer/Modifier..."
 
 #: lazarusidestrconsts.lismenuexampleprojects
 msgid "Example Projects ..."
-msgstr "Exemple de projets..."
+msgstr "Exemples de projets..."
 
 #: lazarusidestrconsts.lismenuextractproc
 msgid "Extract Procedure ..."
@@ -14385,7 +14385,7 @@ msgstr "Sauver dans un fichier \".lps\" du dossier projet"
 
 #: lazarusidestrconsts.lisposavesessioninformationin
 msgid "Save session information in"
-msgstr "Sauver les informations de session dans"
+msgstr "Emplacements pour la sauvegarde des informations de session"
 
 #: lazarusidestrconsts.lisposavesessioninformationinhint
 msgid ".lpi is the project main info file, .lps is a separate file for session data only."
@@ -15899,7 +15899,7 @@ msgstr "Voulez-vous arrêter le débogage ?"
 
 #: lazarusidestrconsts.lisstorepathdelimitersandas
 msgid "Store path delimiters \\ and / as"
-msgstr "Enregistrer les délimiteurs de chemin \\ et / sous"
+msgstr "Enregistrement des délimiteurs de chemin \\ et /"
 
 #: lazarusidestrconsts.lisstrangelpifile
 msgid "Strange lpi file"
@@ -17694,7 +17694,7 @@ msgstr "Point d'arrêt de &Donnée/Suivi..."
 
 #: lazarusidestrconsts.liswatchpointbreakpoint
 msgid "&Data/watch Breakpoint ..."
-msgstr "Point d'arrêt de &Donnée/suivi..."
+msgstr "Point d'arrêt de &Donnée/Suivi..."
 
 #: lazarusidestrconsts.liswatchpropert
 msgid "Watch Properties"
@@ -18195,7 +18195,7 @@ msgstr "Répertoire de sortie \"PO\" :"
 
 #: lazarusidestrconsts.rsresource
 msgid "Resource"
-msgstr "Ressource"
+msgstr "Ressource "
 
 #: lazarusidestrconsts.rsresourceclear
 msgid "Delete all resources?"
@@ -18208,7 +18208,7 @@ msgstr "Nom de fichier"
 #: lazarusidestrconsts.rsresourcetype
 msgctxt "lazarusidestrconsts.rsresourcetype"
 msgid "Type"
-msgstr "Type"
+msgstr "Type "
 
 #: lazarusidestrconsts.rsrevision
 msgid "&Revision:"
