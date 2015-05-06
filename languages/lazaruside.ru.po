@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2015-04-25 20:35+0300\n"
+"PO-Revision-Date: 2015-05-07 00:34+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -4278,6 +4278,14 @@ msgstr "Спрашивать имя при создании"
 #: lazarusidestrconsts.lisausefulsettingonwindowssystemsislazarusdirmingwbin
 msgid "A useful setting on Windows systems is: $(LazarusDir)\\mingw\\bin\\$(TargetCPU)-$(TargetOS)\\gdb.exe"
 msgstr "Типичное значение для ОС Windows: $(LazarusDir)\\mingw\\bin\\$(TargetCPU)-$(TargetOS)\\gdb.exe"
+
+#: lazarusidestrconsts.lisautoadjustideheight
+msgid "Automatically adjust IDE main window height"
+msgstr "Выставлять высоту главного окна IDE автоматически"
+
+#: lazarusidestrconsts.lisautoadjustideheighthint
+msgid "Applicable only when not maximized and for undocked IDE."
+msgstr "Применимо только если окно не развёрнуто и IDE не находится в режиме стыковки."
 
 #: lazarusidestrconsts.lisautocompletionoff
 msgid "Auto completion: off"

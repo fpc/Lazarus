@@ -4315,6 +4315,14 @@ msgstr "Zeptat se na jméno při vytvoření"
 msgid "A useful setting on Windows systems is: $(LazarusDir)\\mingw\\bin\\$(TargetCPU)-$(TargetOS)\\gdb.exe"
 msgstr "Užitečné nastavení na systémech Windows je: $(LazarusDir)\\mingw\\bin\\$(TargetCPU)-$(TargetOS)\\gdb.exe"
 
+#: lazarusidestrconsts.lisautoadjustideheight
+msgid "Automatically adjust IDE main window height"
+msgstr ""
+
+#: lazarusidestrconsts.lisautoadjustideheighthint
+msgid "Applicable only when not maximized and for undocked IDE."
+msgstr ""
+
 #: lazarusidestrconsts.lisautocompletionoff
 msgid "Auto completion: off"
 msgstr "Automatické dokončení: vypnuto"
