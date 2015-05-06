@@ -12,7 +12,7 @@ unit LR_e_img;
 interface
 
 uses
-  Classes, SysUtils, LR_Class, Graphics;
+  Classes, SysUtils, LR_Class, Graphics, LazUtf8Classes;
 
 type
   TfrImageExport = class(TComponent)
@@ -47,7 +47,7 @@ implementation
 constructor TfrImageExportFilter.Create(AStream: TStream);
 begin
   inherited Create(AStream);
-  FFileName := TFileStream(AStream).FileName;
+  FFileName := TFileStreamUtf8(AStream).FileName;
   FFileExt := LowerCase(ExtractFileExt(FFileName));
   FFileName := ChangeFileExt(FFileName, '');
   FZoom := 1;
