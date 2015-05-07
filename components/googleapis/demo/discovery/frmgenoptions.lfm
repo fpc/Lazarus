@@ -1,0 +1,125 @@
+object GenCodeFormOptions: TGenCodeFormOptions
+  Left = 644
+  Height = 205
+  Top = 319
+  Width = 374
+  Caption = 'Generate pascal code'
+  ClientHeight = 205
+  ClientWidth = 374
+  Position = poMainFormCenter
+  LCLVersion = '1.5'
+  object EBaseClass: TEdit
+    Left = 160
+    Height = 18
+    Top = 64
+    Width = 200
+    TabOrder = 0
+  end
+  object EExtraUnits: TEdit
+    Left = 160
+    Height = 18
+    Top = 88
+    Width = 200
+    TabOrder = 1
+  end
+  object EPrefix: TEdit
+    Left = 160
+    Height = 18
+    Top = 112
+    Width = 80
+    TabOrder = 2
+  end
+  object Label1: TLabel
+    Left = 62
+    Height = 12
+    Top = 64
+    Width = 87
+    Alignment = taRightJustify
+    Caption = 'Parent Class name'
+    ParentColor = False
+  end
+  object Label2: TLabel
+    Left = 27
+    Height = 12
+    Top = 88
+    Width = 122
+    Alignment = taRightJustify
+    Caption = 'Extra units for uses clause'
+    ParentColor = False
+  end
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 33
+    Top = 166
+    Width = 362
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
+    TabOrder = 3
+    ShowButtons = [pbOK, pbCancel]
+  end
+  object Label3: TLabel
+    Left = 48
+    Height = 12
+    Top = 112
+    Width = 101
+    Alignment = taRightJustify
+    Caption = 'Prefix for class names'
+    ParentColor = False
+  end
+  object EUnitName: TEdit
+    Left = 160
+    Height = 18
+    Top = 11
+    Width = 104
+    OnEditingDone = EUnitNameEditingDone
+    TabOrder = 4
+  end
+  object Label4: TLabel
+    Left = 99
+    Height = 12
+    Top = 11
+    Width = 50
+    Alignment = taRightJustify
+    Caption = 'Unit name'
+    ParentColor = False
+  end
+  object EFileName: TFileNameEdit
+    Left = 160
+    Height = 20
+    Top = 37
+    Width = 200
+    DialogKind = dkSave
+    DialogOptions = [ofPathMustExist, ofEnableSizing, ofViewDetail]
+    Filter = 'All pascal files|*.pp;*.pas|Delphi files|*.pas|FPC files|*.pp|All files|*.*'
+    FilterIndex = 0
+    DefaultExt = '.pp'
+    HideDirectories = False
+    ButtonWidth = 23
+    NumGlyphs = 1
+    MaxLength = 0
+    TabOrder = 5
+  end
+  object LFileName: TLabel
+    Left = 99
+    Height = 12
+    Top = 40
+    Width = 51
+    Alignment = taRightJustify
+    Caption = 'Save in file'
+    ParentColor = False
+  end
+  object CBView: TCheckBox
+    Left = 160
+    Height = 26
+    Top = 136
+    Width = 131
+    Caption = 'View generated code'
+    TabOrder = 6
+  end
+end
