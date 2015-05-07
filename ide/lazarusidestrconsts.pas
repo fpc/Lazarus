@@ -2523,7 +2523,7 @@ resourcestring
   dlgSROrigin = 'Origin';
   dlgFromCursor = '&From cursor';
   dlgFromBeginning = 'From b&eginning';
-  dlgScope = 'Scope';
+  dlgSearchScope = 'Search scope';
   dlgProject = 'Project';
   lisProjectSession = 'Project Session';
   lisWithRequiredPackages = 'With required packages';
@@ -3335,9 +3335,9 @@ resourcestring
     +'search (e.g. /path/*.pas;/path2/*.pp)';
   lisFRIFindReferences = 'Find References';
   lisFRIInvalidIdentifier = 'Invalid Identifier';
-  lisFRIRenameTo = 'Rename to';
+  lisFRIRenaming = 'Renaming';
   lisFRISearchInCommentsToo = 'Search in comments too';
-  lisFRISearchWhere = 'Search where';
+  lisFRISearch = 'Search';
   lisCodeToolsOptsColon       = 'Colon';
   lisCodeToolsOptsSemicolon   = 'Semicolon';
   lisCodeToolsOptsComma       = 'Comma';

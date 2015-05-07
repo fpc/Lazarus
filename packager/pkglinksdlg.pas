@@ -88,7 +88,6 @@ type
     procedure FilterEditExit(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
-    procedure GridPopupMenuPopup(Sender: TObject);
     procedure LPKFileValidCheckBoxChange(Sender: TObject);
     procedure LPKFileInvalidCheckBoxChange(Sender: TObject);
     procedure LPKParsingTimerTimer(Sender: TObject);
@@ -141,7 +140,7 @@ end;
 procedure TPackageLinksDialog.FormCreate(Sender: TObject);
 begin
   Caption:=lisPLDPackageLinks;
-  ScopeGroupBox.Caption:=dlgScope;
+  ScopeGroupBox.Caption:=dlgSearchScope;
   CopyCellToClipboardMenuItem.Caption:=srkmecCopy;
   DeleteSelectedButton.Caption:=lrsPLDDeleteSelected;
   UpdateGlobalLinksButton.Caption:=lrsRescanLplFiles;
@@ -212,11 +211,6 @@ begin
   LPKInfoCache.EndLPKReader;
   LPKInfoCache.RemoveOnQueueEmpty(@OnAllLPKParsed);
   ClearLinks;
-end;
-
-procedure TPackageLinksDialog.GridPopupMenuPopup(Sender: TObject);
-begin
-
 end;
 
 procedure TPackageLinksDialog.LPKFileValidCheckBoxChange(Sender: TObject);

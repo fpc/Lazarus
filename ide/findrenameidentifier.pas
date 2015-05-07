@@ -521,12 +521,12 @@ begin
   ButtonPanel1.OKButton.Caption:=lisFRIFindReferences;
   ButtonPanel1.OKButton.ModalResult:=mrNone;
   ButtonPanel1.CancelButton.Caption:=lisCancel;
-  NewGroupBox.Caption:=lisFRIRenameTo;
+  NewGroupBox.Caption:=lisFRIRenaming;
   RenameCheckBox.Caption:=lisRename;
   ShowResultCheckBox.Caption:=lisRenameShowResult;
   ScopeCommentsCheckBox.Caption:=lisFRISearchInCommentsToo;
-  ScopeGroupBox.Caption:=lisFRISearchWhere;
-  ScopeRadioGroup.Caption:=dlgScope;
+  ScopeGroupBox.Caption:=lisFRISearch;
+  ScopeRadioGroup.Caption:=dlgSearchScope;
   ScopeRadioGroup.Items[0]:=lisFRIinCurrentUnit;
   ScopeRadioGroup.Items[1]:=lisFRIinMainProject;
   ScopeRadioGroup.Items[2]:=lisFRIinProjectPackageOwningCurrentUnit;
