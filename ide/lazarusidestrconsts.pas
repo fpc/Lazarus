@@ -269,8 +269,8 @@ resourcestring
   lisDiscardChangesAll = 'Discard all changes';
   lisDoNotCloseTheProject = 'Do not close the project';
   lisConvert = 'Convert';
-  lisPLDShowGlobalLinks = 'Show global links';
-  lisPLDShowUserLinks = 'Show user links';
+  lisPLDShowGlobalLinksIn = 'Show global links in ';
+  lisPLDShowUserLinksIn = 'Show user links in ';
   lrsPLDLpkFileValid = 'lpk file valid (%s)';
   lrsPLDLpkFileInvalid = 'lpk file invalid (%s)';
   lisPLDGlobal = 'Global';
@@ -4700,6 +4700,7 @@ resourcestring
   lisA2PCreateNewComp = 'Create New Component';
   lisA2PCreateNewReq = 'Create New Requirement';
   lisA2PFilename2 = 'Filename';
+  lisLastOpened = 'Last opened';
   lisFRIFindOrRenameIdentifier = 'Find or Rename Identifier';
   lisHelpSelectorDialog = 'Help selector';
   lisSelectAHelpItem = 'Select a help item:';

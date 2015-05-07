@@ -365,7 +365,7 @@ begin
   PkgStringGrid.Columns[3].Title.Caption:=lisGroup;
   PkgStringGrid.Columns[4].Title.Caption:=lisOIPState;
   PkgStringGrid.Columns[5].Title.Caption:=lisA2PFilename2;
-  PkgStringGrid.Columns[6].Title.Caption:='Last opened';
+  PkgStringGrid.Columns[6].Title.Caption:=lisLastOpened;
 
   i:=1;
   Node:=FLinks.FindLowest;
@@ -402,11 +402,11 @@ end;
 
 procedure TPackageLinksDialog.UpdateFacets;
 begin
-  ShowGlobalLinksCheckBox.Caption:=lisPLDShowGlobalLinks
-     +' in '+PkgLinks.GetGlobalLinkDirectory+'*.lpl'
+  ShowGlobalLinksCheckBox.Caption:=lisPLDShowGlobalLinksIn
+     +PkgLinks.GetGlobalLinkDirectory+'*.lpl'
      +' ('+IntToStr(CountGlobalLinks)+')';
-  ShowUserLinksCheckBox.Caption:=lisPLDShowUserLinks
-     +' in '+PkgLinks.GetUserLinkFile
+  ShowUserLinksCheckBox.Caption:=lisPLDShowUserLinksIn
+     +PkgLinks.GetUserLinkFile
      +' ('+IntToStr(CountUserLinks)+')';
   LPKFileValidCheckBox.Caption:=Format(lrsPLDLpkFileValid, [IntToStr(
     CountLPKValid)]);
