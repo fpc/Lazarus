@@ -3042,10 +3042,6 @@ msgstr "Įrašyti rengyklės informaciją tik apie projekto failus"
 msgid "Only files that belong to this project."
 msgstr ""
 
-#: lazarusidestrconsts.dlgscope
-msgid "Scope"
-msgstr "Sritis"
-
 #: lazarusidestrconsts.dlgscrollbyoneless
 msgid "Scroll by one less"
 msgstr "Slenkant per lapą slinkti viena eilute mažiau"
@@ -3082,6 +3078,10 @@ msgstr "Ieškoma…"
 #: lazarusidestrconsts.dlgsearchpaths
 msgid "Paths"
 msgstr "Keliai"
+
+#: lazarusidestrconsts.dlgsearchscope
+msgid "Search scope"
+msgstr ""
 
 #: lazarusidestrconsts.dlgselectallchildcontrols
 msgid "Select all child controls together with their parent."
@@ -9222,6 +9222,10 @@ msgstr "Ieškoti trūkstamo modulio"
 msgid "First"
 msgstr "Pirmasis"
 
+#: lazarusidestrconsts.lisfirsttest
+msgid "&First test"
+msgstr ""
+
 #: lazarusidestrconsts.lisfixlfmfile
 msgid "Fix LFM file"
 msgstr "LFM failo taisa"
@@ -9401,17 +9405,17 @@ msgstr "Klaidingas identifikatorius"
 msgid "Rename all References"
 msgstr "Pervadinti visas rodykles"
 
-#: lazarusidestrconsts.lisfrirenameto
-msgid "Rename to"
-msgstr "Pervadinti į"
+#: lazarusidestrconsts.lisfrirenaming
+msgid "Renaming"
+msgstr ""
+
+#: lazarusidestrconsts.lisfrisearch
+msgid "Search"
+msgstr ""
 
 #: lazarusidestrconsts.lisfrisearchincommentstoo
 msgid "Search in comments too"
 msgstr "Taip pat ir komentaruose"
-
-#: lazarusidestrconsts.lisfrisearchwhere
-msgid "Search where"
-msgstr "Kur ieškoti"
 
 #: lazarusidestrconsts.lisfull
 msgid "Full"
@@ -10811,6 +10815,10 @@ msgstr "Rodyti projekto pirminį kodą"
 #: lazarusidestrconsts.liskmviewunitinfo
 msgid "View Unit Info"
 msgstr "Rodyti informaciją apie modulį"
+
+#: lazarusidestrconsts.lislastopened
+msgid "Last opened"
+msgstr ""
 
 #: lazarusidestrconsts.lislaunchingapplicationinvalid
 msgid "Launching application invalid"
@@ -14660,13 +14668,13 @@ msgstr "Globalus"
 msgid "Package Links"
 msgstr "Paketo saitai"
 
-#: lazarusidestrconsts.lispldshowgloballinks
-msgid "Show global links"
-msgstr "Rodyti globalius saitus"
+#: lazarusidestrconsts.lispldshowgloballinksin
+msgid "Show global links in "
+msgstr ""
 
-#: lazarusidestrconsts.lispldshowuserlinks
-msgid "Show user links"
-msgstr "Rodyti vartotojo saitus"
+#: lazarusidestrconsts.lispldshowuserlinksin
+msgid "Show user links in "
+msgstr ""
 
 #: lazarusidestrconsts.lisplduser
 msgid "User"
@@ -15846,6 +15854,10 @@ msgstr "Antrinis aplankas nustatymų failams, kuriame Lazarus ieškos nustatymų
 #: lazarusidestrconsts.lissecondaryconfigpath
 msgid "Secondary config path"
 msgstr "Antrasis sąrankos kelias"
+
+#: lazarusidestrconsts.lissecondtest
+msgid "&Second test"
+msgstr ""
 
 #: lazarusidestrconsts.lisseemessages
 msgid "See messages."

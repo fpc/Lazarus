@@ -3093,10 +3093,6 @@ msgstr "Sla alleen bewerker informatie op voor project bestanden"
 msgid "Only files that belong to this project."
 msgstr ""
 
-#: lazarusidestrconsts.dlgscope
-msgid "Scope"
-msgstr "Scope"
-
 #: lazarusidestrconsts.dlgscrollbyoneless
 msgid "Scroll by one less"
 msgstr "Scroll met een minder"
@@ -3137,6 +3133,10 @@ msgstr "Bezig met zoeken ..."
 #: lazarusidestrconsts.dlgsearchpaths
 msgid "Paths"
 msgstr "Paden:"
+
+#: lazarusidestrconsts.dlgsearchscope
+msgid "Search scope"
+msgstr ""
 
 #: lazarusidestrconsts.dlgselectallchildcontrols
 msgid "Select all child controls together with their parent."
@@ -9275,6 +9275,10 @@ msgstr ""
 msgid "First"
 msgstr ""
 
+#: lazarusidestrconsts.lisfirsttest
+msgid "&First test"
+msgstr ""
+
 #: lazarusidestrconsts.lisfixlfmfile
 msgid "Fix LFM file"
 msgstr "Repareer .lfm-bestand"
@@ -9454,17 +9458,17 @@ msgstr "Ongeldige Identifier"
 msgid "Rename all References"
 msgstr "Hernoem alle referenties"
 
-#: lazarusidestrconsts.lisfrirenameto
-msgid "Rename to"
-msgstr "Hernoem naar"
+#: lazarusidestrconsts.lisfrirenaming
+msgid "Renaming"
+msgstr ""
+
+#: lazarusidestrconsts.lisfrisearch
+msgid "Search"
+msgstr ""
 
 #: lazarusidestrconsts.lisfrisearchincommentstoo
 msgid "Search in comments too"
 msgstr "Zoek ook in commentaar"
-
-#: lazarusidestrconsts.lisfrisearchwhere
-msgid "Search where"
-msgstr "Zoek waar"
 
 #: lazarusidestrconsts.lisfull
 msgid "Full"
@@ -10858,6 +10862,10 @@ msgstr ""
 
 #: lazarusidestrconsts.liskmviewunitinfo
 msgid "View Unit Info"
+msgstr ""
+
+#: lazarusidestrconsts.lislastopened
+msgid "Last opened"
 msgstr ""
 
 #: lazarusidestrconsts.lislaunchingapplicationinvalid
@@ -14918,12 +14926,12 @@ msgstr ""
 msgid "Package Links"
 msgstr ""
 
-#: lazarusidestrconsts.lispldshowgloballinks
-msgid "Show global links"
+#: lazarusidestrconsts.lispldshowgloballinksin
+msgid "Show global links in "
 msgstr ""
 
-#: lazarusidestrconsts.lispldshowuserlinks
-msgid "Show user links"
+#: lazarusidestrconsts.lispldshowuserlinksin
+msgid "Show user links in "
 msgstr ""
 
 #: lazarusidestrconsts.lisplduser
@@ -16113,6 +16121,10 @@ msgstr "tweede configuratie directory, waar Lazarus zoekt voor configuratie temp
 
 #: lazarusidestrconsts.lissecondaryconfigpath
 msgid "Secondary config path"
+msgstr ""
+
+#: lazarusidestrconsts.lissecondtest
+msgid "&Second test"
 msgstr ""
 
 #: lazarusidestrconsts.lisseemessages

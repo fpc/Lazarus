@@ -2993,10 +2993,6 @@ msgstr ""
 msgid "Only files that belong to this project."
 msgstr ""
 
-#: lazarusidestrconsts.dlgscope
-msgid "Scope"
-msgstr ""
-
 #: lazarusidestrconsts.dlgscrollbyoneless
 msgid "Scroll by one less"
 msgstr ""
@@ -3032,6 +3028,10 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgsearchpaths
 msgid "Paths"
+msgstr ""
+
+#: lazarusidestrconsts.dlgsearchscope
+msgid "Search scope"
 msgstr ""
 
 #: lazarusidestrconsts.dlgselectallchildcontrols
@@ -8988,6 +8988,10 @@ msgstr ""
 msgid "First"
 msgstr "Eerste"
 
+#: lazarusidestrconsts.lisfirsttest
+msgid "&First test"
+msgstr ""
+
 #: lazarusidestrconsts.lisfixlfmfile
 msgid "Fix LFM file"
 msgstr ""
@@ -9165,16 +9169,16 @@ msgstr ""
 msgid "Rename all References"
 msgstr ""
 
-#: lazarusidestrconsts.lisfrirenameto
-msgid "Rename to"
+#: lazarusidestrconsts.lisfrirenaming
+msgid "Renaming"
+msgstr ""
+
+#: lazarusidestrconsts.lisfrisearch
+msgid "Search"
 msgstr ""
 
 #: lazarusidestrconsts.lisfrisearchincommentstoo
 msgid "Search in comments too"
-msgstr ""
-
-#: lazarusidestrconsts.lisfrisearchwhere
-msgid "Search where"
 msgstr ""
 
 #: lazarusidestrconsts.lisfull
@@ -10554,6 +10558,10 @@ msgstr ""
 
 #: lazarusidestrconsts.liskmviewunitinfo
 msgid "View Unit Info"
+msgstr ""
+
+#: lazarusidestrconsts.lislastopened
+msgid "Last opened"
 msgstr ""
 
 #: lazarusidestrconsts.lislaunchingapplicationinvalid
@@ -14344,12 +14352,12 @@ msgstr ""
 msgid "Package Links"
 msgstr ""
 
-#: lazarusidestrconsts.lispldshowgloballinks
-msgid "Show global links"
+#: lazarusidestrconsts.lispldshowgloballinksin
+msgid "Show global links in "
 msgstr ""
 
-#: lazarusidestrconsts.lispldshowuserlinks
-msgid "Show user links"
+#: lazarusidestrconsts.lispldshowuserlinksin
+msgid "Show user links in "
 msgstr ""
 
 #: lazarusidestrconsts.lisplduser
@@ -15505,6 +15513,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lissecondaryconfigpath
 msgid "Secondary config path"
+msgstr ""
+
+#: lazarusidestrconsts.lissecondtest
+msgid "&Second test"
 msgstr ""
 
 #: lazarusidestrconsts.lisseemessages

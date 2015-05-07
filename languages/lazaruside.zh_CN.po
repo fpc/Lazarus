@@ -3137,10 +3137,6 @@ msgstr "只为工程文件保存代码编辑器信息"
 msgid "Only files that belong to this project."
 msgstr ""
 
-#: lazarusidestrconsts.dlgscope
-msgid "Scope"
-msgstr "范围"
-
 #: lazarusidestrconsts.dlgscrollbyoneless
 msgid "Scroll by one less"
 msgstr "滚动量减少"
@@ -3183,6 +3179,10 @@ msgstr "查找..."
 #: lazarusidestrconsts.dlgsearchpaths
 msgid "Paths"
 msgstr "路径"
+
+#: lazarusidestrconsts.dlgsearchscope
+msgid "Search scope"
+msgstr ""
 
 #: lazarusidestrconsts.dlgselectallchildcontrols
 msgid "Select all child controls together with their parent."
@@ -9397,6 +9397,10 @@ msgstr ""
 msgid "First"
 msgstr ""
 
+#: lazarusidestrconsts.lisfirsttest
+msgid "&First test"
+msgstr ""
+
 #: lazarusidestrconsts.lisfixlfmfile
 msgid "Fix LFM file"
 msgstr "修复 LFM 文件"
@@ -9577,17 +9581,17 @@ msgstr "无效的标识符"
 msgid "Rename all References"
 msgstr "重命名所有涉及到的"
 
-#: lazarusidestrconsts.lisfrirenameto
-msgid "Rename to"
-msgstr "重命名为"
+#: lazarusidestrconsts.lisfrirenaming
+msgid "Renaming"
+msgstr ""
+
+#: lazarusidestrconsts.lisfrisearch
+msgid "Search"
+msgstr ""
 
 #: lazarusidestrconsts.lisfrisearchincommentstoo
 msgid "Search in comments too"
 msgstr "同时在注释中查找"
-
-#: lazarusidestrconsts.lisfrisearchwhere
-msgid "Search where"
-msgstr "查找范围"
 
 #: lazarusidestrconsts.lisfull
 msgid "Full"
@@ -11022,6 +11026,10 @@ msgstr "查看工程源文件"
 #: lazarusidestrconsts.liskmviewunitinfo
 msgid "View Unit Info"
 msgstr "查看单元信息"
+
+#: lazarusidestrconsts.lislastopened
+msgid "Last opened"
+msgstr ""
 
 #: lazarusidestrconsts.lislaunchingapplicationinvalid
 msgid "Launching application invalid"
@@ -15118,13 +15126,13 @@ msgstr "全局"
 msgid "Package Links"
 msgstr "包链接"
 
-#: lazarusidestrconsts.lispldshowgloballinks
-msgid "Show global links"
-msgstr "显示全局链接"
+#: lazarusidestrconsts.lispldshowgloballinksin
+msgid "Show global links in "
+msgstr ""
 
-#: lazarusidestrconsts.lispldshowuserlinks
-msgid "Show user links"
-msgstr "显示用户链接"
+#: lazarusidestrconsts.lispldshowuserlinksin
+msgid "Show user links in "
+msgstr ""
 
 #: lazarusidestrconsts.lisplduser
 msgid "User"
@@ -16327,6 +16335,10 @@ msgstr "副配置文件目录,Lazarus 搜索的配置模板目录.默认"
 
 #: lazarusidestrconsts.lissecondaryconfigpath
 msgid "Secondary config path"
+msgstr ""
+
+#: lazarusidestrconsts.lissecondtest
+msgid "&Second test"
 msgstr ""
 
 #: lazarusidestrconsts.lisseemessages

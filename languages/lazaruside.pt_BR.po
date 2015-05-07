@@ -3021,10 +3021,6 @@ msgstr "Salvar informações do editor somente para arquivos de projeto"
 msgid "Only files that belong to this project."
 msgstr ""
 
-#: lazarusidestrconsts.dlgscope
-msgid "Scope"
-msgstr "Escopo"
-
 #: lazarusidestrconsts.dlgscrollbyoneless
 msgid "Scroll by one less"
 msgstr "Rolar por um à menos"
@@ -3061,6 +3057,10 @@ msgstr "Procurando ..."
 #: lazarusidestrconsts.dlgsearchpaths
 msgid "Paths"
 msgstr "Caminhos"
+
+#: lazarusidestrconsts.dlgsearchscope
+msgid "Search scope"
+msgstr ""
 
 #: lazarusidestrconsts.dlgselectallchildcontrols
 msgid "Select all child controls together with their parent."
@@ -9180,6 +9180,10 @@ msgstr "Localizar unidade faltante"
 msgid "First"
 msgstr "Primeiro"
 
+#: lazarusidestrconsts.lisfirsttest
+msgid "&First test"
+msgstr ""
+
 #: lazarusidestrconsts.lisfixlfmfile
 msgid "Fix LFM file"
 msgstr "Corrigir arquivo LFM"
@@ -9359,17 +9363,17 @@ msgstr "Identificador Inválido"
 msgid "Rename all References"
 msgstr "Renomear todas as Referências"
 
-#: lazarusidestrconsts.lisfrirenameto
-msgid "Rename to"
-msgstr "Renomear para"
+#: lazarusidestrconsts.lisfrirenaming
+msgid "Renaming"
+msgstr ""
+
+#: lazarusidestrconsts.lisfrisearch
+msgid "Search"
+msgstr ""
 
 #: lazarusidestrconsts.lisfrisearchincommentstoo
 msgid "Search in comments too"
 msgstr "Localizar também nos comentários"
-
-#: lazarusidestrconsts.lisfrisearchwhere
-msgid "Search where"
-msgstr "Localizar onde"
 
 #: lazarusidestrconsts.lisfull
 msgid "Full"
@@ -10763,6 +10767,10 @@ msgstr "Exibir fonte do projeto"
 #: lazarusidestrconsts.liskmviewunitinfo
 msgid "View Unit Info"
 msgstr "Exibir informações da unidade"
+
+#: lazarusidestrconsts.lislastopened
+msgid "Last opened"
+msgstr ""
 
 #: lazarusidestrconsts.lislaunchingapplicationinvalid
 msgid "Launching application invalid"
@@ -14598,13 +14606,13 @@ msgstr "Global"
 msgid "Package Links"
 msgstr "Vínculos Pacote"
 
-#: lazarusidestrconsts.lispldshowgloballinks
-msgid "Show global links"
-msgstr "Exibir vínculos globais"
+#: lazarusidestrconsts.lispldshowgloballinksin
+msgid "Show global links in "
+msgstr ""
 
-#: lazarusidestrconsts.lispldshowuserlinks
-msgid "Show user links"
-msgstr "Exibir vínculos usuário"
+#: lazarusidestrconsts.lispldshowuserlinksin
+msgid "Show user links in "
+msgstr ""
 
 #: lazarusidestrconsts.lisplduser
 msgid "User"
@@ -15770,6 +15778,10 @@ msgstr "diretório de configuração secundário, onde Lazarus procura por arqui
 #: lazarusidestrconsts.lissecondaryconfigpath
 msgid "Secondary config path"
 msgstr "Caminho secundário configuração"
+
+#: lazarusidestrconsts.lissecondtest
+msgid "&Second test"
+msgstr ""
 
 #: lazarusidestrconsts.lisseemessages
 msgid "See messages."

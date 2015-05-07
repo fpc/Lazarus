@@ -3040,10 +3040,6 @@ msgstr "Зберігати відомості тільки про файли п�
 msgid "Only files that belong to this project."
 msgstr ""
 
-#: lazarusidestrconsts.dlgscope
-msgid "Scope"
-msgstr "Контекст"
-
 #: lazarusidestrconsts.dlgscrollbyoneless
 msgid "Scroll by one less"
 msgstr "Прокрутити на один вниз"
@@ -3080,6 +3076,10 @@ msgstr "Пошук ..."
 #: lazarusidestrconsts.dlgsearchpaths
 msgid "Paths"
 msgstr "Шляхи"
+
+#: lazarusidestrconsts.dlgsearchscope
+msgid "Search scope"
+msgstr ""
 
 #: lazarusidestrconsts.dlgselectallchildcontrols
 msgid "Select all child controls together with their parent."
@@ -9216,6 +9216,10 @@ msgstr "Знайти втрачений модуль"
 msgid "First"
 msgstr "Перший"
 
+#: lazarusidestrconsts.lisfirsttest
+msgid "&First test"
+msgstr ""
+
 #: lazarusidestrconsts.lisfixlfmfile
 msgid "Fix LFM file"
 msgstr "Виправити файл LFM"
@@ -9395,17 +9399,17 @@ msgstr "Некоректний ідентифікатор"
 msgid "Rename all References"
 msgstr "Перейменувати всі посилання"
 
-#: lazarusidestrconsts.lisfrirenameto
-msgid "Rename to"
-msgstr "Перейменувати в"
+#: lazarusidestrconsts.lisfrirenaming
+msgid "Renaming"
+msgstr ""
+
+#: lazarusidestrconsts.lisfrisearch
+msgid "Search"
+msgstr ""
 
 #: lazarusidestrconsts.lisfrisearchincommentstoo
 msgid "Search in comments too"
 msgstr "Шукати також і в коментарях"
-
-#: lazarusidestrconsts.lisfrisearchwhere
-msgid "Search where"
-msgstr "Шукати де"
 
 #: lazarusidestrconsts.lisfull
 msgid "Full"
@@ -10803,6 +10807,10 @@ msgstr "Переглядання тексту проекту"
 #: lazarusidestrconsts.liskmviewunitinfo
 msgid "View Unit Info"
 msgstr "Переглянути Інформацію про Модулі"
+
+#: lazarusidestrconsts.lislastopened
+msgid "Last opened"
+msgstr ""
 
 #: lazarusidestrconsts.lislaunchingapplicationinvalid
 msgid "Launching application invalid"
@@ -14647,13 +14655,13 @@ msgstr "Глобальна"
 msgid "Package Links"
 msgstr "Зв'язки Пакунку"
 
-#: lazarusidestrconsts.lispldshowgloballinks
-msgid "Show global links"
-msgstr "Показувати глобальні зв'язки"
+#: lazarusidestrconsts.lispldshowgloballinksin
+msgid "Show global links in "
+msgstr ""
 
-#: lazarusidestrconsts.lispldshowuserlinks
-msgid "Show user links"
-msgstr "Показувати користувацькі зв'язки"
+#: lazarusidestrconsts.lispldshowuserlinksin
+msgid "Show user links in "
+msgstr ""
 
 #: lazarusidestrconsts.lisplduser
 msgid "User"
@@ -15829,6 +15837,10 @@ msgstr "вторинна тека налаштувань, де Lazarus шука�
 #: lazarusidestrconsts.lissecondaryconfigpath
 msgid "Secondary config path"
 msgstr "Вторинний шлях конфігурації"
+
+#: lazarusidestrconsts.lissecondtest
+msgid "&Second test"
+msgstr ""
 
 #: lazarusidestrconsts.lisseemessages
 msgid "See messages."

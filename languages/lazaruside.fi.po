@@ -2992,10 +2992,6 @@ msgstr "Tallenna editorin tiedot vain projektin tiedostoista"
 msgid "Only files that belong to this project."
 msgstr "Vain tähän projektiin kuuluvat tiedostot."
 
-#: lazarusidestrconsts.dlgscope
-msgid "Scope"
-msgstr "Ulottuvuus"
-
 #: lazarusidestrconsts.dlgscrollbyoneless
 msgid "Scroll by one less"
 msgstr "Vieritä yksi vähemmän"
@@ -3032,6 +3028,10 @@ msgstr "Etsitään ..."
 #: lazarusidestrconsts.dlgsearchpaths
 msgid "Paths"
 msgstr "Hakupolut"
+
+#: lazarusidestrconsts.dlgsearchscope
+msgid "Search scope"
+msgstr ""
 
 #: lazarusidestrconsts.dlgselectallchildcontrols
 msgid "Select all child controls together with their parent."
@@ -8949,6 +8949,10 @@ msgstr "Etsi puuttuva käännösyksikkö"
 msgid "First"
 msgstr "Ensimmäinen"
 
+#: lazarusidestrconsts.lisfirsttest
+msgid "&First test"
+msgstr ""
+
 #: lazarusidestrconsts.lisfixlfmfile
 msgid "Fix LFM file"
 msgstr "LFM-tiedoston korjaus"
@@ -9126,17 +9130,17 @@ msgstr "Kelvoton tunniste"
 msgid "Rename all References"
 msgstr "Nimeä uudelleen viittaukset"
 
-#: lazarusidestrconsts.lisfrirenameto
-msgid "Rename to"
-msgstr "Uusi nimi on"
+#: lazarusidestrconsts.lisfrirenaming
+msgid "Renaming"
+msgstr ""
+
+#: lazarusidestrconsts.lisfrisearch
+msgid "Search"
+msgstr ""
 
 #: lazarusidestrconsts.lisfrisearchincommentstoo
 msgid "Search in comments too"
 msgstr "Käy myös kommentit läpi"
-
-#: lazarusidestrconsts.lisfrisearchwhere
-msgid "Search where"
-msgstr "Mistä etsitään"
 
 #: lazarusidestrconsts.lisfull
 msgid "Full"
@@ -10512,6 +10516,10 @@ msgstr "Näytä projektin lähdekoodi"
 #: lazarusidestrconsts.liskmviewunitinfo
 msgid "View Unit Info"
 msgstr "Näytä käännösyksikön tietoja"
+
+#: lazarusidestrconsts.lislastopened
+msgid "Last opened"
+msgstr ""
 
 #: lazarusidestrconsts.lislaunchingapplicationinvalid
 msgid "Launching application invalid"
@@ -14206,13 +14214,13 @@ msgstr "Julkinen"
 msgid "Package Links"
 msgstr "Pakettilinkit"
 
-#: lazarusidestrconsts.lispldshowgloballinks
-msgid "Show global links"
-msgstr "Näytä julkiset linkit"
+#: lazarusidestrconsts.lispldshowgloballinksin
+msgid "Show global links in "
+msgstr ""
 
-#: lazarusidestrconsts.lispldshowuserlinks
-msgid "Show user links"
-msgstr "Näytä käyttäjän linkit"
+#: lazarusidestrconsts.lispldshowuserlinksin
+msgid "Show user links in "
+msgstr ""
 
 #: lazarusidestrconsts.lisplduser
 msgid "User"
@@ -15338,6 +15346,10 @@ msgstr "Toinen asetushakemisto, mistä Lazarus etsii asetusten malleja. Oletus o
 #: lazarusidestrconsts.lissecondaryconfigpath
 msgid "Secondary config path"
 msgstr "Toinen asetuspolku"
+
+#: lazarusidestrconsts.lissecondtest
+msgid "&Second test"
+msgstr ""
 
 #: lazarusidestrconsts.lisseemessages
 msgid "See messages."

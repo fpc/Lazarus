@@ -3168,10 +3168,6 @@ msgstr "Zapisuj informację edytora tylko dla plików projektu"
 msgid "Only files that belong to this project."
 msgstr ""
 
-#: lazarusidestrconsts.dlgscope
-msgid "Scope"
-msgstr "Zasięg"
-
 #: lazarusidestrconsts.dlgscrollbyoneless
 msgid "Scroll by one less"
 msgstr "Przewiń o jeden mniej"
@@ -3212,6 +3208,10 @@ msgstr "Wyszukiwanie..."
 #: lazarusidestrconsts.dlgsearchpaths
 msgid "Paths"
 msgstr "Ścieżki"
+
+#: lazarusidestrconsts.dlgsearchscope
+msgid "Search scope"
+msgstr ""
 
 #: lazarusidestrconsts.dlgselectallchildcontrols
 msgid "Select all child controls together with their parent."
@@ -9337,6 +9337,10 @@ msgstr ""
 msgid "First"
 msgstr "Na początku"
 
+#: lazarusidestrconsts.lisfirsttest
+msgid "&First test"
+msgstr ""
+
 #: lazarusidestrconsts.lisfixlfmfile
 msgid "Fix LFM file"
 msgstr ""
@@ -9518,16 +9522,16 @@ msgstr "Błędny identyfikator"
 msgid "Rename all References"
 msgstr ""
 
-#: lazarusidestrconsts.lisfrirenameto
-msgid "Rename to"
+#: lazarusidestrconsts.lisfrirenaming
+msgid "Renaming"
+msgstr ""
+
+#: lazarusidestrconsts.lisfrisearch
+msgid "Search"
 msgstr ""
 
 #: lazarusidestrconsts.lisfrisearchincommentstoo
 msgid "Search in comments too"
-msgstr ""
-
-#: lazarusidestrconsts.lisfrisearchwhere
-msgid "Search where"
 msgstr ""
 
 #: lazarusidestrconsts.lisfull
@@ -10925,6 +10929,10 @@ msgstr "Pokaż źródło projektu"
 #: lazarusidestrconsts.liskmviewunitinfo
 msgid "View Unit Info"
 msgstr "Informacje o module"
+
+#: lazarusidestrconsts.lislastopened
+msgid "Last opened"
+msgstr ""
 
 #: lazarusidestrconsts.lislaunchingapplicationinvalid
 msgid "Launching application invalid"
@@ -14996,13 +15004,13 @@ msgstr "Globalny"
 msgid "Package Links"
 msgstr "Odnośniki Pakietów"
 
-#: lazarusidestrconsts.lispldshowgloballinks
-msgid "Show global links"
-msgstr "Pokaż odnośniki globalne"
+#: lazarusidestrconsts.lispldshowgloballinksin
+msgid "Show global links in "
+msgstr ""
 
-#: lazarusidestrconsts.lispldshowuserlinks
-msgid "Show user links"
-msgstr "Pokaż odnośniki użytkownika"
+#: lazarusidestrconsts.lispldshowuserlinksin
+msgid "Show user links in "
+msgstr ""
 
 #: lazarusidestrconsts.lisplduser
 msgid "User"
@@ -16191,6 +16199,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lissecondaryconfigpath
 msgid "Secondary config path"
+msgstr ""
+
+#: lazarusidestrconsts.lissecondtest
+msgid "&Second test"
 msgstr ""
 
 #: lazarusidestrconsts.lisseemessages

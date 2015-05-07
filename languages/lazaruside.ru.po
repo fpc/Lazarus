@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2015-05-08 00:53+0300\n"
+"PO-Revision-Date: 2015-05-08 02:24+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -2990,10 +2990,6 @@ msgstr "Сохранять сведения только о файлах про�
 msgid "Only files that belong to this project."
 msgstr "Только файлы, принадлежащие проекту"
 
-#: lazarusidestrconsts.dlgscope
-msgid "Scope"
-msgstr "Где"
-
 #: lazarusidestrconsts.dlgscrollbyoneless
 msgid "Scroll by one less"
 msgstr "Прокручивать на строку меньше"
@@ -3030,6 +3026,10 @@ msgstr "Поиск ..."
 #: lazarusidestrconsts.dlgsearchpaths
 msgid "Paths"
 msgstr "Пути"
+
+#: lazarusidestrconsts.dlgsearchscope
+msgid "Search scope"
+msgstr "Область поиска"
 
 #: lazarusidestrconsts.dlgselectallchildcontrols
 msgid "Select all child controls together with their parent."
@@ -8641,7 +8641,7 @@ msgstr "Извлечь"
 #: lazarusidestrconsts.lisextractprocedure
 msgctxt "lazarusidestrconsts.lisextractprocedure"
 msgid "Extract Procedure"
-msgstr "Выделить процедуру"
+msgstr "Извлечь в процедуру"
 
 #: lazarusidestrconsts.lisextremelyverbose
 msgid "Extremely Verbose"
@@ -8968,6 +8968,10 @@ msgstr "Поиск отсутствующего модуля"
 msgid "First"
 msgstr "В начале"
 
+#: lazarusidestrconsts.lisfirsttest
+msgid "&First test"
+msgstr "&Первая проверка"
+
 #: lazarusidestrconsts.lisfixlfmfile
 msgid "Fix LFM file"
 msgstr "Исправить файл LFM"
@@ -9145,17 +9149,17 @@ msgstr "Некорректный идентификатор"
 msgid "Rename all References"
 msgstr "Переименовать все ссылки"
 
-#: lazarusidestrconsts.lisfrirenameto
-msgid "Rename to"
-msgstr "Переименовать в"
+#: lazarusidestrconsts.lisfrirenaming
+msgid "Renaming"
+msgstr "Переименование"
+
+#: lazarusidestrconsts.lisfrisearch
+msgid "Search"
+msgstr "Поиск"
 
 #: lazarusidestrconsts.lisfrisearchincommentstoo
 msgid "Search in comments too"
 msgstr "Искать и в комментариях"
-
-#: lazarusidestrconsts.lisfrisearchwhere
-msgid "Search where"
-msgstr "Искать где"
 
 #: lazarusidestrconsts.lisfull
 msgid "Full"
@@ -10545,6 +10549,10 @@ msgstr "Показать исходный код проекта"
 msgid "View Unit Info"
 msgstr "Показать сведения о модуле"
 
+#: lazarusidestrconsts.lislastopened
+msgid "Last opened"
+msgstr "Последнее открытие"
+
 #: lazarusidestrconsts.lislaunchingapplicationinvalid
 msgid "Launching application invalid"
 msgstr "Запускающее приложение недопустимо"
@@ -11375,7 +11383,7 @@ msgstr "Примеры проектов ..."
 
 #: lazarusidestrconsts.lismenuextractproc
 msgid "Extract Procedure ..."
-msgstr "Выделить процедуру ..."
+msgstr "Извлечь в процедуру ..."
 
 #: lazarusidestrconsts.lismenufile
 msgid "&File"
@@ -14286,13 +14294,13 @@ msgstr "Глобальные"
 msgid "Package Links"
 msgstr "Ссылки на пакеты"
 
-#: lazarusidestrconsts.lispldshowgloballinks
-msgid "Show global links"
-msgstr "Показывать глобальные ссылки"
+#: lazarusidestrconsts.lispldshowgloballinksin
+msgid "Show global links in "
+msgstr "Показывать глобальные ссылки в "
 
-#: lazarusidestrconsts.lispldshowuserlinks
-msgid "Show user links"
-msgstr "Показывать пользовательские ссылки"
+#: lazarusidestrconsts.lispldshowuserlinksin
+msgid "Show user links in "
+msgstr "Показывать пользовательские ссылки в "
 
 #: lazarusidestrconsts.lisplduser
 msgid "User"
@@ -15430,6 +15438,10 @@ msgstr "вторичный каталог настройки, где Lazarus и�
 #: lazarusidestrconsts.lissecondaryconfigpath
 msgid "Secondary config path"
 msgstr "Путь к вторичному каталогу настройки"
+
+#: lazarusidestrconsts.lissecondtest
+msgid "&Second test"
+msgstr "&Вторая проверка"
 
 #: lazarusidestrconsts.lisseemessages
 msgid "See messages."
@@ -18610,7 +18622,7 @@ msgstr "рассчитать/изменить"
 #: lazarusidestrconsts.srkmecextractproc
 msgctxt "lazarusidestrconsts.srkmecextractproc"
 msgid "Extract Procedure"
-msgstr "Выделить процедуру"
+msgstr "Извлечь в процедуру"
 
 #: lazarusidestrconsts.srkmecexttool
 msgid "External tool %d"

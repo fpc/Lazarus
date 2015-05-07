@@ -3163,10 +3163,6 @@ msgstr "שמור מידע עורך עבור קבצי הפרוייקט בלבד"
 msgid "Only files that belong to this project."
 msgstr ""
 
-#: lazarusidestrconsts.dlgscope
-msgid "Scope"
-msgstr "טווח"
-
 #: lazarusidestrconsts.dlgscrollbyoneless
 msgid "Scroll by one less"
 msgstr "גלול אחד פחות"
@@ -3208,6 +3204,10 @@ msgstr "מחפש ..."
 #: lazarusidestrconsts.dlgsearchpaths
 msgid "Paths"
 msgstr "נתיבים"
+
+#: lazarusidestrconsts.dlgsearchscope
+msgid "Search scope"
+msgstr ""
 
 #: lazarusidestrconsts.dlgselectallchildcontrols
 msgid "Select all child controls together with their parent."
@@ -9525,6 +9525,10 @@ msgstr "חפש יחידות חסרות"
 msgid "First"
 msgstr "ראשון"
 
+#: lazarusidestrconsts.lisfirsttest
+msgid "&First test"
+msgstr ""
+
 #: lazarusidestrconsts.lisfixlfmfile
 msgid "Fix LFM file"
 msgstr "תקן קובץ LFM"
@@ -9708,17 +9712,17 @@ msgstr "מזהה לא חוקי"
 msgid "Rename all References"
 msgstr "שנה שם של כל מראי המקום"
 
-#: lazarusidestrconsts.lisfrirenameto
-msgid "Rename to"
-msgstr "שנה שם ל"
+#: lazarusidestrconsts.lisfrirenaming
+msgid "Renaming"
+msgstr ""
+
+#: lazarusidestrconsts.lisfrisearch
+msgid "Search"
+msgstr ""
 
 #: lazarusidestrconsts.lisfrisearchincommentstoo
 msgid "Search in comments too"
 msgstr "חפש גם בהערות"
-
-#: lazarusidestrconsts.lisfrisearchwhere
-msgid "Search where"
-msgstr "חפש היכן ש"
 
 #: lazarusidestrconsts.lisfull
 msgid "Full"
@@ -11175,6 +11179,10 @@ msgstr "הצג קוד הפרויקט"
 #: lazarusidestrconsts.liskmviewunitinfo
 msgid "View Unit Info"
 msgstr "הצג מידע על היחידה"
+
+#: lazarusidestrconsts.lislastopened
+msgid "Last opened"
+msgstr ""
 
 #: lazarusidestrconsts.lislaunchingapplicationinvalid
 msgid "Launching application invalid"
@@ -15341,13 +15349,13 @@ msgstr "גלובלי"
 msgid "Package Links"
 msgstr "קישורי חבילה"
 
-#: lazarusidestrconsts.lispldshowgloballinks
-msgid "Show global links"
-msgstr "הראה קישורים גלובליים"
+#: lazarusidestrconsts.lispldshowgloballinksin
+msgid "Show global links in "
+msgstr ""
 
-#: lazarusidestrconsts.lispldshowuserlinks
-msgid "Show user links"
-msgstr "הראה קישורי משתמש"
+#: lazarusidestrconsts.lispldshowuserlinksin
+msgid "Show user links in "
+msgstr ""
 
 #: lazarusidestrconsts.lisplduser
 msgid "User"
@@ -16570,6 +16578,10 @@ msgstr "תיקיית הגדרות משנית, המיקום בו לזרוס יח�
 
 #: lazarusidestrconsts.lissecondaryconfigpath
 msgid "Secondary config path"
+msgstr ""
+
+#: lazarusidestrconsts.lissecondtest
+msgid "&Second test"
 msgstr ""
 
 #: lazarusidestrconsts.lisseemessages

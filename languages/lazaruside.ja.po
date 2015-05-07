@@ -3008,10 +3008,6 @@ msgstr "プロジェクトファイルのみエディタ情報を保存"
 msgid "Only files that belong to this project."
 msgstr ""
 
-#: lazarusidestrconsts.dlgscope
-msgid "Scope"
-msgstr "スコープ"
-
 #: lazarusidestrconsts.dlgscrollbyoneless
 msgid "Scroll by one less"
 msgstr "一つ少なくスクロール"
@@ -3048,6 +3044,10 @@ msgstr "検索中 ..."
 #: lazarusidestrconsts.dlgsearchpaths
 msgid "Paths"
 msgstr "パス"
+
+#: lazarusidestrconsts.dlgsearchscope
+msgid "Search scope"
+msgstr ""
 
 #: lazarusidestrconsts.dlgselectallchildcontrols
 msgid "Select all child controls together with their parent."
@@ -9142,6 +9142,10 @@ msgstr "欠けているUnitを検索"
 msgid "First"
 msgstr "冒頭"
 
+#: lazarusidestrconsts.lisfirsttest
+msgid "&First test"
+msgstr ""
+
 #: lazarusidestrconsts.lisfixlfmfile
 msgid "Fix LFM file"
 msgstr "LFMファイルを修復"
@@ -9321,17 +9325,17 @@ msgstr "無効な識別子"
 msgid "Rename all References"
 msgstr "すべての参照名を変更"
 
-#: lazarusidestrconsts.lisfrirenameto
-msgid "Rename to"
-msgstr "次の名前に変更"
+#: lazarusidestrconsts.lisfrirenaming
+msgid "Renaming"
+msgstr ""
+
+#: lazarusidestrconsts.lisfrisearch
+msgid "Search"
+msgstr ""
 
 #: lazarusidestrconsts.lisfrisearchincommentstoo
 msgid "Search in comments too"
 msgstr "コメントも検索"
-
-#: lazarusidestrconsts.lisfrisearchwhere
-msgid "Search where"
-msgstr "検索場所"
 
 #: lazarusidestrconsts.lisfull
 msgid "Full"
@@ -10725,6 +10729,10 @@ msgstr "プロジェクトソースを表示"
 #: lazarusidestrconsts.liskmviewunitinfo
 msgid "View Unit Info"
 msgstr "ユニット情報を表示"
+
+#: lazarusidestrconsts.lislastopened
+msgid "Last opened"
+msgstr ""
 
 #: lazarusidestrconsts.lislaunchingapplicationinvalid
 msgid "Launching application invalid"
@@ -14556,13 +14564,13 @@ msgstr "グローバル"
 msgid "Package Links"
 msgstr "パッケージリンク"
 
-#: lazarusidestrconsts.lispldshowgloballinks
-msgid "Show global links"
-msgstr "グローバルリンクを表示"
+#: lazarusidestrconsts.lispldshowgloballinksin
+msgid "Show global links in "
+msgstr ""
 
-#: lazarusidestrconsts.lispldshowuserlinks
-msgid "Show user links"
-msgstr "ユーザーリンクを表示"
+#: lazarusidestrconsts.lispldshowuserlinksin
+msgid "Show user links in "
+msgstr ""
 
 #: lazarusidestrconsts.lisplduser
 msgid "User"
@@ -15726,6 +15734,10 @@ msgstr "Lazarusが設定テンプレートファイルを検索する二次的�
 #: lazarusidestrconsts.lissecondaryconfigpath
 msgid "Secondary config path"
 msgstr "第2設定パス"
+
+#: lazarusidestrconsts.lissecondtest
+msgid "&Second test"
+msgstr ""
 
 #: lazarusidestrconsts.lisseemessages
 msgid "See messages."

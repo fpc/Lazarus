@@ -3002,10 +3002,6 @@ msgstr "Szerkesztő beállításainak mentése csak a projekt fájlokhoz"
 msgid "Only files that belong to this project."
 msgstr "Csak az e projekthez tartozó fájlok."
 
-#: lazarusidestrconsts.dlgscope
-msgid "Scope"
-msgstr "Hatókör"
-
 #: lazarusidestrconsts.dlgscrollbyoneless
 msgid "Scroll by one less"
 msgstr "Egy sorral rövidebb görgetés"
@@ -3042,6 +3038,10 @@ msgstr "Keresés ..."
 #: lazarusidestrconsts.dlgsearchpaths
 msgid "Paths"
 msgstr "Útvonalak"
+
+#: lazarusidestrconsts.dlgsearchscope
+msgid "Search scope"
+msgstr ""
 
 #: lazarusidestrconsts.dlgselectallchildcontrols
 msgid "Select all child controls together with their parent."
@@ -8993,6 +8993,10 @@ msgstr "Hiányzó unit megkeresése"
 msgid "First"
 msgstr "Elsőként"
 
+#: lazarusidestrconsts.lisfirsttest
+msgid "&First test"
+msgstr ""
+
 #: lazarusidestrconsts.lisfixlfmfile
 msgid "Fix LFM file"
 msgstr "LFM fájl javítása"
@@ -9170,17 +9174,17 @@ msgstr "Érvénytelen azonosító"
 msgid "Rename all References"
 msgstr "Minden hivatkozás átnevezése"
 
-#: lazarusidestrconsts.lisfrirenameto
-msgid "Rename to"
-msgstr "Átnevezés ..."
+#: lazarusidestrconsts.lisfrirenaming
+msgid "Renaming"
+msgstr ""
+
+#: lazarusidestrconsts.lisfrisearch
+msgid "Search"
+msgstr ""
 
 #: lazarusidestrconsts.lisfrisearchincommentstoo
 msgid "Search in comments too"
 msgstr "Keresés a megjegyzésekben is"
-
-#: lazarusidestrconsts.lisfrisearchwhere
-msgid "Search where"
-msgstr "Keresés, ahol"
 
 #: lazarusidestrconsts.lisfull
 msgid "Full"
@@ -10568,6 +10572,10 @@ msgstr "Projekt forráskódjának megjelenítése"
 #: lazarusidestrconsts.liskmviewunitinfo
 msgid "View Unit Info"
 msgstr "Unit infó megjelenítése"
+
+#: lazarusidestrconsts.lislastopened
+msgid "Last opened"
+msgstr ""
 
 #: lazarusidestrconsts.lislaunchingapplicationinvalid
 msgid "Launching application invalid"
@@ -14310,13 +14318,13 @@ msgstr "Globális"
 msgid "Package Links"
 msgstr "Csomag hivatkozások"
 
-#: lazarusidestrconsts.lispldshowgloballinks
-msgid "Show global links"
-msgstr "Globális hivatkozások"
+#: lazarusidestrconsts.lispldshowgloballinksin
+msgid "Show global links in "
+msgstr ""
 
-#: lazarusidestrconsts.lispldshowuserlinks
-msgid "Show user links"
-msgstr "Felhasználói hivatkozások"
+#: lazarusidestrconsts.lispldshowuserlinksin
+msgid "Show user links in "
+msgstr ""
 
 #: lazarusidestrconsts.lisplduser
 msgid "User"
@@ -15454,6 +15462,10 @@ msgstr "másodlagos beállítások könyvtára, ahol a Lazarus keresi a beállí
 #: lazarusidestrconsts.lissecondaryconfigpath
 msgid "Secondary config path"
 msgstr "Másodlagos beállítások útvonala"
+
+#: lazarusidestrconsts.lissecondtest
+msgid "&Second test"
+msgstr ""
 
 #: lazarusidestrconsts.lisseemessages
 msgid "See messages."

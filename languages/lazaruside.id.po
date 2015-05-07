@@ -3101,10 +3101,6 @@ msgstr "Simpan info editor hanya untuk file proyek"
 msgid "Only files that belong to this project."
 msgstr ""
 
-#: lazarusidestrconsts.dlgscope
-msgid "Scope"
-msgstr "Cakupan"
-
 #: lazarusidestrconsts.dlgscrollbyoneless
 msgid "Scroll by one less"
 msgstr "Gulung dengan kurang satu"
@@ -3145,6 +3141,10 @@ msgstr "Pencarian..."
 #: lazarusidestrconsts.dlgsearchpaths
 msgid "Paths"
 msgstr "Path"
+
+#: lazarusidestrconsts.dlgsearchscope
+msgid "Search scope"
+msgstr ""
 
 #: lazarusidestrconsts.dlgselectallchildcontrols
 msgid "Select all child controls together with their parent."
@@ -9302,6 +9302,10 @@ msgstr ""
 msgid "First"
 msgstr ""
 
+#: lazarusidestrconsts.lisfirsttest
+msgid "&First test"
+msgstr ""
+
 #: lazarusidestrconsts.lisfixlfmfile
 msgid "Fix LFM file"
 msgstr "Betulkan file LFM"
@@ -9481,17 +9485,17 @@ msgstr "Pengenal tidak benar"
 msgid "Rename all References"
 msgstr "Ganti nama semua Referensi"
 
-#: lazarusidestrconsts.lisfrirenameto
-msgid "Rename to"
-msgstr "Ganti nama ke"
+#: lazarusidestrconsts.lisfrirenaming
+msgid "Renaming"
+msgstr ""
+
+#: lazarusidestrconsts.lisfrisearch
+msgid "Search"
+msgstr ""
 
 #: lazarusidestrconsts.lisfrisearchincommentstoo
 msgid "Search in comments too"
 msgstr "Cari dalam komentar juga"
-
-#: lazarusidestrconsts.lisfrisearchwhere
-msgid "Search where"
-msgstr "Cari dimana"
 
 #: lazarusidestrconsts.lisfull
 msgid "Full"
@@ -10927,6 +10931,10 @@ msgstr "Lihat sumber proyek"
 #: lazarusidestrconsts.liskmviewunitinfo
 msgid "View Unit Info"
 msgstr "Lihat Info Unit"
+
+#: lazarusidestrconsts.lislastopened
+msgid "Last opened"
+msgstr ""
 
 #: lazarusidestrconsts.lislaunchingapplicationinvalid
 msgid "Launching application invalid"
@@ -14995,12 +15003,12 @@ msgstr ""
 msgid "Package Links"
 msgstr ""
 
-#: lazarusidestrconsts.lispldshowgloballinks
-msgid "Show global links"
+#: lazarusidestrconsts.lispldshowgloballinksin
+msgid "Show global links in "
 msgstr ""
 
-#: lazarusidestrconsts.lispldshowuserlinks
-msgid "Show user links"
+#: lazarusidestrconsts.lispldshowuserlinksin
+msgid "Show user links in "
 msgstr ""
 
 #: lazarusidestrconsts.lisplduser
@@ -16194,6 +16202,10 @@ msgstr "direktori konfig kedua, dimana Lazarus mencari file template konfig. Def
 
 #: lazarusidestrconsts.lissecondaryconfigpath
 msgid "Secondary config path"
+msgstr ""
+
+#: lazarusidestrconsts.lissecondtest
+msgid "&Second test"
 msgstr ""
 
 #: lazarusidestrconsts.lisseemessages
