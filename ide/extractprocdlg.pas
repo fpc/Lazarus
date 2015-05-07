@@ -33,7 +33,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, AVL_Tree, Forms, Controls, Graphics,
-  Dialogs, ExtCtrls, Buttons, StdCtrls,
+  Dialogs, ExtCtrls, Buttons, StdCtrls, ButtonPanel,
   BasicCodeTools, CodeTree, CodeCache, CodeToolManager,
   ExtractProcTool,
   IDEHelpIntf, IDEDialogs,
@@ -44,6 +44,7 @@ type
   { TExtractProcDialog }
 
   TExtractProcDialog = class(TForm)
+    ButtonPanel: TButtonPanel;
     FuncVariableComboBox: TComboBox;
     CreateFunctionCheckBox: TCheckBox;
     FunctionGroupBox: TGroupBox;
@@ -52,10 +53,6 @@ type
     MissingIdentifiersGroupBox: TGroupBox;
     NameEdit: TEdit;
     NameGroupbox: TGroupBox;
-    OkButton: TBitBtn;
-    CancelButton: TBitBtn;
-    HelpButton: TBitBtn;
-    BtnPanel: TPanel;
     TypeRadiogroup: TRadioGroup;
     procedure CreateFunctionCheckBoxChange(Sender: TObject);
     procedure HelpButtonClick(Sender: TObject);
@@ -188,7 +185,7 @@ begin
   CreateFunctionCheckBox.Caption:=lisCreateFunction;
   FuncVariableLabel.Caption:=lisResult2;
   
-  OkButton.Caption:=lisExtract;
+  ButtonPanel.OkButton.Caption:=lisExtract;
 end;
 
 procedure TExtractProcDialog.HelpButtonClick(Sender: TObject);
