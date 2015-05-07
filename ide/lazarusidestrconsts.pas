@@ -4948,6 +4948,8 @@ resourcestring
   //conditional defines dialog
   rsCreateNewDefine = 'Create new define';
   rsConditionalDefines = 'Conditional defines';
+  lisFirstTest = '&First test';
+  lisSecondTest = '&Second test';
   rsAddInverse = 'Add Inverse';
   lisAutomaticallyOnLineBreak = 'line break';
   lisAutomaticallyOnSpace = 'space';
