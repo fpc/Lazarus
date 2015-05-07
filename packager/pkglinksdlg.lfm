@@ -12,7 +12,7 @@ object PackageLinksDialog: TPackageLinksDialog
   LCLVersion = '1.5'
   object ScopeGroupBox: TGroupBox
     Left = 0
-    Height = 144
+    Height = 120
     Top = 0
     Width = 659
     Align = alTop
@@ -22,16 +22,16 @@ object PackageLinksDialog: TPackageLinksDialog
     ChildSizing.TopBottomSpacing = 6
     ChildSizing.HorizontalSpacing = 6
     ChildSizing.VerticalSpacing = 6
-    ClientHeight = 127
+    ClientHeight = 102
     ClientWidth = 655
     TabOrder = 0
     object ShowGlobalLinksCheckBox: TCheckBox
       AnchorSideLeft.Control = ScopeGroupBox
       AnchorSideTop.Control = ScopeGroupBox
       Left = 6
-      Height = 24
+      Height = 17
       Top = 6
-      Width = 170
+      Width = 143
       Caption = 'ShowGlobalLinksCheckBox'
       Checked = True
       OnChange = ShowGlobalLinksCheckBoxChange
@@ -43,9 +43,9 @@ object PackageLinksDialog: TPackageLinksDialog
       AnchorSideTop.Control = ShowGlobalLinksCheckBox
       AnchorSideTop.Side = asrBottom
       Left = 6
-      Height = 24
-      Top = 36
-      Width = 161
+      Height = 17
+      Top = 29
+      Width = 136
       Caption = 'ShowUserLinksCheckBox'
       Checked = True
       OnChange = ShowUserLinksCheckBoxChange
@@ -57,9 +57,9 @@ object PackageLinksDialog: TPackageLinksDialog
       AnchorSideTop.Control = ShowUserLinksCheckBox
       AnchorSideTop.Side = asrBottom
       Left = 6
-      Height = 24
-      Top = 66
-      Width = 147
+      Height = 17
+      Top = 52
+      Width = 120
       Caption = 'LPKFileValidCheckBox'
       Checked = True
       OnChange = LPKFileValidCheckBoxChange
@@ -71,10 +71,10 @@ object PackageLinksDialog: TPackageLinksDialog
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = LPKFileValidCheckBox
       AnchorSideTop.Side = asrCenter
-      Left = 168
-      Height = 24
-      Top = 66
-      Width = 155
+      Left = 141
+      Height = 17
+      Top = 52
+      Width = 130
       BorderSpacing.Left = 15
       Caption = 'LPKFileInvalidCheckBox'
       Checked = True
@@ -89,8 +89,8 @@ object PackageLinksDialog: TPackageLinksDialog
       AnchorSideRight.Control = ScopeGroupBox
       AnchorSideRight.Side = asrBottom
       Left = 6
-      Height = 25
-      Top = 96
+      Height = 21
+      Top = 75
       Width = 643
       Anchors = [akTop, akLeft, akRight]
       OnChange = FilterEditChange
@@ -103,8 +103,8 @@ object PackageLinksDialog: TPackageLinksDialog
   object PkgStringGrid: TStringGrid
     AnchorSideBottom.Control = BtnPanel
     Left = 0
-    Height = 265
-    Top = 144
+    Height = 291
+    Top = 120
     Width = 659
     Align = alTop
     Anchors = [akTop, akLeft, akRight, akBottom]
@@ -145,12 +145,12 @@ object PackageLinksDialog: TPackageLinksDialog
   end
   object BtnPanel: TPanel
     Left = 0
-    Height = 42
-    Top = 409
+    Height = 40
+    Top = 411
     Width = 659
     Align = alBottom
     AutoSize = True
-    ClientHeight = 42
+    ClientHeight = 40
     ClientWidth = 659
     TabOrder = 2
     object CloseBitBtn: TBitBtn
@@ -159,10 +159,10 @@ object PackageLinksDialog: TPackageLinksDialog
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Control = BtnPanel
       AnchorSideBottom.Side = asrBottom
-      Left = 591
-      Height = 28
+      Left = 580
+      Height = 26
       Top = 7
-      Width = 61
+      Width = 72
       Anchors = [akRight, akBottom]
       AutoSize = True
       BorderSpacing.Around = 6
@@ -178,10 +178,10 @@ object PackageLinksDialog: TPackageLinksDialog
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = CloseBitBtn
       AnchorSideTop.Side = asrCenter
-      Left = 150
-      Height = 27
-      Top = 8
-      Width = 152
+      Left = 143
+      Height = 23
+      Top = 9
+      Width = 145
       AutoSize = True
       BorderSpacing.Around = 6
       Caption = 'UpdateGlobalLinksButton'
@@ -193,9 +193,9 @@ object PackageLinksDialog: TPackageLinksDialog
       AnchorSideTop.Control = CloseBitBtn
       AnchorSideTop.Side = asrCenter
       Left = 7
-      Height = 27
-      Top = 8
-      Width = 137
+      Height = 23
+      Top = 9
+      Width = 130
       AutoSize = True
       BorderSpacing.Around = 6
       Caption = 'DeleteSelectedButton'
@@ -206,7 +206,7 @@ object PackageLinksDialog: TPackageLinksDialog
   object ProgressBar1: TProgressBar
     Left = 0
     Height = 20
-    Top = 389
+    Top = 391
     Width = 659
     Align = alBottom
     TabOrder = 3
@@ -217,7 +217,6 @@ object PackageLinksDialog: TPackageLinksDialog
     top = 190
   end
   object GridPopupMenu: TPopupMenu
-    OnPopup = GridPopupMenuPopup
     left = 206
     top = 288
     object CopyCellToClipboardMenuItem: TMenuItem

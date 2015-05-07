@@ -233,6 +233,8 @@ var
 begin
   NewTestGroupBox.Caption := rsCreateNewDefine;
   Caption := rsConditionalDefines;
+  FirstLabel.Caption := lisFirstTest;
+  SecondLabel.Caption := lisSecondTest;
   AddBtn.Caption := lisBtnAdd;
   AddBtn.LoadGlyphFromResourceName(HInstance, 'laz_add');
   AddInverse.Caption := rsAddInverse;

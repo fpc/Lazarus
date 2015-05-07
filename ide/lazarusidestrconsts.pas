@@ -260,8 +260,8 @@ resourcestring
   lisDiscardChangesAll = 'Discard all changes';
   lisDoNotCloseTheProject = 'Do not close the project';
   lisConvert = 'Convert';
-  lisPLDShowGlobalLinks = 'Show global links';
-  lisPLDShowUserLinks = 'Show user links';
+  lisPLDShowGlobalLinksIn = 'Show global links in ';
+  lisPLDShowUserLinksIn = 'Show user links in ';
   lrsPLDLpkFileValid = 'lpk file valid (%s)';
   lrsPLDLpkFileInvalid = 'lpk file invalid (%s)';
   lisPLDGlobal = 'Global';
@@ -2487,7 +2487,7 @@ resourcestring
   dlgSROrigin = 'Origin';
   dlgFromCursor = '&From cursor';
   dlgFromBeginning = 'From b&eginning';
-  dlgScope = 'Scope';
+  dlgSearchScope = 'Search scope';
   dlgProject = 'Project';
   lisProjectSession = 'Project Session';
   lisWithRequiredPackages = 'With required packages';
@@ -3292,9 +3292,9 @@ resourcestring
     +'search (e.g. /path/*.pas;/path2/*.pp)';
   lisFRIFindReferences = 'Find References';
   lisFRIInvalidIdentifier = 'Invalid Identifier';
-  lisFRIRenameTo = 'Rename to';
+  lisFRIRenaming = 'Renaming';
   lisFRISearchInCommentsToo = 'Search in comments too';
-  lisFRISearchWhere = 'Search where';
+  lisFRISearch = 'Search';
   lisCodeToolsOptsColon       = 'Colon';
   lisCodeToolsOptsSemicolon   = 'Semicolon';
   lisCodeToolsOptsComma       = 'Comma';
@@ -4606,6 +4606,7 @@ resourcestring
   lisA2PCreateNewComp = 'Create New Component';
   lisA2PCreateNewReq = 'Create New Requirement';
   lisA2PFilename2 = 'Filename';
+  lisLastOpened = 'Last opened';
   lisFRIFindOrRenameIdentifier = 'Find or Rename Identifier';
   lisHelpSelectorDialog = 'Help selector';
   lisSelectAHelpItem = 'Select a help item:';
@@ -4854,6 +4855,8 @@ resourcestring
   //conditional defines dialog
   rsCreateNewDefine = 'Create new define';
   rsConditionalDefines = 'Conditional defines';
+  lisFirstTest = '&First test';
+  lisSecondTest = '&Second test';
   rsAddInverse = 'Add Inverse';
   lisAutomaticallyOnLineBreak = 'line break';
   lisAutomaticallyOnSpace = 'space';

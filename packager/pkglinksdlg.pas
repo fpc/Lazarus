@@ -88,7 +88,6 @@ type
     procedure FilterEditExit(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
-    procedure GridPopupMenuPopup(Sender: TObject);
     procedure LPKFileValidCheckBoxChange(Sender: TObject);
     procedure LPKFileInvalidCheckBoxChange(Sender: TObject);
     procedure LPKParsingTimerTimer(Sender: TObject);
@@ -141,7 +140,7 @@ end;
 procedure TPackageLinksDialog.FormCreate(Sender: TObject);
 begin
   Caption:=lisPLDPackageLinks;
-  ScopeGroupBox.Caption:=dlgScope;
+  ScopeGroupBox.Caption:=dlgSearchScope;
   CopyCellToClipboardMenuItem.Caption:=srkmecCopy;
   DeleteSelectedButton.Caption:=lrsPLDDeleteSelected;
   UpdateGlobalLinksButton.Caption:=lrsRescanLplFiles;
@@ -212,11 +211,6 @@ begin
   LPKInfoCache.EndLPKReader;
   LPKInfoCache.RemoveOnQueueEmpty(@OnAllLPKParsed);
   ClearLinks;
-end;
-
-procedure TPackageLinksDialog.GridPopupMenuPopup(Sender: TObject);
-begin
-
 end;
 
 procedure TPackageLinksDialog.LPKFileValidCheckBoxChange(Sender: TObject);
@@ -371,7 +365,7 @@ begin
   PkgStringGrid.Columns[3].Title.Caption:=lisGroup;
   PkgStringGrid.Columns[4].Title.Caption:=lisOIPState;
   PkgStringGrid.Columns[5].Title.Caption:=lisA2PFilename2;
-  PkgStringGrid.Columns[6].Title.Caption:='Last opened';
+  PkgStringGrid.Columns[6].Title.Caption:=lisLastOpened;
 
   i:=1;
   Node:=FLinks.FindLowest;
@@ -408,11 +402,11 @@ end;
 
 procedure TPackageLinksDialog.UpdateFacets;
 begin
-  ShowGlobalLinksCheckBox.Caption:=lisPLDShowGlobalLinks
-     +' in '+PkgLinks.GetGlobalLinkDirectory+'*.lpl'
+  ShowGlobalLinksCheckBox.Caption:=lisPLDShowGlobalLinksIn
+     +PkgLinks.GetGlobalLinkDirectory+'*.lpl'
      +' ('+IntToStr(CountGlobalLinks)+')';
-  ShowUserLinksCheckBox.Caption:=lisPLDShowUserLinks
-     +' in '+PkgLinks.GetUserLinkFile
+  ShowUserLinksCheckBox.Caption:=lisPLDShowUserLinksIn
+     +PkgLinks.GetUserLinkFile
      +' ('+IntToStr(CountUserLinks)+')';
   LPKFileValidCheckBox.Caption:=Format(lrsPLDLpkFileValid, [IntToStr(
     CountLPKValid)]);

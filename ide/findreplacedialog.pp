@@ -163,7 +163,7 @@ begin
   FromCursorRadioButton.Caption := dlgFromCursor;
   EntireScopeRadioButton.Caption := dlgFromBeginning;
 
-  ScopeGroupBox.Caption := dlgScope;
+  ScopeGroupBox.Caption := dlgSearchScope;
   GlobalRadioButton.Caption := dlgGlobal;
   SelectedRadioButton.Caption := dlgSelectedText;
 
