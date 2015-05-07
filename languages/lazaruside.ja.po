@@ -4365,8 +4365,12 @@ msgstr "Windowsシステムに対する便利な設定は：$(LazarusDir)\\mingw
 msgid "Automatically adjust IDE main window height"
 msgstr ""
 
-#: lazarusidestrconsts.lisautoadjustideheighthint
-msgid "Applicable only when not maximized and for undocked IDE."
+#: lazarusidestrconsts.lisautoadjustideheightfullcomponentpalette
+msgid "Show complete component palette"
+msgstr ""
+
+#: lazarusidestrconsts.lisautoadjustideheightfullcomponentpalettehint
+msgid "If component palette spans over more lines, show them all and not only one."
 msgstr ""
 
 #: lazarusidestrconsts.lisautocompletionoff

@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2015-05-07 03:06+0300\n"
+"PO-Revision-Date: 2015-05-08 00:53+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -4283,9 +4283,13 @@ msgstr "Типичное значение для ОС Windows: $(LazarusDir)\\mi
 msgid "Automatically adjust IDE main window height"
 msgstr "Выставлять высоту главного окна IDE автоматически"
 
-#: lazarusidestrconsts.lisautoadjustideheighthint
-msgid "Applicable only when not maximized and for undocked IDE."
-msgstr "Применимо только если окно не развёрнуто и IDE не находится в режиме стыковки."
+#: lazarusidestrconsts.lisautoadjustideheightfullcomponentpalette
+msgid "Show complete component palette"
+msgstr "Показывать палитру компонентов полностью"
+
+#: lazarusidestrconsts.lisautoadjustideheightfullcomponentpalettehint
+msgid "If component palette spans over more lines, show them all and not only one."
+msgstr "Показывать все строки палитры компонентов, если она занимает несколько."
 
 #: lazarusidestrconsts.lisautocompletionoff
 msgid "Auto completion: off"
