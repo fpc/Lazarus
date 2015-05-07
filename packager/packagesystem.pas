@@ -5555,7 +5555,7 @@ begin
       CurResult:=IDEQuestionDialog(lisPkgSysPackageFileNotFound,
         Format(lisPkgSysThePackageIsInstalledButNoValidPackageFileWasFound,
                [BrokenPackage.Name, LineEnding]),
-        mtError,[mrOk,mrYesToAll,'Skip these warnings']);
+        mtError, [mrOk, mrYesToAll, lisSkipTheseWarnings]);
       if CurResult=mrYesToAll then
         Quiet:=true;
     end;

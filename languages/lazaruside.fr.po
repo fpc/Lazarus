@@ -15426,6 +15426,10 @@ msgstr "Ignorer le fichier et continuer le chargement"
 msgid "Skip loading last project"
 msgstr "Ignorer le chargement du dernier projet"
 
+#: lazarusidestrconsts.lisskipthesewarnings
+msgid "Skip these warnings"
+msgstr ""
+
 #: lazarusidestrconsts.lisslowerbutmoreaccurate
 msgid "Slower but more accurate."
 msgstr "Plus lent mais plus précis."
