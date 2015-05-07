@@ -362,12 +362,12 @@ type
       const FileNames: array of String);
     procedure CoolBarOnChange(Sender: TObject);
     procedure MainSplitterMoved(Sender: TObject);
+    procedure SetMainIDEHeightEvent(Sender: TObject);
   private
     FOldWindowState: TWindowState;
     FOnActive: TNotifyEvent;
     procedure NewUnitFormDefaultClick(Sender: TObject);
     procedure NewUnitFormPopupMenuPopup(Sender: TObject);
-    function IsDefaultIDE: Boolean;
     function CalcMainIDEHeight: Integer;
     function CalcNonClientHeight: Integer;
   protected
@@ -375,7 +375,6 @@ type
     procedure DoShow; override;
     procedure WndProc(var Message: TLMessage); override;
 
-    procedure DoSetMainIDEHeight(const AIDEIsMaximized: Boolean);
     procedure Resizing(State: TWindowState); override;
   public
     constructor Create(TheOwner: TComponent); override;
@@ -386,6 +385,7 @@ type
     procedure UpdateDockCaption({%H-}Exclude: TControl); override;
     procedure RefreshCoolbar;
     procedure SetMainIDEHeight;
+    procedure DoSetMainIDEHeight(const AIDEIsMaximized: Boolean; ANewHeight: Integer = 0);
   end;
 
 var
@@ -394,7 +394,7 @@ var
 implementation
 
 uses
-  LCLIntf, LCLType, InterfaceBase, Math;
+  LCLIntf, LCLType, Math, IDEWindowIntf;
 
 { TMainIDEBar }
 
@@ -479,27 +479,38 @@ begin
     FOnActive(Self);
 end;
 
-procedure TMainIDEBar.DoSetMainIDEHeight(const AIDEIsMaximized: Boolean);
-var
-  NewHeight: Integer;
+procedure TMainIDEBar.DoSetMainIDEHeight(const AIDEIsMaximized: Boolean;
+  ANewHeight: Integer);
 begin
-  if not (Showing and IsDefaultIDE) then
+  if not Showing then
     Exit;
 
-  if (AIDEIsMaximized or EnvironmentOptions.AutoAdjustIDEHeight) then
+  if ANewHeight <= 0 then
+    ANewHeight := CalcMainIDEHeight;
+
+  if Assigned(IDEDockMaster) then
   begin
-    NewHeight := CalcMainIDEHeight + CalcNonClientHeight;
-    if NewHeight <> Constraints.MaxHeight then
-    begin
-      Constraints.MaxHeight := NewHeight;
-      Constraints.MinHeight := Constraints.MaxHeight;
-      ClientHeight := Constraints.MaxHeight;
-    end;
+    if EnvironmentOptions.AutoAdjustIDEHeight then
+      IDEDockMaster.AdjustMainIDEWindowHeight(Self, True, ANewHeight)
+    else
+      IDEDockMaster.AdjustMainIDEWindowHeight(Self, False, 0);
   end else
-  if Constraints.MaxHeight <> 0 then
   begin
-    Constraints.MaxHeight := 0;
-    Constraints.MinHeight := 0;
+    if (AIDEIsMaximized or EnvironmentOptions.AutoAdjustIDEHeight) then
+    begin
+      ANewHeight := ANewHeight + CalcNonClientHeight;
+      if ANewHeight <> Constraints.MaxHeight then
+      begin
+        Constraints.MaxHeight := ANewHeight;
+        Constraints.MinHeight := Constraints.MaxHeight;
+        ClientHeight := Constraints.MaxHeight;
+      end;
+    end else
+    if Constraints.MaxHeight <> 0 then
+    begin
+      Constraints.MaxHeight := 0;
+      Constraints.MinHeight := 0;
+    end;
   end;
 end;
 
@@ -507,24 +518,58 @@ procedure TMainIDEBar.DoShow;
 begin
   inherited DoShow;
   RefreshCoolbar;
+  ComponentPageControl.OnChange(Self);//refresh component palette with button reposition
 end;
 
 function TMainIDEBar.CalcNonClientHeight: Integer;
+{$IF DEFINED(LCLWin32) OR DEFINED(LCLGtk2)}
 var
   WindowRect, WindowClientRect: TRect;
+{$ENDIF}
 begin
-  if Showing then
-  begin
-    LclIntf.GetWindowRect(Handle, WindowRect{%H-});
-    LclIntf.GetClientRect(Handle, WindowClientRect{%H-});
-    LclIntf.ClientToScreen(Handle, WindowClientRect.TopLeft);
+  {
+    This function is a bug-workaround for various LCL widgetsets.
+    Every widgetset handles constrained height differently.
+    In an ideal word (when the bugs are fixed), this function shouldn't be
+    needed at all - it should return always 0.
 
-    Result := WindowClientRect.Top - WindowRect.Top;
+    Currently tested: Win32, Gtk2, Carbon.
 
-    if Pos('Win32', WidgetSet.ClassName) > 0 then//TWin32WidgetSet widgetset bug -> the constrained height has to be without SM_CYSIZEFRAME and SM_CYMENU (Gtk2 works fine)
-      Result := Result - (LCLIntf.GetSystemMetrics(SM_CYSIZEFRAME) + LCLIntf.GetSystemMetrics(SM_CYMENU));
-  end else
-    Result := 0;
+    List of bugs related to this workaround:
+      http://bugs.freepascal.org/view.php?id=28033
+      http://bugs.freepascal.org/view.php?id=28034
+      http://bugs.freepascal.org/view.php?id=28036
+
+  }
+
+  if not Showing then
+    Exit(0);
+
+  {$IF DEFINED(LCLWin32) OR DEFINED(LCLGtk2)}
+  //Gtk2 + Win32
+  //retrieve real main menu height because
+  // - Win32: multi-line is possible (SM_CYMENU reflects only single line)
+  // - Gtk2:  SM_CYMENU does not work
+  LclIntf.GetWindowRect(Handle, WindowRect{%H-});
+  LclIntf.GetClientRect(Handle, WindowClientRect{%H-});
+  LclIntf.ClientToScreen(Handle, WindowClientRect.TopLeft);
+
+  Result := WindowClientRect.Top - WindowRect.Top;
+
+  {$IFDEF LCLWin32}
+  //Win32 the constrained height has to be without SM_CYSIZEFRAME and SM_CYMENU
+  Result := Result - (LCLIntf.GetSystemMetrics(SM_CYSIZEFRAME) + LCLIntf.GetSystemMetrics(SM_CYMENU));
+  {$ENDIF LCLWin32}
+  {$ELSE}
+  //other widgetsets
+  //Carbon & Qt tested - they behave correctly
+  Result := 0;
+  {$ENDIF}
+end;
+
+procedure TMainIDEBar.SetMainIDEHeightEvent(Sender: TObject);
+begin
+  SetMainIDEHeight;
 end;
 
 procedure TMainIDEBar.WndProc(var Message: TLMessage);
@@ -671,21 +716,27 @@ begin
     end;
   end;
 
-  if EnvironmentOptions.ComponentPaletteVisible then
+  if EnvironmentOptions.ComponentPaletteVisible and Assigned(ComponentPageControl.ActivePage) then
   begin
-    for I := 0 to ComponentPageControl.PageCount-1 do
-    if (ComponentPageControl.Page[I].ControlCount > 0) and (ComponentPageControl.Page[I].Controls[0] is TScrollBox) then
+    ComponentScrollBox := nil;
+    for I := 0 to ComponentPageControl.ActivePage.ControlCount-1 do
+    if (ComponentPageControl.ActivePage.Controls[I] is TScrollBox) then
     begin
-      ComponentScrollBox := TScrollBox(ComponentPageControl.Page[I].Controls[0]);
-      if ComponentScrollBox.ControlCount > 0 then
-      begin
-        SBControl := ComponentScrollBox.Controls[0];
-        NewHeight :=
-          SBControl.Top + SBControl.Height +  //button height
-          ComponentPageControl.Height - ComponentScrollBox.ClientHeight;  //page control non-client height (tabs, borders).
-        Result := Max(Result, NewHeight);
+      ComponentScrollBox := TScrollBox(ComponentPageControl.ActivePage.Controls[I]);
+      Break;
+    end;
+
+    if Assigned(ComponentScrollBox) then
+    for I := 0 to ComponentScrollBox.ControlCount-1 do
+    begin
+      SBControl := ComponentScrollBox.Controls[I];
+      NewHeight :=
+        SBControl.Top + SBControl.Height +  //button height
+        ComponentPageControl.Height - ComponentScrollBox.ClientHeight;  //page control non-client height (tabs, borders).
+      Result := Max(Result, NewHeight);
+
+      if not EnvironmentOptions.AutoAdjustIDEHeightFullComponentPalette then
         Break;  //we need only one button (we calculate one line only)
-      end;
     end;
   end;
 end;
@@ -716,22 +767,6 @@ procedure TMainIDEBar.SetMainIDEHeight;
 begin
   DoSetMainIDEHeight(WindowState = wsMaximized);
 end;
-
-function TMainIDEBar.IsDefaultIDE: Boolean;
-var
-  I: Integer;
-begin
-  Result := True;
-  for I := 0 to MainIDEBar.ControlCount - 1 do
-  begin
-    if (MainIDEBar.Controls[I] as TControl).Tag <> 112 then
-    begin
-      Result := False;
-      Break;
-    end;
-  end;
-end;
-
 
 end.
 

@@ -1517,6 +1517,7 @@ begin
   CompPalette.OnOpenPackage:=@PkgMngr.IDEComponentPaletteOpenPackage;
   CompPalette.OnOpenUnit:=@PkgMngr.IDEComponentPaletteOpenUnit;
   CompPalette.PageControl:=MainIDEBar.ComponentPageControl;
+  CompPalette.OnChangeActivePage:=@MainIDEBar.SetMainIDEHeightEvent;
   // load installed packages
   PkgBoss.LoadInstalledPackages;
 
@@ -2002,13 +2003,11 @@ begin
   MainIDEBar.MainSplitter.Parent := MainIDEBar;
   MainIDEBar.MainSplitter.Align := alLeft;
   MainIDEBar.MainSplitter.MinSize := 50;
-  MainIDEBar.MainSplitter.Tag := 112;
   MainIDEBar.MainSplitter.OnMoved := @MainIDEBar.MainSplitterMoved;
 
 
   MainIDEBar.CoolBar := TCoolBar.Create(OwningComponent);
   MainIDEBar.CoolBar.Parent := MainIDEBar;
-  MainIDEBar.CoolBar.Tag := 112;
   if EnvironmentOptions.ComponentPaletteVisible then
   begin
     MainIDEBar.CoolBar.Align := alLeft;
@@ -2017,7 +2016,6 @@ begin
   else
     MainIDEBar.CoolBar.Align := alClient;
 
-  MainIDEBar.mnuMainMenu.Tag := 112;
   // IDE Coolbar object wraps MainIDEBar.CoolBar.
   IDECoolBar := TIDECoolBar.Create(MainIDEBar.CoolBar);
   IDECoolBar.IsVisible := EnvironmentOptions.IDECoolBarOptions.IDECoolBarVisible;;
@@ -2050,7 +2048,6 @@ begin
     Align := alClient;
     Visible:=EnvironmentOptions.ComponentPaletteVisible;
     Parent := MainIDEBar;
-    Tag := 112;
   end;
 end;
 
@@ -3709,6 +3706,9 @@ begin
     MainIDEBar.CoolBar.Align := alClient;
   MainIDEBar.MainSplitter.Visible := MainIDEBar.Coolbar.Visible and
                                      MainIDEBar.ComponentPageControl.Visible;
+
+  if ComponentPaletteVisible then//when showing component palette, it must be visible to calculate it correctly
+    MainIDEBar.DoSetMainIDEHeight(MainIDEBar.WindowState = wsMaximized, 100);//it will cause the IDE to flicker, but it's better than to have wrongly calculated IDE height
   MainIDEBar.SetMainIDEHeight;
 end;
 

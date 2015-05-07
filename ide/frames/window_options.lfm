@@ -1,9 +1,9 @@
 object WindowOptionsFrame: TWindowOptionsFrame
   Left = 0
-  Height = 582
+  Height = 585
   Top = 0
   Width = 573
-  ClientHeight = 582
+  ClientHeight = 585
   ClientWidth = 573
   TabOrder = 0
   DesignLeft = 349
@@ -41,15 +41,15 @@ object WindowOptionsFrame: TWindowOptionsFrame
     AnchorSideTop.Side = asrBottom
     AnchorSideBottom.Side = asrBottom
     Left = 0
-    Height = 423
+    Height = 426
     Top = 154
     Width = 570
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Top = 3
     Caption = 'WindowPositionsPanel'
-    ClientHeight = 423
+    ClientHeight = 426
     ClientWidth = 570
-    TabOrder = 7
+    TabOrder = 8
     object LeftLabel: TLabel
       AnchorSideTop.Control = LeftEdit
       AnchorSideTop.Side = asrCenter
@@ -459,7 +459,7 @@ object WindowOptionsFrame: TWindowOptionsFrame
   end
   object lblWindowPosition: TDividerBevel
     AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = AutoAdjustIDEHeightCheckBox
+    AnchorSideTop.Control = AutoAdjustIDEHeightFullComponentPaletteCheckBox
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
@@ -485,5 +485,19 @@ object WindowOptionsFrame: TWindowOptionsFrame
     ParentShowHint = False
     ShowHint = True
     TabOrder = 6
+  end
+  object AutoAdjustIDEHeightFullComponentPaletteCheckBox: TCheckBox
+    AnchorSideLeft.Control = AutoAdjustIDEHeightCheckBox
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = AutoAdjustIDEHeightCheckBox
+    Left = 189
+    Height = 17
+    Top = 115
+    Width = 274
+    BorderSpacing.Left = 20
+    Caption = 'AutoAdjustIDEHeightFullComponentPaletteCheckBox'
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 7
   end
 end

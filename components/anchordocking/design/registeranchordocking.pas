@@ -94,6 +94,8 @@ type
     procedure MakeIDEWindowDockable(AControl: TWinControl); override;
     function AddableInWindowMenu(AForm: TCustomForm): boolean; override;
     procedure ShowForm(AForm: TCustomForm; BringToFront: boolean); override;
+    procedure AdjustMainIDEWindowHeight(const AIDEWindow: TCustomForm;
+      const AAdjustHeight: Boolean; const ANewHeight: Integer); override;
     procedure CloseAll; override;
     procedure OnIDERestoreWindows(Sender: TObject);
     function OnProjectClose(Sender: TObject; AProject: TLazProject): TModalResult;
@@ -285,6 +287,33 @@ begin
   if AForm is TAnchorDockHostSite then exit;
   if (DockMaster.FindControl(AForm.Name)=nil) and (AForm.Parent<>nil) then exit;
   Result:=true;
+end;
+
+procedure TIDEAnchorDockMaster.AdjustMainIDEWindowHeight(
+  const AIDEWindow: TCustomForm; const AAdjustHeight: Boolean;
+  const ANewHeight: Integer);
+var
+  Site: TAnchorDockHostSite;
+  I: Integer;
+  SiteNewHeight: Integer;
+begin
+  inherited AdjustMainIDEWindowHeight(AIDEWindow, AAdjustHeight, ANewHeight);
+
+  Site := nil;
+  for I := 0 to AIDEWindow.ControlCount-1 do
+  if AIDEWindow.Controls[I] is TAnchorDockHostSite then
+  begin
+    Site := TAnchorDockHostSite(AIDEWindow.Controls[I]);
+    Break;
+  end;
+
+  if not Assigned(Site) then
+    Exit;
+
+  Site.BoundSplitter.Enabled := not AAdjustHeight;
+  SiteNewHeight := Site.Parent.ClientHeight - ANewHeight - Site.BoundSplitter.Height;
+  if AAdjustHeight and (Site.Height <> SiteNewHeight) then
+    Site.Height := SiteNewHeight;
 end;
 
 function TIDEAnchorDockMaster.GetUserLayoutFilename(Full: boolean): string;
