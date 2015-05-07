@@ -30,6 +30,11 @@ uses
   fpjsonrpc,
   jstree,jsparser,
   fpextdirect,fpwebdata,
+{$IFDEF VER3_1}
+  fphttpwebclient,
+  fpoauth2,
+  fpoauth2ini,
+{$ENDIF}
   webjsonrpc;
 
 type
@@ -271,8 +276,10 @@ begin
                                TExtJSXMLWebdataInputAdaptor,TExtJSXMLDataFormatter,
                                TJSONRPCHandler,TJSONRPCDispatcher,TSessionJSONRPCDispatcher,
                                TJSONRPCContentProducer,
-                               TExtDirectDispatcher,TExtDirectContentProducer]);
+                               TExtDirectDispatcher,TExtDirectContentProducer
+                               ]);
 end;
+
 
 
 Procedure RegisterComponents;
@@ -280,6 +287,9 @@ Procedure RegisterComponents;
 begin
   RegisterUnit('fphtml',@RegisterHTMLComponents);
   RegisterUnit('fpdatasetform',@RegisterdatasetComponents);
+  {$IFDEF VER3_1}
+  classes.RegisterComponents(fpWebTab,[TFPHTTPWebClient,TOAuth2Handler,TFPOAuth2IniStore]);
+  {$ENDIF}
 end;
 
 procedure Register;
