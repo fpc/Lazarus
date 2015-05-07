@@ -4181,6 +4181,7 @@ resourcestring
   lisPkgMangTheFileOfPackageWasNotFound = 'The file "%s" of package %s was not found.';
   lisPkgSysThePackageIsInstalledButNoValidPackageFileWasFound = 'The package "%s" is installed, '
     +'but no valid package file (.lpk) was found.%sA broken dummy package was created.';
+  lisSkipTheseWarnings = 'Skip these warnings';
 
   // package defs
   lisPkgDefsOutputDirectory = 'Output directory';
