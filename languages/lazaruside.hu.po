@@ -15741,6 +15741,10 @@ msgstr "Fájl kihagyása és a betöltés folytatása"
 msgid "Skip loading last project"
 msgstr "Legutóbbi projekt betöltésének kihagyása"
 
+#: lazarusidestrconsts.lisskipthesewarnings
+msgid "Skip these warnings"
+msgstr ""
+
 #: lazarusidestrconsts.lisslowerbutmoreaccurate
 msgid "Slower but more accurate."
 msgstr "Lassabb, de pontosabb."

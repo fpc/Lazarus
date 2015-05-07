@@ -15839,6 +15839,10 @@ msgstr "Přeskočit soubor a pokračovat v načítání"
 msgid "Skip loading last project"
 msgstr "Přeskočit načtení posledního projektu"
 
+#: lazarusidestrconsts.lisskipthesewarnings
+msgid "Skip these warnings"
+msgstr ""
+
 #: lazarusidestrconsts.lisslowerbutmoreaccurate
 msgid "Slower but more accurate."
 msgstr ""

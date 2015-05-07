@@ -16139,6 +16139,10 @@ msgstr "Tęsti įkrovą praleidžiant failą"
 msgid "Skip loading last project"
 msgstr "Neįkelti paskutinio naudoto projekto"
 
+#: lazarusidestrconsts.lisskipthesewarnings
+msgid "Skip these warnings"
+msgstr ""
+
 #: lazarusidestrconsts.lisslowerbutmoreaccurate
 msgid "Slower but more accurate."
 msgstr ""

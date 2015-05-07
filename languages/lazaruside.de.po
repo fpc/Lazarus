@@ -15720,6 +15720,10 @@ msgstr "Datei übergehen und das Laden fortsetzen"
 msgid "Skip loading last project"
 msgstr "Das Laden des letzten Projekts übergehen"
 
+#: lazarusidestrconsts.lisskipthesewarnings
+msgid "Skip these warnings"
+msgstr ""
+
 #: lazarusidestrconsts.lisslowerbutmoreaccurate
 msgid "Slower but more accurate."
 msgstr "Langsamer dafür genauer."

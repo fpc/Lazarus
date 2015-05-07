@@ -16056,6 +16056,10 @@ msgstr "Dosyayı atla ve yüklemeye devam et"
 msgid "Skip loading last project"
 msgstr "Son projenin yüklenmesini atla"
 
+#: lazarusidestrconsts.lisskipthesewarnings
+msgid "Skip these warnings"
+msgstr ""
+
 #: lazarusidestrconsts.lisslowerbutmoreaccurate
 msgid "Slower but more accurate."
 msgstr ""

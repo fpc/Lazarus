@@ -16620,6 +16620,10 @@ msgstr "跳过文件继续装载"
 msgid "Skip loading last project"
 msgstr "跳过装载最后的工程"
 
+#: lazarusidestrconsts.lisskipthesewarnings
+msgid "Skip these warnings"
+msgstr ""
+
 #: lazarusidestrconsts.lisslowerbutmoreaccurate
 msgid "Slower but more accurate."
 msgstr ""

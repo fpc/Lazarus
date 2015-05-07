@@ -16404,6 +16404,10 @@ msgstr "Sla bestand over en vervolg het laden"
 msgid "Skip loading last project"
 msgstr "Sla het laden van het laatste project over"
 
+#: lazarusidestrconsts.lisskipthesewarnings
+msgid "Skip these warnings"
+msgstr ""
+
 #: lazarusidestrconsts.lisslowerbutmoreaccurate
 msgid "Slower but more accurate."
 msgstr ""

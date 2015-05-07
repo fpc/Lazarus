@@ -16122,6 +16122,10 @@ msgstr "Пропустити файл і продовжити завантаже
 msgid "Skip loading last project"
 msgstr "Пропустити завантаження останнього проекту"
 
+#: lazarusidestrconsts.lisskipthesewarnings
+msgid "Skip these warnings"
+msgstr ""
+
 #: lazarusidestrconsts.lisslowerbutmoreaccurate
 msgid "Slower but more accurate."
 msgstr ""

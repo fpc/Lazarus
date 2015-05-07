@@ -16869,6 +16869,10 @@ msgstr "דלג על הקובץ והמשך בטעינה"
 msgid "Skip loading last project"
 msgstr "דלג על טעינת הפרויקט האחרון"
 
+#: lazarusidestrconsts.lisskipthesewarnings
+msgid "Skip these warnings"
+msgstr ""
+
 #: lazarusidestrconsts.lisslowerbutmoreaccurate
 msgid "Slower but more accurate."
 msgstr ""

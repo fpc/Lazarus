@@ -16346,6 +16346,10 @@ msgstr ""
 msgid "Skip loading last project"
 msgstr ""
 
+#: lazarusidestrconsts.lisskipthesewarnings
+msgid "Skip these warnings"
+msgstr ""
+
 #: lazarusidestrconsts.lisslowerbutmoreaccurate
 msgid "Slower but more accurate."
 msgstr ""

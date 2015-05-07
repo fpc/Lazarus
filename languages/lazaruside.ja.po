@@ -16017,6 +16017,10 @@ msgstr "そのファイルをとばして読み込みを続行"
 msgid "Skip loading last project"
 msgstr "最後のプロジェクトの読み込みをスキップ"
 
+#: lazarusidestrconsts.lisskipthesewarnings
+msgid "Skip these warnings"
+msgstr ""
+
 #: lazarusidestrconsts.lisslowerbutmoreaccurate
 msgid "Slower but more accurate."
 msgstr ""

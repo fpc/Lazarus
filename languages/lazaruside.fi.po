@@ -15624,6 +15624,10 @@ msgstr "Ohita tiedosto ja jatka lataamista"
 msgid "Skip loading last project"
 msgstr "Ohita viime projektin lataaminen"
 
+#: lazarusidestrconsts.lisskipthesewarnings
+msgid "Skip these warnings"
+msgstr ""
+
 #: lazarusidestrconsts.lisslowerbutmoreaccurate
 msgid "Slower but more accurate."
 msgstr "Hitaampi mutta tarkempi."
