@@ -22,6 +22,12 @@ begin
     PrinterCanvas.TextOut(50, 220, 'ฉันหิวแล้ว');
     PrinterCanvas.TextOut(50, 290, 'К нам в око́шко застучи́т');
     PrinterCanvas.TextOut(50, 360, 'لا أتَكَلّمُ الْعَرَبيّة');
+    PrinterCanvas.NewPage;
+    PrinterCanvas.TextOut(50, 80, 'Page 2');
+    PrinterCanvas.TextOut(50, 150, 'Finnish: wxyzåäö1234567890');
+    PrinterCanvas.TextOut(50, 220, 'Thai: ฉันหิวแล้ว');
+    PrinterCanvas.TextOut(50, 290, 'Russian: К нам в око́шко застучи́т');
+    PrinterCanvas.TextOut(50, 360, 'Arabic: لا أتَكَلّمُ الْعَرَبيّة');
     WriteLn('Written file ' + PrinterCanvas.OutputFileName);
   finally
     PrinterCanvas.Free;
