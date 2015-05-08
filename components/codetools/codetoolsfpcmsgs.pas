@@ -839,7 +839,7 @@ end;
 procedure TFPCMsgRanges.Clear(FreeMemory: boolean);
 begin
   FCount:=0;
-  if not FreeMemory then begin
+  if FreeMemory then begin
     ReAllocMem(Ranges,0);
     FCapacity:=0;
   end;
