@@ -78,15 +78,15 @@ type
     procedure SetXDPI(const AValue: Integer);
     procedure SetYDPI(const AValue: Integer);
   protected
-    procedure BeginDoc; virtual;
-    procedure NewPage;  virtual;
-    procedure EndDoc; virtual;
     function GetLeftMargin: Integer;
     function GetTopMargin: Integer;
     function GetBottomMargin: Integer;
     function GetRightMargin: Integer;
   public
     constructor Create(APrinter: TPrinter); virtual;
+    procedure BeginDoc; virtual;
+    procedure NewPage;  virtual;
+    procedure EndDoc; virtual;
     procedure Changing; override;
 
     property Printer : TPrinter read fPrinter;
