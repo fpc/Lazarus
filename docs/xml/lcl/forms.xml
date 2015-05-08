@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <fpdoc-descriptions>
   <package name="lcl">
     <!--
@@ -8209,6 +8209,7 @@
         <short>The application terminates when this form is closed.
         </short>
         <seealso/>
+      <descr>This property is set when the first form is created via Application.CreateForm and it is not FormStyle=fsSplash.</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TApplication.MainFormHandle">
@@ -9251,7 +9252,8 @@
         <descr>The form resource is the lfm file compiled into the executable of your application. For this flag it does not matter if it was compiled via an lrs file or via fpcres. The resource is automatically loaded by TForm and therfore any descendant when it is created via Create(Owner). If the resource is missing there is something wrong with either a resource or the unit which contains the faulty form. If the flag is false you will see a blank form and probably search a long time what is wrong. If you set this flag to true you get an exception. 
 
 For creating forms without resources you have 3 options:
-<ul><li>Create a TForm class (not a descendant)</li><li>Construct your form using the CreateNew() constructor.</li><li>It is also possible to disable the exception by setting the global variable RequireDerivedFormResource to False. </li></ul>
+<ul><li>Create a TForm class (not a descendant)</li><li>Construct your form using the CreateNew() constructor.</li><li>It is also possible to disable the exception by setting the global variable RequireDerivedFormResource to False. </li>
+          </ul>
 History:
 
 Before 0.9.31 there was no exception. Therefore some resourceless forms might use the standard constructor Create(Owner) and will now get exceptions. This change is Delphi compatible and compatible with TFrame and TDataModule components.
