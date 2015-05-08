@@ -5138,10 +5138,12 @@ begin
     SaveFlags:=[sfCanAbort];
     if not FilenameIsAbsolute(AFilename) then
       SaveFlags:=[sfSaveAs];
-    debugln(['Error: (lazarus) [TPkgManager.SavePackageFiles] failed writing "',AFilename,'"']);
     Result:=LazarusIDE.DoSaveEditorFile(SrcEdit,SaveFlags);
     if Result=mrIgnore then Result:=mrOk;
-    if Result<>mrOk then exit;
+    if Result<>mrOk then begin
+      debugln(['Error: (lazarus) [TPkgManager.SavePackageFiles] failed writing "',AFilename,'"']);
+      exit;
+    end;
   end;
 end;
 
