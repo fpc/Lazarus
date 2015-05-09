@@ -3,6 +3,8 @@ component palette.
 
 Each Google Service API is a REST API that offers multiple resources.
 
+See the end of this file for instructions for compiling with FPC 2.6.x
+
 ==================
 Component overview
 ==================
@@ -97,3 +99,36 @@ correct scope)
 
 You can re-use the same Client ID and secret for all examples, or you
 can create different client IDs and keys, or even create different projects.
+
+========================
+Compiling with FPC 2.6.4
+========================
+
+The code works with FPC 2.6.4. To work with FPC 2.6.4, you need the
+following files from the FPC SVN repository (trunk):
+
+From packages/fcl-web/src/base:
+
+fpoauth2.pp
+fphttpwebclient.pp
+fpwebclient.pp
+restcodegen.pp
+restbase.pp
+fpoauth2ini.pp
+fpjwt.pp
+
+From packages/googleapi/src
+All *.pp files
+
+There is a directory 2_6_4 to which the files can be copied.
+
+Additionally, in the directory 2_6_4 there is a unit synapsewebclient.
+This unit implements a TFPWebclient descendent that works with Synapse.
+It works with version 2.6.4, and with version 3.x of Free Pascal.
+
+You need to have compiled the laz_synapse package (distributed with synapse)
+for this to work.
+
+To compile the package and the demos, copy the needed files to directory 2_6_4 and 
+add this directory to the source path of the lazgoogleapi package and all
+demo programs.

@@ -1633,6 +1633,7 @@ components/fpweb/lazwebextra.lpk svneol=native#text/plain
 components/fpweb/weblaz.lpk svneol=native#text/plain
 components/fpweb/weblaz.pas svneol=native#text/plain
 components/fpweb/weblazideintf.pp svneol=native#text/plain
+components/googleapis/2_6_4/synapsewebclient.pp svneol=native#text/plain
 components/googleapis/README.txt svneol=native#text/plain
 components/googleapis/demo/calendar/calendardemo.lpi svneol=native#text/plain
 components/googleapis/demo/calendar/calendardemo.lpr svneol=native#text/plain
