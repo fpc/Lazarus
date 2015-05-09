@@ -343,7 +343,7 @@ object ToolbarOptionsFrame: TToolbarOptionsFrame
       Top = 28
       Width = 64
       BorderSpacing.Left = 6
-      MaxValue = 0
+      MaxValue = 5000
       OnChange = spCoolBarWidthChange
       TabOrder = 4
       Value = 230
