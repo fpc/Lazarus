@@ -3708,7 +3708,7 @@ begin
                                      MainIDEBar.ComponentPageControl.Visible;
 
   if ComponentPaletteVisible then//when showing component palette, it must be visible to calculate it correctly
-    MainIDEBar.DoSetMainIDEHeight(MainIDEBar.WindowState = wsMaximized, 100);//it will cause the IDE to flicker, but it's better than to have wrongly calculated IDE height
+    MainIDEBar.DoSetMainIDEHeight(MainIDEBar.WindowState = wsMaximized, 55);//it will cause the IDE to flicker, but it's better than to have wrongly calculated IDE height
   MainIDEBar.SetMainIDEHeight;
 end;
 

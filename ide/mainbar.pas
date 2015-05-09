@@ -533,7 +533,7 @@ begin
     In an ideal word (when the bugs are fixed), this function shouldn't be
     needed at all - it should return always 0.
 
-    Currently tested: Win32, Gtk2, Carbon.
+    Currently tested: Win32, Gtk2, Carbon, Qt.
 
     List of bugs related to this workaround:
       http://bugs.freepascal.org/view.php?id=28033
