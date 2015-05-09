@@ -2,6 +2,14 @@ unit frmmain;
 
 {$mode objfpc}{$H+}
 
+// Define USESYNAPSE if you want to force use of synapse
+{ $DEFINE USESYNAPSE}
+
+// For version 2.6.4, synapse is the only option.
+{$IFDEF VER2_6}
+{$DEFINE USESYNAPSE}
+{$ENDIF}
+
 interface
 
 uses
@@ -58,11 +66,11 @@ uses
   jsonparser, // needed
   fpoauth2,
   lclintf,
-{$IFDEF NATIVEWEBCLIENT}
-  fphttpwebclient
-{$ELSE}
+{$IFDEF USESYNAPSE}
   ssl_openssl,
   synapsewebclient
+{$ELSE}
+  fphttpwebclient
 {$ENDIF}
   ;
 
@@ -76,7 +84,12 @@ begin
   TCalendarAPI.RegisterAPIResources;
   // Set up google client.
   FClient:=TGoogleClient.Create(Self);
+{$IFDEF USESYNAPSE}
   FClient.WebClient:=TSynapseWebClient.Create(Self);
+{$ELSE}
+  FClient.WebClient:=TFPHTTPWebClient.Create(Self);
+{$ENDIF}
+  FClient.WebClient.LogFile:='requests.log';
   FClient.WebClient.RequestSigner:=FClient.AuthHandler;
   FClient.AuthHandler.WebClient:=FClient.WebClient;
   FClient.AuthHandler.Config.AccessType:=atOffLine;

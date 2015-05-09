@@ -52,21 +52,18 @@
         <ComponentName Value="MainForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <UnitName Value="frmmain"/>
       </Unit1>
       <Unit2>
         <Filename Value="frmgenoptions.pp"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="GenCodeFormOptions"/>
         <ResourceBaseClass Value="Form"/>
-        <UnitName Value="frmgenoptions"/>
       </Unit2>
       <Unit3>
         <Filename Value="frmview.pp"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="ViewForm"/>
         <ResourceBaseClass Value="Form"/>
-        <UnitName Value="frmview"/>
       </Unit3>
     </Units>
   </ProjectOptions>

@@ -60,7 +60,7 @@
     </RunParams>
     <RequiredPackages Count="3">
       <Item1>
-        <PackageName Value="googleapiclient"/>
+        <PackageName Value="lazgoogleapis"/>
       </Item1>
       <Item2>
         <PackageName Value="laz_synapse"/>
@@ -69,7 +69,7 @@
         <PackageName Value="LCL"/>
       </Item3>
     </RequiredPackages>
-    <Units Count="2">
+    <Units Count="3">
       <Unit0>
         <Filename Value="calendardemo.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -80,8 +80,11 @@
         <ComponentName Value="MainForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <UnitName Value="frmmain"/>
       </Unit1>
+      <Unit2>
+        <Filename Value="fphttpclient.pp"/>
+        <IsPartOfProject Value="True"/>
+      </Unit2>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

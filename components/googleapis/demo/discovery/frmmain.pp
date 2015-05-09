@@ -2,6 +2,15 @@ unit frmmain;
 
 {$mode objfpc}{$H+}
 
+// Define this if you want to use synapse.
+{ $DEFINE USESYNAPSE}
+
+// For 2.6.4, synapse is currently the only option.
+// You will need to add lazsynapsewebclient to the requires list.
+{$IFDEF VER2_6}
+{$DEFINE USESYNAPSE}
+{$ENDIF}
+
 interface
 
 uses
@@ -64,10 +73,11 @@ type
     FClient : TGoogleClient;
     FDiscoveryAPI : TDiscoveryAPI;
     FDirectory : TDirectoryList;
-    Function  CurrentAPI : TDirectoryListitems;
+    Function  CurrentAPI : TDirectoryListTypeitemsItem;
     procedure DoFetch;
     procedure DownLoadRestAPI(Const AName,AURL: String);
     procedure GenerateCode(const AName, AURL: String);
+    function HttpGetBinary(AURL: String; S: TStream): Boolean;
     procedure ShowDiscovery(PreferredOnly: Boolean; FilterOn: String);
     procedure UpdateCaption;
     procedure ViewFile(AFileName: String);
@@ -87,9 +97,14 @@ uses
   ssl_openssl,
   jsonparser, // needed
   fpoauth2, lclintf,
+{$IFDEF USESYNAPSE}
   synapsewebclient,
-  googlediscoverytopas,
-  httpsend;
+  httpsend,
+{$ELSE}
+  fphttpclient,
+  fphttpwebclient,
+{$ENDIF}
+  googlediscoverytopas;
 
 { TMainForm }
 
@@ -97,7 +112,11 @@ procedure TMainForm.FormCreate(Sender: TObject);
 begin
   // set up communication.
   FClient:=TGoogleClient.Create(Self);
+{$IFDEF USESYNAPSE}
   FClient.WebClient:=TSynapseWebClient.Create(Self);
+{$ELSE}
+  FClient.WebClient:=TFPHTTPWebClient.Create(Self);
+{$ENDIF}
   // Register all classes so they can be streamed.
   TDiscoveryAPI.RegisterAPIResources;
   // create the API and hook it up to the google client.
@@ -137,7 +156,7 @@ end;
 procedure TMainForm.AGenCodeExecute(Sender: TObject);
 
 Var
-  DLI : TDirectoryListitems;
+  DLI : TDirectoryListTypeitemsItem;
 
 begin
   DLI:=CurrentAPI;
@@ -172,6 +191,22 @@ begin
     FreeStream:=True;
     Show;
     end;
+end;
+
+Function TMainForm.HttpGetBinary(AURL : String; S : TStream) : Boolean;
+
+begin
+{$IFDEF USESYNAPSE}
+   Result:=httpsend.HttpGetBinary(AURL,S);
+{$ELSE}
+  try
+    TFPHTTPClient.SimpleGet(AURL,S);
+    S.Position:=0;
+    Result:=True;
+  except
+    Result:=False;
+  end;
+{$ENDIF}
 end;
 
 procedure TMainForm.GenerateCode(const AName, AURL: String);
@@ -255,7 +290,7 @@ end;
 procedure TMainForm.ASaveRESTExecute(Sender: TObject);
 
 Var
-  DLI : TDirectoryListitems;
+  DLI : TDirectoryListTypeitemsItem;
 begin
   DLI:=CurrentAPI;
   DownLoadRestAPI(DLI.Name,DLI.DiscoveryRestUrl);
@@ -269,7 +304,7 @@ end;
 procedure TMainForm.APreViewRestExecute(Sender: TObject);
 
 Var
-  DLI : TDirectoryListitems;
+  DLI : TDirectoryListTypeitemsItem;
 
 begin
   DLI:=CurrentAPI;
@@ -302,10 +337,10 @@ begin
   SBDiscovery.Panels[0].Text:=Format('%d items',[C]);
 end;
 
-function TMainForm.CurrentAPI: TDirectoryListitems;
+function TMainForm.CurrentAPI: TDirectoryListTypeitemsItem;
 begin
   If Assigned(LVServices.Selected) and Assigned(LVServices.Selected.Data) then
-    Result:=TDirectoryListitems(LVServices.Selected.Data)
+    Result:=TDirectoryListTypeitemsItem(LVServices.Selected.Data)
   else
     Result:=Nil;
 end;
@@ -330,7 +365,7 @@ procedure TMainForm.ShowDiscovery(PreferredOnly : Boolean; FilterOn : String);
     Result:=Pos(FilterOn,LowerCase(S))<>0;
   end;
 
-  Function ShowItem (DLI : TDirectoryListitems) : Boolean;
+  Function ShowItem (DLI : TDirectoryListTypeitemsItem) : Boolean;
 
   begin
     Result:=DLI.Preferred or (Not PreferredOnly);
@@ -344,7 +379,7 @@ procedure TMainForm.ShowDiscovery(PreferredOnly : Boolean; FilterOn : String);
       end;
   end;
 Var
-  DLI : TDirectoryListitems;
+  DLI : TDirectoryListTypeitemsItem;
   LI : TListItem;
 
 begin

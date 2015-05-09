@@ -46,14 +46,12 @@
         <ComponentName Value="MainForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <UnitName Value="frmmain"/>
       </Unit1>
       <Unit2>
         <Filename Value="frmselectdownload.pp"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="SelectDownloadForm"/>
         <ResourceBaseClass Value="Form"/>
-        <UnitName Value="frmselectdownload"/>
       </Unit2>
     </Units>
   </ProjectOptions>

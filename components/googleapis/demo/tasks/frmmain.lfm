@@ -8,7 +8,7 @@ object MainForm: TMainForm
   ClientWidth = 702
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  LCLVersion = '1.3'
+  LCLVersion = '1.5'
   object BFetchTaskLists: TButton
     Left = 8
     Height = 25
