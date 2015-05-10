@@ -37,10 +37,11 @@ object ObjectInspectorDlg: TObjectInspectorDlg
     Left = 0
     Height = 184
     Top = 23
-    Width = 300
+    Width = 406
     Align = alTop
+    BevelOuter = bvNone
     ClientHeight = 184
-    ClientWidth = 300
+    ClientWidth = 406
     TabOrder = 2
     object CompFilterEdit: TTreeFilterEdit
       AnchorSideLeft.Control = FilterLabel
