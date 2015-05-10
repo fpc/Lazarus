@@ -7527,9 +7527,16 @@ begin
 end;
 
 procedure TCustomGrid.CacheMouseDown(const X, Y: Integer);
+var
+  ParentForm: TCustomForm;
 begin
   FGCache.ClickMouse := Point(X,Y);
   FGCache.ClickCell  := MouseToCell(FGCache.ClickMouse);
+  if (FGCache.HotGridZone=gzInvalid) then begin
+    ParentForm := GetParentForm(Self);
+    if (ParentForm<>nil) and ParentForm.Active then
+      FGCache.HotGridZone := CellToGridZone(FGCache.ClickCell.X, FGCache.ClickCell.Y);
+  end;
 end;
 
 procedure TCustomGrid.EndUpdate(aRefresh: boolean = true);
