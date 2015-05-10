@@ -522,7 +522,7 @@ begin
 end;
 
 function TMainIDEBar.CalcNonClientHeight: Integer;
-{$IF DEFINED(LCLWin32) OR DEFINED(LCLGtk2)}
+{$IF DEFINED(LCLWin32) OR DEFINED(LCLGtk2) OR DEFINED(LCLQt)}
 var
   WindowRect, WindowClientRect: TRect;
 {$ENDIF}
@@ -545,11 +545,11 @@ begin
   if not Showing then
     Exit(0);
 
-  {$IF DEFINED(LCLWin32) OR DEFINED(LCLGtk2)}
-  //Gtk2 + Win32
+  {$IF DEFINED(LCLWin32) OR DEFINED(LCLGtk2) OR DEFINED(LCLQt)}
+  //Gtk2 + Win32 + Qt
   //retrieve real main menu height because
   // - Win32: multi-line is possible (SM_CYMENU reflects only single line)
-  // - Gtk2:  SM_CYMENU does not work
+  // - Gtk2, Qt:  SM_CYMENU does not work
   LclIntf.GetWindowRect(Handle, WindowRect{%H-});
   LclIntf.GetClientRect(Handle, WindowClientRect{%H-});
   LclIntf.ClientToScreen(Handle, WindowClientRect.TopLeft);
@@ -562,7 +562,7 @@ begin
   {$ENDIF LCLWin32}
   {$ELSE}
   //other widgetsets
-  //Carbon & Qt tested - they behave correctly
+  //Carbon tested - behaves correctly
   Result := 0;
   {$ENDIF}
 end;
