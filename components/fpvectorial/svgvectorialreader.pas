@@ -2628,6 +2628,20 @@ var
         lCurObject := lTextSpanStack.Pop();
         if lCurObject <> nil then lCurObject.Free;
       end
+      else if lNodeName = 'textPath' then
+      begin
+        lText := lParagraph.AddText(lNodeValue);
+
+        lText.Font.Size := 10;
+        lText.Name := lName;
+        // Apply the layer style
+        ApplyLayerStyles(lText);
+
+        // Apply the layer style
+        ApplyStackStylesToText(lText);
+
+        // Add the curvature
+      end
       else
       begin
         lText := lParagraph.AddText(lNodeValue);

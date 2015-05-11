@@ -281,6 +281,9 @@ type
     // Fields for linking the list
     Previous: TPathSegment;
     Next: TPathSegment;
+    // mathematical methods
+    function GetLength(): Double; virtual;
+    // edition methods
     procedure Move(ADeltaX, ADeltaY: Double); virtual;
     procedure Rotate(AAngle: Double; ABase: T3DPoint); virtual; // Angle in radians
     procedure CalculateBoundingBox(ADest: TFPCustomCanvas; var ALeft, ATop, ARight, ABottom: Double); virtual;
@@ -300,6 +303,9 @@ type
   T2DSegment = class(TPathSegment)
   public
     X, Y: Double;
+    // mathematical methods
+    function GetLength(): Double; override;
+    // edition methods
     procedure Move(ADeltaX, ADeltaY: Double); override;
     procedure Rotate(AAngle: Double; ABase: T3DPoint); override;
     function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; override;
@@ -314,6 +320,12 @@ type
     In Bezier segments, we remain using the X and Y coordinates for the ending point.
     The starting point is where the previous segment ended, so that the intermediary
     bezier control points are [X2, Y2] and [X3, Y3].
+
+    Equations:
+
+    B(t) = (1-t)³ [Prev.X, Prev.Y] + 3 (1-t)² t [X2, Y2] + 3 (1-t) t² [X3, Y3] + t³ [X,Y], 0<=t<=1
+
+    B'(t) = 3 (1-t)² [X2-Prev.X, Y2-Prev.Y] + 6 (1-t) t [X3-X2, Y3-Y2] + 3 t² [X-X3,Y-Y3]
   }
 
   { T2DBezierSegment }
@@ -515,6 +527,7 @@ type
     Points: TPathSegment;   // Beginning of the double-linked list
     PointsEnd: TPathSegment;// End of the double-linked list
     CurPoint: TPathSegment; // Used in PrepareForSequentialReading and Next
+    CurWalkDistanceInCurSegment: Double;// Used in PrepareForWalking and NextWalk
     ClipPath: TPath;
     ClipMode: TvClipMode;
     constructor Create(APage: TvPage); override;
@@ -522,7 +535,9 @@ type
     procedure Clear; override;
     procedure Assign(ASource: TPath);
     procedure PrepareForSequentialReading;
+    procedure PrepareForWalking;
     function Next(): TPathSegment;
+    procedure NextWalk(ADistance: Double; out AX, AY, ATangentAngle: Double);
     procedure CalculateBoundingBox(ADest: TFPCustomCanvas; var ALeft, ATop, ARight, ABottom: Double); override;
     procedure AppendSegment(ASegment: TPathSegment);
     procedure AppendMoveToSegment(AX, AY: Double);
@@ -565,6 +580,22 @@ type
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0; ADoDraw: Boolean = True); override;
     function GetEntityFeatures: TvEntityFeatures; override;
     function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; override;
+  end;
+
+  { TvCurvedText }
+
+  // TvCurvedText supports only one line
+  TvCurvedText = class(TvText)
+  public
+    Path: TPath;
+    //constructor Create(APage: TvPage); override;
+    //destructor Destroy; override;
+    //function TryToSelect(APos: TPoint; var ASubpart: Cardinal): TvFindEntityResult; override;
+    //procedure CalculateBoundingBox(ADest: TFPCustomCanvas; var ALeft, ATop, ARight, ABottom: Double); override;
+    procedure Render(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
+      ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0; ADoDraw: Boolean = True); override;
+    //function GetEntityFeatures: TvEntityFeatures; override;
+    //function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; override;
   end;
 
   TvFieldKind = (vfkNumPages, vfkPage, vfkAuthor, vfkDateCreated, vfkDate);
@@ -1649,14 +1680,201 @@ begin
   end;
 end;
 
-{ TvField }
+{ TvStyle }
 
-constructor TvField.Create(APage: TvPage);
+constructor TvStyle.Create;
 begin
-  inherited Create(APage);
+  // Defaults
+  SuppressSpacingBetweenSameParagraphs:=False;
+end;
 
-  DateFormat := 'dd/MM/yyyy hh:mm:ss';
-  NumberFormat := vnfDecimal;
+function TvStyle.GetKind: TvStyleKind;
+begin
+  if Parent = nil then Result := Kind
+  else Result := Parent.GetKind();
+end;
+
+procedure TvStyle.Clear;
+begin
+  Name := '';
+  Parent := nil;
+  Kind := vskTextBody;
+  Alignment := vsaLeft;
+
+  //
+  {Pen.Color := col;
+  Brush := nil;
+  Font := nil;}
+  SetElements := [];
+  //
+  MarginTop := 0;
+  MarginBottom := 0;
+  MarginLeft := 0;
+  MarginRight := 0;
+  //
+end;
+
+procedure TvStyle.CopyFrom(AFrom: TvStyle);
+begin
+  Clear();
+  ApplyOver(AFrom);
+end;
+
+procedure TvStyle.ApplyOver(AFrom: TvStyle);
+begin
+  if AFrom = nil then Exit;
+
+  // Pen
+
+  if spbfPenColor in AFrom.SetElements then
+    Pen.Color := AFrom.Pen.Color;
+  if spbfPenStyle in AFrom.SetElements then
+    Pen.Style := AFrom.Pen.Style;
+  if spbfPenWidth in AFrom.SetElements then
+    Pen.Width := AFrom.Pen.Width;
+
+  // Brush
+
+  if spbfBrushColor in AFrom.SetElements then
+    Brush.Color := AFrom.Brush.Color;
+  if spbfBrushStyle in AFrom.SetElements then
+    Brush.Style := AFrom.Brush.Style;
+  {if spbfBrushGradient in AFrom.SetElements then
+    Brush.Gra := AFrom.Brush.Style;}
+  if spbfBrushKind in AFrom.SetElements then
+    Brush.Kind := AFrom.Brush.Kind;
+
+  // Font
+
+  if spbfFontColor in AFrom.SetElements then
+    Font.Color := AFrom.Font.Color;
+  if spbfFontSize in AFrom.SetElements then
+    Font.Size := AFrom.Font.Size;
+  if spbfFontName in AFrom.SetElements then
+    Font.Name := AFrom.Font.Name;
+  if spbfFontBold in AFrom.SetElements then
+    Font.Bold := AFrom.Font.Bold;
+  if spbfFontItalic in AFrom.SetElements then
+    Font.Italic := AFrom.Font.Italic;
+  If spbfFontUnderline in AFrom.SetElements then
+    Font.Underline := AFrom.Font.Underline;
+  If spbfFontStrikeThrough in AFrom.SetElements then
+    Font.StrikeThrough := AFrom.Font.StrikeThrough;
+  If spbfAlignment in AFrom.SetElements then
+    Alignment := AFrom.Alignment;
+
+  // TextAnchor
+  if spbfTextAnchor in AFrom.SetElements then
+    TextAnchor := AFrom.TextAnchor;
+
+  // Style
+
+  if sseMarginTop in AFrom.SetElements then
+    MarginTop := AFrom.MarginTop;
+  If sseMarginBottom in AFrom.SetElements then
+    MarginBottom := AFrom.MarginBottom;
+  If sseMarginLeft in AFrom.SetElements then
+    MarginLeft := AFrom.MarginLeft;
+  If sseMarginRight in AFrom.SetElements then
+    MarginRight := AFrom.MarginRight;
+
+  // Other
+  SuppressSpacingBetweenSameParagraphs:=AFrom.SuppressSpacingBetweenSameParagraphs;
+
+  SetElements := AFrom.SetElements + SetElements;
+end;
+
+procedure TvStyle.ApplyIntoEntity(ADest: TvEntityWithPenBrushAndFont);
+begin
+  if ADest = nil then Exit;
+
+  // Pen
+
+  if spbfPenColor in SetElements then
+    ADest.Pen.Color := Pen.Color;
+  if spbfPenStyle in SetElements then
+    ADest.Pen.Style := Pen.Style;
+  if spbfPenWidth in SetElements then
+    ADest.Pen.Width := Pen.Width;
+
+  // Brush
+
+  if spbfBrushColor in SetElements then
+    ADest.Brush.Color := Brush.Color;
+  if spbfBrushStyle in SetElements then
+    ADest.Brush.Style := Brush.Style;
+  {if spbfBrushGradient in SetElements then
+    Brush.Gra := AFrom.Brush.Style;}
+  if spbfBrushKind in SetElements then
+    ADest.Brush.Kind := Brush.Kind;
+
+  // Font
+
+  if spbfFontColor in SetElements then
+    ADest.Font.Color := Font.Color;
+  if spbfFontSize in SetElements then
+    ADest.Font.Size := Font.Size;
+  if spbfFontName in SetElements then
+    ADest.Font.Name := Font.Name;
+  if spbfFontBold in SetElements then
+    ADest.Font.Bold := Font.Bold;
+  if spbfFontItalic in SetElements then
+    ADest.Font.Italic := Font.Italic;
+  If spbfFontUnderline in SetElements then
+    ADest.Font.Underline := Font.Underline;
+  If spbfFontStrikeThrough in SetElements then
+    ADest.Font.StrikeThrough := Font.StrikeThrough;
+  {If spbfAlignment in SetElements then
+    ADest.Alignment := Alignment; }
+
+  // TextAnchor
+  if spbfTextAnchor in SetElements then
+    ADest.TextAnchor := TextAnchor;
+end;
+
+function TvStyle.CreateStyleCombinedWithParent: TvStyle;
+begin
+  Result := TvStyle.Create;
+  Result.CopyFrom(Self);
+  if Parent <> nil then Result.ApplyOver(Parent);
+end;
+
+function TvStyle.GenerateDebugTree(ADestRoutine: TvDebugAddItemProc;
+  APageItem: Pointer): Pointer;
+var
+  lStr, lParentName: string;
+begin
+  if Parent <> nil then lParentName := Parent.Name
+  else lParentName := '<No Parent>';
+
+  lStr := Format('[%s] Name=%s Parent=%s',
+    [Self.ClassName, Name, lParentName]);
+
+  if spbfPenColor in SetElements then
+    lStr := lStr + Format(' Pen.Color=%s', [TvEntity.GenerateDebugStrForFPColor(Pen.Color)]);
+{    spbfPenStyle, spbfPenWidth,
+    spbfBrushColor, spbfBrushStyle, spbfBrushGradient,}
+  if spbfFontColor in SetElements then
+    lStr := lStr + Format(' Font.Color=%s', [TvEntity.GenerateDebugStrForFPColor(Pen.Color)]);
+  if spbfFontSize in SetElements then
+    lStr := lStr + Format(' Font.Size=%d', [Font.Size]);
+  if spbfFontName in SetElements then
+    lStr := lStr + ' Font.Name=' + Font.Name;
+  if spbfFontBold in SetElements then
+    if Font.Bold then lStr := lStr + Format(' Font.Bold=%s', [BoolToStr(Font.Bold)]);
+  if spbfFontItalic in SetElements then
+    if Font.Italic then lStr := lStr + Format(' Font.Bold=%s', [BoolToStr(Font.Italic)]);
+{
+    spbfFontUnderline, spbfFontStrikeThrough, spbfAlignment,
+    // Page style
+    sseMarginTop, sseMarginBottom, sseMarginLeft, sseMarginRight
+    );
+   Font.Size, Font.Name, Font.Orientation,
+    BoolToStr(Font.Underline),
+    BoolToStr(Font.StrikeThrough),
+    GetEnumName(TypeInfo(TvTextAnchor), integer(TextAnchor))}
+  lStr := lStr + FExtraDebugStr;
+  Result := ADestRoutine(lStr, APageItem);
 end;
 
 { TvListLevelStyle }
@@ -2200,203 +2418,6 @@ begin
   Result:=inherited GenerateDebugTree(ADestRoutine, APageItem);
 end;
 
-{ TvStyle }
-
-constructor TvStyle.Create;
-begin
-  // Defaults
-  SuppressSpacingBetweenSameParagraphs:=False;
-end;
-
-function TvStyle.GetKind: TvStyleKind;
-begin
-  if Parent = nil then Result := Kind
-  else Result := Parent.GetKind();
-end;
-
-procedure TvStyle.Clear;
-begin
-  Name := '';
-  Parent := nil;
-  Kind := vskTextBody;
-  Alignment := vsaLeft;
-
-  //
-  {Pen.Color := col;
-  Brush := nil;
-  Font := nil;}
-  SetElements := [];
-  //
-  MarginTop := 0;
-  MarginBottom := 0;
-  MarginLeft := 0;
-  MarginRight := 0;
-  //
-end;
-
-procedure TvStyle.CopyFrom(AFrom: TvStyle);
-begin
-  Clear();
-  ApplyOver(AFrom);
-end;
-
-procedure TvStyle.ApplyOver(AFrom: TvStyle);
-begin
-  if AFrom = nil then Exit;
-
-  // Pen
-
-  if spbfPenColor in AFrom.SetElements then
-    Pen.Color := AFrom.Pen.Color;
-  if spbfPenStyle in AFrom.SetElements then
-    Pen.Style := AFrom.Pen.Style;
-  if spbfPenWidth in AFrom.SetElements then
-    Pen.Width := AFrom.Pen.Width;
-
-  // Brush
-
-  if spbfBrushColor in AFrom.SetElements then
-    Brush.Color := AFrom.Brush.Color;
-  if spbfBrushStyle in AFrom.SetElements then
-    Brush.Style := AFrom.Brush.Style;
-  {if spbfBrushGradient in AFrom.SetElements then
-    Brush.Gra := AFrom.Brush.Style;}
-  if spbfBrushKind in AFrom.SetElements then
-    Brush.Kind := AFrom.Brush.Kind;
-
-  // Font
-
-  if spbfFontColor in AFrom.SetElements then
-    Font.Color := AFrom.Font.Color;
-  if spbfFontSize in AFrom.SetElements then
-    Font.Size := AFrom.Font.Size;
-  if spbfFontName in AFrom.SetElements then
-    Font.Name := AFrom.Font.Name;
-  if spbfFontBold in AFrom.SetElements then
-    Font.Bold := AFrom.Font.Bold;
-  if spbfFontItalic in AFrom.SetElements then
-    Font.Italic := AFrom.Font.Italic;
-  If spbfFontUnderline in AFrom.SetElements then
-    Font.Underline := AFrom.Font.Underline;
-  If spbfFontStrikeThrough in AFrom.SetElements then
-    Font.StrikeThrough := AFrom.Font.StrikeThrough;
-  If spbfAlignment in AFrom.SetElements then
-    Alignment := AFrom.Alignment;
-
-  // TextAnchor
-  if spbfTextAnchor in AFrom.SetElements then
-    TextAnchor := AFrom.TextAnchor;
-
-  // Style
-
-  if sseMarginTop in AFrom.SetElements then
-    MarginTop := AFrom.MarginTop;
-  If sseMarginBottom in AFrom.SetElements then
-    MarginBottom := AFrom.MarginBottom;
-  If sseMarginLeft in AFrom.SetElements then
-    MarginLeft := AFrom.MarginLeft;
-  If sseMarginRight in AFrom.SetElements then
-    MarginRight := AFrom.MarginRight;
-
-  // Other
-  SuppressSpacingBetweenSameParagraphs:=AFrom.SuppressSpacingBetweenSameParagraphs;
-
-  SetElements := AFrom.SetElements + SetElements;
-end;
-
-procedure TvStyle.ApplyIntoEntity(ADest: TvEntityWithPenBrushAndFont);
-begin
-  if ADest = nil then Exit;
-
-  // Pen
-
-  if spbfPenColor in SetElements then
-    ADest.Pen.Color := Pen.Color;
-  if spbfPenStyle in SetElements then
-    ADest.Pen.Style := Pen.Style;
-  if spbfPenWidth in SetElements then
-    ADest.Pen.Width := Pen.Width;
-
-  // Brush
-
-  if spbfBrushColor in SetElements then
-    ADest.Brush.Color := Brush.Color;
-  if spbfBrushStyle in SetElements then
-    ADest.Brush.Style := Brush.Style;
-  {if spbfBrushGradient in SetElements then
-    Brush.Gra := AFrom.Brush.Style;}
-  if spbfBrushKind in SetElements then
-    ADest.Brush.Kind := Brush.Kind;
-
-  // Font
-
-  if spbfFontColor in SetElements then
-    ADest.Font.Color := Font.Color;
-  if spbfFontSize in SetElements then
-    ADest.Font.Size := Font.Size;
-  if spbfFontName in SetElements then
-    ADest.Font.Name := Font.Name;
-  if spbfFontBold in SetElements then
-    ADest.Font.Bold := Font.Bold;
-  if spbfFontItalic in SetElements then
-    ADest.Font.Italic := Font.Italic;
-  If spbfFontUnderline in SetElements then
-    ADest.Font.Underline := Font.Underline;
-  If spbfFontStrikeThrough in SetElements then
-    ADest.Font.StrikeThrough := Font.StrikeThrough;
-  {If spbfAlignment in SetElements then
-    ADest.Alignment := Alignment; }
-
-  // TextAnchor
-  if spbfTextAnchor in SetElements then
-    ADest.TextAnchor := TextAnchor;
-end;
-
-function TvStyle.CreateStyleCombinedWithParent: TvStyle;
-begin
-  Result := TvStyle.Create;
-  Result.CopyFrom(Self);
-  if Parent <> nil then Result.ApplyOver(Parent);
-end;
-
-function TvStyle.GenerateDebugTree(ADestRoutine: TvDebugAddItemProc;
-  APageItem: Pointer): Pointer;
-var
-  lStr, lParentName: string;
-begin
-  if Parent <> nil then lParentName := Parent.Name
-  else lParentName := '<No Parent>';
-
-  lStr := Format('[%s] Name=%s Parent=%s',
-    [Self.ClassName, Name, lParentName]);
-
-  if spbfPenColor in SetElements then
-    lStr := lStr + Format(' Pen.Color=%s', [TvEntity.GenerateDebugStrForFPColor(Pen.Color)]);
-{    spbfPenStyle, spbfPenWidth,
-    spbfBrushColor, spbfBrushStyle, spbfBrushGradient,}
-  if spbfFontColor in SetElements then
-    lStr := lStr + Format(' Font.Color=%s', [TvEntity.GenerateDebugStrForFPColor(Pen.Color)]);
-  if spbfFontSize in SetElements then
-    lStr := lStr + Format(' Font.Size=%d', [Font.Size]);
-  if spbfFontName in SetElements then
-    lStr := lStr + ' Font.Name=' + Font.Name;
-  if spbfFontBold in SetElements then
-    if Font.Bold then lStr := lStr + Format(' Font.Bold=%s', [BoolToStr(Font.Bold)]);
-  if spbfFontItalic in SetElements then
-    if Font.Italic then lStr := lStr + Format(' Font.Bold=%s', [BoolToStr(Font.Italic)]);
-{
-    spbfFontUnderline, spbfFontStrikeThrough, spbfAlignment,
-    // Page style
-    sseMarginTop, sseMarginBottom, sseMarginLeft, sseMarginRight
-    );
-   Font.Size, Font.Name, Font.Orientation,
-    BoolToStr(Font.Underline),
-    BoolToStr(Font.StrikeThrough),
-    GetEnumName(TypeInfo(TvTextAnchor), integer(TextAnchor))}
-  lStr := lStr + FExtraDebugStr;
-  Result := ADestRoutine(lStr, APageItem);
-end;
-
 { TvTableRow }
 
 constructor TvTableRow.create(APage: TvPage);
@@ -2808,6 +2829,11 @@ end;
 
 { TPathSegment }
 
+function TPathSegment.GetLength: Double;
+begin
+  Result := 0;
+end;
+
 procedure TPathSegment.Move(ADeltaX, ADeltaY: Double);
 begin
 
@@ -2838,6 +2864,14 @@ begin
 end;
 
 { T2DSegment }
+
+function T2DSegment.GetLength: Double;
+begin
+  Result := 0;
+  if Previous = nil then Exit;
+  if not (Previous is T2DSegment) then Exit;
+  Result := sqrt(sqr(X - T2DSegment(Previous).X) + sqr(Y + T2DSegment(Previous).Y));
+end;
 
 procedure T2DSegment.Move(ADeltaX, ADeltaY: Double);
 begin
@@ -3392,12 +3426,35 @@ begin
   CurPoint := nil;
 end;
 
+procedure TPath.PrepareForWalking;
+begin
+  PrepareForSequentialReading();
+  CurWalkDistanceInCurSegment := 0;
+  Next();
+end;
+
 function TPath.Next(): TPathSegment;
 begin
   if CurPoint = nil then Result := Points
   else Result := CurPoint.Next;
 
   CurPoint := Result;
+end;
+
+// Walk is walking a distance in the path and obtaining the point where we land and the current tangent
+procedure TPath.NextWalk(ADistance: Double; out AX, AY, ATangentAngle: Double);
+var
+  lCurPoint: TPathSegment;
+  lDistanceRemaining: Double;
+begin
+  lCurPoint := CurPoint;
+  lDistanceRemaining := ADistance;
+
+  // get the current segment
+  while lDistanceRemaining > lCurPoint.GetLength() do
+  begin
+
+  end;
 end;
 
 procedure TPath.CalculateBoundingBox(ADest: TFPCustomCanvas; var ALeft, ATop, ARight, ABottom: Double);
@@ -4130,6 +4187,57 @@ begin
   begin
     Style.GenerateDebugTree(ADestRoutine, Result);
   end;
+end;
+
+{ TvCurvedText }
+
+procedure TvCurvedText.Render(ADest: TFPCustomCanvas;
+  var ARenderInfo: TvRenderInfo; ADestX: Integer; ADestY: Integer;
+  AMulX: Double; AMulY: Double; ADoDraw: Boolean);
+
+  function CoordToCanvasX(ACoord: Double): Integer;
+  begin
+    Result := Round(ADestX + AmulX * ACoord);
+  end;
+
+  function CoordToCanvasY(ACoord: Double): Integer;
+  begin
+    Result := Round(ADestY + AmulY * ACoord);
+  end;
+
+var
+  i: Integer;
+  lText, lUTF8Char: string;
+  lX, lY: integer;
+begin
+  inherited Render(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMulY, ADoDraw);
+
+  InitializeRenderInfo(ARenderInfo);
+
+  // Don't draw anything if we have alpha=zero
+  if Font.Color.Alpha = 0 then Exit;
+
+  ADest.Font.FPColor := AdjustColorToBackground(Font.Color, ARenderInfo);
+  lText := Value.Strings[0];
+  Render_NextText_X := CoordToCanvasX(X);
+
+  // render each character separately
+  for i := 0 to UTF8Length(lText)-1 do
+  begin
+    lUTF8Char := UTF8Copy(lText, i+1, 1);
+
+    ADest.TextOut(lX, lY, lUTF8Char);
+  end;
+end;
+
+{ TvField }
+
+constructor TvField.Create(APage: TvPage);
+begin
+  inherited Create(APage);
+
+  DateFormat := 'dd/MM/yyyy hh:mm:ss';
+  NumberFormat := vnfDecimal;
 end;
 
 { TvCircle }
