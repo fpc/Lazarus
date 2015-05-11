@@ -407,6 +407,9 @@ type
     procedure CalcEntityCanvasMinMaxXY(var ARenderInfo: TvRenderInfo; APointX, APointY: Integer);
     procedure MergeRenderInfo(var AFrom, ATo: TvRenderInfo);
     class procedure InitializeRenderInfo(out ARenderInfo: TvRenderInfo);
+    function CentralizeY_InHeight(ADest: TFPCustomCanvas; AHeight: Double): Double;
+    function  GetHeight(ADest: TFPCustomCanvas): Double;
+    function  GetWidth(ADest: TFPCustomCanvas): Double;
     {@@ ASubpart is only valid if this routine returns vfrSubpartFound }
     function TryToSelect(APos: TPoint; var ASubpart: Cardinal): TvFindEntityResult; virtual;
     procedure Move(ADeltaX, ADeltaY: Double); virtual;
@@ -1008,7 +1011,7 @@ type
     function AddList : TvList;
     function GetLevel : Integer;
     function GetBulletSize: Double;
-    class procedure DrawBullet(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo;
+    procedure DrawBullet(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo;
       ALevel: Integer; AX, AY: Double; ADestX: Integer = 0; ADestY: Integer = 0;
       AMulX: Double = 1.0; AMulY: Double = 1.0; ADoDraw: Boolean = True);
 
@@ -2978,6 +2981,30 @@ class procedure TvEntity.InitializeRenderInfo(out ARenderInfo: TvRenderInfo);
 begin
   ARenderInfo.EntityCanvasMinXY := Point(INVALID_RENDERINFO_CANVAS_XY, INVALID_RENDERINFO_CANVAS_XY);
   ARenderInfo.EntityCanvasMaxXY := Point(INVALID_RENDERINFO_CANVAS_XY, INVALID_RENDERINFO_CANVAS_XY);
+end;
+
+function TvEntity.CentralizeY_InHeight(ADest: TFPCustomCanvas; AHeight: Double): Double;
+var
+  lHeight: Double;
+begin
+  lHeight := GetHeight(ADest);
+  Result := Y + Abs(AHeight - lHeight) / 2;
+end;
+
+function TvEntity.GetHeight(ADest: TFPCustomCanvas): Double;
+var
+  ALeft, ATop, ARight, ABottom: Double;
+begin
+  CalculateBoundingBox(ADest, ALeft, ATop, ARight, ABottom);
+  Result := Abs(ATop - ABottom);
+end;
+
+function TvEntity.GetWidth(ADest: TFPCustomCanvas): Double;
+var
+  ALeft, ATop, ARight, ABottom: Double;
+begin
+  CalculateBoundingBox(ADest, ALeft, ATop, ARight, ABottom);
+  Result := Abs(ALeft - ARight);
 end;
 
 function TvEntity.TryToSelect(APos: TPoint; var ASubpart: Cardinal): TvFindEntityResult;
@@ -6295,7 +6322,7 @@ begin
   Result := Result * 1.5; // for upper/lower spacing
 end;
 
-class procedure TvList.DrawBullet(ADest: TFPCustomCanvas;
+procedure TvList.DrawBullet(ADest: TFPCustomCanvas;
   var ARenderInfo: TvRenderInfo; ALevel: Integer; AX, AY: Double;
   ADestX: Integer; ADestY: Integer; AMulX: Double; AMulY: Double;
   ADoDraw: Boolean);
@@ -6310,8 +6337,34 @@ class procedure TvList.DrawBullet(ADest: TFPCustomCanvas;
     Result := Round(ADestY + AmulY * ACoord);
   end;
 
+var
+  lBulletSpacing: Double;
+  lLevel: Integer;
 begin
+  lBulletSpacing := GetBulletSize() / 2;
+  ADest.Pen.Style := psSolid;
+  ADest.Pen.FPColor := colBlack;
+  ADest.Brush.Style := bsSolid;
+  ADest.Brush.FPColor := colBlack;
+  lLevel := GetLevel();
 
+  // level 0  - filled circle
+  // level 1  - circle with empty filling
+  // lebel 2+ - filled square
+  case lLevel of
+    1: ADest.Brush.Style := bsClear;
+  end;
+
+  case lLevel of
+  0, 1:
+  begin
+    ADest.Ellipse(CoordToCanvasX(AX + lBulletSpacing), CoordToCanvasY(AY + lBulletSpacing),
+      CoordToCanvasX(AX + lBulletSpacing*2), CoordToCanvasY(AY + lBulletSpacing*2));
+  end;
+  else
+    ADest.Rectangle(CoordToCanvasX(AX + lBulletSpacing), CoordToCanvasY(AY + lBulletSpacing),
+      CoordToCanvasX(AX + lBulletSpacing*2), CoordToCanvasY(AY + lBulletSpacing*2));
+  end;
 end;
 
 procedure TvList.Render(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
@@ -6332,13 +6385,14 @@ var
   lPara: TvParagraph absolute lEntity;
   lList: TvList absolute lEntity;
   lEntityRenderInfo: TvRenderInfo;
-  CurX, CurY: Double;
+  CurX, CurY, lBulletSize, lItemHeight: Double;
 begin
   InitializeRenderInfo(ARenderInfo);
 
   // Don't call inherited Render(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMulY, ADoDraw);
 
-  CurX := X + GetBulletSize();
+  lBulletSize := GetBulletSize();
+  CurX := X + lBulletSize;
   CurY := Y;
 
   lEntity := GetFirstEntity();
@@ -6346,17 +6400,23 @@ begin
   begin
     if lEntity is TvParagraph then
     begin
-      TvList.DrawBullet(ADest, lEntityRenderInfo, GetLevel(),
+      DrawBullet(ADest, lEntityRenderInfo, GetLevel(),
         X, CurY, ADestX, ADestY, AMulX, AMulY, ADoDraw);
     end;
 
     lEntity.X := CurX;
     lEntity.Y := CurY;
+    lItemHeight := lEntity.GetHeight(ADest);
+    if lItemHeight < lBulletSize then
+    begin
+      lItemHeight := lBulletSize;
+      lEntity.Y := lEntity.CentralizeY_InHeight(ADest, lBulletSize);
+    end;
     lEntity.Render(ADest, lEntityRenderInfo, ADestX, ADestY, AMulX, AMulY, ADoDraw);
 
     MergeRenderInfo(lEntityRenderInfo, ARenderInfo);
 
-    CurY := CurY + GetBulletSize();
+    CurY := CurY + lItemHeight;
     lEntity := GetNextEntity();
   end;
 end;
