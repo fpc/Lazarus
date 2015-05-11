@@ -1007,15 +1007,16 @@ type
 
     constructor Create(APage: TvPage); override;  // MJT 31/08 added override;
     destructor Destroy; override;
+    // helper function to add the most often used sub-entities
     function AddParagraph(ASimpleText: string): TvParagraph;
-    function AddList : TvList;
-    function GetLevel : Integer;
+    function AddList: TvList;
+    // other helper functions
+    function GetLevel: Integer;
     function GetBulletSize: Double;
     procedure DrawBullet(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo;
       ALevel: Integer; AX, AY: Double; ADestX: Integer = 0; ADestY: Integer = 0;
       AMulX: Double = 1.0; AMulY: Double = 1.0; ADoDraw: Boolean = True);
-
-    //function TryToSelect(APos: TPoint; var ASubpart: Cardinal): TvFindEntityResult; override;
+    // overrides
     procedure Render(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0; ADoDraw: Boolean = True); override;
     //function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; override;}
@@ -3218,6 +3219,7 @@ constructor TvEntityWithPenBrushAndFont.Create(APage: TvPage);
 begin
   inherited Create(APage);
   Font.Color := colBlack;
+  Font.Size := 10;
 end;
 
 procedure TvEntityWithPenBrushAndFont.ApplyFontToCanvas(ADest: TFPCustomCanvas;
@@ -3992,6 +3994,7 @@ var
   lSize: TSize;
   lWidth, lHeight: Integer;
   lRenderInfo: TvRenderInfo;
+  lText: String;
   {$ifdef USE_LCL_CANVAS}
   ACanvas: TCanvas absolute ADest;
   {$endif}
@@ -4008,7 +4011,8 @@ begin
 
   for i := 0 to Value.Count-1 do
   begin
-    lSize := ACanvas.TextExtent(Value.Strings[i]);
+    lText := Value.Strings[i];
+    lSize := ACanvas.TextExtent(lText);
     lWidth := Max(lWidth, lSize.cx);
     lSize := ACanvas.TextExtent(Str_Line_Height_Tester);
     lHeight := lHeight + lSize.cy + 2;
@@ -6358,12 +6362,12 @@ begin
   case lLevel of
   0, 1:
   begin
-    ADest.Ellipse(CoordToCanvasX(AX + lBulletSpacing), CoordToCanvasY(AY + lBulletSpacing),
-      CoordToCanvasX(AX + lBulletSpacing*2), CoordToCanvasY(AY + lBulletSpacing*2));
+    ADest.Ellipse(CoordToCanvasX(AX + lBulletSpacing), CoordToCanvasY(AY + lBulletSpacing*4), // ToDo: Figure out why this needs to be like that for curved_text.html to render well
+      CoordToCanvasX(AX + lBulletSpacing*2), CoordToCanvasY(AY + lBulletSpacing*5));
   end;
   else
-    ADest.Rectangle(CoordToCanvasX(AX + lBulletSpacing), CoordToCanvasY(AY + lBulletSpacing),
-      CoordToCanvasX(AX + lBulletSpacing*2), CoordToCanvasY(AY + lBulletSpacing*2));
+    ADest.Rectangle(CoordToCanvasX(AX + lBulletSpacing), CoordToCanvasY(AY + lBulletSpacing*4),
+      CoordToCanvasX(AX + lBulletSpacing*2), CoordToCanvasY(AY + lBulletSpacing*5));
   end;
 end;
 
@@ -6386,24 +6390,32 @@ var
   lList: TvList absolute lEntity;
   lEntityRenderInfo: TvRenderInfo;
   CurX, CurY, lBulletSize, lItemHeight: Double;
+  lHeight_px: Integer;
 begin
   InitializeRenderInfo(ARenderInfo);
 
   // Don't call inherited Render(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMulY, ADoDraw);
 
-  lBulletSize := GetBulletSize();
+  lBulletSize := GetBulletSize() * Abs(AMulX);
   CurX := X + lBulletSize;
   CurY := Y;
 
   lEntity := GetFirstEntity();
   while lEntity <> nil do
   begin
+    // handle both directions of drawing
+    lHeight_px := 0;
+    //if lEntity.GetEntityFeatures().DrawsUpwards then
+      lEntity.CalculateHeightInCanvas(ADest, lHeight_px);
+
+    // draw the bullet (if necessary)
     if lEntity is TvParagraph then
     begin
       DrawBullet(ADest, lEntityRenderInfo, GetLevel(),
-        X, CurY, ADestX, ADestY, AMulX, AMulY, ADoDraw);
+        X, CurY, ADestX, ADestY+lHeight_px, AMulX, AMulY, ADoDraw);
     end;
 
+    // attempt to centralize the item
     lEntity.X := CurX;
     lEntity.Y := CurY;
     lItemHeight := lEntity.GetHeight(ADest);
@@ -6412,10 +6424,12 @@ begin
       lItemHeight := lBulletSize;
       lEntity.Y := lEntity.CentralizeY_InHeight(ADest, lBulletSize);
     end;
-    lEntity.Render(ADest, lEntityRenderInfo, ADestX, ADestY, AMulX, AMulY, ADoDraw);
 
+    // draw the item
+    lEntity.Render(ADest, lEntityRenderInfo, ADestX, ADestY+lHeight_px, AMulX, AMulY, ADoDraw);
+
+    // prepare next loop iteration
     MergeRenderInfo(lEntityRenderInfo, ARenderInfo);
-
     CurY := CurY + lItemHeight;
     lEntity := GetNextEntity();
   end;
