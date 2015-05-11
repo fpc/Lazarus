@@ -1006,7 +1006,8 @@ type
     destructor Destroy; override;
     function AddParagraph(ASimpleText: string): TvParagraph;
     function AddList : TvList;
-    function Level : Integer;
+    function GetLevel : Integer;
+    function GetBulletSize: Double;
     class procedure DrawBullet(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo;
       ALevel: Integer; AX, AY: Double; ADestX: Integer = 0; ADestY: Integer = 0;
       AMulX: Double = 1.0; AMulY: Double = 1.0; ADoDraw: Boolean = True);
@@ -6271,7 +6272,7 @@ begin
   AddEntity(Result);
 end;
 
-function TvList.Level: Integer;
+function TvList.GetLevel: Integer;
 var
   oListItem : TvList;
 begin
@@ -6285,6 +6286,13 @@ begin
 
     inc(Result);
   end;
+end;
+
+function TvList.GetBulletSize: Double;
+begin
+  Result := Font.Size;
+  if Result = 0 then Result := 10;
+  Result := Result * 1.5; // for upper/lower spacing
 end;
 
 class procedure TvList.DrawBullet(ADest: TFPCustomCanvas;
@@ -6329,37 +6337,26 @@ begin
   InitializeRenderInfo(ARenderInfo);
 
   // Don't call inherited Render(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMulY, ADoDraw);
+
+  CurX := X + GetBulletSize();
+  CurY := Y;
+
   lEntity := GetFirstEntity();
   while lEntity <> nil do
   begin
     if lEntity is TvParagraph then
     begin
-      {lText.Render(ADest, lEntityRenderInfo, CurX, ADestY + lHeight_px, AMulX, AMulY, ADoDraw);
-      lText.CalculateBoundingBox(ADest, lLeft, lTop, lRight, lBottom);
-      lCurWidth := lCurWidth + Abs(lRight - lLeft);
-      lFirstText := False;
-      lPrevText := lText;
-
-      lText.X := OldTextX;
-      lText.Y := OldTextY;
-      if lResetOldStyle then
-        TvText(lEntity).Style := nil;  }
-    end
-    else if lEntity is TvList then
-    begin
-      {OldTextX := lText.X;
-      OldTextY := lText.Y;
-      lEntity.X := CoordToCanvasX(lEntity.X + X + lCurWidth);
-      lEntity.Y := lEntity.Y + Y;
-
-      lEntity.Render(ADest, lEntityRenderInfo, ADestX, ADestY + lHeight_px, AMulX, AMulY, ADoDraw);
-
-      lEntity.X := OldTextX;
-      lEntity.Y := OldTextY; }
+      TvList.DrawBullet(ADest, lEntityRenderInfo, GetLevel(),
+        X, CurY, ADestX, ADestY, AMulX, AMulY, ADoDraw);
     end;
+
+    lEntity.X := CurX;
+    lEntity.Y := CurY;
+    lEntity.Render(ADest, lEntityRenderInfo, ADestX, ADestY, AMulX, AMulY, ADoDraw);
 
     MergeRenderInfo(lEntityRenderInfo, ARenderInfo);
 
+    CurY := CurY + GetBulletSize();
     lEntity := GetNextEntity();
   end;
 end;

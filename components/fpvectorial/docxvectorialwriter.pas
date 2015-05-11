@@ -726,7 +726,7 @@ Var
         If Not Assigned(TvParagraph(oEntity).Style) Then
           TvParagraph(oEntity).Style := AList.Style;
 
-        ProcessParagraph(TvParagraph(oEntity), AList.Level, FData.FindListStyleIndex(AList.ListStyle) + 1);
+        ProcessParagraph(TvParagraph(oEntity), AList.GetLevel(), FData.FindListStyleIndex(AList.ListStyle) + 1);
       End
       Else If oEntity Is TvList Then
         ProcessList(TvList(oEntity))
