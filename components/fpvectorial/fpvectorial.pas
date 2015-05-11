@@ -1007,11 +1007,14 @@ type
     function AddParagraph(ASimpleText: string): TvParagraph;
     function AddList : TvList;
     function Level : Integer;
+    class procedure DrawBullet(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo;
+      ALevel: Integer; AX, AY: Double; ADestX: Integer = 0; ADestY: Integer = 0;
+      AMulX: Double = 1.0; AMulY: Double = 1.0; ADoDraw: Boolean = True);
 
-    {function TryToSelect(APos: TPoint; var ASubpart: Cardinal): TvFindEntityResult; override;
+    //function TryToSelect(APos: TPoint; var ASubpart: Cardinal): TvFindEntityResult; override;
     procedure Render(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
-      ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
-    function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; override;}
+      ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0; ADoDraw: Boolean = True); override;
+    //function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; override;}
   end;
 
   {@@
@@ -6281,6 +6284,83 @@ begin
     oListItem := oListItem.Parent;
 
     inc(Result);
+  end;
+end;
+
+class procedure TvList.DrawBullet(ADest: TFPCustomCanvas;
+  var ARenderInfo: TvRenderInfo; ALevel: Integer; AX, AY: Double;
+  ADestX: Integer; ADestY: Integer; AMulX: Double; AMulY: Double;
+  ADoDraw: Boolean);
+
+  function CoordToCanvasX(ACoord: Double): Integer;
+  begin
+    Result := Round(ADestX + AmulX * ACoord);
+  end;
+
+  function CoordToCanvasY(ACoord: Double): Integer;
+  begin
+    Result := Round(ADestY + AmulY * ACoord);
+  end;
+
+begin
+
+end;
+
+procedure TvList.Render(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
+      ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0; ADoDraw: Boolean = True);
+
+  function CoordToCanvasX(ACoord: Double): Integer;
+  begin
+    Result := Round(ADestX + AmulX * ACoord);
+  end;
+
+  function CoordToCanvasY(ACoord: Double): Integer;
+  begin
+    Result := Round(ADestY + AmulY * ACoord);
+  end;
+
+var
+  lEntity: TvEntity;
+  lPara: TvParagraph absolute lEntity;
+  lList: TvList absolute lEntity;
+  lEntityRenderInfo: TvRenderInfo;
+  CurX, CurY: Double;
+begin
+  InitializeRenderInfo(ARenderInfo);
+
+  // Don't call inherited Render(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMulY, ADoDraw);
+  lEntity := GetFirstEntity();
+  while lEntity <> nil do
+  begin
+    if lEntity is TvParagraph then
+    begin
+      {lText.Render(ADest, lEntityRenderInfo, CurX, ADestY + lHeight_px, AMulX, AMulY, ADoDraw);
+      lText.CalculateBoundingBox(ADest, lLeft, lTop, lRight, lBottom);
+      lCurWidth := lCurWidth + Abs(lRight - lLeft);
+      lFirstText := False;
+      lPrevText := lText;
+
+      lText.X := OldTextX;
+      lText.Y := OldTextY;
+      if lResetOldStyle then
+        TvText(lEntity).Style := nil;  }
+    end
+    else if lEntity is TvList then
+    begin
+      {OldTextX := lText.X;
+      OldTextY := lText.Y;
+      lEntity.X := CoordToCanvasX(lEntity.X + X + lCurWidth);
+      lEntity.Y := lEntity.Y + Y;
+
+      lEntity.Render(ADest, lEntityRenderInfo, ADestX, ADestY + lHeight_px, AMulX, AMulY, ADoDraw);
+
+      lEntity.X := OldTextX;
+      lEntity.Y := OldTextY; }
+    end;
+
+    MergeRenderInfo(lEntityRenderInfo, ARenderInfo);
+
+    lEntity := GetNextEntity();
   end;
 end;
 

@@ -37,6 +37,7 @@ type
     function ReadMathFromNode(ANode: TDOMNode; AData: TvTextPageSequence; ADoc: TvVectorialDocument): TvEntity;
     function ReadTableFromNode(ANode: TDOMNode; AData: TvTextPageSequence; ADoc: TvVectorialDocument): TvEntity;
     function ReadTableRowNode(ATable: TvTable; ANode: TDOMNode; AData: TvTextPageSequence; ADoc: TvVectorialDocument): TvEntity;
+    function ReadUListFromNode(ANode: TDOMNode; AData: TvTextPageSequence; ADoc: TvVectorialDocument): TvEntity;
   public
     { General reading methods }
     constructor Create; override;
@@ -100,6 +101,7 @@ begin
       AData.AddParagraph().AddText(LineEnding);
       Result := nil;
     end;
+    'ul': Result := ReadUListFromNode(ANode, AData, ADoc);
   end;
 end;
 
@@ -430,6 +432,36 @@ begin
 
       CurCellPara := CurCell.AddParagraph();
       Self.ReadParagraphFromNode(CurCellPara, lCurNode, AData, ADoc);
+    end;
+    end;
+
+    lCurNode := lCurNode.NextSibling;
+  end;
+end;
+
+function TvHTMLVectorialReader.ReadUListFromNode(ANode: TDOMNode;
+  AData: TvTextPageSequence; ADoc: TvVectorialDocument): TvEntity;
+var
+  lCurNode: TDOMNode;
+  lNodeName, lNodeValue: DOMString;
+  lNodeText: string;
+  //
+  lList: TvList;
+  lCurPara: TvParagraph;
+begin
+  Result := nil;
+  lList := AData.AddList();
+
+  lCurNode := ANode.FirstChild;
+  while Assigned(lCurNode) do
+  begin
+    lNodeName := lCurNode.NodeName;
+    lNodeValue := lCurNode.NodeValue;
+    case lNodeName of
+    'li':
+    begin
+      lNodeText := GetTextContentFromNode(lCurNode);
+      lCurPara := lList.AddParagraph(lNodeText);
     end;
     end;
 
