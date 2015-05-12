@@ -862,7 +862,7 @@ begin
     Exit;
   Widget := TQtWidget(ACustomEdit.Handle);
   if Supports(Widget, IQtEdit, QtEdit) then
-    Result.X := QtEdit.getCursorPosition;
+    Result := QtEdit.getCursorPosition;
 end;
 
 class function TQtWSCustomEdit.GetCanUndo(const ACustomEdit: TCustomEdit): Boolean;

@@ -79,7 +79,7 @@ type
 
   IQtEdit = interface
     ['{035CA259-4442-4E82-9E70-96A114DD3BC6}']
-    function getCursorPosition: Integer;
+    function getCursorPosition: TPoint;
     function getMaxLength: Integer;
     function getSelectionStart: Integer;
     function getSelectionLength: Integer;
@@ -812,7 +812,7 @@ type
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
     function getAlignment: QtAlignment;
-    function getCursorPosition: Integer;
+    function getCursorPosition: TPoint;
     function getMaxLength: Integer;
     function getSelectedText: WideString;
     function getSelectionStart: Integer;
@@ -868,7 +868,7 @@ type
     procedure ClearText;
     function getAlignment: QtAlignment;
     function getBlockCount: Integer;
-    function getCursorPosition: Integer;
+    function getCursorPosition: TPoint;
     function getMaxLength: Integer;
     function getText: WideString; override;
     function getTextStatic: Boolean; override;
@@ -997,7 +997,7 @@ type
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
     // IQtEdit implementation
-    function getCursorPosition: Integer;
+    function getCursorPosition: TPoint;
     function getMaxLength: Integer;
     function getSelectionStart: Integer;
     function getSelectionLength: Integer;
@@ -1069,7 +1069,7 @@ type
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
     // IQtEdit implementation
-    function getCursorPosition: Integer;
+    function getCursorPosition: TPoint;
     function getMaxLength: Integer;
     function getSelectionStart: Integer;
     function getSelectionLength: Integer;
@@ -8759,9 +8759,10 @@ begin
   Result := QLineEdit_alignment(QLineEditH(Widget));
 end;
 
-function TQtLineEdit.getCursorPosition: Integer;
+function TQtLineEdit.getCursorPosition: TPoint;
 begin
-  Result := QLineEdit_cursorPosition(QLineEditH(Widget));
+  Result.Y := 0;
+  Result.X := QLineEdit_cursorPosition(QLineEditH(Widget));
 end;
 
 function TQtLineEdit.getMaxLength: Integer;
@@ -8783,7 +8784,7 @@ begin
     if (CachedSelectionStart <> -1) and not hasFocus then
       Result := CachedSelectionStart
     else
-      Result := getCursorPosition;
+      Result := getCursorPosition.X;
   end;
 end;
 
@@ -9082,16 +9083,19 @@ begin
   Result := QTextDocument_blockCount(QTextEdit_document(QTextEditH(Widget)));
 end;
 
-function TQtTextEdit.getCursorPosition: Integer;
+function TQtTextEdit.getCursorPosition: TPoint;
 var
   TextCursor: QTextCursorH;
 begin
   TextCursor := QTextCursor_create();
   QTextEdit_textCursor(QTextEditH(Widget), TextCursor);
   if QTextCursor_isNull(TextCursor) then
-    Result := 0
+    Result := Point(0, 0)
   else
-    Result := QTextCursor_position(TextCursor);
+  begin
+    Result.X := QTextCursor_position(TextCursor);
+    Result.Y := QTextCursor_blockNumber(TextCursor);
+  end;
   QTextCursor_destroy(TextCursor);
 end;
 
@@ -10238,12 +10242,11 @@ begin
   FOwnerDrawn := False;
 end;
 
-function TQtComboBox.getCursorPosition: Integer;
+function TQtComboBox.getCursorPosition: TPoint;
 begin
+  Result := Point(0, 0);
   if LineEdit <> nil then
-    Result := LineEdit.getCursorPosition
-  else
-    Result := 0;
+    Result.X := LineEdit.getCursorPosition.X;
 end;
 
 function TQtComboBox.getMaxLength: Integer;
@@ -11052,12 +11055,11 @@ begin
     QLineEdit_undo(LineEdit);
 end;
 
-function TQtAbstractSpinBox.getCursorPosition: Integer;
+function TQtAbstractSpinBox.getCursorPosition: TPoint;
 begin
+  Result := Point(0, 0);
   if LineEdit <> nil then
-    Result := QLineEdit_cursorPosition(LineEdit)
-  else
-    Result := 0;
+    Result.X := QLineEdit_cursorPosition(LineEdit);
 end;
 
 function TQtAbstractSpinBox.getReadOnly: Boolean;
