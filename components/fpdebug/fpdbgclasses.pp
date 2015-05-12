@@ -650,6 +650,11 @@ end;
 
 function TDbgProcess.AddBreak(const ALocation: TDbgPtr): TDbgBreakpoint;
 begin
+  if FBreakMap.HasId(ALocation) then begin
+    debugln(['TDbgProcess.AddBreak breakpoint already exists at ', dbgs(ALocation)]);
+    Result := nil;
+    exit;
+  end;
   Result := OSDbgClasses.DbgBreakpointClass.Create(Self, ALocation);
   FBreakMap.Add(ALocation, Result);
   if (GetInstructionPointerRegisterValue=ALocation) and not assigned(FCurrentBreakpoint) then
