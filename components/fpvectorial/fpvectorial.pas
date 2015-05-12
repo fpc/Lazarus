@@ -602,7 +602,7 @@ type
     procedure Render(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0; ADoDraw: Boolean = True); override;
     //function GetEntityFeatures: TvEntityFeatures; override;
-    //function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; override;
+    function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; override;
   end;
 
   TvFieldKind = (vfkNumPages, vfkPage, vfkAuthor, vfkDateCreated, vfkDate);
@@ -1340,7 +1340,7 @@ type
     { Data removing methods }
     procedure Clear; virtual;
     { Debug methods }
-    procedure GenerateDebugTree(ADestRoutine: TvDebugAddItemProc);
+    procedure GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer = nil);
     { Events }
     property OnProgress: TvProgressEvent read FOnProgress write FOnprogress;
   end;
@@ -2424,6 +2424,7 @@ function TvEmbeddedVectorialDoc.GenerateDebugTree(
   ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer;
 begin
   Result:=inherited GenerateDebugTree(ADestRoutine, APageItem);
+  Document.GenerateDebugTree(ADestRoutine, Result);
 end;
 
 { TvTableRow }
@@ -4314,6 +4315,14 @@ begin
     lCharLen := ADest.TextWidth(lUTF8Char);
     Path.NextWalk(lCharLen, lX, lY, lTangentAngle);
   end;
+end;
+
+function TvCurvedText.GenerateDebugTree(ADestRoutine: TvDebugAddItemProc;
+  APageItem: Pointer): Pointer;
+begin
+  Result:=inherited GenerateDebugTree(ADestRoutine, APageItem);
+  if Path <> nil then
+    Path.GenerateDebugTree(ADestRoutine, Result);
 end;
 
 { TvField }
@@ -8392,7 +8401,7 @@ begin
   FCurrentPageIndex:=-1;
 end;
 
-procedure TvVectorialDocument.GenerateDebugTree(ADestRoutine: TvDebugAddItemProc);
+procedure TvVectorialDocument.GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer);
 var
   i: integer;
   p: TvPage;
@@ -8402,7 +8411,7 @@ begin
   begin
     p := TvPage(FPages[i]);
     lPageItem := ADestRoutine(Format('Page %d Width=%f Height=%f MinX=%f MaxX=%f MinY=%f MaxY=%f',
-      [i, p.Width, p.Height, p.MinX, p.MaxX, p.MinY, p.MaxY]), nil);
+      [i, p.Width, p.Height, p.MinX, p.MaxX, p.MinY, p.MaxY]), APageItem);
     p.GenerateDebugTree(ADestRoutine, lPageItem);
   end;
 end;
