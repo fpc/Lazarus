@@ -74,7 +74,8 @@ function CreateAbsoluteSearchPath(const SearchPath, BaseDirectory: string): stri
 function CreateRelativeSearchPath(const SearchPath, BaseDirectory: string): string;
 function MinimizeSearchPath(const SearchPath: string): string;
 function FindPathInSearchPath(APath: PChar; APathLen: integer;
-                              SearchPath: PChar; SearchPathLen: integer): PChar;
+                              SearchPath: PChar; SearchPathLen: integer): PChar; overload;
+function FindPathInSearchPath(const APath, SearchPath: string): integer; overload;
 
 // file operations
 function FileExistsUTF8(const Filename: string): boolean;
@@ -943,6 +944,19 @@ begin
     end;
     StartPos:=NextStartPos+1;
   end;
+end;
+
+function FindPathInSearchPath(const APath, SearchPath: string): integer;
+var
+  p: PChar;
+  SearchP: PChar;
+begin
+  SearchP:=PChar(SearchPath);
+  p:=FindPathInSearchPath(PChar(APath),length(APath),SearchP,length(SearchPath));
+  if p=nil then
+    Result:=-1
+  else
+    Result:=p-SearchP+1;
 end;
 
 function FileSearchUTF8(const Name, DirList: String; ImplicitCurrentDir : Boolean = True): String;
