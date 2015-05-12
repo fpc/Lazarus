@@ -5,11 +5,7 @@ unit lazCollections;
 interface
 
 uses
-  sysutils,
-{$if (defined(ver2))}
-  lazut f8sysutils,
-{$endif}
-  syncobjs;
+  sysutils, syncobjs, LazUTF8SysUtils;
 
 type
 
