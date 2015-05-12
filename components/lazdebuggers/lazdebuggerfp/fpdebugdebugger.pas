@@ -1813,7 +1813,7 @@ begin
 
     if assigned(symproc) then
       result.FuncName:=symproc.Name;
-    sym.Free;
+    sym.ReleaseReference;
     end
 end;
 
