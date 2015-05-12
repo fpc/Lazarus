@@ -171,7 +171,6 @@ type
     procedure MacrosListboxDblClick(Sender: TObject);
     procedure OKButtonClick(Sender: TObject);
     procedure OpenButtonClick({%H-}sender : TOBject);
-    procedure ScannersButtonClick(Sender: TObject);
   private
     fAllKeys: TKeyCommandRelationList;
     fOptions: TExternalUserTool;
@@ -656,10 +655,6 @@ begin
   OpenDialog.FileName := FilenameEdit.Text;
   if OpenDialog.Execute then FilenameEdit.Text := OpenDialog.FileName;
 End;
-
-procedure TExternalToolOptionDlg.ScannersButtonClick(Sender: TObject);
-begin
-end;
 
 procedure TExternalToolOptionDlg.LoadFromOptions;
 begin
