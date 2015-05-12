@@ -5361,6 +5361,10 @@ msgstr "K procházení souboru klikněte zde"
 msgid "Click to see the possible uses"
 msgstr "Klikněte pro zobrazení možných použití"
 
+#: lazarusidestrconsts.lisclicktoselectpalettepage
+msgid "Click to Select Palette Page"
+msgstr ""
+
 #: lazarusidestrconsts.lisclone
 msgid "Clone"
 msgstr "Klonovat"
@@ -16578,6 +16582,10 @@ msgstr "Toto je sourozenec prvku, k jehož horní straně je ukotvený. Ponechte
 #: lazarusidestrconsts.listopspaceequally
 msgid "Top space equally"
 msgstr "Horní mezery stejně"
+
+#: lazarusidestrconsts.listotalpages
+msgid "Total Pages: %s"
+msgstr ""
 
 #: lazarusidestrconsts.listranslatetheenglishmessages
 msgid "Translate the English Messages"

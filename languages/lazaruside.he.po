@@ -5690,6 +5690,10 @@ msgstr "לחץ כאן בשביל לצפות בקובץ"
 msgid "Click to see the possible uses"
 msgstr "הקלק כדי לראות את השימושים האפשריים"
 
+#: lazarusidestrconsts.lisclicktoselectpalettepage
+msgid "Click to Select Palette Page"
+msgstr ""
+
 #: lazarusidestrconsts.lisclone
 msgid "Clone"
 msgstr ""
@@ -17717,6 +17721,10 @@ msgstr "זהו פקד האח שאליו מעוגן הצד העליון. השאר
 #: lazarusidestrconsts.listopspaceequally
 msgid "Top space equally"
 msgstr "רווח שווה מלמעלה"
+
+#: lazarusidestrconsts.listotalpages
+msgid "Total Pages: %s"
+msgstr ""
 
 #: lazarusidestrconsts.listranslatetheenglishmessages
 msgid "Translate the English Messages"

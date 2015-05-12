@@ -679,6 +679,10 @@ msgstr "Kuva"
 msgid "Save image as"
 msgstr "Tallenna kuva"
 
+#: objinspstrconsts.oispressakey
+msgid "Press a key ..."
+msgstr ""
+
 #: objinspstrconsts.oisproperties
 msgid "Properties"
 msgstr "Ominaisuudet"

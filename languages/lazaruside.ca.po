@@ -5534,6 +5534,10 @@ msgstr ""
 msgid "Click to see the possible uses"
 msgstr ""
 
+#: lazarusidestrconsts.lisclicktoselectpalettepage
+msgid "Click to Select Palette Page"
+msgstr ""
+
 #: lazarusidestrconsts.lisclone
 msgid "Clone"
 msgstr ""
@@ -17117,6 +17121,10 @@ msgstr ""
 #: lazarusidestrconsts.listopspaceequally
 msgid "Top space equally"
 msgstr "Iguala l'espai superior"
+
+#: lazarusidestrconsts.listotalpages
+msgid "Total Pages: %s"
+msgstr ""
 
 #: lazarusidestrconsts.listranslatetheenglishmessages
 msgid "Translate the English Messages"
