@@ -70,7 +70,7 @@ type
     constructor Create(AFileName: String; ADebugMap: TObject = nil);
     procedure ParseSymbolTable(AFpSymbolInfo: TfpSymbolList);
     {$ifdef USE_WIN_FILE_MAPPING}
-    constructor Create(AFileHandle: THandle);
+    constructor Create(AFileHandle: THandle; ADebugMap: TObject = nil);
     {$endif}
     destructor Destroy; override;
     function IsValid: Boolean;
@@ -198,10 +198,10 @@ begin
 end;
 
 {$ifdef USE_WIN_FILE_MAPPING}
-constructor TDbgImageLoader.Create(AFileHandle: THandle);
+constructor TDbgImageLoader.Create(AFileHandle: THandle; ADebugMap: TObject = nil);
 begin
   FFileLoader := TDbgFileLoader.Create(AFileHandle);
-  FImgReader := GetImageReader(FFileLoader, True);
+  FImgReader := GetImageReader(FFileLoader, ADebugMap, True);
 end;
 {$endif}
 
