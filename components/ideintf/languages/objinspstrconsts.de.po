@@ -696,6 +696,10 @@ msgstr "Bild"
 msgid "Save image as"
 msgstr "Grafik speichern unter"
 
+#: objinspstrconsts.oispressakey
+msgid "Press a key ..."
+msgstr ""
+
 #: objinspstrconsts.oisproperties
 msgid "Properties"
 msgstr "Eigenschaften"

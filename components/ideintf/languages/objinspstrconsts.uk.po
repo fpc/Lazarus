@@ -703,6 +703,10 @@ msgstr "Картинка"
 msgid "Save image as"
 msgstr "Зберегти зображення як"
 
+#: objinspstrconsts.oispressakey
+msgid "Press a key ..."
+msgstr ""
+
 #: objinspstrconsts.oisproperties
 msgid "Properties"
 msgstr "Властивості"

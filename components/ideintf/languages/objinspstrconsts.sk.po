@@ -730,6 +730,10 @@ msgstr "Obrázok"
 msgid "Save image as"
 msgstr "Uložiť obrázok ako"
 
+#: objinspstrconsts.oispressakey
+msgid "Press a key ..."
+msgstr ""
+
 #: objinspstrconsts.oisproperties
 msgid "Properties"
 msgstr "Vlastnosti"

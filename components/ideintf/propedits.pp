@@ -6836,9 +6836,9 @@ begin
   FGrabForm.KeyPreview:=true;
   FGrabForm.Position:=poScreenCenter;
   FGrabForm.OnKeyDown:=@OnGrabFormKeyDown;
-  FGrabForm.Caption:='Press a key ...';
+  FGrabForm.Caption:=oisPressAKey;
   with TLabel.Create(Self) do begin
-    Caption:='Press a key ...';
+    Caption:=oisPressAKey;
     BorderSpacing.Around:=25;
     Parent:=FGrabForm;
   end;

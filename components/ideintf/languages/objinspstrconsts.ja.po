@@ -700,6 +700,10 @@ msgstr "画像"
 msgid "Save image as"
 msgstr "イメージを名前をつけて保存"
 
+#: objinspstrconsts.oispressakey
+msgid "Press a key ..."
+msgstr ""
+
 #: objinspstrconsts.oisproperties
 msgid "Properties"
 msgstr "プロパティ"

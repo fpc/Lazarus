@@ -349,6 +349,7 @@ resourcestring
   ois0Lines0Chars = '0 lines, 0 chars';
   oisInvalidPropertyValue = 'Invalid property value';
   oisNone = '(none)';
+  oisPressAKey = 'Press a key ...';
   oisSelectShortCut = 'Select short cut';
   srGrabKey = 'Grab key';
   oisComponentNameIsNotAValidIdentifier = 'Component name "%s" is not a valid identifier';

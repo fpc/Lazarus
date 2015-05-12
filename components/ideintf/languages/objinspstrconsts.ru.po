@@ -5,7 +5,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2015-04-30 00:12+0300\n"
+"PO-Revision-Date: 2015-05-13 00:24+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 
@@ -691,6 +691,10 @@ msgstr "Изображение"
 #: objinspstrconsts.oispesaveimageas
 msgid "Save image as"
 msgstr "Сохранить изображение как"
+
+#: objinspstrconsts.oispressakey
+msgid "Press a key ..."
+msgstr "Нажмите клавишу ..."
 
 #: objinspstrconsts.oisproperties
 msgid "Properties"

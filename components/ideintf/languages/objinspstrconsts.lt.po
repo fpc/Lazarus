@@ -702,6 +702,10 @@ msgstr "Paveikslas"
 msgid "Save image as"
 msgstr "Įrašyti paveikslą taip"
 
+#: objinspstrconsts.oispressakey
+msgid "Press a key ..."
+msgstr ""
+
 #: objinspstrconsts.oisproperties
 msgid "Properties"
 msgstr "Savybės"

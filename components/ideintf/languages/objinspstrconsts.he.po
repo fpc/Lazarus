@@ -724,6 +724,10 @@ msgstr "תמונה"
 msgid "Save image as"
 msgstr "שמור דמות בשם"
 
+#: objinspstrconsts.oispressakey
+msgid "Press a key ..."
+msgstr ""
+
 #: objinspstrconsts.oisproperties
 msgid "Properties"
 msgstr "תכונות"
