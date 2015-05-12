@@ -759,6 +759,9 @@ var
 
   function CheckIfFilesCanConflict(FileGroup: TPGIPAmbiguousFileGroup;
     File1, File2: TPGInterPkgFile): boolean;
+  var
+    FileDir1: String;
+    FileDir2: String;
   begin
     Result:=false;
     // report only one unit per package
@@ -777,6 +780,19 @@ var
       // => skip
       exit;
     end;
+    FileDir1:=ExtractFilePath(File1.FullFilename);
+    FileDir2:=ExtractFilePath(File2.FullFilename);
+    if (FindPathInSearchPath(FileDir1,File2.OwnerInfo.SrcDirs)>0)
+    or (FindPathInSearchPath(FileDir2,File1.OwnerInfo.SrcDirs)>0) then
+    begin
+      // File1 in SrcDirs of file owner 2
+      // or File2 in SrcDirs of file owner 1
+      // => a warning about sharing source directories is enough
+      //    don't warn every shared file
+      // => skip
+      exit;
+    end;
+
     Result:=true;
   end;
 
