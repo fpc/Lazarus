@@ -103,6 +103,7 @@ end;
 
 procedure TCustomControlBar.AlignControlToBand(ABand: TCtrlBand; ARightToLeft: Boolean);
 begin
+  ABand.Control.Align:=alNone;
   ABand.Control.Top := ABand.Top + (ABand.Height - ABand.Control.Height) div 2;
   if not ARightToLeft then
     ABand.Control.Left := ABand.Left + cFullGrabber
