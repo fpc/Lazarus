@@ -1934,6 +1934,7 @@ begin
   Button.Enabled:=False;
   fIsFirstUpdate:=True;
   fIsFirstSetFormActivate:=True;
+  TextHint:=rsFilter;
 end;
 
 destructor TCustomControlFilterEdit.Destroy;
@@ -1999,7 +2000,7 @@ procedure TCustomControlFilterEdit.SetFilter(const AValue: string);
 var
   NewValue: String;
 begin
-  if AValue=rsFilter then
+  if (TextHint<>'') and (AValue=TextHint) then
     NewValue:=''
   else
     NewValue:=AValue;
@@ -2007,11 +2008,6 @@ begin
   if (NewValue<>'') or Focused or fJustActivated or (csDesigning in ComponentState) then
   begin
     Text:=NewValue;
-    Font.Color:=clDefault;
-  end
-  else begin
-    Text:=rsFilter;
-    Font.Color:=clBtnShadow;
   end;
   if fFilter=NewValue then exit;
   fFilter:=NewValue;
@@ -2055,8 +2051,6 @@ procedure TCustomControlFilterEdit.EditEnter;
 begin
 //  inherited;
   fJustActivated:=False;
-  if Text=rsFilter then
-    Text:='';
 end;
 
 procedure TCustomControlFilterEdit.EditExit;
@@ -2069,6 +2063,7 @@ end;
 procedure TCustomControlFilterEdit.ButtonClick;
 begin
   fJustActivated:=False;
+  Text:='';
   Filter:='';
   if FocusOnButtonClick then FEdit.SetFocus; //don't SelectAll here
 end;
