@@ -283,6 +283,8 @@ type
     Next: TPathSegment;
     // mathematical methods
     function GetLength(): Double; virtual;
+    function GetPointAndTangentForDistance(ADistance: Double; out AX, AY, ATangentAngle: Double): Boolean; virtual;
+    function GetStartPoint(out APoint: T3DPoint): Boolean;
     // edition methods
     procedure Move(ADeltaX, ADeltaY: Double); virtual;
     procedure Rotate(AAngle: Double; ABase: T3DPoint); virtual; // Angle in radians
@@ -305,6 +307,7 @@ type
     X, Y: Double;
     // mathematical methods
     function GetLength(): Double; override;
+    function GetPointAndTangentForDistance(ADistance: Double; out AX, AY, ATangentAngle: Double): Boolean; override;
     // edition methods
     procedure Move(ADeltaX, ADeltaY: Double); override;
     procedure Rotate(AAngle: Double; ABase: T3DPoint); override;
@@ -334,6 +337,10 @@ type
   public
     X2, Y2: Double;
     X3, Y3: Double;
+    // mathematical methods
+    function GetLength(): Double; override;
+    function GetPointAndTangentForDistance(ADistance: Double; out AX, AY, ATangentAngle: Double): Boolean; override;
+    // edition methods
     procedure Move(ADeltaX, ADeltaY: Double); override;
     function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; override;
   end;
@@ -537,7 +544,7 @@ type
     procedure PrepareForSequentialReading;
     procedure PrepareForWalking;
     function Next(): TPathSegment;
-    procedure NextWalk(ADistance: Double; out AX, AY, ATangentAngle: Double);
+    function NextWalk(ADistance: Double; out AX, AY, ATangentAngle: Double): Boolean;
     procedure CalculateBoundingBox(ADest: TFPCustomCanvas; var ALeft, ATop, ARight, ABottom: Double); override;
     procedure AppendSegment(ASegment: TPathSegment);
     procedure AppendMoveToSegment(AX, AY: Double);
@@ -1008,6 +1015,7 @@ type
     constructor Create(APage: TvPage); override;
     destructor Destroy; override;
     function AddText(AText: string): TvText;
+    function AddCurvedText(AText: string): TvCurvedText;
     function AddField(AKind : TvFieldKind): TvField;
     function AddRasterImage: TvRasterImage;
     function AddEmbeddedVectorialDoc: TvEmbeddedVectorialDoc;
@@ -2834,6 +2842,35 @@ begin
   Result := 0;
 end;
 
+function TPathSegment.GetPointAndTangentForDistance(ADistance: Double; out AX, AY, ATangentAngle: Double): Boolean;
+begin
+  Result := False;
+  AX := 0;
+  AY := 0;
+  ATangentAngle := 0;
+end;
+
+function TPathSegment.GetStartPoint(out APoint: T3DPoint): Boolean;
+begin
+  Result := False;
+  if Previous = nil then Exit;
+  if (Previous is T3DSegment) then
+  begin
+    Result := True;
+    APoint.X := T3DSegment(Previous).X;
+    APoint.Y := T3DSegment(Previous).Y;
+    APoint.Z := T3DSegment(Previous).Z;
+    Exit;
+  end;
+  if (Previous is T2DSegment) then
+  begin
+    Result := True;
+    APoint.X := T2DSegment(Previous).X;
+    APoint.Y := T2DSegment(Previous).Y;
+    Exit;
+  end;
+end;
+
 procedure TPathSegment.Move(ADeltaX, ADeltaY: Double);
 begin
 
@@ -2866,11 +2903,23 @@ end;
 { T2DSegment }
 
 function T2DSegment.GetLength: Double;
+var
+  lStartPoint: T3DPoint;
 begin
   Result := 0;
-  if Previous = nil then Exit;
-  if not (Previous is T2DSegment) then Exit;
-  Result := sqrt(sqr(X - T2DSegment(Previous).X) + sqr(Y + T2DSegment(Previous).Y));
+  if not GetStartPoint(lStartPoint) then Exit;
+  Result := sqrt(sqr(X - lStartPoint.X) + sqr(Y + lStartPoint.Y));
+end;
+
+function T2DSegment.GetPointAndTangentForDistance(ADistance: Double; out AX,
+  AY, ATangentAngle: Double): Boolean;
+var
+  lStartPoint: T3DPoint;
+begin
+  Result:=inherited GetPointAndTangentForDistance(ADistance, AX, AY,
+    ATangentAngle);
+  if not GetStartPoint(lStartPoint) then Exit;
+  Result := LineEquation_GetPointAndTangentForLength(lStartPoint, Make3DPoint(X, Y, 0), ADistance, AX, AY, ATangentAngle);
 end;
 
 procedure T2DSegment.Move(ADeltaX, ADeltaY: Double);
@@ -2900,6 +2949,28 @@ begin
 end;
 
 { T2DBezierSegment }
+
+function T2DBezierSegment.GetLength: Double;
+var
+  lStartPoint: T3DPoint;
+begin
+  Result := 0;
+  if not GetStartPoint(lStartPoint) then Exit;
+  Result := BezierEquation_GetLength(lStartPoint, Make2DPoint(X2, Y2),
+    Make2DPoint(X3, Y3), Make2DPoint(X, Y));
+end;
+
+function T2DBezierSegment.GetPointAndTangentForDistance(ADistance: Double; out
+  AX, AY, ATangentAngle: Double): Boolean;
+var
+  lStartPoint: T3DPoint;
+begin
+  Result:=inherited GetPointAndTangentForDistance(ADistance, AX, AY,
+    ATangentAngle);
+  if not GetStartPoint(lStartPoint) then Exit;
+  Result := BezierEquation_GetPointAndTangentForLength(lStartPoint, Make2DPoint(X2, Y2),
+    Make2DPoint(X3, Y3), Make2DPoint(X, Y), ADistance, AX, AY, ATangentAngle);
+end;
 
 procedure T2DBezierSegment.Move(ADeltaX, ADeltaY: Double);
 begin
@@ -3442,19 +3513,28 @@ begin
 end;
 
 // Walk is walking a distance in the path and obtaining the point where we land and the current tangent
-procedure TPath.NextWalk(ADistance: Double; out AX, AY, ATangentAngle: Double);
+// Returns true if successful, false otherwise
+function TPath.NextWalk(ADistance: Double; out AX, AY, ATangentAngle: Double): Boolean;
 var
   lCurPoint: TPathSegment;
-  lDistanceRemaining: Double;
+  lCurPointLen: Double;
 begin
+  Result := False;
   lCurPoint := CurPoint;
-  lDistanceRemaining := ADistance;
+  CurWalkDistanceInCurSegment := ADistance + CurWalkDistanceInCurSegment;
+  if lCurPoint = nil then Exit;
+  lCurPointLen := lCurPoint.GetLength();
 
   // get the current segment
-  while lDistanceRemaining > lCurPoint.GetLength() do
+  while CurWalkDistanceInCurSegment >= lCurPointLen do
   begin
-
+    CurWalkDistanceInCurSegment := CurWalkDistanceInCurSegment - lCurPointLen;
+    lCurPoint := Next();
+    if lCurPoint = nil then Exit;
+    lCurPointLen := lCurPoint.GetLength();
   end;
+
+  Result := lCurPoint.GetPointAndTangentForDistance(CurWalkDistanceInCurSegment, AX, AY, ATangentAngle);
 end;
 
 procedure TPath.CalculateBoundingBox(ADest: TFPCustomCanvas; var ALeft, ATop, ARight, ABottom: Double);
@@ -4206,27 +4286,33 @@ procedure TvCurvedText.Render(ADest: TFPCustomCanvas;
   end;
 
 var
-  i: Integer;
+  i, lCharLen: Integer;
   lText, lUTF8Char: string;
-  lX, lY: integer;
+  lX, lY, lTangentAngle: Double;
 begin
-  inherited Render(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMulY, ADoDraw);
+  inherited Render(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMulY, False);
 
   InitializeRenderInfo(ARenderInfo);
 
   // Don't draw anything if we have alpha=zero
   if Font.Color.Alpha = 0 then Exit;
+  if Path = nil then Exit;
 
   ADest.Font.FPColor := AdjustColorToBackground(Font.Color, ARenderInfo);
+  if Value.Count = 0 then Exit;
   lText := Value.Strings[0];
   Render_NextText_X := CoordToCanvasX(X);
+
+  Path.PrepareForWalking();
+  Path.NextWalk(0, lX, lY, lTangentAngle);
 
   // render each character separately
   for i := 0 to UTF8Length(lText)-1 do
   begin
     lUTF8Char := UTF8Copy(lText, i+1, 1);
-
-    ADest.TextOut(lX, lY, lUTF8Char);
+    ADest.TextOut(CoordToCanvasX(lX), CoordToCanvasY(lY), lUTF8Char);
+    lCharLen := ADest.TextWidth(lUTF8Char);
+    Path.NextWalk(lCharLen, lX, lY, lTangentAngle);
   end;
 end;
 
@@ -6210,6 +6296,13 @@ end;
 function TvParagraph.AddText(AText: string): TvText;
 begin
   Result := TvText.Create(FPage);
+  Result.Value.Text := AText;
+  AddEntity(Result);
+end;
+
+function TvParagraph.AddCurvedText(AText: string): TvCurvedText;
+begin
+  Result := TvCurvedText.Create(FPage);
   Result.Value.Text := AText;
   AddEntity(Result);
 end;

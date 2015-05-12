@@ -109,6 +109,7 @@ type
     function ReadSpaceSeparatedFloats(AInput: string; AOtherSeparators: string): TDoubleArray;
     procedure ReadSVGTransformationMatrix(AMatrix: string; out AA, AB, AC, AD, AE, AF: Double);
     //
+    function GetTextContentFromNode(ANode: TDOMNode): string;
     procedure ReadDefsFromNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument);
     //
     function ReadEntityFromNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument): TvEntity;
@@ -1249,6 +1250,18 @@ begin
   AD := lMatrixElements[3];
   AE := lMatrixElements[4];
   AF := lMatrixElements[5];
+end;
+
+function TvSVGVectorialReader.GetTextContentFromNode(ANode: TDOMNode): string;
+var
+  i: Integer;
+begin
+  Result := '';
+  for i := 0 to ANode.ChildNodes.Count-1 do
+  begin
+    if ANode.ChildNodes.Item[i] is TDOMText then
+      Result := ANode.ChildNodes.Item[i].NodeValue;
+  end;
 end;
 
 procedure TvSVGVectorialReader.ReadDefsFromNode(ANode: TDOMNode;
@@ -2558,7 +2571,7 @@ var
   lTextSpanStack: TSVGObjectStack; // of TSVGTextSpanStyle
   lCurStyle: TSVGTextSpanStyle;
   i: Integer;
-  lNodeName, lNodeValue: DOMString;
+  lNodeName, lNodeValue, lXLink: DOMString;
   lCurObject: TObject;
 
   procedure ApplyStackStylesToText(ADest: TvText);
@@ -2581,7 +2594,10 @@ var
   var
     j: Integer;
     lCurNode: TDOMNode;
+    lTextStr: string;
     lText: TvText;
+    lCText: TvCurvedText;
+    lInsertedEntity, lInsertedSubEntity: TvEntity;
   begin
     lCurNode := ACurNode.FirstChild;
     while lCurNode <> nil do
@@ -2628,19 +2644,47 @@ var
         lCurObject := lTextSpanStack.Pop();
         if lCurObject <> nil then lCurObject.Free;
       end
-      else if lNodeName = 'textPath' then
+      else if lNodeName = 'textpath' then
       begin
-        lText := lParagraph.AddText(lNodeValue);
+        lTextStr := GetTextContentFromNode(lCurNode);
+        lTextStr := StringReplace(lTextStr, #13#10, '', [rfReplaceAll]);
+        lTextStr := StringReplace(lTextStr, #13, '', [rfReplaceAll]);
+        lTextStr := StringReplace(lTextStr, #10, '', [rfReplaceAll]);
+        lTextStr := Trim(lTextStr);
 
-        lText.Font.Size := 10;
-        lText.Name := lName;
+        lCText := lParagraph.AddCurvedText(lTextStr);
+
+        lCText.Font.Size := 10;
+        lCText.Name := lName;
+
+        // read the attributes
+        for j := 0 to lCurNode.Attributes.Length - 1 do
+        begin
+          lNodeName := lCurNode.Attributes.Item[j].NodeName;
+          lNodeValue := lCurNode.Attributes.Item[j].NodeValue;
+          lNodeName := LowerCase(lNodeName);
+          if lNodeName = 'xlink:href' then
+          begin
+            lXLink := lNodeValue;
+            lXLink := Copy(lXLink, 2, Length(lXLink));
+            if lXLink = '' then Continue; // nothing to insert, so give up
+            lInsertedEntity := AData.FindEntityWithNameAndType(lXLink, TvEntity, True);
+            if lInsertedEntity = nil then Continue; // nothing to insert, give up!
+            if lInsertedEntity is TvBlock then
+            begin
+              lInsertedSubEntity := TvBlock(lInsertedEntity).GetFirstEntity();
+              if not (lInsertedSubEntity is TPath) then Continue;
+              // Add the curvature
+              lCText.Path := TPath(lInsertedSubEntity as TPath);
+            end;
+          end;
+        end;
+
         // Apply the layer style
-        ApplyLayerStyles(lText);
+        ApplyLayerStyles(lCText);
 
         // Apply the layer style
-        ApplyStackStylesToText(lText);
-
-        // Add the curvature
+        ApplyStackStylesToText(lCText);
       end
       else
       begin
