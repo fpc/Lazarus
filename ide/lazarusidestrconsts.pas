@@ -172,6 +172,8 @@ resourcestring
 
   // component palette
   lisSelectionTool = 'Selection tool';
+  lisClickToSelectPalettePage = 'Click to Select Palette Page';
+  lisTotalPages = 'Total Pages: %s';
   
   // macros
   lisCursorColumnInCurrentEditor = 'Cursor column in current editor';

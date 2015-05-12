@@ -350,7 +350,7 @@ begin
       LoadGlyphFromResourceName(HInstance, 'SelCompPage');
       Flat := True;
       SetBounds(2,1,16,16);
-      Hint := 'Click to Select Palette Page';
+      Hint := lisClickToSelectPalettePage;
       ShowHint := True;
       OnClick := @MainIDE.SelComponentPageButtonClick;
       OnMouseWheel := @Pal.OnPageMouseWheel;

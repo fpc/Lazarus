@@ -11,7 +11,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ComCtrls,
-  ExtCtrls, Buttons, MainBar;
+  ExtCtrls, Buttons, MainBar, LazarusIDEStrConsts;
 
 type
 
@@ -174,7 +174,8 @@ begin
   end;
   TreeView1.EndUpdate;
   TreeView1.FullExpand;
-  Panel2.Caption:='Total Pages: '+IntToStr(MainIDEBar.ComponentPageControl.PageCount);
+  Panel2.Caption:=Format(lisTotalPages, [IntToStr(MainIDEBar.
+    ComponentPageControl.PageCount)]);
 end;
 
 end.
