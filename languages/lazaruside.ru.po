@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2015-05-08 02:24+0300\n"
+"PO-Revision-Date: 2015-05-13 00:40+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -5426,6 +5426,10 @@ msgstr "Щёлкните здесь для выбора файла"
 #: lazarusidestrconsts.lisclicktoseethepossibleuses
 msgid "Click to see the possible uses"
 msgstr "Щёлкните для просмотра возможных вариантов использования"
+
+#: lazarusidestrconsts.lisclicktoselectpalettepage
+msgid "Click to Select Palette Page"
+msgstr "Щёлкните для выбора вкладки палитры компонентов"
 
 #: lazarusidestrconsts.lisclone
 msgid "Clone"
@@ -16797,6 +16801,10 @@ msgstr "Это сосед, к которому привязывается вер
 #: lazarusidestrconsts.listopspaceequally
 msgid "Top space equally"
 msgstr "Равномерно по верхним краям"
+
+#: lazarusidestrconsts.listotalpages
+msgid "Total Pages: %s"
+msgstr "Всего вкладок: %s"
 
 #: lazarusidestrconsts.listranslatetheenglishmessages
 msgid "Translate the English Messages"

@@ -5436,6 +5436,10 @@ msgstr "Hier klicken um die Datei zu browsen"
 msgid "Click to see the possible uses"
 msgstr "Klicken sie, um die Einsatzmöglichkeiten zu sehen"
 
+#: lazarusidestrconsts.lisclicktoselectpalettepage
+msgid "Click to Select Palette Page"
+msgstr ""
+
 #: lazarusidestrconsts.lisclone
 msgid "Clone"
 msgstr ""
@@ -16800,6 +16804,10 @@ msgstr "Das ist das Geschwistercontrol, an das die Oberseite verankert wurde. F�
 #: lazarusidestrconsts.listopspaceequally
 msgid "Top space equally"
 msgstr "Gleichmäßiger oberer Rand"
+
+#: lazarusidestrconsts.listotalpages
+msgid "Total Pages: %s"
+msgstr ""
 
 #: lazarusidestrconsts.listranslatetheenglishmessages
 msgid "Translate the English Messages"

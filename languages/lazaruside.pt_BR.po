@@ -5542,6 +5542,10 @@ msgstr "Clique aqui para navegar no arquivo"
 msgid "Click to see the possible uses"
 msgstr "Clique para ver usos possíveis"
 
+#: lazarusidestrconsts.lisclicktoselectpalettepage
+msgid "Click to Select Palette Page"
+msgstr ""
+
 #: lazarusidestrconsts.lisclone
 msgid "Clone"
 msgstr "Clonar"
@@ -17253,6 +17257,10 @@ msgstr "Este é o controle irmão o qual o lado superior está ancorado. Deixar 
 #: lazarusidestrconsts.listopspaceequally
 msgid "Top space equally"
 msgstr "Justificar acima"
+
+#: lazarusidestrconsts.listotalpages
+msgid "Total Pages: %s"
+msgstr ""
 
 #: lazarusidestrconsts.listranslatetheenglishmessages
 msgid "Translate the English Messages"

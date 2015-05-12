@@ -5746,6 +5746,10 @@ msgstr "点击这里浏览文件"
 msgid "Click to see the possible uses"
 msgstr ""
 
+#: lazarusidestrconsts.lisclicktoselectpalettepage
+msgid "Click to Select Palette Page"
+msgstr ""
+
 #: lazarusidestrconsts.lisclone
 msgid "Clone"
 msgstr ""
@@ -17781,6 +17785,10 @@ msgstr "This is the sibling control to which the top side is anchored. Leave emp
 #: lazarusidestrconsts.listopspaceequally
 msgid "Top space equally"
 msgstr "上方空白相等"
+
+#: lazarusidestrconsts.listotalpages
+msgid "Total Pages: %s"
+msgstr ""
 
 #: lazarusidestrconsts.listranslatetheenglishmessages
 msgid "Translate the English Messages"

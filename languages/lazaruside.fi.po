@@ -5418,6 +5418,10 @@ msgstr "Klikkaa tästä selataksesi tiedostoa"
 msgid "Click to see the possible uses"
 msgstr "Klikkaa nähdäksesi mahdolliset käyttötavat"
 
+#: lazarusidestrconsts.lisclicktoselectpalettepage
+msgid "Click to Select Palette Page"
+msgstr ""
+
 #: lazarusidestrconsts.lisclone
 msgid "Clone"
 msgstr "Kloonaa"
@@ -16703,6 +16707,10 @@ msgstr "Tämä on naapurikontrolli, mihin yläreuna on ankkuroitu. Tyhjä tarkoi
 #: lazarusidestrconsts.listopspaceequally
 msgid "Top space equally"
 msgstr "Tasaa välit ylhäällä"
+
+#: lazarusidestrconsts.listotalpages
+msgid "Total Pages: %s"
+msgstr ""
 
 #: lazarusidestrconsts.listranslatetheenglishmessages
 msgid "Translate the English Messages"

@@ -5724,6 +5724,10 @@ msgstr "Pre prehľadávanie súboru kliknite tu"
 msgid "Click to see the possible uses"
 msgstr ""
 
+#: lazarusidestrconsts.lisclicktoselectpalettepage
+msgid "Click to Select Palette Page"
+msgstr ""
+
 #: lazarusidestrconsts.lisclone
 msgid "Clone"
 msgstr ""
@@ -17764,6 +17768,10 @@ msgstr "Toto·je·súrodenec·prvku,·ku·ktorého·hornej·strane·je·ukotven�
 #: lazarusidestrconsts.listopspaceequally
 msgid "Top space equally"
 msgstr "Rovnaká horná medzera"
+
+#: lazarusidestrconsts.listotalpages
+msgid "Total Pages: %s"
+msgstr ""
 
 #: lazarusidestrconsts.listranslatetheenglishmessages
 msgid "Translate the English Messages"

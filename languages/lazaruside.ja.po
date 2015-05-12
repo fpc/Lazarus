@@ -5520,6 +5520,10 @@ msgstr "ファイルを閲覧するためにここをクリックしてくださ
 msgid "Click to see the possible uses"
 msgstr "可能な利用方法を見るにはクリック"
 
+#: lazarusidestrconsts.lisclicktoselectpalettepage
+msgid "Click to Select Palette Page"
+msgstr ""
+
 #: lazarusidestrconsts.lisclone
 msgid "Clone"
 msgstr "クローン"
@@ -17193,6 +17197,10 @@ msgstr "これは上側がアンカーされる兄弟のコントロールです
 #: lazarusidestrconsts.listopspaceequally
 msgid "Top space equally"
 msgstr "上端の間隔を均等に"
+
+#: lazarusidestrconsts.listotalpages
+msgid "Total Pages: %s"
+msgstr ""
 
 #: lazarusidestrconsts.listranslatetheenglishmessages
 msgid "Translate the English Messages"
