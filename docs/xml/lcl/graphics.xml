@@ -14908,7 +14908,7 @@ be carefull with this, modify only within a begin/endupdate</descr>
           <var>FontData</var> - the data describing the font</short>
       </element>
       <element name="TFont.Orientation">
-        <short>The <var>Orientation</var> (wheteher horizontal or vertical etc) of the current font</short>
+        <short>The <var>Orientation</var>Rotation of the current font in 10th of a degree. Zero is text drawn to the right, upsides. With value 900 (90 degrees) it will be drawn towards the top. With 1800 it will be upside-down and drawn to the left.</short>
       </element>
       <element name="TCanvas.SetClipRect"/>
       <element name="TCanvas.GetClipping">
