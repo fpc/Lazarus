@@ -350,6 +350,7 @@ begin
     begin
       lBorderNr := StrToInt(lAttrValue);
 
+      SetBorderLineType(tbtSingle);
       CurTable.Borders.Left.Width := lBorderNr;
       CurTable.Borders.Right.Width := lBorderNr;
       CurTable.Borders.Top.Width := lBorderNr;
