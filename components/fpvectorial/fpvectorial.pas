@@ -283,7 +283,7 @@ type
     Next: TPathSegment;
     // mathematical methods
     function GetLength(): Double; virtual;
-    function GetPointAndTangentForDistance(ADistance: Double; out AX, AY, ATangentAngle: Double): Boolean; virtual;
+    function GetPointAndTangentForDistance(ADistance: Double; out AX, AY, ATangentAngle: Double): Boolean; virtual; // ATangentAngle in radians
     function GetStartPoint(out APoint: T3DPoint): Boolean;
     // edition methods
     procedure Move(ADeltaX, ADeltaY: Double); virtual;
@@ -3515,6 +3515,7 @@ end;
 
 // Walk is walking a distance in the path and obtaining the point where we land and the current tangent
 // Returns true if successful, false otherwise
+// ATangentAngle - In radians
 function TPath.NextWalk(ADistance: Double; out AX, AY, ATangentAngle: Double): Boolean;
 var
   lCurPoint: TPathSegment;
@@ -4289,11 +4290,18 @@ procedure TvCurvedText.Render(ADest: TFPCustomCanvas;
 var
   i, lCharLen: Integer;
   lText, lUTF8Char: string;
-  lX, lY, lTangentAngle: Double;
+  lX, lY, lTangentAngle, lTextHeight: Double;
+  //lLeft, lTop, lWidth, lHeight: Integer;
 begin
   inherited Render(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMulY, False);
 
   InitializeRenderInfo(ARenderInfo);
+
+  if not ADoDraw then
+  begin
+    //Path.CalculateSizeInCanvas(ADest, lLeft, lTop, lWidth, lHeight);
+    Exit;
+  end;
 
   // Don't draw anything if we have alpha=zero
   if Font.Color.Alpha = 0 then Exit;
@@ -4311,6 +4319,13 @@ begin
   for i := 0 to UTF8Length(lText)-1 do
   begin
     lUTF8Char := UTF8Copy(lText, i+1, 1);
+    ADest.Font.Orientation := Round(Math.radtodeg(lTangentAngle)*10);
+
+    // Without adjustment the text is down bellow the path, but we want it on top of it
+    lTextHeight := Abs(AMulY) * ADest.TextHeight(lUTF8Char);
+    lX := lX - Sin(Pi / 2 - lTangentAngle) * lTextHeight;
+    lY := lY + Cos(Pi / 2 - lTangentAngle) * lTextHeight;
+
     ADest.TextOut(CoordToCanvasX(lX), CoordToCanvasY(lY), lUTF8Char);
     lCharLen := ADest.TextWidth(lUTF8Char);
     Path.NextWalk(lCharLen, lX, lY, lTangentAngle);

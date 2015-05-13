@@ -231,6 +231,7 @@ begin
 end;
 
 // (x2,y2)=(x1+L⋅cos(a),y1+L⋅sin(a)).
+// ATangentAngle - in Radians
 function LineEquation_GetPointAndTangentForLength(AStart, AEnd: T3DPoint; ADistance: Double; out AX, AY, ATangentAngle: Double): Boolean;
 var
   lLineAngle: Double; // to X axis
