@@ -42,7 +42,7 @@ uses
   MemCheck,
   {$ENDIF}
   Classes, SysUtils, FileUtil, LazUTF8, LCLType, Controls, Forms, Buttons,
-  StdCtrls, Dialogs, ExtCtrls, LCLProc, ButtonPanel,
+  StdCtrls, Dialogs, ExtCtrls, LCLProc, ButtonPanel, EditBtn,
   IDEExternToolIntf, IDEHelpIntf, PropEdits, IDEDialogs, IDECommands,
   FileProcs, TransferMacros, LazarusIDEStrConsts, EnvironmentOpts, KeyMapping,
   IDEProcs, LazConfigStorage, contnrs, IDEUtils;
@@ -144,17 +144,15 @@ type
 
   TExternalToolOptionDlg = class(TForm)
     ButtonPanel: TButtonPanel;
+    WorkingDirEdit: TDirectoryEdit;
+    FileNameEdit: TFileNameEdit;
     MemoParameters: TMemo;
     ScannersButton: TButton;
     TitleLabel: TLabel;
     TitleEdit: TEdit;
     FilenameLabel: TLabel;
-    FilenameEdit: TEdit;
-    OpenDialog: TOpenDialog;
-    OpenButton:TButton;
     ParametersLabel: TLabel;
     WorkingDirLabel: TLabel;
-    WorkingDirEdit: TEdit;
     OptionsGroupBox: TGroupBox;
     OptionScanOutputForFPCMessagesCheckBox: TCheckBox;
     OptionScanOutputForMakeMessagesCheckBox: TCheckBox;
@@ -170,7 +168,6 @@ type
     procedure MacrosListboxClick(Sender: TObject);
     procedure MacrosListboxDblClick(Sender: TObject);
     procedure OKButtonClick(Sender: TObject);
-    procedure OpenButtonClick({%H-}sender : TOBject);
   private
     fAllKeys: TKeyCommandRelationList;
     fOptions: TExternalUserTool;
@@ -650,12 +647,6 @@ end;
 
 { TExternalToolOptionDlg }
 
-procedure TExternalToolOptionDlg.OpenButtonClick(sender : TOBject);
-begin
-  OpenDialog.FileName := FilenameEdit.Text;
-  if OpenDialog.Execute then FilenameEdit.Text := OpenDialog.FileName;
-End;
-
 procedure TExternalToolOptionDlg.LoadFromOptions;
 begin
   TitleEdit.Text:=fOptions.Title;
@@ -715,13 +706,11 @@ begin
   Caption:=lisEdtExtToolEditTool;
   TitleLabel.Caption:=dlgPOTitle;
   FilenameLabel.Caption:=lisEdtExtToolProgramfilename;
-  OpenButton.Hint:=lisClickHereToBrowseTheFileHint;
+  FilenameEdit.ButtonHint:=lisClickHereToBrowseTheFileHint;
 
-  with OpenDialog do begin
-    Title:=lisSelectFile;
-    Filter:=dlgAllFiles+' ('+GetAllFilesMask+')|'+GetAllFilesMask
+  FilenameEdit.DialogTitle:=lisSelectFile;
+  FilenameEdit.Filter:=dlgAllFiles+' ('+GetAllFilesMask+')|'+GetAllFilesMask
       +'|'+lisExePrograms+' (*.exe)|*.exe';
-  end;
 
   ParametersLabel.Caption:=lisEdtExtToolParameters;
   WorkingDirLabel.Caption:=lisEdtExtToolWorkingDirectory;
