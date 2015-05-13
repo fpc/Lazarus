@@ -106,7 +106,7 @@ type
   TvPage = class;
   TvVectorialPage = class;
   TvTextPageSequence = class;
-  TvEntityWithPenBrushAndFont = class;
+  TvEntity = class;
   TvVectorialDocument = class;
   TvEmbeddedVectorialDoc = class;
 
@@ -117,6 +117,7 @@ type
     Style: TFPPenStyle;
     Width: Integer;
   end;
+  PvPen = ^TvPen;
 
   TvBrushKind = (bkSimpleBrush, bkHorizontalGradient, bkVerticalGradient, vkOtherLinearGradient, bkRadialGradient);
   TvCoordinateUnit = (vcuDocumentUnit, vcuPercentage);
@@ -130,6 +131,7 @@ type
     Gradient_cx_Unit, Gradient_cy_Unit, Gradient_r_Unit, Gradient_fx_Unit, Gradient_fy_Unit: TvCoordinateUnit;
     Gradient_colors: array of TFPColor;
   end;
+  PvBrush = ^TvBrush;
 
   TvFont = record
     Color: TFPColor;
@@ -146,6 +148,7 @@ type
     Underline: boolean;
     StrikeThrough: boolean;
   end;
+  PvFont = ^TvFont;
 
   TvSetStyleElement = (
     // Pen, Brush and Font
@@ -201,8 +204,12 @@ type
     function GetKind: TvStyleKind; // takes care of parenting
     procedure Clear(); virtual;
     procedure CopyFrom(AFrom: TvStyle);
+    procedure CopyFromEntity(AEntity: TvEntity);
+    procedure ApplyOverFromPen(APen: PvPen; ASetElements: TvSetStyleElements);
+    procedure ApplyOverFromBrush(ABrush: PvBrush; ASetElements: TvSetStyleElements);
+    procedure ApplyOverFromFont(AFont: PvFont; ASetElements: TvSetStyleElements);
     procedure ApplyOver(AFrom: TvStyle); virtual;
-    procedure ApplyIntoEntity(ADest: TvEntityWithPenBrushAndFont); virtual;
+    procedure ApplyIntoEntity(ADest: TvEntity); virtual;
     function CreateStyleCombinedWithParent: TvStyle;
     function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; virtual;
   end;
@@ -973,10 +980,13 @@ type
 
   { TvInsert }
 
-  TvInsert = class(TvNamedEntity)
+  TvInsert = class(TvEntityWithStyle) // instead of TvNamedEntity so that it can pass its own style info to the InsertEntity
   public
     InsertEntity: TvEntity; // The entity to be inserted
     RotationAngle: Double; // in angles, normal is zero
+    SetElements: TvSetStyleElements; // Defines which of Pen, Brush and Font will be applied to InsertEntity
+    constructor Create(APage: TvPage); override;
+    destructor Destroy; override;
     procedure Render(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0; ADoDraw: Boolean = True); override;
     function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; override;
@@ -1728,32 +1738,57 @@ begin
   ApplyOver(AFrom);
 end;
 
+procedure TvStyle.CopyFromEntity(AEntity: TvEntity);
+begin
+
+end;
+
+procedure TvStyle.ApplyOverFromPen(APen: PvPen; ASetElements: TvSetStyleElements);
+begin
+  if spbfPenColor in ASetElements then
+    Pen.Color := APen^.Color;
+  if spbfPenStyle in ASetElements then
+    Pen.Style := APen^.Style;
+  if spbfPenWidth in ASetElements then
+    Pen.Width := APen^.Width;
+
+  SetElements += ASetElements * [spbfPenColor, spbfPenStyle, spbfPenWidth];
+end;
+
+procedure TvStyle.ApplyOverFromBrush(ABrush: PvBrush; ASetElements: TvSetStyleElements);
+begin
+  if spbfBrushColor in ASetElements then
+    Brush.Color := ABrush^.Color;
+  if spbfBrushStyle in ASetElements then
+    Brush.Style := ABrush^.Style;
+  {if spbfBrushGradient in ASetElements then
+    Brush.Gra := AFrom.Brush.Style;}
+  if spbfBrushKind in ASetElements then
+    Brush.Kind := ABrush^.Kind;
+
+  SetElements += ASetElements * [spbfBrushColor, spbfBrushStyle, spbfBrushGradient, spbfBrushKind];
+end;
+
+procedure TvStyle.ApplyOverFromFont(AFont: PvFont; ASetElements: TvSetStyleElements);
+begin
+
+end;
+
 procedure TvStyle.ApplyOver(AFrom: TvStyle);
 begin
   if AFrom = nil then Exit;
 
   // Pen
 
-  if spbfPenColor in AFrom.SetElements then
-    Pen.Color := AFrom.Pen.Color;
-  if spbfPenStyle in AFrom.SetElements then
-    Pen.Style := AFrom.Pen.Style;
-  if spbfPenWidth in AFrom.SetElements then
-    Pen.Width := AFrom.Pen.Width;
+  ApplyOverFromPen(@AFrom.Pen, AFrom.SetElements);
 
   // Brush
 
-  if spbfBrushColor in AFrom.SetElements then
-    Brush.Color := AFrom.Brush.Color;
-  if spbfBrushStyle in AFrom.SetElements then
-    Brush.Style := AFrom.Brush.Style;
-  {if spbfBrushGradient in AFrom.SetElements then
-    Brush.Gra := AFrom.Brush.Style;}
-  if spbfBrushKind in AFrom.SetElements then
-    Brush.Kind := AFrom.Brush.Kind;
+  ApplyOverFromBrush(@AFrom.Brush, AFrom.SetElements);
 
   // Font
 
+  //ApplyOverFromFont(@AFrom.Font, AFrom.SetElements);
   if spbfFontColor in AFrom.SetElements then
     Font.Color := AFrom.Font.Color;
   if spbfFontSize in AFrom.SetElements then
@@ -1792,52 +1827,74 @@ begin
   SetElements := AFrom.SetElements + SetElements;
 end;
 
-procedure TvStyle.ApplyIntoEntity(ADest: TvEntityWithPenBrushAndFont);
+procedure TvStyle.ApplyIntoEntity(ADest: TvEntity);
+var
+  lCurEntity: TvEntity;
+  ADestWithPen: TvEntityWithPen absolute ADest;
+  ADestWithBrush: TvEntityWithPenAndBrush absolute ADest;
+  ADestWithFont: TvEntityWithPenBrushAndFont absolute ADest;
 begin
   if ADest = nil then Exit;
 
-  // Pen
+  if ADest is TvEntityWithSubEntities then
+  begin
+    lCurEntity := (ADest as TvEntityWithSubEntities).GetFirstEntity();
+    while lCurEntity <> nil do
+    begin
+      ApplyIntoEntity(lCurEntity);
+      lCurEntity := (ADest as TvEntityWithSubEntities).GetNextEntity();
+    end;
+    Exit;
+  end;
 
-  if spbfPenColor in SetElements then
-    ADest.Pen.Color := Pen.Color;
-  if spbfPenStyle in SetElements then
-    ADest.Pen.Style := Pen.Style;
-  if spbfPenWidth in SetElements then
-    ADest.Pen.Width := Pen.Width;
+  // Pen
+  if ADest is TvEntityWithPen then
+  begin
+    if spbfPenColor in SetElements then
+      ADestWithPen.Pen.Color := Pen.Color;
+    if spbfPenStyle in SetElements then
+      ADestWithPen.Pen.Style := Pen.Style;
+    if spbfPenWidth in SetElements then
+      ADestWithPen.Pen.Width := Pen.Width;
+  end;
 
   // Brush
-
-  if spbfBrushColor in SetElements then
-    ADest.Brush.Color := Brush.Color;
-  if spbfBrushStyle in SetElements then
-    ADest.Brush.Style := Brush.Style;
-  {if spbfBrushGradient in SetElements then
-    Brush.Gra := AFrom.Brush.Style;}
-  if spbfBrushKind in SetElements then
-    ADest.Brush.Kind := Brush.Kind;
+  if ADest is TvEntityWithPenAndBrush then
+  begin
+    if spbfBrushColor in SetElements then
+      ADestWithBrush.Brush.Color := Brush.Color;
+    if spbfBrushStyle in SetElements then
+      ADestWithBrush.Brush.Style := Brush.Style;
+    {if spbfBrushGradient in SetElements then
+      ADestWithBrush.Gra := AFrom.Brush.Style;}
+    if spbfBrushKind in SetElements then
+      ADestWithBrush.Brush.Kind := Brush.Kind;
+  end;
 
   // Font
+  if ADest is TvEntityWithPenBrushAndFont then
+  begin
+    if spbfFontColor in SetElements then
+      ADestWithFont.Font.Color := Font.Color;
+    if spbfFontSize in SetElements then
+      ADestWithFont.Font.Size := Font.Size;
+    if spbfFontName in SetElements then
+      ADestWithFont.Font.Name := Font.Name;
+    if spbfFontBold in SetElements then
+      ADestWithFont.Font.Bold := Font.Bold;
+    if spbfFontItalic in SetElements then
+      ADestWithFont.Font.Italic := Font.Italic;
+    If spbfFontUnderline in SetElements then
+      ADestWithFont.Font.Underline := Font.Underline;
+    If spbfFontStrikeThrough in SetElements then
+      ADestWithFont.Font.StrikeThrough := Font.StrikeThrough;
+    {If spbfAlignment in SetElements then
+      ADestWithFont.Alignment := Alignment; }
 
-  if spbfFontColor in SetElements then
-    ADest.Font.Color := Font.Color;
-  if spbfFontSize in SetElements then
-    ADest.Font.Size := Font.Size;
-  if spbfFontName in SetElements then
-    ADest.Font.Name := Font.Name;
-  if spbfFontBold in SetElements then
-    ADest.Font.Bold := Font.Bold;
-  if spbfFontItalic in SetElements then
-    ADest.Font.Italic := Font.Italic;
-  If spbfFontUnderline in SetElements then
-    ADest.Font.Underline := Font.Underline;
-  If spbfFontStrikeThrough in SetElements then
-    ADest.Font.StrikeThrough := Font.StrikeThrough;
-  {If spbfAlignment in SetElements then
-    ADest.Alignment := Alignment; }
-
-  // TextAnchor
-  if spbfTextAnchor in SetElements then
-    ADest.TextAnchor := TextAnchor;
+    // TextAnchor
+    if spbfTextAnchor in SetElements then
+      ADestWithFont.TextAnchor := TextAnchor;
+  end;
 end;
 
 function TvStyle.CreateStyleCombinedWithParent: TvStyle;
@@ -4322,9 +4379,9 @@ begin
     ADest.Font.Orientation := Round(Math.radtodeg(lTangentAngle)*10);
 
     // Without adjustment the text is down bellow the path, but we want it on top of it
-    lTextHeight := Abs(AMulY) * ADest.TextHeight(lUTF8Char);
+    {lTextHeight := Abs(AMulY) * ADest.TextHeight(lUTF8Char);
     lX := lX - Sin(Pi / 2 - lTangentAngle) * lTextHeight;
-    lY := lY + Cos(Pi / 2 - lTangentAngle) * lTextHeight;
+    lY := lY + Cos(Pi / 2 - lTangentAngle) * lTextHeight;}
 
     ADest.TextOut(CoordToCanvasX(lX), CoordToCanvasY(lY), lUTF8Char);
     lCharLen := ADest.TextWidth(lUTF8Char);
@@ -6236,6 +6293,18 @@ end;
 
 { TvInsert }
 
+constructor TvInsert.Create(APage: TvPage);
+begin
+  inherited Create(APage);
+  Style := TvStyle.Create;
+end;
+
+destructor TvInsert.Destroy;
+begin
+  FreeAndNil(Style);
+  inherited Destroy;
+end;
+
 procedure TvInsert.Render(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo; ADestX: Integer;
   ADestY: Integer; AMulX: Double; AMulY: Double; ADoDraw: Boolean);
 var
@@ -6253,6 +6322,10 @@ begin
   end;
   // Alter the position of the elements to consider the positioning of the BLOCK and of the INSERT
   InsertEntity.Move(X, Y);
+  Style.ApplyOverFromPen(@Pen, SetElements);
+  Style.ApplyOverFromBrush(@Brush, SetElements);
+  Style.ApplyOverFromFont(@Font, SetElements);
+  Style.ApplyIntoEntity(InsertEntity);
   // Render
   InsertEntity.Render(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMuly, ADoDraw);
   // Change them back

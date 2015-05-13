@@ -2814,13 +2814,15 @@ begin
   begin
     lNodeName := ANode.Attributes.Item[i].NodeName;
     lNodeValue := ANode.Attributes.Item[i].NodeValue;
-    {if lNodeName = 'style' then
-      ReadSVGStyle(lNodeValue, lText)
-    else} if IsAttributeFromStyle(lNodeName) then
+    if lNodeName = 'style' then
     begin
-      {ReadSVGPenStyleWithKeyAndValue(lNodeName, lNodeValue, lText);
-      ReadSVGBrushStyleWithKeyAndValue(lNodeName, lNodeValue, lText);
-      ReadSVGFontStyleWithKeyAndValue(lNodeName, lNodeValue, lText);}
+      ReadSVGStyle(lNodeValue, lInsert);
+    end
+    else if IsAttributeFromStyle(lNodeName) then
+    begin
+      lInsert.SetElements += ReadSVGPenStyleWithKeyAndValue(lNodeName, lNodeValue, lInsert);
+      lInsert.SetElements += ReadSVGBrushStyleWithKeyAndValue(lNodeName, lNodeValue, lInsert);
+      lInsert.SetElements += ReadSVGFontStyleWithKeyAndValue(lNodeName, lNodeValue, lInsert);
       ReadSVGGeneralStyleWithKeyAndValue(lNodeName, lNodeValue, lInsert);
     end;
   end;
