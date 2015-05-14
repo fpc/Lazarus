@@ -119,6 +119,20 @@ type
     property Line: integer read FLine write FLine;
   end;
 
+  { TFpDebugThreadRemoveBreakpointCommand }
+
+  TFpDebugThreadRemoveBreakpointCommand = class(TFpDebugThreadCommand)
+  private
+    FLocationValue: TDBGPtr;
+    function GetLocation: string;
+    procedure SetLocation(AValue: string);
+  public
+    function Execute(AController: TDbgController; out DoProcessLoop: boolean): boolean; override;
+    class function TextName: string; override;
+  published
+    property Location: string read GetLocation write SetLocation;
+  end;
+
   { TFpDebugThreadGetLocationInfoCommand }
 
   TFpDebugThreadGetLocationInfoCommand = class(TFpDebugThreadCommand)
@@ -142,6 +156,38 @@ implementation
 
 var
   GFpDebugThreadCommandList: TFpDebugThreadCommandList = nil;
+
+{ TFpDebugThreadRemoveBreakpointCommand }
+
+function TFpDebugThreadRemoveBreakpointCommand.GetLocation: string;
+begin
+  result := FormatAddress(FLocationValue);
+end;
+
+procedure TFpDebugThreadRemoveBreakpointCommand.SetLocation(AValue: string);
+begin
+  FLocationValue := Hex2Dec(AValue);
+end;
+
+function TFpDebugThreadRemoveBreakpointCommand.Execute(AController: TDbgController; out DoProcessLoop: boolean): boolean;
+begin
+  result := false;
+  DoProcessLoop:=false;
+  if not assigned(AController.CurrentProcess) then
+    begin
+    log('Failed to remove breakpoint: No process', dllInfo);
+    exit;
+    end;
+  if (FLocationValue<>0) then
+    result := AController.CurrentProcess.RemoveBreak(FLocationValue)
+  else
+    log('Failed to remove breakpoint: No location given', dllInfo);
+end;
+
+class function TFpDebugThreadRemoveBreakpointCommand.TextName: string;
+begin
+  result := 'removebreakpoint';
+end;
 
 { TFpDebugThreadStopCommand }
 
@@ -321,7 +367,7 @@ end;
 
 class function TFpDebugThreadAddBreakpointCommand.TextName: string;
 begin
-  result := 'breakpoint';
+  result := 'addbreakpoint';
 end;
 
 class function TFpDebugThreadCommandList.instance: TFpDebugThreadCommandList;
@@ -397,6 +443,7 @@ initialization
   TFpDebugThreadCommandList.instance.Add(TFpDebugThreadStepOutCommand);
   TFpDebugThreadCommandList.instance.Add(TFpDebugThreadStopCommand);
   TFpDebugThreadCommandList.instance.Add(TFpDebugThreadAddBreakpointCommand);
+  TFpDebugThreadCommandList.instance.Add(TFpDebugThreadRemoveBreakpointCommand);
   TFpDebugThreadCommandList.instance.Add(TFpDebugThreadGetLocationInfoCommand);
 finalization
   GFpDebugThreadCommandList.Free;
