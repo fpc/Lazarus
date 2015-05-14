@@ -10328,6 +10328,9 @@ var
   Ts: TSize;
   TmpCanvas: TCanvas;
   C: TGridColumn;
+  aRect: TRect;
+  isMultiLine: Boolean;
+  aText: string;
 begin
   if (aCol<0) or (aCol>ColCount-1) then
     Exit;
@@ -10335,6 +10338,7 @@ begin
   tmpCanvas := GetWorkingCanvas(Canvas);
 
   C := ColumnFromGridColumn(aCol);
+  isMultiLine := (C<>nil) and C.Title.MultiLine;
 
   try
     W:=0;
@@ -10353,9 +10357,16 @@ begin
       end;
 
       if (i=0) and (FixedRows>0) and (C<>nil) then
-        Ts := TmpCanvas.TextExtent(C.Title.Caption)
+        aText := C.Title.Caption
       else
-        Ts := TmpCanvas.TextExtent(Cells[aCol, i]);
+        aText := Cells[aCol, i];
+
+      if isMultiLine then begin
+        aRect := rect(0, 0, DefaultColWidth, DefaultRowHeight);
+        DrawText(tmpCanvas.Handle, @aText[1], Length(aText), aRect, DT_CALCRECT or DT_WORDBREAK);
+        Ts.cx := aRect.Right-aRect.Left;
+      end else
+        Ts := tmpCanvas.TextExtent(aText);
 
       if Ts.Cx>W then
         W := Ts.Cx;
