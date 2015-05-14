@@ -6192,7 +6192,9 @@ begin
                 if not DoAutoEdit then
                   // delay select active until mouse reachs another cell
                   // do that only if editor is not shown
-                  GridFlags := GridFlags + [gfNeedsSelectActive];
+                  GridFlags := GridFlags + [gfNeedsSelectActive]
+                else
+                  exit;
 
                 FPivot:=FGCache.ClickCell;
 
@@ -7103,17 +7105,19 @@ begin
   FRow := DRow;
 
   MoveSelection;
-  SelectEditor;
 
-  if (FEditor<>nil) and EditorAlwaysShown then begin
+  if EditorAlwaysShown then begin
+    SelectEditor;
     // if editor visibility was changed on BeforeMoveSelection or MoveSelection
     // make sure editor will be updated.
     // TODO: cell coords of last time editor was visible
     //       could help here too, if they are not the same as the
     //       current cell, editor should be hidden first too.
-    if FEditor.Visible then
-      EditorHide;
-    EditorShow(true);
+    if FEditor<>nil then begin
+      if FEditor.Visible then
+        EditorHide;
+      EditorShow(true);
+    end;
   end;
 
   {$IfDef dbgGrid}DebugLnExit('MoveExtend END FCol= ',IntToStr(FCol), ' FRow= ',IntToStr(FRow));{$Endif}
