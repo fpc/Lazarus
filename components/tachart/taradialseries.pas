@@ -499,6 +499,8 @@ begin
   // This is a workaround for db source invalidating the cache due to
   // unnecessary "dataset changed" events.
   total := Source.ValuesTotal;
+  if total = 0 then
+    exit;
   for i := 0 to Count - 1 do begin
     di := Source[i];
     if IsNan(di^.Y) then continue;
