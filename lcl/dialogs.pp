@@ -385,6 +385,7 @@ type
     function GetTop: Integer;
     procedure SetFindText(const AValue: string);
     procedure SetLeft(const AValue: Integer);
+    procedure SetOptions(AValue: TFindOptions);
     procedure SetPosition(const AValue: TPoint);
     procedure SetTop(const AValue: Integer);
     procedure SetReplaceText(const AValue: string);
@@ -405,16 +406,14 @@ type
 
     function GetHeight: Integer; override;
     function GetWidth: Integer; override;
-    procedure UpdatePosition;
     procedure DoCloseForm(Sender: TObject; var CloseAction: TCloseAction);virtual;
     procedure Find; virtual;
     procedure Help; virtual;
     procedure Replace; virtual;
     function CreateForm:TForm;virtual;
     procedure SetFormValues;virtual;
-
     procedure GetFormValues; virtual;
-
+    Procedure CalcPosition(aForm:Tform);
     property ReplaceText: string read GetReplaceText write SetReplaceText;
     property OnReplace: TNotifyEvent read FOnReplace write FOnReplace;
   public
@@ -427,7 +426,7 @@ type
     property Top: Integer read GetTop write SetTop;
   published
     property FindText: string read GetFindText write SetFindText;
-    property Options: TFindOptions read FOptions write FOptions default [frDown];
+    property Options: TFindOptions read FOptions write SetOptions default [frDown];
     property OnFind: TNotifyEvent read FOnFind write FOnFind;
     property OnHelpClicked: TNotifyEvent read FOnHelpClicked write FOnHelpClicked;
   end;

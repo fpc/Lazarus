@@ -16,17 +16,19 @@ type
   { TFindDialogForm }
 
   TFindDialogForm = class(TForm)
+    // Same order as in TReplaceDialog
     BtnPanel: TPanel;
+    CancelButton: TButton;
+    CaseSensitiveCheckBox: TCheckBox;
+    DirectionRadioGroup: TRadioGroup;
+    EditFind: TEdit;
     EntireScopeCheckBox: TCheckBox;
     FindButton: TButton;
-    CancelButton: TButton;
+    FindLabel: TLabel;
     FlagsPanel: TPanel;
     HelpButton: TButton;
     WholeWordsOnlyCheckBox: TCheckBox;
-    CaseSensitiveCheckBox: TCheckBox;
-    EditFind: TEdit;
-    FindLabel: TLabel;
-    DirectionRadioGroup: TRadioGroup;
+
     procedure EditFindChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
   private
@@ -53,10 +55,12 @@ var
 begin
   inherited CreateNew(aOwner);
   Layout := frButtonsAtBottom in Options;
+
+  Left := 417;
+  Top := 333;
+
   if Layout then begin
-    Left := 417;
     Height := 166;
-    Top := 333;
     Width := 415;
     ClientHeight := 166;
     ClientWidth := 415;
@@ -65,20 +69,20 @@ begin
     Constraints.MinWidth := 415;
   end
   else begin
-    Left := 417;
     Height := 136;
-    Top := 333;
     Width := 480;
     ClientHeight := 140;
     ClientWidth := 480;
     Constraints.MinHeight := 136;
     Constraints.MinWidth := 480;
   end;
+
   AutoSize := True;
   BorderIcons := [biSystemMenu, biHelp];
   Caption := 'Find';
   //OnCreate := @FormCreate;
   Position := poMainFormCenter;
+
   LCLVersion := '1.3';
 
   FindLabel := TLabel.Create(Self);
@@ -400,15 +404,6 @@ begin
   Result := inherited GetWidth;
 end;
 
-procedure TFindDialog.UpdatePosition;
-begin
-  if Assigned(FFindForm) then
-  begin
-    FFindForm.Top:=FFormTop;
-    FFindForm.Left:=FFormLeft;
-  end;
-end;
-
 procedure TFindDialog.DoCloseForm(Sender: TObject; var CloseAction: TCloseAction);
 begin
   if csDesigning in ComponentState then exit;
@@ -439,34 +434,36 @@ procedure TFindDialog.SetFindText(const AValue: string);
 begin
   if FFindText = AValue then exit;
   FFindText:=AValue;
+  TFindDialogForm(FFindForm).EditFind.Text := AValue;
 end;
 
 procedure TFindDialog.SetLeft(const AValue: Integer);
 begin
-  if FFormLeft <> AValue then
-  begin
-    FFormLeft:=AValue;
-    UpdatePosition;
-  end;
+  if FFormLeft = AValue then Exit;
+  FFormLeft:=AValue;
+  if Assigned(FFindForm) then FFindForm.Left :=FFormLeft;
+end;
+
+procedure TFindDialog.SetOptions(AValue: TFindOptions);
+begin
+  if FOptions=AValue then Exit;
+  FOptions:=AValue;
+  TFindDialogForm(FFindForm).EntireScopeCheckBox.Checked    := (frEntireScope in FOptions);
+  TFindDialogForm(FFindForm).WholeWordsOnlyCheckBox.Checked := (frWholeWord in FOptions);
+  TFindDialogForm(FFindForm).CaseSensitiveCheckBox.checked  := (frMatchCase in FOptions);
 end;
 
 procedure TFindDialog.SetPosition(const AValue: TPoint);
 begin
-  if (FFormLeft<>AValue.x) or (FFormTop<>AValue.y) then
-  begin
-    FFormLeft:=AValue.x;
-    FFormTop:=AValue.y;
-    UpdatePosition;
-  end;
+  if (FFormLeft <> AValue.x) then Left := AValue.x;
+  If (FFormTop <> AValue.y) then  Top := AValue.y;
 end;
 
 procedure TFindDialog.SetTop(const AValue: Integer);
 begin
-  if FFormTop <> AValue then
-  begin
-    FFormTop:=AValue;
-    UpdatePosition;
-  end;
+  if FFormTop = AValue then exit;
+  FFormTop:=AValue;
+  if Assigned(FFindForm) then FFindForm.Top :=FFormTop;
 end;
 
 procedure TFindDialog.Find;
@@ -488,6 +485,8 @@ begin
 end;
 
 function TFindDialog.CreateForm: TForm;
+Var
+  StrTmp : String;
 begin
   // do not use Self as Owner, otherwise as desgntime this will not work
   Result := TFindDialogForm.CreateNew(nil,Options);
@@ -508,6 +507,9 @@ begin
     HelpButton.OnClick := @HelpClick;
     CancelButton.OnClick := @CancelClick;
     PopupMode := pmAuto;
+    // Init local property with defaut value
+    FFormTop  := top;
+    FFormLeft := Left;
   end;
 end;
 
@@ -560,6 +562,19 @@ begin
   FFindText := Dlg.EditFind.Text;
 end;
 
+procedure TFindDialog.CalcPosition(aForm:Tform);
+Var
+  MfBound : Trect;
+
+begin
+  MfBound := Application.MainForm.BoundsRect;
+  FFormTop  := MfBound.Top + (((MfBound.Bottom - MfBound.Top)  - aForm.Height) Div 2);
+  FFormLeft := MfBound.Left + (((MfBound.Right - MfBound.Left) - aForm.Width) Div 2);
+  aForm.Top := FFormTop;
+  aForm.Left := FFormLeft;
+end;
+
+
 constructor TFindDialog.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -585,6 +600,8 @@ begin
     FFindForm:=CreateForm;
     
   if Assigned(FFindForm) then begin
+    CalcPosition(FFindForm);
+
     SetFormValues;
     FFindForm.OnClose:=@DoCloseForm;
     FFindForm.OnShow := Self.OnShow;

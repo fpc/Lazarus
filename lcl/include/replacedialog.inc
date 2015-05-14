@@ -15,25 +15,25 @@
 type
 
 { TReplaceDialogForm }
-
   TReplaceDialogForm = class(TForm)
-    FlagPanel: TPanel;
-    PanelButtons: TPanel;
-    PromptOnReplaceCheckBox: TCheckBox;
-    EntireScopeCheckBox: TCheckBox;
-    FindMoreButton: TButton;
-    ReplaceButton: TButton;
-    ReplaceAllButton: TButton;
-    CancelButton: TButton;
-    HelpButton: TButton;
-    WholeWordsOnlyCheckBox: TCheckBox;
-    CaseSensitiveCheckBox: TCheckBox;
+    // Same order as in TFindDialog
+	PanelButtons: TPanel;
+	CancelButton: TButton;
+	CaseSensitiveCheckBox: TCheckBox;
+	DirectionRadioGroup: TRadioGroup;
     EditFind: TEdit;
+	EntireScopeCheckBox: TCheckBox;
+	FindMoreButton: TButton;
+	TextLabel: TLabel;
+	FlagPanel: TPanel;
+	HelpButton: TButton;
+	WholeWordsOnlyCheckBox: TCheckBox;
+
     EditReplace: TEdit;
-    TextLabel: TLabel;
+    PromptOnReplaceCheckBox: TCheckBox;
+    ReplaceAllButton: TButton;
+    ReplaceButton: TButton;
     ReplaceLabel: TLabel;
-    DirectionRadioGroup: TRadioGroup;
-    Label1: TLabel;
   private
     FButtonsBottom: Boolean;
   public
