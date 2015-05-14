@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <Package Version="4">
+    <Name Value="LazDebuggerFPDServer"/>
+    <Type Value="DesignTime"/>
+    <Author Value="Joost van der Sluis"/>
+    <CompilerOptions>
+      <Version Value="11"/>
+      <SearchPaths>
+        <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
+      </SearchPaths>
+    </CompilerOptions>
+    <Description Value="Use fpdserver to debug applications"/>
+    <Version Minor="1"/>
+    <Files Count="2">
+      <Item1>
+        <Filename Value="fpdserverdebugger.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="FPDServerDebugger"/>
+      </Item1>
+      <Item2>
+        <Filename Value="fpdserverdebuggercommands.inc"/>
+        <Type Value="Binary"/>
+      </Item2>
+    </Files>
+    <RequiredPkgs Count="2">
+      <Item1>
+        <PackageName Value="DebuggerIntf"/>
+      </Item1>
+      <Item2>
+        <PackageName Value="FCL"/>
+      </Item2>
+    </RequiredPkgs>
+    <UsageOptions>
+      <UnitPath Value="$(PkgOutDir)"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+    </PublishOptions>
+    <CustomOptions Items="ExternHelp" Version="2">
+      <_ExternHelp Items="Count"/>
+    </CustomOptions>
+  </Package>
+</CONFIG>
