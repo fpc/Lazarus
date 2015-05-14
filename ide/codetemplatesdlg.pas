@@ -33,7 +33,7 @@ interface
 uses
   Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
   ClipBrd, StdCtrls, Buttons, ExtCtrls, Menus, FileUtil, lazutf8classes,
-  ButtonPanel,
+  ButtonPanel, EditBtn,
   // synedit
   SynEdit, SynHighlighterPas, SynEditAutoComplete, SynRegExpr,
   // codetools
@@ -76,6 +76,7 @@ type
     AutoOnOptionsCheckGroup: TCheckGroup;
     ButtonPanel: TButtonPanel;
     EditTemplateGroupBox: TGroupBox;
+    FilenameEdit: TFileNameEdit;
     InsertMacroButton: TButton;
     KeepSubIndentCheckBox: TCheckBox;
     OptionsPanel: TPanel;
@@ -85,15 +86,12 @@ type
     TemplateListBox: TListBox;
     TemplateSynEdit: TSynEdit;
     TemplatesGroupBox: TGroupBox;
-    FilenameButton: TButton;
-    FilenameEdit: TEdit;
     FilenameGroupBox: TGroupBox;
     MainPopupMenu: TPopupMenu;
     procedure AddButtonClick(Sender: TObject);
     procedure DeleteButtonClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure RenameButtonClick(Sender: TObject);
-    procedure FilenameButtonClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure HelpButtonClick(Sender: TObject);
@@ -966,6 +964,8 @@ begin
   AutoOnOptionsCheckGroup.Items.Add(lisAutomaticallyRemoveCharacter);
 
   FilenameEdit.Text:=EditorOpts.CodeTemplateFileName;
+  FilenameEdit.DialogTitle:=dlgChsCodeTempl;
+  FilenameEdit.Filter:=dlgDCIFileDci + '|*.dci|' + dlgAllFiles  + '|' + GetAllFilesMask;
 
   // init synedit
   ColorScheme:=EditorOpts.ReadColorScheme(ASynPasSyn.GetLanguageName);
@@ -1128,24 +1128,6 @@ begin
        SynAutoComplete.Completions[a]
        +' - "'+SynAutoComplete.CompletionComments[a]+'"';
     ShowCurCodeTemplate;
-  end;
-end;
-
-procedure TCodeTemplateDialog.FilenameButtonClick(Sender: TObject);
-var OpenDialog:TOpenDialog;
-begin
-  OpenDialog:=TOpenDialog.Create(nil);
-  try
-    InputHistories.ApplyFileDialogSettings(OpenDialog);
-    with OpenDialog do begin
-      Title:=dlgChsCodeTempl;
-      Filter:=dlgDCIFileDci + '|*.dci|' + dlgAllFiles  + '|' + GetAllFilesMask;
-      if Execute then
-        FilenameEdit.Text:=FileName;
-    end;
-    InputHistories.StoreFileDialogSettings(OpenDialog);
-  finally
-    OpenDialog.Free;
   end;
 end;
 

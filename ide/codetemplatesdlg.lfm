@@ -3,7 +3,6 @@ object CodeTemplateDialog: TCodeTemplateDialog
   Height = 540
   Top = 174
   Width = 729
-  ActiveControl = FilenameEdit
   BorderIcons = [biSystemMenu]
   Caption = 'CodeTemplateDialog'
   ClientHeight = 540
@@ -24,31 +23,25 @@ object CodeTemplateDialog: TCodeTemplateDialog
     ClientHeight = 31
     ClientWidth = 713
     TabOrder = 0
-    object FilenameEdit: TEdit
-      AnchorSideRight.Control = FilenameButton
-      Left = 9
-      Height = 23
-      Top = 4
-      Width = 667
-      Anchors = [akTop, akLeft, akRight]
-      BorderSpacing.Right = 5
-      TabOrder = 0
-      Text = 'FilenameEdit'
-    end
-    object FilenameButton: TButton
+    object FilenameEdit: TFileNameEdit
+      AnchorSideLeft.Control = FilenameGroupBox
       AnchorSideRight.Control = FilenameGroupBox
       AnchorSideRight.Side = asrBottom
-      AnchorSideBottom.Control = FilenameEdit
-      AnchorSideBottom.Side = asrBottom
-      Left = 681
+      Left = 6
       Height = 23
       Top = 4
-      Width = 26
-      Anchors = [akRight, akBottom]
+      Width = 701
+      FileName = 'FilenameEdit'
+      FilterIndex = 0
+      HideDirectories = False
+      ButtonWidth = 45
+      NumGlyphs = 1
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Left = 6
       BorderSpacing.Right = 6
-      Caption = '...'
-      OnClick = FilenameButtonClick
-      TabOrder = 1
+      MaxLength = 0
+      TabOrder = 0
+      Text = 'FilenameEdit'
     end
   end
   object TemplatesGroupBox: TGroupBox
