@@ -57,15 +57,15 @@ var
   CommandStr: string;
 begin
   // quick check parameters
-  ErrorMsg:=CheckOptions('hf', ['help']);
+  ErrorMsg:=CheckOptions('hf:td', ['help','filename:','tcp','daemon'], True);
   if ErrorMsg<>'' then
     begin
-    ShowException(Exception.Create(ErrorMsg));
+    writeln('FPDebug server');
+    writeln(ErrorMsg);
     Terminate;
     Exit;
     end;
 
-  // parse parameters
   if HasOption('h', 'help') then
     begin
     WriteHelp;
@@ -75,24 +75,22 @@ begin
 
   DebugThread := TFpDebugThread.Instance;
 
-  TCPServerThread := TFpDebugTcpServer.Create(DebugThread);
-  ConsoleServerThread := TFpDebugConsoleServer.Create(DebugThread);
+  if HasOption('t','tcp') then
+    TCPServerThread := TFpDebugTcpServer.Create(DebugThread)
+  else
+    TCPServerThread := nil;
 
-  if HasOption('f') then
+  if not HasOption('d','daemon') then
+    ConsoleServerThread := TFpDebugConsoleServer.Create(DebugThread)
+  else
+    ConsoleServerThread := nil;
+
+  CommandStr := GetOptionValue('f', 'filename');
+  if CommandStr<>'' then
     begin
-    CommandStr := GetOptionValue('f');
-    if CommandStr<>'' then
-      begin
-      ACommand := TFpDebugThreadSetFilenameCommand.create(-1, null, @DebugThread.SendLogMessage);
-      TFpDebugThreadSetFilenameCommand(ACommand).Filename:=CommandStr;
-      DebugThread.QueueCommand(ACommand);
-      end
-    else
-      begin
-      WriteHelp;
-      Terminate;
-      end;
-    CommandStr:='';
+    ACommand := TFpDebugThreadSetFilenameCommand.create(-1, null, @DebugThread.SendLogMessage);
+    TFpDebugThreadSetFilenameCommand(ACommand).Filename:=CommandStr;
+    DebugThread.QueueCommand(ACommand);
     end;
 
   while not Terminated do
@@ -105,14 +103,20 @@ begin
     end;
     end;
 
-  ConsoleServerThread.Terminate;
-  TCPServerThread.StopListening;
+  if assigned(ConsoleServerThread) then
+    ConsoleServerThread.Terminate;
+  if assigned(TCPServerThread) then
+    TCPServerThread.StopListening;
 
-  ConsoleServerThread.WaitFor;
-  TCPServerThread.WaitFor;
+  if assigned(ConsoleServerThread) then
+    ConsoleServerThread.WaitFor;
+  if assigned(TCPServerThread) then
+    TCPServerThread.WaitFor;
 
-  TCPServerThread.Free;
-  ConsoleServerThread.Free;
+  if assigned(TCPServerThread) then
+    TCPServerThread.Free;
+  if assigned(ConsoleServerThread) then
+    ConsoleServerThread.Free;
 
   DebugThread.Terminate;
   DebugThread.WaitFor;
@@ -126,15 +130,22 @@ end;
 
 procedure TFPDServerApplication.WriteHelp;
 begin
-  { add your help code here }
-  writeln('Usage: ', ExeName, ' --help -h -f <executable name>');
+  writeln('FPDebug server');
+  writeln('Copyright (c) 2015 by Joost van der Sluis');
+  writeln('fpdserver [options]');
+  writeln(' List of options without argument:');
+  writeln('  -h --help      Show this help message');
+  writeln('  -t --tcp       Start listening to incoming tcp-connections');
+  writeln('  -d --daemon    Do not use the console in- or output');
+  writeln(' List of options with argument:');
+  writeln('  -f --filename  Set the filename of the executable to debug');
 end;
 
 var
   Application: TFPDServerApplication;
 begin
   Application:=TFPDServerApplication.Create(nil);
-  Application.Title:='FPD Server';
+  Application.Title:='FPDebug Server';
   Application.Run;
   Application.Free;
 end.
