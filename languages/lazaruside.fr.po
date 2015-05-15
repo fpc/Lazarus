@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: lazaruside\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2015-05-02 11:10+0100\n"
+"PO-Revision-Date: 2015-05-14 21:22+0100\n"
 "Last-Translator: Yann Mérignac <yann.merignac@laposte.net>\n"
 "Language-Team: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
 "Language: fr_FR\n"
@@ -3032,7 +3032,7 @@ msgstr "Chemins"
 
 #: lazarusidestrconsts.dlgsearchscope
 msgid "Search scope"
-msgstr ""
+msgstr "Portée de la recherche"
 
 #: lazarusidestrconsts.dlgselectallchildcontrols
 msgid "Select all child controls together with their parent."
@@ -4284,15 +4284,15 @@ msgstr "Un paramètre utile pour les systèmes Windows est : \"$(LazarusDir)\\mi
 
 #: lazarusidestrconsts.lisautoadjustideheight
 msgid "Automatically adjust IDE main window height"
-msgstr ""
+msgstr "Ajuster automatiquement la hauteur de la fenêtre principale de l'EDI"
 
 #: lazarusidestrconsts.lisautoadjustideheightfullcomponentpalette
 msgid "Show complete component palette"
-msgstr ""
+msgstr "Montrer la palette des composants entière"
 
 #: lazarusidestrconsts.lisautoadjustideheightfullcomponentpalettehint
 msgid "If component palette spans over more lines, show them all and not only one."
-msgstr ""
+msgstr "Si la palette de composants s'étend sur plus de lignes, tous les montrer et non pas un seul."
 
 #: lazarusidestrconsts.lisautocompletionoff
 msgid "Auto completion: off"
@@ -5432,7 +5432,7 @@ msgstr "Cliquez pour voir les utilisations possibles"
 
 #: lazarusidestrconsts.lisclicktoselectpalettepage
 msgid "Click to Select Palette Page"
-msgstr ""
+msgstr "Cliquez pour choisir la page de palette"
 
 #: lazarusidestrconsts.lisclone
 msgid "Clone"
@@ -8980,7 +8980,7 @@ msgstr "Premier"
 
 #: lazarusidestrconsts.lisfirsttest
 msgid "&First test"
-msgstr ""
+msgstr "&Premier essai"
 
 #: lazarusidestrconsts.lisfixlfmfile
 msgid "Fix LFM file"
@@ -9161,11 +9161,11 @@ msgstr "Renommer toutes les références"
 
 #: lazarusidestrconsts.lisfrirenaming
 msgid "Renaming"
-msgstr ""
+msgstr "Renommage en cours"
 
 #: lazarusidestrconsts.lisfrisearch
 msgid "Search"
-msgstr ""
+msgstr "Recherche"
 
 #: lazarusidestrconsts.lisfrisearchincommentstoo
 msgid "Search in comments too"
@@ -10561,7 +10561,7 @@ msgstr "Afficher les informations d'unité"
 
 #: lazarusidestrconsts.lislastopened
 msgid "Last opened"
-msgstr ""
+msgstr "Dernier ouvert"
 
 #: lazarusidestrconsts.lislaunchingapplicationinvalid
 msgid "Launching application invalid"
@@ -14311,11 +14311,11 @@ msgstr "Liens de paquet"
 
 #: lazarusidestrconsts.lispldshowgloballinksin
 msgid "Show global links in "
-msgstr ""
+msgstr "Afficher les liens globaux dans "
 
 #: lazarusidestrconsts.lispldshowuserlinksin
 msgid "Show user links in "
-msgstr ""
+msgstr "Afficher les liens de l'utilisateur dans "
 
 #: lazarusidestrconsts.lisplduser
 msgid "User"
@@ -15456,7 +15456,7 @@ msgstr "Chemin de configuration secondaire"
 
 #: lazarusidestrconsts.lissecondtest
 msgid "&Second test"
-msgstr ""
+msgstr "&Second essai"
 
 #: lazarusidestrconsts.lisseemessages
 msgid "See messages."
@@ -15569,7 +15569,7 @@ msgstr "Valeur par défaut"
 
 #: lazarusidestrconsts.lissetthistotranslatethecompilermessagestoanotherlang
 msgid "Set this to translate the compiler messages to another language (i.e. not English). For example: German: $(FPCSrcDir)/compiler/msg/errordu.msg."
-msgstr "Définir ceci pour traduire les messages du compilateur dans une autre langue que l'anglais. Par exemple, pour l'allemand :\"$(FPCSrcDir)/compiler/msg/errordu.msg\"."
+msgstr "À définir pour traduire les messages du compilateur dans une autre langue que l'anglais. Par exemple, pour l'allemand :\"$(FPCSrcDir)/compiler/msg/errordu.msg\"."
 
 #: lazarusidestrconsts.lissetupdefaultindentation
 msgid "(Set up default indentation)"
@@ -15750,7 +15750,7 @@ msgstr "Ignorer le chargement du dernier projet"
 
 #: lazarusidestrconsts.lisskipthesewarnings
 msgid "Skip these warnings"
-msgstr ""
+msgstr "Ignorer ces avertissements"
 
 #: lazarusidestrconsts.lisslowerbutmoreaccurate
 msgid "Slower but more accurate."
@@ -16815,11 +16815,11 @@ msgstr "Espacement égal en haut"
 
 #: lazarusidestrconsts.listotalpages
 msgid "Total Pages: %s"
-msgstr ""
+msgstr "Total des pages : %s"
 
 #: lazarusidestrconsts.listranslatetheenglishmessages
 msgid "Translate the English Messages"
-msgstr "Traduire les messages en anglais"
+msgstr "Traduire les messages"
 
 #: lazarusidestrconsts.listreeneedsrefresh
 msgid "Tree needs refresh"

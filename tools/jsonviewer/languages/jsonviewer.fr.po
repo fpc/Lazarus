@@ -4,7 +4,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: 2015-04-29 15:02+0100\n"
-"PO-Revision-Date: 2015-04-29 15:02+0100\n"
+"PO-Revision-Date: 2015-05-06 09:52+0100\n"
 "Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
 "Language-Team: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -288,7 +288,7 @@ msgstr "&Valeurs"
 
 #: tmainform.misortmembers.caption
 msgid "Sort object members"
-msgstr "Trier les membres des objects"
+msgstr "Trier les membres des objets"
 
 #: tmainform.mistrict.caption
 msgid "&Strict JSON"
