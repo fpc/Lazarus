@@ -1163,7 +1163,7 @@ begin
     if not Process.ReadData(Frame, Size, Frame) then Break;
     AnEntry := TDbgCallstackEntry.create(Self, Frame, Address);
     AnEntry.RegisterValueList.DbgRegisterAutoCreate['eip'].SetValue(Address, IntToStr(Address),Size,8);
-    AnEntry.RegisterValueList.DbgRegisterAutoCreate['esp'].SetValue(Address, IntToStr(Address),Size,5);
+    AnEntry.RegisterValueList.DbgRegisterAutoCreate['ebp'].SetValue(Frame, IntToStr(Frame),Size,5);
     FCallStackEntryList.Add(AnEntry);
     Dec(count);
     if Count <= 0 then Break;
