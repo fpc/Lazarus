@@ -2861,6 +2861,7 @@ components/lazthread/lazthread.pas svneol=native#text/plain
 components/lazthread/reglazthread.pas svneol=native#text/plain
 components/lazthread/threadoptionsdialog.lfm svneol=native#text/plain
 components/lazthread/threadoptionsdialog.pas svneol=native#text/plain
+components/lazutils/FTL.TXT svneol=native#text/plain
 components/lazutils/LazLoggerImpl.inc svneol=native#text/pascal
 components/lazutils/LazLoggerIntf.inc svneol=native#text/pascal
 components/lazutils/Makefile svneol=native#text/plain
