@@ -1414,6 +1414,7 @@ var
     ns := Source.Count;
     if (np <= 0) or (ns = 0) or (ns < np) then exit;
     CalcXRange(xmin, xmax);
+    if xmin = xmax then exit;
 
     n := 0;
     for i := 0 to ns - 1 do
