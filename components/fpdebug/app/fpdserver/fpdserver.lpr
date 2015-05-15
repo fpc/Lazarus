@@ -26,35 +26,22 @@ uses
   Classes,
   SysUtils,
   CustApp,
-  syncobjs,
-  pipes,
-  lazfglhash,
   debugthread,
   DebugThreadCommand,
-  lazCollections,
   DebugInOutputProcessor,
-  DebugTCPServer;
+  DebugTCPServer,
+  DebugConsoleServer;
 
 type
 
-  TFpDebugEventQueue = specialize TLazThreadedQueue<TFpDebugEvent>;
-
   { TFPDServerApplication }
 
-  TFPDServerApplication = class(TCustomApplication, IFpDebugListener)
-  private
-    FEventQueue: TFpDebugEventQueue;
-    FInOutputProcessor: TCustomInOutputProcessor;
-    FConnectionIdentifier: integer;
+  TFPDServerApplication = class(TCustomApplication)
   protected
     procedure DoRun; override;
   public
     constructor Create(TheOwner: TComponent); override;
-    destructor Destroy; override;
     procedure WriteHelp; virtual;
-    // IFpDebugListener
-    procedure SendEvent(AnEvent: TFpDebugEvent);
-    function GetOrigin: string;
   end;
 
 { TFPDServerApplication }
@@ -64,11 +51,10 @@ var
   ErrorMsg: String;
   DebugThread: TFpDebugThread;
   DebugEvent: TFpDebugEvent;
-  InputStream: TInputPipeStream;
-  CommandStr: string;
   TCPServerThread: TFpDebugTcpServer;
+  ConsoleServerThread: TFpDebugConsoleServer;
   ACommand: TFpDebugThreadCommand;
-  b: char;
+  CommandStr: string;
 begin
   // quick check parameters
   ErrorMsg:=CheckOptions('hf', ['help']);
@@ -88,7 +74,9 @@ begin
     end;
 
   DebugThread := TFpDebugThread.Instance;
+
   TCPServerThread := TFpDebugTcpServer.Create(DebugThread);
+  ConsoleServerThread := TFpDebugConsoleServer.Create(DebugThread);
 
   if HasOption('f') then
     begin
@@ -107,77 +95,33 @@ begin
     CommandStr:='';
     end;
 
-  InputStream:=TInputPipeStream.Create(StdInputHandle);
+  while not Terminated do
+    begin
+    try
+      CheckSynchronize(100);
+    except
+      on e: exception do
+        writeln(StdErr, 'Exception: '+e.Message);
+    end;
+    end;
 
-  FConnectionIdentifier := DebugThread.AddListener(self);
-  FInOutputProcessor := TJSonInOutputProcessor.create(FConnectionIdentifier, @DebugThread.SendLogMessage);
-  try
-
-    while not terminated do
-      begin
-      if FEventQueue.PopItem(DebugEvent) = wrSignaled then
-        begin
-        writeln(FInOutputProcessor.EventToText(DebugEvent));
-        end;
-      while InputStream.NumBytesAvailable>0 do
-        begin
-        InputStream.Read(b,sizeof(b));
-        if b <> #10 then
-          CommandStr:=CommandStr+b
-        else
-          begin
-          if CommandStr='q' then
-            Terminate
-          else
-            begin
-            ACommand := FInOutputProcessor.TextToCommand(CommandStr);
-            if assigned(ACommand) then
-              DebugThread.QueueCommand(ACommand);
-            end;
-          CommandStr:='';
-          end;
-        end;
-      CheckSynchronize;
-      end;
-
-    DebugThread.RemoveListener(self);
-
-  finally
-    FInOutputProcessor.Free;
-  end;
-
-
+  ConsoleServerThread.Terminate;
   TCPServerThread.StopListening;
+
+  ConsoleServerThread.WaitFor;
   TCPServerThread.WaitFor;
+
   TCPServerThread.Free;
+  ConsoleServerThread.Free;
+
   DebugThread.Terminate;
   DebugThread.WaitFor;
-  InputStream.Free;
-
-  terminate;
 end;
 
 constructor TFPDServerApplication.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
-  FEventQueue:=TFpDebugEventQueue.Create(100, INFINITE, 100);
   StopOnException:=True;
-end;
-
-destructor TFPDServerApplication.Destroy;
-begin
-  FEventQueue.Free;
-  inherited Destroy;
-end;
-
-procedure TFPDServerApplication.SendEvent(AnEvent: TFpDebugEvent);
-begin
-  FEventQueue.PushItem(AnEvent);
-end;
-
-function TFPDServerApplication.GetOrigin: string;
-begin
-  result := 'console';
 end;
 
 procedure TFPDServerApplication.WriteHelp;
