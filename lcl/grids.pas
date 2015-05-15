@@ -780,6 +780,7 @@ type
     function  doColSizing(X,Y: Integer): Boolean;
     function  doRowSizing(X,Y: Integer): Boolean;
     procedure doColMoving(X,Y: Integer);
+    procedure doPushCell;
     procedure doRowMoving(X,Y: Integer);
     procedure doTopleftChange(DimChg: Boolean);
     procedure DrawXORVertLine(X: Integer);
@@ -1058,6 +1059,7 @@ type
     procedure ShowCellHintWindow(APoint: TPoint);
     procedure SizeChanged(OldColCount, OldRowCount: Integer); virtual;
     procedure Sort(ColSorting: Boolean; index,IndxFrom,IndxTo:Integer); virtual;
+    procedure StartPushCell;
     procedure TopLeftChanged; virtual;
     function  TryMoveSelection(Relative: Boolean; var DCol, DRow: Integer): Boolean;
     procedure UnLockEditor;
@@ -3731,6 +3733,12 @@ begin
   Application.CancelHint;
 end;
 
+procedure TCustomGrid.StartPushCell;
+begin
+  fGridState := gsButtonColumnClicking;
+  DoPushCell;
+end;
+
 function TCustomGrid.SelectCell(ACol, ARow: Integer): Boolean;
 begin
   Result:=true;
@@ -4980,6 +4988,16 @@ begin
     doTopleftChange(False)
 end;
 
+procedure TCustomGrid.doPushCell;
+begin
+  with FGCache do
+  begin
+    PushedCell := ClickCell;
+    ClickCellPushed:=True;
+    InvalidateCell(PushedCell.x, PushedCell.y);
+  end;
+end;
+
 function TCustomGrid.IsCellButtonColumn(ACell: TPoint): boolean;
 var
   Column: TGridColumn;
@@ -6052,16 +6070,6 @@ end;
 procedure TCustomGrid.MouseDown(Button: TMouseButton; Shift: TShiftState; X,
   Y: Integer);
 
-  procedure DoPushCell;
-  begin
-    with FGCache do
-    begin
-      PushedCell := ClickCell;
-      ClickCellPushed:=True;
-      InvalidateCell(PushedCell.x, PushedCell.y);
-    end;
-  end;
-
   function DoAutoEdit: boolean;
   begin
     result := FAutoEdit and EditingAllowed(FCol) and
@@ -6152,8 +6160,7 @@ begin
         FIgnoreClick := False;
         UnlockEditor;
         if IsMouseOverCellButton(X, Y) then begin
-          fGridState := gsButtonColumnClicking;
-          DoPushCell;
+          StartPushCell;
           Exit;
         end else
         if FExtendedColSizing and

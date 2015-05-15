@@ -2553,6 +2553,8 @@ begin
             if InsertCancelable and IsEOF then
               doCancel;
             doMoveBy;
+            if IsMouseOverCellButton(X, Y) then
+              StartPushCell;
           end;
           if ssCtrl in Shift then
             ToggleSelectedRow
