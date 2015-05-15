@@ -2071,7 +2071,7 @@ begin
       if (csNoFocus in LCLObject.ControlStyle) then
       begin
         if LCLObject.TabStop then
-          setFocusPolicy(QtWheelFocus)
+          setFocusPolicy(QtTabFocus)
         else
           setFocusPolicy(QtNoFocus);
       end else
