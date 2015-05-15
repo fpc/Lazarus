@@ -155,32 +155,22 @@ type
     procedure DoOnCommandSuccesfull(ACommandResponse: TJSonObject); override;
   end;
 
-  { TInterruptableInetSocket }
-
-  TInterruptableInetSocket = class(TInetSocket)
-  private
-    FIntHandler: TSocketHandler;
-  public
-    constructor Create(const AHost: String; APort: Word; AHandler: TSocketHandler=nil); Overload;
-    procedure ShutDown;
-  end;
-
   { TFPDSocketThread }
 
   TFPDSocketThread = class(TThread)
   private
     FConnectionIdentifier: integer;
-    FSocket: TInetSocket;
     FDebugger: TFPDServerDebugger;
     FSendQueue: TThreadedQueueString;
+    FErrMessage: string;
   protected
     procedure ReceivedCommand(Data: PtrInt);
+    procedure ConnectionProblem(Data: PtrInt);
     procedure Execute; override;
   public
     constructor Create(ADebugger: TFPDServerDebugger);
     procedure SendString(AString: string);
     destructor Destroy; override;
-    procedure CloseConnection;
     property ConnectionIdentifier: integer read FConnectionIdentifier;
   end;
 
@@ -189,7 +179,11 @@ type
   TFPDServerDebugger = class(TDebuggerIntf)
   private
     FSocketThread: TFPDSocketThread;
+    // This is a list of all commands send to the fpdebug-server, to handle the (asynchrounous)
+    // callback when a command is a succes or failure.
     FCommandList: TFPDSendCommandList;
+    FIsConnected: boolean;
+    procedure ConnectToFPDServer;
   protected
     // Overrides of TDebuggerIntf methods.
     function GetSupportedCommands: TDBGCommands; override;
@@ -219,6 +213,8 @@ type
     // because the TFPDSendCommands do not have access to TFPDServerDebugger's protected methods theirself)
     procedure DoOnRunFailed;
     procedure DoOnDoCurrentSuccessfull(ALocRec: TDBGLocationRec);
+    // This procedure is called when the socket-thread is shut-down.
+    procedure DoOnConnectionProblem(AMessage: string);
   end;
 
 procedure Register;
@@ -364,7 +360,8 @@ end;
 
 procedure TFPBreakpoint.ResetBreak;
 begin
-  TFPDServerDebugger(Debugger).QueueCommand(TFPDSendRemoveBreakpointCommand.create(Address));
+  if assigned(Debugger) then
+    TFPDServerDebugger(Debugger).QueueCommand(TFPDSendRemoveBreakpointCommand.create(Address));
   FIsSet:=false;
 end;
 
@@ -445,31 +442,20 @@ begin
   result := nil;
 end;
 
-{ TInterruptableInetSocket }
-
-constructor TInterruptableInetSocket.Create(const AHost: String; APort: Word; AHandler: TSocketHandler);
-begin
-  if not assigned(AHandler) then
-    FIntHandler := TSocketHandler.Create
-  else
-    FIntHandler := AHandler;
-  inherited create(AHost, APort, AHandler)
-end;
-
-procedure TInterruptableInetSocket.ShutDown;
-begin
-  FIntHandler.Shutdown(true);
-end;
-
 { TFPDSocketThread }
 
 procedure TFPDSocketThread.ReceivedCommand(Data: PtrInt);
 var
   ACommand: TJSONObject;
 begin
-  ACommand := TObject(data) as TJSONObject;;
+  ACommand := TObject(data) as TJSONObject;
   FDebugger.ReceivedCommand(ACommand);
   ACommand.Free;
+end;
+
+procedure TFPDSocketThread.ConnectionProblem(Data: PtrInt);
+begin
+  FDebugger.DoOnConnectionProblem(FErrMessage);
 end;
 
 procedure TFPDSocketThread.Execute;
@@ -481,6 +467,7 @@ var
   i: integer;
   InputStr: string;
   JSonData: TJSONData;
+  ASocket: TInetSocket;
 
   function ReadString: string;
   var
@@ -498,18 +485,18 @@ var
       end;
 
     result := '';
-    i := FSocket.Read(InputBuffer[0], InputBufferSize-1);
+    i := ASocket.Read(InputBuffer[0], InputBufferSize-1);
     if i=0 then
       begin
       // Connection closed
-      DebugLn('Lost Connection with FPDebug-server.');
+      FErrMessage := 'Connection with FPDebug-server closed.';
       Terminate;
       end
     else if i<0 then
       begin
-      if FSocket.LastError<>35 {EAGAIN} then
+      if ASocket.LastError<>35 {EAGAIN} then
         begin
-        debugln('Error during write. Socket-error: '+inttostr(FSocket.LastError));
+        FErrMessage := 'Error during write to FPDebug-server. Socket-error: '+inttostr(ASocket.LastError);
         Terminate;
         end;
       end
@@ -535,66 +522,101 @@ var
     tc := GetTickCount64;
     result := ReadString;
     while not terminated and (result='') and ((GetTickCount64-tc)<ATimeout) do
+      begin
+      sleep(1);
       result := ReadString;
+      end;
   end;
 
+var
+  IsConnected: boolean;
 begin
+  IsConnected:=false;
+  FErrMessage:='';
   try
-    FSocket := TInterruptableInetSocket.Create('127.0.0.1',9001);
-
-    // Set non-blocking
-    fpfcntl(FSocket.Handle,F_SETFL,O_NONBLOCK);
-
-    // Read and check FPDebug Server greeting
-    s := ReadSTringTimeout(100);
-    if s<>'Welcome to FPDebug-server.' then
-      Exit;
-    // Read connection-identifier
-    s := ReadSTringTimeout(100);
-    delete(s,length(s),1);
-    s := copy(s, rpos(' ',s)+1, 5);
-    FConnectionIdentifier:=StrToIntDef(s,-1);
-    if FConnectionIdentifier=-1 then
-      raise Exception.Create('Failed to retreive connection-identifier');
-
-    // Skip help-message
-    s := ReadSTringTimeout(100);
-
-    while not terminated do
-      begin
-      s:=ReadString;
-      if s<>'' then
+    ASocket := TInetSocket.Create('127.0.0.1',9001);
+    try
+      if not assigned(ASocket) then
         begin
-        JSonData := GetJSON(s);
-        if JSonData is TJSONObject then
-          Application.QueueAsyncCall(@ReceivedCommand, ptrint(JSonData))
-        else
-          raise exception.CreateFmt('JSon-command %s is not a JSON-Object.',[s]);
-        end;
-
-      if not terminated and (FSendQueue.PopItem(SendStr) = wrSignaled) then
+        FErrMessage:='Failed to connect to fpdebug-server at 127.0.0.1:9001';
+        Terminate;
+        end
+      else
         begin
-        SendStr := SendStr + #10;
-        i := FSocket.Write(SendStr[1], length(SendStr));
+        // Set non-blocking
+        fpfcntl(ASocket.Handle,F_SETFL,O_NONBLOCK);
 
-        if i < 0 then
+        // Read and check FPDebug Server greeting
+        s := ReadSTringTimeout(100);
+        if s='Welcome to FPDebug-server.' then
           begin
-          if FSocket.LastError=32 then
+          // Read connection-identifier
+          s := ReadSTringTimeout(100);
+          delete(s,length(s),1);
+          s := copy(s, rpos(' ',s)+1, 5);
+          FConnectionIdentifier:=StrToIntDef(s,-1);
+          if FConnectionIdentifier>-1 then
             begin
-            // Lost connection
-            end
-          else
-            DebugLn(Format('Error during write. Socket-error: %d',[FSocket.LastError]));
+            // Skip help-message
+            s := ReadSTringTimeout(100);
+            IsConnected:=True;
+            end;
+          end;
+
+        if not IsConnected then
+          begin
+          FErrMessage:='Connected to 127.0.0.1:9001, but failed to negotiate handshake.';
           Terminate;
-          end
-        else if i < length(SendStr) then
-          raise exception.create('Message has not been send to client entirely');
+          end;
         end;
-      end;
+
+      while not terminated do
+        begin
+        s:=ReadString;
+        if s<>'' then
+          begin
+          JSonData := GetJSON(s);
+          if JSonData is TJSONObject then
+            Application.QueueAsyncCall(@ReceivedCommand, ptrint(JSonData))
+          else
+            raise exception.CreateFmt('JSon-command %s is not a JSON-Object.',[s]);
+          end;
+
+        if not terminated and (FSendQueue.PopItem(SendStr) = wrSignaled) then
+          begin
+          SendStr := SendStr + #10;
+          i := ASocket.Write(SendStr[1], length(SendStr));
+
+          if i < 0 then
+            begin
+            if ASocket.LastError=32 then
+              begin
+              // Lost connection
+              end
+            else
+              DebugLn(Format('Error during write. Socket-error: %d',[ASocket.LastError]));
+            Terminate;
+            end
+          else if i < length(SendStr) then
+            raise exception.create('Message has not been send to client entirely');
+          end;
+        end;
+    finally
+      ASocket.Free;
+    end;
   except
     on E: Exception do
-      DebugLn('Exception in  SocketThread: '+E.Message);
+      begin
+      FErrMessage:='Exception on connection with FPDebug-server: ' + E.Message;
+      end;
   end;
+
+  // There are two different ways in which the thread can terminate:
+  // 1: The thread terminates itself, due to a lost connection or similar problem. In that case the
+  //    thread is freed in the TFPDServerDebugger.DoConnectionProblem method.
+  // 2: TFPDServerDebugger.Destroy terminates the thread. In that case it will also free the thread, and
+  //    the asynchrounous call to ConnectionProblem is removed from the async-queue.
+  Application.QueueAsyncCall(@ConnectionProblem, 0);
 end;
 
 constructor TFPDSocketThread.Create(ADebugger: TFPDServerDebugger);
@@ -614,17 +636,20 @@ end;
 destructor TFPDSocketThread.Destroy;
 begin
   FSendQueue.Free;
-  FSocket.Free;
+  Application.RemoveAsyncCalls(Self);
   inherited destroy;
 end;
 
-procedure TFPDSocketThread.CloseConnection;
-begin
-  Terminate;
-  (FSocket as TInterruptableInetSocket).ShutDown;
-end;
-
 { TFPDServerDebugger }
+
+procedure TFPDServerDebugger.ConnectToFPDServer;
+begin
+  if not FIsConnected then
+    begin
+    FSocketThread := TFPDSocketThread.Create(Self);
+    FIsConnected:=true;
+    end;
+end;
 
 function TFPDServerDebugger.GetSupportedCommands: TDBGCommands;
 begin
@@ -755,17 +780,19 @@ end;
 constructor TFPDServerDebugger.Create(const AExternalDebugger: String);
 begin
   inherited Create(AExternalDebugger);
-  FSocketThread := TFPDSocketThread.Create(Self);
   FCommandList := TFPDSendCommandList.Create(true);
 end;
 
 destructor TFPDServerDebugger.Destroy;
 begin
-  FSocketThread.CloseConnection;
-  FSocketThread.WaitFor;
-  FSocketThread.Free;
-  FCommandList.Free;
   inherited Destroy;
+  if FIsConnected then
+    begin
+    FSocketThread.Terminate;
+    FSocketThread.WaitFor;
+    FSocketThread.Free;
+    end;
+  FCommandList.Free;
 end;
 
 procedure TFPDServerDebugger.ReceivedCommand(ACommand: TJSONObject);
@@ -807,6 +834,7 @@ begin
         end
       else
         begin
+        ConnectToFPDServer;
         QueueCommand(TFPDSendFilenameCommand.create(FileName));
         QueueCommand(TFPDSendRunCommand.create);
         SetState(dsInit);
@@ -860,6 +888,16 @@ end;
 procedure TFPDServerDebugger.DoOnDoCurrentSuccessfull(ALocRec: TDBGLocationRec);
 begin
   DoCurrent(ALocRec);
+end;
+
+procedure TFPDServerDebugger.DoOnConnectionProblem(AMessage: string);
+begin
+  if AMessage<>'' then
+    ShowMessage(AMessage);
+  FIsConnected:=false;
+  SetState(dsStop);
+  FSocketThread.WaitFor;
+  FSocketThread.Free;
 end;
 
 end.
