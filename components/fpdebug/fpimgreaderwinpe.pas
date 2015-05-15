@@ -133,6 +133,7 @@ begin
     SymbolArr:=PDbgImageSectionEx(p)^.Sect.RawData;
     SymbolStr:=PDbgImageSectionEx(ps)^.Sect.RawData;
     SymbolCount := PDbgImageSectionEx(p)^.Sect.Size div sizeof(TImageSymbol);
+    {$PUSH}{$R-} // SymbolArr may be more than maxSmallInt
     for i := 0 to SymbolCount-1 do
     begin
       begin
@@ -154,6 +155,7 @@ begin
         AfpSymbolInfo.AddObject(SymbolName, TObject(PtrUInt(SymbolArr^[i].Value+ImageBase+FCodeBase)));
       end
     end;
+    {$POP}
   end;
 end;
 
