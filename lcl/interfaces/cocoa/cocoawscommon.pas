@@ -884,7 +884,10 @@ begin
   Msg.X := round(MousePos.X);
   Msg.Y := round(MousePos.Y);
   Msg.State :=  TShiftState(integer(CocoaModifiersToKeyState(Event.modifierFlags)));
-  Msg.WheelDelta := round(event.deltaY);
+  // Some info on event.deltaY can be found here:
+  // https://developer.apple.com/library/mac/releasenotes/AppKit/RN-AppKitOlderNotes/
+  // It says that deltaY=1 means 1 line, and in the LCL 1 line is 120
+  Msg.WheelDelta := round(event.deltaY * 120);
 
 
   NotifyApplicationUserInput(Target, Msg.Msg);
