@@ -1,0 +1,148 @@
+object MainForm: TMainForm
+  Left = 506
+  Height = 636
+  Top = 173
+  Width = 1025
+  Caption = 'Google mail demo'
+  ClientHeight = 636
+  ClientWidth = 1025
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  LCLVersion = '1.5'
+  object BRefreshFolders: TButton
+    Left = 104
+    Height = 25
+    Top = 8
+    Width = 120
+    Caption = 'Refresh'
+    OnClick = BRefreshFoldersClick
+    TabOrder = 0
+  end
+  object GBAccess: TGroupBox
+    Left = 0
+    Height = 91
+    Top = 545
+    Width = 1025
+    Align = alBottom
+    Caption = 'Please provide Google API access code'
+    ClientHeight = 63
+    ClientWidth = 1021
+    TabOrder = 1
+    Visible = False
+    object LEAccess: TLabel
+      Left = 16
+      Height = 12
+      Top = 8
+      Width = 56
+      Caption = 'Access code'
+      ParentColor = False
+    end
+    object BSetAccess: TButton
+      Left = 792
+      Height = 33
+      Top = 0
+      Width = 107
+      Anchors = [akTop, akRight]
+      Caption = 'OK'
+      OnClick = BSetAccessClick
+      TabOrder = 0
+    end
+    object BCancel: TButton
+      Left = 904
+      Height = 33
+      Top = 0
+      Width = 106
+      Anchors = [akTop, akRight]
+      Caption = 'Cancel'
+      OnClick = BCancelClick
+      TabOrder = 1
+    end
+    object EAccessCode: TEdit
+      Left = 144
+      Height = 18
+      Top = 2
+      Width = 648
+      Anchors = [akTop, akLeft, akRight]
+      TabOrder = 2
+    end
+  end
+  object BRefreshFiles: TButton
+    Left = 883
+    Height = 25
+    Top = 8
+    Width = 112
+    Anchors = [akTop, akRight]
+    Caption = 'Refresh'
+    Enabled = False
+    OnClick = BRefreshFilesClick
+    TabOrder = 2
+  end
+  object LMails: TLabel
+    Left = 392
+    Height = 12
+    Top = 8
+    Width = 484
+    Anchors = [akTop, akLeft, akRight]
+    Caption = 'Messages with label'
+    ParentColor = False
+  end
+  object LLabels: TLabel
+    Left = 24
+    Height = 12
+    Top = 8
+    Width = 30
+    Caption = 'Labels'
+    ParentColor = False
+  end
+  object TVLabels: TTreeView
+    Left = 8
+    Height = 512
+    Top = 40
+    Width = 344
+    Anchors = [akTop, akLeft, akBottom]
+    DefaultItemHeight = 14
+    ReadOnly = True
+    TabOrder = 3
+    OnSelectionChanged = TVLabelsSelectionChanged
+    Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
+  end
+  object LVMessages: TListView
+    Left = 392
+    Height = 512
+    Top = 32
+    Width = 629
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    Columns = <    
+      item
+        Caption = 'Title'
+        Width = 200
+      end    
+      item
+        Caption = 'From'
+        Width = 200
+      end    
+      item
+        Caption = 'Received'
+        Width = 200
+      end    
+      item
+        Caption = 'Recipient'
+        Width = 200
+      end    
+      item
+        Caption = 'Sender'
+        Width = 200
+      end    
+      item
+        Caption = 'Snippet'
+        Width = 300
+      end>
+    TabOrder = 4
+    ViewStyle = vsReport
+    OnDblClick = LVMessagesDblClick
+  end
+  object SDDownload: TSaveDialog
+    left = 415
+    top = 163
+  end
+end

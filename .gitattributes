@@ -1670,6 +1670,13 @@ components/googleapis/demo/drive/frmmain.pp svneol=native#text/plain
 components/googleapis/demo/drive/frmselectdownload.lfm svneol=native#text/plain
 components/googleapis/demo/drive/frmselectdownload.pp svneol=native#text/plain
 components/googleapis/demo/drive/google.ini svneol=native#text/plain
+components/googleapis/demo/gmail/frmmain.lfm svneol=native#text/plain
+components/googleapis/demo/gmail/frmmain.pp svneol=native#text/plain
+components/googleapis/demo/gmail/gmaildemo.ico -text
+components/googleapis/demo/gmail/gmaildemo.lpi svneol=native#text/plain
+components/googleapis/demo/gmail/gmaildemo.lpr svneol=native#text/plain
+components/googleapis/demo/gmail/gmaildemo.res -text
+components/googleapis/demo/gmail/google.ini svneol=native#text/plain
 components/googleapis/demo/tasks/frmmain.lfm svneol=native#text/plain
 components/googleapis/demo/tasks/frmmain.pp svneol=native#text/plain
 components/googleapis/demo/tasks/google.ini svneol=native#text/plain
