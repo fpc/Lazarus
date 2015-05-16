@@ -132,7 +132,8 @@ end;
 procedure TvHTMLVectorialReader.ReadParagraphFromNode(ADest: TvParagraph; ANode: TDOMNode;
   AData: TvTextPageSequence; ADoc: TvVectorialDocument);
 var
-  lText: TvText;
+  lText: TvText = nil;
+  lTextSeparatedByBR: Boolean = False;
   lTextStr: string;
   lCurNode: TDOMNode;
   lNodeName, lNodeValue, lAttrName, lAttrValue: DOMString;
@@ -155,16 +156,34 @@ begin
   lCurNode := ANode.FirstChild;
   while Assigned(lCurNode) do
   begin
-    lNodeName := lCurNode.NodeName;
+    lNodeName := LowerCase(lCurNode.NodeName);
     lNodeValue := lCurNode.NodeValue;
 
-    if lCurNode is TDOMText then
+    if (lCurNode is TDOMText) and not lTextSeparatedByBR then
     begin
       lTextStr := lNodeValue;
       lText := ADest.AddText(lTextStr);
       lCurNode := lCurNode.NextSibling;
       Continue;
+    end
+    // If after a text we get a <br /> or a TDOMText, merge them
+    else if (lNodeName = 'br') and (lText <> nil) then
+    begin
+      lTextSeparatedByBR := True;
+      lCurNode := lCurNode.NextSibling;
+      Continue;
+    end
+    else if (lCurNode is TDOMText) and lTextSeparatedByBR then
+    begin
+      lTextStr := lNodeValue;
+      lText.Value.Add(lTextStr);
+      lCurNode := lCurNode.NextSibling;
+      Continue;
     end;
+
+    // reset text merging
+    lText := nil;
+    lTextSeparatedByBR := False;
 
     case lNodeName of
     // <image width="100" height="100" xlink:href="data:image/png;base64,UgAAA....QSK5CYII="/>
