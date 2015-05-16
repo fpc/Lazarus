@@ -16,7 +16,7 @@
     <Description Value="Useful units for Lazarus packages."/>
     <License Value="Modified LGPL-2"/>
     <Version Major="1"/>
-    <Files Count="78">
+    <Files Count="79">
       <Item1>
         <Filename Value="laz2_dom.pas"/>
         <UnitName Value="Laz2_DOM"/>
@@ -139,7 +139,7 @@
       </Item30>
       <Item31>
         <Filename Value="lazutf8sysutils.pas"/>
-        <UnitName Value="lazutf8sysutils"/>
+        <UnitName Value="LazUTF8SysUtils"/>
       </Item31>
       <Item32>
         <Filename Value="lazmethodlist.pas"/>
@@ -328,8 +328,12 @@
       </Item77>
       <Item78>
         <Filename Value="lazcollections.pas"/>
-        <UnitName Value="lazcollections"/>
+        <UnitName Value="lazCollections"/>
       </Item78>
+      <Item79>
+        <Filename Value="lazlistclasses.pas"/>
+        <UnitName Value="LazListClasses"/>
+      </Item79>
     </Files>
     <LazDoc Paths="../../docs/xml/lazutils"/>
     <i18n>
