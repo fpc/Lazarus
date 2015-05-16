@@ -406,6 +406,7 @@ type
 
   TvEntityFeatures = record
     DrawsUpwards: Boolean; // TvText, TvEmbeddedVectorialDoc, etc draws upwards, but in the future we might have entities drawing downwards
+    DrawsUpwardHeightAdjustment: Integer; // in Canvas pixels
   end;
 
   { Now all elements }
@@ -449,7 +450,7 @@ type
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0; ADoDraw: Boolean = True); virtual;
     function AdjustColorToBackground(AColor: TFPColor; ARenderInfo: TvRenderInfo): TFPColor;
     function GetNormalizedPos(APage: TvVectorialPage; ANewMin, ANewMax: Double): T3DPoint;
-    function GetEntityFeatures: TvEntityFeatures; virtual;
+    function GetEntityFeatures(ADest: TFPCustomCanvas): TvEntityFeatures; virtual;
     function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; virtual;
     class function GenerateDebugStrForFPColor(AColor: TFPColor): string;
     class function GenerateDebugStrForString(AValue: string): string;
@@ -592,7 +593,7 @@ type
     procedure CalculateBoundingBox(ADest: TFPCustomCanvas; var ALeft, ATop, ARight, ABottom: Double); override;
     procedure Render(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0; ADoDraw: Boolean = True); override;
-    function GetEntityFeatures: TvEntityFeatures; override;
+    function GetEntityFeatures(ADest: TFPCustomCanvas): TvEntityFeatures; override;
     function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; override;
   end;
 
@@ -1033,7 +1034,6 @@ type
     function TryToSelect(APos: TPoint; var ASubpart: Cardinal): TvFindEntityResult; override;
     procedure Render(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0; ADoDraw: Boolean = True); override;
-    function GetEntityFeatures: TvEntityFeatures; override;
     function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; override;
   end;
 
@@ -1107,7 +1107,6 @@ type
     function TryToSelect(APos: TPoint; var ASubpart: Cardinal): TvFindEntityResult; override;
     procedure Render(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0; ADoDraw: Boolean = True); override;
-    function GetEntityFeatures: TvEntityFeatures; override;
     function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; override;
   end;
 
@@ -1262,7 +1261,6 @@ type
     //
     procedure Render(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0; ADoDraw: Boolean = True); override;
-    function GetEntityFeatures: TvEntityFeatures; override;
     function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; override;
   end;
 
@@ -2400,11 +2398,6 @@ begin
   end;
 end;
 
-function TvTable.GetEntityFeatures: TvEntityFeatures;
-begin
-  Result.DrawsUpwards := False;
-end;
-
 function TvTable.GenerateDebugTree(ADestRoutine: TvDebugAddItemProc;
   APageItem: Pointer): Pointer;
 var
@@ -3241,9 +3234,10 @@ begin
   Result.Z := (Z - APage.MinZ) * (ANewMax - ANewMin) / (APage.MaxZ - APage.MinZ) + ANewMin;
 end;
 
-function TvEntity.GetEntityFeatures: TvEntityFeatures;
+function TvEntity.GetEntityFeatures(ADest: TFPCustomCanvas): TvEntityFeatures;
 begin
   Result.DrawsUpwards := False;
+  Result.DrawsUpwardHeightAdjustment := 0;
 end;
 
 function TvEntity.GenerateDebugTree(ADestRoutine: TvDebugAddItemProc;
@@ -4303,8 +4297,20 @@ begin
   end;
 end;
 
-function TvText.GetEntityFeatures: TvEntityFeatures;
+function TvText.GetEntityFeatures(ADest: TFPCustomCanvas): TvEntityFeatures;
+var
+  ActualText: String;
+  lHeight_px: Integer;
 begin
+  Result.DrawsUpwardHeightAdjustment := 0;
+  if Value.Count > 0 then
+  begin
+    ActualText := Value.Text;
+    Value.Text := Value.Strings[0];
+    CalculateHeightInCanvas(ADest, lHeight_px);
+    Result.DrawsUpwardHeightAdjustment := lHeight_px;
+    Value.Text := ActualText;
+  end;
   Result.DrawsUpwards := True;
 end;
 
@@ -6499,11 +6505,7 @@ begin
   lEntity := GetFirstEntity();
   while lEntity <> nil do
   begin
-    lHeight_px := 0;
-    if lText.GetEntityFeatures().DrawsUpwards then
-    begin
-      lText.CalculateHeightInCanvas(ADest, lHeight_px);
-    end;
+    lHeight_px := lEntity.GetEntityFeatures(ADest).DrawsUpwardHeightAdjustment;
 
     if lEntity is TvText then
     begin
@@ -6563,11 +6565,6 @@ begin
 
     lEntity := GetNextEntity();
   end;
-end;
-
-function TvParagraph.GetEntityFeatures: TvEntityFeatures;
-begin
-  Result.DrawsUpwards := False;
 end;
 
 function TvParagraph.GenerateDebugTree(ADestRoutine: TvDebugAddItemProc;
@@ -6867,11 +6864,7 @@ begin
   begin
     lEntity.X := X;
     lEntity.Y := Y + lCurHeight;
-    lHeight_px := 0;
-    if lEntity.GetEntityFeatures().DrawsUpwards then
-    begin
-      lEntity.CalculateHeightInCanvas(ADest, lHeight_px);
-    end;
+    lHeight_px := lEntity.GetEntityFeatures(ADest).DrawsUpwardHeightAdjustment;
     lEntity.Render(ADest, lEntityRenderInfo, ADestX, ADestY + lHeight_px, AMulX, AMulY, ADoDraw);
     lEntity.CalculateBoundingBox(ADest, lLeft, lTop, lRight, lBottom);
     lCurHeight := lCurHeight + (lBottom - lTop);
@@ -6879,11 +6872,6 @@ begin
     lEntity := GetNextEntity();
     MergeRenderInfo(lEntityRenderInfo, ARenderInfo);
   end;
-end;
-
-function TvRichText.GetEntityFeatures: TvEntityFeatures;
-begin
-  Result.DrawsUpwards := False;
 end;
 
 function TvRichText.GenerateDebugTree(ADestRoutine: TvDebugAddItemProc;
@@ -7811,11 +7799,7 @@ begin
 
     CurEntity.X := 0;
     CurEntity.Y := 0;
-    lHeight_px := 0;
-    if CurEntity.GetEntityFeatures().DrawsUpwards then
-    begin
-      CurEntity.CalculateHeightInCanvas(ADest, lHeight_px);
-    end;
+    lHeight_px := CurEntity.GetEntityFeatures(ADest).DrawsUpwardHeightAdjustment;
     RenderInfo.BackgroundColor := BackgroundColor;
     CurEntity.Render(ADest, RenderInfo, ADestX, CurY_px + lHeight_px, AMulX, AMulY);
     // Store the old position in X/Y but don't use it, we use this to debug out the position
