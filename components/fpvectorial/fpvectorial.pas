@@ -430,7 +430,7 @@ type
     procedure CalculateHeightInCanvas(ADest: TFPCustomCanvas; out AHeight: Integer);
     // helper functions for CalculateBoundingBox & TvRenderInfo
     procedure ExpandBoundingBox(ADest: TFPCustomCanvas; var ALeft, ATop, ARight, ABottom: Double);
-    procedure CalcEntityCanvasMinMaxXY(var ARenderInfo: TvRenderInfo; APointX, APointY: Integer);
+    class procedure CalcEntityCanvasMinMaxXY(var ARenderInfo: TvRenderInfo; APointX, APointY: Integer);
     procedure MergeRenderInfo(var AFrom, ATo: TvRenderInfo);
     class procedure InitializeRenderInfo(out ARenderInfo: TvRenderInfo);
     function CentralizeY_InHeight(ADest: TFPCustomCanvas; AHeight: Double): Double;
@@ -2077,6 +2077,8 @@ class procedure TvTableCell.DrawBorder(ABorder: TvTableBorders;
   end;
 
 begin
+  CalcEntityCanvasMinMaxXY(ARenderInfo, CoordToCanvasX(AX), CoordToCanvasY(AY));
+  CalcEntityCanvasMinMaxXY(ARenderInfo, CoordToCanvasX(AX), CoordToCanvasY(AY+AHeight));
   ADest.Pen.Style := psSolid;
   ADest.Pen.FPColor := colBlack;
   if ABorder.Left.LineType <> tbtNone then
@@ -2394,7 +2396,7 @@ begin
     CurRow.Y := Y + CurRow.Y;
 
     CurRow.Render(ADest, lEntityRenderInfo, ADestX, ADestY, AMulX, AMulY, ADoDraw);
-    MergeRenderInfo(lEntityRenderInfo, ARenderInfo);
+    //MergeRenderInfo(lEntityRenderInfo, ARenderInfo); no need to merge, since TvTableCell.DrawBorder calculates the proper size
   end;
 end;
 
@@ -3118,7 +3120,7 @@ begin
   if lBottom > ABottom then ABottom := lBottom;
 end;
 
-procedure TvEntity.CalcEntityCanvasMinMaxXY(
+class procedure TvEntity.CalcEntityCanvasMinMaxXY(
   var ARenderInfo: TvRenderInfo; APointX, APointY: Integer);
 begin
   if ARenderInfo.EntityCanvasMinXY.X = INVALID_RENDERINFO_CANVAS_XY then
@@ -3398,6 +3400,7 @@ var
   ALCLDest: TCanvas absolute ADest;
   {$endif}
 begin
+  if AFont.Size = 0 then AFont.Size := 10;
   ADest.Font.Size := Round(AmulX * AFont.Size);
   ADest.Font.Bold := AFont.Bold;
   ADest.Font.Italic := AFont.Italic;
@@ -4195,6 +4198,7 @@ var
   ACanvas: TCanvas absolute ADest;
   {$endif}
 begin
+  //lText := Value.Text; // For debugging
   inherited Render(ADest, lRenderInfo, 0, 0, 1, 1, False);
 
   ALeft := X;
@@ -4246,6 +4250,7 @@ var
   lTextWidth: Integer;
   {$endif}
 begin
+  //lText := Value.Text; // for debugging
   inherited Render(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMulY, ADoDraw);
 
   InitializeRenderInfo(ARenderInfo);
@@ -6443,6 +6448,8 @@ begin
   lEntity := GetFirstEntity();
   while lEntity <> nil do
   begin
+    if Style <> nil then
+      Style.ApplyIntoEntity(lEntity);
     lEntity.CalculateBoundingBox(ADest, lLeft, lTop, lRight, lBottom);
     lCurWidth := lCurWidth + (lRight - lLeft);
     lCurHeight := Max(lCurHeight, Abs(lTop - lBottom));
@@ -6523,6 +6530,10 @@ begin
       lText.Render_Use_NextText_X := not lFirstText;
       if lText.Render_Use_NextText_X then
         lText.Render_NextText_X := lPrevText.Render_NextText_X;
+
+      // Style apply
+      if Style <> nil then
+        Style.ApplyIntoEntity(lText);
 
       lText.Render(ADest, lEntityRenderInfo, CurX, ADestY + lHeight_px, AMulX, AMulY, ADoDraw);
       lText.CalculateBoundingBox(ADest, lLeft, lTop, lRight, lBottom);
@@ -7810,7 +7821,8 @@ begin
     // Store the old position in X/Y but don't use it, we use this to debug out the position
     CurEntity.X := ADestX;
     CurEntity.Y := CurY_px;
-    CurY_px := CurY_px + Abs(RenderInfo.EntityCanvasMaxXY.Y - RenderInfo.EntityCanvasMinXY.Y)
+    lHeight_px := Abs(RenderInfo.EntityCanvasMaxXY.Y - RenderInfo.EntityCanvasMinXY.Y);
+    CurY_px := CurY_px + lHeight_px;
   end;
 
   {$ifdef FPVECTORIAL_TOCANVAS_DEBUG}
