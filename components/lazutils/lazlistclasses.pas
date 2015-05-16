@@ -41,7 +41,7 @@ unit LazListClasses;
 *)
 
 interface
-{$INLINE off}
+{no $INLINE off}
 
 uses
   Classes, SysUtils, math, LazLoggerBase;
