@@ -16,7 +16,7 @@ type
 
 { TReplaceDialogForm }
   TReplaceDialogForm = class(TForm)
-    // Same order as in TFindDialog
+    // Same order as in TReplaceDialog
 	PanelButtons: TPanel;
 	CancelButton: TButton;
 	CaseSensitiveCheckBox: TCheckBox;
@@ -605,7 +605,7 @@ end;
 constructor TReplaceDialog.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  Options:=Options + [frReplace, frReplaceAll, frHidePromptOnreplace];
+  FOptions += [frReplace, frReplaceAll, frHidePromptOnreplace];
 end;
 
 function TReplaceDialog.DefaultTitle: string; 

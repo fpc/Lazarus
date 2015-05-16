@@ -16,7 +16,7 @@ type
   { TFindDialogForm }
 
   TFindDialogForm = class(TForm)
-    // Same order as in TReplaceDialog
+  // Same order as in TFindDialog
     BtnPanel: TPanel;
     CancelButton: TButton;
     CaseSensitiveCheckBox: TCheckBox;
@@ -448,9 +448,11 @@ procedure TFindDialog.SetOptions(AValue: TFindOptions);
 begin
   if FOptions=AValue then Exit;
   FOptions:=AValue;
-  TFindDialogForm(FFindForm).EntireScopeCheckBox.Checked    := (frEntireScope in FOptions);
-  TFindDialogForm(FFindForm).WholeWordsOnlyCheckBox.Checked := (frWholeWord in FOptions);
-  TFindDialogForm(FFindForm).CaseSensitiveCheckBox.checked  := (frMatchCase in FOptions);
+  If Assigned(FFindForm) then begin
+    TFindDialogForm(FFindForm).EntireScopeCheckBox.Checked    := (frEntireScope in FOptions);
+    TFindDialogForm(FFindForm).WholeWordsOnlyCheckBox.Checked := (frWholeWord in FOptions);
+    TFindDialogForm(FFindForm).CaseSensitiveCheckBox.checked  := (frMatchCase in FOptions);
+  end;
 end;
 
 procedure TFindDialog.SetPosition(const AValue: TPoint);
