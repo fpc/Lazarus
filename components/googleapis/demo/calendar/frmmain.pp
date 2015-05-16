@@ -89,8 +89,8 @@ begin
 {$ELSE}
   FClient.WebClient:=TFPHTTPWebClient.Create(Self);
 {$ENDIF}
-  FClient.WebClient.LogFile:='requests.log';
   FClient.WebClient.RequestSigner:=FClient.AuthHandler;
+  FClient.WebClient.LogFile:='requests.log';
   FClient.AuthHandler.WebClient:=FClient.WebClient;
   FClient.AuthHandler.Config.AccessType:=atOffLine;
   // We want to enter a code.
@@ -192,8 +192,8 @@ var
   Entry: TCalendarListEntry;
   Resource : TCalendarListResource;
   EN : String;
-
   i:integer;
+
 begin
   LBCalendars.Items.Clear;
   FreeAndNil(CalendarList);
@@ -202,10 +202,11 @@ begin
     Resource:=FCalendarAPI.CreateCalendarListResource;
     CalendarList:=Resource.list('');
     SaveRefreshToken;
+    I:=0;
     if assigned(calendarList) then
-      for i:= 0 to Length(calendarList.items)-1 do
+      for Entry in calendarList.items do
         begin
-        Entry:=calendarList.items[i];
+        Inc(i);
         EN:=Entry.Summary;
         if EN='' then
           EN:=Entry.id+' ('+Entry.description+')';
@@ -233,8 +234,8 @@ procedure TMainForm.BFetchEventsClick(Sender: TObject);
 var
   Entry: TEvent;
   EN : String;
-
   i:integer;
+
 begin
   if LBCalendars.ItemIndex<0 then
     Exit;
@@ -242,10 +243,11 @@ begin
   FreeAndNil(Events);
   Events:=FCalendarAPI.EventsResource.list(FCurrentCalendar.id,'');
   SaveRefreshToken;
+  I:=0;
   if assigned(Events) then
-    for i:= 0 to Length(Events.items)-1 do
+    for Entry in Events.items do
       begin
-      Entry:=Events.items[i];
+      Inc(i);
       EN:=Entry.Summary;
       if EN='' then
         EN:=Entry.id+' ('+Entry.description+')';
