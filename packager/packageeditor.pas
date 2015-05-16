@@ -176,6 +176,12 @@ type
   { TPackageEditorForm }
 
   TPackageEditorForm = class(TBasePackageEditor,IFilesEditorInterface)
+    MenuItem1: TMenuItem;
+    mnuAddDiskFile: TMenuItem;
+    mnuAddDiskFiles: TMenuItem;
+    mnuAddNewFile: TMenuItem;
+    mnuAddNewComp: TMenuItem;
+    mnuAddNewReqr: TMenuItem;
     MoveDownBtn: TSpeedButton;
     MoveUpBtn: TSpeedButton;
     DirectoryHierarchyButton: TSpeedButton;
@@ -183,6 +189,7 @@ type
     DisableI18NForLFMCheckBox: TCheckBox;
     FilterEdit: TTreeFilterEdit;
     FilterPanel: TPanel;
+    AddPopupMenu: TPopupMenu;
     SortAlphabeticallyButton: TSpeedButton;
     Splitter1: TSplitter;
     // toolbar
@@ -192,7 +199,6 @@ type
     CompileBitBtn: TToolButton;
     UseBitBtn: TToolButton;
     AddBitBtn: TToolButton;
-    AddMoreBitBtn: TToolButton;
     RemoveBitBtn: TToolButton;
     OptionsBitBtn: TToolButton;
     MoreBitBtn: TToolButton;
@@ -219,7 +225,6 @@ type
     ItemsPopupMenu: TPopupMenu;
     MorePopupMenu: TPopupMenu;
     procedure AddBitBtnClick(Sender: TObject);
-    procedure AddMoreBitBtnClick(Sender: TObject);
     procedure AddToProjectClick(Sender: TObject);
     procedure AddToUsesPkgSectionCheckBoxChange(Sender: TObject);
     procedure ApplyDependencyButtonClick(Sender: TObject);
@@ -250,6 +255,10 @@ type
     procedure ItemsTreeViewDragOver(Sender, Source: TObject; X, Y: Integer;
       State: TDragState; var Accept: Boolean);
     procedure ItemsTreeViewKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure mnuAddDiskFilesClick(Sender: TObject);
+    procedure mnuAddNewCompClick(Sender: TObject);
+    procedure mnuAddNewReqrClick(Sender: TObject);
+    procedure mnuAddNewFileClick(Sender: TObject);
     procedure MorePopupMenuPopup(Sender: TObject);
     procedure ItemsTreeViewDblClick(Sender: TObject);
     procedure ItemsTreeViewSelectionChanged(Sender: TObject);
@@ -312,6 +321,7 @@ type
     procedure SetSortAlphabetically(const AValue: boolean);
     procedure SetupComponents;
     function OnTreeViewGetImageIndex({%H-}Str: String; Data: TObject; var {%H-}AIsEnabled: Boolean): Integer;
+    procedure ShowAddDialogEx(AType: TAddToPkgType);
     procedure UpdateNodeImage(TVNode: TTreeNode; NodeData: TPENodeData);
     procedure UpdatePending;
     function CanUpdate(Flag: TPEFlag; Immediately: boolean): boolean;
@@ -998,6 +1008,37 @@ begin
     Key := VK_UNKNOWN;
 end;
 
+procedure TPackageEditorForm.ShowAddDialogEx(AType: TAddToPkgType);
+begin
+  if LazPackage=nil then exit;
+  BeginUpdate;
+  try
+    ShowAddDialog(AType);
+  finally
+    EndUpdate;
+  end;
+end;
+
+procedure TPackageEditorForm.mnuAddDiskFilesClick(Sender: TObject);
+begin
+  ShowAddDialogEx(d2ptFiles);
+end;
+
+procedure TPackageEditorForm.mnuAddNewCompClick(Sender: TObject);
+begin
+  ShowAddDialogEx(d2ptNewComponent);
+end;
+
+procedure TPackageEditorForm.mnuAddNewReqrClick(Sender: TObject);
+begin
+  ShowAddDialogEx(d2ptRequiredPkg);
+end;
+
+procedure TPackageEditorForm.mnuAddNewFileClick(Sender: TObject);
+begin
+  ShowAddDialogEx(d2ptNewFile);
+end;
+
 procedure TPackageEditorForm.ItemsTreeViewSelectionChanged(Sender: TObject);
 begin
   if fUpdateLock>0 then exit;
@@ -1549,17 +1590,6 @@ begin
   end;
 end;
 
-procedure TPackageEditorForm.AddMoreBitBtnClick(Sender: TObject);
-begin
-  if LazPackage=nil then exit;
-  BeginUpdate;
-  try
-    ShowAddDialog(fLastDlgPage);
-  finally
-    EndUpdate;
-  end;
-end;
-
 procedure TPackageEditorForm.AddToUsesPkgSectionCheckBoxChange(Sender: TObject);
 var
   CurFile: TPkgFile;
@@ -1864,17 +1894,24 @@ begin
 
   SaveBitBtn    := CreateToolButton('SaveBitBtn', lisMenuSave, lisPckEditSavePackage, 'laz_save', @SaveBitBtnClick);
   CompileBitBtn := CreateToolButton('CompileBitBtn', lisCompile, lisPckEditCompilePackage, 'pkg_compile', @CompileBitBtnClick);
-  UseBitBtn     := CreateToolButton('UseBitBtn', lisPckEditInstall, lisPckEditInstallPackageInTheIDE, 'pkg_install', nil);
+  UseBitBtn     := CreateToolButton('UseBitBtn', lisUseSub, lisClickToSeeTheChoices, 'pkg_install', nil);
   CreateDivider;
-  AddBitBtn     := CreateToolButton('AddBitBtn', lisAdd, lisPckEditAddFiles, 'laz_add', @AddBitBtnClick);
-  AddMoreBitBtn := CreateToolButton('AddMoreBitBtn', lisDlgAdd, lisPckEditAddOtherItems, 'laz_addmore', @AddMoreBitBtnClick);
+  AddBitBtn     := CreateToolButton('AddBitBtn', lisAddSub, lisClickToSeeTheChoices, 'laz_add', nil);
   RemoveBitBtn  := CreateToolButton('RemoveBitBtn', lisRemove, lisPckEditRemoveSelectedItem, 'laz_delete', @RemoveBitBtnClick);
   CreateDivider;
   OptionsBitBtn := CreateToolButton('OptionsBitBtn', lisOptions, lisPckEditEditGeneralOptions, 'pkg_properties', @OptionsBitBtnClick);
-  HelpBitBtn    := CreateToolButton('HelpBitBtn', GetButtonCaption(idButtonHelp), lisPkgEdThereAreMoreFunctionsInThePopupmenu, 'menu_help', @HelpBitBtnClick);
-  MoreBitBtn    := CreateToolButton('MoreBitBtn', lisMoreSub, lisPkgEdThereAreMoreFunctionsInThePopupmenu, '', nil);
+  HelpBitBtn    := CreateToolButton('HelpBitBtn', GetButtonCaption(idButtonHelp), '', 'menu_help', @HelpBitBtnClick);
+  MoreBitBtn    := CreateToolButton('MoreBitBtn', lisMoreSub, lisPkgEdMoreFunctionsForThePackage, '', nil);
 
+  UseBitBtn.DropdownMenu := UsePopupMenu;
+  AddBitBtn.DropdownMenu := AddPopupMenu;
   MoreBitBtn.DropdownMenu := MorePopupMenu;
+
+  mnuAddDiskFile.Caption := lisPckEditAddFilesFromFileSystem;
+  mnuAddDiskFiles.Caption := lisAddFilesInDirectory;
+  mnuAddNewFile.Caption := lisA2PNewFile;
+  mnuAddNewComp.Caption := lisA2PNewComponent;
+  mnuAddNewReqr.Caption := lisProjAddNewRequirement;
 
   // Buttons on FilterPanel
   OpenButton.LoadGlyphFromResourceName(HInstance, 'laz_open');
@@ -2270,11 +2307,6 @@ begin
   AddBitBtn.Enabled:=Writable;
   RemoveBitBtn.Enabled:=Writable and (ActiveFileCnt+ActiveDepCount>0);
   OpenButton.Enabled:=(FileCount+DepCount>0);
-  UseBitBtn.Caption:=lisUseSub;
-  UseBitBtn.Hint:=lisClickToSeeThePossibleUses;
-  UseBitBtn.OnClick:=nil;
-  UseBitBtn.DropdownMenu:=UsePopupMenu;
-  OptionsBitBtn.Enabled:=true;
 end;
 
 function TPackageEditorForm.OnTreeViewGetImageIndex(Str: String; Data: TObject;

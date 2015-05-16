@@ -937,12 +937,12 @@ begin
   ToolBar.Images            := IDEImages.Images_16;
   FilterEdit.OnGetImageIndex:=@OnTreeViewGetImageIndex;
 
-  AddBitBtn     := CreateToolButton('AddBitBtn', lisAdd, lisPckEditAddFiles, 'laz_add', @AddBitBtnClick);
+  AddBitBtn     := CreateToolButton('AddBitBtn', lisAdd, lisPckEditAddFilesFromFileSystem, 'laz_add', @AddBitBtnClick);
   AddMoreBitBtn := CreateToolButton('AddMoreBitBtn', lisDlgAdd, lisPckEditAddOtherItems, 'laz_addmore', @AddMoreBitBtnClick);
   RemoveBitBtn  := CreateToolButton('RemoveBitBtn', lisRemove, lisPckEditRemoveSelectedItem, 'laz_delete', @RemoveBitBtnClick);
   CreateDivider;
   OptionsBitBtn := CreateToolButton('OptionsBitBtn', lisOptions, lisPckEditEditGeneralOptions, 'menu_environment_options', @OptionsBitBtnClick);
-  HelpBitBtn    := CreateToolButton('HelpBitBtn', GetButtonCaption(idButtonHelp), lisPkgEdThereAreMoreFunctionsInThePopupmenu, 'menu_help', @HelpBitBtnClick);
+  HelpBitBtn    := CreateToolButton('HelpBitBtn', GetButtonCaption(idButtonHelp), lisPkgEdMoreFunctionsForThePackage, 'menu_help', @HelpBitBtnClick);
 
   OpenButton.LoadGlyphFromResourceName(HInstance, 'laz_open');
   OpenButton.Caption:='';

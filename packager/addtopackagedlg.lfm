@@ -1,11 +1,12 @@
 object AddToPackageDlg: TAddToPackageDlg
   Left = 413
-  Height = 322
-  Top = 604
+  Height = 357
+  Top = 535
   Width = 658
   ActiveControl = PageControl1
+  BorderIcons = [biSystemMenu, biMaximize]
   Caption = 'Add to package'
-  ClientHeight = 322
+  ClientHeight = 357
   ClientWidth = 658
   KeyPreview = True
   OnClose = AddToPackageDlgClose
@@ -13,10 +14,10 @@ object AddToPackageDlg: TAddToPackageDlg
   OnDestroy = FormDestroy
   OnKeyDown = AddToPackageDlgKeyDown
   Position = poScreenCenter
-  LCLVersion = '1.3'
+  LCLVersion = '1.5'
   object PageControl1: TPageControl
     Left = 0
-    Height = 282
+    Height = 319
     Top = 0
     Width = 658
     ActivePage = NewFilePage
@@ -26,16 +27,17 @@ object AddToPackageDlg: TAddToPackageDlg
     OnChange = PageControl1Change
     object NewFilePage: TTabSheet
       Caption = 'New File'
-      ClientHeight = 249
-      ClientWidth = 654
+      ClientHeight = 291
+      ClientWidth = 650
       OnResize = NewFilePageResize
       object NewFileTreeView: TTreeView
-        Left = 0
-        Height = 244
-        Top = 0
+        Left = 6
+        Height = 279
+        Top = 6
         Width = 249
         Align = alLeft
-        BorderSpacing.Bottom = 5
+        BorderSpacing.Around = 6
+        DefaultItemHeight = 18
         ReadOnly = True
         RightClickSelect = True
         TabOrder = 0
@@ -46,22 +48,24 @@ object AddToPackageDlg: TAddToPackageDlg
       end
       object NewFileDescriptionGroupBox: TGroupBox
         AnchorSideLeft.Control = NewFileTreeView
-        Left = 249
-        Height = 244
-        Top = 0
-        Width = 405
+        Left = 261
+        Height = 279
+        Top = 6
+        Width = 383
         Align = alClient
-        BorderSpacing.Bottom = 5
+        BorderSpacing.Around = 6
         Caption = 'NewFileDescriptionGroupBox'
-        ClientHeight = 223
-        ClientWidth = 397
+        ClientHeight = 259
+        ClientWidth = 379
         TabOrder = 1
         object NewFileHelpLabel: TLabel
-          Left = 0
-          Height = 223
-          Top = 0
-          Width = 397
+          Left = 4
+          Height = 251
+          Top = 4
+          Width = 371
           Align = alClient
+          Anchors = []
+          BorderSpacing.Around = 4
           Caption = 'NewFileHelpLabel'
           ParentColor = False
           WordWrap = True
@@ -70,16 +74,16 @@ object AddToPackageDlg: TAddToPackageDlg
     end
     object NewComponentPage: TTabSheet
       Caption = 'New Component'
-      ClientHeight = 249
-      ClientWidth = 654
+      ClientHeight = 291
+      ClientWidth = 650
       OnResize = NewComponentPageResize
       object AncestorTypeLabel: TLabel
         AnchorSideTop.Control = AncestorComboBox
         AnchorSideTop.Side = asrCenter
         Left = 5
-        Height = 17
-        Top = 12
-        Width = 119
+        Height = 15
+        Top = 10
+        Width = 101
         Caption = 'AncestorTypeLabel'
         ParentColor = False
       end
@@ -87,9 +91,9 @@ object AddToPackageDlg: TAddToPackageDlg
         AnchorSideTop.Control = ClassNameEdit
         AnchorSideTop.Side = asrCenter
         Left = 5
-        Height = 17
-        Top = 45
-        Width = 107
+        Height = 15
+        Top = 39
+        Width = 87
         Caption = 'ClassNameLabel'
         ParentColor = False
       end
@@ -97,9 +101,9 @@ object AddToPackageDlg: TAddToPackageDlg
         AnchorSideTop.Control = PalettePageCombobox
         AnchorSideTop.Side = asrCenter
         Left = 5
-        Height = 17
-        Top = 78
-        Width = 109
+        Height = 15
+        Top = 68
+        Width = 90
         Caption = 'PalettePageLabel'
         ParentColor = False
       end
@@ -107,9 +111,9 @@ object AddToPackageDlg: TAddToPackageDlg
         AnchorSideTop.Control = ComponentUnitFileEdit
         AnchorSideTop.Side = asrCenter
         Left = 5
-        Height = 17
-        Top = 111
-        Width = 155
+        Height = 15
+        Top = 97
+        Width = 132
         Caption = 'ComponentUnitFileLabel'
         ParentColor = False
       end
@@ -117,9 +121,9 @@ object AddToPackageDlg: TAddToPackageDlg
         AnchorSideTop.Control = ComponentUnitNameEdit
         AnchorSideTop.Side = asrCenter
         Left = 5
-        Height = 17
-        Top = 142
-        Width = 174
+        Height = 15
+        Top = 126
+        Width = 146
         Caption = 'ComponentUnitNameLabel'
         ParentColor = False
       end
@@ -127,11 +131,11 @@ object AddToPackageDlg: TAddToPackageDlg
         AnchorSideLeft.Side = asrBottom
         AnchorSideTop.Control = NewComponentPage
         Left = 184
-        Height = 29
+        Height = 23
         Top = 6
         Width = 200
         BorderSpacing.Top = 6
-        ItemHeight = 0
+        ItemHeight = 15
         OnChange = AncestorComboBoxChange
         OnCloseUp = AncestorComboBoxCloseUp
         TabOrder = 0
@@ -142,10 +146,11 @@ object AddToPackageDlg: TAddToPackageDlg
         AnchorSideLeft.Side = asrBottom
         AnchorSideTop.Control = AncestorComboBox
         AnchorSideTop.Side = asrCenter
-        Left = 384
-        Height = 22
-        Top = 9
-        Width = 196
+        Left = 390
+        Height = 19
+        Top = 8
+        Width = 162
+        BorderSpacing.Left = 6
         Caption = 'AncestorShowAllCheckBox'
         Checked = True
         OnClick = AncestorShowAllCheckBoxClick
@@ -159,8 +164,8 @@ object AddToPackageDlg: TAddToPackageDlg
         AnchorSideRight.Control = AncestorComboBox
         AnchorSideRight.Side = asrBottom
         Left = 184
-        Height = 25
-        Top = 41
+        Height = 23
+        Top = 35
         Width = 200
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Top = 6
@@ -175,11 +180,11 @@ object AddToPackageDlg: TAddToPackageDlg
         AnchorSideRight.Control = AncestorComboBox
         AnchorSideRight.Side = asrBottom
         Left = 184
-        Height = 29
-        Top = 72
+        Height = 23
+        Top = 64
         Width = 200
         BorderSpacing.Top = 6
-        ItemHeight = 0
+        ItemHeight = 15
         TabOrder = 3
         Text = 'PalettePageCombobox'
       end
@@ -189,9 +194,9 @@ object AddToPackageDlg: TAddToPackageDlg
         AnchorSideTop.Side = asrBottom
         AnchorSideRight.Control = ComponentUnitFileBrowseButton
         Left = 184
-        Height = 25
-        Top = 107
-        Width = 408
+        Height = 23
+        Top = 93
+        Width = 383
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Top = 6
         TabOrder = 4
@@ -202,11 +207,11 @@ object AddToPackageDlg: TAddToPackageDlg
         AnchorSideTop.Control = ComponentUnitFileEdit
         AnchorSideTop.Side = asrCenter
         AnchorSideRight.Control = ComponentUnitFileShortenButton
-        Left = 592
-        Height = 27
+        Left = 567
+        Height = 25
         Hint = 'Save file dialog'
-        Top = 106
-        Width = 26
+        Top = 92
+        Width = 35
         Anchors = [akTop, akRight]
         AutoSize = True
         Caption = '...'
@@ -221,13 +226,14 @@ object AddToPackageDlg: TAddToPackageDlg
         AnchorSideTop.Side = asrCenter
         AnchorSideRight.Control = NewComponentPage
         AnchorSideRight.Side = asrBottom
-        Left = 618
-        Height = 27
+        Left = 602
+        Height = 25
         Hint = 'Shorten or expand filename'
-        Top = 106
-        Width = 36
+        Top = 92
+        Width = 42
         Anchors = [akTop, akRight]
         AutoSize = True
+        BorderSpacing.Right = 6
         Caption = '<>'
         OnClick = ComponentUnitFileShortenButtonClick
         ParentShowHint = False
@@ -241,8 +247,8 @@ object AddToPackageDlg: TAddToPackageDlg
         AnchorSideRight.Control = AncestorComboBox
         AnchorSideRight.Side = asrBottom
         Left = 184
-        Height = 25
-        Top = 138
+        Height = 23
+        Top = 122
         Width = 200
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Top = 6
@@ -255,9 +261,9 @@ object AddToPackageDlg: TAddToPackageDlg
         AnchorSideTop.Control = ComponentIconSpeedButton
         AnchorSideTop.Side = asrCenter
         Left = 5
-        Height = 17
-        Top = 174
-        Width = 135
+        Height = 15
+        Top = 157
+        Width = 115
         Caption = 'ComponentIconLabel'
         ParentColor = False
       end
@@ -267,7 +273,7 @@ object AddToPackageDlg: TAddToPackageDlg
         AnchorSideTop.Side = asrBottom
         Left = 184
         Height = 26
-        Top = 169
+        Top = 151
         Width = 28
         BorderSpacing.Top = 6
         OnClick = ComponentIconSpeedButtonClick
@@ -277,13 +283,13 @@ object AddToPackageDlg: TAddToPackageDlg
     end
     object NewRequirementPage: TTabSheet
       Caption = 'New Requirement'
-      ClientHeight = 249
-      ClientWidth = 654
+      ClientHeight = 291
+      ClientWidth = 650
       object NewDepPanel: TPanel
         Left = 0
-        Height = 249
+        Height = 291
         Top = 0
-        Width = 654
+        Width = 650
         Align = alClient
         BevelOuter = bvNone
         ChildSizing.LeftRightSpacing = 6
@@ -292,14 +298,14 @@ object AddToPackageDlg: TAddToPackageDlg
         ChildSizing.VerticalSpacing = 6
         ChildSizing.Layout = cclLeftToRightThenTopToBottom
         ChildSizing.ControlsPerLine = 2
-        ClientHeight = 249
-        ClientWidth = 654
+        ClientHeight = 291
+        ClientWidth = 650
         TabOrder = 0
         object DependPkgNameLabel: TLabel
           Left = 6
-          Height = 17
-          Top = 12
-          Width = 146
+          Height = 15
+          Top = 10
+          Width = 121
           BorderSpacing.CellAlignHorizontal = ccaLeftTop
           BorderSpacing.CellAlignVertical = ccaCenter
           Caption = 'DependPkgNameLabel'
@@ -307,23 +313,23 @@ object AddToPackageDlg: TAddToPackageDlg
         end
         object DependPkgNameComboBox: TComboBox
           AnchorSideLeft.Side = asrBottom
-          Left = 169
-          Height = 29
+          Left = 142
+          Height = 23
           Top = 6
           Width = 200
           AutoComplete = True
           AutoCompleteText = [cbactEnabled, cbactEndOfLineComplete, cbactSearchAscending]
           Constraints.MinWidth = 200
-          ItemHeight = 0
+          ItemHeight = 15
           OnChange = DependPkgNameComboBoxChange
           TabOrder = 0
           Text = 'DependPkgNameComboBox'
         end
         object DependMinVersionLabel: TLabel
           Left = 6
-          Height = 17
-          Top = 45
-          Width = 153
+          Height = 15
+          Top = 39
+          Width = 129
           BorderSpacing.CellAlignHorizontal = ccaLeftTop
           BorderSpacing.CellAlignVertical = ccaCenter
           Caption = 'DependMinVersionLabel'
@@ -331,9 +337,9 @@ object AddToPackageDlg: TAddToPackageDlg
         end
         object DependMinVersionEdit: TEdit
           AnchorSideLeft.Side = asrBottom
-          Left = 169
-          Height = 25
-          Top = 41
+          Left = 142
+          Height = 23
+          Top = 35
           Width = 200
           BorderSpacing.Top = 6
           TabOrder = 1
@@ -341,9 +347,9 @@ object AddToPackageDlg: TAddToPackageDlg
         end
         object DependMaxVersionLabel: TLabel
           Left = 6
-          Height = 17
-          Top = 76
-          Width = 157
+          Height = 15
+          Top = 68
+          Width = 130
           BorderSpacing.CellAlignHorizontal = ccaLeftTop
           BorderSpacing.CellAlignVertical = ccaCenter
           Caption = 'DependMaxVersionLabel'
@@ -351,9 +357,9 @@ object AddToPackageDlg: TAddToPackageDlg
         end
         object DependMaxVersionEdit: TEdit
           AnchorSideLeft.Side = asrBottom
-          Left = 169
-          Height = 25
-          Top = 72
+          Left = 142
+          Height = 23
+          Top = 64
           Width = 200
           BorderSpacing.Top = 6
           TabOrder = 2
@@ -363,15 +369,15 @@ object AddToPackageDlg: TAddToPackageDlg
     end
     object AddFilesPage: TTabSheet
       Caption = 'Add Files'
-      ClientHeight = 249
-      ClientWidth = 654
+      ClientHeight = 291
+      ClientWidth = 650
       object FilesListView: TListView
-        Left = 0
-        Height = 204
-        Top = 0
-        Width = 654
+        Left = 6
+        Height = 242
+        Top = 6
+        Width = 638
         Align = alClient
-        BorderSpacing.Bottom = 5
+        BorderSpacing.Around = 6
         Columns = <        
           item
             Caption = 'Filename'
@@ -389,18 +395,18 @@ object AddToPackageDlg: TAddToPackageDlg
       end
       object AddFilesBtnPanel: TPanel
         Left = 0
-        Height = 39
-        Top = 218
-        Width = 654
+        Height = 37
+        Top = 254
+        Width = 650
         Align = alBottom
         AutoSize = True
         BevelOuter = bvNone
-        ClientHeight = 39
-        ClientWidth = 654
+        ClientHeight = 37
+        ClientWidth = 650
         TabOrder = 1
         object FilesShortenButton: TBitBtn
-          Left = 108
-          Height = 27
+          Left = 112
+          Height = 25
           Top = 6
           Width = 126
           Align = alLeft
@@ -411,8 +417,8 @@ object AddToPackageDlg: TAddToPackageDlg
           TabOrder = 0
         end
         object FilesDeleteButton: TBitBtn
-          Left = 240
-          Height = 27
+          Left = 244
+          Height = 25
           Top = 6
           Width = 118
           Align = alLeft
@@ -424,9 +430,9 @@ object AddToPackageDlg: TAddToPackageDlg
         end
         object FilesDirButton: TBitBtn
           Left = 6
-          Height = 27
+          Height = 25
           Top = 6
-          Width = 96
+          Width = 100
           Align = alLeft
           AutoSize = True
           BorderSpacing.Around = 6
@@ -439,20 +445,20 @@ object AddToPackageDlg: TAddToPackageDlg
   end
   object NewFileBtnPanel: TPanel
     Left = 0
-    Height = 40
-    Top = 282
+    Height = 38
+    Top = 319
     Width = 658
     Align = alBottom
     AutoSize = True
     BevelOuter = bvNone
-    ClientHeight = 40
+    ClientHeight = 38
     ClientWidth = 658
     TabOrder = 1
     object OkButton: TBitBtn
-      Left = 416
-      Height = 28
+      Left = 431
+      Height = 26
       Top = 6
-      Width = 102
+      Width = 97
       Align = alRight
       AutoSize = True
       BorderSpacing.Around = 6
@@ -499,10 +505,10 @@ object AddToPackageDlg: TAddToPackageDlg
     end
     object CancelButton: TBitBtn
       AnchorSideLeft.Side = asrBottom
-      Left = 524
-      Height = 28
+      Left = 534
+      Height = 26
       Top = 6
-      Width = 128
+      Width = 118
       Align = alRight
       AutoSize = True
       BorderSpacing.Around = 6

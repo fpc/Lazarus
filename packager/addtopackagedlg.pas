@@ -33,12 +33,10 @@ uses
   Math, Classes, SysUtils, LCLProc, LCLType, Forms, Controls, Buttons, ExtDlgs,
   StdCtrls, ExtCtrls, Dialogs, FileUtil, ComCtrls, AVL_Tree,
   // IDEIntf
-  NewItemIntf, ProjectIntf, PackageIntf, FormEditingIntf, IDEWindowIntf,
-  IDEDialogs,
+  NewItemIntf, ProjectIntf, PackageIntf, FormEditingIntf, IDEWindowIntf, IDEDialogs,
   // IDE
-  LazarusIDEStrConsts, InputHistory, CodeToolManager, IDEDefs,
-  IDEProcs, EnvironmentOpts, PackageSystem, PackageDefs, ComponentReg,
-  AddDirToPkgDlg;
+  LazarusIDEStrConsts, InputHistory, IDEDefs, IDEProcs, EnvironmentOpts,
+  PackageSystem, PackageDefs, ComponentReg, AddDirToPkgDlg;
   
 type
   TAddToPkgType = (
@@ -223,6 +221,13 @@ begin
   AddDlg.OnGetUnitRegisterInfo:=OnGetUnitRegisterInfo;
   AddDlg.LazPackage:=Pkg;
   AddDlg.ActivatePage:=Page;
+
+  //auto press AddFiles if called with "Add files" page
+  if Page=d2ptFiles then
+    AddDlg.FilesDirButton.Click;
+  //hide tabs for simpler use
+  AddDlg.PageControl1.ShowTabs:=false;
+
   Result:=AddDlg.ShowModal;
   Page:=AddDlg.ActivatePage;
   if Result=mrOk then begin
