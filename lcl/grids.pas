@@ -410,9 +410,9 @@ type
     FLayout: ^TTextLayout;
     FPrefixOption: TPrefixOption;
     FMultiline: Boolean;
+    FIsDefaultCaption: boolean;
     procedure FontChanged(Sender: TObject);
     function GetAlignment: TAlignment;
-    function GetCaption: TCaption;
     function GetColor: TColor;
     function GetFont: TFont;
     function GetLayout: TTextLayout;
@@ -429,6 +429,8 @@ type
     procedure SetLayout(const AValue: TTextLayout);
     procedure SetMultiLine(const AValue: Boolean);
     procedure SetPrefixOption(const AValue: TPrefixOption);
+    procedure WriteCaption(Writer: TWriter);
+
     property IsDefaultFont: boolean read FIsDefaultTitleFont;
   protected
     function  GetDefaultCaption: string; virtual;
@@ -436,7 +438,9 @@ type
     function  GetDefaultColor: TColor;
     function  GetDefaultLayout: TTextLayout;
     function  GetOwner: TPersistent; override;
+    function  GetCaption: TCaption;
     procedure SetCaption(const AValue: TCaption); virtual;
+    procedure DefineProperties(Filer: TFiler); override;
   public
     constructor Create(TheColumn: TGridColumn); virtual;
     destructor Destroy; override;
@@ -10924,6 +10928,14 @@ end;
 
 { TGridColumnTitle }
 
+procedure TGridColumnTitle.WriteCaption(Writer: TWriter);
+begin
+  if not FIsDefaultCaption then
+    Writer.WriteString(FCaption)
+  else
+    Writer.WriteString(Caption);
+end;
+
 procedure TGridColumnTitle.FontChanged(Sender: TObject);
 begin
   FisDefaultTitleFont := False;
@@ -10940,7 +10952,7 @@ end;
 
 function TGridColumnTitle.GetCaption: TCaption;
 begin
-  if FCaption = nil then
+  if (FCaption = nil) and FIsDefaultCaption then
     result := GetDefaultCaption
   else
     result := FCaption;
@@ -10986,7 +10998,7 @@ end;
 
 function TGridColumnTitle.IsCaptionStored: boolean;
 begin
-  result := true;
+  result := false;
 end;
 
 function TGridColumnTitle.IsColorStored: boolean;
@@ -11022,8 +11034,15 @@ begin
     if FCaption<>nil then
       StrDispose(FCaption);
     FCaption := StrNew(PChar(AValue));
+    FIsDefaultCaption := false;
     FColumn.ColumnChanged;
   end;
+end;
+
+procedure TGridColumnTitle.DefineProperties(Filer: TFiler);
+begin
+  inherited DefineProperties(Filer);
+  Filer.DefineProperty('Caption',  nil,  @WriteCaption, true);
 end;
 
 procedure TGridColumnTitle.SetColor(const AValue: TColor);
@@ -11136,6 +11155,7 @@ begin
   FImageIndex := -1;
   FOldImageIndex := -1;
   FImageLayout := blGlyphRight;
+  FIsDefaultCaption := true;
 end;
 
 destructor TGridColumnTitle.Destroy;
