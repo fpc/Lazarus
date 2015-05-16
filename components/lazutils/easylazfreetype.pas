@@ -50,9 +50,13 @@ type
 
   TFontCollectionItemDestroyListener = procedure() of object;
   ArrayOfFontCollectionItemDestroyListener = array of TFontCollectionItemDestroyListener;
+  TCustomFamilyCollectionItem = class;
+
+  { TCustomFontCollectionItem }
 
   TCustomFontCollectionItem = class
   protected
+    FFamily: TCustomFamilyCollectionItem;
     function GetBold: boolean; virtual; abstract;
     function GetInformation(AIndex: TFreeTypeInformation): string; virtual; abstract;
     function GetItalic: boolean; virtual; abstract;
@@ -76,6 +80,7 @@ type
     property VersionNumber: string read GetVersionNumber;
     property Style[AIndex: integer]: string read GetStyle;
     property StyleCount: integer read GetStyleCount;
+    property Family: TCustomFamilyCollectionItem read FFamily write FFamily;
   end;
 
   IFreeTypeFontEnumerator = interface
@@ -127,7 +132,9 @@ type
     procedure Clear; virtual; abstract;
     procedure BeginUpdate; virtual; abstract;
     procedure AddFolder(AFolder: string); virtual; abstract;
+    procedure RemoveFolder(AFolder: string); virtual; abstract;
     function AddFile(AFilename: string): boolean; virtual; abstract;
+    function RemoveFile(AFilename: string): boolean; virtual; abstract;
     function AddStream(AStream: TStream; AOwned: boolean): boolean; virtual; abstract;
     procedure EndUpdate; virtual; abstract;
     function FontFileEnumerator: IFreeTypeFontEnumerator; virtual; abstract;
@@ -193,6 +200,8 @@ type
   TFreeTypeFont = class(TFreeTypeRenderableFont)
   private
     FName: String;
+    FFaceChanged: boolean;
+    FDPI: integer;
     FStream: TStream;
     FOwnedStream: boolean;
     FPointSize: single;
@@ -216,7 +225,7 @@ type
     procedure SetFreeTypeStyles(AValue: TFreeTypeStyles);
     procedure SetLineFullHeight(AValue: single);
     procedure SetStyleAsString(AValue: string);
-    procedure UpdateFace(const AName: String);
+    procedure LoadFace;
     procedure SetName(const AValue: String);
     procedure DiscardFace;
     procedure DiscardInstance;
@@ -242,6 +251,7 @@ type
     FCharMap: TT_CharMap;
     FCharmapOk: boolean;
     FAscentValue, FDescentValue, FLineGapValue, FLargeLineGapValue, FCapHeight: single;
+    procedure FaceChanged;
     function GetClearType: boolean; override;
     procedure SetClearType(const AValue: boolean); override;
     function GetLineFullHeight: single; override;
@@ -254,6 +264,8 @@ type
     procedure OnDestroyFontItem;
     procedure FetchNames;
     function GetCollection: TCustomFreeTypeFontCollection;
+    function CheckFace: boolean;
+    function CheckInstance: boolean;
   public
     Quality : TGlyphRenderQuality;
     SmallLinePadding: boolean;
@@ -690,7 +702,7 @@ end;
 
 constructor TFreeTypeGlyph.Create(AFont: TFreeTypeFont; AIndex: integer);
 begin
-  if TT_New_Glyph(AFont.FFace, FGlyphData) <> TT_Err_Ok then
+  if not AFont.CheckFace or (TT_New_Glyph(AFont.FFace, FGlyphData) <> TT_Err_Ok) then
     raise Exception.Create('Cannot create empty glyph');
   FLoaded := AFont.LoadGlyphInto(FGlyphData, AIndex);
   FIndex := AIndex;
@@ -772,65 +784,63 @@ end;
 
 { TFreeTypeFont }
 
-procedure TFreeTypeFont.UpdateFace(const AName: String);
+procedure TFreeTypeFont.LoadFace;
 var errorNum: TT_Error;
-    PrevDPI: integer;
     familyItem: TCustomFamilyCollectionItem;
     fontItem: TCustomFontCollectionItem;
 begin
-  PrevDPI := DPI;
   DiscardFace;
-
   if FStream <> nil then
   begin
     errorNum := TT_Open_Face(FStream,False,FFace);
     if errorNum <> TT_Err_Ok then
       raise exception.Create('Cannot open font (TT_Error ' + intToStr(errorNum)+') <Stream>');
   end else
-  if (Pos(PathDelim, AName) <> 0) or (Collection = nil) or (Collection.FontFileCount = 0) then
   begin
-    if AName = '' then exit;
-
-    errorNum := TT_Open_Face(AName,FFace);
-    if errorNum <> TT_Err_Ok then
-      raise exception.Create('Cannot open font (TT_Error ' + intToStr(errorNum)+') "'+AName+'"');
-  end else
-  begin
-    familyItem := Collection.Family[AName];
-    if familyItem = nil then
-      raise exception.Create('Font family not found');
-    fontItem := familyItem.GetFont(FStyleStr);
-    if fontItem = nil then
-      raise exception.Create('Font style not found');
-    FFace := fontItem.QueryFace(@OnDestroyFontItem);
-    FFaceItem := fontItem;
+    if Pos(PathDelim, FName) <> 0 then
+    begin
+      errorNum := TT_Open_Face(FName,FFace);
+      if errorNum <> TT_Err_Ok then
+        raise exception.Create('Cannot open font (TT_Error ' + intToStr(errorNum)+') "'+FName+'"');
+    end else
+    begin
+      familyItem := Collection.Family[FName];
+      if familyItem = nil then
+        raise exception.Create('Font family not found ("'+FName+'")');
+      fontItem := familyItem.GetFont(FStyleStr);
+      if fontItem = nil then
+        raise exception.Create('Font style not found ("'+FStyleStr+'")');
+      FFace := fontItem.QueryFace(@OnDestroyFontItem);
+      FFaceItem := fontItem;
+    end;
   end;
 
   FFaceLoaded:= true;
-  FName:=AName;
   UpdateInstance;
-  DPI := PrevDPI;
 end;
 
 procedure TFreeTypeFont.SetName(const AValue: String);
 begin
   DiscardStream;
   if FName=AValue then exit;
-  UpdateFace(AValue);
+  FName := AValue;
+  FaceChanged;
 end;
 
 {$hints off}
 function TFreeTypeFont.GetDPI: integer;
 var metrics: TT_Instance_Metrics;
 begin
-  if not FInstanceCreated then
-    result := 96
+  if not CheckInstance then
+  begin
+    result := FDPI;
+  end
   else
   begin
     if TT_Get_Instance_Metrics(FInstance,metrics) = TT_Err_Ok then
       result := metrics.y_resolution
     else
-      result := 96;
+      result := FDPI;
   end;
 end;
 {$hints on}
@@ -898,7 +908,7 @@ function TFreeTypeFont.GetGlyph(Index: integer): TFreeTypeGlyph;
 var node: TAvgLvlTreeNode;
     lGlyph: TFreeTypeGlyph;
 begin
-  if not FInstanceCreated then
+  if not CheckInstance then
   begin
     result := nil;
     exit;
@@ -917,7 +927,7 @@ end;
 function TFreeTypeFont.GetGlyphCount: integer;
 var prop : TT_Face_Properties;
 begin
-  if not FFaceLoaded then
+  if not CheckFace then
     result := 0
   else
   begin
@@ -955,6 +965,7 @@ end;
 procedure TFreeTypeFont.OnDestroyFontItem;
 begin
   DiscardFace;
+  FaceChanged;
 end;
 
 function TFreeTypeFont.GetPixelSize: single;
@@ -986,6 +997,8 @@ end;
 
 procedure TFreeTypeFont.SetDPI(const AValue: integer);
 begin
+  if FDPI = AValue then exit;
+  FDPI := AValue;
   if FInstanceCreated then
   begin
     TT_Set_Instance_Resolutions(FInstance, AValue,AValue);
@@ -1033,7 +1046,7 @@ begin
   AValue := Trim(AValue);
   if FStyleStr=AValue then Exit;
   FStyleStr:=AValue;
-  UpdateFace(FName);
+  FaceChanged;
 end;
 
 procedure TFreeTypeFont.DiscardFace;
@@ -1077,8 +1090,7 @@ end;
 
 procedure TFreeTypeFont.SetPixelSize(const AValue: single);
 begin
-  if FInstanceCreated then
-    SizeInPoints := AValue*72/DPI;
+  SizeInPoints := AValue*72/DPI;
 end;
 
 procedure TFreeTypeFont.SetPointSize(AValue: single);
@@ -1086,14 +1098,13 @@ begin
   if AValue < FreeTypeMinPointSize then AValue := FreeTypeMinPointSize;
   if FPointSize=AValue then exit;
   FPointSize:=AValue;
-  if FInstanceCreated then
-    UpdateSizeInPoints;
+  UpdateSizeInPoints;
 end;
 
 function TFreeTypeFont.LoadGlyphInto(_glyph: TT_Glyph; glyph_index: Word): boolean;
 var flags: integer;
 begin
-  if not FInstanceCreated then
+  if not CheckInstance then
     raise Exception.Create('No font instance');
   flags := TT_Load_Scale_Glyph;
   if FHinted then flags := flags or TT_Load_Hint_Glyph;
@@ -1105,8 +1116,7 @@ begin
   if FWidthFactor=AValue then exit;
   FWidthFactor:=AValue;
   FGlyphTable.FreeAndClear;
-  if FInstanceCreated then
-    UpdateSizeInPoints;
+  UpdateSizeInPoints;
 end;
 
 procedure TFreeTypeFont.UpdateInstance;
@@ -1119,6 +1129,8 @@ begin
   if errorNum = TT_Err_Ok then
   begin
     FInstanceCreated := true;
+    TT_Set_Instance_Resolutions(FInstance, FDPI,FDPI);
+    UpdateSizeInPoints;
     UpdateMetrics;
     UpdateCharmap;
   end else
@@ -1144,7 +1156,7 @@ end;
 procedure TFreeTypeFont.UpdateMetrics;
 var prop: TT_Face_Properties;
 begin
-  if FFaceLoaded then
+  if CheckFace then
   begin
     TT_Get_Face_Properties(FFace,prop);
     FAscentValue := prop.horizontal^.ascender;
@@ -1198,7 +1210,7 @@ end;
 
 procedure TFreeTypeFont.UpdateCharmap;
 var i,n: integer;
-    platform,encoding: integer;
+    lPlatform,encoding: integer;
 begin
   if FCharmapOk then exit;
   if not FFaceLoaded then
@@ -1208,15 +1220,15 @@ begin
   end;
 
   n := TT_Get_CharMap_Count(FFace);
-  platform := 0;
+  lPlatform := 0;
   encoding := 0;
 
   //MS Unicode
   for i := 0 to n-1 do
   begin
-    if TT_Get_CharMap_ID(FFace, i, platform, encoding) = TT_Err_Ok then
+    if TT_Get_CharMap_ID(FFace, i, lPlatform, encoding) = TT_Err_Ok then
     begin
-      if (platform = 3) and (encoding = 1) then
+      if (lPlatform = 3) and (encoding = 1) then
         if TT_Get_CharMap(FFace, i, FCharMap) = TT_Err_Ok then
         begin
           FCharmapOk := true;
@@ -1228,9 +1240,9 @@ begin
   //Apple Unicode
   for i := 0 to n-1 do
   begin
-    if TT_Get_CharMap_ID(FFace, i, platform, encoding) = TT_Err_Ok then
+    if TT_Get_CharMap_ID(FFace, i, lPlatform, encoding) = TT_Err_Ok then
     begin
-      if (platform = 0) then
+      if (lPlatform = 0) then
         if TT_Get_CharMap(FFace, i, FCharMap) = TT_Err_Ok then
         begin
           FCharmapOk := true;
@@ -1242,9 +1254,9 @@ begin
   //ISO Unicode
   for i := 0 to n-1 do
   begin
-    if TT_Get_CharMap_ID(FFace, i, platform, encoding) = TT_Err_Ok then
+    if TT_Get_CharMap_ID(FFace, i, lPlatform, encoding) = TT_Err_Ok then
     begin
-      if (platform = 2) and (encoding = 1) then
+      if (lPlatform = 2) and (encoding = 1) then
         if TT_Get_CharMap(FFace, i, FCharMap) = TT_Err_Ok then
         begin
           FCharmapOk := true;
@@ -1314,6 +1326,15 @@ begin
   end;
 end;
 
+procedure TFreeTypeFont.FaceChanged;
+begin
+  if not FFaceChanged then
+  begin
+    FFaceChanged := true;
+    DiscardFace;
+  end;
+end;
+
 constructor TFreeTypeFont.Create;
 begin
   EnsureFreeTypeInitialized;
@@ -1322,6 +1343,7 @@ begin
   FInstanceCreated := false;
   FCharmapOk := false;
   FPointSize := 10;
+  FDPI := 96;
   FGlyphTable := TAvgLvlTree.Create;
   FHinted := true;
   FWidthFactor := 1;
@@ -1329,8 +1351,7 @@ begin
   FStyleStr:= 'Regular';
   SmallLinePadding:= true;
   Quality := grqHighQuality;
-
-  UpdateFace('');
+  FFaceChanged := true;
 end;
 
 destructor TFreeTypeFont.Destroy;
@@ -1347,7 +1368,7 @@ begin
   DiscardStream;
   FStream := AStream;
   FOwnedStream:= AStreamOwner;
-  UpdateFace('');
+  FaceChanged;
 end;
 
 procedure TFreeTypeFont.RenderText(AText: string; x, y: single; ARect: TRect;
@@ -1358,7 +1379,7 @@ var
   idx: integer;
   g: TFreeTypeGlyph;
 begin
-  if not FInstanceCreated then exit;
+  if not CheckInstance then exit;
   if AText = '' then exit;
   idx := pos(LineEnding,AText);
   while idx <> 0 do
@@ -1394,13 +1415,13 @@ begin
   end;
 end;
 
-procedure TFreeTypeFont.SetNameAndStyle(AName: String; AStyle: string);
+procedure TFreeTypeFont.SetNameAndStyle(AName: string; AStyle: string);
 begin
   AStyle := Trim(AStyle);
   if (AName = FName) and (AStyle = FStyleStr) then exit;
   FName := AName;
   FStyleStr := AStyle;
-  UpdateFace(FName);
+  FaceChanged;
 end;
 
 procedure TFreeTypeFont.SetNameAndStyle(AName: string; AStyle: TFreeTypeStyles);
@@ -1421,7 +1442,7 @@ var
   g: TFreeTypeGlyph;
 begin
   result := 0;
-  if not FInstanceCreated then exit;
+  if not CheckInstance then exit;
   if AText = '' then exit;
 
   maxWidth := 0;
@@ -1560,7 +1581,7 @@ var
   g: TFreeTypeGlyph;
 begin
   result := nil;
-  if not FInstanceCreated then exit;
+  if not CheckInstance then exit;
   if AText = '' then exit;
   StrLineEnding := LineEnding;
   pstr := @AText[1];
@@ -1683,7 +1704,7 @@ var i,j: integer;
 
 begin
   setlength(FNamesArray, maxNameIndex+1);
-  if FFaceLoaded then
+  if CheckFace then
   begin
     for i := 0 to TT_Get_Name_Count(FFace)-1 do
     begin
@@ -1723,6 +1744,21 @@ begin
     result := FontCollection
   else
     result := FCollection;
+end;
+
+function TFreeTypeFont.CheckFace: boolean;
+begin
+  if FFaceChanged then
+  begin
+    FFaceChanged:= false;
+    LoadFace;
+  end;
+  result := FFaceLoaded;
+end;
+
+function TFreeTypeFont.CheckInstance: boolean;
+begin
+  result := CheckFace and FInstanceCreated;
 end;
 
 { TFreeTypeGrayscaleMap }

@@ -246,7 +246,7 @@ const
    try
      ftstream := TFreeTypeStream.Create(name);
      if ftstream.Activate then
-       raise exception.Create('Cannot activate');
+       raise exception.Create('Cannot activate stream, file may not exist');
    except
      on ex: Exception do
      begin
