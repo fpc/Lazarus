@@ -355,6 +355,10 @@ type
   TGetCellHintEvent = procedure (Sender: TObject; ACol, ARow: Integer;
                                  var HintText: String) of object;
 
+  TSaveColumnEvent = procedure (Sender, aColumn: TObject; aColIndex: Integer;
+                                aCfg: TXMLConfig; const aVersion: integer;
+                                const aPath: string) of object;
+
   { TVirtualGrid }
 
   TVirtualGrid=class
@@ -684,6 +688,8 @@ type
     FFastEditing: boolean;
     FAltColorStartNormal: boolean;
     FFlat: Boolean;
+    FOnLoadColumn: TSaveColumnEvent;
+    FOnSaveColumn: TSaveColumnEvent;
     FRangeSelectMode: TRangeSelectMode;
     FSelections: TGridRectArray;
     FOnUserCheckboxBitmap: TUserCheckboxBitmapEvent;
@@ -920,6 +926,10 @@ type
     procedure DoEditorShow; virtual;
     procedure DoExit; override;
     procedure DoEnter; override;
+    procedure DoLoadColumn(sender: TCustomGrid; aColumn: TGridColumn; aColIndex: Integer;
+                            aCfg: TXMLConfig; aVersion: Integer; aPath: string); virtual;
+    procedure DoSaveColumn(sender: TCustomGrid; aColumn: TGridColumn; aColIndex: Integer;
+                            aCfg: TXMLConfig; aVersion: Integer; aPath: string); virtual;
     function  DoMouseWheel(Shift: TShiftState; WheelDelta: Integer; MousePos: TPoint): Boolean; override;
     function  DoMouseWheelDown(Shift: TShiftState; MousePos: TPoint): Boolean; override;
     function  DoMouseWheelUp(Shift: TShiftState; MousePos: TPoint): Boolean; override;
@@ -1170,7 +1180,8 @@ type
     function FlipX(X: Integer): Integer;
     // Hint-related
     property OnGetCellHint : TGetCellHintEvent read FOnGetCellHint write FOnGetCellHint;
-
+    property OnSaveColumn: TSaveColumnEvent read FOnSaveColumn write FOnSaveColumn;
+    property OnLoadColumn: TSaveColumnEvent read FOnLoadColumn write FOnLoadColumn;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -1199,15 +1210,15 @@ type
     procedure InvalidateRow(ARow: Integer);
     function  IsCellVisible(aCol, aRow: Integer): Boolean;
     function  IsFixedCellVisible(aCol, aRow: Integer): boolean;
-    procedure LoadFromFile(FileName: string);
-    procedure LoadFromStream(AStream: TStream);
+    procedure LoadFromFile(FileName: string); virtual;
+    procedure LoadFromStream(AStream: TStream); virtual;
     function  MouseCoord(X,Y: Integer): TGridCoord;
     function  MouseToCell(const Mouse: TPoint): TPoint; overload;
     procedure MouseToCell(X,Y: Integer; var ACol,ARow: Longint); overload;
     function  MouseToLogcell(Mouse: TPoint): TPoint;
     function  MouseToGridZone(X,Y: Integer): TGridZone;
-    procedure SaveToFile(FileName: string);
-    procedure SaveToStream(AStream: TStream);
+    procedure SaveToFile(FileName: string); virtual;
+    procedure SaveToStream(AStream: TStream); virtual;
     procedure SetFocus; override;
 
     property SelectedRange[AIndex: Integer]: TGridRect read GetSelectedRange;
@@ -6753,6 +6764,20 @@ begin
   {$IfDef dbgGrid}DebugLnExit('DoEnter - END');{$Endif}
 end;
 
+procedure TCustomGrid.DoLoadColumn(sender: TCustomGrid; aColumn: TGridColumn;
+  aColIndex: Integer; aCfg: TXMLConfig; aVersion: Integer; aPath: string);
+begin
+  if Assigned(FOnLoadColumn) then
+    FOnLoadColumn(Self, aColumn, aColIndex, aCfg, aVersion, aPath);
+end;
+
+procedure TCustomGrid.DoSaveColumn(sender: TCustomGrid; aColumn: TGridColumn;
+  aColIndex: Integer; aCfg: TXMLConfig; aVersion: Integer; aPath: string);
+begin
+  if Assigned(FOnSaveColumn) then
+    FOnSaveColumn(Self, aColumn, aColIndex, aCfg, aVersion, aPath);
+end;
+
 function TCustomGrid.DoMouseWheel(Shift: TShiftState; WheelDelta: Integer;
   MousePos: TPoint): Boolean;
 begin
@@ -8622,13 +8647,15 @@ begin
     cfg.setValue(cPath + '/title/caption/value', c.Title.Caption);
     if not c.Title.IsDefaultFont then
       CfgSetFontValue(cfg, cPath + '/title/font', c.Title.Font);
+
+    doSaveColumn(self, c, -1, Cfg, Version, cPath);
   end;
 end;
 
 procedure TCustomGrid.SaveContent(cfg: TXMLConfig);
 var
   i,j,k: Integer;
-  Path: string;
+  Path, tmpPath: string;
 begin
   cfg.SetValue('grid/version', GRIDFILEVERSION);
 
@@ -8651,9 +8678,11 @@ begin
         k:=integer(PtrUInt(FCols[i]));
         if (k>=0)and(k<>DefaultColWidth) then begin
           inc(j);
+          tmpPath := 'grid/design/columns/column'+IntToStr(j);
           cfg.SetValue('grid/design/columns/columncount',j);
-          cfg.SetValue('grid/design/columns/column'+IntToStr(j)+'/index', i);
-          cfg.SetValue('grid/design/columns/column'+IntToStr(j)+'/width', k);
+          cfg.SetValue(tmpPath+'/index', i);
+          cfg.SetValue(tmpPath+'/width', k);
+          doSaveColumn(self, nil, i, Cfg, GRIDFILEVERSION, tmpPath);
         end;
       end;
     end;
@@ -8756,6 +8785,8 @@ begin
     s := cfg.GetValue(cPath + '/title/font/name/value', '');
     if s<>'' then
       cfgGetFontValue(cfg, cPath + '/title/font', c.Title.Font);
+
+    doLoadColumn(self, c, -1, cfg, version, cpath);
   end;
 end;
 
@@ -8765,7 +8796,7 @@ var
   CreateSaved: Boolean;
   Opt: TGridOptions;
   i,j,k: Integer;
-  Path: string;
+  Path, tmpPath: string;
 
     procedure GetValue(optStr:string; aOpt:TGridOption);
     begin
@@ -8802,9 +8833,11 @@ begin
         Path:='grid/design/columns/';
         k:=cfg.getValue(Path+'columncount',0);
         for i:=1 to k do begin
-          j:=cfg.getValue(Path+'column'+IntToStr(i)+'/index',-1);
+          tmpPath := Path+'column'+IntToStr(i);
+          j:=cfg.getValue(tmpPath+'/index',-1);
           if (j>=0)and(j<=ColCount-1) then begin
-            ColWidths[j]:=cfg.getValue(Path+'column'+IntToStr(i)+'/width',-1);
+            ColWidths[j]:=cfg.getValue(tmpPath+'/width',-1);
+            doLoadColumn(self, nil, j, Cfg, Version, tmpPath);
           end;
         end;
       end;

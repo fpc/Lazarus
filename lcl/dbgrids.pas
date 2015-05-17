@@ -34,7 +34,7 @@ interface
 uses
   Classes, SysUtils, Math, FileUtil, DB,
   LazUTF8, LazLoggerBase, LCLStrConsts, LCLIntf, LCLType, LMessages, LResources,
-  Controls, StdCtrls, Graphics, Grids, Dialogs, Themes, Variants, Clipbrd;
+  Controls, StdCtrls, Graphics, Grids, Dialogs, Themes, Variants, Clipbrd, Laz2_XMLCfg;
 
 {$if FPC_FULLVERSION<20701}
   {$DEFINE noautomatedbookmark}
@@ -82,8 +82,8 @@ type
   );
   TDbGridExtraOptions = set of TDbGridExtraOption;
 
-  TDbGridStatusItem = (gsUpdatingData, gsAddingAutoColumns,
-                       gsRemovingAutoColumns, gsAutoSized, gsStartEditing);
+  TDbGridStatusItem = (gsUpdatingData, gsAddingAutoColumns, gsRemovingAutoColumns,
+                       gsAutoSized, gsStartEditing, gsLoadingGrid);
   TDbGridStatus = set of TDbGridStatusItem;
 
   TDataSetScrolledEvent =
@@ -389,6 +389,10 @@ type
     function  DoMouseWheelUp(Shift: TShiftState; MousePos: TPoint): Boolean; override;
     procedure DoOnChangeBounds; override;
     procedure DoPrepareCanvas(aCol,aRow:Integer; aState: TGridDrawState); override;
+    procedure DoLoadColumn(sender: TCustomGrid; aColumn: TGridColumn; aColIndex: Integer;
+                            aCfg: TXMLConfig; aVersion: Integer; aPath: string); override;
+    procedure DoSaveColumn(sender: TCustomGrid; aColumn: TGridColumn; aColIndex: Integer;
+                            aCfg: TXMLConfig; aVersion: Integer; aPath: string); override;
     procedure DrawAllRows; override;
     procedure DrawFocusRect(aCol,aRow:Integer; ARect:TRect); override;
     procedure DrawRow(ARow: Integer); override;
@@ -494,6 +498,12 @@ type
     function MouseToRecordOffset(const x,y: Integer; out Column: TColumn; out RecordOffset: Integer): TGridZone;
     function ExecuteAction(AAction: TBasicAction): Boolean; override;
     function UpdateAction(AAction: TBasicAction): Boolean; override;
+
+    procedure SaveToFile(FileName: string); override;
+    procedure SaveToStream(AStream: TStream); override;
+    procedure LoadFromFile(FileName: string); override;
+    procedure LoadFromStream(AStream: TStream); override;
+
     property AllowOutboundEvents;
     property SelectedField: TField read GetCurrentField write SetCurrentField;
     property SelectedIndex: Integer read GetSelectedIndex write SetSelectedIndex;
@@ -1717,7 +1727,7 @@ begin
   // add as many columns as there are fields in the dataset
   // do this only at runtime.
   if (csDesigning in ComponentState) or not FDatalink.Active or
-    (gsRemovingAutoColumns in FGridStatus) or
+    (gsRemovingAutoColumns in FGridStatus) or  (gsLoadingGrid in FGridStatus) or
     not (dgeAutoColumns in OptionsExtra)
   then
     exit;
@@ -2084,6 +2094,33 @@ begin
     end;
 
   end;
+end;
+
+procedure TCustomDBGrid.DoLoadColumn(sender: TCustomGrid; aColumn: TGridColumn;
+  aColIndex: Integer; aCfg: TXMLConfig; aVersion: Integer; aPath: string);
+var
+  c: TColumn;
+  s: string;
+begin
+  c:=TColumn(aColumn);
+  s := aCfg.GetValue(aPath + '/fieldname/value', '');
+  if s<>'' then
+    c.FieldName := s;
+  s := aCfg.GetValue(aPath + '/displayformat/value', '');
+  if s<>'' then
+    c.DisplayFormat := s;
+  inherited DoLoadColumn(sender, aColumn, aColIndex, aCfg, aVersion, aPath);
+end;
+
+procedure TCustomDBGrid.DoSaveColumn(sender: TCustomGrid; aColumn: TGridColumn;
+  aColIndex: Integer; aCfg: TXMLConfig; aVersion: Integer; aPath: string);
+var
+  c: TColumn;
+begin
+  c:=TColumn(aColumn);
+  aCfg.SetValue(aPath + '/fieldname/value', c.FieldName);
+  aCfg.SetValue(aPath + '/displayformat/value', c.DisplayFormat);
+  inherited DoSaveColumn(sender, aColumn, aColIndex, aCfg, aVersion, aPath);
 end;
 
 procedure TCustomDBGrid.BeforeMoveSelection(const DCol,DRow: Integer);
@@ -3560,6 +3597,34 @@ function TCustomDBGrid.UpdateAction(AAction: TBasicAction): Boolean;
 begin
   Result := (DataLink <> nil)
             and DataLink.UpdateAction(AAction);
+end;
+
+procedure TCustomDBGrid.SaveToFile(FileName: string);
+begin
+  SaveOptions:=[ soDesign ];
+  inherited SaveToFile(Filename);
+end;
+
+procedure TCustomDBGrid.SaveToStream(AStream: TStream);
+begin
+  SaveOptions:=[ soDesign ];
+  inherited SaveToStream(AStream);
+end;
+
+procedure TCustomDBGrid.LoadFromFile(FileName: string);
+begin
+  SaveOptions:=[ soDesign ];
+  Include(FGridStatus, gsLoadingGrid);
+  inherited LoadFromFile(Filename);
+  Exclude(FGridStatus, gsLoadingGrid);
+end;
+
+procedure TCustomDBGrid.LoadFromStream(AStream: TStream);
+begin
+  SaveOptions:=[ soDesign ];
+  Include(FGridStatus, gsLoadingGrid);
+  inherited LoadFromStream(AStream);
+  Exclude(FGridStatus, gsLoadingGrid);
 end;
 
 { TComponentDataLink }
