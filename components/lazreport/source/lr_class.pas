@@ -1820,7 +1820,7 @@ begin
           DebugLn('frCreateObject classname compare %s=%s',[frAddIns[i].ClassRef.ClassName,ClassName]);
           {$ENDIF}
 
-          if frAddIns[i].ClassRef.ClassName = ClassName then
+          if CompareText(frAddIns[i].ClassRef.ClassName, ClassName)=0 then
           begin
             Result := frAddIns[i].ClassRef.Create(AOwnerPage);
 //            Result.Create;
