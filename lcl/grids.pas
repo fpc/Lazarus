@@ -1029,6 +1029,7 @@ type
     procedure KeyUp(var Key : Word; Shift : TShiftState); override;
     procedure KeyPress(var Key: char); override;
     procedure LoadContent(cfg: TXMLConfig; Version: Integer); virtual;
+    procedure LoadGridOptions(cfg: TXMLConfig; Version: Integer); virtual;
     procedure Loaded; override;
     procedure LockEditor;
     function  MouseButtonAllowed(Button: TMouseButton): boolean; virtual;
@@ -1053,6 +1054,7 @@ type
     procedure ResizeRow(aRow, aHeight: Integer);
     procedure RowHeightsChanged; virtual;
     procedure SaveContent(cfg: TXMLConfig); virtual;
+    procedure SaveGridOptions(cfg: TXMLConfig); virtual;
     procedure ScrollBarRange(Which:Integer; aRange,aPage,aPos: Integer);
     procedure ScrollBarPosition(Which, Value: integer);
     function  ScrollBarIsVisible(Which:Integer): Boolean;
@@ -8698,29 +8700,7 @@ begin
       end;
     end;
 
-    Path:='grid/design/options/';
-    Cfg.SetValue(Path+'goFixedVertLine/value', goFixedVertLine in options);
-    Cfg.SetValue(Path+'goFixedHorzLine/value', goFixedHorzLine in options);
-    Cfg.SetValue(Path+'goVertLine/value',  goVertLine in options);
-    Cfg.SetValue(Path+'goHorzLine/value',  goHorzLine in options);
-    Cfg.SetValue(Path+'goRangeSelect/value', goRangeSelect in options);
-    Cfg.SetValue(Path+'goDrawFocusSelected/value', goDrawFocusSelected in options);
-    Cfg.SetValue(Path+'goRowSizing/value', goRowSizing in options);
-    Cfg.SetValue(Path+'goColSizing/value', goColSizing in options);
-    Cfg.SetValue(Path+'goRowMoving/value', goRowMoving in options);
-    Cfg.SetValue(Path+'goColMoving/value', goColMoving in options);
-    Cfg.SetValue(Path+'goEditing/value', goEditing in options);
-    Cfg.SetValue(Path+'goAutoAddRows/value', goAutoAddRows in options);
-    Cfg.SetValue(Path+'goTabs/value', goTabs in options);
-    Cfg.SetValue(Path+'goRowSelect/value', goRowSelect in options);
-    Cfg.SetValue(Path+'goAlwaysShowEditor/value', goAlwaysShowEditor in options);
-    Cfg.SetValue(Path+'goThumbTracking/value', goThumbTracking in options);
-    Cfg.SetValue(Path+'goColSpanning/value', goColSpanning in options);
-    cfg.SetValue(Path+'goRelaxedRowSelect/value', goRelaxedRowSelect in options);
-    cfg.SetValue(Path+'goDblClickAutoSize/value', goDblClickAutoSize in options);
-    Cfg.SetValue(Path+'goSmoothScroll/value', goSmoothScroll in Options);
-    Cfg.SetValue(Path+'goAutoAddRowsSkipContentCheck/value', goAutoAddRowsSkipContentCheck in Options);
-    Cfg.SetValue(Path+'goRowHighlight/value', goRowHighlight in Options);
+    SaveGridOptions(Cfg);
   end;
 
   Cfg.SetValue('grid/saveoptions/position', soPosition in SaveOptions);
@@ -8736,6 +8716,35 @@ begin
       Cfg.SetValue('grid/position/selection/bottom',Selection.bottom);
     end;
   end;
+end;
+
+procedure TCustomGrid.SaveGridOptions(cfg: TXMLConfig);
+var
+  Path: string;
+begin
+  Path:='grid/design/options/';
+  Cfg.SetValue(Path+'goFixedVertLine/value', goFixedVertLine in options);
+  Cfg.SetValue(Path+'goFixedHorzLine/value', goFixedHorzLine in options);
+  Cfg.SetValue(Path+'goVertLine/value',  goVertLine in options);
+  Cfg.SetValue(Path+'goHorzLine/value',  goHorzLine in options);
+  Cfg.SetValue(Path+'goRangeSelect/value', goRangeSelect in options);
+  Cfg.SetValue(Path+'goDrawFocusSelected/value', goDrawFocusSelected in options);
+  Cfg.SetValue(Path+'goRowSizing/value', goRowSizing in options);
+  Cfg.SetValue(Path+'goColSizing/value', goColSizing in options);
+  Cfg.SetValue(Path+'goRowMoving/value', goRowMoving in options);
+  Cfg.SetValue(Path+'goColMoving/value', goColMoving in options);
+  Cfg.SetValue(Path+'goEditing/value', goEditing in options);
+  Cfg.SetValue(Path+'goAutoAddRows/value', goAutoAddRows in options);
+  Cfg.SetValue(Path+'goTabs/value', goTabs in options);
+  Cfg.SetValue(Path+'goRowSelect/value', goRowSelect in options);
+  Cfg.SetValue(Path+'goAlwaysShowEditor/value', goAlwaysShowEditor in options);
+  Cfg.SetValue(Path+'goThumbTracking/value', goThumbTracking in options);
+  Cfg.SetValue(Path+'goColSpanning/value', goColSpanning in options);
+  cfg.SetValue(Path+'goRelaxedRowSelect/value', goRelaxedRowSelect in options);
+  cfg.SetValue(Path+'goDblClickAutoSize/value', goDblClickAutoSize in options);
+  Cfg.SetValue(Path+'goSmoothScroll/value', goSmoothScroll in Options);
+  Cfg.SetValue(Path+'goAutoAddRowsSkipContentCheck/value', goAutoAddRowsSkipContentCheck in Options);
+  Cfg.SetValue(Path+'goRowHighlight/value', goRowHighlight in Options);
 end;
 
 procedure TCustomGrid.LoadColumns(cfg: TXMLConfig; Version: integer);
@@ -8794,15 +8803,8 @@ end;
 procedure TCustomGrid.LoadContent(cfg: TXMLConfig; Version: Integer);
 var
   CreateSaved: Boolean;
-  Opt: TGridOptions;
   i,j,k: Integer;
   Path, tmpPath: string;
-
-    procedure GetValue(optStr:string; aOpt:TGridOption);
-    begin
-      if Cfg.GetValue(Path+OptStr+'/value', False) then Opt:=Opt+[aOpt];
-    end;
-
 begin
   if soDesign in FSaveOptions then begin
     CreateSaved:=Cfg.GetValue('grid/saveoptions/create', false);
@@ -8851,34 +8853,7 @@ begin
         end;
       end;
 
-      Opt:=[];
-      Path:='grid/design/options/';
-      GetValue('goFixedVertLine', goFixedVertLine);
-      GetValue('goFixedHorzLine', goFixedHorzLine);
-      GetValue('goVertLine',goVertLine);
-      GetValue('goHorzLine',goHorzLine);
-      GetValue('goRangeSelect',goRangeSelect);
-      GetValue('goDrawFocusSelected',goDrawFocusSelected);
-      GetValue('goRowSizing',goRowSizing);
-      GetValue('goColSizing',goColSizing);
-      GetValue('goRowMoving',goRowMoving);
-      GetValue('goColMoving',goColMoving);
-      GetValue('goEditing',goEditing);
-      GetValue('goAutoAddRows',goAutoAddRows);
-      GetValue('goRowSelect',goRowSelect);
-      GetValue('goTabs',goTabs);
-      GetValue('goAlwaysShowEditor',goAlwaysShowEditor);
-      GetValue('goThumbTracking',goThumbTracking);
-      GetValue('goColSpanning', goColSpanning);
-      GetValue('goRelaxedRowSelect',goRelaxedRowSelect);
-      GetValue('goDblClickAutoSize',goDblClickAutoSize);
-      GetValue('goAutoAddRowsSkipContentCheck',goAutoAddRowsSkipContentCheck);
-      GetValue('goRowHighlight',goRowHighlight);
-      if Version>=2 then begin
-        GetValue('goSmoothScroll',goSmoothScroll);
-      end;
-
-      Options:=Opt;
+      LoadGridOptions(cfg, Version);
     end;
 
     CreateSaved:=Cfg.GetValue('grid/saveoptions/position', false);
@@ -8902,6 +8877,46 @@ begin
       end;
     end;
   end;
+end;
+
+procedure TCustomGrid.LoadGridOptions(cfg: TXMLConfig; Version: Integer);
+var
+  Opt: TGridOptions;
+  Path: string;
+
+  procedure GetValue(optStr:string; aOpt:TGridOption);
+  begin
+    if Cfg.GetValue(Path+OptStr+'/value', False) then Opt:=Opt+[aOpt];
+  end;
+begin
+  Opt:=[];
+  Path:='grid/design/options/';
+  GetValue('goFixedVertLine', goFixedVertLine);
+  GetValue('goFixedHorzLine', goFixedHorzLine);
+  GetValue('goVertLine',goVertLine);
+  GetValue('goHorzLine',goHorzLine);
+  GetValue('goRangeSelect',goRangeSelect);
+  GetValue('goDrawFocusSelected',goDrawFocusSelected);
+  GetValue('goRowSizing',goRowSizing);
+  GetValue('goColSizing',goColSizing);
+  GetValue('goRowMoving',goRowMoving);
+  GetValue('goColMoving',goColMoving);
+  GetValue('goEditing',goEditing);
+  GetValue('goAutoAddRows',goAutoAddRows);
+  GetValue('goRowSelect',goRowSelect);
+  GetValue('goTabs',goTabs);
+  GetValue('goAlwaysShowEditor',goAlwaysShowEditor);
+  GetValue('goThumbTracking',goThumbTracking);
+  GetValue('goColSpanning', goColSpanning);
+  GetValue('goRelaxedRowSelect',goRelaxedRowSelect);
+  GetValue('goDblClickAutoSize',goDblClickAutoSize);
+  GetValue('goAutoAddRowsSkipContentCheck',goAutoAddRowsSkipContentCheck);
+  GetValue('goRowHighlight',goRowHighlight);
+  if Version>=2 then begin
+    GetValue('goSmoothScroll',goSmoothScroll);
+  end;
+
+  Options:=Opt;
 end;
 
 procedure TCustomGrid.Loaded;
