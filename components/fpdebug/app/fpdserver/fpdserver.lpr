@@ -181,6 +181,7 @@ var
   Application: TFPDServerApplication;
 begin
   Application:=TFPDServerApplication.Create(nil);
+  CustomApplication:=Application;
   Application.Title:='FPDebug Server';
   Application.Run;
   Application.Free;

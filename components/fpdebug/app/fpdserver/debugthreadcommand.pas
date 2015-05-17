@@ -15,6 +15,7 @@ uses
   DbgIntfBaseTypes,
   strutils,
   debugthread,
+  CustApp,
   SysUtils;
 
 type
@@ -25,6 +26,15 @@ type
   public
     class function instance: TFpDebugThreadCommandList;
     function GetCommandByName(ATextName: string): TFpDebugThreadCommandClass;
+  end;
+
+  { TFpDebugThreadQuitDebugServerCommand }
+
+  TFpDebugThreadQuitDebugServerCommand = class(TFpDebugThreadCommand)
+  public
+    function PreExecute(AController: TDbgController; out DoQueueCommand: boolean): boolean; override;
+    function Execute(AController: TDbgController; out DoProcessLoop: boolean): boolean; override;
+    class function TextName: string; override;
   end;
 
   { TFpDebugThreadSetFilenameCommand }
@@ -156,6 +166,24 @@ implementation
 
 var
   GFpDebugThreadCommandList: TFpDebugThreadCommandList = nil;
+
+{ TFpDebugThreadQuitDebugServerCommand }
+
+function TFpDebugThreadQuitDebugServerCommand.PreExecute(AController: TDbgController; out DoQueueCommand: boolean): boolean;
+begin
+  DoQueueCommand:=false;
+  CustomApplication.Terminate;
+end;
+
+function TFpDebugThreadQuitDebugServerCommand.Execute(AController: TDbgController; out DoProcessLoop: boolean): boolean;
+begin
+  // Do nothing
+end;
+
+class function TFpDebugThreadQuitDebugServerCommand.TextName: string;
+begin
+  result := 'quitdebugserver';
+end;
 
 { TFpDebugThreadRemoveBreakpointCommand }
 
@@ -433,6 +461,7 @@ begin
 end;
 
 initialization
+  TFpDebugThreadCommandList.instance.Add(TFpDebugThreadQuitDebugServerCommand);
   TFpDebugThreadCommandList.instance.Add(TFpDebugThreadSetFilenameCommand);
   TFpDebugThreadCommandList.instance.Add(TFpDebugThreadRunCommand);
   TFpDebugThreadCommandList.instance.Add(TFpDebugThreadContinueCommand);
