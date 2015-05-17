@@ -111,21 +111,25 @@ begin
 
     result := ACommandClass.Create(FConnectionIdentifier, AnUID, FOnLog);
     APropCount := GetPropList(result, APropList);
-    for i := 0 to APropCount-1 do
-      begin
-      APropName := APropList^[i]^.Name;
-      AJSonProp := TJSONObject(AJSonCommand).Find(LowerCase(APropName));
-
-      if assigned(AJSonProp) then
+    try
+      for i := 0 to APropCount-1 do
         begin
-        case APropList^[i]^.PropType^.Kind of
-          tkAString, tkString, tkUString:
-            SetStrProp(result, APropList^[i], AJSonProp.AsString);
-          tkInteger:
-            SetOrdProp(result, APropList^[i], AJSonProp.AsInteger);
+        APropName := APropList^[i]^.Name;
+        AJSonProp := TJSONObject(AJSonCommand).Find(LowerCase(APropName));
+
+        if assigned(AJSonProp) then
+          begin
+          case APropList^[i]^.PropType^.Kind of
+            tkAString, tkString, tkUString:
+              SetStrProp(result, APropList^[i], AJSonProp.AsString);
+            tkInteger:
+              SetOrdProp(result, APropList^[i], AJSonProp.AsInteger);
+          end;
+          end;
         end;
-        end;
-      end;
+    finally
+      Freemem(APropList);
+    end;
   finally
     AJSonCommand.Free;
   end;
