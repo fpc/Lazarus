@@ -1,12 +1,13 @@
 object AskCompNameDialog: TAskCompNameDialog
   Left = 299
-  Height = 135
+  Height = 125
   Top = 177
-  Width = 366
+  Width = 389
   BorderIcons = [biSystemMenu]
+  BorderStyle = bsDialog
   Caption = 'AskCompNameDialog'
-  ClientHeight = 135
-  ClientWidth = 366
+  ClientHeight = 125
+  ClientWidth = 389
   OnCreate = FormCreate
   Position = poScreenCenter
   LCLVersion = '1.5'
@@ -14,20 +15,20 @@ object AskCompNameDialog: TAskCompNameDialog
     Left = 6
     Height = 15
     Top = 6
-    Width = 300
+    Width = 377
     Align = alTop
     BorderSpacing.Around = 6
     Caption = 'Label1'
-    Constraints.MaxWidth = 300
-    Constraints.MinWidth = 300
     ParentColor = False
     WordWrap = True
   end
   object NameEdit: TEdit
+    AnchorSideTop.Control = Label1
+    AnchorSideRight.Side = asrBottom
     Left = 6
     Height = 23
     Top = 27
-    Width = 354
+    Width = 377
     Align = alTop
     BorderSpacing.Around = 6
     OnChange = NameEditChange
@@ -39,8 +40,8 @@ object AskCompNameDialog: TAskCompNameDialog
   object ButtonPanel1: TButtonPanel
     Left = 6
     Height = 26
-    Top = 103
-    Width = 354
+    Top = 93
+    Width = 377
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
     HelpButton.Name = 'HelpButton'
@@ -60,12 +61,17 @@ object AskCompNameDialog: TAskCompNameDialog
     AnchorSideRight.Control = NameEdit
     AnchorSideRight.Side = asrBottom
     Left = 6
-    Height = 38
+    Height = 32
     Top = 56
-    Width = 354
+    Width = 377
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 6
     BevelOuter = bvNone
+    Caption = 'InfoPanel'
+    Color = clInfoBk
+    Font.Color = clInfoText
+    ParentColor = False
+    ParentFont = False
     TabOrder = 1
   end
 end

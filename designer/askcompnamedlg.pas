@@ -88,11 +88,13 @@ end;
 
 procedure TAskCompNameDialog.NameEditChange(Sender: TObject);
 var
+  Ok: boolean;
   ErrorMsg: string;
 begin
-  ButtonPanel1.OKButton.Enabled:=IsValidName(NameEdit.Text,ErrorMsg);
+  Ok:=IsValidName(NameEdit.Text, ErrorMsg);
+  ButtonPanel1.OKButton.Enabled:=Ok;
   InfoPanel.Caption:=ErrorMsg;
-  InfoPanel.Color:=IfThen(ErrorMsg<>'', clInfoBk, clDefault);
+  InfoPanel.Visible:=not Ok;
 end;
 
 function TAskCompNameDialog.GetNewName: TComponentName;
