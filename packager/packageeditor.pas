@@ -3128,6 +3128,7 @@ end;
 
 procedure TPackageEditorForm.DoCompile(CompileClean, CompileRequired: boolean);
 begin
+  CompileBitBtn.Enabled:=False;
   PackageEditors.CompilePackage(LazPackage,CompileClean,CompileRequired);
   UpdateTitle;
   UpdateButtons;
