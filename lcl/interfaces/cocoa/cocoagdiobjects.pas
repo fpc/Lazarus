@@ -239,6 +239,9 @@ type
     procedure SetInfo(AWidth, AHeight, ADepth, ABitsPerPixel: Integer;
       AAlignment: TCocoaBitmapAlignment; AType: TCocoaBitmapType);
 
+    procedure CreateHandle();
+    procedure FreeHandle();
+    procedure ReCreateHandle();
     function CreateSubImage(const ARect: TRect): CGImageRef;
     function CreateMaskImage(const ARect: TRect): CGImageRef;
     procedure PreMultiplyAlpha();
@@ -739,10 +742,6 @@ end;
 constructor TCocoaBitmap.Create(AWidth, AHeight, ADepth, ABitsPerPixel: Integer;
   AAlignment: TCocoaBitmapAlignment; AType: TCocoaBitmapType;
   AData: Pointer; ACopyData: Boolean);
-var
-  HasAlpha: Boolean;
-  BitmapFormat: NSBitmapFormat;
-  pool:NSAutoReleasePool;
 begin
   inherited Create(False);
   {$ifdef VerboseBitmaps}
@@ -768,39 +767,7 @@ begin
     FFreeData := False;
   end;
 
-  HasAlpha := AType in [cbtARGB, cbtRGBA];
-  // Non premultiplied bitmaps can't be used for bitmap context
-  // So we need to pre-multiply ourselves, but only if we were allowed
-  // to copy the data, otherwise we might corrupt the original
-  if ACopyData then
-    PreMultiplyAlpha();
-  BitmapFormat := 0;
-  if AType in [cbtARGB, cbtRGB] then
-    BitmapFormat := BitmapFormat or NSAlphaFirstBitmapFormat;
-
-  //WriteLn('[TCocoaBitmap.Create] FSamplesPerPixel=', FSamplesPerPixel,
-  //  ' FData=', DebugShowData());
-
-  // Create the associated NSImageRep
-  FImagerep := NSBitmapImageRep(NSBitmapImageRep.alloc.initWithBitmapDataPlanes_pixelsWide_pixelsHigh__colorSpaceName_bitmapFormat_bytesPerRow_bitsPerPixel(
-    @FData, // planes, BitmapDataPlanes
-    FWidth, // width, pixelsWide
-    FHeight,// height, PixelsHigh
-    FBitsPerSample,// bitsPerSample, bps
-    FSamplesPerPixel, // samplesPerPixel, spp
-    HasAlpha, // hasAlpha
-    False, // isPlanar
-    GetColorSpace, // colorSpaceName
-    BitmapFormat, // bitmapFormat
-    FBytesPerRow, // bytesPerRow
-    FBitsPerPixel //bitsPerPixel
-    ));
-
-  // Create the associated NSImage
-  FImage := NSImage.alloc.initWithSize(NSMakeSize(AWidth, AHeight));
-  pool := NSAutoreleasePool.alloc.init;
-  Image.addRepresentation(Imagerep);
-  pool.release;
+  CreateHandle();
 end;
 
 constructor TCocoaBitmap.CreateDefault;
@@ -810,7 +777,7 @@ end;
 
 destructor TCocoaBitmap.Destroy;
 begin
-  image.release;
+  FreeHandle();
   if FFreeData then System.FreeMem(FData);
   if FOriginalData <> nil then
     System.FreeMem(FOriginalData);
@@ -880,6 +847,60 @@ begin
     FBitsPerSample := ABitsPerPixel div 3;
     FSamplesPerPixel := 3;
   end;
+end;
+
+procedure TCocoaBitmap.CreateHandle();
+var
+  HasAlpha: Boolean;
+  BitmapFormat: NSBitmapFormat;
+begin
+  HasAlpha := FType in [cbtARGB, cbtRGBA];
+  // Non premultiplied bitmaps can't be used for bitmap context
+  // So we need to pre-multiply ourselves, but only if we were allowed
+  // to copy the data, otherwise we might corrupt the original
+  if FFreeData then
+    PreMultiplyAlpha();
+  BitmapFormat := 0;
+  if FType in [cbtARGB, cbtRGB] then
+    BitmapFormat := BitmapFormat or NSAlphaFirstBitmapFormat;
+
+  //WriteLn('[TCocoaBitmap.Create] FSamplesPerPixel=', FSamplesPerPixel,
+  //  ' FData=', DebugShowData());
+
+  // Create the associated NSImageRep
+  FImagerep := NSBitmapImageRep(NSBitmapImageRep.alloc.initWithBitmapDataPlanes_pixelsWide_pixelsHigh__colorSpaceName_bitmapFormat_bytesPerRow_bitsPerPixel(
+    @FData, // planes, BitmapDataPlanes
+    FWidth, // width, pixelsWide
+    FHeight,// height, PixelsHigh
+    FBitsPerSample,// bitsPerSample, bps
+    FSamplesPerPixel, // samplesPerPixel, spp
+    HasAlpha, // hasAlpha
+    False, // isPlanar
+    GetColorSpace, // colorSpaceName
+    BitmapFormat, // bitmapFormat
+    FBytesPerRow, // bytesPerRow
+    FBitsPerPixel //bitsPerPixel
+    ));
+
+  // Create the associated NSImage
+  FImage := NSImage.alloc.initWithSize(NSMakeSize(FWidth, FHeight));
+  //pool := NSAutoreleasePool.alloc.init;
+  Image.addRepresentation(Imagerep);
+  //pool.release;
+end;
+
+procedure TCocoaBitmap.FreeHandle;
+begin
+  if FImage = nil then Exit;
+  FImage.release;
+  FImage := nil;
+  FImageRep := nil;
+end;
+
+procedure TCocoaBitmap.ReCreateHandle;
+begin
+  FreeHandle();
+  CreateHandle();
 end;
 
 function TCocoaBitmap.CreateSubImage(const ARect: TRect): CGImageRef;
@@ -1980,12 +2001,14 @@ begin
 
     CGImageRelease(MskImage);
     CGContextRestoreGState(CGContext);
+    Bmp.ReCreateHandle(); // Fix for bug 28102
   end
   else
   begin
-    // convert Y coodrinate of the source bitmap
+    // convert Y coordinate of the source bitmap
     YSrc := Bmp.Height - (SrcHeight + YSrc);
     Result := DrawImageRep(GetNSRect(X, Y, Width, Height),GetNSRect(XSrc, YSrc, SrcWidth, SrcHeight), bmp.ImageRep);
+    Bmp.ReCreateHandle(); // Fix for bug 28102
   end;
 end;
 
