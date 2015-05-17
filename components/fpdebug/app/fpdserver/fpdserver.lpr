@@ -50,18 +50,23 @@ procedure TFPDServerApplication.DoRun;
 var
   ErrorMsg: String;
   DebugThread: TFpDebugThread;
-  DebugEvent: TFpDebugEvent;
   TCPServerThread: TFpDebugTcpServer;
   ConsoleServerThread: TFpDebugConsoleServer;
+  Port: integer;
+  SensePorts: integer;
   ACommand: TFpDebugThreadCommand;
   CommandStr: string;
 begin
   // quick check parameters
-  ErrorMsg:=CheckOptions('hf:td', ['help','filename:','tcp','daemon'], True);
+  ErrorMsg:=CheckOptions('hf:tdp:a::', ['help','filename:','tcp','daemon','port:','autoport::'], True);
+
+  writeln('FPDebug Server');
+  writeln('Copyright (c) 2015 by Joost van der Sluis');
+
   if ErrorMsg<>'' then
     begin
-    writeln('FPDebug server');
     writeln(ErrorMsg);
+    writeln('For more help, try: '+ExtractFileName(ExeName)+' -h');
     Terminate;
     Exit;
     end;
@@ -73,17 +78,48 @@ begin
     Exit;
     end;
 
-  DebugThread := TFpDebugThread.Instance;
-
-  if HasOption('t','tcp') then
-    TCPServerThread := TFpDebugTcpServer.Create(DebugThread)
+  CommandStr := GetOptionValue('p','port');
+  if CommandStr<>'' then
+    begin
+    if not TryStrToInt(CommandStr, Port) then
+      begin
+      writeln('Invalid port number '''+CommandStr+'''');
+      Terminate;
+      Exit;
+      end;
+    end
   else
-    TCPServerThread := nil;
+    Port := 9159;
+
+  if HasOption('a','autoport') then
+    begin
+    CommandStr := GetOptionValue('a','autoport');
+    if CommandStr<>'' then
+      begin
+      if not TryStrToInt(CommandStr, SensePorts) then
+        begin
+        writeln('Autoport should be an integer number. Invalid autoport value '''+CommandStr+'''');
+        Terminate;
+        Exit;
+        end;
+      end
+    else
+      SensePorts:=5
+    end
+  else
+    SensePorts:=1;
+
+  DebugThread := TFpDebugThread.Instance;
 
   if not HasOption('d','daemon') then
     ConsoleServerThread := TFpDebugConsoleServer.Create(DebugThread)
   else
     ConsoleServerThread := nil;
+
+  if HasOption('t','tcp') then
+    TCPServerThread := TFpDebugTcpServer.Create(DebugThread, Port, SensePorts)
+  else
+    TCPServerThread := nil;
 
   CommandStr := GetOptionValue('f', 'filename');
   if CommandStr<>'' then
@@ -130,8 +166,6 @@ end;
 
 procedure TFPDServerApplication.WriteHelp;
 begin
-  writeln('FPDebug server');
-  writeln('Copyright (c) 2015 by Joost van der Sluis');
   writeln('fpdserver [options]');
   writeln(' List of options without argument:');
   writeln('  -h --help      Show this help message');
@@ -139,6 +173,8 @@ begin
   writeln('  -d --daemon    Do not use the console in- or output');
   writeln(' List of options with argument:');
   writeln('  -f --filename  Set the filename of the executable to debug');
+  writeln('  -p --port      Set the port (9159) to listen for incoming tcp-connections');
+  writeln('  -a --autoport  Try to bind to n (5) sequential ports when a port is in use');
 end;
 
 var

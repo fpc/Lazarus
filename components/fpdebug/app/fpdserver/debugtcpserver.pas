@@ -30,9 +30,12 @@ type
 
   TFpDebugTcpServer = class(TThread)
   private
+    FPort: integer;
+    FSensePorts: integer;
     FTCPConnection: TInetServer;
     FConnectionList: TConnectionList;
     FDebugThread: TFpDebugThread;
+    function CreateInetServer: TInetServer;
     procedure FTCPConnectionConnect(Sender: TObject; Data: TSocketStream);
     procedure FTCPConnectionAcceptError(Sender: TObject; ASocket: Longint; E: Exception; var ErrorAction: TAcceptErrorAction);
     procedure FTCPConnectionConnectQuery(Sender: TObject; ASocket: Longint; var Allow: Boolean);
@@ -40,7 +43,7 @@ type
     procedure Execute; override;
   public
     procedure StopListening;
-    constructor create(ADebugThread: TFpDebugThread);
+    constructor create(ADebugThread: TFpDebugThread; APort, ASensePorts: integer);
     procedure RemoveConnection(ADebugTcpConnectionThread: TFpDebugTcpConnectionThread);
     destructor Destroy; override;
   end;
@@ -223,6 +226,46 @@ begin
   Allow:=true;
 end;
 
+function TFpDebugTcpServer.CreateInetServer: TInetServer;
+var
+  Conn: boolean;
+  InetServer: TInetServer;
+  FFirstError: string;
+  i: Integer;
+begin
+  result := nil;
+  for i := 0 to FSensePorts-1 do
+    begin
+    conn := false;
+    InetServer := TInetServer.Create(FPort+i);
+    try
+      InetServer.Listen;
+      Conn:=true;
+      Break;
+    except
+      on E: Exception do
+        begin
+        InetServer.Free;
+        if (E is ESocketError) and (ESocketError(E).Code=seBindFailed) then
+          begin
+          // Ignore, try next port
+          if FFirstError='' then
+            FFirstError:=e.Message;
+          end
+        else
+          Raise;
+        end;
+    end;
+    end;
+  if conn then
+    begin
+    result := InetServer;
+    FDebugThread.SendNotification(-1, ntListenerMessage, null, 'Listening for incoming TCP-connections on port %d', '', [result.Port])
+    end
+  else
+    FDebugThread.SendNotification(-1, ntConnectionProblem, null, 'Failed to start listening for incoming TCP-connections: %s', '', [FFirstError])
+end;
+
 procedure TFpDebugTcpServer.FTCPConnectionConnect(Sender: TObject; Data: TSocketStream);
 var
   AConnectionThread: TFpDebugTcpConnectionThread;
@@ -237,25 +280,24 @@ var
   AConnection: TInetServer;
 begin
   try
-    FTCPConnection := TInetServer.Create(9001);
-    try
-      FTCPConnection.OnConnect:=@FTCPConnectionConnect;
-      FTCPConnection.OnConnectQuery:=@FTCPConnectionConnectQuery;
-      FTCPConnection.OnAcceptError:=@FTCPConnectionAcceptError;
-      FTCPConnection.Listen;
-      FTCPConnection.StartAccepting;
-    finally
-      AConnection:=FTCPConnection;
-      FTCPConnection := nil;
-      AConnection.Free;
-    end;
+    FTCPConnection := CreateInetServer;
+    if assigned(FTCPConnection) then
+      begin
+      try
+        FTCPConnection.OnConnect:=@FTCPConnectionConnect;
+        FTCPConnection.OnConnectQuery:=@FTCPConnectionConnectQuery;
+        FTCPConnection.OnAcceptError:=@FTCPConnectionAcceptError;
+        FTCPConnection.StartAccepting;
+      finally
+        AConnection:=FTCPConnection;
+        FTCPConnection := nil;
+        AConnection.Free;
+      end;
+      end
   Except
     on E: Exception do
       begin
-      if (E is ESocketError) and (ESocketError(E).Code=seBindFailed) then
-        FDebugThread.SendNotification(-1, ntConnectionProblem, null, 'Failed to start listening for incoming TCP-connections: %s', '', [e.Message])
-      else
-        WriteLn('Exception: '+e.Message);
+      WriteLn('Exception: '+e.Message);
       end;
   end;
 end;
@@ -267,8 +309,12 @@ begin
     FTCPConnection.StopAccepting(true);
 end;
 
-constructor TFpDebugTcpServer.create(ADebugThread: TFpDebugThread);
+constructor TFpDebugTcpServer.create(ADebugThread: TFpDebugThread; APort, ASensePorts: integer);
 begin
+  FPort:=APort;
+  if ASensePorts<1 then
+    ASensePorts:=1;
+  FSensePorts:=ASensePorts;
   FDebugThread:=ADebugThread;
   FConnectionList:=TConnectionList.Create(false);
   inherited Create(false);

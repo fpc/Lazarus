@@ -31,6 +31,7 @@ type
     ntLostConnection,
     ntInvalidCommand,
     ntConnectionProblem,
+    ntListenerMessage,
     ntReceivedCommand,
     ntExecutedCommand,
     ntFailedCommand
@@ -83,10 +84,14 @@ type
     // As above, for commands that has failed to execute.
     procedure ComposeFailureEvent(var AnEvent: TFpDebugEvent); virtual;
     // Descendents have to override this function to implement the actual command. This function is called from within
-    // the debug-controller's debug loop. (This means it is only executed when the debuggee is paused or stopped)
-    // Should return tru on success, false on a failure. Set DoProcessLoop to true when the debuggee should continue,
+    // the controller's debug loop. (This means it is only executed when the debuggee is paused or stopped)
+    // Should return true on success, false on a failure. Set DoProcessLoop to true when the debuggee should continue,
     // make it false if the debuggee should stay in a paused state.
     function Execute(AController: TDbgController; out DoProcessLoop: boolean): boolean; virtual; abstract;
+    // This method is called before the command is queued for execution in the controller's debug loop. This
+    // can happen in any thread. If DoQueueCommand is true, the result is ignored or else a success-event is
+    // send if the result is true, a failure if the result is false.
+    function PreExecute(AController: TDbgController; out DoQueueCommand: boolean): boolean; virtual;
     // The name that is used to identify the command
     class function TextName: string; virtual; abstract;
     // The identifier of the Listener that has send this command
@@ -136,6 +141,7 @@ const
     'LostConnection',
     'InvalidCommand',
     'ConnectionProblem',
+    'ListenerMessage',
     'ReceivedCommand',
     'ExecutedCommand',
     'FailedCommand');
@@ -190,6 +196,12 @@ begin
   AnEvent.AnUID:=FUID;
   AnEvent.EventName:=TextName;
   AnEvent.Message:=Format('%s-command failed.',[TextName]);
+end;
+
+function TFpDebugThreadCommand.PreExecute(AController: TDbgController; out DoQueueCommand: boolean): boolean;
+begin
+  DoQueueCommand:=true;
+  result:=true;
 end;
 
 { TFpDebugThread }
@@ -362,8 +374,44 @@ begin
 end;
 
 procedure TFpDebugThread.QueueCommand(ACommand: TFpDebugThreadCommand);
+var
+  DoQueueCommand: boolean;
+  Success: boolean;
+  AnEvent: TFpDebugEvent;
 begin
-  FCommandQueue.Add(ACommand);
+  try
+    Success := ACommand.PreExecute(FController, DoQueueCommand);
+  except
+    on E: Exception do
+      begin
+      SendLogMessage('Exception while executing command :'+e.Message, dllError);
+      DoQueueCommand:=false;
+      Success:=false;
+      end;
+  end;
+  if DoQueueCommand then
+    begin
+    FCommandQueue.Add(ACommand);
+    end
+  else
+    begin
+    try
+      if Success then
+        begin
+        ClearEvent(AnEvent);
+        ACommand.ComposeSuccessEvent(AnEvent);
+        SendEvent(AnEvent);
+        end
+      else
+        begin
+        ClearEvent(AnEvent);
+        ACommand.ComposeFailureEvent(AnEvent);
+        SendEvent(AnEvent);
+        end;
+    finally
+      ACommand.Free;
+    end;
+    end;
 end;
 
 procedure TFpDebugThread.SendNotification(AConnectionIdentifier: integer; ANotificationType: TFpDebugNotificationType; AnUID: variant; AMessage, ACommand: string);
