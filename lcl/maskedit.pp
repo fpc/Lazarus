@@ -1033,6 +1033,9 @@ begin
   begin
     Result := False;
   end;
+  // if NewText = old Text the next statement will do nothing,
+  // and NO mask will appear, so Clear first ...
+  Clear;
   Text := NewText;
 end;
 
