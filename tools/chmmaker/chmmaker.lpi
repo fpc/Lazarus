@@ -25,7 +25,7 @@
     <RunParams>
       <local>
         <FormatVersion Value="1"/>
-        <LaunchingApplication Use="True" PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
+        <LaunchingApplication PathPlusParams=""/>
       </local>
     </RunParams>
     <RequiredPackages Count="3">
@@ -51,13 +51,14 @@
         <ComponentName Value="CHMForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <UnitName Value="unit1"/>
       </Unit1>
       <Unit2>
         <Filename Value="chmsitemapeditor.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="SitemapEditForm"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
+        <UnitName Value="CHMSiteMapEditor"/>
       </Unit2>
     </Units>
   </ProjectOptions>

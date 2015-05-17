@@ -3,9 +3,9 @@ program chmmaker;
 {$mode objfpc}{$H+}
 
 uses
-  {$IFDEF UNIX}{$IFDEF UseCThreads}
+  {$IFDEF UNIX}
   cthreads,
-  {$ENDIF}{$ENDIF}
+  {$ENDIF}
   Interfaces, // this includes the LCL widgetset
   Forms, LazFileUtils
   { add your units here }, unit1, CHMSiteMapEditor, lhelpcontrolpkg;
