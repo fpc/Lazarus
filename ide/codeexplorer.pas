@@ -131,7 +131,6 @@ type
     procedure CodeExplorerViewCreate(Sender: TObject);
     procedure CodeExplorerViewDestroy(Sender: TObject);
     procedure CodeFilterEditEnter(Sender: TObject);
-    procedure CodeFilterEditExit(Sender: TObject);
     procedure CodeTreeviewDblClick(Sender: TObject);
     procedure CodeTreeviewDeletion(Sender: TObject; Node: TTreeNode);
     procedure CodeTreeviewKeyUp(Sender: TObject; var Key: Word;
@@ -139,7 +138,6 @@ type
     procedure CodeFilterEditChange(Sender: TObject);
     procedure DirectivesFilterEditChange(Sender: TObject);
     procedure DirectivesFilterEditEnter(Sender: TObject);
-    procedure DirectivesFilterEditExit(Sender: TObject);
     procedure DirectivesTreeViewDblClick(Sender: TObject);
     procedure DirectivesTreeViewDeletion(Sender: TObject; Node: TTreeNode);
     procedure DirectivesTreeViewKeyUp(Sender: TObject; var Key: Word;
@@ -471,11 +469,13 @@ begin
   CodePage.Caption:=lisCode;
   CodeRefreshSpeedButton.Hint:=dlgUnitDepRefresh;
   CodeOptionsSpeedButton.Hint:=lisOptions;
-  CodeFilterEdit.Text:=lisCEFilter;
+  CodeFilterEdit.Text:='';
   DirectivesPage.Caption:=lisDirectives;
-  DirectivesFilterEdit.Text:=lisCEFilter;
+  DirectivesFilterEdit.Text:='';
   DirRefreshSpeedButton.Hint:=dlgUnitDepRefresh;
   DirOptionsSpeedButton.Hint:=lisOptions;
+  CodeFilterEdit.TextHint:=lisCEFilter;
+  DirectivesFilterEdit.TextHint:=lisCEFilter;
 
   CodeRefreshSpeedButton.LoadGlyphFromResourceName(HInstance, 'laz_refresh');
   CodeOptionsSpeedButton.LoadGlyphFromResourceName(HInstance, 'menu_environment_options');
@@ -530,16 +530,7 @@ end;
 
 procedure TCodeExplorerView.CodeFilterEditEnter(Sender: TObject);
 begin
-  if CodeFilterEdit.Text = lisCEFilter then
-    CodeFilterEdit.Text:=''
-  else
-    CodeFilterEdit.SelectAll;
-end;
-
-procedure TCodeExplorerView.CodeFilterEditExit(Sender: TObject);
-begin
-  if CodeFilterEdit.Text='' then
-    CodeFilterEdit.Text:=lisCEFilter;
+  CodeFilterEdit.SelectAll;
 end;
 
 procedure TCodeExplorerView.CodeTreeviewDblClick(Sender: TObject);
@@ -575,16 +566,7 @@ end;
 
 procedure TCodeExplorerView.DirectivesFilterEditEnter(Sender: TObject);
 begin
-  if DirectivesFilterEdit.Text = lisCEFilter then
-    DirectivesFilterEdit.Text:=''
-  else
-    DirectivesFilterEdit.SelectAll;
-end;
-
-procedure TCodeExplorerView.DirectivesFilterEditExit(Sender: TObject);
-begin
-  if DirectivesFilterEdit.Text='' then
-    DirectivesFilterEdit.Text:=lisCEFilter;
+  DirectivesFilterEdit.SelectAll;
 end;
 
 procedure TCodeExplorerView.DirectivesTreeViewDblClick(Sender: TObject);
@@ -813,7 +795,6 @@ end;
 function TCodeExplorerView.GetCodeFilter: string;
 begin
   Result:=CodeFilterEdit.Text;
-  if Result=lisCEFilter then Result:='';
 end;
 
 function TCodeExplorerView.GetCurrentPage: TCodeExplorerPage;
@@ -829,7 +810,6 @@ end;
 function TCodeExplorerView.GetDirectivesFilter: string;
 begin
   Result:=DirectivesFilterEdit.Text;
-  if Result=lisCEFilter then Result:='';
 end;
 
 function TCodeExplorerView.GetCodeNodeImage(Tool: TFindDeclarationTool;
