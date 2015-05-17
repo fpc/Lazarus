@@ -27,7 +27,7 @@ uses
   Classes, SysUtils, LCLProc, Forms, Controls, Dialogs,
   ActnList, ExtCtrls, Buttons, StdCtrls, ObjInspStrConsts,
   ComponentEditors, PropEdits, PropEditUtils, DBActns, StdActns, LCLIntf,
-  LCLType, Graphics, Menus, contnrs;
+  LCLType, Graphics, Menus, ComCtrls, contnrs;
 
 type
   TActStdPropItem = class;
@@ -80,6 +80,7 @@ type
     ActNewStd: TAction;
     ActionListSelf: TActionList;
     ActNew: TAction;
+    ImageList1: TImageList;
     lblCategory: TLabel;
     lblName: TLabel;
     lstCategory: TListBox;
@@ -96,16 +97,17 @@ type
     MenuItem6: TMenuItem;
     mItemActListDelAction: TMenuItem;
     MenuItem8: TMenuItem;
-    PanelToolbar: TPanel;
     PanelDescr: TPanel;
-    btnAdd: TSpeedButton;
-    btnDelete: TSpeedButton;
-    btnUp: TSpeedButton;
-    btnDown: TSpeedButton;
     PopMenuActions: TPopupMenu;
     PopMenuToolBarActions: TPopupMenu;
-    SBShowMenuNewActions: TSpeedButton;
     Splitter: TSplitter;
+    ToolBar1: TToolBar;
+    btnAdd: TToolButton;
+    btnAddMore: TToolButton;
+    btnDelete: TToolButton;
+    ToolButton4: TToolButton;
+    btnUp: TToolButton;
+    btnDown: TToolButton;
     procedure ActDeleteExecute(Sender: TObject);
     procedure ActDeleteUpdate(Sender: TObject);
     procedure ActMoveDownExecute(Sender: TObject);
@@ -120,9 +122,9 @@ type
     procedure ActionListEditorKeyDown(Sender: TObject; var Key: Word;
       {%H-}Shift: TShiftState);
     procedure ActionListEditorKeyPress(Sender: TObject; var Key: char);
+    procedure FormCreate(Sender: TObject);
     procedure lstActionNameDrawItem(Control: TWinControl; Index: Integer;
       ARect: TRect; State: TOwnerDrawState);
-    procedure SBShowMenuNewActionsClick(Sender: TObject);
     procedure SplitterCanResize(Sender: TObject; var {%H-}NewSize: Integer;
       var {%H-}Accept: Boolean);
     procedure lstActionNameKeyDown(Sender: TObject; var Key: Word;
@@ -688,7 +690,7 @@ end;
 
 procedure TActionListEditor.ActPanelToolBarExecute(Sender: TObject);
 begin
-  PanelToolBar.Visible := TAction(Sender).Checked;
+  ToolBar1.Visible := TAction(Sender).Checked;
 end;
 
 procedure TActionListEditor.ActionListEditorClose(Sender: TObject;
@@ -711,6 +713,21 @@ procedure TActionListEditor.ActionListEditorKeyPress(Sender: TObject;
   var Key: char);
 begin
   if Ord(Key) = VK_ESCAPE then Self.Close;
+end;
+
+procedure TActionListEditor.FormCreate(Sender: TObject);
+begin
+  //imageindex 0 exists
+  ImageList1.AddResourceName(HInstance, 'laz_add'); //imageindex 1
+  ImageList1.AddResourceName(HInstance, 'laz_delete'); //imageindex 2
+  ImageList1.AddResourceName(HInstance, 'arrow_up'); //imadeindex 3
+  ImageList1.AddResourceName(HInstance, 'arrow_down'); //imageindex 4
+  btnAddMore.ImageIndex := 0;
+  // These must be set in code because OI does not work with non-existent values.
+  btnAdd.ImageIndex := 1;
+  btnDelete.ImageIndex := 2;
+  btnUp.ImageIndex := 3;
+  btnDown.ImageIndex := 4;
 end;
 
 procedure TActionListEditor.lstActionNameDrawItem(Control: TWinControl;
@@ -766,15 +783,6 @@ begin
   i := lstActionName.Items.IndexOfObject(APersistent);
   if i >= 0 then
     lstActionName.Items.Delete(i);
-end;
-
-procedure TActionListEditor.SBShowMenuNewActionsClick(Sender: TObject);
-var
-  MousePoint: TPoint;
-begin
-  MousePoint := SBShowMenuNewActions.ClientToScreen(Point(0, btnAdd.Height-1));
-  PopMenuToolBarActions.PopUp(MousePoint.X-btnAdd.Width, MousePoint.Y);
-  SBShowMenuNewActions.Down := False;
 end;
 
 procedure TActionListEditor.ActDeleteExecute(Sender: TObject);
@@ -885,7 +893,7 @@ begin
   ActMoveDown.Hint := cActionListEditorMoveDownAction;
   ActPanelDescr.Caption := cActionListEditorPanelDescrriptions;
   ActPanelToolBar.Caption := cActionListEditorPanelToolBar;
-  SBShowMenuNewActions.Hint := cActionListEditorNewAction;
+  btnAddMore.Hint := cActionListEditorNewAction;
   mItemToolBarNewAction.Caption := cActionListEditorNewAction;
   mItemToolBarNewStdAction.Caption := cActionListEditorNewStdAction;
   mItemActListNewAction.Caption := cActionListEditorNewAction;
@@ -893,11 +901,6 @@ begin
   mItemActListMoveDownAction.Caption := cActionListEditorMoveDownAction;
   mItemActListMoveUpAction.Caption := cActionListEditorMoveUpAction;
   mItemActListDelAction.Caption := cActionListEditorDeleteAction;
-
-  btnAdd.LoadGlyphFromResourceName(HInstance, 'laz_add');
-  btnDelete.LoadGlyphFromResourceName(HInstance, 'laz_delete');
-  btnUp.LoadGlyphFromResourceName(HInstance, 'arrow_up');
-  btnDown.LoadGlyphFromResourceName(HInstance, 'arrow_down');
 
   GlobalDesignHook.AddHandlerComponentRenamed(@OnComponentRenamed);
   GlobalDesignHook.AddHandlerSetSelection(@OnComponentSelection);
