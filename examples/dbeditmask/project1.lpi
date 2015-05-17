@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <ProjectOptions>
     <Version Value="9"/>
@@ -30,7 +30,7 @@
     <RequiredPackages Count="3">
       <Item1>
         <PackageName Value="DBFLaz"/>
-        <MinVersion Minor="1" Valid="True" Release="1"/>
+        <MinVersion Minor="1" Release="1" Valid="True"/>
       </Item1>
       <Item2>
         <PackageName Value="FCL"/>
@@ -44,7 +44,6 @@
       <Unit0>
         <Filename Value="project1.lpr"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="project1"/>
       </Unit0>
       <Unit1>
         <Filename Value="Unit1.pas"/>
@@ -52,12 +51,11 @@
         <ComponentName Value="Form1"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <UnitName Value="Unit1"/>
       </Unit1>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
-    <Version Value="10"/>
+    <Version Value="11"/>
     <PathDelim Value="\"/>
     <Target>
       <Filename Value="project1"/>
@@ -78,8 +76,5 @@
         </Win32>
       </Options>
     </Linking>
-    <Other>
-      <CompilerPath Value="$(CompPath)"/>
-    </Other>
   </CompilerOptions>
 </CONFIG>
