@@ -1714,7 +1714,7 @@ begin
       if (nrNameID < 0) or (nrNameID > maxNameIndex) then continue;
 
         { check for Microsoft, Unicode, English }
-      if ((nrPlatformID=3) and (nrEncodingID=1) and
+      if ((nrPlatformID=3) and (nrEncodingID in [0,1]) and
          ((nrLanguageID=$0409) or (nrLanguageID=$0809) or
           (nrLanguageID=$0c09) or (nrLanguageID=$1009) or
           (nrLanguageID=$1409) or (nrLanguageID=$1809))) or
