@@ -368,6 +368,7 @@ type
     FRopMode: Integer;
     FPenPos: TQtPoint;
     FOwnPainter: Boolean;
+    FUserDC: boolean;
     SelFont: TQtFont;
     SelBrush: TQtBrush;
     SelPen: TQtPen;
@@ -476,6 +477,7 @@ type
     procedure translate(dx: Double; dy: Double);
     property Metrics: TQtFontMetrics read GetMetrics;
     property Rop2: Integer read GetRop write SetRop;
+    property UserDC: boolean read FUserDC write FUserDC; {if context is created from GetDC() and it's not default DC.}
   end;
   
   { TQtPixmap }
@@ -2209,6 +2211,7 @@ begin
 
   {NOTE FOR QT DEVELOPERS: Whenever you call TQtDeviceContext.Create() outside
    of TQtWidgetSet.BeginPaint() SET APaintEvent TO FALSE !}
+  FUserDC := False;
   Parent := nil;
   ParentPixmap := nil;
   FMetrics := nil;
@@ -2247,6 +2250,7 @@ end;
 
 constructor TQtDeviceContext.CreatePrinterContext(ADevice: QPrinterH);
 begin
+  FUserDC := False;
   SelFont := nil;
   SelBrush := nil;
   SelPen := nil;
@@ -2262,6 +2266,7 @@ end;
 
 constructor TQtDeviceContext.CreateFromPainter(APainter: QPainterH);
 begin
+  FUserDC := False;
   SelFont := nil;
   SelBrush := nil;
   SelPen := nil;

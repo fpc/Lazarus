@@ -2848,7 +2848,12 @@ begin
     Widget := TQtWidget(hWnd);
     Result := Widget.Context;
     if Result = 0 then
-      Result := HDC(QtDefaultContext);
+    begin
+      {issue #28106}
+      Result := HDC(TQtDeviceContext.Create(Widget.Widget, False));
+      {can be destroyed via ReleaseDC()}
+      TQtDeviceContext(Result).UserDC := True;
+    end;
   end else
     Result := HDC(QtScreenContext);
 
@@ -5264,7 +5269,12 @@ begin
 
   Result := 0;
 
-  if IsValidDC(DC) then Exit;
+  if IsValidDC(DC) then
+  begin
+    if TQtDeviceContext(DC).UserDC then
+      TQtDeviceContext(DC).Free;
+    Exit;
+  end;
 
   Result := 1;
 end;
