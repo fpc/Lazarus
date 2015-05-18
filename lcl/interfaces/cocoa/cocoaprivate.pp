@@ -1535,12 +1535,17 @@ var
   lRoundBtnSize: NSSize;
 begin
   // NSTexturedRoundedBezelStyle should be the preferred style, but it has a fixed height!
-  // So use it only if it won't cause a too large height difference
-  lBtnHeight := r.Bottom - r.Top;
-  lRoundBtnSize := fittingSize();
-  lDiff := Abs(Round(lRoundBtnSize.Height) - lBtnHeight);
-  if lDiff < 4 then // this nr of pixels maximum size difference is arbitrary and we could choose another number
-    setBezelStyle(NSTexturedRoundedBezelStyle)
+  // fittingSize is 10.7+
+  if respondsToSelector(objcselector('fittingSize')) then
+  begin
+    lBtnHeight := r.Bottom - r.Top;
+    lRoundBtnSize := fittingSize();
+    lDiff := Abs(Round(lRoundBtnSize.Height) - lBtnHeight);
+    if lDiff < 4 then // this nr of pixels maximum size difference is arbitrary and we could choose another number
+      setBezelStyle(NSTexturedRoundedBezelStyle)
+    else
+      setBezelStyle(NSTexturedSquareBezelStyle);
+  end
   else
     setBezelStyle(NSTexturedSquareBezelStyle);
 
