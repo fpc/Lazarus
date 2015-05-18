@@ -715,6 +715,7 @@ begin
 
   FreeItemsInMap(FBreakMap);
   FreeItemsInMap(FThreadMap);
+  FreeItemsInMap(FLibMap);
 
   FreeAndNil(FBreakMap);
   FreeAndNil(FThreadMap);
