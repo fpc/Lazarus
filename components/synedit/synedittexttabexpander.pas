@@ -26,7 +26,7 @@ unit SynEditTextTabExpander;
 interface
 
 uses
-  LCLProc, Classes, SysUtils, LazSynEditText, SynEditTextBase;
+  LCLProc, Classes, SysUtils, math, LazSynEditText, SynEditTextBase;
 
 type
 
@@ -55,11 +55,13 @@ type
   private
     FTabWidth: integer;
     FIndexOfLongestLine: Integer;
+    FFirstUnknownLongestLine, FLastUnknownLongestLine: Integer;
     FTabData: TSynEditStringTabData;
     FLastLineHasTab: Boolean; // Last line, parsed by GetPhysicalCharWidths
     FLastLinePhysLen: Integer;
     FViewChangeStamp: int64;
     procedure TextBufferChanged(Sender: TObject);
+    procedure LineTextChanged(Sender: TSynEditStrings; aIndex, aCount: Integer);
     procedure LineCountChanged(Sender: TSynEditStrings; AIndex, ACount : Integer);
     function ExpandedString(Index: integer): string;
     function ExpandedStringLength(Index: integer): Integer;
@@ -135,6 +137,8 @@ end;
 constructor TSynEditStringTabExpander.Create(ASynStringSource: TSynEditStrings);
 begin
   FIndexOfLongestLine := -1;
+  FFirstUnknownLongestLine := -1;
+  FLastUnknownLongestLine := -1;
   inherited Create(ASynStringSource);
   TextBufferChanged(nil);
   TabWidth := 8;
@@ -155,7 +159,7 @@ begin
       Data.Free;
     end;
   end;
-  fSynStrings.RemoveChangeHandler(senrLineChange, @LineCountChanged);
+  fSynStrings.RemoveChangeHandler(senrLineChange, @LineTextChanged);
   fSynStrings.RemoveChangeHandler(senrLineCount, @LineCountChanged);
   fSynStrings.RemoveNotifyHandler(senrTextBufferChanged, @TextBufferChanged);
   inherited Destroy;
@@ -178,6 +182,8 @@ begin
 
   FTabWidth := AValue;
   FIndexOfLongestLine := -1;
+  FFirstUnknownLongestLine := -1;
+  FLastUnknownLongestLine := -1;
   for i := 0 to Count - 1 do
     if not(FTabData[i] >= NO_TAB_IN_LINE_OFFSET) then
       FTabData[i] := LINE_LEN_UNKNOWN;
@@ -219,14 +225,47 @@ begin
   end
   else
     FTabData.IncRefCount;
-  LineCountChanged(TSynEditStrings(Sender), 0, Count);
+  LineTextChanged(TSynEditStrings(Sender), 0, Count);
+end;
+
+procedure TSynEditStringTabExpander.LineTextChanged(Sender: TSynEditStrings; aIndex,
+  aCount: Integer);
+var
+  i: integer;
+begin
+  if (FIndexOfLongestLine >= AIndex) and (FIndexOfLongestLine < AIndex+ACount) then
+    FIndexOfLongestLine := -1;
+  if (FFirstUnknownLongestLine < 0) or (AIndex < FFirstUnknownLongestLine) then
+    FFirstUnknownLongestLine := AIndex;
+  if AIndex+ACount-1 > FLastUnknownLongestLine then
+    FLastUnknownLongestLine := AIndex+ACount-1;
+  for i := AIndex to AIndex + ACount - 1 do
+    FTabData[i] := LINE_LEN_UNKNOWN;
 end;
 
 procedure TSynEditStringTabExpander.LineCountChanged(Sender: TSynEditStrings; AIndex, ACount: Integer);
 var
   i: integer;
 begin
-  FIndexOfLongestLine := -1;
+  if ACount < 0 then begin
+    if (FIndexOfLongestLine >= AIndex) and (FIndexOfLongestLine < AIndex-ACount) then
+      FIndexOfLongestLine := -1;
+    if (FFirstUnknownLongestLine >= 0) then begin
+      if (AIndex < FFirstUnknownLongestLine) then
+        FFirstUnknownLongestLine := Max(AIndex, FFirstUnknownLongestLine + ACount);
+      if (AIndex < FLastUnknownLongestLine) then
+        FLastUnknownLongestLine := Max(AIndex, FLastUnknownLongestLine + ACount);
+    end;
+
+    exit;
+  end;
+
+  if (FIndexOfLongestLine >= AIndex) then
+    FIndexOfLongestLine := FIndexOfLongestLine + ACount;
+  if (FFirstUnknownLongestLine < 0) or (AIndex < FFirstUnknownLongestLine) then
+    FFirstUnknownLongestLine := AIndex;
+  if (AIndex < FLastUnknownLongestLine) or (FLastUnknownLongestLine < 0) then
+    FLastUnknownLongestLine := Max(AIndex, FLastUnknownLongestLine) +ACount;
   for i := AIndex to AIndex + ACount - 1 do
     FTabData[i] := LINE_LEN_UNKNOWN;
 end;
@@ -334,20 +373,40 @@ var
   i, j, m: Integer;
   Line1, Line2: Integer;
 begin
+  Result := 0;
   Line1 := 0;
   Line2 := Count - 1;
+
   if (fIndexOfLongestLine >= 0) and (fIndexOfLongestLine < Count) then begin
     Result := FTabData[fIndexOfLongestLine];
     if Result <> LINE_LEN_UNKNOWN then begin
       if Result >= NO_TAB_IN_LINE_OFFSET then Result := Result -  NO_TAB_IN_LINE_OFFSET;
-      exit;
+      if (FFirstUnknownLongestLine < 0) then
+        exit;
+      // Result has the value from index
+      Line1 := FFirstUnknownLongestLine;
+      if (FLastUnknownLongestLine < Line2) then
+        Line2 := FLastUnknownLongestLine;
+    end
+    else begin
+      Result := 0;
+      if (FFirstUnknownLongestLine < 0) then begin
+        Line1 := fIndexOfLongestLine;
+        Line2 := fIndexOfLongestLine;
+      end
+      else begin // TODO: Calculate for fIndexOfLongestLine, instead of extending the range
+        Line1 := Min(fIndexOfLongestLine, FFirstUnknownLongestLine);
+        if (FLastUnknownLongestLine < Line2) then
+          Line2 := Max(fIndexOfLongestLine, FLastUnknownLongestLine);
+      end;
     end;
-    Line1 := fIndexOfLongestLine;
-    Line2 := fIndexOfLongestLine;
   end;
 
+  FFirstUnknownLongestLine := -1;
+  FLastUnknownLongestLine := -1;
+
   try
-    Result := 0;
+    //Result := 0;
     m := 0;
     CharWidths := nil;
     for i := Line1 to Line2 do begin
