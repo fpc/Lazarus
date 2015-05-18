@@ -301,7 +301,9 @@ type
     property ShrinkProc: TLazStorageMemShrinkProc read FShrinkProc write FShrinkProc;
   end;
 
-  TLazPagedListMem = object(specialize TLazPagedListMemBase<Pointer, TLazListClassesVarItemSize>)
+  TLazPagedListMemParent = specialize TLazPagedListMemBase<Pointer, TLazListClassesVarItemSize>;
+    
+  TLazPagedListMem = object(TLazPagedListMemParent)
   public
     procedure Create(AnPageSiteExp: Integer; AnItemSize: Integer);
   end;

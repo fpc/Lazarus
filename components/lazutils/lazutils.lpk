@@ -12,18 +12,6 @@
       <Other>
         <CustomOptions Value="$(IDEBuildOptions)"/>
       </Other>
-      <Conditionals Value="if GetProjValue('FPC_FULLVERSION') &lt; 30000 then begin
-  CustomOptions += ' -gw';
-end;
-// example for adding linker options on Mac OS X
-//if TargetOS='darwin' then
-//  LinkerOptions := ' -framework OpenGL';
-
-// example for adding a unit and include path on Windows
-//if SrcOS='win' then begin
-//  UnitPath += ';win';
-//  IncPath += ';win';
-//end;"/>
     </CompilerOptions>
     <Description Value="Useful units for Lazarus packages."/>
     <License Value="Modified LGPL-2"/>
