@@ -426,6 +426,8 @@ begin
   end;
   TFpDebugDebugger(Debugger).PrepareCallStackEntryList;
   ThreadCallStack := TFpDebugDebugger(Debugger).FDbgController.CurrentProcess.MainThread.CallStackEntryList;
+  if ThreadCallStack = nil then
+    exit;
 
   if ThreadCallStack.Count = 0 then
   begin
