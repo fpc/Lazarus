@@ -44,7 +44,8 @@ uses
 type
   TAddToProjectType = (
     a2pFiles,
-    a2pRequiredPkg
+    a2pRequiredPkg,
+    a2pEditorFiles
     );
 
   TAddToProjectResult = class
@@ -113,7 +114,8 @@ type
   end;
   
 function ShowAddToProjectDlg(AProject: TProject;
-  var AddResult: TAddToProjectResult): TModalResult;
+  var AddResult: TAddToProjectResult;
+  AInitTab: TAddToProjectType): TModalResult;
 function CheckAddingDependency(LazProject: TProject;
   NewDependency: TPkgDependency): boolean;
 
@@ -123,7 +125,9 @@ implementation
 {$R *.lfm}
 
 function ShowAddToProjectDlg(AProject: TProject;
-  var AddResult: TAddToProjectResult): TModalResult;
+  var AddResult: TAddToProjectResult;
+  AInitTab: TAddToProjectType
+  ): TModalResult;
 var
   AddToProjectDialog: TAddToProjectDialog;
 begin
@@ -131,6 +135,18 @@ begin
   AddToProjectDialog.TheProject:=AProject;
   AddToProjectDialog.UpdateAvailableFiles;
   AddToProjectDialog.UpdateAvailableDependencyNames;
+
+  case AInitTab of
+    a2pFiles: AddToProjectDialog.NoteBook.ActivePageIndex:=2;
+    a2pEditorFiles: AddToProjectDialog.NoteBook.ActivePageIndex:=0;
+    a2pRequiredPkg: AddToProjectDialog.NoteBook.ActivePageIndex:=1;
+  end;
+  // hide tabs for simple look
+  AddToProjectDialog.NoteBook.ShowTabs:=false;
+  // press "Add files" btn
+  if AInitTab=a2pFiles then
+    AddToProjectDialog.FilesDirButton.Click;
+
   Result:=AddToProjectDialog.ShowModal;
   if Result=mrOk then begin
     AddResult:=AddToProjectDialog.AddResult;

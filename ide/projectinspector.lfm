@@ -1,7 +1,7 @@
 object ProjectInspectorForm: TProjectInspectorForm
-  Left = 393
+  Left = 670
   Height = 456
-  Top = 104
+  Top = 134
   Width = 299
   ActiveControl = ItemsTreeView
   AllowDropFiles = True
@@ -18,6 +18,7 @@ object ProjectInspectorForm: TProjectInspectorForm
     Align = alClient
     Anchors = [akTop, akLeft, akBottom]
     BorderSpacing.Top = 2
+    DefaultItemHeight = 18
     DragMode = dmAutomatic
     MultiSelect = True
     PopupMenu = ItemsPopupMenu
@@ -38,6 +39,7 @@ object ProjectInspectorForm: TProjectInspectorForm
     Top = 48
     Width = 299
     Align = alTop
+    BevelOuter = bvNone
     ClientHeight = 28
     ClientWidth = 299
     TabOrder = 1
@@ -45,13 +47,14 @@ object ProjectInspectorForm: TProjectInspectorForm
       AnchorSideLeft.Control = BtnPanel
       AnchorSideTop.Control = BtnPanel
       AnchorSideTop.Side = asrCenter
-      Left = 1
-      Height = 26
-      Top = 1
+      Left = 2
+      Height = 25
+      Top = 2
       Width = 25
       Align = alLeft
       AllowAllUp = True
       AutoSize = True
+      BorderSpacing.Around = 2
       Constraints.MinHeight = 25
       Constraints.MinWidth = 25
       OnClick = OpenButtonClick
@@ -63,13 +66,14 @@ object ProjectInspectorForm: TProjectInspectorForm
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = OpenButton
       AnchorSideTop.Side = asrCenter
-      Left = 37
+      Left = 40
       Height = 25
       Top = 2
       Width = 25
       AllowAllUp = True
       AutoSize = True
       BorderSpacing.Left = 11
+      BorderSpacing.Around = 2
       Constraints.MinHeight = 25
       Constraints.MinWidth = 25
       GroupIndex = 1
@@ -82,13 +86,13 @@ object ProjectInspectorForm: TProjectInspectorForm
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = OpenButton
       AnchorSideTop.Side = asrCenter
-      Left = 63
+      Left = 67
       Height = 25
       Top = 2
       Width = 25
       AllowAllUp = True
       AutoSize = True
-      BorderSpacing.Left = 1
+      BorderSpacing.Around = 2
       Constraints.MinHeight = 25
       Constraints.MinWidth = 25
       GroupIndex = 2
@@ -101,10 +105,10 @@ object ProjectInspectorForm: TProjectInspectorForm
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = SortAlphabeticallyButton
       AnchorSideTop.Side = asrCenter
-      Left = 91
-      Height = 28
-      Top = 0
-      Width = 205
+      Left = 95
+      Height = 23
+      Top = 3
+      Width = 201
       UseFormActivate = True
       ButtonWidth = 23
       NumGlyphs = 1
@@ -131,5 +135,32 @@ object ProjectInspectorForm: TProjectInspectorForm
     OnPopup = ItemsPopupMenuPopup
     left = 72
     top = 112
+    object MenuItem1: TMenuItem
+      Caption = 'New Item1'
+    end
+  end
+  object AddPopupMenu: TPopupMenu
+    left = 74
+    top = 163
+    object mnuAddDiskFile: TMenuItem
+      Caption = 'Add file from disk'
+      Default = True
+      OnClick = AddBitBtnClick
+    end
+    object MenuItem2: TMenuItem
+      Caption = '-'
+    end
+    object mnuAddDiskFiles: TMenuItem
+      Caption = 'Add files'
+      OnClick = mnuAddDiskFilesClick
+    end
+    object mnuAddEditorFiles: TMenuItem
+      Caption = 'Add editor files'
+      OnClick = mnuAddEditorFilesClick
+    end
+    object mnuAddReq: TMenuItem
+      Caption = 'Add requirement'
+      OnClick = mnuAddReqClick
+    end
   end
 end

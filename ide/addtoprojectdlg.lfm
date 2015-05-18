@@ -4,30 +4,30 @@ object AddToProjectDialog: TAddToProjectDialog
   Top = 250
   Width = 598
   ActiveControl = Notebook
-  BorderStyle = bsSizeToolWin
+  BorderIcons = [biSystemMenu, biMaximize]
   Caption = 'AddToProjectDialog'
   ClientHeight = 339
   ClientWidth = 598
   OnClose = AddToProjectDialogClose
   Position = poScreenCenter
-  LCLVersion = '1.3'
+  LCLVersion = '1.5'
   object Notebook: TPageControl
     Left = 0
-    Height = 297
+    Height = 301
     Top = 0
     Width = 598
-    ActivePage = AddEditorFilePage
+    ActivePage = AddFilesPage
     Align = alClient
-    TabIndex = 0
+    TabIndex = 2
     TabOrder = 0
     OnChange = NotebookChange
     object AddEditorFilePage: TTabSheet
       Caption = 'AddEditorFilePage'
-      ClientHeight = 264
+      ClientHeight = 273
       ClientWidth = 590
       object AddFileLabel: TLabel
         Left = 6
-        Height = 20
+        Height = 15
         Top = 6
         Width = 578
         Align = alTop
@@ -37,8 +37,8 @@ object AddToProjectDialog: TAddToProjectDialog
       end
       object AddFileListView: TListView
         Left = 6
-        Height = 224
-        Top = 32
+        Height = 238
+        Top = 27
         Width = 578
         Align = alTop
         Anchors = [akTop, akLeft, akRight, akBottom]
@@ -84,13 +84,13 @@ object AddToProjectDialog: TAddToProjectDialog
       end
       object DependPkgNameComboBox: TComboBox
         Left = 218
-        Height = 28
+        Height = 23
         Top = 14
         Width = 370
         Anchors = [akTop, akLeft, akRight]
         AutoComplete = True
         AutoCompleteText = [cbactEnabled, cbactEndOfLineComplete, cbactSearchAscending]
-        ItemHeight = 20
+        ItemHeight = 15
         OnChange = DependPkgNameComboBoxChange
         TabOrder = 0
         Text = 'DependPkgNameComboBox'
@@ -116,12 +116,12 @@ object AddToProjectDialog: TAddToProjectDialog
     end
     object AddFilesPage: TTabSheet
       Caption = 'AddFilesPage'
-      ClientHeight = 264
+      ClientHeight = 273
       ClientWidth = 590
       object FilesListView: TListView
         AnchorSideBottom.Control = FilesDirButton
         Left = 6
-        Height = 216
+        Height = 230
         Top = 6
         Width = 578
         Anchors = [akTop, akLeft, akRight, akBottom]
@@ -141,9 +141,9 @@ object AddToProjectDialog: TAddToProjectDialog
         AnchorSideBottom.Control = AddFilesPage
         AnchorSideBottom.Side = asrBottom
         Left = 6
-        Height = 30
-        Top = 228
-        Width = 119
+        Height = 25
+        Top = 242
+        Width = 100
         Anchors = [akLeft, akBottom]
         AutoSize = True
         BorderSpacing.Around = 6
@@ -156,10 +156,10 @@ object AddToProjectDialog: TAddToProjectDialog
         AnchorSideLeft.Side = asrBottom
         AnchorSideTop.Control = FilesDirButton
         AnchorSideTop.Side = asrCenter
-        Left = 131
-        Height = 30
-        Top = 228
-        Width = 150
+        Left = 112
+        Height = 25
+        Top = 242
+        Width = 126
         AutoSize = True
         BorderSpacing.Around = 6
         Caption = 'FilesShortenButton'
@@ -171,10 +171,10 @@ object AddToProjectDialog: TAddToProjectDialog
         AnchorSideLeft.Side = asrBottom
         AnchorSideTop.Control = FilesShortenButton
         AnchorSideTop.Side = asrCenter
-        Left = 287
-        Height = 30
-        Top = 228
-        Width = 143
+        Left = 244
+        Height = 25
+        Top = 242
+        Width = 118
         AutoSize = True
         BorderSpacing.Around = 6
         Caption = 'FilesDeleteButton'
@@ -185,8 +185,8 @@ object AddToProjectDialog: TAddToProjectDialog
   end
   object ButtonPanel: TButtonPanel
     Left = 6
-    Height = 30
-    Top = 303
+    Height = 26
+    Top = 307
     Width = 586
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True

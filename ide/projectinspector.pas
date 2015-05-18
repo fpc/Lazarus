@@ -86,9 +86,16 @@ type
   { TProjectInspectorForm }
 
   TProjectInspectorForm = class(TForm,IFilesEditorInterface)
+    AddPopupMenu: TPopupMenu;
     BtnPanel: TPanel;
     DirectoryHierarchyButton: TSpeedButton;
     FilterEdit: TTreeFilterEdit;
+    MenuItem1: TMenuItem;
+    MenuItem2: TMenuItem;
+    mnuAddEditorFiles: TMenuItem;
+    mnuAddDiskFile: TMenuItem;
+    mnuAddDiskFiles: TMenuItem;
+    mnuAddReq: TMenuItem;
     OpenButton: TSpeedButton;
     ItemsTreeView: TTreeView;
     ItemsPopupMenu: TPopupMenu;
@@ -97,12 +104,10 @@ type
     ToolBar: TToolBar;
     // toolbuttons
     AddBitBtn: TToolButton;
-    AddMoreBitBtn: TToolButton;
     RemoveBitBtn: TToolButton;
     OptionsBitBtn: TToolButton;
     HelpBitBtn: TToolButton;
     procedure AddBitBtnClick(Sender: TObject);
-    procedure AddMoreBitBtnClick(Sender: TObject);
     procedure CopyMoveToDirMenuItemClick(Sender: TObject);
     procedure DirectoryHierarchyButtonClick(Sender: TObject);
     procedure FormDropFiles(Sender: TObject; const FileNames: array of String);
@@ -116,6 +121,9 @@ type
       State: TDragState; var Accept: Boolean);
     procedure ItemsTreeViewKeyDown(Sender: TObject; var Key: Word; {%H-}Shift: TShiftState);
     procedure ItemsTreeViewSelectionChanged(Sender: TObject);
+    procedure mnuAddDiskFilesClick(Sender: TObject);
+    procedure mnuAddEditorFilesClick(Sender: TObject);
+    procedure mnuAddReqClick(Sender: TObject);
     procedure MoveDependencyUpClick(Sender: TObject);
     procedure MoveDependencyDownClick(Sender: TObject);
     procedure SetDependencyDefaultFilenameMenuItemClick(Sender: TObject);
@@ -162,6 +170,7 @@ type
     FFlags: TProjectInspectorFlags;
     FProjectNodeDataList : array [TPENodeType] of TPENodeData;
     function AddOneFile(aFilename: string): TModalResult;
+    procedure DoAddMoreDialog(AInitTab: TAddToProjectType);
     procedure FreeNodeData(Typ: TPENodeType);
     function CreateNodeData(Typ: TPENodeType; aName: string; aRemoved: boolean): TPENodeData;
     procedure SetDependencyDefaultFilename(AsPreferred: boolean);
@@ -320,6 +329,21 @@ begin
   UpdateButtons;
 end;
 
+procedure TProjectInspectorForm.mnuAddDiskFilesClick(Sender: TObject);
+begin
+  DoAddMoreDialog(a2pFiles);
+end;
+
+procedure TProjectInspectorForm.mnuAddEditorFilesClick(Sender: TObject);
+begin
+  DoAddMoreDialog(a2pEditorFiles);
+end;
+
+procedure TProjectInspectorForm.mnuAddReqClick(Sender: TObject);
+begin
+  DoAddMoreDialog(a2pRequiredPkg);
+end;
+
 procedure TProjectInspectorForm.MoveDependencyUpClick(Sender: TObject);
 var
   Dependency: TPkgDependency;
@@ -428,13 +452,13 @@ begin
   end;
 end;
 
-procedure TProjectInspectorForm.AddMoreBitBtnClick(Sender: TObject);
+procedure TProjectInspectorForm.DoAddMoreDialog(AInitTab: TAddToProjectType);
 var
   AddResult: TAddToProjectResult;
   i: Integer;
 begin
   AddResult:=nil;
-  if ShowAddToProjectDlg(LazProject,AddResult)<>mrOk then exit;
+  if ShowAddToProjectDlg(LazProject,AddResult,AInitTab)<>mrOk then exit;
 
   case AddResult.AddType of
   a2pFiles:
@@ -456,6 +480,8 @@ begin
       EndUpdate;
     end;
 
+  else
+    Showmessage('Not implemented');
   end;
 
   AddResult.Free;
@@ -937,12 +963,17 @@ begin
   ToolBar.Images            := IDEImages.Images_16;
   FilterEdit.OnGetImageIndex:=@OnTreeViewGetImageIndex;
 
-  AddBitBtn     := CreateToolButton('AddBitBtn', lisAdd, lisPckEditAddFilesFromFileSystem, 'laz_add', @AddBitBtnClick);
-  AddMoreBitBtn := CreateToolButton('AddMoreBitBtn', lisDlgAdd, lisPckEditAddOtherItems, 'laz_addmore', @AddMoreBitBtnClick);
+  AddBitBtn     := CreateToolButton('AddBitBtn', lisAddSub, lisClickToSeeTheChoices, 'laz_add', nil);
   RemoveBitBtn  := CreateToolButton('RemoveBitBtn', lisRemove, lisPckEditRemoveSelectedItem, 'laz_delete', @RemoveBitBtnClick);
   CreateDivider;
   OptionsBitBtn := CreateToolButton('OptionsBitBtn', lisOptions, lisPckEditEditGeneralOptions, 'menu_environment_options', @OptionsBitBtnClick);
   HelpBitBtn    := CreateToolButton('HelpBitBtn', GetButtonCaption(idButtonHelp), lisPkgEdMoreFunctionsForThePackage, 'menu_help', @HelpBitBtnClick);
+
+  AddBitBtn.DropdownMenu:=AddPopupMenu;
+  mnuAddDiskFile.Caption:=lisPckEditAddFilesFromFileSystem;
+  mnuAddDiskFiles.Caption:=lisAddFilesInDirectory;
+  mnuAddEditorFiles.Caption:=lisProjAddEditorFile;
+  mnuAddReq.Caption:=lisProjAddNewRequirement;
 
   OpenButton.LoadGlyphFromResourceName(HInstance, 'laz_open');
   OpenButton.Caption:='';
