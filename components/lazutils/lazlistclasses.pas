@@ -70,9 +70,8 @@ type
     CNT_OFFS  = SizeOf(Pointer);
     DATA_OFFS = CNT_OFFS + (2 * SizeOf(Integer));
   private
-    (* Keep the size small, if no entries exist
-       FMem:  FLowElemPointer: PByte; FCount, FCapacity: Integer; Array of <FItemSize
-    *)
+    // Keep the size small, if no entries exist
+    //   FMem:  FLowElemPointer: PByte; FCount, FCapacity: Integer; Array of <FItemSize
     FMem: PByte;
 
     function GetDataPointer: PByte; inline;
@@ -164,9 +163,8 @@ type
 
   generic TLazRoundBufferListMemBase<TPItemT, TSizeT> = object
   private
-    (* Keep the size small, if no entries exist
-       FMem:  FLowElemPointer: PByte; FCount, FCapacity_in_bytes: Integer; Array of <FItemSize
-    *)
+    // Keep the size small, if no entries exist
+    // FMem:  FLowElemPointer: PByte; FCount, FCapacity_in_bytes: Integer; Array of <FItemSize
     FMem: TLazListClassesInternalMem;
     FItemSize: TSizeT; // May be zero size
 
@@ -228,7 +226,6 @@ type
     property Count: Integer read GetCount;
     property ItemPointer[Index: Integer]: PT read GetItemPointer;
   end;
-
 
   { TLazFixedRoundBufferListMemBase }
 
@@ -364,16 +361,7 @@ type
     property Items[Index: Integer]: T read Get write Put; default;
   end;
 
-
 implementation
-
-{ TLazPagedListMem }
-
-procedure TLazPagedListMem.Create(AnPageSiteExp: Integer; AnItemSize: Integer);
-begin
-  FItemSize.ItemSize := AnItemSize;
-  inherited Create(AnPageSiteExp);
-end;
 
 { TLazListClassesInternalMem }
 
@@ -1656,14 +1644,14 @@ begin
 
     if ACount > PCapHalf then begin
       // insert new page, then "delete-bubble"
-      (* * insert 900 into:   [][]   [0..700|701..999]                      [][][][]
+      { * insert 900 into:   [][]   [0..700|701..999]                      [][][][]
            1) SPLIT+add:      [][]   [0..700|+200]        [+700|701..999]   [][][][]
            2) bubble 100:     [>][>] [+100/100..800|+200] [+700|701..999]   [][][][]
 
          * insert 1900 into:  [][]   [0..700|701..999]                              [][][][]
            1) SPLIT+add:      [][]   [0..700|+200]        [+1000] [+700|701..999]   [][][][]
            2) bubble 100:     [>][>] [+100/100..800|+200] [+700|701..999]   [][][][]
-      *)
+      }
       n2 := Min(SubIndex, ACount);
       n1 := Min(PCap-SubIndex, ACount - n2);
       if ExtraPagesNeeded = 0 then begin
@@ -1684,7 +1672,7 @@ begin
     end
     else begin
       // normal insert
-      (* * insert 100 into:    []     [1000]      [0..50|51..999]       [][][][]
+      {  * insert 100 into:    []     [1000]      [0..50|51..999]       [][][][]
            1) bubble 100(prev) [<]    [0..900]    [0..50|51..899]       [][][][]
            2) move 50          [<]    [0..950]    [51..899]       [][][][]
            3) add:             []     [0.950,+50] [+50,51..999]  [][][][]
@@ -1698,8 +1686,7 @@ begin
            2) move 50          [<]    [0..950]    [51..899]                       [][][][]
            3) INS(SPLIT at 0)  [<]    [0..950]    [+1000]         [51..899]       [][][][]
            3)  add:            []     [0.950,+50] [+1000]         [+50,51..999]  [][][][]
-
-      *)
+      }
       if ACount > SubIndex then begin
         if InsertPageIdx = 0 then begin
           InsertPages(0, 1);
@@ -1733,7 +1720,7 @@ begin
     InvSubIndex := PCap - SubIndex;
     if ACount > PCapHalf then begin
       // insert new page, then "delete-bubble"
-      (* Same as above, but bubble to end *)
+      // Same as above, but bubble to end
       n1 := Min(InvSubIndex, ACount);
       n2 := Min(SubIndex, ACount - n1);
       if ExtraPagesNeeded = 0 then begin
@@ -1753,7 +1740,7 @@ begin
         BubbleEntriesFromEnd(InsertPageIdx+ExtraPagesNeeded+1, PCap - ACount);
     end
     else begin
-      (* Same as above, but bubble to end *)
+      // Same as above, but bubble to end
       // normal insert
       if ACount > InvSubIndex then begin
         c := PageCount;
@@ -1969,6 +1956,14 @@ begin
     for i := 0 to fpages.Count - 1 do FPages.ItemPointer[i]^.DebugDump;
   end
   else debugln(['PAGED .Dump NONE']);
+end;
+
+{ TLazPagedListMem }
+
+procedure TLazPagedListMem.Create(AnPageSiteExp: Integer; AnItemSize: Integer);
+begin
+  FItemSize.ItemSize := AnItemSize;
+  inherited Create(AnPageSiteExp);
 end;
 
 { TLazDualCapacityList }
