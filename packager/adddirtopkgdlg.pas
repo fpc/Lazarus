@@ -26,7 +26,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, Forms, Controls, Graphics, Dialogs,
-  StdCtrls, ExtCtrls, ButtonPanel,
+  StdCtrls, ExtCtrls, ButtonPanel, EditBtn,
   SynRegExpr, FileProcs,
   // IDE
   IDEWindowIntf, InputHistory, IDEProcs,
@@ -38,6 +38,7 @@ type
 
   TAddDirToPkgDialog = class(TForm)
     ButtonPanel1: TButtonPanel;
+    DirEdit: TDirectoryEdit;
     OnlyTextCheckBox: TCheckBox;
     ExcludeFilterCombobox: TComboBox;
     ExcludeRegExCheckBox: TCheckBox;
@@ -46,12 +47,9 @@ type
     IncludeRegExCheckBox: TCheckBox;
     IncludeGroupBox: TGroupBox;
     SubDirCheckBox: TCheckBox;
-    DirButton: TButton;
     DirGroupBox: TGroupBox;
-    DirEdit: TEdit;
     procedure ButtonPanel1CancelClick(Sender: TObject);
     procedure ButtonPanel1OkClick(Sender: TObject);
-    procedure DirButtonClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -121,7 +119,8 @@ begin
   end;
   ExcludeFilterCombobox.ItemIndex:=0;
 
-  IDEDialogLayoutList.ApplyLayout(Self,400,350);
+  // not needed for borderstyle dialog
+  //IDEDialogLayoutList.ApplyLayout(Self,400,350);
 
   fIncludeFilterRE:=TRegExpr.Create;
   fExcludeFilterRE:=TRegExpr.Create;
@@ -143,24 +142,6 @@ begin
   if not GatherFiles(DirEdit.Text,SubDirCheckBox.Checked,
     OnlyTextCheckBox.Checked) then exit;
   ModalResult:=mrOk;
-end;
-
-procedure TAddDirToPkgDialog.DirButtonClick(Sender: TObject);
-var
-  SelectDirectoryDialog: TSelectDirectoryDialog;
-begin
-  SelectDirectoryDialog:=TSelectDirectoryDialog.Create(nil);
-  try
-    SelectDirectoryDialog.InitialDir:=LazPackage.Directory;
-    SelectDirectoryDialog.Options:=SelectDirectoryDialog.Options+[ofPathMustExist];
-    InputHistories.ApplyFileDialogSettings(SelectDirectoryDialog);
-    if SelectDirectoryDialog.Execute then begin
-      DirEdit.Text:=SelectDirectoryDialog.FileName;
-    end;
-    InputHistories.StoreFileDialogSettings(SelectDirectoryDialog);
-  finally
-    SelectDirectoryDialog.Free;
-  end;
 end;
 
 procedure TAddDirToPkgDialog.FormClose(Sender: TObject; var CloseAction: TCloseAction);

@@ -1,111 +1,94 @@
 object AddDirToPkgDialog: TAddDirToPkgDialog
-  Left = 305
-  Height = 361
-  Top = 261
-  Width = 400
-  ActiveControl = DirEdit
+  Left = 411
+  Height = 348
+  Top = 297
+  Width = 454
+  BorderStyle = bsDialog
   Caption = 'AddDirToPkgDialog'
-  ClientHeight = 361
-  ClientWidth = 400
+  ClientHeight = 348
+  ClientWidth = 454
   OnClose = FormClose
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   Position = poScreenCenter
-  LCLVersion = '1.1'
+  LCLVersion = '1.5'
   object DirGroupBox: TGroupBox
-    Left = 0
-    Height = 86
-    Top = 0
-    Width = 400
+    Left = 6
+    Height = 84
+    Top = 6
+    Width = 442
     Align = alTop
     AutoSize = True
+    BorderSpacing.Around = 6
     Caption = 'DirGroupBox'
-    ClientHeight = 65
-    ClientWidth = 392
+    ClientHeight = 63
+    ClientWidth = 438
     TabOrder = 0
-    object DirEdit: TEdit
-      AnchorSideLeft.Control = DirGroupBox
-      AnchorSideTop.Control = DirGroupBox
-      AnchorSideRight.Control = DirButton
-      Left = 6
-      Height = 25
-      Top = 6
-      Width = 354
-      Anchors = [akTop, akLeft, akRight]
-      BorderSpacing.Left = 6
-      BorderSpacing.Top = 6
-      TabOrder = 0
-      Text = 'DirEdit'
-    end
-    object DirButton: TButton
-      AnchorSideTop.Control = DirEdit
-      AnchorSideTop.Side = asrCenter
-      AnchorSideRight.Control = DirGroupBox
-      AnchorSideRight.Side = asrBottom
-      Left = 360
-      Height = 27
-      Top = 5
-      Width = 26
-      Anchors = [akTop, akRight]
-      AutoSize = True
-      BorderSpacing.Top = 6
-      BorderSpacing.Right = 6
-      Caption = '...'
-      OnClick = DirButtonClick
-      TabOrder = 1
-    end
     object SubDirCheckBox: TCheckBox
-      AnchorSideLeft.Control = DirGroupBox
       AnchorSideTop.Control = DirEdit
       AnchorSideTop.Side = asrBottom
       Left = 6
       Height = 22
-      Top = 37
-      Width = 133
+      Top = 35
+      Width = 120
       BorderSpacing.Around = 6
       Caption = 'SubDirCheckBox'
       Checked = True
       State = cbChecked
-      TabOrder = 2
+      TabOrder = 1
+    end
+    object DirEdit: TDirectoryEdit
+      Left = 6
+      Height = 23
+      Top = 6
+      Width = 426
+      ShowHidden = False
+      ButtonWidth = 45
+      NumGlyphs = 1
+      Align = alTop
+      BorderSpacing.Around = 6
+      MaxLength = 0
+      TabOrder = 0
     end
   end
   object IncludeGroupBox: TGroupBox
-    Left = 0
-    Height = 118
-    Top = 86
-    Width = 400
+    Left = 6
+    Height = 112
+    Top = 96
+    Width = 442
     Align = alTop
     AutoSize = True
+    BorderSpacing.Around = 6
     Caption = 'IncludeGroupBox'
-    ClientHeight = 97
-    ClientWidth = 392
+    ClientHeight = 91
+    ClientWidth = 438
     TabOrder = 1
     object IncludeRegExCheckBox: TCheckBox
       Left = 6
       Height = 22
-      Top = 41
-      Width = 380
+      Top = 35
+      Width = 426
       Align = alClient
       BorderSpacing.Around = 6
       Caption = 'IncludeRegExCheckBox'
-      TabOrder = 0
+      TabOrder = 1
     end
     object IncludeFilterCombobox: TComboBox
       Left = 6
-      Height = 29
+      Height = 23
       Top = 6
-      Width = 380
+      Width = 426
       Align = alTop
       BorderSpacing.Around = 6
-      ItemHeight = 0
-      TabOrder = 1
+      ItemHeight = 17
+      TabOrder = 0
       Text = 'IncludeFilterCombobox'
     end
     object OnlyTextCheckBox: TCheckBox
       Left = 6
       Height = 22
-      Top = 69
-      Width = 380
+      Top = 63
+      Width = 426
       Align = alBottom
       BorderSpacing.Around = 6
       Caption = 'OnlyTextCheckBox'
@@ -115,43 +98,44 @@ object AddDirToPkgDialog: TAddDirToPkgDialog
     end
   end
   object ExcludeGroupBox: TGroupBox
-    Left = 0
-    Height = 90
-    Top = 204
-    Width = 400
+    Left = 6
+    Height = 84
+    Top = 214
+    Width = 442
     Align = alTop
     AutoSize = True
+    BorderSpacing.Around = 6
     Caption = 'ExcludeGroupBox'
-    ClientHeight = 69
-    ClientWidth = 392
+    ClientHeight = 63
+    ClientWidth = 438
     TabOrder = 2
     object ExcludeRegExCheckBox: TCheckBox
       Left = 6
       Height = 22
-      Top = 41
-      Width = 380
+      Top = 35
+      Width = 426
       Align = alClient
       BorderSpacing.Around = 6
       Caption = 'ExcludeRegExCheckBox'
-      TabOrder = 0
+      TabOrder = 1
     end
     object ExcludeFilterCombobox: TComboBox
       Left = 6
-      Height = 29
+      Height = 23
       Top = 6
-      Width = 380
+      Width = 426
       Align = alTop
       BorderSpacing.Around = 6
-      ItemHeight = 0
-      TabOrder = 1
+      ItemHeight = 17
+      TabOrder = 0
       Text = 'ExcludeFilterCombobox'
     end
   end
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 39
-    Top = 316
-    Width = 388
+    Height = 29
+    Top = 313
+    Width = 442
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
     HelpButton.Name = 'HelpButton'
@@ -162,5 +146,6 @@ object AddDirToPkgDialog: TAddDirToPkgDialog
     CancelButton.DefaultCaption = True
     TabOrder = 3
     ShowButtons = [pbOK, pbCancel]
+    ShowBevel = False
   end
 end
