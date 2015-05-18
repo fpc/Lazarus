@@ -133,31 +133,34 @@ type
     ImageIndexTemplate: integer;
     FNewItem: TNewIDEItemTemplate;
     procedure FillProjectInheritableItemsList;
-    procedure FillItemsTree;
+    procedure FillItemsTree(AOnlyModules: boolean);
     procedure SetupComponents;
     procedure UpdateDescription;
     function FindItem(const aName: string): TTreeNode;
   public
-    constructor Create(TheOwner: TComponent); override;
+    constructor Create(TheOwner: TComponent; AOnlyModules: boolean);
     destructor Destroy; override;
   public
     property NewItem: TNewIDEItemTemplate Read FNewItem;
   end;
 
-function ShowNewIDEItemDialog(out NewItem: TNewIDEItemTemplate): TModalResult;
+function ShowNewIDEItemDialog(out NewItem: TNewIDEItemTemplate;
+  AOnlyModules: boolean = false): TModalResult;
 
 
 implementation
 
+uses Math;
 
 {$R *.lfm}
 
-function ShowNewIDEItemDialog(out NewItem: TNewIDEItemTemplate): TModalResult;
+function ShowNewIDEItemDialog(out NewItem: TNewIDEItemTemplate;
+  AOnlyModules: boolean): TModalResult;
 var
   NewOtherDialog: TNewOtherDialog;
 begin
   NewItem := nil;
-  NewOtherDialog := TNewOtherDialog.Create(nil);
+  NewOtherDialog := TNewOtherDialog.Create(nil, AOnlyModules);
   Result  := NewOtherDialog.ShowModal;
   if Result = mrOk then
     NewItem := NewOtherDialog.NewItem;
@@ -278,37 +281,35 @@ Begin
   end;
 end;
 
-procedure TNewOtherDialog.FillItemsTree;
+procedure TNewOtherDialog.FillItemsTree(AOnlyModules: boolean);
 var
-  NewParentNode: TTreeNode;
-  CategoryID:    integer;
-  Category:      TNewIDEItemCategory;
-  TemplateID:    integer;
-  Template:      TNewIDEItemTemplate;
+  NewParentNode, ChildNode: TTreeNode;
+  CategoryID, TemplateID, CategoryCount: integer;
+  Category: TNewIDEItemCategory;
+  Template: TNewIDEItemTemplate;
 begin
   ItemsTreeView.BeginUpdate;
   ItemsTreeView.Items.Clear;
-  for CategoryID := 0 to NewIDEItems.Count - 1 do
+  CategoryCount := NewIDEItems.Count;
+  if AOnlyModules and (CategoryCount > 1) then
+    CategoryCount := 1;
+  for CategoryID := 0 to CategoryCount-1 do
   begin
     Category := NewIDEItems[CategoryID];
     if not Category.VisibleInNewDialog then continue;
-    NewParentNode := ItemsTreeView.Items.AddObject(nil,
-                                              Category.LocalizedName, Category);
-    
+    NewParentNode := ItemsTreeView.Items.AddObject(nil,Category.LocalizedName, Category);
     NewParentNode.ImageIndex := ImageIndexFolder;
     NewParentNode.SelectedIndex := ImageIndexFolder;
-    
     for TemplateID := 0 to Category.Count - 1 do
     begin
       Template := Category[TemplateID];
       //DebugLn('TNewOtherDialog.FillItemsTree ',Template.Name,' ',dbgs(Template.VisibleInNewDialog));
       if Template.VisibleInNewDialog then
-        with ItemsTreeView.Items.AddChildObject(NewParentNode,
-                                               Template.LocalizedName, Template)
-        do begin
-          ImageIndex := ImageIndexTemplate;
-          SelectedIndex := ImageIndexTemplate;
-        end;
+      begin
+        ChildNode := ItemsTreeView.Items.AddChildObject(NewParentNode, Template.LocalizedName, Template);
+        ChildNode.ImageIndex := ImageIndexTemplate;
+        ChildNode.SelectedIndex := ImageIndexTemplate;
+      end;
     end;
     NewParentNode.Expand(True);
   end;
@@ -388,14 +389,14 @@ begin
   end;
 end;
 
-constructor TNewOtherDialog.Create(TheOwner: TComponent);
+constructor TNewOtherDialog.Create(TheOwner: TComponent; AOnlyModules: boolean);
 var
   Node: TTreeNode;
 begin
   inherited Create(TheOwner);
   Caption := lisMenuNewOther;
   SetupComponents;
-  FillItemsTree;
+  FillItemsTree(AOnlyModules);
   FillProjectInheritableItemsList;
   InheritableComponentsListView.Visible := false;
   IDEDialogLayoutList.ApplyLayout(Self, 570, 400);
