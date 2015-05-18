@@ -10631,6 +10631,10 @@ var
           Inc(P);
       end;
   end;
+var
+  aCol: Integer;
+  aRow: Integer;
+  NewValue: String;
 begin
   L := TStringList.Create;
   SubL := TStringList.Create;
@@ -10644,11 +10648,23 @@ begin
       CollectCols(L[j]);
       for i:=0 to SubL.Count-1 do
         if (i+StartCol<ColCount) and (not GetColumnReadonly(i+StartCol)) then
-           Cells[i + StartCol, j + StartRow] := SubL[i];
+        begin
+          aCol := i+StartCol;
+          aRow := j+StartRow;
+          NewValue := SubL[i];
+          {$IFDEF EnableGridPasteValidateEntry}
+          if not ValidateEntry(aCol,aRow,Cells[aCol,aRow],NewValue) then
+            break;
+          {$ENDIF}
+          Cells[aCol, aRow] := NewValue;
+        end;
     end;
   finally
     SubL.Free;
     L.Free;
+    {$IFDEF EnableGridPasteValidateEntry}
+    EditingDone;
+    {$ENDIF}
   end;
 end;
 
