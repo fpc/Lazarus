@@ -22,7 +22,7 @@ interface
 
 uses
   // libs
-  MacOSAll, CocoaAll, SysUtils,
+  MacOSAll, CocoaAll, SysUtils, Math,
   // LCL
   Classes, Controls, Buttons, LCLType, LCLProc, Graphics, GraphType,
   // widgetset
@@ -39,6 +39,9 @@ type
     class function  LCLGlyphPosToCocoa(ALayout: TButtonLayout): NSCellImagePosition;
   published
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    //
+    class procedure GetPreferredSize(const AWinControl: TWinControl; var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean); override;
+    //
     class procedure SetGlyph(const ABitBtn: TCustomBitBtn; const AValue: TButtonGlyph); override;
     class procedure SetLayout(const ABitBtn: TCustomBitBtn; const AValue: TButtonLayout); override;
   end;
@@ -83,6 +86,28 @@ var
 begin
   btn := AllocButton(AWinControl, TLCLButtonCallBack, AParams, NSRoundedBezelStyle, NSMomentaryPushInButton);
   Result := TLCLIntfHandle(btn);
+end;
+
+type
+  NSButtonSoundExtensionsCategory = objccategory external (NSButton)
+    function intrinsicContentSize(): NSSize; message 'intrinsicContentSize';
+  end;
+
+class procedure TCocoaWSBitBtn.GetPreferredSize(const AWinControl: TWinControl;
+  var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean);
+var
+  lButton: TCustomBitBtn absolute AWinControl;
+  lButtonHandle: TCocoaButton;
+  Size: NSSize;
+begin
+  if not AWinControl.HandleAllocated then Exit;
+
+  lButtonHandle := TCocoaButton(AWinControl.Handle);
+  Size := lButtonHandle.fittingSize();
+  if lButton.Glyph <> nil then
+    Size.Height := Max(Size.Height, lButton.Glyph.Height + 6); // This nr is arbitrary
+  PreferredWidth := Round(Size.Width);
+  PreferredHeight := Round(Size.Height);
 end;
 
 {------------------------------------------------------------------------------

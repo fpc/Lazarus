@@ -245,7 +245,9 @@ type
     procedure mouseExited(event: NSEvent); override;
     procedure mouseMoved(event: NSEvent); override;
     procedure resetCursorRects; override;
+    // lcl overrides
     function lclIsHandle: Boolean; override;
+    procedure lclSetFrame(const r: TRect); override;
   end;
 
   TCocoaFieldEditor = objcclass;
@@ -1525,6 +1527,24 @@ end;
 function TCocoaButton.lclIsHandle: Boolean;
 begin
   Result := True;
+end;
+
+procedure TCocoaButton.lclSetFrame(const r: TRect);
+var
+  lBtnHeight, lDiff: Integer;
+  lRoundBtnSize: NSSize;
+begin
+  // NSTexturedRoundedBezelStyle should be the preferred style, but it has a fixed height!
+  // So use it only if it won't cause a too large height difference
+  lBtnHeight := r.Bottom - r.Top;
+  lRoundBtnSize := fittingSize();
+  lDiff := Abs(Round(lRoundBtnSize.Height) - lBtnHeight);
+  if lDiff < 4 then // this nr of pixels maximum size difference is arbitrary and we could choose another number
+    setBezelStyle(NSTexturedRoundedBezelStyle)
+  else
+    setBezelStyle(NSTexturedSquareBezelStyle);
+
+  inherited lclSetFrame(r);
 end;
 
 procedure TCocoaButton.actionButtonClick(sender: NSObject);
