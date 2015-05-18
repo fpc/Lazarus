@@ -2648,7 +2648,8 @@ begin
     end;
     exit;
   end;
-  Result := t2.OrdHighBound - t2.OrdLowBound + 1;
+  if t2.HasBounds then
+    Result := Integer(t2.OrdHighBound - t2.OrdLowBound + 1);
 end;
 
 function TFpDwarfValueArray.GetMemberCountEx(AIndex: array of Int64): Integer;
@@ -2897,6 +2898,8 @@ begin
 
   if LocationParser.ResultKind in [lseValue] then begin
     AnAddress := TargetLoc(LocationParser.ResultData);
+    if ATag=DW_AT_location then
+      AnAddress.Address :=CompilationUnit.MapAddressToNewValue(AnAddress.Address);
     Result := True;
   end
   else
@@ -3503,7 +3506,7 @@ begin
     InitLocParserData.ObjectDataAddrPush := False;
     if assigned(AValueObj) and LocationFromTag(DW_AT_upper_bound, AValueObj, AnAddress, @InitLocParserData, InformationEntry, True) then begin
       FHighBoundState := rfConst;
-      FHighBoundConst := AnAddress.Address;
+      FHighBoundConst := Int64(AnAddress.Address);
     end
     else
     begin

@@ -16,6 +16,7 @@ uses
   DbgIntfBaseTypes,
   FpDbgLinuxExtra,
   FpDbgDwarfDataClasses,
+  FpImgReaderMacho,
   FpDbgInfo,
   MacOSAll,
   FpDbgUtil,
@@ -134,14 +135,13 @@ type
     procedure OnForkEvent(Sender : TObject);
     {$endif}
   protected
-    function InitializeLoader: TDbgImageLoader; override;
+    procedure InitializeLoaders; override;
     function CreateThread(AthreadIdentifier: THandle; out IsMainThread: boolean): TDbgThread; override;
     function AnalyseDebugEvent(AThread: TDbgThread): TFPDEvent; override;
   public
-    class function StartInstance(AFileName: string; AParams, AnEnvironment: TStrings; AWorkingDirectory: string; AOnLog: TOnLog): TDbgProcess; override;
+    class function StartInstance(AFileName: string; AParams, AnEnvironment: TStrings; AWorkingDirectory, AConsoleTty: string; AOnLog: TOnLog; ReDirectOutput: boolean): TDbgProcess; override;
     constructor Create(const AName: string; const AProcessID, AThreadID: Integer; AOnLog: TOnLog); override;
     destructor Destroy; override;
-    procedure LoadInfo; override;
 
     function ReadData(const AAdress: TDbgPtr; const ASize: Cardinal; out AData): Boolean; override;
     function WriteData(const AAdress: TDbgPtr; const ASize: Cardinal; const AData): Boolean; override;
@@ -165,9 +165,7 @@ procedure RegisterDbgClasses;
 implementation
 
 var
-  GSlavePtyFd: cint;
-  GMasterPtyFd: cint;
-  GSlavePty: string;
+  GConsoleTty: string;
 
 type
   vm_map_t = mach_port_t;
@@ -249,30 +247,32 @@ procedure TDbgDarwinProcess.OnForkEvent(Sender: TObject);
 {$else}
 procedure OnForkEvent;
 {$endif VER2_6}
+var
+  ConsoleTtyFd: cint;
 begin
   if FpSetsid<>0 then
     begin
     // For some reason, FpSetsid always fails.
     // writeln('Failed to set sid. '+inttostr(fpgeterrno));
     end;
-  if GSlavePty<>'' then
+  if GConsoleTty<>'' then
   begin
-    GSlavePtyFd:=FpOpen(GSlavePty, O_RDWR + O_NOCTTY);
-    if GSlavePtyFd>-1 then
+    ConsoleTtyFd:=FpOpen(GConsoleTty, O_RDWR + O_NOCTTY);
+    if ConsoleTtyFd>-1 then
       begin
-      if (FpIOCtl(GSlavePtyFd, TIOCSCTTY, nil) = -1) then
+      if (FpIOCtl(ConsoleTtyFd, TIOCSCTTY, nil) = -1) then
         begin
         // This call always fails for some reason. That's also why login_tty can not be used. (login_tty
         // also calls TIOCSCTTY, but when it fails it aborts) The failure is ignored.
         // writeln('Failed to set tty '+inttostr(fpgeterrno));
         end;
 
-      safefpdup2(GSlavePtyFd,0);
-      safefpdup2(GSlavePtyFd,1);
-      safefpdup2(GSlavePtyFd,2);
+      safefpdup2(ConsoleTtyFd,0);
+      safefpdup2(ConsoleTtyFd,1);
+      safefpdup2(ConsoleTtyFd,2);
       end
     else
-      writeln('Failed to open tty '+GSlavePty+'. Errno: '+inttostr(fpgeterrno));
+      writeln('Failed to open tty '+GConsoleTty+'. Errno: '+inttostr(fpgeterrno));
   end;
 
   fpPTrace(PTRACE_TRACEME, 0, nil, nil);
@@ -283,6 +283,16 @@ var
   aKernResult: kern_return_t;
   old_StateCnt: mach_msg_Type_number_t;
 begin
+  if ID<0 then
+    begin
+    // The ID is set to -1 when the debugger does not have sufficient rights.
+    // In that case just return zero's, so that the debuggee wil just run without
+    // any problems/exceptions in the debugger.
+    FillByte(FThreadState32, SizeOf(FThreadState32),0);
+    FillByte(FThreadState64, SizeOf(FThreadState64),0);
+    result := true;
+    exit;
+    end;
   if Process.Mode=dm32 then
     begin
     old_StateCnt:=x86_THREAD_STATE32_COUNT;
@@ -341,6 +351,8 @@ var
   new_StateCnt: mach_msg_Type_number_t;
 begin
   result := true;
+  if ID<0 then
+    Exit;
 
   if Process.Mode=dm32 then
     begin
@@ -410,6 +422,8 @@ var
   i: integer;
 begin
   result := -1;
+  if ID<0 then
+    Exit;
   if not ReadDebugState then
     exit;
 
@@ -470,6 +484,8 @@ function TDbgDarwinThread.RemoveWatchpoint(AnId: integer): boolean;
 
 begin
   result := false;
+  if ID<0 then
+    Exit;
   if not ReadDebugState then
     exit;
 
@@ -484,6 +500,8 @@ var
   dr6: DWord;
 begin
   result := -1;
+  if ID<0 then
+    Exit;
   if ReadDebugState then
     begin
     if Process.Mode=dm32 then
@@ -619,18 +637,53 @@ begin
   result := true;
 end;
 
-function TDbgDarwinProcess.InitializeLoader: TDbgImageLoader;
+procedure TDbgDarwinProcess.InitializeLoaders;
+var
+  dSYMFilename: string;
+  PrimaryLoader: TDbgImageLoader;
+  ALoader: TDbgImageLoader;
 begin
-  result := TDbgImageLoader.Create(FExecutableFilename);
+  ALoader:=nil;
+  PrimaryLoader := TDbgImageLoader.Create(FExecutableFilename);
+  LoaderList.Add(PrimaryLoader);
+
+  // JvdS: Mach-O binaries do not contain DWARF-debug info. Instead this info
+  // is stored inside the .o files, and the executable contains a map (in stabs-
+  // format) of all these .o files. An alternative to parsing this map and reading
+  // those .o files a dSYM-bundle could be used, which could be generated
+  // with dsymutil.
+  dSYMFilename:=ChangeFileExt(FExecutableFilename, '.dSYM');
+  dSYMFilename:=dSYMFilename+'/Contents/Resources/DWARF/'+ExtractFileName(Name);
+
+  if ExtractFileExt(dSYMFilename)='.app' then
+    dSYMFilename := ChangeFileExt(dSYMFilename,'');
+
+  if FileExists(dSYMFilename) then
+    begin
+    ALoader := TDbgImageLoader.Create(dSYMFilename);
+    if GUIDToString(ALoader.UUID)<>GUIDToString(PrimaryLoader.UUID) then
+      begin
+      log('The unique UUID''s of the executable and the dSYM bundle with debug-info ('+dSYMFilename+') do not match.', dllDebug);
+      FreeAndNil(ALoader);
+      end
+    else
+      begin
+      log('Load debug-info from dSYM bundle ('+dSYMFilename+').', dllDebug);
+      LoaderList.Add(ALoader);
+      end;
+    end;
+
+  if not assigned(ALoader) then
+    begin
+    log('Read debug-info from separate object files.', dllDebug);
+    TDbgMachoDataSource.LoadSubFiles(PrimaryLoader.SubFiles, LoaderList);
+    end;
 end;
 
 function TDbgDarwinProcess.CreateThread(AthreadIdentifier: THandle; out IsMainThread: boolean): TDbgThread;
 begin
   IsMainThread:=true;
-  if AthreadIdentifier>-1 then
-    result := TDbgDarwinThread.Create(Self, AthreadIdentifier, AthreadIdentifier)
-  else
-    result := nil;
+  result := TDbgDarwinThread.Create(Self, AthreadIdentifier, AthreadIdentifier)
 end;
 
 constructor TDbgDarwinProcess.Create(const AName: string; const AProcessID,
@@ -651,55 +704,15 @@ end;
 destructor TDbgDarwinProcess.Destroy;
 begin
   FProcProcess.Free;
-  if FMasterPtyFd>-1 then
-    FpClose(FMasterPtyFd);
   inherited Destroy;
 end;
 
-procedure TDbgDarwinProcess.LoadInfo;
-var
-  dSYMFilename: string;
-  ALoader: TDbgImageLoader;
-begin
-  inherited LoadInfo;
-
-  // JvdS: Mach-O binaries do not contain DWARF-debug info. Instead this info
-  // is stored inside the .o files, and the executable contains a map (in stabs-
-  // format) of all these .o files. An alternative to parsing this map and reading
-  // those .o files a dSYM-bundle could be used, which could be generated
-  // with dsymutil.
-  dSYMFilename:=ChangeFileExt(Name, '.dSYM');
-  dSYMFilename:=dSYMFilename+'/Contents/Resources/DWARF/'+ExtractFileName(Name);
-
-  if ExtractFileExt(dSYMFilename)='.app' then
-    dSYMFilename := ChangeFileExt(dSYMFilename,'');
-
-  if FileExists(dSYMFilename) then
-    begin
-    ALoader := TDbgImageLoader.Create(dSYMFilename);
-    if GUIDToString(ALoader.UUID)<>GUIDToString(Loader.UUID) then
-      log('The unique UUID''s of the executable and the dSYM bundle with debug-info ('+dSYMFilename+') do not match. This can lead to problems during debugging.', dllInfo);
-    FDbgInfo.Free;
-    Loader.Free;
-    Loader := ALoader;
-    FDbgInfo := TFpDwarfInfo.Create(Loader);
-    TFpDwarfInfo(FDbgInfo).LoadCompilationUnits;
-
-    if FDbgInfo.HasInfo then
-      begin
-      if FSymInstances.IndexOf(Self)=-1 then
-        FSymInstances.Add(Self);
-      end;
-    end
-  else
-    log('No dSYM bundle ('+dSYMFilename+') found.', dllInfo);
-end;
-
-class function TDbgDarwinProcess.StartInstance(AFileName: string; AParams, AnEnvironment: TStrings; AWorkingDirectory: string; AOnLog: TOnLog): TDbgProcess;
+class function TDbgDarwinProcess.StartInstance(AFileName: string; AParams, AnEnvironment: TStrings; AWorkingDirectory, AConsoleTty: string; AOnLog: TOnLog; ReDirectOutput: boolean): TDbgProcess;
 var
   PID: TPid;
   AProcess: TProcess;
   AnExecutabeFilename: string;
+  AMasterPtyFd: cint;
 begin
   result := nil;
 
@@ -720,6 +733,24 @@ begin
       end;
     end;
 
+  AMasterPtyFd:=-1;
+  if ReDirectOutput then
+    begin
+    if AConsoleTty<>'' then
+      AOnLog('It is of no use to provide a console-tty when the console output is being redirected.', dllInfo);
+    AMasterPtyFd := posix_openpt(O_RDWR + O_NOCTTY);
+    if AMasterPtyFd<0 then
+      AOnLog('Failed to open pseudo-tty. Errno: ' + IntToStr(fpgeterrno), dllError)
+    else
+      begin
+      if grantpt(AMasterPtyFd)<>0 then
+        AOnLog('Failed to set pseudo-tty slave permissions. Errno: ' + IntToStr(fpgeterrno), dllError);
+      if unlockpt(AMasterPtyFd)<>0 then
+        AOnLog('Failed to unlock pseudo-tty slave. Errno: ' + IntToStr(fpgeterrno), dllError);
+      AConsoleTty := strpas(ptsname(AMasterPtyFd));
+      end;
+    end;
+
   AProcess := TProcess.Create(nil);
   try
     AProcess.OnForkEvent:=@OnForkEvent;
@@ -727,26 +758,14 @@ begin
     AProcess.Parameters:=AParams;
     AProcess.Environment:=AnEnvironment;
     AProcess.CurrentDirectory:=AWorkingDirectory;
-
-    GSlavePty:='';
-    GMasterPtyFd := posix_openpt(O_RDWR + O_NOCTTY);
-    if GMasterPtyFd<0 then
-      AOnLog('Failed to open pseudo-tty. Errno: ' + IntToStr(fpgeterrno), dllDebug)
-    else
-    begin
-      if grantpt(GMasterPtyFd)<>0 then
-        AOnLog('Failed to set pseudo-tty slave permissions. Errno: ' + IntToStr(fpgeterrno), dllDebug);
-      if unlockpt(GMasterPtyFd)<>0 then
-        AOnLog('Failed to unlock pseudo-tty slave. Errno: ' + IntToStr(fpgeterrno), dllDebug);
-      GSlavePty := strpas(ptsname(GMasterPtyFd));
-    end;
+    GConsoleTty := AConsoleTty;
 
     AProcess.Execute;
     PID:=AProcess.ProcessID;
 
     sleep(100);
     result := TDbgDarwinProcess.Create(AFileName, Pid, -1, AOnLog);
-    TDbgDarwinProcess(result).FMasterPtyFd := GMasterPtyFd;
+    TDbgDarwinProcess(result).FMasterPtyFd := AMasterPtyFd;
     TDbgDarwinProcess(result).FProcProcess := AProcess;
     TDbgDarwinProcess(result).FExecutableFilename := AnExecutabeFilename;
   except
@@ -754,6 +773,9 @@ begin
     begin
       AOnLog(Format('Failed to start process "%s". Errormessage: "%s".',[AFileName, E.Message]), dllInfo);
       AProcess.Free;
+
+      if AMasterPtyFd>-1 then
+        FpClose(AMasterPtyFd);
     end;
   end;
 end;
@@ -912,9 +934,8 @@ begin
     if aKernResult <> KERN_SUCCESS then
       begin
       Log('Failed to call task_threads. Mach error: '+mach_error_string(aKernResult));
-      end;
-
-    if act_listCtn>0 then
+      end
+    else if act_listCtn>0 then
       ThreadIdentifier := act_list^[0];
     end
 end;

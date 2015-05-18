@@ -163,6 +163,8 @@ begin
 end;
 
 procedure HandleRun(AParams: String; out CallProcessLoop: boolean);
+var
+  AParamList: TStringList;
 begin
   CallProcessLoop:=false;
   if Assigned(GController.MainProcess)
@@ -175,6 +177,16 @@ begin
   then begin
     WriteLN('No filename set');
     Exit;
+  end;
+
+  if AParams<>'' then begin
+    AParamList := TStringList.Create;
+    try
+      AParamList.Text:=AParams;
+      GController.Params.Assign(AParamList);
+    finally
+      AParamList.free;
+    end;
   end;
 
   if not GController.Run then
@@ -866,7 +878,7 @@ begin
   MCommands.AddCommand(['file', 'f'], @HandleFile, 'file <filename>: Loads the debuggee <filename>');
   MCommands.AddCommand(['show', 's'], @HandleShow, 'show <info>: Enter show help for more info');
   MCommands.AddCommand(['set'], @HandleSet,  'set param: Enter set help for more info');
-  MCommands.AddCommand(['run', 'r'], @HandleRun,  'run: Starts the loaded debuggee');
+  MCommands.AddCommand(['run', 'r'], @HandleRun,  'run [params]: Starts the loaded debuggee');
   MCommands.AddCommand(['break', 'b'], @HandleBreak,  'break [-d] <adress>|<filename:line>: Set a breakpoint at <adress> or <filename:line>. -d removes');
   MCommands.AddCommand(['continue', 'cont', 'c'], @HandleContinue,  'continue: Continues execution');
   MCommands.AddCommand(['kill', 'k'], @HandleKill,  'kill: Stops execution of the debuggee');

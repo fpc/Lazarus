@@ -474,7 +474,7 @@ type
   protected
     procedure SetHasInfo;
   public
-    constructor Create({%H-}ALoader: TDbgImageLoader); virtual;
+    constructor Create({%H-}ALoaderList: TDbgImageLoaderList); virtual;
     (* Context should be searched by Thread, and StackFrame. The Address can be
        derived from this.
        However a different Address may be froced.
@@ -1352,7 +1352,7 @@ end;
 
 { TDbgInfo }
 
-constructor TDbgInfo.Create(ALoader: TDbgImageLoader);
+constructor TDbgInfo.Create(ALoaderList: TDbgImageLoaderList);
 begin
   inherited Create;
 end;

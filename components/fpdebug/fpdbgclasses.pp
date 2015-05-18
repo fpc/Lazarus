@@ -190,13 +190,13 @@ type
     FName: String;
     FProcess: TDbgProcess;
     FSymbolTableInfo: TFpSymbolInfo;
-    FLoader: TDbgImageLoader;
+    FLoaderList: TDbgImageLoaderList;
 
   protected
     FDbgInfo: TDbgInfo;
-    function InitializeLoader: TDbgImageLoader; virtual;
+    procedure InitializeLoaders; virtual;
     procedure SetName(const AValue: String);
-    property Loader: TDbgImageLoader read FLoader write FLoader;
+    property LoaderList: TDbgImageLoaderList read FLoaderList write FLoaderList;
   public
     constructor Create(const AProcess: TDbgProcess); virtual;
     destructor Destroy; override;
@@ -262,7 +262,7 @@ type
     // Should analyse why the debugger has stopped.
     function AnalyseDebugEvent(AThread: TDbgThread): TFPDEvent; virtual; abstract;
   public
-    class function StartInstance(AFileName: string; AParams, AnEnvironment: TStrings; AWorkingDirectory: string; AOnLog: TOnLog): TDbgProcess; virtual;
+    class function StartInstance(AFileName: string; AParams, AnEnvironment: TStrings; AWorkingDirectory, AConsoleTty: string; AOnLog: TOnLog; ReDirectOutput: boolean): TDbgProcess; virtual;
     constructor Create(const AName: string; const AProcessID, AThreadID: Integer; AOnLog: TOnLog); virtual;
     destructor Destroy; override;
     function  AddBreak(const ALocation: TDbgPtr): TDbgBreakpoint; overload;
@@ -577,12 +577,13 @@ end;
 
 function TDbgInstance.AddrOffset: Int64;
 begin
-  Result := FLoader.ImageBase;
+  Result := FLoaderList.ImageBase;
 end;
 
 constructor TDbgInstance.Create(const AProcess: TDbgProcess);
 begin
   FProcess := AProcess;
+  FLoaderList := TDbgImageLoaderList.Create(True);
 
   inherited Create;
 end;
@@ -591,7 +592,7 @@ destructor TDbgInstance.Destroy;
 begin
   FreeAndNil(FDbgInfo);
   FreeAndNil(FSymbolTableInfo);
-  FreeAndNil(FLoader);
+  FreeAndNil(FLoaderList);
   inherited;
 end;
 
@@ -604,14 +605,14 @@ end;
 
 procedure TDbgInstance.LoadInfo;
 begin
-  FLoader := InitializeLoader;
-  if FLoader.Image64Bit then
+  InitializeLoaders;
+  if FLoaderList.Image64Bit then
     FMode:=dm64
   else
     FMode:=dm32;
-  FDbgInfo := TFpDwarfInfo.Create(FLoader);
+  FDbgInfo := TFpDwarfInfo.Create(FLoaderList);
   TFpDwarfInfo(FDbgInfo).LoadCompilationUnits;
-  FSymbolTableInfo := TFpSymbolInfo.Create(FLoader);
+  FSymbolTableInfo := TFpSymbolInfo.Create(FLoaderList);
 end;
 
 function TDbgInstance.RemoveBreak(const AFileName: String; ALine: Cardinal): Boolean;
@@ -630,9 +631,9 @@ begin
   FName := AValue;
 end;
 
-function TDbgInstance.InitializeLoader: TDbgImageLoader;
+procedure TDbgInstance.InitializeLoaders;
 begin
-  result := nil;
+  // Do nothing;
 end;
 
 { TDbgLibrary }
@@ -649,6 +650,11 @@ end;
 
 function TDbgProcess.AddBreak(const ALocation: TDbgPtr): TDbgBreakpoint;
 begin
+  if FBreakMap.HasId(ALocation) then begin
+    debugln(['TDbgProcess.AddBreak breakpoint already exists at ', dbgs(ALocation)]);
+    Result := nil;
+    exit;
+  end;
   Result := OSDbgClasses.DbgBreakpointClass.Create(Self, ALocation);
   FBreakMap.Add(ALocation, Result);
   if (GetInstructionPointerRegisterValue=ALocation) and not assigned(FCurrentBreakpoint) then
@@ -709,6 +715,7 @@ begin
 
   FreeItemsInMap(FBreakMap);
   FreeItemsInMap(FThreadMap);
+  FreeItemsInMap(FLibMap);
 
   FreeAndNil(FBreakMap);
   FreeAndNil(FThreadMap);
@@ -956,7 +963,7 @@ resourcestring
   sNoDebugSupport = 'Debug support is not available for this platform .';
 
 class function TDbgProcess.StartInstance(AFileName: string; AParams,
-  AnEnvironment: TStrings; AWorkingDirectory: string; AOnLog: TOnLog): TDbgProcess;
+  AnEnvironment: TStrings; AWorkingDirectory, AConsoleTty: string; AOnLog: TOnLog; ReDirectOutput: boolean): TDbgProcess;
 begin
   if assigned(AOnLog) then
     AOnLog(sNoDebugSupport, dllError)
@@ -1157,7 +1164,7 @@ begin
     if not Process.ReadData(Frame, Size, Frame) then Break;
     AnEntry := TDbgCallstackEntry.create(Self, Frame, Address);
     AnEntry.RegisterValueList.DbgRegisterAutoCreate['eip'].SetValue(Address, IntToStr(Address),Size,8);
-    AnEntry.RegisterValueList.DbgRegisterAutoCreate['esp'].SetValue(Address, IntToStr(Address),Size,5);
+    AnEntry.RegisterValueList.DbgRegisterAutoCreate['ebp'].SetValue(Frame, IntToStr(Frame),Size,5);
     FCallStackEntryList.Add(AnEntry);
     Dec(count);
     if Count <= 0 then Break;

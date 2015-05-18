@@ -122,6 +122,8 @@ type
     FProcessMap: TMap;
     FPDEvent: TFPDEvent;
     FParams: TStringList;
+    FConsoleTty: string;
+    FRedirectConsoleOutput: boolean;
     FWorkingDirectory: string;
     procedure SetEnvironment(AValue: TStrings);
     procedure SetExecutableFilename(AValue: string);
@@ -159,6 +161,8 @@ type
     property Params: TStringList read FParams write SetParams;
     property Environment: TStrings read FEnvironment write SetEnvironment;
     property WorkingDirectory: string read FWorkingDirectory write FWorkingDirectory;
+    property RedirectConsoleOutput: boolean read FRedirectConsoleOutput write FRedirectConsoleOutput;
+    property ConsoleTty: string read FConsoleTty write FConsoleTty;
     // With this parameter set a 'next' will only stop if the current
     // instruction is the first inststruction of a line according to the
     // debuginfo.
@@ -505,7 +509,7 @@ end;
 
 destructor TDbgController.Destroy;
 begin
-  //FCurrentProcess.Free;
+  FMainProcess.Free;
   FProcessMap.Free;
   FParams.Free;
   FEnvironment.Free;
@@ -527,23 +531,23 @@ begin
   result := False;
   if assigned(FMainProcess) then
     begin
-    Log('The debuggee is already running');
+    Log('The debuggee is already running', dllInfo);
     Exit;
     end;
 
   if FExecutableFilename = '' then
     begin
-    Log('No filename given to execute.');
+    Log('No filename given to execute.', dllInfo);
     Exit;
     end;
 
   if not FileExists(FExecutableFilename) then
     begin
-    Log('File %s does not exist.',[FExecutableFilename]);
+    Log('File %s does not exist.',[FExecutableFilename], dllInfo);
     Exit;
     end;
 
-  FCurrentProcess := OSDbgClasses.DbgProcessClass.StartInstance(FExecutableFilename, Params, Environment, WorkingDirectory, @Log);
+  FCurrentProcess := OSDbgClasses.DbgProcessClass.StartInstance(FExecutableFilename, Params, Environment, WorkingDirectory, FConsoleTty , @Log, RedirectConsoleOutput);
   if assigned(FCurrentProcess) then
     begin
     FProcessMap.Add(FCurrentProcess.ProcessID, FCurrentProcess);

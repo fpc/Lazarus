@@ -93,7 +93,7 @@ type
   protected
     function GetHandle: THandle; override;
     function GetLastEventProcessIdentifier: THandle; override;
-    function InitializeLoader: TDbgImageLoader; override;
+    procedure InitializeLoaders; override;
   public
     destructor Destroy; override;
 
@@ -105,7 +105,7 @@ type
     procedure Interrupt;
     function  HandleDebugEvent(const ADebugEvent: TDebugEvent): Boolean;
 
-    class function StartInstance(AFileName: string; AParams, AnEnvironment: TStrings; AWorkingDirectory: string; AOnLog: TOnLog): TDbgProcess; override;
+    class function StartInstance(AFileName: string; AParams, AnEnvironment: TStrings; AWorkingDirectory, AConsoleTty: string; AOnLog: TOnLog; ReDirectOutput: boolean): TDbgProcess; override;
     function Continue(AProcess: TDbgProcess; AThread: TDbgThread; SingleStep: boolean): boolean; override;
     function WaitForDebugEvent(out ProcessIdentifier, ThreadIdentifier: THandle): boolean; override;
     function AnalyseDebugEvent(AThread: TDbgThread): TFPDEvent; override;
@@ -131,7 +131,7 @@ type
   private
     FInfo: TLoadDLLDebugInfo;
   protected
-    function InitializeLoader: TDbgImageLoader; override;
+    procedure InitializeLoaders; override;
   public
     constructor Create(const AProcess: TDbgProcess; const ADefaultName: String;
       const AModuleHandle: THandle; const ABaseAddr: TDbgPtr; AInfo: TLoadDLLDebugInfo);
@@ -245,9 +245,9 @@ end;
 
 { tDbgWinLibrary }
 
-function tDbgWinLibrary.InitializeLoader: TDbgImageLoader;
+procedure tDbgWinLibrary.InitializeLoaders;
 begin
-  result := TDbgImageLoader.Create(FInfo.hFile);
+  LoaderList.Add(TDbgImageLoader.Create(FInfo.hFile));
 end;
 
 constructor tDbgWinLibrary.Create(const AProcess: TDbgProcess;
@@ -278,9 +278,9 @@ begin
   Result:= MDebugEvent.LoadDll.hFile;
 end;
 
-function TDbgWinProcess.InitializeLoader: TDbgImageLoader;
+procedure TDbgWinProcess.InitializeLoaders;
 begin
-  result := TDbgImageLoader.Create(FInfo.hFile);
+  LoaderList.Add(TDbgImageLoader.Create(FInfo.hFile));
 end;
 
 destructor TDbgWinProcess.Destroy;
@@ -450,8 +450,8 @@ begin
   end;
 end;
 
-class function TDbgWinProcess.StartInstance(AFileName: string; AParams,
-  AnEnvironment: TStrings; AWorkingDirectory: string; AOnLog: TOnLog): TDbgProcess;
+class function TDbgWinProcess.StartInstance(AFileName: string; AParams, AnEnvironment: TStrings; AWorkingDirectory, AConsoleTty: string;
+  AOnLog: TOnLog; ReDirectOutput: boolean): TDbgProcess;
 var
   AProcess: TProcess;
 begin
@@ -904,14 +904,48 @@ begin
 end;
 
 function DebugBreakProcess(Process:HANDLE): WINBOOL; external 'kernel32' name 'DebugBreakProcess';
+var
+  DebugBreakAddr: Pointer = nil;
+  _CreateRemoteThread: function(hProcess: THandle; lpThreadAttributes: Pointer; dwStackSize: DWORD; lpStartAddress: TFNThreadStartRoutine; lpParameter: Pointer; dwCreationFlags: DWORD; var lpThreadId: DWORD): THandle; stdcall = nil;
+
+procedure InitWin32;
+var
+  hMod: THandle;
+begin
+  // Check if we already are initialized
+  if DebugBreakAddr <> nil then Exit;
+
+  // normally you would load a lib, but since kernel32 is
+  // always loaded we can use this (and we don't have to free it
+  hMod := GetModuleHandle(kernel32);
+  if hMod = 0 then Exit; //????
+
+  DebugBreakAddr := GetProcAddress(hMod, 'DebugBreak');
+  Pointer(_CreateRemoteThread) := GetProcAddress(hMod, 'CreateRemoteThread');
+end;
 
 function TDbgWinProcess.Pause: boolean;
 var
   hndl: Handle;
+  hThread: THandle;
+  NewThreadId: Cardinal;
 begin
+  //hndl := OpenProcess(PROCESS_CREATE_THREAD or PROCESS_QUERY_INFORMATION or PROCESS_VM_OPERATION or PROCESS_VM_WRITE or PROCESS_VM_READ, False, TargetPID);
   hndl := OpenProcess(PROCESS_ALL_ACCESS, false, ProcessID);
   FPauseRequested:=true;
   result := DebugBreakProcess(hndl);
+  if not Result then begin
+    DebugLn(['pause failed(1) ', GetLastError]);
+    InitWin32;
+    hThread := _CreateRemoteThread(hndl, nil, 0, DebugBreakAddr, nil, 0, NewThreadId);
+    if hThread = 0 then begin
+      DebugLn(['pause failed(2) ', GetLastError]);
+    end
+    else begin
+      Result := True;
+      CloseHandle(hThread);
+    end;
+  end;
   CloseHandle(hndl);
 end;
 

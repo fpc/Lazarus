@@ -50,7 +50,8 @@ type
 
   { TFpDbgLogMessage }
 
-  TFpDbgLogMessage = record
+  TFpDbgLogMessage = class
+  public
     SyncLogMessage: string;
     SyncLogLevel: TFPDLogLevel;
   end;
@@ -59,10 +60,15 @@ type
 
   TFpDebugDebuggerProperties = class(TDebuggerProperties)
   private
+    FConsoleTty: string;
     FNextOnlyStopOnStartLine: boolean;
   public
     constructor Create; override;
     procedure Assign(Source: TPersistent); override;
+    {$ifdef unix}
+  published
+    {$endif unix}
+    property ConsoleTty: string read FConsoleTty write FConsoleTty;
   published
     property NextOnlyStopOnStartLine: boolean read FNextOnlyStopOnStartLine write FNextOnlyStopOnStartLine;
   end;
@@ -79,12 +85,14 @@ type
     FFpDebugThread: TFpDebugThread;
     FQuickPause: boolean;
     FRaiseExceptionBreakpoint: FpDbgClasses.TDBGBreakPoint;
-    FDbgLogMessageList: array of TFpDbgLogMessage;
+    FDbgLogMessageList: TFPObjectList;
     FLogCritSection: TRTLCriticalSection;
     FMemConverter: TFpDbgMemConvertorLittleEndian;
     FMemReader: TDbgMemReader;
     FMemManager: TFpDbgMemManager;
     FConsoleOutputThread: TThread;
+    FReleaseLock: Integer;
+    FReleaseNeeded: Boolean;
     {$ifdef linux}
     FCacheLine: cardinal;
     FCacheFileName: string;
@@ -99,7 +107,7 @@ type
     procedure HandleSoftwareException(out AnExceptionLocation: TDBGLocationRec; var continue: boolean);
     procedure FreeDebugThread;
     procedure FDbgControllerHitBreakpointEvent(var continue: boolean; const Breakpoint: FpDbgClasses.TDbgBreakpoint);
-    procedure FDbgControllerCreateProcessEvent(var continue: boolean);
+    procedure FDbgControllerCreateProcessEvent(var {%H-}continue: boolean);
     procedure FDbgControllerProcessExitEvent(AExitCode: DWord);
     procedure FDbgControllerExceptionEvent(var continue: boolean; const ExceptionClass, ExceptionMessage: string);
     procedure FDbgControllerDebugInfoLoaded(Sender: TObject);
@@ -107,6 +115,8 @@ type
     procedure DoWatchFreed(Sender: TObject);
     procedure ProcessASyncWatches({%H-}Data: PtrInt);
     procedure DoLog({%H-}Data: PtrInt);
+    procedure IncReleaseLock;
+    procedure DecReleaseLock;
   protected
     procedure ScheduleWatchValueEval(AWatchValue: TWatchValue);
     function EvaluateExpression(AWatchValue: TWatchValue;
@@ -134,6 +144,7 @@ type
     procedure StartDebugLoop;
     procedure DebugLoopFinished;
     procedure QuickPause;
+    procedure DoRelease; override;
     procedure DoState(const OldState: TDBGState); override;
     {$ifdef linux}
     procedure DoAddBreakLine;
@@ -319,6 +330,7 @@ begin
   inherited Assign(Source);
   if Source is TFpDebugDebuggerProperties then begin
     FNextOnlyStopOnStartLine := TFpDebugDebuggerProperties(Source).NextOnlyStopOnStartLine;
+    FConsoleTty:=TFpDebugDebuggerProperties(Source).ConsoleTty;
   end;
 end;
 
@@ -414,6 +426,8 @@ begin
   end;
   TFpDebugDebugger(Debugger).PrepareCallStackEntryList;
   ThreadCallStack := TFpDebugDebugger(Debugger).FDbgController.CurrentProcess.MainThread.CallStackEntryList;
+  if ThreadCallStack = nil then
+    exit;
 
   if ThreadCallStack.Count = 0 then
   begin
@@ -1040,8 +1054,13 @@ begin
   {$PUSH}{$R-}
   DoDbgEvent(ecProcess, etProcessExit, Format('Process exited with exit-code %d',[AExitCode]));
   {$POP}
-  SetState(dsStop);
-  FreeDebugThread;
+  IncReleaseLock;
+  try
+    SetState(dsStop);
+    FreeDebugThread;
+  finally
+    DecReleaseLock;
+  end;
 end;
 
 procedure TFpDebugDebugger.FDbgControllerExceptionEvent(var continue: boolean;
@@ -1260,24 +1279,49 @@ end;
 procedure TFpDebugDebugger.DoLog(Data: PtrInt);
 var
   AMessage: TFpDbgLogMessage;
+  AnObjList: TFPObjectList;
+  i: Integer;
 begin
   FLogAsyncQueued:=false;
-  EnterCriticalsection(FLogCritSection);
-  try
-    if length(FDbgLogMessageList) = 0 then
-      Exit;
-    AMessage := FDbgLogMessageList[0];
-    move(FDbgLogMessageList[1], FDbgLogMessageList[0], SizeOf(TFpDbgLogMessage)*high(FDbgLogMessageList));
-    SetLength(FDbgLogMessageList, high(FDbgLogMessageList));
-  finally
-    LeaveCriticalsection(FLogCritSection);
-  end;
 
-  case AMessage.SyncLogLevel of
-    dllDebug: DebugLn(AMessage.SyncLogMessage);
-    dllInfo:  ShowMessage(AMessage.SyncLogMessage);
-    dllError: raise exception.Create(AMessage.SyncLogMessage);
+  AnObjList:=TFPObjectList.Create(false);
+  try
+    EnterCriticalsection(FLogCritSection);
+    try
+      while FDbgLogMessageList.Count > 0 do
+        begin
+        AnObjList.Add(FDbgLogMessageList[0]);
+        FDbgLogMessageList.Delete(0);
+        end;
+    finally
+      LeaveCriticalsection(FLogCritSection);
+    end;
+
+    for i := 0 to AnObjList.Count-1 do
+      begin
+      AMessage := TFpDbgLogMessage(AnObjList[i]);
+      case AMessage.SyncLogLevel of
+        dllDebug: DebugLn(AMessage.SyncLogMessage);
+        dllInfo:  ShowMessage(AMessage.SyncLogMessage);
+        dllError: raise exception.Create(AMessage.SyncLogMessage);
+      end; {case}
+      AMessage.Free;
+      end;
+  finally
+    AnObjList.Free;
   end;
+end;
+
+procedure TFpDebugDebugger.IncReleaseLock;
+begin
+  inc(FReleaseLock);
+end;
+
+procedure TFpDebugDebugger.DecReleaseLock;
+begin
+  dec(FReleaseLock);
+  if FReleaseNeeded and (FReleaseLock = 0) then
+    DoRelease;
 end;
 
 function TFpDebugDebugger.GetClassInstanceName(AnAddr: TDBGPtr): string;
@@ -1421,6 +1465,7 @@ function TFpDebugDebugger.RequestCommand(const ACommand: TDBGCommand;
   const AParams: array of const): Boolean;
 var
   EvalFlags: TDBGEvaluateFlags;
+  AConsoleTty: string;
   addr: TDBGPtr;
 begin
   result := False;
@@ -1432,6 +1477,9 @@ begin
       if not assigned(FDbgController.MainProcess) then
         begin
         FDbgController.ExecutableFilename:=FileName;
+        AConsoleTty:=TFpDebugDebuggerProperties(GetProperties).ConsoleTty;
+        FDbgController.ConsoleTty:=AConsoleTty;
+        FDbgController.RedirectConsoleOutput:=AConsoleTty='';
         FDbgController.Params.Clear;
         if Arguments<>'' then
           CommandToList(Arguments, FDbgController.Params);
@@ -1551,12 +1599,12 @@ begin
   // This function could be running in a thread. Add the log-message to an
   // array and queue the processing in the main thread. Not an ideal
   // implementation. But good enough for now.
+  AMessage := TFpDbgLogMessage.Create;
   AMessage.SyncLogLevel:=ALogLevel;
   AMessage.SyncLogMessage:=AString;
   EnterCriticalsection(FLogCritSection);
   try
-    setlength(FDbgLogMessageList, length(FDbgLogMessageList)+1);
-    FDbgLogMessageList[high(FDbgLogMessageList)] := AMessage;
+    FDbgLogMessageList.Add(AMessage);
   finally
     LeaveCriticalsection(FLogCritSection);
   end;
@@ -1589,19 +1637,24 @@ procedure TFpDebugDebugger.DebugLoopFinished;
 var
   Cont: boolean;
 begin
-  {$ifdef DBG_FPDEBUG_VERBOSE}
-  DebugLn('DebugLoopFinished');
-  {$endif DBG_FPDEBUG_VERBOSE}
+  IncReleaseLock;
+  try
+    {$ifdef DBG_FPDEBUG_VERBOSE}
+    DebugLn('DebugLoopFinished');
+    {$endif DBG_FPDEBUG_VERBOSE}
 
-  FDbgController.SendEvents(Cont);
+    FDbgController.SendEvents(Cont); // This may free the TFpDebugDebugger (self)
 
-  FQuickPause:=false;
+    FQuickPause:=false;
 
-  if Cont then
-    begin
-    SetState(dsRun);
-    StartDebugLoop;
-    end
+    if Cont then
+      begin
+      SetState(dsRun);
+      StartDebugLoop;
+      end
+  finally
+    DecReleaseLock;
+  end;
 end;
 
 procedure TFpDebugDebugger.QuickPause;
@@ -1609,14 +1662,28 @@ begin
   FQuickPause:=FDbgController.Pause;
 end;
 
+procedure TFpDebugDebugger.DoRelease;
+begin
+  if FReleaseLock > 0 then begin
+    FReleaseNeeded := True;
+    exit;
+  end;
+  inherited DoRelease;
+end;
+
 procedure TFpDebugDebugger.DoState(const OldState: TDBGState);
 begin
-  inherited DoState(OldState);
-  if not (State in [dsPause, dsInternalPause]) then
-    begin
-    FWatchEvalList.Clear;
-    FWatchAsyncQueued := False;
-    end;
+  IncReleaseLock;
+  try
+    inherited DoState(OldState);
+    if not (State in [dsPause, dsInternalPause]) then
+      begin
+      FWatchEvalList.Clear;
+      FWatchAsyncQueued := False;
+      end;
+  finally
+    DecReleaseLock;
+  end;
 end;
 
 {$ifdef linux}
@@ -1726,6 +1793,7 @@ begin
   inherited Create(AExternalDebugger);
   FWatchEvalList := TFPList.Create;
   FPrettyPrinter := TFpPascalPrettyPrinter.Create(sizeof(pointer));
+  FDbgLogMessageList := TFPObjectList.Create(false);
   InitCriticalSection(FLogCritSection);
   FMemReader := TFpDbgMemReader.Create(self);
   FMemConverter := TFpDbgMemConvertorLittleEndian.Create;
@@ -1753,6 +1821,7 @@ begin
   FreeAndNil(FMemManager);
   FreeAndNil(FMemConverter);
   FreeAndNil(FMemReader);
+  FreeAndNil(FDbgLogMessageList);
   DoneCriticalsection(FLogCritSection);
   inherited Destroy;
 end;
@@ -1787,6 +1856,7 @@ begin
 
     if assigned(symproc) then
       result.FuncName:=symproc.Name;
+    sym.ReleaseReference;
     end
 end;
 
