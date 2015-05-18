@@ -952,6 +952,19 @@ begin
   end
   else
     Result := StartBuilding;
+
+  // Auto increment build number
+  if Result then
+  begin
+    with Project1.ProjResources.VersionInfo do
+    begin
+      if UseVersionInfo and AutoIncrementBuild then
+      begin
+        BuildNr := BuildNr + 1;
+        Project1.WriteProject(Project1.PublishOptions.WriteFlags,AFileName,EnvironmentOptions.BuildMatrixOptions);
+      end;
+    end;
+  end;
 end;
 
 function TLazBuildApplication.LoadProject(const AFilename: string): TProject;
