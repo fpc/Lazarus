@@ -31,7 +31,7 @@ interface
 
 uses
   Math, Classes, SysUtils, LCLProc, LCLType, Forms, Controls, Buttons, ExtDlgs,
-  StdCtrls, ExtCtrls, Dialogs, FileUtil, ComCtrls, AVL_Tree,
+  StdCtrls, ExtCtrls, Dialogs, FileUtil, ComCtrls, ButtonPanel, AVL_Tree,
   // IDEIntf
   NewItemIntf, ProjectIntf, PackageIntf, FormEditingIntf, IDEWindowIntf, IDEDialogs,
   // IDE
@@ -83,7 +83,7 @@ type
     AncestorComboBox: TComboBox;
     AncestorShowAllCheckBox: TCheckBox;
     AncestorTypeLabel: TLabel;
-    CancelButton: TBitBtn;
+    ButtonPanel1: TButtonPanel;
     ClassNameEdit: TEdit;
     ClassNameLabel: TLabel;
     ComponentIconLabel: TLabel;
@@ -107,8 +107,6 @@ type
     NewComponentPage: TTabSheet;
     NewDepPanel: TPanel;
     NewRequirementPage: TTabSheet;
-    OkButton: TBitBtn;
-    AddToPackageBtnPanel: TPanel;
     PageControl1: TPageControl;
     PalettePageCombobox: TComboBox;
     PalettePageLabel: TLabel;
@@ -658,7 +656,7 @@ begin
       LastParams:=CurParams;
       inc(i);
     end;
-    OkButton.Enabled:=FilesListView.SelCount>0;
+    ButtonPanel1.OKButton.Enabled:=FilesListView.SelCount>0;
     ok:=LastParams<>nil;
   finally
     if not ok then Params.Clear;
@@ -738,7 +736,7 @@ begin
   FilesDeleteButton.Enabled:=FilesListView.SelCount>0;
   Result:=FilesListView.Items.Count>0;
   FilesShortenButton.Enabled:=Result;
-  OkButton.Enabled:=FilesListView.SelCount>0;
+  ButtonPanel1.OKButton.Enabled:=FilesListView.SelCount>0;
 end;
 
 procedure TAddToPackageDlg.FormCreate(Sender: TObject);
@@ -968,31 +966,31 @@ end;
 function TAddToPackageDlg.CheckNewCompOk: Boolean;
 begin
   Result:=(AncestorComboBox.Text<>'') and (ClassNameEdit.Text<>'') and (ComponentUnitNameEdit.Text<>'');
-  OkButton.Enabled:=Result;
+  ButtonPanel1.OKButton.Enabled:=Result;
 end;
 
 function TAddToPackageDlg.CheckNewReqOk: Boolean;
 begin
   Result:=(DependPkgNameComboBox.Text<>'');
-  OkButton.Enabled:=Result;
+  ButtonPanel1.OKButton.Enabled:=Result;
 end;
 
 procedure TAddToPackageDlg.PageControl1Change(Sender: TObject);
 begin
   case PageControl1.PageIndex of
     0: begin              // New Component
-      OkButton.Caption:=lisA2PCreateNewComp;
-      OkButton.OnClick:=@NewComponentButtonClick;
+      ButtonPanel1.OkButton.Caption:=lisA2PCreateNewComp;
+      ButtonPanel1.OkButton.OnClick:=@NewComponentButtonClick;
       CheckNewCompOk;
     end;
     1: begin              // New Requirement
-      OkButton.Caption:=lisA2PCreateNewReq;
-      OkButton.OnClick:=@NewDependButtonClick;
+      ButtonPanel1.OkButton.Caption:=lisA2PCreateNewReq;
+      ButtonPanel1.OkButton.OnClick:=@NewDependButtonClick;
       CheckNewReqOk;
     end;
     2: begin              // Add Files
-      OkButton.Caption:=lisA2PAddFilesToPackage;
-      OkButton.OnClick:=@FilesAddButtonClick;
+      ButtonPanel1.OkButton.Caption:=lisA2PAddFilesToPackage;
+      ButtonPanel1.OkButton.OnClick:=@FilesAddButtonClick;
       CheckFilesButtonsOk;
     end;
   end;
@@ -1004,7 +1002,7 @@ begin
   NewComponentPage.Caption:=lisA2PNewComponent;
   NewRequirementPage.Caption:=lisProjAddNewRequirement;
   AddFilesPage.Caption:=lisA2PAddFiles;
-  CancelButton.Caption:=lisCancel;
+  ButtonPanel1.CancelButton.Caption:=lisCancel;
   PageControl1.PageIndex:=0;
   PageControl1Change(PageControl1);
 
@@ -1037,7 +1035,7 @@ begin
   end;
   ComponentUnitNameLabel.Caption:=lisA2PUnitName;
   ComponentUnitNameEdit.Text:='';
-  ComponentIconLabel.Caption:='Icon (maximum 24x24)';
+  ComponentIconLabel.Caption:=lisA2PIconAndSize;
   ComponentIconSpeedButton.Width:=ComponentPaletteBtnWidth;
   ComponentIconSpeedButton.Height:=ComponentPaletteBtnHeight;
 end;
@@ -1116,7 +1114,7 @@ begin
     PalettePageCombobox.Text:=PkgComponent.RealPage.PageName;
   // filename
   AutoCompleteNewComponentUnitName;
-  OkButton.Enabled := True;
+  ButtonPanel1.OkButton.Enabled:=True;
 end;
 
 procedure TAddToPackageDlg.AutoCompleteNewComponentUnitName;

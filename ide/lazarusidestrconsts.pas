@@ -4291,6 +4291,7 @@ resourcestring
   lisA2PUnitName = 'Unit Name:';
   lisA2PShortenOrExpandFilename = 'Shorten or expand filename';
   lisA2PSaveFileDialog = 'Save file dialog';
+  lisA2PIconAndSize = 'Icon (maximum 24x24):';
   lisMoveSelectedUp = 'Move selected item up (Ctrl+Up)';
   lisMoveSelectedDown = 'Move selected item down (Ctrl+Down)';
 
