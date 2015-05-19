@@ -1301,8 +1301,8 @@ type
     // List of common styles, for conveniently finding them
     StyleTextBody, StyleHeading1, StyleHeading2, StyleHeading3,
       StyleHeading4, StyleHeading5, StyleHeading6: TvStyle;
-    StyleTextBodyCentralized, StyleHeading1Centralized,
-      StyleHeading2Centralized, StyleHeading3Centralized: TvStyle;
+    StyleTextBodyCentralized, StyleTextBodyBold: TvStyle; // text body modifications
+    StyleHeading1Centralized, StyleHeading2Centralized, StyleHeading3Centralized: TvStyle; // heading modifications
     StyleBulletList, StyleNumberList : TvListStyle;
     StyleTextSpanBold, StyleTextSpanItalic, StyleTextSpanUnderline: TvStyle;
     { Base methods }
@@ -1529,6 +1529,7 @@ type
   protected
     FFilename: string;
     class function GetTextContentsFromNode(ANode: TDOMNode): DOMString;
+    class function RemoveLineEndingsAndTrim(AStr: string): string;
   public
     { General reading methods }
     constructor Create; virtual;
@@ -4244,7 +4245,7 @@ var
   lTextWidth: Integer;
   {$endif}
 begin
-  //lText := Value.Text; // for debugging
+  lText := Value.Text + Format(' F=%d', [ADest.Font.Size]); // for debugging
   inherited Render(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMulY, ADoDraw);
 
   InitializeRenderInfo(ARenderInfo);
@@ -4285,6 +4286,7 @@ begin
       Render_NextText_X := CoordToCanvasX(X)+XAnchorAdjustment;
     if ADoDraw then
       ADest.TextOut(Render_NextText_X, Round(LowerDim.Y), lText);
+    //lText := lText + Format(' F=%d', [ADest.Font.Size]); // for debugging
 
     CalcEntityCanvasMinMaxXY(ARenderInfo, Render_NextText_X, Round(LowerDim.Y));
     lTextSize := ACanvas.TextExtent(lText);
@@ -8343,6 +8345,12 @@ begin
   StyleTextBodyCentralized.Alignment := vsaCenter;
   StyleTextBodyCentralized.SetElements := StyleTextBodyCentralized.SetElements + [spbfAlignment];
 
+  StyleTextBodyBold := AddStyle();
+  StyleTextBodyBold.ApplyOver(StyleTextBody);
+  StyleTextBodyBold.Name := 'Text Body Bold';
+  StyleTextBodyBold.Font.Bold := True;
+  StyleTextBodyBold.SetElements := StyleTextBodyCentralized.SetElements + [spbfFontBold];
+
   StyleHeading1Centralized := AddStyle();
   StyleHeading1Centralized.ApplyOver(StyleHeading1);
   StyleHeading1Centralized.Name := 'Heading 1 Centered';
@@ -8528,6 +8536,13 @@ begin
 
     Result := Result + lNodeTextTmp;
   end;
+end;
+
+class function TvCustomVectorialReader.RemoveLineEndingsAndTrim(AStr: string): string;
+begin
+  Result := Trim(AStr);
+  Result := StringReplace(Result, #13, '', [rfReplaceAll]);
+  Result := StringReplace(Result, #10, '', [rfReplaceAll]);
 end;
 
 constructor TvCustomVectorialReader.Create;

@@ -2647,9 +2647,7 @@ var
       else if lNodeName = 'textpath' then
       begin
         lTextStr := GetTextContentFromNode(lCurNode);
-        lTextStr := StringReplace(lTextStr, #13#10, '', [rfReplaceAll]);
-        lTextStr := StringReplace(lTextStr, #13, '', [rfReplaceAll]);
-        lTextStr := StringReplace(lTextStr, #10, '', [rfReplaceAll]);
+        lTextStr := RemoveLineEndingsAndTrim(lTextStr);
         lTextStr := Trim(lTextStr);
 
         lCText := lParagraph.AddCurvedText(lTextStr);

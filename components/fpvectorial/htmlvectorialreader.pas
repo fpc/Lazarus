@@ -133,8 +133,7 @@ procedure TvHTMLVectorialReader.ReadParagraphFromNode(ADest: TvParagraph; ANode:
   AData: TvTextPageSequence; ADoc: TvVectorialDocument);
 var
   lText: TvText = nil;
-  lTextSeparatedByBR: Boolean = False;
-  lTextStr: string;
+  lTextStr: string = '';
   lCurNode: TDOMNode;
   lNodeName, lNodeValue, lAttrName, lAttrValue: DOMString;
   lCurAttr: TDOMNode;
@@ -150,6 +149,19 @@ var
   lImageData: array of Byte;
   lImageDataStream: TMemoryStream;
   lImageReader: TFPCustomImageReader;
+
+  procedure TextMerging();
+  begin
+    if lTextStr <> '' then
+    begin
+      if lText = nil then
+        lText := ADest.AddText(lTextStr)
+      else
+        lText.Value.Add(lTextStr);
+      lTextStr := '';
+    end;
+  end;
+
 begin
   ADest.Style := ADoc.StyleTextBody;
 
@@ -159,31 +171,18 @@ begin
     lNodeName := LowerCase(lCurNode.NodeName);
     lNodeValue := lCurNode.NodeValue;
 
-    if (lCurNode is TDOMText) and not lTextSeparatedByBR then
+    if (lCurNode is TDOMText) then
     begin
-      lTextStr := lNodeValue;
-      lText := ADest.AddText(lTextStr);
-      lCurNode := lCurNode.NextSibling;
-      Continue;
-    end
-    // If after a text we get a <br /> or a TDOMText, merge them
-    else if (lNodeName = 'br') and (lText <> nil) then
-    begin
-      lTextSeparatedByBR := True;
-      lCurNode := lCurNode.NextSibling;
-      Continue;
-    end
-    else if (lCurNode is TDOMText) and lTextSeparatedByBR then
-    begin
-      lTextStr := lNodeValue;
-      lText.Value.Add(lTextStr);
+      lTextStr += RemoveLineEndingsAndTrim(lNodeValue);
       lCurNode := lCurNode.NextSibling;
       Continue;
     end;
 
+    // text merging
+    TextMerging();
     // reset text merging
-    lText := nil;
-    lTextSeparatedByBR := False;
+    if lNodeName <> 'br' then
+      lText := nil;
 
     case lNodeName of
     // <image width="100" height="100" xlink:href="data:image/png;base64,UgAAA....QSK5CYII="/>
@@ -198,8 +197,9 @@ begin
 
       for i := 0 to lCurNode.Attributes.Length - 1 do
       begin
-        lAttrName := lCurNode.Attributes.Item[i].NodeName;
-        lAttrValue := lCurNode.Attributes.Item[i].NodeValue;
+        lCurAttr := lCurNode.Attributes.Item[i];
+        lAttrName := lCurAttr.NodeName;
+        lAttrValue := lCurAttr.NodeValue;
 
         case lAttrName of
         'alt':
@@ -284,6 +284,8 @@ begin
 
     lCurNode := lCurNode.NextSibling;
   end;
+
+  TextMerging();
 end;
 
 function TvHTMLVectorialReader.ReadSVGFromNode(ANode: TDOMNode;
@@ -443,7 +445,7 @@ begin
     begin
       CurCell := CurRow.AddCell();
       CurCellPara := CurCell.AddParagraph();
-      CurCellPara.Style := ADoc.StyleTextSpanBold;
+      CurCellPara.Style := ADoc.StyleTextBodyBold;
       CurCellPara.AddText(GetTextContentFromNode(lCurNode));
     end;
     'td':
