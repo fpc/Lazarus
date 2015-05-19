@@ -115,8 +115,8 @@ type
     procedure HelpButtonClick(Sender: TObject);
     procedure OkButtonClick(Sender: TObject);
     procedure HostApplicationBrowseBtnClick(Sender: TObject);
-    procedure UserOverridesListViewSelectItem(Sender: TObject; Item: TListItem;
-      Selected: Boolean);
+    procedure UserOverridesListViewSelectItem(Sender: TObject; {%H-}Item: TListItem;
+      {%H-}Selected: Boolean);
     procedure WorkingDirectoryBtnClick(Sender: TObject);
     procedure UserOverridesAddButtonClick(Sender: TObject);
     procedure UserOverridesEditButtonClick(Sender: TObject);

@@ -55,8 +55,6 @@ function ShowComponentNameDialog(ALookupRoot: TComponent; ANewComponent: TCompon
 
 implementation
 
-uses Math;
-
 {$R *.lfm}
 
 function ShowComponentNameDialog(ALookupRoot: TComponent; ANewComponent: TComponent): string;

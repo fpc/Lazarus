@@ -138,7 +138,7 @@ type
     procedure UpdateDescription;
     function FindItem(const aName: string): TTreeNode;
   public
-    constructor Create(TheOwner: TComponent; AOnlyModules: boolean);
+    constructor Create(TheOwner: TComponent; AOnlyModules: boolean); reintroduce;
     destructor Destroy; override;
   public
     property NewItem: TNewIDEItemTemplate Read FNewItem;
@@ -149,8 +149,6 @@ function ShowNewIDEItemDialog(out NewItem: TNewIDEItemTemplate;
 
 
 implementation
-
-uses Math;
 
 {$R *.lfm}
 
