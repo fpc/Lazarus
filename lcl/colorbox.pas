@@ -41,6 +41,7 @@ type
   TCustomColorBox = class(TCustomComboBox)
   private
     FColorRectWidth: Integer;
+    FColorRectOffset: Integer;
     FDefaultColorColor: TColor;
     FNoneColorColor: TColor;
     FOnGetColors: TGetColorsEvent;
@@ -50,6 +51,7 @@ type
     function GetColorName(Index: Integer): string;
     function GetSelected: TColor;
     procedure SetColorRectWidth(AValue: Integer);
+    procedure SetColorRectOffset(AValue: Integer);
     procedure SetDefaultColorColor(const AValue: TColor);
     procedure SetNoneColorColor(const AValue: TColor);
     procedure SetSelected(Value: TColor);
@@ -67,6 +69,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     property ColorRectWidth: Integer read FColorRectWidth write SetColorRectWidth default 14;
+    property ColorRectOffset: Integer read FColorRectOffset write SetColorRectOffset default 3;
     property Style: TColorBoxStyle read FStyle write SetStyle
       default [cbStandardColors, cbExtendedColors, cbSystemColors];
     property Colors[Index: Integer]: TColor read GetColor;
@@ -82,6 +85,7 @@ type
   TColorBox = class(TCustomColorBox)
   published
     property ColorRectWidth;
+    property ColorRectOffset;
     property DefaultColorColor;
     property NoneColorColor;
     property Selected;
@@ -361,6 +365,7 @@ begin
   inherited ReadOnly := True;
 
   FColorRectWidth := 14;
+  FColorRectOffset := 3;
   FStyle := [cbStandardColors, cbExtendedColors, cbSystemColors];
   FNoneColorColor := clBlack;
   FDefaultColorColor := clBlack;
@@ -400,6 +405,13 @@ procedure TCustomColorBox.SetColorRectWidth(AValue: Integer);
 begin
   if FColorRectWidth = AValue then Exit;
   FColorRectWidth := AValue;
+  Invalidate;
+end;
+
+procedure TCustomColorBox.SetColorRectOffset(AValue: Integer);
+begin
+  if FColorRectOffset = AValue then Exit;
+  FColorRectOffset := AValue;
   Invalidate;
 end;
 
@@ -553,9 +565,9 @@ begin
   if Index = -1 then
     Exit;
 
-  r.top := Rect.top + 3;
-  r.bottom := Rect.bottom - 3;
-  r.left := Rect.left + 3;
+  r.top := Rect.top + FColorRectOffset;
+  r.bottom := Rect.bottom - FColorRectOffset;
+  r.left := Rect.left + FColorRectOffset;
   r.right := r.left + FColorRectWidth;
   Exclude(State, odPainted);
 
@@ -595,7 +607,7 @@ begin
     Pen.Color := PenColor;
   end;
   r := Rect;
-  r.left := r.left + FColorRectWidth + 4;
+  r.left := r.left + FColorRectWidth + FColorRectOffset + 1;
 
   inherited DrawItem(Index, BidiFlipRect(r, Rect, UseRightToLeftAlignment), State);
 end;
