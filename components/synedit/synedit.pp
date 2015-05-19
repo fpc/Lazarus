@@ -4428,6 +4428,9 @@ begin
         debugln(['ScrollAfterTopLineChanged did scroll Delta=',Delta]);
         {$ENDIF}
         include(fStateFlags, sfHasScrolled);
+        {$IFDEF Windows} // May be needed in other OS ? Trunk does that for all OS, but testing is needed
+        Include(fStateFlags, sfCaretChanged); // need to update
+        {$ENDIF}
         FScreenCaret.InvalidatePos; // Wine (Win emulator) may have changed the pos with the scroll
       end else begin
         Invalidate;    // scrollwindow failed, invalidate all
