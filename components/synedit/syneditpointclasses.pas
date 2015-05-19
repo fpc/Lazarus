@@ -361,7 +361,7 @@ type
     FCustomOffsetX, FCustomOffsetY: Array [TSynCaretType] of Integer;
     FCurrentPosX, FCurrentPosY: Integer;
     FCurrentVisible, FCurrentCreated: Boolean;
-    FCurrentClippedWidth, FCurrentClippedHeight: Integer;
+    FCurrentClippedWidth: Integer;
     FLockCount: Integer;
     FLockFlags: TSynCaretLockFlags;
     procedure SetClipBottom(const AValue: Integer);
@@ -2236,7 +2236,6 @@ begin
   FCurrentPosX := -1;
   FCurrentPosY := -1;
   FCurrentClippedWidth := -1;
-  FCurrentClippedHeight := -1;
   FClipExtraPixel := 0;
   FLockCount := 0;
 end;
@@ -2523,7 +2522,7 @@ begin
     exit;
   end;
 
-  if (not FCurrentCreated) or (FCurrentClippedWidth <> w) or (FCurrentClippedHeight <> h) then begin
+  if (not FCurrentCreated) or (FCurrentClippedWidth <> w) then begin
     {$IFDeF SynCaretDebug}
     debugln(['SynEditCaret CreateCaret for HandleOwner=',FHandleOwner, ' DebugShowCount=', FDebugShowCount, ' Width=', w, ' pref-width=', FPixelWidth, ' Height=', FPixelHeight, '  FCurrentCreated=',FCurrentCreated,  ' FCurrentVisible=',FCurrentVisible]);
     FDebugShowCount := 0;
@@ -2535,7 +2534,6 @@ begin
     FCurrentCreated := True;
     FCurrentVisible := False;
     FCurrentClippedWidth := w;
-    FCurrentClippedHeight := h;
     FCurrentPosX := x - 1;
     SetCaretRespondToFocus(Handle, False); // Only for GTK
   end;
