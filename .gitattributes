@@ -2933,6 +2933,7 @@ components/lazutils/lazfileutils.inc svneol=native#text/plain
 components/lazutils/lazfileutils.pas svneol=native#text/pascal
 components/lazutils/lazfreetype.pas svneol=native#text/pascal
 components/lazutils/lazfreetypefontcollection.pas svneol=native#text/plain
+components/lazutils/lazfreetypefpimagedrawer.pas svneol=native#text/pascal
 components/lazutils/lazlistclasses.pas svneol=native#text/plain
 components/lazutils/lazlogger.pas svneol=native#text/pascal
 components/lazutils/lazloggerbase.pas svneol=native#text/pascal
