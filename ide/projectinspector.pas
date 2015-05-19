@@ -967,7 +967,7 @@ begin
   RemoveBitBtn  := CreateToolButton('RemoveBitBtn', lisRemove, lisPckEditRemoveSelectedItem, 'laz_delete', @RemoveBitBtnClick);
   CreateDivider;
   OptionsBitBtn := CreateToolButton('OptionsBitBtn', lisOptions, lisPckEditEditGeneralOptions, 'menu_environment_options', @OptionsBitBtnClick);
-  HelpBitBtn    := CreateToolButton('HelpBitBtn', GetButtonCaption(idButtonHelp), lisPkgEdMoreFunctionsForThePackage, 'menu_help', @HelpBitBtnClick);
+  HelpBitBtn    := CreateToolButton('HelpBitBtn', GetButtonCaption(idButtonHelp), lisMenuOnlineHelp, 'menu_help', @HelpBitBtnClick);
 
   AddBitBtn.DropdownMenu:=AddPopupMenu;
   mnuAddDiskFile.Caption:=lisPckEditAddFilesFromFileSystem;
