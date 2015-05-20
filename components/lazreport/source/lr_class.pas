@@ -9766,6 +9766,8 @@ var
   f1, f2: Integer;
   c: Char;
   s: String;
+  Dummy: Extended;
+  IsNumeric: Boolean;
 begin
   if (TVarData(v).VType = varEmpty) {VarIsEmpty(v)} or VarIsNull(v) then
   begin
@@ -9791,7 +9793,8 @@ begin
         end;
       fmtNumber:
         begin
-          if not VarIsNumeric(v) then
+          IsNumeric := VarIsNumeric(v) or TryStrToFloat(v, Dummy);
+          if not IsNumeric then
             result := v
           else begin
             DefaultFormatSettings.DecimalSeparator := Chr(AFormat and $FF);
