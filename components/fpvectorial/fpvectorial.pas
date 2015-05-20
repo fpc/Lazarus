@@ -4237,7 +4237,7 @@ var
   //
   LowerDim: T3DPoint;
   XAnchorAdjustment: Integer;
-  lLongestLine, lLineWidth: Integer;
+  lLongestLine, lLineWidth, lFontSizePx: Integer;
   lText: string;
   {$ifdef USE_LCL_CANVAS}
   ACanvas: TCanvas absolute ADest;
@@ -4272,13 +4272,15 @@ begin
   // TvText supports multiple lines
   for i := 0 to Value.Count - 1 do
   begin
-    if Font.Size = 0 then
-      LowerDim.Y := CoordToCanvasY(Y) + 12 * (i - Value.Count)
+    lFontSizePx := Font.Size;
+    if lFontSizePx = 0 then lFontSizePx := 10;
+
+    // We need to keep the order of lines drawing correct regardless of
+    // the drawing direction
+    if AMulY < 0 then
+      LowerDim.Y := CoordToCanvasY(Y) + lFontSizePx * 1.2 * (Value.Count - i)
     else
-    begin
-      LowerDim.Y := Y + Font.Size * 1.2 * (Value.Count - i);
-      LowerDim.Y := CoordToCanvasY(LowerDim.Y);
-    end;
+      LowerDim.Y := CoordToCanvasY(Y) + lFontSizePx * 1.2 * i;
 
     ADest.Font.FPColor := AdjustColorToBackground(Font.Color, ARenderInfo);
     lText := Value.Strings[i];
