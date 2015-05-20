@@ -982,6 +982,9 @@ var
         if (ComparePGInterPkgShortFilename(CurFile,OtherFile)<>0) then break;
         OtherNode:=OtherNode.Successor;
 
+        if OtherFile.AnUnitName<>'' then
+          continue; // units were already checked in CheckDuplicateUnits
+
         // other file with same short name found
         if not CheckIfFilesCanConflict(FileGroup,CurFile,OtherFile) then
           continue;
