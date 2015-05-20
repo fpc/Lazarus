@@ -3174,6 +3174,15 @@ begin
   TGtk3Widget(AData).DeliverMessage(Msg);
 end;
 
+procedure Gtk3EntryChanged(AEntry: PGtkEntryBuffer; AData: GPointer); cdecl;
+var
+  Msg: TLMessage;
+begin
+  FillChar(Msg, SizeOf(Msg), 0);
+  Msg.Msg := CM_TEXTCHANGED;
+  TGtk3Widget(AData).DeliverMessage(Msg);
+end;
+
 function TGtk3Entry.GetAlignment: TAlignment;
 var
   AFloat: GFloat;
@@ -3233,8 +3242,9 @@ end;
 procedure TGtk3Entry.InitializeWidget;
 begin
   inherited InitializeWidget;
-  g_signal_connect_data(PGtkEntry(FWidget)^.get_buffer, 'deleted-text', TGCallback(@Gtk3EntryDeletedText), Self, nil, 0);
-  g_signal_connect_data(PGtkEntry(FWidget)^.get_buffer, 'inserted-text', TGCallback(@Gtk3EntryInsertedText), Self, nil, 0);
+  g_signal_connect_data(PGtkEntry(FWidget), 'changed', TGCallback(@Gtk3EntryChanged), Self, nil, 0);
+  //g_signal_connect_data(PGtkEntry(FWidget)^.get_buffer, 'deleted-text', TGCallback(@Gtk3EntryDeletedText), Self, nil, 0);
+  //g_signal_connect_data(PGtkEntry(FWidget)^.get_buffer, 'inserted-text', TGCallback(@Gtk3EntryInsertedText), Self, nil, 0);
 end;
 
 procedure TGtk3Entry.SetPasswordChar(APasswordChar: Char);
