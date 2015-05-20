@@ -5979,6 +5979,16 @@ begin
   251: Result:=150;
   252: Result:=129;
   255: Result:=152;
+  262: Result := 93;
+  263: Result := 125;
+  268: Result := 94;
+  269: Result := 126;
+  272: Result := 92;
+  273: Result := 124;
+  381: Result := 64;
+  382: Result := 96;
+  352: Result := 91;
+  353: Result := 123;
   402: Result:=159;
   915: Result:=226;
   920: Result:=233;
