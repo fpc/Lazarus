@@ -614,7 +614,7 @@ var
   end;
 
   procedure CollectFilesInDir(OwnerInfo: TPGInterPkgOwnerInfo; Dir: string;
-    var SearchedDirs: string; IsIncDir: boolean);
+    var SearchedDirs: string; {%H-}IsIncDir: boolean);
   var
     Files: TStrings;
     aFilename: String;
@@ -641,7 +641,6 @@ var
         AnUnitName:='';
         case Ext of
         '.ppu','.o','.rst','.rsj','.pas','.pp','.p':
-          if not IsIncDir then
           begin
             AnUnitName:=ExtractFileNameOnly(aFilename);
             if not IsDottedIdentifier(AnUnitName) then continue;
