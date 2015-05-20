@@ -869,6 +869,7 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
   protected
     function GetValueAddress(AValueObj: TFpDwarfValue; out AnAddress: TFpDbgMemLocation): Boolean; override;
     function HasAddress: Boolean; override;
+    function GetFlags: TDbgSymbolFlags; override;
   public
   end;
 
@@ -4716,6 +4717,11 @@ end;
 function TFpDwarfSymbolValueParameter.HasAddress: Boolean;
 begin
   Result := InformationEntry.HasAttrib(DW_AT_location);
+end;
+
+function TFpDwarfSymbolValueParameter.GetFlags: TDbgSymbolFlags;
+begin
+  Result := (inherited GetFlags) + [sfParameter];
 end;
 
 { TFpDwarfSymbolUnit }

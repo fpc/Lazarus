@@ -106,6 +106,7 @@ type
     property FunctionName: string read GetFunctionName;
     property Line: integer read GetLine;
     property RegisterValueList: TDbgRegisterValueList read FRegisterValueList;
+    property ProcSymbol: TFpDbgSymbol read GetSymbol;
   end;
 
   TDbgCallstackEntryList = specialize TFPGObjectList<TDbgCallstackEntry>;

@@ -85,6 +85,7 @@ type
     sfDynArray,     // skArray is known to be a dynamic array
     sfStatArray,    // skArray is known to be a static array
     sfVirtual,      // skProcedure,skFunction:  virtual function (or overriden)
+    sfParameter,    // Parameter to a function
     // unimplemented:
     sfInternalRef,  // TODO: (May not always be present) Internal ref/pointer e.g. var/constref parameters
     sfConst,         // The sym is a constant and cannot be modified
