@@ -10421,8 +10421,8 @@ begin
         aText := Cells[aCol, i];
 
       if isMultiLine then begin
-        aRect := rect(0, 0, DefaultColWidth, DefaultRowHeight);
-        DrawText(tmpCanvas.Handle, @aText[1], Length(aText), aRect, DT_CALCRECT or DT_WORDBREAK);
+        aRect := rect(0, 0, MaxInt, MaxInt);
+        DrawText(tmpCanvas.Handle, pchar(aText), Length(aText), aRect, DT_CALCRECT or DT_WORDBREAK);
         Ts.cx := aRect.Right-aRect.Left;
       end else
         Ts := tmpCanvas.TextExtent(aText);
