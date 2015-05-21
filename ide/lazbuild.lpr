@@ -692,20 +692,20 @@ procedure TLazBuildApplication.CheckPackageGraphForCompilation(
       Item:=TObject(PathList[0]);
       if Item is TPkgDependency then begin
         if Result<>'' then
-          Result:=Result+'>';
+          Result:=Result+'->';
         Result:=Result+TPkgDependency(Item).AsString;
       end else if Item is TProject then begin
         if Result<>'' then
-          Result:=Result+'>';
+          Result:=Result+'->';
         Result:=Result
                 +'Project:'+ExtractFileNameOnly(TProject(Item).ProjectInfoFile);
       end else if Item is TLazPackage then begin
         if Result<>'' then
-          Result:=Result+'>';
+          Result:=Result+'->';
         Result:=Result+TLazPackage(Item).IDAsString;
       end else begin
         if Result<>'' then
-          Result:=Result+'>';
+          Result:=Result+'->';
         Result:=Result+'Unknown:'+dbgsName(Item);
       end;
     end;
