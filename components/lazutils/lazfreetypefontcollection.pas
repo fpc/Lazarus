@@ -273,10 +273,17 @@ begin
 end;
 
 procedure TFontCollectionItem.NotifyDestroy;
-var i: integer;
+var
+  listener: TFontCollectionItemDestroyListener;
 begin
-  for i := 0 to high(FDestroyListeners) do
-    FDestroyListeners[i]();
+  //the list of listeners may change during the process
+  //so it is safer to avoid the 'for' loop
+  while length(FDestroyListeners) > 0 do
+  begin
+    listener := FDestroyListeners[high(FDestroyListeners)];
+    setlength(FDestroyListeners, length(FDestroyListeners)-1);
+    listener.NotifyProc();
+  end;
   FDestroyListeners := nil;
 end;
 
@@ -341,7 +348,7 @@ begin
   end;
   result := FFace;
   inc(FFaceUsage);
-  if Assigned(AListener) then
+  if Assigned(AListener.NotifyProc) then
   begin
     setlength(FDestroyListeners,length(FDestroyListeners)+1);
     FDestroyListeners[high(FDestroyListeners)] := AListener;
@@ -352,7 +359,8 @@ procedure TFontCollectionItem.ReleaseFace(AListener: TFontCollectionItemDestroyL
 var i,j: integer;
 begin
   for i := 0 to high(FDestroyListeners) do
-    if FDestroyListeners[i] = AListener then
+    if (FDestroyListeners[i].TargetObject = AListener.TargetObject) and
+       (FDestroyListeners[i].NotifyProc = AListener.NotifyProc) then
     begin
       for j := i to high(FDestroyListeners)-1 do
         FDestroyListeners[j] := FDestroyListeners[j+1];

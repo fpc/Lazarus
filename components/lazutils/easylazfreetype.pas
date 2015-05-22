@@ -48,7 +48,15 @@ type
   TFreeTypeGlyph = class;
   TFreeTypeFont = class;
 
-  TFontCollectionItemDestroyListener = procedure() of object;
+  TFontCollectionItemDestroyProc = procedure() of object;
+  TFontCollectionItemDestroyListener = record
+    TargetObject: TObject;
+    NotifyProc: TFontCollectionItemDestroyProc;
+  end;
+
+  function FontCollectionItemDestroyListener(ATargetObject: TObject; ANotifyProc: TFontCollectionItemDestroyProc): TFontCollectionItemDestroyListener;
+
+type
   ArrayOfFontCollectionItemDestroyListener = array of TFontCollectionItemDestroyListener;
   TCustomFamilyCollectionItem = class;
 
@@ -411,6 +419,14 @@ const
   TT_PLATFORM_MICROSOFT     = 3;
   //TT_PLATFORM_CUSTOM        = 4;
   //TT_PLATFORM_ADOBE         = 7; // artificial
+
+function FontCollectionItemDestroyListener(ATargetObject: TObject;
+  ANotifyProc: TFontCollectionItemDestroyProc
+  ): TFontCollectionItemDestroyListener;
+begin
+  result.TargetObject := ATargetObject;
+  result.NotifyProc := ANotifyProc;
+end;
 
 function StylesToArray(AStyles: string): ArrayOfString;
 var
@@ -845,7 +861,7 @@ begin
       fontItem := familyItem.GetFont(FStyleStr);
       if fontItem = nil then
         raise exception.Create('Font style not found ("'+FStyleStr+'")');
-      FFace := fontItem.QueryFace(@OnDestroyFontItem);
+      FFace := fontItem.QueryFace(FontCollectionItemDestroyListener(self,@OnDestroyFontItem));
       FFaceItem := fontItem;
     end;
   end;
@@ -1102,7 +1118,7 @@ begin
     DiscardInstance;
     if FFaceItem <> nil then
     begin
-      FFaceItem.ReleaseFace(@OnDestroyFontItem);
+      FFaceItem.ReleaseFace(FontCollectionItemDestroyListener(self,@OnDestroyFontItem));
       FFaceItem := nil;
     end
     else
