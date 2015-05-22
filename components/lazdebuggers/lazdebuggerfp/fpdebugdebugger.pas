@@ -513,15 +513,17 @@ begin
           Reg := RegList.FindRegisterByDwarfIndex(16);
         if Reg <> nil then begin
           AContext := AController.CurrentProcess.DbgInfo.FindContext(CurThreadId, e.Index, Reg.NumValue);
-          AContext.MemManager.DefaultContext := AContext;
-          FPrettyPrinter.AddressSize := AContext.SizeOfAddress;
+          if AContext <> nil then begin
+            AContext.MemManager.DefaultContext := AContext;
+            FPrettyPrinter.AddressSize := AContext.SizeOfAddress;
 
-          for i := 0 to ProcVal.MemberCount - 1 do begin
-            m := ProcVal.Member[i];
-            if (m <> nil) and (sfParameter in m.DbgSymbol.Flags) then begin
-              FPrettyPrinter.PrintValue(v, m, wdfDefault, -1, [ppoStackParam]);
-              if params <> '' then params := params + ', ';
-              params := params + v;
+            for i := 0 to ProcVal.MemberCount - 1 do begin
+              m := ProcVal.Member[i];
+              if (m <> nil) and (sfParameter in m.DbgSymbol.Flags) then begin
+                FPrettyPrinter.PrintValue(v, m, wdfDefault, -1, [ppoStackParam]);
+                if params <> '' then params := params + ', ';
+                params := params + v;
+              end;
             end;
           end;
         end;
