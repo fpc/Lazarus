@@ -53,7 +53,7 @@ interface
 
 uses
   Classes, SysUtils, Controls, Forms, LCLProc, LCLType, LazConf,
-  StdCtrls, Buttons, FileUtil, Laz2_XMLCfg, LazFileCache, ExtCtrls,
+  StdCtrls, Buttons, FileUtil, Laz2_XMLCfg, LazFileCache, ExtCtrls, ButtonPanel,
   IDEHelpIntf, LazarusIDEStrConsts, IDEProcs;
 
 type
@@ -63,11 +63,7 @@ type
   TCondForm = class(TForm)
     AddBtn: TBitBtn;
     AddInverse: TBitBtn;
-    btnHelp: TBitBtn;
-    btmCancel: TBitBtn;
-    btnSave: TBitBtn;
-    btnOk: TBitBtn;
-    ButtonPanel: TPanel;
+    ButtonPanel1: TButtonPanel;
     FirstLabel: TLabel;
     FirstTest: TComboBox;
     ListBox: TListBox;
@@ -241,9 +237,9 @@ begin
   AddInverse.LoadGlyphFromResourceName(HInstance, 'pkg_issues');
   RemoveBtn.Caption := lisBtnRemove;
   RemoveBtn.LoadGlyphFromResourceName(HInstance, 'laz_delete');
-  btnSave.Caption := lisSave;
-  btnSave.LoadGlyphFromStock(idButtonSave);
-  btnOk.Caption := lisApply;
+  ButtonPanel1.CloseButton.Caption := lisSave;
+  ButtonPanel1.OKButton.Caption := lisOk;
+  //ButtonPanel1.CloseButton.LoadGlyphFromStock(idButtonSave);
   //if btnSave.Glyph.Empty then
   //  btnSave.LoadGlyphFromResourceName(HInstance, 'laz_save');
   try
@@ -388,8 +384,8 @@ begin
                     and (FirstTest.Text[1] <> '!')
                     and (ListBox.Items.IndexOf(s) = -1);
   RemoveBtn.Enabled := ListBox.SelCount > 0;
-  btnSave.Enabled := IsChanged;
-  btnOk.Enabled := ListBox.SelCount > 0;
+  ButtonPanel1.CloseButton.Enabled := IsChanged;
+  ButtonPanel1.OKButton.Enabled := ListBox.SelCount > 0;
 end;
 
 function TCondForm.IsChanged: Boolean;
@@ -412,7 +408,7 @@ var
   ff, ss: string;
   XMLConfig: TXMLConfig;
 begin
-  if btnSave.Enabled then        // Is enabled only if there are changes
+  if ButtonPanel1.CloseButton.Enabled then // enabled only if there are changes
     try
       SplitActiveRow(ff, ss);
       InvalidateFileStateCache;
