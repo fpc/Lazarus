@@ -143,7 +143,7 @@ begin
   TextBufferChanged(nil);
   TabWidth := 8;
   fSynStrings.AddChangeHandler(senrLineCount, @LineCountChanged);
-  fSynStrings.AddChangeHandler(senrLineChange, @LineCountChanged);
+  fSynStrings.AddChangeHandler(senrLineChange, @LineTextChanged);
   fSynStrings.AddNotifyHandler(senrTextBufferChanged, @TextBufferChanged);
 end;
 
