@@ -60,7 +60,7 @@ uses
   ProjectIntf, CompOptsIntf, IDEWindowIntf, LazIDEIntf, IDEImagesIntf,
   IDEMsgIntf, IDEExternToolIntf,
   // IDE
-  CompilerOptions, EnvironmentOpts, IDEProcs, DialogProcs,
+  CompilerOptions, EnvironmentOpts, IDEProcs, DialogProcs, LazarusIDEStrConsts,
   TransferMacros, LazConf, IDECmdLine, PackageDefs, PackageSystem, InputHistory;
 
 type
@@ -177,11 +177,11 @@ begin
   if (SrcFile=nil) and (PPUFile=nil) then
     RaiseException('');
   if (SrcFile<>nil) and (PPUFile<>nil) and (PPUFile.OwnerInfo<>SrcFile.OwnerInfo) then
-    RaiseException('');
+    RaiseException('bug: not equal: PPUFile.OwnerInfo='+PPUFile.OwnerInfo.Name+' SrcFile.OwnerInfo='+SrcFile.OwnerInfo.Name);
   if (SrcFile<>nil) and FilenameIsCompiledSource(SrcFile.ShortFilename) then
-    RaiseException('');
+    RaiseException('bug: src is compiled file: SrcFile.Filename='+SrcFile.FullFilename);
   if (PPUFile<>nil) and not FilenameIsCompiledSource(PPUFile.ShortFilename) then
-    RaiseException('');
+    RaiseException('bug: compiled file is source:'+PPUFile.FullFilename);
   Result:=length(CompiledFiles);
   SetLength(CompiledFiles,Result+1);
   SetLength(Sources,Result+1);
@@ -925,14 +925,14 @@ var
           PPUFile:=FileGroup.CompiledFiles[i];
           if SrcFile<>nil then
           begin
-            Msg:='Duplicate unit "'+SrcFile.AnUnitName+'"';
-            Msg+=' in "'+SrcFile.OwnerInfo.Name+'"';
+            Msg:=Format(lisDuplicateUnitIn, [SrcFile.AnUnitName, SrcFile.
+              OwnerInfo.Name]);
             if PPUFile<>nil then
               Msg+=', ppu="'+PPUFile.FullFilename+'"';
             Msg+=', source="'+SrcFile.FullFilename+'"';
           end else begin
-            Msg:='Duplicate unit "'+PPUFile.AnUnitName+'"';
-            Msg+=' in "'+PPUFile.OwnerInfo.Name+'"';
+            Msg:=Format(lisDuplicateUnitIn, [PPUFile.AnUnitName, PPUFile.
+              OwnerInfo.Name]);
             Msg+=', orphaned ppu "'+PPUFile.FullFilename+'"';
           end;
           if IDEMessagesWindow<>nil then
