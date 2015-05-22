@@ -3712,6 +3712,10 @@ msgstr "Failo pavadinimas"
 msgid "File not unit"
 msgstr "Failas nėra modulis"
 
+#: lazarusidestrconsts.lisa2piconandsize
+msgid "Icon (maximum 24x24):"
+msgstr ""
+
 #: lazarusidestrconsts.lisa2pinvalidancestortype
 msgid "Invalid Ancestor Type"
 msgstr "Klaidingas protėvio tipas"
@@ -4101,6 +4105,10 @@ msgstr "Adresas:"
 msgctxt "lazarusidestrconsts.lisaddressbreakpoint"
 msgid "&Address Breakpoint ..."
 msgstr "&Adreso stabdos taškas…"
+
+#: lazarusidestrconsts.lisaddsub
+msgid "Add >>"
+msgstr ""
 
 #: lazarusidestrconsts.lisaddtoincludesearchpath
 msgid "Add to include search path?"
@@ -5572,9 +5580,9 @@ msgstr ""
 msgid "Click here to browse the file"
 msgstr "Čia paspaudę, galėsite naršyti failo"
 
-#: lazarusidestrconsts.lisclicktoseethepossibleuses
-msgid "Click to see the possible uses"
-msgstr "Paspaudus bus parodyti galimi naudojimai"
+#: lazarusidestrconsts.lisclicktoseethechoices
+msgid "Click to see the choices"
+msgstr ""
 
 #: lazarusidestrconsts.lisclicktoselectpalettepage
 msgid "Click to Select Palette Page"
@@ -13451,8 +13459,8 @@ msgstr "Išvalius bus naudojamas paketo pavadinimas"
 msgid "Disable I18N of lfm"
 msgstr "Nenaudoti LFM internacionalizacijos"
 
-#: lazarusidestrconsts.lispckeditaddfiles
-msgid "Add files from the file system"
+#: lazarusidestrconsts.lispckeditaddfilesfromfilesystem
+msgid "Add Files from File System"
 msgstr ""
 
 #: lazarusidestrconsts.lispckeditaddotheritems
@@ -13510,7 +13518,9 @@ msgid "Dependency Properties"
 msgstr "Priklausomybių savybės"
 
 #: lazarusidestrconsts.lispckediteditgeneraloptions
-msgid "Edit General Options"
+#, fuzzy
+#| msgid "Edit General Options"
+msgid "Edit general options"
 msgstr "Keisti pagrindines parinktis"
 
 #: lazarusidestrconsts.lispckeditfileproperties
@@ -13520,10 +13530,6 @@ msgstr "Failo savybės"
 #: lazarusidestrconsts.lispckeditinstall
 msgid "Install"
 msgstr "Įdiegti"
-
-#: lazarusidestrconsts.lispckeditinstallpackageintheide
-msgid "Install package in the IDE"
-msgstr "Įdiegti paketą į IKA"
 
 #: lazarusidestrconsts.lispckeditinvalidmaximumversion
 msgid "Invalid maximum version"
@@ -13987,9 +13993,9 @@ msgstr "Atstatyti paketą?"
 msgid "The file \"%s\"%sis currently not in the unit path of the package.%sAdd \"%s\" to unit path?"
 msgstr "Failas %s%s%s%s yra ne paketo modulių kelyje.%s%s%s%s%s įtraukti į modulių kelią?"
 
-#: lazarusidestrconsts.lispkgedtherearemorefunctionsinthepopupmenu
-msgid "There are more functions in the popupmenu"
-msgstr "Daugiau funkcijų yra iškylančiame menių"
+#: lazarusidestrconsts.lispkgedmorefunctionsforthepackage
+msgid "More functions for the package"
+msgstr ""
 
 #: lazarusidestrconsts.lispkgfiletypebinary
 msgctxt "lazarusidestrconsts.lispkgfiletypebinary"

@@ -3664,6 +3664,10 @@ msgstr "Fájlnév"
 msgid "File not unit"
 msgstr "A fájl nem unit"
 
+#: lazarusidestrconsts.lisa2piconandsize
+msgid "Icon (maximum 24x24):"
+msgstr ""
+
 #: lazarusidestrconsts.lisa2pinvalidancestortype
 msgid "Invalid Ancestor Type"
 msgstr "Érvénytelen ős típus"
@@ -4011,6 +4015,10 @@ msgstr "Cím:"
 msgctxt "lazarusidestrconsts.lisaddressbreakpoint"
 msgid "&Address Breakpoint ..."
 msgstr "Töréspont adott címen ..."
+
+#: lazarusidestrconsts.lisaddsub
+msgid "Add >>"
+msgstr ""
 
 #: lazarusidestrconsts.lisaddtoincludesearchpath
 msgid "Add to include search path?"
@@ -5435,9 +5443,9 @@ msgstr "Beállításszűrők törlése"
 msgid "Click here to browse the file"
 msgstr "Kattintson ide a fájl böngészéséhez"
 
-#: lazarusidestrconsts.lisclicktoseethepossibleuses
-msgid "Click to see the possible uses"
-msgstr "Kattintson ide a lehetséges használat megjelenítéséhez"
+#: lazarusidestrconsts.lisclicktoseethechoices
+msgid "Click to see the choices"
+msgstr ""
 
 #: lazarusidestrconsts.lisclicktoselectpalettepage
 msgid "Click to Select Palette Page"
@@ -13211,9 +13219,9 @@ msgstr "Törölje a csomag nevének használatához"
 msgid "Disable I18N of lfm"
 msgstr "I18N kikapcsolása az lfm-ben"
 
-#: lazarusidestrconsts.lispckeditaddfiles
-msgid "Add files from the file system"
-msgstr "Fájlok hozzáadása a fájlrendszerből"
+#: lazarusidestrconsts.lispckeditaddfilesfromfilesystem
+msgid "Add Files from File System"
+msgstr ""
 
 #: lazarusidestrconsts.lispckeditaddotheritems
 msgid "Add other items"
@@ -13270,7 +13278,9 @@ msgid "Dependency Properties"
 msgstr "Függőség tulajdonságai"
 
 #: lazarusidestrconsts.lispckediteditgeneraloptions
-msgid "Edit General Options"
+#, fuzzy
+#| msgid "Edit General Options"
+msgid "Edit general options"
 msgstr "Általános beállítások szerkesztése"
 
 #: lazarusidestrconsts.lispckeditfileproperties
@@ -13280,10 +13290,6 @@ msgstr "Fájl tulajdonságok"
 #: lazarusidestrconsts.lispckeditinstall
 msgid "Install"
 msgstr "Telepítés"
-
-#: lazarusidestrconsts.lispckeditinstallpackageintheide
-msgid "Install package in the IDE"
-msgstr "Csomag telepítése az IDE-be"
 
 #: lazarusidestrconsts.lispckeditinvalidmaximumversion
 msgid "Invalid maximum version"
@@ -13731,9 +13737,9 @@ msgstr "Visszaállítája a csomagot?"
 msgid "The file \"%s\"%sis currently not in the unit path of the package.%sAdd \"%s\" to unit path?"
 msgstr "A(z) \"%s\" fájl%sjelenleg nem szerepel a csomag unit útvonalai között.%s Hozzáadja a unit útvonalakhoz ezt: \"%s\"?"
 
-#: lazarusidestrconsts.lispkgedtherearemorefunctionsinthepopupmenu
-msgid "There are more functions in the popupmenu"
-msgstr "További funkciók találhatók a felugró menüben"
+#: lazarusidestrconsts.lispkgedmorefunctionsforthepackage
+msgid "More functions for the package"
+msgstr ""
 
 #: lazarusidestrconsts.lispkgfiletypebinary
 msgctxt "lazarusidestrconsts.lispkgfiletypebinary"

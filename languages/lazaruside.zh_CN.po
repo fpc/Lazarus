@@ -3861,6 +3861,10 @@ msgstr "文件名"
 msgid "File not unit"
 msgstr "文件不是单元文件"
 
+#: lazarusidestrconsts.lisa2piconandsize
+msgid "Icon (maximum 24x24):"
+msgstr ""
+
 #: lazarusidestrconsts.lisa2pinvalidancestortype
 msgid "Invalid Ancestor Type"
 msgstr "无效的父类"
@@ -4247,6 +4251,10 @@ msgstr ""
 #: lazarusidestrconsts.lisaddressbreakpoint
 msgctxt "lazarusidestrconsts.lisaddressbreakpoint"
 msgid "&Address Breakpoint ..."
+msgstr ""
+
+#: lazarusidestrconsts.lisaddsub
+msgid "Add >>"
 msgstr ""
 
 #: lazarusidestrconsts.lisaddtoincludesearchpath
@@ -5742,8 +5750,8 @@ msgstr ""
 msgid "Click here to browse the file"
 msgstr "点击这里浏览文件"
 
-#: lazarusidestrconsts.lisclicktoseethepossibleuses
-msgid "Click to see the possible uses"
+#: lazarusidestrconsts.lisclicktoseethechoices
+msgid "Click to see the choices"
 msgstr ""
 
 #: lazarusidestrconsts.lisclicktoselectpalettepage
@@ -13889,8 +13897,8 @@ msgstr ""
 msgid "Disable I18N of lfm"
 msgstr ""
 
-#: lazarusidestrconsts.lispckeditaddfiles
-msgid "Add files from the file system"
+#: lazarusidestrconsts.lispckeditaddfilesfromfilesystem
+msgid "Add Files from File System"
 msgstr ""
 
 #: lazarusidestrconsts.lispckeditaddotheritems
@@ -13950,7 +13958,9 @@ msgid "Dependency Properties"
 msgstr "附属属性"
 
 #: lazarusidestrconsts.lispckediteditgeneraloptions
-msgid "Edit General Options"
+#, fuzzy
+#| msgid "Edit General Options"
+msgid "Edit general options"
 msgstr "编辑一般选项"
 
 #: lazarusidestrconsts.lispckeditfileproperties
@@ -13960,10 +13970,6 @@ msgstr "文件属性"
 #: lazarusidestrconsts.lispckeditinstall
 msgid "Install"
 msgstr "安装"
-
-#: lazarusidestrconsts.lispckeditinstallpackageintheide
-msgid "Install package in the IDE"
-msgstr "安装 IDE 中的包"
 
 #: lazarusidestrconsts.lispckeditinvalidmaximumversion
 msgid "Invalid maximum version"
@@ -14447,9 +14453,9 @@ msgstr "重新打开包?"
 msgid "The file \"%s\"%sis currently not in the unit path of the package.%sAdd \"%s\" to unit path?"
 msgstr "文件 %s%s%s%si不在当前包单元路径中间.%s%s添加 %s%s%s 到 UnitPath?"
 
-#: lazarusidestrconsts.lispkgedtherearemorefunctionsinthepopupmenu
-msgid "There are more functions in the popupmenu"
-msgstr "弹出菜单中有更多功能"
+#: lazarusidestrconsts.lispkgedmorefunctionsforthepackage
+msgid "More functions for the package"
+msgstr ""
 
 #: lazarusidestrconsts.lispkgfiletypebinary
 msgctxt "lazarusidestrconsts.lispkgfiletypebinary"

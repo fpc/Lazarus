@@ -3676,6 +3676,10 @@ msgstr "ファイル名"
 msgid "File not unit"
 msgstr "ファイルはユニットでない"
 
+#: lazarusidestrconsts.lisa2piconandsize
+msgid "Icon (maximum 24x24):"
+msgstr ""
+
 #: lazarusidestrconsts.lisa2pinvalidancestortype
 msgid "Invalid Ancestor Type"
 msgstr "無効な先祖型"
@@ -4063,6 +4067,10 @@ msgstr "アドレス："
 msgctxt "lazarusidestrconsts.lisaddressbreakpoint"
 msgid "&Address Breakpoint ..."
 msgstr "アドレスブレークポイント(&A) ..."
+
+#: lazarusidestrconsts.lisaddsub
+msgid "Add >>"
+msgstr ""
 
 #: lazarusidestrconsts.lisaddtoincludesearchpath
 msgid "Add to include search path?"
@@ -5516,9 +5524,9 @@ msgstr "オプションのためのフィルタをクリア"
 msgid "Click here to browse the file"
 msgstr "ファイルを閲覧するためにここをクリックしてください。"
 
-#: lazarusidestrconsts.lisclicktoseethepossibleuses
-msgid "Click to see the possible uses"
-msgstr "可能な利用方法を見るにはクリック"
+#: lazarusidestrconsts.lisclicktoseethechoices
+msgid "Click to see the choices"
+msgstr ""
 
 #: lazarusidestrconsts.lisclicktoselectpalettepage
 msgid "Click to Select Palette Page"
@@ -13353,8 +13361,8 @@ msgstr "パッケージ名を利用するためにクリア"
 msgid "Disable I18N of lfm"
 msgstr "lfmの国際化を無効化"
 
-#: lazarusidestrconsts.lispckeditaddfiles
-msgid "Add files from the file system"
+#: lazarusidestrconsts.lispckeditaddfilesfromfilesystem
+msgid "Add Files from File System"
 msgstr ""
 
 #: lazarusidestrconsts.lispckeditaddotheritems
@@ -13412,7 +13420,9 @@ msgid "Dependency Properties"
 msgstr "依存関係属性"
 
 #: lazarusidestrconsts.lispckediteditgeneraloptions
-msgid "Edit General Options"
+#, fuzzy
+#| msgid "Edit General Options"
+msgid "Edit general options"
 msgstr "一般的なオプションを編集"
 
 #: lazarusidestrconsts.lispckeditfileproperties
@@ -13422,10 +13432,6 @@ msgstr "ファイルのプロパティ"
 #: lazarusidestrconsts.lispckeditinstall
 msgid "Install"
 msgstr "インストール"
-
-#: lazarusidestrconsts.lispckeditinstallpackageintheide
-msgid "Install package in the IDE"
-msgstr "IDEにパッケージをインストール"
 
 #: lazarusidestrconsts.lispckeditinvalidmaximumversion
 msgid "Invalid maximum version"
@@ -13887,9 +13893,9 @@ msgstr "パッケージを復帰しますか？"
 msgid "The file \"%s\"%sis currently not in the unit path of the package.%sAdd \"%s\" to unit path?"
 msgstr "ファイル %s%s%s%sはまだパッケージのユニットパスにありません。%s%s %s%s%s をユニットパスに追加しますか？"
 
-#: lazarusidestrconsts.lispkgedtherearemorefunctionsinthepopupmenu
-msgid "There are more functions in the popupmenu"
-msgstr "ポップアップメニューの中にもっと多くの機能があります。"
+#: lazarusidestrconsts.lispkgedmorefunctionsforthepackage
+msgid "More functions for the package"
+msgstr ""
 
 #: lazarusidestrconsts.lispkgfiletypebinary
 msgctxt "lazarusidestrconsts.lispkgfiletypebinary"

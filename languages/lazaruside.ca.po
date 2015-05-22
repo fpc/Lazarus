@@ -3793,6 +3793,10 @@ msgstr "Nom del fitxer"
 msgid "File not unit"
 msgstr "El fitxer no és una unitat"
 
+#: lazarusidestrconsts.lisa2piconandsize
+msgid "Icon (maximum 24x24):"
+msgstr ""
+
 #: lazarusidestrconsts.lisa2pinvalidancestortype
 msgid "Invalid Ancestor Type"
 msgstr "El tipus d'avantpassat no és vàlid"
@@ -4173,6 +4177,10 @@ msgstr ""
 #: lazarusidestrconsts.lisaddressbreakpoint
 msgctxt "lazarusidestrconsts.lisaddressbreakpoint"
 msgid "&Address Breakpoint ..."
+msgstr ""
+
+#: lazarusidestrconsts.lisaddsub
+msgid "Add >>"
 msgstr ""
 
 #: lazarusidestrconsts.lisaddtoincludesearchpath
@@ -5632,8 +5640,8 @@ msgstr ""
 msgid "Click here to browse the file"
 msgstr ""
 
-#: lazarusidestrconsts.lisclicktoseethepossibleuses
-msgid "Click to see the possible uses"
+#: lazarusidestrconsts.lisclicktoseethechoices
+msgid "Click to see the choices"
 msgstr ""
 
 #: lazarusidestrconsts.lisclicktoselectpalettepage
@@ -13651,8 +13659,8 @@ msgstr ""
 msgid "Disable I18N of lfm"
 msgstr ""
 
-#: lazarusidestrconsts.lispckeditaddfiles
-msgid "Add files from the file system"
+#: lazarusidestrconsts.lispckeditaddfilesfromfilesystem
+msgid "Add Files from File System"
 msgstr ""
 
 #: lazarusidestrconsts.lispckeditaddotheritems
@@ -13710,7 +13718,9 @@ msgid "Dependency Properties"
 msgstr ""
 
 #: lazarusidestrconsts.lispckediteditgeneraloptions
-msgid "Edit General Options"
+#, fuzzy
+#| msgid "Edit General Options"
+msgid "Edit general options"
 msgstr "Edita les opcions generals"
 
 #: lazarusidestrconsts.lispckeditfileproperties
@@ -13720,10 +13730,6 @@ msgstr "Propietats del fitxer"
 #: lazarusidestrconsts.lispckeditinstall
 msgid "Install"
 msgstr "Instal·la"
-
-#: lazarusidestrconsts.lispckeditinstallpackageintheide
-msgid "Install package in the IDE"
-msgstr "Instal·la el paquet a l'IDE"
 
 #: lazarusidestrconsts.lispckeditinvalidmaximumversion
 msgid "Invalid maximum version"
@@ -14205,9 +14211,9 @@ msgstr "Voleu revertir el paquet?"
 msgid "The file \"%s\"%sis currently not in the unit path of the package.%sAdd \"%s\" to unit path?"
 msgstr "El fitxer %s%s%s%sja no és a la trajectòria d'unitats del paquet.%s%sVoleu afegir %s%s%s a la trajectòria de les unitats? "
 
-#: lazarusidestrconsts.lispkgedtherearemorefunctionsinthepopupmenu
-msgid "There are more functions in the popupmenu"
-msgstr "Hi ha més funcions en el menú emergent"
+#: lazarusidestrconsts.lispkgedmorefunctionsforthepackage
+msgid "More functions for the package"
+msgstr ""
 
 #: lazarusidestrconsts.lispkgfiletypebinary
 msgctxt "lazarusidestrconsts.lispkgfiletypebinary"

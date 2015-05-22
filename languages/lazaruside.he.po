@@ -3875,6 +3875,10 @@ msgstr "שם קובץ"
 msgid "File not unit"
 msgstr "הקובץ אינו יחידה"
 
+#: lazarusidestrconsts.lisa2piconandsize
+msgid "Icon (maximum 24x24):"
+msgstr ""
+
 #: lazarusidestrconsts.lisa2pinvalidancestortype
 msgid "Invalid Ancestor Type"
 msgstr "סוג קדום לא מוכר"
@@ -4266,6 +4270,10 @@ msgstr ""
 #: lazarusidestrconsts.lisaddressbreakpoint
 msgctxt "lazarusidestrconsts.lisaddressbreakpoint"
 msgid "&Address Breakpoint ..."
+msgstr ""
+
+#: lazarusidestrconsts.lisaddsub
+msgid "Add >>"
 msgstr ""
 
 #: lazarusidestrconsts.lisaddtoincludesearchpath
@@ -5790,9 +5798,9 @@ msgstr ""
 msgid "Click here to browse the file"
 msgstr "לחץ כאן בשביל לצפות בקובץ"
 
-#: lazarusidestrconsts.lisclicktoseethepossibleuses
-msgid "Click to see the possible uses"
-msgstr "הקלק כדי לראות את השימושים האפשריים"
+#: lazarusidestrconsts.lisclicktoseethechoices
+msgid "Click to see the choices"
+msgstr ""
 
 #: lazarusidestrconsts.lisclicktoselectpalettepage
 msgid "Click to Select Palette Page"
@@ -14091,8 +14099,8 @@ msgstr ""
 msgid "Disable I18N of lfm"
 msgstr ""
 
-#: lazarusidestrconsts.lispckeditaddfiles
-msgid "Add files from the file system"
+#: lazarusidestrconsts.lispckeditaddfilesfromfilesystem
+msgid "Add Files from File System"
 msgstr ""
 
 #: lazarusidestrconsts.lispckeditaddotheritems
@@ -14154,7 +14162,9 @@ msgid "Dependency Properties"
 msgstr "תכונות התלות"
 
 #: lazarusidestrconsts.lispckediteditgeneraloptions
-msgid "Edit General Options"
+#, fuzzy
+#| msgid "Edit General Options"
+msgid "Edit general options"
 msgstr "ערוך אפשרויות כלליות"
 
 #: lazarusidestrconsts.lispckeditfileproperties
@@ -14164,10 +14174,6 @@ msgstr "תכונות קובץ"
 #: lazarusidestrconsts.lispckeditinstall
 msgid "Install"
 msgstr "התקן"
-
-#: lazarusidestrconsts.lispckeditinstallpackageintheide
-msgid "Install package in the IDE"
-msgstr "התקן חבילה ב IDE"
 
 #: lazarusidestrconsts.lispckeditinvalidmaximumversion
 msgid "Invalid maximum version"
@@ -14662,9 +14668,9 @@ msgstr "לשחזר חבילה?"
 msgid "The file \"%s\"%sis currently not in the unit path of the package.%sAdd \"%s\" to unit path?"
 msgstr "הקובץ  %s%s%s%s אינו בנתיב החבילה כרגע. להוסיף אותו לנתיב החבילה?"
 
-#: lazarusidestrconsts.lispkgedtherearemorefunctionsinthepopupmenu
-msgid "There are more functions in the popupmenu"
-msgstr "יש עוד פונקציות בתפריט הקופץ"
+#: lazarusidestrconsts.lispkgedmorefunctionsforthepackage
+msgid "More functions for the package"
+msgstr ""
 
 #: lazarusidestrconsts.lispkgfiletypebinary
 msgctxt "lazarusidestrconsts.lispkgfiletypebinary"

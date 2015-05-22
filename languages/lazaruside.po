@@ -3646,6 +3646,10 @@ msgstr ""
 msgid "File not unit"
 msgstr ""
 
+#: lazarusidestrconsts.lisa2piconandsize
+msgid "Icon (maximum 24x24):"
+msgstr ""
+
 #: lazarusidestrconsts.lisa2pinvalidancestortype
 msgid "Invalid Ancestor Type"
 msgstr ""
@@ -3992,6 +3996,10 @@ msgstr ""
 #: lazarusidestrconsts.lisaddressbreakpoint
 msgctxt "lazarusidestrconsts.lisaddressbreakpoint"
 msgid "&Address Breakpoint ..."
+msgstr ""
+
+#: lazarusidestrconsts.lisaddsub
+msgid "Add >>"
 msgstr ""
 
 #: lazarusidestrconsts.lisaddtoincludesearchpath
@@ -5417,8 +5425,8 @@ msgstr ""
 msgid "Click here to browse the file"
 msgstr ""
 
-#: lazarusidestrconsts.lisclicktoseethepossibleuses
-msgid "Click to see the possible uses"
+#: lazarusidestrconsts.lisclicktoseethechoices
+msgid "Click to see the choices"
 msgstr ""
 
 #: lazarusidestrconsts.lisclicktoselectpalettepage
@@ -13145,8 +13153,8 @@ msgstr ""
 msgid "Disable I18N of lfm"
 msgstr ""
 
-#: lazarusidestrconsts.lispckeditaddfiles
-msgid "Add files from the file system"
+#: lazarusidestrconsts.lispckeditaddfilesfromfilesystem
+msgid "Add Files from File System"
 msgstr ""
 
 #: lazarusidestrconsts.lispckeditaddotheritems
@@ -13204,7 +13212,7 @@ msgid "Dependency Properties"
 msgstr ""
 
 #: lazarusidestrconsts.lispckediteditgeneraloptions
-msgid "Edit General Options"
+msgid "Edit general options"
 msgstr ""
 
 #: lazarusidestrconsts.lispckeditfileproperties
@@ -13213,10 +13221,6 @@ msgstr ""
 
 #: lazarusidestrconsts.lispckeditinstall
 msgid "Install"
-msgstr ""
-
-#: lazarusidestrconsts.lispckeditinstallpackageintheide
-msgid "Install package in the IDE"
 msgstr ""
 
 #: lazarusidestrconsts.lispckeditinvalidmaximumversion
@@ -13665,8 +13669,8 @@ msgstr ""
 msgid "The file \"%s\"%sis currently not in the unit path of the package.%sAdd \"%s\" to unit path?"
 msgstr ""
 
-#: lazarusidestrconsts.lispkgedtherearemorefunctionsinthepopupmenu
-msgid "There are more functions in the popupmenu"
+#: lazarusidestrconsts.lispkgedmorefunctionsforthepackage
+msgid "More functions for the package"
 msgstr ""
 
 #: lazarusidestrconsts.lispkgfiletypebinary

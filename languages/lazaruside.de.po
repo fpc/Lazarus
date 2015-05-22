@@ -3661,6 +3661,10 @@ msgstr "Dateiname"
 msgid "File not unit"
 msgstr "Keine Unit-Datei"
 
+#: lazarusidestrconsts.lisa2piconandsize
+msgid "Icon (maximum 24x24):"
+msgstr ""
+
 #: lazarusidestrconsts.lisa2pinvalidancestortype
 msgid "Invalid Ancestor Type"
 msgstr "Ungültige Basisklasse"
@@ -4008,6 +4012,10 @@ msgstr "Adresse:"
 msgctxt "lazarusidestrconsts.lisaddressbreakpoint"
 msgid "&Address Breakpoint ..."
 msgstr "&Adresshaltepunkt ..."
+
+#: lazarusidestrconsts.lisaddsub
+msgid "Add >>"
+msgstr ""
 
 #: lazarusidestrconsts.lisaddtoincludesearchpath
 msgid "Add to include search path?"
@@ -5432,9 +5440,9 @@ msgstr "Filter für Einstellungen zurücksetzen"
 msgid "Click here to browse the file"
 msgstr "Hier klicken um die Datei zu browsen"
 
-#: lazarusidestrconsts.lisclicktoseethepossibleuses
-msgid "Click to see the possible uses"
-msgstr "Klicken sie, um die Einsatzmöglichkeiten zu sehen"
+#: lazarusidestrconsts.lisclicktoseethechoices
+msgid "Click to see the choices"
+msgstr ""
 
 #: lazarusidestrconsts.lisclicktoselectpalettepage
 msgid "Click to Select Palette Page"
@@ -13190,9 +13198,9 @@ msgstr ""
 msgid "Disable I18N of lfm"
 msgstr ""
 
-#: lazarusidestrconsts.lispckeditaddfiles
-msgid "Add files from the file system"
-msgstr "Dateien aus dem Dateisystem hinzufügen"
+#: lazarusidestrconsts.lispckeditaddfilesfromfilesystem
+msgid "Add Files from File System"
+msgstr ""
 
 #: lazarusidestrconsts.lispckeditaddotheritems
 msgid "Add other items"
@@ -13249,7 +13257,9 @@ msgid "Dependency Properties"
 msgstr "Abhängigkeitseigenschaften"
 
 #: lazarusidestrconsts.lispckediteditgeneraloptions
-msgid "Edit General Options"
+#, fuzzy
+#| msgid "Edit General Options"
+msgid "Edit general options"
 msgstr "Allgemeine Einstellungen"
 
 #: lazarusidestrconsts.lispckeditfileproperties
@@ -13259,10 +13269,6 @@ msgstr "Dateieigenschaften"
 #: lazarusidestrconsts.lispckeditinstall
 msgid "Install"
 msgstr "Installieren"
-
-#: lazarusidestrconsts.lispckeditinstallpackageintheide
-msgid "Install package in the IDE"
-msgstr "Installiere Packages in der IDE"
 
 #: lazarusidestrconsts.lispckeditinvalidmaximumversion
 msgid "Invalid maximum version"
@@ -13710,9 +13716,9 @@ msgstr "Package zurücknehmen?"
 msgid "The file \"%s\"%sis currently not in the unit path of the package.%sAdd \"%s\" to unit path?"
 msgstr "Die Datei \"%s\"%sbefindet sich derzeit nicht im Unitpfad des Packages.%s \"%s\" In den Unitpfad aufnehmen?"
 
-#: lazarusidestrconsts.lispkgedtherearemorefunctionsinthepopupmenu
-msgid "There are more functions in the popupmenu"
-msgstr "Das Popup-Menü enthält mehr Funktionen"
+#: lazarusidestrconsts.lispkgedmorefunctionsforthepackage
+msgid "More functions for the package"
+msgstr ""
 
 #: lazarusidestrconsts.lispkgfiletypebinary
 msgctxt "lazarusidestrconsts.lispkgfiletypebinary"

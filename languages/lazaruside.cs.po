@@ -3674,6 +3674,10 @@ msgstr "Jméno souboru"
 msgid "File not unit"
 msgstr "Soubor není jednotka"
 
+#: lazarusidestrconsts.lisa2piconandsize
+msgid "Icon (maximum 24x24):"
+msgstr ""
+
 #: lazarusidestrconsts.lisa2pinvalidancestortype
 msgid "Invalid Ancestor Type"
 msgstr "Neplatný typ předka"
@@ -4030,6 +4034,10 @@ msgstr "Adresa:"
 msgctxt "lazarusidestrconsts.lisaddressbreakpoint"
 msgid "&Address Breakpoint ..."
 msgstr "Adresa bodu přerušení ..."
+
+#: lazarusidestrconsts.lisaddsub
+msgid "Add >>"
+msgstr ""
 
 #: lazarusidestrconsts.lisaddtoincludesearchpath
 msgid "Add to include search path?"
@@ -5466,9 +5474,9 @@ msgstr "Vyčistit filtr pro možnosti"
 msgid "Click here to browse the file"
 msgstr "K procházení souboru klikněte zde"
 
-#: lazarusidestrconsts.lisclicktoseethepossibleuses
-msgid "Click to see the possible uses"
-msgstr "Klikněte pro zobrazení možných použití"
+#: lazarusidestrconsts.lisclicktoseethechoices
+msgid "Click to see the choices"
+msgstr ""
 
 #: lazarusidestrconsts.lisclicktoselectpalettepage
 msgid "Click to Select Palette Page"
@@ -13267,8 +13275,8 @@ msgstr "Vyčistit pro použití jména balíčku"
 msgid "Disable I18N of lfm"
 msgstr "Zakázat I18N v lfm"
 
-#: lazarusidestrconsts.lispckeditaddfiles
-msgid "Add files from the file system"
+#: lazarusidestrconsts.lispckeditaddfilesfromfilesystem
+msgid "Add Files from File System"
 msgstr ""
 
 #: lazarusidestrconsts.lispckeditaddotheritems
@@ -13326,7 +13334,9 @@ msgid "Dependency Properties"
 msgstr "Vlastnosti závislosti"
 
 #: lazarusidestrconsts.lispckediteditgeneraloptions
-msgid "Edit General Options"
+#, fuzzy
+#| msgid "Edit General Options"
+msgid "Edit general options"
 msgstr "Upravit obecné nastavení"
 
 #: lazarusidestrconsts.lispckeditfileproperties
@@ -13336,10 +13346,6 @@ msgstr "Vlastnosti souboru"
 #: lazarusidestrconsts.lispckeditinstall
 msgid "Install"
 msgstr "Instalovat"
-
-#: lazarusidestrconsts.lispckeditinstallpackageintheide
-msgid "Install package in the IDE"
-msgstr "Instalovat balíček do IDE"
 
 #: lazarusidestrconsts.lispckeditinvalidmaximumversion
 msgid "Invalid maximum version"
@@ -13791,9 +13797,9 @@ msgstr "Navrátit balíček?"
 msgid "The file \"%s\"%sis currently not in the unit path of the package.%sAdd \"%s\" to unit path?"
 msgstr "Soubor \"%s\"%snení aktuálně v cestě jednotek balíčku.%sPřidat \"%s\" do cesty jednotek?"
 
-#: lazarusidestrconsts.lispkgedtherearemorefunctionsinthepopupmenu
-msgid "There are more functions in the popupmenu"
-msgstr "V roletovém menu je více funkcí"
+#: lazarusidestrconsts.lispkgedmorefunctionsforthepackage
+msgid "More functions for the package"
+msgstr ""
 
 #: lazarusidestrconsts.lispkgfiletypebinary
 msgctxt "lazarusidestrconsts.lispkgfiletypebinary"

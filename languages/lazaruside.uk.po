@@ -3710,6 +3710,10 @@ msgstr "Назва файлу"
 msgid "File not unit"
 msgstr "Файл не є модулем"
 
+#: lazarusidestrconsts.lisa2piconandsize
+msgid "Icon (maximum 24x24):"
+msgstr ""
+
 #: lazarusidestrconsts.lisa2pinvalidancestortype
 msgid "Invalid Ancestor Type"
 msgstr "Неправильний тип предка"
@@ -4099,6 +4103,10 @@ msgstr "Адреса:"
 msgctxt "lazarusidestrconsts.lisaddressbreakpoint"
 msgid "&Address Breakpoint ..."
 msgstr "&Точка зупинки за Адресою ..."
+
+#: lazarusidestrconsts.lisaddsub
+msgid "Add >>"
+msgstr ""
 
 #: lazarusidestrconsts.lisaddtoincludesearchpath
 msgid "Add to include search path?"
@@ -5564,9 +5572,9 @@ msgstr ""
 msgid "Click here to browse the file"
 msgstr "Клацніть тут для вибору файлу"
 
-#: lazarusidestrconsts.lisclicktoseethepossibleuses
-msgid "Click to see the possible uses"
-msgstr "Клацніть для перегляду можливих варіантів використання"
+#: lazarusidestrconsts.lisclicktoseethechoices
+msgid "Click to see the choices"
+msgstr ""
 
 #: lazarusidestrconsts.lisclicktoselectpalettepage
 msgid "Click to Select Palette Page"
@@ -13438,8 +13446,8 @@ msgstr "Очистити для викор назви пакету"
 msgid "Disable I18N of lfm"
 msgstr "Вимкнути I18N в lfm"
 
-#: lazarusidestrconsts.lispckeditaddfiles
-msgid "Add files from the file system"
+#: lazarusidestrconsts.lispckeditaddfilesfromfilesystem
+msgid "Add Files from File System"
 msgstr ""
 
 #: lazarusidestrconsts.lispckeditaddotheritems
@@ -13497,7 +13505,9 @@ msgid "Dependency Properties"
 msgstr "Властивості Залежності"
 
 #: lazarusidestrconsts.lispckediteditgeneraloptions
-msgid "Edit General Options"
+#, fuzzy
+#| msgid "Edit General Options"
+msgid "Edit general options"
 msgstr "Редагувати Загальні Параметри"
 
 #: lazarusidestrconsts.lispckeditfileproperties
@@ -13507,10 +13517,6 @@ msgstr "Властивості файлу"
 #: lazarusidestrconsts.lispckeditinstall
 msgid "Install"
 msgstr "Встановити"
-
-#: lazarusidestrconsts.lispckeditinstallpackageintheide
-msgid "Install package in the IDE"
-msgstr "Встановити пакунки IDE"
 
 #: lazarusidestrconsts.lispckeditinvalidmaximumversion
 msgid "Invalid maximum version"
@@ -13974,9 +13980,9 @@ msgstr "Повернути пакунок?"
 msgid "The file \"%s\"%sis currently not in the unit path of the package.%sAdd \"%s\" to unit path?"
 msgstr "Файл %s%s%s%sзараз не знаходиться в списку шляхів модулів пакунку.%s%sДодати %s%s%s в шлях?"
 
-#: lazarusidestrconsts.lispkgedtherearemorefunctionsinthepopupmenu
-msgid "There are more functions in the popupmenu"
-msgstr "У спливаючому меню більше функцій"
+#: lazarusidestrconsts.lispkgedmorefunctionsforthepackage
+msgid "More functions for the package"
+msgstr ""
 
 #: lazarusidestrconsts.lispkgfiletypebinary
 msgctxt "lazarusidestrconsts.lispkgfiletypebinary"

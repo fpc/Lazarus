@@ -5,10 +5,12 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2015-05-13 00:40+0300\n"
+"PO-Revision-Date: 2015-05-22 03:26+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
+"Language: ru\n"
+"X-Generator: Poedit 1.7.7\n"
 
 #: lazarusidestrconsts.dbgbreakgroupdlgcaption
 msgctxt "lazarusidestrconsts.dbgbreakgroupdlgcaption"
@@ -3652,6 +3654,10 @@ msgstr "Имя файла"
 msgid "File not unit"
 msgstr "Файл не является модулем"
 
+#: lazarusidestrconsts.lisa2piconandsize
+msgid "Icon (maximum 24x24):"
+msgstr "Значок (не более 24x24):"
+
 #: lazarusidestrconsts.lisa2pinvalidancestortype
 msgid "Invalid Ancestor Type"
 msgstr "Неверный тип предка"
@@ -3999,6 +4005,10 @@ msgstr "Адрес:"
 msgctxt "lazarusidestrconsts.lisaddressbreakpoint"
 msgid "&Address Breakpoint ..."
 msgstr "Точка останова по &адресу ..."
+
+#: lazarusidestrconsts.lisaddsub
+msgid "Add >>"
+msgstr "Добавить >>"
 
 #: lazarusidestrconsts.lisaddtoincludesearchpath
 msgid "Add to include search path?"
@@ -5423,9 +5433,9 @@ msgstr "Очистить фильтр параметров"
 msgid "Click here to browse the file"
 msgstr "Щёлкните здесь для выбора файла"
 
-#: lazarusidestrconsts.lisclicktoseethepossibleuses
-msgid "Click to see the possible uses"
-msgstr "Щёлкните для просмотра возможных вариантов использования"
+#: lazarusidestrconsts.lisclicktoseethechoices
+msgid "Click to see the choices"
+msgstr "Нажмите, чтобы увидеть возможные действия"
 
 #: lazarusidestrconsts.lisclicktoselectpalettepage
 msgid "Click to Select Palette Page"
@@ -13187,9 +13197,9 @@ msgstr "Очистите это поле для использования им�
 msgid "Disable I18N of lfm"
 msgstr "Отключить i18n для LFM"
 
-#: lazarusidestrconsts.lispckeditaddfiles
-msgid "Add files from the file system"
-msgstr "Добавить файлы из файловой системы"
+#: lazarusidestrconsts.lispckeditaddfilesfromfilesystem
+msgid "Add Files from File System"
+msgstr "Добавить файлы"
 
 #: lazarusidestrconsts.lispckeditaddotheritems
 msgid "Add other items"
@@ -13246,7 +13256,7 @@ msgid "Dependency Properties"
 msgstr "Свойства зависимости"
 
 #: lazarusidestrconsts.lispckediteditgeneraloptions
-msgid "Edit General Options"
+msgid "Edit general options"
 msgstr "Изменить общие параметры"
 
 #: lazarusidestrconsts.lispckeditfileproperties
@@ -13256,10 +13266,6 @@ msgstr "Свойства файла"
 #: lazarusidestrconsts.lispckeditinstall
 msgid "Install"
 msgstr "Установить"
-
-#: lazarusidestrconsts.lispckeditinstallpackageintheide
-msgid "Install package in the IDE"
-msgstr "Установить пакет в IDE"
 
 #: lazarusidestrconsts.lispckeditinvalidmaximumversion
 msgid "Invalid maximum version"
@@ -13707,9 +13713,9 @@ msgstr "Возвратить пакет?"
 msgid "The file \"%s\"%sis currently not in the unit path of the package.%sAdd \"%s\" to unit path?"
 msgstr "Файл \"%s\"%sсейчас не находится в списке путей к модулям пакета.%sДобавить \"%s\" к списку путей к модулям?"
 
-#: lazarusidestrconsts.lispkgedtherearemorefunctionsinthepopupmenu
-msgid "There are more functions in the popupmenu"
-msgstr "Во всплывающем меню больше функций"
+#: lazarusidestrconsts.lispkgedmorefunctionsforthepackage
+msgid "More functions for the package"
+msgstr "Прочие возможности управления пакетом"
 
 #: lazarusidestrconsts.lispkgfiletypebinary
 msgctxt "lazarusidestrconsts.lispkgfiletypebinary"

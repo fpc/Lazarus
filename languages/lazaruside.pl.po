@@ -3876,6 +3876,10 @@ msgstr "Nazwa pliku"
 msgid "File not unit"
 msgstr "Plik nie jest modułem"
 
+#: lazarusidestrconsts.lisa2piconandsize
+msgid "Icon (maximum 24x24):"
+msgstr ""
+
 #: lazarusidestrconsts.lisa2pinvalidancestortype
 msgid "Invalid Ancestor Type"
 msgstr "Nieprawidłowy typ przodka"
@@ -4256,6 +4260,10 @@ msgstr "Adres:"
 msgctxt "lazarusidestrconsts.lisaddressbreakpoint"
 msgid "&Address Breakpoint ..."
 msgstr "Pułapka adresu ..."
+
+#: lazarusidestrconsts.lisaddsub
+msgid "Add >>"
+msgstr ""
 
 #: lazarusidestrconsts.lisaddtoincludesearchpath
 msgid "Add to include search path?"
@@ -5717,8 +5725,8 @@ msgstr ""
 msgid "Click here to browse the file"
 msgstr ""
 
-#: lazarusidestrconsts.lisclicktoseethepossibleuses
-msgid "Click to see the possible uses"
+#: lazarusidestrconsts.lisclicktoseethechoices
+msgid "Click to see the choices"
 msgstr ""
 
 #: lazarusidestrconsts.lisclicktoselectpalettepage
@@ -13779,8 +13787,8 @@ msgstr ""
 msgid "Disable I18N of lfm"
 msgstr ""
 
-#: lazarusidestrconsts.lispckeditaddfiles
-msgid "Add files from the file system"
+#: lazarusidestrconsts.lispckeditaddfilesfromfilesystem
+msgid "Add Files from File System"
 msgstr ""
 
 #: lazarusidestrconsts.lispckeditaddotheritems
@@ -13840,7 +13848,9 @@ msgid "Dependency Properties"
 msgstr ""
 
 #: lazarusidestrconsts.lispckediteditgeneraloptions
-msgid "Edit General Options"
+#, fuzzy
+#| msgid "Edit General Options"
+msgid "Edit general options"
 msgstr "Zmień ogólne opcje"
 
 #: lazarusidestrconsts.lispckeditfileproperties
@@ -13850,10 +13860,6 @@ msgstr "Właściwości plku"
 #: lazarusidestrconsts.lispckeditinstall
 msgid "Install"
 msgstr "Zainstaluj"
-
-#: lazarusidestrconsts.lispckeditinstallpackageintheide
-msgid "Install package in the IDE"
-msgstr "Zainstaluj pakiet w IDE"
 
 #: lazarusidestrconsts.lispckeditinvalidmaximumversion
 msgid "Invalid maximum version"
@@ -14339,9 +14345,9 @@ msgstr "Chcesz przywrócić pakiet?"
 msgid "The file \"%s\"%sis currently not in the unit path of the package.%sAdd \"%s\" to unit path?"
 msgstr "Plik %s%s%s%sis jest poza ścieżką do modułów .%s%sCzy dodać %s%s%s do ścieżki do modułów?"
 
-#: lazarusidestrconsts.lispkgedtherearemorefunctionsinthepopupmenu
-msgid "There are more functions in the popupmenu"
-msgstr "Więcej funkcji jest w menu podręcznym"
+#: lazarusidestrconsts.lispkgedmorefunctionsforthepackage
+msgid "More functions for the package"
+msgstr ""
 
 #: lazarusidestrconsts.lispkgfiletypebinary
 msgctxt "lazarusidestrconsts.lispkgfiletypebinary"
