@@ -1,12 +1,12 @@
 msgid ""
 msgstr ""
 "Last-Translator: Swen Heinig <swen@heinig.email>\n"
-"PO-Revision-Date: 2015-01-27 16:33+0100\n"
+"PO-Revision-Date: 2015-05-21 23:36+0100\n"
 "Project-Id-Version: lazreport\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.5.4\n"
+"X-Generator: Poedit 1.7.5\n"
 "MIME-Version: 1.0\n"
 "Last-Translator: Olivier Guilbaud\n"
 "PO-Revision-Date: 2005-05-01 18:33+0200\n"
@@ -286,7 +286,7 @@ msgstr "t mmm jjjj"
 
 #: lr_const.sdateformat4
 msgid "d mmmm yyyy"
-msgstr "d mmmm jjjj"
+msgstr "t mmmm jjjj"
 
 #: lr_const.sdatetimecategory
 msgid "Date and time"
@@ -462,7 +462,7 @@ msgstr "Bunte &Schaltflächen"
 
 #: lr_const.sdesoptionsformcontents
 msgid "&Contents"
-msgstr "&Inhalt"
+msgstr "&Inhalte"
 
 #: lr_const.sdesoptionsformdes
 msgctxt "lr_const.sdesoptionsformdes"
@@ -2348,7 +2348,7 @@ msgstr "Umrandeter Bereich"
 
 #: lr_const.sroundrectformgradient
 msgid "Gradient"
-msgstr ""
+msgstr "Steigung"
 
 #: lr_const.sroundrectformhint
 msgid "Click here to define the shadow color or gradient colors"
@@ -2499,11 +2499,11 @@ msgstr "Unbenannt"
 
 #: lr_const.susefixedfontsettings
 msgid "Use fixed font settings"
-msgstr ""
+msgstr "Feste Schrifteinstellungen verwenden"
 
 #: lr_const.susememofontsettings
 msgid "Use Memo font settings"
-msgstr ""
+msgstr "Memo-Schrifteinstellungen verwenden"
 
 #: lr_const.susesyntaxhighlight
 msgid "Use syntax highlight"
@@ -2533,7 +2533,7 @@ msgstr "Zeile#"
 
 #: lr_const.svar6
 msgid "Line through#"
-msgstr ""
+msgstr "Zeile durchgängig#"
 
 #: lr_const.svar7
 msgid "Column#"
@@ -2604,4 +2604,3 @@ msgstr "Wortumbruch"
 #: lr_const.syes
 msgid "Yes"
 msgstr "Ja"
-
