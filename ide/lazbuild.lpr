@@ -415,6 +415,9 @@ begin
   
   if not Init then exit;
 
+  if ConsoleVerbosity>=0 then
+    debugln(['Hint: (lazarus) compile package "',AFilename,'"']);
+
   APackage:=LoadPackage(AFilename);
   if APackage=nil then
     Error(ErrorLoadPackageFailed, 'unable to load package "'+AFilename+'"');
