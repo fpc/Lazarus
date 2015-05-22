@@ -33,8 +33,11 @@ uses
   Classes, Forms, Graphics, StdCtrls, Buttons, ExtCtrls, SysUtils;
 
 type
+
+  { TfrmAboutBox }
+
   TfrmAboutBox = class(TForm)
-    bbOK:          TBitBtn;
+    bbOK:          TButton;
     pnlClient:     TPanel;
     imgOpenSource: TImage;
     mWarning:      TMemo;
