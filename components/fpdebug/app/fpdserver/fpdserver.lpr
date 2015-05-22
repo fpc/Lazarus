@@ -58,10 +58,13 @@ var
   CommandStr: string;
 begin
   // quick check parameters
-  ErrorMsg:=CheckOptions('hf:tdp:a::', ['help','filename:','tcp','daemon','port:','autoport::'], True);
+  ErrorMsg:=CheckOptions('hf:tdp:a::i', ['help','filename:','tcp','daemon','port:','autoport::','interactive'], True);
 
-  writeln('FPDebug Server');
-  writeln('Copyright (c) 2015 by Joost van der Sluis');
+  if not HasOption('i','interactive') then
+    begin
+    writeln('FPDebug Server');
+    writeln('Copyright (c) 2015 by Joost van der Sluis');
+    end;
 
   if ErrorMsg<>'' then
     begin
@@ -121,6 +124,18 @@ begin
   else
     TCPServerThread := nil;
 
+  if HasOption('i','interactive') then
+    begin
+    if assigned(TCPServerThread) then
+      begin
+      TCPServerThread.WaitForInitialization(Port);
+      end
+    else
+      Port := -1;
+    writeln(TJSonInOutputProcessor.InteractiveInitializationMessage(Port));
+    FlushThread;
+    end;
+
   CommandStr := GetOptionValue('f', 'filename');
   if CommandStr<>'' then
     begin
@@ -168,13 +183,14 @@ procedure TFPDServerApplication.WriteHelp;
 begin
   writeln('fpdserver [options]');
   writeln(' List of options without argument:');
-  writeln('  -h --help      Show this help message');
-  writeln('  -t --tcp       Start listening to incoming tcp-connections');
-  writeln('  -d --daemon    Do not use the console in- or output');
+  writeln('  -h --help        Show this help message');
+  writeln('  -t --tcp         Start listening to incoming tcp-connections');
+  writeln('  -d --daemon      Do not use the console in- or output');
+  writeln('  -i --interactive Run in interactive mode for automatic parsing');
   writeln(' List of options with argument:');
-  writeln('  -f --filename  Set the filename of the executable to debug');
-  writeln('  -p --port      Set the port (9159) to listen for incoming tcp-connections');
-  writeln('  -a --autoport  Try to bind to n (5) sequential ports when a port is in use');
+  writeln('  -f --filename    Set the filename of the executable to debug');
+  writeln('  -p --port        Set the port (9159) to listen for incoming tcp-connections');
+  writeln('  -a --autoport    Try to bind to n (5) sequential ports when a port is in use');
 end;
 
 var

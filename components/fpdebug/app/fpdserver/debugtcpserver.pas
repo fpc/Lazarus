@@ -35,6 +35,7 @@ type
     FTCPConnection: TInetServer;
     FConnectionList: TConnectionList;
     FDebugThread: TFpDebugThread;
+    FInitializationFinished: PRTLEvent;
     function CreateInetServer: TInetServer;
     procedure FTCPConnectionConnect(Sender: TObject; Data: TSocketStream);
     procedure FTCPConnectionAcceptError(Sender: TObject; ASocket: Longint; E: Exception; var ErrorAction: TAcceptErrorAction);
@@ -42,6 +43,7 @@ type
   protected
     procedure Execute; override;
   public
+    procedure WaitForInitialization(out Port: integer);
     procedure StopListening;
     constructor create(ADebugThread: TFpDebugThread; APort, ASensePorts: integer);
     procedure RemoveConnection(ADebugTcpConnectionThread: TFpDebugTcpConnectionThread);
@@ -260,10 +262,14 @@ begin
   if conn then
     begin
     result := InetServer;
-    FDebugThread.SendNotification(-1, ntListenerMessage, null, 'Listening for incoming TCP-connections on port %d', '', [result.Port])
+    FPort:=result.Port;
+    FDebugThread.SendNotification(-1, ntListenerMessage, null, 'Listening for incoming TCP-connections on port %d', '', [FPort])
     end
   else
+    begin
+    FPort:=-1;
     FDebugThread.SendNotification(-1, ntConnectionProblem, null, 'Failed to start listening for incoming TCP-connections: %s', '', [FFirstError])
+    end;
 end;
 
 procedure TFpDebugTcpServer.FTCPConnectionConnect(Sender: TObject; Data: TSocketStream);
@@ -281,6 +287,7 @@ var
 begin
   try
     FTCPConnection := CreateInetServer;
+    RTLeventSetEvent(FInitializationFinished);
     if assigned(FTCPConnection) then
       begin
       try
@@ -302,6 +309,12 @@ begin
   end;
 end;
 
+procedure TFpDebugTcpServer.WaitForInitialization(out Port: integer);
+begin
+  RTLeventWaitFor(FInitializationFinished);
+  Port := FPort;
+end;
+
 procedure TFpDebugTcpServer.StopListening;
 begin
   Terminate;
@@ -317,6 +330,7 @@ begin
   FSensePorts:=ASensePorts;
   FDebugThread:=ADebugThread;
   FConnectionList:=TConnectionList.Create(false);
+  FInitializationFinished:=RTLEventCreate;
   inherited Create(false);
 end;
 
@@ -329,6 +343,7 @@ destructor TFpDebugTcpServer.Destroy;
 var
   i: integer;
 begin
+  RTLeventdestroy(FInitializationFinished);
   for i := 0 to FConnectionList.Count-1 do
     FConnectionList[i].Terminate;
   for i := 0 to FConnectionList.Count-1 do

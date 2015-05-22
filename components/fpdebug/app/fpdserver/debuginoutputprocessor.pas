@@ -38,6 +38,7 @@ type
   public
     function TextToCommand(const ACommandText: string): TFpDebugThreadCommand; override;
     function EventToText(AnEvent: TFpDebugEvent): string; override;
+    class function InteractiveInitializationMessage(APort: integer): string;
   end;
 
 implementation
@@ -192,6 +193,24 @@ begin
     result := JSonEvent.AsJSON;
   finally
     JSonEvent.Free;
+  end;
+end;
+
+class function TJSonInOutputProcessor.InteractiveInitializationMessage(APort: integer): string;
+var
+  s: string;
+  JSonMessage: TJSONObject;
+  JSonLocationRec: TJSONObject;
+begin
+  JSonMessage := TJSONObject.Create;
+  try
+    JSonMessage.Add('welcome', 'FPDebug Server');
+    JSonMessage.Add('copyright', 'Joost van der Sluis (2015)');
+    if APort>-1 then
+      JSonMessage.Add('port', APort);
+    result := JSonMessage.AsJSON;
+  finally
+    JSonMessage.Free;
   end;
 end;
 
