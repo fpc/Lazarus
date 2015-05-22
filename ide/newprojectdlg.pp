@@ -32,8 +32,8 @@ interface
 
 uses
   Classes, SysUtils, Forms, Graphics, Controls, Project, Buttons, ButtonPanel,
-  StdCtrls, ProjectIntf, ExtCtrls, LazarusIDEStrConsts,
-  IDEHelpIntf;
+  StdCtrls, ProjectIntf, ExtCtrls, ComCtrls, LazarusIDEStrConsts,
+  IDEHelpIntf, IDEImagesIntf;
 
 type
 
@@ -43,12 +43,12 @@ type
     ButtonPanel: TButtonPanel;
     DescriptionGroupBox: TGroupBox;
     HelpLabel: TLabel;
-    ListBox: TListBox;
+    Tree: TTreeView;
     Panel1: TPanel;
     Splitter1: TSplitter;
     procedure HelpButtonClick(Sender: TObject);
-    procedure ListBoxDblClick(Sender: TObject);
-    procedure ListBoxSelectionChange(Sender: TObject; {%H-}User: boolean);
+    procedure TreeDblClick(Sender: TObject);
+    procedure TreeSelectionChange(Sender: TObject);
   private
     FProjectDescriptor: TProjectDescriptor;
     procedure FillHelpLabel;
@@ -91,33 +91,58 @@ end;
 
 procedure TNewProjectDialog.FillHelpLabel;
 begin
-  FProjectDescriptor := TProjectDescriptor(ListBox.Items.Objects[ListBox.ItemIndex]);
-  HelpLabel.Caption:=FProjectDescriptor.GetLocalizedDescription;
-  HelpLabel.Width:=Self.ClientWidth-HelpLabel.Left-10;
+  if Assigned(Tree.Selected) then
+    if Assigned(Tree.Selected.Data) then
+    begin
+      FProjectDescriptor:=TProjectDescriptor(Tree.Selected.Data);
+      HelpLabel.Caption:=FProjectDescriptor.GetLocalizedDescription;
+      ButtonPanel.OKButton.Enabled:=true;
+    end
+    else
+    begin
+      FProjectDescriptor:=nil;
+      HelpLabel.Caption:=lisChooseOneOfTheseItemsToCreateANewProject;
+      ButtonPanel.OKButton.Enabled:=false;
+    end;
 end;
 
 procedure TNewProjectDialog.SetupComponents;
 var
+  NIndexTemplate, NIndexFolder: integer;
+  RootNode, ItemNode: TTreeNode;
   i: integer;
 begin
-  with ListBox do begin
-    with Items do begin
-      BeginUpdate;
-      for i:=0 to ProjectDescriptors.Count-1 do begin
-        if ProjectDescriptors[i].VisibleInNewDialog then
-          AddObject(ProjectDescriptors[i].GetLocalizedName, ProjectDescriptors[i]);
+  Tree.Images:=IDEImages.Images_16;
+  NIndexFolder:=IDEImages.LoadImage(16, 'folder');
+  NIndexTemplate:=IDEImages.LoadImage(16, 'template');
+
+  with Tree do begin
+    Items.BeginUpdate;
+
+    RootNode:=Items.Add(nil, dlgProject);
+    RootNode.ImageIndex:=NIndexFolder;
+    RootNode.SelectedIndex:=NIndexFolder;
+
+    for i:=0 to ProjectDescriptors.Count-1 do
+      if ProjectDescriptors[i].VisibleInNewDialog then
+      begin
+        ItemNode:=Items.AddChildObject(RootNode, ProjectDescriptors[i].GetLocalizedName, ProjectDescriptors[i]);
+        ItemNode.ImageIndex:=NIndexTemplate;
+        ItemNode.SelectedIndex:=NIndexTemplate;
       end;
-      EndUpdate;
-    end;
-    ItemIndex:=0;
-    OnSelectionChange:=@ListBoxSelectionChange;
+
+    FullExpand;
+    Items.EndUpdate;
+
+    //select first child node
+    if Items.Count>0 then
+      Selected:=Items[1];
   end;
 
-  DescriptionGroupBox.Caption := lisCodeHelpDescrTag;
-
-  ButtonPanel.OKButton.Caption := lisMenuOk;
-  ButtonPanel.HelpButton.Caption := lisMenuHelp;
-  ButtonPanel.CancelButton.Caption := lisCancel;
+  DescriptionGroupBox.Caption:=lisCodeHelpDescrTag;
+  ButtonPanel.OKButton.Caption:=lisOk;
+  ButtonPanel.CancelButton.Caption:=lisCancel;
+  ButtonPanel.HelpButton.Caption:=lisHelp;
 end;
 
 procedure TNewProjectDialog.HelpButtonClick(Sender: TObject);
@@ -125,14 +150,16 @@ begin
   LazarusHelp.ShowHelpForIDEControl(Self);
 end;
 
-procedure TNewProjectDialog.ListBoxDblClick(Sender: TObject);
+procedure TNewProjectDialog.TreeDblClick(Sender: TObject);
+var
+  Pnt: TPoint;
 begin
-  if ListBox.ItemAtPos(ListBox.ScreenToClient(Mouse.CursorPos),true) >= 0 then
+  Pnt:=Tree.ScreenToClient(Mouse.CursorPos);
+  if Assigned(Tree.GetNodeAt(Pnt.X, Pnt.Y)) then
     ModalResult:=mrOk;
 end;
 
-procedure TNewProjectDialog.ListBoxSelectionChange(Sender: TObject;
-  User: boolean);
+procedure TNewProjectDialog.TreeSelectionChange(Sender: TObject);
 begin
   FillHelpLabel;
 end;
