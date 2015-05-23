@@ -275,7 +275,6 @@ type
     procedure FetchNames;
     function GetCollection: TCustomFreeTypeFontCollection;
     function CheckFace: boolean;
-    function CheckInstance: boolean;
   public
     Quality : TGlyphRenderQuality;
     SmallLinePadding: boolean;
@@ -293,6 +292,7 @@ type
     function CharsWidth(AText: string): ArrayOfSingle;
     function CharsPosition(AText: string): ArrayOfCharPosition; overload;
     function CharsPosition(AText: string; AAlign: TFreeTypeAlignments): ArrayOfCharPosition; overload;
+    function CheckInstance: boolean;
     property Name: String read FName write SetName;
     property DPI: integer read GetDPI write SetDPI;
     property SizeInPoints: single read FPointSize write SetPointSize;
@@ -946,6 +946,11 @@ end;
 
 function TFreeTypeFont.GetCharIndex(AUnicodeChar: integer): integer;
 begin
+  if not CheckInstance then
+  begin
+    result := 0;
+    exit;
+  end;
   if FCharmapOk then
   begin
     if FCharmapSymbol then
