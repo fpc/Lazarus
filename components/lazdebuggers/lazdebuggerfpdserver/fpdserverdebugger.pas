@@ -662,7 +662,6 @@ destructor TFPDSocketThread.Destroy;
 begin
   FSendQueue.Free;
   Application.RemoveAsyncCalls(Self);
-  Application.;
   inherited destroy;
 end;
 
