@@ -11,6 +11,8 @@ uses
   FPDbgController,
   DbgIntfBaseTypes,
   DbgIntfDebuggerBase,
+  lazCollections,
+  syncobjs,
   lazfglhash,
   fpjson,
   FpDbgClasses;
@@ -98,12 +100,13 @@ type
     property ListenerIdentifier: integer read FListenerIdentifier;
   end;
   TFpDebugThreadCommandClass = class of TFpDebugThreadCommand;
+  TFpDebugThreadCommandQueue = specialize TLazThreadedQueue<TFpDebugThreadCommand>;
 
   { TFpDebugThread }
 
   TFpDebugThread = class(TThread)
   private
-    FCommandQueue: TThreadList;
+    FCommandQueue: TFpDebugThreadCommandQueue;
     FController: TDbgController;
     FListenerList: TThreadList;
   protected
@@ -269,7 +272,6 @@ end;
 
 procedure TFpDebugThread.Execute;
 var
-  AList: TList;
   ACommand: TFpDebugThreadCommand;
   ARunLoop: boolean;
   AnEvent: TFpDebugEvent;
@@ -283,17 +285,8 @@ begin
   try
     repeat
     try
-      ACommand:=nil;
-      AList := FCommandQueue.LockList;
-      try
-        if AList.Count>0 then
-          begin
-          ACommand:=TFpDebugThreadCommand(AList.Items[0]);
-          AList.Delete(0);
-          end;
-      finally
-        FCommandQueue.UnlockList;
-      end;
+      if FCommandQueue.PopItem(ACommand)<>wrSignaled then
+        ACommand:=nil;
 
       if assigned(ACommand) then
         begin
@@ -323,8 +316,6 @@ begin
           FController.SendEvents(ARunLoop);
           end;
         end;
-
-      sleep(100);
     except
       on E: Exception do
         writeln('Exception in debug-thread: '+e.Message); // just continue
@@ -355,7 +346,7 @@ end;
 constructor TFpDebugThread.Create;
 begin
   inherited create(false);
-  FCommandQueue := TThreadList.Create;
+  FCommandQueue := TFpDebugThreadCommandQueue.create(100, INFINITE, 100);
   FListenerList:=TThreadList.Create;
 end;
 
@@ -391,7 +382,7 @@ begin
   end;
   if DoQueueCommand then
     begin
-    FCommandQueue.Add(ACommand);
+    FCommandQueue.PushItem(ACommand);
     end
   else
     begin
