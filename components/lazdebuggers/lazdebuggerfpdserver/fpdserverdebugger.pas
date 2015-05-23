@@ -15,9 +15,11 @@ uses
   jsonparser,
   BaseUnix,
   LazLogger,
+  process,
   dialogs,
   syncobjs,
   lazCollections,
+  lazutf8sysutils,
   strutils,
   SysUtils;
 
@@ -48,6 +50,13 @@ type
   TFPDSendCommandList = class(TFPDCustomSendCommandList)
   public
     function SearchByUID(const ACommandUID: integer): TFPDSendCommand;
+  end;
+
+  { TFPDSendQuitDebugServerCommand }
+
+  TFPDSendQuitDebugServerCommand = class(TFPDSendCommand)
+  protected
+    procedure ComposeJSon(AJsonObject: TJSONObject); override;
   end;
 
   { TFPDSendRunCommand }
@@ -159,6 +168,8 @@ type
 
   TFPDSocketThread = class(TThread)
   private
+    FPort: integer;
+    FHostName: string;
     FConnectionIdentifier: integer;
     FDebugger: TFPDServerDebugger;
     FSendQueue: TThreadedQueueString;
@@ -168,7 +179,7 @@ type
     procedure ConnectionProblem(Data: PtrInt);
     procedure Execute; override;
   public
-    constructor Create(ADebugger: TFPDServerDebugger);
+    constructor Create(ADebugger: TFPDServerDebugger; AHostName: string; APort: integer);
     procedure SendString(AString: string);
     destructor Destroy; override;
     property ConnectionIdentifier: integer read FConnectionIdentifier;
@@ -179,11 +190,14 @@ type
   TFPDServerDebugger = class(TDebuggerIntf)
   private
     FSocketThread: TFPDSocketThread;
+    FDebugServerStartedAsChild: boolean;
+    FIsConnected: boolean;
+    FDebugProcess: TProcess;
     // This is a list of all commands send to the fpdebug-server, to handle the (asynchrounous)
     // callback when a command is a succes or failure.
     FCommandList: TFPDSendCommandList;
-    FIsConnected: boolean;
-    procedure ConnectToFPDServer;
+    function ConnectToFPDServer: boolean;
+    procedure DisconnectFromFPDServer;
   protected
     // Overrides of TDebuggerIntf methods.
     function GetSupportedCommands: TDBGCommands; override;
@@ -261,6 +275,14 @@ end;
 { TFPDSendCommand }
 
 var GCommandUID: integer = 0;
+
+{ TFPDSendQuitDebugServerCommand }
+
+procedure TFPDSendQuitDebugServerCommand.ComposeJSon(AJsonObject: TJSONObject);
+begin
+  inherited ComposeJSon(AJsonObject);
+  AJsonObject.Add('command','quitdebugserver');
+end;
 
 { TFPDSendRemoveBreakpointCommand }
 
@@ -534,11 +556,11 @@ begin
   IsConnected:=false;
   FErrMessage:='';
   try
-    ASocket := TInetSocket.Create('127.0.0.1',9001);
+    ASocket := TInetSocket.Create(FHostName, FPort);
     try
       if not assigned(ASocket) then
         begin
-        FErrMessage:='Failed to connect to fpdebug-server at 127.0.0.1:9001';
+        FErrMessage:='Failed to connect to fpdebug-server at '+FHostName+':'+IntToStr(FPort);
         Terminate;
         end
       else
@@ -565,7 +587,7 @@ begin
 
         if not IsConnected then
           begin
-          FErrMessage:='Connected to 127.0.0.1:9001, but failed to negotiate handshake.';
+          FErrMessage:='Connected to '+FHostName+':'+inttostr(FPort)+', but failed to negotiate handshake.';
           Terminate;
           end;
         end;
@@ -619,8 +641,11 @@ begin
   Application.QueueAsyncCall(@ConnectionProblem, 0);
 end;
 
-constructor TFPDSocketThread.Create(ADebugger: TFPDServerDebugger);
+constructor TFPDSocketThread.Create(ADebugger: TFPDServerDebugger;
+  AHostName: string; APort: integer);
 begin
+  FHostName:=AHostName;
+  FPort:=APort;
   FDebugger := ADebugger;
   FSendQueue:=TThreadedQueueString.create(100, INFINITE, 100);
   inherited create(false);
@@ -637,17 +662,116 @@ destructor TFPDSocketThread.Destroy;
 begin
   FSendQueue.Free;
   Application.RemoveAsyncCalls(Self);
+  Application.;
   inherited destroy;
 end;
 
 { TFPDServerDebugger }
 
-procedure TFPDServerDebugger.ConnectToFPDServer;
+function TFPDServerDebugger.ConnectToFPDServer: boolean;
+var
+  buff,s: string;
+  dw: dword;
+  tc: Int64;
+  js: TJSONData;
+  port: integer;
 begin
   if not FIsConnected then
     begin
-    FSocketThread := TFPDSocketThread.Create(Self);
-    FIsConnected:=true;
+    result := false;
+    port := -1;
+    if pos('gdb', LowerCase(ExtractFileName(ExternalDebugger)))>0 then
+      ShowMessage('The name of the external debugger contains ''gdb''. The currently selected FPDebug-debugger can not work in combination with gdb. The debugger will most likely fail to start.');
+    FDebugProcess := TProcess.Create(nil);
+    try
+      try
+        FDebugProcess.Executable:=ExternalDebugger;
+        FDebugProcess.Options:=[poUsePipes, poNoConsole, poNewProcessGroup];
+        FDebugProcess.Parameters.Add('--tcp');
+        FDebugProcess.Parameters.Add('--daemon');
+        FDebugProcess.Parameters.Add('--autoport');
+        FDebugProcess.Parameters.Add('--interactive');
+        FDebugProcess.ShowWindow:=swoNone;
+
+        DoDbgOutput('Start debugger: '+FDebugProcess.Executable + ' ' + StringReplace(FDebugProcess.Parameters.Text,LineEnding,' ',[rfReplaceAll]));
+
+        FDebugProcess.Execute;
+        // Wait and scan output for tcp/ip port number
+        s := '';
+        buff := '';
+        dw := 0;
+        tc := GetTickCount64;
+        while FDebugProcess.Running and ((GetTickCount64-tc)<5000) and (dw<1) do
+          begin
+          dw := FDebugProcess.Output.NumBytesAvailable;
+          if dw > 0 then
+            begin
+            setlength(buff, dw);
+            FDebugProcess.Output.ReadBuffer(buff[1], dw);
+            s := s + buff;
+            dw := pos(#10,s);
+            end;
+          sleep(5);
+          end;
+        if dw>0 then
+          begin
+          s := copy(s,1,dw);
+
+          DoDbgOutput('recv stdin: '+S);
+
+          js := GetJSON(s);
+          try
+            if js.JSONType=jtObject then
+              port := TJSONObject(js).Get('port',-1);
+          finally
+            js.Free;
+          end;
+          if port<1 then
+            ShowMessage('No valid TCP/IP port to bind to FPDebug Server');
+          end
+        else
+          ShowMessage('Invalid response from FPDebug Server');
+      except
+        on E: Exception do
+          ShowMessage('Failed to run FPDebug Server: '+E.Message);
+      end;
+    finally
+      if port<1 then
+        FDebugProcess.Free;
+    end;
+
+    if port>-1 then
+      begin
+      FSocketThread := TFPDSocketThread.Create(Self, '127.0.0.1', port);
+      FDebugServerStartedAsChild:=true;
+      FIsConnected:=true;
+      result := true;
+      end;
+    end
+  else
+    result := true;
+end;
+
+procedure TFPDServerDebugger.DisconnectFromFPDServer;
+begin
+  if FDebugServerStartedAsChild then
+    begin
+    // Try to send the FPDebug server the command to terminate. It could be that
+    // the server is already gone, but try anyway and give it some time to terminate
+    // by itself.
+    QueueCommand(TFPDSendQuitDebugServerCommand.create);
+    WaitForThreadTerminate(FSocketThread.Handle, 1000);
+    end;
+
+  FSocketThread.Terminate;
+  FSocketThread.WaitFor;
+  FSocketThread.Free;
+
+  if FDebugServerStartedAsChild then
+    begin
+    if FDebugProcess.Running then
+      FDebugProcess.Terminate(1);
+    FDebugProcess.Free;
     end;
 end;
 
@@ -785,14 +909,10 @@ end;
 
 destructor TFPDServerDebugger.Destroy;
 begin
-  inherited Destroy;
   if FIsConnected then
-    begin
-    FSocketThread.Terminate;
-    FSocketThread.WaitFor;
-    FSocketThread.Free;
-    end;
+    DisconnectFromFPDServer;
   FCommandList.Free;
+  inherited Destroy;
 end;
 
 procedure TFPDServerDebugger.ReceivedCommand(ACommand: TJSONObject);
@@ -834,10 +954,15 @@ begin
         end
       else
         begin
-        ConnectToFPDServer;
-        QueueCommand(TFPDSendFilenameCommand.create(FileName));
-        QueueCommand(TFPDSendRunCommand.create);
-        SetState(dsInit);
+        result := ConnectToFPDServer;
+        if result then
+          begin
+          QueueCommand(TFPDSendFilenameCommand.create(FileName));
+          QueueCommand(TFPDSendRunCommand.create);
+          SetState(dsInit);
+          end
+        else
+          SetState(dsStop);
         end;
       end;
     dcStepOver:
@@ -895,9 +1020,8 @@ begin
   if AMessage<>'' then
     ShowMessage(AMessage);
   FIsConnected:=false;
+  DisconnectFromFPDServer;
   SetState(dsStop);
-  FSocketThread.WaitFor;
-  FSocketThread.Free;
 end;
 
 end.
