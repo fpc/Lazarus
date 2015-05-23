@@ -2754,37 +2754,26 @@ begin
   while P^ <> #0 do
   begin
     CharLen := UTF8CharacterLength(P);
-
-    // Result := Result + Copy(P, 1, CharLen);
     i := 1;
     j := 0;
     ResultLen := Length(Result);
     SetLength(Result, ResultLen + CharLen);
     while i <= CharLen do
     begin
-      /// Result := Result + (P + j)^;
       Result[ResultLen + i] := (P + J)^;
-      ///
       Inc(i);
       Inc(j);
     end;
-    //
-
     Inc(N);
-    if P^ = {#10} BreakStr[Length(BreakStr)] then
+    if P^ = BreakStr[Length(BreakStr)] then
       N := 0;
     if N > MaxCol then
     begin
       Len := Length(Result);
-
-      ///// avoiding RPos
       RP := Len;
-      //while Result[RP] <> #32 do
       while not (Result[RP] in BreakChars) do
         Dec(RP);
-      /////
-
-      RightSpace := Len - RP;  //RPos(' ', Result);
+      RightSpace := Len - RP;
       if RightSpace > 0 then
       begin
         Dec(P, RightSpace);
