@@ -3,14 +3,14 @@ msgstr ""
 "Project-Id-Version: lazaruside\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2015-05-14 21:22+0100\n"
+"PO-Revision-Date: 2015-05-22 09:31+0100\n"
 "Last-Translator: Yann Mérignac <yann.merignac@laposte.net>\n"
 "Language-Team: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
 "Language: fr_FR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.7.5\n"
+"X-Generator: Poedit 1.8\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #: lazarusidestrconsts.dbgbreakgroupdlgcaption
@@ -3657,7 +3657,7 @@ msgstr "Le fichier n'est pas une unité"
 
 #: lazarusidestrconsts.lisa2piconandsize
 msgid "Icon (maximum 24x24):"
-msgstr ""
+msgstr "Icône (24x24 maximum) :"
 
 #: lazarusidestrconsts.lisa2pinvalidancestortype
 msgid "Invalid Ancestor Type"
@@ -4009,7 +4009,7 @@ msgstr "&Adresse du point d'arrêt..."
 
 #: lazarusidestrconsts.lisaddsub
 msgid "Add >>"
-msgstr ""
+msgstr "Ajouter >>"
 
 #: lazarusidestrconsts.lisaddtoincludesearchpath
 msgid "Add to include search path?"
@@ -5436,7 +5436,7 @@ msgstr "Cliquez ici pour parcourir le fichier"
 
 #: lazarusidestrconsts.lisclicktoseethechoices
 msgid "Click to see the choices"
-msgstr ""
+msgstr "Cliquez pour voir les choix"
 
 #: lazarusidestrconsts.lisclicktoselectpalettepage
 msgid "Click to Select Palette Page"
@@ -13212,7 +13212,7 @@ msgstr "Désactiver \"I18N\" du \"lfm\""
 
 #: lazarusidestrconsts.lispckeditaddfilesfromfilesystem
 msgid "Add Files from File System"
-msgstr ""
+msgstr "Ajouter les fichiers depuis le système"
 
 #: lazarusidestrconsts.lispckeditaddotheritems
 msgid "Add other items"
@@ -13269,8 +13269,6 @@ msgid "Dependency Properties"
 msgstr "Propriétés de dépendance"
 
 #: lazarusidestrconsts.lispckediteditgeneraloptions
-#, fuzzy
-#| msgid "Edit General Options"
 msgid "Edit general options"
 msgstr "Éditer les options générales"
 
@@ -13730,7 +13728,7 @@ msgstr "Le fichier \"%s\"%s n'est pas actuellement dans le chemin des unités du
 
 #: lazarusidestrconsts.lispkgedmorefunctionsforthepackage
 msgid "More functions for the package"
-msgstr ""
+msgstr "Davantage de fonctions pour le paquet"
 
 #: lazarusidestrconsts.lispkgfiletypebinary
 msgctxt "lazarusidestrconsts.lispkgfiletypebinary"
