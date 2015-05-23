@@ -69,6 +69,7 @@ function lrStrToDateTime(AValue: string): TDateTime;
 function lrExpandVariables(const S:string):string;
 procedure lrNormalizeLocaleFloats(DisableLocale: boolean);
 function lrConfigFolderName(ACreatePath: boolean): string;
+function lrCanReadName(Stream: TStream): boolean;
 
 procedure CanvasTextRectJustify(const Canvas:TCanvas;
   const ARect: TRect; X1, X2, Y: integer; const Text: string;
@@ -921,6 +922,34 @@ begin
 
   if ACreatePath and not ForceDirectoriesUTF8(Result) then
     raise EInOutError.Create(SysUtils.Format(lrsUnableToCreateConfigDirectoryS,[Result]));
+end;
+
+function lrCanReadName(Stream: TStream): boolean;
+var
+  oldPosition: Int64;
+  aName: string;
+  n: Integer;
+begin
+  // normally stream is seek-able so this should work....
+  oldPosition := stream.Position;
+  result := false;
+  try
+    try
+      n := stream.ReadWord;
+      setLength(aName, n);
+      stream.Read(aName[1], n);
+      if (n>0) and (stream.ReadByte=0) then begin
+        // unfortunately, objects names are not validated
+        // only check standard names here
+        while (n>0) and (aName[n] in ['a'..'z','A'..'Z','0'..'9','_']) do
+          dec(n);
+        result := (n=0);
+      end;
+    except
+    end;
+  finally
+    Stream.Position := oldPosition;
+  end;
 end;
 
 function UTF8Desc(S: string; var Desc: string): Integer;
