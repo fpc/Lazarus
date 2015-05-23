@@ -16,6 +16,7 @@ type
     btnDedupeMemo: TButton;
     btnDedupeFile: TButton;
     btnGenerate: TButton;
+    Label1 :TLabel;
     lblLines: TLabel;
     lblTime: TLabel;
     Memo: TMemo;
@@ -109,10 +110,14 @@ begin
   lblTime.Caption := 'Time:';
   lblLines.Caption := 'Duplicated lines:';
   Application.ProcessMessages;
-  ShowMessage('Generating data. Please wait.');
-  SpinEdit1.Value := 1000000;
-  btnGenerateClick(nil);
-  ShowMessage('Saving it to a file. Please wait.');
+
+  if Trim(Memo.Text) = '' then
+  begin
+    ShowMessage('Generating data. Please wait.');
+    btnGenerateClick(nil);
+  end;
+
+  ShowMessage('Saving memo to a file. Please wait.');
   Memo.Lines.SaveToFile('temp.txt');
   ShowMessage('Dedupping the file.');
   T := Now;
@@ -143,7 +148,7 @@ end;
 
 procedure TForm1.FormShow(Sender: TObject);
 begin
-  spinedit1.Value := 1000000;
+  spinedit1.Value := 100000;
 end;
 
 end.
