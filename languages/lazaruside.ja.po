@@ -8208,6 +8208,10 @@ msgstr "ソースの重複。どちらかを削除するか、すべての検索
 msgid "Duplicate Unit"
 msgstr ""
 
+#: lazarusidestrconsts.lisduplicateunitin
+msgid "Duplicate unit \"%s\" in \"%s\""
+msgstr ""
+
 #: lazarusidestrconsts.lisedit
 msgctxt "lazarusidestrconsts.lisedit"
 msgid "Edit"

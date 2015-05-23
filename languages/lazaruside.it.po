@@ -8091,6 +8091,10 @@ msgstr "Files sorgenti duplicate. Cancellarne una, o assicurarsi che tutti i per
 msgid "Duplicate Unit"
 msgstr "Unit duplicata"
 
+#: lazarusidestrconsts.lisduplicateunitin
+msgid "Duplicate unit \"%s\" in \"%s\""
+msgstr ""
+
 #: lazarusidestrconsts.lisedit
 msgctxt "lazarusidestrconsts.lisedit"
 msgid "Edit"

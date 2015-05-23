@@ -8244,6 +8244,10 @@ msgstr "Fontes duplicados. Exclua um ou certifique-se de que todos os caminhos d
 msgid "Duplicate Unit"
 msgstr ""
 
+#: lazarusidestrconsts.lisduplicateunitin
+msgid "Duplicate unit \"%s\" in \"%s\""
+msgstr ""
+
 #: lazarusidestrconsts.lisedit
 msgctxt "lazarusidestrconsts.lisedit"
 msgid "Edit"

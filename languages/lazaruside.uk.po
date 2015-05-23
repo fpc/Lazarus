@@ -8278,6 +8278,10 @@ msgstr "Дубльовані джерельні коди. Видаліть од�
 msgid "Duplicate Unit"
 msgstr ""
 
+#: lazarusidestrconsts.lisduplicateunitin
+msgid "Duplicate unit \"%s\" in \"%s\""
+msgstr ""
+
 #: lazarusidestrconsts.lisedit
 msgctxt "lazarusidestrconsts.lisedit"
 msgid "Edit"

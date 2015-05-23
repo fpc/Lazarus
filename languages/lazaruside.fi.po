@@ -8040,6 +8040,10 @@ msgstr "Päällekkäiset lähdekoodit. Poista yksi tai varmista että hakupolut 
 msgid "Duplicate Unit"
 msgstr "Päällekkäinen käännösyksikkö"
 
+#: lazarusidestrconsts.lisduplicateunitin
+msgid "Duplicate unit \"%s\" in \"%s\""
+msgstr ""
+
 #: lazarusidestrconsts.lisedit
 msgctxt "lazarusidestrconsts.lisedit"
 msgid "Edit"

@@ -8568,6 +8568,10 @@ msgstr "מקורות כפולים.מחק אחד או שתבדוק שכל נתי�
 msgid "Duplicate Unit"
 msgstr ""
 
+#: lazarusidestrconsts.lisduplicateunitin
+msgid "Duplicate unit \"%s\" in \"%s\""
+msgstr ""
+
 #: lazarusidestrconsts.lisedit
 msgctxt "lazarusidestrconsts.lisedit"
 msgid "Edit"

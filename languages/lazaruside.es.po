@@ -8075,6 +8075,10 @@ msgstr "Fuentes duplicadas. Elimine una o asegúrese de que todas las rutas de b
 msgid "Duplicate Unit"
 msgstr "Unidad duplicada"
 
+#: lazarusidestrconsts.lisduplicateunitin
+msgid "Duplicate unit \"%s\" in \"%s\""
+msgstr ""
+
 #: lazarusidestrconsts.lisedit
 msgctxt "lazarusidestrconsts.lisedit"
 msgid "Edit"

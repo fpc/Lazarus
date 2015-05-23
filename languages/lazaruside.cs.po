@@ -8119,6 +8119,10 @@ msgstr "Duplicitní zdroje. Smažte jeden nebo se ujistěte, že všechny prohle
 msgid "Duplicate Unit"
 msgstr "Duplicitní Jednotka"
 
+#: lazarusidestrconsts.lisduplicateunitin
+msgid "Duplicate unit \"%s\" in \"%s\""
+msgstr ""
+
 #: lazarusidestrconsts.lisedit
 msgctxt "lazarusidestrconsts.lisedit"
 msgid "Edit"

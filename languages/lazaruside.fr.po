@@ -8061,6 +8061,10 @@ msgstr "Codes sources dupliqués. Supprimez-en un ou assurez-vous que les chemin
 msgid "Duplicate Unit"
 msgstr "Unité dupliquée"
 
+#: lazarusidestrconsts.lisduplicateunitin
+msgid "Duplicate unit \"%s\" in \"%s\""
+msgstr ""
+
 #: lazarusidestrconsts.lisedit
 msgctxt "lazarusidestrconsts.lisedit"
 msgid "Edit"
