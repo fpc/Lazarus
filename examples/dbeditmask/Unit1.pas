@@ -14,11 +14,13 @@ type
   { TForm1 }
 
   TForm1 = class(TForm)
+    DBEdit1: TDBEdit;
     IntEdit: TDBEdit;
     Dbf1ADATE: TDateField;
     Dbf1AINT: TLargeintField;
     Dbf1ASTR: TStringField;
     Label1: TLabel;
+    Label2: TLabel;
     ShowLongDateCheckBox: TCheckBox;
     DataSource1: TDataSource;
     ClientDataSet1ADate: TDateField;
