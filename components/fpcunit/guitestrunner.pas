@@ -252,6 +252,7 @@ function TGUITestRunner.MakeTestPath(Node: TTreeNode): string;
 begin
   Result := Node.Text;
   Node := Node.Parent;
+  If Node = Nil then Exit;
   // We can now skip the unnecessary "All Tests" text
   while Node.Parent <> nil do
   begin
