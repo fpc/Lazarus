@@ -8,10 +8,10 @@ object EncloseSelectionDialog: TEncloseSelectionDialog
   ClientWidth = 331
   OnCreate = EncloseSelectionDialogCREATE
   Position = poScreenCenter
-  LCLVersion = '0.9.27'
+  LCLVersion = '1.5'
   object TypeRadiogroup: TRadioGroup
     Left = 6
-    Height = 200
+    Height = 194
     Top = 6
     Width = 319
     Align = alClient
@@ -31,9 +31,17 @@ object EncloseSelectionDialog: TEncloseSelectionDialog
   end
   object ButtonPanel: TButtonPanel
     Left = 6
-    Height = 26
-    Top = 212
+    Height = 32
+    Top = 206
     Width = 319
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
     TabOrder = 1
     ShowButtons = [pbOK, pbCancel]
     ShowBevel = False

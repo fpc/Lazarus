@@ -67,7 +67,7 @@ uses
   CodeContextForm, SrcEditHintFrm, etMessagesWnd, etSrcEditMarks, InputHistory,
   CodeMacroPrompt, CodeTemplatesDlg, CodeToolsOptions,
   editor_general_options,
-  SortSelectionDlg, EncloseSelectionDlg, ConDef, InvertAssignTool,
+  SortSelectionDlg, EncloseSelectionDlg, EncloseIfDef, InvertAssignTool,
   SourceEditProcs, SourceMarks, CharacterMapDlg, SearchFrm,
   FPDocHints, EditorMacroListViewer,
   DbgIntfBaseTypes, DbgIntfDebuggerBase, BaseDebugManager, Debugger, MainIntf,
@@ -3860,7 +3860,7 @@ begin
     if i>=0 then
       IsPascal := EditorOpts.HighlighterList[i].DefaultCommentType <> comtCPP;
     // will show modal dialog - must not be in Editor.BeginUpdate block, or painting will not work
-    FEditor.SelText:=AddConditional(EditorComponent.SelText,IsPascal);
+    FEditor.SelText:=EncloseInsideIFDEF(EditorComponent.SelText,IsPascal);
   finally
     FEditor.EndUndoBlock{$IFDEF SynUndoDebugBeginEnd}('TSourceEditor.ConditionalSelection'){$ENDIF};
   end;

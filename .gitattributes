@@ -5603,8 +5603,6 @@ ide/componentpalette.pas svneol=native#text/pascal
 ide/compoptsmodes.pas svneol=native#text/plain
 ide/comppagespopup.lfm svneol=native#text/plain
 ide/comppagespopup.pas svneol=native#text/pascal
-ide/condef.lfm svneol=native#text/plain
-ide/condef.pas svneol=native#text/pascal
 ide/customdefines.lfm svneol=native#text/plain
 ide/customdefines.pas svneol=native#text/pascal
 ide/customformeditor.pp svneol=native#text/pascal
@@ -5625,6 +5623,8 @@ ide/editoroptions.rc svneol=native#text/plain
 ide/editoroptions.res -text
 ide/emptymethodsdlg.lfm svneol=native#text/plain
 ide/emptymethodsdlg.pas svneol=native#text/plain
+ide/encloseifdef.lfm svneol=native#text/plain
+ide/encloseifdef.pas svneol=native#text/pascal
 ide/encloseselectiondlg.lfm svneol=native#text/plain
 ide/encloseselectiondlg.pas svneol=native#text/pascal
 ide/environmentopts.pp svneol=native#text/pascal

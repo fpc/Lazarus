@@ -1,4 +1,4 @@
-object CondForm: TCondForm
+object EncloseIfDefForm: TEncloseIfDefForm
   Left = 415
   Height = 384
   Top = 298
@@ -14,21 +14,21 @@ object CondForm: TCondForm
   LCLVersion = '1.5'
   object NewTestGroupBox: TGroupBox
     Left = 6
-    Height = 157
+    Height = 163
     Top = 6
     Width = 362
     Align = alTop
     AutoSize = True
     BorderSpacing.Around = 6
     Caption = 'NewTestGroupBox'
-    ClientHeight = 137
-    ClientWidth = 358
+    ClientHeight = 147
+    ClientWidth = 360
     TabOrder = 0
     object FirstLabel: TLabel
       Left = 6
       Height = 15
       Top = 6
-      Width = 346
+      Width = 348
       Align = alTop
       BorderSpacing.Around = 6
       Caption = '&First test'
@@ -38,8 +38,8 @@ object CondForm: TCondForm
       AnchorSideTop.Side = asrBottom
       Left = 6
       Height = 15
-      Top = 56
-      Width = 346
+      Top = 60
+      Width = 348
       Align = alTop
       BorderSpacing.Around = 6
       Caption = '&Second test'
@@ -48,12 +48,12 @@ object CondForm: TCondForm
     object FirstTest: TComboBox
       AnchorSideTop.Side = asrBottom
       Left = 6
-      Height = 23
+      Height = 27
       Top = 27
-      Width = 346
+      Width = 348
       Align = alTop
       BorderSpacing.Around = 6
-      ItemHeight = 15
+      ItemHeight = 0
       ItemIndex = 0
       Items.Strings = (
         'MSWINDOWS'
@@ -74,12 +74,12 @@ object CondForm: TCondForm
     object SecondTest: TComboBox
       AnchorSideTop.Side = asrBottom
       Left = 6
-      Height = 23
-      Top = 77
-      Width = 346
+      Height = 27
+      Top = 81
+      Width = 348
       Align = alTop
       BorderSpacing.Around = 6
-      ItemHeight = 15
+      ItemHeight = 0
       ItemIndex = 0
       Items.Strings = (
         'NONE'
@@ -93,9 +93,9 @@ object CondForm: TCondForm
       AnchorSideTop.Control = SecondTest
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = AddInverse
-      Left = 102
-      Height = 25
-      Top = 106
+      Left = 108
+      Height = 27
+      Top = 114
       Width = 75
       Anchors = [akTop, akRight]
       AutoSize = True
@@ -112,9 +112,9 @@ object CondForm: TCondForm
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = NewTestGroupBox
       AnchorSideRight.Side = asrBottom
-      Left = 277
-      Height = 25
-      Top = 106
+      Left = 279
+      Height = 27
+      Top = 114
       Width = 75
       Anchors = [akTop, akRight]
       AutoSize = True
@@ -130,10 +130,10 @@ object CondForm: TCondForm
       AnchorSideTop.Control = SecondTest
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = RemoveBtn
-      Left = 183
-      Height = 25
-      Top = 106
-      Width = 88
+      Left = 189
+      Height = 27
+      Top = 114
+      Width = 84
       HelpType = htKeyword
       Anchors = [akTop, akRight]
       AutoSize = True
@@ -147,8 +147,8 @@ object CondForm: TCondForm
   end
   object ListBox: TListBox
     Left = 6
-    Height = 177
-    Top = 169
+    Height = 163
+    Top = 175
     Width = 362
     Align = alClient
     Anchors = [akTop]
@@ -157,12 +157,14 @@ object CondForm: TCondForm
     OnClick = ListBoxClick
     OnDblClick = ListBoxDblClick
     OnKeyDown = ListBoxKeyDown
+    ScrollWidth = 360
     TabOrder = 1
+    TopIndex = -1
   end
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 26
-    Top = 352
+    Height = 34
+    Top = 344
     Width = 362
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True

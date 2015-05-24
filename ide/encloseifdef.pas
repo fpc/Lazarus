@@ -1,7 +1,7 @@
 {
  /***************************************************************************
-                    condef.pas  -  Conditional Defines
-                    ----------------------------------
+                    encloseifdef.pas  -  Conditional Defines
+                    ----------------------------------------
 
  ***************************************************************************/
 
@@ -24,7 +24,7 @@
  *                                                                         *
  ***************************************************************************
 }
-unit ConDef;
+unit EncloseIfDef;
 
 {$mode objfpc}{$H+}
 
@@ -47,7 +47,7 @@ interface
   This tool is most useful when you need to put several identical conditionals
   in a file, You can add to the possible conditionals by selecting or typing
   the required symbols in "First test" and /or "Second test" and using the
-  Add button. Your additons are saved in the condef.xml file in the lazarus
+  Add button. Your additons are saved in the encloseifdef.xml file in the lazarus
   configuration directory.
 *)
 
@@ -58,9 +58,9 @@ uses
 
 type
 
-  { TCondForm }
+  { TEncloseIfDefForm }
 
-  TCondForm = class(TForm)
+  TEncloseIfDefForm = class(TForm)
     AddBtn: TBitBtn;
     AddInverse: TBitBtn;
     ButtonPanel1: TButtonPanel;
@@ -95,31 +95,31 @@ type
   end;
 
 
-function ShowConDefDlg: string;
-function AddConditional(Text: string; IsPascal: Boolean):string;
+function EncloseInsideIFDEF(Text: string; IsPascal: Boolean):string;
 
 implementation
 
 {$R *.lfm}
 
-function ShowConDefDlg: string;
+const
+  XmlRoot = 'encloseifdef/';
+
+function ShowEncloseIfDefDlg: string;
 var
-  CondForm: TCondForm;
+  EncloseIfDefForm: TEncloseIfDefForm;
 begin
   Result := '';
-  CondForm := TCondForm.Create(nil);
+  EncloseIfDefForm := TEncloseIfDefForm.Create(nil);
   try
-    CondForm.ActiveControl := CondForm.ListBox;
-    if CondForm.ShowModal <> mrOK then
-      Result := ''
-    else
-      Result := CondForm.FS;
+    EncloseIfDefForm.ActiveControl := EncloseIfDefForm.ListBox;
+    if EncloseIfDefForm.ShowModal = mrOK then
+      Result := EncloseIfDefForm.FS;
   finally
-    CondForm.Free;
+    EncloseIfDefForm.Free;
   end
 end;
 
-function AddConditional(Text: string; IsPascal: Boolean):string;
+function EncloseInsideIFDEF(Text: string; IsPascal: Boolean):string;
 var
   cond, s, f: string;
   p, p1: Integer;
@@ -144,7 +144,7 @@ var
 
 begin
   Result := Text;
-  cond := ShowConDefDlg;
+  cond := ShowEncloseIfDefDlg;
   p := Pos(',',cond);
   if p <= 0 then Exit;
   f := Copy(Cond, 1, p-1);
@@ -220,9 +220,9 @@ begin
   end;
 end;
 
-{ TCondForm }
+{ TEncloseIfDefForm }
 
-procedure TCondForm.CondFormCREATE(Sender: TObject);
+procedure TEncloseIfDefForm.CondFormCREATE(Sender: TObject);
 var
   i: Integer;
   XMLConfig: TXMLConfig;
@@ -245,10 +245,10 @@ begin
   try
     XMLConfig:=CreateXMLConfig;
     try
-      StoredChoice := XMLConfig.GetValue('condef/Choice',
+      StoredChoice := XMLConfig.GetValue(XmlRoot + 'Choice',
         '"MSWINDOWS,UNIX","MSWINDOWS,ELSE","FPC,NONE","FPC,ELSE","DEBUG,NONE"');
-      StoredFirst := XMLConfig.GetValue('condef/First', 'MSWINDOWS');
-      StoredSecond := XMLConfig.GetValue('condef/Second', 'UNIX');
+      StoredFirst := XMLConfig.GetValue(XmlRoot + 'First', 'MSWINDOWS');
+      StoredSecond := XMLConfig.GetValue(XmlRoot + 'Second', 'UNIX');
     finally
       XMLConfig.Free;
     end;
@@ -268,14 +268,14 @@ begin
   end;
 end;
 
-procedure TCondForm.FormShow(Sender: TObject);
+procedure TEncloseIfDefForm.FormShow(Sender: TObject);
 begin
   if SecondTest.Items.Count < 10 then
     SecondTest.Items.AddStrings(FirstTest.Items);
   ListBoxClick(Nil);
 end;
 
-function TCondForm.SplitActiveRow(out aFirst, aSecond: string): Boolean;
+function TEncloseIfDefForm.SplitActiveRow(out aFirst, aSecond: string): Boolean;
 var
   i: integer;
   Line: string;
@@ -295,44 +295,44 @@ begin
     end;
 end;
 
-procedure TCondForm.AddBtnClick(Sender: TObject);
+procedure TEncloseIfDefForm.AddBtnClick(Sender: TObject);
 begin
   ListBox.Items.Add(FirstTest.Text+','+SecondTest.Text);
   ListBox.ItemIndex := ListBox.Items.Count-1;
   UpdateButtons;
 end;
 
-procedure TCondForm.AddInverseCLICK(Sender: TObject);
+procedure TEncloseIfDefForm.AddInverseCLICK(Sender: TObject);
 begin
   ListBox.Items.Add('!'+FirstTest.Text+','+SecondTest.Text);
   ListBox.ItemIndex := ListBox.Items.Count-1;
   UpdateButtons;
 end;
 
-procedure TCondForm.TestEditChange(Sender: TObject);
+procedure TEncloseIfDefForm.TestEditChange(Sender: TObject);
 begin
   UpdateButtons;
 end;
 
-procedure TCondForm.btnSaveClick(Sender: TObject);
+procedure TEncloseIfDefForm.btnSaveClick(Sender: TObject);
 begin
   SaveIfChanged;
   Close;
 end;
 
-procedure TCondForm.OKButtonClick(Sender: TObject);
+procedure TEncloseIfDefForm.OKButtonClick(Sender: TObject);
 begin
   SaveIfChanged;
   with ListBox do
     FS := Items[ItemIndex];  // Return selected row to caller.
 end;
 
-procedure TCondForm.HelpButtonClick(Sender: TObject);
+procedure TEncloseIfDefForm.HelpButtonClick(Sender: TObject);
 begin
   LazarusHelp.ShowHelpForIDEControl(Self);
 end;
 
-procedure TCondForm.ListBoxClick(Sender: TObject);
+procedure TEncloseIfDefForm.ListBoxClick(Sender: TObject);
 var
   ff, ss: string;
 begin
@@ -343,17 +343,17 @@ begin
   end;
 end;
 
-procedure TCondForm.ListBoxDblClick(Sender: TObject);
+procedure TEncloseIfDefForm.ListBoxDblClick(Sender: TObject);
 begin
   ModalResult := mrOK;
 end;
 
-procedure TCondForm.RemoveBtnClick(Sender: TObject);
+procedure TEncloseIfDefForm.RemoveBtnClick(Sender: TObject);
 begin
   DeleteSelected;
 end;
 
-procedure TCondForm.ListBoxKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+procedure TEncloseIfDefForm.ListBoxKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
   if Key = VK_DELETE then begin
     DeleteSelected;
@@ -361,7 +361,7 @@ begin
   end;
 end;
 
-procedure TCondForm.DeleteSelected;
+procedure TEncloseIfDefForm.DeleteSelected;
 var
   i: Integer;
 begin
@@ -373,7 +373,7 @@ begin
       end;
 end;
 
-procedure TCondForm.UpdateButtons;
+procedure TEncloseIfDefForm.UpdateButtons;
 var
   s: string;
 begin
@@ -388,7 +388,7 @@ begin
   ButtonPanel1.OKButton.Enabled := ListBox.SelCount > 0;
 end;
 
-function TCondForm.IsChanged: Boolean;
+function TEncloseIfDefForm.IsChanged: Boolean;
 var
   ff, ss: string;
 begin
@@ -403,7 +403,7 @@ begin
   Result := False;
 end;
 
-procedure TCondForm.SaveIfChanged;
+procedure TEncloseIfDefForm.SaveIfChanged;
 var
   ff, ss: string;
   XMLConfig: TXMLConfig;
@@ -414,9 +414,9 @@ begin
       InvalidateFileStateCache;
       XMLConfig:=CreateXMLConfig;
       try
-        XMLConfig.SetValue('condef/Choice', ListBox.Items.CommaText);
-        XMLConfig.SetValue('condef/First', ff);
-        XMLConfig.SetValue('condef/Second', ss);
+        XMLConfig.SetValue(XmlRoot + 'Choice', ListBox.Items.CommaText);
+        XMLConfig.SetValue(XmlRoot + 'First', ff);
+        XMLConfig.SetValue(XmlRoot + 'Second', ss);
         XMLConfig.Flush;
       finally
         XMLConfig.Free;
@@ -428,12 +428,12 @@ begin
     end;
 end;
 
-function TCondForm.CreateXMLConfig: TXMLConfig;
+function TEncloseIfDefForm.CreateXMLConfig: TXMLConfig;
 var
   ConfFileName: String;
 begin
   Result:=nil;
-  ConfFileName:=SetDirSeparators(GetPrimaryConfigPath+'/condef.xml');
+  ConfFileName:=SetDirSeparators(GetPrimaryConfigPath+'/encloseifdef.xml');
   try
     if (not FileExistsUTF8(ConfFileName)) then
       Result:=TXMLConfig.CreateClean(ConfFileName)
