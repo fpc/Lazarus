@@ -114,22 +114,6 @@ type
     procedure SaveCurCodeTemplate;
   end;
 
-  { TCodeTemplateEditForm }
-
-  TCodeTemplateEditForm = class(TForm)
-    TokenLabel: TLabel;
-    TokenEdit: TEdit;
-    CommentLabel: TLabel;
-    CommentEdit: TEdit;
-    OkButton: TButton;
-    CancelButton: TButton;
-    procedure OkButtonClick(Sender: TObject);
-  public
-    SynAutoComplete: TSynEditAutoComplete;
-    TemplateIndex: integer;
-    constructor Create(TheOwner: TComponent); override;
-  end;
-
   { TLazCodeMacros }
 
   TLazCodeMacros = class(TIDECodeMacros)
@@ -151,9 +135,9 @@ type
 function ShowCodeTemplateDialog: TModalResult;
 
 function AddCodeTemplate(ASynAutoComplete: TSynEditAutoComplete;
-  var Token, Comment: string): TModalResult;
+  var AToken, AComment: string): TModalResult;
 function EditCodeTemplate(ASynAutoComplete: TSynEditAutoComplete;
-  Index: integer): TModalResult;
+  AIndex: integer): TModalResult;
   
 procedure CreateStandardCodeMacros;
 
@@ -223,56 +207,67 @@ begin
   CodeTemplateDialog.Free;
 end;
 
-function AddCodeTemplate(ASynAutoComplete:TSynEditAutoComplete;
-  var Token,Comment: string):TModalResult;
+function IsCodeTemplateOk(ASynAutoComplete: TSynEditAutoComplete;
+  const AToken, AComment: string; AIndex: integer): boolean;
 var
-  CodeTemplateEditForm:TCodeTemplateEditForm;
+  n: integer;
 begin
-  Result:=mrCancel;
-  CodeTemplateEditForm:=TCodeTemplateEditForm.Create(nil);
-  try
-    CodeTemplateEditForm.SynAutoComplete:=ASynAutoComplete;
-    CodeTemplateEditForm.TemplateIndex:=ASynAutoComplete.Completions.Count;
-    CodeTemplateEditForm.Caption:=lisCodeTemplAddCodeTemplate;
-    CodeTemplateEditForm.OkButton.Caption:=lisCodeTemplAdd;
-    CodeTemplateEditForm.TokenEdit.Text:=Token;
-    CodeTemplateEditForm.CommentEdit.Text:=Comment;
-    Result:=CodeTemplateEditForm.ShowModal;
-    if Result=mrOk then begin
-      Token:=CodeTemplateEditForm.TokenEdit.Text;
-      Comment:=CodeTemplateEditForm.CommentEdit.Text;
-    end;
-  finally
-    CodeTemplateEditForm.Free;
+  n:=ASynAutoComplete.Completions.IndexOf(AToken);
+  if (n<0) or (n=AIndex) then
+    Result:= true
+  else
+  begin
+    Result:= false;
+    IDEMessageDialog(
+      lisCodeTemplError,
+      Format(lisCodeTemplATokenAlreadyExists, [AToken]),
+      mtError, [mbOK]);
   end;
 end;
 
-function EditCodeTemplate(ASynAutoComplete:TSynEditAutoComplete;
-  Index:integer):TModalResult;
+function AddCodeTemplate(ASynAutoComplete: TSynEditAutoComplete;
+  var AToken, AComment: string): TModalResult;
 var
-  CodeTemplateEditForm:TCodeTemplateEditForm;
+  Str: array of string;
 begin
-  Result:=mrCancel;
-  if (Index<0) or (Index>=ASynAutoComplete.Completions.Count) then exit;
-  CodeTemplateEditForm:=TCodeTemplateEditForm.Create(nil);
-  try
-    CodeTemplateEditForm.SynAutoComplete:=ASynAutoComplete;
-    CodeTemplateEditForm.TemplateIndex:=Index;
-    CodeTemplateEditForm.Caption:=lisCodeTemplEditCodeTemplate;
-    CodeTemplateEditForm.OkButton.Caption:=lisCodeTemplChange;
-    CodeTemplateEditForm.TokenEdit.Text:=ASynAutoComplete.Completions[Index];
-    CodeTemplateEditForm.CommentEdit.Text:=
-      ASynAutoComplete.CompletionComments[Index];
-    Result:=CodeTemplateEditForm.ShowModal;
-    if Result=mrOk then begin
-      ASynAutoComplete.Completions[Index]:=
-        CodeTemplateEditForm.TokenEdit.Text;
-      ASynAutoComplete.CompletionComments[Index]:=
-        CodeTemplateEditForm.CommentEdit.Text;
-    end;
-  finally
-    CodeTemplateEditForm.Free;
-  end;
+  Result:= mrCancel;
+
+  SetLength(Str, 2);
+  Str[0]:= AToken;
+  Str[1]:= AComment;
+
+  if InputQuery(lisCodeTemplAddCodeTemplate,
+    [lisCodeTemplToken, lisCodeTemplComment], Str) then
+    if IsCodeTemplateOk(ASynAutoComplete,
+         Str[0], Str[1], ASynAutoComplete.Completions.Count) then
+      begin
+        Result:= mrOk;
+        AToken:= Str[0];
+        AComment:= Str[1];
+      end;
+end;
+
+function EditCodeTemplate(ASynAutoComplete: TSynEditAutoComplete;
+  AIndex: integer): TModalResult;
+var
+  Str: array of string;
+begin
+  Result:= mrCancel;
+  if (AIndex<0) or (AIndex>=ASynAutoComplete.Completions.Count) then exit;
+
+  SetLength(Str, 2);
+  Str[0]:= ASynAutoComplete.Completions[AIndex];
+  Str[1]:= ASynAutoComplete.CompletionComments[AIndex];
+
+  if not InputQuery(lisCodeTemplEditCodeTemplate,
+    [lisCodeTemplToken, lisCodeTemplComment], Str) then exit;
+
+  if not IsCodeTemplateOk(ASynAutoComplete,
+    Str[0], Str[1], AIndex) then exit;
+
+  ASynAutoComplete.Completions[AIndex]:= Str[0];
+  ASynAutoComplete.CompletionComments[AIndex]:= Str[1];
+  Result:= mrOk;
 end;
 
 function CodeMacroUpper(const Parameter: string; InteractiveValue: TPersistent;
@@ -798,134 +793,6 @@ begin
                     @CodeMacroEditParam,nil);
 end;
 
-{ TCodeTemplateEditForm }
-
-constructor TCodeTemplateEditForm.Create(TheOwner:TComponent);
-begin
-  inherited CreateNew(TheOwner, 1);
-  if LazarusResources.Find(ClassName)=nil then begin
-    Width:=300;
-    Height:=150;
-    Constraints.MinWidth:=300;
-    Constraints.MinHeight:=150;
-    BorderIcons:=[biSystemMenu];
-    Position:=poScreenCenter;
-
-    TokenLabel:=TLabel.Create(Self);
-    with TokenLabel do begin
-      Name:='TokenLabel';
-      Parent:=Self;
-      Caption:=lisCodeTemplToken;
-      AutoSize:=true;
-      AnchorSide[akLeft].Control:=Self;
-      AnchorSide[akTop].Control:=Self;
-      AnchorSide[akLeft].Side:=asrLeft;
-      AnchorSide[akTop].Side:=asrTop;
-      BorderSpacing.Left:=6;
-      BorderSpacing.Top:=12;
-      Anchors:=[akLeft,akTop];
-      Show;
-    end;
-
-    TokenEdit:=TEdit.Create(Self);
-    with TokenEdit do begin
-      Name:='TokenEdit';
-      Parent:=Self;
-      AnchorSide[akLeft].Control:=Self;
-      AnchorSide[akTop].Control:=TokenLabel;
-      AnchorSide[akRight].Control:=Self;
-      AnchorSide[akLeft].Side:=asrLeft;
-      AnchorSide[akTop].Side:=asrBottom;
-      AnchorSide[akRight].Side:=asrRight;
-      BorderSpacing.Left:=6;
-      BorderSpacing.Right:=6;
-      BorderSpacing.Top:=0;
-      Anchors:=[akLeft,akTop,akRight];
-      Text:='';
-      Show;
-    end;
-
-    CommentLabel:=TLabel.Create(Self);
-    with CommentLabel do begin
-      Name:='CommentLabel';
-      Parent:=Self;
-      Caption:=lisCodeTemplComment;
-      AutoSize:=true;
-      AnchorSide[akLeft].Control:=Self;
-      AnchorSide[akTop].Control:=TokenEdit;
-      AnchorSide[akLeft].Side:=asrLeft;
-      AnchorSide[akTop].Side:=asrBottom;
-      BorderSpacing.Left:=6;
-      BorderSpacing.Top:=12;
-      Anchors:=[akLeft,akTop];
-      Show;
-    end;
-
-    CommentEdit:=TEdit.Create(Self);
-    with CommentEdit do begin
-      Name:='CommentEdit';
-      Parent:=Self;
-      AnchorSide[akLeft].Control:=Self;
-      AnchorSide[akTop].Control:=CommentLabel;
-      AnchorSide[akRight].Control:=Self;
-      AnchorSide[akLeft].Side:=asrLeft;
-      AnchorSide[akTop].Side:=asrBottom;
-      AnchorSide[akRight].Side:=asrRight;
-      BorderSpacing.Left:=6;
-      BorderSpacing.Right:=6;
-      BorderSpacing.Top:=0;
-      Anchors:=[akLeft,akTop,akRight];
-      Text:='';
-      Show;
-    end;
-
-    CancelButton:=TButton.Create(Self);
-    with CancelButton do begin
-      Name:='CancelButton';
-      Parent:=Self;
-      Caption:=lisCancel;
-      ModalResult:=mrCancel;
-      AutoSize:=true;
-      AnchorSide[akRight].Control:=Self;
-      AnchorSide[akBottom].Control:=Self;
-      AnchorSide[akRight].Side:=asrRight;
-      AnchorSide[akBottom].Side:=asrBottom;
-      BorderSpacing.Around:=6;
-      Anchors:=[akRight,akBottom];
-      Show;
-    end;
-
-    OkButton:=TButton.Create(Self);
-    with OkButton do begin
-      Name:='OkButton';
-      Parent:=Self;
-      Caption:=lisMenuOk;
-      OnClick:=@OkButtonClick;
-      AutoSize:=true;
-      AnchorSide[akRight].Control:=CancelButton;
-      AnchorSide[akBottom].Control:=Self;
-      AnchorSide[akRight].Side:=asrLeft;
-      AnchorSide[akBottom].Side:=asrBottom;
-      BorderSpacing.Around:=6;
-      Anchors:=[akRight,akBottom];
-      Show;
-    end;
-  end;
-end;
-
-procedure TCodeTemplateEditForm.OkButtonClick(Sender:TObject);
-var a:integer;
-  AText,ACaption:AnsiString;
-begin
-  a:=SynAutoComplete.Completions.IndexOf(TokenEdit.Text);
-  if (a<0) or (a=TemplateIndex) then
-    ModalResult:=mrOk
-  else begin
-    AText:=Format(lisCodeTemplATokenAlreadyExists, [TokenEdit.Text]);
-    ACaption:=lisCodeTemplError;
-    IDEMessageDialog(ACaption,AText,mterror,[mbok]);
-  end;
-end;
 
 { TCodeTemplateDialog }
 
