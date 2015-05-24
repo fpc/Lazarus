@@ -517,19 +517,22 @@ function QuestionDlg(const aCaption, aMsg: string; DlgType: TMsgDlgType;
 function QuestionDlg(const aCaption, aMsg: string; DlgType: TMsgDlgType;
             Buttons: array of const; const HelpKeyword: string): TModalResult; overload;
 
-            
 procedure ShowMessage(const aMsg: string);
 procedure ShowMessageFmt(const aMsg: string; Params: array of const);
 procedure ShowMessagePos(const aMsg: string; X, Y: Integer);
 
-function InputQuery(const ACaption, APrompt : String; MaskInput : Boolean; var Value : String) : Boolean;
-function InputQuery(const ACaption, APrompt : String; var Value : String) : Boolean;
 function InputBox(const ACaption, APrompt, ADefault : String) : String;
 function PasswordBox(const ACaption, APrompt : String) : String;
-  
+
+const
+  cInputQueryEditSize: integer = 320;
+  cInputQuerySpacingSize: integer = 6;
+
 type
   TSelectDirOpt = (sdAllowCreate, sdPerformCreate, sdPrompt);
   TSelectDirOpts = set of TSelectDirOpt;
+  TInputCloseQueryEvent = procedure(Sender: TObject; const AValues: array of string;
+    var ACanClose: boolean) of object;
 
 function SelectDirectory(const Caption, InitialDirectory: string;
   out Directory: string): boolean;
@@ -537,6 +540,11 @@ function SelectDirectory(const Caption, InitialDirectory: string;
   out Directory: string; ShowHidden: boolean; HelpCtx: Longint = 0): boolean;
 function SelectDirectory(out Directory: string;
   Options: TSelectDirOpts; HelpCtx: Longint): Boolean;
+
+function InputQuery(const ACaption, APrompt : String; MaskInput : Boolean; var Value : String) : Boolean;
+function InputQuery(const ACaption, APrompt : String; var Value : String) : Boolean;
+function InputQuery(const ACaption: string; const APrompts: array of string;
+  var AValues: array of string; ACloseEvent: TInputCloseQueryEvent = nil): boolean;
 
 function ExtractColorIndexAndColor(const AColorList: TStrings; const AIndex: Integer;
   out ColorIndex: Integer; out ColorValue: TColor): Boolean;
@@ -730,6 +738,7 @@ begin
   FPrintRange:=prAllPages;
   FCopies:=1;
 end;
+
 
 initialization
   Forms.MessageBoxFunction := @ShowMessageBox;

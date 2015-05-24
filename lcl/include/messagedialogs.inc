@@ -294,4 +294,121 @@ begin
   Result := InputQuery(ACaption, APrompt, False, Value);
 end;
 
+{ TDummyForInput }
+
+type
+  TDummyEditList = array of TEdit;
+  PDummyEditList = ^TDummyEditList;
+
+  TDummyForInput = class(TForm)
+  public
+    FEditsPtr: PDummyEditList;
+    FOnCloseEvent: TInputCloseQueryEvent;
+    procedure FOnClick(Sender: TObject);
+  end;
+
+procedure TDummyForInput.FOnClick(Sender: TObject);
+var
+  Cfm: boolean;
+  Str: array of string;
+  i: integer;
+begin
+  Cfm:= true;
+  if Assigned(FOnCloseEvent) then
+  begin
+    SetLength(Str, Length(FEditsPtr^));
+    for i:= 0 to Length(Str)-1 do
+      Str[i]:= FEditsPtr^[i].Text;
+    FOnCloseEvent(nil, Str, Cfm);
+  end;
+  if Cfm then
+    ModalResult:= mrOk;
+end;
+
+
+function InputQuery(const ACaption: string; const APrompts: array of string;
+  var AValues: array of string; ACloseEvent: TInputCloseQueryEvent): boolean;
+var
+  FPanels: array of TPanel;
+  FEdits: array of TEdit;
+  FLabels: array of TPanel;
+  FButtons: TButtonPanel;
+  FForm: TDummyForInput;
+  Len, i: integer;
+begin
+  Result:= false;
+  if Length(APrompts)<1 then
+    raise EInvalidOperation.Create('InputQuery: prompt array cannot be empty');
+  if Length(APrompts)>Length(AValues) then
+    raise EInvalidOperation.Create('InputQuery: prompt array length must be <= value array length');
+
+  Len:= Length(AValues);
+  SetLength(FPanels, Len);
+  SetLength(FLabels, Len);
+  SetLength(FEdits, Len);
+
+  FForm:= TDummyForInput.CreateNew(nil);
+  FForm.Width:= 600;
+  FForm.Height:= 400;
+  FForm.BorderStyle:= bsDialog;
+  FForm.Position:= poScreenCenter;
+  FForm.Caption:= ACaption;
+  FForm.FOnCloseEvent:= ACloseEvent;
+
+  FButtons:= TButtonPanel.Create(FForm);
+  FButtons.Parent:= FForm;
+  FButtons.ShowButtons:= [pbOK, pbCancel];
+  FButtons.ShowBevel:= false;
+  FButtons.OKButton.OnClick:= @FForm.FOnClick;
+  FButtons.OKButton.ModalResult:= mrNone;
+
+  for i:= 0 to Len-1 do
+  begin
+    FPanels[i]:= TPanel.Create(FForm);
+    FPanels[i].Parent:= FForm;
+    FPanels[i].Align:= alTop;
+    FPanels[i].BevelInner:= bvNone;
+    FPanels[i].BevelOuter:= bvNone;
+    FPanels[i].AutoSize:= true;
+    FPanels[i].BorderSpacing.Around:= cInputQuerySpacingSize;
+
+    //fix order of panels
+    if i>0 then
+      FPanels[i].Top:= FPanels[i-1].Top+10;
+
+    FEdits[i]:= TEdit.Create(FForm);
+    FEdits[i].Parent:= FPanels[i];
+    FEdits[i].Align:= alRight;
+    FEdits[i].Width:= cInputQueryEditSize;
+    FEdits[i].Text:= AValues[i];
+
+    FLabels[i]:= TPanel.Create(FForm);
+    FLabels[i].Parent:= FPanels[i];
+    FLabels[i].Align:= alRight;
+    FLabels[i].BevelInner:= bvNone;
+    FLabels[i].BevelOuter:= bvNone;
+    if i<Length(APrompts) then
+      FLabels[i].Caption:= APrompts[i];
+    FLabels[i].BorderSpacing.Right:= cInputQuerySpacingSize;
+    FLabels[i].Width:= FLabels[i].Canvas.TextWidth(FLabels[i].Caption);
+  end;
+
+  FButtons.Align:= alTop;
+  FButtons.Top:= FPanels[Len-1].Top+10;
+
+  FForm.AutoSize:= true;
+  FForm.ActiveControl:= FEdits[0];
+  FForm.FEditsPtr:= @FEdits;
+
+  try
+    Result:= FForm.ShowModal=mrOk;
+    if Result then
+      for i:= 0 to Len-1 do
+        AValues[i]:= FEdits[i].Text;
+  finally
+    FreeAndNil(FForm);
+  end;
+end;
+
 // included by dialogs.pp
+
