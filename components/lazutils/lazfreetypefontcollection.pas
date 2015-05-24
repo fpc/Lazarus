@@ -124,6 +124,12 @@ procedure SetDefaultFreeTypeFontCollection(ACollection : TCustomFreeTypeFontColl
 
 implementation
 
+const
+  //one of these files will be used as a default font
+  ArialLikeFonts: array[0..8] of string = ('Helvetica', 'Helvetica Neue',
+  'Arial', 'Nimbus Sans L', 'Microsoft Sans Serif', 'FreeSans',
+  'Liberation Sans', 'DejaVu Sans Condensed', 'Tahoma');
+
 type
   { TFamilyEnumerator }
 
@@ -759,6 +765,8 @@ end;
 
 function TFreeTypeFontCollection.GetFamily(AName: string
   ): TCustomFamilyCollectionItem;
+var
+  i,j: Integer;
 begin
   if AName = '' then
   begin
@@ -766,14 +774,43 @@ begin
     exit;
   end;
   result := FindFamily(AName);
-  if (result = nil) and (CompareText(AName,'Arial')=0) then result := FindFamily('Helvetica');
-  if (result = nil) and (CompareText(AName,'Helvetica')=0) then result := FindFamily('Arial');
+  if result <> nil then exit;
+
+  if (CompareText(AName,'Arial')=0) then
+  begin
+    if result = nil then result := FindFamily('Helvetica Neue');
+    if result = nil then result := FindFamily('Helvetica');
+  end else
+  if (CompareText(AName,'Helvetica')=0) then
+  begin
+    if result = nil then result := FindFamily('Helvetica Neue');
+    if result = nil then result := FindFamily('Arial');
+  end else
+  if (CompareText(AName,'Helvetica Neue')=0) then
+  begin
+    if result = nil then result := FindFamily('Helvetica');
+    if result = nil then result := FindFamily('Arial');
+  end;
+  if result <> nil then exit;
+
+  for i := low(ArialLikeFonts) to high(ArialLikeFonts) do
+    if CompareText(AName,ArialLikeFonts[i])=0 then
+    begin
+      for j := 0 to high(ArialLikeFonts) do
+      begin
+        result := FindFamily(ArialLikeFonts[j]);
+        if result <> nil then break;
+      end;
+      break;
+    end;
+
   if (result = nil) and (CompareText(AName,'Courier New')=0) then result := FindFamily('Nimbus Monospace');
   if (result = nil) and (CompareText(AName,'Courier New')=0) then result := FindFamily('Courier');
   if (result = nil) and (CompareText(AName,'Nimbus Monospace')=0) then result := FindFamily('Courier New');
   if (result = nil) and (CompareText(AName,'Nimbus Monospace')=0) then result := FindFamily('Courier');
   if (result = nil) and (CompareText(AName,'Courier')=0) then result := FindFamily('Courier New');
   if (result = nil) and (CompareText(AName,'Courier')=0) then result := FindFamily('Nimbus Monospace');
+
   if (result = nil) and (CompareText(AName,'Times')=0) then result := FindFamily('Times New Roman');
   if (result = nil) and (CompareText(AName,'Times')=0) then result := FindFamily('CG Times');
   if (result = nil) and (CompareText(AName,'Times New Roman')=0) then result := FindFamily('Times');
