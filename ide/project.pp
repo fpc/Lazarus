@@ -770,7 +770,7 @@ type
     FStateFlags: TLazProjectStateFlags;
     FStorePathDelim: TPathDelimSwitch;
     FUnitList: TFPList;  // list of _all_ units (TUnitInfo)
-    FCustomDefines: TStrings; // list of user selectable defines for custom options
+    FOtherDefines: TStrings; // list of user selectable defines for custom options
     FUpdateLock: integer;
     FUseAsDefault: Boolean;
     // Variables used by ReadProject / WriteProject
@@ -836,7 +836,7 @@ type
     // Methods for ReadProject
     function LoadOldProjectType(const Path: string): TOldProjectType;
     procedure LoadFlags(const Path: string);
-    procedure LoadCustomDefines(const Path: string);
+    procedure LoadOtherDefines(const Path: string);
     procedure LoadSessionInfo(const Path: string; Merge: boolean);
     procedure LoadFromLPI;
     procedure LoadFromSession;
@@ -845,7 +845,7 @@ type
     // Methods for WriteProject
     procedure SaveFlags(const Path: string);
     procedure SaveUnits(const Path: string; SaveSession: boolean);
-    procedure SaveCustomDefines(const Path: string);
+    procedure SaveOtherDefines(const Path: string);
     procedure SaveSessionInfo(const Path: string);
     procedure SaveToLPI;
     procedure SaveToSession;
@@ -1111,7 +1111,7 @@ type
     property StorePathDelim: TPathDelimSwitch read FStorePathDelim write SetStorePathDelim;
     property TargetFilename: string read GetTargetFilename write SetTargetFilename;
     property Units[Index: integer]: TUnitInfo read GetUnits;
-    property CustomDefines: TStrings read FCustomDefines;
+    property OtherDefines: TStrings read FOtherDefines;
     property UpdateLock: integer read FUpdateLock;
     property UseAsDefault: Boolean read FUseAsDefault write FUseAsDefault; // for dialog only (used to store options once)
   end;
@@ -2680,7 +2680,7 @@ begin
   FRunParameters:=TRunParamsOptions.Create;
   Title := '';
   FUnitList := TFPList.Create;  // list of TUnitInfo
-  FCustomDefines := TStringList.Create;
+  FOtherDefines := TStringList.Create;
 
   FResources := TProjectResources.Create(Self);
   ProjResources.OnModified := @EmbeddedObjectModified;
@@ -2703,7 +2703,7 @@ begin
   FreeAndNil(FAllEditorsInfoList);
   FreeThenNil(FResources);
   FreeThenNil(FBookmarks);
-  FreeThenNil(FCustomDefines);
+  FreeThenNil(FOtherDefines);
   FreeThenNil(FUnitList);
   FreeThenNil(FJumpHistory);
   FreeThenNil(FSourceDirectories);
@@ -2764,17 +2764,20 @@ begin
   Flags:=Flags-[pfUseDefaultCompilerOptions];
 end;
 
-procedure TProject.LoadCustomDefines(const Path: string);
+procedure TProject.LoadOtherDefines(const Path: string);
 var
   Cnt, i: Integer;
-  s: String;
+  SubPath, s: String;
 begin
-  Cnt := FXMLConfig.GetValue(Path+'CustomDefines/Count', 0);
+  SubPath := 'OtherDefines/';
+  if not FXMLConfig.HasPath(Path+SubPath, False) then
+    SubPath := 'CustomDefines/';    // Load from the old path name.
+  Cnt := FXMLConfig.GetValue(Path+SubPath+'Count', 0);
   for i := 0 to Cnt-1 do
   begin
-    s := FXMLConfig.GetValue(Path+'CustomDefines/Define'+IntToStr(i)+'/Value', '');
+    s := FXMLConfig.GetValue(Path+SubPath+'Define'+IntToStr(i)+'/Value', '');
     if s <> '' then
-      CustomDefines.Add(s);
+      OtherDefines.Add(s);
   end;
 end;
 
@@ -2894,8 +2897,8 @@ begin
   RunParameterOptions.Load(FXMLConfig,Path,fPathDelimChanged);
   // load the Publish Options
   PublishOptions.LoadFromXMLConfig(FXMLConfig,Path+'PublishOptions/',fPathDelimChanged);
-  // load custom defines
-  LoadCustomDefines(Path);
+  // load defines used for custom options
+  LoadOtherDefines(Path);
   // load session info
   LoadSessionInfo(Path,false);
   // call hooks to read their info (e.g. DebugBoss)
@@ -2919,8 +2922,8 @@ begin
   // load MacroValues and compiler options
   BuildModes.LoadSessionFromXMLConfig(FXMLConfig, Path, FLoadParts);
 
-  // load custom defines
-  LoadCustomDefines(Path);
+  // load defines used for custom options
+  LoadOtherDefines(Path);
   // load session info
   LoadSessionInfo(Path,true);
 
@@ -3096,15 +3099,14 @@ begin
   FXMLConfig.SetDeleteValue(Path+'Units/Count',SaveUnitCount,0);
 end;
 
-procedure TProject.SaveCustomDefines(const Path: string);
+procedure TProject.SaveOtherDefines(const Path: string);
 var
   i: integer;
 begin
-  for i:=0 to FCustomDefines.Count-1 do begin
-    FXMLConfig.SetDeleteValue(Path+'CustomDefines/Define'+IntToStr(i)+'/Value',
-                           FCustomDefines[i],'');
-  end;
-  FXMLConfig.SetDeleteValue(Path+'CustomDefines/Count',FCustomDefines.Count,0);
+  for i:=0 to FOtherDefines.Count-1 do
+    FXMLConfig.SetDeleteValue(Path+'OtherDefines/Define'+IntToStr(i)+'/Value',
+                              FOtherDefines[i],'');
+  FXMLConfig.SetDeleteValue(Path+'OtherDefines/Count',FOtherDefines.Count,0);
 end;
 
 procedure TProject.SaveSessionInfo(const Path: string);
@@ -3185,8 +3187,8 @@ begin
   SaveUnits(Path,FSaveSessionInLPI);
 
   if FSaveSessionInLPI then begin
-    // save custom defines
-    SaveCustomDefines(Path);
+    // save defines used for custom options
+    SaveOtherDefines(Path);
     // save session info
     SaveSessionInfo(Path);
   end;
@@ -3221,8 +3223,8 @@ begin
   BuildModes.SaveSessionData(Path);
   // save all units
   SaveUnits(Path,true);
-  // save custom defines
-  SaveCustomDefines(Path);
+  // save defines used for custom options
+  SaveOtherDefines(Path);
   // save session info
   SaveSessionInfo(Path);
 

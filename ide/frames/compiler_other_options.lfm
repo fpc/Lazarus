@@ -18,15 +18,15 @@ object CompilerOtherOptionsFrame: TCompilerOtherOptionsFrame
     Align = alClient
     Anchors = [akTop, akLeft, akRight]
     Caption = 'grpConditionals'
-    ClientHeight = 141
-    ClientWidth = 517
+    ClientHeight = 150
+    ClientWidth = 519
     TabOrder = 0
     inline CondSynEdit: TSynEdit
       AnchorSideRight.Side = asrBottom
       Left = 0
-      Height = 113
+      Height = 133
       Top = 0
-      Width = 517
+      Width = 519
       Align = alClient
       Font.Height = 9
       Font.Name = '-misc-dejavu sans mono-*-*-*-*-*-*-*-*-*-*-iso10646-1'
@@ -552,7 +552,6 @@ object CompilerOtherOptionsFrame: TCompilerOtherOptionsFrame
         'CondSynEdit'
       )
       VisibleSpecialChars = [vscSpace, vscTabAtLast]
-      SelectedColor.FrameEdges = sfeAround
       SelectedColor.BackPriority = 50
       SelectedColor.ForePriority = 50
       SelectedColor.FramePriority = 50
@@ -560,23 +559,17 @@ object CompilerOtherOptionsFrame: TCompilerOtherOptionsFrame
       SelectedColor.ItalicPriority = 50
       SelectedColor.UnderlinePriority = 50
       SelectedColor.StrikeOutPriority = 50
-      IncrementColor.FrameEdges = sfeAround
-      HighlightAllColor.FrameEdges = sfeAround
       BracketHighlightStyle = sbhsBoth
       BracketMatchColor.Background = clNone
       BracketMatchColor.Foreground = clNone
-      BracketMatchColor.FrameEdges = sfeAround
       BracketMatchColor.Style = [fsBold]
       FoldedCodeColor.Background = clNone
       FoldedCodeColor.Foreground = clGray
       FoldedCodeColor.FrameColor = clGray
-      FoldedCodeColor.FrameEdges = sfeAround
       MouseLinkColor.Background = clNone
       MouseLinkColor.Foreground = clBlue
-      MouseLinkColor.FrameEdges = sfeAround
       LineHighlightColor.Background = clNone
       LineHighlightColor.Foreground = clNone
-      LineHighlightColor.FrameEdges = sfeAround
       OnChange = CondSynEditChange
       OnProcessUserCommand = CondSynEditProcessUserCommand
       inline SynLeftGutterPartList1: TSynGutterPartList
@@ -589,7 +582,6 @@ object CompilerOtherOptionsFrame: TCompilerOtherOptionsFrame
           MouseActions = <>
           MarkupInfo.Background = clBtnFace
           MarkupInfo.Foreground = clNone
-          MarkupInfo.FrameEdges = sfeAround
           DigitCount = 2
           ShowOnlyLineNumbersMultiplesOf = 1
           ZeroStart = False
@@ -606,7 +598,6 @@ object CompilerOtherOptionsFrame: TCompilerOtherOptionsFrame
           MouseActions = <>
           MarkupInfo.Background = clWhite
           MarkupInfo.Foreground = clGray
-          MarkupInfo.FrameEdges = sfeAround
         end
         object SynGutterCodeFolding1: TSynGutterCodeFolding
           MouseActions = <          
@@ -637,7 +628,6 @@ object CompilerOtherOptionsFrame: TCompilerOtherOptionsFrame
             end>
           MarkupInfo.Background = clNone
           MarkupInfo.Foreground = clGray
-          MarkupInfo.FrameEdges = sfeAround
           MouseActionsExpanded = <          
             item
               ClickCount = ccAny
@@ -664,9 +654,9 @@ object CompilerOtherOptionsFrame: TCompilerOtherOptionsFrame
     end
     object CondStatusbar: TStatusBar
       Left = 0
-      Height = 28
-      Top = 113
-      Width = 517
+      Height = 17
+      Top = 133
+      Width = 519
       Panels = <      
         item
           Width = 80
@@ -697,17 +687,17 @@ object CompilerOtherOptionsFrame: TCompilerOtherOptionsFrame
     Width = 521
     Align = alBottom
     Caption = 'grpCustomOptions'
-    ClientHeight = 177
-    ClientWidth = 517
+    ClientHeight = 186
+    ClientWidth = 519
     TabOrder = 2
     object memoCustomOptions: TMemo
       AnchorSideLeft.Control = grpCustomOptions
       AnchorSideBottom.Control = grpCustomOptions
       AnchorSideBottom.Side = asrBottom
       Left = 0
-      Height = 173
+      Height = 182
       Top = 4
-      Width = 361
+      Width = 363
       Anchors = [akTop, akLeft, akRight, akBottom]
       BorderSpacing.Right = 6
       ParentShowHint = False
@@ -721,8 +711,8 @@ object CompilerOtherOptionsFrame: TCompilerOtherOptionsFrame
       AnchorSideLeft.Side = asrBottom
       AnchorSideRight.Control = btnDefines
       AnchorSideRight.Side = asrBottom
-      Left = 367
-      Height = 30
+      Left = 369
+      Height = 27
       Top = 4
       Width = 150
       Anchors = [akTop, akLeft, akRight]
@@ -736,9 +726,9 @@ object CompilerOtherOptionsFrame: TCompilerOtherOptionsFrame
       AnchorSideTop.Control = btnAllOptions
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Side = asrBottom
-      Left = 367
-      Height = 30
-      Top = 40
+      Left = 369
+      Height = 27
+      Top = 37
       Width = 150
       Anchors = [akTop, akLeft, akRight]
       AutoSize = True

@@ -18,7 +18,7 @@
  *                                                                         *
  ***************************************************************************
 }
-unit CustomDefines;
+unit DefinesGui;
 
 {$mode objfpc}{$H+}
 
@@ -30,9 +30,9 @@ uses
 
 type
 
-  { TCustomDefinesForm }
+  { TDefinesGuiForm }
 
-  TCustomDefinesForm = class(TForm)
+  TDefinesGuiForm = class(TForm)
     AddBtn: TBitBtn;
     ButtonPanel: TButtonPanel;
     DefinesCheckList: TCheckListBox;
@@ -75,9 +75,9 @@ implementation
 
 {$R *.lfm}
 
-{ TCustomDefinesForm }
+{ TDefinesGuiForm }
 
-procedure TCustomDefinesForm.FormCreate(Sender: TObject);
+procedure TDefinesGuiForm.FormCreate(Sender: TObject);
 begin
   Caption := lisLazBuildDefines;
   gbNewDefine.Caption := lisCodeToolsDefsDefine;
@@ -87,36 +87,36 @@ begin
   RemoveBtn.LoadGlyphFromResourceName(HInstance, 'laz_delete');
 end;
 
-procedure TCustomDefinesForm.FormShow(Sender: TObject);
+procedure TDefinesGuiForm.FormShow(Sender: TObject);
 begin
   DefinesCheckListClick(Nil);
   ActiveControl := DefinesCheckList;
   IdleConnected := True;
 end;
 
-procedure TCustomDefinesForm.FormDestroy(Sender: TObject);
+procedure TDefinesGuiForm.FormDestroy(Sender: TObject);
 begin
 
 end;
 
-procedure TCustomDefinesForm.AddBtnClick(Sender: TObject);
+procedure TDefinesGuiForm.AddBtnClick(Sender: TObject);
 begin
   DefinesCheckList.Items.Add(edDefine.Text);
   DefinesCheckList.ItemIndex := DefinesCheckList.Items.Count-1;
   UpdateButtons;
 end;
 
-procedure TCustomDefinesForm.EditChange(Sender: TObject);
+procedure TDefinesGuiForm.EditChange(Sender: TObject);
 begin
   UpdateButtons;
 end;
 
-procedure TCustomDefinesForm.HelpButtonClick(Sender: TObject);
+procedure TDefinesGuiForm.HelpButtonClick(Sender: TObject);
 begin
   LazarusHelp.ShowHelpForIDEControl(Self);
 end;
 
-procedure TCustomDefinesForm.DefinesCheckListClick(Sender: TObject);
+procedure TDefinesGuiForm.DefinesCheckListClick(Sender: TObject);
 begin
   with DefinesCheckList do
     if ItemIndex > -1 then
@@ -124,17 +124,17 @@ begin
   UpdateButtons;
 end;
 
-procedure TCustomDefinesForm.DefinesCheckListDblClick(Sender: TObject);
+procedure TDefinesGuiForm.DefinesCheckListDblClick(Sender: TObject);
 begin
   //ModalResult := mrOK;
 end;
 
-procedure TCustomDefinesForm.RemoveBtnClick(Sender: TObject);
+procedure TDefinesGuiForm.RemoveBtnClick(Sender: TObject);
 begin
   DeleteSelected;
 end;
 
-procedure TCustomDefinesForm.DefinesCheckListKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+procedure TDefinesGuiForm.DefinesCheckListKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
   if Key = VK_DELETE then
   begin
@@ -143,7 +143,7 @@ begin
   end;
 end;
 
-procedure TCustomDefinesForm.SetIdleConnected(AValue: Boolean);
+procedure TDefinesGuiForm.SetIdleConnected(AValue: Boolean);
 begin
   if FIdleConnected = AValue then exit;
   FIdleConnected := AValue;
@@ -153,7 +153,7 @@ begin
     Application.RemoveOnIdleHandler(@OnIdle);
 end;
 
-procedure TCustomDefinesForm.OnIdle(Sender: TObject; var Done: Boolean);
+procedure TDefinesGuiForm.OnIdle(Sender: TObject; var Done: Boolean);
 var
   s: String;
   i, ListInd: Integer;
@@ -181,7 +181,7 @@ begin
   end;
 end;
 
-procedure TCustomDefinesForm.DeleteSelected;
+procedure TDefinesGuiForm.DeleteSelected;
 var
   i: Integer;
 begin
@@ -194,14 +194,14 @@ begin
       end;
 end;
 
-procedure TCustomDefinesForm.UpdateButtons;
+procedure TDefinesGuiForm.UpdateButtons;
 begin
   AddBtn.Enabled := (edDefine.Text <> '')
                 and (DefinesCheckList.Items.IndexOf(edDefine.Text) = -1);
   RemoveBtn.Enabled := DefinesCheckList.SelCount > 0;
 end;
 
-function TCustomDefinesForm.ToCustomOptions(aStrings: TStrings): TModalResult;
+function TDefinesGuiForm.ToCustomOptions(aStrings: TStrings): TModalResult;
 var
   i: Integer;
 begin

@@ -434,6 +434,7 @@
         <ComponentName Value="CompilerOtherOptionsFrame"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="Compiler_Other_Options"/>
       </Unit59>
       <Unit60>
         <Filename Value="frames/compiler_compilation_options.pas"/>
@@ -604,6 +605,7 @@
         <ComponentName Value="EditorOptionsForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
+        <UnitName Value="EditorOptions"/>
       </Unit88>
       <Unit89>
         <Filename Value="../packager/cleanpkgdeps.pas"/>
@@ -633,6 +635,7 @@
       <Unit93>
         <Filename Value="../converter/convertdelphi.pas"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="ConvertDelphi"/>
       </Unit93>
       <Unit94>
         <Filename Value="etfpcmsgparser.pas"/>
@@ -778,6 +781,7 @@
       <Unit123>
         <Filename Value="lazarusidestrconsts.pas"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="LazarusIDEStrConsts"/>
       </Unit123>
       <Unit124>
         <Filename Value="codetemplatesdlg.pas"/>
@@ -1269,66 +1273,69 @@
         <IsPartOfProject Value="True"/>
       </Unit228>
       <Unit229>
-        <Filename Value="customdefines.pas"/>
+        <Filename Value="examplemanager.pas"/>
         <IsPartOfProject Value="True"/>
         <HasResources Value="True"/>
       </Unit229>
       <Unit230>
-        <Filename Value="examplemanager.pas"/>
+        <Filename Value="formeditor.pp"/>
         <IsPartOfProject Value="True"/>
-        <HasResources Value="True"/>
       </Unit230>
       <Unit231>
-        <Filename Value="formeditor.pp"/>
+        <Filename Value="revision.inc"/>
         <IsPartOfProject Value="True"/>
       </Unit231>
       <Unit232>
-        <Filename Value="revision.inc"/>
+        <Filename Value="objectlists.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit232>
       <Unit233>
-        <Filename Value="objectlists.pas"/>
-        <IsPartOfProject Value="True"/>
-      </Unit233>
-      <Unit234>
         <Filename Value="mouseactiondialog.pas"/>
         <IsPartOfProject Value="True"/>
         <HasResources Value="True"/>
-      </Unit234>
-      <Unit235>
+      </Unit233>
+      <Unit234>
         <Filename Value="basedebugmanager.pas"/>
         <IsPartOfProject Value="True"/>
-      </Unit235>
-      <Unit236>
+      </Unit234>
+      <Unit235>
         <Filename Value="imexportcompileropts.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="ImExportCompOptsDlg"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-      </Unit236>
-      <Unit237>
+      </Unit235>
+      <Unit236>
         <Filename Value="initialsetupproc.pas"/>
         <IsPartOfProject Value="True"/>
-      </Unit237>
-      <Unit238>
+      </Unit236>
+      <Unit237>
         <Filename Value="qfinitlocalvardlg.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="QFInitLocalVarDialog"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-      </Unit238>
-      <Unit239>
+      </Unit237>
+      <Unit238>
         <Filename Value="../packager/interpkgconflictfiles.pas"/>
         <IsPartOfProject Value="True"/>
         <HasResources Value="True"/>
-      </Unit239>
-      <Unit240>
+      </Unit238>
+      <Unit239>
         <Filename Value="encloseifdef.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="EncloseIfDefForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="EncloseIfDef"/>
+      </Unit239>
+      <Unit240>
+        <Filename Value="definesgui.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="DefinesGuiForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="DefinesGui"/>
       </Unit240>
     </Units>
   </ProjectOptions>

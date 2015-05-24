@@ -1,35 +1,35 @@
-object CustomDefinesForm: TCustomDefinesForm
+object DefinesGuiForm: TDefinesGuiForm
   Left = 305
   Height = 326
   Top = 265
   Width = 341
   BorderIcons = [biSystemMenu]
-  Caption = 'Conditional Defines'
+  Caption = 'Defines'
   ClientHeight = 326
   ClientWidth = 341
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnShow = FormShow
   Position = poScreenCenter
-  LCLVersion = '1.1'
+  LCLVersion = '1.5'
   object gbNewDefine: TGroupBox
     Left = 6
-    Height = 79
+    Height = 73
     Top = 6
     Width = 329
     Align = alTop
     AutoSize = True
     BorderSpacing.Around = 6
     Caption = 'gbNewDefine'
-    ClientHeight = 60
-    ClientWidth = 325
+    ClientHeight = 57
+    ClientWidth = 327
     TabOrder = 0
     object AddBtn: TBitBtn
       AnchorSideTop.Control = RemoveBtn
       AnchorSideRight.Control = RemoveBtn
-      Left = 163
-      Height = 26
-      Top = 31
+      Left = 165
+      Height = 27
+      Top = 27
       Width = 75
       Anchors = [akTop, akRight]
       AutoSize = True
@@ -46,9 +46,9 @@ object CustomDefinesForm: TCustomDefinesForm
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = edDefine
       AnchorSideRight.Side = asrBottom
-      Left = 244
-      Height = 26
-      Top = 31
+      Left = 246
+      Height = 27
+      Top = 27
       Width = 75
       Anchors = [akTop, akRight]
       AutoSize = True
@@ -63,9 +63,9 @@ object CustomDefinesForm: TCustomDefinesForm
     object edDefine: TEdit
       AnchorSideTop.Side = asrBottom
       Left = 6
-      Height = 25
+      Height = 21
       Top = 0
-      Width = 313
+      Width = 315
       Align = alTop
       BorderSpacing.Left = 6
       BorderSpacing.Right = 6
@@ -76,8 +76,8 @@ object CustomDefinesForm: TCustomDefinesForm
   end
   object DefinesCheckList: TCheckListBox
     Left = 6
-    Height = 182
-    Top = 91
+    Height = 187
+    Top = 85
     Width = 329
     Align = alClient
     Anchors = [akTop, akBottom]
@@ -87,11 +87,12 @@ object CustomDefinesForm: TCustomDefinesForm
     OnDblClick = DefinesCheckListDblClick
     OnKeyDown = DefinesCheckListKeyDown
     TabOrder = 1
+    TopIndex = -1
   end
   object ButtonPanel: TButtonPanel
     Left = 6
-    Height = 41
-    Top = 279
+    Height = 42
+    Top = 278
     Width = 329
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True

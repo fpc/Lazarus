@@ -32,7 +32,7 @@ uses
   Dialogs, StdCtrls, ComCtrls, ExtCtrls, Buttons, LCLType, LazUTF8,
   CodeToolsCfgScript, KeywordFuncLists, LazarusIDEStrConsts,
   IDEOptionsIntf, CompOptsIntf, IDECommands, LazIDEIntf, Project, PackageDefs,
-  CompilerOptions, Compiler, AllCompilerOptions, CustomDefines,
+  CompilerOptions, Compiler, AllCompilerOptions, DefinesGui,
   EditorOptions, SynEdit, SynEditKeyCmds, SynCompletion, SourceSynEditor;
 
 type
@@ -147,19 +147,19 @@ end;
 
 procedure TCompilerOtherOptionsFrame.btnDefinesClick(Sender: TObject);
 var
-  EditForm: TCustomDefinesForm;
+  EditForm: TDefinesGuiForm;
 begin
-  EditForm := TCustomDefinesForm.Create(Nil);
+  EditForm := TDefinesGuiForm.Create(Nil);
   try
   try
     EditForm.OptionsReader := FOptionsReader;
     EditForm.OptionsThread := FOptionsThread;
     EditForm.CustomOptions := memoCustomOptions.Lines;
-    EditForm.DefinesCheckList.Items.Assign(Project1.CustomDefines);
+    EditForm.DefinesCheckList.Items.Assign(Project1.OtherDefines);
     EditForm.UseComments := FUseComments;
     if EditForm.ShowModal = mrOK then
     begin
-      Project1.CustomDefines.Assign(EditForm.DefinesCheckList.Items);
+      Project1.OtherDefines.Assign(EditForm.DefinesCheckList.Items);
       // Synchronize with custom options memo
       EditForm.ToCustomOptions(memoCustomOptions.Lines);
       memoCustomOptions.Invalidate;
