@@ -38,60 +38,58 @@ unit PkgVirtualUnitEditor;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, Buttons,
-  StdCtrls, FileUtil, LazarusIDEStrConsts, PackageDefs;
-
-type
-
-  { TEditVirtualUnitDialog }
-
-  TEditVirtualUnitDialog = class(TForm)
-    CancelButton: TBitBtn;
-    FilenameEdit: TEdit;
-    OkButton: TBitBtn;
-    UnitnameEdit: TEdit;
-    FilenameLabel: TLabel;
-    UnitnameLabel: TLabel;
-    procedure EditVirtualUnitDialogCreate(Sender: TObject);
-    procedure OkButtonClick(Sender: TObject);
-  private
-    FPkgFile: TPkgFile;
-    procedure SetPkgFile(const AValue: TPkgFile);
-  public
-    property PkgFile: TPkgFile read FPkgFile write SetPkgFile;
-  end;
+  Classes, SysUtils, Forms, Controls, PackageDefs;
 
 function ShowEditVirtualPackageDialog(PkgFile: TPkgFile): TModalResult;
 
 implementation
 
-{$R *.lfm}
+uses
+  Dialogs, FileUtil, LazarusIDEStrConsts;
+
+type
+  TDummyForClose = class
+  public
+    PkgFile: TPkgFile;
+    procedure CloseEvent(Sender: TObject; const AValues: array of string;
+      var ACanClose: boolean);
+  end;
 
 function ShowEditVirtualPackageDialog(PkgFile: TPkgFile): TModalResult;
 var
-  EditVirtualUnitDialog: TEditVirtualUnitDialog;
+  Str: array of string;
+  Dummy: TDummyForClose;
 begin
-  EditVirtualUnitDialog:=TEditVirtualUnitDialog.Create(nil);
+  Result:= mrCancel;
+  if not Assigned(PkgFile) then exit;
+
+  SetLength(Str, 2);
+  Str[0]:= PkgFile.Filename;
+  Str[1]:= PkgFile.Unit_Name;
+
+  Dummy:= TDummyForClose.Create;
   try
-    EditVirtualUnitDialog.PkgFile:=PkgFile;
-    Result:=EditVirtualUnitDialog.ShowModal;
+    Dummy.PkgFile:= PkgFile;
+    if not InputQuery(lisPVUEditVirtualUnit,
+      [lisPEFilename, lisPEUnitname], Str, @Dummy.CloseEvent) then exit;
   finally
-    EditVirtualUnitDialog.Free;
+    FreeAndNil(Dummy);
   end;
+
+  if (PkgFile.Filename=Str[0]) and
+     (PkgFile.Unit_name=Str[1]) then exit;
+
+  PkgFile.Filename:= Str[0];
+  PkgFile.Unit_name:= Str[1];
+  if Assigned(PkgFile.LazPackage) then
+    PkgFile.LazPackage.Modified:= true;
+  Result:= mrOk;
 end;
 
-{ TEditVirtualUnitDialog }
+{ TDummyForClose }
 
-procedure TEditVirtualUnitDialog.EditVirtualUnitDialogCreate(Sender: TObject);
-begin
-  Caption:=lisPVUEditVirtualUnit;
-  FilenameLabel.Caption:=lisPEFilename;
-  UnitnameLabel.Caption:=lisPEUnitname;
-  UnitnameEdit.Hint:=lisPVUTheUnitnameIsUsedWhenTheIDEExtendsUsesClauses;
-  UnitnameEdit.ShowHint:=true;
-end;
-
-procedure TEditVirtualUnitDialog.OkButtonClick(Sender: TObject);
+procedure TDummyForClose.CloseEvent(Sender: TObject; const AValues: array of string;
+  var ACanClose: boolean);
 var
   NewFilename: String;
   NewUnitName: String;
@@ -99,8 +97,10 @@ var
   LazPackage: TLazPackage;
   ConflictUnit: TPkgFile;
 begin
-  NewFilename:=FilenameEdit.Text;
-  NewUnitName:=UnitnameEdit.Text;
+  ACanClose:=false;
+  NewFilename:=AValues[0];
+  NewUnitName:=AValues[1];
+
   if not FilenameIsPascalUnit(NewFilename) then begin
     MessageDlg(lisPEInvalidUnitFilename,
       lisPVUAPascalUnitMustHaveTheExtensionPpOrPas,
@@ -132,25 +132,7 @@ begin
     end;
   end;
 
-  // commit
-  if (PkgFile.Filename<>NewFilename)
-  or (PkgFile.Unit_name<>NewUnitName) then begin
-    PkgFile.Filename:=NewFilename;
-    PkgFile.Unit_name:=NewUnitName;
-    if LazPackage<>nil then LazPackage.Modified:=true;
-  end;
-  
-  ModalResult:=mrOk;
-end;
-
-procedure TEditVirtualUnitDialog.SetPkgFile(const AValue: TPkgFile);
-begin
-  if FPkgFile=AValue then exit;
-  FPkgFile:=AValue;
-  if PkgFile<>nil then begin
-    FilenameEdit.Text:=PkgFile.Filename;
-    UnitnameEdit.Text:=PkgFile.Unit_Name;
-  end;
+  ACanClose:=true;
 end;
 
 end.
