@@ -183,6 +183,22 @@ type
     property Message: string read FMessage;
   end;
 
+  { TFPDSendWatchEvaluateCommand }
+
+  TFPDSendWatchEvaluateCommand = class(TFPDSendCommand)
+  private
+    FWatchValue: TWatchValue;
+    procedure DoWatchFreed(Sender: TObject);
+  protected
+    procedure ComposeJSon(AJsonObject: TJSONObject); override;
+  public
+    constructor create(AWatchValue: TWatchValue);
+    destructor Destroy; override;
+    procedure DoOnCommandSuccesfull(ACommandResponse: TJSonObject); override;
+    procedure DoOnCommandFailed(ACommandResponse: TJSonObject); override;
+  end;
+
+
   { TFPDSocketThread }
 
   TFPDSocketThread = class(TThread)
@@ -241,6 +257,7 @@ type
     // Overrides of TDebuggerIntf methods.
     class function Caption: String; override;
     function CreateBreakPoints: TDBGBreakPoints; override;
+    function CreateWatches: TWatchesSupplier; override;
     function RequestCommand(const ACommand: TDBGCommand; const AParams: array of const): Boolean; override;
     // These methods are called by several TFPDSendCommands after success or failure of a command. (Most common
     // because the TFPDSendCommands do not have access to TFPDServerDebugger's protected methods theirself)
@@ -286,6 +303,13 @@ type
     function FindByUID(AnUID: integer): TFPBreakpoint;
   end;
 
+  { TFPWatches }
+
+  TFPWatches = class(TWatchesSupplier)
+  protected
+    procedure InternalRequestData(AWatchValue: TWatchValue); override;
+  end;
+
 procedure Register;
 begin
   RegisterDebugger(TFPDServerDebugger);
@@ -294,6 +318,68 @@ end;
 { TFPDSendCommand }
 
 var GCommandUID: integer = 0;
+
+{ TFPDSendWatchEvaluateCommand }
+
+procedure TFPDSendWatchEvaluateCommand.DoWatchFreed(Sender: TObject);
+begin
+  FWatchValue:=nil;
+end;
+
+procedure TFPDSendWatchEvaluateCommand.ComposeJSon(AJsonObject: TJSONObject);
+begin
+  inherited ComposeJSon(AJsonObject);
+  AJsonObject.Add('command','evaluate');
+  AJsonObject.Add('expression',FWatchValue.Expression);
+end;
+
+constructor TFPDSendWatchEvaluateCommand.create(AWatchValue: TWatchValue);
+begin
+  inherited create(true);
+  AWatchValue.AddFreeNotification(@DoWatchFreed);
+  FWatchValue := AWatchValue;
+end;
+
+destructor TFPDSendWatchEvaluateCommand.Destroy;
+begin
+  FWatchValue.RemoveFreeeNotification(@DoWatchFreed);
+  inherited Destroy;
+end;
+
+procedure TFPDSendWatchEvaluateCommand.DoOnCommandSuccesfull(ACommandResponse: TJSonObject);
+var
+  s: string;
+  i: TDebuggerDataState;
+begin
+  inherited DoOnCommandSuccesfull(ACommandResponse);
+
+  if assigned(FWatchValue) then
+    begin
+    FWatchValue.Value:=ACommandResponse.Get('message','');
+    s := ACommandResponse.Get('validity','');
+    FWatchValue.Validity:=ddsError;
+    for i := low(TDebuggerDataState) to high(TDebuggerDataState) do
+      if DebuggerDataStateStr[i]=s then
+        begin
+        FWatchValue.Validity:=i;
+        break;
+        end;
+    end;
+end;
+
+procedure TFPDSendWatchEvaluateCommand.DoOnCommandFailed(ACommandResponse: TJSonObject);
+begin
+  inherited DoOnCommandFailed(ACommandResponse);
+  FWatchValue.Validity:=ddsInvalid;
+end;
+
+{ TFPWatches }
+
+procedure TFPWatches.InternalRequestData(AWatchValue: TWatchValue);
+begin
+  TFPDServerDebugger(Debugger).QueueCommand(TFPDSendWatchEvaluateCommand.create(AWatchValue));
+  inherited InternalRequestData(AWatchValue);
+end;
 
 { TFPDSendEvaluateCommand }
 
@@ -1003,6 +1089,11 @@ end;
 function TFPDServerDebugger.CreateBreakPoints: TDBGBreakPoints;
 begin
   Result := TFPBreakPoints.Create(Self, TFPBreakpoint);
+end;
+
+function TFPDServerDebugger.CreateWatches: TWatchesSupplier;
+begin
+  Result := TFPWatches.Create(Self);
 end;
 
 function TFPDServerDebugger.RequestCommand(const ACommand: TDBGCommand; const AParams: array of const): Boolean;
