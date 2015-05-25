@@ -36,7 +36,11 @@ uses
   Types, Classes, SysUtils, Math, Maps, LCLStrConsts, LCLProc, LCLType, LCLIntf,
   FileUtil, FPCanvas, Controls, GraphType, Graphics, Forms, DynamicArray,
   LMessages, StdCtrls, LResources, MaskEdit, Buttons, Clipbrd, Themes,
-  LazUTF8, LazUtf8Classes, Laz2_XMLCfg, LCSVUtils; // <-- replaces XMLConf (part of FPC libs)
+  LazUTF8, LazUtf8Classes, Laz2_XMLCfg, LCSVUtils
+{$ifdef WINDOWS}
+  ,messages
+{$endif}
+  ;
 
 const
   //GRIDFILEVERSION = 1; // Original
@@ -1228,6 +1232,11 @@ type
     property SortOrder: TSortOrder read FSortOrder write FSortOrder;
     property SortColumn: Integer read FSortColumn;
     property TabStop default true;
+{$ifdef WINDOWS}
+  protected
+    procedure IMEStartComposition(var Msg:TMessage); message WM_IME_STARTCOMPOSITION;
+    procedure IMEComposition(var Msg:TMessage); message WM_IME_COMPOSITION;
+{$endif}
   end;
 
   TGetEditEvent = procedure (Sender: TObject; ACol, ARow: Integer; var Value: string) of object;
@@ -9170,6 +9179,32 @@ begin
   DebugLnExit('TCustomGrid.SetFocus END');
   {$ENDIF}
 end;
+
+{$ifdef WINDOWS}
+procedure TCustomGrid.IMEStartComposition(var Msg: TMessage);
+begin
+  // enable editor
+  SelectEditor;
+  EditorShow(True);
+  if Editor<>nil then
+    Msg.Result:=SendMessage(Editor.Handle,Msg.msg,Msg.wParam,Msg.lParam);
+end;
+
+procedure TCustomGrid.IMEComposition(var Msg: TMessage);
+var
+  wc : pWideChar;
+  s : string;
+begin
+  wc := @Msg.wParamlo;
+  s := Ansistring(WideCharLenToString(wc,1));
+  // check valid mbcs
+  if (Length(s)>0) and (s[1]<>'?') then
+    Msg.wParamlo:=swap(pword(@s[1])^);
+  // send first mbcs to editor
+  if Editor<>nil then
+    Msg.Result:=SendMessage(Editor.Handle,Msg.msg,Msg.wParam,Msg.lParam);
+end;
+{$endif}
 
 procedure TCustomGrid.Clear;
 var
