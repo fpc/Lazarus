@@ -47,6 +47,7 @@ type
   protected
     procedure DoEnter; override;
     procedure DoExit; override;
+    function PerformTab(ForwardTab: boolean): boolean; override;
   end;
 
   { TCustomEditButton }
@@ -987,6 +988,22 @@ procedure TEbEdit.DoExit;
 begin
   if (Owner is TCustomEditButton) then TCustomEditButton(Owner).CheckButtonVisible;
   inherited DoExit;
+end;
+
+function TEbEdit.PerformTab(ForwardTab: boolean): boolean;
+begin
+  //if not Forward then inherited PerFormTab will set focus to the owning
+  //TCustomEditButton, which immediately transfers the focus back to the TEbEdit
+  //so let TCustomEditButton do the Performtab in this case
+  if ForwardTab then
+    Result := inherited PerformTab(ForwardTab)
+  else
+  begin
+    if Assigned(Owner) and (Owner is TCustomEditButton) then
+      Result :=  TCustomEditButton(Owner).PerformTab(ForwardTab)
+    else
+      Result := False;
+  end;
 end;
 
 { TCustomEditButton }
