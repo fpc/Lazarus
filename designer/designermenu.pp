@@ -1994,6 +1994,8 @@ begin
       DMenuItem.NextItem:=TempMI;
       if (DMenuItem.ParentMenu <> nil) then
         DMenuItem.ParentMenu.SubMenu:=DMenuItem;
+      if (TempMI.NextItem <> nil) then
+        TempMI.NextItem.PrevItem:=TempMI;
       if (DMenuItem.PrevItem <> nil) then
         DMenuItem.PrevItem.NextItem:=DMenuItem;
       Result:=1;
