@@ -3061,7 +3061,11 @@ begin
     Manager.AddJumpPointClicked(Self);
 
   OldEntireScope := ssoEntireScope in anOptions;
-  Again:=False;
+  //do not show lisUESearchStringContinueBeg/lisUESearchStringContinueEnd if the caret is in the beginning/end
+  if ssoBackwards in anOptions then
+    Again := ((FEditor.CaretY >= FEditor.Lines.Count) and (FEditor.CaretX > Length(FEditor.LineText)))//caret in the last line and last character
+  else
+    Again := ((FEditor.CaretY = 1) and (FEditor.CaretX = 1));//caret at the top/left
   repeat
     try
       Result:=EditorComponent.SearchReplace(aFindText, aReplaceText, anOptions);
