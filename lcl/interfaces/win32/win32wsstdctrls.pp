@@ -583,6 +583,9 @@ var
   WindowInfo: PWin32WindowInfo;
   NCCreateParams: PNCCreateParams;
   LMessage: TLMessage;
+  Count: LResult;
+  Top: Integer;
+  ARect: TRect;
 begin
   case Msg of
     WM_NCCREATE:
@@ -608,6 +611,26 @@ begin
         LMessage.WParam := WParam;
         LMessage.Result := 0;
         Exit(DeliverMessage(WindowInfo^.WinControl, LMessage));
+      end;
+    WM_ERASEBKGND:
+      // Avoid unnecessary background paints to avoid flickering of the listbox
+      begin
+        WindowInfo := GetWin32WindowInfo(Window);
+        Count := SendMessage(Window, LB_GETCOUNT, 0, 0);
+        if Assigned(WindowInfo^.WinControl) and
+          (TCustomListBox(WindowInfo^.WinControl).Columns < 2) and
+          (Count <> LB_ERR) and (SendMessage(Window, LB_GETITEMRECT, Count - 1, Windows.LParam(@ARect)) <> LB_ERR) then
+        begin
+          Top := ARect.Bottom;
+          Windows.GetClientRect(Window, ARect);
+          ARect.Top := Top;
+          if not IsRectEmpty(ARect) then
+            Windows.FillRect(HDC(WParam), ARect, WindowInfo^.WinControl.Brush.Reference.Handle);
+          Result := 1;
+        end
+        else
+          Result := CallDefaultWindowProc(Window, Msg, WParam, LParam);
+        Exit;
       end;
   end;
   // normal processing
