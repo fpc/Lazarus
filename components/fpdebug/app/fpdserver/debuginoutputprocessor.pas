@@ -10,6 +10,7 @@ uses
   fpjson,
   FpDbgUtil,
   DebugThreadCommand,
+  DbgIntfDebuggerBase,
   debugthread,
   FpDbgClasses,
   typinfo,
@@ -149,6 +150,8 @@ begin
       JSonEvent.Add('breakpointLocation', FormatAddress(AnEvent.BreakpointAddr));
     if AnEvent.SendByConnectionIdentifier>0 then
       JSonEvent.Add('connIdentifier', AnEvent.SendByConnectionIdentifier);
+    if AnEvent.Validity<>ddsUnknown then
+      JSonEvent.Add('validity', DebuggerDataStateStr[AnEvent.Validity]);
     if AnEvent.LocationRec.Address <> 0 then
       begin
       JSonLocationRec := TJSONObject.Create;

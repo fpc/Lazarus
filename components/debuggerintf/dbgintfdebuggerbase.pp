@@ -146,6 +146,16 @@ type
   (* TValidState: State for breakpoints *)
   TValidState = (vsUnknown, vsValid, vsInvalid);
 
+const
+  DebuggerDataStateStr : array[TDebuggerDataState] of string = (
+    'Unknown',
+    'Requested',
+    'Evaluating',
+    'Valid',
+    'Invalid',
+    'Error');
+
+type
   TDBGEvaluateFlag =
     (defNoTypeInfo,        // No Typeinfo object will be returned
      defSimpleTypeInfo,    // Returns: Kind (skSimple, skClass, ..); TypeName (but does make no attempt to avoid an alias)

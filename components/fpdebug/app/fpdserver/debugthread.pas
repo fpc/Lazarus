@@ -9,6 +9,8 @@ uses
   Classes,
   SysUtils,
   FPDbgController,
+  FpDbgDwarfDataClasses,
+  FpdMemoryTools,
   DbgIntfBaseTypes,
   DbgIntfDebuggerBase,
   lazCollections,
@@ -51,6 +53,7 @@ type
     AnUID: variant;
     BreakpointAddr: TDBGPtr;
     LocationRec: TDBGLocationRec;
+    Validity: TDebuggerDataState;
   end;
 
   // Each listener should implement this interface.
@@ -109,11 +112,15 @@ type
     FCommandQueue: TFpDebugThreadCommandQueue;
     FController: TDbgController;
     FListenerList: TThreadList;
+    FMemConverter: TFpDbgMemConvertorLittleEndian;
+    FMemReader: TDbgMemReader;
+    FMemManager: TFpDbgMemManager;
   protected
     // Handlers for the FController-events
     procedure FControllerHitBreakpointEvent(var continue: boolean; const Breakpoint: TDbgBreakpoint);
     procedure FControllerProcessExitEvent(ExitCode: DWord);
     procedure FControllerCreateProcessEvent(var continue: boolean);
+    procedure FControllerDebugInfoLoaded(Sender: TObject);
     // Main debug thread-loop
     procedure Execute; override;
     // Send an event to all listeners
@@ -154,6 +161,32 @@ implementation
 
 var
   FFpDebugThread: TFpDebugThread;
+
+type
+
+  { TFpDbgMemReader }
+
+  TFpDbgMemReader = class(TDbgMemReader)
+    private
+      FDebugThread: TFpDebugThread;
+    protected
+      function GetDbgProcess: TDbgProcess; override;
+    public
+      constructor create(ADebugThread: TFpDebugThread);
+  end;
+
+{ TFpDbgMemReader }
+
+function TFpDbgMemReader.GetDbgProcess: TDbgProcess;
+begin
+  result := FDebugThread.FController.CurrentProcess;
+end;
+
+constructor TFpDbgMemReader.create(ADebugThread: TFpDebugThread);
+begin
+  Inherited Create;
+  FDebugThread:=ADebugThread;
+end;
 
 { TFpDebugThreadCommand }
 
@@ -228,6 +261,12 @@ begin
   AnEvent.InstructionPointerRegValue:=0;
   AnEvent.BreakpointAddr:=0;
   AnEvent.LocationRec.Address:=0;
+  AnEvent.Validity:=ddsUnknown;
+end;
+
+procedure TFpDebugThread.FControllerDebugInfoLoaded(Sender: TObject);
+begin
+  TFpDwarfInfo(FController.CurrentProcess.DbgInfo).MemManager := FMemManager;
 end;
 
 procedure TFpDebugThread.FControllerHitBreakpointEvent(var continue: boolean; const Breakpoint: TDbgBreakpoint);
@@ -280,6 +319,7 @@ begin
   FController.OnCreateProcessEvent:=@FControllerCreateProcessEvent;
   FController.OnProcessExitEvent:=@FControllerProcessExitEvent;
   FController.OnHitBreakpointEvent:=@FControllerHitBreakpointEvent;
+  FController.OnDebugInfoLoaded:=@FControllerDebugInfoLoaded;
   FController.OnLog:=@SendLogMessage;
 
   try
@@ -348,6 +388,10 @@ begin
   inherited create(false);
   FCommandQueue := TFpDebugThreadCommandQueue.create(100, INFINITE, 100);
   FListenerList:=TThreadList.Create;
+
+  FMemReader := TFpDbgMemReader.Create(self);
+  FMemConverter := TFpDbgMemConvertorLittleEndian.Create;
+  FMemManager := TFpDbgMemManager.Create(FMemReader, FMemConverter);
 end;
 
 destructor TFpDebugThread.Destroy;
@@ -355,6 +399,9 @@ begin
   FListenerList.Free;
   FCommandQueue.Free;
   inherited Destroy;
+  FMemManager.Free;
+  FMemConverter.Free;
+  FMemReader.Free;
 end;
 
 class function TFpDebugThread.Instance: TFpDebugThread;

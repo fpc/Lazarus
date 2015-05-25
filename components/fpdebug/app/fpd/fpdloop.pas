@@ -80,9 +80,6 @@ type
   TPDDbgMemReader = class(TDbgMemReader)
   protected
     function GetDbgProcess: TDbgProcess; override;
-  public
-    function ReadMemory(AnAddress: TDbgPtr; ASize: Cardinal; ADest: Pointer): Boolean; override;
-    function ReadMemoryEx(AnAddress, AnAddressSpace: TDbgPtr; ASize: Cardinal; ADest: Pointer): Boolean; override;
   end;
 
 
@@ -96,16 +93,6 @@ resourcestring
 function TPDDbgMemReader.GetDbgProcess: TDbgProcess;
 begin
   result := GController.CurrentProcess;
-end;
-
-function TPDDbgMemReader.ReadMemory(AnAddress: TDbgPtr; ASize: Cardinal; ADest: Pointer): Boolean;
-begin
-  result := GetDbgProcess.ReadData(AnAddress, ASize, ADest^);
-end;
-
-function TPDDbgMemReader.ReadMemoryEx(AnAddress, AnAddressSpace: TDbgPtr; ASize: Cardinal; ADest: Pointer): Boolean;
-begin
-  result := GetDbgProcess.ReadData(AnAddress, ASize, ADest^);
 end;
 
 { TFPDLoop }

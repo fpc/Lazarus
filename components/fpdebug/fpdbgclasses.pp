@@ -119,6 +119,8 @@ type
   protected
     function GetDbgProcess: TDbgProcess; virtual; abstract;
   public
+    function ReadMemory(AnAddress: TDbgPtr; ASize: Cardinal; ADest: Pointer): Boolean; override;
+    function ReadMemoryEx(AnAddress, AnAddressSpace: TDbgPtr; ASize: Cardinal; ADest: Pointer): Boolean; override;
     function ReadRegister(ARegNum: Cardinal; out AValue: TDbgPtr; AContext: TFpDbgAddressContext): Boolean; override;
     function RegisterSize(ARegNum: Cardinal): Integer; override;
   end;
@@ -438,6 +440,17 @@ begin
 end;
 
 { TDbgMemReader }
+
+function TDbgMemReader.ReadMemory(AnAddress: TDbgPtr; ASize: Cardinal; ADest: Pointer): Boolean;
+begin
+  result := GetDbgProcess.ReadData(AnAddress, ASize, ADest^);
+end;
+
+function TDbgMemReader.ReadMemoryEx(AnAddress, AnAddressSpace: TDbgPtr; ASize: Cardinal; ADest: Pointer): Boolean;
+begin
+  Assert(AnAddressSpace>0,'TDbgMemReader.ReadMemoryEx ignores AddressSpace');
+  result := GetDbgProcess.ReadData(AnAddress, ASize, ADest^);
+end;
 
 function TDbgMemReader.ReadRegister(ARegNum: Cardinal; out AValue: TDbgPtr; AContext: TFpDbgAddressContext): Boolean;
 var

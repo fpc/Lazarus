@@ -11,6 +11,9 @@ uses
   FpDbgClasses,
   FpDbgUtil,
   FpDbgInfo,
+  FpPascalParser,
+  FpPascalBuilder,
+  FpErrorMessages,
   DbgIntfDebuggerBase,
   DbgIntfBaseTypes,
   strutils,
@@ -160,12 +163,96 @@ type
     property Address: string read GetAddress write SetAddress;
   end;
 
+  { TFpDebugThreadEvaluateCommand }
+
+  TFpDebugThreadEvaluateCommand = class(TFpDebugThreadCommand)
+  private
+    FExpression: string;
+    FResText: string;
+    FValidity: TDebuggerDataState;
+  public
+    function Execute(AController: TDbgController; out DoProcessLoop: boolean): boolean; override;
+    class function TextName: string; override;
+    procedure ComposeSuccessEvent(var AnEvent: TFpDebugEvent); override;
+  published
+    property Expression: string read FExpression write FExpression;
+  end;
+
 implementation
 
 { TFpDebugThreadCommandList }
 
 var
   GFpDebugThreadCommandList: TFpDebugThreadCommandList = nil;
+
+{ TFpDebugThreadEvaluateCommand }
+
+procedure TFpDebugThreadEvaluateCommand.ComposeSuccessEvent(var AnEvent: TFpDebugEvent);
+begin
+  inherited ComposeSuccessEvent(AnEvent);
+  AnEvent.Message:=FResText;
+  AnEvent.Validity:=FValidity;
+end;
+
+function TFpDebugThreadEvaluateCommand.Execute(AController: TDbgController; out DoProcessLoop: boolean): boolean;
+var
+  AContext: TFpDbgInfoContext;
+  APasExpr: TFpPascalExpression;
+  ADbgInfo: TDbgInfo;
+  Res: Boolean;
+  APrettyPrinter: TFpPascalPrettyPrinter;
+  ATypeInfo: TDBGType;
+
+begin
+  Result := False;
+  ADbgInfo := AController.CurrentProcess.DbgInfo;
+  AContext := ADbgInfo.FindContext(AController.CurrentThread.ID, 0, AController.CurrentProcess.GetInstructionPointerRegisterValue);
+  if AContext = nil then
+    begin
+    FValidity:=ddsInvalid;
+    exit;
+    end;
+
+  Result := True;
+  AContext.MemManager.DefaultContext := AContext;
+  APasExpr := TFpPascalExpression.Create(FExpression, AContext);
+  try
+    APasExpr.ResultValue; // trigger full validation
+    if not APasExpr.Valid then
+      begin
+      FResText := ErrorHandler.ErrorAsString(APasExpr.Error);
+      FValidity := ddsError;
+      end
+    else
+      begin
+      APrettyPrinter := TFpPascalPrettyPrinter.Create(sizeof(pointer));
+      try
+        APrettyPrinter.AddressSize:=AContext.SizeOfAddress;
+        APrettyPrinter.MemManager := AContext.MemManager;
+        Res := APrettyPrinter.PrintValue(FResText, ATypeInfo, APasExpr.ResultValue);
+        if Res then
+          begin
+          FValidity:=ddsValid;
+          end
+        else
+          begin
+          FResText := 'Error';
+          FValidity:=ddsValid;
+          end;
+      finally
+        APrettyPrinter.Free;
+      end;
+      end;
+  finally
+    APasExpr.Free;
+    AContext.ReleaseReference;
+  end;
+end;
+
+class function TFpDebugThreadEvaluateCommand.TextName: string;
+begin
+  result := 'evaluate';
+end;
 
 { TFpDebugThreadQuitDebugServerCommand }
 
@@ -474,6 +561,7 @@ initialization
   TFpDebugThreadCommandList.instance.Add(TFpDebugThreadAddBreakpointCommand);
   TFpDebugThreadCommandList.instance.Add(TFpDebugThreadRemoveBreakpointCommand);
   TFpDebugThreadCommandList.instance.Add(TFpDebugThreadGetLocationInfoCommand);
+  TFpDebugThreadCommandList.instance.Add(TFpDebugThreadEvaluateCommand);
 finalization
   GFpDebugThreadCommandList.Free;
 end.
