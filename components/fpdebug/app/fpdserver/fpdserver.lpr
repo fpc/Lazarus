@@ -30,7 +30,8 @@ uses
   DebugThreadCommand,
   DebugInOutputProcessor,
   DebugTCPServer,
-  DebugConsoleServer;
+  DebugConsoleServer,
+  debugscriptserver;
 
 type
 
@@ -51,14 +52,16 @@ var
   ErrorMsg: String;
   DebugThread: TFpDebugThread;
   TCPServerThread: TFpDebugTcpServer;
+  ScriptServerThread: TFpDebugScriptServer;
   ConsoleServerThread: TFpDebugConsoleServer;
   Port: integer;
   SensePorts: integer;
   ACommand: TFpDebugThreadCommand;
+  ScriptFile: string;
   CommandStr: string;
 begin
   // quick check parameters
-  ErrorMsg:=CheckOptions('hf:tdp:a::i', ['help','filename:','tcp','daemon','port:','autoport::','interactive'], True);
+  ErrorMsg:=CheckOptions('hf:tdp:a::is:', ['help','filename:','tcp','daemon','port:','autoport::','interactive','script:'], True);
 
   if not HasOption('i','interactive') then
     begin
@@ -136,6 +139,12 @@ begin
     FlushThread;
     end;
 
+  ScriptFile := GetOptionValue('s','script');
+  if ScriptFile<>'' then
+    ScriptServerThread := TFpDebugScriptServer.create(DebugThread, ScriptFile)
+  else
+    ScriptServerThread := nil;
+
   CommandStr := GetOptionValue('f', 'filename');
   if CommandStr<>'' then
     begin
@@ -158,16 +167,22 @@ begin
     ConsoleServerThread.Terminate;
   if assigned(TCPServerThread) then
     TCPServerThread.StopListening;
+  if assigned(ScriptServerThread) then
+    ScriptServerThread.Terminate;
 
   if assigned(ConsoleServerThread) then
     ConsoleServerThread.WaitFor;
   if assigned(TCPServerThread) then
     TCPServerThread.WaitFor;
+  if assigned(ScriptServerThread) then
+    ScriptServerThread.WaitFor;
 
   if assigned(TCPServerThread) then
     TCPServerThread.Free;
   if assigned(ConsoleServerThread) then
     ConsoleServerThread.Free;
+  if assigned(ScriptServerThread) then
+    ScriptServerThread.Free;
 
   DebugThread.Terminate;
   DebugThread.WaitFor;
@@ -191,6 +206,7 @@ begin
   writeln('  -f --filename    Set the filename of the executable to debug');
   writeln('  -p --port        Set the port (9159) to listen for incoming tcp-connections');
   writeln('  -a --autoport    Try to bind to n (5) sequential ports when a port is in use');
+  writeln('  -s --script      Load script with debug-commands');
 end;
 
 var

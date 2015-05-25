@@ -37,7 +37,7 @@
         <PackageName Value="fpdebug"/>
       </Item2>
     </RequiredPackages>
-    <Units Count="6">
+    <Units Count="7">
       <Unit0>
         <Filename Value="fpdserver.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -67,6 +67,11 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="DebugConsoleServer"/>
       </Unit5>
+      <Unit6>
+        <Filename Value="debugscriptserver.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="debugscriptserver"/>
+      </Unit6>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
