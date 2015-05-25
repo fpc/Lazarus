@@ -33,15 +33,17 @@ type
   protected
     FCommandUID: integer;
     FServerDebugger: TFPDServerDebugger;
+    FAutomaticFree: boolean;
     function GetAsString: string; virtual;
     procedure ComposeJSon(AJsonObject: TJSONObject); virtual;
   public
-    constructor create; virtual;
+    constructor create(AnAutomaticFree: boolean=true); virtual;
     procedure DoOnCommandSuccesfull(ACommandResponse: TJSonObject); virtual;
     procedure DoOnCommandReceived(ACommandResponse: TJSonObject); virtual;
     procedure DoOnCommandFailed(ACommandResponse: TJSonObject); virtual;
     property CommandUID: integer read FCommandUID;
     property AsString: string read GetAsString;
+    property AutomaticFree: boolean read FAutomaticFree;
   end;
 
   { TFPDSendCommandList }
@@ -164,6 +166,23 @@ type
     procedure DoOnCommandSuccesfull(ACommandResponse: TJSonObject); override;
   end;
 
+  { TFPDSendEvaluateCommand }
+
+  TFPDSendEvaluateCommand = class(TFPDSendCommand)
+  private
+    FExpression: string;
+    FValidity: TDebuggerDataState;
+    FMessage: string;
+  protected
+    procedure ComposeJSon(AJsonObject: TJSONObject); override;
+  public
+    constructor create(AnAutomaticFree: boolean; AnExpression: string);
+    procedure DoOnCommandSuccesfull(ACommandResponse: TJSonObject); override;
+    procedure DoOnCommandFailed(ACommandResponse: TJSonObject); override;
+    property Validity: TDebuggerDataState read FValidity;
+    property Message: string read FMessage;
+  end;
+
   { TFPDSocketThread }
 
   TFPDSocketThread = class(TThread)
@@ -276,6 +295,45 @@ end;
 
 var GCommandUID: integer = 0;
 
+{ TFPDSendEvaluateCommand }
+
+procedure TFPDSendEvaluateCommand.ComposeJSon(AJsonObject: TJSONObject);
+begin
+  inherited ComposeJSon(AJsonObject);
+  AJsonObject.Add('command','evaluate');
+  AJsonObject.Add('expression',FExpression);
+end;
+
+constructor TFPDSendEvaluateCommand.create(AnAutomaticFree: boolean; AnExpression: string);
+begin
+  FExpression:=AnExpression;
+  FValidity:=ddsRequested;
+  inherited create(AnAutomaticFree);
+end;
+
+procedure TFPDSendEvaluateCommand.DoOnCommandSuccesfull(ACommandResponse: TJSonObject);
+var
+  s: string;
+  i: TDebuggerDataState;
+begin
+  inherited DoOnCommandSuccesfull(ACommandResponse);
+  FMessage:=ACommandResponse.Get('message','');
+  s := ACommandResponse.Get('validity','');
+  FValidity:=ddsError;
+  for i := low(TDebuggerDataState) to high(TDebuggerDataState) do
+    if DebuggerDataStateStr[i]=s then
+      begin
+      FValidity:=i;
+      break;
+      end;
+end;
+
+procedure TFPDSendEvaluateCommand.DoOnCommandFailed(ACommandResponse: TJSonObject);
+begin
+  inherited DoOnCommandFailed(ACommandResponse);
+  FValidity:=ddsInvalid;
+end;
+
 { TFPDSendQuitDebugServerCommand }
 
 procedure TFPDSendQuitDebugServerCommand.ComposeJSon(AJsonObject: TJSONObject);
@@ -319,10 +377,11 @@ begin
   AJsonObject.Add('uid', FCommandUID);
 end;
 
-constructor TFPDSendCommand.create;
+constructor TFPDSendCommand.create(AnAutomaticFree: boolean);
 begin
   inc(GCommandUID);
   FCommandUID := GCommandUID;
+  FAutomaticFree:=AnAutomaticFree;
 end;
 
 procedure TFPDSendCommand.DoOnCommandSuccesfull(ACommandResponse: TJSonObject);
@@ -776,7 +835,7 @@ end;
 
 function TFPDServerDebugger.GetSupportedCommands: TDBGCommands;
 begin
-  Result:=[dcRun, dcStepOver, dcStepInto, dcStepOut, dcStepOverInstr, dcStepIntoInstr, dcStop];
+  Result:=[dcRun, dcStepOver, dcStepInto, dcStepOut, dcStepOverInstr, dcStepIntoInstr, dcStop, dcEvaluate];
 end;
 
 procedure TFPDServerDebugger.DoHandleCreateProcessEvent(AnEvent: TJSONObject);
@@ -842,12 +901,18 @@ begin
               'ExecutedCommand':
                 begin
                 SendCommand.DoOnCommandSuccesfull(ANotification);
-                FCommandList.Remove(SendCommand);
+                if SendCommand.AutomaticFree then
+                  FCommandList.Remove(SendCommand)
+                else
+                  FCommandList.Extract(SendCommand);
                 end;
               'FailedCommand'  :
                 begin
                 SendCommand.DoOnCommandFailed(ANotification);
-                FCommandList.Remove(SendCommand);
+                if SendCommand.AutomaticFree then
+                  FCommandList.Remove(SendCommand)
+                else
+                  FCommandList.Extract(SendCommand);
                 end;
               'ReceivedCommand':
                 SendCommand.DoOnCommandReceived(ANotification);
@@ -941,6 +1006,9 @@ begin
 end;
 
 function TFPDServerDebugger.RequestCommand(const ACommand: TDBGCommand; const AParams: array of const): Boolean;
+var
+  ASendCommand: TFPDSendEvaluateCommand;
+  tc: qword;
 begin
   result := true;
   case ACommand of
@@ -994,6 +1062,19 @@ begin
       QueueCommand(TFPDSendStopCommand.create);
       if state=dsPause then
         SetState(dsRun);
+      end;
+    dcEvaluate:
+      begin
+      ASendCommand := TFPDSendEvaluateCommand.create(False, String(AParams[0].VAnsiString));
+      QueueCommand(ASendCommand);
+      tc := GetTickCount64;
+      repeat
+      sleep(5);
+      Application.ProcessMessages;
+      until (ASendCommand.Validity<>ddsRequested) or ((GetTickCount64-tc)>2000);
+      String(AParams[1].VPointer^) := ASendCommand.Message;
+      TDBGType(AParams[2].VPointer^) := nil;
+      ASendCommand.Free;
       end
     else
       result := false;
