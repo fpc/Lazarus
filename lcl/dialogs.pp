@@ -525,7 +525,8 @@ function InputBox(const ACaption, APrompt, ADefault : String) : String;
 function PasswordBox(const ACaption, APrompt : String) : String;
 
 const
-  cInputQueryEditSize: integer = 320;
+  cInputQueryEditSizePixels: integer = 260; // Edit size in pixels
+  cInputQueryEditSizePercents: integer = 25; // Edit size in % of monitor width
   cInputQuerySpacingSize: integer = 6;
 
 type

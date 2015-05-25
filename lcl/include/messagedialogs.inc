@@ -379,7 +379,9 @@ begin
     FEdits[i]:= TEdit.Create(FForm);
     FEdits[i].Parent:= FPanels[i];
     FEdits[i].Align:= alRight;
-    FEdits[i].Width:= cInputQueryEditSize;
+    FEdits[i].Width:= Max(
+      cInputQueryEditSizePixels,
+      _InputQueryActiveMonitor.Width * cInputQueryEditSizePercents div 100);
     FEdits[i].Text:= AValues[i];
 
     FLabels[i]:= TPanel.Create(FForm);
