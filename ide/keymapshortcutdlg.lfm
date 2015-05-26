@@ -5,12 +5,15 @@ object ShortCutDialog: TShortCutDialog
   Width = 545
   ActiveControl = BtnPanel
   AutoSize = True
+  BorderIcons = [biSystemMenu]
+  BorderStyle = bsDialog
   Caption = 'ShortCutDialog'
   ClientHeight = 260
   ClientWidth = 545
   OnCreate = FormCreate
   OnShow = FormShow
-  LCLVersion = '1.3'
+  Position = poScreenCenter
+  LCLVersion = '1.5'
   object PrimaryGroupBox: TGroupBox
     Left = 6
     Height = 93
@@ -34,7 +37,7 @@ object ShortCutDialog: TShortCutDialog
   object BtnPanel: TButtonPanel
     AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 28
+    Height = 26
     Top = 216
     Width = 533
     Align = alTop
