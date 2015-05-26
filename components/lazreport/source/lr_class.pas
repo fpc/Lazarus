@@ -20,7 +20,7 @@ uses
   Dialogs, Menus, Variants, DB, Graphics, Printers, osPrinters, LazUTF8, DOM,
   XMLWrite, XMLRead, XMLConf, LCLType, LCLIntf, TypInfo, LR_View, LR_Pars,
   LR_Intrp, LR_DSet, LR_DBSet, LR_DBRel, LR_Const, DbCtrls, LazUtf8Classes,
-  LazLoggerBase;
+  LCLProc;
 
 const
 // object flags
@@ -2708,12 +2708,13 @@ var
   i  : Integer;
 begin
   {$IFDEF DebugLR}
-  DebugLn('%s.TfrView.LoadFromStream begin StreamMode=%d ClassName=%s',
-    [name,Ord(StreamMode),ClassName]);
+  DebugLn('%s.TfrView.LoadFromStream begin StreamMode=%d ClassName=%s Stream.Position=%d',
+    [name,Ord(StreamMode),ClassName, Stream.Position]);
   {$ENDIF}
   with Stream do
   begin
-//    if StreamMode = smDesigning then
+
+    if (frVersion>27) or ((frVersion=27) and lrCanReadName(Stream)) or (StreamMode = smDesigning) then
     begin
       if frVersion >= 23 then
         fName := ReadString(Stream)
@@ -2787,7 +2788,7 @@ begin
 
   end;
   {$IFDEF DebugLR}
-  DebugLn('%s.TfrView.LoadFromStream end',[name]);
+  DebugLn('%s.TfrView.LoadFromStream end Position=%d',[name, Stream.Position]);
   {$ENDIF}
 end;
 
@@ -9690,6 +9691,8 @@ var
   f1, f2: Integer;
   c: Char;
   s: String;
+  Dummy: Extended;
+  IsNumeric: Boolean;
 begin
   if (TVarData(v).VType = varEmpty) {VarIsEmpty(v)} or VarIsNull(v) then
   begin
@@ -9715,7 +9718,8 @@ begin
         end;
       fmtNumber:
         begin
-          if not VarIsNumeric(v) then
+          IsNumeric := VarIsNumeric(v) or TryStrToFloat(v, Dummy);
+          if not IsNumeric then
             result := v
           else begin
             DefaultFormatSettings.DecimalSeparator := Chr(AFormat and $FF);
