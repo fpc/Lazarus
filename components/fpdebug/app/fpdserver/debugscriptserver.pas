@@ -43,7 +43,8 @@ begin
     for i := 0 to FFileContents.Count-1 do
       begin
       ACommand := FInOutputProcessor.TextToCommand(FFileContents.Strings[i]);
-      FDebugThread.QueueCommand(ACommand);
+      if assigned(ACommand) then
+        FDebugThread.QueueCommand(ACommand);
       if Terminated then
         Break;
       end;
