@@ -376,7 +376,7 @@ begin
     PkgStringGrid.Cells[5,i]:=Link.EffectiveFilename;
 
     if Link.LastUsed=0 then
-      PkgStringGrid.Cells[6,i]:= '?'
+      PkgStringGrid.Cells[6,i]:= lisNever
     else
       PkgStringGrid.Cells[6,i]:= DateTimeToStr(Link.LastUsed);
 
