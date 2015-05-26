@@ -739,6 +739,7 @@ begin
 
       while not terminated do
         begin
+        repeat
         s:=ReadString;
         if s<>'' then
           begin
@@ -748,6 +749,10 @@ begin
           else
             raise exception.CreateFmt('JSon-command %s is not a JSON-Object.',[s]);
           end;
+        // When one string has been received, there is a large chance that there is more
+        // input waiting. Keep checking for input until the input-buffer is empty, before
+        // the thread starts waiting for new commands using FSendQueue.PopItem.
+        until s='';
 
         if not terminated and (FSendQueue.PopItem(SendStr) = wrSignaled) then
           begin
