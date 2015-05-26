@@ -84,8 +84,6 @@ type
     procedure CopyCellToClipboardMenuItemClick(Sender: TObject);
     procedure DeleteSelectedButtonClick(Sender: TObject);
     procedure FilterEditChange(Sender: TObject);
-    procedure FilterEditEnter(Sender: TObject);
-    procedure FilterEditExit(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure LPKFileValidCheckBoxChange(Sender: TObject);
@@ -145,7 +143,7 @@ begin
   DeleteSelectedButton.Caption:=lrsPLDDeleteSelected;
   UpdateGlobalLinksButton.Caption:=lrsRescanLplFiles;
   CloseBitBtn.Caption:=lisClose;
-  FilterEdit.Text:=lisCEFilter;
+  FilterEdit.TextHint:=lisCEFilter;
 
   ProgressBar1.Style:=pbstMarquee;
   ProgressBar1.Visible:=true;
@@ -192,18 +190,6 @@ begin
   RescanGlobalLinks;
   UpdatePackageList;
   PkgLinks.SaveUserLinks;
-end;
-
-procedure TPackageLinksDialog.FilterEditEnter(Sender: TObject);
-begin
-  if FilterEdit.Text=lisCEFilter then
-    FilterEdit.Text:='';
-end;
-
-procedure TPackageLinksDialog.FilterEditExit(Sender: TObject);
-begin
-  if FilterEdit.Text='' then
-    FilterEdit.Text:=lisCEFilter;
 end;
 
 procedure TPackageLinksDialog.FormDestroy(Sender: TObject);
@@ -306,7 +292,6 @@ begin
     FCountUserLinks:=0;
     Node:=FLinks.FindLowest;
     FilterCase:=FilterEdit.Text;
-    if FilterCase=lisCEFilter then FilterCase:='';
     FilterLo:=UTF8LowerCase(FilterCase);
     while Node<>nil do begin
       Link:=TPkgLinkInfo(Node.Data);
@@ -389,7 +374,11 @@ begin
       s:=lrsPLDInvalid;
     PkgStringGrid.Cells[4,i]:=s;
     PkgStringGrid.Cells[5,i]:=Link.EffectiveFilename;
-    PkgStringGrid.Cells[6,i]:=DateTimeToStr(Link.LastUsed);
+
+    if Link.LastUsed=0 then
+      PkgStringGrid.Cells[6,i]:= '?'
+    else
+      PkgStringGrid.Cells[6,i]:= DateTimeToStr(Link.LastUsed);
 
     inc(i);
   end;
