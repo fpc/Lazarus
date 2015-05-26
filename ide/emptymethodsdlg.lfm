@@ -1,47 +1,52 @@
 object EmptyMethodsDialog: TEmptyMethodsDialog
   Left = 290
-  Height = 421
+  Height = 429
   Top = 202
-  Width = 387
+  Width = 634
   ActiveControl = PrivateCheckBox
+  BorderIcons = [biSystemMenu, biMaximize]
   Caption = 'EmptyMethodsDialog'
-  ClientHeight = 421
-  ClientWidth = 387
+  ClientHeight = 429
+  ClientWidth = 634
   OnCreate = FormCreate
   Position = poScreenCenter
-  LCLVersion = '0.9.31'
+  LCLVersion = '1.5'
   object ButtonPanel1: TButtonPanel
     Left = 6
     Height = 26
-    Top = 389
-    Width = 375
+    Top = 397
+    Width = 622
     OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
     OKButton.OnClick = OKButtonClick
     HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
     HelpButton.Enabled = False
     CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
     CloseButton.Enabled = False
     CancelButton.Name = 'CancelButton'
-    TabOrder = 0
+    CancelButton.DefaultCaption = True
+    TabOrder = 2
     ShowButtons = [pbOK, pbCancel]
     ShowBevel = False
   end
   object MethodsGroupBox: TGroupBox
     Left = 6
-    Height = 261
-    Top = 122
-    Width = 375
+    Height = 259
+    Top = 132
+    Width = 622
     Align = alClient
     BorderSpacing.Around = 6
     Caption = 'MethodsGroupBox'
-    ClientHeight = 243
-    ClientWidth = 371
+    ClientHeight = 239
+    ClientWidth = 618
     TabOrder = 1
     inline MethodsSynEdit: TSynEdit
       Left = 6
-      Height = 231
+      Height = 227
       Top = 6
-      Width = 359
+      Width = 606
       Align = alClient
       BorderSpacing.Around = 6
       Font.Height = -14
@@ -56,50 +61,24 @@ object EmptyMethodsDialog: TEmptyMethodsDialog
       Gutter.Width = 59
       Gutter.MouseActions = <      
         item
-          Shift = []
-          ShiftMask = []
-          Button = mbLeft
           ClickCount = ccAny
           ClickDir = cdDown
-          Command = 13
-          MoveCaret = False
-          Option = 0
-          Priority = 0
+          Command = emcOnMainGutterClick
         end      
         item
-          Shift = []
-          ShiftMask = []
           Button = mbRight
-          ClickCount = ccSingle
-          ClickDir = cdUp
-          Command = 12
-          MoveCaret = False
-          Option = 0
-          Priority = 0
+          Command = emcContextMenu
         end>
       RightGutter.Width = 0
       RightGutter.MouseActions = <      
         item
-          Shift = []
-          ShiftMask = []
-          Button = mbLeft
           ClickCount = ccAny
           ClickDir = cdDown
-          Command = 13
-          MoveCaret = False
-          Option = 0
-          Priority = 0
+          Command = emcOnMainGutterClick
         end      
         item
-          Shift = []
-          ShiftMask = []
           Button = mbRight
-          ClickCount = ccSingle
-          ClickDir = cdUp
-          Command = 12
-          MoveCaret = False
-          Option = 0
-          Priority = 0
+          Command = emcContextMenu
         end>
       Highlighter = SynPasSyn1
       Keystrokes = <      
@@ -425,135 +404,101 @@ object EmptyMethodsDialog: TEmptyMethodsDialog
         end>
       MouseActions = <      
         item
-          Shift = []
           ShiftMask = [ssShift, ssAlt]
-          Button = mbLeft
-          ClickCount = ccSingle
           ClickDir = cdDown
-          Command = 1
+          Command = emcStartSelections
           MoveCaret = True
-          Option = 0
-          Priority = 0
         end      
         item
           Shift = [ssShift]
           ShiftMask = [ssShift, ssAlt]
-          Button = mbLeft
-          ClickCount = ccSingle
           ClickDir = cdDown
-          Command = 1
+          Command = emcStartSelections
           MoveCaret = True
           Option = 1
-          Priority = 0
         end      
         item
           Shift = [ssAlt]
           ShiftMask = [ssShift, ssAlt]
-          Button = mbLeft
-          ClickCount = ccSingle
           ClickDir = cdDown
-          Command = 3
+          Command = emcStartColumnSelections
           MoveCaret = True
-          Option = 0
-          Priority = 0
         end      
         item
           Shift = [ssShift, ssAlt]
           ShiftMask = [ssShift, ssAlt]
-          Button = mbLeft
-          ClickCount = ccSingle
           ClickDir = cdDown
-          Command = 3
+          Command = emcStartColumnSelections
           MoveCaret = True
           Option = 1
-          Priority = 0
         end      
         item
-          Shift = []
-          ShiftMask = []
           Button = mbRight
-          ClickCount = ccSingle
-          ClickDir = cdUp
-          Command = 12
-          MoveCaret = False
-          Option = 0
-          Priority = 0
+          Command = emcContextMenu
         end      
         item
-          Shift = []
-          ShiftMask = []
-          Button = mbLeft
           ClickCount = ccDouble
           ClickDir = cdDown
-          Command = 6
+          Command = emcSelectWord
           MoveCaret = True
-          Option = 0
-          Priority = 0
         end      
         item
-          Shift = []
-          ShiftMask = []
-          Button = mbLeft
           ClickCount = ccTriple
           ClickDir = cdDown
-          Command = 7
+          Command = emcSelectLine
           MoveCaret = True
-          Option = 0
-          Priority = 0
         end      
         item
-          Shift = []
-          ShiftMask = []
-          Button = mbLeft
           ClickCount = ccQuad
           ClickDir = cdDown
-          Command = 8
+          Command = emcSelectPara
           MoveCaret = True
-          Option = 0
-          Priority = 0
         end      
         item
-          Shift = []
-          ShiftMask = []
           Button = mbMiddle
-          ClickCount = ccSingle
           ClickDir = cdDown
-          Command = 10
+          Command = emcPasteSelection
           MoveCaret = True
-          Option = 0
-          Priority = 0
         end      
         item
           Shift = [ssCtrl]
           ShiftMask = [ssShift, ssAlt, ssCtrl]
-          Button = mbLeft
-          ClickCount = ccSingle
-          ClickDir = cdUp
-          Command = 11
-          MoveCaret = False
-          Option = 0
-          Priority = 0
+          Command = emcMouseLink
         end>
+      MouseTextActions = <>
       MouseSelActions = <      
         item
-          Shift = []
-          ShiftMask = []
-          Button = mbLeft
-          ClickCount = ccSingle
           ClickDir = cdDown
-          Command = 9
-          MoveCaret = False
-          Option = 0
-          Priority = 0
+          Command = emcStartDragMove
         end>
       Lines.Strings = (
         'MethodsSynEdit'
       )
+      VisibleSpecialChars = [vscSpace, vscTabAtLast]
       ReadOnly = True
+      SelectedColor.BackPriority = 50
+      SelectedColor.ForePriority = 50
+      SelectedColor.FramePriority = 50
+      SelectedColor.BoldPriority = 50
+      SelectedColor.ItalicPriority = 50
+      SelectedColor.UnderlinePriority = 50
+      SelectedColor.StrikeOutPriority = 50
       BracketHighlightStyle = sbhsBoth
+      BracketMatchColor.Background = clNone
+      BracketMatchColor.Foreground = clNone
+      BracketMatchColor.Style = [fsBold]
+      FoldedCodeColor.Background = clNone
+      FoldedCodeColor.Foreground = clGray
+      FoldedCodeColor.FrameColor = clGray
+      MouseLinkColor.Background = clNone
+      MouseLinkColor.Foreground = clBlue
+      LineHighlightColor.Background = clNone
+      LineHighlightColor.Foreground = clNone
+      WantTabs = False
       inline TSynGutterPartList
         object TSynGutterMarks
           Width = 24
+          MouseActions = <>
         end
         object TSynGutterLineNumber
           Width = 19
@@ -567,35 +512,28 @@ object EmptyMethodsDialog: TEmptyMethodsDialog
         end
         object TSynGutterChanges
           Width = 4
+          MouseActions = <>
           ModifiedColor = 59900
           SavedColor = clGreen
         end
         object TSynGutterSeparator
           Width = 2
+          MouseActions = <>
+          MarkupInfo.Background = clWhite
+          MarkupInfo.Foreground = clGray
         end
         object TSynGutterCodeFolding
           MouseActions = <          
             item
-              Shift = []
-              ShiftMask = []
               Button = mbRight
-              ClickCount = ccSingle
-              ClickDir = cdUp
-              Command = 16
-              MoveCaret = False
-              Option = 0
-              Priority = 0
+              Command = emcCodeFoldContextMenu
             end          
             item
-              Shift = []
               ShiftMask = [ssShift]
               Button = mbMiddle
               ClickCount = ccAny
               ClickDir = cdDown
-              Command = 14
-              MoveCaret = False
-              Option = 0
-              Priority = 0
+              Command = emcCodeFoldCollaps
             end          
             item
               Shift = [ssShift]
@@ -603,58 +541,36 @@ object EmptyMethodsDialog: TEmptyMethodsDialog
               Button = mbMiddle
               ClickCount = ccAny
               ClickDir = cdDown
-              Command = 14
-              MoveCaret = False
+              Command = emcCodeFoldCollaps
               Option = 1
-              Priority = 0
             end          
             item
-              Shift = []
-              ShiftMask = []
-              Button = mbLeft
               ClickCount = ccAny
               ClickDir = cdDown
-              Command = 0
-              MoveCaret = False
-              Option = 0
-              Priority = 0
+              Command = emcNone
             end>
           MarkupInfo.Background = clNone
           MarkupInfo.Foreground = clGray
           MouseActionsExpanded = <          
             item
-              Shift = []
-              ShiftMask = []
-              Button = mbLeft
               ClickCount = ccAny
               ClickDir = cdDown
-              Command = 14
-              MoveCaret = False
-              Option = 0
-              Priority = 0
+              Command = emcCodeFoldCollaps
             end>
           MouseActionsCollapsed = <          
             item
               Shift = [ssCtrl]
               ShiftMask = [ssCtrl]
-              Button = mbLeft
               ClickCount = ccAny
               ClickDir = cdDown
-              Command = 15
-              MoveCaret = False
-              Option = 0
-              Priority = 0
+              Command = emcCodeFoldExpand
             end          
             item
-              Shift = []
               ShiftMask = [ssCtrl]
-              Button = mbLeft
               ClickCount = ccAny
               ClickDir = cdDown
-              Command = 15
-              MoveCaret = False
+              Command = emcCodeFoldExpand
               Option = 1
-              Priority = 0
             end>
         end
       end
@@ -662,9 +578,9 @@ object EmptyMethodsDialog: TEmptyMethodsDialog
   end
   object SectionsGroupBox: TGroupBox
     Left = 6
-    Height = 110
+    Height = 120
     Top = 6
-    Width = 375
+    Width = 622
     Align = alTop
     AutoSize = True
     BorderSpacing.Around = 6
@@ -674,59 +590,59 @@ object EmptyMethodsDialog: TEmptyMethodsDialog
     ChildSizing.HorizontalSpacing = 15
     ChildSizing.Layout = cclTopToBottomThenLeftToRight
     ChildSizing.ControlsPerLine = 4
-    ClientHeight = 92
-    ClientWidth = 371
-    TabOrder = 2
+    ClientHeight = 100
+    ClientWidth = 618
+    TabOrder = 0
     object PrivateCheckBox: TCheckBox
       Left = 6
-      Height = 23
+      Height = 25
       Top = 6
-      Width = 112
+      Width = 124
       Caption = 'PrivateCheckBox'
       OnChange = PrivateCheckBoxChange
       TabOrder = 0
     end
     object ProtectedCheckBox: TCheckBox
       Left = 6
-      Height = 23
-      Top = 29
-      Width = 112
+      Height = 25
+      Top = 31
+      Width = 124
       Caption = 'ProtectedCheckBox'
       OnChange = PrivateCheckBoxChange
       TabOrder = 1
     end
     object PublicCheckBox: TCheckBox
       Left = 6
-      Height = 17
-      Top = 52
-      Width = 112
+      Height = 19
+      Top = 56
+      Width = 124
       Caption = 'PublicCheckBox'
       OnChange = PrivateCheckBoxChange
       TabOrder = 2
     end
     object PublishedCheckBox: TCheckBox
       Left = 6
-      Height = 17
-      Top = 69
-      Width = 112
+      Height = 19
+      Top = 75
+      Width = 124
       Caption = 'PublishedCheckBox'
       OnChange = PrivateCheckBoxChange
       TabOrder = 3
     end
     object AllButton: TButton
-      Left = 133
-      Height = 23
+      Left = 145
+      Height = 25
       Top = 6
-      Width = 103
+      Width = 114
       Caption = 'AllButton'
       OnClick = AllButtonClick
       TabOrder = 4
     end
     object PublishedButton: TButton
-      Left = 133
-      Height = 23
-      Top = 29
-      Width = 103
+      Left = 145
+      Height = 25
+      Top = 31
+      Width = 114
       Caption = 'PublishedButton'
       OnClick = PublishedButtonClick
       TabOrder = 5
@@ -734,17 +650,6 @@ object EmptyMethodsDialog: TEmptyMethodsDialog
   end
   object SynPasSyn1: TSynPasSyn
     Enabled = False
-    AsmAttri.FrameEdges = sfeAround
-    CommentAttri.FrameEdges = sfeAround
-    IDEDirectiveAttri.FrameEdges = sfeAround
-    IdentifierAttri.FrameEdges = sfeAround
-    KeyAttri.FrameEdges = sfeAround
-    NumberAttri.FrameEdges = sfeAround
-    SpaceAttri.FrameEdges = sfeAround
-    StringAttri.FrameEdges = sfeAround
-    SymbolAttri.FrameEdges = sfeAround
-    CaseLabelAttri.FrameEdges = sfeAround
-    DirectiveAttri.FrameEdges = sfeAround
     CompilerMode = pcmDelphi
     NestedComments = False
     left = 103
