@@ -482,6 +482,14 @@ type
     procedure SetLastFocusedControl(AControl: TWinControl);
     procedure SetWindowFocus;
     procedure SetWindowState(Value : TWindowState);
+    procedure AddHandler(HandlerType: TFormHandlerType;
+                         const Handler: TMethod; AsFirst: Boolean = false);
+    procedure RemoveHandler(HandlerType: TFormHandlerType;
+                            const Handler: TMethod);
+    function FindDefaultForActiveControl: TWinControl;
+    procedure UpdateMenu;
+    procedure UpdateShowInTaskBar;
+  protected
     procedure WMActivate(var Message : TLMActivate); message LM_ACTIVATE;
     procedure WMCloseQuery(var message: TLMessage); message LM_CLOSEQUERY;
     procedure WMHelp(var Message: TLMHelp); message LM_HELP;
@@ -497,19 +505,12 @@ type
     procedure CMRelease(var Message: TLMessage); message CM_RELEASE;
     procedure CMActivate(var Message: TLMessage); message CM_ACTIVATE;
     procedure CMDeactivate(var Message: TLMessage); message CM_DEACTIVATE;
-    procedure AddHandler(HandlerType: TFormHandlerType;
-                         const Handler: TMethod; AsFirst: Boolean = false);
-    procedure RemoveHandler(HandlerType: TFormHandlerType;
-                            const Handler: TMethod);
-    function FindDefaultForActiveControl: TWinControl;
-    procedure UpdateMenu;
-    procedure UpdateShowInTaskBar;
+    procedure CMShowingChanged(var Message: TLMessage); message CM_SHOWINGCHANGED;
   protected
     FActionLists: TList; // keep this TList for Delphi compatibility
     FFormBorderStyle: TFormBorderStyle;
     FFormState: TFormState;
     class procedure WSRegisterClass; override;
-    procedure CMShowingChanged(var Message: TLMessage); message CM_SHOWINGCHANGED;
     procedure DoShowWindow; virtual;
     procedure Activate; virtual;
     procedure ActiveChanged; virtual;
