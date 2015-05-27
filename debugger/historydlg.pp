@@ -362,6 +362,11 @@ begin
   for i := low(COL_WIDTHS) to high(COL_WIDTHS) do
     lvHistory.Column[i].Width := COL_WIDTHS[i];
 
+  OpenDialog1.Title := lisImport;
+  SaveDialog1.Title := lisExport;
+
+  OpenDialog1.Filter := Format('%s|*.xml|%s|*.*|', [lisXMLFiles, lisAllFiles]);
+  SaveDialog1.Filter := OpenDialog1.Filter;
 end;
 
 initialization
