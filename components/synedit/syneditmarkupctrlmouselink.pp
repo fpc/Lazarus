@@ -172,6 +172,13 @@ var
   i: Integer;
 begin
   Result := False;
+
+  if not (emUseMouseActions in TCustomSynEdit(SynEdit).MouseOptions) then begin
+    Result := (emShowCtrlMouseLinks in TCustomSynEdit(SynEdit).MouseOptions) and
+              (AShift * [ssShift, ssCtrl, ssAlt] = [ssCtrl]);
+    exit;
+  end;
+
   // todo: check FMouseSelActions if over selection?
   for i := 0 to TCustomSynEdit(SynEdit).MouseActions.Count - 1 do begin
     act := TCustomSynEdit(SynEdit).MouseActions.Items[i];
