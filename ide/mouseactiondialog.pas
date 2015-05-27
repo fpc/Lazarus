@@ -38,7 +38,6 @@ type
     OptLabel: TLabel;
     Opt2Spin: TSpinEdit;
     Opt2Label: TLabel;
-    ScrollBox1: TScrollBox;
     ShiftCheck: TCheckBox;
     PriorSpin: TSpinEdit;
     procedure ActionBoxChange(Sender: TObject);
@@ -53,6 +52,7 @@ type
   private
     FKeyMap: TKeyCommandRelationList;
     procedure AddMouseCmd(const S: string);
+    procedure FillListbox;
   public
     { public declarations }
     Procedure ResetInputs;
@@ -64,6 +64,8 @@ type
   function KeyMapIndexOfCommand(AKeyMap: TKeyCommandRelationList; ACmd: Word) : Integer;
 
 implementation
+
+uses Math;
 
 {$R *.lfm}
 
@@ -98,11 +100,42 @@ begin
   end;
 end;
 
+procedure TMouseaActionDialog.FillListbox;
+const
+  cCheckSize=35;
+var
+  r: TSynMAUpRestriction;
+  s: string;
+  i, Len: integer;
+begin
+  for r := low(TSynMAUpRestriction) to high(TSynMAUpRestriction) do
+    case r of
+      crLastDownPos:          chkUpRestrict.AddItem(synfMatchActionPosOfMouseDown, nil);
+      crLastDownPosSameLine:  chkUpRestrict.AddItem(synfMatchActionLineOfMouseDown, nil);
+      crLastDownPosSearchAll: chkUpRestrict.AddItem(synfSearchAllActionOfMouseDown, nil);
+      crLastDownButton:       chkUpRestrict.AddItem(synfMatchActionButtonOfMouseDown, nil);
+      crLastDownShift:        chkUpRestrict.AddItem(synfMatchActionModifiersOfMouseDown, nil);
+      crAllowFallback:        chkUpRestrict.AddItem(synfContinueWithNextMouseUpAction, nil);
+      else begin
+        WriteStr(s, r);
+        chkUpRestrict.AddItem(s, nil);
+      end;
+    end;
+
+  // update scrollbar
+  Len := 0;
+  with chkUpRestrict do
+  begin
+    for i := 0 to Items.Count-1 do
+      Len := Max(Len, Canvas.TextWidth(Items[i])+cCheckSize);
+    ScrollWidth := Len;
+  end;
+end;
+
 procedure TMouseaActionDialog.FormCreate(Sender: TObject);
 var
   mb: TSynMouseButton;
   cc: TSynMAClickCount;
-  r: TSynMAUpRestriction;
   s: string;
 begin
   ButtonName[mbXLeft]:=dlgMouseOptBtnLeft;
@@ -119,20 +152,7 @@ begin
   ClickName[ccQuad]:=dlgMouseOptBtn4;
   ClickName[ccAny]:=dlgMouseOptBtnAny;
 
-  for r := low(TSynMAUpRestriction) to high(TSynMAUpRestriction) do
-    case r of
-      crLastDownPos:          chkUpRestrict.AddItem(synfMatchActionPosOfMouseDown, nil);
-      crLastDownPosSameLine:  chkUpRestrict.AddItem(synfMatchActionLineOfMouseDown, nil);
-      crLastDownPosSearchAll: chkUpRestrict.AddItem(synfSearchAllActionOfMouseDown, nil);
-      crLastDownButton:       chkUpRestrict.AddItem(synfMatchActionButtonOfMouseDown, nil);
-      crLastDownShift:        chkUpRestrict.AddItem(synfMatchActionModifiersOfMouseDown, nil);
-      crAllowFallback:        chkUpRestrict.AddItem(synfContinueWithNextMouseUpAction, nil);
-      else begin
-        WriteStr(s, r);
-        chkUpRestrict.AddItem(s, nil);
-      end;
-    end;
-
+  FillListbox;
 
   ButtonDirName[cdUp]:=lisUp;
   ButtonDirName[cdDown]:=lisDown;
