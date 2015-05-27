@@ -343,8 +343,6 @@ type
     procedure SaveAllToFileMenuItemClick(Sender: TObject);
     procedure SaveShownToFileMenuItemClick(Sender: TObject);
     procedure SearchEditChange(Sender: TObject);
-    procedure SearchEditEnter(Sender: TObject);
-    procedure SearchEditExit(Sender: TObject);
     procedure SearchEditKeyDown(Sender: TObject; var Key: Word;
       {%H-}Shift: TShiftState);
     procedure SearchNextSpeedButtonClick(Sender: TObject);
@@ -403,9 +401,6 @@ type
     function AddCustomMessage(TheUrgency: TMessageLineUrgency; Msg: string;
       aFilename: string = ''; LineNumber: integer = 0; Column: integer = 0;
       const ViewCaption: string = CustomViewCaption): TMessageLine;
-
-    // misc
-    function GetDefaultSearchText: string;
   end;
 
 const
@@ -2971,21 +2966,7 @@ var
   s: TCaption;
 begin
   s:=SearchEdit.Text;
-  if s=GetDefaultSearchText then
-    s:='';
   MessagesCtrl.SearchText:=s;
-end;
-
-procedure TMessagesFrame.SearchEditEnter(Sender: TObject);
-begin
-  if SearchEdit.Text=GetDefaultSearchText then
-    SearchEdit.Text:='';
-end;
-
-procedure TMessagesFrame.SearchEditExit(Sender: TObject);
-begin
-  if SearchEdit.Text='' then
-    SearchEdit.Text:=GetDefaultSearchText;
 end;
 
 procedure TMessagesFrame.SearchEditKeyDown(Sender: TObject; var Key: Word;
@@ -3292,7 +3273,6 @@ procedure TMessagesFrame.HideSearch;
 begin
   SearchPanel.Visible:=false;
   MessagesCtrl.SearchText:='';
-  SearchEdit.Text:=GetDefaultSearchText;
 end;
 
 procedure TMessagesFrame.SaveClicked(OnlyShown: boolean);
@@ -3476,11 +3456,11 @@ begin
   SearchPanel.Visible:=false; // by default the search is hidden
   HideSearchSpeedButton.Hint:=lisHideSearch;
   HideSearchSpeedButton.LoadGlyphFromResourceName(HInstance, 'debugger_power_grey');
-  SearchEdit.Text:=GetDefaultSearchText;
   SearchNextSpeedButton.Hint:=lisUDSearchNextOccurrenceOfThisPhrase;
   SearchNextSpeedButton.LoadGlyphFromResourceName(HInstance, 'callstack_bottom');
   SearchPrevSpeedButton.Hint:=lisUDSearchPreviousOccurrenceOfThisPhrase;
   SearchPrevSpeedButton.LoadGlyphFromResourceName(HInstance, 'callstack_top');
+  SearchEdit.TextHint:=lisUDSearch;
 end;
 
 destructor TMessagesFrame.Destroy;
@@ -3610,11 +3590,6 @@ end;
 procedure TMessagesFrame.SelectMsgLine(Msg: TMessageLine; DoScroll: boolean);
 begin
   MessagesCtrl.Select(Msg,DoScroll);
-end;
-
-function TMessagesFrame.GetDefaultSearchText: string;
-begin
-  Result:=lisUDSearch;
 end;
 
 function TMessagesFrame.SelectFirstUrgentMessage(

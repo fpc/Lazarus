@@ -10,29 +10,27 @@ object MessagesFrame: TMessagesFrame
   DesignTop = 171
   object SearchPanel: TPanel
     Left = 0
-    Height = 27
-    Top = 79
+    Height = 23
+    Top = 83
     Width = 444
     Align = alBottom
     AutoSize = True
-    ClientHeight = 27
+    BevelOuter = bvNone
+    ClientHeight = 23
     ClientWidth = 444
     TabOrder = 0
     object SearchEdit: TEdit
       AnchorSideLeft.Control = HideSearchSpeedButton
       AnchorSideLeft.Side = asrBottom
-      Left = 34
-      Height = 25
+      Left = 33
+      Height = 23
       Top = 1
       Width = 200
       BorderSpacing.Left = 10
       Constraints.MinWidth = 200
       OnChange = SearchEditChange
-      OnEnter = SearchEditEnter
-      OnExit = SearchEditExit
       OnKeyDown = SearchEditKeyDown
       TabOrder = 0
-      Text = 'SearchEdit'
     end
     object SearchNextSpeedButton: TSpeedButton
       AnchorSideLeft.Control = SearchEdit
@@ -40,8 +38,8 @@ object MessagesFrame: TMessagesFrame
       AnchorSideTop.Control = SearchEdit
       AnchorSideBottom.Control = SearchEdit
       AnchorSideBottom.Side = asrBottom
-      Left = 234
-      Height = 25
+      Left = 233
+      Height = 23
       Top = 1
       Width = 23
       Anchors = [akTop, akLeft, akBottom]
@@ -56,8 +54,8 @@ object MessagesFrame: TMessagesFrame
       AnchorSideTop.Control = SearchNextSpeedButton
       AnchorSideBottom.Control = SearchNextSpeedButton
       AnchorSideBottom.Side = asrBottom
-      Left = 257
-      Height = 25
+      Left = 256
+      Height = 23
       Top = 1
       Width = 23
       Anchors = [akTop, akLeft, akBottom]
@@ -71,9 +69,9 @@ object MessagesFrame: TMessagesFrame
       AnchorSideTop.Control = SearchPanel
       AnchorSideBottom.Control = SearchPanel
       AnchorSideBottom.Side = asrBottom
-      Left = 1
-      Height = 25
-      Top = 1
+      Left = 0
+      Height = 23
+      Top = 0
       Width = 23
       Anchors = [akTop, akLeft, akBottom]
       Flat = True
