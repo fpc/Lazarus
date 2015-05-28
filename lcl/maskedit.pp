@@ -225,7 +225,7 @@ const
     function RestoreMask(const NewText: String): Boolean;
     procedure RealSetText(const AValue: TCaption); override;
     function RealGetText: TCaption; override;
-    Function GetTextWithoutMask : TCaption;
+    Function GetTextWithoutMask(Value: TCaption) : TCaption;
     Procedure SetTextApplyMask(Value: TCaption);
     function  GetEditText: string; virtual;
     procedure SetEditText(const AValue: string);
@@ -411,7 +411,13 @@ begin
   CME := TCustomMaskEdit.Create(nil);
   try
     CME.EditMask := AEditMask;
-    Result := CME.ApplyMaskToText(Value);
+    if CME.IsMasked then
+    begin
+      Result := CME.ApplyMaskToText(Value);
+      Result := CME.GetTextWithoutMask(Result);
+    end
+    else
+      Result := Value;
   finally
     CME.Free;
   end;
@@ -1063,10 +1069,9 @@ end;
 
 function TCustomMaskEdit.RealGetText: TCaption;
 begin
-  if not IsMasked then
-    Result := inherited RealGetText  //don't call GetEditText here (issue #0026924)
-  else
-    Result := GetTextWithoutMask;
+  Result := inherited RealGetText;  //don't call GetEditText here (issue #0026924)
+  if IsMasked then
+    Result := GetTextWithoutMask(Result);
 end;
 
 // Set the actual Text
@@ -1515,7 +1520,7 @@ end;
 
 
 // Get the actual Text
-function TCustomMaskEdit.GetTextWithoutMask: TCaption;
+function TCustomMaskEdit.GetTextWithoutMask(Value: TCaption): TCaption;
 {
   Replace al FSPaceChars with #32
   If FMaskSave = False then do trimming of spaces and remove all maskliterals
@@ -1524,36 +1529,29 @@ var
   S: String;
   i: Integer;
 Begin
-  if not IsMasked then
+  S := StringReplace(Value, FSpaceChar, #32, [rfReplaceAll]);
+  //FSpaceChar can be used as a literal in the mask, so put it back
+  for i := 1 to FMaskLength do
   begin
-    Result := inherited RealGetText;
-  end
-  else
+    if IsLiteral(FMask[i]) and (FMask[i] = FSpaceChar) then
+    begin
+      SetCodePoint(S, i, FSpaceChar);
+    end;
+  end;
+  if not FMaskSave then
   begin
-    S := StringReplace(inherited RealGetText, FSpaceChar, #32, [rfReplaceAll]);
-    //FSpaceChar can be used as a literal in the mask, so put it back
     for i := 1 to FMaskLength do
     begin
-      if IsLiteral(FMask[i]) and (FMask[i] = FSpaceChar) then
-      begin
-        SetCodePoint(S, i, FSpaceChar);
-      end;
+      if IsLiteral(FMask[i]) then SetCodePoint(S, i, #1); //We know this char can never be in Text, so this is safe
     end;
-    if not FMaskSave then
-    begin
-      for i := 1 to FMaskLength do
-      begin
-        if IsLiteral(FMask[i]) then SetCodePoint(S, i, #1); //We know this char can never be in Text, so this is safe
-      end;
-      S := StringReplace(S, #1, '', [rfReplaceAll]);
-      //Trimming only occurs if FMaskSave = False
-      case FTrimType of
-        metTrimLeft : S := TrimLeft(S);
-        metTrimRight: S := TrimRight(S);
-      end;//case
-    end;
-    Result := S;
+    S := StringReplace(S, #1, '', [rfReplaceAll]);
+    //Trimming only occurs if FMaskSave = False
+    case FTrimType of
+      metTrimLeft : S := TrimLeft(S);
+      metTrimRight: S := TrimRight(S);
+    end;//case
   end;
+  Result := S;
 End;
 
 
