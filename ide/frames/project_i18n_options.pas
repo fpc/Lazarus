@@ -5,8 +5,8 @@ unit project_i18n_options;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs,
-  StdCtrls, Project, IDEProcs, IDEOptionsIntf, LazarusIDEStrConsts, IDEDialogs;
+  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
+  EditBtn, Project, IDEProcs, IDEOptionsIntf, LazarusIDEStrConsts, IDEDialogs;
 
 type
 
@@ -16,8 +16,7 @@ type
     EnableI18NCheckBox: TCheckBox;
     I18NGroupBox: TGroupBox;
     PoForFormsCheckBox: TCheckBox;
-    POOutDirButton: TButton;
-    POOutDirEdit: TEdit;
+    POOutDirEdit: TEditButton;
     PoOutDirLabel: TLabel;
     procedure EnableI18NCheckBoxChange(Sender: TObject);
     procedure FrameClick(Sender: TObject);
@@ -93,6 +92,7 @@ begin
     PoForFormsCheckBox.Checked:=EnableI18NForLFM;
     Enablei18nInfo(Enablei18n);
   end;
+  POOutDirEdit.Button.LoadGlyphFromResourceName(HInstance, ResBtnSelDir); //DirectoryEdit
 end;
 
 procedure TProjectI18NOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);

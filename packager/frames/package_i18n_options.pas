@@ -5,7 +5,7 @@ unit package_i18n_options;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, StdCtrls,
+  Classes, SysUtils, FileUtil, Forms, Controls, StdCtrls, EditBtn,
   IDEOptionsIntf, LazarusIDEStrConsts, PackageDefs, IDEDialogs;
 
 type
@@ -15,8 +15,7 @@ type
   TPackageI18NOptionsFrame = class(TAbstractIDEOptionsEditor)
     EnableI18NCheckBox: TCheckBox;
     I18NGroupBox: TGroupBox;
-    POOutDirButton: TButton;
-    POOutDirEdit: TEdit;
+    POOutDirEdit: TEditButton;
     PoOutDirLabel: TLabel;
     PoForFormsCheckBox: TCheckBox;
     procedure EnableI18NCheckBoxChange(Sender: TObject);
@@ -75,6 +74,8 @@ begin
   I18NGroupBox.Enabled := FLazPackage.EnableI18N;
   POOutDirEdit.Text := FLazPackage.POOutputDirectory;
   PoForFormsCheckBox.Checked:=FLazPackage.EnableI18NForLFM;
+
+  POOutDirEdit.Button.LoadGlyphFromResourceName(HInstance, ResBtnSelDir); //DirectoryEdit
 end;
 
 procedure TPackageI18NOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
