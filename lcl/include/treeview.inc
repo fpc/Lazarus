@@ -5192,27 +5192,9 @@ var
   CursorNode: TTreeNode;
   LogicalX: Integer;
   CursorNodeSelected: Boolean;
-begin
-  {$IFDEF VerboseDrag}
-  DebugLn('TCustomTreeView.MouseDown A ',DbgSName(Self),' ');
-  {$ENDIF}
-  fMouseDownPos := Point(X,Y);
-  FStates:=FStates-[tvsEditOnMouseUp,tvsSingleSelectOnMouseUp];
 
-  if not Focused and CanFocus then
-    SetFocus;
-
-  inherited MouseDown(Button, Shift, X, Y);
-
-  CursorNode := GetNodeAt(X, Y);
-  CursorNodeSelected := (CursorNode<>nil)
-    and (CursorNode.Selected
-      or ((tvoAllowMultiselect in Options) and CursorNode.MultiSelected));
-  LogicalX:=X;
-  if ((Button = mbLeft) or ((Button = mbRight) and RightClickSelect)) and
-     (([ssDouble, ssTriple, ssQuad] * Shift) = []) then
+  procedure ChangeSelection;
   begin
-    // single click or first of a multi click
     if (CursorNode <> nil) then
     begin
       if CursorNode.HasChildren and ShowButtons and
@@ -5263,8 +5245,37 @@ begin
         end;
       end;
     end;
-  end
-  else // multi click
+  end;//ChangeSelection
+
+begin
+  {$IFDEF VerboseDrag}
+  DebugLn('TCustomTreeView.MouseDown A ',DbgSName(Self),' ');
+  {$ENDIF}
+  fMouseDownPos := Point(X,Y);
+  FStates:=FStates-[tvsEditOnMouseUp,tvsSingleSelectOnMouseUp];
+
+  if not Focused and CanFocus then
+    SetFocus;
+
+  CursorNode := GetNodeAt(X, Y);
+  CursorNodeSelected := (CursorNode<>nil)
+    and (CursorNode.Selected
+      or ((tvoAllowMultiselect in Options) and CursorNode.MultiSelected));
+  LogicalX:=X;
+
+  if (Button = mbRight) and RightClickSelect and
+     (([ssDouble, ssTriple, ssQuad] * Shift) = [])//single right click or first of a multi click
+  then
+    ChangeSelection;
+
+  inherited MouseDown(Button, Shift, X, Y);
+
+  if (Button = mbLeft) and
+     (([ssDouble, ssTriple, ssQuad] * Shift) = [])//single left click or first of a multi click
+  then
+    ChangeSelection;
+
+  // multi click
   if not (tvoNoDoubleClickExpand in Options) and (ssDouble in Shift)
      and (Button = mbLeft) and (CursorNode<>nil) then
     CursorNode.Expanded := not CursorNode.Expanded;
