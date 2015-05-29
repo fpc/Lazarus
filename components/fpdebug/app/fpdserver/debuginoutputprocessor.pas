@@ -142,6 +142,9 @@ var
   s: string;
   JSonEvent: TJSONObject;
   JSonLocationRec: TJSONObject;
+  JSonStackArray: TJSONArray;
+  JSonStackEntry: TJSONObject;
+  i: Integer;
 begin
   JSonEvent := TJSONObject.Create;
   try
@@ -193,6 +196,21 @@ begin
           JSonEvent.Add('command',AnEvent.EventName);
         end;
     end;
+    if length(AnEvent.StackEntryArray)>0 then
+      begin
+      JSonStackArray := TJSONArray.Create;
+      for i := 0 to high(AnEvent.StackEntryArray) do
+        begin
+        JSonStackEntry := TJSONObject.Create;
+        JSonStackEntry.Add('address', FormatAddress(AnEvent.StackEntryArray[i].AnAddress));
+        JSonStackEntry.Add('frameaddress', FormatAddress(AnEvent.StackEntryArray[i].FrameAdress));
+        JSonStackEntry.Add('sourcefile', AnEvent.StackEntryArray[i].SourceFile);
+        JSonStackEntry.Add('line', AnEvent.StackEntryArray[i].Line);
+        JSonStackEntry.Add('functionname', AnEvent.StackEntryArray[i].FunctionName);
+        JSonStackArray.Add(JSonStackEntry);
+        end;
+      JSonEvent.Add('callstack', JSonStackArray);
+      end;
     result := JSonEvent.AsJSON;
   finally
     JSonEvent.Free;

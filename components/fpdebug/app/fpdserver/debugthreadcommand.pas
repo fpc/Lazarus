@@ -178,12 +178,56 @@ type
     property Expression: string read FExpression write FExpression;
   end;
 
+  { TFpDebugThreadStackTraceCommand }
+
+  TFpDebugThreadStackTraceCommand = class(TFpDebugThreadCommand)
+  private
+    FStackEntryArray: TFpDebugEventCallStackEntryArray;
+  public
+    function Execute(AController: TDbgController; out DoProcessLoop: boolean): boolean; override;
+    class function TextName: string; override;
+    procedure ComposeSuccessEvent(var AnEvent: TFpDebugEvent); override;
+  end;
+
 implementation
 
 { TFpDebugThreadCommandList }
 
 var
   GFpDebugThreadCommandList: TFpDebugThreadCommandList = nil;
+
+{ TFpDebugThreadStackTraceCommand }
+
+function TFpDebugThreadStackTraceCommand.Execute(AController: TDbgController; out DoProcessLoop: boolean): boolean;
+var
+  ThreadCallStack: TDbgCallstackEntryList;
+  i: integer;
+begin
+  AController.CurrentProcess.MainThread.PrepareCallStackEntryList;
+  ThreadCallStack := AController.CurrentProcess.MainThread.CallStackEntryList;
+  SetLength(FStackEntryArray, ThreadCallStack.Count);
+  for i := 0 to ThreadCallStack.Count-1 do
+    begin
+    FStackEntryArray[i].AnAddress:=ThreadCallStack[i].AnAddress;
+    FStackEntryArray[i].FrameAdress:=ThreadCallStack[i].FrameAdress;
+    FStackEntryArray[i].FunctionName:=ThreadCallStack[i].FunctionName;
+    FStackEntryArray[i].Line:=ThreadCallStack[i].Line;
+    FStackEntryArray[i].SourceFile:=ThreadCallStack[i].SourceFile;
+    end;
+  result := true;
+end;
+
+
+class function TFpDebugThreadStackTraceCommand.TextName: string;
+begin
+  result := 'stacktrace';
+end;
+
+procedure TFpDebugThreadStackTraceCommand.ComposeSuccessEvent(var AnEvent: TFpDebugEvent);
+begin
+  inherited ComposeSuccessEvent(AnEvent);
+  AnEvent.StackEntryArray:=FStackEntryArray;
+end;
 
 { TFpDebugThreadEvaluateCommand }
 
@@ -562,6 +606,7 @@ initialization
   TFpDebugThreadCommandList.instance.Add(TFpDebugThreadRemoveBreakpointCommand);
   TFpDebugThreadCommandList.instance.Add(TFpDebugThreadGetLocationInfoCommand);
   TFpDebugThreadCommandList.instance.Add(TFpDebugThreadEvaluateCommand);
+  TFpDebugThreadCommandList.instance.Add(TFpDebugThreadStackTraceCommand);
 finalization
   GFpDebugThreadCommandList.Free;
 end.

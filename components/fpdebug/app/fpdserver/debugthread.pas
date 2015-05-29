@@ -41,6 +41,15 @@ type
     ntFailedCommand
   );
 
+  TFpDebugEventCallStackEntry = record
+    AnAddress: TDBGPtr;
+    FrameAdress: TDBGPtr;
+    SourceFile: string;
+    FunctionName: string;
+    Line: integer;
+  end;
+  TFpDebugEventCallStackEntryArray = array of TFpDebugEventCallStackEntry;
+
   // This record is used to pass debugging-events. Not every field is applicable for each type of event.
   TFpDebugEvent = record
     SendByConnectionIdentifier: integer;
@@ -54,6 +63,7 @@ type
     BreakpointAddr: TDBGPtr;
     LocationRec: TDBGLocationRec;
     Validity: TDebuggerDataState;
+    StackEntryArray: TFpDebugEventCallStackEntryArray;
   end;
 
   // Each listener should implement this interface.
@@ -262,6 +272,7 @@ begin
   AnEvent.BreakpointAddr:=0;
   AnEvent.LocationRec.Address:=0;
   AnEvent.Validity:=ddsUnknown;
+  SetLength(AnEvent.StackEntryArray,0);
 end;
 
 procedure TFpDebugThread.FControllerDebugInfoLoaded(Sender: TObject);
