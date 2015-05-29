@@ -6308,6 +6308,12 @@ begin
         if t is TfrSubReportView then
         begin
           Page := (t as TfrSubReportView).SubPage;
+          if Typ = btPageFooter then
+          begin
+            Parent.CurY := Parent.Bands[btPageFooter].y + t.y;
+            Parent.CurBottomY := Parent.Bands[btPageFooter].y +
+                                Parent.Bands[btPageFooter].dy;
+          end;
           Page.CurY := Parent.CurY;
           Page.CurBottomY := Parent.CurBottomY;
         end;
@@ -6338,6 +6344,7 @@ begin
         Exit;
       end
       else
+      if Typ <> btPageFooter then
         Parent.NewPage;
     end;
     
