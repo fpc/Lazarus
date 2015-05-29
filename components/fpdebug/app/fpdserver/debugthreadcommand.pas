@@ -6,7 +6,6 @@ interface
 
 uses
   Classes,
-  contnrs,
   FPDbgController,
   FpDbgClasses,
   FpDbgUtil,
@@ -214,6 +213,7 @@ begin
     FStackEntryArray[i].Line:=ThreadCallStack[i].Line;
     FStackEntryArray[i].SourceFile:=ThreadCallStack[i].SourceFile;
     end;
+  DoProcessLoop:=false;
   result := true;
 end;
 
@@ -249,6 +249,7 @@ var
 
 begin
   Result := False;
+  DoProcessLoop:=false;
   ADbgInfo := AController.CurrentProcess.DbgInfo;
   AContext := ADbgInfo.FindContext(AController.CurrentThread.ID, 0, AController.CurrentProcess.GetInstructionPointerRegisterValue);
   if AContext = nil then
@@ -304,11 +305,13 @@ function TFpDebugThreadQuitDebugServerCommand.PreExecute(AController: TDbgContro
 begin
   DoQueueCommand:=false;
   CustomApplication.Terminate;
+  result := true;
 end;
 
 function TFpDebugThreadQuitDebugServerCommand.Execute(AController: TDbgController; out DoProcessLoop: boolean): boolean;
 begin
-  // Do nothing
+  result := true;
+  DoProcessLoop := false;
 end;
 
 class function TFpDebugThreadQuitDebugServerCommand.TextName: string;

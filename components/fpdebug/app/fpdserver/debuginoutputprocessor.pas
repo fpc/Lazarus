@@ -14,7 +14,6 @@ uses
   debugthread,
   FpDbgClasses,
   typinfo,
-  varutils,
   variants,
   jsonparser;
 
@@ -43,9 +42,6 @@ type
   end;
 
 implementation
-
-var
-  GJSonInOutputProcessor: TJSonInOutputProcessor = nil;
 
 { TCustomInOutputProcessor }
 
@@ -139,7 +135,6 @@ end;
 
 function TJSonInOutputProcessor.EventToText(AnEvent: TFpDebugEvent): string;
 var
-  s: string;
   JSonEvent: TJSONObject;
   JSonLocationRec: TJSONObject;
   JSonStackArray: TJSONArray;
@@ -219,9 +214,7 @@ end;
 
 class function TJSonInOutputProcessor.InteractiveInitializationMessage(APort: integer): string;
 var
-  s: string;
   JSonMessage: TJSONObject;
-  JSonLocationRec: TJSONObject;
 begin
   JSonMessage := TJSONObject.Create;
   try
@@ -235,7 +228,5 @@ begin
   end;
 end;
 
-finalization
-  GJSonInOutputProcessor := nil;
 end.
 
