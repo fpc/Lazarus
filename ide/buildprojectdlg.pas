@@ -54,7 +54,7 @@ type
     PkgOutMaskComboBox: TComboBox;
     PkgSrcCheckBox: TCheckBox;
     PkgSrcMaskComboBox: TComboBox;
-    PreviewGroupBox: TGroupBox;
+    PreviewLabel: TLabel;
     FilesTreeView: TTreeView;
     ProjOutCheckBox: TCheckBox;
     ProjOutMaskComboBox: TComboBox;
@@ -126,7 +126,7 @@ begin
   ProjSrcCheckBox.Caption:=lisProjectSourceDirectories;
   PkgOutCheckBox.Caption:=lisPackageOutputDirectories;
   PkgSrcCheckBox.Caption:=lisPackageSourceDirectories;
-  PreviewGroupBox.Caption:=lisTheseFilesWillBeDeleted;
+  PreviewLabel.Caption:=lisTheseFilesWillBeDeleted;
 
   ButtonPanel1.OKButton.Caption:=lisCleanUpAndBuild;
   ButtonPanel1.HelpButton.Caption:=lisMenuHelp;
