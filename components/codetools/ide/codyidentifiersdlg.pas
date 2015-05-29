@@ -160,7 +160,6 @@ type
     procedure UseIdentifierClick(Sender: TObject);
     procedure ContainsSpeedButtonClick(Sender: TObject);
     procedure FilterEditChange(Sender: TObject);
-    procedure FilterEditExit(Sender: TObject);
     procedure FilterEditKeyDown(Sender: TObject; var Key: Word;
       {%H-}Shift: TShiftState);
     procedure FormDestroy(Sender: TObject);
@@ -180,7 +179,6 @@ type
     FLastHideOtherProjects: boolean;
     FIdleConnected: boolean;
     FMaxItems: integer;
-    FNoFilterText: string;
     FItems: TObjectList; // list of TCodyIdentifier
     FLastFilterType: TCodyIdentifierFilter;
     procedure SetDlgAction(NewAction: TCodyIdentifierDlgAction);
@@ -882,13 +880,6 @@ begin
   UpdateItemsList;
 end;
 
-procedure TCodyIdentifiersDlg.FilterEditExit(Sender: TObject);
-begin
-  if FItems=nil then exit;
-  if GetFilterEditText='' then
-    FilterEdit.Text:=FNoFilterText;
-end;
-
 procedure TCodyIdentifiersDlg.FilterEditKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 var
@@ -935,7 +926,7 @@ begin
   ButtonPanel1.OKButton.Caption:=crsUseIdentifier;
   ButtonPanel1.OKButton.OnClick:=@UseIdentifierClick;
   FMaxItems:=40;
-  FNoFilterText:=crsFilter;
+  FilterEdit.TextHint:=crsFilter;
   FItems:=TObjectList.Create;
   HideOtherProjectsCheckBox.Checked:=true;
   HideOtherProjectsCheckBox.Caption:=crsHideUnitsOfOtherProjects;
@@ -1270,8 +1261,6 @@ end;
 function TCodyIdentifiersDlg.GetFilterEditText: string;
 begin
   Result:=FilterEdit.Text;
-  if Result=FNoFilterText then
-    Result:='';
 end;
 
 function TCodyIdentifiersDlg.FindSelectedIdentifier: TCodyIdentifier;
@@ -1349,9 +1338,7 @@ begin
   UpdateCurOwnerOfUnit;
   UpdateGeneralInfo;
   FLastFilter:='...'; // force one update
-  if CurIdentifier='' then
-    FilterEdit.Text:=FNoFilterText
-  else
+  if CurIdentifier<>'' then
     FilterEdit.Text:=CurIdentifier;
   IdleConnected:=true;
 end;
