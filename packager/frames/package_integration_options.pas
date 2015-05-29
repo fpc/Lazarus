@@ -25,8 +25,6 @@ type
     RunTimeOnlyRadioButton: TRadioButton;
     RunTimeRadioButton: TRadioButton;
     UpdateRadioGroup: TRadioGroup;
-    procedure FPDocPackageNameEditEnter(Sender: TObject);
-    procedure FPDocPackageNameEditExit(Sender: TObject);
     procedure PkgTypeGroupBoxClick(Sender: TObject);
   private
     FLazPackage: TLazPackage;
@@ -66,20 +64,6 @@ begin
     if (FLazPackage.AutoInstall <> pitNope) then
       ShowMsgPackageTypeMustBeDesign;
   end;
-end;
-
-procedure TPackageIntegrationOptionsFrame.FPDocPackageNameEditEnter(Sender: TObject);
-begin
-  if FPDocPackageNameEdit.Text=lisDefaultPlaceholder then
-    FPDocPackageNameEdit.Text:='';
-end;
-
-procedure TPackageIntegrationOptionsFrame.FPDocPackageNameEditExit(Sender: TObject);
-begin
-  if GetFPDocPkgNameEditValue='' then
-    FPDocPackageNameEdit.Text:=lisDefaultPlaceholder
-  else
-    FPDocPackageNameEdit.Text:=GetFPDocPkgNameEditValue;
 end;
 
 function TPackageIntegrationOptionsFrame.GetSelectedPkgType: TLazPackageType;
@@ -204,10 +188,9 @@ begin
       UpdateRadioGroup.ItemIndex := 2;
   end;
   SetPathTextAndHint(FLazPackage.FPDocPaths, FPDocSearchPathsEdit);
-  if FLazPackage.FPDocPackageName='' then
-    FPDocPackageNameEdit.Text:=lisDefaultPlaceholder
-  else
-    FPDocPackageNameEdit.Text:=FLazPackage.FPDocPackageName;
+
+  FPDocPackageNameEdit.TextHint:=lisDefaultPlaceholder;
+  FPDocPackageNameEdit.Text:=FLazPackage.FPDocPackageName;
 end;
 
 function TPackageIntegrationOptionsFrame.ShowMsgPackageTypeMustBeDesign: boolean;
@@ -226,10 +209,7 @@ end;
 
 function TPackageIntegrationOptionsFrame.GetFPDocPkgNameEditValue: string;
 begin
-  if FPDocPackageNameEdit.Text=lisDefaultPlaceholder then
-    Result:=''
-  else
-    Result:=MakeValidFPDocPackageName(FPDocPackageNameEdit.Text);
+  Result:=MakeValidFPDocPackageName(FPDocPackageNameEdit.Text);
 end;
 
 function TPackageIntegrationOptionsFrame.Check: Boolean;

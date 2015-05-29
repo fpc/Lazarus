@@ -10,8 +10,8 @@ object PackageIntegrationOptionsFrame: TPackageIntegrationOptionsFrame
   DesignTop = 267
   object UpdateRadioGroup: TRadioGroup
     Left = 0
-    Height = 103
-    Top = 133
+    Height = 89
+    Top = 114
     Width = 461
     Align = alTop
     AutoFill = True
@@ -26,7 +26,7 @@ object PackageIntegrationOptionsFrame: TPackageIntegrationOptionsFrame
     ChildSizing.ShrinkVertical = crsScaleChilds
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 1
-    ClientHeight = 84
+    ClientHeight = 69
     ClientWidth = 457
     ItemIndex = 0
     Items.Strings = (
@@ -38,14 +38,14 @@ object PackageIntegrationOptionsFrame: TPackageIntegrationOptionsFrame
   end
   object DocGroupBox: TGroupBox
     Left = 0
-    Height = 91
-    Top = 242
+    Height = 84
+    Top = 209
     Width = 461
     Align = alTop
     AutoSize = True
     BorderSpacing.Top = 6
     Caption = 'FPDoc settings'
-    ClientHeight = 72
+    ClientHeight = 64
     ClientWidth = 457
     TabOrder = 1
     object FPDocSearchPathsEdit: TEdit
@@ -54,10 +54,10 @@ object PackageIntegrationOptionsFrame: TPackageIntegrationOptionsFrame
       AnchorSideTop.Control = DocGroupBox
       AnchorSideRight.Control = DocGroupBox
       AnchorSideRight.Side = asrBottom
-      Left = 175
-      Height = 27
+      Left = 138
+      Height = 23
       Top = 6
-      Width = 276
+      Width = 313
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Around = 6
       ParentShowHint = False
@@ -70,9 +70,9 @@ object PackageIntegrationOptionsFrame: TPackageIntegrationOptionsFrame
       AnchorSideTop.Control = FPDocSearchPathsEdit
       AnchorSideTop.Side = asrCenter
       Left = 6
-      Height = 17
-      Top = 11
-      Width = 163
+      Height = 15
+      Top = 10
+      Width = 126
       BorderSpacing.Left = 6
       BorderSpacing.Top = 6
       Caption = 'FPDocSearchPathsLabel'
@@ -83,9 +83,9 @@ object PackageIntegrationOptionsFrame: TPackageIntegrationOptionsFrame
       AnchorSideTop.Control = FPDocPackageNameEdit
       AnchorSideTop.Side = asrCenter
       Left = 6
-      Height = 17
-      Top = 44
-      Width = 176
+      Height = 15
+      Top = 39
+      Width = 138
       BorderSpacing.Left = 6
       Caption = 'FPDocPackageNameLabel'
       ParentColor = False
@@ -95,22 +95,19 @@ object PackageIntegrationOptionsFrame: TPackageIntegrationOptionsFrame
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = FPDocSearchPathsEdit
       AnchorSideTop.Side = asrBottom
-      Left = 188
-      Height = 27
-      Top = 39
+      Left = 150
+      Height = 23
+      Top = 35
       Width = 116
       BorderSpacing.Around = 6
-      OnEnter = FPDocPackageNameEditEnter
-      OnExit = FPDocPackageNameEditExit
       ParentShowHint = False
       ShowHint = True
       TabOrder = 1
-      Text = 'FPDocPackageNameEdit'
     end
   end
   object PkgTypeGroupBox: TGroupBox
     Left = 0
-    Height = 127
+    Height = 108
     Top = 0
     Width = 461
     Align = alTop
@@ -124,14 +121,14 @@ object PackageIntegrationOptionsFrame: TPackageIntegrationOptionsFrame
     ChildSizing.ShrinkVertical = crsScaleChilds
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 1
-    ClientHeight = 108
+    ClientHeight = 88
     ClientWidth = 457
     Constraints.MinHeight = 30
     TabOrder = 2
     OnClick = PkgTypeGroupBoxClick
     object RunAndDesignTimeRadioButton: TRadioButton
       Left = 6
-      Height = 24
+      Height = 19
       Top = 6
       Width = 445
       Caption = 'RunAndDesignTimeRadioButton'
@@ -143,8 +140,8 @@ object PackageIntegrationOptionsFrame: TPackageIntegrationOptionsFrame
     end
     object DesignTimeRadioButton: TRadioButton
       Left = 6
-      Height = 24
-      Top = 30
+      Height = 19
+      Top = 25
       Width = 445
       Caption = 'DesignTimeRadioButton'
       ParentShowHint = False
@@ -153,8 +150,8 @@ object PackageIntegrationOptionsFrame: TPackageIntegrationOptionsFrame
     end
     object RunTimeRadioButton: TRadioButton
       Left = 6
-      Height = 24
-      Top = 54
+      Height = 19
+      Top = 44
       Width = 445
       Caption = 'RunTimeRadioButton'
       ParentShowHint = False
@@ -163,8 +160,8 @@ object PackageIntegrationOptionsFrame: TPackageIntegrationOptionsFrame
     end
     object RunTimeOnlyRadioButton: TRadioButton
       Left = 6
-      Height = 24
-      Top = 78
+      Height = 19
+      Top = 63
       Width = 445
       Caption = 'RunTimeOnlyRadioButton'
       ParentShowHint = False
