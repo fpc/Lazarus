@@ -560,20 +560,20 @@ var
 begin
   TheTreeNodes:=TreeNodes;
   if TheTreeNodes=nil then exit;
-  
+
   // Get the first selected node of the tree
   CurNode := TheTreeNodes.FFirstMultiSelected;
-  
+
   // Initialize self unbinded
   Self.FPrevMultiSelected := nil;
   Self.FNextMultiSelected := nil;
-  
+
   // If there isn't any selected node, set self as first
   if CurNode = nil then
     TheTreeNodes.FFirstMultiSelected := Self
   else
   begin
-  
+
     // if last selected node was the previous one
     if (TheTreeNodes.FLastMultiSelected.AbsoluteIndex+1=Self.AbsoluteIndex) and (TheTreeNodes.FLastMultiSelected.FNextMultiSelected=nil) then
     begin
@@ -615,11 +615,11 @@ begin
         if Self.FPrevMultiSelected = nil then
           TheTreeNodes.FFirstMultiSelected := Self;
       end;
-      
+
     end;
-    
+
   end;
-  
+
   // Set self as last selected node
   TheTreeNodes.FLastMultiSelected := Self;
 end;
@@ -1705,7 +1705,7 @@ end;
 function TTreeNode.DisplayTextLeft: integer;
 var
   TV: TCustomTreeView;
-  ImgIndex: TImageIndex;  
+  ImgIndex: TImageIndex;
 begin
   Result := DisplayIconLeft;
   TV := TreeView;
@@ -2438,19 +2438,19 @@ function TTreeNodes.GetNodeFromIndex(Index: Integer): TTreeNode;
     TreeNodeError('TTreeNodes.GetNodeFromIndex Index '+IntToStr(Index)
            +' out of bounds (Count='+IntToStr(FCount)+')');
   end;
-  
+
   procedure RaiseSubTreeCount0;
   begin
     TreeNodeError(
       'TTreeNodes.GetNodeFromIndex: Consistency error - SubTreeCount=0');
   end;
-  
+
   procedure RaiseSubTreeCountTooBig;
   begin
     TreeNodeError(
       'TTreeNodes.GetNodeFromIndex: Consistency error - invalid SubTreeCount');
   end;
-  
+
   procedure RaiseCountTooBig;
   begin
     TreeNodeError(
@@ -3142,7 +3142,7 @@ end;
 destructor TCustomTreeView.Destroy;
 begin
   LockSelectionChangeEvent; // prevent change event during destroying
-  
+
   Images:=nil;
   FreeThenNil(FTreeNodes);
   FreeThenNil(FSaveItems);
@@ -3944,12 +3944,12 @@ begin
     lNode := FTreeNodes.FLastMultiSelected
   else
     lNode := Selected;
-    
+
   case Key of
 
   VK_DOWN:
   begin
-    if lNode <> nil then 
+    if lNode <> nil then
       lNode := lNode.GetNextExpanded
     else if Items.Count > 0 then
       lNode := FTreeNodes.GetFirstNode;
@@ -3985,13 +3985,13 @@ begin
         lNode.Expanded := True;
       Key:=VK_UNKNOWN;
     end;
-    
+
   VK_ADD:
-    if lNode <> nil then 
+    if lNode <> nil then
       lNode.Expanded := True;
-    
+
   VK_SUBTRACT:
-    if lNode <> nil then 
+    if lNode <> nil then
       lNode.Expanded := False;
 
   VK_HOME:
@@ -4022,7 +4022,7 @@ begin
         else Break;
 
     end;
-    
+
   VK_NEXT: // Page Down
     if lNode <> nil then
     begin
@@ -5465,7 +5465,7 @@ begin
       // Scrolls to the current scroll bar position
     SB_THUMBPOSITION,
     SB_THUMBTRACK: ScrolledLeft := Msg.Pos;
-      
+
     SB_ENDSCROLL: ;// Ends scrolling
   end;
 end;
