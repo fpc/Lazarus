@@ -13,9 +13,9 @@ object ProjectFPDocOptionsFrame: TProjectFPDocOptionsFrame
     AnchorSideTop.Control = FPDocPackageNameEdit
     AnchorSideTop.Side = asrCenter
     Left = 6
-    Height = 14
-    Top = 9
-    Width = 123
+    Height = 15
+    Top = 10
+    Width = 138
     BorderSpacing.Around = 6
     Caption = 'FPDocPackageNameLabel'
     ParentColor = False
@@ -24,17 +24,14 @@ object ProjectFPDocOptionsFrame: TProjectFPDocOptionsFrame
     AnchorSideLeft.Control = FPDocPackageNameLabel
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = Owner
-    Left = 135
-    Height = 21
+    Left = 150
+    Height = 23
     Top = 6
     Width = 120
     BorderSpacing.Around = 6
-    OnEnter = FPDocPackageNameEditEnter
-    OnExit = FPDocPackageNameEditExit
     ParentShowHint = False
     ShowHint = True
     TabOrder = 0
-    Text = 'FPDocPackageNameEdit'
   end
   object SearchPathsGroupBox: TGroupBox
     AnchorSideLeft.Control = Owner
@@ -45,12 +42,12 @@ object ProjectFPDocOptionsFrame: TProjectFPDocOptionsFrame
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
     Left = 0
-    Height = 236
-    Top = 33
+    Height = 234
+    Top = 35
     Width = 478
     Anchors = [akTop, akLeft, akRight, akBottom]
     Caption = 'SearchPathsGroupBox'
-    ClientHeight = 218
+    ClientHeight = 214
     ClientWidth = 474
     TabOrder = 1
     object PathsListBox: TListBox
@@ -65,78 +62,56 @@ object ProjectFPDocOptionsFrame: TProjectFPDocOptionsFrame
       ScrollWidth = 472
       TabOrder = 0
     end
-    object PathEdit: TEdit
-      AnchorSideLeft.Control = SearchPathsGroupBox
-      AnchorSideTop.Control = PathsListBox
-      AnchorSideTop.Side = asrBottom
-      AnchorSideRight.Control = BrowseButton
-      Left = 6
-      Height = 21
-      Top = 120
-      Width = 438
-      Anchors = [akTop, akLeft, akRight]
-      BorderSpacing.Left = 6
-      BorderSpacing.Top = 6
-      BorderSpacing.Bottom = 6
-      OnChange = PathEditChange
-      TabOrder = 1
-      Text = 'PathEdit'
-    end
     object AddPathButton: TBitBtn
       AnchorSideLeft.Control = SearchPathsGroupBox
-      AnchorSideTop.Control = PathEdit
       AnchorSideTop.Side = asrBottom
       Left = 6
-      Height = 23
+      Height = 25
       Top = 147
-      Width = 99
+      Width = 108
       AutoSize = True
       BorderSpacing.Left = 6
       BorderSpacing.Top = 6
       Caption = 'AddPathButton'
       Enabled = False
-      NumGlyphs = 0
       OnClick = AddPathButtonClick
       TabOrder = 2
     end
     object DeletePathButton: TBitBtn
       AnchorSideLeft.Control = AddPathButton
       AnchorSideLeft.Side = asrBottom
-      AnchorSideTop.Control = PathEdit
       AnchorSideTop.Side = asrBottom
-      Left = 111
-      Height = 23
+      Left = 120
+      Height = 25
       Top = 147
-      Width = 111
+      Width = 119
       AutoSize = True
       BorderSpacing.Around = 6
       Caption = 'DeletePathButton'
       Enabled = False
-      NumGlyphs = 0
       OnClick = DeletePathButtonClick
       TabOrder = 3
     end
-    object BrowseButton: TButton
-      AnchorSideLeft.Control = PathEdit
-      AnchorSideLeft.Side = asrBottom
-      AnchorSideTop.Control = PathEdit
+    object PathEdit: TDirectoryEdit
+      AnchorSideLeft.Control = SearchPathsGroupBox
+      AnchorSideTop.Control = PathsListBox
+      AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = SearchPathsGroupBox
       AnchorSideRight.Side = asrBottom
-      AnchorSideBottom.Control = PathEdit
-      AnchorSideBottom.Side = asrBottom
-      Left = 444
-      Height = 21
+      Left = 6
+      Height = 23
       Top = 120
-      Width = 24
-      Anchors = [akTop, akRight, akBottom]
-      BorderSpacing.Right = 6
-      Caption = '...'
-      OnClick = BrowseButtonClick
-      TabOrder = 4
+      Width = 462
+      Directory = 'PathEdit'
+      ShowHidden = False
+      ButtonWidth = 45
+      NumGlyphs = 1
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Around = 6
+      MaxLength = 0
+      TabOrder = 1
+      OnChange = PathEditChange
+      Text = 'PathEdit'
     end
-  end
-  object SelectDirectoryDialog: TSelectDirectoryDialog
-    FilterIndex = 0
-    left = 370
   end
 end
