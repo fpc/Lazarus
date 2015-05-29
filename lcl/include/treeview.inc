@@ -5198,11 +5198,6 @@ begin
   {$ENDIF}
   fMouseDownPos := Point(X,Y);
   FStates:=FStates-[tvsEditOnMouseUp,tvsSingleSelectOnMouseUp];
-  if Button=mbRight then begin
-    if RightClickSelect then begin
-      Selected:=GetNodeAt(X,Y);
-    end;
-  end;
 
   if not Focused and CanFocus then
     SetFocus;
@@ -5214,17 +5209,19 @@ begin
     and (CursorNode.Selected
       or ((tvoAllowMultiselect in Options) and CursorNode.MultiSelected));
   LogicalX:=X;
-  if ([ssDouble, ssTriple, ssQuad] * Shift) = [] then
+  if ((Button = mbLeft) or ((Button = mbRight) and RightClickSelect)) and
+     (([ssDouble, ssTriple, ssQuad] * Shift) = []) then
   begin
     // single click or first of a multi click
-    if (Button = mbLeft) and (CursorNode <> nil) then
+    if (CursorNode <> nil) then
     begin
       if CursorNode.HasChildren and ShowButtons and
          (LogicalX >= CursorNode.DisplayExpandSignLeft) and
          (LogicalX < CursorNode.DisplayExpandSignRight) then
       begin
-        // mousedown occured on expand sign -> expand/collapse
-        CursorNode.Expanded:=not CursorNode.Expanded;
+        // mousedown occured on expand sign -> expand/collapse only on left button
+        if (Button = mbLeft) then
+          CursorNode.Expanded:=not CursorNode.Expanded;
       end
       else if LogicalX >= CursorNode.DisplayStateIconLeft then
       begin
@@ -5260,7 +5257,7 @@ begin
           begin
             if not CursorNodeSelected then
               Items.SelectOnlyThis(CursorNode)
-            else
+            else if Button = mbLeft then
               Include(FStates, tvsSingleSelectOnMouseUp);
           end;
         end;
