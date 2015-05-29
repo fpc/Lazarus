@@ -1345,6 +1345,9 @@ constructor TEditorColorOptionsFrame.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   FTempColorSchemeSettings := TColorSchemeFactory.Create;
+
+  ExportSaveDialog.Title := lisExport;
+  ExportSaveDialog.Filter := Format('%s|*.xml|', [lisXMLFiles]);
 end;
 
 destructor TEditorColorOptionsFrame.Destroy;
