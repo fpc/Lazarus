@@ -11,6 +11,7 @@ uses
   forms,
   DbgIntfDebuggerBase,
   DbgIntfBaseTypes,
+  maps,
   fpjson,
   jsonparser,
   BaseUnix,
@@ -198,6 +199,21 @@ type
     procedure DoOnCommandFailed(ACommandResponse: TJSonObject); override;
   end;
 
+  { TFPDSendCallStackCommand }
+
+  TFPDSendCallStackCommand = class(TFPDSendCommand)
+  private
+    FCallStack: TCallStackBase;
+    FCallStackSupplier: TCallStackSupplier;
+    procedure DoCallStackFreed(Sender: TObject);
+  protected
+    procedure ComposeJSon(AJsonObject: TJSONObject); override;
+  public
+    constructor create(ACallStack: TCallStackBase; ACallStackSupplier: TCallStackSupplier);
+    destructor Destroy; override;
+    procedure DoOnCommandSuccesfull(ACommandResponse: TJSonObject); override;
+    procedure DoOnCommandFailed(ACommandResponse: TJSonObject); override;
+  end;
 
   { TFPDSocketThread }
 
@@ -258,6 +274,7 @@ type
     class function Caption: String; override;
     function CreateBreakPoints: TDBGBreakPoints; override;
     function CreateWatches: TWatchesSupplier; override;
+    function CreateCallStack: TCallStackSupplier; override;
     function RequestCommand(const ACommand: TDBGCommand; const AParams: array of const): Boolean; override;
     // These methods are called by several TFPDSendCommands after success or failure of a command. (Most common
     // because the TFPDSendCommands do not have access to TFPDServerDebugger's protected methods theirself)
@@ -310,6 +327,19 @@ type
     procedure InternalRequestData(AWatchValue: TWatchValue); override;
   end;
 
+  { TFPCallStackSupplier }
+
+  TFPCallStackSupplier = class(TCallStackSupplier)
+  public
+    procedure RequestCount(ACallstack: TCallStackBase); override;
+    procedure RequestEntries(ACallstack: TCallStackBase); override;
+    procedure RequestCurrent(ACallstack: TCallStackBase); override;
+    // Used in the succes callback of the TFPDSendCallStackCommand command to trigger
+    // an update og the GUI after the callstack has been read.
+    procedure DoUpdate;
+  end;
+
+
 procedure Register;
 begin
   RegisterDebugger(TFPDServerDebugger);
@@ -318,6 +348,40 @@ end;
 { TFPDSendCommand }
 
 var GCommandUID: integer = 0;
+
+{ TFPCallStackSupplier }
+
+procedure TFPCallStackSupplier.RequestCount(ACallstack: TCallStackBase);
+begin
+  if (Debugger = nil) or not(Debugger.State = dsPause)
+  then begin
+    ACallstack.SetCountValidity(ddsInvalid);
+    exit;
+  end;
+
+  TFPDServerDebugger(Debugger).QueueCommand(TFPDSendCallStackCommand.create(ACallstack, Self));
+  ACallstack.SetCountValidity(ddsRequested);
+end;
+
+procedure TFPCallStackSupplier.RequestEntries(ACallstack: TCallStackBase);
+begin
+  if (Debugger = nil) or not(Debugger.State = dsPause)
+  then begin
+    ACallstack.SetCountValidity(ddsInvalid);
+    exit;
+  end;
+end;
+
+procedure TFPCallStackSupplier.RequestCurrent(ACallstack: TCallStackBase);
+begin
+  ACallstack.CurrentIndex := 0;
+  ACallstack.SetCurrentValidity(ddsValid);
+end;
+
+procedure TFPCallStackSupplier.DoUpdate;
+begin
+  Changed;
+end;
 
 { TFPDSendWatchEvaluateCommand }
 
@@ -342,7 +406,7 @@ end;
 
 destructor TFPDSendWatchEvaluateCommand.Destroy;
 begin
-  FWatchValue.RemoveFreeeNotification(@DoWatchFreed);
+  FWatchValue.RemoveFreeNotification(@DoWatchFreed);
   inherited Destroy;
 end;
 
@@ -1099,6 +1163,11 @@ end;
 function TFPDServerDebugger.CreateWatches: TWatchesSupplier;
 begin
   Result := TFPWatches.Create(Self);
+end;
+
+function TFPDServerDebugger.CreateCallStack: TCallStackSupplier;
+begin
+  Result:=TFPCallStackSupplier.Create(Self);
 end;
 
 function TFPDServerDebugger.RequestCommand(const ACommand: TDBGCommand; const AParams: array of const): Boolean;

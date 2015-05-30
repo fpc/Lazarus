@@ -163,3 +163,91 @@ begin
   AJsonObject.Add('command','continue');
 end;
 
+{ TFPDSendCallStackCommand }
+
+procedure TFPDSendCallStackCommand.DoCallStackFreed(Sender: TObject);
+begin
+  FCallStack:=nil;
+end;
+
+procedure TFPDSendCallStackCommand.ComposeJSon(AJsonObject: TJSONObject);
+begin
+  inherited ComposeJSon(AJsonObject);
+  AJsonObject.Add('command','stacktrace');
+end;
+
+constructor TFPDSendCallStackCommand.create(ACallStack: TCallStackBase; ACallStackSupplier: TCallStackSupplier);
+begin
+  inherited create(True);
+  ACallStack.AddFreeNotification(@DoCallStackFreed);
+  FCallStack := ACallStack;
+  FCallStackSupplier := ACallStackSupplier;
+end;
+
+destructor TFPDSendCallStackCommand.Destroy;
+begin
+  FCallStack.RemoveFreeNotification(@DoCallStackFreed);
+  inherited Destroy;
+end;
+
+procedure TFPDSendCallStackCommand.DoOnCommandSuccesfull(ACommandResponse: TJSonObject);
+var
+  JSonCallStackArr: TJSONArray;
+  JSonCallStackEntryObj: TJSONObject;
+  e: TCallStackEntry;
+  It: TMapIterator;
+  AnAddress: TDBGPtr;
+  FunctionName: string;
+  SourceFile: string;
+  Line: integer;
+
+begin
+  inherited DoOnCommandSuccesfull(ACommandResponse);
+  if assigned(FCallStack) then
+    begin
+    JSonCallStackArr := ACommandResponse.Get('callstack', TJSONArray(nil));
+    if assigned(JSonCallStackArr) and (JSonCallStackArr.Count>0) then
+      begin
+      FCallStack.Count:=JSonCallStackArr.Count;
+      FCallStack.SetCountValidity(ddsValid);
+
+      It := TMapIterator.Create(FCallstack.RawEntries);
+
+      if not It.Locate(FCallstack.LowestUnknown )
+      then if not It.EOM
+      then It.Next;
+
+      while (not IT.EOM) and (TCallStackEntry(It.DataPtr^).Index < FCallstack.HighestUnknown) do
+        begin
+        e := TCallStackEntry(It.DataPtr^);
+        if e.Validity = ddsRequested then
+          begin
+          JSonCallStackEntryObj := JSonCallStackArr.Items[e.Index] as TJSONObject;
+
+          AnAddress:=Hex2Dec(JSonCallStackEntryObj.Get('address','0'));
+          FunctionName:=JSonCallStackEntryObj.Get('functionname','');
+          SourceFile:=JSonCallStackEntryObj.Get('sourcefile','');
+          Line:=JSonCallStackEntryObj.get('line',-1);
+
+          e.Init(AnAddress, nil, FunctionName, SourceFile, '', Line, ddsValid);
+          end;
+        It.Next;
+        end;
+      It.Free;
+      FCallStack.SetCountValidity(ddsValid);
+      TFPCallStackSupplier(FCallStackSupplier).DoUpdate;
+      end
+    else
+      begin
+      FCallStack.SetCountValidity(ddsInvalid);
+      FCallStack.SetHasAtLeastCountInfo(ddsInvalid);
+      end;
+    end;
+end;
+
+procedure TFPDSendCallStackCommand.DoOnCommandFailed(ACommandResponse: TJSonObject);
+begin
+  FCallStack.SetCountValidity(ddsInvalid);
+end;
+
+
