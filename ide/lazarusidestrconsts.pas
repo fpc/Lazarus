@@ -5462,6 +5462,9 @@ resourcestring
   lisImpossible = 'Impossible';
   lisAProjectUnitCanNotBeUsedByOtherPackagesProjects = 'A project unit can '
     +'not be used by other packages/projects';
+  lisPackagesUnitsIdentifiersLinesBytes = 'packages=%s/%s units=%s/%s '
+    +'identifiers=%s/%s lines=%s bytes=%s';
+  lisScanning2 = '%s. Scanning ...';
   lisShowGlyphsFor = 'Show Glyphs for';
   lisDirectoryNotWritable = 'Directory not writable';
   lisTheDirectoryIsNotWritable = 'The directory "%s" is not writable.';
