@@ -1583,7 +1583,7 @@ begin
     AddCommand(emcStartColumnSelections, True,  mbXLeft, ccSingle, cdDown, [ssShift, ssAlt], [ssShift, ssAlt], emcoSelectionContinue);
   end;
   if (emShowCtrlMouseLinks in AnOptions) then
-    AddCommand(emcMouseLink,             False, mbXLeft, ccSingle, cdUp, [SYNEDIT_LINK_MODIFIER], [ssShift, ssAlt, ssCtrl]);
+    AddCommand(emcMouseLink,             False, mbXLeft, ccSingle, cdUp, [SYNEDIT_LINK_MODIFIER], [ssShift, ssAlt, ssCtrl] + [SYNEDIT_LINK_MODIFIER]);
 
   if (emDoubleClickSelectsLine in AnOptions) then begin
     AddCommand(emcSelectLine,            True,  mbXLeft, ccDouble, cdDown, [], []);
