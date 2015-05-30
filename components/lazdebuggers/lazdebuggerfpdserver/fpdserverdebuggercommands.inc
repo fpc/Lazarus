@@ -163,6 +163,12 @@ begin
   AJsonObject.Add('command','continue');
 end;
 
+procedure TFPDSendContinueCommand.DoOnCommandSuccesfull(ACommandResponse: TJSonObject);
+begin
+  inherited DoOnCommandSuccesfull(ACommandResponse);
+  FServerDebugger.DoOnContinueSuccessfull;
+end;
+
 { TFPDSendCallStackCommand }
 
 procedure TFPDSendCallStackCommand.DoCallStackFreed(Sender: TObject);

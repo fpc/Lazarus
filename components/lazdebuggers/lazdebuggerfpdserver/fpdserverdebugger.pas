@@ -76,6 +76,8 @@ type
   TFPDSendContinueCommand = class(TFPDSendCommand)
   protected
     procedure ComposeJSon(AJsonObject: TJSONObject); override;
+  public
+    procedure DoOnCommandSuccesfull(ACommandResponse: TJSonObject); override;
   end;
 
   { TFPDSendNextCommand }
@@ -279,6 +281,7 @@ type
     // These methods are called by several TFPDSendCommands after success or failure of a command. (Most common
     // because the TFPDSendCommands do not have access to TFPDServerDebugger's protected methods theirself)
     procedure DoOnRunFailed;
+    procedure DoOnContinueSuccessfull;
     procedure DoOnDoCurrentSuccessfull(ALocRec: TDBGLocationRec);
     // This procedure is called when the socket-thread is shut-down.
     procedure DoOnConnectionProblem(AMessage: string);
@@ -1182,7 +1185,6 @@ begin
       if State in [dsPause, dsInternalPause] then
         begin
         QueueCommand(TFPDSendContinueCommand.create);
-        SetState(dsRun);
         end
       else
         begin
@@ -1253,6 +1255,11 @@ begin
   // is set to dsIdle again and is set to dsStop on the next try
   // to run.
   FileName := ''
+end;
+
+procedure TFPDServerDebugger.DoOnContinueSuccessfull;
+begin
+  SetState(dsRun);
 end;
 
 procedure TFPDServerDebugger.DoOnDoCurrentSuccessfull(ALocRec: TDBGLocationRec);
