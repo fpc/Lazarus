@@ -1844,13 +1844,12 @@ begin
     exit;
   end;
   fLastStatusBarUpdate:=Now;
-  s:='packages='+BigIntToStr(VisiblePackages)+'/'+BigIntToStr(ScannedPackages)
-    +' units='+BigIntToStr(VisibleUnits)+'/'+BigIntToStr(ScannedUnits)
-    +' identifiers='+BigIntToStr(VisibleIdentifiers)+'/'+BigIntToStr(ScannedIdentifiers)
-    +' lines='+BigIntToStr(ScannedLines)
-    +' bytes='+BigIntToStr(ScannedBytes);
+  s:=Format(lisPackagesUnitsIdentifiersLinesBytes, [BigIntToStr(VisiblePackages)
+    , BigIntToStr(ScannedPackages), BigIntToStr(VisibleUnits), BigIntToStr(
+    ScannedUnits), BigIntToStr(VisibleIdentifiers), BigIntToStr(
+    ScannedIdentifiers), BigIntToStr(ScannedLines), BigIntToStr(ScannedBytes)]);
   if fStage<>cbwsFinished then
-    s:=s+'. Scanning ...';
+    s:=Format(lisScanning2, [s]);
   StatusBar1.SimpleText:=s;
 end;
 
