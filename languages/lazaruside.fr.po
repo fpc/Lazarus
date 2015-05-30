@@ -13082,6 +13082,10 @@ msgstr "Dossiers de sortie du paquet"
 msgid "Package source directories"
 msgstr "Dossiers des codes sources du paquet"
 
+#: lazarusidestrconsts.lispackagesunitsidentifierslinesbytes
+msgid "packages=%s/%s units=%s/%s identifiers=%s/%s lines=%s bytes=%s"
+msgstr ""
+
 #: lazarusidestrconsts.lispackageunit
 msgid "package unit"
 msgstr "unité du paquet"
@@ -15441,6 +15445,10 @@ msgstr "Chercher les fichiers de code source dans les répertoires frères (rép
 #: lazarusidestrconsts.lisscanning
 msgid "Scanning"
 msgstr "Recherche en cours"
+
+#: lazarusidestrconsts.lisscanning2
+msgid "%s. Scanning ..."
+msgstr ""
 
 #: lazarusidestrconsts.lisscanparentdir
 msgid "Scanning parent directory"

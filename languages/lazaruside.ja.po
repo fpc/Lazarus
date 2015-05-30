@@ -13237,6 +13237,10 @@ msgstr "パッケージ出力ディレクトリ"
 msgid "Package source directories"
 msgstr "パッケージソースディレクトリ"
 
+#: lazarusidestrconsts.lispackagesunitsidentifierslinesbytes
+msgid "packages=%s/%s units=%s/%s identifiers=%s/%s lines=%s bytes=%s"
+msgstr ""
+
 #: lazarusidestrconsts.lispackageunit
 msgid "package unit"
 msgstr "パッケージユニット"
@@ -15728,6 +15732,10 @@ msgstr ""
 #: lazarusidestrconsts.lisscanning
 msgid "Scanning"
 msgstr "走査"
+
+#: lazarusidestrconsts.lisscanning2
+msgid "%s. Scanning ..."
+msgstr ""
 
 #: lazarusidestrconsts.lisscanparentdir
 msgid "Scanning parent directory"

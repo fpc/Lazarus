@@ -13095,6 +13095,10 @@ msgstr "Csomagok kimeneti könyvtárai"
 msgid "Package source directories"
 msgstr "Csomagok forrásainak könyvtárai"
 
+#: lazarusidestrconsts.lispackagesunitsidentifierslinesbytes
+msgid "packages=%s/%s units=%s/%s identifiers=%s/%s lines=%s bytes=%s"
+msgstr ""
+
 #: lazarusidestrconsts.lispackageunit
 msgid "package unit"
 msgstr "csomag unit"
@@ -15456,6 +15460,10 @@ msgstr "Forrásfájlok keresése a testvér könyvtárakban (a szülőkönyvtár
 #: lazarusidestrconsts.lisscanning
 msgid "Scanning"
 msgstr "Ellenőrzés"
+
+#: lazarusidestrconsts.lisscanning2
+msgid "%s. Scanning ..."
+msgstr ""
 
 #: lazarusidestrconsts.lisscanparentdir
 msgid "Scanning parent directory"

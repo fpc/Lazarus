@@ -12995,6 +12995,10 @@ msgstr "Paketin käännöshakemisto"
 msgid "Package source directories"
 msgstr "Paketin lähdehakemisto"
 
+#: lazarusidestrconsts.lispackagesunitsidentifierslinesbytes
+msgid "packages=%s/%s units=%s/%s identifiers=%s/%s lines=%s bytes=%s"
+msgstr ""
+
 #: lazarusidestrconsts.lispackageunit
 msgid "package unit"
 msgstr "paketin käännösyksikkö"
@@ -15340,6 +15344,10 @@ msgstr "Etsi lähdekoodit sisarus-hakemistoissa (emohakemisto ja sen lapset)"
 #: lazarusidestrconsts.lisscanning
 msgid "Scanning"
 msgstr "Tutkii"
+
+#: lazarusidestrconsts.lisscanning2
+msgid "%s. Scanning ..."
+msgstr ""
 
 #: lazarusidestrconsts.lisscanparentdir
 msgid "Scanning parent directory"

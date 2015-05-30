@@ -13113,6 +13113,10 @@ msgstr "Cartelle di uscita del pacchetto"
 msgid "Package source directories"
 msgstr "Cartelle sorgenti del pacchetto"
 
+#: lazarusidestrconsts.lispackagesunitsidentifierslinesbytes
+msgid "packages=%s/%s units=%s/%s identifiers=%s/%s lines=%s bytes=%s"
+msgstr ""
+
 #: lazarusidestrconsts.lispackageunit
 msgid "package unit"
 msgstr "unit del pacchetto "
@@ -15475,6 +15479,10 @@ msgstr "Ricerca dei file sorgenti nelle cartelle collegate (cartella superiore e
 #: lazarusidestrconsts.lisscanning
 msgid "Scanning"
 msgstr "Scansione"
+
+#: lazarusidestrconsts.lisscanning2
+msgid "%s. Scanning ..."
+msgstr ""
 
 #: lazarusidestrconsts.lisscanparentdir
 msgid "Scanning parent directory"

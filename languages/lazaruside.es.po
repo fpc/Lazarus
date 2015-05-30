@@ -13094,6 +13094,10 @@ msgstr "Directorios de salida de paquetes"
 msgid "Package source directories"
 msgstr "Directorios de fuentes de paquetes"
 
+#: lazarusidestrconsts.lispackagesunitsidentifierslinesbytes
+msgid "packages=%s/%s units=%s/%s identifiers=%s/%s lines=%s bytes=%s"
+msgstr ""
+
 #: lazarusidestrconsts.lispackageunit
 msgid "package unit"
 msgstr "Unidad de paquete"
@@ -15454,6 +15458,10 @@ msgstr "Buscar por ficheros fuente en directorios hermanos (directorio padre y s
 #: lazarusidestrconsts.lisscanning
 msgid "Scanning"
 msgstr "Escaneando"
+
+#: lazarusidestrconsts.lisscanning2
+msgid "%s. Scanning ..."
+msgstr ""
 
 #: lazarusidestrconsts.lisscanparentdir
 msgid "Scanning parent directory"

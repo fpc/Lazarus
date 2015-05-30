@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2015-05-23 03:26+0300\n"
+"PO-Revision-Date: 2015-05-30 02:58+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -13073,6 +13073,10 @@ msgstr "Каталоги вывода пакетов"
 msgid "Package source directories"
 msgstr "Каталоги исходного кода пакетов"
 
+#: lazarusidestrconsts.lispackagesunitsidentifierslinesbytes
+msgid "packages=%s/%s units=%s/%s identifiers=%s/%s lines=%s bytes=%s"
+msgstr "пакетов=%s/%s модулей=%s/%s идентификаторов=%s/%s строк=%s байт=%s"
+
 #: lazarusidestrconsts.lispackageunit
 msgid "package unit"
 msgstr "модуль пакета"
@@ -15432,6 +15436,10 @@ msgstr "Искать файлы исходного кода в соседних 
 #: lazarusidestrconsts.lisscanning
 msgid "Scanning"
 msgstr "Идёт поиск"
+
+#: lazarusidestrconsts.lisscanning2
+msgid "%s. Scanning ..."
+msgstr "%s. Поиск ..."
 
 #: lazarusidestrconsts.lisscanparentdir
 msgid "Scanning parent directory"

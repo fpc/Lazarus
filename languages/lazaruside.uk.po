@@ -13322,6 +13322,10 @@ msgstr "Вихідні теки пакунку"
 msgid "Package source directories"
 msgstr "Теки з джерелом пакунку"
 
+#: lazarusidestrconsts.lispackagesunitsidentifierslinesbytes
+msgid "packages=%s/%s units=%s/%s identifiers=%s/%s lines=%s bytes=%s"
+msgstr ""
+
 #: lazarusidestrconsts.lispackageunit
 msgid "package unit"
 msgstr "модуль пакунку"
@@ -15830,6 +15834,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisscanning
 msgid "Scanning"
+msgstr ""
+
+#: lazarusidestrconsts.lisscanning2
+msgid "%s. Scanning ..."
 msgstr ""
 
 #: lazarusidestrconsts.lisscanparentdir
