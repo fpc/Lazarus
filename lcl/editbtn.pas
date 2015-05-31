@@ -1015,7 +1015,8 @@ end;
 
 procedure TCustomEditButton.InternalOnEditChange(Sender: TObject);
 begin
-  EditChange;
+  if not (csLoading in ComponentState) then
+    EditChange;
 end;
 
 procedure TCustomEditButton.InternalOnEditClick(Sender: TObject);
