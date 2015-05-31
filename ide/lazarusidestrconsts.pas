@@ -1000,6 +1000,9 @@ resourcestring
   lisChooseTestBuildDir = 'Choose the directory for tests';
   lisLazarusDesktopSettings = 'Lazarus Desktop Settings';
   lisXMLFiles = 'XML files';
+  lisPackageFilesFilter = 'Package files';
+  lisProjectFilesFilter = 'Project files';
+  lisSessionFilesFilter = 'Session files';
 
   // dialogs
   lisProjectChanged = 'Project changed';

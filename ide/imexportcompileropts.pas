@@ -251,19 +251,25 @@ end;
 
 procedure TImExportCompOptsDlg.HideRadioButtons;
 begin
-  Width:=FileNameEdit.Left + FileNameEdit.Width + 70; // Room for localized "File"
-  ExportRadioGroup.Visible:=False;
+  ExportRadioGroup.Enabled:=False; // Enabled is better than visible, nicer dialog
 end;
 
 procedure TImExportCompOptsDlg.InitImport;
 begin
   Caption:=lisIECOImportCompilerOptions;
   HideRadioButtons;
-  FileNameEdit.Filter:='XML file (*.xml)|*.xml|'
-                      +'Project file (*.lpi)|*.lpi|'
-                      +'Package file (*.lpk)|*.lpk|'
-                      +'Session file (*.lps)|*.lps|'
-                      +'All files (*)|*';
+  FileNameEdit.Filter:= Format(
+                       '%s|*.xml|'
+                      +'%s|*.lpi|'
+                      +'%s|*.lpk|'
+                      +'%s|*.lps|'
+                      +'%s|*',
+                      [lisXmlFiles,
+                       lisProjectFilesFilter,
+                       lisPackageFilesFilter,
+                       lisSessionFilesFilter,
+                       dlgAllFiles]);
+
   FileNameEdit.DialogOptions:=FileNameEdit.DialogOptions+[ofFileMustExist];
   FileNameEdit.OnChange:=@FileNameEditChangeImport;
   with ButtonPanel1 do begin
