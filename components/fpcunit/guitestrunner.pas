@@ -208,8 +208,10 @@ const
   imgGrayBall = 12; //default
   imgBlueBall = 13; //busy
 
-type
+const
+  SectionName_TestNodes = 'Tests';
 
+type
   TTreeNodeState=(tsUnChecked, tsChecked);
 
 type
@@ -261,51 +263,48 @@ begin
   end;
 end;
 
+
 procedure TGUITestRunner.SaveTree;
+
+  function IsMessageNode(const Node: TTreeNode): boolean;
+  begin
+    Result := Node.Data = nil;
+  end;
+
 var
   i: integer;
 begin
-  FConfStore.EraseSection('DisabledTests');
+  FConfStore.EraseSection(SectionName_TestNodes);
   for i := 0 to TestTree.Items.Count-1 do
   begin
-    if TestTree.Items[i].StateIndex = ord(tsUnChecked) then
-      FConfStore.WriteBool('DisabledTests', MakeTestPath(TestTree.Items[i]), True);
+    if IsMessageNode(TestTree.Items[i]) then
+      continue;
+    FConfStore.WriteBool(SectionName_TestNodes,
+      MakeTestPath(TestTree.Items[i]) + '.Checked',
+      TestTree.Items[i].StateIndex = Ord(tsChecked));
+    FConfStore.WriteBool(SectionName_TestNodes,
+      MakeTestPath(TestTree.Items[i]) + '.Expanded',
+      TestTree.Items[i].Expanded);
   end;
 end;
 
 procedure TGUITestRunner.RestoreTree;
 var
-  i, j: integer;
-  c: integer;
-  t: string;
-  n: TTreeNode;
-  sl: TStringList;
+  i: integer;
 begin
-  if not FConfStore.SectionExists('DisabledTests') then
+  if not FConfStore.SectionExists(SectionName_TestNodes) then
     Exit;
-  sl := TStringList.Create;
-  FConfStore.ReadSection('DisabledTests', sl);
-  try
-    for i := 0 to sl.Count-1 do
-    begin
-      c := WordCount(sl[i], ['.']);
-      n := TestTree.Items.GetFirstNode;
-      for j := 1 to c do
-      begin
-        t := ExtractWord(j,sl[i],['.']);
-        if Assigned(n) then
-        begin
-          if n.Text = t then
-            continue
-          else
-            n := n.FindNode(t);
-        end;
-      end;
-      if Assigned(n) and (n.Text = t) then  // we have a node and it matches the last text found
-        n.StateIndex := ord(tsUnChecked);
-    end;
-  finally
-    sl.Free;
+  for i := 0 to TestTree.Items.Count - 1 do
+  begin
+    TestTree.Items[i].Expanded := FConfStore.ReadBool(SectionName_TestNodes,
+      MakeTestPath(TestTree.Items[i]) + '.Expanded',
+      TestTree.Items[i].Expanded);
+    if FConfStore.ReadBool(SectionName_TestNodes,
+         MakeTestPath(TestTree.Items[i]) + '.Checked',
+         true) then
+      TestTree.Items[i].StateIndex := Ord(tsChecked)
+    else
+      TestTree.Items[i].StateIndex := Ord(tsUnChecked);
   end;
 end;
 
@@ -891,6 +890,7 @@ begin
 end;
 
 procedure TGUITestRunner.RunTest(ATest: TTest);
+
   procedure SkipUncheckedTests(aResult: TTestResult; aNode: TTreeNode);
   var
     i: integer;
@@ -905,8 +905,8 @@ var
   TestResult:TTestResult;
   w: TXMLResultsWriter;
   m: TMemoryStream;
-
 begin
+  SaveTree;
   barcolor := clGreen;
   ResetNodeColors;
   failureCounter := 0;
@@ -928,7 +928,7 @@ begin
       MemoLog(Format(rsRunning, [TestTree.Selected.Text]));
       aTest.Run(TestResult);
       MemoLog(Format(rsNumberOfExec, [IntToStr(TestResult.RunTests),
-        FormatDateTime('hh:nn:ss.zzz', Now - TestResult.StartingTime)]));
+      FormatDateTime('hh:nn:ss.zzz', Now - TestResult.StartingTime)]));
 
       w.WriteResult(TestResult);
       m := TMemoryStream.Create;
@@ -948,9 +948,8 @@ begin
     finally
       w.Free;
     end;
-   finally
+  finally
     EnableRunActions(true);
-
     TestResult.Free;
   end;
 end;
