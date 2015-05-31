@@ -213,6 +213,10 @@ begin
     FStackEntryArray[i].Line:=ThreadCallStack[i].Line;
     FStackEntryArray[i].SourceFile:=ThreadCallStack[i].SourceFile;
     end;
+  // Clear the callstack immediately. Doing this each time the process continous is
+  // cumbersome. And the chances that this command is called twice, so that
+  // caching the result is usefull, are slim.
+  AController.CurrentProcess.MainThread.ClearCallStack;
   DoProcessLoop:=false;
   result := true;
 end;
