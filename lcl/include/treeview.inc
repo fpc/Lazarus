@@ -5192,61 +5192,6 @@ var
   CursorNode: TTreeNode;
   LogicalX: Integer;
   CursorNodeSelected: Boolean;
-
-  procedure ChangeSelection;
-  begin
-    if (CursorNode <> nil) then
-    begin
-      if CursorNode.HasChildren and ShowButtons and
-         (LogicalX >= CursorNode.DisplayExpandSignLeft) and
-         (LogicalX < CursorNode.DisplayExpandSignRight) then
-      begin
-        // mousedown occured on expand sign -> expand/collapse only on left button
-        if (Button = mbLeft) then
-          CursorNode.Expanded:=not CursorNode.Expanded;
-      end
-      else if LogicalX >= CursorNode.DisplayStateIconLeft then
-      begin
-        // mousedown occured in text or icon
-        // -> select node and begin drag operation
-        {$IFDEF VerboseDrag}
-        DebugLn(['TCustomTreeView.MouseDown In Text ',DbgSName(Self),' MouseCapture=',MouseCapture]);
-        {$ENDIF}
-        if (Selected = CursorNode) and (LogicalX >= CursorNode.DisplayTextLeft) then
-          Include(FStates, tvsEditOnMouseUp);
-        if not (tvoAllowMultiselect in Options) then
-          Selected := CursorNode
-        else
-        begin
-          if (ssShift in Shift) then
-          begin
-            Exclude(FStates,tvsEditOnMouseUp);
-            LockSelectionChangeEvent;
-            try
-              Items.ClearMultiSelection;
-              CursorNode.MultiSelectGroup;
-            finally
-              UnlockSelectionChangeEvent;
-            end;
-          end
-          else
-          if (ssCtrl in Shift) then
-          begin
-            Exclude(FStates,tvsEditOnMouseUp);
-            CursorNode.MultiSelected:=not CursorNode.MultiSelected;
-          end
-          else
-          begin
-            if not CursorNodeSelected then
-              Items.SelectOnlyThis(CursorNode)
-            else if Button = mbLeft then
-              Include(FStates, tvsSingleSelectOnMouseUp);
-          end;
-        end;
-      end;
-    end;
-  end;//ChangeSelection
-
 begin
   {$IFDEF VerboseDrag}
   DebugLn('TCustomTreeView.MouseDown A ',DbgSName(Self),' ');
@@ -5254,30 +5199,92 @@ begin
   fMouseDownPos := Point(X,Y);
   FStates:=FStates-[tvsEditOnMouseUp,tvsSingleSelectOnMouseUp];
 
-  if not Focused and CanFocus then
-    SetFocus;
-
   CursorNode := GetNodeAt(X, Y);
   CursorNodeSelected := (CursorNode<>nil)
     and (CursorNode.Selected
       or ((tvoAllowMultiselect in Options) and CursorNode.MultiSelected));
   LogicalX:=X;
 
-  if (Button = mbRight) and RightClickSelect and
-     (([ssDouble, ssTriple, ssQuad] * Shift) = [])//single right click or first of a multi click
+  //change selection on right click
+  if (Button = mbRight) and RightClickSelect and//right click
+     (([ssDouble, ssTriple, ssQuad] * Shift) = []) and//single or first of a multi click
+     not(ssCtrl in Shift) and//only when CTRL is not pressed
+     (CursorNode <> nil) and
+     (LogicalX >= CursorNode.DisplayStateIconLeft)//only after expand sign
   then
-    ChangeSelection;
+  begin
+    if not (tvoAllowMultiselect in Options) then
+      Selected := CursorNode
+    else
+    if not CursorNodeSelected then
+      Items.SelectOnlyThis(CursorNode);
+  end;
+
+  if not Focused and CanFocus then
+    SetFocus;
 
   inherited MouseDown(Button, Shift, X, Y);
 
-  if (Button = mbLeft) and
-     (([ssDouble, ssTriple, ssQuad] * Shift) = [])//single left click or first of a multi click
-  then
-    ChangeSelection;
+  //CursorNode must be reassigned again - e.g. in OnMouseDown the node can be deleted or moved.
+  CursorNode := GetNodeAt(X, Y);
+  CursorNodeSelected := (CursorNode<>nil)
+    and (CursorNode.Selected
+      or ((tvoAllowMultiselect in Options) and CursorNode.MultiSelected));
 
-  // multi click
+  //change selection on left click
+  if (Button = mbLeft) and//left click
+     (([ssDouble, ssTriple, ssQuad] * Shift) = []) and//single or first of a multi click
+     (CursorNode <> nil) then
+  begin
+    if CursorNode.HasChildren and ShowButtons and
+       (LogicalX >= CursorNode.DisplayExpandSignLeft) and
+       (LogicalX < CursorNode.DisplayExpandSignRight) then
+    begin
+      // mousedown occured on expand sign -> expand/collapse
+      CursorNode.Expanded := not CursorNode.Expanded;
+    end
+    else if LogicalX >= CursorNode.DisplayStateIconLeft then
+    begin
+      // mousedown occured in text or icon
+      // -> select node and begin drag operation
+      {$IFDEF VerboseDrag}
+      DebugLn(['TCustomTreeView.MouseDown In Text ',DbgSName(Self),' MouseCapture=',MouseCapture]);
+      {$ENDIF}
+      if (Selected = CursorNode) and (LogicalX >= CursorNode.DisplayTextLeft) then
+        Include(FStates, tvsEditOnMouseUp);
+      if not (tvoAllowMultiselect in Options) then
+        Selected := CursorNode
+      else
+      begin
+        if (ssShift in Shift) then
+        begin
+          Exclude(FStates,tvsEditOnMouseUp);
+          LockSelectionChangeEvent;
+          try
+            Items.ClearMultiSelection;
+            CursorNode.MultiSelectGroup;
+          finally
+            UnlockSelectionChangeEvent;
+          end;
+        end
+        else if (ssCtrl in Shift) then
+        begin
+          Exclude(FStates,tvsEditOnMouseUp);
+          CursorNode.MultiSelected:=not CursorNode.MultiSelected;
+        end
+        else
+        begin
+          if not CursorNodeSelected then
+            Items.SelectOnlyThis(CursorNode)
+          else
+            Include(FStates, tvsSingleSelectOnMouseUp);
+        end;
+      end;
+    end;
+  end
+  else// multi click
   if not (tvoNoDoubleClickExpand in Options) and (ssDouble in Shift)
-     and (Button = mbLeft) and (CursorNode<>nil) then
+  and (Button = mbLeft) and (CursorNode<>nil) then
     CursorNode.Expanded := not CursorNode.Expanded;
 end;
 
