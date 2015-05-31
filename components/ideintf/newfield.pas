@@ -430,17 +430,20 @@ var i: TFieldType;
 begin
   SelectType.Clear;
   SelectType.Sorted := False;
-  for i := Low(Fieldtypenames) to High(Fieldtypenames) do begin
+  for i := Low(Fieldtypenames) to High(Fieldtypenames) do
     SelectType.Items.AddObject(Fieldtypenames[i], Tobject(PtrUInt(i)));
-  end;
   SelectType.Sorted := True;
 end;
 
 
 function TNewFieldFrm.GetLookupDataset: TDataset;
 begin
-  Result := GlobalDesignHook.GetComponent( DataSetsCombo.Items[DataSetsCombo.ItemIndex] ) as TDataset;
-  if Not Result.InheritsFrom(TDataset) then Result := Nil;
+  if GlobalDesignHook=Nil then
+    Result := Nil
+  else begin
+    Result := GlobalDesignHook.GetComponent( DataSetsCombo.Items[DataSetsCombo.ItemIndex] ) as TDataset;
+    if Not Result.InheritsFrom(TDataset) then Result := Nil;
+  end;
 end;
 
 procedure TNewFieldFrm.AddLookupDataset(const s: ansistring);

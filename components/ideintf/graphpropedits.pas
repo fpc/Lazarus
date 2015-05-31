@@ -220,7 +220,7 @@ procedure TPicturePropertyEditor.Edit;
 
   procedure AddPackage(Picture: TPicture);
   begin
-    if Picture.Graphic=nil then exit;
+    if (Picture.Graphic=nil) or (GlobalDesignHook=nil) then exit;
     //DebugLn(['AddPackage ',dbgsname(Picture.Graphic)]);
     GlobalDesignHook.AddDependency(Picture.Graphic.ClassType,'');
   end;

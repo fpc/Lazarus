@@ -174,11 +174,14 @@ begin
   FieldsListBox.Clear;
   RefreshFieldsListBox(False);
 
-  GlobalDesignHook.AddHandlerComponentRenamed(@OnComponentRenamed);
-  GlobalDesignHook.AddHandlerPersistentDeleting(@OnPersistentDeleting);
-  GlobalDesignHook.AddHandlerGetSelection(@OnGetSelection);
-  GlobalDesignHook.AddHandlerSetSelection(@OnSetSelection);
-  GlobalDesignHook.AddHandlerPersistentAdded(@OnPersistentAdded);
+  if Assigned(GlobalDesignHook) then
+  begin
+    GlobalDesignHook.AddHandlerComponentRenamed(@OnComponentRenamed);
+    GlobalDesignHook.AddHandlerPersistentDeleting(@OnPersistentDeleting);
+    GlobalDesignHook.AddHandlerGetSelection(@OnGetSelection);
+    GlobalDesignHook.AddHandlerSetSelection(@OnSetSelection);
+    GlobalDesignHook.AddHandlerPersistentAdded(@OnPersistentAdded);
+  end;
 
   SelectionChanged;
 end;
@@ -212,12 +215,12 @@ end;
 
 procedure TDSFieldsEditorFrm.FieldsEditorFrmDestroy(Sender: TObject);
 begin
-  if Assigned(FComponentEditor) then begin
-    if Assigned(LinkDataset) And (Not (csDestroying in LinkDataset.ComponentState)) And (FieldsListBox.SelCount > 0) then
-         GlobalDesignHook.SelectOnlyThis(LinkDataset);
-  end;
-  if Assigned(GlobalDesignHook) then
+  if Assigned(FComponentEditor) and Assigned(LinkDataset) and Assigned(GlobalDesignHook)
+  and not (csDestroying in LinkDataset.ComponentState) and (FieldsListBox.SelCount > 0) then
+  begin
+    GlobalDesignHook.SelectOnlyThis(LinkDataset);
     GlobalDesignHook.RemoveAllHandlersForObject(Self);
+  end;
 end;
 
 procedure TDSFieldsEditorFrm.FieldsListBoxDrawItem(Control: TWinControl;
@@ -402,7 +405,7 @@ end;
 procedure TDSFieldsEditorFrm.SelectionChanged(AOrderChanged: Boolean = false);
 var SelList: TPersistentSelectionList;
 begin
-  if FUpdateSelectionCount>0 then
+  if (FUpdateSelectionCount>0) or (GlobalDesignHook=nil) then
     exit;
   GlobalDesignHook.RemoveHandlerSetSelection(@OnSetSelection);
   try

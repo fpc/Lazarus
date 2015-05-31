@@ -480,7 +480,7 @@ var
   tmpIndex: Integer;
   tmpValidCategory, tmpIsActCategory: Boolean;
 begin
-  if Self.Visible then begin
+  if Self.Visible and Assigned(GlobalDesignHook) then begin
     ASelections:= TPersistentSelectionList.Create;
     GlobalDesignHook.GetSelection(ASelections);
     try
@@ -902,18 +902,21 @@ begin
   mItemActListMoveUpAction.Caption := cActionListEditorMoveUpAction;
   mItemActListDelAction.Caption := cActionListEditorDeleteAction;
 
-  GlobalDesignHook.AddHandlerComponentRenamed(@OnComponentRenamed);
-  GlobalDesignHook.AddHandlerSetSelection(@OnComponentSelection);
-  GlobalDesignHook.AddHandlerRefreshPropertyValues(@OnRefreshPropertyValues);
-  GlobalDesignHook.AddHandlerPersistentDeleting(@OnComponentDelete);
+  if Assigned(GlobalDesignHook) then
+  begin
+    GlobalDesignHook.AddHandlerComponentRenamed(@OnComponentRenamed);
+    GlobalDesignHook.AddHandlerSetSelection(@OnComponentSelection);
+    GlobalDesignHook.AddHandlerRefreshPropertyValues(@OnRefreshPropertyValues);
+    GlobalDesignHook.AddHandlerPersistentDeleting(@OnComponentDelete);
+  end;
 
   AddActionEditor(Self);
 end;
 
 destructor TActionListEditor.Destroy;
 begin
-  if Assigned(GlobalDesignHook)
-  then GlobalDesignHook.RemoveAllHandlersForObject(Self);
+  if Assigned(GlobalDesignHook) then
+    GlobalDesignHook.RemoveAllHandlersForObject(Self);
 
   ReleaseActionEditor(Self);
   
