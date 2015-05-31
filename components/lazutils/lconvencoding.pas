@@ -52,9 +52,10 @@ const
 
   EncodingCPMac = 'macintosh';
   EncodingCPKOI8 = 'koi8';
+
   EncodingCPIso1 = 'iso88591';
-  EncodingCPIso15 = 'iso885915';
   EncodingCPIso2 = 'iso88592';
+  EncodingCPIso15 = 'iso885915';
 
 //signatures in ansi
 const
@@ -6960,7 +6961,6 @@ begin
   List.Add(UpperCase(EncodingCP874));
 
   {$IFNDEF DisableAsianCodePages}
-  // asian
   List.Add(UpperCase(EncodingCP932));
   List.Add(UpperCase(EncodingCP936));
   List.Add(UpperCase(EncodingCP949));
@@ -6969,8 +6969,11 @@ begin
 
   List.Add('ISO-8859-1');
   List.Add('ISO-8859-2');
+  List.Add('ISO-8859-15');
+
   List.Add('KOI-8');
   List.Add('Macintosh');
+
   // UCS2 are less common, list them last
   List.Add('UCS-2LE');
   List.Add('UCS-2BE');
