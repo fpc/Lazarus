@@ -131,6 +131,11 @@ type
         itmAddJumpPoint: TIDEMenuCommand;
         itmJumpToNextError: TIDEMenuCommand;
         itmJumpToPrevError: TIDEMenuCommand;
+        itmJumpToInterface: TIDEMenuCommand;
+        itmJumpToInterfaceUses: TIDEMenuCommand;
+        itmJumpToImplementation: TIDEMenuCommand;
+        itmJumpToImplementationUses: TIDEMenuCommand;
+        itmJumpToInitialization: TIDEMenuCommand;
       //itmBookmarks: TIDEMenuSection;
         itmSetFreeBookmark: TIDEMenuCommand;
         itmJumpToNextBookmark: TIDEMenuCommand;

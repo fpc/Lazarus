@@ -144,7 +144,6 @@ type
       Shift: TShiftState);
     procedure IdleTimer1Timer(Sender: TObject);
     procedure JumpToMenuItemClick(Sender: TObject);
-    procedure JumpToImplementationMenuItemClick(Sender: TObject);
     procedure OnCloseIDE(Sender: TObject);
     procedure ShowSrcEditPosMenuItemClick(Sender: TObject);
     procedure MainNotebookPageChanged(Sender: TObject);
@@ -278,7 +277,6 @@ const
 var
   CodeExplorerView: TCodeExplorerView = nil;
   CEJumpToIDEMenuCommand: TIDEMenuCommand;
-  CEJumpToImplementationIDEMenuCommand: TIDEMenuCommand;
   CEShowSrcEditPosIDEMenuCommand: TIDEMenuCommand;
   CERefreshIDEMenuCommand: TIDEMenuCommand;
   CERenameIDEMenuCommand: TIDEMenuCommand;
@@ -369,8 +367,6 @@ begin
   CodeExplorerMenuRoot:=RegisterIDEMenuRoot(CodeExplorerMenuRootName);
   Path:=CodeExplorerMenuRoot.Name;
   CEJumpToIDEMenuCommand:=RegisterIDEMenuCommand(Path, 'Jump to', lisMenuJumpTo);
-  CEJumpToImplementationIDEMenuCommand:=RegisterIDEMenuCommand(Path,
-    'Jump to implementation', lisMenuJumpToImplementation);
   CEShowSrcEditPosIDEMenuCommand:=RegisterIDEMenuCommand(Path, 'Show position of source editor',
     lisShowPositionOfSourceEditor);
   CERefreshIDEMenuCommand:=RegisterIDEMenuCommand(Path, 'Refresh', dlgUnitDepRefresh);
@@ -507,7 +503,6 @@ begin
   //CodeExplorerMenuRoot.Items.WriteDebugReport(' ');
 
   CEJumpToIDEMenuCommand.OnClick:=@JumpToMenuItemClick;
-  CEJumpToImplementationIDEMenuCommand.OnClick:=@JumpToImplementationMenuItemClick;
   CEShowSrcEditPosIDEMenuCommand.OnClick:=@ShowSrcEditPosMenuItemClick;
   CERefreshIDEMenuCommand.OnClick:=@RefreshMenuItemClick;
   CERenameIDEMenuCommand.OnClick:=@RenameMenuItemClick;
@@ -609,11 +604,6 @@ begin
   JumpToSelection(false);
 end;
 
-procedure TCodeExplorerView.JumpToImplementationMenuItemClick(Sender: TObject);
-begin
-  JumpToSelection(true);
-end;
-
 procedure TCodeExplorerView.OnCloseIDE(Sender: TObject);
 begin
   CodeExplorerOptions.Save;
@@ -678,10 +668,8 @@ var
   CurItem: TTreeNode;
   CanRename: boolean;
   CurNode: TViewNodeData;
-  HasImplementation: Boolean;
 begin
   CanRename:=false;
-  HasImplementation:=false;
   CurTreeView:=GetCurrentTreeView;
   if CurTreeView<>nil then begin
     if tvoAllowMultiselect in CurTreeView.Options then
@@ -700,13 +688,9 @@ begin
           ;
         end;
       end;
-      if (CurNode.ImplementationNode<>nil)
-      and (CurNode.ImplementationNode.StartPos>0) then
-        HasImplementation:=true;
     end;
   end;
   CERenameIDEMenuCommand.Visible:=CanRename;
-  CEJumpToImplementationIDEMenuCommand.Visible:=HasImplementation;
   //DebugLn(['TCodeExplorerView.TreePopupmenuPopup ',CERenameIDEMenuCommand.Visible]);
 end;
 

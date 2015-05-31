@@ -2161,6 +2161,11 @@ begin
   MainIDEBar.itmJumpHistory.OnClick := @SourceEditorManager.ViewJumpHistoryClicked;
   MainIDEBar.itmJumpToNextBookmark.OnClick := @SourceEditorManager.BookMarkNextClicked;
   MainIDEBar.itmJumpToPrevBookmark.OnClick := @SourceEditorManager.BookMarkPrevClicked;
+  MainIDEBar.itmJumpToInterface.OnClick := @SourceEditorManager.JumpToInterfaceClicked;
+  MainIDEBar.itmJumpToInterfaceUses.OnClick := @SourceEditorManager.JumpToInterfaceUsesClicked;
+  MainIDEBar.itmJumpToImplementation.OnClick := @SourceEditorManager.JumpToImplementationClicked;
+  MainIDEBar.itmJumpToImplementationUses.OnClick := @SourceEditorManager.JumpToImplementationUsesClicked;
+  MainIDEBar.itmJumpToInitialization.OnClick := @SourceEditorManager.JumpToInitializationClicked;
   MainIDEBar.itmFindBlockStart.OnClick:=@mnuSearchFindBlockStart;
   MainIDEBar.itmFindBlockOtherEnd.OnClick:=@mnuSearchFindBlockOtherEnd;
   MainIDEBar.itmFindDeclaration.OnClick:=@mnuSearchFindDeclaration;

@@ -303,6 +303,7 @@ var
     mnuSearch: TIDEMenuSection;
       itmSearchFindReplace: TIDEMenuSection;
       itmJumpings: TIDEMenuSection;
+        itmJumpToSection: TIDEMenuSection;
       itmBookmarks: TIDEMenuSection;
       itmCodeToolSearches: TIDEMenuSection;
 

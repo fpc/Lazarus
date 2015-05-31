@@ -693,6 +693,15 @@ begin
     CreateMenuItem(ParentMI,itmJumpToNextError,'itmJumpToNextError',lisMenuJumpToNextError);
     CreateMenuItem(ParentMI,itmJumpToPrevError,'itmJumpToPrevError',lisMenuJumpToPrevError);
 
+    CreateMenuSubSection(ParentMI,itmJumpToSection,'itmJumpToSection',lisMenuJumpTo);
+    ParentMI:=itmJumpToSection;
+
+    CreateMenuItem(ParentMI,itmJumpToInterface,'itmJumpToInterface',lisMenuJumpToInterface, 'menu_jumpto_interface');
+    CreateMenuItem(ParentMI,itmJumpToInterfaceUses,'itmJumpToInterfaceUses',lisMenuJumpToInterfaceUses, 'menu_jumpto_interfaceuses');
+    CreateMenuItem(ParentMI,itmJumpToImplementation,'itmJumpToImplementation',lisMenuJumpToImplementation, 'menu_jumpto_implementation');
+    CreateMenuItem(ParentMI,itmJumpToImplementationUses,'itmJumpToImplementationUses',lisMenuJumpToImplementationUses, 'menu_jumpto_implementationuses');
+    CreateMenuItem(ParentMI,itmJumpToInitialization,'itmJumpToInitialization',lisMenuJumpToInitialization, 'menu_jumpto_initialization');
+
     CreateMenuSeparatorSection(mnuSearch,itmBookmarks,'itmBookmarks');
     ParentMI:=itmBookmarks;
 
@@ -1137,6 +1146,11 @@ begin
     itmSetFreeBookmark.Command:=GetCommand(ecSetFreeBookmark);
     itmJumpToNextBookmark.Command:=GetCommand(ecNextBookmark);
     itmJumpToPrevBookmark.Command:=GetCommand(ecPrevBookmark);
+    itmJumpToInterface.Command:=GetCommand(ecJumpToInterface);
+    itmJumpToInterfaceUses.Command:=GetCommand(ecJumpToInterfaceUses);
+    itmJumpToImplementation.Command:=GetCommand(ecJumpToImplementation);
+    itmJumpToImplementationUses.Command:=GetCommand(ecJumpToImplementationUses);
+    itmJumpToInitialization.Command:=GetCommand(ecJumpToInitialization);
     itmFindBlockOtherEnd.Command:=GetCommand(ecFindBlockOtherEnd);
     itmFindBlockStart.Command:=GetCommand(ecFindBlockStart);
     itmFindDeclaration.Command:=GetCommand(ecFindDeclaration);

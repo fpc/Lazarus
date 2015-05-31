@@ -84,6 +84,11 @@ menu/menu_search_find_previous.png
 menu/menu_search_incremental.png
 menu/menu_search_jumpback.png
 menu/menu_search_jumpforward.png
+menu/menu_jumpto_interface.png
+menu/menu_jumpto_interfaceuses.png
+menu/menu_jumpto_implementation.png
+menu/menu_jumpto_implementationuses.png
+menu/menu_jumpto_initialization.png
 menu/menu_search_next_bookmark.png
 menu/menu_search_openfile_atcursor.png
 menu/menu_search_previous_bookmark.png

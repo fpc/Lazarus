@@ -100,10 +100,10 @@ begin
   // register IDE shortcut and menu item
   Key := IDEShortCut(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   Cat:=IDECommandList.FindCategoryByName(CommandCategoryCodeTools);
-  CmdMyTool := RegisterIDECommand(Cat,'JumpToImplementation', 'Jump to implementation keyword', Key, nil, @JumpIDEToImplementationKeyword);
+  CmdMyTool := RegisterIDECommand(Cat,'JumpToImplementationDemo', 'Jump to implementation keyword (demo)', Key, nil, @JumpIDEToImplementationKeyword);
 
-  RegisterIDEMenuCommand(itmCodeToolSearches,'JumpToImplementation',
-    'Jump to implementation keyword',nil,@JumpIDEToImplementationKeyword, CmdMyTool);
+  RegisterIDEMenuCommand(itmCodeToolSearches,'JumpToImplementationDemo',
+    'Jump to implementation keyword (demo)',nil,@JumpIDEToImplementationKeyword, CmdMyTool);
 end;
 
 end.

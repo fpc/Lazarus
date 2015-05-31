@@ -75,6 +75,11 @@ const
   ecFindBlockStart          = ecFirstLazarus + 22;
   ecOpenFileAtCursor        = ecFirstLazarus + 23;
   ecGotoIncludeDirective    = ecFirstLazarus + 24;
+  ecJumpToInterface         = ecFirstLazarus + 25;
+  ecJumpToInterfaceUses     = ecFirstLazarus + 26;
+  ecJumpToImplementation    = ecFirstLazarus + 27;
+  ecJumpToImplementationUses= ecFirstLazarus + 28;
+  ecJumpToInitialization    = ecFirstLazarus + 29;
 
   // edit selection
   ecSelectionUpperCase      = ecFirstLazarus + 50;
@@ -1219,7 +1224,7 @@ begin
 end;
 
 const
-  IDEEditorCommandStrs: array[0..302] of TIdentMapEntry = (
+  IDEEditorCommandStrs: array[0..307] of TIdentMapEntry = (
   // search
     (Value: ecFind;                                   Name: 'ecFind'),
     (Value: ecFindAgain;                              Name: 'ecFindAgain'),
@@ -1247,6 +1252,11 @@ const
     (Value: ecFindBlockStart;                         Name: 'ecFindBlockStart'),
     (Value: ecOpenFileAtCursor;                       Name: 'ecOpenFileAtCursor'),
     (Value: ecGotoIncludeDirective;                   Name: 'ecGotoIncludeDirective'),
+    (Value: ecJumpToInterface;                        Name: 'ecJumpToInterface'),
+    (Value: ecJumpToInterfaceUses;                    Name: 'ecJumpToInterfaceUses'),
+    (Value: ecJumpToImplementation;                   Name: 'ecJumpToImplementation'),
+    (Value: ecJumpToImplementationUses;               Name: 'ecJumpToImplementationUses'),
+    (Value: ecJumpToInitialization;                   Name: 'ecJumpToInitialization'),
 
   // edit selection
     (Value: ecSelectionUpperCase;                     Name: 'ecSelectionUpperCase'),

@@ -941,6 +941,11 @@ type
              read FOnCurrentCodeBufferChanged write FOnCurrentCodeBufferChanged;
   end;
 
+  TJumpToSectionType = (
+    jmpInterface, jmpInterfaceUses,
+    jmpImplementation, jmpImplementationUses,
+    jmpInitialization);
+
   { TSourceEditorManager }
   (* Reintroduce all Methods with the final types *)
 
@@ -1016,6 +1021,12 @@ type
   public
     procedure BookMarkNextClicked(Sender: TObject);
     procedure BookMarkPrevClicked(Sender: TObject);
+    procedure JumpToSection(JumpType: TJumpToSectionType);
+    procedure JumpToInterfaceClicked(Sender: TObject);
+    procedure JumpToInterfaceUsesClicked(Sender: TObject);
+    procedure JumpToImplementationClicked(Sender: TObject);
+    procedure JumpToImplementationUsesClicked(Sender: TObject);
+    procedure JumpToInitializationClicked(Sender: TObject);
   protected
     // macros
     function MacroFuncCol(const {%H-}s:string; const {%H-}Data: PtrInt;
@@ -9530,6 +9541,89 @@ end;
 procedure TSourceEditorManager.JumpForwardClicked(Sender: TObject);
 begin
   if ActiveSourceWindow <> nil then HistoryJump(Sender,jhaForward);
+end;
+
+procedure TSourceEditorManager.JumpToImplementationClicked(Sender: TObject);
+begin
+  JumpToSection(jmpImplementation);
+end;
+
+procedure TSourceEditorManager.JumpToImplementationUsesClicked(Sender: TObject);
+begin
+  JumpToSection(jmpImplementationUses);
+end;
+
+procedure TSourceEditorManager.JumpToInitializationClicked(Sender: TObject);
+begin
+  JumpToSection(jmpInitialization);
+end;
+
+procedure TSourceEditorManager.JumpToInterfaceClicked(Sender: TObject);
+begin
+  JumpToSection(jmpInterface);
+end;
+
+procedure TSourceEditorManager.JumpToInterfaceUsesClicked(Sender: TObject);
+begin
+  JumpToSection(jmpInterfaceUses);
+end;
+
+procedure TSourceEditorManager.JumpToSection(JumpType: TJumpToSectionType);
+const
+  cJumpNames: array[TJumpToSectionType] of string = (
+    'Interface', 'Interface uses', 'Implementation', 'Implementation uses', 'Initialization');
+var
+  SrcEditor: TSourceEditorInterface;
+  Node: TCodeTreeNode;
+  Tool: TCodeTool;
+  NewTopLine: Integer;
+  NewCodePos: TCodeXYPosition;
+begin
+  if not LazarusIDE.BeginCodeTools then Exit; //==>
+
+  SrcEditor := SourceEditorManagerIntf.ActiveEditor;
+  if not Assigned(SrcEditor) then Exit; //==>
+
+  if CodeToolBoss.Explore(SrcEditor.CodeToolsBuffer as TCodeBuffer, Tool, false, false) then
+  begin
+    case JumpType of
+      jmpInterface: Node := Tool.FindInterfaceNode;
+      jmpInterfaceUses:
+      begin
+        Node := Tool.FindMainUsesSection;
+        if Node = nil then//if the uses section is missing, jump to interface
+          Node := Tool.FindInterfaceNode;
+      end;
+      jmpImplementation: Node := Tool.FindImplementationNode;
+      jmpImplementationUses:
+      begin
+        Node := Tool.FindImplementationUsesSection;
+        if Node = nil then//if the uses section is missing, jump to implementation
+          Node := Tool.FindImplementationNode;
+      end;
+      jmpInitialization:
+      begin
+        Node := Tool.FindInitializationNode;
+        if Node = nil then//if initialization is missing, jump to last end
+          Node := Tool.FindRootNode(ctnEndPoint);
+      end;
+    end;
+    if (Node <> nil) then
+    begin
+      NewTopLine := 0;
+      NewCodePos := CleanCodeXYPosition;
+      if Tool.CleanPosToCaretAndTopLine(Node.StartPos, NewCodePos, NewTopLine)
+      and (LazarusIDE.DoOpenFileAndJumpToPos(NewCodePos.Code.Filename
+            ,Point(NewCodePos.X,NewCodePos.Y), NewTopLine, -1,-1
+            ,[ofRegularFile,ofUseCache]) = mrOk)
+      then
+        SrcEditor.EditorControl.SetFocus;
+    end
+    else
+      ShowMessage(Format(lisCannotFind, [cJumpNames[JumpType]]));
+  end
+  else
+    LazarusIDE.DoJumpToCodeToolBossError;
 end;
 
 procedure TSourceEditorManager.AddJumpPointClicked(Sender: TObject);
