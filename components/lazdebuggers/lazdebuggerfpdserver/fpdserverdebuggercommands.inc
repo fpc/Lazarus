@@ -192,7 +192,8 @@ end;
 
 destructor TFPDSendCallStackCommand.Destroy;
 begin
-  FCallStack.RemoveFreeNotification(@DoCallStackFreed);
+  if assigned(FCallStack) then
+    FCallStack.RemoveFreeNotification(@DoCallStackFreed);
   inherited Destroy;
 end;
 
