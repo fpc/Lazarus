@@ -41,18 +41,34 @@ type
   { TGUITestRunner }
 
   TGUITestRunner = class(TForm, ITestListener)
-    actCopy: TAction;
-    actCut: TAction;
     ActCloseForm: TAction;
-    actCopyErrorMsg: TAction;
+    ActCopyErrorMsg: TAction;
     ActCheckCurrentSuite: TAction;
     ActCheckAll: TAction;
+    ActSaveResults: TAction;
+    ActCopyTextToClipboard: TAction;
     ActRunHighlightedTest: TAction;
     ActUncheckAll: TAction;
     ActUncheckCurrentSuite: TAction;
-    btnRunHighlighted: TBitBtn;
     ilNodeStates: TImageList;
-    Memo1: TMemo;
+    MainMenu1: TMainMenu;
+    MemoLog: TMemo;
+    MemoDetails: TMemo;
+    MenuItem10: TMenuItem;
+    MenuItem11: TMenuItem;
+    MenuItem12: TMenuItem;
+    MenuItem13: TMenuItem;
+    MenuItem14: TMenuItem;
+    MenuItem15: TMenuItem;
+    MenuItem16: TMenuItem;
+    MenuItem17: TMenuItem;
+    MenuItem18: TMenuItem;
+    MenuItem19: TMenuItem;
+    MenuItem2: TMenuItem;
+    MenuItemEdit: TMenuItem;
+    MenuItem3: TMenuItem;
+    MenuItemTestTree: TMenuItem;
+    MenuItemActions: TMenuItem;
     miExpandNodes: TMenuItem;
     miCollapseNodes: TMenuItem;
     MenuItem4: TMenuItem;
@@ -64,19 +80,16 @@ type
     miRunTest: TMenuItem;
     miShowfailureMsg: TMenuItem;
     pbBar: TPaintBox;
-    PopupMenu3: TPopupMenu;
+    PopupResults: TPopupMenu;
     RunAction: TAction;
-    ActionList1: TActionList;
-    ActionList2: TActionList;
-    BtnRun: TBitBtn;
-    BtnClose: TBitBtn;
+    ActionListMain: TActionList;
+    Splitter2: TSplitter;
     TestTreeImageList: TImageList;
-    ResultsXMLImageList: TImageList;
+    MainImageList: TImageList;
     MenuItem1: TMenuItem;
-    MenuItem2: TMenuItem;
-    MenuItem3: TMenuItem;
-    PopupMenu1: TPopupMenu;
-    PopupMenu2: TPopupMenu;
+    MenuItemCopyText: TMenuItem;
+    PopupTree: TPopupMenu;
+    PopupDetails: TPopupMenu;
     SaveDialog: TSaveDialog;
     Splitter1: TSplitter;
     TestTree: TTreeView;
@@ -84,16 +97,18 @@ type
     PageControl1: TPageControl;
     Panel1: TPanel;
     Panel2: TPanel;
-    XMLToolBar: TToolBar;
-    CopyXMLToolButton: TToolButton;
-    CutXMLToolButton: TToolButton;
-    SaveAsToolButton: TToolButton;
+    ToolBar1: TToolBar;
+    ToolButton1: TToolButton;
+    ToolButton2: TToolButton;
     tsTestTree: TTabSheet;
     tsResultsXML: TTabSheet;
     XMLSynEdit: TSynEdit;
     procedure ActCheckAllExecute(Sender: TObject);
     procedure ActCheckCurrentSuiteExecute(Sender: TObject);
     procedure ActCloseFormExecute(Sender: TObject);
+    procedure ActCopyTextToClipboardExecute(Sender: TObject);
+    procedure ActCopyTextToClipboardUpdate(Sender: TObject);
+    procedure ActSaveResultsExecute(Sender: TObject);
     procedure ActRunHighlightedTestExecute(Sender: TObject);
     procedure ActUncheckAllExecute(Sender: TObject);
     procedure ActRunHighLightedTestUpdate(Sender: TObject);
@@ -104,19 +119,15 @@ type
     procedure RunExecute(Sender: TObject);
     procedure GUITestRunnerCreate(Sender: TObject);
     procedure GUITestRunnerShow(Sender: TObject);
-    procedure MenuItem3Click(Sender: TObject);
-    procedure SaveAsToolButtonClick(Sender: TObject);
     procedure TestTreeChange(Sender: TObject; Node: TTreeNode);
     procedure TestTreeCreateNodeClass(Sender: TCustomTreeView;
       var NodeClass: TTreeNodeClass);
     procedure TestTreeMouseDown(Sender: TOBject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure TestTreeSelectionChanged(Sender: TObject);
-    procedure actCopyErrorMsgExecute(Sender: TObject);
-    procedure actCopyErrorMsgUpdate(Sender: TObject);
+    procedure ActCopyErrorMsgExecute(Sender: TObject);
+    procedure ActCopyErrorMsgUpdate(Sender: TObject);
     procedure pbBarPaint(Sender: TObject);
-    procedure actCopyExecute(Sender: TObject);
-    procedure actCutExecute(Sender: TObject);
   private
     failureCounter: Integer;
     errorCounter: Integer;
@@ -127,6 +138,7 @@ type
     FFirstFailure: TTreeNode; // reference to first failed test
     FConfStore: TIniFile;
     procedure BuildTree(rootNode: TTreeNode; aSuite: TTestSuite);
+    procedure ClearDetails;
     function  FindNode(aTest: TTest): TTreeNode;
     function MakeTestPath(Node: TTreeNode): string;
     procedure ResetNodeColors;
@@ -135,10 +147,11 @@ type
     procedure PaintNodeIgnore(aNode: TTreeNode);
     procedure PaintNodeNonFailed(aNode: TTreeNode);
     procedure PaintNodeBusy(aNode: TTreeNode);
-    procedure MemoLog(LogEntry: string);
+    procedure DoMemoLog(LogEntry: string);
     procedure EnableRunActions(AValue: boolean);
     procedure RestoreTree;
     procedure SaveTree;
+    procedure ShowDetails(const Node: TTreeNode);
   public
     procedure AddFailure(ATest: TTest; AFailure: TTestFailure);
     procedure AddError(ATest: TTest; AError: TTestFailure);
@@ -174,29 +187,30 @@ resourcestring
   sbtnClose = 'Close';
   stshTree = 'Testcase tree';
   stshResults = 'Results XML';
-  sactRunAction = '&Run';
-  sactRunActionH = 'Run all checked test(s)';
+  sactRunAction = '&Run all';
+  sactRunActionH = 'Run all checked tests';
   sactCloseForm = 'Quit';
-  sactCloseFormH = 'Quit Testting';
-  sactCheckCurrentSuite = 'Check the Current Suite';
-  sactUncheckCurrentSuite = 'Uncheck the Current Suite';
-  sactCheckAll = 'Check all Tests';
-  sactUncheckAll = 'Uncheck all tests';
-  sactRunHighlightedTest = 'Run highlighted test';
-  smiRunTest = '&Run all selected (checked) tests';
-  smiShowfail= 'Copy message to clipboard';
-  smiCopy = '&Copy';
-  smiCut = 'C&ut';
-  smiCopyClipbrd = 'Copy to clipboard';
+  sactCloseFormH = 'Quit testing';
+  sactCheckCurrentSuite = 'Select current suite';
+  sactUncheckCurrentSuite = 'Deselect current suite';
+  sactCheckAll = 'Select all tests';
+  sactUncheckAll = 'Deselect all tests';
+  sactRunHighlightedTest = 'Run selected';
+  sactRunHighlightedTestH = 'Run selected test';
+  smiActions = 'Actions';
+  smiTestTree = 'Test tree';
+  smiEdit = 'Edit';
+  sactCopyAllToClipboard = 'Copy text to clipboard';
+  sactCopyAllToClipboardH = 'Copy the entire text to clipboard';
+  sactSaveResults = 'Save results';
+  sactSaveResultsH = 'Save XML results to file';
 
 implementation
 
 {$R *.lfm}
 
 uses
-  xmlwrite
-  ,strutils
-  ;
+  xmlwrite;
 
 const
   // TestTreeImageList indexes:
@@ -238,17 +252,6 @@ end;
 
 { TGUITestRunner }
 
-procedure TGUITestRunner.actCopyExecute(Sender: TObject);
-begin
-  Clipboard.AsText := XMLSynEdit.Lines.Text;
-end;
-
-
-procedure TGUITestRunner.actCutExecute(Sender: TObject);
-begin
-  Clipboard.AsText := XMLSynEdit.Lines.Text;
-  XMLSynEdit.Lines.Clear;
-end;
 
 function TGUITestRunner.MakeTestPath(Node: TTreeNode): string;
 begin
@@ -266,7 +269,7 @@ end;
 
 procedure TGUITestRunner.SaveTree;
 
-  function IsMessageNode(const Node: TTreeNode): boolean;
+  function SkipNode(const Node: TTreeNode): boolean;
   begin
     Result := Node.Data = nil;
   end;
@@ -277,7 +280,7 @@ begin
   FConfStore.EraseSection(SectionName_TestNodes);
   for i := 0 to TestTree.Items.Count-1 do
   begin
-    if IsMessageNode(TestTree.Items[i]) then
+    if SkipNode(TestTree.Items[i]) then
       continue;
     FConfStore.WriteBool(SectionName_TestNodes,
       MakeTestPath(TestTree.Items[i]) + '.Checked',
@@ -318,9 +321,6 @@ begin
   RestoreTree;
   PageControl1.ActivePage := tsTestTree;
   //
-  BtnRun.Caption:= sbtnRun;
-  btnRunHighlighted.Caption := sbtnRunH;
-  BtnClose.Caption:= sbtnClose;
   tsTestTree.Caption:= stshTree;
   tsResultsXML.Caption:= stshResults;
   //
@@ -334,14 +334,19 @@ begin
   ActCheckAll.Caption:= sactCheckAll;
   ActUncheckAll.Caption:= sactUncheckAll;
   ActRunHighlightedTest.Caption:= sactRunHighlightedTest;
-  miRunTest.Caption:= smiRunTest;
-  miShowfailureMsg.Caption:= smiShowfail;
-  MenuItem1.Caption:= smiCopy;
-  MenuItem2.Caption:= smiCut;
-  MenuItem3.Caption:= smiCopyClipbrd;
-  // Select the first entry in the tree in order to immediately activate the 
+  ActRunHighlightedTest.Hint := sactRunHighlightedTestH;
+  MenuItemActions.Caption := smiActions;
+  MenuItemTestTree.Caption := smiTestTree;
+  MenuItemEdit.Caption := smiEdit;
+  ActCopyTextToClipboard.Caption := sactCopyAllToClipboard;
+  ActCopyTextToClipboard.Hint := sactCopyAllToClipboardH;
+  ActSaveResults.Caption := sactSaveResults;
+  ActSaveResults.Hint := sactSaveResultsH;
+
+  // Select the first entry in the tree in order to immediately activate the
   // Run All tests button:
-  if TestTree.Items.Count>0 then begin
+  if TestTree.Items.Count>0 then
+  begin
     TestTree.Items.SelectOnlyThis(TestTree.Items[0]);
     TestTree.Items[0].Expand(False);
   end;
@@ -358,6 +363,25 @@ end;
 procedure TGUITestRunner.ActCloseFormExecute(Sender: TObject);
 begin
   Close;
+end;
+
+procedure TGUITestRunner.ActCopyTextToClipboardExecute(Sender: TObject);
+begin
+  if ActiveControl = MemoDetails then
+    Clipboard.AsText := MemoDetails.Lines.Text
+  else if ActiveControl = XMLSynEdit then
+    Clipboard.AsText := XMLSynEdit.Text;
+end;
+
+procedure TGUITestRunner.ActCopyTextToClipboardUpdate(Sender: TObject);
+begin
+  TAction(Sender).Enabled := (ActiveControl = MemoDetails) or (ActiveControl = XMLSynEdit);
+end;
+
+procedure TGUITestRunner.ActSaveResultsExecute(Sender: TObject);
+begin
+  if SaveDialog.Execute then
+    XMLSynEdit.Lines.SaveToFile(SaveDialog.FileName);
 end;
 
 procedure TGUITestRunner.ActCheckAllExecute(Sender: TObject);
@@ -455,22 +479,11 @@ begin
     RunExecute(Self);
 end;
 
-procedure TGUITestRunner.MenuItem3Click(Sender: TObject);
-begin
-  Clipboard.AsText := Memo1.Lines.Text;
-end;
-
-procedure TGUITestRunner.SaveAsToolButtonClick(Sender: TObject);
-begin
-  if SaveDialog.Execute then
-    XMLSynEdit.Lines.SaveToFile(SaveDialog.FileName);
-end;
-
 procedure TGUITestRunner.TestTreeChange(Sender: TObject; Node: TTreeNode);
 begin
   if not Assigned(Node) then
     Exit;
-  Memo1.Lines.Text := TMessageTreeNode(Node).Message;
+  //MemoDetails.Lines.Text := TMessageTreeNode(Node).Message;
 end;
 
 procedure TGUITestRunner.TestTreeCreateNodeClass(Sender: TCustomTreeView;
@@ -514,30 +527,52 @@ begin
    end;
 end;
 
+procedure TGUITestRunner.ClearDetails;
+begin
+  MemoDetails.Lines.Clear;
+end;
+
+procedure TGUITestRunner.ShowDetails(const Node: TTreeNode);
+
+  procedure AddMessages(const Node: TTreeNode);
+  begin
+    if (Node is TMessageTreeNode) and (TMessageTreeNode(Node).Message <> '') then
+      MemoDetails.Lines.Add(TMessageTreeNode(Node).Message)
+    else
+      MemoDetails.Lines.Add(Node.Text);
+  end;
+
+var
+  CurrNode: TTreeNode;
+begin
+  ClearDetails;
+  if (Node.Data <> nil) and (TObject(Node.Data) is TTestCase) then
+  begin
+    CurrNode := Node.GetFirstChild;
+    while CurrNode <> nil do
+    begin
+      AddMessages(CurrNode);
+      CurrNode := CurrNode.GetNextSibling;
+    end;
+  end
+  else if (Node.Parent <> nil) and (Node.Parent.Data <> nil) and (TObject(Node.Parent.Data) is TTestCase) then
+    AddMessages(Node);
+end;
 
 procedure TGUITestRunner.TestTreeSelectionChanged(Sender: TObject);
 begin
-  if ((Sender as TTreeView).Selected <> nil) and
-    Assigned((Sender as TTreeview).Selected.Data)  then
-  begin
-    btnRunHighlighted.Visible := true;
-    btnRunHighlighted.Caption := rsRun + (Sender as TTreeview).Selected.Text;
-  end
-  else
-    begin
-      btnRunHighlighted.Visible := false;
-      btnRunHighlighted.Caption := '';
-    end;
+  if (Sender as TTreeView).Selected <> nil then
+    ShowDetails((Sender as TTreeView).Selected);
 end;
 
 
-procedure TGUITestRunner.actCopyErrorMsgExecute(Sender: TObject);
+procedure TGUITestRunner.ActCopyErrorMsgExecute(Sender: TObject);
 begin
   ClipBoard.AsText := (TestTree.Selected as TMessageTreeNode).Message;
 end;
 
 
-procedure TGUITestRunner.actCopyErrorMsgUpdate(Sender: TObject);
+procedure TGUITestRunner.ActCopyErrorMsgUpdate(Sender: TObject);
 begin
   (Sender as TAction).Enabled := Assigned(TestTree.selected) and
     (Copy(TestTree.Selected.Text, 1, 9) = 'Message: ');
@@ -608,7 +643,7 @@ var
 begin
   Result := nil;
   for i := 0 to TestTree.Items.Count -1 do
-    if (TTest(TestTree.Items[i].data) = aTest) then
+    if (TTest(TestTree.Items[i].Data) = aTest) then
     begin
       Result :=  TestTree.Items[i];
       Exit;
@@ -749,10 +784,9 @@ begin
   end;
 end;
 
-
-procedure TGUITestRunner.MemoLog(LogEntry: string);
+procedure TGUITestRunner.DoMemoLog(LogEntry: string);
 begin
-  Memo1.Lines.Add(TimeToStr(Now) + ' - ' + LogEntry);
+  MemoLog.Lines.Add(TimeToStr(Now) + ' - ' + LogEntry);
 end;
 
 procedure TGUITestRunner.EnableRunActions(AValue: boolean);
@@ -764,12 +798,12 @@ end;
 procedure TGUITestRunner.AddFailure(ATest: TTest; AFailure: TTestFailure);
 var
   FailureNode: TTreeNode;
-  node: TMessageTreeNode;
+  Node: TMessageTreeNode;
 begin
   FailureNode := FindNode(ATest);
   if Assigned(FailureNode) then
   begin
-    node := TestTree.Items.AddChild(FailureNode,
+    Node := TestTree.Items.AddChild(FailureNode,
       Format(rsMessage, [FirstLine(AFailure.ExceptionMessage)]))
       as TMessageTreeNode;
     if not(AFailure.IsIgnoredTest) then
@@ -777,36 +811,37 @@ begin
       // Genuine failure
       if not Assigned(FFirstFailure) then
         FFirstFailure := FailureNode;
-      node.Message := AFailure.ExceptionMessage;
-      node.ImageIndex := imgWarningSign;
-      node.SelectedIndex := imgWarningSign;
-      node := TestTree.Items.AddChild(FailureNode,
+      Node.Message := AFailure.ExceptionMessage;
+      Node.ImageIndex := imgWarningSign;
+      Node.SelectedIndex := imgWarningSign;
+      Node := TestTree.Items.AddChild(FailureNode,
         Format(rsException, [AFailure.ExceptionClassName])) as TMessageTreeNode;
-      node.ImageIndex := imgWarningSign;
-      node.SelectedIndex := imgWarningSign;
+      Node.ImageIndex := imgWarningSign;
+      Node.SelectedIndex := imgWarningSign;
       {$IF FPC_FULLVERSION <= 30001}
-      node := TestTree.Items.AddChild(FailureNode,
+      Node := TestTree.Items.AddChild(FailureNode,
         Format('at line %d in <%s>', [AFailure.LineNumber, AFailure.UnitName])) as TMessageTreeNode;
       {$ELSE}
-      node := TestTree.Items.AddChild(FailureNode, 'at ' + AFailure.LocationInfo) as TMessageTreeNode;
+      Node := TestTree.Items.AddChild(FailureNode, 'at ' + AFailure.LocationInfo) as TMessageTreeNode;
       {$ENDIF}
-      node.ImageIndex := imgWarningSign;
-      node.SelectedIndex := imgWarningSign;
+      Node.ImageIndex := imgWarningSign;
+      Node.SelectedIndex := imgWarningSign;
       PaintNodeFailure(FailureNode);
     end
     else
     begin
       // Although reported as a failure, the test was set up
       // to be ignored so it is actually a success of sorts
-      node.Message := AFailure.ExceptionMessage;
-      node.ImageIndex := imgGreenBall;
-      node.SelectedIndex := imgGreenBall;
-      node := TestTree.Items.AddChild(FailureNode,
+      Node.Message := AFailure.ExceptionMessage;
+      Node.ImageIndex := imgGreenBall;
+      Node.SelectedIndex := imgGreenBall;
+      Node := TestTree.Items.AddChild(FailureNode,
         Format(rsException, [AFailure.ExceptionClassName])) as TMessageTreeNode;
-      node.ImageIndex := imgGreenBall;
-      node.SelectedIndex := imgGreenBall;
+      Node.ImageIndex := imgGreenBall;
+      Node.SelectedIndex := imgGreenBall;
       PaintNodeIgnore(FailureNode);
     end;
+    ShowDetails(FailureNode);
   end;
 
   if not(AFailure.IsIgnoredTest) then
@@ -820,7 +855,7 @@ end;
 
 procedure TGUITestRunner.AddError(ATest: TTest; AError: TTestFailure);
 var
-  ErrorNode, node: TTreeNode;
+  ErrorNode, Node: TTreeNode;
   MessageNode: TMessageTreeNode;
 begin
   ErrorNode := FindNode(ATest);
@@ -834,23 +869,24 @@ begin
     MessageNode.Message := AError.ExceptionMessage;
     MessageNode.ImageIndex := imgWarningSign;
     MessageNode.SelectedIndex := imgWarningSign;
-    node := TestTree.Items.AddChild(ErrorNode, Format(rsExceptionCla, [
+    Node := TestTree.Items.AddChild(ErrorNode, Format(rsExceptionCla, [
       AError.ExceptionClassName]));
-    node.ImageIndex := imgWarningSign;
-    node.SelectedIndex := imgWarningSign;
+    Node.ImageIndex := imgWarningSign;
+    Node.SelectedIndex := imgWarningSign;
     // line info details
     {$IF FPC_FULLVERSION <= 30001}
-    node := TestTree.Items.AddChild(ErrorNode,
+    Node := TestTree.Items.AddChild(ErrorNode,
       Format('at line %d in <%s>', [AError.LineNumber, AError.UnitName])) as TMessageTreeNode;
 
     {$ELSE}
     node := TestTree.Items.AddChild(ErrorNode, 'at ' + AError.LocationInfo);
     {$ENDIF}
-    node.ImageIndex := imgInfoSign;
-    node.SelectedIndex := imgInfoSign;
+    Node.ImageIndex := imgInfoSign;
+    Node.SelectedIndex := imgInfoSign;
     // TODO : add stack trace info
 
     PaintNodeError(ErrorNode);
+    ShowDetails(ErrorNode);
   end;
   Inc(errorCounter);
   barColor := clRed;
@@ -907,6 +943,7 @@ var
   m: TMemoryStream;
 begin
   SaveTree;
+  ClearDetails;
   barcolor := clGreen;
   ResetNodeColors;
   failureCounter := 0;
@@ -925,9 +962,9 @@ begin
       w.FileName := 'null'; // prevents output to the console
       TestResult.AddListener(w);
 
-      MemoLog(Format(rsRunning, [TestTree.Selected.Text]));
+      DoMemoLog(Format(rsRunning, [TestTree.Selected.Text]));
       aTest.Run(TestResult);
-      MemoLog(Format(rsNumberOfExec, [IntToStr(TestResult.RunTests),
+      DoMemoLog(Format(rsNumberOfExec, [IntToStr(TestResult.RunTests),
       FormatDateTime('hh:nn:ss.zzz', Now - TestResult.StartingTime)]));
 
       w.WriteResult(TestResult);
@@ -939,7 +976,7 @@ begin
           XMLSynEdit.Lines.LoadFromStream(m);
         except
           on E: Exception do
-            XMLSynEdit.Lines.Text:='WriteXMLFile exception: '+E.ClassName+'/'+E.Message;
+            XMLSynEdit.Lines.Text:='WriteXMLFile exception: ' + E.ClassName + '/' + E.Message;
         end;
       finally
         m.Free;
@@ -961,7 +998,7 @@ end;
 
 procedure TGUITestRunner.EndTestSuite(ATestSuite: TTestSuite);
 var
-  n: TTreeNode;
+  Node: TTreeNode;
 begin
   // scroll treeview to first failed test
   if Assigned(FFirstFailure) then
@@ -970,21 +1007,20 @@ begin
     TestTree.MakeSelectionVisible;
   end;
 
-  n := FindNode(ATestSuite);
-  if Assigned(n) then
-    PaintNodeNonFailed(n);
+  Node := FindNode(ATestSuite);
+  if Assigned(Node) then
+    PaintNodeNonFailed(Node);
 end;
 
 procedure TranslateResStrings;
 var
   Lang, FallbackLang, S: String;
-
 begin
-  GetLanguageIDs(Lang,FallbackLang); // in unit gettext
-  S:=AppendPathDelim(AppendPathDelim(ExtractFileDir(ParamStr(0))) + 'languages');
+  GetLanguageIDs(Lang, FallbackLang); // in unit gettext
+  S := AppendPathDelim(AppendPathDelim(ExtractFileDir(ParamStr(0))) + 'languages');
   if FallbackLang = 'pt' then
      Lang := 'pb';
-  TranslateUnitResourceStrings('guitestrunner',S+'guitestrunner.%s.po', Lang,FallbackLang);
+  TranslateUnitResourceStrings('guitestrunner', S + 'guitestrunner.%s.po', Lang, FallbackLang);
 end;
 
 initialization
