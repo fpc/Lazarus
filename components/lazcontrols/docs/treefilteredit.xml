@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fpdoc-descriptions><package name="LazControls"><module name="TreeFilterEdit"><element name="TTreeFilterEdit"><short>Filter contents of an associated TreeView.</short>
+      </element><element name="TTreeFilterEdit.FilteredTreeview"><short>The associated TreeView.</short>
+      </element>
+    </module>
+  </package>
+</fpdoc-descriptions>

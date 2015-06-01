@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fpdoc-descriptions><package name="LazControls"><module name="ListViewFilterEdit"><element name="TListViewFilterEdit"><short>Filter contents of an associated ListView.</short>
+      </element><element name="TListViewFilterEdit.FilteredListview"><short>The associated ListView.</short>
+      </element>
+    </module>
+  </package>
+</fpdoc-descriptions>
