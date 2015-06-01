@@ -39,6 +39,8 @@ interface
 uses
   Classes, SysUtils, Maps, FpDbgDwarf, FpDbgUtil, FpDbgLoader,
   FpDbgInfo, FpdMemoryTools, LazLoggerBase, LazClasses, DbgIntfBaseTypes, fgl,
+  DbgIntfDebuggerBase,
+  FpPascalBuilder,
   fpDbgSymTableContext,
   FpDbgDwarfDataClasses;
 
@@ -93,13 +95,15 @@ type
     FIsSymbolResolved: boolean;
     FSymbol: TFpDbgSymbol;
     FRegisterValueList: TDbgRegisterValueList;
+    FIndex: integer;
     function GetFunctionName: string;
     function GetSymbol: TFpDbgSymbol;
     function GetLine: integer;
     function GetSourceFile: string;
   public
-    constructor create(AThread: TDbgThread; AFrameAddress, AnAddress: TDBGPtr);
+    constructor create(AThread: TDbgThread; AnIndex: integer; AFrameAddress, AnAddress: TDBGPtr);
     destructor Destroy; override;
+    function GetParamsAsString: string;
     property AnAddress: TDBGPtr read FAnAddress;
     property FrameAdress: TDBGPtr read FFrameAdress;
     property SourceFile: string read GetSourceFile;
@@ -107,6 +111,7 @@ type
     property Line: integer read GetLine;
     property RegisterValueList: TDbgRegisterValueList read FRegisterValueList;
     property ProcSymbol: TFpDbgSymbol read GetSymbol;
+    property Index: integer read FIndex;
   end;
 
   TDbgCallstackEntryList = specialize TFPGObjectList<TDbgCallstackEntry>;
@@ -403,6 +408,46 @@ begin
     result := '';
 end;
 
+function TDbgCallstackEntry.GetParamsAsString: string;
+var
+  ProcVal: TFpDbgValue;
+  InstrPointerValue: TDBGPtr;
+  AContext: TFpDbgInfoContext;
+  APrettyPrinter: TFpPascalPrettyPrinter;
+  m: TFpDbgValue;
+  v: String;
+  i: Integer;
+begin
+  result := '';
+  if assigned(ProcSymbol) then begin
+    ProcVal := ProcSymbol.Value;
+    if (ProcVal <> nil) then begin
+      InstrPointerValue := FThread.Process.GetInstructionPointerRegisterValue;
+      if InstrPointerValue <> 0 then begin
+        AContext := FThread.Process.DbgInfo.FindContext(FThread.ID, Index, InstrPointerValue);
+        if AContext <> nil then begin
+          AContext.MemManager.DefaultContext := AContext;
+          APrettyPrinter:=TFpPascalPrettyPrinter.Create(DBGPTRSIZE[FThread.Process.Mode]);
+          try
+            for i := 0 to ProcVal.MemberCount - 1 do begin
+              m := ProcVal.Member[i];
+              if (m <> nil) and (sfParameter in m.DbgSymbol.Flags) then begin
+                APrettyPrinter.PrintValue(v, m, wdfDefault, -1, [ppoStackParam]);
+                if result <> '' then result := result + ', ';
+                result := result + v;
+              end;
+            end;
+          finally
+            APrettyPrinter.Free;
+          end;
+        end;
+      end;
+    end;
+    if result <> '' then
+      result := '(' + result + ')';
+  end;
+end;
+
 function TDbgCallstackEntry.GetLine: integer;
 var
   Symbol: TFpDbgSymbol;
@@ -425,11 +470,12 @@ begin
     result := '';
 end;
 
-constructor TDbgCallstackEntry.create(AThread: TDbgThread; AFrameAddress, AnAddress: TDBGPtr);
+constructor TDbgCallstackEntry.create(AThread: TDbgThread; AnIndex: integer; AFrameAddress, AnAddress: TDBGPtr);
 begin
   FThread := AThread;
   FFrameAdress:=AFrameAddress;
   FAnAddress:=AnAddress;
+  FIndex:=AnIndex;
   FRegisterValueList := TDbgRegisterValueList.Create;
 end;
 
@@ -1148,6 +1194,8 @@ begin
 end;
 
 procedure TDbgThread.PrepareCallStackEntryList(AFrameRequired: Integer);
+const
+  MaxFrames = 25;
 var
   Address, Frame, LastFrame: QWord;
   Size, Count: integer;
@@ -1166,17 +1214,17 @@ begin
   Size := sizeof(pointer); // TODO: Context.AddressSize
 
   FCallStackEntryList.FreeObjects:=true;
-  AnEntry := TDbgCallstackEntry.create(Self, Frame, Address);
+  AnEntry := TDbgCallstackEntry.create(Self, 0, Frame, Address);
   // Top level entry needs no registerlist / same as GetRegisterValueList
   FCallStackEntryList.Add(AnEntry);
 
   LastFrame := 0;
-  Count := 25;
+  Count := MaxFrames;
   while (Frame <> 0) and (Frame > LastFrame) do
   begin
     if not Process.ReadData(Frame + Size, Size, Address) or (Address = 0) then Break;
     if not Process.ReadData(Frame, Size, Frame) then Break;
-    AnEntry := TDbgCallstackEntry.create(Self, Frame, Address);
+    AnEntry := TDbgCallstackEntry.create(Self, MaxFrames+1-Count, Frame, Address);
     AnEntry.RegisterValueList.DbgRegisterAutoCreate['eip'].SetValue(Address, IntToStr(Address),Size,8);
     AnEntry.RegisterValueList.DbgRegisterAutoCreate['ebp'].SetValue(Frame, IntToStr(Frame),Size,5);
     FCallStackEntryList.Add(AnEntry);

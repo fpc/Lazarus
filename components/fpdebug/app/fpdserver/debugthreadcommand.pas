@@ -209,7 +209,7 @@ begin
     begin
     FStackEntryArray[i].AnAddress:=ThreadCallStack[i].AnAddress;
     FStackEntryArray[i].FrameAdress:=ThreadCallStack[i].FrameAdress;
-    FStackEntryArray[i].FunctionName:=ThreadCallStack[i].FunctionName;
+    FStackEntryArray[i].FunctionName:=ThreadCallStack[i].FunctionName+ThreadCallStack[i].GetParamsAsString;
     FStackEntryArray[i].Line:=ThreadCallStack[i].Line;
     FStackEntryArray[i].SourceFile:=ThreadCallStack[i].SourceFile;
     end;
