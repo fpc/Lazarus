@@ -438,10 +438,10 @@ begin
     OpenDialog.Title:=lisOpenFile;
     OpenDialog.Options:=OpenDialog.Options
                           +[ofFileMustExist,ofPathMustExist,ofAllowMultiSelect];
-    OpenDialog.Filter:=dlgAllFiles+' ('+GetAllFilesMask+')|'+GetAllFilesMask
-                 +'|'+lisLazarusUnit+' (*.pas;*.pp)|*.pas;*.pp'
-                 +'|'+lisLazarusInclude+' (*.inc)|*.inc'
-                 +'|'+lisLazarusForm+' (*.lfm;*.dfm)|*.lfm;*.dfm';
+    OpenDialog.Filter:=dlgFilterAll+' ('+GetAllFilesMask+')|'+GetAllFilesMask
+                 +'|'+dlgFilterLazarusUnit+' (*.pas;*.pp)|*.pas;*.pp'
+                 +'|'+dlgFilterLazarusInclude+' (*.inc)|*.inc'
+                 +'|'+dlgFilterLazarusForm+' (*.lfm;*.dfm)|*.lfm;*.dfm';
     if OpenDialog.Execute then begin
       for i:=0 to OpenDialog.Files.Count-1 do
         if not (AddOneFile(OpenDialog.Files[i]) in [mrOk, mrIgnore]) then break;

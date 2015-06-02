@@ -529,7 +529,7 @@ begin
     Dlg.Filter:='PNG|*.png'
               +'|Bitmap, bmp|*.bmp'
               +'|Pixmap, xpm|*.xpm'
-              +'|'+lisAllFiles+'|'+GetAllFilesMask;
+              +'|'+dlgFilterAll+'|'+GetAllFilesMask;
     if Dlg.Execute then begin
       LoadComponentIcon(Dlg.FileName);
     end;

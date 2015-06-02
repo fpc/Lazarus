@@ -1347,7 +1347,7 @@ begin
   FTempColorSchemeSettings := TColorSchemeFactory.Create;
 
   ExportSaveDialog.Title := lisExport;
-  ExportSaveDialog.Filter := Format('%s|*.xml|', [lisXMLFiles]);
+  ExportSaveDialog.Filter := Format('%s|*.xml|', [dlgFilterXML]);
 end;
 
 destructor TEditorColorOptionsFrame.Destroy;

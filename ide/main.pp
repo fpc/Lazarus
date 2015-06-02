@@ -2897,15 +2897,15 @@ begin
     // append a filter for all file types of the open files in the source editor
     CreateFileDialogFilterForSourceEditorFiles(Filter,AllEditorMask,AllMask);
     if (AllEditorMask<>'') then
-      Filter:=Filter+ '|' + lisEditorFileTypes + ' (' + AllEditorMask + ')|' +
+      Filter:=Filter+ '|' + dlgFilterLazarusEditorFile + ' (' + AllEditorMask + ')|' +
         AllEditorMask;
 
     // prepend an all normal files filter
-    Filter:=lisLazarusFile + ' ('+AllMask+')|' + AllMask + '|' + Filter;
+    Filter:=dlgFilterLazarusFile + ' ('+AllMask+')|' + AllMask + '|' + Filter;
 
     // append an any files filter
     if TFileDialog.FindMaskInFilter(Filter,GetAllFilesMask)<1 then
-      Filter:=Filter+ '|' + dlgAllFiles + ' (' + GetAllFilesMask + ')|' + GetAllFilesMask;
+      Filter:=Filter+ '|' + dlgFilterAll + ' (' + GetAllFilesMask + ')|' + GetAllFilesMask;
 
     OpenDialog.Filter := Filter;
 
@@ -4458,8 +4458,8 @@ begin
     InputHistories.ApplyFileDialogSettings(OpenDialog);
     OpenDialog.Title:=lisChooseDelphiUnit;
     OpenDialog.Options:=OpenDialog.Options+[ofPathMustExist,ofFileMustExist,ofAllowMultiSelect];
-    OpenDialog.Filter:=lisDelphiUnit+' (*.pas)|*.pas|'+
-                       dlgAllFiles+' ('+GetAllFilesMask+')|' + GetAllFilesMask;
+    OpenDialog.Filter:=dlgFilterDelphiUnit+' (*.pas)|*.pas|'+
+                       dlgFilterAll+' ('+GetAllFilesMask+')|' + GetAllFilesMask;
     if InputHistories.LastConvertDelphiUnit<>'' then begin
       OpenDialog.InitialDir:=ExtractFilePath(InputHistories.LastConvertDelphiUnit);
       OpenDialog.Filename  :=ExtractFileName(InputHistories.LastConvertDelphiUnit);
@@ -4495,9 +4495,9 @@ begin
     InputHistories.ApplyFileDialogSettings(OpenDialog);
     OpenDialog.Title:=lisChooseDelphiProject;
     OpenDialog.Options:=OpenDialog.Options+[ofPathMustExist,ofFileMustExist];
-    OpenDialog.Filter:=lisDelphiProject+' (*.dpr)|*.dpr|'+
-                       lisLazarusProject+' (*.lpr)|*.lpr|'+
-                       dlgAllFiles+' ('+GetAllFilesMask+')|' + GetAllFilesMask;
+    OpenDialog.Filter:=dlgFilterDelphiProject+' (*.dpr)|*.dpr|'+
+                       dlgFilterLazarusProject+' (*.lpr)|*.lpr|'+
+                       dlgFilterAll+' ('+GetAllFilesMask+')|' + GetAllFilesMask;
     if InputHistories.LastConvertDelphiProject<>'' then begin
       OpenDialog.InitialDir:=ExtractFilePath(InputHistories.LastConvertDelphiProject);
       OpenDialog.Filename  :=ExtractFileName(InputHistories.LastConvertDelphiProject);
@@ -4525,8 +4525,8 @@ begin
     InputHistories.ApplyFileDialogSettings(OpenDialog);
     OpenDialog.Title:=lisChooseDelphiPackage;
     OpenDialog.Options:=OpenDialog.Options+[ofPathMustExist,ofFileMustExist];
-    OpenDialog.Filter:=lisDelphiPackage+' (*.dpk)|*.dpk|'+
-                       dlgAllFiles+' ('+GetAllFilesMask+')|' + GetAllFilesMask;
+    OpenDialog.Filter:=dlgFilterDelphiPackage+' (*.dpk)|*.dpk|'+
+                       dlgFilterAll+' ('+GetAllFilesMask+')|' + GetAllFilesMask;
     if InputHistories.LastConvertDelphiPackage<>'' then begin
       OpenDialog.InitialDir:=ExtractFilePath(InputHistories.LastConvertDelphiPackage);
       OpenDialog.Filename  :=ExtractFileName(InputHistories.LastConvertDelphiPackage);
@@ -7616,7 +7616,7 @@ begin
     InputHistories.ApplyFileDialogSettings(OpenDialog);
     OpenDialog.Title:=lisSelectDFMFiles;
     OpenDialog.Options:=OpenDialog.Options+[ofAllowMultiSelect];
-    OpenDialog.Filter:=rsFormDataFileDfm+'|'+dlgAllFiles+'|'+GetAllFilesMask;
+    OpenDialog.Filter:=dlgFilterDelphiFormDfm+'|'+dlgFilterAll+'|'+GetAllFilesMask;
     if OpenDialog.Execute and (OpenDialog.Files.Count>0) then begin
       For I := 0 to OpenDialog.Files.Count-1 do begin
         AFilename:=ExpandFileNameUTF8(OpenDialog.Files.Strings[i]);

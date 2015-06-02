@@ -414,8 +414,8 @@ begin
     InputHistories.ApplyFileDialogSettings(OpenDialog);
     OpenDialog.Title:=lisOpenPackageFile;
     OpenDialog.Options:=OpenDialog.Options+[ofAllowMultiSelect];
-    OpenDialog.Filter:=lisLazarusPackage+' (*.lpk)|*.lpk'
-                     +'|'+dlgAllFiles+' ('+FileMask+')|'+FileMask;
+    OpenDialog.Filter:=dlgFilterLazarusPackage+' (*.lpk)|*.lpk'
+                     +'|'+dlgFilterAll+' ('+FileMask+')|'+FileMask;
     if OpenDialog.Execute and (OpenDialog.Files.Count>0) then begin
       OpenFlags:=[pofAddToRecent];
       For I := 0 to OpenDialog.Files.Count-1 do
@@ -1132,8 +1132,8 @@ begin
   try
     InputHistories.ApplyFileDialogSettings(SaveDialog);
     SaveDialog.Title:=Format(lisPkgMangSavePackageLpk, [APackage.IDAsString]);
-    SaveDialog.Filter:=lisLazarusPackage+' (*.lpk)|*.lpk'
-                     +'|'+dlgAllFiles+' ('+FileMask+')|'+FileMask;
+    SaveDialog.Filter:=dlgFilterLazarusPackage+' (*.lpk)|*.lpk'
+                     +'|'+dlgFilterAll+' ('+FileMask+')|'+FileMask;
     if APackage.HasDirectory then
       SaveDialog.InitialDir:=APackage.Directory;
 

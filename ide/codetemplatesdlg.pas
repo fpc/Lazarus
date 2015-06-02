@@ -832,7 +832,7 @@ begin
 
   FilenameEdit.Text:=EditorOpts.CodeTemplateFileName;
   FilenameEdit.DialogTitle:=dlgChsCodeTempl;
-  FilenameEdit.Filter:=dlgDCIFileDci + '|*.dci|' + dlgAllFiles  + '|' + GetAllFilesMask;
+  FilenameEdit.Filter:=dlgFilterDciFile + '|*.dci|' + dlgFilterAll  + '|' + GetAllFilesMask;
 
   // init synedit
   ColorScheme:=EditorOpts.ReadColorScheme(ASynPasSyn.GetLanguageName);

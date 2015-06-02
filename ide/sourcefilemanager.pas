@@ -3519,9 +3519,9 @@ Begin
     InputHistories.ApplyFileDialogSettings(OpenDialog);
     OpenDialog.Title:=lisChooseProgramSourcePpPasLpr;
     OpenDialog.Options:=OpenDialog.Options+[ofPathMustExist,ofFileMustExist];
-    Filter := lisLazarusUnit + ' (*.pas;*.pp;*.p)|*.pas;*.pp;*.p'
-      + '|' + lisLazarusProjectSource + ' (*.lpr)|*.lpr';
-    Filter:=Filter+ '|' + dlgAllFiles + ' (' + GetAllFilesMask + ')|' + GetAllFilesMask;
+    Filter := dlgFilterLazarusUnit + ' (*.pas;*.pp;*.p)|*.pas;*.pp;*.p'
+      + '|' + dlgFilterLazarusProjectSource + ' (*.lpr)|*.lpr';
+    Filter:=Filter+ '|' + dlgFilterAll + ' (' + GetAllFilesMask + ')|' + GetAllFilesMask;
     OpenDialog.Filter := Filter;
     if OpenDialog.Execute then begin
       AFilename:=ExpandFileNameUTF8(OpenDialog.Filename);
@@ -3793,8 +3793,8 @@ begin
     try
       InputHistories.ApplyFileDialogSettings(OpenDialog);
       OpenDialog.Title:=lisOpenProjectFile+' (*.lpi)';
-      OpenDialog.Filter := lisLazarusProjectInfoFile+' (*.lpi)|*.lpi|'
-                          +lisAllFiles+'|'+GetAllFilesMask;
+      OpenDialog.Filter := dlgFilterLazarusProject+' (*.lpi)|*.lpi|'
+                          +dlgFilterAll+'|'+GetAllFilesMask;
       if OpenDialog.Execute then begin
         AFilename:=GetPhysicalFilenameCached(ExpandFileNameUTF8(OpenDialog.Filename),false);
         if FileUtil.CompareFileExt(AFilename,'.lpi')<>0 then begin
@@ -4391,25 +4391,25 @@ begin
     SaveDialog.Title:=lisSaveSpace+SaveAsFilename+' (*'+SaveAsFileExt+')';
     SaveDialog.FileName:=SaveAsFilename+SaveAsFileExt;
 
-    Filter := lisLazarusUnit + ' (*.pas;*.pp)|*.pas;*.pp';
+    Filter := dlgFilterLazarusUnit + ' (*.pas;*.pp)|*.pas;*.pp';
     if (SaveAsFileExt='.lpi') then
-      Filter:=Filter+ '|' + lisLazarusProject + ' (*.lpi)|*.lpi';
+      Filter:=Filter+ '|' + dlgFilterLazarusProject + ' (*.lpi)|*.lpi';
     if (SaveAsFileExt='.lfm') or (SaveAsFileExt='.dfm') then
-      Filter:=Filter+ '|' + lisLazarusForm + ' (*.lfm;*.dfm)|*.lfm;*.dfm';
+      Filter:=Filter+ '|' + dlgFilterLazarusForm + ' (*.lfm;*.dfm)|*.lfm;*.dfm';
     if (SaveAsFileExt='.lpk') then
-      Filter:=Filter+ '|' + lisLazarusPackage + ' (*.lpk)|*.lpk';
+      Filter:=Filter+ '|' + dlgFilterLazarusPackage + ' (*.lpk)|*.lpk';
     if (SaveAsFileExt='.lpr') then
-      Filter:=Filter+ '|' + lisLazarusProjectSource + ' (*.lpr)|*.lpr';
+      Filter:=Filter+ '|' + dlgFilterLazarusProjectSource + ' (*.lpr)|*.lpr';
     // append a filter for all editor files
     CreateFileDialogFilterForSourceEditorFiles(Filter,AllEditorExt,AllFilter);
     if AllEditorExt<>'' then
-      Filter:=Filter+ '|' + lisEditorFileTypes + ' (' + AllEditorExt + ')|' + AllEditorExt;
+      Filter:=Filter+ '|' + dlgFilterLazarusEditorFile + ' (' + AllEditorExt + ')|' + AllEditorExt;
 
     // append an any file filter *.*
-    Filter:=Filter+ '|' + dlgAllFiles + ' (' + GetAllFilesMask + ')|' + GetAllFilesMask;
+    Filter:=Filter+ '|' + dlgFilterAll + ' (' + GetAllFilesMask + ')|' + GetAllFilesMask;
 
     // prepend an all filter
-    Filter:=  lisLazarusFile + ' ('+AllFilter+')|' + AllFilter + '|' + Filter;
+    Filter:=  dlgFilterLazarusFile + ' ('+AllFilter+')|' + AllFilter + '|' + Filter;
     SaveDialog.Filter := Filter;
 
     // if this is a project file, start in project directory

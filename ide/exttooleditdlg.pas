@@ -709,8 +709,8 @@ begin
   FilenameEdit.ButtonHint:=lisClickHereToBrowseTheFileHint;
 
   FilenameEdit.DialogTitle:=lisSelectFile;
-  FilenameEdit.Filter:=dlgAllFiles+' ('+GetAllFilesMask+')|'+GetAllFilesMask
-      +'|'+lisExePrograms+' (*.exe)|*.exe';
+  FilenameEdit.Filter:=dlgFilterAll+' ('+GetAllFilesMask+')|'+GetAllFilesMask
+      +'|'+dlgFilterPrograms+' (*.exe)|*.exe';
 
   ParametersLabel.Caption:=lisEdtExtToolParameters;
   WorkingDirLabel.Caption:=lisEdtExtToolWorkingDirectory;

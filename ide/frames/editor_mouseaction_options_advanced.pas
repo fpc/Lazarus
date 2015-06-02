@@ -716,7 +716,7 @@ begin
   OpenDialog1.Title := lisImport;
   SaveDialog1.Title := lisExport;
 
-  OpenDialog1.Filter := Format('%s|*.xml|%s|*.*|', [lisXMLFiles, lisAllFiles]);
+  OpenDialog1.Filter := Format('%s|*.xml|%s|*.*|', [dlgFilterXML, dlgFilterAll]);
   SaveDialog1.Filter := OpenDialog1.Filter;
 end;
 

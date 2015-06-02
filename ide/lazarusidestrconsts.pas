@@ -600,9 +600,6 @@ resourcestring
   lisChooseDelphiUnit = 'Choose Delphi unit (*.pas)';
   lisChooseDelphiProject = 'Choose Delphi project (*.dpr)';
   lisChooseDelphiPackage = 'Choose Delphi package (*.dpk)';
-  lisDelphiUnit = 'Delphi unit';
-  lisDelphiProject = 'Delphi project';
-  lisDelphiPackage = 'Delphi package';
   lisFormatError = 'Format error';
   lisLFMFileCorrupt = 'LFM file corrupt';
   lisUnableToFindAValidClassnameIn = 'Unable to find a valid classname in "%s"';
@@ -976,13 +973,9 @@ resourcestring
   lisIECORecentFiles = 'Recent files';
   lisIECOSaveToFile = 'Save to file';
   lisIECOLoadFromFile = 'Load from file';
-  lisLazarusFile = 'Lazarus file';
   lisDebugUnableToLoadFile = 'Unable to load file';
   lisDebugUnableToLoadFile2 = 'Unable to load file "%s".';
   lisOpenProjectFile = 'Open Project File';
-  lisLazarusProjectInfoFile = 'Lazarus Project Info file';
-  lisAllFiles = 'All Files';
-  lisExePrograms = 'Programs';
   lisSelectFile = 'Select the file';
   lisClickHereToBrowseTheFileHint = 'Click here to browse the file';
   lisOpenPackageFile = 'Open Package File';
@@ -998,11 +991,6 @@ resourcestring
   lisChooseMakeExecutable = 'Choose "make" executable';
   lisChooseDebuggerExecutable = 'Choose debugger executable';
   lisChooseTestBuildDir = 'Choose the directory for tests';
-  lisLazarusDesktopSettings = 'Lazarus Desktop Settings';
-  lisXMLFiles = 'XML files';
-  lisPackageFilesFilter = 'Package files';
-  lisProjectFilesFilter = 'Project files';
-  lisSessionFilesFilter = 'Session files';
 
   // dialogs
   lisProjectChanged = 'Project changed';
@@ -1450,6 +1438,31 @@ resourcestring
     +'failed to compile.%sRemove it from the installation list?';
   lisEnvOptDlgTestDirNotFoundMsg = 'Test directory "%s" not found.';
 
+  // open-dialog filters
+  dlgFilterAll = 'All files';
+  dlgFilterXML = 'XML files';
+  dlgFilterPrograms = 'Programs';
+  dlgFilterExecutable = 'Executable';
+  dlgFilterLazarusFile = 'Lazarus file';
+  dlgFilterLazarusEditorFile = 'Editor file types';
+  dlgFilterLazarusUnit = 'Lazarus unit';
+  dlgFilterLazarusInclude = 'Lazarus include file';
+  dlgFilterLazarusProject = 'Lazarus project';
+  dlgFilterLazarusForm = 'Lazarus form';
+  dlgFilterLazarusPackage = 'Lazarus package';
+  dlgFilterLazarusProjectSource = 'Lazarus project source';
+  dlgFilterLazarusOtherFile = 'Lazarus other file';
+  dlgFilterLazarusSession = 'Lazarus session';
+  dlgFilterLazarusDesktopSettings = 'Lazarus Desktop Settings';
+  dlgFilterDelphiUnit = 'Delphi unit';
+  dlgFilterDelphiProject = 'Delphi project';
+  dlgFilterDelphiPackage = 'Delphi package';
+  dlgFilterDelphiFormDfm = 'Delphi form file (*.dfm)|*.dfm';
+  dlgFilterPascalFile = 'Pascal file';
+  dlgFilterDciFile = 'DCI file';
+  dlgFilterFPCMessageFile = 'FPC message file';
+  dlgFilterCodetoolsTemplateFile = 'CodeTools template file';
+
   // editor options
   dlgEdMisc = 'Misc';
   dlgEdTabIndent = 'Tab and Indent';
@@ -1460,11 +1473,6 @@ resourcestring
   dlgReport = 'Report';
   dlgDelTemplate = 'Delete template ';
   dlgChsCodeTempl = 'Choose code template file (*.dci)';
-  dlgAllFiles = 'All files';
-  dlgDCIFileDci = 'DCI file (*.dci)';
-  lisCodetoolsTemplateFile = 'CodeTools template file';
-  lisExecutable = 'Executable';
-  lisEditorFileTypes = 'Editor file types';
   lisPkgMgrNew = 'new';
   lisPkgMgrRemove = 'remove';
   lisPkgMgrKeep = 'keep';
@@ -1474,13 +1482,6 @@ resourcestring
   lisConfirmPackageAction = 'Action';
   lisSaveFileAs = 'Save file as';
   lisOpenExistingFile = 'Open existing file';
-  lisLazarusUnit = 'Lazarus unit';
-  lisLazarusInclude = 'Lazarus include file';
-  lisLazarusProject = 'Lazarus project';
-  lisLazarusForm = 'Lazarus form';
-  lisLazarusPackage = 'Lazarus package';
-  lisLazarusProjectSource = 'Lazarus project source';
-  lisLazarusOtherFile = 'Lazarus other file';
 
   dlgUndoGroupOptions = 'Undo / Redo';
   dlgScrollGroupOptions = 'Scrolling';
@@ -2111,7 +2112,6 @@ resourcestring
   dlgCOVerbosity = 'Verbosity';
   dlgCOCfgCmpMessages = 'Messages';
   lisChooseAnFPCMessageFile = 'Choose an FPC message file';
-  lisFPCMessageFile = 'FPC message file';
   lisChooseAFileWithCodeToolsTemplates = 'Choose a file with CodeTools templates';
   dlgCOOther = 'Other';
   dlgCOCompilerCommands = 'Compiler Commands';
@@ -3373,7 +3373,6 @@ resourcestring
   lisFPDocThereIsASyntaxErrorInTheFpdocElement = 'There is a syntax error in '
     +'the fpdoc element "%s":%s%s';
   lisChooseAnExampleFile = 'Choose an example file';
-  lisPascalFile = 'Pascal file';
   lisUnableToWriteTheProjectInfoFileError = 'Unable to write the project info '
     +'file%s"%s".%sError: %s';
   lisUnableToWriteTheProjectSessionFileError = 'Unable to write the project session '
@@ -4930,7 +4929,6 @@ resourcestring
   lisInheritedParameters = 'Inherited parameters';
   lisShowRelativePaths = 'Show relative paths';
   lisCommandLineParameters = 'Command line parameters';
-  rsFormDataFileDfm = 'Form data file (*.dfm)|*.dfm';
   liswlWatchList = 'Watch List';
   liswlExpression = 'Expression';
   lisKMChooseKeymappingScheme = 'Choose Keymapping scheme';

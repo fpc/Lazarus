@@ -80,7 +80,7 @@ begin
     InitIDEFileDialog(OpenDialog);
     OpenDialog.Title:=lisChooseAnFPCMessageFile;
     OpenDialog.Options:=OpenDialog.Options+[ofFileMustExist];
-    OpenDialog.Filter:=lisFPCMessageFile+' (*.msg)|*.msg|'+dlgAllFiles+'|'+
+    OpenDialog.Filter:=dlgFilterFPCMessageFile+' (*.msg)|*.msg|'+dlgFilterAll+'|'+
       GetAllFilesMask;
     if OpenDialog.Execute then
       MsgFileEdit.Text:=OpenDialog.FileName;

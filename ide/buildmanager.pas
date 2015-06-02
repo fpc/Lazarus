@@ -381,7 +381,7 @@ begin
   GlobalMacroList.Add(TTransferMacro.Create('FPC_FULLVERSION','',
                       lisFPCFullVersionEG20701, @MacroFuncFPC_FULLVERSION, []));
   GlobalMacroList.Add(TTransferMacro.Create('FPCMsgFile','',
-                     lisFPCMessageFile, @MacroFuncFPCMsgFile, []));
+                     dlgFilterFPCMessageFile, @MacroFuncFPCMsgFile, []));
   GlobalMacroList.Add(TTransferMacro.Create('Params','',
                       lisCommandLineParamsOfProgram,@MacroFuncParams,[]));
   GlobalMacroList.Add(TTransferMacro.Create('ProjFile','',
@@ -469,7 +469,7 @@ begin
   tr('ProjSrcPath',lisProjectSrcPath);
   tr('ProjOutDir',lisProjectOutDir);
   tr('Env',lisEnvironmentVariableNameAsParameter);
-  tr('FPCMsgFile',lisFPCMessageFile);
+  tr('FPCMsgFile',dlgFilterFPCMessageFile);
   tr('MakeExe',lisMakeExe);
   tr('MakeLib',lisMakeExe);
   tr('Make',lisPathOfTheMakeUtility);

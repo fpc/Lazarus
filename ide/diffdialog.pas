@@ -356,12 +356,12 @@ begin
   
   // dialogs
   dlgOpen.Title:=lisOpenExistingFile;
-  dlgOpen.Filter:=dlgAllFiles+' ('+GetAllFilesMask+')|'+GetAllFilesMask
-                 +'|'+lisLazarusUnit+' (*.pas;*.pp)|*.pas;*.pp'
-                 +'|'+lisLazarusProject+' (*.lpi)|*.lpi'
-                 +'|'+lisLazarusForm+' (*.lfm;*.dfm)|*.lfm;*.dfm'
-                 +'|'+lisLazarusPackage+' (*.lpk)|*.lpk'
-                 +'|'+lisLazarusProjectSource+' (*.lpr)|*.lpr';
+  dlgOpen.Filter:=dlgFilterAll+' ('+GetAllFilesMask+')|'+GetAllFilesMask
+                 +'|'+dlgFilterLazarusUnit+' (*.pas;*.pp)|*.pas;*.pp'
+                 +'|'+dlgFilterLazarusProject+' (*.lpi)|*.lpi'
+                 +'|'+dlgFilterLazarusForm+' (*.lfm;*.dfm)|*.lfm;*.dfm'
+                 +'|'+dlgFilterLazarusPackage+' (*.lpk)|*.lpk'
+                 +'|'+dlgFilterLazarusProjectSource+' (*.lpr)|*.lpr';
 
   // diff
   EditorOpts.GetSynEditSettings(DiffSynEdit);

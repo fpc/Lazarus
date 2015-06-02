@@ -508,9 +508,9 @@ begin
     Filename:='gdb'+GetExecutableExt;
     Dlg.Title:=SimpleFormat(lisSelectPathTo, [Filename]);
     Dlg.Options:=Dlg.Options+[ofFileMustExist];
-    Filter:=dlgAllFiles+'|'+GetAllFilesMask;
+    Filter:=dlgFilterAll+'|'+GetAllFilesMask;
     if ExtractFileExt(Filename)<>'' then
-      Filter:=lisExecutable+'|*'+ExtractFileExt(Filename)+'|'+Filter;
+      Filter:=dlgFilterExecutable+'|*'+ExtractFileExt(Filename)+'|'+Filter;
     Dlg.Filter:=Filter;
     if not Dlg.Execute then exit;
     Filename:=Dlg.FileName;
@@ -537,9 +537,9 @@ begin
     Filename:='fpc'+GetExecutableExt;
     Dlg.Title:=SimpleFormat(lisSelectPathTo, [Filename]);
     Dlg.Options:=Dlg.Options+[ofFileMustExist];
-    Filter:=dlgAllFiles+'|'+GetAllFilesMask;
+    Filter:=dlgFilterAll+'|'+GetAllFilesMask;
     if ExtractFileExt(Filename)<>'' then
-      Filter:=lisExecutable+'|*'+ExtractFileExt(Filename)+'|'+Filter;
+      Filter:=dlgFilterExecutable+'|*'+ExtractFileExt(Filename)+'|'+Filter;
     Dlg.Filter:=Filter;
     if not Dlg.Execute then exit;
     Filename:=Dlg.FileName;
@@ -605,9 +605,9 @@ begin
     Filename:='make'+GetExecutableExt;
     Dlg.Title:=SimpleFormat(lisSelectPathTo, [Filename]);
     Dlg.Options:=Dlg.Options+[ofFileMustExist];
-    Filter:=dlgAllFiles+'|'+GetAllFilesMask;
+    Filter:=dlgFilterAll+'|'+GetAllFilesMask;
     if ExtractFileExt(Filename)<>'' then
-      Filter:=lisExecutable+'|*'+ExtractFileExt(Filename)+'|'+Filter;
+      Filter:=dlgFilterExecutable+'|*'+ExtractFileExt(Filename)+'|'+Filter;
     Dlg.Filter:=Filter;
     if not Dlg.Execute then exit;
     Filename:=Dlg.FileName;

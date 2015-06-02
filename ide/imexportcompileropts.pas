@@ -264,11 +264,11 @@ begin
                       +'%s|*.lpk|'
                       +'%s|*.lps|'
                       +'%s|*',
-                      [lisXmlFiles,
-                       lisProjectFilesFilter,
-                       lisPackageFilesFilter,
-                       lisSessionFilesFilter,
-                       dlgAllFiles]);
+                      [dlgFilterXML,
+                       dlgFilterLazarusProject,
+                       dlgFilterLazarusPackage,
+                       dlgFilterLazarusSession,
+                       dlgFilterAll]);
 
   FileNameEdit.DialogOptions:=FileNameEdit.DialogOptions+[ofFileMustExist];
   FileNameEdit.OnChange:=@FileNameEditChangeImport;

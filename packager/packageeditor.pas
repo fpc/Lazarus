@@ -1577,12 +1577,13 @@ begin
     OpenDialog.Title:=lisOpenFile;
     OpenDialog.Options:=OpenDialog.Options
                           +[ofFileMustExist,ofPathMustExist,ofAllowMultiSelect];
-    OpenDialog.Filter:=dlgAllFiles+' ('+GetAllFilesMask+')|'+GetAllFilesMask
-                 +'|'+lisLazarusUnit+' (*.pas;*.pp)|*.pas;*.pp'
-                 +'|'+lisLazarusProject+' (*.lpi)|*.lpi'
-                 +'|'+lisLazarusForm+' (*.lfm;*.dfm)|*.lfm;*.dfm'
-                 +'|'+lisLazarusPackage+' (*.lpk)|*.lpk'
-                 +'|'+lisLazarusProjectSource+' (*.lpr)|*.lpr';
+    OpenDialog.Filter:=
+      dlgFilterAll+' ('+GetAllFilesMask+')|'+GetAllFilesMask
+      +'|'+dlgFilterLazarusUnit+' (*.pas;*.pp)|*.pas;*.pp'
+      +'|'+dlgFilterLazarusProject+' (*.lpi)|*.lpi'
+      +'|'+dlgFilterLazarusForm+' (*.lfm;*.dfm)|*.lfm;*.dfm'
+      +'|'+dlgFilterLazarusPackage+' (*.lpk)|*.lpk'
+      +'|'+dlgFilterLazarusProjectSource+' (*.lpr)|*.lpr';
     if OpenDialog.Execute then begin
       NewUnitPaths:='';
       NewIncPaths:='';
