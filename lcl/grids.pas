@@ -10858,6 +10858,15 @@ var
   MaxCols: Integer = 0;
   MaxRows: Integer = 0;
 
+  function RowOffset: Integer;
+  begin
+    // return row offset of current CSV record (MaxRows) which is 1 based
+    if withHeader then
+      result := Max(0, FixedRows-1)  + Max(MaxRows-1, 0)
+    else
+      result := FixedRows + Max(MaxRows-2, 0);
+  end;
+
   procedure NewRecord(Fields:TStringlist);
   var
     i, aRow: Integer;
@@ -10884,22 +10893,14 @@ var
     end;
 
     // and rows ...
-    if RowCount<MaxRows then
-      RowCount := RowCount + 20;
+    aRow := RowOffset;
+    if aRow>RowCount-1 then
+      RowCount := aRow + 20;
 
     // setup columns captions of custom columns if they are enabled
     if (MaxRows=1) and withHeader and Columns.Enabled then begin
       for i:=0 to Fields.Count-1 do
         Columns[i].Title.Caption:=Fields[i];
-    end;
-
-    if not WithHeader then
-      aRow := FixedRows + (MaxRows-2)   // MaxRows is 1 based, 2nd one is our first row
-    else begin
-      aRow := FixedRows-1;
-      if aRow<0 then
-        aRow := 0;
-      aRow := aRow + (MaxRows-1);
     end;
 
     for i:=0 to Fields.Count-1 do
@@ -10910,12 +10911,16 @@ begin
   BeginUpdate;
   try
     LCSVUtils.LoadFromCSVStream(AStream, @NewRecord, ADelimiter);
-    RowCount := MaxRows;
+
+    // last row offset + 1 (offset is 0 based)
+    RowCount := RowOffset + 1;
+
     if not Columns.Enabled then
       ColCount := MaxCols
     else
       while Columns.Count > MaxCols do
         Columns.Delete(Columns.Count-1);
+
   finally
     EndUpdate;
   end;
