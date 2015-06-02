@@ -947,9 +947,11 @@ Type
     property OnUTF8KeyPress;
     property ParentBiDiMode;
     property ParentFont;
+    property ParentShowHint;
     property PopupMenu;
     property ReadOnly: Boolean read GetReadOnly write SetReadOnly default False;
     property ScrollBars;
+    property ShowHint;
     property TabOrder;
     property Tabstop;
     property Visible;
