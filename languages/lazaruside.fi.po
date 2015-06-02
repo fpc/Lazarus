@@ -553,10 +553,6 @@ msgstr "Lisää puolipiste"
 msgid "Adjust top line due to comment in front"
 msgstr "Säädä ylin rivi edellä olevan kommentin mukaan"
 
-#: lazarusidestrconsts.dlgallfiles
-msgid "All files"
-msgstr "Kaikki tiedostot"
-
 #: lazarusidestrconsts.dlgalphabetically
 msgid "Alphabetically"
 msgstr "Aakkosjärjestys"
@@ -1184,10 +1180,6 @@ msgstr "Kursori ohittaa tabulaattorit"
 msgid "User defined extension (.pp.xxx)"
 msgstr "Käyttäjän määrittämä tarkennin (.pp.xxx)"
 
-#: lazarusidestrconsts.dlgdcifiledci
-msgid "DCI file (*.dci)"
-msgstr ""
-
 #: lazarusidestrconsts.dlgdebugoptionspatheditordlgcaption
 msgid "Path Editor"
 msgstr "Polkujen muokkain"
@@ -1538,6 +1530,138 @@ msgstr "Tiedostopäätteet"
 #: lazarusidestrconsts.dlgfiles
 msgid "%s files"
 msgstr ""
+
+#: lazarusidestrconsts.dlgfilterall
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgfilterall"
+msgid "All files"
+msgstr "Kaikki tiedostot"
+
+#: lazarusidestrconsts.dlgfiltercodetoolstemplatefile
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgfiltercodetoolstemplatefile"
+msgid "CodeTools template file"
+msgstr "CodeTools-mallinetiedosto"
+
+#: lazarusidestrconsts.dlgfilterdcifile
+msgid "DCI file"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfilterdelphiformdfm
+msgid "Delphi form file (*.dfm)|*.dfm"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfilterdelphipackage
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgfilterdelphipackage"
+msgid "Delphi package"
+msgstr "Delphi-paketti"
+
+#: lazarusidestrconsts.dlgfilterdelphiproject
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgfilterdelphiproject"
+msgid "Delphi project"
+msgstr "Delphi-projekti"
+
+#: lazarusidestrconsts.dlgfilterdelphiunit
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgfilterdelphiunit"
+msgid "Delphi unit"
+msgstr "Delphi-käännösyksikkö"
+
+#: lazarusidestrconsts.dlgfilterexecutable
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgfilterexecutable"
+msgid "Executable"
+msgstr "Suoritettava ohjelma"
+
+#: lazarusidestrconsts.dlgfilterfpcmessagefile
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgfilterfpcmessagefile"
+msgid "FPC message file"
+msgstr "FPC viestitiedosto"
+
+#: lazarusidestrconsts.dlgfilterlazarusdesktopsettings
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgfilterlazarusdesktopsettings"
+msgid "Lazarus Desktop Settings"
+msgstr "Lazaruksen työpöytäasetukset"
+
+#: lazarusidestrconsts.dlgfilterlazaruseditorfile
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgfilterlazaruseditorfile"
+msgid "Editor file types"
+msgstr "Editorin tiedostojen tyypit"
+
+#: lazarusidestrconsts.dlgfilterlazarusfile
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgfilterlazarusfile"
+msgid "Lazarus file"
+msgstr "Lazarus-tiedosto"
+
+#: lazarusidestrconsts.dlgfilterlazarusform
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgfilterlazarusform"
+msgid "Lazarus form"
+msgstr "Lazarus-lomake"
+
+#: lazarusidestrconsts.dlgfilterlazarusinclude
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgfilterlazarusinclude"
+msgid "Lazarus include file"
+msgstr "Lazarus include-tiedosto"
+
+#: lazarusidestrconsts.dlgfilterlazarusotherfile
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgfilterlazarusotherfile"
+msgid "Lazarus other file"
+msgstr "Lazarus muu tiedosto"
+
+#: lazarusidestrconsts.dlgfilterlazaruspackage
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgfilterlazaruspackage"
+msgid "Lazarus package"
+msgstr "Lazarus-paketti"
+
+#: lazarusidestrconsts.dlgfilterlazarusproject
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgfilterlazarusproject"
+msgid "Lazarus project"
+msgstr "Lazarus-projekti"
+
+#: lazarusidestrconsts.dlgfilterlazarusprojectsource
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgfilterlazarusprojectsource"
+msgid "Lazarus project source"
+msgstr "Lazarus-projektin lähdekoodi"
+
+#: lazarusidestrconsts.dlgfilterlazarussession
+msgid "Lazarus session"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfilterlazarusunit
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgfilterlazarusunit"
+msgid "Lazarus unit"
+msgstr "Lazarus-käännösyksikkö"
+
+#: lazarusidestrconsts.dlgfilterpascalfile
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgfilterpascalfile"
+msgid "Pascal file"
+msgstr "Pascal-tiedosto"
+
+#: lazarusidestrconsts.dlgfilterprograms
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgfilterprograms"
+msgid "Programs"
+msgstr "Ohjelmat"
+
+#: lazarusidestrconsts.dlgfilterxml
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgfilterxml"
+msgid "XML files"
+msgstr "XML-tiedostot"
 
 #: lazarusidestrconsts.dlgfindtextatcursor
 msgid "Find text at cursor"
@@ -3053,6 +3177,26 @@ msgstr "Aseta elementti oletusarvoon"
 msgid "Set property Variable"
 msgstr "Muuttuja ominaisuuden asettajassa"
 
+#: lazarusidestrconsts.dlgsetpropertyvariablehint
+msgid "The parameter name for the default setter procedure."
+msgstr ""
+
+#: lazarusidestrconsts.dlgsetpropertyvariableisprefix
+msgid "is prefix"
+msgstr ""
+
+#: lazarusidestrconsts.dlgsetpropertyvariableisprefixhint
+msgid "If checked, the \"Set property Variable\" is a prefix. Otherwise it is a fixed name."
+msgstr ""
+
+#: lazarusidestrconsts.dlgsetpropertyvariableuseconst
+msgid "use const"
+msgstr ""
+
+#: lazarusidestrconsts.dlgsetpropertyvariableuseconsthint
+msgid "If checked, the setter parameter is marked with \"const\"."
+msgstr ""
+
 #: lazarusidestrconsts.dlgshowallunits
 msgid "Show all units"
 msgstr "Näytä kaikki käännösyksiköt"
@@ -4102,10 +4246,6 @@ msgstr "Kaikki lohkorakenteet vaikuttavat hyviltä."
 #: lazarusidestrconsts.lisallbuildmodes
 msgid "<All build modes>"
 msgstr "<Kaikki koontamoodit>"
-
-#: lazarusidestrconsts.lisallfiles
-msgid "All Files"
-msgstr "Kaikki tiedostot"
 
 #: lazarusidestrconsts.lisallinheritedoptions
 msgid "All inherited options"
@@ -6076,10 +6216,6 @@ msgstr "Tekstivakio"
 msgid "Symbol"
 msgstr "Symboli"
 
-#: lazarusidestrconsts.liscodetoolstemplatefile
-msgid "CodeTools template file"
-msgstr "CodeTools-mallinetiedosto"
-
 #: lazarusidestrconsts.liscoexecuteafter
 msgid "Execute after"
 msgstr "Suorita jälkeen"
@@ -7667,18 +7803,6 @@ msgstr ""
 msgid "Delphi compatible resources. Recommended."
 msgstr "Delphi yhteensopivat resurssit. Suositus."
 
-#: lazarusidestrconsts.lisdelphipackage
-msgid "Delphi package"
-msgstr "Delphi-paketti"
-
-#: lazarusidestrconsts.lisdelphiproject
-msgid "Delphi project"
-msgstr "Delphi-projekti"
-
-#: lazarusidestrconsts.lisdelphiunit
-msgid "Delphi unit"
-msgstr "Delphi-käännösyksikkö"
-
 #: lazarusidestrconsts.lisdesigntimepackagesaddcomponentsandmenuitemstotheid
 msgid "\"Design time\" packages add components and menu items to the IDE. They can be used by projects, but are not compiled into the project. The compiler will not find units of this package when compiling the project."
 msgstr "\"Suunnittelupaketti\" lisää komponentteja ja valikkoja IDE:en. Projektit voivat käyttää niitä, mutta niitä ei käännetä projektin mukana. Kääntäjä ei löydä käännösyksikköjä näistä paketista kääntäessään projektia."
@@ -8068,10 +8192,6 @@ msgstr "Muokkaa näppäimiä"
 #: lazarusidestrconsts.liseditorcolors
 msgid "Editor Colors"
 msgstr "Editorin värit"
-
-#: lazarusidestrconsts.liseditorfiletypes
-msgid "Editor file types"
-msgstr "Editorin tiedostojen tyypit"
 
 #: lazarusidestrconsts.liseditormacros
 msgid "Editor macros"
@@ -8528,10 +8648,6 @@ msgstr "%s sivuutetaan ajon akana"
 msgid "Exclude filter"
 msgstr "Poistosuodatin"
 
-#: lazarusidestrconsts.lisexecutable
-msgid "Executable"
-msgstr "Suoritettava ohjelma"
-
 #: lazarusidestrconsts.lisexecutableisadirectory
 msgid "executable \"%s\" is a directory"
 msgstr "Suoritettava ohjelma \"%s\" onkin hakemisto"
@@ -8551,10 +8667,6 @@ msgstr "Suorittaa komennon ennen"
 #: lazarusidestrconsts.lisexecutionstopped
 msgid "Execution stopped"
 msgstr "Suoritus on pysäytetty"
-
-#: lazarusidestrconsts.lisexeprograms
-msgid "Programs"
-msgstr "Ohjelmat"
 
 #: lazarusidestrconsts.lisexit
 msgctxt "lazarusidestrconsts.lisexit"
@@ -9020,10 +9132,6 @@ msgstr "FPC versio numerona (esim. 20701)"
 #: lazarusidestrconsts.lisfpcmakefailed
 msgid "fpcmake failed"
 msgstr "fpcmake epäonnistui"
-
-#: lazarusidestrconsts.lisfpcmessagefile
-msgid "FPC message file"
-msgstr "FPC viestitiedosto"
 
 #: lazarusidestrconsts.lisfpcmessagefile2
 msgid "FPC message file:"
@@ -10554,10 +10662,6 @@ msgstr ""
 msgid "Lazarus Default"
 msgstr "Lazarus oletukset"
 
-#: lazarusidestrconsts.lislazarusdesktopsettings
-msgid "Lazarus Desktop Settings"
-msgstr "Lazaruksen työpöytäasetukset"
-
 #: lazarusidestrconsts.lislazarusdirectory
 msgid "Lazarus directory"
 msgstr "Lazaruksen hakemisto"
@@ -10570,21 +10674,9 @@ msgstr "hakemisto, käytetään kantahakemistona"
 msgid "Lazarus IDE v%s"
 msgstr ""
 
-#: lazarusidestrconsts.lislazarusfile
-msgid "Lazarus file"
-msgstr "Lazarus-tiedosto"
-
-#: lazarusidestrconsts.lislazarusform
-msgid "Lazarus form"
-msgstr "Lazarus-lomake"
-
 #: lazarusidestrconsts.lislazaruside
 msgid "Lazarus IDE"
 msgstr ""
-
-#: lazarusidestrconsts.lislazarusinclude
-msgid "Lazarus include file"
-msgstr "Lazarus include-tiedosto"
 
 #: lazarusidestrconsts.lislazaruslanguageid
 msgid "Lazarus language ID (e.g. en, de, br, fi)"
@@ -10597,30 +10689,6 @@ msgstr "Lazarus kieli-nimi (esim. english, deutsch)"
 #: lazarusidestrconsts.lislazarusoptionsprojectfilename
 msgid "lazarus [options] <project-filename>"
 msgstr ""
-
-#: lazarusidestrconsts.lislazarusotherfile
-msgid "Lazarus other file"
-msgstr "Lazarus muu tiedosto"
-
-#: lazarusidestrconsts.lislazaruspackage
-msgid "Lazarus package"
-msgstr "Lazarus-paketti"
-
-#: lazarusidestrconsts.lislazarusproject
-msgid "Lazarus project"
-msgstr "Lazarus-projekti"
-
-#: lazarusidestrconsts.lislazarusprojectinfofile
-msgid "Lazarus Project Info file"
-msgstr "Lazarus-projektin tietoja"
-
-#: lazarusidestrconsts.lislazarusprojectsource
-msgid "Lazarus project source"
-msgstr "Lazarus-projektin lähdekoodi"
-
-#: lazarusidestrconsts.lislazarusunit
-msgid "Lazarus unit"
-msgstr "Lazarus-käännösyksikkö"
 
 #: lazarusidestrconsts.lislazbuildaboaction
 msgctxt "lazarusidestrconsts.lislazbuildaboaction"
@@ -11517,6 +11585,22 @@ msgstr "Hyppää"
 #: lazarusidestrconsts.lismenujumptoimplementation
 msgid "Jump to Implementation"
 msgstr "Hyppää toteutukseen"
+
+#: lazarusidestrconsts.lismenujumptoimplementationuses
+msgid "Jump to Implementation uses"
+msgstr ""
+
+#: lazarusidestrconsts.lismenujumptoinitialization
+msgid "Jump to Initialization"
+msgstr ""
+
+#: lazarusidestrconsts.lismenujumptointerface
+msgid "Jump to Interface"
+msgstr ""
+
+#: lazarusidestrconsts.lismenujumptointerfaceuses
+msgid "Jump to Interface uses"
+msgstr ""
 
 #: lazarusidestrconsts.lismenujumptonextbookmark
 msgid "Jump to Next Bookmark"
@@ -13027,10 +13111,6 @@ msgstr ", jäsennetty "
 #: lazarusidestrconsts.lisparser
 msgid "parser \"%s\": %s"
 msgstr "jäsentäjä \"%s\": %s"
-
-#: lazarusidestrconsts.lispascalfile
-msgid "Pascal file"
-msgstr "Pascal-tiedosto"
 
 #: lazarusidestrconsts.lispasscount
 msgid "Pass Count"
@@ -17776,10 +17856,6 @@ msgstr "väärä versio %s: %s"
 msgid "XML Error"
 msgstr "XML-virhe"
 
-#: lazarusidestrconsts.lisxmlfiles
-msgid "XML files"
-msgstr "XML-tiedostot"
-
 #: lazarusidestrconsts.lisxmlparsererrorinfileerror
 msgid "XML parser error in file %s%sError: %s"
 msgstr ""
@@ -17923,10 +17999,6 @@ msgstr "Anna PID"
 #: lazarusidestrconsts.rsfilterthelistwithstring
 msgid "Filter the lines in list with a string"
 msgstr "Suodata luettelon rivit tekstillä"
-
-#: lazarusidestrconsts.rsformdatafiledfm
-msgid "Form data file (*.dfm)|*.dfm"
-msgstr "Lomaketiedosto (*.dfm)|*.dfm"
 
 #: lazarusidestrconsts.rsfoundbutnotlistedhere
 msgid "Found, but not listed here: "

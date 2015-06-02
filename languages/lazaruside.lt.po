@@ -560,10 +560,6 @@ msgstr "Padėti kabliataškį"
 msgid "Adjust top line due to comment in front"
 msgstr "Turi matytis ir komentaras"
 
-#: lazarusidestrconsts.dlgallfiles
-msgid "All files"
-msgstr "Visi failai"
-
 #: lazarusidestrconsts.dlgalphabetically
 msgid "Alphabetically"
 msgstr "Pagal abėcėlę"
@@ -1212,10 +1208,6 @@ msgstr "Žymeklis nepaiso tabuliavimų"
 msgid "User defined extension (.pp.xxx)"
 msgstr "Naudotojo nurodytas plėtinys (.pp.xxx)"
 
-#: lazarusidestrconsts.dlgdcifiledci
-msgid "DCI file (*.dci)"
-msgstr ""
-
 #: lazarusidestrconsts.dlgdebugoptionspatheditordlgcaption
 msgid "Path Editor"
 msgstr "Kelio rengyklė"
@@ -1569,6 +1561,137 @@ msgstr "Failų plėtiniai"
 #: lazarusidestrconsts.dlgfiles
 msgid "%s files"
 msgstr ""
+
+#: lazarusidestrconsts.dlgfilterall
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgfilterall"
+msgid "All files"
+msgstr "Visi failai"
+
+#: lazarusidestrconsts.dlgfiltercodetoolstemplatefile
+msgctxt "lazarusidestrconsts.dlgfiltercodetoolstemplatefile"
+msgid "CodeTools template file"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfilterdcifile
+msgid "DCI file"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfilterdelphiformdfm
+msgid "Delphi form file (*.dfm)|*.dfm"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfilterdelphipackage
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgfilterdelphipackage"
+msgid "Delphi package"
+msgstr "Delphi paketas"
+
+#: lazarusidestrconsts.dlgfilterdelphiproject
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgfilterdelphiproject"
+msgid "Delphi project"
+msgstr "Delphi projektas"
+
+#: lazarusidestrconsts.dlgfilterdelphiunit
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgfilterdelphiunit"
+msgid "Delphi unit"
+msgstr "Delphi modulis"
+
+#: lazarusidestrconsts.dlgfilterexecutable
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgfilterexecutable"
+msgid "Executable"
+msgstr "Vykdomasis failas"
+
+#: lazarusidestrconsts.dlgfilterfpcmessagefile
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgfilterfpcmessagefile"
+msgid "FPC message file"
+msgstr "FPC pranešimo failas"
+
+#: lazarusidestrconsts.dlgfilterlazarusdesktopsettings
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgfilterlazarusdesktopsettings"
+msgid "Lazarus Desktop Settings"
+msgstr "Lazarus darbalaukio nuostatos"
+
+#: lazarusidestrconsts.dlgfilterlazaruseditorfile
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgfilterlazaruseditorfile"
+msgid "Editor file types"
+msgstr "Rengyklės failų tipai"
+
+#: lazarusidestrconsts.dlgfilterlazarusfile
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgfilterlazarusfile"
+msgid "Lazarus file"
+msgstr "Lazarus failas"
+
+#: lazarusidestrconsts.dlgfilterlazarusform
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgfilterlazarusform"
+msgid "Lazarus form"
+msgstr "Lazarus forma"
+
+#: lazarusidestrconsts.dlgfilterlazarusinclude
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgfilterlazarusinclude"
+msgid "Lazarus include file"
+msgstr "Lazarus įdedamasis failas"
+
+#: lazarusidestrconsts.dlgfilterlazarusotherfile
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgfilterlazarusotherfile"
+msgid "Lazarus other file"
+msgstr "Kitoks Lazarus failas"
+
+#: lazarusidestrconsts.dlgfilterlazaruspackage
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgfilterlazaruspackage"
+msgid "Lazarus package"
+msgstr "Lazarus paketas"
+
+#: lazarusidestrconsts.dlgfilterlazarusproject
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgfilterlazarusproject"
+msgid "Lazarus project"
+msgstr "Lazarus projektas"
+
+#: lazarusidestrconsts.dlgfilterlazarusprojectsource
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgfilterlazarusprojectsource"
+msgid "Lazarus project source"
+msgstr "Lazarus projekto pirminis kodas"
+
+#: lazarusidestrconsts.dlgfilterlazarussession
+msgid "Lazarus session"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfilterlazarusunit
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgfilterlazarusunit"
+msgid "Lazarus unit"
+msgstr "Lazarus modulis"
+
+#: lazarusidestrconsts.dlgfilterpascalfile
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgfilterpascalfile"
+msgid "Pascal file"
+msgstr "Paskalio failas"
+
+#: lazarusidestrconsts.dlgfilterprograms
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgfilterprograms"
+msgid "Programs"
+msgstr "Programos"
+
+#: lazarusidestrconsts.dlgfilterxml
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgfilterxml"
+msgid "XML files"
+msgstr "XML failai"
 
 #: lazarusidestrconsts.dlgfindtextatcursor
 msgid "Find text at cursor"
@@ -3103,6 +3226,26 @@ msgstr "Priskirti numatytą vertę"
 msgid "Set property Variable"
 msgstr "„Set“ kintamojo pavadinimas"
 
+#: lazarusidestrconsts.dlgsetpropertyvariablehint
+msgid "The parameter name for the default setter procedure."
+msgstr ""
+
+#: lazarusidestrconsts.dlgsetpropertyvariableisprefix
+msgid "is prefix"
+msgstr ""
+
+#: lazarusidestrconsts.dlgsetpropertyvariableisprefixhint
+msgid "If checked, the \"Set property Variable\" is a prefix. Otherwise it is a fixed name."
+msgstr ""
+
+#: lazarusidestrconsts.dlgsetpropertyvariableuseconst
+msgid "use const"
+msgstr ""
+
+#: lazarusidestrconsts.dlgsetpropertyvariableuseconsthint
+msgid "If checked, the setter parameter is marked with \"const\"."
+msgstr ""
+
 #: lazarusidestrconsts.dlgshowallunits
 msgid "Show all units"
 msgstr "Rodyti visus modulius"
@@ -4215,10 +4358,6 @@ msgstr "Visi blokai geri."
 #: lazarusidestrconsts.lisallbuildmodes
 msgid "<All build modes>"
 msgstr ""
-
-#: lazarusidestrconsts.lisallfiles
-msgid "All Files"
-msgstr "Visi failai"
 
 #: lazarusidestrconsts.lisallinheritedoptions
 msgid "All inherited options"
@@ -6249,10 +6388,6 @@ msgstr "Eilutės konstanta"
 msgid "Symbol"
 msgstr "Simbolis"
 
-#: lazarusidestrconsts.liscodetoolstemplatefile
-msgid "CodeTools template file"
-msgstr ""
-
 #: lazarusidestrconsts.liscoexecuteafter
 msgid "Execute after"
 msgstr "Startuoti po"
@@ -7892,18 +8027,6 @@ msgstr "Delphi"
 msgid "Delphi compatible resources. Recommended."
 msgstr ""
 
-#: lazarusidestrconsts.lisdelphipackage
-msgid "Delphi package"
-msgstr "Delphi paketas"
-
-#: lazarusidestrconsts.lisdelphiproject
-msgid "Delphi project"
-msgstr "Delphi projektas"
-
-#: lazarusidestrconsts.lisdelphiunit
-msgid "Delphi unit"
-msgstr "Delphi modulis"
-
 #: lazarusidestrconsts.lisdesigntimepackagesaddcomponentsandmenuitemstotheid
 msgid "\"Design time\" packages add components and menu items to the IDE. They can be used by projects, but are not compiled into the project. The compiler will not find units of this package when compiling the project."
 msgstr ""
@@ -8312,10 +8435,6 @@ msgstr ""
 #: lazarusidestrconsts.liseditorcolors
 msgid "Editor Colors"
 msgstr ""
-
-#: lazarusidestrconsts.liseditorfiletypes
-msgid "Editor file types"
-msgstr "Rengyklės failų tipai"
 
 #: lazarusidestrconsts.liseditormacros
 msgid "Editor macros"
@@ -8785,10 +8904,6 @@ msgstr "„%s“ išbrauktas vykdymo metu"
 msgid "Exclude filter"
 msgstr "Neįtraukimo filtras"
 
-#: lazarusidestrconsts.lisexecutable
-msgid "Executable"
-msgstr "Vykdomasis failas"
-
 #: lazarusidestrconsts.lisexecutableisadirectory
 msgid "executable \"%s\" is a directory"
 msgstr ""
@@ -8808,10 +8923,6 @@ msgstr "Startuojama komanda prieš"
 #: lazarusidestrconsts.lisexecutionstopped
 msgid "Execution stopped"
 msgstr "Veika sustabdyta"
-
-#: lazarusidestrconsts.lisexeprograms
-msgid "Programs"
-msgstr "Programos"
 
 #: lazarusidestrconsts.lisexit
 msgctxt "lazarusidestrconsts.lisexit"
@@ -9293,10 +9404,6 @@ msgstr ""
 #: lazarusidestrconsts.lisfpcmakefailed
 msgid "fpcmake failed"
 msgstr "„fpcmake“ nepavyko"
-
-#: lazarusidestrconsts.lisfpcmessagefile
-msgid "FPC message file"
-msgstr "FPC pranešimo failas"
 
 #: lazarusidestrconsts.lisfpcmessagefile2
 msgid "FPC message file:"
@@ -10853,10 +10960,6 @@ msgstr "Lazarus"
 msgid "Lazarus Default"
 msgstr ""
 
-#: lazarusidestrconsts.lislazarusdesktopsettings
-msgid "Lazarus Desktop Settings"
-msgstr "Lazarus darbalaukio nuostatos"
-
 #: lazarusidestrconsts.lislazarusdirectory
 msgid "Lazarus directory"
 msgstr "Lazarus aplankas"
@@ -10869,21 +10972,9 @@ msgstr "aplankas, naudotinas kaip pagrindinis"
 msgid "Lazarus IDE v%s"
 msgstr "Lazarus IKA v%s"
 
-#: lazarusidestrconsts.lislazarusfile
-msgid "Lazarus file"
-msgstr "Lazarus failas"
-
-#: lazarusidestrconsts.lislazarusform
-msgid "Lazarus form"
-msgstr "Lazarus forma"
-
 #: lazarusidestrconsts.lislazaruside
 msgid "Lazarus IDE"
 msgstr "Lazarus IKA"
-
-#: lazarusidestrconsts.lislazarusinclude
-msgid "Lazarus include file"
-msgstr "Lazarus įdedamasis failas"
 
 #: lazarusidestrconsts.lislazaruslanguageid
 msgid "Lazarus language ID (e.g. en, de, br, fi)"
@@ -10896,30 +10987,6 @@ msgstr "Lazarus kalbos pavadinimas (t.y. anglų, vokiečių, lietuvių, …)"
 #: lazarusidestrconsts.lislazarusoptionsprojectfilename
 msgid "lazarus [options] <project-filename>"
 msgstr "lazarus [parinktys] <projekto_failo_pavadinimas>"
-
-#: lazarusidestrconsts.lislazarusotherfile
-msgid "Lazarus other file"
-msgstr "Kitoks Lazarus failas"
-
-#: lazarusidestrconsts.lislazaruspackage
-msgid "Lazarus package"
-msgstr "Lazarus paketas"
-
-#: lazarusidestrconsts.lislazarusproject
-msgid "Lazarus project"
-msgstr "Lazarus projektas"
-
-#: lazarusidestrconsts.lislazarusprojectinfofile
-msgid "Lazarus Project Info file"
-msgstr "Lazarus projekto informacinis failas"
-
-#: lazarusidestrconsts.lislazarusprojectsource
-msgid "Lazarus project source"
-msgstr "Lazarus projekto pirminis kodas"
-
-#: lazarusidestrconsts.lislazarusunit
-msgid "Lazarus unit"
-msgstr "Lazarus modulis"
 
 #: lazarusidestrconsts.lislazbuildaboaction
 msgctxt "lazarusidestrconsts.lislazbuildaboaction"
@@ -11832,6 +11899,22 @@ msgstr "Šokti į"
 #: lazarusidestrconsts.lismenujumptoimplementation
 msgid "Jump to Implementation"
 msgstr "Šokti į įgyvendinimą"
+
+#: lazarusidestrconsts.lismenujumptoimplementationuses
+msgid "Jump to Implementation uses"
+msgstr ""
+
+#: lazarusidestrconsts.lismenujumptoinitialization
+msgid "Jump to Initialization"
+msgstr ""
+
+#: lazarusidestrconsts.lismenujumptointerface
+msgid "Jump to Interface"
+msgstr ""
+
+#: lazarusidestrconsts.lismenujumptointerfaceuses
+msgid "Jump to Interface uses"
+msgstr ""
 
 #: lazarusidestrconsts.lismenujumptonextbookmark
 msgid "Jump to Next Bookmark"
@@ -13367,10 +13450,6 @@ msgstr ", nagrinėtas "
 #: lazarusidestrconsts.lisparser
 msgid "parser \"%s\": %s"
 msgstr ""
-
-#: lazarusidestrconsts.lispascalfile
-msgid "Pascal file"
-msgstr "Paskalio failas"
 
 #: lazarusidestrconsts.lispasscount
 msgid "Pass Count"
@@ -18490,10 +18569,6 @@ msgstr "„%s“ nurodyta klaidinga laida: %s"
 msgid "XML Error"
 msgstr "XML klaida"
 
-#: lazarusidestrconsts.lisxmlfiles
-msgid "XML files"
-msgstr "XML failai"
-
 #: lazarusidestrconsts.lisxmlparsererrorinfileerror
 msgid "XML parser error in file %s%sError: %s"
 msgstr "XML analizatorius klaida, failas: %s%sKlaida: %s"
@@ -18640,10 +18715,6 @@ msgstr ""
 #: lazarusidestrconsts.rsfilterthelistwithstring
 msgid "Filter the lines in list with a string"
 msgstr "Sąrašą filtruoti naudojant tekstą"
-
-#: lazarusidestrconsts.rsformdatafiledfm
-msgid "Form data file (*.dfm)|*.dfm"
-msgstr "Formos duomenų failas (*.dfm)|*.dfm"
 
 #: lazarusidestrconsts.rsfoundbutnotlistedhere
 msgid "Found, but not listed here: "

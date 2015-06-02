@@ -562,10 +562,6 @@ msgstr "הוסף נקודה פסיק"
 msgid "Adjust top line due to comment in front"
 msgstr "התאם את הקו העליון להערות בהתחלה"
 
-#: lazarusidestrconsts.dlgallfiles
-msgid "All files"
-msgstr "כל הקבצים"
-
 #: lazarusidestrconsts.dlgalphabetically
 msgid "Alphabetically"
 msgstr "לפי סדר א' ב'"
@@ -1254,10 +1250,6 @@ msgstr "סמן מדלג על טאבים"
 msgid "User defined extension (.pp.xxx)"
 msgstr "הרחבה של המשתמש (pp.xxx.)"
 
-#: lazarusidestrconsts.dlgdcifiledci
-msgid "DCI file (*.dci)"
-msgstr ""
-
 #: lazarusidestrconsts.dlgdebugoptionspatheditordlgcaption
 msgid "Path Editor"
 msgstr "נתיב העורך"
@@ -1622,6 +1614,134 @@ msgstr "הרחבות לקובץ"
 #: lazarusidestrconsts.dlgfiles
 msgid "%s files"
 msgstr ""
+
+#: lazarusidestrconsts.dlgfilterall
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgfilterall"
+msgid "All files"
+msgstr "כל הקבצים"
+
+#: lazarusidestrconsts.dlgfiltercodetoolstemplatefile
+msgctxt "lazarusidestrconsts.dlgfiltercodetoolstemplatefile"
+msgid "CodeTools template file"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfilterdcifile
+msgid "DCI file"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfilterdelphiformdfm
+msgid "Delphi form file (*.dfm)|*.dfm"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfilterdelphipackage
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgfilterdelphipackage"
+msgid "Delphi package"
+msgstr "חבילת דלפי"
+
+#: lazarusidestrconsts.dlgfilterdelphiproject
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgfilterdelphiproject"
+msgid "Delphi project"
+msgstr "פרוייקט דלפי"
+
+#: lazarusidestrconsts.dlgfilterdelphiunit
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgfilterdelphiunit"
+msgid "Delphi unit"
+msgstr "יחידת דלפי"
+
+#: lazarusidestrconsts.dlgfilterexecutable
+msgctxt "lazarusidestrconsts.dlgfilterexecutable"
+msgid "Executable"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfilterfpcmessagefile
+msgctxt "lazarusidestrconsts.dlgfilterfpcmessagefile"
+msgid "FPC message file"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfilterlazarusdesktopsettings
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgfilterlazarusdesktopsettings"
+msgid "Lazarus Desktop Settings"
+msgstr "הגדרות שולחן העבודה של לזארוס"
+
+#: lazarusidestrconsts.dlgfilterlazaruseditorfile
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgfilterlazaruseditorfile"
+msgid "Editor file types"
+msgstr "סוגי הקבצים של העורך"
+
+#: lazarusidestrconsts.dlgfilterlazarusfile
+#, fuzzy
+#| msgid "Lazarus File"
+msgctxt "lazarusidestrconsts.dlgfilterlazarusfile"
+msgid "Lazarus file"
+msgstr "קובץ לזארוס"
+
+#: lazarusidestrconsts.dlgfilterlazarusform
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgfilterlazarusform"
+msgid "Lazarus form"
+msgstr "טופס לזארוס"
+
+#: lazarusidestrconsts.dlgfilterlazarusinclude
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgfilterlazarusinclude"
+msgid "Lazarus include file"
+msgstr "קובץ \"כלול\" של לזארוס"
+
+#: lazarusidestrconsts.dlgfilterlazarusotherfile
+msgctxt "lazarusidestrconsts.dlgfilterlazarusotherfile"
+msgid "Lazarus other file"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfilterlazaruspackage
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgfilterlazaruspackage"
+msgid "Lazarus package"
+msgstr "חבילת לזארוס"
+
+#: lazarusidestrconsts.dlgfilterlazarusproject
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgfilterlazarusproject"
+msgid "Lazarus project"
+msgstr "פרוייקט לזארוס"
+
+#: lazarusidestrconsts.dlgfilterlazarusprojectsource
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgfilterlazarusprojectsource"
+msgid "Lazarus project source"
+msgstr "קובץ קוד של פרוייקט לזארוס"
+
+#: lazarusidestrconsts.dlgfilterlazarussession
+msgid "Lazarus session"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfilterlazarusunit
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgfilterlazarusunit"
+msgid "Lazarus unit"
+msgstr "יחידת לזארוס"
+
+#: lazarusidestrconsts.dlgfilterpascalfile
+msgctxt "lazarusidestrconsts.dlgfilterpascalfile"
+msgid "Pascal file"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfilterprograms
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgfilterprograms"
+msgid "Programs"
+msgstr "תוכנות"
+
+#: lazarusidestrconsts.dlgfilterxml
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgfilterxml"
+msgid "XML files"
+msgstr "קבצי XML"
 
 #: lazarusidestrconsts.dlgfindtextatcursor
 msgid "Find text at cursor"
@@ -3231,6 +3351,26 @@ msgstr "קבע אלמנט לברירת המחדל"
 msgid "Set property Variable"
 msgstr "קבע את משתנה התכונות"
 
+#: lazarusidestrconsts.dlgsetpropertyvariablehint
+msgid "The parameter name for the default setter procedure."
+msgstr ""
+
+#: lazarusidestrconsts.dlgsetpropertyvariableisprefix
+msgid "is prefix"
+msgstr ""
+
+#: lazarusidestrconsts.dlgsetpropertyvariableisprefixhint
+msgid "If checked, the \"Set property Variable\" is a prefix. Otherwise it is a fixed name."
+msgstr ""
+
+#: lazarusidestrconsts.dlgsetpropertyvariableuseconst
+msgid "use const"
+msgstr ""
+
+#: lazarusidestrconsts.dlgsetpropertyvariableuseconsthint
+msgid "If checked, the setter parameter is marked with \"const\"."
+msgstr ""
+
 #: lazarusidestrconsts.dlgshowallunits
 msgid "Show all units"
 msgstr ""
@@ -4394,10 +4534,6 @@ msgstr "כל הבלוקים נראים תקינים."
 #: lazarusidestrconsts.lisallbuildmodes
 msgid "<All build modes>"
 msgstr ""
-
-#: lazarusidestrconsts.lisallfiles
-msgid "All Files"
-msgstr "כל הקבצים"
 
 #: lazarusidestrconsts.lisallinheritedoptions
 msgid "All inherited options"
@@ -6494,10 +6630,6 @@ msgstr "קבוע מסוג מחרוזת"
 msgid "Symbol"
 msgstr "סמל"
 
-#: lazarusidestrconsts.liscodetoolstemplatefile
-msgid "CodeTools template file"
-msgstr ""
-
 #: lazarusidestrconsts.liscoexecuteafter
 msgid "Execute after"
 msgstr "בצע אחרי"
@@ -8165,18 +8297,6 @@ msgstr "דלפי"
 msgid "Delphi compatible resources. Recommended."
 msgstr ""
 
-#: lazarusidestrconsts.lisdelphipackage
-msgid "Delphi package"
-msgstr "חבילת דלפי"
-
-#: lazarusidestrconsts.lisdelphiproject
-msgid "Delphi project"
-msgstr "פרוייקט דלפי"
-
-#: lazarusidestrconsts.lisdelphiunit
-msgid "Delphi unit"
-msgstr "יחידת דלפי"
-
 #: lazarusidestrconsts.lisdesigntimepackagesaddcomponentsandmenuitemstotheid
 msgid "\"Design time\" packages add components and menu items to the IDE. They can be used by projects, but are not compiled into the project. The compiler will not find units of this package when compiling the project."
 msgstr ""
@@ -8596,10 +8716,6 @@ msgstr ""
 #: lazarusidestrconsts.liseditorcolors
 msgid "Editor Colors"
 msgstr ""
-
-#: lazarusidestrconsts.liseditorfiletypes
-msgid "Editor file types"
-msgstr "סוגי הקבצים של העורך"
 
 #: lazarusidestrconsts.liseditormacros
 msgid "Editor macros"
@@ -9081,10 +9197,6 @@ msgstr ""
 msgid "Exclude filter"
 msgstr "אל תכלול מסנן"
 
-#: lazarusidestrconsts.lisexecutable
-msgid "Executable"
-msgstr ""
-
 #: lazarusidestrconsts.lisexecutableisadirectory
 msgid "executable \"%s\" is a directory"
 msgstr ""
@@ -9104,10 +9216,6 @@ msgstr "ביצוע פקודה לפני"
 #: lazarusidestrconsts.lisexecutionstopped
 msgid "Execution stopped"
 msgstr "הריצה נעצרה"
-
-#: lazarusidestrconsts.lisexeprograms
-msgid "Programs"
-msgstr "תוכנות"
 
 #: lazarusidestrconsts.lisexit
 msgctxt "lazarusidestrconsts.lisexit"
@@ -9596,10 +9704,6 @@ msgstr ""
 #: lazarusidestrconsts.lisfpcmakefailed
 msgid "fpcmake failed"
 msgstr "fpcmake נכשל"
-
-#: lazarusidestrconsts.lisfpcmessagefile
-msgid "FPC message file"
-msgstr ""
 
 #: lazarusidestrconsts.lisfpcmessagefile2
 msgid "FPC message file:"
@@ -11217,10 +11321,6 @@ msgstr "לזארוס"
 msgid "Lazarus Default"
 msgstr ""
 
-#: lazarusidestrconsts.lislazarusdesktopsettings
-msgid "Lazarus Desktop Settings"
-msgstr "הגדרות שולחן העבודה של לזארוס"
-
 #: lazarusidestrconsts.lislazarusdirectory
 msgid "Lazarus directory"
 msgstr "הספרייה של לזרוס"
@@ -11233,23 +11333,9 @@ msgstr "התקייה, שיש להשתמש בה כתיקיית המוצא"
 msgid "Lazarus IDE v%s"
 msgstr "לזרוס IDE v%s"
 
-#: lazarusidestrconsts.lislazarusfile
-#, fuzzy
-#| msgid "Lazarus File"
-msgid "Lazarus file"
-msgstr "קובץ לזארוס"
-
-#: lazarusidestrconsts.lislazarusform
-msgid "Lazarus form"
-msgstr "טופס לזארוס"
-
 #: lazarusidestrconsts.lislazaruside
 msgid "Lazarus IDE"
 msgstr "לזארוס IDE"
-
-#: lazarusidestrconsts.lislazarusinclude
-msgid "Lazarus include file"
-msgstr "קובץ \"כלול\" של לזארוס"
 
 #: lazarusidestrconsts.lislazaruslanguageid
 msgid "Lazarus language ID (e.g. en, de, br, fi)"
@@ -11262,30 +11348,6 @@ msgstr "שם השפה של לזרוס (למשל english, deutsch, hebrew)"
 #: lazarusidestrconsts.lislazarusoptionsprojectfilename
 msgid "lazarus [options] <project-filename>"
 msgstr "לזארוס [אפשרויות] <פרוייקט-שם קובץ>"
-
-#: lazarusidestrconsts.lislazarusotherfile
-msgid "Lazarus other file"
-msgstr ""
-
-#: lazarusidestrconsts.lislazaruspackage
-msgid "Lazarus package"
-msgstr "חבילת לזארוס"
-
-#: lazarusidestrconsts.lislazarusproject
-msgid "Lazarus project"
-msgstr "פרוייקט לזארוס"
-
-#: lazarusidestrconsts.lislazarusprojectinfofile
-msgid "Lazarus Project Info file"
-msgstr "קובץ מידע של פרוייקט לזארוס"
-
-#: lazarusidestrconsts.lislazarusprojectsource
-msgid "Lazarus project source"
-msgstr "קובץ קוד של פרוייקט לזארוס"
-
-#: lazarusidestrconsts.lislazarusunit
-msgid "Lazarus unit"
-msgstr "יחידת לזארוס"
 
 #: lazarusidestrconsts.lislazbuildaboaction
 msgctxt "lazarusidestrconsts.lislazbuildaboaction"
@@ -12322,6 +12384,22 @@ msgstr "קפוץ אל"
 #| msgid "Jump to implementation"
 msgid "Jump to Implementation"
 msgstr "קפוץ למימוש"
+
+#: lazarusidestrconsts.lismenujumptoimplementationuses
+msgid "Jump to Implementation uses"
+msgstr ""
+
+#: lazarusidestrconsts.lismenujumptoinitialization
+msgid "Jump to Initialization"
+msgstr ""
+
+#: lazarusidestrconsts.lismenujumptointerface
+msgid "Jump to Interface"
+msgstr ""
+
+#: lazarusidestrconsts.lismenujumptointerfaceuses
+msgid "Jump to Interface uses"
+msgstr ""
 
 #: lazarusidestrconsts.lismenujumptonextbookmark
 #, fuzzy
@@ -14002,10 +14080,6 @@ msgstr "פרוש"
 
 #: lazarusidestrconsts.lisparser
 msgid "parser \"%s\": %s"
-msgstr ""
-
-#: lazarusidestrconsts.lispascalfile
-msgid "Pascal file"
 msgstr ""
 
 #: lazarusidestrconsts.lispasscount
@@ -19250,10 +19324,6 @@ msgstr ""
 msgid "XML Error"
 msgstr "שגיאת XML"
 
-#: lazarusidestrconsts.lisxmlfiles
-msgid "XML files"
-msgstr "קבצי XML"
-
 #: lazarusidestrconsts.lisxmlparsererrorinfileerror
 msgid "XML parser error in file %s%sError: %s"
 msgstr "שגיאה בקובץ %s בעת קריאת XML%sשגיאה: %s"
@@ -19402,10 +19472,6 @@ msgstr ""
 #: lazarusidestrconsts.rsfilterthelistwithstring
 msgid "Filter the lines in list with a string"
 msgstr ""
-
-#: lazarusidestrconsts.rsformdatafiledfm
-msgid "Form data file (*.dfm)|*.dfm"
-msgstr "קובץ מידע טופס (dfm.*)"
 
 #: lazarusidestrconsts.rsfoundbutnotlistedhere
 msgid "Found, but not listed here: "

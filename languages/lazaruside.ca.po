@@ -553,10 +553,6 @@ msgstr "Afegeix punt i coma"
 msgid "Adjust top line due to comment in front"
 msgstr "Ajusta la línia de sobre a causa del comentari de davant"
 
-#: lazarusidestrconsts.dlgallfiles
-msgid "All files"
-msgstr "Tots els fitxers"
-
 #: lazarusidestrconsts.dlgalphabetically
 msgid "Alphabetically"
 msgstr "Alfabèticament"
@@ -1231,10 +1227,6 @@ msgstr ""
 msgid "User defined extension (.pp.xxx)"
 msgstr "Extensions definides per l'usuari (.pp.xxx)"
 
-#: lazarusidestrconsts.dlgdcifiledci
-msgid "DCI file (*.dci)"
-msgstr ""
-
 #: lazarusidestrconsts.dlgdebugoptionspatheditordlgcaption
 msgid "Path Editor"
 msgstr ""
@@ -1596,6 +1588,128 @@ msgstr "Extensions d'Arxiu"
 #: lazarusidestrconsts.dlgfiles
 msgid "%s files"
 msgstr ""
+
+#: lazarusidestrconsts.dlgfilterall
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgfilterall"
+msgid "All files"
+msgstr "Tots els fitxers"
+
+#: lazarusidestrconsts.dlgfiltercodetoolstemplatefile
+msgctxt "lazarusidestrconsts.dlgfiltercodetoolstemplatefile"
+msgid "CodeTools template file"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfilterdcifile
+msgid "DCI file"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfilterdelphiformdfm
+msgid "Delphi form file (*.dfm)|*.dfm"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfilterdelphipackage
+msgctxt "lazarusidestrconsts.dlgfilterdelphipackage"
+msgid "Delphi package"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfilterdelphiproject
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgfilterdelphiproject"
+msgid "Delphi project"
+msgstr "Projecte Delphi"
+
+#: lazarusidestrconsts.dlgfilterdelphiunit
+msgctxt "lazarusidestrconsts.dlgfilterdelphiunit"
+msgid "Delphi unit"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfilterexecutable
+msgctxt "lazarusidestrconsts.dlgfilterexecutable"
+msgid "Executable"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfilterfpcmessagefile
+msgctxt "lazarusidestrconsts.dlgfilterfpcmessagefile"
+msgid "FPC message file"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfilterlazarusdesktopsettings
+msgctxt "lazarusidestrconsts.dlgfilterlazarusdesktopsettings"
+msgid "Lazarus Desktop Settings"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfilterlazaruseditorfile
+msgctxt "lazarusidestrconsts.dlgfilterlazaruseditorfile"
+msgid "Editor file types"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfilterlazarusfile
+#, fuzzy
+#| msgid "Lazarus File"
+msgctxt "lazarusidestrconsts.dlgfilterlazarusfile"
+msgid "Lazarus file"
+msgstr "Arxiu Lazarus"
+
+#: lazarusidestrconsts.dlgfilterlazarusform
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgfilterlazarusform"
+msgid "Lazarus form"
+msgstr "Forma Lazarus"
+
+#: lazarusidestrconsts.dlgfilterlazarusinclude
+msgctxt "lazarusidestrconsts.dlgfilterlazarusinclude"
+msgid "Lazarus include file"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfilterlazarusotherfile
+msgctxt "lazarusidestrconsts.dlgfilterlazarusotherfile"
+msgid "Lazarus other file"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfilterlazaruspackage
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgfilterlazaruspackage"
+msgid "Lazarus package"
+msgstr "Paquet Lazarus"
+
+#: lazarusidestrconsts.dlgfilterlazarusproject
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgfilterlazarusproject"
+msgid "Lazarus project"
+msgstr "Projecte Lazarus"
+
+#: lazarusidestrconsts.dlgfilterlazarusprojectsource
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgfilterlazarusprojectsource"
+msgid "Lazarus project source"
+msgstr "Font de projecte Lazarus"
+
+#: lazarusidestrconsts.dlgfilterlazarussession
+msgid "Lazarus session"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfilterlazarusunit
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgfilterlazarusunit"
+msgid "Lazarus unit"
+msgstr "Unitat Lazarus"
+
+#: lazarusidestrconsts.dlgfilterpascalfile
+msgctxt "lazarusidestrconsts.dlgfilterpascalfile"
+msgid "Pascal file"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfilterprograms
+msgctxt "lazarusidestrconsts.dlgfilterprograms"
+msgid "Programs"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfilterxml
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgfilterxml"
+msgid "XML files"
+msgstr "Arxius XML"
 
 #: lazarusidestrconsts.dlgfindtextatcursor
 msgid "Find text at cursor"
@@ -3154,6 +3268,26 @@ msgstr "Predetermina l'element"
 msgid "Set property Variable"
 msgstr "Variable de propietat"
 
+#: lazarusidestrconsts.dlgsetpropertyvariablehint
+msgid "The parameter name for the default setter procedure."
+msgstr ""
+
+#: lazarusidestrconsts.dlgsetpropertyvariableisprefix
+msgid "is prefix"
+msgstr ""
+
+#: lazarusidestrconsts.dlgsetpropertyvariableisprefixhint
+msgid "If checked, the \"Set property Variable\" is a prefix. Otherwise it is a fixed name."
+msgstr ""
+
+#: lazarusidestrconsts.dlgsetpropertyvariableuseconst
+msgid "use const"
+msgstr ""
+
+#: lazarusidestrconsts.dlgsetpropertyvariableuseconsthint
+msgid "If checked, the setter parameter is marked with \"const\"."
+msgstr ""
+
 #: lazarusidestrconsts.dlgshowallunits
 msgid "Show all units"
 msgstr ""
@@ -4298,10 +4432,6 @@ msgstr "Tots els blocs semblen correctes."
 #: lazarusidestrconsts.lisallbuildmodes
 msgid "<All build modes>"
 msgstr ""
-
-#: lazarusidestrconsts.lisallfiles
-msgid "All Files"
-msgstr "Tots els arxius"
 
 #: lazarusidestrconsts.lisallinheritedoptions
 msgid "All inherited options"
@@ -6319,10 +6449,6 @@ msgstr "Constant alfanumèrica"
 msgid "Symbol"
 msgstr "Símbol"
 
-#: lazarusidestrconsts.liscodetoolstemplatefile
-msgid "CodeTools template file"
-msgstr ""
-
 #: lazarusidestrconsts.liscoexecuteafter
 msgid "Execute after"
 msgstr "Executa després de"
@@ -7933,18 +8059,6 @@ msgstr ""
 msgid "Delphi compatible resources. Recommended."
 msgstr ""
 
-#: lazarusidestrconsts.lisdelphipackage
-msgid "Delphi package"
-msgstr ""
-
-#: lazarusidestrconsts.lisdelphiproject
-msgid "Delphi project"
-msgstr "Projecte Delphi"
-
-#: lazarusidestrconsts.lisdelphiunit
-msgid "Delphi unit"
-msgstr ""
-
 #: lazarusidestrconsts.lisdesigntimepackagesaddcomponentsandmenuitemstotheid
 msgid "\"Design time\" packages add components and menu items to the IDE. They can be used by projects, but are not compiled into the project. The compiler will not find units of this package when compiling the project."
 msgstr ""
@@ -8346,10 +8460,6 @@ msgstr ""
 
 #: lazarusidestrconsts.liseditorcolors
 msgid "Editor Colors"
-msgstr ""
-
-#: lazarusidestrconsts.liseditorfiletypes
-msgid "Editor file types"
 msgstr ""
 
 #: lazarusidestrconsts.liseditormacros
@@ -8808,10 +8918,6 @@ msgstr ""
 msgid "Exclude filter"
 msgstr ""
 
-#: lazarusidestrconsts.lisexecutable
-msgid "Executable"
-msgstr ""
-
 #: lazarusidestrconsts.lisexecutableisadirectory
 msgid "executable \"%s\" is a directory"
 msgstr ""
@@ -8831,10 +8937,6 @@ msgstr "Executa l'ordre abans"
 #: lazarusidestrconsts.lisexecutionstopped
 msgid "Execution stopped"
 msgstr "S'ha aturat l'execució"
-
-#: lazarusidestrconsts.lisexeprograms
-msgid "Programs"
-msgstr ""
 
 #: lazarusidestrconsts.lisexit
 msgctxt "lazarusidestrconsts.lisexit"
@@ -9315,10 +9417,6 @@ msgstr ""
 
 #: lazarusidestrconsts.lisfpcmakefailed
 msgid "fpcmake failed"
-msgstr ""
-
-#: lazarusidestrconsts.lisfpcmessagefile
-msgid "FPC message file"
 msgstr ""
 
 #: lazarusidestrconsts.lisfpcmessagefile2
@@ -10861,10 +10959,6 @@ msgstr "Lazarus"
 msgid "Lazarus Default"
 msgstr ""
 
-#: lazarusidestrconsts.lislazarusdesktopsettings
-msgid "Lazarus Desktop Settings"
-msgstr ""
-
 #: lazarusidestrconsts.lislazarusdirectory
 msgid "Lazarus directory"
 msgstr "Directori del Lazarus"
@@ -10877,22 +10971,8 @@ msgstr ""
 msgid "Lazarus IDE v%s"
 msgstr ""
 
-#: lazarusidestrconsts.lislazarusfile
-#, fuzzy
-#| msgid "Lazarus File"
-msgid "Lazarus file"
-msgstr "Arxiu Lazarus"
-
-#: lazarusidestrconsts.lislazarusform
-msgid "Lazarus form"
-msgstr "Forma Lazarus"
-
 #: lazarusidestrconsts.lislazaruside
 msgid "Lazarus IDE"
-msgstr ""
-
-#: lazarusidestrconsts.lislazarusinclude
-msgid "Lazarus include file"
 msgstr ""
 
 #: lazarusidestrconsts.lislazaruslanguageid
@@ -10906,30 +10986,6 @@ msgstr ""
 #: lazarusidestrconsts.lislazarusoptionsprojectfilename
 msgid "lazarus [options] <project-filename>"
 msgstr "lazarus [opcions] <projecte-nomfitxer>"
-
-#: lazarusidestrconsts.lislazarusotherfile
-msgid "Lazarus other file"
-msgstr ""
-
-#: lazarusidestrconsts.lislazaruspackage
-msgid "Lazarus package"
-msgstr "Paquet Lazarus"
-
-#: lazarusidestrconsts.lislazarusproject
-msgid "Lazarus project"
-msgstr "Projecte Lazarus"
-
-#: lazarusidestrconsts.lislazarusprojectinfofile
-msgid "Lazarus Project Info file"
-msgstr ""
-
-#: lazarusidestrconsts.lislazarusprojectsource
-msgid "Lazarus project source"
-msgstr "Font de projecte Lazarus"
-
-#: lazarusidestrconsts.lislazarusunit
-msgid "Lazarus unit"
-msgstr "Unitat Lazarus"
 
 #: lazarusidestrconsts.lislazbuildaboaction
 msgctxt "lazarusidestrconsts.lislazbuildaboaction"
@@ -11928,6 +11984,22 @@ msgstr "Ves a"
 
 #: lazarusidestrconsts.lismenujumptoimplementation
 msgid "Jump to Implementation"
+msgstr ""
+
+#: lazarusidestrconsts.lismenujumptoimplementationuses
+msgid "Jump to Implementation uses"
+msgstr ""
+
+#: lazarusidestrconsts.lismenujumptoinitialization
+msgid "Jump to Initialization"
+msgstr ""
+
+#: lazarusidestrconsts.lismenujumptointerface
+msgid "Jump to Interface"
+msgstr ""
+
+#: lazarusidestrconsts.lismenujumptointerfaceuses
+msgid "Jump to Interface uses"
 msgstr ""
 
 #: lazarusidestrconsts.lismenujumptonextbookmark
@@ -13562,10 +13634,6 @@ msgstr ""
 
 #: lazarusidestrconsts.lisparser
 msgid "parser \"%s\": %s"
-msgstr ""
-
-#: lazarusidestrconsts.lispascalfile
-msgid "Pascal file"
 msgstr ""
 
 #: lazarusidestrconsts.lispasscount
@@ -18595,10 +18663,6 @@ msgstr ""
 msgid "XML Error"
 msgstr ""
 
-#: lazarusidestrconsts.lisxmlfiles
-msgid "XML files"
-msgstr "Arxius XML"
-
 #: lazarusidestrconsts.lisxmlparsererrorinfileerror
 msgid "XML parser error in file %s%sError: %s"
 msgstr ""
@@ -18745,10 +18809,6 @@ msgstr ""
 #: lazarusidestrconsts.rsfilterthelistwithstring
 msgid "Filter the lines in list with a string"
 msgstr ""
-
-#: lazarusidestrconsts.rsformdatafiledfm
-msgid "Form data file (*.dfm)|*.dfm"
-msgstr "Arxiu de dades de Forma (*.dfm)|*.dfm"
 
 #: lazarusidestrconsts.rsfoundbutnotlistedhere
 msgid "Found, but not listed here: "

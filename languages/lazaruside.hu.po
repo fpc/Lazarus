@@ -555,10 +555,6 @@ msgstr "Pontosvessző hozzáadása"
 msgid "Adjust top line due to comment in front"
 msgstr "Felső sor igazítása az előtte lévő megjegyzéshez"
 
-#: lazarusidestrconsts.dlgallfiles
-msgid "All files"
-msgstr "Minden fájl"
-
 #: lazarusidestrconsts.dlgalphabetically
 msgid "Alphabetically"
 msgstr "Ábécé rendben"
@@ -1191,10 +1187,6 @@ msgstr "A kurzor átugrik a tab-okon"
 msgid "User defined extension (.pp.xxx)"
 msgstr "Felhasználó által megadott kiterjesztés (.pp.xxx)"
 
-#: lazarusidestrconsts.dlgdcifiledci
-msgid "DCI file (*.dci)"
-msgstr "DCI fájl (*.dci)"
-
 #: lazarusidestrconsts.dlgdebugoptionspatheditordlgcaption
 msgid "Path Editor"
 msgstr "Útvonalszerkesztő"
@@ -1546,6 +1538,138 @@ msgstr "Fájlkiterjesztések"
 #: lazarusidestrconsts.dlgfiles
 msgid "%s files"
 msgstr "%s fájl"
+
+#: lazarusidestrconsts.dlgfilterall
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgfilterall"
+msgid "All files"
+msgstr "Minden fájl"
+
+#: lazarusidestrconsts.dlgfiltercodetoolstemplatefile
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgfiltercodetoolstemplatefile"
+msgid "CodeTools template file"
+msgstr "CodeTools sablon fájl"
+
+#: lazarusidestrconsts.dlgfilterdcifile
+msgid "DCI file"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfilterdelphiformdfm
+msgid "Delphi form file (*.dfm)|*.dfm"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfilterdelphipackage
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgfilterdelphipackage"
+msgid "Delphi package"
+msgstr "Delphi csomag"
+
+#: lazarusidestrconsts.dlgfilterdelphiproject
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgfilterdelphiproject"
+msgid "Delphi project"
+msgstr "Delphi projekt"
+
+#: lazarusidestrconsts.dlgfilterdelphiunit
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgfilterdelphiunit"
+msgid "Delphi unit"
+msgstr "Delphi unit"
+
+#: lazarusidestrconsts.dlgfilterexecutable
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgfilterexecutable"
+msgid "Executable"
+msgstr "Futtatható"
+
+#: lazarusidestrconsts.dlgfilterfpcmessagefile
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgfilterfpcmessagefile"
+msgid "FPC message file"
+msgstr "FPC üzenetfájl"
+
+#: lazarusidestrconsts.dlgfilterlazarusdesktopsettings
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgfilterlazarusdesktopsettings"
+msgid "Lazarus Desktop Settings"
+msgstr "Lazarus felület beállításai"
+
+#: lazarusidestrconsts.dlgfilterlazaruseditorfile
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgfilterlazaruseditorfile"
+msgid "Editor file types"
+msgstr "Szerkeszthető fájltípusok"
+
+#: lazarusidestrconsts.dlgfilterlazarusfile
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgfilterlazarusfile"
+msgid "Lazarus file"
+msgstr "Lazarus fájl"
+
+#: lazarusidestrconsts.dlgfilterlazarusform
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgfilterlazarusform"
+msgid "Lazarus form"
+msgstr "Lazarus form"
+
+#: lazarusidestrconsts.dlgfilterlazarusinclude
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgfilterlazarusinclude"
+msgid "Lazarus include file"
+msgstr "Lazarus include fájl"
+
+#: lazarusidestrconsts.dlgfilterlazarusotherfile
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgfilterlazarusotherfile"
+msgid "Lazarus other file"
+msgstr "Lazarus egyéb fájl"
+
+#: lazarusidestrconsts.dlgfilterlazaruspackage
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgfilterlazaruspackage"
+msgid "Lazarus package"
+msgstr "Lazarus csomag"
+
+#: lazarusidestrconsts.dlgfilterlazarusproject
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgfilterlazarusproject"
+msgid "Lazarus project"
+msgstr "Lazarus projekt"
+
+#: lazarusidestrconsts.dlgfilterlazarusprojectsource
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgfilterlazarusprojectsource"
+msgid "Lazarus project source"
+msgstr "Lazarus projekt forráskód"
+
+#: lazarusidestrconsts.dlgfilterlazarussession
+msgid "Lazarus session"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfilterlazarusunit
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgfilterlazarusunit"
+msgid "Lazarus unit"
+msgstr "Lazarus unit"
+
+#: lazarusidestrconsts.dlgfilterpascalfile
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgfilterpascalfile"
+msgid "Pascal file"
+msgstr "Pascal fájl"
+
+#: lazarusidestrconsts.dlgfilterprograms
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgfilterprograms"
+msgid "Programs"
+msgstr "Programok"
+
+#: lazarusidestrconsts.dlgfilterxml
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgfilterxml"
+msgid "XML files"
+msgstr "XML fájlok"
 
 #: lazarusidestrconsts.dlgfindtextatcursor
 msgid "Find text at cursor"
@@ -3063,6 +3187,26 @@ msgstr "Elem alapértelmezettre állítása"
 msgid "Set property Variable"
 msgstr "Tulajdonság-beállítás változója"
 
+#: lazarusidestrconsts.dlgsetpropertyvariablehint
+msgid "The parameter name for the default setter procedure."
+msgstr ""
+
+#: lazarusidestrconsts.dlgsetpropertyvariableisprefix
+msgid "is prefix"
+msgstr ""
+
+#: lazarusidestrconsts.dlgsetpropertyvariableisprefixhint
+msgid "If checked, the \"Set property Variable\" is a prefix. Otherwise it is a fixed name."
+msgstr ""
+
+#: lazarusidestrconsts.dlgsetpropertyvariableuseconst
+msgid "use const"
+msgstr ""
+
+#: lazarusidestrconsts.dlgsetpropertyvariableuseconsthint
+msgid "If checked, the setter parameter is marked with \"const\"."
+msgstr ""
+
 #: lazarusidestrconsts.dlgshowallunits
 msgid "Show all units"
 msgstr "Minden unit megjelenítése"
@@ -4117,10 +4261,6 @@ msgstr "Minden blokk jónak tűnik."
 #: lazarusidestrconsts.lisallbuildmodes
 msgid "<All build modes>"
 msgstr "<Minden építési mód>"
-
-#: lazarusidestrconsts.lisallfiles
-msgid "All Files"
-msgstr "Minden fájl"
 
 #: lazarusidestrconsts.lisallinheritedoptions
 msgid "All inherited options"
@@ -6102,10 +6242,6 @@ msgstr "Szöveg konstans"
 msgid "Symbol"
 msgstr "Szimbólum"
 
-#: lazarusidestrconsts.liscodetoolstemplatefile
-msgid "CodeTools template file"
-msgstr "CodeTools sablon fájl"
-
 #: lazarusidestrconsts.liscoexecuteafter
 msgid "Execute after"
 msgstr "Utólag végrehajtandó"
@@ -7698,18 +7834,6 @@ msgstr "Delphi"
 msgid "Delphi compatible resources. Recommended."
 msgstr "Delphi kompatibilis erőforrások. Ajánlott."
 
-#: lazarusidestrconsts.lisdelphipackage
-msgid "Delphi package"
-msgstr "Delphi csomag"
-
-#: lazarusidestrconsts.lisdelphiproject
-msgid "Delphi project"
-msgstr "Delphi projekt"
-
-#: lazarusidestrconsts.lisdelphiunit
-msgid "Delphi unit"
-msgstr "Delphi unit"
-
 #: lazarusidestrconsts.lisdesigntimepackagesaddcomponentsandmenuitemstotheid
 msgid "\"Design time\" packages add components and menu items to the IDE. They can be used by projects, but are not compiled into the project. The compiler will not find units of this package when compiling the project."
 msgstr "A \"tervezési\" csomagok komponenseket és menübejegyzéseket adnak az IDE-hez. A projektek használhatják őket, de nem lesznek beléjük építve. A fordító nem fogja megtalálni ezen csomagok unit-jait a projekt fordításakor."
@@ -8106,10 +8230,6 @@ msgstr "Billentyű szerkesztése"
 #: lazarusidestrconsts.liseditorcolors
 msgid "Editor Colors"
 msgstr "Szerkesztő színei"
-
-#: lazarusidestrconsts.liseditorfiletypes
-msgid "Editor file types"
-msgstr "Szerkeszthető fájltípusok"
 
 #: lazarusidestrconsts.liseditormacros
 msgid "Editor macros"
@@ -8569,10 +8689,6 @@ msgstr "%s kihagyva futásidőben"
 msgid "Exclude filter"
 msgstr "Kizáró szűrő"
 
-#: lazarusidestrconsts.lisexecutable
-msgid "Executable"
-msgstr "Futtatható"
-
 #: lazarusidestrconsts.lisexecutableisadirectory
 msgid "executable \"%s\" is a directory"
 msgstr "a(z) \"%s\" állomány egy könyvtár"
@@ -8592,10 +8708,6 @@ msgstr "Előzőleg végrehajtandó művelet futtatása"
 #: lazarusidestrconsts.lisexecutionstopped
 msgid "Execution stopped"
 msgstr "Futtatás leállítva"
-
-#: lazarusidestrconsts.lisexeprograms
-msgid "Programs"
-msgstr "Programok"
 
 #: lazarusidestrconsts.lisexit
 msgctxt "lazarusidestrconsts.lisexit"
@@ -9064,10 +9176,6 @@ msgstr "FPC változat egyetlen számként (pl. 20701)"
 #: lazarusidestrconsts.lisfpcmakefailed
 msgid "fpcmake failed"
 msgstr "fpcmake sikertelen"
-
-#: lazarusidestrconsts.lisfpcmessagefile
-msgid "FPC message file"
-msgstr "FPC üzenetfájl"
 
 #: lazarusidestrconsts.lisfpcmessagefile2
 msgid "FPC message file:"
@@ -10610,10 +10718,6 @@ msgstr "Lazarus"
 msgid "Lazarus Default"
 msgstr "Lazarus alapértelmezés"
 
-#: lazarusidestrconsts.lislazarusdesktopsettings
-msgid "Lazarus Desktop Settings"
-msgstr "Lazarus felület beállításai"
-
 #: lazarusidestrconsts.lislazarusdirectory
 msgid "Lazarus directory"
 msgstr "Lazarus könyvtára"
@@ -10626,21 +10730,9 @@ msgstr "könyvtár, mely alapkönyvtárként használandó"
 msgid "Lazarus IDE v%s"
 msgstr "Lazarus IDE v%s"
 
-#: lazarusidestrconsts.lislazarusfile
-msgid "Lazarus file"
-msgstr "Lazarus fájl"
-
-#: lazarusidestrconsts.lislazarusform
-msgid "Lazarus form"
-msgstr "Lazarus form"
-
 #: lazarusidestrconsts.lislazaruside
 msgid "Lazarus IDE"
 msgstr "Lazarus IDE"
-
-#: lazarusidestrconsts.lislazarusinclude
-msgid "Lazarus include file"
-msgstr "Lazarus include fájl"
 
 #: lazarusidestrconsts.lislazaruslanguageid
 msgid "Lazarus language ID (e.g. en, de, br, fi)"
@@ -10653,30 +10745,6 @@ msgstr "Lazarus nyelv neve (pl. english, deutsch)"
 #: lazarusidestrconsts.lislazarusoptionsprojectfilename
 msgid "lazarus [options] <project-filename>"
 msgstr "lazarus [beállítások] <projekt-fájlnév>"
-
-#: lazarusidestrconsts.lislazarusotherfile
-msgid "Lazarus other file"
-msgstr "Lazarus egyéb fájl"
-
-#: lazarusidestrconsts.lislazaruspackage
-msgid "Lazarus package"
-msgstr "Lazarus csomag"
-
-#: lazarusidestrconsts.lislazarusproject
-msgid "Lazarus project"
-msgstr "Lazarus projekt"
-
-#: lazarusidestrconsts.lislazarusprojectinfofile
-msgid "Lazarus Project Info file"
-msgstr "Lazarus projekt infó fájl"
-
-#: lazarusidestrconsts.lislazarusprojectsource
-msgid "Lazarus project source"
-msgstr "Lazarus projekt forráskód"
-
-#: lazarusidestrconsts.lislazarusunit
-msgid "Lazarus unit"
-msgstr "Lazarus unit"
 
 #: lazarusidestrconsts.lislazbuildaboaction
 msgctxt "lazarusidestrconsts.lislazbuildaboaction"
@@ -11587,6 +11655,22 @@ msgstr "Ugrás ..."
 #: lazarusidestrconsts.lismenujumptoimplementation
 msgid "Jump to Implementation"
 msgstr "Ugrás a kidolgozáshoz"
+
+#: lazarusidestrconsts.lismenujumptoimplementationuses
+msgid "Jump to Implementation uses"
+msgstr ""
+
+#: lazarusidestrconsts.lismenujumptoinitialization
+msgid "Jump to Initialization"
+msgstr ""
+
+#: lazarusidestrconsts.lismenujumptointerface
+msgid "Jump to Interface"
+msgstr ""
+
+#: lazarusidestrconsts.lismenujumptointerfaceuses
+msgid "Jump to Interface uses"
+msgstr ""
 
 #: lazarusidestrconsts.lismenujumptonextbookmark
 msgid "Jump to Next Bookmark"
@@ -13127,10 +13211,6 @@ msgstr ", elemezve"
 #: lazarusidestrconsts.lisparser
 msgid "parser \"%s\": %s"
 msgstr "\"%s\" elemző: %s"
-
-#: lazarusidestrconsts.lispascalfile
-msgid "Pascal file"
-msgstr "Pascal fájl"
 
 #: lazarusidestrconsts.lispasscount
 msgid "Pass Count"
@@ -17896,10 +17976,6 @@ msgstr "a %s rossz változatot tartalmaz: %s"
 msgid "XML Error"
 msgstr "XML Hiba"
 
-#: lazarusidestrconsts.lisxmlfiles
-msgid "XML files"
-msgstr "XML fájlok"
-
 #: lazarusidestrconsts.lisxmlparsererrorinfileerror
 msgid "XML parser error in file %s%sError: %s"
 msgstr "XML elemző hiba a(z) %s%s fájlban. Hiba: %s"
@@ -18043,10 +18119,6 @@ msgstr "PID bevitele"
 #: lazarusidestrconsts.rsfilterthelistwithstring
 msgid "Filter the lines in list with a string"
 msgstr "A lista sorainak szűrése egy karakterlánc alapján"
-
-#: lazarusidestrconsts.rsformdatafiledfm
-msgid "Form data file (*.dfm)|*.dfm"
-msgstr "Form adatfájl (*.dfm)|*.dfm"
 
 #: lazarusidestrconsts.rsfoundbutnotlistedhere
 msgid "Found, but not listed here: "

@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2015-05-30 02:58+0300\n"
+"PO-Revision-Date: 2015-06-03 02:50+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -555,10 +555,6 @@ msgstr "Добавлять точку с запятой"
 #: lazarusidestrconsts.dlgadjusttopline
 msgid "Adjust top line due to comment in front"
 msgstr "Устанавливать верхнюю строку на комментарии"
-
-#: lazarusidestrconsts.dlgallfiles
-msgid "All files"
-msgstr "Все файлы"
 
 #: lazarusidestrconsts.dlgalphabetically
 msgid "Alphabetically"
@@ -1190,10 +1186,6 @@ msgstr "Курсор пропускает ТАБы"
 msgid "User defined extension (.pp.xxx)"
 msgstr "Расширение пользователя (.pp.xxx)"
 
-#: lazarusidestrconsts.dlgdcifiledci
-msgid "DCI file (*.dci)"
-msgstr "Файл DCI (*.dci)"
-
 #: lazarusidestrconsts.dlgdebugoptionspatheditordlgcaption
 msgid "Path Editor"
 msgstr "Редактор путей"
@@ -1545,6 +1537,118 @@ msgstr "Расширения файлов"
 #: lazarusidestrconsts.dlgfiles
 msgid "%s files"
 msgstr "Файлов: %s"
+
+#: lazarusidestrconsts.dlgfilterall
+msgctxt "lazarusidestrconsts.dlgfilterall"
+msgid "All files"
+msgstr "Все файлы"
+
+#: lazarusidestrconsts.dlgfiltercodetoolstemplatefile
+msgctxt "lazarusidestrconsts.dlgfiltercodetoolstemplatefile"
+msgid "CodeTools template file"
+msgstr "Файл шаблонов CodeTools"
+
+#: lazarusidestrconsts.dlgfilterdcifile
+msgid "DCI file"
+msgstr "Файл DCI"
+
+#: lazarusidestrconsts.dlgfilterdelphiformdfm
+msgid "Delphi form file (*.dfm)|*.dfm"
+msgstr "Файл формы Delphi (*.dfm)|*.dfm"
+
+#: lazarusidestrconsts.dlgfilterdelphipackage
+msgctxt "lazarusidestrconsts.dlgfilterdelphipackage"
+msgid "Delphi package"
+msgstr "Пакет Delphi"
+
+#: lazarusidestrconsts.dlgfilterdelphiproject
+msgctxt "lazarusidestrconsts.dlgfilterdelphiproject"
+msgid "Delphi project"
+msgstr "Проект Delphi"
+
+#: lazarusidestrconsts.dlgfilterdelphiunit
+msgctxt "lazarusidestrconsts.dlgfilterdelphiunit"
+msgid "Delphi unit"
+msgstr "Модуль Delphi"
+
+#: lazarusidestrconsts.dlgfilterexecutable
+msgctxt "lazarusidestrconsts.dlgfilterexecutable"
+msgid "Executable"
+msgstr "Исполнимый файл"
+
+#: lazarusidestrconsts.dlgfilterfpcmessagefile
+msgctxt "lazarusidestrconsts.dlgfilterfpcmessagefile"
+msgid "FPC message file"
+msgstr "Файл сообщений FPC"
+
+#: lazarusidestrconsts.dlgfilterlazarusdesktopsettings
+msgctxt "lazarusidestrconsts.dlgfilterlazarusdesktopsettings"
+msgid "Lazarus Desktop Settings"
+msgstr "Параметры рабочего стола Lazarus"
+
+#: lazarusidestrconsts.dlgfilterlazaruseditorfile
+msgctxt "lazarusidestrconsts.dlgfilterlazaruseditorfile"
+msgid "Editor file types"
+msgstr "Типы файлов редактора"
+
+#: lazarusidestrconsts.dlgfilterlazarusfile
+msgctxt "lazarusidestrconsts.dlgfilterlazarusfile"
+msgid "Lazarus file"
+msgstr "Файл Lazarus"
+
+#: lazarusidestrconsts.dlgfilterlazarusform
+msgctxt "lazarusidestrconsts.dlgfilterlazarusform"
+msgid "Lazarus form"
+msgstr "Форма Lazarus"
+
+#: lazarusidestrconsts.dlgfilterlazarusinclude
+msgctxt "lazarusidestrconsts.dlgfilterlazarusinclude"
+msgid "Lazarus include file"
+msgstr "Включаемый файл Lazarus"
+
+#: lazarusidestrconsts.dlgfilterlazarusotherfile
+msgctxt "lazarusidestrconsts.dlgfilterlazarusotherfile"
+msgid "Lazarus other file"
+msgstr "Иной файл Lazarus"
+
+#: lazarusidestrconsts.dlgfilterlazaruspackage
+msgctxt "lazarusidestrconsts.dlgfilterlazaruspackage"
+msgid "Lazarus package"
+msgstr "Пакет Lazarus"
+
+#: lazarusidestrconsts.dlgfilterlazarusproject
+msgctxt "lazarusidestrconsts.dlgfilterlazarusproject"
+msgid "Lazarus project"
+msgstr "Проект Lazarus"
+
+#: lazarusidestrconsts.dlgfilterlazarusprojectsource
+msgctxt "lazarusidestrconsts.dlgfilterlazarusprojectsource"
+msgid "Lazarus project source"
+msgstr "Исходный код проекта Lazarus"
+
+#: lazarusidestrconsts.dlgfilterlazarussession
+msgid "Lazarus session"
+msgstr "Сеанс работы в Lazarus"
+
+#: lazarusidestrconsts.dlgfilterlazarusunit
+msgctxt "lazarusidestrconsts.dlgfilterlazarusunit"
+msgid "Lazarus unit"
+msgstr "Модуль Lazarus"
+
+#: lazarusidestrconsts.dlgfilterpascalfile
+msgctxt "lazarusidestrconsts.dlgfilterpascalfile"
+msgid "Pascal file"
+msgstr "Файл Паскаля"
+
+#: lazarusidestrconsts.dlgfilterprograms
+msgctxt "lazarusidestrconsts.dlgfilterprograms"
+msgid "Programs"
+msgstr "Программы"
+
+#: lazarusidestrconsts.dlgfilterxml
+msgctxt "lazarusidestrconsts.dlgfilterxml"
+msgid "XML files"
+msgstr "Файлы XML"
 
 #: lazarusidestrconsts.dlgfindtextatcursor
 msgid "Find text at cursor"
@@ -3053,6 +3157,26 @@ msgstr "Установить элемент по умолчанию"
 msgid "Set property Variable"
 msgstr "Переменная свойства"
 
+#: lazarusidestrconsts.dlgsetpropertyvariablehint
+msgid "The parameter name for the default setter procedure."
+msgstr ""
+
+#: lazarusidestrconsts.dlgsetpropertyvariableisprefix
+msgid "is prefix"
+msgstr ""
+
+#: lazarusidestrconsts.dlgsetpropertyvariableisprefixhint
+msgid "If checked, the \"Set property Variable\" is a prefix. Otherwise it is a fixed name."
+msgstr ""
+
+#: lazarusidestrconsts.dlgsetpropertyvariableuseconst
+msgid "use const"
+msgstr ""
+
+#: lazarusidestrconsts.dlgsetpropertyvariableuseconsthint
+msgid "If checked, the setter parameter is marked with \"const\"."
+msgstr ""
+
 #: lazarusidestrconsts.dlgshowallunits
 msgid "Show all units"
 msgstr "Показывать все модули"
@@ -4107,10 +4231,6 @@ msgstr "Все блоки выглядят нормально."
 #: lazarusidestrconsts.lisallbuildmodes
 msgid "<All build modes>"
 msgstr "<Все режимы сборки>"
-
-#: lazarusidestrconsts.lisallfiles
-msgid "All Files"
-msgstr "Все файлы"
 
 #: lazarusidestrconsts.lisallinheritedoptions
 msgid "All inherited options"
@@ -6089,10 +6209,6 @@ msgstr "Строковая константа"
 msgid "Symbol"
 msgstr "Символ"
 
-#: lazarusidestrconsts.liscodetoolstemplatefile
-msgid "CodeTools template file"
-msgstr "Файл шаблонов CodeTools"
-
 #: lazarusidestrconsts.liscoexecuteafter
 msgid "Execute after"
 msgstr "Выполнить после компиляции"
@@ -7677,18 +7793,6 @@ msgstr "Delphi"
 msgid "Delphi compatible resources. Recommended."
 msgstr "Ресурсы, совместимые с Delphi. Рекомендуется использовать именно их."
 
-#: lazarusidestrconsts.lisdelphipackage
-msgid "Delphi package"
-msgstr "Пакет Delphi"
-
-#: lazarusidestrconsts.lisdelphiproject
-msgid "Delphi project"
-msgstr "Проект Delphi"
-
-#: lazarusidestrconsts.lisdelphiunit
-msgid "Delphi unit"
-msgstr "Модуль Delphi"
-
 #: lazarusidestrconsts.lisdesigntimepackagesaddcomponentsandmenuitemstotheid
 msgid "\"Design time\" packages add components and menu items to the IDE. They can be used by projects, but are not compiled into the project. The compiler will not find units of this package when compiling the project."
 msgstr "Пакеты времени разработки добавляют компоненты и элементы меню в IDE. Они могут использоваться проектами, но не собираться с ними. Компилятор не найдёт модулей такого пакета при сборке проекта."
@@ -8085,10 +8189,6 @@ msgstr "Изменить клавиши"
 #: lazarusidestrconsts.liseditorcolors
 msgid "Editor Colors"
 msgstr "Цвета редактора"
-
-#: lazarusidestrconsts.liseditorfiletypes
-msgid "Editor file types"
-msgstr "Типы файлов редактора"
 
 #: lazarusidestrconsts.liseditormacros
 msgid "Editor macros"
@@ -8546,10 +8646,6 @@ msgstr "%s исключён во время исполнения"
 msgid "Exclude filter"
 msgstr "Исключающий фильтр"
 
-#: lazarusidestrconsts.lisexecutable
-msgid "Executable"
-msgstr "Исполнимый файл"
-
 #: lazarusidestrconsts.lisexecutableisadirectory
 msgid "executable \"%s\" is a directory"
 msgstr "исполнимый файл \"%s\" является каталогом"
@@ -8569,10 +8665,6 @@ msgstr "Выполнить команду до"
 #: lazarusidestrconsts.lisexecutionstopped
 msgid "Execution stopped"
 msgstr "Исполнение остановлено"
-
-#: lazarusidestrconsts.lisexeprograms
-msgid "Programs"
-msgstr "Программы"
 
 #: lazarusidestrconsts.lisexit
 msgctxt "lazarusidestrconsts.lisexit"
@@ -9041,10 +9133,6 @@ msgstr "Версия FPC в виде одного числа (например, 
 #: lazarusidestrconsts.lisfpcmakefailed
 msgid "fpcmake failed"
 msgstr "ошибка fpcmake"
-
-#: lazarusidestrconsts.lisfpcmessagefile
-msgid "FPC message file"
-msgstr "Файл сообщений FPC"
 
 #: lazarusidestrconsts.lisfpcmessagefile2
 msgid "FPC message file:"
@@ -10588,10 +10676,6 @@ msgstr "Lazarus"
 msgid "Lazarus Default"
 msgstr "Lazarus по умолчанию"
 
-#: lazarusidestrconsts.lislazarusdesktopsettings
-msgid "Lazarus Desktop Settings"
-msgstr "Установки Рабочего Стола Lazarus"
-
 #: lazarusidestrconsts.lislazarusdirectory
 msgid "Lazarus directory"
 msgstr "Каталог Lazarus"
@@ -10604,21 +10688,9 @@ msgstr "каталог для использования в качестве б�
 msgid "Lazarus IDE v%s"
 msgstr "Lazarus IDE v%s"
 
-#: lazarusidestrconsts.lislazarusfile
-msgid "Lazarus file"
-msgstr "Файл Lazarus"
-
-#: lazarusidestrconsts.lislazarusform
-msgid "Lazarus form"
-msgstr "Форма Lazarus"
-
 #: lazarusidestrconsts.lislazaruside
 msgid "Lazarus IDE"
 msgstr "IDE Lazarus"
-
-#: lazarusidestrconsts.lislazarusinclude
-msgid "Lazarus include file"
-msgstr "Включаемый файл Lazarus"
 
 #: lazarusidestrconsts.lislazaruslanguageid
 msgid "Lazarus language ID (e.g. en, de, br, fi)"
@@ -10631,30 +10703,6 @@ msgstr "Название языка Lazarus (пример: английский,
 #: lazarusidestrconsts.lislazarusoptionsprojectfilename
 msgid "lazarus [options] <project-filename>"
 msgstr "lazarus [параметры] <имя файла проекта>"
-
-#: lazarusidestrconsts.lislazarusotherfile
-msgid "Lazarus other file"
-msgstr "Иной файл Lazarus"
-
-#: lazarusidestrconsts.lislazaruspackage
-msgid "Lazarus package"
-msgstr "Пакет Lazarus"
-
-#: lazarusidestrconsts.lislazarusproject
-msgid "Lazarus project"
-msgstr "Проект Lazarus"
-
-#: lazarusidestrconsts.lislazarusprojectinfofile
-msgid "Lazarus Project Info file"
-msgstr "Файл сведений о проекте Lazarus"
-
-#: lazarusidestrconsts.lislazarusprojectsource
-msgid "Lazarus project source"
-msgstr "Исходный код проекта Lazarus"
-
-#: lazarusidestrconsts.lislazarusunit
-msgid "Lazarus unit"
-msgstr "Модуль Lazarus"
 
 #: lazarusidestrconsts.lislazbuildaboaction
 msgctxt "lazarusidestrconsts.lislazbuildaboaction"
@@ -11564,7 +11612,23 @@ msgstr "Перейти к"
 
 #: lazarusidestrconsts.lismenujumptoimplementation
 msgid "Jump to Implementation"
-msgstr "Перейти к реализации"
+msgstr "Перейти к секции Implementation"
+
+#: lazarusidestrconsts.lismenujumptoimplementationuses
+msgid "Jump to Implementation uses"
+msgstr "Перейти к выражению Uses секции Implementation"
+
+#: lazarusidestrconsts.lismenujumptoinitialization
+msgid "Jump to Initialization"
+msgstr "Перейти к секции Initialization"
+
+#: lazarusidestrconsts.lismenujumptointerface
+msgid "Jump to Interface"
+msgstr "Перейти к секции Interface"
+
+#: lazarusidestrconsts.lismenujumptointerfaceuses
+msgid "Jump to Interface uses"
+msgstr "Перейти к выражению Uses секции Interface"
 
 #: lazarusidestrconsts.lismenujumptonextbookmark
 msgid "Jump to Next Bookmark"
@@ -13105,10 +13169,6 @@ msgstr ", проанализировано "
 #: lazarusidestrconsts.lisparser
 msgid "parser \"%s\": %s"
 msgstr "анализатор \"%s\": %s"
-
-#: lazarusidestrconsts.lispascalfile
-msgid "Pascal file"
-msgstr "Файл Паскаля"
 
 #: lazarusidestrconsts.lispasscount
 msgid "Pass Count"
@@ -17872,10 +17932,6 @@ msgstr "некорректная версия в %s: %s"
 msgid "XML Error"
 msgstr "Ошибка XML"
 
-#: lazarusidestrconsts.lisxmlfiles
-msgid "XML files"
-msgstr "Файлы XML"
-
 #: lazarusidestrconsts.lisxmlparsererrorinfileerror
 msgid "XML parser error in file %s%sError: %s"
 msgstr "Ошибка анализа XML в файле %s%sОшибка: %s"
@@ -18019,10 +18075,6 @@ msgstr "Введите идентификатор процесса"
 #: lazarusidestrconsts.rsfilterthelistwithstring
 msgid "Filter the lines in list with a string"
 msgstr "Отфильтровывайте значения списка при помощи строки"
-
-#: lazarusidestrconsts.rsformdatafiledfm
-msgid "Form data file (*.dfm)|*.dfm"
-msgstr "Файл данных формы (*.dfm)|*.dfm"
 
 #: lazarusidestrconsts.rsfoundbutnotlistedhere
 msgid "Found, but not listed here: "
@@ -19889,4 +19941,3 @@ msgstr "Только чтение"
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"
 msgstr "Сведения о версии"
-
