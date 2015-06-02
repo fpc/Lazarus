@@ -277,6 +277,7 @@ procedure TGUITestRunner.SaveTree;
 var
   i: integer;
 begin
+  FConfStore.CacheUpdates := true;
   FConfStore.EraseSection(SectionName_TestNodes);
   for i := 0 to TestTree.Items.Count-1 do
   begin
@@ -289,6 +290,7 @@ begin
       MakeTestPath(TestTree.Items[i]) + '.Expanded',
       TestTree.Items[i].Expanded);
   end;
+  FConfStore.UpdateFile;
 end;
 
 procedure TGUITestRunner.RestoreTree;
