@@ -292,6 +292,7 @@ end;
 procedure TCHMForm.FileListBoxDrawItem(Control: TWinControl; Index: Integer;
   ARect: TRect; State: TOwnerDrawState);
 begin
+  FileListbox.Canvas.FillRect(ARect);
   if Pos('..', FileListBox.Items.Strings[Index]) > 0 then
   begin
     // These items won't be added to the chm because they are not within the project dir
@@ -302,7 +303,10 @@ begin
     FileListBox.Canvas.Frame(ARect);
   end;
   // Draw item text
-  FileListBox.Canvas.TextRect(ARect, 2, ARect.Top+2, FileListBox.Items[Index]);
+  FileListBox.Canvas.TextRect(ARect,
+    2, (ARect.Top + ARect.Bottom - FileListbox.Canvas.TextHeight('Tg')) div 2,
+    FileListBox.Items[Index]
+  );
 end;
 
 procedure TCHMForm.FormClose(Sender: TObject; var CloseAction: TCloseAction);
