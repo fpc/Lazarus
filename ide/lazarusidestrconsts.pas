@@ -1441,6 +1441,7 @@ resourcestring
   // open-dialog filters
   dlgFilterAll = 'All files';
   dlgFilterXML = 'XML files';
+  dlgFilterHTML = 'HTML files';
   dlgFilterPrograms = 'Programs';
   dlgFilterExecutable = 'Executable';
   dlgFilterLazarusFile = 'Lazarus file';
@@ -1457,7 +1458,7 @@ resourcestring
   dlgFilterDelphiUnit = 'Delphi unit';
   dlgFilterDelphiProject = 'Delphi project';
   dlgFilterDelphiPackage = 'Delphi package';
-  dlgFilterDelphiFormDfm = 'Delphi form file (*.dfm)|*.dfm';
+  dlgFilterDelphiForm = 'Delphi form';
   dlgFilterPascalFile = 'Pascal file';
   dlgFilterDciFile = 'DCI file';
   dlgFilterFPCMessageFile = 'FPC message file';

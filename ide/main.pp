@@ -3031,13 +3031,11 @@ begin
   try
     SaveDialog.Title:=lisSaveSpace;
     SaveDialog.FileName:=SrcEdit.PageName+'.html';
-    SaveDialog.Filter := ' (*.html;*.htm)|*.html;*.htm';
-    SaveDialog.Options := [ofOverwritePrompt, ofPathMustExist{, ofNoReadOnlyReturn}]; // Does not work for desktop
+    SaveDialog.Filter:=dlgFilterHTML+' (*.html;*.htm)|*.html;*.htm';
+    SaveDialog.Options:=[ofOverwritePrompt, ofPathMustExist{, ofNoReadOnlyReturn}]; // Does not work for desktop
     // show save dialog
     if (not SaveDialog.Execute) or (ExtractFileName(SaveDialog.Filename)='')
-    then begin
-      exit;
-    end;
+      then exit;
     Filename:=ExpandFileNameUTF8(SaveDialog.Filename);
   finally
     SaveDialog.Free;
@@ -7616,7 +7614,7 @@ begin
     InputHistories.ApplyFileDialogSettings(OpenDialog);
     OpenDialog.Title:=lisSelectDFMFiles;
     OpenDialog.Options:=OpenDialog.Options+[ofAllowMultiSelect];
-    OpenDialog.Filter:=dlgFilterDelphiFormDfm+'|'+dlgFilterAll+'|'+GetAllFilesMask;
+    OpenDialog.Filter:=dlgFilterDelphiForm+' (*.dfm)|*.dfm|'+dlgFilterAll+'|'+GetAllFilesMask;
     if OpenDialog.Execute and (OpenDialog.Files.Count>0) then begin
       For I := 0 to OpenDialog.Files.Count-1 do begin
         AFilename:=ExpandFileNameUTF8(OpenDialog.Files.Strings[i]);
