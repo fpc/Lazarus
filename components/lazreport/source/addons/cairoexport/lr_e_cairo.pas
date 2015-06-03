@@ -753,8 +753,8 @@ begin
   aStyle.Layout:=tlTop;    //       background painting, set to false for the moment
   aStyle.Wordbreak:= TfrMemoView_(View).WordWrap;
 
-  gapx := trunc(View.FrameWidth / 2 + 0.5) + 2;
-  gapy := trunc(View.FrameWidth / 4 + 0.5) + 1;
+  gapx := trunc(View.FrameWidth / 2 + 0.5);
+  gapy := trunc(View.FrameWidth / 4 + 0.5);
   sgapx := trunc( gapx * ScaleX + 0.5);
   sgapy := trunc( gapy * ScaleY + 0.5);
   nx := trunc((x+gapx) * ScaleX + 0.5);
