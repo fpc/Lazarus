@@ -132,6 +132,22 @@ begin
   FR.Left:= midX - size.cx div 2;
   FR.Right:= FR.Left + size.cx;
 
+  // angle=90: 1pixel shift appears (reason: float math)
+  // workaround:
+  if FArrowAngle=90 then
+  begin
+    if FArrowType in [atUp, atDown] then
+    begin
+      FR.Left:= midX-size.cy;
+      FR.Right:= midX+size.cy;
+    end
+    else
+    begin
+      FR.Top:= midY-size.cx;
+      FR.Bottom:= midY+size.cx;
+    end;
+  end;
+
   case FArrowType of
     atUp: begin
         FT[ptC] := Point(midX, FR.Top);
