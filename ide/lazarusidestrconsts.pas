@@ -2060,11 +2060,6 @@ resourcestring
   dlgCDTStoredPostfix = 'Stored postfix';
   dlgCDTVariablePrefix = 'Variable prefix';
   dlgSetPropertyVariable = 'Set property Variable';
-  dlgSetPropertyVariableHint = 'The parameter name for the default setter procedure.';
-  dlgSetPropertyVariableIsPrefix = 'is prefix';
-  dlgSetPropertyVariableIsPrefixHint = 'If checked, the "Set property Variable" is a prefix. Otherwise it is a fixed name.';
-  dlgSetPropertyVariableUseConst = 'use const';
-  dlgSetPropertyVariableUseConstHint = 'If checked, the setter parameter is marked with "const".';
   dlgMaxLineLength = 'Max line length:';
   dlgNotSplitLineFront = 'Do not split line in front of';
   dlgNotSplitLineAfter = 'Do not split line after';
@@ -2072,11 +2067,9 @@ resourcestring
   dlgInsSpaceFront = 'Insert space in front of';
   dlgInsSpaceAfter = 'Insert space after';
   dlgWRDPreview = 'Preview';
-  lisIdCAdd = 'Add';
   dlgAddSemicolon = 'Add semicolon';
   dlgAddAssignmentOperator = 'Add assignment operator :=';
   lisAddKeywordDo = 'Add keyword "do"';
-
   dlgUserSchemeError = 'Failed to load user-scheme file %s';
 
   // source editor
@@ -5413,7 +5406,6 @@ resourcestring
   lisClassesAndPropertiesExistValuesWereNotChecked = 'Classes and properties '
     +'exist. Values were not checked.';
   lisInsertPrintShortTag = 'Insert PrintShort tag';
-  lisIdCOpen = 'Open';
   lisAutomaticallyInvokeAfterPoint = 'Automatically invoke after point';
   lisAddParameterBrackets = 'Add parameter brackets';
   lisReplaceWholeIdentifier = 'Replace whole identifier';
