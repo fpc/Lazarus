@@ -415,9 +415,10 @@ begin
   DMenuItem.SubMenuArrow.Name:='SubMenuArrow_' + DMenuItem.ID;
   DMenuItem.SubMenuArrow.Parent:=DMenuItem.SelfPanel;
   DMenuItem.SubMenuArrow.ArrowType:=atright;
-  DMenuItem.SubMenuArrow.Width:=20;
-  DMenuItem.SubMenuArrow.Height:=13;
-  DMenuItem.SubMenuArrow.ShadowType:=stout;
+  DMenuItem.SubMenuArrow.ArrowPointerAngle:=90;
+  DMenuItem.SubMenuArrow.ShadowType:=stNone;
+  DMenuItem.SubMenuArrow.Width:=14;
+  DMenuItem.SubMenuArrow.Height:=14;
   DMenuItem.SubMenuArrow.Visible:=false;
   DMenuItem.SubMenuArrow.OnMouseDown:=@MenuItemMouseDown;
   DMenuItem.SubMenuArrow.OnDragOver:=@MenuItemDragOver;
