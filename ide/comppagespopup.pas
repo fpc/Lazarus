@@ -11,7 +11,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ComCtrls,
-  ExtCtrls, Buttons, MainBar, LazarusIDEStrConsts;
+  ExtCtrls, Buttons, MainBar, LazarusIDEStrConsts, LCLIntf, LMessages;
 
 type
 
@@ -29,11 +29,20 @@ type
     procedure TreeView1Click(Sender: TObject);
   private
     fGroups: TStringList;   // Objects have group TreeNodes
+    fLastCloseUp: QWord;
+    fLastCanShowCheck: Boolean;
     procedure FindGroups;
     procedure BuildTreeItem(aPageCapt: string);
     procedure BuildList;
+  protected
+    procedure WMActivate(var Message : TLMActivate); message LM_ACTIVATE;
+
+    procedure DoCreate; override;
+    procedure DoClose(var CloseAction: TCloseAction); override;
   public
     procedure FixBounds;
+    procedure CanShowCheck;
+    property LastCanShowCheck: Boolean read fLastCanShowCheck;
   end;
 
 var
@@ -72,6 +81,21 @@ begin
   Close;
 end;
 
+procedure TDlgCompPagesPopup.DoClose(var CloseAction: TCloseAction);
+begin
+  inherited DoClose(CloseAction);
+
+  if CloseAction = caHide then
+    fLastCloseUp := GetTickCount64;
+end;
+
+procedure TDlgCompPagesPopup.DoCreate;
+begin
+  inherited DoCreate;
+
+  fLastCanShowCheck := True;
+end;
+
 procedure TDlgCompPagesPopup.FixBounds;
 begin
   if (self.Height+100)>screen.Height then
@@ -100,6 +124,17 @@ begin
           Break;
         end;
   Close;
+end;
+
+procedure TDlgCompPagesPopup.WMActivate(var Message: TLMActivate);
+begin
+  {$IFDEF LCLWin32}
+  //activate the mainform to simulate a true popup-window (works only on Windows)
+  if Assigned(PopupParent) and PopupParent.HandleAllocated then
+    SendMessage(PopupParent.Handle, LM_NCACTIVATE, Ord(Message.Active <> WA_INACTIVE), 0);
+  {$ENDIF}
+
+  inherited WMActivate(Message);
 end;
 
 procedure TDlgCompPagesPopup.FindGroups;
@@ -153,6 +188,11 @@ begin
   ItemNode.SelectedIndex:=0;
 end;
 
+procedure TDlgCompPagesPopup.CanShowCheck;
+begin
+  fLastCanShowCheck := not Visible and (GetTickCount64 > fLastCloseUp + 100);
+end;
+
 procedure TDlgCompPagesPopup.BuildList;
 var
   i: integer;
@@ -174,8 +214,8 @@ begin
   end;
   TreeView1.EndUpdate;
   TreeView1.FullExpand;
-  Panel2.Caption:=Format(lisTotalPages, [IntToStr(MainIDEBar.
-    ComponentPageControl.PageCount)]);
+  Panel2.Caption:=Format(lisTotalPages,
+                         [IntToStr(MainIDEBar.ComponentPageControl.PageCount)]);
 end;
 
 end.

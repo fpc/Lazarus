@@ -435,6 +435,8 @@ type
     // ComponentPalette events
     procedure ComponentPaletteClassSelected(Sender: TObject);
     // Copied from CodeTyphon
+    procedure SelComponentPageButtonMouseDown(Sender: TObject;
+      {%H-}Button: TMouseButton; {%H-}Shift: TShiftState; {%H-}X, {%H-}Y: Integer); override;
     procedure SelComponentPageButtonClick(Sender: TObject); override;
 
     // SourceNotebook events
@@ -5062,21 +5064,28 @@ end;
 procedure TMainIDE.SelComponentPageButtonClick(Sender: TObject);
 var
   zPos: TPoint;
-  btn: TGraphicControl;
+  btn: TControl;
 begin
-  btn := Sender as TGraphicControl;
-  zPos:=point(btn.Width,btn.Height);
+  btn := Sender as TControl;
+  zPos:=point(btn.Width div 2,btn.Height);
   zPos:=btn.ClientToScreen(zPos);
   if DlgCompPagesPopup=nil then
     Application.CreateForm(TDlgCompPagesPopup, DlgCompPagesPopup);
-  if not DlgCompPagesPopup.Visible then
+  if DlgCompPagesPopup.LastCanShowCheck then
   begin
     DlgCompPagesPopup.Left:=zPos.x-(DlgCompPagesPopup.Width div 2);
-    DlgCompPagesPopup.Top:=zPos.y-5;
+    DlgCompPagesPopup.Top:=zPos.y;
     DlgCompPagesPopup.FixBounds;
+    DlgCompPagesPopup.PopupParent := GetParentForm(btn);
     DlgCompPagesPopup.Show;
-  end else
-    DlgCompPagesPopup.Close;
+  end;
+end;
+
+procedure TMainIDE.SelComponentPageButtonMouseDown(Sender: TObject;
+  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+begin
+  if DlgCompPagesPopup<>nil then
+    DlgCompPagesPopup.CanShowCheck;//do the check in OnMouseDown
 end;
 
 procedure TMainIDE.mnuEnvCodeTemplatesClicked(Sender: TObject);

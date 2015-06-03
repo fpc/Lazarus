@@ -189,6 +189,8 @@ type
     procedure FindInFilesPerDialog(AProject: TProject); override;
     procedure FindInFiles(AProject: TProject; const FindText: string); override;
 
+    procedure SelComponentPageButtonMouseDown(Sender: TObject;
+      Button: TMouseButton; Shift: TShiftState; X, Y: Integer); virtual; abstract;
     procedure SelComponentPageButtonClick(Sender: TObject); virtual; abstract;
   public
     property ToolStatus: TIDEToolStatus read FToolStatus write SetToolStatus;

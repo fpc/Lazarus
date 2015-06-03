@@ -352,6 +352,7 @@ begin
       SetBounds(2,1,16,16);
       Hint := lisClickToSelectPalettePage;
       ShowHint := True;
+      OnMouseDown := @MainIDE.SelComponentPageButtonMouseDown;
       OnClick := @MainIDE.SelComponentPageButtonClick;
       OnMouseWheel := @Pal.OnPageMouseWheel;
       Parent := PanelRight;
