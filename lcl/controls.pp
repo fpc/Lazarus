@@ -2492,7 +2492,6 @@ type
 
   TMouse = class
   private
-    FCapture: HWND;
     FWheelScrollLines: Integer;
     procedure SetCapture(const Value: HWND);
     function GetCapture: HWND;
