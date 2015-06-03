@@ -19,7 +19,7 @@ unit Arrow;
 interface
 
 uses
-  Classes, Controls, Graphics, types, IndustrialBase;
+  Classes, types, math, Controls, Graphics, IndustrialBase;
 
 type
 
@@ -34,10 +34,12 @@ type
   private
     FArrowColor: TColor;
     FArrowType: TArrowType;
-    FR: TRect;
+    FArrowAngle: integer;
     FShadowType: TShadowType;
+    FR: TRect;
     FT: TTrianglePoints;
     procedure CalcTrianglePoints;
+    procedure SetArrowAngle(AValue: integer);
     procedure SetArrowColor(AValue: TColor);
     procedure SetArrowType(AValue: TArrowType);
     procedure SetShadowType(AValue: TShadowType);
@@ -51,6 +53,7 @@ type
     property Anchors;
     property ArrowColor: TColor read FArrowColor write SetArrowColor default clBlack;
     property ArrowType: TArrowType read FArrowType write SetArrowType default atLeft;
+    property ArrowPointerAngle: integer read FArrowAngle write SetArrowAngle default 60;
     property BorderSpacing;
     property Color;
     property Constraints;
@@ -89,6 +92,8 @@ implementation
 const
   Default_Height_Width = 20;
   ArrowMinHeight = 8;
+  cMinAngle = 20;
+  cMaxAngle = 160;
 
 
 procedure Register;
@@ -99,27 +104,34 @@ end;
 { TArrow }
 
 procedure TArrow.CalcTrianglePoints;
+const
+  cOffset = 2;
 var
-  midY, midX, half: integer;
-  sz: TSize;
-  square, tall: boolean;
+  midY, midX: integer;
+  ratioNeed, ratioThis: double;
+  size: TSize;
 begin
   FR:= ClientRect;
-  InflateRect(FR, -2, -2);
-  sz:= Size(FR);
-  square:= (sz.cx = sz.cy);
-  if not square then
-    begin
-      tall:= (sz.cy > sz.cx);
-      case tall of
-        False:InflateRect(FR, -((sz.cx - sz.cy) div 2), 0);
-        True: InflateRect(FR, 0, -((sz.cy - sz.cx) div 2));
-      end;
-      sz:= Size(FR);
-    end;
-  half:= sz.cx div 2;
-  midX:= FR.Left + half;
-  midY:= FR.Top + half;
+  InflateRect(FR, -cOffset, -cOffset);
+  midX:= (FR.Left + FR.Right) div 2;
+  midY:= (FR.Top + FR.Bottom) div 2;
+  size:= Types.Size(FR);
+
+  ratioNeed:= 2*tan(FArrowAngle*pi/180/2);
+  if FArrowType in [atLeft, atRight] then
+    ratioNeed:= 1/ratioNeed;
+
+  ratioThis:= size.cx/size.cy;
+  if ratioThis>=ratioNeed then
+    size.cx:= Trunc(size.cx*ratioNeed/ratioThis)
+  else
+    size.cy:= Trunc(size.cy*ratioThis/ratioNeed);
+
+  FR.Top:= midY - size.cy div 2;
+  FR.Bottom:= FR.Top + size.cy;
+  FR.Left:= midX - size.cx div 2;
+  FR.Right:= FR.Left + size.cx;
+
   case FArrowType of
     atUp: begin
         FT[ptC] := Point(midX, FR.Top);
@@ -157,6 +169,14 @@ begin
   FArrowType:=AValue;
   GraphicChanged;
 end;
+
+procedure TArrow.SetArrowAngle(AValue: integer);
+begin
+  if FArrowAngle=AValue then Exit;
+  FArrowAngle:=Max(Min(AValue, cMaxAngle), cMinAngle);
+  GraphicChanged;
+end;
+
 
 procedure TArrow.SetShadowType(AValue: TShadowType);
 begin
@@ -225,7 +245,8 @@ begin
   inherited Create(aOwner);
   Constraints.MinHeight:= ArrowMinHeight;
   Constraints.MinWidth:= ArrowMinHeight;
-  FArrowType:= atLeft;      // set defaults to match TArrow component
+  FArrowType:= atLeft; // set defaults to match TArrow component
+  FArrowAngle:= 60; // angle of equal side triangle
   FShadowType:= stEtchedIn;
   FArrowColor:= clBlack;
 end;
