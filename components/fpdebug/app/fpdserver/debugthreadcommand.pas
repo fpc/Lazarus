@@ -51,6 +51,18 @@ type
     property Filename: string read FFileName write FFileName;
   end;
 
+   { TFpDebugThreadSetRedirectConsoleOutputCommand }
+
+   TFpDebugThreadSetConsoleTtyCommand = class(TFpDebugThreadCommand)
+  private
+    FConsoleTty: String;
+  public
+    function Execute(AController: TDbgController; out DoProcessLoop: boolean): boolean; override;
+    class function TextName: string; override;
+  published
+    property ConsoleTty: String read FConsoleTty write FConsoleTty;
+  end;
+
   { TFpDebugThreadRunCommand }
 
   TFpDebugThreadRunCommand = class(TFpDebugThreadCommand)
@@ -194,6 +206,21 @@ implementation
 
 var
   GFpDebugThreadCommandList: TFpDebugThreadCommandList = nil;
+
+{ TFpDebugThreadSetConsoleTtyCommand }
+
+function TFpDebugThreadSetConsoleTtyCommand.Execute(AController: TDbgController; out DoProcessLoop: boolean): boolean;
+begin
+  AController.ConsoleTty:=FConsoleTty;
+  AController.RedirectConsoleOutput:=(AController.ConsoleTty='');
+  DoProcessLoop:=false;
+  result:=true;
+end;
+
+class function TFpDebugThreadSetConsoleTtyCommand.TextName: string;
+begin
+  result := 'setconsoletty';
+end;
 
 { TFpDebugThreadStackTraceCommand }
 
@@ -601,6 +628,7 @@ end;
 initialization
   TFpDebugThreadCommandList.instance.Add(TFpDebugThreadQuitDebugServerCommand);
   TFpDebugThreadCommandList.instance.Add(TFpDebugThreadSetFilenameCommand);
+  TFpDebugThreadCommandList.instance.Add(TFpDebugThreadSetConsoleTtyCommand);
   TFpDebugThreadCommandList.instance.Add(TFpDebugThreadRunCommand);
   TFpDebugThreadCommandList.instance.Add(TFpDebugThreadContinueCommand);
   TFpDebugThreadCommandList.instance.Add(TFpDebugThreadStepOverInstrCommand);
