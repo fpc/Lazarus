@@ -388,7 +388,7 @@ begin
       {$IFDEF CPU64}
       Obj := TObject(QVariant_toULongLong(V, @Ok));
       {$ENDIF}
-      if OK and (Obj <> nil) then
+      if OK and QtWidgetset.IsValidHandle(HWND(Obj)) then
       begin
         if not (Obj is TQtWidget) then
           raise Exception.Create('QtObjectFromWidgetH: QObject_property returned '
