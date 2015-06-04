@@ -229,6 +229,14 @@ var
   ThreadCallStack: TDbgCallstackEntryList;
   i: integer;
 begin
+  result := false;
+  DoProcessLoop:=false;
+  if not assigned(AController.CurrentProcess) then
+    begin
+    log('Failed to get call stack: No process', dllInfo);
+    exit;
+    end;
+
   AController.CurrentProcess.MainThread.PrepareCallStackEntryList;
   ThreadCallStack := AController.CurrentProcess.MainThread.CallStackEntryList;
   SetLength(FStackEntryArray, ThreadCallStack.Count);
@@ -244,7 +252,6 @@ begin
   // cumbersome. And the chances that this command is called twice, so that
   // caching the result is usefull, are slim.
   AController.CurrentProcess.MainThread.ClearCallStack;
-  DoProcessLoop:=false;
   result := true;
 end;
 
@@ -281,6 +288,12 @@ var
 begin
   Result := False;
   DoProcessLoop:=false;
+  if not assigned(AController.CurrentProcess) then
+    begin
+    log('Failed to evaluate expression: No process', dllInfo);
+    exit;
+    end;
+
   ADbgInfo := AController.CurrentProcess.DbgInfo;
   AContext := ADbgInfo.FindContext(AController.CurrentThread.ID, 0, AController.CurrentProcess.GetInstructionPointerRegisterValue);
   if AContext = nil then
@@ -496,7 +509,13 @@ var
 begin
   DoProcessLoop:=false;
   result := false;
-  if Assigned(AController.CurrentProcess) then
+
+  if not assigned(AController.CurrentProcess) then
+    begin
+    log('Failed to get location info: No process', dllInfo);
+    exit;
+    end
+  else
     begin
     FLocationRec.FuncName:='';
     FLocationRec.SrcFile:='';
