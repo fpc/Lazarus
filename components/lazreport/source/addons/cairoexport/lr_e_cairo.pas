@@ -789,8 +789,8 @@ begin
 
   nx := Trunc( x * ScaleX + 0.5 );
   ny := Trunc( y * ScaleY + 0.5 );
-  ndx := Trunc( View.dx * ScaleX + 1.5 );
-  ndy := Trunc( View.dy * ScaleY + 1.5 );
+  ndx := Trunc( View.dx * ScaleX + 0.5 );
+  ndy := Trunc( View.dy * ScaleY + 0.5 );
 
   DataRect := Rect(nx, ny, nx+ndx, ny+ndy);
 
