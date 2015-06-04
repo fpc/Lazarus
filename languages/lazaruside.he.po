@@ -1666,6 +1666,18 @@ msgstr ""
 msgid "HTML files"
 msgstr ""
 
+#: lazarusidestrconsts.dlgfilterimagesbitmap
+msgid "Bitmap images"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfilterimagespixmap
+msgid "Pixmap images"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfilterimagespng
+msgid "PNG images"
+msgstr ""
+
 #: lazarusidestrconsts.dlgfilterlazarusdesktopsettings
 #, fuzzy
 msgctxt "lazarusidestrconsts.dlgfilterlazarusdesktopsettings"
@@ -18047,6 +18059,10 @@ msgstr "הכותרת בסרגל המשימות מראה למשל: project1.lpi -
 #: lazarusidestrconsts.listitleleaveemptyfordefault
 msgid "Title (leave empty for default)"
 msgstr "כותרת (השאר ריק לברירת מחדל)"
+
+#: lazarusidestrconsts.listitleopencomponenticon24x24
+msgid "Choose a component icon 24x24"
+msgstr ""
 
 #: lazarusidestrconsts.listmfunctionappendpathdelimiter
 msgid "Function: append path delimiter"

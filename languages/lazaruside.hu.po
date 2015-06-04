@@ -1593,6 +1593,18 @@ msgstr "FPC üzenetfájl"
 msgid "HTML files"
 msgstr ""
 
+#: lazarusidestrconsts.dlgfilterimagesbitmap
+msgid "Bitmap images"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfilterimagespixmap
+msgid "Pixmap images"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfilterimagespng
+msgid "PNG images"
+msgstr ""
+
 #: lazarusidestrconsts.dlgfilterlazarusdesktopsettings
 #, fuzzy
 msgctxt "lazarusidestrconsts.dlgfilterlazarusdesktopsettings"
@@ -16795,6 +16807,10 @@ msgstr "A cím a tálcán így jelenik meg: project1.lpi - Lazarus"
 #: lazarusidestrconsts.listitleleaveemptyfordefault
 msgid "Title (leave empty for default)"
 msgstr "Cím (üres = alapértelmezett)"
+
+#: lazarusidestrconsts.listitleopencomponenticon24x24
+msgid "Choose a component icon 24x24"
+msgstr ""
 
 #: lazarusidestrconsts.listmfunctionappendpathdelimiter
 msgid "Function: append path delimiter"

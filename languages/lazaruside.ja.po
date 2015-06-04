@@ -1596,6 +1596,18 @@ msgstr "FPC メッセージファイル"
 msgid "HTML files"
 msgstr ""
 
+#: lazarusidestrconsts.dlgfilterimagesbitmap
+msgid "Bitmap images"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfilterimagespixmap
+msgid "Pixmap images"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfilterimagespng
+msgid "PNG images"
+msgstr ""
+
 #: lazarusidestrconsts.dlgfilterlazarusdesktopsettings
 #, fuzzy
 msgctxt "lazarusidestrconsts.dlgfilterlazarusdesktopsettings"
@@ -17167,6 +17179,10 @@ msgstr "タスクバーのタイトルはproject1.lpi - Lazarusなどと表示�
 #: lazarusidestrconsts.listitleleaveemptyfordefault
 msgid "Title (leave empty for default)"
 msgstr "タイトル（デフォルトの場合空欄にしておいて下さい）"
+
+#: lazarusidestrconsts.listitleopencomponenticon24x24
+msgid "Choose a component icon 24x24"
+msgstr ""
 
 #: lazarusidestrconsts.listmfunctionappendpathdelimiter
 msgid "Function: append path delimiter"

@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2015-06-04 03:27+0300\n"
+"PO-Revision-Date: 2015-06-05 00:03+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -1584,6 +1584,18 @@ msgstr "Файл сообщений FPC"
 #: lazarusidestrconsts.dlgfilterhtml
 msgid "HTML files"
 msgstr "Файлы HTML"
+
+#: lazarusidestrconsts.dlgfilterimagesbitmap
+msgid "Bitmap images"
+msgstr "Изображения Bitmap"
+
+#: lazarusidestrconsts.dlgfilterimagespixmap
+msgid "Pixmap images"
+msgstr "Изображения Pixmap"
+
+#: lazarusidestrconsts.dlgfilterimagespng
+msgid "PNG images"
+msgstr "Изображения PNG"
 
 #: lazarusidestrconsts.dlgfilterlazarusdesktopsettings
 msgctxt "lazarusidestrconsts.dlgfilterlazarusdesktopsettings"
@@ -16751,6 +16763,10 @@ msgstr "Заголовок в панели задач имеет следующ�
 #: lazarusidestrconsts.listitleleaveemptyfordefault
 msgid "Title (leave empty for default)"
 msgstr "Название (оставьте пустым для значения по умолчанию)"
+
+#: lazarusidestrconsts.listitleopencomponenticon24x24
+msgid "Choose a component icon 24x24"
+msgstr "Выберите значок компонента (24x24)"
 
 #: lazarusidestrconsts.listmfunctionappendpathdelimiter
 msgid "Function: append path delimiter"

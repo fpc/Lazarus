@@ -1599,6 +1599,18 @@ msgstr "File messaggi FPC"
 msgid "HTML files"
 msgstr ""
 
+#: lazarusidestrconsts.dlgfilterimagesbitmap
+msgid "Bitmap images"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfilterimagespixmap
+msgid "Pixmap images"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfilterimagespng
+msgid "PNG images"
+msgstr ""
+
 #: lazarusidestrconsts.dlgfilterlazarusdesktopsettings
 #, fuzzy
 msgctxt "lazarusidestrconsts.dlgfilterlazarusdesktopsettings"
@@ -16814,6 +16826,10 @@ msgstr "Il titolo nella taskbar mostra per esempio: progetto1.lpi - Lazarus"
 #: lazarusidestrconsts.listitleleaveemptyfordefault
 msgid "Title (leave empty for default)"
 msgstr "Titolo (lasciare vuoto per usare il predefinito)"
+
+#: lazarusidestrconsts.listitleopencomponenticon24x24
+msgid "Choose a component icon 24x24"
+msgstr ""
 
 #: lazarusidestrconsts.listmfunctionappendpathdelimiter
 msgid "Function: append path delimiter"
