@@ -524,12 +524,14 @@ begin
   try
     InputHistories.ApplyFileDialogSettings(Dlg);
     Dlg.InitialDir:=LazPackage.GetFileDialogInitialDir(ExtractFilePath(ComponentUnitFileEdit.Text));
-    Dlg.Title := 'Choose a component icon 24x24';
-    Dlg.Options := Dlg.Options+[ofPathMustExist];
-    Dlg.Filter:='PNG|*.png'
-              +'|Bitmap, bmp|*.bmp'
-              +'|Pixmap, xpm|*.xpm'
-              +'|'+dlgFilterAll+'|'+GetAllFilesMask;
+    Dlg.Title:=lisTitleOpenComponentIcon24x24;
+    Dlg.Options:=Dlg.Options+[ofPathMustExist];
+    Dlg.Filter:=Format('%s|*.png|%s|*.bmp|%s|*.xpm|%s|%s',
+      [dlgFilterImagesPng,
+       dlgFilterImagesBitmap,
+       dlgFilterImagesPixmap,
+       dlgFilterAll, GetAllFilesMask]);
+
     if Dlg.Execute then begin
       LoadComponentIcon(Dlg.FileName);
     end;

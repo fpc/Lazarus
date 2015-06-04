@@ -28,7 +28,7 @@ uses
   EditorOptions, LazarusIDEStrConsts, IDEOptionsIntf, sysutils, StdCtrls,
   ExtCtrls, Classes, Controls, Grids, ComCtrls, Dialogs,
   SynEditMouseCmds, Laz2_XMLCfg, MouseActionDialog, math, KeyMapping,
-  IDEImagesIntf, IDEDialogs, LazUTF8;
+  IDEImagesIntf, IDEDialogs, LazUTF8, FileUtil;
 
 type
 
@@ -716,7 +716,7 @@ begin
   OpenDialog1.Title := lisImport;
   SaveDialog1.Title := lisExport;
 
-  OpenDialog1.Filter := Format('%s|*.xml|%s|*.*|', [dlgFilterXML, dlgFilterAll]);
+  OpenDialog1.Filter := Format('%s|*.xml|%s|%s|', [dlgFilterXML, dlgFilterAll, GetAllFilesMask]);
   SaveDialog1.Filter := OpenDialog1.Filter;
 end;
 

@@ -263,12 +263,12 @@ begin
                       +'%s|*.lpi|'
                       +'%s|*.lpk|'
                       +'%s|*.lps|'
-                      +'%s|*',
+                      +'%s|%s',
                       [dlgFilterXML,
                        dlgFilterLazarusProject,
                        dlgFilterLazarusPackage,
                        dlgFilterLazarusSession,
-                       dlgFilterAll]);
+                       dlgFilterAll, GetAllFilesMask]);
 
   FileNameEdit.DialogOptions:=FileNameEdit.DialogOptions+[ofFileMustExist];
   FileNameEdit.OnChange:=@FileNameEditChangeImport;

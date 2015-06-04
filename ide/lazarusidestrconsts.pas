@@ -1437,6 +1437,7 @@ resourcestring
   lisPkgMangThePackageFailedToCompileRemoveItFromTheInstallati = 'The package "%s" '
     +'failed to compile.%sRemove it from the installation list?';
   lisEnvOptDlgTestDirNotFoundMsg = 'Test directory "%s" not found.';
+  lisTitleOpenComponentIcon24x24 = 'Choose a component icon 24x24';
 
   // open-dialog filters
   dlgFilterAll = 'All files';
@@ -1463,6 +1464,9 @@ resourcestring
   dlgFilterDciFile = 'DCI file';
   dlgFilterFPCMessageFile = 'FPC message file';
   dlgFilterCodetoolsTemplateFile = 'CodeTools template file';
+  dlgFilterImagesPng = 'PNG images';
+  dlgFilterImagesBitmap = 'Bitmap images';
+  dlgFilterImagesPixmap = 'Pixmap images';
 
   // editor options
   dlgEdMisc = 'Misc';
