@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2015-06-03 02:50+0300\n"
+"PO-Revision-Date: 2015-06-04 03:27+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -1552,9 +1552,9 @@ msgstr "Файл шаблонов CodeTools"
 msgid "DCI file"
 msgstr "Файл DCI"
 
-#: lazarusidestrconsts.dlgfilterdelphiformdfm
-msgid "Delphi form file (*.dfm)|*.dfm"
-msgstr "Файл формы Delphi (*.dfm)|*.dfm"
+#: lazarusidestrconsts.dlgfilterdelphiform
+msgid "Delphi form"
+msgstr "Форма Delphi"
 
 #: lazarusidestrconsts.dlgfilterdelphipackage
 msgctxt "lazarusidestrconsts.dlgfilterdelphipackage"
@@ -1580,6 +1580,10 @@ msgstr "Исполнимый файл"
 msgctxt "lazarusidestrconsts.dlgfilterfpcmessagefile"
 msgid "FPC message file"
 msgstr "Файл сообщений FPC"
+
+#: lazarusidestrconsts.dlgfilterhtml
+msgid "HTML files"
+msgstr "Файлы HTML"
 
 #: lazarusidestrconsts.dlgfilterlazarusdesktopsettings
 msgctxt "lazarusidestrconsts.dlgfilterlazarusdesktopsettings"
@@ -3156,26 +3160,6 @@ msgstr "Установить элемент по умолчанию"
 #: lazarusidestrconsts.dlgsetpropertyvariable
 msgid "Set property Variable"
 msgstr "Переменная свойства"
-
-#: lazarusidestrconsts.dlgsetpropertyvariablehint
-msgid "The parameter name for the default setter procedure."
-msgstr ""
-
-#: lazarusidestrconsts.dlgsetpropertyvariableisprefix
-msgid "is prefix"
-msgstr ""
-
-#: lazarusidestrconsts.dlgsetpropertyvariableisprefixhint
-msgid "If checked, the \"Set property Variable\" is a prefix. Otherwise it is a fixed name."
-msgstr ""
-
-#: lazarusidestrconsts.dlgsetpropertyvariableuseconst
-msgid "use const"
-msgstr ""
-
-#: lazarusidestrconsts.dlgsetpropertyvariableuseconsthint
-msgid "If checked, the setter parameter is marked with \"const\"."
-msgstr ""
 
 #: lazarusidestrconsts.dlgshowallunits
 msgid "Show all units"
@@ -19941,3 +19925,4 @@ msgstr "Только чтение"
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"
 msgstr "Сведения о версии"
+

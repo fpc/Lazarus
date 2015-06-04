@@ -1557,8 +1557,8 @@ msgstr "Šablona CodeTools"
 msgid "DCI file"
 msgstr ""
 
-#: lazarusidestrconsts.dlgfilterdelphiformdfm
-msgid "Delphi form file (*.dfm)|*.dfm"
+#: lazarusidestrconsts.dlgfilterdelphiform
+msgid "Delphi form"
 msgstr ""
 
 #: lazarusidestrconsts.dlgfilterdelphipackage
@@ -1590,6 +1590,10 @@ msgstr "Spustitelný"
 msgctxt "lazarusidestrconsts.dlgfilterfpcmessagefile"
 msgid "FPC message file"
 msgstr "Soubor FPC zpráv"
+
+#: lazarusidestrconsts.dlgfilterhtml
+msgid "HTML files"
+msgstr ""
 
 #: lazarusidestrconsts.dlgfilterlazarusdesktopsettings
 #, fuzzy
@@ -3194,26 +3198,6 @@ msgstr "Nastavit prvek na výchozí"
 #: lazarusidestrconsts.dlgsetpropertyvariable
 msgid "Set property Variable"
 msgstr "Nastavit hodnotu vlastnosti"
-
-#: lazarusidestrconsts.dlgsetpropertyvariablehint
-msgid "The parameter name for the default setter procedure."
-msgstr ""
-
-#: lazarusidestrconsts.dlgsetpropertyvariableisprefix
-msgid "is prefix"
-msgstr ""
-
-#: lazarusidestrconsts.dlgsetpropertyvariableisprefixhint
-msgid "If checked, the \"Set property Variable\" is a prefix. Otherwise it is a fixed name."
-msgstr ""
-
-#: lazarusidestrconsts.dlgsetpropertyvariableuseconst
-msgid "use const"
-msgstr ""
-
-#: lazarusidestrconsts.dlgsetpropertyvariableuseconsthint
-msgid "If checked, the setter parameter is marked with \"const\"."
-msgstr ""
 
 #: lazarusidestrconsts.dlgshowallunits
 msgid "Show all units"
