@@ -11,41 +11,6 @@ object CleanPkgDepsDlg: TCleanPkgDepsDlg
   OnDestroy = FormDestroy
   Position = poScreenCenter
   LCLVersion = '1.5'
-  object TransitivityGroupBox: TGroupBox
-    Left = 6
-    Height = 330
-    Top = 6
-    Width = 510
-    Align = alClient
-    BorderSpacing.Around = 6
-    Caption = 'TransitivityGroupBox'
-    ClientHeight = 310
-    ClientWidth = 506
-    TabOrder = 0
-    object TransitivityTreeView: TTreeView
-      Left = 3
-      Height = 289
-      Top = 18
-      Width = 500
-      Align = alClient
-      BorderSpacing.Around = 3
-      DefaultItemHeight = 18
-      ReadOnly = True
-      TabOrder = 0
-      OnMouseDown = TransitivityTreeViewMouseDown
-      Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
-    end
-    object TransitivityLabel: TLabel
-      Left = 0
-      Height = 15
-      Top = 0
-      Width = 506
-      Align = alTop
-      Caption = 'TransitivityLabel'
-      ParentColor = False
-      WordWrap = True
-    end
-  end
   object BtnPanel: TPanel
     Left = 0
     Height = 38
@@ -107,5 +72,29 @@ object CleanPkgDepsDlg: TCleanPkgDepsDlg
       OnClick = SelectNoneBitBtnClick
       TabOrder = 0
     end
+  end
+  object TransitivityLabel: TLabel
+    Left = 6
+    Height = 15
+    Top = 6
+    Width = 510
+    Align = alTop
+    BorderSpacing.Around = 6
+    Caption = 'TransitivityLabel'
+    ParentColor = False
+    WordWrap = True
+  end
+  object TransitivityTreeView: TTreeView
+    Left = 6
+    Height = 309
+    Top = 27
+    Width = 510
+    Align = alClient
+    BorderSpacing.Around = 6
+    DefaultItemHeight = 18
+    ReadOnly = True
+    TabOrder = 0
+    OnMouseDown = TransitivityTreeViewMouseDown
+    Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
   end
 end
