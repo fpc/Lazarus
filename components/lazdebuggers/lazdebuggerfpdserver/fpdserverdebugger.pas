@@ -1039,7 +1039,7 @@ procedure TFPDServerDebugger.DoHandleConsoleOutputEvent(AnEvent: TJSONObject);
 var
   AMessage: string;
 begin
-  Message:=AnEvent.Get('message','');
+  AMessage:=AnEvent.Get('message','');
   OnConsoleOutput(Self, AMessage);
 end;
 
