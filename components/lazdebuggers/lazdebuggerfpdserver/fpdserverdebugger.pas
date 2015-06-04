@@ -264,6 +264,7 @@ type
     procedure DoHandleCreateProcessEvent(AnEvent: TJSONObject);
     procedure DoHandleExitProcessEvent(AnEvent: TJSONObject);
     procedure DoHandleBreakpointEvent(AnEvent: TJSONObject);
+    procedure DoHandleConsoleOutputEvent(AnEvent: TJSONObject);
   public
     constructor Create(const AExternalDebugger: String); override;
     destructor Destroy; override;
@@ -1034,11 +1035,20 @@ begin
   QueueCommand(TFPDSendDoCurrentCommand.create);
 end;
 
+procedure TFPDServerDebugger.DoHandleConsoleOutputEvent(AnEvent: TJSONObject);
+var
+  AMessage: string;
+begin
+  Message:=AnEvent.Get('message','');
+  OnConsoleOutput(Self, AMessage);
+end;
+
 procedure TFPDServerDebugger.HandleNotification(ANotification: TJSONObject);
 var
   NotificationType: string;
   UID: integer;
   SendCommand: TFPDSendCommand;
+  Message: string;
 begin
   // Ignore notifications from other connections
   if ANotification.get('connIdentifier',-1)=FSocketThread.ConnectionIdentifier then
@@ -1110,7 +1120,8 @@ begin
   case EventName of
     'CreateProcess' : DoHandleCreateProcessEvent(ANotification);
     'ExitProcess'   : DoHandleExitProcessEvent(ANotification);
-    'BreakPoint'    : DoHandleBreakPointEvent(ANotification)
+    'BreakPoint'    : DoHandleBreakPointEvent(ANotification);
+    'ConsoleOutput' : DoHandleConsoleOutputEvent(ANotification);
   else
     debugln('Received unknown event: '+EventName);
   end;
