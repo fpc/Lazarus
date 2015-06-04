@@ -125,6 +125,8 @@ type
     FMemConverter: TFpDbgMemConvertorLittleEndian;
     FMemReader: TDbgMemReader;
     FMemManager: TFpDbgMemManager;
+    FConsoleOutputThread: TThread;
+    procedure FreeConsoleOutputThread;
   protected
     // Handlers for the FController-events
     procedure FControllerHitBreakpointEvent(var continue: boolean; const Breakpoint: TDbgBreakpoint);
@@ -184,6 +186,48 @@ type
     public
       constructor create(ADebugThread: TFpDebugThread);
   end;
+
+  { TFpWaitForConsoleOutputThread }
+
+  TFpWaitForConsoleOutputThread = class(TThread)
+  private
+    FDebugThread: TFpDebugThread;
+  public
+    constructor Create(ADebugThread: TFpDebugThread);
+    procedure Execute; override;
+  end;
+
+constructor TFpWaitForConsoleOutputThread.Create(ADebugThread: TFpDebugThread);
+begin
+  Inherited create(false);
+  FDebugThread := ADebugThread;
+end;
+
+procedure TFpWaitForConsoleOutputThread.Execute;
+var
+  res: integer;
+  AnEvent: TFpDebugEvent;
+  s: string;
+begin
+  while not terminated do
+  begin
+    res := FDebugThread.FController.CurrentProcess.CheckForConsoleOutput(100);
+    if res<0 then
+      Terminate
+    else if res>0 then
+    begin
+      FDebugThread.ClearEvent(AnEvent);
+      AnEvent.EventType:=etEvent;
+      AnEvent.EventName:='ConsoleOutput';
+      s := FDebugThread.FController.CurrentProcess.GetConsoleOutput;
+      if s <> '' then
+      begin
+        AnEvent.Message:=s;
+        FDebugThread.SendEvent(AnEvent);
+      end;
+    end;
+  end;
+end;
 
 { TFpDbgMemReader }
 
@@ -280,6 +324,21 @@ begin
   TFpDwarfInfo(FController.CurrentProcess.DbgInfo).MemManager := FMemManager;
 end;
 
+procedure TFpDebugThread.FreeConsoleOutputThread;
+var
+  ADebugEvent: TFpDebugEvent;
+  AThread: TFpWaitForConsoleOutputThread;
+begin
+  if assigned(FConsoleOutputThread) then
+    begin
+    AThread := TFpWaitForConsoleOutputThread(FConsoleOutputThread);
+    FConsoleOutputThread := nil;
+    AThread.Terminate;
+    AThread.WaitFor;
+    AThread.Free;
+    end;
+end;
+
 procedure TFpDebugThread.FControllerHitBreakpointEvent(var continue: boolean; const Breakpoint: TDbgBreakpoint);
 var
   ADebugEvent: TFpDebugEvent;
@@ -299,6 +358,8 @@ procedure TFpDebugThread.FControllerProcessExitEvent(ExitCode: DWord);
 var
   ADebugEvent: TFpDebugEvent;
 begin
+  FreeConsoleOutputThread;
+
   ClearEvent(ADebugEvent);
   ADebugEvent.EventType:=etEvent;
   ADebugEvent.EventName:='ExitProcess';
@@ -317,6 +378,9 @@ begin
   ADebugEvent.InstructionPointerRegValue:=FController.CurrentProcess.GetInstructionPointerRegisterValue;
 
   SendEvent(ADebugEvent);
+
+  if FController.RedirectConsoleOutput then
+    FConsoleOutputThread := TFpWaitForConsoleOutputThread.Create(self);
   continue:=false;
 end;
 
@@ -327,6 +391,7 @@ var
   AnEvent: TFpDebugEvent;
 begin
   FController := TDbgController.Create;
+  FController.RedirectConsoleOutput:=true;
   FController.OnCreateProcessEvent:=@FControllerCreateProcessEvent;
   FController.OnProcessExitEvent:=@FControllerProcessExitEvent;
   FController.OnHitBreakpointEvent:=@FControllerHitBreakpointEvent;
@@ -407,6 +472,7 @@ end;
 
 destructor TFpDebugThread.Destroy;
 begin
+  FreeConsoleOutputThread;
   FListenerList.Free;
   FCommandQueue.Free;
   inherited Destroy;
