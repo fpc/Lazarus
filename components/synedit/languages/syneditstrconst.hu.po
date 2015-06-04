@@ -229,7 +229,7 @@ msgstr "Matematikai mód"
 
 #: syneditstrconst.syns_attrmeasurementunitvalue
 msgid "Measurement unit"
-msgstr ""
+msgstr "Mértékegység"
 
 #: syneditstrconst.syns_attrmessage
 msgid "Message"
@@ -345,7 +345,7 @@ msgstr "Szakasz"
 
 #: syneditstrconst.syns_attrselectorvalue
 msgid "Selector"
-msgstr ""
+msgstr "Választó"
 
 #: syneditstrconst.syns_attrspace
 msgid "Space"
@@ -489,11 +489,11 @@ msgstr "Kijelölés gyors beillesztése"
 
 #: syneditstrconst.syns_emcpluginmulticaretselectiontocarets
 msgid "Set carets at EOL in selected lines"
-msgstr ""
+msgstr "Kurzorok elhelyezése a kijelölt sorok végein"
 
 #: syneditstrconst.syns_emcpluginmulticarettogglecaret
 msgid "Toggle extra caret"
-msgstr ""
+msgstr "Extra kurzor ki/be"
 
 #: syneditstrconst.syns_emcselection_opt
 msgid "Mode,Begin,Continue"
@@ -525,7 +525,7 @@ msgstr "Kijelölés húzása"
 
 #: syneditstrconst.syns_emcstartdragmove_opt
 msgid "\"Caret on up if not dragged\",yes,no"
-msgstr ""
+msgstr "\"Kurzor a felengedéshez ha nem volt húzás\",Igen,Nem"
 
 #: syneditstrconst.syns_emcstartlineselections
 msgid "Line Selection"
@@ -533,7 +533,7 @@ msgstr "Sor kijelölés"
 
 #: syneditstrconst.syns_emcstartlineselectionsnoneempty
 msgid "Line Selection (select immediate)"
-msgstr ""
+msgstr "Sor kijelölése (közvetlenül)"
 
 #: syneditstrconst.syns_emcstartselection
 msgid "Selection"
@@ -802,4 +802,3 @@ msgstr "<nincs>"
 #: syneditstrconst.syns_untitled
 msgid "Untitled"
 msgstr "Névtelen"
-

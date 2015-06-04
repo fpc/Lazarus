@@ -33,7 +33,7 @@ msgstr "A hibakereső nem tudta megszerezni az alkalmazás folyamatazonosítój�
 
 #: gdbmistringconstants.gdbmicommandstartmainruntostoperror
 msgid "The debugger was unable to initialize itself.%0:sThe application did run (and terminated) before the debugger could set any breakpoints. %0:sThis may be caused by missing debug info."
-msgstr "A hibakereső nem tudta inicializálni magát.%0:sAz alkalmazás futott (és leállt) mielőtt a hibakereső töréspontokat állított volna be. %0:sEzt hiányzó hibakeresési infók okozhatják."
+msgstr "A hibakereső nem tudta előkészíteni magát.%0:sAz alkalmazás futott (és leállt) mielőtt a hibakereső töréspontokat állított volna be. %0:sEzt hiányzó hibakeresési infók okozhatják."
 
 #: gdbmistringconstants.gdbmierroronruncommand
 msgid "The debugger encountered an error when trying to run/step the application:%0:s%0:s%1:s%0:s%0:sPress \"Ok\" to continue debugging (paused), and correct the problem, or choose an alternative run command.%0:sPress \"Stop\" to end the debug session."
@@ -145,11 +145,11 @@ msgstr "Váratlan eredmény:%sA hibakereső leállni"
 
 #: gdbmistringconstants.synffailedtoinitializedebugger
 msgid "Failed to initialize debugger"
-msgstr ""
+msgstr "A hibakereső előkészítése nem sikerült"
 
 #: gdbmistringconstants.synffailedtoinitializethedebuggersetpascalfailed
 msgid "Failed to initialize the debugger (set pascal failed)"
-msgstr ""
+msgstr "A hibakereső előkészítése nem sikerült (pascal bekapcsolása) "
 
 #: gdbmistringconstants.synffailedtoloadapplicationexecutable
 msgid "Failed to load application executable"
@@ -157,5 +157,4 @@ msgstr "Nem sikerült betölteni a futtatható alkalmazást"
 
 #: gdbmistringconstants.synfthedebuggerwasunabletosetallbreakpointsduringiniti
 msgid "The debugger was unable to set all breakpoints during initialization.%0:sYou may wish to check if all sources were compiled with debug-info.%0:sPress OK to ignore this and continue."
-msgstr ""
-
+msgstr "A hibakereső nem tudta elhelyezni az összes megszakítási pontot az előkészítés folyamán.%0:s Ellenőrizni kell, hogy az összes forráskód hibakeresési információkkal lett-e lefordítva!%0:sAz 'OK'-t választva figyelmen kívül hagyhatja ezt és folytathatja a futtatást."

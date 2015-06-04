@@ -1319,7 +1319,7 @@ msgstr "Nem lehet letiltott vagy láthatatlan ablakot előtérbe hozni"
 
 #: lclstrconsts.sduplicatemenus
 msgid "Duplicate menus"
-msgstr "Többszörös menük"
+msgstr "Ismétlődő menük"
 
 #: lclstrconsts.sinvalidactioncreation
 msgid "Invalid action creation"
@@ -1553,4 +1553,3 @@ msgstr "Méret"
 #: lclstrconsts.sshellctrlstype
 msgid "Type"
 msgstr "Típus"
-

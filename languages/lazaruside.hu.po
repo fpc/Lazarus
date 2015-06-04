@@ -78,7 +78,7 @@ msgstr "Előzmények közt előre"
 
 #: lazarusidestrconsts.dlfmousesimplebuttonmulticarettoggle
 msgid "Toggle extra Caret"
-msgstr ""
+msgstr "Extra kurzor ki/be"
 
 #: lazarusidestrconsts.dlfmousesimplebuttonnothing
 msgctxt "lazarusidestrconsts.dlfmousesimplebuttonnothing"
@@ -165,11 +165,11 @@ msgstr "Kibővített, műveletek (töréspont, összecsukás) egérgomb felenged
 
 #: lazarusidestrconsts.dlfmousesimplegutterleftupright
 msgid "Extended, Actions, right gutter half only"
-msgstr ""
+msgstr "Kibővített, műveletek csak a hasábköz jobb felén"
 
 #: lazarusidestrconsts.dlfmousesimplegutterlines
 msgid "Use line numers to select lines"
-msgstr ""
+msgstr "Sorszámok használata a sor kijelöléséhez"
 
 #: lazarusidestrconsts.dlfmousesimpleguttersect
 msgctxt "lazarusidestrconsts.dlfmousesimpleguttersect"
@@ -596,10 +596,8 @@ msgid "Main .lpr unit creates each form with Application.CreateForm(). They are 
 msgstr "A fő .lpr unit létrehozza az összes form-ot az Application.CreateForm() eljárással. Ezek automatikusan meg is lesznek szüntetve."
 
 #: lazarusidestrconsts.dlgautocreatenewforms
-#, fuzzy
-#| msgid "When creating new forms, add them to auto-created forms"
 msgid "Auto-create new forms"
-msgstr "Új form-ok létrehozásakor adja őket hozzá az automatikusan létrehozott form-okhoz"
+msgstr "Új form-ok automatikus létrehozása"
 
 #: lazarusidestrconsts.dlgautodel
 msgid "Auto delete file"
@@ -880,7 +878,7 @@ msgstr "Hibakereső elérési út kiegészítése (semmi):"
 
 #: lazarusidestrconsts.dlgcodecreation
 msgid "Code Creation"
-msgstr "Kód létrehozás"
+msgstr "Kód létrehozása"
 
 #: lazarusidestrconsts.dlgcodefoldenableboth
 msgid "Both"
@@ -1336,7 +1334,7 @@ msgstr "Szerkesztő fájljai"
 #: lazarusidestrconsts.dlgedidcomlet
 msgctxt "lazarusidestrconsts.dlgedidcomlet"
 msgid "Identifier completion"
-msgstr "Azonosító kiegészítés"
+msgstr "Azonosítók kiegészítése"
 
 #: lazarusidestrconsts.dlgedinvert
 msgid "Invert"
@@ -1540,58 +1538,51 @@ msgid "%s files"
 msgstr "%s fájl"
 
 #: lazarusidestrconsts.dlgfilterall
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgfilterall"
 msgid "All files"
 msgstr "Minden fájl"
 
 #: lazarusidestrconsts.dlgfiltercodetoolstemplatefile
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgfiltercodetoolstemplatefile"
 msgid "CodeTools template file"
 msgstr "CodeTools sablon fájl"
 
 #: lazarusidestrconsts.dlgfilterdcifile
 msgid "DCI file"
-msgstr ""
+msgstr "DCI fájl"
 
 #: lazarusidestrconsts.dlgfilterdelphiform
 msgid "Delphi form"
-msgstr ""
+msgstr "Delphi form"
 
 #: lazarusidestrconsts.dlgfilterdelphipackage
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgfilterdelphipackage"
 msgid "Delphi package"
 msgstr "Delphi csomag"
 
 #: lazarusidestrconsts.dlgfilterdelphiproject
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgfilterdelphiproject"
 msgid "Delphi project"
 msgstr "Delphi projekt"
 
 #: lazarusidestrconsts.dlgfilterdelphiunit
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgfilterdelphiunit"
 msgid "Delphi unit"
 msgstr "Delphi unit"
 
 #: lazarusidestrconsts.dlgfilterexecutable
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgfilterexecutable"
 msgid "Executable"
 msgstr "Futtatható"
 
 #: lazarusidestrconsts.dlgfilterfpcmessagefile
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgfilterfpcmessagefile"
 msgid "FPC message file"
 msgstr "FPC üzenetfájl"
 
 #: lazarusidestrconsts.dlgfilterhtml
 msgid "HTML files"
-msgstr ""
+msgstr "HTML fájlok"
 
 #: lazarusidestrconsts.dlgfilterimagesbitmap
 msgid "Bitmap images"
@@ -1606,83 +1597,70 @@ msgid "PNG images"
 msgstr ""
 
 #: lazarusidestrconsts.dlgfilterlazarusdesktopsettings
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgfilterlazarusdesktopsettings"
 msgid "Lazarus Desktop Settings"
 msgstr "Lazarus felület beállításai"
 
 #: lazarusidestrconsts.dlgfilterlazaruseditorfile
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgfilterlazaruseditorfile"
 msgid "Editor file types"
 msgstr "Szerkeszthető fájltípusok"
 
 #: lazarusidestrconsts.dlgfilterlazarusfile
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgfilterlazarusfile"
 msgid "Lazarus file"
 msgstr "Lazarus fájl"
 
 #: lazarusidestrconsts.dlgfilterlazarusform
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgfilterlazarusform"
 msgid "Lazarus form"
 msgstr "Lazarus form"
 
 #: lazarusidestrconsts.dlgfilterlazarusinclude
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgfilterlazarusinclude"
 msgid "Lazarus include file"
 msgstr "Lazarus include fájl"
 
 #: lazarusidestrconsts.dlgfilterlazarusotherfile
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgfilterlazarusotherfile"
 msgid "Lazarus other file"
 msgstr "Lazarus egyéb fájl"
 
 #: lazarusidestrconsts.dlgfilterlazaruspackage
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgfilterlazaruspackage"
 msgid "Lazarus package"
 msgstr "Lazarus csomag"
 
 #: lazarusidestrconsts.dlgfilterlazarusproject
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgfilterlazarusproject"
 msgid "Lazarus project"
 msgstr "Lazarus projekt"
 
 #: lazarusidestrconsts.dlgfilterlazarusprojectsource
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgfilterlazarusprojectsource"
 msgid "Lazarus project source"
 msgstr "Lazarus projekt forráskód"
 
 #: lazarusidestrconsts.dlgfilterlazarussession
 msgid "Lazarus session"
-msgstr ""
+msgstr "Lazarus munkamenet"
 
 #: lazarusidestrconsts.dlgfilterlazarusunit
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgfilterlazarusunit"
 msgid "Lazarus unit"
 msgstr "Lazarus unit"
 
 #: lazarusidestrconsts.dlgfilterpascalfile
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgfilterpascalfile"
 msgid "Pascal file"
 msgstr "Pascal fájl"
 
 #: lazarusidestrconsts.dlgfilterprograms
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgfilterprograms"
 msgid "Programs"
 msgstr "Programok"
 
 #: lazarusidestrconsts.dlgfilterxml
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgfilterxml"
 msgid "XML files"
 msgstr "XML fájlok"
@@ -2605,7 +2583,7 @@ msgstr "Hasábköz"
 
 #: lazarusidestrconsts.dlgmouseoptnodegutterchanges
 msgid "Line Changes"
-msgstr ""
+msgstr "Sorváltások"
 
 #: lazarusidestrconsts.dlgmouseoptnodegutterfold
 msgid "Fold Tree"
@@ -2660,86 +2638,77 @@ msgid "Messages"
 msgstr "Üzenetek"
 
 #: lazarusidestrconsts.dlgmsgwincolorurgentdebug
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgmsgwincolorurgentdebug"
 msgid "Debug"
 msgstr "Hibakeresés"
 
 #: lazarusidestrconsts.dlgmsgwincolorurgenterror
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgmsgwincolorurgenterror"
 msgid "Error"
 msgstr "Hiba"
 
 #: lazarusidestrconsts.dlgmsgwincolorurgentfatal
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgmsgwincolorurgentfatal"
 msgid "Fatal"
 msgstr "Végzetes"
 
 #: lazarusidestrconsts.dlgmsgwincolorurgenthint
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgmsgwincolorurgenthint"
 msgid "Hint"
 msgstr "Tipp"
 
 #: lazarusidestrconsts.dlgmsgwincolorurgentimportant
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgmsgwincolorurgentimportant"
 msgid "Important"
 msgstr "Fontos"
 
 #: lazarusidestrconsts.dlgmsgwincolorurgentnone
 msgid "Normal"
-msgstr ""
+msgstr "Normál"
 
 #: lazarusidestrconsts.dlgmsgwincolorurgentnote
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgmsgwincolorurgentnote"
 msgid "Note"
 msgstr "Megjegyzés"
 
 #: lazarusidestrconsts.dlgmsgwincolorurgentpanic
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgmsgwincolorurgentpanic"
 msgid "Panic"
 msgstr "Pánik"
 
 #: lazarusidestrconsts.dlgmsgwincolorurgentprogress
 msgid "Time and statistics"
-msgstr ""
+msgstr "Idő és statisztika"
 
 #: lazarusidestrconsts.dlgmsgwincolorurgentverbose
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgmsgwincolorurgentverbose"
 msgid "Verbose"
 msgstr "Egyéb"
 
 #: lazarusidestrconsts.dlgmsgwincolorurgentverbose2
 msgid "Verbose 2"
-msgstr ""
+msgstr "Egyéb 2"
 
 #: lazarusidestrconsts.dlgmsgwincolorurgentverbose3
 msgid "Verbose 3"
-msgstr ""
+msgstr "Egyéb 3"
 
 #: lazarusidestrconsts.dlgmsgwincolorurgentwarning
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgmsgwincolorurgentwarning"
 msgid "Warning"
 msgstr "Figyelmeztetés"
 
 #: lazarusidestrconsts.dlgmulticaretcolumnmode
 msgid "Multi-caret (column-select) move with cursor"
-msgstr ""
+msgstr "Multi-kurzor (oszlopkijelölés) mozgatása a kurzorral"
 
 #: lazarusidestrconsts.dlgmulticaretmode
 msgid "Multi-caret move with cursor"
-msgstr ""
+msgstr "Multi-kurzor mozgatása a kurzorral"
 
 #: lazarusidestrconsts.dlgmulticaretoncolumnselection
 msgid "Enable multi caret for column selection"
-msgstr ""
+msgstr "Multi-kurzor engedélyezése oszlopkijelöléskor"
 
 #: lazarusidestrconsts.dlgmultiselect
 msgid "Multi Select"
@@ -3181,7 +3150,7 @@ msgstr "Útvonalak"
 
 #: lazarusidestrconsts.dlgsearchscope
 msgid "Search scope"
-msgstr ""
+msgstr "Keresés hatóköre"
 
 #: lazarusidestrconsts.dlgselectallchildcontrols
 msgid "Select all child controls together with their parent."
@@ -3328,7 +3297,7 @@ msgstr "Amikor egy vezérlő elég közel van egy másik vezérlőhöz, akkor az
 
 #: lazarusidestrconsts.dlgsourceedittabmultiline
 msgid "Multiline tabs"
-msgstr ""
+msgstr "Fülek több sorba rendezése"
 
 #: lazarusidestrconsts.dlgspacenotcosmos
 msgctxt "lazarusidestrconsts.dlgspacenotcosmos"
@@ -3382,7 +3351,7 @@ msgstr "Altulajdonságok"
 
 #: lazarusidestrconsts.dlgsyntaxoptions
 msgid "Syntax options"
-msgstr "Szintakszis beállításai"
+msgstr "Szintaxis beállításai"
 
 #: lazarusidestrconsts.dlgtabindent
 msgid "Tab indents blocks"
@@ -3453,7 +3422,7 @@ msgstr "Kurzor után"
 
 #: lazarusidestrconsts.dlgtrimspacetypeleaveline
 msgid "Leave line"
-msgstr "Sorelhagyáskor"
+msgstr "Sor elhagyásakor"
 
 #: lazarusidestrconsts.dlgtrimspacetypeposonly
 msgid "Position Only"
@@ -3531,7 +3500,7 @@ msgstr "Helyi sémabeállítások használata"
 
 #: lazarusidestrconsts.dlgusesyntaxhighlight
 msgid "Use syntax highlight"
-msgstr "Szintakszis kiemelés hasnzálata"
+msgstr "Szintaxiskiemelés használata"
 
 #: lazarusidestrconsts.dlgusetabshistory
 msgid "Use tab history when closing tabs"
@@ -3806,7 +3775,7 @@ msgstr "A fájl nem unit"
 
 #: lazarusidestrconsts.lisa2piconandsize
 msgid "Icon (maximum 24x24):"
-msgstr ""
+msgstr "Ikon (maximum 24x24):"
 
 #: lazarusidestrconsts.lisa2pinvalidancestortype
 msgid "Invalid Ancestor Type"
@@ -3859,7 +3828,7 @@ msgstr "Oldalnév túl hosszú"
 
 #: lazarusidestrconsts.lisa2ppalettepage
 msgid "Palette Page:"
-msgstr "Paletta oldal:"
+msgstr "Paletta-oldal:"
 
 #: lazarusidestrconsts.lisa2ppascalunitsmusthavetheextensionpporpas
 msgid "Pascal units must have the extension .pp or .pas"
@@ -4024,7 +3993,7 @@ msgstr "Lazarus névjegye"
 
 #: lazarusidestrconsts.lisaboutlazarusmsg
 msgid "License: GPL/LGPL. See Lazarus and Free Pascal sources for license details.%sLazarus is an IDE to create graphical and console applications with Free Pascal. Free Pascal is Pascal and Object Pascal compiler that runs on Windows, Linux, Mac OS X, FreeBSD and more.%sLazarus is the missing part of the puzzle that will allow you to develop programs for all of the above platforms in a Delphi like environment. The IDE is a RAD tool that includes a form designer.%sAs Lazarus is growing we need more developers."
-msgstr "Licenc: GPL/LGPL. Lásd a Lazarus és a Free Pascal forráskódokat a licenc részleteiért.%sA Lazarus egy IDE grafikus és konzolos alkalmazások létrehozására Free Pascal használatával. A Free Pascal egy Pascal és Object Pascal fordító, mely a fut Windows-on, Linux-on, Mac OS X-en, FreeBSD-n, stb.%sA Lazarus a kirakós hiányzó darabja, mely lehetővé teszi programok fejlesztését az összes fenti platformra egy Delphi-szerű környezetben. Az IDE egy RAD (Rapid Application Development) eszköz mely tartalmaz űrlaptervezőt.%sAhogy a Lazarus növekszik egyre több fejlesztőre van szükségünk."
+msgstr "Licenc: GPL/LGPL. Lásd a Lazarus és a Free Pascal forráskódokat a licenc részleteiért.%sA Lazarus egy IDE grafikus és konzolos alkalmazások létrehozására Free Pascal használatával. A Free Pascal egy Pascal és Object Pascal fordító, mely a fut Windows-on, Linux-on, Mac OS X-en, FreeBSD-n stb.%sA Lazarus a kirakós hiányzó darabja, mely lehetővé teszi programok fejlesztését az összes fenti platformra egy Delphi-szerű környezetben. Az IDE egy RAD (Rapid Application Development) eszköz mely tartalmaz űrlaptervezőt.%sAhogy a Lazarus növekszik egyre több fejlesztőre van szükségünk."
 
 #: lazarusidestrconsts.lisaboutnocontributors
 msgid "Cannot find contributors list."
@@ -4158,7 +4127,7 @@ msgstr "Töréspont adott címen ..."
 
 #: lazarusidestrconsts.lisaddsub
 msgid "Add >>"
-msgstr ""
+msgstr "Hozzáadás >>"
 
 #: lazarusidestrconsts.lisaddtoincludesearchpath
 msgid "Add to include search path?"
@@ -4437,15 +4406,15 @@ msgstr "Egy jól használható beállítás Windows-on: $(LazarusDir)\\mingw\\bi
 
 #: lazarusidestrconsts.lisautoadjustideheight
 msgid "Automatically adjust IDE main window height"
-msgstr ""
+msgstr "Az IDE főablakának magassága automatikusan legyen beállítva"
 
 #: lazarusidestrconsts.lisautoadjustideheightfullcomponentpalette
 msgid "Show complete component palette"
-msgstr ""
+msgstr "Teljes komponens paletta megjelenítése"
 
 #: lazarusidestrconsts.lisautoadjustideheightfullcomponentpalettehint
 msgid "If component palette spans over more lines, show them all and not only one."
-msgstr ""
+msgstr "Ha a komponens paletta több sort foglal el akkor mind jelenjen meg, ne csak egy."
 
 #: lazarusidestrconsts.lisautocompletionoff
 msgid "Auto completion: off"
@@ -5379,7 +5348,7 @@ msgstr "Válasszon egy FPDoc hivatkozást!"
 
 #: lazarusidestrconsts.lischooseakey
 msgid "Choose a key ..."
-msgstr "Válasszon egy billentyűt! ..."
+msgstr "Válasszon egy billentyűt ..."
 
 #: lazarusidestrconsts.lischooseanameforthecomponent
 msgid "Choose a name for the component"
@@ -5475,7 +5444,7 @@ msgstr "Körkörös függőség érzékelve"
 
 #: lazarusidestrconsts.lisclasscompletion
 msgid "Class Completion"
-msgstr "Osztály kiegészítés"
+msgstr "Osztályok kiegészítése"
 
 #: lazarusidestrconsts.lisclassesandpropertiesexistvalueswerenotchecked
 msgid "Classes and properties exist. Values were not checked."
@@ -5523,7 +5492,7 @@ msgstr "A szűrőfeltételeknek megfelelő fájlok eltávolítása"
 
 #: lazarusidestrconsts.liscldirsimplesyntaxeginsteadof
 msgid "Simple Syntax (e.g. * instead of .*)"
-msgstr "Egyszerű szintakszis (pl. .* helyett *)"
+msgstr "Egyszerű szintaxis (pl. .* helyett *)"
 
 #: lazarusidestrconsts.liscleanall
 msgid "Clean all"
@@ -5581,11 +5550,11 @@ msgstr "Kattintson ide a fájl böngészéséhez"
 
 #: lazarusidestrconsts.lisclicktoseethechoices
 msgid "Click to see the choices"
-msgstr ""
+msgstr "Kattintson ide a lehetőségek megjelenítéséhez"
 
 #: lazarusidestrconsts.lisclicktoselectpalettepage
 msgid "Click to Select Palette Page"
-msgstr ""
+msgstr "Kattintson a paletta-oldal kiválasztásához!"
 
 #: lazarusidestrconsts.lisclone
 msgid "Clone"
@@ -5687,7 +5656,7 @@ msgstr "Kódböngésző"
 
 #: lazarusidestrconsts.liscodegenerationoptions
 msgid "Code generation options"
-msgstr "Kód létrehozás beállításai"
+msgstr "Kód létrehozásának beállításai"
 
 #: lazarusidestrconsts.liscodehelpaddpathbutton
 msgid "Add path"
@@ -6487,7 +6456,7 @@ msgstr "Konzolos alkalmazás"
 
 #: lazarusidestrconsts.lisconsoleapplicationprogramdescriptor
 msgid "A Free Pascal command line program using TCustomApplication to easily check command line options, handling exceptions, etc."
-msgstr "Egy parancssoros Free Pascal program, mely a TCustomApplication-t használja a paraméterek ellenőrzéséhez, kivételkezeléshez, stb."
+msgstr "Egy parancssoros Free Pascal program, mely a TCustomApplication-t használja a paraméterek ellenőrzéséhez, kivételkezeléshez stb."
 
 #: lazarusidestrconsts.lisconstructorcode
 msgid "Constructor code"
@@ -6871,187 +6840,179 @@ msgstr "A felhasználó úgy döntött, hogy befejezi az átalakítást e fájll
 
 #: lazarusidestrconsts.liscoolbaraddconfigdelete
 msgid "Add/Config/Delete Toolbar(s)"
-msgstr ""
+msgstr "Eszköztár(ak) hozzáadása/beállítása/törlése"
 
 #: lazarusidestrconsts.liscoolbaradddivider
 msgid "Add Divider"
-msgstr ""
+msgstr "Elválasztó hozzáadása"
 
 #: lazarusidestrconsts.liscoolbaraddselected
 msgid "Add selected item to toolbar"
-msgstr ""
+msgstr "A kijelölt elem hozzáadása az eszköztárhoz"
 
 #: lazarusidestrconsts.liscoolbaravailablecommands
 msgid "Available commands"
-msgstr ""
+msgstr "Elérhető parancsok"
 
 #: lazarusidestrconsts.liscoolbarborderstyle
 msgid "Toolbars border style"
-msgstr ""
+msgstr "Eszköztárak keretének stílusa"
 
 #: lazarusidestrconsts.liscoolbarborderstyleitem0
-#, fuzzy
 msgctxt "lazarusidestrconsts.liscoolbarborderstyleitem0"
 msgid "None"
-msgstr "Semmi"
+msgstr "Nincs"
 
 #: lazarusidestrconsts.liscoolbarborderstyleitem1
-#, fuzzy
 msgctxt "lazarusidestrconsts.liscoolbarborderstyleitem1"
 msgid "Single"
 msgstr "Egyszeres"
 
 #: lazarusidestrconsts.liscoolbarclearselection
 msgid "Clear selection"
-msgstr ""
+msgstr "Kijelölés megszüntetése"
 
 #: lazarusidestrconsts.liscoolbarcodeexplorer
-#, fuzzy
 msgctxt "lazarusidestrconsts.liscoolbarcodeexplorer"
 msgid "Code Explorer"
 msgstr "Kódböngésző"
 
 #: lazarusidestrconsts.liscoolbarcodetemplates
-#, fuzzy
 msgctxt "lazarusidestrconsts.liscoolbarcodetemplates"
 msgid "Code Templates"
 msgstr "Kódsablonok"
 
 #: lazarusidestrconsts.liscoolbarconfigure
 msgid "&Configure"
-msgstr ""
+msgstr "&Beállítás"
 
 #: lazarusidestrconsts.liscoolbardeletetoolbar
 msgid "Are you sure you want to delete the selected toolbar?"
-msgstr ""
+msgstr "Biztosan törölhető a kijelölt eszköztár?"
 
 #: lazarusidestrconsts.liscoolbardeletewarning
 msgid "There must be at least one toolbar!"
-msgstr ""
+msgstr "Legalább egy eszköztárnak léteznie kell!"
 
 #: lazarusidestrconsts.liscoolbardesigner
 msgid "Designer"
-msgstr ""
+msgstr "Tervező"
 
 #: lazarusidestrconsts.liscoolbargeneralsettings
 msgid "General Coolbar Settings"
-msgstr ""
+msgstr "Általános eszköztár-beállítások"
 
 #: lazarusidestrconsts.liscoolbargrabstyle
 msgid "Toolbars grab style"
-msgstr ""
+msgstr "Eszköztárak fogantyújának stílusa"
 
 #: lazarusidestrconsts.liscoolbargrabstyleitem0
 msgid "Simple"
-msgstr ""
+msgstr "Egyszerű"
 
 #: lazarusidestrconsts.liscoolbargrabstyleitem1
-#, fuzzy
 msgctxt "lazarusidestrconsts.liscoolbargrabstyleitem1"
 msgid "Double"
 msgstr "Kétszeres"
 
 #: lazarusidestrconsts.liscoolbargrabstyleitem2
 msgid "HorLines"
-msgstr ""
+msgstr "Vízszintes vonalak"
 
 #: lazarusidestrconsts.liscoolbargrabstyleitem3
 msgid "VerLines"
-msgstr ""
+msgstr "Függoleges vonalak"
 
 #: lazarusidestrconsts.liscoolbargrabstyleitem4
 msgid "Gripper"
-msgstr ""
+msgstr "Fogantyú"
 
 #: lazarusidestrconsts.liscoolbargrabstyleitem5
-#, fuzzy
 msgctxt "lazarusidestrconsts.liscoolbargrabstyleitem5"
 msgid "Button"
-msgstr "Gomb"
+msgstr "Nyomógomb"
 
 #: lazarusidestrconsts.liscoolbargrabwidth
 msgid "Grab width"
-msgstr ""
+msgstr "Fogantyú szélessége"
 
 #: lazarusidestrconsts.liscoolbarhelp1
 msgid "The \"Add\" button inserts a command before the selected Item of the Toolbar."
-msgstr ""
+msgstr "A \"Hozzáadás\" gomb beszúr egy parancsot az eszköztár kijelölt eleme elé."
 
 #: lazarusidestrconsts.liscoolbarhelp2
 msgid "If none is selected, the Item will be appended at the end of the Toolbar."
-msgstr ""
+msgstr "Ha semmi sincs kijelölve akkor az elem az eszköztár végéhez lesz adva."
 
 #: lazarusidestrconsts.liscoolbarhelp3
 msgid "You may rearrange Toolbar Items with \"Move Up\" and \"Move Down\" buttons."
-msgstr ""
+msgstr "Az eszköztár elemei átrendezhetők a \"Mozgatás felfelé\" és a \"Mozgatás lefelé\" gombokkal."
 
 #: lazarusidestrconsts.liscoolbarhelp4
 msgid "Hint: to append an Item at the end, use \"Clear selection\""
-msgstr ""
+msgstr "Tipp: a \"Kijelölés megszüntetése\" után lehet egy elemet a lista végéhez adni"
 
 #: lazarusidestrconsts.liscoolbaridemainmenu
 msgid "IDE Main Menu"
-msgstr ""
+msgstr "IDE Főmenü"
 
 #: lazarusidestrconsts.liscoolbarmessages
-#, fuzzy
 msgctxt "lazarusidestrconsts.liscoolbarmessages"
 msgid "Messages"
 msgstr "Üzenetek"
 
 #: lazarusidestrconsts.liscoolbarmoveselecteddown
 msgid "Move selected toolbar item down"
-msgstr ""
+msgstr "A kijelöl eszköztárelem mozgatása lefelé"
 
 #: lazarusidestrconsts.liscoolbarmoveselectedup
 msgid "Move selected toolbar item up"
-msgstr ""
+msgstr "A kijelöl eszköztárelem mozgatása felfelé"
 
 #: lazarusidestrconsts.liscoolbaroptions
 msgid "IDE CoolBar"
-msgstr ""
+msgstr "IDE eszköztár"
 
 #: lazarusidestrconsts.liscoolbarpackageeditor
 msgid "Package Editor"
-msgstr ""
+msgstr "Csomagszerkesztő"
 
 #: lazarusidestrconsts.liscoolbarpackageeditorfiles
 msgid "Package Editor Files"
-msgstr ""
+msgstr "Csomagszerkesztő fájljai"
 
 #: lazarusidestrconsts.liscoolbarremoveselected
 msgid "Remove selected item from toolbar"
-msgstr ""
+msgstr "A kijelölt elem eltávolítása az eszköztárról"
 
 #: lazarusidestrconsts.liscoolbarrestoredefaults
 msgid "Restore defaults"
-msgstr ""
+msgstr "Alapértelmezések visszaállítása"
 
 #: lazarusidestrconsts.liscoolbarselecttoolbar
 msgid "Please select a toolbar first!"
-msgstr ""
+msgstr "Előbb ki kell választani egy eszköztárat!"
 
 #: lazarusidestrconsts.liscoolbarsourceeditor
-#, fuzzy
 msgctxt "lazarusidestrconsts.liscoolbarsourceeditor"
 msgid "Source Editor"
 msgstr "Forráskódszerkesztő"
 
 #: lazarusidestrconsts.liscoolbarsourcetab
 msgid "Source Tab"
-msgstr ""
+msgstr "Forrás-fül"
 
 #: lazarusidestrconsts.liscoolbartoolbarcommands
 msgid "Toolbar commands"
-msgstr ""
+msgstr "Eszköztár parancsai"
 
 #: lazarusidestrconsts.liscoolbarvisible
 msgid "Coolbar is &visible"
-msgstr ""
+msgstr "Az eszköztár látható"
 
 #: lazarusidestrconsts.liscoolbarwidth
 msgid "Coolbar width"
-msgstr ""
+msgstr "Eszköztár szélessége"
 
 #: lazarusidestrconsts.liscopy
 msgctxt "lazarusidestrconsts.liscopy"
@@ -8172,7 +8133,7 @@ msgstr "Ismétlődő fájlnév"
 
 #: lazarusidestrconsts.lisduplicatefoundofvalue
 msgid "Duplicate found of value \"%s\"."
-msgstr "A(z) \"%s\" érték többszörösen megtalálható."
+msgstr "A(z) \"%s\" érték ismétlődik."
 
 #: lazarusidestrconsts.lisduplicatename
 msgid "Duplicate Name"
@@ -8200,7 +8161,7 @@ msgstr "Ismétlődő unit"
 
 #: lazarusidestrconsts.lisduplicateunitin
 msgid "Duplicate unit \"%s\" in \"%s\""
-msgstr ""
+msgstr "Ismétlődő unit \"%s\" itt: \"%s\""
 
 #: lazarusidestrconsts.lisedit
 msgctxt "lazarusidestrconsts.lisedit"
@@ -8542,10 +8503,8 @@ msgid "Error in the \"unit output directory\":"
 msgstr "Hiba az \"unitok kimeneti könytára\" útvonalában:"
 
 #: lazarusidestrconsts.liserrorinvalidbuildmode
-#, fuzzy
-#| msgid "ERROR: invalid build mode \"%s\""
 msgid "Error: (lazarus) invalid build mode \"%s\""
-msgstr "HIBA: Érvénytelen építési mód: \"%s\""
+msgstr "Hiba: (lazarus) érvénytelen építési mód: \"%s\""
 
 #: lazarusidestrconsts.liserrorloadingfile
 msgid "Error loading file"
@@ -9119,7 +9078,7 @@ msgstr "Elsőként"
 
 #: lazarusidestrconsts.lisfirsttest
 msgid "&First test"
-msgstr ""
+msgstr "Első teszt"
 
 #: lazarusidestrconsts.lisfixlfmfile
 msgid "Fix LFM file"
@@ -9212,7 +9171,7 @@ msgstr "Hiba írás közben: \"%s\"%s%s"
 
 #: lazarusidestrconsts.lisfpdocfpdocsyntaxerror
 msgid "FPDoc syntax error"
-msgstr "FPDoc szintaxis hiba"
+msgstr "FPDoc szintaktikai hiba"
 
 #: lazarusidestrconsts.lisfpdocpackagename
 msgid "FPDoc package name:"
@@ -9224,7 +9183,7 @@ msgstr "FPDoc csomagnév. Alapértelmezett a projektfájl neve."
 
 #: lazarusidestrconsts.lisfpdocthereisasyntaxerrorinthefpdocelement
 msgid "There is a syntax error in the fpdoc element \"%s\":%s%s"
-msgstr "Szintaxis hiba van a(z) \"%s\" FPDoc elemben:%s%s"
+msgstr "Szintaktikai hiba a(z) \"%s\" FPDoc elemben:%s%s"
 
 #: lazarusidestrconsts.lisframe
 msgid "Frame"
@@ -9296,11 +9255,11 @@ msgstr "Minden hivatkozás átnevezése"
 
 #: lazarusidestrconsts.lisfrirenaming
 msgid "Renaming"
-msgstr ""
+msgstr "Átnevezés"
 
 #: lazarusidestrconsts.lisfrisearch
 msgid "Search"
-msgstr ""
+msgstr "Keresés"
 
 #: lazarusidestrconsts.lisfrisearchincommentstoo
 msgid "Search in comments too"
@@ -9405,11 +9364,11 @@ msgstr "Megnövelés a legnagyobbra"
 
 #: lazarusidestrconsts.lishashelp
 msgid "Has Help"
-msgstr "Van súgja"
+msgstr "Van súgója"
 
 #: lazarusidestrconsts.lisheadercolors
 msgid "Header colors"
-msgstr ""
+msgstr "Fejlécek színei"
 
 #: lazarusidestrconsts.lisheadercommentforclass
 msgid "Header comment for class"
@@ -9828,7 +9787,7 @@ msgstr "Örökölt projekt komponens"
 
 #: lazarusidestrconsts.lisinitializelocalvariable
 msgid "Initialize Local Variable"
-msgstr ""
+msgstr "Helyi változó előkészítése"
 
 #: lazarusidestrconsts.lisinordertocreateacleancopyoftheprojectpackageallfil
 msgid "In order to create a clean copy of the project/package, all files in the following directory will be deleted and all its content will be lost.%sDelete all files in \"%s\"?"
@@ -9841,7 +9800,7 @@ msgstr "Beszúrás"
 
 #: lazarusidestrconsts.lisinsertassignment
 msgid "Insert Assignment %s := ..."
-msgstr ""
+msgstr "Értékadás beszúrása: %s := ..."
 
 #: lazarusidestrconsts.lisinsertdate
 msgid "insert date"
@@ -10695,7 +10654,7 @@ msgstr "Unit infó megjelenítése"
 
 #: lazarusidestrconsts.lislastopened
 msgid "Last opened"
-msgstr ""
+msgstr "Legutóbb megnyitva"
 
 #: lazarusidestrconsts.lislaunchingapplicationinvalid
 msgid "Launching application invalid"
@@ -11225,7 +11184,7 @@ msgstr "Forráskódszerkesztők kezelése ..."
 
 #: lazarusidestrconsts.lismaximumnumberofthreadsforcompilinginparalleldefaul
 msgid "Maximum number of threads for compiling in parallel. Default is 0, which guesses the number of cores in the system."
-msgstr ""
+msgstr "A párhuzamos fordításhoz engedélyezett szálak száma. Alapértelmezés a 0, ez jelenti a rendszerben használt magok számát."
 
 #: lazarusidestrconsts.lismaximumparallelprocesses0meansdefault
 msgid "Maximum parallel processes, 0 means default (%s)"
@@ -11654,19 +11613,19 @@ msgstr "Ugrás a kidolgozáshoz"
 
 #: lazarusidestrconsts.lismenujumptoimplementationuses
 msgid "Jump to Implementation uses"
-msgstr ""
+msgstr "Ugrás a kidolgozás uses szakaszához"
 
 #: lazarusidestrconsts.lismenujumptoinitialization
 msgid "Jump to Initialization"
-msgstr ""
+msgstr "Ugrás az előkészítéshez"
 
 #: lazarusidestrconsts.lismenujumptointerface
 msgid "Jump to Interface"
-msgstr ""
+msgstr "Ugrás a felülethez"
 
 #: lazarusidestrconsts.lismenujumptointerfaceuses
 msgid "Jump to Interface uses"
-msgstr ""
+msgstr "Ugrás a felület uses szakaszához"
 
 #: lazarusidestrconsts.lismenujumptonextbookmark
 msgid "Jump to Next Bookmark"
@@ -11824,7 +11783,7 @@ msgstr "Gyors szintaxis ellenörzés"
 
 #: lazarusidestrconsts.lismenuquicksyntaxcheckok
 msgid "Quick syntax check OK"
-msgstr "Gyors szintakszis ellenőrzés rendben"
+msgstr "Gyors szintaxis ellenőrzés rendben"
 
 #: lazarusidestrconsts.lismenuremovefromproject
 msgid "Remove from Project ..."
@@ -12484,7 +12443,7 @@ msgstr "Tovább"
 
 #: lazarusidestrconsts.lismore2
 msgid "More ..."
-msgstr ""
+msgstr "Továbbiak ..."
 
 #: lazarusidestrconsts.lismoresub
 msgctxt "lazarusidestrconsts.lismoresub"
@@ -12549,7 +12508,7 @@ msgstr "(ms)"
 
 #: lazarusidestrconsts.lismsgcolors
 msgid "Message colors"
-msgstr ""
+msgstr "Üzenetek színei"
 
 #: lazarusidestrconsts.lismultipledirectoriesareseparatedwithsemicolons
 msgid "Multiple directories are separated with semicolons"
@@ -13074,7 +13033,6 @@ msgid "Open XML"
 msgstr "XML megnyitása"
 
 #: lazarusidestrconsts.lisoptions
-#, fuzzy
 msgctxt "lazarusidestrconsts.lisoptions"
 msgid "Options"
 msgstr "Beállítások"
@@ -13101,7 +13059,7 @@ msgstr "Nyelv felülbírálása. Például --language=de. A lehetséges értéke
 
 #: lazarusidestrconsts.lisoverridethedefaultcompileregppc386ppcx64ppcppcetcd
 msgid "%soverride the default compiler. e.g. ppc386 ppcx64 ppcppc etc. default is stored in environmentoptions.xml"
-msgstr "%saz alapértelmezett fordító felülbírálása.pl. ppc386 ppcx64 ppcppc stb. az alapértelmezett az environmentoptions.xml van tárolva"
+msgstr "%saz alapértelmezett fordító felülbírálása. Pl. ppc386, ppcx64, ppcppc stb. Az alapértelmezett az environmentoptions.xml van tárolva"
 
 #: lazarusidestrconsts.lisoverridetheprojectbuildmode
 msgid "%soverride the project or IDE build mode."
@@ -13109,7 +13067,7 @@ msgstr "%sa projekt vagy az IDE építési módjának felülbírálása"
 
 #: lazarusidestrconsts.lisoverridetheprojectcpuegi386x86_64powerpcpowerpc_64
 msgid "%soverride the project cpu. e.g. i386 x86_64 powerpc powerpc_64 etc. default: %s"
-msgstr "%sa projekt CPU felülbírálása. pl. i386 x86_64 powerpc powerpc_64 stb. alapértelmezett: %s"
+msgstr "%sa projekt CPU felülbírálása. Pl. i386, x86_64, powerpc, powerpc_64 stb. Alapértelmezett: %s"
 
 #: lazarusidestrconsts.lisoverridetheprojectoperatingsystemegwin32linuxdefau
 msgid "%soverride the project operating system. e.g. win32 linux. default: %s"
@@ -13177,7 +13135,7 @@ msgstr "Csomagok forrásainak könyvtárai"
 
 #: lazarusidestrconsts.lispackagesunitsidentifierslinesbytes
 msgid "packages=%s/%s units=%s/%s identifiers=%s/%s lines=%s bytes=%s"
-msgstr ""
+msgstr "csomagok=%s/%s unit-ok=%s/%s azonosítók=%s/%s sorok=%s bájtok=%s"
 
 #: lazarusidestrconsts.lispackageunit
 msgid "package unit"
@@ -13202,7 +13160,7 @@ msgstr "Pánik"
 
 #: lazarusidestrconsts.lisparsed
 msgid ", parsed "
-msgstr ", elemezve"
+msgstr ", elemezve: "
 
 #: lazarusidestrconsts.lisparser
 msgid "parser \"%s\": %s"
@@ -13227,7 +13185,7 @@ msgstr "Beillesztés a vágólapról"
 
 #: lazarusidestrconsts.lispastelcolors
 msgid "Pastel Colors"
-msgstr ""
+msgstr "Pasztellszínek"
 
 #: lazarusidestrconsts.lispath
 msgid "Path"
@@ -13305,7 +13263,7 @@ msgstr "I18N kikapcsolása az lfm-ben"
 
 #: lazarusidestrconsts.lispckeditaddfilesfromfilesystem
 msgid "Add Files from File System"
-msgstr ""
+msgstr "Fájlok hozzáadása a fájlrendszerből"
 
 #: lazarusidestrconsts.lispckeditaddotheritems
 msgid "Add other items"
@@ -13362,8 +13320,6 @@ msgid "Dependency Properties"
 msgstr "Függőség tulajdonságai"
 
 #: lazarusidestrconsts.lispckediteditgeneraloptions
-#, fuzzy
-#| msgid "Edit General Options"
 msgid "Edit general options"
 msgstr "Általános beállítások szerkesztése"
 
@@ -13823,7 +13779,7 @@ msgstr "A(z) \"%s\" fájl%sjelenleg nem szerepel a csomag unit útvonalai közö
 
 #: lazarusidestrconsts.lispkgedmorefunctionsforthepackage
 msgid "More functions for the package"
-msgstr ""
+msgstr "További műveletek a csomaggal"
 
 #: lazarusidestrconsts.lispkgfiletypebinary
 msgctxt "lazarusidestrconsts.lispkgfiletypebinary"
@@ -13909,7 +13865,7 @@ msgstr "Körkörös függőség észlelve"
 
 #: lazarusidestrconsts.lispkgmangcompilepackage
 msgid "Compile package %s"
-msgstr ""
+msgstr "Csomag fordítása: %s"
 
 #: lazarusidestrconsts.lispkgmangdeletefailed
 msgid "Delete failed"
@@ -14414,11 +14370,11 @@ msgstr "Csomag hivatkozások"
 
 #: lazarusidestrconsts.lispldshowgloballinksin
 msgid "Show global links in "
-msgstr ""
+msgstr "Globális hivatkozások itt: "
 
 #: lazarusidestrconsts.lispldshowuserlinksin
 msgid "Show user links in "
-msgstr ""
+msgstr "Felhasználói hivatkozások itt: "
 
 #: lazarusidestrconsts.lisplduser
 msgid "User"
@@ -15539,7 +15495,7 @@ msgstr "Ellenőrzés"
 
 #: lazarusidestrconsts.lisscanning2
 msgid "%s. Scanning ..."
-msgstr ""
+msgstr "%s. Ellenőrzés ..."
 
 #: lazarusidestrconsts.lisscanparentdir
 msgid "Scanning parent directory"
@@ -15563,7 +15519,7 @@ msgstr "Másodlagos beállítások útvonala"
 
 #: lazarusidestrconsts.lissecondtest
 msgid "&Second test"
-msgstr ""
+msgstr "Második teszt"
 
 #: lazarusidestrconsts.lisseemessages
 msgid "See messages."
@@ -15684,7 +15640,7 @@ msgstr "(Alapértelmezett behúzás beállítása)"
 
 #: lazarusidestrconsts.lissetutf8inrtl
 msgid "Set UTF-8 in RTL"
-msgstr ""
+msgstr "UTF-8 bekapcsolása az RTL-ben"
 
 #: lazarusidestrconsts.lisshort
 msgid "Short:"
@@ -15801,11 +15757,11 @@ msgstr "Unit-ok megjelenítése"
 
 #: lazarusidestrconsts.lisshowunitswithinitialization
 msgid "Show units with initialization/finalization sections"
-msgstr "Indító/befejező szakaszt tartalmazó unit-ok megjelenítése"
+msgstr "Előkészítő/befejező szakaszt tartalmazó unit-ok megjelenítése"
 
 #: lazarusidestrconsts.lisshowunitswithinitializationhint
 msgid "These units may initialize global data used by the program/application. Remove with care."
-msgstr "Ezen unit-ok a program/alkalmazás által használt globális adatok alapértékeit állíthatják be. Körültekintően távolítandók el."
+msgstr "Ezen unit-ok a program/alkalmazás által használt globális adatokat készíthetnek elő. Körültekintően távolítandók el."
 
 #: lazarusidestrconsts.lisshowunusedunits
 msgid "Show unused units ..."
@@ -15857,7 +15813,7 @@ msgstr "Legutóbbi projekt betöltésének kihagyása"
 
 #: lazarusidestrconsts.lisskipthesewarnings
 msgid "Skip these warnings"
-msgstr ""
+msgstr "Ezen figyelmeztetések átugrása"
 
 #: lazarusidestrconsts.lisslowerbutmoreaccurate
 msgid "Slower but more accurate."
@@ -16123,7 +16079,7 @@ msgstr "Váltás a Kedvencek lapra komponensnév kérése után."
 
 #: lazarusidestrconsts.lissyntaxmode
 msgid "Syntax mode"
-msgstr "Szintakszis mód"
+msgstr "Szintaxis mód"
 
 #: lazarusidestrconsts.lissystemppunotfoundcheckyourfpccfg
 msgid "system.ppu not found. Check your fpc.cfg."
@@ -16300,7 +16256,7 @@ msgstr "A célkönyvtár nem létezik:%s\"%s\""
 
 #: lazarusidestrconsts.listhedestinationdirectorydoesnotexistpleasecheckthep
 msgid "The destination directory \"%s\" does not exist.%sPlease check the project target file name Menu > Project > Project Options."
-msgstr "A(z) \"%s\" célkönyvtár nem létezik.%sEllenőrizze a projekt célfájljának nevét a menüben itt: Projekt -> Projekt beállításai!"
+msgstr "A(z) \"%s\" célkönyvtár nem létezik.%sEllenőrizze a projekt célfájljának nevét a menüben itt: Projekt -> Projekt beállításai"
 
 #: lazarusidestrconsts.listhedirectorycontainsnoprojectincludefilesanymorere
 msgid "The directory \"%s\" contains no project include files any more. Remove this directory from the project's include search path?"
@@ -16704,11 +16660,11 @@ msgstr "A(z) \"%s\" unit keresési útvonala tartalmazza a(z) \"%s\" könyvtára
 
 #: lazarusidestrconsts.listheworkingdirectorydoesnotexistpleasechecktheworki
 msgid "The working directory \"%s\" does not exist.%sPlease check the working directory in Menu > Run > Run parameters."
-msgstr "A(z) \"%s\" munkakönyvtár nem létezik.%sEllenőrizze a munkakönyvtárat a menüben itt: Futtatás -> Futtatási paraméterek!"
+msgstr "A(z) \"%s\" munkakönyvtár nem létezik.%sEllenőrizze a munkakönyvtárat a menüben itt: Futtatás -> Futtatási paraméterek"
 
 #: lazarusidestrconsts.listhisbuildmodenowsetsutf8inthertlflagsareinpagesoth
 msgid "This build mode now sets UTF-8 in the RTL.%s Flags are in pages \"Other\" and \"Additions and Overrides\"."
-msgstr ""
+msgstr "Ezen építési mód bekapcsolja az UTF-8 támogatást az RTL-ben.%s Részletek az \"Egyéb\" és a \"Kiegészítések és felülbírálások\" lapokon."
 
 #: lazarusidestrconsts.listhiscomponentalreadycontainsaclasswiththename
 msgid "This component already contains a class with the name %s."
@@ -16748,7 +16704,7 @@ msgstr "Ez állomány nem helyezhető át.%sJelöljön ki kódot, amit új eljá
 
 #: lazarusidestrconsts.listhiswillallowchangingallbuildmodesatoncenotimpleme
 msgid "This will allow changing all build modes at once. Not implemented yet."
-msgstr ""
+msgstr "Ez lehetővé teszi az összes építési mód egyidejű megváltoztatását. Még nincs kidolgozva."
 
 #: lazarusidestrconsts.listhiswillcreateacirculardependency
 msgid "This will create a circular dependency."
@@ -16850,31 +16806,31 @@ msgstr "Teljes/Részleges elérési út megjelenítésének átkapcsolása fájl
 
 #: lazarusidestrconsts.listoolbarconfiguration
 msgid "Toolbar Configuration"
-msgstr ""
+msgstr "Eszköztár beállítása"
 
 #: lazarusidestrconsts.listoolbaroptions
 msgid "Toolbar"
-msgstr ""
+msgstr "Eszköztár"
 
 #: lazarusidestrconsts.listoolbaroptionshighlight
 msgid "Highlight toolbars buttons"
-msgstr ""
+msgstr "Eszköztárak gombjainak kiemelése"
 
 #: lazarusidestrconsts.listoolbaroptionsraise
 msgid "Raise toolbars"
-msgstr ""
+msgstr "Eszköztárak kiemelése"
 
 #: lazarusidestrconsts.listoolbaroptionsstandardvisible
 msgid "Standard toolbar visible"
-msgstr ""
+msgstr "Az alap eszköztár látható"
 
 #: lazarusidestrconsts.listoolbaroptionstoolbarsvisible
 msgid "Toolbars visible"
-msgstr ""
+msgstr "Látható eszköztárak"
 
 #: lazarusidestrconsts.listoolbaroptionsviewdebugvisible
 msgid "Debug toolbar visible"
-msgstr ""
+msgstr "A hibakeresési eszköztár látható"
 
 #: lazarusidestrconsts.listoolhasnoexecutable
 msgid "tool \"%s\" has no executable"
@@ -16926,7 +16882,7 @@ msgstr "Felső oldali távolságok egyenlően"
 
 #: lazarusidestrconsts.listotalpages
 msgid "Total Pages: %s"
-msgstr ""
+msgstr "Összes oldal: %s"
 
 #: lazarusidestrconsts.listranslatetheenglishmessages
 msgid "Translate the English Messages"
@@ -18400,7 +18356,7 @@ msgstr "Szöveg megjelölési parancsai"
 
 #: lazarusidestrconsts.srkmcatmulticaret
 msgid "Multi caret commands"
-msgstr ""
+msgstr "Multi-kurzoros parancsok"
 
 #: lazarusidestrconsts.srkmcatpackagemenu
 msgid "Package menu commands"
@@ -18844,16 +18800,12 @@ msgid "Guess Misplaced $IFDEF"
 msgstr "Rosszul elhelyezett $IFDEF keresése"
 
 #: lazarusidestrconsts.srkmechalfwordleft
-#, fuzzy
-#| msgid "Move cursor half-word left"
 msgid "Move cursor part-word left (e.g. CamelCase)"
-msgstr "Kurzor mozgatása fél szóval balra"
+msgstr "Kurzor mozgatása rész-szóval balra (pl. CamelCase)"
 
 #: lazarusidestrconsts.srkmechalfwordright
-#, fuzzy
-#| msgid "Move cursor half-word right"
 msgid "Move cursor part-word right (e.g. CamelCase)"
-msgstr "Kurzor mozgatása fél szóval jobbra"
+msgstr "Kurzor mozgatása rész-szóval jobbra (pl. CamelCase)"
 
 #: lazarusidestrconsts.srkmecimestr
 msgid "Ime Str"
@@ -19090,27 +19042,27 @@ msgstr "program szüneteltetése"
 
 #: lazarusidestrconsts.srkmecpluginmulticaretclearall
 msgid "Clear all extra carets"
-msgstr ""
+msgstr "Az összes extra kurzor eltávolítása"
 
 #: lazarusidestrconsts.srkmecpluginmulticaretmodecancelonmove
 msgid "Cursor keys clear all extra carets"
-msgstr ""
+msgstr "A kurzorbillentyűk az összes extra kurzort eltávolítják"
 
 #: lazarusidestrconsts.srkmecpluginmulticaretmodemoveall
 msgid "Cursor keys move all extra carets"
-msgstr ""
+msgstr "A kurzorbillentyűk az összes extra kurzort mozgatják"
 
 #: lazarusidestrconsts.srkmecpluginmulticaretsetcaret
 msgid "Add extra caret"
-msgstr ""
+msgstr "Extra kurzor hozzáadása"
 
 #: lazarusidestrconsts.srkmecpluginmulticarettogglecaret
 msgid "Toggle extra caret"
-msgstr ""
+msgstr "Extra kurzor ki/be"
 
 #: lazarusidestrconsts.srkmecpluginmulticaretunsetcaret
 msgid "Remove extra caret"
-msgstr ""
+msgstr "Extra kurzor eltávolítása"
 
 #: lazarusidestrconsts.srkmecprevbookmark
 msgid "Previous Bookmark"
@@ -19219,16 +19171,12 @@ msgid "Select Goto XY"
 msgstr "Pozíció kijelölése"
 
 #: lazarusidestrconsts.srkmecselhalfwordleft
-#, fuzzy
-#| msgid "Select half-word left"
 msgid "Select part-word left (e.g. CamelCase)"
-msgstr "Fél szó kijelölése balra"
+msgstr "Rész-szó kijelölése balra (pl. CamelCase)"
 
 #: lazarusidestrconsts.srkmecselhalfwordright
-#, fuzzy
-#| msgid "Select half-word right"
 msgid "Select part-word right (e.g. CamelCase)"
-msgstr "Fél szó kijelölése jbbra"
+msgstr "Rész-szó kijelölése jobbra (pl. CamelCase)"
 
 #: lazarusidestrconsts.srkmecselleft
 msgid "Select Left"
@@ -19497,7 +19445,7 @@ msgstr "Előző cella (kijelöléssel / csak elsők)"
 
 #: lazarusidestrconsts.srkmecsyntaxcheck
 msgid "Syntax Check"
-msgstr "Szintakszis ellenőrzése"
+msgstr "Szintaxis ellenőrzése"
 
 #: lazarusidestrconsts.srkmectoggleassembler
 msgid "View assembler"
@@ -19682,7 +19630,7 @@ msgstr "Parancs billentyűinek szerkesztése"
 
 #: lazarusidestrconsts.synfcontinuewithnextmouseupaction
 msgid "Continue with next mouse up action"
-msgstr ""
+msgstr "Folytatás a következő egérfelengedés művelettel"
 
 #: lazarusidestrconsts.synffoldcomments
 msgid "Fold comments"
@@ -19718,23 +19666,23 @@ msgstr "Megjegyzések elrejtése a kijelölésben"
 
 #: lazarusidestrconsts.synfmatchactionbuttonofmousedown
 msgid "Match action button of mouse down"
-msgstr ""
+msgstr "Az egérlenyomás művelettel egyező gomb"
 
 #: lazarusidestrconsts.synfmatchactionlineofmousedown
 msgid "Match action line of mouse down"
-msgstr ""
+msgstr "Az egérlenyomás művelettel egyező sor"
 
 #: lazarusidestrconsts.synfmatchactionmodifiersofmousedown
 msgid "Match action modifiers of mouse down"
-msgstr ""
+msgstr "Az egérlenyomás művelettel egyező módosító"
 
 #: lazarusidestrconsts.synfmatchactionposofmousedown
 msgid "Match action pos of mouse down"
-msgstr ""
+msgstr "Az egérlenyomás művelettel egyező hely"
 
 #: lazarusidestrconsts.synfsearchallactionofmousedown
 msgid "Search all action of mouse down"
-msgstr ""
+msgstr "Összes egérlenyomás művelet keresése"
 
 #: lazarusidestrconsts.synfunfoldactiveifdef
 msgid "Unfold active Ifdef"
@@ -19865,7 +19813,7 @@ msgstr "U&grás könyvjelzőhöz"
 
 #: lazarusidestrconsts.uemhighlighter
 msgid "Highlighter"
-msgstr "Kiemelő"
+msgstr "Kiemelés"
 
 #: lazarusidestrconsts.ueminspect
 msgctxt "lazarusidestrconsts.ueminspect"

@@ -29,7 +29,7 @@ msgstr "Nem kezelhetők az ilyen típusú altartalmak. \"%s\" a következő url-
 
 #: lhelpstrconsts.slhelp_close
 msgid "&Close"
-msgstr ""
+msgstr "Be&zárás"
 
 #: lhelpstrconsts.slhelp_contents
 msgid "Contents"
@@ -61,7 +61,7 @@ msgstr "&Súgó"
 
 #: lhelpstrconsts.slhelp_helpfileschmchmallfiles
 msgid "Help files (*.chm)|*.chm|All files (*.*)|*"
-msgstr ""
+msgstr "Súgó fájlok (*.chm)|*.chm|Minden fájl (*.*)|*"
 
 #: lhelpstrconsts.slhelp_helpshowthisinformation
 msgid "    --help     :  Show this information"
@@ -129,15 +129,15 @@ msgstr "&Megnyitás ..."
 
 #: lhelpstrconsts.slhelp_openexistingfile
 msgid "Open existing file"
-msgstr ""
+msgstr "Létező fájl megnyitása"
 
 #: lhelpstrconsts.slhelp_opennewfileinseparatetab
 msgid "Open new file in separate tab"
-msgstr ""
+msgstr "Új fájl megnyitása másik fülön"
 
 #: lhelpstrconsts.slhelp_opennewtabwithstatusbar
 msgid "Open new tab with status bar"
-msgstr ""
+msgstr "Új fül nyitása állapotsorral"
 
 #: lhelpstrconsts.slhelp_openrecent
 msgid "Open Recent"
@@ -190,4 +190,3 @@ msgstr "    Használat: lhelp [[fájlnév] [--context azonosító] [--hide] [--i
 #: lhelpstrconsts.slhelp_view
 msgid "&View"
 msgstr "&Nézet"
-

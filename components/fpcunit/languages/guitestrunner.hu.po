@@ -134,10 +134,8 @@ msgid "C&ut"
 msgstr "Kivágás"
 
 #: guitestrunner.smiruntest
-#, fuzzy
-#| msgid "  &Run all selected (checked) tests"
 msgid "&Run all selected (checked) tests"
-msgstr "  Minden kiválasztott (kijelölt) teszt futtatása"
+msgstr "Minden kiválasztott (kijelölt) teszt futtatása"
 
 #: guitestrunner.smishowfail
 msgid "Copy message to clipboard"
@@ -150,4 +148,3 @@ msgstr "Eredmények XML-ként"
 #: guitestrunner.stshtree
 msgid "Testcase tree"
 msgstr "Teszt-esetek fája"
-

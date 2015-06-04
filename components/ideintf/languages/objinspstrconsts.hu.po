@@ -157,7 +157,7 @@ msgstr "Ez a művelet lecseréli az összes feliratot az adatkészletben találh
 
 #: objinspstrconsts.dpeunabletoretrievefieldsdefinitions
 msgid "Unable to retrieve fields definition from dataset."
-msgstr ""
+msgstr "Nem lehet kiolvasni a mezők meghatározásait az adatkészletből."
 
 #: objinspstrconsts.fescalculated
 msgid "&Calculated"
@@ -418,11 +418,11 @@ msgstr "Törlés?"
 
 #: objinspstrconsts.oischangeclass
 msgid "Change Class ..."
-msgstr ""
+msgstr "Osztály módosítása ..."
 
 #: objinspstrconsts.oischangeparent
 msgid "Change Parent"
-msgstr ""
+msgstr "Szülő módosítása"
 
 #: objinspstrconsts.oischar
 msgid "Char"
@@ -696,7 +696,7 @@ msgstr "Kép mentése másként"
 
 #: objinspstrconsts.oispressakey
 msgid "Press a key ..."
-msgstr ""
+msgstr "Nyomjon le egy billentyűt ..."
 
 #: objinspstrconsts.oisproperties
 msgid "Properties"
@@ -720,7 +720,7 @@ msgstr "Korlátozások"
 
 #: objinspstrconsts.oisreverttoinherited
 msgid "Revert to inherited"
-msgstr ""
+msgstr "Öröklött érték visszaállítása"
 
 #: objinspstrconsts.oissamplemasks
 msgid "Sample Masks:"
@@ -1336,7 +1336,7 @@ msgstr "Elemek szerkesztése ..."
 #: objinspstrconsts.sccslvedtapply
 msgctxt "objinspstrconsts.sccslvedtapply"
 msgid "Apply"
-msgstr "Alkalmaz"
+msgstr "Alkalmazás"
 
 #: objinspstrconsts.sccslvedtcaption
 msgid "ListView Items Editor"
@@ -1401,7 +1401,7 @@ msgstr "StringGrid szerkesztése ..."
 #: objinspstrconsts.sccssgedtapply
 msgctxt "objinspstrconsts.sccssgedtapply"
 msgid "Apply"
-msgstr "Alkalmaz"
+msgstr "Alkalmazás"
 
 #: objinspstrconsts.sccssgedtcaption
 msgid "StringGrid Editor"
@@ -1446,7 +1446,7 @@ msgstr "Elemek szerkesztése ..."
 #: objinspstrconsts.sccstredtapply
 msgctxt "objinspstrconsts.sccstredtapply"
 msgid "Apply"
-msgstr "Alkalmaz"
+msgstr "Alkalmazás"
 
 #: objinspstrconsts.sccstredtcaption
 msgid "TreeView Items Editor"
@@ -1570,4 +1570,3 @@ msgstr "Fül mozgatása eggyel balra"
 #: objinspstrconsts.tccesmovetabright
 msgid "Move tab right"
 msgstr "Fül mozgatása eggyel jobbra"
-
