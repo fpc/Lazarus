@@ -24,7 +24,7 @@ uses
 type
 
   TArrowType = (atUp, atDown, atLeft, atRight);
-  TShadowType = (stNone, stIn, stOut, stEtchedIn, stEtchedOut);
+  TShadowType = (stNone, stIn, stOut, stEtchedIn, stEtchedOut, stFilledArrow);
   TTriPts = (ptA, ptB, ptC);
   TTrianglePoints = array[TTriPts] of TPoint;
 
@@ -36,6 +36,7 @@ type
     FArrowType: TArrowType;
     FArrowAngle: integer;
     FShadowType: TShadowType;
+    FShadowColor: TColor;
     FR: TRect;
     FT: TTrianglePoints;
     procedure CalcTrianglePoints;
@@ -80,6 +81,7 @@ type
     property ParentShowHint;
     property PopupMenu;
     property ShadowType: TShadowType read FShadowType write SetShadowType default stEtchedIn;
+    property ShadowColor: TColor read FShadowColor write FShadowColor default cl3DShadow;
     property ShowHint;
     property Visible;
   end;
@@ -94,6 +96,8 @@ const
   ArrowMinHeight = 8;
   cMinAngle = 20;
   cMaxAngle = 160;
+  cShadowColors: array[TShadowType] of TColor =
+    (clWindow, cl3DShadow, cl3DShadow, cl3DHiLight, cl3DHiLight, clBlue{not used});
 
 
 procedure Register;
@@ -208,10 +212,6 @@ begin
 end;
 
 procedure TArrow.Paint;
-const
-  Colors: array[TShadowType] of TColor
-    =(clWindow, cl3DShadow, cl3DShadow, cl3DHiLight, cl3DHiLight);
-
   procedure Offset(var ptA, ptB: TPoint);
   begin
     case FArrowType of
@@ -224,11 +224,11 @@ const
 
   procedure ShadowLine(p1, p2: TPoint);
   begin
-    Canvas.Pen.Color:= Colors[FShadowType];
+    Canvas.Pen.Color:= cShadowColors[FShadowType];
     Canvas.MoveTo(p1);
     Canvas.LineTo(p2);
     Offset(p1, p2);
-    Canvas.Pen.Color:= cl3DShadow;
+    Canvas.Pen.Color:= FShadowColor;
     Canvas.MoveTo(p1);
     Canvas.LineTo(p2);
     if (Height>13) then
@@ -239,19 +239,43 @@ const
       end;
   end;
 
+  procedure ShadowTriangle;
+  const
+    dx = 2;
+  var
+    Pts: TTrianglePoints;
+  begin
+    Pts:= FT;
+    Inc(Pts[ptA].x, dx);
+    Inc(Pts[ptA].y, dx);
+    Inc(Pts[ptB].x, dx);
+    Inc(Pts[ptB].y, dx);
+    Inc(Pts[ptC].x, dx);
+    Inc(Pts[ptC].y, dx);
+    Canvas.Pen.Color:= FShadowColor;
+    Canvas.Brush.Color:= FShadowColor;
+    Canvas.Polygon(Pts);
+  end;
+
 begin
+  CalcTrianglePoints;
+
   Canvas.AntialiasingMode := AntiAliasingMode;
   // Paint background
   Canvas.Brush.Color := Color;
   Canvas.FillRect(ClientRect);
+
+  // Paint shadow area
+  if (FShadowType=stFilledArrow) then
+    ShadowTriangle;
+
   // Paint arrow
   Canvas.Pen.Color:= FArrowColor;
   Canvas.Brush.Color:= FArrowColor;
-  CalcTrianglePoints;
   Canvas.Polygon(FT);
 
-  if (FShadowType <> stNone)
-    then ShadowLine(FT[ptB], FT[ptC]);
+  if not (FShadowType in [stNone, stFilledArrow]) then
+    ShadowLine(FT[ptB], FT[ptC]);
 
   inherited Paint;
 end;
@@ -264,6 +288,7 @@ begin
   FArrowType:= atLeft; // set defaults to match TArrow component
   FArrowAngle:= 60; // angle of equal side triangle
   FShadowType:= stEtchedIn;
+  FShadowColor:= cl3DShadow;
   FArrowColor:= clBlack;
 end;
 
