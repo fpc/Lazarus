@@ -176,7 +176,6 @@ begin
         end;
       etLog  :
         begin
-        JSonEvent.Add('message',AnEvent.Message);
         case AnEvent.LogLevel of
           dllDebug: JSonEvent.Add('logType','debug');
           dllError: JSonEvent.Add('logType','error');
@@ -186,11 +185,11 @@ begin
       etNotification:
         begin
         JSonEvent.Add('notificationType',FpDebugNotificationTypeNames[AnEvent.NotificationType]);
-        JSonEvent.Add('message',AnEvent.Message);
         if AnEvent.EventName<>'' then
           JSonEvent.Add('command',AnEvent.EventName);
         end;
     end;
+    JSonEvent.Add('message',AnEvent.Message);
     if length(AnEvent.StackEntryArray)>0 then
       begin
       JSonStackArray := TJSONArray.Create;
