@@ -245,6 +245,7 @@ var
   LHelpName: String;
   LHelpConn: TLHelpConnection;
   Proc: TProcess;
+  ext: String;
 begin
   if ChmFileNameEdit.FileName = '' then
   begin
@@ -254,12 +255,13 @@ begin
   CompileBtnClick(Sender);
   // open
   // ...
-  LHelpName := '../../components/chmhelp/lhelp/lhelp' + ExtractFileExt(Application.Name);
+  ext := ExtractFileExt(Application.ExeName);
+  LHelpName := '../../components/chmhelp/lhelp/lhelp' + ext;
   if not FileExists(LHelpName) then
   begin
     if MessageDlg('LHelp could not be located at '+ LHelpName +' Try to build using lazbuild?', mtError, [mbCancel, mbYes], 0) = mrYes then
     begin
-      if not FileExists('../../lazbuild') then
+      if not FileExists('../../lazbuild' + ext) then
       begin
         MessageDlg('lazbuild coul not be found.', mtError, [mbCancel], 0);
         Exit;
