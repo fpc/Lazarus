@@ -13,7 +13,7 @@ msgstr ""
 
 #: anchordockstr.adrsafreesideofasplittermustnotbeanchorednodetypeancho
 msgid "A free side of a splitter must not be anchored: Node=\"%s\" Type=%s Anchors[%s]=\"%s\""
-msgstr "Egy elválasztó szabad oldalát nem lehet rögzíteni: Csomópont=\"%s\" Típus=%s Horgonyok[%s]=\"%s\""
+msgstr "Egy elválasztó szabad oldalát nem lehet lehorgonyozni: Csomópont=\"%s\" Típus=%s Horgonyok[%s]=\"%s\""
 
 #: anchordockstr.adrsallfiles
 msgid "All files"
@@ -41,7 +41,7 @@ msgstr "Horgonyzás az elválasztó rossz oldalához: Csomópont=\"%s\" Horgonyo
 
 #: anchordockstr.adrsapagemustnotbeanchorednodeparentparenttypeanchors
 msgid "A page must not be anchored: Node=\"%s\" Parent=%s ParentType=%s Anchors[%s]=\"%s\""
-msgstr "Egy lapot nem lehet rögzíteni: Csomópont=\"%s\" Szülő:%s Szülőtípus=%s Horgonyok[%s]=\"%s\""
+msgstr "Egy lapot nem lehet lehorgonyozni: Csomópont=\"%s\" Szülő:%s Szülőtípus=%s Horgonyok[%s]=\"%s\""
 
 #: anchordockstr.adrsautomatically
 msgid "Automatically"

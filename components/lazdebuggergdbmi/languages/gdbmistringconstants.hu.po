@@ -33,7 +33,7 @@ msgstr "A hibakereső nem tudta megszerezni az alkalmazás folyamatazonosítój�
 
 #: gdbmistringconstants.gdbmicommandstartmainruntostoperror
 msgid "The debugger was unable to initialize itself.%0:sThe application did run (and terminated) before the debugger could set any breakpoints. %0:sThis may be caused by missing debug info."
-msgstr "A hibakereső nem tudta inicializálni magát.%0:sAz alkalmazás futott (és leállt) mielőtt a hibakereső töréspontokat állított volna be. %0:sEzt hiányzó hibakeresési infók okozhatják."
+msgstr "A hibakereső nem tudta előkészíteni magát.%0:sAz alkalmazás futott (és leállt) mielőtt a hibakereső töréspontokat állított volna be. %0:sEzt hiányzó hibakeresési infók okozhatják."
 
 #: gdbmistringconstants.gdbmierroronruncommand
 msgid "The debugger encountered an error when trying to run/step the application:%0:s%0:s%1:s%0:s%0:sPress \"Ok\" to continue debugging (paused), and correct the problem, or choose an alternative run command.%0:sPress \"Stop\" to end the debug session."
@@ -146,4 +146,3 @@ msgstr "Váratlan eredmény:%sA hibakereső leállni"
 #: gdbmistringconstants.synffailedtoloadapplicationexecutable
 msgid "Failed to load application executable"
 msgstr "Nem sikerült betölteni a futtatható alkalmazást"
-

@@ -460,7 +460,7 @@ msgstr "Extra behúzás a Case...Else számára"
 
 #: jcfuiconsts.lisindentextraindentforifelseblocks
 msgid "Extra Indent for If...Else blocks"
-msgstr "Extra behúzás az IF...Else számára"
+msgstr "Extra behúzás az If...Else számára"
 
 #: jcfuiconsts.lisindentindentation
 msgid "Indentation"
@@ -476,7 +476,7 @@ msgstr "Behúzás az eljárástest számára függvénytárakban"
 
 #: jcfuiconsts.lisindentindentnestedtypes
 msgid "Indent nested types"
-msgstr "Beágyazott típusok behúzás"
+msgstr "Beágyazott típusok behúzása"
 
 #: jcfuiconsts.lisindentindentvarandconstinclass
 msgid "Indent var and const in class"

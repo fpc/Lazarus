@@ -281,7 +281,7 @@ msgstr "DocEditor könyvtára"
 
 #: codetoolsstrconsts.ctsduplicateidentifier
 msgid "duplicate identifier: %s"
-msgstr "többszörös azonosító: %s"
+msgstr "ismétlődő azonosító: %s"
 
 #: codetoolsstrconsts.ctselse
 msgid "else"
