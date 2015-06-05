@@ -100,8 +100,6 @@ function WSRegisterCalendarDialog: Boolean;    external name 'WSRegisterCalendar
 // Buttons
 function WSRegisterCustomBitBtn: Boolean;      external name 'WSRegisterCustomBitBtn';
 function WSRegisterCustomSpeedButton: Boolean; external name 'WSRegisterCustomSpeedButton';
-// Arrow
-function WSRegisterArrow: Boolean;             external name 'WSRegisterArrow';
 // CheckLst
 function WSRegisterCustomCheckListBox: Boolean; external name 'WSRegisterCustomCheckListBox';
 // Forms
