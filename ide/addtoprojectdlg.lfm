@@ -9,6 +9,7 @@ object AddToProjectDialog: TAddToProjectDialog
   ClientHeight = 339
   ClientWidth = 598
   OnClose = AddToProjectDialogClose
+  OnShow = AddToProjectDialogShow
   Position = poScreenCenter
   LCLVersion = '1.5'
   object Notebook: TPageControl

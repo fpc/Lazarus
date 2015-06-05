@@ -85,6 +85,7 @@ type
       {%H-}Selected: Boolean);
     procedure AddToProjectDialogClose(Sender: TObject;
                                       var {%H-}CloseAction: TCloseAction);
+    procedure AddToProjectDialogShow(Sender: TObject);
     procedure DependPkgNameComboBoxChange(Sender: TObject);
     procedure FilesDirButtonClick(Sender: TObject);
     procedure FilesListViewSelectItem(Sender: TObject; {%H-}Item: TListItem;
@@ -143,6 +144,7 @@ begin
   end;
   // hide tabs for simple look
   AddToProjectDialog.NoteBook.ShowTabs:=false;
+  AddToProjectDialog.NoteBook.TabStop:=false;
   // press "Add files" btn
   if AInitTab=a2pFiles then
     AddToProjectDialog.FilesDirButton.Click;
@@ -211,6 +213,11 @@ procedure TAddToProjectDialog.AddToProjectDialogClose(Sender: TObject;
   var CloseAction: TCloseAction);
 begin
   IDEDialogLayoutList.SaveLayout(Self);
+end;
+
+procedure TAddToProjectDialog.AddToProjectDialogShow(Sender: TObject);
+begin
+  SelectNext(NoteBook.ActivePage, True, True);
 end;
 
 procedure TAddToProjectDialog.DependPkgNameComboBoxChange(Sender: TObject);
