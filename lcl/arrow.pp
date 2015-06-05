@@ -24,7 +24,7 @@ uses
 type
 
   TArrowType = (atUp, atDown, atLeft, atRight);
-  TShadowType = (stNone, stIn, stOut, stEtchedIn, stEtchedOut, stFilledArrow);
+  TShadowType = (stNone, stIn, stOut, stEtchedIn, stEtchedOut, stFilled);
   TTriPts = (ptA, ptB, ptC);
   TTrianglePoints = array[TTriPts] of TPoint;
 
@@ -43,6 +43,7 @@ type
     procedure SetArrowAngle(AValue: integer);
     procedure SetArrowColor(AValue: TColor);
     procedure SetArrowType(AValue: TArrowType);
+    procedure SetShadowColor(AValue: TColor);
     procedure SetShadowType(AValue: TShadowType);
   protected
     class function GetControlClassDefaultSize: TSize; override;
@@ -81,7 +82,7 @@ type
     property ParentShowHint;
     property PopupMenu;
     property ShadowType: TShadowType read FShadowType write SetShadowType default stEtchedIn;
-    property ShadowColor: TColor read FShadowColor write FShadowColor default cl3DShadow;
+    property ShadowColor: TColor read FShadowColor write SetShadowColor default cl3DShadow;
     property ShowHint;
     property Visible;
   end;
@@ -92,12 +93,14 @@ procedure Register;
 implementation
 
 const
-  Default_Height_Width = 20;
-  ArrowMinHeight = 8;
+  cDefaultControlSize = 20;
+  cMinArrowSize = 8;
   cMinAngle = 20;
   cMaxAngle = 160;
   cShadowColors: array[TShadowType] of TColor =
     (clWindow, cl3DShadow, cl3DShadow, cl3DHiLight, cl3DHiLight, clBlue{not used});
+  cInnerOffset = 2;
+  cShadowSize = 2; //must be <= cInnerOffset
 
 
 procedure Register;
@@ -108,20 +111,20 @@ end;
 { TArrow }
 
 procedure TArrow.CalcTrianglePoints;
-const
-  cOffset = 2;
 var
   midY, midX: integer;
   ratioNeed, ratioThis: double;
   size: TSize;
 begin
   FR:= ClientRect;
-  InflateRect(FR, -cOffset, -cOffset);
+  InflateRect(FR, -cInnerOffset, -cInnerOffset);
+  Dec(FR.Bottom); // for "filled" shadow
+
   midX:= (FR.Left + FR.Right) div 2;
   midY:= (FR.Top + FR.Bottom) div 2;
   size:= Types.Size(FR);
 
-  ratioNeed:= 2*tan(FArrowAngle*pi/180/2);
+  ratioNeed:= 2*Tan(FArrowAngle*pi/(180*2));
   if FArrowType in [atLeft, atRight] then
     ratioNeed:= 1/ratioNeed;
 
@@ -190,6 +193,13 @@ begin
   GraphicChanged;
 end;
 
+procedure TArrow.SetShadowColor(AValue: TColor);
+begin
+  if FShadowColor=AValue then Exit;
+  FShadowColor:= AValue;
+  GraphicChanged;
+end;
+
 procedure TArrow.SetArrowAngle(AValue: integer);
 begin
   if FArrowAngle=AValue then Exit;
@@ -207,8 +217,8 @@ end;
 
 class function TArrow.GetControlClassDefaultSize: TSize;
 begin
-  Result.cx:=Default_Height_Width;
-  Result.cy:=Default_Height_Width;
+  Result.cx:=cDefaultControlSize;
+  Result.cy:=cDefaultControlSize;
 end;
 
 procedure TArrow.Paint;
@@ -240,18 +250,16 @@ procedure TArrow.Paint;
   end;
 
   procedure ShadowTriangle;
-  const
-    dx = 2;
   var
     Pts: TTrianglePoints;
   begin
     Pts:= FT;
-    Inc(Pts[ptA].x, dx);
-    Inc(Pts[ptA].y, dx);
-    Inc(Pts[ptB].x, dx);
-    Inc(Pts[ptB].y, dx);
-    Inc(Pts[ptC].x, dx);
-    Inc(Pts[ptC].y, dx);
+    Inc(Pts[ptA].x, cShadowSize);
+    Inc(Pts[ptA].y, cShadowSize);
+    Inc(Pts[ptB].x, cShadowSize);
+    Inc(Pts[ptB].y, cShadowSize);
+    Inc(Pts[ptC].x, cShadowSize);
+    Inc(Pts[ptC].y, cShadowSize);
     Canvas.Pen.Color:= FShadowColor;
     Canvas.Brush.Color:= FShadowColor;
     Canvas.Polygon(Pts);
@@ -266,7 +274,7 @@ begin
   Canvas.FillRect(ClientRect);
 
   // Paint shadow area
-  if (FShadowType=stFilledArrow) then
+  if (FShadowType=stFilled) then
     ShadowTriangle;
 
   // Paint arrow
@@ -274,7 +282,7 @@ begin
   Canvas.Brush.Color:= FArrowColor;
   Canvas.Polygon(FT);
 
-  if not (FShadowType in [stNone, stFilledArrow]) then
+  if not (FShadowType in [stNone, stFilled]) then
     ShadowLine(FT[ptB], FT[ptC]);
 
   inherited Paint;
@@ -283,8 +291,8 @@ end;
 constructor TArrow.Create(aOwner: TComponent);
 begin
   inherited Create(aOwner);
-  Constraints.MinHeight:= ArrowMinHeight;
-  Constraints.MinWidth:= ArrowMinHeight;
+  Constraints.MinHeight:= cMinArrowSize;
+  Constraints.MinWidth:= cMinArrowSize;
   FArrowType:= atLeft; // set defaults to match TArrow component
   FArrowAngle:= 60; // angle of equal side triangle
   FShadowType:= stEtchedIn;
