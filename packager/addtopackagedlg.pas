@@ -552,6 +552,7 @@ begin
     SaveDialog.InitialDir := LazPackage.GetFileDialogInitialDir(SaveDialog.InitialDir);
     SaveDialog.Title := lisSaveAs;
     SaveDialog.Options := SaveDialog.Options+[ofPathMustExist];
+    SaveDialog.Filter := Format('%s|*.pas;*.pp', [dlgFilterPascalFile]);
     if SaveDialog.Execute then begin
       AFilename := CleanAndExpandFilename(SaveDialog.Filename);
       if FilenameIsPascalUnit(AFilename) then begin
