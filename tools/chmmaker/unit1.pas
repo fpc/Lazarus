@@ -71,6 +71,7 @@ type
       ARect: TRect; {%H-}State: TOwnerDrawState);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
     procedure IndexEditAcceptFileName(Sender: TObject; var Value: String);
     procedure IndexEditBtnClick(Sender: TObject);
     procedure ProjCloseItemClick(Sender: TObject);
@@ -332,6 +333,11 @@ begin
   CloseProject;
 end;
 
+procedure TCHMForm.FormDestroy(Sender: TObject);
+begin
+  CloseProject;
+end;
+
 procedure TCHMForm.IndexEditAcceptFileName(Sender: TObject; var Value: String);
 begin
   Modified := True;
@@ -360,7 +366,11 @@ begin
     Stream := TFileStream.Create(FileName, fmCreate or fmOpenReadWrite);
   end;
 
-  if SitemapEditForm.Execute(Stream, stIndex, FileListBox.Items) then IndexEdit.FileName := FileName;
+  try
+    if SitemapEditForm.Execute(Stream, stIndex, FileListBox.Items) then IndexEdit.FileName := FileName;
+  finally
+    Stream.Free;
+  end;
 end;
 
 procedure TCHMForm.ProjCloseItemClick(Sender: TObject);
@@ -442,12 +452,13 @@ begin
     Stream := TFileStream.Create(FileName, fmCreate or fmOpenReadWrite);
   end;
 
-  BDir := ExtractFilePath(Project.FileName);
-
-  FileName := ExtractRelativepath(BDir, FileName);
-
-  
-  if SitemapEditForm.Execute(Stream, stTOC, FileListBox.Items) then TOCEdit.FileName := FileName;
+  try
+    BDir := ExtractFilePath(Project.FileName);
+    FileName := ExtractRelativepath(BDir, FileName);
+    if SitemapEditForm.Execute(Stream, stTOC, FileListBox.Items) then TOCEdit.FileName := FileName;
+  finally
+    Stream.Free;
+  end;
 end;
 
 function TCHMForm.GetModified: Boolean;
