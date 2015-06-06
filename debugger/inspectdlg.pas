@@ -104,7 +104,7 @@ type
   protected
     function  ColSizeGetter(AColId: Integer; var ASize: Integer): Boolean;
     procedure ColSizeSetter(AColId: Integer; ASize: Integer);
-    procedure InternalExecute(const AExpression: ansistring; ARepeatCount: Integer = -1);
+    procedure InternalExecute(const AExpression: ansistring);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -790,7 +790,7 @@ begin
   inherited Destroy;
 end;
 
-procedure TIDEInspectDlg.InternalExecute(const AExpression: ansistring; ARepeatCount: Integer);
+procedure TIDEInspectDlg.InternalExecute(const AExpression: ansistring);
 begin
   if FHistoryIndex >= FHistory.Count then
     FHistoryIndex := FHistory.Count - 1;

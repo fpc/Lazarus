@@ -49,7 +49,7 @@ unit indcyClasses;
 interface
 
 uses
-   LCLIntf, LCLType, Classes, Forms, Graphics, Math, Controls, ExtCtrls, SysUtils,
+   LCLIntf, Classes, Graphics, Controls, SysUtils,
    indcyTypes, indcyGraphics;
 
 type

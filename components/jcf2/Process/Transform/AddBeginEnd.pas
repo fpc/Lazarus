@@ -129,7 +129,7 @@ function SafeToRemoveBeginEnd(const pcNode: TParseTreeNode): Boolean;
 const
   { if there is an if stament with no else case immediately hereunder,
   should find it by this depth }
-  IMMEDIATE_IF_DEPTH = 4;
+  //IMMEDIATE_IF_DEPTH = 4;
   MAX_IF_CLIMB = 5;
 var
   lcParent: TParseTreeNode;

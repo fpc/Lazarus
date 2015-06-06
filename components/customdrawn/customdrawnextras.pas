@@ -430,8 +430,6 @@ procedure TCDPageControlEditor.ExecuteVerb(Index: integer);
 var
   NewPage: TCDTabSheet;
   Hook: TPropertyEditorHook;
-  PageComponent: TPersistent;
-  OldPage: longint;
   lPageName: String;
 begin
   if not GetHook(Hook) then exit;

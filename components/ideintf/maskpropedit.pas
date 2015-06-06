@@ -18,7 +18,7 @@ unit MaskPropEdit;
 interface
 
 uses
-  Classes, SysUtils, MaskUtils, Forms, Controls, Graphics, Dialogs,
+  Classes, SysUtils, Forms, Controls, Graphics, Dialogs,
   StdCtrls, Buttons, ExtCtrls, FileUtil, MaskEdit, LazIDEIntf,
   PropEdits, ComponentEditors, ObjInspStrConsts, ButtonPanel;
 

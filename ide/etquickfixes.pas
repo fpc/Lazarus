@@ -351,7 +351,7 @@ begin
   Code:=CodeToolBoss.LoadFile(Msg.GetFullFilename,true,false);
   if Code=nil then exit;
 
-  if QuickFixLocalVarNotInitialized(Code,Msg.Column,Msg.Line,Identifier) then
+  if QuickFixLocalVarNotInitialized(Code, Msg.Column, Msg.Line) then
     Msg.MarkFixed;
 end;
 

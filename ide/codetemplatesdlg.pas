@@ -208,7 +208,7 @@ begin
 end;
 
 function IsCodeTemplateOk(ASynAutoComplete: TSynEditAutoComplete;
-  const AToken, AComment: string; AIndex: integer): boolean;
+  const AToken: string; AIndex: integer): boolean;
 var
   n: integer;
 begin
@@ -238,8 +238,7 @@ begin
 
   if InputQuery(lisCodeTemplAddCodeTemplate,
     [lisCodeTemplToken, lisCodeTemplComment], Str) then
-    if IsCodeTemplateOk(ASynAutoComplete,
-         Str[0], Str[1], ASynAutoComplete.Completions.Count) then
+    if IsCodeTemplateOk(ASynAutoComplete, Str[0], ASynAutoComplete.Completions.Count) then
       begin
         Result:= mrOk;
         AToken:= Str[0];
@@ -262,8 +261,7 @@ begin
   if not InputQuery(lisCodeTemplEditCodeTemplate,
     [lisCodeTemplToken, lisCodeTemplComment], Str) then exit;
 
-  if not IsCodeTemplateOk(ASynAutoComplete,
-    Str[0], Str[1], AIndex) then exit;
+  if not IsCodeTemplateOk(ASynAutoComplete, Str[0], AIndex) then exit;
 
   ASynAutoComplete.Completions[AIndex]:= Str[0];
   ASynAutoComplete.CompletionComments[AIndex]:= Str[1];

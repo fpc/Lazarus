@@ -136,7 +136,6 @@ procedure TMouseaActionDialog.FormCreate(Sender: TObject);
 var
   mb: TSynMouseButton;
   cc: TSynMAClickCount;
-  s: string;
 begin
   ButtonName[mbXLeft]:=dlgMouseOptBtnLeft;
   ButtonName[mbXRight]:=dlgMouseOptBtnRight;

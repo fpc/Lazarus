@@ -164,7 +164,6 @@ procedure TCDDrawerWinCE.DrawCheckBoxSquare(ADest: TCanvas; ADestPos: TPoint;
   ASize: TSize; AState: TCDControlState; AStateEx: TCDControlStateEx);
 var
   lHalf, lSquareHalf, lSquareHeight: Integer;
-  lColor: TColor;
 begin
   lHalf := ASize.cy div 2;
   lSquareHalf := GetMeasures(TCDCHECKBOX_SQUARE_HALF_HEIGHT);

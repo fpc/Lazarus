@@ -61,7 +61,7 @@ type
     fUnitsToFixCase: TStringToStringTree;// Like rename but done for every target.
     fUnitsToComment: TStringList;        // List of units to be commented.
     fMissingUnits: TStringList;          // Units not found in search path.
-    function FindMissingUnits(AUnitUpdater: TStringMapUpdater): boolean;
+    function FindMissingUnits: boolean;
     procedure ToBeRenamedOrRemoved(AOldName, ANewName: string);
     procedure FindReplacement(AUnitUpdater: TStringMapUpdater;
                               AMapToEdit: TStringToStringTree);
@@ -210,7 +210,7 @@ begin
   inherited Destroy;
 end;
 
-function TUsedUnits.FindMissingUnits(AUnitUpdater: TStringMapUpdater): boolean;
+function TUsedUnits.FindMissingUnits: boolean;
 var
   UsesNode: TCodeTreeNode;
   InAtom, UnitNameAtom: TAtomPosition;
@@ -595,8 +595,8 @@ begin
     if fCTLink.Settings.UnitsReplaceMode=rlInteractive then
       MapToEdit:=TStringToStringTree.Create(false);
     fCTLink.CodeTool.BuildTree(lsrEnd);
-    if not (fMainUsedUnits.FindMissingUnits(UnitUpdater) and
-            fImplUsedUnits.FindMissingUnits(UnitUpdater)) then
+    if not (fMainUsedUnits.FindMissingUnits and
+            fImplUsedUnits.FindMissingUnits) then
       exit(mrCancel);
 
     // Find replacements for missing units from settings.

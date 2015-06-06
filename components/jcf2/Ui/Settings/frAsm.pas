@@ -68,7 +68,7 @@ uses
   { jcf }
   JcfSettings, jcfuiconsts,
   { local }
-  Capitalisation, SettingsTypes, SetAsm;
+  SettingsTypes, SetAsm;
 
 procedure TfAsm.FrameResize(Sender:TObject);
 begin
