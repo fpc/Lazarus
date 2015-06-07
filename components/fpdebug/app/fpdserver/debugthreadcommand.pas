@@ -200,12 +200,150 @@ type
     procedure ComposeSuccessEvent(var AnEvent: TFpDebugEvent); override;
   end;
 
+  { TFpDebugThreadDisassembleCommand }
+
+  TFpDebugThreadDisassembleCommand = class(TFpDebugThreadCommand)
+  private
+    FAddressValue: TDBGPtr;
+    FLines: integer;
+    FDisassemblerEntryArray: TFpDebugEventDisassemblerEntryArray;
+    FStartAddr: TDBGPtr;
+    FEndAddr: TDBGPtr;
+    FLastEntryEndAddr: TDBGPtr;
+    function GetAddress: string;
+    procedure SetAddress(AValue: string);
+  public
+    constructor Create(AListenerIdentifier: integer; AnUID: variant; AOnLog: TOnLog); override;
+    function Execute(AController: TDbgController; out DoProcessLoop: boolean): boolean; override;
+    class function TextName: string; override;
+    procedure ComposeSuccessEvent(var AnEvent: TFpDebugEvent); override;
+  published
+    property Address: string read GetAddress write SetAddress;
+    property Lines: integer read FLines write FLines;
+  end;
+
 implementation
 
-{ TFpDebugThreadCommandList }
+uses
+  FpDbgDisasX86;
 
+{ TFpDebugThreadDisassembleCommand }
+
+function TFpDebugThreadDisassembleCommand.GetAddress: string;
+begin
+  result := FormatAddress(FAddressValue);
+end;
+
+procedure TFpDebugThreadDisassembleCommand.SetAddress(AValue: string);
+begin
+  FAddressValue := Hex2Dec(AValue);
+end;
+
+constructor TFpDebugThreadDisassembleCommand.Create(AListenerIdentifier: integer; AnUID: variant; AOnLog: TOnLog);
+begin
+  inherited Create(AListenerIdentifier, AnUID, AOnLog);
+  FLines:=10;
+end;
+
+function TFpDebugThreadDisassembleCommand.Execute(AController: TDbgController; out DoProcessLoop: boolean): boolean;
 var
-  GFpDebugThreadCommandList: TFpDebugThreadCommandList = nil;
+  AnAddr: TDBGPtr;
+  CodeBin: array[0..20] of byte;
+  p: pointer;
+  ADump,
+  AStatement,
+  ASrcFileName: string;
+  ASrcFileLine: integer;
+  i,j: Integer;
+  Sym: TFpDbgSymbol;
+  StatIndex: integer;
+  FirstIndex: integer;
+
+begin
+  result := false;
+  DoProcessLoop:=false;
+  if not assigned(AController.CurrentProcess) then
+    begin
+    log('Failed to dissasemble: No process', dllInfo);
+    exit;
+    end;
+
+  Sym:=nil;
+  ASrcFileLine:=0;
+  ASrcFileName:='';
+  StatIndex:=0;
+  FirstIndex:=0;
+  if FAddressValue=0 then
+    FStartAddr:=AController.CurrentProcess.GetInstructionPointerRegisterValue
+  else
+    FStartAddr:=FAddressValue;
+  AnAddr:=FStartAddr;
+  setlength(FDisassemblerEntryArray, FLines);
+
+  for i := 0 to FLines-1 do
+    begin
+    FDisassemblerEntryArray[i].Addr:=AnAddr;
+    if not AController.CurrentProcess.ReadData(AnAddr, sizeof(CodeBin),CodeBin) then
+      begin
+      Log(Format('Disassemble: Failed to read memory at %s.', [FormatAddress(AnAddr)]), dllDebug);
+      FDisassemblerEntryArray[i].Statement := 'Failed to read memory';
+      inc(AnAddr);
+      end
+    else
+      begin
+      p := @CodeBin;
+      FpDbgDisasX86.Disassemble(p, AController.CurrentProcess.Mode=dm64, ADump, AStatement);
+
+      Sym := AController.CurrentProcess.FindSymbol(AnAddr);
+
+      // If this is the last statement for this source-code-line, fill the
+      // SrcStatementCount from the prior statements.
+      if (assigned(sym) and ((ASrcFileName<>sym.FileName) or (ASrcFileLine<>sym.Line))) or
+        (not assigned(sym) and ((ASrcFileLine<>0) or (ASrcFileName<>''))) then
+        begin
+        for j := 0 to StatIndex-1 do
+          FDisassemblerEntryArray[FirstIndex+j].SrcStatementCount:=StatIndex;
+        StatIndex:=0;
+        FirstIndex:=i;
+        end;
+
+      if assigned(sym) then
+        begin
+        ASrcFileName:=sym.FileName;
+        ASrcFileLine:=sym.Line;
+        end
+      else
+        begin
+        ASrcFileName:='';
+        ASrcFileLine:=0;
+        end;
+      FDisassemblerEntryArray[i].Dump := ADump;
+      FDisassemblerEntryArray[i].Statement := AStatement;
+      FDisassemblerEntryArray[i].SrcFileLine:=ASrcFileLine;
+      FDisassemblerEntryArray[i].SrcFileName:=ASrcFileName;
+      FDisassemblerEntryArray[i].SrcStatementIndex:=StatIndex;
+      inc(StatIndex);
+      FEndAddr:=AnAddr;
+      Inc(AnAddr, {%H-}PtrUInt(p) - {%H-}PtrUInt(@CodeBin));
+      end;
+    end;
+  FLastEntryEndAddr:=AnAddr;
+  result := true;
+end;
+
+class function TFpDebugThreadDisassembleCommand.TextName: string;
+begin
+  result := 'disassemble';
+end;
+
+procedure TFpDebugThreadDisassembleCommand.ComposeSuccessEvent(var AnEvent: TFpDebugEvent);
+begin
+  inherited ComposeSuccessEvent(AnEvent);
+  AnEvent.DisassemblerEntryArray := FDisassemblerEntryArray;
+  AnEvent.Addr1:=FStartAddr;
+  AnEvent.Addr2:=FEndAddr;
+  AnEvent.Addr3:=FLastEntryEndAddr;
+end;
 
 { TFpDebugThreadSetConsoleTtyCommand }
 
@@ -582,6 +720,11 @@ begin
   result := 'addbreakpoint';
 end;
 
+{ TFpDebugThreadCommandList }
+
+var
+  GFpDebugThreadCommandList: TFpDebugThreadCommandList = nil;
+
 class function TFpDebugThreadCommandList.instance: TFpDebugThreadCommandList;
 begin
   if not assigned(GFpDebugThreadCommandList) then
@@ -661,6 +804,7 @@ initialization
   TFpDebugThreadCommandList.instance.Add(TFpDebugThreadGetLocationInfoCommand);
   TFpDebugThreadCommandList.instance.Add(TFpDebugThreadEvaluateCommand);
   TFpDebugThreadCommandList.instance.Add(TFpDebugThreadStackTraceCommand);
+  TFpDebugThreadCommandList.instance.Add(TFpDebugThreadDisassembleCommand);
 finalization
   GFpDebugThreadCommandList.Free;
 end.

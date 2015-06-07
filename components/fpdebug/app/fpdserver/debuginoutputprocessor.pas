@@ -205,6 +205,28 @@ begin
         end;
       JSonEvent.Add('callstack', JSonStackArray);
       end;
+    if length(AnEvent.DisassemblerEntryArray)>0 then
+      begin
+      JSonStackArray := TJSONArray.Create;
+      for i := 0 to high(AnEvent.DisassemblerEntryArray) do
+        begin
+        JSonStackEntry := TJSONObject.Create;
+        JSonStackEntry.Add('address', FormatAddress(AnEvent.DisassemblerEntryArray[i].Addr));
+        JSonStackEntry.Add('dump', AnEvent.DisassemblerEntryArray[i].Dump);
+        JSonStackEntry.Add('statement', AnEvent.DisassemblerEntryArray[i].Statement);
+        JSonStackEntry.Add('srcfilename', AnEvent.DisassemblerEntryArray[i].SrcFileName);
+        JSonStackEntry.Add('srcfileline', AnEvent.DisassemblerEntryArray[i].SrcFileLine);
+        JSonStackEntry.Add('srcstatementindex', AnEvent.DisassemblerEntryArray[i].SrcStatementIndex);
+        JSonStackEntry.Add('srcstatementcount', AnEvent.DisassemblerEntryArray[i].SrcStatementCount);
+        JSonStackEntry.Add('functionname', AnEvent.DisassemblerEntryArray[i].FuncName);
+        JSonStackEntry.Add('offset', AnEvent.DisassemblerEntryArray[i].Offset);
+        JSonStackArray.Add(JSonStackEntry);
+        end;
+      JSonEvent.Add('disassembly', JSonStackArray);
+      JSonEvent.Add('startaddress', FormatAddress(AnEvent.Addr1));
+      JSonEvent.Add('endaddress', FormatAddress(AnEvent.Addr2));
+      JSonEvent.Add('lastentryendaddress', FormatAddress(AnEvent.Addr3));
+      end;
     result := JSonEvent.AsJSON;
   finally
     JSonEvent.Free;

@@ -49,6 +49,7 @@ type
     Line: integer;
   end;
   TFpDebugEventCallStackEntryArray = array of TFpDebugEventCallStackEntry;
+  TFpDebugEventDisassemblerEntryArray = array of TDisassemblerEntry;
 
   // This record is used to pass debugging-events. Not every field is applicable for each type of event.
   TFpDebugEvent = record
@@ -63,7 +64,11 @@ type
     BreakpointAddr: TDBGPtr;
     LocationRec: TDBGLocationRec;
     Validity: TDebuggerDataState;
+    Addr1: TDBGPtr;
+    Addr2: TDBGPtr;
+    Addr3: TDBGPtr;
     StackEntryArray: TFpDebugEventCallStackEntryArray;
+    DisassemblerEntryArray: TFpDebugEventDisassemblerEntryArray;
   end;
 
   // Each listener should implement this interface.
@@ -317,6 +322,10 @@ begin
   AnEvent.LocationRec.Address:=0;
   AnEvent.Validity:=ddsUnknown;
   SetLength(AnEvent.StackEntryArray,0);
+  SetLength(AnEvent.DisassemblerEntryArray,0);
+  AnEvent.Addr1:=0;
+  AnEvent.Addr2:=0;
+  AnEvent.Addr3:=0;
 end;
 
 procedure TFpDebugThread.FControllerDebugInfoLoaded(Sender: TObject);
