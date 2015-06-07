@@ -958,6 +958,9 @@ type
     property TabOrder;
     property TabStop;
     property Text;
+    property TextHint;
+    property TextHintFontColor;
+    property TextHintFontStyle;
     property Visible;
     property OnChange;
     property OnClick;
