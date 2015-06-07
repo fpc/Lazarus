@@ -707,7 +707,7 @@ type
     FSelLength: integer;
     FSelStart: integer;
     FTextChangedByRealSetText: Boolean;
-    FTextHint: String;
+    FTextHint: TTranslateString;
     FTextHintShowing: Boolean;
     FSettingTextHint: Boolean;
     FTextHintFontColor: TColor;
@@ -715,7 +715,7 @@ type
     FSavedFontColor: TColor;
     FSavedFontStyle: TFontStyles;
     FSavedParentFont: Boolean;
-    procedure SetTextHint(AValue: String);
+    procedure SetTextHint(AValue: TTranslateString);
     procedure ShowTextHint;
     procedure HideTextHint;
     procedure SetAlignment(const AValue: TAlignment);
@@ -794,7 +794,7 @@ type
     property TabOrder;
     property TabStop default true;
     property Text;
-    property TextHint: String read FTextHint write SetTextHint;
+    property TextHint: TTranslateString read FTextHint write SetTextHint;
     property TextHintFontColor: TColor read FTextHintFontColor write FTextHintFontColor default clGrayText;
     property TextHintFontStyle: TFontStyles read FTextHintFontStyle write FTextHintFontStyle default [fsItalic];
   end;

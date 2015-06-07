@@ -618,7 +618,7 @@ begin
   Result:=fCaretPos;
 end;
 
-procedure TCustomEdit.SetTextHint(AValue: String);
+procedure TCustomEdit.SetTextHint(AValue: TTranslateString);
 begin
   if (FTextHint = AValue) then Exit;
   FTextHint := AValue;

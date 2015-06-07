@@ -120,7 +120,7 @@ type
     function GetSpacing: Integer;
     function GetTabStop: Boolean;
     function GetText: TCaption;
-    function GetTextHint: TCaption;
+    function GetTextHint: TTranslateString;
     function GetTextHintFontColor: TColor;
     function GetTextHintFontStyle: TFontStyles;
     function IsCustomGlyph : Boolean;
@@ -185,7 +185,7 @@ type
     procedure SetSelText(AValue: String);
     procedure SetSpacing(const Value: integer);
     procedure SetTabStop(AValue: Boolean);
-    procedure SetTextHint(AValue: TCaption);
+    procedure SetTextHint(AValue: TTranslateString);
     procedure SetTextHintFontColor(AValue: TColor);
     procedure SetTextHintFontStyle(AValue: TFontStyles);
   protected
@@ -300,7 +300,7 @@ type
     property SelText: String read GetSelText write SetSelText;
     property TabStop: Boolean read GetTabStop write SetTabStop default True;
     property Text: TCaption read GetText write SetText;
-    property TextHint: TCaption read GetTextHint write SetTextHint;
+    property TextHint: TTranslateString read GetTextHint write SetTextHint;
     property TextHintFontColor: TColor read GetTextHintFontColor write SetTextHintFontColor default clGrayText;
     property TextHintFontStyle: TFontStyles read GetTextHintFontStyle write SetTextHintFontStyle default [fsItalic];
 
@@ -1196,7 +1196,7 @@ begin
   Result := FEdit.Text;
 end;
 
-function TCustomEditButton.GetTextHint: TCaption;
+function TCustomEditButton.GetTextHint: TTranslateString;
 begin
   Result := FEdit.TextHint;
 end;
@@ -1802,7 +1802,7 @@ begin
   FEdit.TabStop := AValue;
 end;
 
-procedure TCustomEditButton.SetTextHint(AValue: TCaption);
+procedure TCustomEditButton.SetTextHint(AValue: TTranslateString);
 begin
   FEdit.TextHint := AValue;
 end;
