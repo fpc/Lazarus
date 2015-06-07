@@ -582,7 +582,7 @@ begin
 end;
 
 function CopyFile(const SrcFilename, DestFilename: String;
-                  Flags: TCopyFileFlags=[cffOverwriteFile]): Boolean;
+                  Flags: TCopyFileFlags=[cffOverwriteFile]; ExceptionOnError: Boolean=False): Boolean;
 var
   SrcHandle: THandle;
   DestHandle: THandle;
@@ -611,18 +611,33 @@ begin
     End;
   End;
   If TryCount > 0 Then
-    raise EFOpenError.Createfmt({SFOpenError}'Unable to open file "%s"', [SrcFilename]);
+  begin
+    if ExceptionOnError then
+      raise EFOpenError.CreateFmt({SFOpenError}'Unable to open file "%s"', [SrcFilename])
+    else
+      exit;
+  end;
   try
     DestHandle := FileCreateUTF8(DestFileName);
     if (THandle(DestHandle)=feInvalidHandle) then
-      raise EFCreateError.createfmt({SFCreateError}'Unable to create file "%s"',[DestFileName]);
+    begin
+      if ExceptionOnError then
+        raise EFCreateError.CreateFmt({SFCreateError}'Unable to create file "%s"',[DestFileName])
+      else
+        Exit;
+    end;
     try
       repeat
         ReadCount:=FileRead(SrcHandle,Buffer[1],High(Buffer));
         if ReadCount<=0 then break;
         WriteCount:=FileWrite(DestHandle,Buffer[1],ReadCount);
         if WriteCount<ReadCount then
-          raise EWriteError.createfmt({SFCreateError}'Unable to write to file "%s"',[DestFileName])
+        begin
+          if ExceptionOnError then
+            raise EWriteError.CreateFmt({SFCreateError}'Unable to write to file "%s"',[DestFileName])
+          else
+            Exit;
+        end;
       until false;
     finally
       FileClose(DestHandle);
@@ -635,7 +650,7 @@ begin
   end;
 end;
 
-function CopyFile(const SrcFilename, DestFilename: string; PreserveTime: Boolean): boolean;
+function CopyFile(const SrcFilename, DestFilename: string; PreserveTime: Boolean; ExceptionOnError: Boolean): boolean;
 // Flags parameter can be used for the same thing.
 var
   Flags: TCopyFileFlags;
@@ -644,7 +659,7 @@ begin
     Flags:=[cffPreserveTime, cffOverwriteFile]
   else
     Flags:=[cffOverwriteFile];
-  Result := CopyFile(SrcFilename, DestFilename, Flags);
+  Result := CopyFile(SrcFilename, DestFilename, Flags, ExceptionOnError);
 end;
 
 { TCopyDirTree for CopyDirTree function }
