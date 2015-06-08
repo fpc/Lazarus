@@ -217,6 +217,20 @@ type
     procedure DoOnCommandFailed(ACommandResponse: TJSonObject); override;
   end;
 
+  { TFPDSendDisassembleCommand }
+
+  TFPDSendDisassembleCommand = class(TFPDSendCommand)
+  private
+    FDisassembler: TDBGDisassembler;
+    FStartAddr: TDBGPtr;
+    FLinesCount: integer;
+  protected
+    procedure ComposeJSon(AJsonObject: TJSONObject); override;
+  public
+    constructor create(ADisassembler: TDBGDisassembler; AStartAddr: TDBGPtr; ALinesCount: integer);
+    procedure DoOnCommandSuccesfull(ACommandResponse: TJSonObject); override;
+  end;
+
   { TFPDSocketThread }
 
   TFPDSocketThread = class(TThread)
@@ -278,6 +292,7 @@ type
     function CreateBreakPoints: TDBGBreakPoints; override;
     function CreateWatches: TWatchesSupplier; override;
     function CreateCallStack: TCallStackSupplier; override;
+    function CreateDisassembler: TDBGDisassembler; override;
     function RequestCommand(const ACommand: TDBGCommand; const AParams: array of const): Boolean; override;
     // These methods are called by several TFPDSendCommands after success or failure of a command. (Most common
     // because the TFPDSendCommands do not have access to TFPDServerDebugger's protected methods theirself)
@@ -324,6 +339,17 @@ type
     function FindByUID(AnUID: integer): TFPBreakpoint;
   end;
 
+  { TFPDBGDisassembler }
+
+  TFPDBGDisassembler = class(TDBGDisassembler)
+  protected
+    function PrepareEntries(AnAddr: TDbgPtr; ALinesBefore, ALinesAfter: Integer): boolean; override;
+  public
+    // Used in the succes callback of the TFPDSendDisassembleCommand command to add
+    // the retrieved range of assembly instructions.
+    procedure AddRange(ARange: TDBGDisassemblerEntryRange);
+  end;
+
   { TFPWatches }
 
   TFPWatches = class(TWatchesSupplier)
@@ -352,6 +378,22 @@ end;
 { TFPDSendCommand }
 
 var GCommandUID: integer = 0;
+
+{ TFPDBGDisassembler }
+
+function TFPDBGDisassembler.PrepareEntries(AnAddr: TDbgPtr; ALinesBefore, ALinesAfter: Integer): boolean;
+begin
+  Assert(ALinesBefore<>0,'TFPDBGDisassembler.PrepareEntries LinesBefore not supported');
+
+  TFPDServerDebugger(Debugger).QueueCommand(TFPDSendDisassembleCommand.create(self, AnAddr, ALinesAfter+1));
+  result := false;
+end;
+
+procedure TFPDBGDisassembler.AddRange(ARange: TDBGDisassemblerEntryRange);
+begin
+  EntryRanges.AddRange(ARange);
+  Changed;
+end;
 
 { TFPCallStackSupplier }
 
@@ -1182,6 +1224,11 @@ end;
 function TFPDServerDebugger.CreateCallStack: TCallStackSupplier;
 begin
   Result:=TFPCallStackSupplier.Create(Self);
+end;
+
+function TFPDServerDebugger.CreateDisassembler: TDBGDisassembler;
+begin
+  Result:=TFPDBGDisassembler.Create(Self);
 end;
 
 function TFPDServerDebugger.RequestCommand(const ACommand: TDBGCommand; const AParams: array of const): Boolean;

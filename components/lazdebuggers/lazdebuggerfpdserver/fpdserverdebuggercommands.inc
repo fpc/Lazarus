@@ -252,6 +252,63 @@ begin
     end;
 end;
 
+{ TFPDSendDisassembleCommand }
+
+procedure TFPDSendDisassembleCommand.ComposeJSon(AJsonObject: TJSONObject);
+begin
+  inherited ComposeJSon(AJsonObject);
+  AJsonObject.Add('command','disassemble');
+  if FStartAddr>0 then
+    AJsonObject.Add('address', Dec2Numb(FStartAddr, 8, 16));
+  if FLinesCount>0 then
+    AJsonObject.Add('lines', FLinesCount);
+end;
+
+constructor TFPDSendDisassembleCommand.create(ADisassembler: TDBGDisassembler;
+  AStartAddr: TDBGPtr; ALinesCount: integer);
+begin
+  inherited create(true);
+  FDisassembler := ADisassembler;
+  FLinesCount:=ALinesCount;
+  FStartAddr:=AStartAddr;
+end;
+
+procedure TFPDSendDisassembleCommand.DoOnCommandSuccesfull(ACommandResponse: TJSonObject);
+var
+  JSonCallStackArr: TJSONArray;
+  JSonCallStackEntryObj: TJSONObject;
+  ARange: TDBGDisassemblerEntryRange;
+  AnEntry: TDisassemblerEntry;
+  i: Integer;
+begin
+  if assigned(FDisassembler) then
+    begin
+    JSonCallStackArr := ACommandResponse.Get('disassembly', TJSONArray(nil));
+    if assigned(JSonCallStackArr) and (JSonCallStackArr.Count>0) then
+      begin
+      ARange := TDBGDisassemblerEntryRange.Create;
+      ARange.RangeStartAddr:=Hex2Dec(ACommandResponse.Get('startaddress', Dec2Numb(FStartAddr, 8, 16)));
+      for i := 0 to JSonCallStackArr.Count-1 do
+        begin
+        JSonCallStackEntryObj := JSonCallStackArr.Items[i] as TJSONObject;
+        AnEntry.Addr:=Hex2Dec(JSonCallStackEntryObj.Get('address', '0'));
+        AnEntry.Dump:=JSonCallStackEntryObj.Get('dump', '');
+        AnEntry.Statement:=JSonCallStackEntryObj.Get('statement', '');
+        AnEntry.SrcFileName:=JSonCallStackEntryObj.Get('srcfilename', '');
+        AnEntry.SrcFileLine:=JSonCallStackEntryObj.Get('srcfileline', 0);
+        AnEntry.SrcStatementIndex:=JSonCallStackEntryObj.Get('srcstatementindex', 0);
+        AnEntry.SrcStatementCount:=JSonCallStackEntryObj.Get('srcstatementcount', 0);
+        AnEntry.FuncName:=JSonCallStackEntryObj.Get('functionname', '');
+        AnEntry.Offset:=JSonCallStackEntryObj.Get('offset', 0);
+        ARange.Append(@AnEntry);
+        end;
+      ARange.RangeEndAddr:=Hex2Dec(ACommandResponse.Get('endaddress', Dec2Numb(AnEntry.Addr, 8, 16)));
+      ARange.LastEntryEndAddr:=Hex2Dec(ACommandResponse.Get('lastentryendaddress', '0'));
+      TFPDBGDisassembler(FDisassembler).AddRange(ARange);
+      end
+    end;
+end;
+
 procedure TFPDSendCallStackCommand.DoOnCommandFailed(ACommandResponse: TJSonObject);
 begin
   FCallStack.SetCountValidity(ddsInvalid);
