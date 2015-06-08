@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2015-06-05 00:03+0300\n"
+"PO-Revision-Date: 2015-06-09 02:34+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -1851,7 +1851,7 @@ msgstr "Каталог исходного кода FPC"
 
 #: lazarusidestrconsts.dlgframecolor
 msgid "Text-mark"
-msgstr "Отметка"
+msgstr "Рамка"
 
 #: lazarusidestrconsts.dlgfrmeditor
 msgid "Form Editor"
@@ -10111,7 +10111,7 @@ msgstr "Оставить их и продолжить"
 #: lazarusidestrconsts.liskey
 msgctxt "lazarusidestrconsts.liskey"
 msgid "Key"
-msgstr "Клавиша"
+msgstr "Ключ"
 
 #: lazarusidestrconsts.liskeycatcustom
 msgid "Custom commands"
