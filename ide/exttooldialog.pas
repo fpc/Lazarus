@@ -40,7 +40,7 @@ uses
   {$ENDIF}
   Classes, SysUtils, Process, LCLType, LCLProc, Controls, Forms,
   Buttons, StdCtrls, ComCtrls, Dialogs, ExtCtrls, ButtonPanel, Menus,
-  FileProcs,
+  FileProcs, FileUtil,
   IDEExternToolIntf, IDEImagesIntf, IDEDialogs, IDEHelpIntf, IDECommands,
   ProjectIntf,
   EnvironmentOpts,
@@ -156,6 +156,9 @@ begin
   MoveDownButton.ImageIndex := IDEImages.LoadImage(16, 'arrow_down');
 
   fExtToolList:=TExternalUserTools.Create;
+
+  OpenDialog1.Filter:= dlgFilterXML+'|*.xml|'+dlgFilterAll+'|'+GetAllFilesMask;
+  SaveDialog1.Filter:= OpenDialog1.Filter;
 end;
 
 destructor TExternalToolDialog.Destroy;
