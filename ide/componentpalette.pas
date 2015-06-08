@@ -739,7 +739,8 @@ begin
   if not fComponentButtons.Find(Selected.ComponentClass.ClassName, i) then
     ReAlignButtons(FPageControl.ActivePage);
   // Select button
-  fComponentButtons[Selected.ComponentClass.ClassName].Down := true;
+  if fComponentButtons.Find(Selected.ComponentClass.ClassName, i) then //find again!
+    fComponentButtons.Data[i].Down := true;
 end;
 
 procedure TComponentPalette.CreatePopupMenu;
