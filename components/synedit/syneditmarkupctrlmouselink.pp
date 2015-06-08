@@ -175,7 +175,7 @@ begin
 
   if not (emUseMouseActions in TCustomSynEdit(SynEdit).MouseOptions) then begin
     Result := (emShowCtrlMouseLinks in TCustomSynEdit(SynEdit).MouseOptions) and
-              (AShift * [ssShift, ssCtrl, ssAlt] = [ssCtrl]);
+              (AShift * ([ssShift, ssCtrl, ssAlt] + [SYNEDIT_LINK_MODIFIER]) = [SYNEDIT_LINK_MODIFIER]);
     exit;
   end;
 
