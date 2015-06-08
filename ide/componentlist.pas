@@ -131,8 +131,6 @@ begin
   if Assigned(IDEComponentPalette) then
   begin
     UpdateComponents;
-    with ListTree do
-      Selected := Items.GetFirstNode;
     TreeFilterEd.InvalidateFilter;
     IDEComponentPalette.AddHandlerSelectionChanged(@SelectionWasChanged);
     IDEComponentPalette.AddHandlerComponentAdded(@ComponentWasAdded);
@@ -162,6 +160,13 @@ begin
   end
   else
     PageControl.AnchorSideBottom.Side := asrBottom;
+
+  if not Assigned(Parent) then//only in undocked IDE
+  begin
+    if TreeFilterEd.CanFocus then
+      TreeFilterEd.SetFocus;
+    TreeFilterEd.SelectAll;
+  end;
 end;
 
 procedure TComponentListForm.FormActivate(Sender: TObject);
