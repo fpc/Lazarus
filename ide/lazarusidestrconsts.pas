@@ -3988,6 +3988,7 @@ resourcestring
   lisPkgMangUnableToDeleteFile = 'Unable to delete file "%s".';
   lisSkipErrors = 'Skip errors';
   lisDeleteAllTheseFiles = 'Delete all these files?';
+  lisCheckUncheckAll = 'Check/uncheck all';
   lisPkgMangUnsavedPackage = 'Unsaved package';
   lisFpcmakeFailed = 'fpcmake failed';
   lisCallingToCreateMakefileFromFailed = 'Calling %s to create Makefile from %s failed.';
