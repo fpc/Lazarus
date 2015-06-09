@@ -757,7 +757,7 @@ begin
   begin
     if FCursorPos < 0 then FCursorPos := 0
     else if FCursorPos  > FMaskLength then FCursorPos := FMaskLength;
-    if FCursorPos + 1 > FMaskLength then
+    if (FCursorPos + 1 > FMaskLength) or not Focused then
       SetSel(FCursorPos, FCursorPos)
     else
       SetSel(FCursorPos, FCursorPos + 1);
