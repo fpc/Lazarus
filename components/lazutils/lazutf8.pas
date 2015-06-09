@@ -2749,7 +2749,7 @@ var
   ResultLen, RP :Integer;
 begin
   Result := '';
-  if (S = '') or (BreakStr = '') or (BreakChars = []) then Exit;
+  if (S = '') or (MaxCol = 0) or (BreakStr = '') or (BreakChars = []) then Exit;
   P := PChar(S);
   while P^ <> #0 do
   begin
@@ -2774,7 +2774,7 @@ begin
       while not (Result[RP] in BreakChars) do
         Dec(RP);
       RightSpace := Len - RP;
-      if RightSpace > 0 then
+      if (RightSpace > 0) and (RightSpace < MaxCol) then
       begin
         Dec(P, RightSpace);
         SetLength(Result, Len - RightSpace);
