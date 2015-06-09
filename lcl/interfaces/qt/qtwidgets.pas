@@ -16741,7 +16741,9 @@ begin
   begin
     QLCLAbstractScrollArea_override_viewportEvent(QLCLAbstractScrollAreaH(Widget),
       QLCLAbstractScrollArea_viewportEvent_Override(NilMethod));
-    FreeAndNil(FViewPortWidget);
+    FViewPortWidget.FOwner := nil;
+    FViewPortWidget.Release;
+    FViewPortWidget := nil;
   end;
 end;
 
