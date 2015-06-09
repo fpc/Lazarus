@@ -5442,6 +5442,10 @@ msgstr ""
 msgid "%s Check the target (OS, CPU, LCL widget type). Maybe you have to recompile the package for this target or set another target for the project."
 msgstr "%s 対象(OS, CPU, LCL ウィジェットタイプ)をチェックして下さい。たぶんこの対象についてパッケージを再コンパイルするか、プロジェクトについて別の対象をセットする必要があるでしょう。"
 
+#: lazarusidestrconsts.lischeckuncheckall
+msgid "Check/uncheck all"
+msgstr ""
+
 #: lazarusidestrconsts.lischooseadifferentname
 msgid "Choose a different name"
 msgstr "違う名前を選択してください"

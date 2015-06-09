@@ -5396,6 +5396,10 @@ msgstr "Zkontrolujte cestu pro hledání balíčku %s, zkuste čisté sestavení
 msgid "%s Check the target (OS, CPU, LCL widget type). Maybe you have to recompile the package for this target or set another target for the project."
 msgstr "%s Ověřte cíl (OS, CPU, typ LCL widgetu). Možná musíte přeložit balíček pro tento cíl, nebo nastavit jiný cíl pro tento projekt."
 
+#: lazarusidestrconsts.lischeckuncheckall
+msgid "Check/uncheck all"
+msgstr ""
+
 #: lazarusidestrconsts.lischooseadifferentname
 msgid "Choose a different name"
 msgstr "Vyberte jiné jméno"

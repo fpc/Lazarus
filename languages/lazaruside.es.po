@@ -5362,6 +5362,10 @@ msgstr ". comprueba el trayecto de búsqueda del paquete %s, prueba una reconstr
 msgid "%s Check the target (OS, CPU, LCL widget type). Maybe you have to recompile the package for this target or set another target for the project."
 msgstr "%s Comprobar el objetivo (SO, CPU, tipo de widget LCL). Tal vez tenga que recompilar el paquete para este objetivo o establecer otro objetivo para el proyecto."
 
+#: lazarusidestrconsts.lischeckuncheckall
+msgid "Check/uncheck all"
+msgstr ""
+
 #: lazarusidestrconsts.lischooseadifferentname
 msgid "Choose a different name"
 msgstr "Escoja un nombre distinto"

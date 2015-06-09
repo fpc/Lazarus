@@ -5345,6 +5345,10 @@ msgstr ". Tarkista paketin %s hakupolku, yritä puhdasta uudelleen käännöstä
 msgid "%s Check the target (OS, CPU, LCL widget type). Maybe you have to recompile the package for this target or set another target for the project."
 msgstr "%s Tarkista kohde (OS, CPU, LCL widget type). Ehkä paketti pitää kääntää uudelleen kohteelle tai asettaa projektille uusi kohde."
 
+#: lazarusidestrconsts.lischeckuncheckall
+msgid "Check/uncheck all"
+msgstr ""
+
 #: lazarusidestrconsts.lischooseadifferentname
 msgid "Choose a different name"
 msgstr "Valitse toisenlainen nimi"

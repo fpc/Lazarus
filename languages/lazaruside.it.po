@@ -5377,6 +5377,10 @@ msgstr ". Verifica il percorso di ricerca del pacchetto %s, prova con un pulisci
 msgid "%s Check the target (OS, CPU, LCL widget type). Maybe you have to recompile the package for this target or set another target for the project."
 msgstr "%s Verifica la destinazione (OS, CPU, tipo di LCL). Forse dovete ricompilare il pacchetto per la destinazione corretta, o modificare la destinazione del progetto."
 
+#: lazarusidestrconsts.lischeckuncheckall
+msgid "Check/uncheck all"
+msgstr ""
+
 #: lazarusidestrconsts.lischooseadifferentname
 msgid "Choose a different name"
 msgstr "Scegliere un nome differente"

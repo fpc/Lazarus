@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2015-06-09 02:34+0300\n"
+"PO-Revision-Date: 2015-06-10 00:06+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -5334,6 +5334,10 @@ msgstr ". Проверьте список путей поиска пакета %
 #: lazarusidestrconsts.lischeckthetargetoscpulclwidgettypemaybeyouhavetoreco
 msgid "%s Check the target (OS, CPU, LCL widget type). Maybe you have to recompile the package for this target or set another target for the project."
 msgstr "%s Проверьте целевую платформу (ОС, процессор, тип библиотеки виджетов LCL). Возможно, вам требуется пересобрать пакет для данной целевой платформы, либо назначить другую целевую платформу для проекта."
+
+#: lazarusidestrconsts.lischeckuncheckall
+msgid "Check/uncheck all"
+msgstr "Выбрать всё или снять выбор"
 
 #: lazarusidestrconsts.lischooseadifferentname
 msgid "Choose a different name"
