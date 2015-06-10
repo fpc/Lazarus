@@ -578,7 +578,7 @@ begin
   CodeToolBoss.IdentItemCheckHasChilds(IdentItem);
 
   CanAddSemicolon:=CodeToolsOpts.IdentComplAddSemicolon and (AddChar<>';');
-  CanAddComma:=(AddChar<>',');
+  CanAddComma:=CodeToolsOpts.IdentComplAddSemicolon and (AddChar<>',');
   IsReadOnly:=false;
 
   Result:=IdentItem.Identifier;
@@ -609,6 +609,15 @@ begin
     ctnUnit, ctnPackage, ctnLibrary:
       ValueType:=icvUnitName;
   end;
+
+  //Add the '&' character to prefixed identifiers
+  if (iliNeedsAmpersand in IdentItem.Flags) and
+     //check if there is already an '&' in front of this atom
+     ((IdentList.StartAtom.StartPos-1 > IdentList.StartContext.Tool.SrcLen) or  //StartPos-1 is out-of-scope
+      (IdentList.StartAtom.StartPos-1 < 1) or                                   //StartPos-1 is out-of-scope
+      (IdentList.StartContext.Tool.Src[IdentList.StartAtom.StartPos-1] <> '&')) //StartPos is in-scope and not &
+  then
+    Result := '&' + Result;
 
   case ValueType of
   
@@ -718,10 +727,11 @@ begin
     Result+=',';
   end;
 
-  if (IdentItem.GetDesc=ctnUseUnit) and (AddChar<>'.') then begin
-    // ToDo: check if there is already a point
+  if CodeToolsOpts.IdentComplAddSemicolon and
+     (IdentItem.GetDesc=ctnUseUnit) and (AddChar<>'.') and
+     not IdentList.StartUpAtomBehindIs('.')//check if there is already a point
+  then
     Result+='.';
-  end;
 
   // add 'do'
   if CodeToolsOpts.IdentComplAddDo and (AddChar='')

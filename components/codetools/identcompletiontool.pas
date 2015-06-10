@@ -99,7 +99,8 @@ type
     iliIsExperimental,
     iliIsUnimplemented,
     iliIsLibrary,
-    iliAtCursor // the item is the identifier at the completion
+    iliAtCursor, // the item is the identifier at the completion
+    iliNeedsAmpersand //the item has to be prefixed with '&'
     );
   TIdentListItemFlags = set of TIdentListItemFlag;
   
@@ -1238,6 +1239,11 @@ begin
                             FoundContext.Node,
                             FoundContext.Tool,
                             ctnNone);
+
+  //Add the '&' character to prefixed identifiers
+  if (Ident^='&') and (IsIdentStartChar[Ident[1]]) then
+    Include(NewItem.Flags,iliNeedsAmpersand);
+
   if (FoundContext.Node=CurrentIdentifierList.StartContext.Node) then begin
     // found identifier is in cursor node
     Include(NewItem.Flags,iliAtCursor);
