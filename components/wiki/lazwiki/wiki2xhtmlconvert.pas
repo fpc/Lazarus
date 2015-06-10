@@ -320,7 +320,7 @@ var
         URL:=''; // show category without link
         exit;
       end
-      else if Scheme='image' then begin
+      else if (Scheme='image') or (Scheme='file') then begin
         URL:=copy(URL,p+1,length(URL));
         URL:=UTF8Trim(URL);
         URL:=WikiTitleToPage(URL);
