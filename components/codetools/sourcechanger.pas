@@ -1381,6 +1381,28 @@ begin
           then
             CurAtomType:=atKeyword;
         end;
+      '&': //identifier prefixed with '&' or octal number
+        begin
+          inc(CurPos);
+          if CurPos<=SrcLen then
+          case Src[CurPos] of
+            'a'..'z','A'..'Z','_'://identifier prefixed with '&'
+            begin
+              CurAtomType:=atIdentifier;
+              repeat
+                inc(CurPos);
+              until (CurPos>SrcLen) or (not IsIdentChar[Src[CurPos]]);
+            end;
+            '0'..'7'://octal number
+            begin
+              CurAtomType:=atNumber;
+              repeat
+                inc(CurPos);
+              until (CurPos>SrcLen) or (not IsOctNumberChar[Src[CurPos]]);
+            end;
+          end else
+            CurAtomType:=atNone;
+        end;
       #128..#255: // UTF8
         begin
           CurAtomType:=atIdentifier;

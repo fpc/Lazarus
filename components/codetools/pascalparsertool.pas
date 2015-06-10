@@ -5170,7 +5170,7 @@ begin
       // -> check if a space must be inserted
       if AddAtom
       and ( ((phpCommentsToSpace in Attr) and (CurPos.StartPos>LastAtomEndPos))
-         or ((CurPos.StartPos<=SrcLen) and (IsIdentChar[Src[CurPos.StartPos]])
+         or ((CurPos.StartPos<=SrcLen) and (IsIdentChar[Src[CurPos.StartPos]] or (Src[CurPos.StartPos] = '&'))
              and ExtractStreamEndIsIdentChar)
          )
       then begin

@@ -833,7 +833,7 @@ begin
   if CurPos.StartPos>SrcLen then exit(false);
   p:=@Src[CurPos.StartPos];
   if p^ in ['0'..'9','%','$'] then exit(true);
-  if (p^='&') and (p[1] in ['0'..'7']) then exit(true);
+  if (p^='&') and IsOctNumberChar[p[1]] then exit(true);
   Result:=false;
 end;
 
@@ -1229,10 +1229,10 @@ begin
     '&': // octal number or keyword as identifier
       begin
         inc(p);
-        if p^ in ['0'..'7'] then begin
-          while p^ in ['0'..'7'] do
+        if IsOctNumberChar[p^] then begin
+          while IsOctNumberChar[p^] do
             inc(p);
-        end else if IsIdentChar[p^] then begin
+        end else if IsIdentStartChar[p^] then begin
           CurPos.Flag:=cafWord;
           while IsIdentChar[p^] do
             inc(p);
