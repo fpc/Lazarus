@@ -1602,6 +1602,30 @@ begin
         end;
       end;
     end;
+  '&':
+    begin
+      // identifier with "&" character or an octal number
+      inc(p);
+      case p^ of
+        '_','A'..'Z','a'..'z'://identifier: &uses
+        begin
+          inc(p);
+          while IsIdentChar[p^] do
+            inc(p);
+          TokenType:=lsttWord;
+        end;
+        '0'..'7'://octal number: &10
+        begin
+          inc(p);
+          while IsOctNumberChar[p^] do
+            inc(p);
+          TokenType:=lsttNone;
+        end;
+      else
+        TokenType:=lsttNone;
+      end;
+      SrcPos:=p-PChar(Src)+1;
+    end;
   '''','#':
     begin
       TokenType:=lsttStringConstant;

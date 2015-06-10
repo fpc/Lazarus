@@ -172,6 +172,7 @@ var
   IsCommentStartChar,
   IsCommentEndChar,
   IsHexNumberChar,   // ['0'..'9','a'..'f','A'..'F']
+  IsOctNumberChar,   // ['0'..'7']
   IsEqualOperatorStartChar, // [':','+','-','/','*','<','>']
   IsAfterFloatPointChar: // ['0'..'9','e','E']
     array[char] of boolean;
@@ -836,6 +837,7 @@ begin
     IsCommentStartChar[c]:=c in ['/','{','('];
     IsCommentEndChar[c]:=c in ['}',')',#13,#10];
     IsHexNumberChar[c]:=c in ['0'..'9','a'..'f','A'..'F'];
+    IsOctNumberChar[c]:=c in ['0'..'7'];
     IsEqualOperatorStartChar[c]:=c in [':','+','-','/','*','<','>'];
     IsWordChar[c]:=c in ['a'..'z','A'..'Z'];
     IsNonWordChar[c]:=(c in [#0..#127]) and (not IsIdentChar[c]);
