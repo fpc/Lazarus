@@ -12,7 +12,7 @@ object SearchResultsView: TSearchResultsView
   OnCreate = Form1Create
   OnKeyDown = FormKeyDown
   Position = poDefault
-  LCLVersion = '1.1'
+  LCLVersion = '1.5'
   object ResultsNoteBook: TPageControl
     AnchorSideTop.Control = ToolBar
     AnchorSideTop.Side = asrBottom
@@ -35,6 +35,7 @@ object SearchResultsView: TSearchResultsView
     Width = 57
     Align = alNone
     AutoSize = True
+    EdgeBorders = []
     Images = ImageList
     TabOrder = 2
     object SearchAgainButton: TToolButton
@@ -53,6 +54,7 @@ object SearchResultsView: TSearchResultsView
     end
     object ToolButton3: TToolButton
       Left = 47
+      Height = 22
       Top = 2
       Width = 10
       Caption = 'ToolButton3'
@@ -65,8 +67,8 @@ object SearchResultsView: TSearchResultsView
     AnchorSideTop.Control = ToolBar
     AnchorSideTop.Side = asrCenter
     Left = 63
-    Height = 21
-    Top = 2
+    Height = 23
+    Top = 1
     Width = 296
     UseFormActivate = True
     ButtonWidth = 23
