@@ -9612,10 +9612,9 @@ msgstr ""
 msgid "Goto Line"
 msgstr ""
 
-#: lazarusidestrconsts.lisgotoselectedsourceline
-msgctxt "lazarusidestrconsts.lisgotoselectedsourceline"
-msgid "Goto selected source line"
-msgstr "Ga naar geselecteerde broncode regel"
+#: lazarusidestrconsts.lisgotoselected
+msgid "Goto selected"
+msgstr ""
 
 #: lazarusidestrconsts.lisgplnotice
 msgid ""

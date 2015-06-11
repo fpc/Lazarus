@@ -9639,10 +9639,9 @@ msgstr ""
 msgid "Goto Line"
 msgstr ""
 
-#: lazarusidestrconsts.lisgotoselectedsourceline
-msgctxt "lazarusidestrconsts.lisgotoselectedsourceline"
-msgid "Goto selected source line"
-msgstr "Pergi ke baris sumber yang dipilih"
+#: lazarusidestrconsts.lisgotoselected
+msgid "Goto selected"
+msgstr ""
 
 #: lazarusidestrconsts.lisgplnotice
 #, fuzzy,badformat

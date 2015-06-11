@@ -9323,10 +9323,9 @@ msgstr "Globale Einstellungen"
 msgid "Goto Line"
 msgstr "Zu Zeile springen"
 
-#: lazarusidestrconsts.lisgotoselectedsourceline
-msgctxt "lazarusidestrconsts.lisgotoselectedsourceline"
-msgid "Goto selected source line"
-msgstr "Zu ausgewählter Zeile springen"
+#: lazarusidestrconsts.lisgotoselected
+msgid "Goto selected"
+msgstr ""
 
 #: lazarusidestrconsts.lisgplnotice
 msgid ""

@@ -9668,10 +9668,9 @@ msgstr "Ustawienia globalne"
 msgid "Goto Line"
 msgstr "Idź do wiersza"
 
-#: lazarusidestrconsts.lisgotoselectedsourceline
-msgctxt "lazarusidestrconsts.lisgotoselectedsourceline"
-msgid "Goto selected source line"
-msgstr "Przejdź do zaznaczonej linii źródła"
+#: lazarusidestrconsts.lisgotoselected
+msgid "Goto selected"
+msgstr ""
 
 #: lazarusidestrconsts.lisgplnotice
 msgid ""

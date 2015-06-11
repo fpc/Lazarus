@@ -9560,10 +9560,9 @@ msgstr ""
 msgid "Goto Line"
 msgstr "ЙтиДо Рядка"
 
-#: lazarusidestrconsts.lisgotoselectedsourceline
-msgctxt "lazarusidestrconsts.lisgotoselectedsourceline"
-msgid "Goto selected source line"
-msgstr "Перейти до виділеного рядка коду"
+#: lazarusidestrconsts.lisgotoselected
+msgid "Goto selected"
+msgstr ""
 
 #: lazarusidestrconsts.lisgplnotice
 #, fuzzy,badformat

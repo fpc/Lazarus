@@ -9392,10 +9392,9 @@ msgstr ""
 msgid "Goto Line"
 msgstr "Přejít na řádek"
 
-#: lazarusidestrconsts.lisgotoselectedsourceline
-msgctxt "lazarusidestrconsts.lisgotoselectedsourceline"
-msgid "Goto selected source line"
-msgstr "Přejít na vybraný zdrojový řádek"
+#: lazarusidestrconsts.lisgotoselected
+msgid "Goto selected"
+msgstr ""
 
 #: lazarusidestrconsts.lisgplnotice
 msgid ""

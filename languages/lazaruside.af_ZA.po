@@ -9315,9 +9315,8 @@ msgstr ""
 msgid "Goto Line"
 msgstr ""
 
-#: lazarusidestrconsts.lisgotoselectedsourceline
-msgctxt "lazarusidestrconsts.lisgotoselectedsourceline"
-msgid "Goto selected source line"
+#: lazarusidestrconsts.lisgotoselected
+msgid "Goto selected"
 msgstr ""
 
 #: lazarusidestrconsts.lisgplnotice

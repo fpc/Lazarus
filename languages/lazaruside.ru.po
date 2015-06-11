@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2015-06-10 00:06+0300\n"
+"PO-Revision-Date: 2015-06-11 02:24+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -9293,10 +9293,9 @@ msgstr "Глобальные параметры"
 msgid "Goto Line"
 msgstr "Переход к строке"
 
-#: lazarusidestrconsts.lisgotoselectedsourceline
-msgctxt "lazarusidestrconsts.lisgotoselectedsourceline"
-msgid "Goto selected source line"
-msgstr "Перейти к выделенной строке"
+#: lazarusidestrconsts.lisgotoselected
+msgid "Goto selected"
+msgstr "Перейти к выделенному"
 
 #: lazarusidestrconsts.lisgplnotice
 msgid ""
@@ -17736,7 +17735,7 @@ msgstr "Параметры точки останова ..."
 
 #: lazarusidestrconsts.lisviewsource
 msgid "View Source"
-msgstr "Просмотреть исходный код"
+msgstr "Просмотреть код"
 
 #: lazarusidestrconsts.lisviewsourcedisass
 msgctxt "lazarusidestrconsts.lisviewsourcedisass"

@@ -9710,10 +9710,9 @@ msgstr ""
 msgid "Goto Line"
 msgstr ""
 
-#: lazarusidestrconsts.lisgotoselectedsourceline
-msgctxt "lazarusidestrconsts.lisgotoselectedsourceline"
-msgid "Goto selected source line"
-msgstr "Choď na zvolený riadok zdrojového kódu"
+#: lazarusidestrconsts.lisgotoselected
+msgid "Goto selected"
+msgstr ""
 
 #: lazarusidestrconsts.lisgplnotice
 #, fuzzy,badformat

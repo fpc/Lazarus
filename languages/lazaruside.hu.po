@@ -9295,10 +9295,9 @@ msgstr "Általános beállítások"
 msgid "Goto Line"
 msgstr "Ugrás adott sorra"
 
-#: lazarusidestrconsts.lisgotoselectedsourceline
-msgctxt "lazarusidestrconsts.lisgotoselectedsourceline"
-msgid "Goto selected source line"
-msgstr "Ugrás a forrás kiválasztott sorára"
+#: lazarusidestrconsts.lisgotoselected
+msgid "Goto selected"
+msgstr ""
 
 #: lazarusidestrconsts.lisgplnotice
 msgid ""

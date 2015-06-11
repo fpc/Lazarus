@@ -9872,10 +9872,9 @@ msgstr ""
 msgid "Goto Line"
 msgstr "לך אל שורה"
 
-#: lazarusidestrconsts.lisgotoselectedsourceline
-msgctxt "lazarusidestrconsts.lisgotoselectedsourceline"
-msgid "Goto selected source line"
-msgstr "לך לשורת הקוד שנבחרה"
+#: lazarusidestrconsts.lisgotoselected
+msgid "Goto selected"
+msgstr ""
 
 #: lazarusidestrconsts.lisgplnotice
 #, fuzzy

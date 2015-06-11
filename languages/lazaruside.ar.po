@@ -9326,10 +9326,9 @@ msgstr ""
 msgid "Goto Line"
 msgstr "إذهب إلى السّطر "
 
-#: lazarusidestrconsts.lisgotoselectedsourceline
-msgctxt "lazarusidestrconsts.lisgotoselectedsourceline"
-msgid "Goto selected source line"
-msgstr "إذهب إلى سطر الأوامر المعيّن"
+#: lazarusidestrconsts.lisgotoselected
+msgid "Goto selected"
+msgstr ""
 
 #: lazarusidestrconsts.lisgplnotice
 msgid ""

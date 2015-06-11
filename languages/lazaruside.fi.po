@@ -9292,9 +9292,9 @@ msgstr "Julkiset asetukset"
 msgid "Goto Line"
 msgstr "Mene riville"
 
-#: lazarusidestrconsts.lisgotoselectedsourceline
-msgid "Goto selected source line"
-msgstr "Mene valitulle lähdekoodiriville"
+#: lazarusidestrconsts.lisgotoselected
+msgid "Goto selected"
+msgstr ""
 
 #: lazarusidestrconsts.lisgplnotice
 msgid ""
