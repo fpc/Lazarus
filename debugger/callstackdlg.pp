@@ -734,10 +734,11 @@ begin
   ToolButtonPower.Hint := lisDbgWinPowerHint;
   for i:= 0 to mnuLimit.Items.Count-1 do
     mnuLimit.Items[i].Caption:= Format(lisMaxS, [mnuLimit.Items[i].Tag]);
+  actViewLimit.Caption := mnuLimit.Items[0].Caption;
   actViewMore.Caption := lisMore;
   actViewTop.Caption := lisCSTop;
   actViewBottom.Caption := lisCSBottom;
-  actViewGoto.Caption := lisGotoSelectedSourceLine;
+  actViewGoto.Caption := lisGotoSelected;
   actShow.Caption := lisViewSource;
   actShowDisass.Caption := lisViewSourceDisass;
   actToggleBreakPoint.Caption := uemToggleBreakpoint;
@@ -745,7 +746,7 @@ begin
   actCopyAll.Caption := lisCopyAll;
 
   lvCallStack.Columns[1].Caption:= lisIndex;
-  lvCallStack.Columns[2].Caption:= lisCEOModeSource;
+  lvCallStack.Columns[2].Caption:= histdlgColumnLoc;
   lvCallStack.Columns[3].Caption:= dlgAddHiAttrGroupLine;
   lvCallStack.Columns[4].Caption:= lisFunction;
 

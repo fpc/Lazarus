@@ -5028,7 +5028,7 @@ resourcestring
   lisViewSource = 'View Source';
   lisViewSourceDisass = 'View Assembler';
   lisMaxS = 'Max %d';
-  lisGotoSelectedSourceLine = 'Goto selected source line';
+  lisGotoSelected = 'Goto selected';
   lisCopyAll = 'Copy All';
   lisIndex = 'Index';
   lisFunction = 'Function';
