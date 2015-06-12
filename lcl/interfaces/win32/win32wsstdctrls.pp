@@ -613,8 +613,11 @@ begin
         Exit(DeliverMessage(WindowInfo^.WinControl, LMessage));
       end;
     WM_ERASEBKGND:
-      // Avoid unnecessary background paints to avoid flickering of the listbox
+      if WindowsVersion <= wvXP then   // Standardbehavior for XP
+        Result := CallDefaultWindowProc(Window, Msg, WParam, LParam)
+      else
       begin
+        // Avoid unnecessary background paints to avoid flickering of the listbox
         WindowInfo := GetWin32WindowInfo(Window);
         Count := SendMessage(Window, LB_GETCOUNT, 0, 0);
         if Assigned(WindowInfo^.WinControl) and
