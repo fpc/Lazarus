@@ -22,7 +22,7 @@ unit PrintersDlgs;
 interface
 
 uses
-  Classes, SysUtils, Forms, Dialogs, LResources, Printers, OsPrinters;
+  Classes, SysUtils, Forms, Controls, Dialogs, LResources, Printers, OsPrinters;
 
 type
 
