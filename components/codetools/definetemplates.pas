@@ -7833,6 +7833,8 @@ var
   Info: String;
   Infos: TFPCInfoStrings;
   InfoTypes: TFPCInfoTypes;
+  BaseDir: String;
+  FullFilename: String;
 begin
   OldOptions:=TFPCTargetConfigCache.Create(nil);
   CfgFiles:=nil;
@@ -7846,6 +7848,7 @@ begin
     CompilerDate:=FileAgeCached(Compiler);
     if FileExistsCached(Compiler) then begin
       ExtraOptions:=GetFPCInfoCmdLineOptions(ExtraOptions);
+      BaseDir:='';
 
       // get version and real OS and CPU
       InfoTypes:=[fpciTargetOS,fpciTargetProcessor,fpciFullVersion];
@@ -7885,6 +7888,11 @@ begin
           if Filename='' then continue;
           CfgFileExists:=Filename[1]='+';
           Filename:=copy(Filename,2,length(Filename));
+          FullFilename:=LazFileUtils.ExpandFileNameUTF8(TrimFileName(Filename),BaseDir);
+          if CfgFileExists<>FileExistsCached(FullFilename) then begin
+            debugln(['Warning: [TFPCTargetConfigCache.Update] fpc found cfg a file, the IDE did not: "',Filename,'"']);
+            CfgFileExists:=not CfgFileExists;
+          end;
           CfgFileDate:=0;
           if CfgFileExists then
             CfgFileDate:=FileAgeCached(Filename);

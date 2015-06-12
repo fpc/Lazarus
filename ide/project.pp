@@ -812,6 +812,7 @@ type
     procedure SetAutoOpenDesignerFormsDisabled(const AValue: boolean);
     procedure SetEnableI18N(const AValue: boolean);
     procedure SetEnableI18NForLFM(const AValue: boolean);
+    procedure SetLastCompilerParams(AValue: string);
     procedure SetMainProject(const AValue: boolean);
     procedure SetMainUnitID(const AValue: Integer);
     procedure SetPOOutputDirectory(const AValue: string);
@@ -1079,7 +1080,7 @@ type
     property LastCompilerFilename: string read FLastCompilerFilename
                                           write FLastCompilerFilename;
     property LastCompilerParams: string read FLastCompilerParams
-                                        write FLastCompilerParams;
+                                        write SetLastCompilerParams;
     property LastCompileComplete: boolean read FLastCompileComplete write FLastCompileComplete;
     property MacroEngine: TTransferMacroList read FMacroEngine;
     property MainFilename: String read GetMainFilename;
@@ -5113,6 +5114,14 @@ begin
   debugln(['TProject.SetEnableI18NForLFM ',AValue]);
   {$ENDIF}
   Modified:=true;
+end;
+
+procedure TProject.SetLastCompilerParams(AValue: string);
+begin
+  if FLastCompilerParams=AValue then Exit;
+  //debugln(['TProject.SetLastCompilerParams Old="',FLastCompilerParams,'"']);
+  //debugln(['TProject.SetLastCompilerParams New="',AValue,'"']);
+  FLastCompilerParams:=AValue;
 end;
 
 procedure TProject.SetMainProject(const AValue: boolean);
