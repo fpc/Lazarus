@@ -78,31 +78,31 @@ implementation
     {$IFDEF LCLCarbon}
       {$IFNDEF NativePrint}
         // add units as needed for carbon, for the moment use cups ones.
-        uses Controls, udlgSelectPrinter, udlgPropertiesPrinter, udlgPageSetup, FileUtil;
+        uses udlgSelectPrinter, udlgPropertiesPrinter, udlgPageSetup, FileUtil;
         {$I cupsprndialogs.inc}
       {$ELSE}
-        uses Controls, Math, CarbonProc, MacOSAll, LCLProc;
+        uses Math, CarbonProc, MacOSAll, LCLProc;
         {$I carbonprndialogs.inc}
       {$ENDIF}
     {$ENDIF}
     {$IFDEF LCLCocoa}
-      uses Controls, Math, CocoaAll, MacOSAll, LCLProc;
+      uses Math, CocoaAll, MacOSAll, LCLProc;
       {$I cocoaprndialogs.inc}
     {$ENDIF}
     {$IFDEF LCLQt}
-      uses Controls, qtobjects, qt4, qtint, FileUtil;
+      uses qtobjects, qt4, qtint;
       {$I qtprndialogs.inc}
     {$ENDIF}
     {$IFDEF LCLGtk2}
-      uses Controls, udlgSelectPrinter, udlgPropertiesPrinter, udlgPageSetup, FileUtil;
+      uses udlgSelectPrinter, udlgPropertiesPrinter, udlgPageSetup;
       {$I cupsprndialogs.inc}
     {$ENDIF}
   {$ELSE}
     {$IFDEF LCLQt}
-      uses Controls, qtobjects, qt4, qtint, FileUtil;
+      uses qtobjects, qt4, qtint;
       {$I qtprndialogs.inc}
     {$ELSE}
-      uses Controls, udlgSelectPrinter, udlgPropertiesPrinter, udlgPageSetup, FileUtil;
+      uses udlgSelectPrinter, udlgPropertiesPrinter, udlgPageSetup;
       {$I cupsprndialogs.inc}
     {$ENDIF}
   {$ENDIF}
@@ -110,13 +110,12 @@ implementation
 
 {$IFDEF MSWindows}
   {$IFDEF LCLQt}
-    uses Windows, Controls,
-    qtobjects, qtwidgets, qt4, LCLIntf, LCLType, FileUtil;
+    uses Windows,
+    qtobjects, qtwidgets, qt4, LCLIntf, LCLType;
     {$I qtprndialogs.inc}
   {$ELSE}
-
-  uses Windows, WinUtilPrn, InterfaceBase, LCLIntf, LCLType, WinVer;
-  {$I winprndialogs.inc}
+    uses Windows, WinUtilPrn, InterfaceBase, LCLIntf, LCLType, WinVer;
+    {$I winprndialogs.inc}
   {$ENDIF}
 
 {$ENDIF}
