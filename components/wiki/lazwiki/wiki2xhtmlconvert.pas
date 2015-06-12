@@ -236,9 +236,7 @@ begin
     if HeaderTxt<>'' then begin
       HRef:=WikiHeaderToLink(HeaderTxt);
       // add anchor
-      LinkNode:=doc.CreateElement('a');
-      LinkNode.SetAttribute('name', HRef);
-      Page.CurDOMNode.ParentNode.InsertBefore(LinkNode, Page.CurDOMNode);
+      Page.CurDOMNode.SetAttribute('id', HRef);
       // add TOC link
       LINode:=doc.CreateElement('li');
       LINode.SetAttribute('class', 'toclevel-'+IntToStr(Page.SectionLevel));
