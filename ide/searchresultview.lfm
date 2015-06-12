@@ -75,7 +75,6 @@ object SearchResultsView: TSearchResultsView
     NumGlyphs = 1
     BorderSpacing.Left = 6
     MaxLength = 0
-    ParentFont = False
     TabOrder = 0
     OnChange = SearchInListChange
   end

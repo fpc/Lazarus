@@ -444,6 +444,11 @@ begin
         Node.Expand(False);
     end;
     Key := #0;
+  end else
+  if Key = Char(VK_RETURN) then  //SearchInListEdit passes only OnPress through
+  begin
+    Key := #0;
+    FOnSelectionChanged(Self);
   end;
 end;
 
