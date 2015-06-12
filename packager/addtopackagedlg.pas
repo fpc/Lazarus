@@ -130,6 +130,7 @@ type
     procedure FilesShortenButtonClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
+    procedure FormShow(Sender: TObject);
     procedure NewComponentButtonClick(Sender: TObject);
     procedure NewComponentPageResize(Sender: TObject);
     procedure NewDependButtonClick(Sender: TObject);
@@ -211,6 +212,7 @@ begin
     AddDlg.FilesDirButton.Click;
   //hide tabs for simpler use
   AddDlg.PageControl1.ShowTabs:=false;
+  AddDlg.PageControl1.TabStop:=false;
 
   Result:=AddDlg.ShowModal;
   Page:=AddDlg.ActivatePage;
@@ -758,6 +760,11 @@ begin
   FreeAndNil(fPkgComponents);
   FreeAndNil(fPackages);
   FreeAndNil(Params);
+end;
+
+procedure TAddToPackageDlg.FormShow(Sender: TObject);
+begin
+  SelectNext(PageControl1.ActivePage, True, True);
 end;
 
 procedure TAddToPackageDlg.NewComponentButtonClick(Sender: TObject);

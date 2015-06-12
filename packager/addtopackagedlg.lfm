@@ -12,6 +12,7 @@ object AddToPackageDlg: TAddToPackageDlg
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnKeyDown = AddToPackageDlgKeyDown
+  OnShow = FormShow
   Position = poScreenCenter
   LCLVersion = '1.5'
   object PageControl1: TPageControl
