@@ -823,55 +823,62 @@ begin
   doc:=Page.XHTML;
   CurName:=lowercase(copy(W.Src,Token.NameStartPos,Token.NameEndPos-Token.NameStartPos));
   CurValue:=copy(W.Src,Token.ValueStartPos,Token.ValueEndPos-Token.ValueStartPos);
-  CodeNode:=doc.CreateElement('pre');
-  if (CurName='pascal')
-  or (CurName='delphi')
-  or (CurName='code')
-  or (CurName='syntaxhighlight')
-  or (CurName='source')
-  or (CurName='fpc')
-  then
-    CurName:='pascal';
-  if CurName<>'' then
-    CodeNode.SetAttribute('class',CurName);
-  Page.CurDOMNode.AppendChild(CodeNode);
-  if CurValue<>'' then begin
-    if (CurName='pascal') then begin
-      p:=PChar(CurValue);
-      AtomStart:=p;
-      LastToken:=pNone;
-      LastRangeStart:=p;
-      repeat
-        // skip space
-        while p^ in [#1..#31,' '] do inc(p);
-        // read token
-        if (p^='{') or ((p^='/') and (p[1]='/')) or ((p^='(') and (p[1]='*'))
-        then begin
-          // comment
-          AddSpan(pComment,p);
-          p:=FindCommentEnd(p,false);
-        end else begin
-          ReadRawNextPascalAtom(p,AtomStart);
-          if AtomStart^=#0 then break;
-          case AtomStart^ of
-          '''','#':
-            AddSpan(pString,AtomStart);
-          '0'..'9','%','$','&':
-            AddSpan(pNumber,AtomStart);
-          'a'..'z','A'..'Z','_':
-            if WordIsKeyWord.DoIdentifier(AtomStart) then
-              AddSpan(pKey,AtomStart)
+
+  if CurName = 'code' then begin
+    CodeNode := doc.CreateElement('code');
+    Page.CurDomNode.AppendChild(CodeNode);
+    CodeNode.AppendChild(doc.CreateTextNode(CurValue));
+  end else
+  begin
+    CodeNode:=doc.CreateElement('pre');
+    if (CurName='pascal')
+    or (CurName='delphi')
+    or (CurName='syntaxhighlight')
+    or (CurName='source')
+    or (CurName='fpc')
+    then
+      CurName:='pascal';
+    if CurName<>'' then
+      CodeNode.SetAttribute('class',CurName);
+    Page.CurDOMNode.AppendChild(CodeNode);
+    if CurValue<>'' then begin
+      if (CurName='pascal') then begin
+        p:=PChar(CurValue);
+        AtomStart:=p;
+        LastToken:=pNone;
+        LastRangeStart:=p;
+        repeat
+          // skip space
+          while p^ in [#1..#31,' '] do inc(p);
+          // read token
+          if (p^='{') or ((p^='/') and (p[1]='/')) or ((p^='(') and (p[1]='*'))
+          then begin
+            // comment
+            AddSpan(pComment,p);
+            p:=FindCommentEnd(p,false);
+          end else begin
+            ReadRawNextPascalAtom(p,AtomStart);
+            if AtomStart^=#0 then break;
+            case AtomStart^ of
+            '''','#':
+              AddSpan(pString,AtomStart);
+            '0'..'9','%','$','&':
+              AddSpan(pNumber,AtomStart);
+            'a'..'z','A'..'Z','_':
+              if WordIsKeyWord.DoIdentifier(AtomStart) then
+                AddSpan(pKey,AtomStart)
+              else
+                AddSpan(pNone,AtomStart);
             else
-              AddSpan(pNone,AtomStart);
-          else
-            AddSpan(pSymbol,AtomStart);
+              AddSpan(pSymbol,AtomStart);
+            end;
           end;
-        end;
-      until false;
-      Flush(p);
-    end else begin
-      // default: add as text
-      CodeNode.AppendChild(doc.CreateTextNode(CurValue));
+        until false;
+        Flush(p);
+      end else begin
+        // default: add as text
+        CodeNode.AppendChild(doc.CreateTextNode(CurValue));
+      end;
     end;
   end;
 end;
