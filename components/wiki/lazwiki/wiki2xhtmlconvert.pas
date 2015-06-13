@@ -379,7 +379,7 @@ var
         URL:=GetPageLink(TargetPage);
         if Anchor<>'' then
           URL+='#'+Anchor;
-      end else if (not FileExistsUTF8(Filename)) then begin
+      end else if ((FileName <> '') and not FileExistsUTF8(Filename)) then begin
         if WarnMissingPageLinks and WarnURL(LinkToken.Link) then
           Log('WARNING: TWiki2XHTMLConverter.InsertLink "'+dbgstr(LinkToken.Link)+'": file not found: "'+Filename+'" at '+W.PosToStr(LinkToken.LinkStartPos,true));
         URL:='';
