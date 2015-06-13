@@ -17,6 +17,7 @@
       <XPManifest>
         <DpiAware Value="True"/>
       </XPManifest>
+      <Icon Value="0"/>
     </General>
     <LazDoc Paths="docs/xml/ide"/>
     <VersionInfo>
