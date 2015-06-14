@@ -68,6 +68,7 @@ type
     FLinkToBaseDocument: string;
     FMaxH: integer;
     FPageFileExt: string;
+    FUseTemplateIcons: Boolean;
     procedure DoAddLinksToTranslations(Page: TW2XHTMLPage);
     procedure DoAddLinkToBaseDocument(Page: TW2XHTMLPage);
     procedure OnHeaderToken(Token: TWPToken);
@@ -106,9 +107,14 @@ type
     property AddLinksToTranslations: boolean read FAddLinksToTranslations write FAddLinksToTranslations default true;
     property AddTOCIfHeaderCountMoreThan: integer read FAddTOCIfHeaderCountMoreThan
                  write FAddTOCIfHeaderCountMoreThan default 2;
+    property UseTemplateIcons: Boolean read FUseTemplateIcons write FUseTemplateIcons;
   end;
 
 implementation
+
+const
+  NOTE_ICON = 'note.png';
+  WARNING_ICON = 'warning.png';
 
 { TWiki2XHTMLConverter }
 
@@ -505,11 +511,15 @@ var
   doc: TXMLDocument;
   NodeName: string;
   Node: TDOMElement;
+  childNode1, childNode2: TDOMElement;
   LinkToken: TWPLinkToken;
   NodeClass: String;
   NameValueToken: TWPNameValueToken;
   CurName: String;
   CurValue: String;
+  foundImg: string;
+  fn: String;
+  captn, iconfile: String;
 begin
   Page:=TW2XHTMLPage(Token.UserData);
   W:=Page.WikiPage;
@@ -671,6 +681,59 @@ begin
         exit;
       end;
       CurValue:=copy(W.Src,NameValueToken.ValueStartPos,NameValueToken.ValueEndPos-NameValueToken.ValueStartPos);
+
+      case Lowercase(CurName) of
+        'note', 'warning':
+          begin
+            case Lowercase(CurName) of
+              'note'   : begin captn := 'Note'; iconfile := NOTE_ICON; end;
+              'warning': begin captn := 'Warning'; iconfile := WARNING_ICON; end;
+            end;
+            Node := doc.CreateElement('div');
+            Node.SetAttribute('class', 'template-with-icon');
+            Page.CurDOMNode.AppendChild(Node);
+
+            childnode1 := doc.CreateElement('div');
+            Node.AppendChild(childnode1);
+            childnode1.SetAttribute('class', 'icon');
+            if FUseTemplateIcons then begin
+              fn := FindImage(iconfile);
+              if fn <> '' then
+                fn := GetImageLink(fn);
+              MarkImageAsUsed(fn, Page);
+              childnode2 := doc.CreateElement('img');
+              childnode2.SetAttribute('src', fn);
+//              childnode2.SetAttribute('align', 'left');
+              childnode1.AppendChild(childnode2);
+            end;
+
+            childnode2 := doc.CreateElement('b');
+            childnode2.AppendChild(doc.createTextNode(captn + ': '));
+            Node.AppendChild(childnode2);
+            Node.AppendChild(doc.CreateTextNode(CurValue));
+              // to do: CurValue can contain further html tags!
+            exit;
+          end;
+
+        'mantislink':
+          begin
+            Node := doc.CreateElement('a');
+            Node.SetAttribute('href', 'http://bugs.freepascal.org/view.php?id='+CurValue);
+            Node.AppendChild(doc.CreateTextNode('MantisLink #'));
+            Node.AppendChild(doc.CreateTextNode(Curvalue));
+            Page.CurDOMNode.AppendChild(Node);
+            exit;
+          end;
+
+        else
+          Node := doc.CreateElement('span');
+          if CurName <> '' then Node.SetAttribute('class', CurName);
+          Page.CurDOMNode.AppendChild(Node);
+          if CurValue <> '' then
+            Node.AppendChild(doc.CreateTextNode(CurValue));
+          exit;
+      end;
+
       Node:=doc.CreateElement('span');
       if CurName<>'' then
         Node.SetAttribute('class',CurName);
@@ -938,6 +1001,7 @@ begin
   fLinkToBaseDocument:='Online version';
   FAddLinksToTranslations:=true;
   FAddTOCIfHeaderCountMoreThan:=2;
+  FUseTemplateIcons := true;
 end;
 
 destructor TWiki2XHTMLConverter.Destroy;
