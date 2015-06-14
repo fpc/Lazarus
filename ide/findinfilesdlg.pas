@@ -369,6 +369,8 @@ procedure TLazFindInFilesDialog.SaveHistory;
 var
   Dir: String;
 begin
+  if ReplaceCheckBox.Checked then
+    InputHistories.AddToReplaceHistory(ReplaceText);
   InputHistories.AddToFindHistory(FindText);
   Dir:=AppendPathDelim(TrimFilename(DirectoriesComboBox.Text));
   if Dir<>'' then

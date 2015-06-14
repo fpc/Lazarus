@@ -8311,10 +8311,9 @@ var
   AnEditorInfo: TUnitEditorInfo;
 begin
   Result:=false;
-  if pos('(',SearchResultsView.GetSelectedText) > 0 then
+  AFileName:= SearchResultsView.GetSourceFileName;
+  if AFilename<>'' then
   begin
-    AFileName:= SearchResultsView.GetSourceFileName;
-    if AFilename='' then exit;
     LogCaretXY:= SearchResultsView.GetSourcePositon;
     OpenFlags:=[ofOnlyIfExists,ofRegularFile];
     if MainBuildBoss.IsTestUnitFilename(AFilename) then begin
@@ -8391,6 +8390,8 @@ begin
     SearchResultsView.DisableAutoSizing;
   if State>=iwgfShow then
     IDEWindowCreators.ShowForm(SearchresultsView,State=iwgfShowOnTop);
+  if SearchresultsView.SearchInListEdit.CanFocus then
+    SearchresultsView.SearchInListEdit.SetFocus;
 end;
 
 function TMainIDE.GetTestBuildDirectory: string;
@@ -10057,8 +10058,8 @@ end;
 
 function TMainIDE.DoFindInFiles: TModalResult;
 begin
-  Result:=mrOk;
   FindInFilesDialog.FindInFilesPerDialog(Project1);
+  Result:=FindInFilesDialog.ModalResult;
 end;
 
 procedure TMainIDE.DoCompleteCodeAtCursor;
