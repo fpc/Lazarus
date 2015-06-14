@@ -298,6 +298,152 @@ var
     Result:=true;
   end;
 
+  procedure HandleImgLink(const AFileName, Value: String);
+  type
+    THorPos = (hpDefault, hpLeft, hpCenter, hpRight);
+  var
+    L: TStringList;
+    hpos: THorPos;
+    thumb: Boolean;
+    factor: Double;
+    frame: Boolean;
+    alt: String;
+    cap: String;
+    w, h: Integer;   // -2 auto, -1 not used, else: pixels
+    i, p: Integer;
+    s: String;
+    node: TDOMElement;
+    imgnode: TDOMElement;
+    capnode: TDOMElement;
+  begin
+    hpos := hpDefault;
+    w := -1;  // not used
+    h := -1;
+    thumb := false;
+    frame := false;
+    factor := 1.0;
+    cap := '';
+    alt := '';
+
+    L := TStringList.Create;
+    try
+      L.Delimiter := '|';
+      L.StrictDelimiter := true;
+      L.DelimitedText := Value;
+
+      for i:=0 to L.Count-1 do begin
+        s := L[i];
+        case Lowercase(s) of
+          'thumb', 'thumbnail':
+            begin
+              w := 220;
+              h := -2;  // auto
+              thumb := true;
+              factor := 1.0;
+              frame := true;
+            end;
+          'frame':
+            frame := true;
+          'frameless':
+            frame := false;
+          'left':
+            hpos := hpLeft;
+          'center':
+            hpos := hpCenter;
+          'right':
+            hpos := hpRight;
+          'none':
+            hpos := hpDefault;
+          else
+            if pos('alt=', s) = 1 then
+              alt := copy(s, Length('alt='), MaxInt)
+            else
+            if pos('link=', s) = 1 then
+              // currently not supported
+            else
+            if pos('px', s) = Length(s)-1 then
+            begin
+              if s[1]='x' then   // e.g: "x100px" -- height
+                h := StrToInt(Copy(s, 2, Length(s)-3))
+              else begin
+                p := pos('x', s);
+                if p = Length(s) then   // e.g: "200px" --> width
+                  w := StrToInt(Copy(s, 1, Length(s)-2))
+                else
+                if p > 0 then   // e.g: "200x100px" --> width x height
+                begin
+                  w := StrToInt(copy(s, 1, p-1));
+                  h := StrToInt(copy(s, p+1, Length(s)-p-2));
+                end else
+                  cap := s;
+              end;
+            end else
+            if (pos('upright', s) = 1) then
+            begin
+              thumb := true;
+              s := trim(copy(s, Length('upright')+1, MaxInt));
+              if s <> '' then val(s, factor, p) else factor := 1.0;
+            end
+            else
+              cap := s;
+        end;
+      end;
+
+      if thumb or frame then begin
+        node := doc.CreateElement('div');
+        if frame then
+          node.SetAttribute('class', 'image')
+        else
+          node.SetAttribute('class', 'image-no-border');
+        case hpos of
+          hpDefault: node.SetAttribute('style', 'float:right;');
+          hpLeft   : node.SetAttribute('style', 'float:left;');
+          hpCenter : node.SetAttribute('style', 'display:block; margin:0px auto;');
+          hpRight  : node.SetAttribute('style', 'float:right;');
+        end;
+        Page.CurDOMNode.AppendChild(node);
+        imgnode := doc.CreateElement('img');
+        node.AppendChild(imgnode);
+        if cap <> '' then begin
+          capnode := doc.CreateElement('figcaption');
+          capnode.SetAttribute('style', 'margin-top: 4px');
+          capnode.AppendChild(doc.CreateTextNode(cap));
+          node.AppendChild(capnode);
+        end;
+      end else
+      begin
+        imgnode := doc.CreateElement('img');
+        imgnode.SetAttribute('class', 'image-no-border');
+        Page.CurDOMNode.AppendChild(imgnode);
+      end;
+
+      imgnode.SetAttribute('src', AFileName);
+      if alt <> '' then
+        imgnode.SetAttribute('alt', alt);
+      if w > 0 then
+      begin
+        if thumb and (factor <> 1.0) then w := round(w*factor);
+        imgnode.SetAttribute('width', IntToStr(w)+'px');
+      end;
+      if h = -2 then
+        imgnode.SetAttribute('height', 'auto')
+      else
+      if h > 0 then
+      begin
+        if thumb and (factor <> 1.0) then h := round(h * factor);
+        imgnode.SetAttribute('height', IntToStr(h)+'px');
+      end;
+      case hpos of
+         hpLeft  : imgnode.SetAttribute('style', 'float:left');
+         hpCenter: imgnode.SetAttribute('style', 'display:block; margin:0px auto;');
+         hpRight : imgNode.SetAttribute('style', 'float:right');
+      end;
+
+    finally
+      L.Free;
+    end;
+  end;
+
   function HandleLink(var URL, Caption: string): boolean;
   var
     p: SizeInt;
@@ -334,11 +480,7 @@ var
         if FoundImgFile<>'' then begin
           Filename:=GetImageLink(FoundImgFile);
           MarkImageAsUsed(Filename,Page);
-          Node:=doc.CreateElement('img');
-          Node.SetAttribute('src', Filename);
-          if Caption<>'' then
-            Node.SetAttribute('alt', Caption);
-          Page.CurDOMNode.AppendChild(Node);
+          HandleImgLink(FileName, Caption);
           exit(true);
         end;
         if WarnURL(LinkToken.Link) then
@@ -406,7 +548,6 @@ begin
   if URL='' then exit;
   Caption:=copy(W.Src, LinkToken.CaptionStartPos, LinkToken.CaptionEndPos-
     LinkToken.CaptionStartPos);
-  if Caption='' then exit(true);
   if HandleLink(URL,Caption) then exit;
 
   if URL<>'' then begin
@@ -703,7 +844,6 @@ begin
               MarkImageAsUsed(fn, Page);
               childnode2 := doc.CreateElement('img');
               childnode2.SetAttribute('src', fn);
-//              childnode2.SetAttribute('align', 'left');
               childnode1.AppendChild(childnode2);
             end;
 
