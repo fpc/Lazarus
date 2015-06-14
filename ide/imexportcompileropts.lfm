@@ -30,40 +30,6 @@ object ImExportCompOptsDlg: TImExportCompOptsDlg
     TabOrder = 3
     ShowButtons = [pbOK, pbCancel, pbHelp]
   end
-  object HistoryLabel: TLabel
-    AnchorSideTop.Control = FileNameEdit
-    AnchorSideTop.Side = asrBottom
-    AnchorSideRight.Control = FileNameEdit
-    AnchorSideRight.Side = asrBottom
-    Left = 407
-    Height = 15
-    Top = 54
-    Width = 38
-    Anchors = [akTop, akRight]
-    BorderSpacing.Top = 6
-    Caption = 'History'
-    ParentColor = False
-  end
-  object HistoryButton: TButton
-    AnchorSideLeft.Control = HistoryLabel
-    AnchorSideTop.Control = HistoryLabel
-    AnchorSideTop.Side = asrBottom
-    AnchorSideRight.Control = HistoryLabel
-    AnchorSideRight.Side = asrBottom
-    Left = 410
-    Height = 25
-    Hint = 'Recent files'
-    Top = 75
-    Width = 35
-    Anchors = [akTop, akRight]
-    BorderSpacing.Top = 6
-    Caption = '>>'
-    OnClick = HistoryButtonClick
-    ParentShowHint = False
-    PopupMenu = RecentPopupMenu
-    ShowHint = True
-    TabOrder = 2
-  end
   object FileLabel: TLabel
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
@@ -76,33 +42,7 @@ object ImExportCompOptsDlg: TImExportCompOptsDlg
     Caption = 'File'
     ParentColor = False
   end
-  object FileNameEdit: TFileNameEdit
-    AnchorSideLeft.Control = FileLabel
-    AnchorSideTop.Control = FileLabel
-    AnchorSideTop.Side = asrBottom
-    AnchorSideRight.Control = Owner
-    AnchorSideRight.Side = asrBottom
-    Left = 6
-    Height = 23
-    Top = 25
-    Width = 439
-    DialogOptions = [ofExtensionDifferent, ofEnableSizing, ofViewDetail]
-    Filter = 'XML file (*.xml)|*.xml|Project file (*.lpi)|*.lpi|Package file (*.lpk)|*.lpk|Session file (*.lps)|*.lps|All files (*)|*'
-    FilterIndex = 0
-    HideDirectories = False
-    ButtonWidth = 45
-    NumGlyphs = 1
-    Anchors = [akTop, akLeft, akRight]
-    BorderSpacing.Top = 4
-    BorderSpacing.Right = 6
-    MaxLength = 0
-    ParentShowHint = False
-    PopupMenu = RecentPopupMenu
-    TabOrder = 0
-  end
   object ExportRadioGroup: TRadioGroup
-    AnchorSideLeft.Control = FileNameEdit
-    AnchorSideTop.Control = FileNameEdit
     AnchorSideTop.Side = asrBottom
     Left = 6
     Height = 66
@@ -125,13 +65,48 @@ object ImExportCompOptsDlg: TImExportCompOptsDlg
       'Current build mode'
       'All build modes'
     )
+    TabOrder = 2
+  end
+  object FileNameEdit: TComboBox
+    AnchorSideLeft.Control = FileLabel
+    AnchorSideTop.Control = FileLabel
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 6
+    Height = 23
+    Top = 25
+    Width = 378
+    BorderSpacing.Top = 4
+    BorderSpacing.Right = 6
+    ItemHeight = 15
+    OnChange = FileNameEditChange
+    ParentShowHint = False
+    TabOrder = 0
+  end
+  object ButtonBrowse: TButton
+    AnchorSideLeft.Control = FileNameEdit
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = FileNameEdit
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 390
+    Height = 25
+    Top = 25
+    Width = 55
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Right = 6
+    Caption = '...'
+    OnClick = ButtonBrowseClick
     TabOrder = 1
   end
-  object RecentPopupMenu: TPopupMenu
-    left = 256
-    top = 96
-    object MenuItem1: TMenuItem
-      Caption = 'New Item1'
-    end
+  object OpenDlg: TOpenDialog
+    Options = [ofFileMustExist, ofEnableSizing, ofViewDetail]
+    left = 304
+    top = 88
+  end
+  object SaveDlg: TSaveDialog
+    left = 349
+    top = 88
   end
 end
