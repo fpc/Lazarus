@@ -32,6 +32,7 @@
 unit DbgIntfDebuggerBase;
 
 {$mode objfpc}{$H+}
+{$modeswitch nestedprocvars}
 
 interface
 
@@ -1184,6 +1185,22 @@ type
 (******************************************************************************)
 (******************************************************************************)
 
+(*  Some values to calculate how many bytes to disassemble for a given amount of lines
+    Those values are only guesses *)
+const
+  // DAssBytesPerCommandAvg: Average len: Used for LinesBefore/LinesAfter.
+  // (should rather be to big than to small)
+  DAssBytesPerCommandAvg = 8;
+  // If we have a range with more then DAssRangeOverFuncTreshold * DAssBytesPerCommandAvg
+  //  then prefer the Range-end as start, rather than the known func start
+  //  (otherwhise re-dissassemble the whole function, including the part already known)
+  // The assumption is, that no single *source* statement starting before this range,
+  //  will ever reach into the next statement (where the next statement already started / mixed addresses)
+  DAssRangeOverFuncTreshold = 15;
+  // Never dis-assemble more bytes in a single go (actually, max-offset before requested addr)
+  DAssMaxRangeSize = 4096;
+
+type
   PDisassemblerEntry = ^TDisassemblerEntry;
   TDisassemblerEntry = record
     Addr: TDbgPtr;                   // Address
@@ -1196,6 +1213,19 @@ type
     SrcStatementIndex: SmallInt;     // Index of Statement, within list of Stmnt of the same SrcLine
     SrcStatementCount: SmallInt;     // Count of Statements for this SrcLine
   end;
+
+  TDisassemblerAddressValidity =
+    (avFoundFunction, avFoundRange, avFoundStatement,  // known address
+     avGuessed,                                        // guessed
+     avExternRequest,                                  // As requested by external caller
+     avPadded                                          // Padded, because address was not known for sure
+    );
+  TDisassemblerAddress = record
+    Value, GuessedValue: TDBGPtr;
+    Offset: Integer;
+    Validity: TDisassemblerAddressValidity;
+  end;
+
 
   { TBaseDisassembler }
 
@@ -1303,6 +1333,35 @@ type
     property OnDelete: TNotifyEvent read FOnDelete write FOnDelete;
     property OnMerge: TDBGDisassemblerEntryMapMergeEvent
              read FOnMerge write FOnMerge;
+  end;
+
+  { TDBGDisassemblerRangeExtender }
+
+  TDoDisassembleRangeProc = function(AnEntryRanges: TDBGDisassemblerEntryMap; AFirstAddr, ALastAddr: TDisassemblerAddress; StopAfterAddress: TDBGPtr; StopAfterNumLines: Integer): Boolean is nested;
+  TDisassembleCancelProc = function(): Boolean is nested;
+  TDisassembleAdjustToKnowFunctionStart = function (var AStartAddr: TDisassemblerAddress): Boolean is nested;
+
+  TDBGDisassemblerRangeExtender = class
+  private
+    FOnAdjustToKnowFunctionStart: TDisassembleAdjustToKnowFunctionStart;
+    FOnCheckCancel: TDisassembleCancelProc;
+    FOnDoDisassembleRange: TDoDisassembleRangeProc;
+
+    FEntryRangeMap: TDBGDisassemblerEntryMap;
+    FRangeIterator: TDBGDisassemblerEntryMapIterator;
+    function CheckIfCancelled: boolean;
+    function AdjustToRangeOrKnowFunctionStart(var AStartAddr: TDisassemblerAddress;
+      ARangeBefore: TDBGDisassemblerEntryRange): Boolean;
+    function InitAddress(AValue: TDBGPtr; AValidity: TDisassemblerAddressValidity;
+      AnOffset: Integer = -1): TDisassemblerAddress;
+  public
+    constructor Create(AnEntryRangeMap: TDBGDisassemblerEntryMap);
+    destructor Destroy;
+    function DisassembleRange(ALinesBefore,
+      ALinesAfter: integer; AStartAddr: TDBGPtr; AnEndAddr: TDBGPtr): boolean;
+    property OnDoDisassembleRange: TDoDisassembleRangeProc read FOnDoDisassembleRange write FOnDoDisassembleRange;
+    property OnCheckCancel: TDisassembleCancelProc read FOnCheckCancel write FOnCheckCancel;
+    property OnAdjustToKnowFunctionStart: TDisassembleAdjustToKnowFunctionStart read FOnAdjustToKnowFunctionStart write FOnAdjustToKnowFunctionStart;
   end;
 
   { TDBGDisassembler }
@@ -1850,6 +1909,7 @@ function dbgs(AKind: TDBGSymbolKind): String; overload;
 function dbgs(AnAttribute: TDBGSymbolAttribute): String; overload;
 function dbgs(AnAttributes: TDBGSymbolAttributes): String; overload;
 function dbgs(ADisassRange: TDBGDisassemblerEntryRange): String; overload;
+function dbgs(const AnAddr: TDisassemblerAddress): string; overload;
 function dbgs(ACategory: TDBGEventCategory): String; overload;
 function dbgs(AFlag: TDBGEvaluateFlag): String; overload;
 function dbgs(AFlags: TDBGEvaluateFlags): String; overload;
@@ -1984,6 +2044,254 @@ begin
       Result := Format('Range(%u)=[[ Cnt=%d, Capac=%d, [0].Addr=%u, RFirst=%u, [Cnt].Addr=%u, RLast=%u, REnd=%u, FirstOfs=%d ]]',
         [PtrUInt(ADisassRange), Count, Capacity, FirstAddr, RangeStartAddr, LastAddr, RangeEndAddr, LastEntryEndAddr, fo]);
     {$POP}
+  end;
+end;
+
+function Dbgs(const AnAddr: TDisassemblerAddress): string;
+const
+  ValidityName: array [TDisassemblerAddressValidity] of string =
+    ('FoundFunction', 'FoundRange', 'FoundStatemnet', 'Guessed', 'ExternRequest', 'Padded');
+begin
+  Result := Format('[[ Value=%u, Guessed=%u, Offset=%d, Validity=%s ]]',
+                   [AnAddr.Value, AnAddr.GuessedValue, AnAddr.Offset, ValidityName[AnAddr.Validity]]);
+end;
+
+{ TDBGDisassemblerRangeExtender }
+
+function TDBGDisassemblerRangeExtender.InitAddress(AValue: TDBGPtr;
+  AValidity: TDisassemblerAddressValidity; AnOffset: Integer): TDisassemblerAddress;
+begin
+  Result.Value          := AValue;
+  Result.GuessedValue   := AValue;;
+  Result.Offset   := AnOffset;
+  Result.Validity := AValidity;
+end;
+
+constructor TDBGDisassemblerRangeExtender.Create(AnEntryRangeMap: TDBGDisassemblerEntryMap);
+begin
+  FEntryRangeMap := AnEntryRangeMap;
+  FRangeIterator:= TDBGDisassemblerEntryMapIterator.Create(FEntryRangeMap);
+end;
+
+destructor TDBGDisassemblerRangeExtender.Destroy;
+begin
+  FRangeIterator.Free;
+  inherited;
+end;
+
+function TDBGDisassemblerRangeExtender.CheckIfCancelled: boolean;
+begin
+  result := assigned(FOnCheckCancel) and FOnCheckCancel();
+end;
+
+// Set Value, based on GuessedValue
+function TDBGDisassemblerRangeExtender.AdjustToRangeOrKnowFunctionStart(var AStartAddr: TDisassemblerAddress;
+  ARangeBefore: TDBGDisassemblerEntryRange): Boolean;
+begin
+  Result := False;
+  AStartAddr.Offset := -1;
+  AStartAddr.Validity := avGuessed;
+  if OnAdjustToKnowFunctionStart(AStartAddr)
+  then begin
+    // funtion found, check for range
+    if (ARangeBefore <> nil) and (ARangeBefore.LastAddr > AStartAddr.Value)
+    and (ARangeBefore.Count > DAssRangeOverFuncTreshold)
+    and (ARangeBefore.EntriesPtr[ARangeBefore.Count - 1]^.Offset > DAssRangeOverFuncTreshold  * DAssBytesPerCommandAvg)
+    then begin
+      // got a big overlap, don't redo the whole function
+      debugln(DBG_DISASSEMBLER, ['INFO: Restarting inside previous range for known function-start=', Dbgs(AStartAddr),'  and ARangeBefore=', dbgs(ARangeBefore)]);
+      // redo one statement
+      {$PUSH}{$IFnDEF DBGMI_WITH_DISASS_OVERFLOW}{$Q-}{$R-}{$ENDIF} // Overflow is allowed to occur
+      AStartAddr.Value  := ARangeBefore.EntriesPtr[ARangeBefore.Count - 1]^.Addr;
+      AStartAddr.Offset := ARangeBefore.EntriesPtr[ARangeBefore.Count - 1]^.Offset;
+      AStartAddr.Validity := avFoundRange;
+      //AStartAddr - ARangeBefore.EntriesPtr[ARangeBefore.Count - DAssRangeOverFuncTreshold]^.Addr ;
+      {$POP}
+    end
+  end
+  else begin
+    debugln(DBG_DISASSEMBLER, ['INFO: No known function-start for ', Dbgs(AStartAddr),'  ARangeBefore=', dbgs(ARangeBefore)]);
+    // no function found // check distance to previous range
+    // The distance of range before has been checked by the caller
+    if (ARangeBefore <> nil)
+    then begin
+      {$PUSH}{$IFnDEF DBGMI_WITH_DISASS_OVERFLOW}{$Q-}{$R-}{$ENDIF} // Overflow is allowed to occur
+      AStartAddr.Value := ARangeBefore.EntriesPtr[ARangeBefore.Count - 1]^.Addr;
+      AStartAddr.Offset := ARangeBefore.EntriesPtr[ARangeBefore.Count - 1]^.Offset;
+      AStartAddr.Validity := avFoundRange;
+      {$POP}
+    end
+    else begin
+      AStartAddr.Value := AStartAddr.GuessedValue;
+      AStartAddr.Offset := -1;
+      AStartAddr.Validity := avGuessed;
+    end;
+  end;
+end;
+
+function TDBGDisassemblerRangeExtender.DisassembleRange(ALinesBefore,
+  ALinesAfter: integer; AStartAddr: TDBGPtr; AnEndAddr: TDBGPtr): boolean;
+var
+  TryStartAt, TryEndAt: TDisassemblerAddress;
+  TmpAddr: TDBGPtr;
+  GotCnt, LastGotCnt: Integer;
+  RngBefore, RngAfter: TDBGDisassemblerEntryRange;
+begin
+  result := true;
+  (* Try to find the boundaries for the unknown range containing FStartAddr
+     If FStartAddr already has known disassembler data, then this will return
+     the boundaries of the 1ast unknown section after FStartAddr
+  *)
+  // Guess the maximum Addr-Range which needs to be disassembled
+  TryStartAt := InitAddress(AStartAddr, avExternRequest, -1);
+  // Find the begin of the function at TryStartAt
+  // or the rng before (if not to far back)
+
+  RngBefore := FRangeIterator.GetRangeForAddr(AStartAddr, True);
+  {$PUSH}{$IFnDEF DBGMI_WITH_DISASS_OVERFLOW}{$Q-}{$R-}{$ENDIF} // Overflow is allowed to occur
+  if (RngBefore <> nil)
+  and (TryStartAt.Value > RngBefore.EntriesPtr[RngBefore.Count - 1]^.Addr)
+  and (TryStartAt.Value - RngBefore.EntriesPtr[RngBefore.Count - 1]^.Addr > ALinesBefore * DAssBytesPerCommandAvg)
+  then RngBefore := nil;
+  {$POP}
+  TmpAddr := AStartAddr - Min(ALinesBefore * DAssBytesPerCommandAvg, DAssMaxRangeSize);
+  TryStartAt.GuessedValue := TmpAddr;
+  AdjustToRangeOrKnowFunctionStart(TryStartAt, RngBefore);
+  // check max size
+  if (TryStartAt.Value < AStartAddr - Min(AStartAddr, DAssMaxRangeSize))
+  then begin
+    DebugLn(DBG_DISASSEMBLER, ['INFO: Limit Range for Disass: FStartAddr=', AStartAddr, '  TryStartAt.Value=', TryStartAt.Value  ]);
+    TryStartAt := InitAddress(TmpAddr, avGuessed);
+  end;
+
+  // Guess Maximum, will adjust later
+  if TryStartAt.Value > AnEndAddr then begin
+    if (RngBefore <> nil) then begin
+      GotCnt := RngBefore.IndexOfAddr(AnEndAddr);
+      LastGotCnt := RngBefore.IndexOfAddr(TryStartAt.Value);
+      if (GotCnt >= 0) and (LastGotCnt >= 0) and (LastGotCnt > GotCnt) then
+        ALinesAfter := Max(ALinesAfter - (LastGotCnt - GotCnt), 1);
+    end;
+    AnEndAddr := TryStartAt.Value; // WARNING: modifying FEndAddr
+  end;
+
+  TryEndAt := InitAddress(AnEndAddr + ALinesAfter * DAssBytesPerCommandAvg, avGuessed);
+
+  // Read as many unknown ranges, until LinesAfter is met
+  GotCnt := -1;
+  while(True)
+  do begin
+    // check if we need any LinesAfter
+    if CheckIfCancelled then break;
+    LastGotCnt:= GotCnt;
+    GotCnt := 0;
+    TmpAddr := AnEndAddr;
+    if TryStartAt.Value > AnEndAddr
+    then
+      TmpAddr := TryStartAt.Value;
+    if RngBefore <> nil
+    then begin
+      TmpAddr := RngBefore.RangeEndAddr;
+      if RngBefore.EntriesPtr[RngBefore.Count - 1]^.Addr > TmpAddr
+      then TmpAddr := RngBefore.EntriesPtr[RngBefore.Count - 1]^.Addr;
+      GotCnt := RngBefore.IndexOfAddrWithOffs(AnEndAddr);
+      if GotCnt >= 0 then begin
+        GotCnt := RngBefore.Count - 1 - GotCnt;  // the amount of LinesAfter, that are already known
+        if (GotCnt >= ALinesAfter)
+        then break;
+        // adjust end address
+        TryEndAt := InitAddress(RngBefore.RangeEndAddr + (ALinesAfter-GotCnt) * DAssBytesPerCommandAvg, avGuessed);
+      end
+      else GotCnt := 0;
+    end;
+    if LastGotCnt >= GotCnt
+    then begin
+      debugln(['Disassembler: *** Failure to get any more lines while scanning forward LastGotCnt=',LastGotCnt, ' now GotCnt=',GotCnt, ' Requested=',ALinesAfter]);
+      break;
+    end;
+
+    if CheckIfCancelled then break;
+    RngAfter := FRangeIterator.NextRange;
+    // adjust TryEndAt
+    if (RngAfter <> nil) and (TryEndAt.Value >= RngAfter.RangeStartAddr)
+    then begin
+      TryEndAt.Value := RngAfter.RangeStartAddr;
+      TryEndAt.Validity := avFoundRange;
+    end;
+
+    if CheckIfCancelled then break;
+    // Try to disassemble the range
+    if not OnDoDisassembleRange(FEntryRangeMap, TryStartAt, TryEndAt, TmpAddr, ALinesAfter-GotCnt)
+    then begin
+      // disassemble failed
+      debugln(['ERROR: Failed to disassemble from ', Dbgs(TryStartAt),' to ', Dbgs(TryEndAt)]);
+      break;
+    end;
+
+    // prepare the next range
+    RngBefore := FRangeIterator.GetRangeForAddr(AStartAddr, True);
+    if (RngBefore = nil)
+    then begin
+      debugln(['INTERNAL ERROR: (linesafter) Missing the data, that was just  disassembled: from ', Dbgs(TryStartAt),' to ', Dbgs(TryEndAt)]);
+      break;
+    end;
+
+    TryStartAt.Value := RngBefore.RangeEndAddr;
+    TryStartAt.Validity := avFoundRange;
+    TryEndAt := InitAddress(AnEndAddr + ALinesAfter * DAssBytesPerCommandAvg, avGuessed);
+  end;
+
+  // Find LinesBefore
+  RngAfter := FRangeIterator.GetRangeForAddr(AStartAddr, True);
+  GotCnt := -1;
+  while(True)
+  do begin
+    if CheckIfCancelled then break;
+    LastGotCnt:= GotCnt;
+    if (RngAfter = nil)
+    then begin
+      debugln(['INTERNAL ERROR: (linesbefore) Missing the data, that was disassembled: from ', Dbgs(TryStartAt),' to ', Dbgs(TryEndAt)]);
+      break;
+    end;
+
+    GotCnt := RngAfter.IndexOfAddrWithOffs(AStartAddr);  // already known before
+    if GotCnt >= ALinesBefore
+    then break;
+    if LastGotCnt >= GotCnt
+    then begin
+      debugln(['Disassembler: *** Failure to get any more lines while scanning backward LastGotCnt=',LastGotCnt, ' now GotCnt=',GotCnt, ' Requested=',ALinesBefore]);
+      break;
+    end;
+
+    TryEndAt := InitAddress(RngAfter.RangeStartAddr, avFoundRange);
+    TmpAddr := TryEndAt.Value - Min((ALinesBefore - GotCnt) * DAssBytesPerCommandAvg, DAssMaxRangeSize);
+    TryStartAt := InitAddress(TryEndAt.Value - 1, avGuessed);
+    TryStartAt.GuessedValue := TmpAddr;
+    // and adjust
+    RngBefore := FRangeIterator.PreviousRange;
+    {$PUSH}{$IFnDEF DBGMI_WITH_DISASS_OVERFLOW}{$Q-}{$R-}{$ENDIF} // Overflow is allowed to occur
+    if (RngBefore <> nil)
+    and (TryStartAt.Value > RngBefore.EntriesPtr[RngBefore.Count - 1]^.Addr)
+    and (TryStartAt.Value - RngBefore.EntriesPtr[RngBefore.Count - 1]^.Addr > (ALinesBefore - GotCnt) * DAssBytesPerCommandAvg)
+    then RngBefore := nil;
+    {$POP}
+    AdjustToRangeOrKnowFunctionStart(TryStartAt, RngBefore);
+    if (TryStartAt.Value < TryEndAt.Value - Min(TryEndAt.Value, DAssMaxRangeSize))
+    then begin
+      DebugLn(DBG_DISASSEMBLER, ['INFO: Limit Range for Disass: TryEndAt.Value=', TryEndAt.Value, '  TryStartAt.Value=', TryStartAt.Value  ]);
+      TryStartAt := InitAddress(TmpAddr, avGuessed);
+    end;
+
+    if CheckIfCancelled then break;
+    // Try to disassemble the range
+    if not OnDoDisassembleRange(FEntryRangeMap, TryStartAt, TryEndAt, 0, -1)
+    then begin
+      // disassemble failed
+      debugln(['ERROR: Failed to disassemble from ', Dbgs(TryStartAt),' to ', Dbgs(TryEndAt)]);
+      break;
+    end;
+
+    RngAfter := FRangeIterator.GetRangeForAddr(AStartAddr, True);
   end;
 end;
 
