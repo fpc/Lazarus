@@ -10060,6 +10060,14 @@ function TMainIDE.DoFindInFiles: TModalResult;
 begin
   FindInFilesDialog.FindInFilesPerDialog(Project1);
   Result:=FindInFilesDialog.ModalResult;
+  if (Result=mrOK) and (FindInFilesDialog.Options*[fifReplace, fifReplaceAll] = []) then
+  begin
+    //copy settings into FindReplaceDialog to use for F3 (if replace function wasn't used).
+    //  Those settings won't be used when FindReplaceDialog is shown again because
+    //  the FindReplaceDialog settings are always loaded from InputHistories.
+    LazFindReplaceDialog.FindText := FindInFilesDialog.FindText;
+    LazFindReplaceDialog.Options := FindInFilesDialog.SynSearchOptions;
+  end;
 end;
 
 procedure TMainIDE.DoCompleteCodeAtCursor;
