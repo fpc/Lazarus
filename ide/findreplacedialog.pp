@@ -452,6 +452,7 @@ begin
   ReplaceWithCheckbox.Checked := ssoReplace in NewOptions;
   ReplaceTextComboBox.Enabled := ssoReplace in NewOptions;
   PromptOnReplaceCheckBox.Enabled := ssoReplace in NewOptions;
+  fReplaceAllClickedLast := ssoReplaceAll in NewOptions;
 
   if ssoReplace in NewOptions then
   begin

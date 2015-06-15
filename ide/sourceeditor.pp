@@ -3002,7 +3002,7 @@ begin
   end
   else begin
     DoFindAndReplace(LazFindReplaceDialog.FindText, LazFindReplaceDialog.ReplaceText,
-      LazFindReplaceDialog.Options - [ssoEntireScope, ssoSelectedOnly, ssoReplaceAll]
+      LazFindReplaceDialog.Options - [ssoEntireScope, ssoSelectedOnly]
                                    + [ssoFindContinue]);
   end;
 End;
@@ -3019,7 +3019,7 @@ begin
     // TODO: maybe start with default set to backwards direction? But StartFindAndReplace replaces it with input-history
     StartFindAndReplace(False);
   end else begin
-    SrchOptions:=LazFindReplaceDialog.Options - [ssoEntireScope, ssoSelectedOnly, ssoReplaceAll]
+    SrchOptions:=LazFindReplaceDialog.Options - [ssoEntireScope, ssoSelectedOnly]
                                               + [ssoFindContinue];
     if ssoBackwards in SrchOptions then
       SrchOptions := SrchOptions - [ssoBackwards]
