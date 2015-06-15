@@ -280,6 +280,7 @@ const
     property EditText;
   published
     property Align;
+    property Alignment;
     property Anchors;
     property AutoSelect;
     property AutoSize;
