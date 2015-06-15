@@ -187,6 +187,7 @@ div.image {
     padding: 3px;
     margin: 8px;
     font-size: 80%;
+    vertical-align: text-top;
 }
 
 .image-no-border {
@@ -194,6 +195,7 @@ div.image {
     padding: 0px;
     margin: 8px;
     font-size: 80%;
+    vertical-align: text-top;
 }
 
 

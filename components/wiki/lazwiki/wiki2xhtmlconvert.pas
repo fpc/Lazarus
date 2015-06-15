@@ -449,7 +449,6 @@ var
     p: SizeInt;
     Scheme: String;
     Filename: String;
-    Node: TDOMElement;
     TargetPage: TW2XHTMLPage;
     FoundImgFile: String;
     DocumentName: String;
@@ -658,7 +657,6 @@ var
   NameValueToken: TWPNameValueToken;
   CurName: String;
   CurValue: String;
-  foundImg: string;
   fn: String;
   captn, iconfile: String;
 begin
