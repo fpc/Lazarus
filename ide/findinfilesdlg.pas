@@ -308,6 +308,9 @@ begin
     Result:=GetCurrentDirUTF8;
 end;
 
+const
+  SharedOptions = [ssoWholeWord,ssoEntireScope,ssoRegExpr,ssoRegExprMultiLine];
+
 procedure TLazFindInFilesDialog.LoadHistory;
 
   procedure AssignToComboBox(AComboBox: TComboBox; Strings: TStrings);
@@ -363,6 +366,7 @@ begin
   // show last used file masks
   AssignToComboBox(FileMaskComboBox, InputHistories.FindInFilesMaskHistory);
   Options := InputHistories.FindInFilesSearchOptions;
+  SynSearchOptions := InputHistories.FindOptions * SharedOptions;//share basic options with FindReplaceDlg
 end;
 
 procedure TLazFindInFilesDialog.SaveHistory;
@@ -377,6 +381,7 @@ begin
     InputHistories.AddToFindInFilesPathHistory(Dir);
   InputHistories.AddToFindInFilesMaskHistory(FileMaskComboBox.Text);
   InputHistories.FindInFilesSearchOptions:=Options;
+  InputHistories.FindOptions := InputHistories.FindOptions - SharedOptions + (SynSearchOptions*SharedOptions);//share basic options with FindReplaceDlg
   InputHistories.Save;
 end;
 
