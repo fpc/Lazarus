@@ -1059,7 +1059,7 @@ begin
     exit(true);
   end;
   // search in used units
-  UsesNode:=FindMainUsesSection;
+  UsesNode:=FindMainUsesNode;
   if UsesNode=nil then begin
     debugln(['TEventsCodeTool.FindClassOfInstance no main uses section found']);
     if ExceptionOnNotFound then RaiseClassNotFound;

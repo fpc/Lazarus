@@ -1698,14 +1698,14 @@ begin
     debugln(['TCodyIdentifiersDlg.AddToUsesSection "',NewUnitName,'" is hidden used unit']);
     exit;
   end;
-  UsesNode:=CurTool.FindMainUsesSection;
+  UsesNode:=CurTool.FindMainUsesNode;
   if (UsesNode<>nil) and (CurTool.FindNameInUsesSection(UsesNode,NewUnitName)<>nil)
   then begin
     debugln(['TCodyIdentifiersDlg.AddToUsesSection "',NewUnitName,'" is already used in main uses section']);
     exit;
   end;
   if CurInImplementation then begin
-    UsesNode:=CurTool.FindImplementationUsesSection;
+    UsesNode:=CurTool.FindImplementationUsesNode;
     if (UsesNode<>nil) and (CurTool.FindNameInUsesSection(UsesNode,NewUnitName)<>nil)
     then begin
       debugln(['TCodyIdentifiersDlg.AddToUsesSection "',NewUnitName,'" is already used in implementation uses section']);

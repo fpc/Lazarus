@@ -768,8 +768,8 @@ type
       ): TCodeTreeNode; // search for type, const, var, proc, prop
 
     function FindInitializationSection: TCodeTreeNode; deprecated; // use FindInitializationNode
-    function FindMainUsesSection(UseContainsSection: boolean = false): TCodeTreeNode;
-    function FindImplementationUsesSection: TCodeTreeNode;
+    function FindMainUsesSection(UseContainsSection: boolean = false): TCodeTreeNode; deprecated; // use FindMainUsesNode
+    function FindImplementationUsesSection: TCodeTreeNode; deprecated; // use FindImplementationUsesNode
     function FindNameInUsesSection(UsesNode: TCodeTreeNode;
           const AUnitName: string): TCodeTreeNode;
     function FindUnitInUsesSection(UsesNode: TCodeTreeNode;
@@ -1719,7 +1719,7 @@ begin
   Result:=false;
   if Identifier='' then exit;
   BuildTree(lsrMainUsesSectionEnd);
-  UsesNode:=FindMainUsesSection;
+  UsesNode:=FindMainUsesNode;
   if UsesNode=nil then exit;
 
   Params:=TFindDeclarationParams.Create;
@@ -1957,34 +1957,12 @@ end;
 function TFindDeclarationTool.FindMainUsesSection(UseContainsSection: boolean
   ): TCodeTreeNode;
 begin
-  Result:=Tree.Root;
-  if Result=nil then exit;
-  if UseContainsSection then begin
-    if Result.Desc<>ctnPackage then exit(nil);
-    Result:=Result.FirstChild;
-    while (Result<>nil) and (Result.Desc<>ctnContainsSection) do
-      Result:=Result.NextBrother;
-  end else begin
-    if Result.Desc=ctnUnit then begin
-      Result:=Result.NextBrother;
-      if Result=nil then exit;
-    end;
-    Result:=Result.FirstChild;
-    if (Result=nil) then exit;
-    if (Result.Desc<>ctnUsesSection) then Result:=nil;
-  end;
+  Result := FindMainUsesNode(UseContainsSection);
 end;
 
 function TFindDeclarationTool.FindImplementationUsesSection: TCodeTreeNode;
 begin
-  Result:=Tree.Root;
-  if Result=nil then exit;
-  while (Result<>nil) and (Result.Desc<>ctnImplementation) do
-    Result:=Result.NextBrother;
-  if Result=nil then exit;
-  Result:=Result.FirstChild;
-  if (Result=nil) then exit;
-  if (Result.Desc<>ctnUsesSection) then Result:=nil;
+  Result := FindImplementationUsesNode;
 end;
 
 function TFindDeclarationTool.FindNameInUsesSection(UsesNode: TCodeTreeNode;
@@ -2084,13 +2062,13 @@ begin
   end;
 
   // check if already there
-  UsesNode:=FindMainUsesSection;
+  UsesNode:=FindMainUsesNode;
   if (UsesNode<>nil) and (FindNameInUsesSection(UsesNode,Result)<>nil)
   then begin
     Result:='';
     exit;
   end;
-  UsesNode:=FindImplementationUsesSection;
+  UsesNode:=FindImplementationUsesNode;
   if (UsesNode<>nil) and (FindNameInUsesSection(UsesNode,Result)<>nil)
   then begin
     Result:='';
@@ -2230,12 +2208,12 @@ begin
   //debugln(['TFindDeclarationTool.FindUnitFileInAllUsesSections Self=',ExtractFilename(MainFilename),' Search=',ExtractFilename(AFilename)]);
   if AFilename='' then exit;
   if CheckMain then begin
-    Result:=FindUnitFileInUsesSection(FindMainUsesSection,AFilename);
+    Result:=FindUnitFileInUsesSection(FindMainUsesNode,AFilename);
     //debugln(['TFindDeclarationTool.FindUnitFileInAllUsesSections Self=',ExtractFilename(MainFilename),' Search=',ExtractFilename(AFilename),' used in main uses=',Result<>nil]);
     if Result<>nil then exit;
   end;
   if CheckImplementation then
-    Result:=FindUnitFileInUsesSection(FindImplementationUsesSection,AFilename);
+    Result:=FindUnitFileInUsesSection(FindImplementationUsesNode,AFilename);
 end;
 
 function TFindDeclarationTool.FindUnitSource(const AnUnitName,
@@ -5168,14 +5146,14 @@ begin
   try
     BuildTree(lsrEnd);
 
-    InterfaceUsesNode:=FindMainUsesSection;
+    InterfaceUsesNode:=FindMainUsesNode;
     if not CheckUsesSection(InterfaceUsesNode,Found) then exit;
 
     StartPos:=-1;
     if Found then begin
       StartPos:=InterfaceUsesNode.EndPos;
     end else begin
-      ImplementationUsesNode:=FindImplementationUsesSection;
+      ImplementationUsesNode:=FindImplementationUsesNode;
       if not CheckUsesSection(ImplementationUsesNode,Found) then exit;
       if Found then
         StartPos:=ImplementationUsesNode.EndPos;

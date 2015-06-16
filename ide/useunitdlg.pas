@@ -401,7 +401,7 @@ begin
   CodeToolBoss.Explore(ACode,Tool,false);
   if Tool=nil then exit;
   // collect implementation use unit nodes
-  ImplUsesNode := Tool.FindImplementationUsesSection;
+  ImplUsesNode := Tool.FindImplementationUsesNode;
   if Assigned(ImplUsesNode) then
     for i := 0 to FImplUsedUnits.Count - 1 do
       FImplUsedUnits.Objects[i] := ImplUsesNode;

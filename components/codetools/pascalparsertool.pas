@@ -267,7 +267,9 @@ type
     // sections / scan range
     function FindRootNode(Desc: TCodeTreeNodeDesc): TCodeTreeNode;
     function FindInterfaceNode: TCodeTreeNode;
+    function FindMainUsesNode(UseContainsSection: boolean = false): TCodeTreeNode;
     function FindImplementationNode: TCodeTreeNode;
+    function FindImplementationUsesNode: TCodeTreeNode;
     function FindInitializationNode: TCodeTreeNode;
     function FindFinalizationNode: TCodeTreeNode;
     function FindMainBeginEndNode: TCodeTreeNode;
@@ -5866,6 +5868,18 @@ begin
   Result:=FindRootNode(ctnImplementation);
 end;
 
+function TPascalParserTool.FindImplementationUsesNode: TCodeTreeNode;
+begin
+  Result:=Tree.Root;
+  if Result=nil then exit;
+  while (Result<>nil) and (Result.Desc<>ctnImplementation) do
+    Result:=Result.NextBrother;
+  if Result=nil then exit;
+  Result:=Result.FirstChild;
+  if (Result=nil) then exit;
+  if (Result.Desc<>ctnUsesSection) then Result:=nil;
+end;
+
 function TPascalParserTool.FindInitializationNode: TCodeTreeNode;
 begin
   Result:=FindRootNode(ctnInitialization);
@@ -5889,6 +5903,27 @@ begin
   end;
   if Result=nil then exit;
   if Result.Desc<>ctnBeginBlock then Result:=nil;
+end;
+
+function TPascalParserTool.FindMainUsesNode(UseContainsSection: boolean
+  ): TCodeTreeNode;
+begin
+  Result:=Tree.Root;
+  if Result=nil then exit;
+  if UseContainsSection then begin
+    if Result.Desc<>ctnPackage then exit(nil);
+    Result:=Result.FirstChild;
+    while (Result<>nil) and (Result.Desc<>ctnContainsSection) do
+      Result:=Result.NextBrother;
+  end else begin
+    if Result.Desc=ctnUnit then begin
+      Result:=Result.NextBrother;
+      if Result=nil then exit;
+    end;
+    Result:=Result.FirstChild;
+    if (Result=nil) then exit;
+    if (Result.Desc<>ctnUsesSection) then Result:=nil;
+  end;
 end;
 
 function TPascalParserTool.FindFirstSectionChild: TCodeTreeNode;

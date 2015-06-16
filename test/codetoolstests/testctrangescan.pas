@@ -227,15 +227,15 @@ begin
     lsrInterfaceStart:
       AssertEquals('interface start scanned',true,Tool.FindInterfaceNode<>nil);
     lsrMainUsesSectionStart:
-      AssertEquals('main uses section start scanned',true,Tool.FindMainUsesSection<>nil);
+      AssertEquals('main uses section start scanned',true,Tool.FindMainUsesNode<>nil);
     lsrMainUsesSectionEnd:
-      AssertEquals('main uses section end scanned',true,Tool.FindMainUsesSection.FirstChild<>nil);
+      AssertEquals('main uses section end scanned',true,Tool.FindMainUsesNode.FirstChild<>nil);
     lsrImplementationStart:
       AssertEquals('implementation start scanned',true,Tool.FindImplementationNode<>nil);
     lsrImplementationUsesSectionStart:
-      AssertEquals('implementation uses section start scanned',true,Tool.FindImplementationUsesSection<>nil);
+      AssertEquals('implementation uses section start scanned',true,Tool.FindImplementationUsesNode<>nil);
     lsrImplementationUsesSectionEnd:
-      AssertEquals('implementation uses section end scanned',true,Tool.FindImplementationUsesSection.FirstChild<>nil);
+      AssertEquals('implementation uses section end scanned',true,Tool.FindImplementationUsesNode.FirstChild<>nil);
     lsrInitializationStart:
       AssertEquals('initialization section start scanned',true,Tool.FindInitializationNode<>nil);
     lsrFinalizationStart:

@@ -2415,9 +2415,9 @@ var
       if LoadCodeBuffer(Code,OldFilename,[lbfUpdateFromDisk,lbfCheckIfText],false)<>mrOk
       then exit;
       CodeToolBoss.Explore(Code,Tool,false);
-      if not CheckUsesSection(Tool,Tool.FindMainUsesSection,NewFilename) then
+      if not CheckUsesSection(Tool,Tool.FindMainUsesNode,NewFilename) then
         Result:=false;
-      if not CheckUsesSection(Tool,Tool.FindImplementationUsesSection,NewFilename) then
+      if not CheckUsesSection(Tool,Tool.FindImplementationUsesNode,NewFilename) then
         Result:=false;
     end;
     if not Result then begin

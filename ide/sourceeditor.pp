@@ -9590,14 +9590,14 @@ begin
       jmpInterface: Node := Tool.FindInterfaceNode;
       jmpInterfaceUses:
       begin
-        Node := Tool.FindMainUsesSection;
+        Node := Tool.FindMainUsesNode;
         if Node = nil then//if the uses section is missing, jump to interface
           Node := Tool.FindInterfaceNode;
       end;
       jmpImplementation: Node := Tool.FindImplementationNode;
       jmpImplementationUses:
       begin
-        Node := Tool.FindImplementationUsesSection;
+        Node := Tool.FindImplementationUsesNode;
         if Node = nil then//if the uses section is missing, jump to implementation
           Node := Tool.FindImplementationNode;
       end;

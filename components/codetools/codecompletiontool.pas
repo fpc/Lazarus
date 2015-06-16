@@ -1308,7 +1308,7 @@ begin
     Indent:=Beauty.GetLineIndent(Src,InFrontOfNode.StartPos);
     InsertPos:=FindLineEndOrCodeInFrontOfPosition(InFrontOfNode.StartPos);
   end else begin
-    Node:=FindMainUsesSection(false);
+    Node:=FindMainUsesNode(false);
     if Node<>nil then begin
       // insert behind uses section
       Indent:=Beauty.GetLineIndent(Src,Node.StartPos);
@@ -7917,7 +7917,7 @@ begin
   Result:=true;
   if (fNewMainUsesSectionUnits=nil) then exit;
   //DebugLn(['TCodeCompletionCodeTool.InsertAllNewUnitsToMainUsesSection ']);
-  UsesNode:=FindMainUsesSection;
+  UsesNode:=FindMainUsesNode;
 
   // remove units, that are already in the uses section
   CurSourceName:=GetSourceName(false);

@@ -603,8 +603,8 @@ begin
     // first collect all units
     if not FindUsedUnitNames(ExistingUnits) then exit;
     // then change uses sections
-    Replace(FindMainUsesSection);
-    Replace(FindImplementationUsesSection);
+    Replace(FindMainUsesNode);
+    Replace(FindImplementationUsesNode);
   finally
     ExistingUnits.Free;
   end;
@@ -950,7 +950,7 @@ begin
   if UsesSection=usMain then begin
     // quick check using only the main uses section
     BuildTree(lsrMainUsesSectionEnd);
-    UsesNode:=FindMainUsesSection;
+    UsesNode:=FindMainUsesNode;
     if (UsesNode<>nil)
     and (FindUnitInUsesSection(UsesNode,NewUnitName,Junk,Junk)) then
       exit(true); // unit already in main uses section
@@ -965,8 +965,8 @@ begin
   Beauty:=SourceChangeCache.BeautifyCodeOptions;
   SourceChangeCache.BeginUpdate;
   try
-    UsesNode:=FindMainUsesSection;
-    OtherUsesNode:=FindImplementationUsesSection;
+    UsesNode:=FindMainUsesNode;
+    OtherUsesNode:=FindImplementationUsesNode;
     if UsesSection=usImplementation then begin
       SectionNode:=UsesNode;
       UsesNode:=OtherUsesNode;
@@ -1062,8 +1062,8 @@ begin
   else
     BuildTree(lsrImplementationUsesSectionEnd);
   case UsesSection Of
-    usMain: UsesNode:=FindMainUsesSection;
-    usImplementation: UsesNode:=FindImplementationUsesSection;
+    usMain: UsesNode:=FindMainUsesNode;
+    usImplementation: UsesNode:=FindImplementationUsesNode;
   end;
   Result:=UnitExistsInUsesSection(UsesNode,AnUnitName);
 end;
@@ -1284,8 +1284,8 @@ begin
   ImplementationUsesSection:=nil;
   // find the uses sections
   BuildTree(lsrImplementationUsesSectionEnd);
-  MainUsesNode:=FindMainUsesSection;
-  ImplementatioUsesNode:=FindImplementationUsesSection;
+  MainUsesNode:=FindMainUsesNode;
+  ImplementatioUsesNode:=FindImplementationUsesNode;
   // create lists
   try
     MainUsesSection:=UsesSectionToUnitNames(MainUsesNode);
@@ -1333,8 +1333,8 @@ begin
   // find the uses sections
   List:=TStringToStringTree.Create(false);
   BuildTree(lsrImplementationUsesSectionEnd);
-  Collect(FindMainUsesSection,'Main');
-  Collect(FindImplementationUsesSection,'Implementation');
+  Collect(FindMainUsesNode,'Main');
+  Collect(FindImplementationUsesNode,'Implementation');
   Result:=true;
 end;
 
@@ -1346,7 +1346,7 @@ begin
   MainUsesSection:=nil;
   // find the uses sections
   BuildTree(lsrMainUsesSectionEnd);
-  MainUsesNode:=FindMainUsesSection;
+  MainUsesNode:=FindMainUsesNode;
   // create lists
   try
     MainUsesSection:=UsesSectionToFilenames(MainUsesNode);
@@ -1366,8 +1366,8 @@ begin
   ImplementationUsesSection:=nil;
   // find the uses sections
   BuildTree(lsrImplementationUsesSectionEnd);
-  MainUsesNode:=FindMainUsesSection;
-  ImplementatioUsesNode:=FindImplementationUsesSection;
+  MainUsesNode:=FindMainUsesNode;
+  ImplementatioUsesNode:=FindImplementationUsesNode;
   // create lists
   try
     MainUsesSection:=UsesSectionToFilenames(MainUsesNode);
@@ -1408,7 +1408,7 @@ begin
   NormalUnits:=nil;
   // find the uses sections
   BuildTree(lsrMainUsesSectionEnd);
-  UsesNode:=FindMainUsesSection(UseContainsSection);
+  UsesNode:=FindMainUsesNode(UseContainsSection);
   if UsesNode=nil then exit;
   FoundInUnits:=TStringList.Create;
   MissingInUnits:=TStringList.Create;
@@ -1558,9 +1558,9 @@ begin
   if FixCase then
     SourceChangeCache.MainScanner:=Scanner;
   try
-    if not CheckUsesSection(FindMainUsesSection(true)) then exit;
+    if not CheckUsesSection(FindMainUsesNode(true)) then exit;
     if SearchImplementation
-    and not CheckUsesSection(FindImplementationUsesSection) then exit;
+    and not CheckUsesSection(FindImplementationUsesNode) then exit;
   except
     FreeAndNil(MissingUnits);
     raise;
@@ -1664,8 +1664,8 @@ begin
   Result:=false;
   BuildTree(lsrInitializationStart);
   SourceChangeCache.MainScanner:=Scanner;
-  if not CommentUnitsInUsesSection(MissingUnits, SourceChangeCache, FindMainUsesSection) then exit;
-  if not CommentUnitsInUsesSection(MissingUnits, SourceChangeCache, FindImplementationUsesSection) then exit;
+  if not CommentUnitsInUsesSection(MissingUnits, SourceChangeCache, FindMainUsesNode) then exit;
+  if not CommentUnitsInUsesSection(MissingUnits, SourceChangeCache, FindImplementationUsesNode) then exit;
   if not SourceChangeCache.Apply then exit;
   Result:=true;
 end;
@@ -1886,8 +1886,8 @@ begin
   BuildTree(lsrEnd);
   Identifiers:=nil;
   try
-    CheckUsesSection(FindMainUsesSection,false);
-    CheckUsesSection(FindImplementationUsesSection,true);
+    CheckUsesSection(FindMainUsesNode,false);
+    CheckUsesSection(FindImplementationUsesNode,true);
   finally
     Identifiers.Free;
   end;
@@ -2415,7 +2415,7 @@ var
         fdfIgnoreOverloadedProcs];
       Params.ContextNode:=FindInterfaceNode;
       if Params.ContextNode=nil then
-        Params.ContextNode:=FindMainUsesSection;
+        Params.ContextNode:=FindMainUsesNode;
       Params.SetIdentifier(StartTool,Identifier,nil);
       try
         Params.Save(OldInput);
@@ -6361,7 +6361,7 @@ begin
       Indent:=Beauty.GetLineIndent(Src,ANode.StartPos);
       InsertPos:=ANode.StartPos;
     end else begin
-      ANode:=FindMainUsesSection;
+      ANode:=FindMainUsesNode;
       if ANode<>nil then begin
         Indent:=Beauty.GetLineIndent(Src,ANode.StartPos);
         InsertPos:=ANode.StartPos;
