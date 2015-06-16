@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, sysutils,
-  Controls, StdCtrls, Dialogs,
+  Controls, StdCtrls, Dialogs, FileUtil,
   FileProcs, DefineTemplates, CodeToolManager,
   IDEOptionsIntf,  CompOptsIntf, IDEDialogs, IDEUtils,
   Project, CompilerOptions, PackageDefs, LazarusIDEStrConsts, EnvironmentOpts,
@@ -82,6 +82,7 @@ begin
   try
     InputHistories.ApplyFileDialogSettings(OpenDialog);
     OpenDialog.Options:=OpenDialog.Options+[ofFileMustExist];
+    OpenDialog.Filter:=dlgFilterAll+'|'+GetAllFilesMask;
     OldFilename:='';
     OldParams:='';
     // set title
@@ -90,11 +91,11 @@ begin
       OpenDialog.Title:=Format(lisChooseCompilerExecutable,[GetDefaultCompilerFilename])
     end else if (Sender=ExecAfterBrowseButton) then begin
       Combo:=ExecuteAfterCommandComboBox;
-      OpenDialog.Title:='Choose an executable';
+      OpenDialog.Title:=lisChooseExecutable;
       SplitCmdLine(Combo.Text,OldFilename,OldParams);
     end else if (Sender=ExecBeforeBrowseButton) then begin
       Combo:=ExecuteBeforeCommandComboBox;
-      OpenDialog.Title:='Choose an executable';
+      OpenDialog.Title:=lisChooseExecutable;
       SplitCmdLine(Combo.Text,OldFilename,OldParams);
     end else
       exit;
@@ -116,14 +117,14 @@ begin
         end;
       end else begin
         // maybe a script
-        if not CheckExecutable(OldFilename,NewFilename,'Invalid Executable','The file "%s" is not executable.')
+        if not CheckExecutable(OldFilename,NewFilename,lisInvalidExecutable,lisInvalidExecutableMessageText)
         then
           exit;
       end;
     end else if (Sender=ExecBeforeBrowseButton)
     or (Sender=ExecAfterBrowseButton) then begin
       // check executable
-      if not CheckExecutable(OldFilename,NewFilename,'Invalid Executable','The file "%s" is not executable.')
+      if not CheckExecutable(OldFilename,NewFilename,lisInvalidExecutable,lisInvalidExecutableMessageText)
       then
         exit;
     end;

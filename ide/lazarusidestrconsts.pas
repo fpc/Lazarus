@@ -745,6 +745,8 @@ resourcestring
   lisTheDirectoryContainsNoProjectUnitsAnyMoreRemoveThi = 'The directory "%s" '
     +'contains no project units any more. Remove this directory from the '
     +'project''s unit search path?';
+  lisInvalidExecutable = 'Invalid Executable';
+  lisInvalidExecutableMessageText = 'The file "%s" is not executable.';
   lisInvalidProjectFilename = 'Invalid project filename';
   lisisAnInvalidProjectNamePleaseChooseAnotherEGProject = '"%s" is an '
     +'invalid project name.%sPlease choose another (e.g. project1.lpi)';
@@ -991,6 +993,7 @@ resourcestring
   lisChooseMakeExecutable = 'Choose "make" executable';
   lisChooseDebuggerExecutable = 'Choose debugger executable';
   lisChooseTestBuildDir = 'Choose the directory for tests';
+  lisChooseExecutable = 'Choose an executable';
 
   // dialogs
   lisProjectChanged = 'Project changed';
