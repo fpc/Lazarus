@@ -1,6 +1,6 @@
 unit DebugThreadCommand;
 
-{$mode objfpc}{$H+}
+{$mode objfpc}{$H+}{$modeswitch nestedprocvars}
 
 interface
 
@@ -18,6 +18,7 @@ uses
   strutils,
   debugthread,
   CustApp,
+  Maps,
   SysUtils;
 
 type
@@ -205,7 +206,8 @@ type
   TFpDebugThreadDisassembleCommand = class(TFpDebugThreadCommand)
   private
     FAddressValue: TDBGPtr;
-    FLines: integer;
+    FLinesAfter: integer;
+    FLinesBefore: integer;
     FDisassemblerEntryArray: TFpDebugEventDisassemblerEntryArray;
     FStartAddr: TDBGPtr;
     FEndAddr: TDBGPtr;
@@ -219,7 +221,8 @@ type
     procedure ComposeSuccessEvent(var AnEvent: TFpDebugEvent); override;
   published
     property Address: string read GetAddress write SetAddress;
-    property Lines: integer read FLines write FLines;
+    property LinesAfter: integer read FLinesAfter write FLinesAfter;
+    property LinesBefore: integer read FLinesBefore write FLinesBefore;
   end;
 
 implementation
@@ -242,22 +245,127 @@ end;
 constructor TFpDebugThreadDisassembleCommand.Create(AListenerIdentifier: integer; AnUID: variant; AOnLog: TOnLog);
 begin
   inherited Create(AListenerIdentifier, AnUID, AOnLog);
-  FLines:=10;
+  FLinesAfter:=10;
+  FLinesBefore:=5;
 end;
 
 function TFpDebugThreadDisassembleCommand.Execute(AController: TDbgController; out DoProcessLoop: boolean): boolean;
+
+  function OnAdjustToKnowFunctionStart(var AStartAddr: TDisassemblerAddress): Boolean;
+  var
+    Sym: TFpDbgSymbol;
+  begin
+    Sym := AController.CurrentProcess.FindSymbol(AStartAddr.GuessedValue);
+    if assigned(Sym) and (Sym.Kind in [skProcedure, skFunction]) then
+      begin
+      AStartAddr.Value:=Sym.Address.Address;
+      AStartAddr.Offset:=0;
+      AStartAddr.Validity:=avFoundFunction;
+      result := true;
+      end
+    else
+      result := false;
+  end;
+
+  function OnDoDisassembleRange(AnEntryRanges: TDBGDisassemblerEntryMap; AFirstAddr, ALastAddr: TDisassemblerAddress; AStopAfterAddress: TDBGPtr; AStopAfterNumLines: Integer): Boolean;
+
+  var
+    AnAddr: TDBGPtr;
+    CodeBin: array[0..20] of byte;
+    AnEntry: TDisassemblerEntry;
+    p: pointer;
+    ADump,
+    AStatement,
+    ASrcFileName: string;
+    ASrcFileLine: cardinal;
+    i,j: Integer;
+    Sym: TFpDbgSymbol;
+    StatIndex: integer;
+    FirstIndex: integer;
+    AResultList: TDBGDisassemblerEntryRange;
+
+  begin
+    result := false;
+    AResultList := TDBGDisassemblerEntryRange.Create;
+    AResultList.RangeStartAddr := AFirstAddr.Value;
+
+    Sym:=nil;
+    ASrcFileLine:=0;
+    ASrcFileName:='';
+    StatIndex:=0;
+    FirstIndex:=0;
+    AnEntry.Offset:=-1;
+    AnAddr:=AFirstAddr.Value;
+
+    i := 0;
+    while ((AStopAfterAddress=0) or (AStopAfterNumLines > -1)) and (AnAddr <= ALastAddr.Value) do
+      begin
+      AnEntry.Addr:=AnAddr;
+      if not AController.CurrentProcess.ReadData(AnAddr, sizeof(CodeBin),CodeBin) then
+        begin
+        Log(Format('Disassemble: Failed to read memory at %s.', [FormatAddress(AnAddr)]), dllDebug);
+        AnEntry.Statement := 'Failed to read memory';
+        inc(AnAddr);
+        end
+      else
+        begin
+        p := @CodeBin;
+        FpDbgDisasX86.Disassemble(p, AController.CurrentProcess.Mode=dm64, ADump, AStatement);
+
+        Sym := AController.CurrentProcess.FindSymbol(AnAddr);
+
+        // If this is the last statement for this source-code-line, fill the
+        // SrcStatementCount from the prior statements.
+        if (assigned(sym) and ((ASrcFileName<>sym.FileName) or (ASrcFileLine<>sym.Line))) or
+          (not assigned(sym) and ((ASrcFileLine<>0) or (ASrcFileName<>''))) then
+          begin
+          for j := 0 to StatIndex-1 do
+            AResultList.EntriesPtr[FirstIndex+j]^.SrcStatementCount:=StatIndex;
+          StatIndex:=0;
+          FirstIndex:=i;
+          end;
+
+        if assigned(sym) then
+          begin
+          ASrcFileName:=sym.FileName;
+          ASrcFileLine:=sym.Line;
+          end
+        else
+          begin
+          ASrcFileName:='';
+          ASrcFileLine:=0;
+          end;
+        AnEntry.Dump := ADump;
+        AnEntry.Statement := AStatement;
+        AnEntry.SrcFileLine:=ASrcFileLine;
+        AnEntry.SrcFileName:=ASrcFileName;
+        AnEntry.SrcStatementIndex:=StatIndex;
+        inc(StatIndex);
+        AResultList.RangeEndAddr:=AnAddr;
+        Inc(AnAddr, {%H-}PtrUInt(p) - {%H-}PtrUInt(@CodeBin));
+        end;
+      AResultList.Append(@AnEntry);
+      if (AnAddr>AStopAfterAddress) then
+        dec(AStopAfterNumLines);
+      inc(i);
+      end;
+    AResultList.LastEntryEndAddr:=AnAddr;
+
+    if AResultList.Count>0 then
+      AnEntryRanges.AddRange(AResultList)
+    else
+      AResultList.Free;
+
+    result := true;
+  end;
+
 var
-  AnAddr: TDBGPtr;
-  CodeBin: array[0..20] of byte;
-  p: pointer;
-  ADump,
-  AStatement,
-  ASrcFileName: string;
-  ASrcFileLine: integer;
-  i,j: Integer;
-  Sym: TFpDbgSymbol;
-  StatIndex: integer;
-  FirstIndex: integer;
+  i: Integer;
+  DisassembleRangeExtender: TDBGDisassemblerRangeExtender;
+  DisassemblerEntryRange: TDBGDisassemblerEntryRange;
+  DisassemblerEntryRangeMap: TDBGDisassemblerEntryMap;
+  RangeIterator: TDBGDisassemblerEntryMapIterator;
+  ARange: TDBGDisassemblerEntryRange;
 
 begin
   result := false;
@@ -268,66 +376,53 @@ begin
     exit;
     end;
 
-  Sym:=nil;
-  ASrcFileLine:=0;
-  ASrcFileName:='';
-  StatIndex:=0;
-  FirstIndex:=0;
   if FAddressValue=0 then
     FStartAddr:=AController.CurrentProcess.GetInstructionPointerRegisterValue
   else
     FStartAddr:=FAddressValue;
-  AnAddr:=FStartAddr;
-  setlength(FDisassemblerEntryArray, FLines);
 
-  for i := 0 to FLines-1 do
-    begin
-    FDisassemblerEntryArray[i].Addr:=AnAddr;
-    if not AController.CurrentProcess.ReadData(AnAddr, sizeof(CodeBin),CodeBin) then
-      begin
-      Log(Format('Disassemble: Failed to read memory at %s.', [FormatAddress(AnAddr)]), dllDebug);
-      FDisassemblerEntryArray[i].Statement := 'Failed to read memory';
-      inc(AnAddr);
-      end
-    else
-      begin
-      p := @CodeBin;
-      FpDbgDisasX86.Disassemble(p, AController.CurrentProcess.Mode=dm64, ADump, AStatement);
-
-      Sym := AController.CurrentProcess.FindSymbol(AnAddr);
-
-      // If this is the last statement for this source-code-line, fill the
-      // SrcStatementCount from the prior statements.
-      if (assigned(sym) and ((ASrcFileName<>sym.FileName) or (ASrcFileLine<>sym.Line))) or
-        (not assigned(sym) and ((ASrcFileLine<>0) or (ASrcFileName<>''))) then
-        begin
-        for j := 0 to StatIndex-1 do
-          FDisassemblerEntryArray[FirstIndex+j].SrcStatementCount:=StatIndex;
-        StatIndex:=0;
-        FirstIndex:=i;
-        end;
-
-      if assigned(sym) then
-        begin
-        ASrcFileName:=sym.FileName;
-        ASrcFileLine:=sym.Line;
-        end
-      else
-        begin
-        ASrcFileName:='';
-        ASrcFileLine:=0;
-        end;
-      FDisassemblerEntryArray[i].Dump := ADump;
-      FDisassemblerEntryArray[i].Statement := AStatement;
-      FDisassemblerEntryArray[i].SrcFileLine:=ASrcFileLine;
-      FDisassemblerEntryArray[i].SrcFileName:=ASrcFileName;
-      FDisassemblerEntryArray[i].SrcStatementIndex:=StatIndex;
-      inc(StatIndex);
-      FEndAddr:=AnAddr;
-      Inc(AnAddr, {%H-}PtrUInt(p) - {%H-}PtrUInt(@CodeBin));
-      end;
+  DisassemblerEntryRangeMap := TDBGDisassemblerEntryMap.Create(itu8, SizeOf(TDBGDisassemblerEntryRange));
+  try
+    DisassembleRangeExtender := TDBGDisassemblerRangeExtender.Create(DisassemblerEntryRangeMap);
+    try
+      DisassembleRangeExtender.OnDoDisassembleRange:=@OnDoDisassembleRange;
+      DisassembleRangeExtender.OnAdjustToKnowFunctionStart:=@OnAdjustToKnowFunctionStart;
+      DisassembleRangeExtender.DisassembleRange(FLinesBefore, FLinesAfter, FStartAddr, FStartAddr);
+    finally
+      DisassembleRangeExtender.Free;
     end;
-  FLastEntryEndAddr:=AnAddr;
+
+    // Convert the DisassemblerEntryRangeMap to the FDisassemblerEntryArray
+    DisassemblerEntryRange := TDBGDisassemblerEntryRange.Create;
+    try
+      RangeIterator := TDBGDisassemblerEntryMapIterator.Create(DisassemblerEntryRangeMap);
+      try
+        RangeIterator.First;
+        RangeIterator.GetData(ARange);
+        repeat
+          DisassemblerEntryRange.Merge(ARange);
+
+          ARange := RangeIterator.NextRange;
+        until RangeIterator.EOM;
+
+        setlength(FDisassemblerEntryArray, DisassemblerEntryRange.Count);
+        for i := 0 to DisassemblerEntryRange.Count-1 do
+          begin
+          FDisassemblerEntryArray[i] := DisassemblerEntryRange.Entries[i];
+          end;
+        FStartAddr:=DisassemblerEntryRange.RangeStartAddr;
+        FEndAddr:=DisassemblerEntryRange.RangeEndAddr;
+        FLastEntryEndAddr:=DisassemblerEntryRange.LastEntryEndAddr;
+      finally
+        RangeIterator.Free;
+      end;
+    finally
+      DisassemblerEntryRange.Free;;
+    end;
+  finally
+    DisassemblerEntryRangeMap.Free;
+  end;
+
   result := true;
 end;
 
