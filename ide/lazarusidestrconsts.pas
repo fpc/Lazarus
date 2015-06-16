@@ -5524,8 +5524,7 @@ resourcestring
 
   lisCanNotCompileProject = 'Cannot compile project';
   lisTheProjectHasNoMainSourceFile = 'The project has no main source file.';
-  lisInvalidMacroTheNameIsAKeyword = 'Invalid macro name "%s". The name '
-    +'is a keyword.';
+  lisInvalidMacroTheNameIsAKeyword = 'Invalid macro name "%s". The name is a keyword.';
   lisTheMacroDoesNotBeginWith = 'The macro "%s" does not begin with "%s".';
   lisRenameTo = 'Rename to %s';
   lisAddValueToMacro = 'Add value to macro %s';
@@ -5540,8 +5539,7 @@ resourcestring
   lisDlgDefines = 'Defines ...';
   lisWithIncludes2 = ', with includes ';
   lisParsed = ', parsed ';
-  lisCreatingFileIndexOfFPCSources =
-    'Creating file index of FPC sources %s ...';
+  lisCreatingFileIndexOfFPCSources = 'Creating file index of FPC sources %s ...';
   lisTheFileIndexIsNeededForFunctionsLikeFindDeclaratio = 'The file index is '
     +'needed for functions like find declaration. While scanning you can edit '
     +'sources and compile, but functions like find declaration will show unit-'
@@ -5554,15 +5552,15 @@ resourcestring
     'The default mode must be stored in project, not in session.';
   lisThereMustBeAtLeastOneBuildMode = 'There must be at least one build mode.';
   lisDuplicateEntry = 'Duplicate entry';
-  lisThereIsAlreadyABuildModeWithThisName = 'There is already a build mode '
-    +'with this name.';
-  lisAddNewBuildModeCopyingSettingsFrom = 'Add new build mode, copying '
-    +'settings from "%s"';
+  lisThereIsAlreadyABuildModeWithThisName = 'There is already a build mode with this name.';
+  lisAddNewBuildModeCopyingSettingsFrom = 'Add new build mode, copying settings from "%s"';
   lisDeleteMode = 'Delete mode "%s"';
   lisMoveOnePositionUp = 'Move "%s" one position up';
   lisMoveOnePositionDown = 'Move "%s" one position down';
   lisShowDifferencesBetweenModes = 'Show differences between modes ...';
-  lisCreateDebugAndReleaseModes = 'Create Debug and Release modes';
+  lisBuildMode = 'Build Mode: %s';
+  lisCreateDebugAndReleaseModesNewProj = 'Create Debug and Release modes for new projects';
+  lisCreateNowForThisProject = 'Create now for this project';
   lisChangeBuildMode = 'Change build mode';
   lisWarningThisIsTheMainUnitTheNewMainUnitWillBePas = '%sWarning: This is '
     +'the main unit. The new main unit will be %s.pas.';

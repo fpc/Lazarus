@@ -30,31 +30,35 @@ unit BuildModesManager;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Dialogs, StdCtrls, Grids, Buttons, Menus,
-  ButtonPanel, LCLProc, Graphics, IDEOptionsIntf, IDEDialogs, TransferMacros,
-  Project, CompOptsIntf, CompilerOptions, Compiler_ModeMatrix,
-  BuildModeDiffDlg, LazarusIDEStrConsts;
+  Classes, SysUtils, Forms, Controls, Dialogs, StdCtrls, Grids, Menus, ComCtrls,
+  ButtonPanel, LCLProc, IDEOptionsIntf, IDEDialogs, TransferMacros, Project,
+  CompOptsIntf, CompilerOptions, Compiler_ModeMatrix, BuildModeDiffDlg, LazarusIDEStrConsts;
 
 type
 
   { TBuildModesForm }
 
   TBuildModesForm = class(TForm)
-    AddSpeedButton: TSpeedButton;
-    DeleteSpeedButton: TSpeedButton;
-    DiffSpeedButton: TSpeedButton;
-    MoveDownSpeedButton: TSpeedButton;
-    MoveUpSpeedButton: TSpeedButton;
-    BuildModesGroupBox: TGroupBox;
-    BuildModesPopupMenu: TPopupMenu;
-    BuildModesStringGrid: TStringGrid;
     btnCreateDefaultModes: TButton;
+    BuildModesStringGrid: TStringGrid;
+    cbDebugReleaseProject: TCheckBox;
+    ImageList1: TImageList;
+    BuildModesPopupMenu: TPopupMenu;
     ButtonPanel1: TButtonPanel;
     NoteLabel: TLabel;
+    ToolBar1: TToolBar;
+    ToolButton1: TToolButton;
+    ToolButton5: TToolButton;
+    ToolButtonAdd: TToolButton;
+    ToolButtonDelete: TToolButton;
+    ToolButtonDiff: TToolButton;
+    ToolButtonMoveDown: TToolButton;
+    ToolButtonMoveUp: TToolButton;
     procedure btnCreateDefaultModesClick(Sender: TObject);
     procedure BuildModesStringGridDrawCell(Sender: TObject;
       aCol, aRow: Integer; aRect: TRect; {%H-}aState: TGridDrawState);
     procedure CancelButtonClick(Sender: TObject);
+    procedure cbDebugReleaseProjectClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure DiffSpeedButtonClick(Sender: TObject);
@@ -204,17 +208,21 @@ end;
 procedure TBuildModesForm.FormShow(Sender: TObject);
 begin
   // options dialog
-  BuildModesGroupBox.Caption:=lisBuildModes;
   DoShowSession;
   // modes
   FillBuildModesGrid;
   UpdateBuildModeButtons;
 
-  AddSpeedButton.LoadGlyphFromResourceName(HInstance, 'laz_add');
-  DeleteSpeedButton.LoadGlyphFromResourceName(HInstance, 'laz_delete');
-  MoveUpSpeedButton.LoadGlyphFromResourceName(HInstance, 'arrow_up');
-  MoveDownSpeedButton.LoadGlyphFromResourceName(HInstance, 'arrow_down');
-  DiffSpeedButton.LoadGlyphFromResourceName(HInstance, 'menu_tool_diff');
+  ImageList1.AddResourceName(HInstance, 'laz_add');
+  ImageList1.AddResourceName(HInstance, 'laz_delete');
+  ImageList1.AddResourceName(HInstance, 'arrow_up');
+  ImageList1.AddResourceName(HInstance, 'arrow_down');
+  ImageList1.AddResourceName(HInstance, 'menu_tool_diff');
+  ToolButtonAdd.ImageIndex:=0;
+  ToolButtonDelete.ImageIndex:=1;
+  ToolButtonMoveUp.ImageIndex:=2;
+  ToolButtonMoveDown.ImageIndex:=3;
+  ToolButtonDiff.ImageIndex:=4;
 end;
 
 procedure TBuildModesForm.DiffSpeedButtonClick(Sender: TObject);
@@ -522,23 +530,23 @@ begin
     Identifier:='';
   end;
   // Dialog caption
-  if Project1<>nil then
-    Caption:=Format(dlgProjectOptionsFor,[Project1.GetTitleOrName])
-            + ', '+copy(Identifier,1,12)
-  else
-    Caption:='No project';
+  Caption:=Format(lisBuildMode, [Identifier]);
   // Buttons
-  AddSpeedButton.Hint:=Format(lisAddNewBuildModeCopyingSettingsFrom, [Identifier]);
-  DeleteSpeedButton.Enabled:=(CurMode<>nil) and (fBuildModes.Count>1);
-  DeleteSpeedButton.Hint:=Format(lisDeleteMode, [Identifier]);
-  MoveUpSpeedButton.Enabled:=(CurMode<>nil) and (i>0);
-  MoveUpSpeedButton.Hint:=Format(lisMoveOnePositionUp, [Identifier]);
-  MoveDownSpeedButton.Enabled:=i<BuildModesStringGrid.RowCount-2;
-  MoveDownSpeedButton.Hint:=Format(lisMoveOnePositionDown, [Identifier]);
-  DiffSpeedButton.Hint:=lisShowDifferencesBetweenModes;
+  ToolButtonAdd.Hint:=Format(lisAddNewBuildModeCopyingSettingsFrom, [Identifier]);
+  ToolButtonDelete.Enabled:=(CurMode<>nil) and (fBuildModes.Count>1);
+  ToolButtonDelete.Hint:=Format(lisDeleteMode, [Identifier]);
+  ToolButtonMoveUp.Enabled:=(CurMode<>nil) and (i>0);
+  ToolButtonMoveUp.Hint:=Format(lisMoveOnePositionUp, [Identifier]);
+  ToolButtonMoveDown.Enabled:=i<BuildModesStringGrid.RowCount-2;
+  ToolButtonMoveDown.Hint:=Format(lisMoveOnePositionDown, [Identifier]);
+  ToolButtonDiff.Hint:=lisShowDifferencesBetweenModes;
   NoteLabel.Caption:='';
-  btnCreateDefaultModes.Caption:=lisCreateDebugAndReleaseModes;
-  btnCreateDefaultModes.Hint:='';
+  // ToDo: Save in Environment options and use for new projects.
+  cbDebugReleaseProject.Caption:=lisCreateDebugAndReleaseModesNewProj;
+  cbDebugReleaseProject.Hint:='Under Construction ...'; // Remove this when implemented.
+
+  btnCreateDefaultModes.Caption:=lisCreateNowForThisProject;
+  btnCreateDefaultModes.Hint:='';   // ToDo: Figure out a good hint.
   btnCreateDefaultModes.Visible := (fBuildModes.Find(DebugModeName)=Nil)
                                and (fBuildModes.Find(ReleaseModeName)=Nil);
 end;
@@ -603,6 +611,11 @@ end;
 procedure TBuildModesForm.CancelButtonClick(Sender: TObject);
 begin
   ;
+end;
+
+procedure TBuildModesForm.cbDebugReleaseProjectClick(Sender: TObject);
+begin
+  (Sender as TCheckBox).Checked := False;
 end;
 
 procedure TBuildModesForm.BuildModesStringGridDrawCell(Sender: TObject;
