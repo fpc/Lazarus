@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Last-Translator: Swen Heinig <swen@heinig.email>\n"
-"PO-Revision-Date: 2015-05-21 23:36+0100\n"
+"PO-Revision-Date: 2015-06-13 19:18+0100\n"
 "Project-Id-Version: lazreport\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -2250,7 +2250,7 @@ msgstr "&Alle"
 
 #: lr_const.sprintformcollate
 msgid "Collate"
-msgstr ""
+msgstr "Sortieren"
 
 #: lr_const.sprintformcopy
 msgid "&Copies:"

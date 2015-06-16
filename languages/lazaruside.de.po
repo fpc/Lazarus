@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2015-04-19 22:09+0100\n"
+"PO-Revision-Date: 2015-06-13 19:51+0100\n"
 "Last-Translator: Swen Heinig <swen@heinig.email>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-SourceCharset: utf-8\n"
 "Language: de_DE\n"
-"X-Generator: Poedit 1.5.4\n"
+"X-Generator: Poedit 1.7.5\n"
 
 #: lazarusidestrconsts.dbgbreakgroupdlgcaption
 msgctxt "lazarusidestrconsts.dbgbreakgroupdlgcaption"
@@ -1541,39 +1541,34 @@ msgid "%s files"
 msgstr "%s Dateien"
 
 #: lazarusidestrconsts.dlgfilterall
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgfilterall"
 msgid "All files"
 msgstr "Alle Dateien"
 
 #: lazarusidestrconsts.dlgfiltercodetoolstemplatefile
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgfiltercodetoolstemplatefile"
 msgid "CodeTools template file"
 msgstr "CodeTools-Vorlagendatei"
 
 #: lazarusidestrconsts.dlgfilterdcifile
 msgid "DCI file"
-msgstr ""
+msgstr "DCI-Datei"
 
 #: lazarusidestrconsts.dlgfilterdelphiform
 msgid "Delphi form"
-msgstr ""
+msgstr "Delphi-Formular"
 
 #: lazarusidestrconsts.dlgfilterdelphipackage
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgfilterdelphipackage"
 msgid "Delphi package"
 msgstr "Delphi-Package"
 
 #: lazarusidestrconsts.dlgfilterdelphiproject
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgfilterdelphiproject"
 msgid "Delphi project"
 msgstr "Delphi-Projekt"
 
 #: lazarusidestrconsts.dlgfilterdelphiunit
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgfilterdelphiunit"
 msgid "Delphi unit"
 msgstr "Delphi-Unit"
@@ -1584,105 +1579,91 @@ msgid "Executable"
 msgstr ""
 
 #: lazarusidestrconsts.dlgfilterfpcmessagefile
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgfilterfpcmessagefile"
 msgid "FPC message file"
 msgstr "FPC-Nachrichten-Datei"
 
 #: lazarusidestrconsts.dlgfilterhtml
 msgid "HTML files"
-msgstr ""
+msgstr "HTML-Dateien"
 
 #: lazarusidestrconsts.dlgfilterimagesbitmap
 msgid "Bitmap images"
-msgstr ""
+msgstr "Bitmap-Bilder"
 
 #: lazarusidestrconsts.dlgfilterimagespixmap
 msgid "Pixmap images"
-msgstr ""
+msgstr "Pixmap-Bilder"
 
 #: lazarusidestrconsts.dlgfilterimagespng
 msgid "PNG images"
-msgstr ""
+msgstr "PNG-Bilder"
 
 #: lazarusidestrconsts.dlgfilterlazarusdesktopsettings
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgfilterlazarusdesktopsettings"
 msgid "Lazarus Desktop Settings"
 msgstr "Lazarus-Desktop-Einstellungen"
 
 #: lazarusidestrconsts.dlgfilterlazaruseditorfile
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgfilterlazaruseditorfile"
 msgid "Editor file types"
 msgstr "Editor-Dateitypen"
 
 #: lazarusidestrconsts.dlgfilterlazarusfile
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgfilterlazarusfile"
 msgid "Lazarus file"
 msgstr "Lazarus-Datei"
 
 #: lazarusidestrconsts.dlgfilterlazarusform
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgfilterlazarusform"
 msgid "Lazarus form"
-msgstr "Lazarus-Form"
+msgstr "Lazarus-Formular"
 
 #: lazarusidestrconsts.dlgfilterlazarusinclude
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgfilterlazarusinclude"
 msgid "Lazarus include file"
 msgstr "Lazarus-Include-Datei"
 
 #: lazarusidestrconsts.dlgfilterlazarusotherfile
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgfilterlazarusotherfile"
 msgid "Lazarus other file"
 msgstr "Lazarus andere Datei"
 
 #: lazarusidestrconsts.dlgfilterlazaruspackage
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgfilterlazaruspackage"
 msgid "Lazarus package"
 msgstr "Lazarus-Package"
 
 #: lazarusidestrconsts.dlgfilterlazarusproject
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgfilterlazarusproject"
 msgid "Lazarus project"
 msgstr "Lazarus-Projekt"
 
 #: lazarusidestrconsts.dlgfilterlazarusprojectsource
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgfilterlazarusprojectsource"
 msgid "Lazarus project source"
 msgstr "Lazarus-Projektquelltext"
 
 #: lazarusidestrconsts.dlgfilterlazarussession
 msgid "Lazarus session"
-msgstr ""
+msgstr "Lazarus-Sitzung"
 
 #: lazarusidestrconsts.dlgfilterlazarusunit
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgfilterlazarusunit"
 msgid "Lazarus unit"
 msgstr "Lazarus-Unit"
 
 #: lazarusidestrconsts.dlgfilterpascalfile
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgfilterpascalfile"
 msgid "Pascal file"
 msgstr "Pascal-Datei"
 
 #: lazarusidestrconsts.dlgfilterprograms
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgfilterprograms"
 msgid "Programs"
 msgstr "Programme"
 
 #: lazarusidestrconsts.dlgfilterxml
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgfilterxml"
 msgid "XML files"
 msgstr "XML-Dateien"
@@ -2666,7 +2647,6 @@ msgid "Debug"
 msgstr "Debug"
 
 #: lazarusidestrconsts.dlgmsgwincolorurgenterror
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgmsgwincolorurgenterror"
 msgid "Error"
 msgstr "Fehler"
@@ -2677,20 +2657,18 @@ msgid "Fatal"
 msgstr ""
 
 #: lazarusidestrconsts.dlgmsgwincolorurgenthint
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgmsgwincolorurgenthint"
 msgid "Hint"
 msgstr "Hinweis"
 
 #: lazarusidestrconsts.dlgmsgwincolorurgentimportant
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgmsgwincolorurgentimportant"
 msgid "Important"
 msgstr "Wichtig"
 
 #: lazarusidestrconsts.dlgmsgwincolorurgentnone
 msgid "Normal"
-msgstr ""
+msgstr "Normal"
 
 #: lazarusidestrconsts.dlgmsgwincolorurgentnote
 msgctxt "lazarusidestrconsts.dlgmsgwincolorurgentnote"
@@ -2704,7 +2682,7 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgmsgwincolorurgentprogress
 msgid "Time and statistics"
-msgstr ""
+msgstr "Zeit und Statistik"
 
 #: lazarusidestrconsts.dlgmsgwincolorurgentverbose
 msgctxt "lazarusidestrconsts.dlgmsgwincolorurgentverbose"
@@ -2720,7 +2698,6 @@ msgid "Verbose 3"
 msgstr ""
 
 #: lazarusidestrconsts.dlgmsgwincolorurgentwarning
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgmsgwincolorurgentwarning"
 msgid "Warning"
 msgstr "Warnung"
@@ -3177,7 +3154,7 @@ msgstr "Pfade"
 
 #: lazarusidestrconsts.dlgsearchscope
 msgid "Search scope"
-msgstr ""
+msgstr "Suchbereich"
 
 #: lazarusidestrconsts.dlgselectallchildcontrols
 msgid "Select all child controls together with their parent."
@@ -3802,7 +3779,7 @@ msgstr "Keine Unit-Datei"
 
 #: lazarusidestrconsts.lisa2piconandsize
 msgid "Icon (maximum 24x24):"
-msgstr ""
+msgstr "Icon (Maximum 24x24):"
 
 #: lazarusidestrconsts.lisa2pinvalidancestortype
 msgid "Invalid Ancestor Type"
@@ -4433,15 +4410,15 @@ msgstr "Eine brauchbare Einstellung unter Windows ist: $(LazarusDir)\\mingw\\bin
 
 #: lazarusidestrconsts.lisautoadjustideheight
 msgid "Automatically adjust IDE main window height"
-msgstr ""
+msgstr "IDE-Hauptmenü-Höhe automatisch anpassen"
 
 #: lazarusidestrconsts.lisautoadjustideheightfullcomponentpalette
 msgid "Show complete component palette"
-msgstr ""
+msgstr "Zeige komplette Komponentenpalette"
 
 #: lazarusidestrconsts.lisautoadjustideheightfullcomponentpalettehint
 msgid "If component palette spans over more lines, show them all and not only one."
-msgstr ""
+msgstr "Wenn sich die Komponentenpalette über mehrere Zeilen erstreckt, zeige alle und nicht nur eine."
 
 #: lazarusidestrconsts.lisautocompletionoff
 msgid "Auto completion: off"
@@ -6875,11 +6852,11 @@ msgstr "Symbolleiste(n) hinzufügen/konfigurieren/löschen"
 
 #: lazarusidestrconsts.liscoolbaradddivider
 msgid "Add Divider"
-msgstr ""
+msgstr "Trenner hinzufügen"
 
 #: lazarusidestrconsts.liscoolbaraddselected
 msgid "Add selected item to toolbar"
-msgstr ""
+msgstr "Gewähltes Element zur Symbolleiste hinzufügen"
 
 #: lazarusidestrconsts.liscoolbaravailablecommands
 msgid "Available commands"
@@ -6923,7 +6900,7 @@ msgstr "Wollen Sie die ausgewählte Symbolleiste wirklich löschen?"
 
 #: lazarusidestrconsts.liscoolbardeletewarning
 msgid "There must be at least one toolbar!"
-msgstr ""
+msgstr "Es muß wenigstens eine Symbolleiste geben!"
 
 #: lazarusidestrconsts.liscoolbardesigner
 msgid "Designer"
@@ -6994,11 +6971,11 @@ msgstr "Meldungen"
 
 #: lazarusidestrconsts.liscoolbarmoveselecteddown
 msgid "Move selected toolbar item down"
-msgstr ""
+msgstr "Gewähltes Symbolleisten-Element nach unten verschieben"
 
 #: lazarusidestrconsts.liscoolbarmoveselectedup
 msgid "Move selected toolbar item up"
-msgstr ""
+msgstr "Gewähltes Symbolleisten-Element nach oben verschieben"
 
 #: lazarusidestrconsts.liscoolbaroptions
 msgid "IDE CoolBar"
@@ -7006,15 +6983,15 @@ msgstr "IDE-CoolBar"
 
 #: lazarusidestrconsts.liscoolbarpackageeditor
 msgid "Package Editor"
-msgstr ""
+msgstr "Package-Editor"
 
 #: lazarusidestrconsts.liscoolbarpackageeditorfiles
 msgid "Package Editor Files"
-msgstr ""
+msgstr "Package-Editordateien"
 
 #: lazarusidestrconsts.liscoolbarremoveselected
 msgid "Remove selected item from toolbar"
-msgstr ""
+msgstr "Gewähltes Element aus der Symbolleiste entfernen"
 
 #: lazarusidestrconsts.liscoolbarrestoredefaults
 msgid "Restore defaults"
@@ -7031,7 +7008,7 @@ msgstr "Quelltexteditor"
 
 #: lazarusidestrconsts.liscoolbarsourcetab
 msgid "Source Tab"
-msgstr ""
+msgstr "Quelltext-Tabulator"
 
 #: lazarusidestrconsts.liscoolbartoolbarcommands
 msgid "Toolbar commands"
@@ -7043,7 +7020,7 @@ msgstr "Coolbar ist sichtbar"
 
 #: lazarusidestrconsts.liscoolbarwidth
 msgid "Coolbar width"
-msgstr ""
+msgstr "Coolbar-Breite"
 
 #: lazarusidestrconsts.liscopy
 msgctxt "lazarusidestrconsts.liscopy"
@@ -10685,7 +10662,7 @@ msgstr "Unit-Informationen anzeigen"
 
 #: lazarusidestrconsts.lislastopened
 msgid "Last opened"
-msgstr ""
+msgstr "Zuletzt geöffnet"
 
 #: lazarusidestrconsts.lislaunchingapplicationinvalid
 msgid "Launching application invalid"
@@ -12531,7 +12508,7 @@ msgstr "(ms)"
 
 #: lazarusidestrconsts.lismsgcolors
 msgid "Message colors"
-msgstr ""
+msgstr "Nachrichten-Farben"
 
 #: lazarusidestrconsts.lismultipledirectoriesareseparatedwithsemicolons
 msgid "Multiple directories are separated with semicolons"
@@ -15838,7 +15815,7 @@ msgstr "Das Laden des letzten Projekts übergehen"
 
 #: lazarusidestrconsts.lisskipthesewarnings
 msgid "Skip these warnings"
-msgstr ""
+msgstr "Diese Warnungen überspringen"
 
 #: lazarusidestrconsts.lisslowerbutmoreaccurate
 msgid "Slower but more accurate."
@@ -19967,4 +19944,3 @@ msgstr "Schreibgeschützt"
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"
 msgstr "Versionsinformation"
-
