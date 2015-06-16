@@ -3255,9 +3255,11 @@ components/printers/images/printersdlgs.txt svneol=native#text/plain
 components/printers/images/tpagesetupdialog.png -text svneol=unset#image/png
 components/printers/images/tprintdialog.png -text svneol=unset#image/png
 components/printers/images/tprintersetupdialog.png -text svneol=unset#image/png
+components/printers/languages/printer4lazstrconst.po svneol=native#text/plain
 components/printers/osprinters.pas svneol=native#text/pascal
 components/printers/printer4lazarus.lpk svneol=native#text/pascal
 components/printers/printer4lazarus.pas svneol=native#text/pascal
+components/printers/printer4lazstrconst.pas svneol=native#text/plain
 components/printers/printersdlgs.pp svneol=native#text/pascal
 components/printers/printersdlgs.res -text
 components/printers/qt/qtprinters.inc svneol=native#text/pascal
