@@ -12,21 +12,109 @@ const
 
 function TCocoaPrinterView.initWithFrame(frameRect: NSRect): id;
 begin
+  PageMin := 1;
+  PageMax := 1;
+  PageFrom := 1;
+  PageTo := 1;
   Result:=inherited initWithFrame(frameRect);
-  Size := NSMakeSize(200, 200);
-  Image := NSImage.alloc.initWithSize(Size);
+  //Image := NSImage.alloc.initWithSize(Size);
 end;
 
 procedure TCocoaPrinterView.dealloc;
 begin
-  Image.release();
+  //Image.release();
   inherited dealloc();
 end;
 
 procedure TCocoaPrinterView.drawRect(dirtyRect: NSRect);
+var
+  pageHeight: Double;
+  lRect: NSRect;
+  lCurPage: Integer;
 begin
-  Self.setFrameSize(Size);
-  Image.drawInRect_fromRect_operation_fraction(Self.frame, NSZeroRect, NSCompositeSourceAtop, 1.0);
+  // image page printing alternative
+  //Image.drawInRect_fromRect_operation_fraction(Self.frame, NSZeroRect, NSCompositeSourceAtop, 1.0);
+
+  if Canvas = nil then Exit;
+
+  pageHeight := calculatePrintHeight();
+  lRect := updateSize(False);
+
+  // figure out which page this is
+  lCurPage := Round((lRect.size.height - dirtyRect.origin.y) / pageHeight);
+
+  Canvas.DrawRecording(Self, dirtyRect, lCurPage - PageFrom);
+end;
+
+// Return the number of pages available for printing
+function TCocoaPrinterView.knowsPageRange(range: NSRangePointer): Boolean;
+begin
+  updateSize(True);
+  range^.location := PageFrom;
+  range^.length := PageTo - PageFrom + 1;
+  Result := True;
+end;
+
+function TCocoaPrinterView.rectForPage(page: NSInteger): NSRect;
+var
+  lBounds: NSRect;
+  pageHeight, pageWidth: Double;
+begin
+  pageHeight := calculatePrintHeight();
+  pageWidth := calculatePrintWidth();
+  // page Y starting pos is Bottom-Left of page 1 - (pagenr-zero-based) * pageHeight, so:
+  // pageHeight * ((PageTo - PageFrom) - (page - PageFrom)), which simplifies to:
+  Result := NSMakeRect(0, pageHeight * (PageTo - page),
+    pageWidth, pageHeight);
+end;
+
+// Calculate the vertical size of the view that fits on a single page
+function TCocoaPrinterView.calculatePrintHeight: Double;
+var
+  pi: NSPrintInfo;
+  paperSize: NSSize;
+  pageHeight, scale: Double;
+begin
+  // Obtain the print info object for the current operation
+  pi := NSPrintOperation.currentOperation.printInfo;
+
+  // Calculate the page height in points
+  paperSize := pi.paperSize;
+  pageHeight := paperSize.height - pi.topMargin - pi.bottomMargin;
+
+  // Convert height to the scaled view
+  scale := pi.dictionary.objectForKey(NSPrintScalingFactor).floatValue;
+  Result := pageHeight / scale;
+end;
+
+function TCocoaPrinterView.calculatePrintWidth: Double;
+var
+  pi: NSPrintInfo;
+  paperSize: NSSize;
+  pageWidth, scale: Double;
+begin
+  // Obtain the print info object for the current operation
+  pi := NSPrintOperation.currentOperation.printInfo;
+
+  // Calculate the page width in points
+  paperSize := pi.paperSize;
+  pageWidth := paperSize.width - pi.leftMargin - pi.rightMargin;
+
+  // Convert height to the scaled view
+  scale := pi.dictionary.objectForKey(NSPrintScalingFactor).floatValue;
+  Result := pageWidth / scale;
+end;
+
+function TCocoaPrinterView.updateSize(ADoSetFrame: Boolean): NSRect;
+var
+  Size: NSSize;
+begin
+  Size.height := calculatePrintHeight();
+  Size.height := Size.height * (PageTo - PageFrom + 1);
+  Size.width := calculatePrintWidth();
+  if ADoSetFrame then
+    Self.setFrameSize(Size);
+  Result := NSMakeRect(0, 0, Size.width, Size.height);
 end;
 
 { TCocoaPrinter }
@@ -115,7 +203,7 @@ procedure TCocoaPrinter.BeginPage;
 {var
   PaperRect: PMRect;  }
 begin
- { if FBeginDocumentStatus = noErr then
+  {if FBeginDocumentStatus = noErr then
   begin
     FNewPageStatus := PMSessionBeginPage(PrintSession, nil, nil);
     OSError(FNewPageStatus, Self, 'BeginPage', 'PMSessionBeginPage', '', kPMCancel);
@@ -181,8 +269,9 @@ var
 begin
   inherited Create;
 
-  FPrintViewRect := GetNSRect(0, 0, 800, 800);
+  FPrintViewRect := GetNSRect(0, 0, 1000, 1000);
   FPrintView := TCocoaPrinterView.alloc.initWithFrame(FPrintViewRect);
+  FPrintView.Canvas := Canvas as TCocoaPrinterCanvas;
 
   FPrintOp := NSPrintOperation.printOperationWithView(FPrintView);
   FPrintInfo := FPrintOp.printInfo();
@@ -264,7 +353,6 @@ var
   FPaper: PMPaper = nil;
   lCFString: CFStringRef = nil;
 begin
-  Result := DoDoGetPaperName(FPrintInfo.PMPageFormat());
   Result := '';
   if APageFormat = nil then APageFormat := GetPageFormat();
   if PMGetPageFormatPaper(APageFormat, FPaper) <> noErr then Exit;
@@ -587,6 +675,11 @@ begin
     kPMPrinterProcessing: Result := psPrinting;
     kPMPrinterStopped: Result := psStopped;
   end;
+end;
+
+function TCocoaPrinter.DoGetDefaultCanvasClass: TPrinterCanvasRef;
+begin
+  Result := TCocoaPrinterCanvas;
 end;
 
 function TCocoaPrinter.GetCanPrint: Boolean;

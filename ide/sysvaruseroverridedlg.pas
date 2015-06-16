@@ -47,33 +47,32 @@ type
     VariableEdit: TEdit;
     ValueLabel: TLabel;
     ValueEdit: TEdit;
-    procedure FormCreate(Sender: TObject);
     procedure OkButtonClick(Sender: TObject);
   private
   public
     constructor Create(TheOwner: TComponent); override;
   end;
 
-function ShowSysVarUserOverrideDialog(var Variable, Value: string): TModalResult;
+function ShowSysVarUserOverrideDialog(var AName, AValue: string): TModalResult;
 
 implementation
 
 {$R *.lfm}
 
-function ShowSysVarUserOverrideDialog(var Variable, Value: string): TModalResult;
-var SysVarUserOverrideDialog: TSysVarUserOverrideDialog;
+function ShowSysVarUserOverrideDialog(var AName, AValue: string): TModalResult;
 begin
-  SysVarUserOverrideDialog:=TSysVarUserOverrideDialog.Create(nil);
-  with SysVarUserOverrideDialog do begin
-    VariableEdit.Text:=Variable;
-    ValueEdit.Text:=Value;
-    if Variable=''
-      then ActiveControl := VariableEdit;
+  with TSysVarUserOverrideDialog.Create(nil) do
+  try
+    VariableEdit.Text:=AName;
+    ValueEdit.Text:=AValue;
+    //if AName=''
+    //  then ActiveControl := VariableEdit;
     Result:=ShowModal;
     if (Result=mrOk) then begin
-      Variable:=Trim(VariableEdit.Text);
-      Value:=ValueEdit.Text;
+      AName:=Trim(VariableEdit.Text);
+      AValue:=ValueEdit.Text;
     end;
+  finally
     Free;
   end;
 end;
@@ -90,12 +89,6 @@ begin
       mtWarning,[mbCancel,mbIgnore])=mrCancel
     then ModalResult := mrNone; //cancel close
   end;
-end;
-
-procedure TSysVarUserOverrideDialog.FormCreate(Sender: TObject);
-begin
-  //XXX: ButtonPanel's button event can't be assigned from OI
-  ButtonPanel.OKButton.OnClick:=@OKButtonClick;
 end;
 
 constructor TSysVarUserOverrideDialog.Create(TheOwner: TComponent);

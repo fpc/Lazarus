@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, Types, fpcanvas, fpimage,
   // LCL for types
-  Controls, Graphics, ComCtrls, ExtCtrls;
+  Controls, Graphics, ComCtrls, ExtCtrls, LazUTF8;
 
 const
   CDDRAWSTYLE_COUNT = 19;
@@ -25,6 +25,8 @@ const
 
   TCDRADIOBUTTON_CIRCLE_HEIGHT = $601;
 
+  TCDCOMBOBOX_DEFAULT_HEIGHT = $801;
+
   TCDSCROLLBAR_BUTTON_WIDTH = $900;
   TCDSCROLLBAR_LEFT_SPACING = $901;   // Left and right are only read left and right for horizontal orientation
   TCDSCROLLBAR_RIGHT_SPACING= $902;   // in vertical orientation they are respectively top and bottom
@@ -41,6 +43,13 @@ const
   TCDLISTVIEW_COLUMN_TEXT_LEFT_SPACING = $1202;
   TCDLISTVIEW_LINE_TOP_SPACING     = $1203;
   TCDLISTVIEW_LINE_BOTTOM_SPACING  = $1204;
+
+  TCDTOOLBAR_ITEM_SPACING = $1300;
+  TCDTOOLBAR_ITEM_ARROW_WIDTH = $1301;
+  TCDTOOLBAR_ITEM_BUTTON_DEFAULT_WIDTH = $1303;
+  TCDTOOLBAR_ITEM_ARROW_RESERVED_WIDTH = $1304;
+  TCDTOOLBAR_ITEM_SEPARATOR_DEFAULT_WIDTH = $1305;
+  TCDTOOLBAR_DEFAULT_HEIGHT = $1306;
 
   TCDCTABCONTROL_CLOSE_TAB_BUTTON_WIDTH = $2600;
   TCDCTABCONTROL_CLOSE_TAB_BUTTON_EXTRA_SPACING = $2601;
@@ -153,6 +162,7 @@ type
     MultiLine: Boolean;
     Lines: TStrings; // Just a reference, never Free
     FullyVisibleLinesCount, LineHeight: Integer; // Filled on drawing to be used in customdrawncontrols.pas
+    PasswordChar: Char;
     // customizable extra margins, zero is the base value
     LeftTextMargin, RightTextMargin: Integer;
     // For the combo box for example
@@ -210,6 +220,33 @@ type
     ShowColumnHeader: Boolean;
   end;
 
+  // ToolBar Start
+
+  TCDToolbarItemKind = (tikButton, tikCheckButton, tikDropDownButton,
+    tikSeparator, tikDivider);
+
+  TCDToolbarItemSubpartKind = (tiskMain, tiskArrow);
+
+  TCDToolBarItem = class
+    Kind: TCDToolbarItemKind;
+    SubpartKind: TCDToolbarItemSubpartKind;
+    Image: TBitmap;
+    Caption: string;
+    Width: Integer;
+    Down: Boolean;
+    // filled for drawing
+    State: TCDControlState;
+  end;
+
+  TCDToolBarStateEx = class(TCDControlStateEx)
+    ShowCaptions: Boolean;
+    IsVertical: Boolean;
+    Items: TFPList; // of TCDToolBarItem
+    ToolBarHeight: Integer;
+  end;
+
+  // ToolBar End
+
   TCDCTabControlStateEx = class(TCDControlStateEx)
   public
     LeftmostTabVisibleIndex: Integer;
@@ -238,7 +275,7 @@ type
     // Additional
     cidStaticText,
     // Common Controls
-    cidTrackBar, cidProgressBar, cidListView, cidCTabControl
+    cidTrackBar, cidProgressBar, cidListView, cidToolBar, cidCTabControl
     );
 
   { TCDColorPalette }
@@ -285,6 +322,7 @@ type
     procedure LoadFallbackPaletteColors; virtual;
     function  PalDefaultUsesNativePalette: Boolean; virtual;
     function GetDrawStyle: TCDDrawStyle; virtual;
+    class function VisibleText(const aVisibleText: TCaption; const APasswordChar: Char): TCaption;
     // GetControlDefaultColor is used by customdrawncontrols to resolve clDefault
     function GetControlDefaultColor(AControlId: TCDControlID): TColor;
     // General
@@ -293,7 +331,7 @@ type
       AState: TCDControlState; AStateEx: TCDControlStateEx): Integer; virtual; abstract;
     procedure CalculatePreferredSize(ADest: TCanvas; AControlId: TCDControlID;
       AState: TCDControlState; AStateEx: TCDControlStateEx;
-      var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean); virtual; abstract;
+      var PreferredWidth, PreferredHeight: integer; WithThemeSpace, AAllowUseOfMeasuresEx: Boolean); virtual; abstract;
     function GetColor(AColorID: Integer): TColor; virtual; abstract;
     function GetClientArea(ADest: TCanvas; ASize: TSize; AControlId: TCDControlID;
       AState: TCDControlState; AStateEx: TCDControlStateEx): TRect; virtual; abstract;
@@ -371,6 +409,12 @@ type
       AState: TCDControlState; AStateEx: TCDListViewStateEx); virtual; abstract;
     procedure DrawReportListViewItem(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
       ACurItem: TCDListItems; AState: TCDControlState; AStateEx: TCDListViewStateEx); virtual; abstract;
+    // TCDToolBar
+    procedure DrawToolBar(ADest: TCanvas; ASize: TSize;
+      AState: TCDControlState; AStateEx: TCDToolBarStateEx); virtual; abstract;
+    procedure DrawToolBarItem(ADest: TCanvas; ASize: TSize;
+      ACurItem: TCDToolBarItem; AX, AY: Integer;
+      AState: TCDControlState; AStateEx: TCDToolBarStateEx); virtual; abstract;
     // TCDCustomTabControl
     procedure DrawCTabControl(ADest: TCanvas; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDCTabControlStateEx); virtual; abstract;
@@ -630,6 +674,14 @@ begin
   Result := dsCommon;
 end;
 
+class function TCDDrawer.VisibleText(const aVisibleText: TCaption; const APasswordChar: Char): TCaption;
+begin
+  if aPasswordChar = #0 then
+    result := aVisibleText
+  else
+    result := StringOfChar( aPasswordChar, UTF8Length(aVisibleText) );
+end;
+
 { Control colors can refer to their background or foreground }
 function TCDDrawer.GetControlDefaultColor(AControlId: TCDControlID): TColor;
 begin
@@ -672,6 +724,7 @@ begin
   cidTrackBar:   DrawTrackBar(ADest, ASize, AState, TCDPositionedCStateEx(AStateEx));
   cidProgressBar:DrawProgressBar(ADest, ASize, AState, TCDProgressBarStateEx(AStateEx));
   cidListView:   DrawListView(ADest, ASize, AState, TCDListViewStateEx(AStateEx));
+  cidToolBar:    DrawToolBar(ADest, ASize, AState, TCDToolBarStateEx(AStateEx));
   cidCTabControl:DrawCTabControl(ADest, ASize, AState, TCDCTabControlStateEx(AStateEx));
   end;
 end;

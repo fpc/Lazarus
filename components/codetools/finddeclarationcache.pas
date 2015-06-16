@@ -140,7 +140,7 @@ type
     function FindInRange(Identifier: PChar;
       CleanStartPos, CleanEndPos: integer): PCodeTreeNodeCacheEntry;
     function FindNearestAVLNode(Identifier: PChar;
-      CleanStartPos, CleanEndPos: integer; InFront: boolean): TAVLTreeNode;
+      CleanStartPos, CleanEndPos: integer; {%H-}InFront: boolean): TAVLTreeNode;
     function FindNearest(Identifier: PChar;
       CleanStartPos, CleanEndPos: integer;
       InFront: boolean): PCodeTreeNodeCacheEntry;

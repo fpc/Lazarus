@@ -61,6 +61,15 @@ begin
   Result := 0;
 end;
 
+function GetOwnerHandle(ADialog : TCommonDialog): HWND;
+begin
+  with ADialog do
+   if Owner is TWinControl then
+     Result := TWinControl(Owner).Handle
+   else
+     Result := WidgetSet.AppHandle;
+end;
+
 
 { TPageSetupDialog }
 
@@ -96,7 +105,7 @@ begin
       else
         lCustData := 0;
       Flags := PSD_MARGINS or PSD_ENABLEPAGESETUPHOOK;
-      hWndOwner := Widgetset.AppHandle;
+      hWndOwner := GetOwnerHandle(Self);
       rtMargin := fMargins;
       PDev := TPrinterDevice(Printer.Printers.Objects[Printer.PrinterIndex]);
       // Pdev.DevMode has the required size, just copy to the global memory
@@ -207,7 +216,7 @@ begin
       else
         lCustData := 0;
       Flags := PD_PRINTSETUP or PD_RETURNDC or PD_ENABLESETUPHOOK;
-      hWndOwner := Widgetset.AppHandle;
+      hWndOwner := GetOwnerHandle(self);
       PDev := TPrinterDevice(Printer.Printers.Objects[Printer.PrinterIndex]);
       // Pdev.DevMode has the required size, just copy to the global memory
       DeviceMode := GlobalAlloc(GHND, PDev.DevModeSize);
@@ -335,7 +344,7 @@ begin
       if (poHelp in Options) then Flags := Flags or PD_SHOWHELP;
       if not (poWarning in Options) then Flags := Flags or PD_NOWARNING;
       
-      hWndOwner := Widgetset.AppHandle;
+      hWndOwner := GetOwnerHandle(self);
       PDev := TPrinterDevice(Printer.Printers.Objects[Printer.PrinterIndex]);
       // Pdev.DevMode has the required size, just copy to the global memory
       DeviceMode := GlobalAlloc(GHND, PDEV.DevModeSize);

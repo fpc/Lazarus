@@ -31,8 +31,8 @@ interface
 
 uses
   Classes, SysUtils, AVL_Tree, FileProcs, FindDeclarationTool, CodeBeautifier,
-  CodeGraph, CodeCache, StdCodeTools, DirectoryCacher, LinkScanner,
-  CustomCodeTool, CodeTree, CodeAtom, CodeToolsStructs;
+  CodeCache, StdCodeTools, DirectoryCacher, LinkScanner,
+  CustomCodeTool, CodeTree, CodeToolsStructs;
 
 type
 

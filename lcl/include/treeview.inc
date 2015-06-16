@@ -560,20 +560,20 @@ var
 begin
   TheTreeNodes:=TreeNodes;
   if TheTreeNodes=nil then exit;
-  
+
   // Get the first selected node of the tree
   CurNode := TheTreeNodes.FFirstMultiSelected;
-  
+
   // Initialize self unbinded
   Self.FPrevMultiSelected := nil;
   Self.FNextMultiSelected := nil;
-  
+
   // If there isn't any selected node, set self as first
   if CurNode = nil then
     TheTreeNodes.FFirstMultiSelected := Self
   else
   begin
-  
+
     // if last selected node was the previous one
     if (TheTreeNodes.FLastMultiSelected.AbsoluteIndex+1=Self.AbsoluteIndex) and (TheTreeNodes.FLastMultiSelected.FNextMultiSelected=nil) then
     begin
@@ -615,11 +615,11 @@ begin
         if Self.FPrevMultiSelected = nil then
           TheTreeNodes.FFirstMultiSelected := Self;
       end;
-      
+
     end;
-    
+
   end;
-  
+
   // Set self as last selected node
   TheTreeNodes.FLastMultiSelected := Self;
 end;
@@ -1705,7 +1705,7 @@ end;
 function TTreeNode.DisplayTextLeft: integer;
 var
   TV: TCustomTreeView;
-  ImgIndex: TImageIndex;  
+  ImgIndex: TImageIndex;
 begin
   Result := DisplayIconLeft;
   TV := TreeView;
@@ -2438,19 +2438,19 @@ function TTreeNodes.GetNodeFromIndex(Index: Integer): TTreeNode;
     TreeNodeError('TTreeNodes.GetNodeFromIndex Index '+IntToStr(Index)
            +' out of bounds (Count='+IntToStr(FCount)+')');
   end;
-  
+
   procedure RaiseSubTreeCount0;
   begin
     TreeNodeError(
       'TTreeNodes.GetNodeFromIndex: Consistency error - SubTreeCount=0');
   end;
-  
+
   procedure RaiseSubTreeCountTooBig;
   begin
     TreeNodeError(
       'TTreeNodes.GetNodeFromIndex: Consistency error - invalid SubTreeCount');
   end;
-  
+
   procedure RaiseCountTooBig;
   begin
     TreeNodeError(
@@ -3142,7 +3142,7 @@ end;
 destructor TCustomTreeView.Destroy;
 begin
   LockSelectionChangeEvent; // prevent change event during destroying
-  
+
   Images:=nil;
   FreeThenNil(FTreeNodes);
   FreeThenNil(FSaveItems);
@@ -3944,12 +3944,12 @@ begin
     lNode := FTreeNodes.FLastMultiSelected
   else
     lNode := Selected;
-    
+
   case Key of
 
   VK_DOWN:
   begin
-    if lNode <> nil then 
+    if lNode <> nil then
       lNode := lNode.GetNextExpanded
     else if Items.Count > 0 then
       lNode := FTreeNodes.GetFirstNode;
@@ -3985,13 +3985,13 @@ begin
         lNode.Expanded := True;
       Key:=VK_UNKNOWN;
     end;
-    
+
   VK_ADD:
-    if lNode <> nil then 
+    if lNode <> nil then
       lNode.Expanded := True;
-    
+
   VK_SUBTRACT:
-    if lNode <> nil then 
+    if lNode <> nil then
       lNode.Expanded := False;
 
   VK_HOME:
@@ -4022,7 +4022,7 @@ begin
         else Break;
 
     end;
-    
+
   VK_NEXT: // Page Down
     if lNode <> nil then
     begin
@@ -4916,7 +4916,12 @@ var
         end
       else
       if not (tvoThemedDraw in Options) then
-        Canvas.Font.Color := Font.Color;
+      begin
+        //Canvas.Font.Color := Font.Color;
+        Canvas.Brush.Color := FSelectedColor;
+        Canvas.Font.Color := InvertColor(Brush.Color);
+        Canvas.FillRect(NodeRect);
+      end;
     end
     else
       Details := ThemeServices.GetElementDetails(ttItemNormal);
@@ -5193,10 +5198,26 @@ begin
   {$ENDIF}
   fMouseDownPos := Point(X,Y);
   FStates:=FStates-[tvsEditOnMouseUp,tvsSingleSelectOnMouseUp];
-  if Button=mbRight then begin
-    if RightClickSelect then begin
-      Selected:=GetNodeAt(X,Y);
-    end;
+
+  CursorNode := GetNodeAt(X, Y);
+  CursorNodeSelected := (CursorNode<>nil)
+    and (CursorNode.Selected
+      or ((tvoAllowMultiselect in Options) and CursorNode.MultiSelected));
+  LogicalX:=X;
+
+  //change selection on right click
+  if (Button = mbRight) and RightClickSelect and//right click
+     (([ssDouble, ssTriple, ssQuad] * Shift) = []) and//single or first of a multi click
+     not(ssCtrl in Shift) and//only when CTRL is not pressed
+     (CursorNode <> nil) and
+     (LogicalX >= CursorNode.DisplayStateIconLeft)//only after expand sign
+  then
+  begin
+    if not (tvoAllowMultiselect in Options) then
+      Selected := CursorNode
+    else
+    if not CursorNodeSelected then
+      Items.SelectOnlyThis(CursorNode);
   end;
 
   if not Focused and CanFocus then
@@ -5204,67 +5225,66 @@ begin
 
   inherited MouseDown(Button, Shift, X, Y);
 
+  //CursorNode must be reassigned again - e.g. in OnMouseDown the node can be deleted or moved.
   CursorNode := GetNodeAt(X, Y);
   CursorNodeSelected := (CursorNode<>nil)
     and (CursorNode.Selected
       or ((tvoAllowMultiselect in Options) and CursorNode.MultiSelected));
-  LogicalX:=X;
-  if ([ssDouble, ssTriple, ssQuad] * Shift) = [] then
+
+  //change selection on left click
+  if (Button = mbLeft) and//left click
+     (([ssDouble, ssTriple, ssQuad] * Shift) = []) and//single or first of a multi click
+     (CursorNode <> nil) then
   begin
-    // single click or first of a multi click
-    if (Button = mbLeft) and (CursorNode <> nil) then
+    if CursorNode.HasChildren and ShowButtons and
+       (LogicalX >= CursorNode.DisplayExpandSignLeft) and
+       (LogicalX < CursorNode.DisplayExpandSignRight) then
     begin
-      if CursorNode.HasChildren and ShowButtons and
-         (LogicalX >= CursorNode.DisplayExpandSignLeft) and
-         (LogicalX < CursorNode.DisplayExpandSignRight) then
+      // mousedown occured on expand sign -> expand/collapse
+      CursorNode.Expanded := not CursorNode.Expanded;
+    end
+    else if LogicalX >= CursorNode.DisplayStateIconLeft then
+    begin
+      // mousedown occured in text or icon
+      // -> select node and begin drag operation
+      {$IFDEF VerboseDrag}
+      DebugLn(['TCustomTreeView.MouseDown In Text ',DbgSName(Self),' MouseCapture=',MouseCapture]);
+      {$ENDIF}
+      if (Selected = CursorNode) and (LogicalX >= CursorNode.DisplayTextLeft) then
+        Include(FStates, tvsEditOnMouseUp);
+      if not (tvoAllowMultiselect in Options) then
+        Selected := CursorNode
+      else
       begin
-        // mousedown occured on expand sign -> expand/collapse
-        CursorNode.Expanded:=not CursorNode.Expanded;
-      end
-      else if LogicalX >= CursorNode.DisplayStateIconLeft then
-      begin
-        // mousedown occured in text or icon
-        // -> select node and begin drag operation
-        {$IFDEF VerboseDrag}
-        DebugLn(['TCustomTreeView.MouseDown In Text ',DbgSName(Self),' MouseCapture=',MouseCapture]);
-        {$ENDIF}
-        if (Selected = CursorNode) and (LogicalX >= CursorNode.DisplayTextLeft) then
-          Include(FStates, tvsEditOnMouseUp);
-        if not (tvoAllowMultiselect in Options) then
-          Selected := CursorNode
+        if (ssShift in Shift) then
+        begin
+          Exclude(FStates,tvsEditOnMouseUp);
+          LockSelectionChangeEvent;
+          try
+            Items.ClearMultiSelection;
+            CursorNode.MultiSelectGroup;
+          finally
+            UnlockSelectionChangeEvent;
+          end;
+        end
+        else if (ssCtrl in Shift) then
+        begin
+          Exclude(FStates,tvsEditOnMouseUp);
+          CursorNode.MultiSelected:=not CursorNode.MultiSelected;
+        end
         else
         begin
-          if (ssShift in Shift) then
-          begin
-            Exclude(FStates,tvsEditOnMouseUp);
-            LockSelectionChangeEvent;
-            try
-              Items.ClearMultiSelection;
-              CursorNode.MultiSelectGroup;
-            finally
-              UnlockSelectionChangeEvent;
-            end;
-          end
+          if not CursorNodeSelected then
+            Items.SelectOnlyThis(CursorNode)
           else
-          if (ssCtrl in Shift) then
-          begin
-            Exclude(FStates,tvsEditOnMouseUp);
-            CursorNode.MultiSelected:=not CursorNode.MultiSelected;
-          end
-          else
-          begin
-            if not CursorNodeSelected then
-              Items.SelectOnlyThis(CursorNode)
-            else
-              Include(FStates, tvsSingleSelectOnMouseUp);
-          end;
+            Include(FStates, tvsSingleSelectOnMouseUp);
         end;
       end;
     end;
   end
-  else // multi click
+  else// multi click
   if not (tvoNoDoubleClickExpand in Options) and (ssDouble in Shift)
-     and (Button = mbLeft) and (CursorNode<>nil) then
+  and (Button = mbLeft) and (CursorNode<>nil) then
     CursorNode.Expanded := not CursorNode.Expanded;
 end;
 
@@ -5463,7 +5483,7 @@ begin
       // Scrolls to the current scroll bar position
     SB_THUMBPOSITION,
     SB_THUMBTRACK: ScrolledLeft := Msg.Pos;
-      
+
     SB_ENDSCROLL: ;// Ends scrolling
   end;
 end;

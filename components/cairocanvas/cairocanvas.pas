@@ -69,9 +69,6 @@ type
     function CreateCairoHandle: HDC; virtual; abstract;
     procedure DestroyCairoHandle; virtual;
     procedure SetHandle(NewHandle: HDC); override;
-    procedure BeginDoc; override;
-    procedure EndDoc; override;
-    procedure NewPage; override;
     function GetClipRect: TRect; override;
     procedure SetClipRect(const ARect: TRect); override;
     function GetClipping: Boolean; override;
@@ -89,6 +86,9 @@ type
     constructor Create(APrinter : TPrinter); override;
     constructor Create; overload;
     destructor Destroy; override;
+    procedure BeginDoc; override;
+    procedure EndDoc; override;
+    procedure NewPage; override;
     procedure FillRect(const ARect: TRect); override;
     procedure Rectangle(X1,Y1,X2,Y2: Integer); override;
     procedure Polyline(Points: PPoint; NumPts: Integer); override;

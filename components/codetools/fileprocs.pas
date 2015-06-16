@@ -356,7 +356,7 @@ uses
   {$IFDEF darwin}
   MacOSAll,
   {$ENDIF}
-  Unix, BaseUnix;
+  Unix;
 {$ENDIF}
 
 function SimpleFormat(const Fmt: String; const Args: array of const): String;
@@ -2220,30 +2220,31 @@ function DbgText(const StringWithSpecialChars: string; KeepLines: boolean
 var
   i: Integer;
   s: String;
-  LastChar: Char;
   c: Char;
+  l: Integer;
 begin
   Result:=StringWithSpecialChars;
   i:=1;
-  LastChar:=#0;
   while (i<=length(Result)) do begin
     c:=Result[i];
     case c of
     ' '..#126: inc(i);
     else
-      s:='#'+IntToStr(ord(c));
-      if (c in [#10,#13]) then begin
-        if ((LastChar in [#10,#13])
-            or (i=length(Result)) or (not (Result[i+1] in [#10,#13])))
-        then begin
-          s+=LineEnding;
-          c:=#0; // line break was handled
-        end;
+      if KeepLines and (c in [#10,#13]) then begin
+        // replace line ending with system line ending
+        if (i<length(Result)) and (Result[i+1] in [#10,#13])
+        and (c<>Result[i+1]) then
+          l:=2
+        else
+          l:=1;
+        ReplaceSubstring(Result,i,l,LineEnding);
+        inc(i,length(LineEnding));
+      end else begin
+        s:='#'+IntToStr(ord(c));
+        ReplaceSubstring(Result,i,1,s);
+        inc(i,length(s));
       end;
-      ReplaceSubstring(Result,i,1,s);
-      inc(i,length(s));
     end;
-    LastChar:=c;
   end;
 end;
 

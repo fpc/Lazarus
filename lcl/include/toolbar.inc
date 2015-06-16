@@ -80,7 +80,7 @@ end;
 
   Constructor for the class.
  ------------------------------------------------------------------------------}
-constructor TToolbar.Create(TheOwner : TComponent);
+constructor TToolBar.Create(TheOwner: TComponent);
 var
   Details: TThemedElementDetails;
 begin
@@ -425,6 +425,8 @@ begin
     Canvas.FrameRect(Clientrect);
   end;
   inherited Paint;
+  if Assigned(OnPaint) then
+    OnPaint(Self);
 end;
 
 procedure TToolBar.SetButtonSize(NewButtonWidth, NewButtonHeight: integer);

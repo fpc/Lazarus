@@ -87,6 +87,9 @@ type
     LinkDataset: TDataset;
     FDesigner: TComponentEditorDesigner;
     FComponentEditor: TFieldsComponentEditor;
+    FUpdateSelectionCount: Integer;
+    procedure BeginUpdateSelection;
+    procedure EndUpdateSelection;
     procedure ExchangeItems(const fFirst, fSecond: integer);
     procedure RefreshFieldsListBox(SelectAllNew: boolean);
     function FindChild(ACandidate: TPersistent; out AIndex: Integer): Boolean;
@@ -171,11 +174,14 @@ begin
   FieldsListBox.Clear;
   RefreshFieldsListBox(False);
 
-  GlobalDesignHook.AddHandlerComponentRenamed(@OnComponentRenamed);
-  GlobalDesignHook.AddHandlerPersistentDeleting(@OnPersistentDeleting);
-  GlobalDesignHook.AddHandlerGetSelection(@OnGetSelection);
-  GlobalDesignHook.AddHandlerSetSelection(@OnSetSelection);
-  GlobalDesignHook.AddHandlerPersistentAdded(@OnPersistentAdded);
+  if Assigned(GlobalDesignHook) then
+  begin
+    GlobalDesignHook.AddHandlerComponentRenamed(@OnComponentRenamed);
+    GlobalDesignHook.AddHandlerPersistentDeleting(@OnPersistentDeleting);
+    GlobalDesignHook.AddHandlerGetSelection(@OnGetSelection);
+    GlobalDesignHook.AddHandlerSetSelection(@OnSetSelection);
+    GlobalDesignHook.AddHandlerPersistentAdded(@OnPersistentAdded);
+  end;
 
   SelectionChanged;
 end;
@@ -194,8 +200,9 @@ begin
   LinkDataSet.Active := False;
   if FieldsListBox.SelCount = 0 then
     exit;
+  BeginUpdateSelection;
   FDesigner.DeleteSelection;
-  SelectionChanged;
+  EndUpdateSelection;
   if PreActive then
     LinkDataSet.Active := True;
 end;
@@ -208,12 +215,12 @@ end;
 
 procedure TDSFieldsEditorFrm.FieldsEditorFrmDestroy(Sender: TObject);
 begin
-  if Assigned(FComponentEditor) then begin
-    if Assigned(LinkDataset) And (Not (csDestroying in LinkDataset.ComponentState)) And (FieldsListBox.SelCount > 0) then
-         GlobalDesignHook.SelectOnlyThis(LinkDataset);
-  end;
-  if Assigned(GlobalDesignHook) then
+  if Assigned(FComponentEditor) and Assigned(LinkDataset) and Assigned(GlobalDesignHook)
+  and not (csDestroying in LinkDataset.ComponentState) and (FieldsListBox.SelCount > 0) then
+  begin
+    GlobalDesignHook.SelectOnlyThis(LinkDataset);
     GlobalDesignHook.RemoveAllHandlersForObject(Self);
+  end;
 end;
 
 procedure TDSFieldsEditorFrm.FieldsListBoxDrawItem(Control: TWinControl;
@@ -398,6 +405,8 @@ end;
 procedure TDSFieldsEditorFrm.SelectionChanged(AOrderChanged: Boolean = false);
 var SelList: TPersistentSelectionList;
 begin
+  if (FUpdateSelectionCount>0) or (GlobalDesignHook=nil) then
+    exit;
   GlobalDesignHook.RemoveHandlerSetSelection(@OnSetSelection);
   try
     SelList := TPersistentSelectionList.Create;
@@ -472,6 +481,18 @@ begin
        with FieldsListBox do
          Selected[Items.AddObject(fld.FieldName, fld)] := Select;
   end;
+end;
+
+procedure TDSFieldsEditorFrm.BeginUpdateSelection;
+begin
+  Inc(FUpdateSelectionCount);
+end;
+
+procedure TDSFieldsEditorFrm.EndUpdateSelection;
+begin
+  dec(FUpdateSelectionCount);
+  if FUpdateSelectionCount=0 then
+    SelectionChanged;
 end;
 
 { TFieldsComponentEditor }

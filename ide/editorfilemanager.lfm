@@ -11,7 +11,7 @@ object EditorFileManagerForm: TEditorFileManagerForm
   OnCreate = FormCreate
   OnKeyDown = FormKeyDown
   Position = poScreenCenter
-  LCLVersion = '1.3'
+  LCLVersion = '1.5'
   object CheckListBox1: TCheckListBox
     AnchorSideTop.Control = FilterPanel
     AnchorSideTop.Side = asrBottom
@@ -30,7 +30,7 @@ object EditorFileManagerForm: TEditorFileManagerForm
     OnKeyPress = CheckListBox1KeyPress
     OnKeyDown = CheckListBox1KeyDown
     PopupMenu = PopupMenu1
-    TabOrder = 0
+    TabOrder = 1
   end
   object ButtonPanel1: TButtonPanel
     Left = 6
@@ -47,7 +47,7 @@ object EditorFileManagerForm: TEditorFileManagerForm
     CloseButton.OnClick = CloseButtonClick
     CancelButton.Name = 'CancelButton'
     CancelButton.DefaultCaption = True
-    TabOrder = 1
+    TabOrder = 3
     ShowButtons = [pbClose, pbHelp]
   end
   object Panel1: TPanel
@@ -60,6 +60,7 @@ object EditorFileManagerForm: TEditorFileManagerForm
     Width = 186
     Anchors = [akTop, akRight, akBottom]
     ClientHeight = 328
+    BevelOuter = bvNone
     ClientWidth = 186
     TabOrder = 2
     object CheckAllCheckBox: TCheckBox
@@ -160,9 +161,10 @@ object EditorFileManagerForm: TEditorFileManagerForm
     Top = 0
     Width = 536
     Anchors = [akTop, akLeft, akRight]
+    BevelOuter = bvNone
     ClientHeight = 28
     ClientWidth = 536
-    TabOrder = 3
+    TabOrder = 0
     object FilterEdit: TListFilterEdit
       AnchorSideLeft.Control = SortAlphabeticallyButton
       AnchorSideLeft.Side = asrBottom
@@ -175,7 +177,6 @@ object EditorFileManagerForm: TEditorFileManagerForm
       ButtonWidth = 23
       NumGlyphs = 1
       BorderSpacing.Left = 11
-      Font.Color = clBtnShadow
       MaxLength = 0
       ParentFont = False
       TabOrder = 0

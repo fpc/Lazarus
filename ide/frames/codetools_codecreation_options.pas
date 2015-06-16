@@ -68,7 +68,7 @@ begin
     InitIDEFileDialog(OpenDialog);
     OpenDialog.Title:=lisChooseAFileWithCodeToolsTemplates;
     OpenDialog.Options:=OpenDialog.Options+[ofFileMustExist];
-    OpenDialog.Filter:=lisCodetoolsTemplateFile+' (*.xml)|*.xml|'+dlgAllFiles+
+    OpenDialog.Filter:=dlgFilterCodetoolsTemplateFile+' (*.xml)|*.xml|'+dlgFilterAll+
       '|'+GetAllFilesMask;
     if OpenDialog.Execute then
       TemplateFileEdit.Text:=OpenDialog.FileName;

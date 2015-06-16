@@ -9,7 +9,7 @@ interface
 
 uses
   MacOSAll, // for CGContextRef
-  LCLtype, LCLProc, Graphics, Controls,
+  LCLtype, LCLProc, Graphics, Controls, fpcanvas,
   CocoaAll, CocoaProc, CocoaUtils,
   {$ifndef CocoaUseHITheme}
   customdrawndrawers, customdrawn_mac,
@@ -135,6 +135,8 @@ type
     constructor CreateDefault(const AGlobal: Boolean = False);
     constructor Create(const ALogBrush: TLogBrush; const AGlobal: Boolean = False);
     constructor Create(const AColor: NSColor; const AGlobal: Boolean = False);
+    constructor Create(const AColor: TColor; AStyle: TFPBrushStyle; APattern: TBrushPattern;
+      AGlobal: Boolean = False);
     destructor Destroy; override;
     procedure Apply(ADC: TCocoaContext; UseROP2: Boolean = True);
 
@@ -169,6 +171,9 @@ type
     constructor Create(dwPenStyle, dwWidth: DWord; const lplb: TLogBrush; dwStyleCount: DWord; lpStyle: PDWord);
     constructor Create(const ABrush: TCocoaBrush; const AGlobal: Boolean = False);
     constructor Create(const AColor: TColor; AGlobal: Boolean);
+    constructor Create(const AColor: TColor; AStyle: TFPPenStyle; ACosmetic: Boolean;
+      AWidth: Integer; AMode: TFPPenMode; AEndCap: TFPPenEndCap;
+      AJoinStyle: TFPPenJoinStyle; AGlobal: Boolean = False);
     procedure Apply(ADC: TCocoaContext; UseROP2: Boolean = True);
 
     property Width: Integer read FWidth;
@@ -234,6 +239,9 @@ type
     procedure SetInfo(AWidth, AHeight, ADepth, ABitsPerPixel: Integer;
       AAlignment: TCocoaBitmapAlignment; AType: TCocoaBitmapType);
 
+    procedure CreateHandle();
+    procedure FreeHandle();
+    procedure ReCreateHandle();
     function CreateSubImage(const ARect: TRect): CGImageRef;
     function CreateMaskImage(const ARect: TRect): CGImageRef;
     procedure PreMultiplyAlpha();
@@ -340,6 +348,14 @@ type
     FBrush  : TCocoaBrush;
     FPen    : TCocoaPen;
     FRegion : TCocoaRegion;
+    // In Cocoa there is no way to enlarge a clip region :(
+    // see http://stackoverflow.com/questions/18648608/how-can-i-reset-or-clear-the-clipping-mask-associated-with-a-cgcontext
+    // So before every single clip operation we need to save the DC state
+    // And before every single clip operator or savedc/restoredc
+    // we need to restore the dc to clear the clipping region
+    //
+    // Also, because of bug 28015 FClipped cannot use ctx.Restore(Save)GraphicsState;
+    // it will use CGContextRestore(Save)GState(CGContext()); to save/restore DC instead
     FClipped: Boolean;
     FClipRegion: TCocoaRegion;
     FSavedDCList: TFPObjectList;
@@ -726,10 +742,6 @@ end;
 constructor TCocoaBitmap.Create(AWidth, AHeight, ADepth, ABitsPerPixel: Integer;
   AAlignment: TCocoaBitmapAlignment; AType: TCocoaBitmapType;
   AData: Pointer; ACopyData: Boolean);
-var
-  HasAlpha: Boolean;
-  BitmapFormat: NSBitmapFormat;
-  pool:NSAutoReleasePool;
 begin
   inherited Create(False);
   {$ifdef VerboseBitmaps}
@@ -755,39 +767,7 @@ begin
     FFreeData := False;
   end;
 
-  HasAlpha := AType in [cbtARGB, cbtRGBA];
-  // Non premultiplied bitmaps can't be used for bitmap context
-  // So we need to pre-multiply ourselves, but only if we were allowed
-  // to copy the data, otherwise we might corrupt the original
-  if ACopyData then
-    PreMultiplyAlpha();
-  BitmapFormat := 0;
-  if AType in [cbtARGB, cbtRGB] then
-    BitmapFormat := BitmapFormat or NSAlphaFirstBitmapFormat;
-
-  //WriteLn('[TCocoaBitmap.Create] FSamplesPerPixel=', FSamplesPerPixel,
-  //  ' FData=', DebugShowData());
-
-  // Create the associated NSImageRep
-  FImagerep := NSBitmapImageRep(NSBitmapImageRep.alloc.initWithBitmapDataPlanes_pixelsWide_pixelsHigh__colorSpaceName_bitmapFormat_bytesPerRow_bitsPerPixel(
-    @FData, // planes, BitmapDataPlanes
-    FWidth, // width, pixelsWide
-    FHeight,// height, PixelsHigh
-    FBitsPerSample,// bitsPerSample, bps
-    FSamplesPerPixel, // samplesPerPixel, spp
-    HasAlpha, // hasAlpha
-    False, // isPlanar
-    GetColorSpace, // colorSpaceName
-    BitmapFormat, // bitmapFormat
-    FBytesPerRow, // bytesPerRow
-    FBitsPerPixel //bitsPerPixel
-    ));
-
-  // Create the associated NSImage
-  FImage := NSImage.alloc.initWithSize(NSMakeSize(AWidth, AHeight));
-  pool := NSAutoreleasePool.alloc.init;
-  Image.addRepresentation(Imagerep);
-  pool.release;
+  CreateHandle();
 end;
 
 constructor TCocoaBitmap.CreateDefault;
@@ -797,7 +777,7 @@ end;
 
 destructor TCocoaBitmap.Destroy;
 begin
-  image.release;
+  FreeHandle();
   if FFreeData then System.FreeMem(FData);
   if FOriginalData <> nil then
     System.FreeMem(FOriginalData);
@@ -867,6 +847,60 @@ begin
     FBitsPerSample := ABitsPerPixel div 3;
     FSamplesPerPixel := 3;
   end;
+end;
+
+procedure TCocoaBitmap.CreateHandle();
+var
+  HasAlpha: Boolean;
+  BitmapFormat: NSBitmapFormat;
+begin
+  HasAlpha := FType in [cbtARGB, cbtRGBA];
+  // Non premultiplied bitmaps can't be used for bitmap context
+  // So we need to pre-multiply ourselves, but only if we were allowed
+  // to copy the data, otherwise we might corrupt the original
+  if FFreeData then
+    PreMultiplyAlpha();
+  BitmapFormat := 0;
+  if FType in [cbtARGB, cbtRGB] then
+    BitmapFormat := BitmapFormat or NSAlphaFirstBitmapFormat;
+
+  //WriteLn('[TCocoaBitmap.Create] FSamplesPerPixel=', FSamplesPerPixel,
+  //  ' FData=', DebugShowData());
+
+  // Create the associated NSImageRep
+  FImagerep := NSBitmapImageRep(NSBitmapImageRep.alloc.initWithBitmapDataPlanes_pixelsWide_pixelsHigh__colorSpaceName_bitmapFormat_bytesPerRow_bitsPerPixel(
+    @FData, // planes, BitmapDataPlanes
+    FWidth, // width, pixelsWide
+    FHeight,// height, PixelsHigh
+    FBitsPerSample,// bitsPerSample, bps
+    FSamplesPerPixel, // samplesPerPixel, spp
+    HasAlpha, // hasAlpha
+    False, // isPlanar
+    GetColorSpace, // colorSpaceName
+    BitmapFormat, // bitmapFormat
+    FBytesPerRow, // bytesPerRow
+    FBitsPerPixel //bitsPerPixel
+    ));
+
+  // Create the associated NSImage
+  FImage := NSImage.alloc.initWithSize(NSMakeSize(FWidth, FHeight));
+  //pool := NSAutoreleasePool.alloc.init;
+  Image.addRepresentation(Imagerep);
+  //pool.release;
+end;
+
+procedure TCocoaBitmap.FreeHandle;
+begin
+  if FImage = nil then Exit;
+  FImage.release;
+  FImage := nil;
+  FImageRep := nil;
+end;
+
+procedure TCocoaBitmap.ReCreateHandle;
+begin
+  FreeHandle();
+  CreateHandle();
 end;
 
 function TCocoaBitmap.CreateSubImage(const ARect: TRect): CGImageRef;
@@ -1252,7 +1286,7 @@ begin
     FClipRegion.Clear
   else
   begin
-    ctx.saveGraphicsState;
+    CGContextSaveGState(CGContext());
     FClipRegion.CombineWith(AClipRegion, Mode);
     FClipRegion.Apply(Self);
     FClipped := True;
@@ -1494,7 +1528,7 @@ begin
 
   if FClipped then
   begin
-    ctx.saveGraphicsState;
+    CGContextSaveGState(CGContext());
     FClipRegion.Apply(Self);
   end;
 end;
@@ -1522,10 +1556,9 @@ begin
 
   if FClipped then
   begin
-    ctx.saveGraphicsState;
+    CGContextSaveGState(CGContext());
     FClipRegion.Apply(Self);
   end;
-
 end;
 
 function TCocoaContext.InitDraw(width, height:Integer): Boolean;
@@ -1780,7 +1813,7 @@ procedure TCocoaContext.TextOut(X, Y: Integer; Options: Longint; Rect: PRect; UT
 var
   BrushSolid, FillBg: Boolean;
 begin
-  ctx.saveGraphicsState;
+  CGContextSaveGState(CGContext());
 
   if Assigned(Rect) then
   begin
@@ -1812,7 +1845,7 @@ begin
     FText.Draw(ctx, X, Y, FillBg, CharsDelta);
   end;
 
-  ctx.restoreGraphicsState;
+  CGContextRestoreGState(CGContext());
 end;
 
 procedure TCocoaContext.Frame(const R: TRect);
@@ -1913,7 +1946,7 @@ begin
   if FClipped  then
   begin
     Trans := CGContextGetCTM(CGContext);
-    ctx.RestoreGraphicsState;
+    CGContextRestoreGState(CGContext());
     ApplyTransform(Trans);
   end;
 end;
@@ -1948,14 +1981,13 @@ var
   Bmp: TCocoaBitmap;
   MskImage: CGImageRef;
   ImgRect: CGRect;
-
 begin
   Bmp := SrcDC.Bitmap;
   if not Assigned(Bmp) then
     Exit(False);
 
   if (Msk <> nil) and (Msk.Image <> nil) then
-    begin
+  begin
     MskImage := Msk.CreateMaskImage(Bounds(XMsk, YMsk, SrcWidth, SrcHeight));
     ImgRect := CGRectMake(x, -y, SrcWidth, SrcHeight);
     CGContextSaveGState(CGContext);
@@ -1969,16 +2001,15 @@ begin
 
     CGImageRelease(MskImage);
     CGContextRestoreGState(CGContext);
-    end
-    else
-    begin
-    // convert Y coodrinate of the source bitmap
+    Bmp.ReCreateHandle(); // Fix for bug 28102
+  end
+  else
+  begin
+    // convert Y coordinate of the source bitmap
     YSrc := Bmp.Height - (SrcHeight + YSrc);
     Result := DrawImageRep(GetNSRect(X, Y, Width, Height),GetNSRect(XSrc, YSrc, SrcWidth, SrcHeight), bmp.ImageRep);
-    end;
-
-
-
+    Bmp.ReCreateHandle(); // Fix for bug 28102
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -2632,6 +2663,49 @@ begin
   Dashes := nil;
 end;
 
+constructor TCocoaPen.Create(const AColor: TColor; AStyle: TFPPenStyle;
+  ACosmetic: Boolean; AWidth: Integer; AMode: TFPPenMode; AEndCap: TFPPenEndCap;
+  AJoinStyle: TFPPenJoinStyle; AGlobal: Boolean);
+begin
+  inherited Create(AColor, True, AGlobal);
+
+  case AStyle of
+    psSolid:       FStyle := PS_SOLID;
+    psDash:        FStyle := PS_DASH;
+    psDot:         FStyle := PS_DOT;
+    psDashDot:     FStyle := PS_DASHDOT;
+    psDashDotDot:  FStyle := PS_DASHDOTDOT;
+    psinsideFrame: FStyle := PS_INSIDEFRAME;
+    psPattern:     FStyle := PS_USERSTYLE;
+    psClear:       FStyle := PS_NULL;
+  end;
+
+  if ACosmetic then
+  begin
+    FWidth := 1;
+    FIsGeometric := False;
+  end
+  else
+  begin
+    FIsGeometric := True;
+
+    case AJoinStyle of
+      pjsRound: FJoinStyle := kCGLineJoinRound;
+      pjsBevel: FJoinStyle := kCGLineJoinBevel;
+      pjsMiter: FJoinStyle := kCGLineJoinMiter;
+    end;
+
+    case AEndCap of
+      pecRound: FEndCap := kCGLineCapRound;
+      pecSquare: FEndCap := kCGLineCapSquare;
+      pecFlat: FEndCap := kCGLineCapButt;
+    end;
+    FWidth := Max(1, AWidth);
+  end;
+  FIsExtPen := False;
+  Dashes := nil;
+end;
+
 { TCocoaBrush }
 
 procedure DrawBitmapPattern(info: UnivPtr; c: CGContextRef); MWPascal;
@@ -2791,6 +2865,22 @@ begin
     end
     else
       inherited Create(0, True, AGlobal);
+  end;
+end;
+
+constructor TCocoaBrush.Create(const AColor: TColor; AStyle: TFPBrushStyle; APattern: TBrushPattern;
+  AGlobal: Boolean);
+begin
+  case AStyle of
+  bsSolid:
+  begin
+    inherited Create(AColor, True, AGlobal);
+  end;
+  // bsHorizontal, bsVertical, bsFDiagonal,
+  // bsBDiagonal, bsCross, bsDiagCross,
+  // bsImage, bsPattern
+  else // bsClear
+    inherited Create(AColor, False, AGlobal);
   end;
 end;
 

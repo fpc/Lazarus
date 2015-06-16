@@ -1,0 +1,44 @@
+object SelectDownloadForm: TSelectDownloadForm
+  Left = 612
+  Height = 226
+  Top = 344
+  Width = 354
+  Caption = 'Select download format for file'
+  ClientHeight = 226
+  ClientWidth = 354
+  Position = poOwnerFormCenter
+  LCLVersion = '1.5'
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 33
+    Top = 187
+    Width = 342
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
+    TabOrder = 0
+    ShowButtons = [pbOK, pbCancel]
+  end
+  object RGFormat: TRadioGroup
+    Left = 0
+    Height = 181
+    Top = 0
+    Width = 354
+    Align = alClient
+    AutoFill = True
+    Caption = 'Available download formats'
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+    ChildSizing.EnlargeVertical = crsHomogenousChildResize
+    ChildSizing.ShrinkHorizontal = crsScaleChilds
+    ChildSizing.ShrinkVertical = crsScaleChilds
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 1
+    TabOrder = 1
+  end
+end

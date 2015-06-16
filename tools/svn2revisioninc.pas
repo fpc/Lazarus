@@ -99,6 +99,25 @@ var
 const
   RevisionIncComment = '// Created by Svn2RevisionInc';
   
+function SvnInPath: Boolean;
+var
+  P: TProcessUTF8;
+begin
+  Result := True;
+  P := TProcessUTF8.Create(nil);
+  try
+    P.Options := [poUsePipes, poWaitOnExit];
+    P.CommandLine := 'svn --version';
+    try
+      P.Execute;
+    except
+      Result := False;
+    end;
+  finally
+    P.Destroy;
+  end;
+end;
+
 function GitInPath: Boolean;
 var
   P: TProcessUTF8;
@@ -548,6 +567,9 @@ begin
     debugln('Error: Invalid constant name ', ConstName, '.');
     exit;
   end;
+
+  if not SvnInPath then
+    debugln('Warning: svn not in path.');
 
   Result := True;
 end;

@@ -222,8 +222,8 @@ type
 
 // Copy a file and a whole directory tree
 function CopyFile(const SrcFilename, DestFilename: string;
-                  Flags: TCopyFileFlags=[cffOverwriteFile]): boolean;
-function CopyFile(const SrcFilename, DestFilename: string; PreserveTime: boolean): boolean;
+                  Flags: TCopyFileFlags=[cffOverwriteFile]; ExceptionOnError: Boolean=False): boolean;
+function CopyFile(const SrcFilename, DestFilename: string; PreserveTime: boolean; ExceptionOnError: Boolean=False): boolean;
 function CopyDirTree(const SourceDir, TargetDir: string; Flags: TCopyFileFlags=[]): Boolean;
 
 // file actions

@@ -1,4 +1,3 @@
- Valdas Jankunas <zmuogs@gmail.com>, 2012.
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -135,7 +134,9 @@ msgid "C&ut"
 msgstr "Iš&kirpti"
 
 #: guitestrunner.smiruntest
-msgid "  &Run all selected (checked) tests"
+#, fuzzy
+#| msgid "  &Run all selected (checked) tests"
+msgid "&Run all selected (checked) tests"
 msgstr "  &Vykdyti parinktus testavimus"
 
 #: guitestrunner.smishowfail

@@ -427,8 +427,7 @@ type
     procedure HandleDirective;
     procedure UpdateCleanedSource(NewCopiedSrcPos: integer);
     function ReturnFromIncludeFile: boolean;
-    function ParseKeyWord(StartPos, WordLen: integer; LastTokenType: TLSTokenType
-                          ): boolean;
+    function ParseKeyWord(StartPos: integer; LastTokenType: TLSTokenType): boolean;
     function DoEndToken: boolean; inline;
     function DoSourceTypeToken: boolean; inline;
     function DoInterfaceToken: boolean; inline;
@@ -582,8 +581,8 @@ type
                     out ACleanPos: integer): integer; // 0=valid CleanPos
                           //-1=CursorPos was skipped, CleanPos between two links
                           // 1=CursorPos beyond scanned code
-    function CleanedPosToCursor(ACleanedPos: integer; var ACursorPos: integer;
-                                var ACode: Pointer): boolean;
+    function CleanedPosToCursor(ACleanedPos: integer; out ACursorPos: integer;
+                                out ACode: Pointer): boolean;
     function CleanedPosToStr(ACleanedPos: integer): string;
     function LastErrorIsInFrontOfCleanedPos(ACleanedPos: integer): boolean;
     procedure RaiseLastErrorIfInFrontOfCleanedPos(ACleanedPos: integer);
@@ -1603,6 +1602,30 @@ begin
         end;
       end;
     end;
+  '&':
+    begin
+      // identifier with "&" character or an octal number
+      inc(p);
+      case p^ of
+        '_','A'..'Z','a'..'z'://identifier: &uses
+        begin
+          inc(p);
+          while IsIdentChar[p^] do
+            inc(p);
+          TokenType:=lsttWord;
+        end;
+        '0'..'7'://octal number: &10
+        begin
+          inc(p);
+          while IsOctNumberChar[p^] do
+            inc(p);
+          TokenType:=lsttNone;
+        end;
+      else
+        TokenType:=lsttNone;
+      end;
+      SrcPos:=p-PChar(Src)+1;
+    end;
   '''','#':
     begin
       TokenType:=lsttStringConstant;
@@ -1836,7 +1859,7 @@ begin
         //debugln(['TLinkScanner.Scan Token ',dbgstr(Src,TokenStart,SrcPos-TokenStart)]);
         ReadNextToken;
         if TokenType=lsttWord then
-          ParseKeyWord(TokenStart,SrcPos-TokenStart,LastTokenType);
+          ParseKeyWord(TokenStart,LastTokenType);
 
         //writeln('TLinkScanner.Scan G "',copy(Src,TokenStart,SrcPos-TokenStart),'" LastTokenType=',LastTokenType,' TokenType=',TokenType);
         if (LastTokenType=lsttEnd) and (TokenType=lsttPoint) then begin
@@ -2621,8 +2644,8 @@ function TLinkScanner.GuessMisplacedIfdefEndif(StartCursorPos: integer;
     IfStack:=nil;
   end;
   
-  function InitGuessMisplaced(var CurToken: TToken; ACode: Pointer;
-    var ASrc: string; var ASrcLen: integer): boolean;
+  function InitGuessMisplaced(out CurToken: TToken; ACode: Pointer;
+    out ASrc: string; out ASrcLen: integer): boolean;
   var
     ASrcLog: TSourceLog;
   begin
@@ -2698,7 +2721,6 @@ function TLinkScanner.GuessMisplacedIfdefEndif(StartCursorPos: integer;
   end;
 
   function GuessMisplacedIfdefEndifInCode(ACode: Pointer;
-    StartCursorPos: integer; StartCode: Pointer;
     var EndCursorPos: integer; var EndCode: Pointer): boolean;
   var
     ASrc: string;
@@ -2798,7 +2820,7 @@ begin
   try
     while LinkId<LinkCount do begin
       Result:=GuessMisplacedIfdefEndifInCode(FLinks[LinkID].Code,
-        StartCursorPos,StartCode,EndCursorPos,EndCode);
+        EndCursorPos,EndCode);
       if Result then exit;
       // search next code
       LastCode:=FLinks[LinkID].Code;
@@ -4103,7 +4125,7 @@ begin
   Result:=SrcPos<=SrcLen;
 end;
 
-function TLinkScanner.ParseKeyWord(StartPos, WordLen: integer;
+function TLinkScanner.ParseKeyWord(StartPos: integer;
   LastTokenType: TLSTokenType): boolean;
 var
   p: PChar;
@@ -4392,8 +4414,8 @@ begin
     Result:=1; // default: CursorPos beyond/outside scanned code
 end;
 
-function TLinkScanner.CleanedPosToCursor(ACleanedPos: integer;
-  var ACursorPos: integer; var ACode: Pointer): boolean;
+function TLinkScanner.CleanedPosToCursor(ACleanedPos: integer; out
+  ACursorPos: integer; out ACode: Pointer): boolean;
 
   procedure ConsistencyCheckI(i: integer);
   begin
@@ -4449,6 +4471,8 @@ begin
     end;
     ConsistencyCheckI(1);
   end;
+  ACode:=nil;
+  ACursorPos:=0;
 end;
 
 function TLinkScanner.CleanedPosToStr(ACleanedPos: integer): string;
@@ -4489,6 +4513,7 @@ begin
     exit;
   end;
   ACode:=FLinks[LinkIndex].Code;
+  CodeIsReadOnly:=false;
   FOnGetSourceStatus(Self,ACode,CodeIsReadOnly);
   if CodeIsReadOnly then begin
     EditError(ctsfileIsReadOnly, ACode);

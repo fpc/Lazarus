@@ -57,13 +57,11 @@ type
     procedure Init(TheStatements: TStrings; TheInsertPositions: TObjectList);
   end;
 
-function QuickFixLocalVarNotInitialized(Code: TCodeBuffer; X, Y: integer;
-  Identifier: string): boolean;
+function QuickFixLocalVarNotInitialized(Code: TCodeBuffer; X, Y: integer): boolean;
 
 implementation
 
-function QuickFixLocalVarNotInitialized(Code: TCodeBuffer; X, Y: integer;
-  Identifier: string): boolean;
+function QuickFixLocalVarNotInitialized(Code: TCodeBuffer; X, Y: integer): boolean;
 var
   Statements: TStrings;
   InsertPositions: TObjectList;

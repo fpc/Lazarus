@@ -651,8 +651,9 @@ begin
     {. $note WE MUST USE NON NATIVE DIALOGS HERE, OTHERWISE NO SIGNALS #16532.}
     QFileDialog_setOption(QFileDialogH(FileDialog.Widget),
       QFileDialogDontUseNativeDialog, True);
-
+    {$ifndef QT_NATIVE_DIALOGS}
     FileDialog.initializePreview(TPreviewFileDialog(ACommonDialog).PreviewFileControl);
+    {$endif}
     FileDialog.AttachEvents;
 
     Result := THandle(FileDialog);

@@ -852,7 +852,7 @@ begin
   if c = 0 then
     Result := -1
   else
-    Result := ((ALine - 1) * Height) div c;
+    Result := (Int64(ALine - 1) * Int64(Height)) div c;
 end;
 
 function TSynGutterLineOverviewProvider.TextLineToPixelEnd(ALine: Integer): Integer;
@@ -864,8 +864,8 @@ begin
   if c = 0 then
     Result := -1
   else begin
-    Result := ((ALine - 1) * Height) div c;
-    n      := ( ALine      * Height) div c - 1; // next line - 1 pix
+    Result := (Int64(ALine - 1) * Int64(Height)) div c;
+    n      := (Int64(ALine)     * Int64(Height)) div c - 1; // next line - 1 pix
     if n > Result then
       Result := n;
   end;
@@ -873,14 +873,14 @@ end;
 
 function TSynGutterLineOverviewProvider.PixelLineToText(ALineIdx: Integer): Integer;
 var
-  c: Integer;
+  c: Int64;
 begin
   c := Max(1, TextBuffer.Count);
   if c = 0 then
     Result := -1
   else begin
-    Result := (ALineIdx * c) div Height + 1;
-    if ((Result - 1) * Height) div c <> ALineIdx then
+    Result := (Int64(ALineIdx) * c) div Height + 1;
+    if (Int64(Result - 1) * Int64(Height)) div c <> ALineIdx then
       inc(Result);
   end;
 end;
@@ -1359,7 +1359,7 @@ begin
   if c = 0 then
     Result := -1
   else
-    Result := (ALine - 1) * Height div c;
+    Result := Int64(ALine - 1) * Int64(Height) div c;
 end;
 
 function TSynGutterLineOverview.TextLineToPixelEnd(ALine: Integer): Integer;
@@ -1371,8 +1371,8 @@ begin
   if c = 0 then
     Result := -1
   else begin
-    Result := ((ALine - 1) * Height) div c;
-    n      := ( ALine      * Height) div c - 1; // next line - 1 pix
+    Result := (Int64(ALine - 1) * Int64(Height)) div c;
+    n      := (Int64(ALine)     * Int64(Height)) div c - 1; // next line - 1 pix
     if n > Result then
       Result := n;
   end;

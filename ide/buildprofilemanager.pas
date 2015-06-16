@@ -161,9 +161,6 @@ implementation
 
 {$R *.lfm}
 
-uses
-  AddProfileDialog;
-
 const
   DefaultTargetDirectory = ''; // empty will be replaced by '$(ConfDir)/bin';
 
@@ -560,25 +557,21 @@ end;
 procedure TBuildProfileManagerForm.AddButtonClick(Sender: TObject);
 var
   NewProfile: TBuildLazarusProfile;
+  Str: string;
 begin
-  with TAddProfileForm.Create(nil) do
-  try
-    Caption:=lisLazBuildNewProf;
-    ProfileHeaderLabel.Caption:=lisLazBuildNewProfInfo;
-    if (ShowModal=mrOk) and (NameEdit.Text<>'') then begin
-      // Update ProfsToManage collection.
-      NewProfile:=TBuildLazarusProfile.Create(fProfsToManage,NameEdit.Text);
-      NewProfile.Assign(fProfsToManage.Current, False);
-      fProfsToManage.Add(NewProfile);
-      fProfsToManage.fCurrentIndex:=fProfsToManage.Count-1; // Select the new profile.
-      // Update ListBox
-      ProfilesListbox.Items.Add(NameEdit.Text);
-      ProfilesListbox.ItemIndex:=ProfilesListbox.Count-1;
-      EnableButtons;
-    end;
-  finally
-    Free;
-  end;
+  Str:= '';
+  if not InputQuery(lisLazBuildNewProf, lisLazBuildNewProfInfo, Str) then Exit;
+  if Str='' then Exit;
+
+  // Update ProfsToManage collection.
+  NewProfile:=TBuildLazarusProfile.Create(fProfsToManage,Str);
+  NewProfile.Assign(fProfsToManage.Current, False);
+  fProfsToManage.Add(NewProfile);
+  fProfsToManage.fCurrentIndex:=fProfsToManage.Count-1; // Select the new profile.
+  // Update ListBox
+  ProfilesListbox.Items.Add(Str);
+  ProfilesListbox.ItemIndex:=ProfilesListbox.Count-1;
+  EnableButtons;
 end;
 
 procedure TBuildProfileManagerForm.RemoveButtonClick(Sender: TObject);
@@ -612,28 +605,24 @@ end;
 procedure TBuildProfileManagerForm.EditButtonClick(Sender: TObject);
 var
   i, SelI: integer;
+  Str: string;
 begin
   i:=ProfilesListbox.ItemIndex;
   if i<0 then exit;
-  with TAddProfileForm.Create(nil) do
-  try
-    Caption:=lisLazBuildRenameProf;
-    ProfileHeaderLabel.Caption:=lisLazBuildRenameProfInfo;
-    NameEdit.Text:=ProfilesListbox.Items[i];
-    if (ShowModal=mrOk) and (NameEdit.Text<>'') then begin
-      // Update ProfsToManage collection.
-      fProfsToManage[i].fName:=NameEdit.Text;
-      // Update selected list.
-      SelI:=fProfsToManage.Selected.IndexOf(ProfilesListbox.Items[i]);
-      if SelI>-1 then
-        fProfsToManage.Selected[SelI]:=NameEdit.Text;
-      // Update ListBox
-      ProfilesListbox.Items[i]:=NameEdit.Text;
-      EnableButtons;
-    end;
-  finally
-    Free;
-  end;
+
+  Str:= ProfilesListbox.Items[i];
+  if not InputQuery(lisLazBuildRenameProf, lisLazBuildRenameProfInfo, Str) then Exit;
+  if Str='' then Exit;
+
+  // Update ProfsToManage collection.
+  fProfsToManage[i].fName:=Str;
+  // Update selected list.
+  SelI:=fProfsToManage.Selected.IndexOf(ProfilesListbox.Items[i]);
+  if SelI>-1 then
+    fProfsToManage.Selected[SelI]:=Str;
+  // Update ListBox
+  ProfilesListbox.Items[i]:=Str;
+  EnableButtons;
 end;
 
 procedure TBuildProfileManagerForm.MoveUpButtonClick(Sender: TObject);

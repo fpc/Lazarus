@@ -1,42 +1,43 @@
 object NewProjectDialog: TNewProjectDialog
-  Left = 240
+  Left = 371
   Height = 302
-  Top = 451
+  Top = 381
   Width = 561
+  BorderIcons = [biSystemMenu]
   Caption = 'NewProjectDialog'
   ClientHeight = 302
   ClientWidth = 561
   Position = poScreenCenter
-  LCLVersion = '0.9.31'
+  LCLVersion = '1.5'
   object Panel1: TPanel
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
     AnchorSideRight.Control = Owner
     Left = 6
-    Height = 252
+    Height = 258
     Top = 6
     Width = 549
     Align = alClient
     BorderSpacing.Around = 6
     BevelOuter = bvNone
-    ClientHeight = 252
+    ClientHeight = 258
     ClientWidth = 549
     TabOrder = 0
     object DescriptionGroupBox: TGroupBox
-      Left = 251
-      Height = 252
+      Left = 274
+      Height = 258
       Top = 0
-      Width = 298
+      Width = 275
       Align = alClient
       Caption = 'DescriptionGroupBox'
-      ClientHeight = 231
-      ClientWidth = 294
-      TabOrder = 0
+      ClientHeight = 238
+      ClientWidth = 271
+      TabOrder = 1
       object HelpLabel: TLabel
         Left = 6
-        Height = 219
+        Height = 226
         Top = 6
-        Width = 282
+        Width = 259
         Align = alClient
         BorderSpacing.Around = 6
         Caption = 'HelpLabel'
@@ -44,28 +45,33 @@ object NewProjectDialog: TNewProjectDialog
         WordWrap = True
       end
     end
-    object ListBox: TListBox
-      Left = 0
-      Height = 252
-      Top = 0
-      Width = 246
-      Align = alLeft
-      Anchors = []
-      ItemHeight = 0
-      OnDblClick = ListBoxDblClick
-      TabOrder = 1
-    end
     object Splitter1: TSplitter
-      Left = 246
-      Height = 252
+      Left = 269
+      Height = 258
       Top = 0
       Width = 5
+    end
+    object Tree: TTreeView
+      Left = 0
+      Height = 258
+      Top = 0
+      Width = 269
+      Align = alLeft
+      Anchors = []
+      DefaultItemHeight = 18
+      HideSelection = False
+      ReadOnly = True
+      ScrollBars = ssAutoBoth
+      TabOrder = 0
+      OnDblClick = TreeDblClick
+      OnSelectionChanged = TreeSelectionChange
+      Options = [tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
     end
   end
   object ButtonPanel: TButtonPanel
     Left = 6
-    Height = 32
-    Top = 264
+    Height = 26
+    Top = 270
     Width = 549
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True

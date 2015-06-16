@@ -736,8 +736,7 @@ begin
   Result := Assigned(ctx) and (not Assigned(br) or (br is TCocoaBrush));
   if not Result then Exit;
 
-  with Rect do
-    ctx.Rectangle(Left, Top, Right, Bottom, True, TCocoaBrush(br));
+  ctx.Rectangle(Rect.Left, Rect.Top, Rect.Right, Rect.Bottom, True, TCocoaBrush(br));
 end;
 
 function TCocoaWidgetSet.FillRgn(DC: HDC; RegionHnd: HRGN; hbr: HBRUSH): Bool;
@@ -2300,7 +2299,6 @@ begin
 
   if Result = 1 then
     NSObject(Handle).lclScreenToLocal(P.X, P.Y);
-
 end;
 
 function TCocoaWidgetSet.SelectClipRGN(DC: hDC; RGN: HRGN): Longint;

@@ -156,7 +156,7 @@ uses
   UseUnitDlg, FindOverloadsDlg, EditorFileManager,
   CleanDirDlg, CodeContextForm, AboutFrm, CompatibilityRestrictions,
   RestrictionBrowser, ProjectWizardDlg, IDECmdLine, IDEGuiCmdLine, CodeExplOpts,
-  EditorMacroListViewer, SourceFileManager, ToolWin,
+  EditorMacroListViewer, SourceFileManager,
   // main ide
   MainBar, MainIntf, MainBase;
 
@@ -365,7 +365,6 @@ type
 
     // options menu
     procedure mnuEnvGeneralOptionsClicked(Sender: TObject);
-    procedure mnuEnvEditorOptionsClicked(Sender: TObject);
     procedure mnuEnvCodeTemplatesClicked(Sender: TObject);
     procedure mnuEnvCodeToolsDefinesEditorClicked(Sender: TObject);
     procedure mnuEnvRescanFPCSrcDirClicked(Sender: TObject);
@@ -436,6 +435,8 @@ type
     // ComponentPalette events
     procedure ComponentPaletteClassSelected(Sender: TObject);
     // Copied from CodeTyphon
+    procedure SelComponentPageButtonMouseDown(Sender: TObject;
+      {%H-}Button: TMouseButton; {%H-}Shift: TShiftState; {%H-}X, {%H-}Y: Integer); override;
     procedure SelComponentPageButtonClick(Sender: TObject); override;
 
     // SourceNotebook events
@@ -776,7 +777,8 @@ type
     function DoWarnAmbiguousFiles: TModalResult;
     function DoSaveForBuild(AReason: TCompileReason): TModalResult; override;
     function DoBuildProject(const AReason: TCompileReason;
-                            Flags: TProjectBuildFlags): TModalResult; override;
+                            Flags: TProjectBuildFlags;
+                            FinalizeResources: boolean = True): TModalResult; override;
     function UpdateProjectPOFile(AProject: TProject): TModalResult;
     function DoAbortBuild(Interactive: boolean): TModalResult;
     procedure DoCompile;
@@ -861,6 +863,7 @@ type
                         ActiveUnitInfo: TUnitInfo;
                         NewSource: TCodeBuffer; NewX, NewY, NewTopLine: integer;
                         Flags: TJumpToCodePosFlags = [jfFocusEditor]): TModalResult; override;
+    function DoShowCodeToolBossError: TMessageLine; override;
     procedure DoJumpToCodeToolBossError; override;
     function NeedSaveSourceEditorChangesToCodeCache(AEditor: TSourceEditorInterface): boolean; override;
     function SaveSourceEditorChangesToCodeCache(AEditor: TSourceEditorInterface): boolean; override;
@@ -1412,7 +1415,6 @@ var
   FormCreator: TIDEWindowCreator;
   PkgMngr: TPkgManager;
   CompPalette: TComponentPalette;
-  AMenuHeight: Integer;
 begin
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.Create START');{$ENDIF}
   inherited Create(TheOwner);
@@ -1457,21 +1459,6 @@ begin
   // build and position the MainIDE form
   Application.CreateForm(TMainIDEBar,MainIDEBar);
   MainIDEBar.OnActive:=@OnMainBarActive;
-
-  AMenuHeight := LCLIntf.GetSystemMetrics(SM_CYMENU);
-  if AMenuHeight > 0 then
-  begin
-    // what we know:
-    // 1. cmd speedbuttons height = 22
-    // 2. components palette buttons = 32
-    // 3. menu height provided by widgetset (varies , depends on theme)
-    // so we set 22 + 32 + (borders * 2).
-    MainIDEBar.Constraints.MaxHeight := AMenuHeight +
-      22 {cmd speedbtns} + 32 {component buttons} +
-      LCLIntf.GetSystemMetrics(SM_CYSIZEFRAME) +
-      (LCLIntf.GetSystemMetrics(SM_CYBORDER) * 2) {borders};
-  end else
-    MainIDEBar.Constraints.MaxHeight:=85;
 
   MainIDEBar.Name := NonModalIDEWindowNames[nmiwMainIDEName];
   FormCreator:=IDEWindowCreators.Add(MainIDEBar.Name);
@@ -1533,6 +1520,7 @@ begin
   CompPalette.OnOpenPackage:=@PkgMngr.IDEComponentPaletteOpenPackage;
   CompPalette.OnOpenUnit:=@PkgMngr.IDEComponentPaletteOpenUnit;
   CompPalette.PageControl:=MainIDEBar.ComponentPageControl;
+  CompPalette.OnChangeActivePage:=@MainIDEBar.SetMainIDEHeightEvent;
   // load installed packages
   PkgBoss.LoadInstalledPackages;
 
@@ -1543,7 +1531,6 @@ begin
 
   // load package configs
   HelpBoss.LoadHelpOptions;
-  MainIDEBar.RefreshCoolbar;
 end;
 
 procedure TMainIDE.StartIDE;
@@ -2021,6 +2008,7 @@ begin
   MainIDEBar.MainSplitter.MinSize := 50;
   MainIDEBar.MainSplitter.OnMoved := @MainIDEBar.MainSplitterMoved;
 
+
   MainIDEBar.CoolBar := TCoolBar.Create(OwningComponent);
   MainIDEBar.CoolBar.Parent := MainIDEBar;
   if EnvironmentOptions.ComponentPaletteVisible then
@@ -2030,16 +2018,15 @@ begin
   end
   else
     MainIDEBar.CoolBar.Align := alClient;
+
   // IDE Coolbar object wraps MainIDEBar.CoolBar.
-  IDECoolBar:=TIDECoolBar.Create(MainIDEBar.CoolBar);
-  IDECoolBar.SetCoolBarDefaults;
-  IDECoolBar.CreateDefaultToolbars;
-  MainIDEBar.CoolBar.Visible := EnvironmentOptions.IDECoolBarOptions.IDECoolBarVisible;
+  IDECoolBar := TIDECoolBar.Create(MainIDEBar.CoolBar);
+  IDECoolBar.IsVisible := EnvironmentOptions.IDECoolBarOptions.IDECoolBarVisible;;
   MainIDEBar.CoolBar.OnChange := @MainIDEBar.CoolBarOnChange;
 
   MainIDEBar.CreatePopupMenus(OwningComponent);
-  MainIDEBar.miOptions.OnClick := @ToolBarOptionsClick;
-  MainIDEBar.CoolBar.PopupMenu := MainIDEBar.pmOptions;
+  MainIDEBar.OptionsMenuItem.OnClick := @ToolBarOptionsClick;
+  MainIDEBar.CoolBar.PopupMenu := MainIDEBar.OptionsPopupMenu;
   MainIDEBar.OpenFilePopupMenu.OnPopup := @OpenFilePopupMenuPopup;
   MainIDEBar.SetBuildModePopupMenu.OnPopup := @SetBuildModePopupMenuPopup;
 end;
@@ -2143,7 +2130,6 @@ begin
   SourceEditorManager.OnClearBookmarkId := @OnSrcNotebookEditorClearBookmarkId;
   SourceEditorManager.OnSetBookmark := @OnSrcNotebookEditorDoSetBookmark;
   SourceEditorManager.OnGotoBookmark := @OnSrcNotebookEditorDoGotoBookmark;
-  SourceEditorManager.OnEditorPropertiesClicked := @mnuEnvEditorOptionsClicked;
   SourceEditorManager.OnFindDeclarationClicked := @OnSrcNotebookFindDeclaration;
   SourceEditorManager.OnInitIdentCompletion :=@OnSrcNotebookInitIdentCompletion;
   SourceEditorManager.OnShowCodeContext :=@OnSrcNotebookShowCodeContext;
@@ -2178,6 +2164,11 @@ begin
   MainIDEBar.itmJumpHistory.OnClick := @SourceEditorManager.ViewJumpHistoryClicked;
   MainIDEBar.itmJumpToNextBookmark.OnClick := @SourceEditorManager.BookMarkNextClicked;
   MainIDEBar.itmJumpToPrevBookmark.OnClick := @SourceEditorManager.BookMarkPrevClicked;
+  MainIDEBar.itmJumpToInterface.OnClick := @SourceEditorManager.JumpToInterfaceClicked;
+  MainIDEBar.itmJumpToInterfaceUses.OnClick := @SourceEditorManager.JumpToInterfaceUsesClicked;
+  MainIDEBar.itmJumpToImplementation.OnClick := @SourceEditorManager.JumpToImplementationClicked;
+  MainIDEBar.itmJumpToImplementationUses.OnClick := @SourceEditorManager.JumpToImplementationUsesClicked;
+  MainIDEBar.itmJumpToInitialization.OnClick := @SourceEditorManager.JumpToInitializationClicked;
   MainIDEBar.itmFindBlockStart.OnClick:=@mnuSearchFindBlockStart;
   MainIDEBar.itmFindBlockOtherEnd.OnClick:=@mnuSearchFindBlockOtherEnd;
   MainIDEBar.itmFindDeclaration.OnClick:=@mnuSearchFindDeclaration;
@@ -2909,15 +2900,15 @@ begin
     // append a filter for all file types of the open files in the source editor
     CreateFileDialogFilterForSourceEditorFiles(Filter,AllEditorMask,AllMask);
     if (AllEditorMask<>'') then
-      Filter:=Filter+ '|' + lisEditorFileTypes + ' (' + AllEditorMask + ')|' +
+      Filter:=Filter+ '|' + dlgFilterLazarusEditorFile + ' (' + AllEditorMask + ')|' +
         AllEditorMask;
 
     // prepend an all normal files filter
-    Filter:=lisLazarusFile + ' ('+AllMask+')|' + AllMask + '|' + Filter;
+    Filter:=dlgFilterLazarusFile + ' ('+AllMask+')|' + AllMask + '|' + Filter;
 
     // append an any files filter
     if TFileDialog.FindMaskInFilter(Filter,GetAllFilesMask)<1 then
-      Filter:=Filter+ '|' + dlgAllFiles + ' (' + GetAllFilesMask + ')|' + GetAllFilesMask;
+      Filter:=Filter+ '|' + dlgFilterAll + ' (' + GetAllFilesMask + ')|' + GetAllFilesMask;
 
     OpenDialog.Filter := Filter;
 
@@ -3043,13 +3034,11 @@ begin
   try
     SaveDialog.Title:=lisSaveSpace;
     SaveDialog.FileName:=SrcEdit.PageName+'.html';
-    SaveDialog.Filter := ' (*.html;*.htm)|*.html;*.htm';
-    SaveDialog.Options := [ofOverwritePrompt, ofPathMustExist{, ofNoReadOnlyReturn}]; // Does not work for desktop
+    SaveDialog.Filter:=dlgFilterHTML+' (*.html;*.htm)|*.html;*.htm';
+    SaveDialog.Options:=[ofOverwritePrompt, ofPathMustExist{, ofNoReadOnlyReturn}]; // Does not work for desktop
     // show save dialog
     if (not SaveDialog.Execute) or (ExtractFileName(SaveDialog.Filename)='')
-    then begin
-      exit;
-    end;
+      then exit;
     Filename:=ExpandFileNameUTF8(SaveDialog.Filename);
   finally
     SaveDialog.Free;
@@ -3702,13 +3691,13 @@ end;
 
 procedure TMainIDE.DoToggleViewComponentPalette;
 var
-  ComponentPaletteVisible: boolean;
+  ComponentPaletteVisible: Boolean;
 begin
   ComponentPaletteVisible:=not MainIDEBar.ComponentPageControl.Visible;
   MainIDEBar.itmViewComponentPalette.Checked:=ComponentPaletteVisible;
   MainIDEBar.ComponentPageControl.Visible:=ComponentPaletteVisible;
   EnvironmentOptions.ComponentPaletteVisible:=ComponentPaletteVisible;
-     if ComponentPaletteVisible then
+  if ComponentPaletteVisible then
   begin
     if MainIDEBar.CoolBar.Align = alClient then
     begin
@@ -3723,6 +3712,10 @@ begin
     MainIDEBar.CoolBar.Align := alClient;
   MainIDEBar.MainSplitter.Visible := MainIDEBar.Coolbar.Visible and
                                      MainIDEBar.ComponentPageControl.Visible;
+
+  if ComponentPaletteVisible then//when showing component palette, it must be visible to calculate it correctly
+    MainIDEBar.DoSetMainIDEHeight(MainIDEBar.WindowState = wsMaximized, 55);//it will cause the IDE to flicker, but it's better than to have wrongly calculated IDE height
+  MainIDEBar.SetMainIDEHeight;
 end;
 
 procedure TMainIDE.DoToggleViewIDESpeedButtons;
@@ -3736,6 +3729,7 @@ begin
   EnvironmentOptions.IDECoolBarOptions.IDECoolBarVisible := SpeedButtonsVisible;
   MainIDEBar.MainSplitter.Visible := MainIDEBar.Coolbar.Visible and
                                      MainIDEBar.ComponentPageControl.Visible;
+  MainIDEBar.SetMainIDEHeight;
 end;
 
 procedure TMainIDE.AllowCompilation(aAllow: Boolean);
@@ -4465,8 +4459,8 @@ begin
     InputHistories.ApplyFileDialogSettings(OpenDialog);
     OpenDialog.Title:=lisChooseDelphiUnit;
     OpenDialog.Options:=OpenDialog.Options+[ofPathMustExist,ofFileMustExist,ofAllowMultiSelect];
-    OpenDialog.Filter:=lisDelphiUnit+' (*.pas)|*.pas|'+
-                       dlgAllFiles+' ('+GetAllFilesMask+')|' + GetAllFilesMask;
+    OpenDialog.Filter:=dlgFilterDelphiUnit+' (*.pas)|*.pas|'+
+                       dlgFilterAll+' ('+GetAllFilesMask+')|' + GetAllFilesMask;
     if InputHistories.LastConvertDelphiUnit<>'' then begin
       OpenDialog.InitialDir:=ExtractFilePath(InputHistories.LastConvertDelphiUnit);
       OpenDialog.Filename  :=ExtractFileName(InputHistories.LastConvertDelphiUnit);
@@ -4502,9 +4496,9 @@ begin
     InputHistories.ApplyFileDialogSettings(OpenDialog);
     OpenDialog.Title:=lisChooseDelphiProject;
     OpenDialog.Options:=OpenDialog.Options+[ofPathMustExist,ofFileMustExist];
-    OpenDialog.Filter:=lisDelphiProject+' (*.dpr)|*.dpr|'+
-                       lisLazarusProject+' (*.lpr)|*.lpr|'+
-                       dlgAllFiles+' ('+GetAllFilesMask+')|' + GetAllFilesMask;
+    OpenDialog.Filter:=dlgFilterDelphiProject+' (*.dpr)|*.dpr|'+
+                       dlgFilterLazarusProject+' (*.lpr)|*.lpr|'+
+                       dlgFilterAll+' ('+GetAllFilesMask+')|' + GetAllFilesMask;
     if InputHistories.LastConvertDelphiProject<>'' then begin
       OpenDialog.InitialDir:=ExtractFilePath(InputHistories.LastConvertDelphiProject);
       OpenDialog.Filename  :=ExtractFileName(InputHistories.LastConvertDelphiProject);
@@ -4532,8 +4526,8 @@ begin
     InputHistories.ApplyFileDialogSettings(OpenDialog);
     OpenDialog.Title:=lisChooseDelphiPackage;
     OpenDialog.Options:=OpenDialog.Options+[ofPathMustExist,ofFileMustExist];
-    OpenDialog.Filter:=lisDelphiPackage+' (*.dpk)|*.dpk|'+
-                       dlgAllFiles+' ('+GetAllFilesMask+')|' + GetAllFilesMask;
+    OpenDialog.Filter:=dlgFilterDelphiPackage+' (*.dpk)|*.dpk|'+
+                       dlgFilterAll+' ('+GetAllFilesMask+')|' + GetAllFilesMask;
     if InputHistories.LastConvertDelphiPackage<>'' then begin
       OpenDialog.InitialDir:=ExtractFilePath(InputHistories.LastConvertDelphiPackage);
       OpenDialog.Filename  :=ExtractFileName(InputHistories.LastConvertDelphiPackage);
@@ -5071,26 +5065,28 @@ end;
 procedure TMainIDE.SelComponentPageButtonClick(Sender: TObject);
 var
   zPos: TPoint;
-  btn: TGraphicControl;
+  btn: TControl;
 begin
-  btn := Sender as TGraphicControl;
-  zPos:=point(btn.Width,btn.Height);
+  btn := Sender as TControl;
+  zPos:=point(btn.Width div 2,btn.Height);
   zPos:=btn.ClientToScreen(zPos);
   if DlgCompPagesPopup=nil then
     Application.CreateForm(TDlgCompPagesPopup, DlgCompPagesPopup);
-  if not DlgCompPagesPopup.Visible then
+  if DlgCompPagesPopup.LastCanShowCheck then
   begin
     DlgCompPagesPopup.Left:=zPos.x-(DlgCompPagesPopup.Width div 2);
-    DlgCompPagesPopup.Top:=zPos.y-5;
+    DlgCompPagesPopup.Top:=zPos.y;
     DlgCompPagesPopup.FixBounds;
+    DlgCompPagesPopup.PopupParent := GetParentForm(btn);
     DlgCompPagesPopup.Show;
-  end else
-    DlgCompPagesPopup.Close;
+  end;
 end;
 
-procedure TMainIDE.mnuEnvEditorOptionsClicked(Sender: TObject);
+procedure TMainIDE.SelComponentPageButtonMouseDown(Sender: TObject;
+  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
-  DoOpenIDEOptions(TEditorGeneralOptionsFrame);
+  if DlgCompPagesPopup<>nil then
+    DlgCompPagesPopup.CanShowCheck;//do the check in OnMouseDown
 end;
 
 procedure TMainIDE.mnuEnvCodeTemplatesClicked(Sender: TObject);
@@ -5827,6 +5823,24 @@ begin
   end;
 end;
 
+function TMainIDE.DoShowCodeToolBossError: TMessageLine;
+begin
+  if CodeToolBoss.ErrorMessage='' then
+    Result := nil
+  else
+  begin
+    MessagesView.ClearCustomMessages('Codetools');
+    if CodeToolBoss.ErrorCode<>nil then begin
+      Result:=MessagesView.AddCustomMessage(mluError,CodeToolBoss.ErrorMessage,
+        CodeToolBoss.ErrorCode.Filename,CodeToolBoss.ErrorLine,CodeToolBoss.ErrorColumn,
+        'Codetools');
+      Result.Flags:=Result.Flags+[mlfLeftToken];
+    end else
+      Result:=MessagesView.AddCustomMessage(mluError,CodeToolBoss.ErrorMessage,'Codetools');
+    MessagesView.SelectMsgLine(Result);
+  end;
+end;
+
 procedure TMainIDE.DoShowCodeBrowser(State: TIWGetFormState);
 begin
   CreateCodeBrowser(State=iwgfDisabled);
@@ -6492,7 +6506,7 @@ begin
 end;
 
 function TMainIDE.DoBuildProject(const AReason: TCompileReason;
-  Flags: TProjectBuildFlags): TModalResult;
+  Flags: TProjectBuildFlags; FinalizeResources: boolean): TModalResult;
 var
   SrcFilename: string;
   ToolBefore: TProjectCompilationToolOptions;
@@ -6789,7 +6803,8 @@ begin
       end;
     end;
 
-    Project1.ProjResources.DoAfterBuild(AReason, Project1.IsVirtual);
+    if FinalizeResources then
+      Project1.ProjResources.DoAfterBuild(AReason, Project1.IsVirtual);
   finally
     // check sources
     DoCheckFilesOnDisk;
@@ -7627,7 +7642,7 @@ begin
     InputHistories.ApplyFileDialogSettings(OpenDialog);
     OpenDialog.Title:=lisSelectDFMFiles;
     OpenDialog.Options:=OpenDialog.Options+[ofAllowMultiSelect];
-    OpenDialog.Filter:=rsFormDataFileDfm+'|'+dlgAllFiles+'|'+GetAllFilesMask;
+    OpenDialog.Filter:=dlgFilterDelphiForm+' (*.dfm)|*.dfm|'+dlgFilterAll+'|'+GetAllFilesMask;
     if OpenDialog.Execute and (OpenDialog.Files.Count>0) then begin
       For I := 0 to OpenDialog.Files.Count-1 do begin
         AFilename:=ExpandFileNameUTF8(OpenDialog.Files.Strings[i]);
@@ -8315,10 +8330,9 @@ var
   AnEditorInfo: TUnitEditorInfo;
 begin
   Result:=false;
-  if pos('(',SearchResultsView.GetSelectedText) > 0 then
+  AFileName:= SearchResultsView.GetSourceFileName;
+  if AFilename<>'' then
   begin
-    AFileName:= SearchResultsView.GetSourceFileName;
-    if AFilename='' then exit;
     LogCaretXY:= SearchResultsView.GetSourcePositon;
     OpenFlags:=[ofOnlyIfExists,ofRegularFile];
     if MainBuildBoss.IsTestUnitFilename(AFilename) then begin
@@ -8395,6 +8409,8 @@ begin
     SearchResultsView.DisableAutoSizing;
   if State>=iwgfShow then
     IDEWindowCreators.ShowForm(SearchresultsView,State=iwgfShowOnTop);
+  if SearchresultsView.SearchInListEdit.CanFocus then
+    SearchresultsView.SearchInListEdit.SetFocus;
 end;
 
 function TMainIDE.GetTestBuildDirectory: string;
@@ -9299,7 +9315,6 @@ var
   ErrorTopLine: integer;
   AnUnitInfo: TUnitInfo;
   AnEditorInfo: TUnitEditorInfo;
-  Msg: TMessageLine;
 begin
   if (Screen.GetCurrentModalForm<>nil) or (CodeToolBoss.ErrorMessage='') then
   begin
@@ -9310,15 +9325,7 @@ begin
   // syntax error -> show error and jump
   // show error in message view
   SourceFileMgr.ArrangeSourceEditorAndMessageView(false);
-  MessagesView.ClearCustomMessages;
-  if CodeToolBoss.ErrorCode<>nil then begin
-    Msg:=MessagesView.AddCustomMessage(mluError,CodeToolBoss.ErrorMessage,
-      CodeToolBoss.ErrorCode.Filename,CodeToolBoss.ErrorLine,CodeToolBoss.ErrorColumn,
-      'Codetools');
-    Msg.Flags:=Msg.Flags+[mlfLeftToken];
-  end else
-    Msg:=MessagesView.AddCustomMessage(mluError,CodeToolBoss.ErrorMessage,'Codetools');
-  MessagesView.SelectMsgLine(Msg);
+  DoShowCodeToolBossError;
 
   // jump to error in source editor
   if CodeToolBoss.ErrorCode<>nil then begin
@@ -9740,7 +9747,9 @@ begin
                                          LogCaretXY.X,LogCaretXY.Y);
   if not Result then begin
     if JumpToError then
-      DoJumpToCodeToolBossError;
+      DoJumpToCodeToolBossError
+    else
+      DoShowCodeToolBossError;
     exit;
   end;
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.DoInitIdentCompletion B');{$ENDIF}
@@ -9761,7 +9770,9 @@ begin
   Result:=ShowCodeContext(ActiveUnitInfo.Source);
   if not Result then begin
     if JumpToError then
-      DoJumpToCodeToolBossError;
+      DoJumpToCodeToolBossError
+    else
+      DoShowCodeToolBossError;
     exit;
   end;
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.DoShowCodeContext B');{$ENDIF}
@@ -10061,8 +10072,16 @@ end;
 
 function TMainIDE.DoFindInFiles: TModalResult;
 begin
-  Result:=mrOk;
   FindInFilesDialog.FindInFilesPerDialog(Project1);
+  Result:=FindInFilesDialog.ModalResult;
+  if (Result=mrOK) and (FindInFilesDialog.Options*[fifReplace, fifReplaceAll] = []) then
+  begin
+    //copy settings into FindReplaceDialog to use for F3 (if replace function wasn't used).
+    //  Those settings won't be used when FindReplaceDialog is shown again because
+    //  the FindReplaceDialog settings are always loaded from InputHistories.
+    LazFindReplaceDialog.FindText := FindInFilesDialog.FindText;
+    LazFindReplaceDialog.Options := FindInFilesDialog.SynSearchOptions;
+  end;
 end;
 
 procedure TMainIDE.DoCompleteCodeAtCursor;
@@ -10671,7 +10690,7 @@ var
     ConflictingClass: TClass;
     s: string;
   begin
-    if SysUtils.CompareText(ActiveUnitInfo.Unit_Name,AName)=0 then
+    if SysUtils.CompareText(ActiveUnitInfo.SrcUnitName,AName)=0 then
       raise Exception.Create(Format(
         lisTheUnitItselfHasAlreadyTheNamePascalIdentifiersMus, [AName]));
     if ActiveUnitInfo.IsPartOfProject then begin
@@ -11623,7 +11642,7 @@ begin
     OkToAdd:=SourceFileMgr.CheckDirIsInSearchPath(AnUnitInfo,False,False);
     if (pfMainUnitHasUsesSectionForAllUnits in Project1.Flags) then begin
       AnUnitInfo.ReadUnitNameFromSource(false);
-      ShortUnitName:=AnUnitInfo.Unit_Name;
+      ShortUnitName:=AnUnitInfo.SrcUnitName;
       if (ShortUnitName<>'') then begin
         if CodeToolBoss.AddUnitToMainUsesSectionIfNeeded(
                        Project1.MainUnitInfo.Source,ShortUnitName,'') then begin

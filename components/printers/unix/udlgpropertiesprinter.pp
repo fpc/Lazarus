@@ -30,7 +30,7 @@ interface
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, ComCtrls, ExtCtrls,
   StdCtrls, Buttons, Printers, CupsLCL, OsPrinters in '../osprinters.pas', LCLProc,
-  CupsDyn;
+  CupsDyn, Printer4LazStrConst;
 
 type
 
@@ -70,10 +70,10 @@ type
     rbPortrait: TRADIOBUTTON;
     sb: TScrollBox;
     procedure FormDestroy(Sender: TObject);
-    procedure rbPortraitCLICK(Sender: TObject);
-    procedure cbPaperSizeKEYPRESS(Sender: TObject; var Key: Char);
-    procedure dlgpropertiesprinterCREATE(Sender: TObject);
-    procedure dlgpropertiesprinterSHOW(Sender: TObject);
+    procedure rbPortraitClick(Sender: TObject);
+    procedure cbPaperSizeKeypress(Sender: TObject; var Key: Char);
+    procedure dlgpropertiesprinterCreate(Sender: TObject);
+    procedure dlgpropertiesprinterShow(Sender: TObject);
   private
     { private declarations }
     procedure RefreshInfos;
@@ -98,13 +98,13 @@ implementation
 Type
   THackCUPSPrinter=Class(TCUPSPrinter);
 
-procedure Tdlgpropertiesprinter.dlgpropertiesprinterSHOW(Sender: TObject);
+procedure Tdlgpropertiesprinter.dlgpropertiesprinterShow(Sender: TObject);
 begin
   if Sender=nil then ;
   RefreshInfos;
 end;
 
-procedure Tdlgpropertiesprinter.cbPaperSizeKEYPRESS(Sender: TObject;
+procedure Tdlgpropertiesprinter.cbPaperSizeKeypress(Sender: TObject;
   var Key: Char);
 begin
   if Sender=nil then ;
@@ -338,14 +338,34 @@ begin
 end;
 
 //Initialization
-procedure Tdlgpropertiesprinter.dlgpropertiesprinterCREATE(Sender: TObject);
+procedure Tdlgpropertiesprinter.dlgpropertiesprinterCreate(Sender: TObject);
 begin
   if Sender=nil then ;
   Notebook1.PageIndex:=0;
+
+  btnCancel1.Caption := p4lrsCancel;
+  btnOk.Caption := p4lrsOk;
+  pgGeneral.Caption := p4lrsGeneral;
+  labPaperSize.Caption := p4lrsPaperSize;
+  labPaperType.Caption := p4lrsPaperType;
+  labPaperSrc.Caption := p4lrsPaperSource;
+  labResolution.Caption := p4lrsResolution;
+  gbOrientation.Caption := ' '+p4lrsOrientation+' ';
+  rbPortrait.Caption := p4lrsPortrait;
+  rbLandscape.Caption := p4lrsLandscape;
+  rbrev_Landscape.Caption := p4lrsReverseLandscape;
+  rbrev_portrait.Caption := p4lrsReversePortrait;
+  gbBanners.Caption := ' '+p4lrsBanners+' ';
+  labBanStart.Caption := p4lrsStart;
+  labBanEnd.Caption := p4lrsEnd;
+  gbPagesSheet.Caption := ' '+p4lrsPagesPerSheet+' ';
+  pgMargins.Caption := p4lrsMargins;
+  pgAdvanced.Caption := p4lrsAdvanced;
+
   SetupOptions;
 end;
 
-procedure Tdlgpropertiesprinter.rbPortraitCLICK(Sender: TObject);
+procedure Tdlgpropertiesprinter.rbPortraitClick(Sender: TObject);
 begin
   if Sender=nil then ;
   RefreshInfos;

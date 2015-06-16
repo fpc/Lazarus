@@ -31,7 +31,7 @@ interface
 
 uses
   Classes, SysUtils,
-  FileProcs, CodeAtom, CodeCache, KeywordFuncLists, CustomCodeTool,
+  FileProcs, CodeCache, KeywordFuncLists, CustomCodeTool,
   BasicCodeTools, FindDeclarationTool, AVL_Tree;
 
 type

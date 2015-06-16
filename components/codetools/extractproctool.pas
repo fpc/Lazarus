@@ -856,7 +856,7 @@ var
 
   function InsertProcIntf(IntfInsertPos, IntfIndent: integer;
     const CompleteParamList, BaseParamList, ProcCode: string;
-    const ProcClassName: string; ProcClassNode: TCodeTreeNode): boolean;
+    ProcClassNode: TCodeTreeNode): boolean;
   var
     ProcHeader: String;
     FrontGap: TGapTyp;
@@ -1061,7 +1061,7 @@ begin
     if not CreateProcBody(ProcClassName,CompleteParamList,
                           VarSection,BeginEndCode,ProcCode) then exit;
     if not InsertProcIntf(IntfInsertPos,IntfIndent,CompleteParamList,
-                  BaseParamList,ProcCode,ProcClassName,ProcClassNode) then exit;
+                  BaseParamList,ProcCode,ProcClassNode) then exit;
     if not InsertProcBody(InsertPos,Indent,ProcCode) then exit;
     if not CreatePathForNewProc(InsertPos,ProcClassName,BaseParamList,
                                 NewProcPath) then exit;
@@ -1102,7 +1102,7 @@ var
   var
     p: Pointer;
   begin
-    p:=Pointer(PtrUInt(CleanPos));
+    p:={%H-}Pointer(PtrUInt(CleanPos));
     if WithIdentifiers=nil then WithIdentifiers:=TAVLTree.Create;
     if WithIdentifiers.Find(p)<>nil then exit;
     {$IFDEF CTDEBUG}
@@ -1339,7 +1339,7 @@ var
 
       AVLNode:=WithIdentifiers.FindLowest;
       while AVLNode<>nil do begin
-        CleanPos:=integer(PtrUInt(AVLNode.Data));
+        CleanPos:=integer({%H-}PtrUInt(AVLNode.Data));
         //debugln(['Replace Prefix identifier: ',GetIdentifier(@Src[CleanPos])]);
         if not SourceChangeCache.Replace(gtNone,gtNone,CleanPos,CleanPos,WithVar)
         then

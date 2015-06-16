@@ -69,8 +69,8 @@ begin
   if not Assigned(APage.Parent) or not APage.Parent.HandleAllocated then
     exit;
   AParent := TQtWidget(APage.Parent.Handle);
-  if AParent.ChildOfComplexWidget = ccwTTabControl then
-    exit;
+  if not (AParent is TQtTabWidget) then
+      exit;
   ATabWidget := TQtTabWidget(AParent);
 
   AColor.Alpha := 0;
@@ -307,9 +307,8 @@ class procedure TQtWSCustomTabControl.MovePage(const ATabControl: TCustomTabCont
 var
   TabWidget: TQtTabWidget;
   Index: Integer;
-  Page: TQtPage;
 begin
-  Page := TQtPage(AChild.Handle);
+  AChild.HandleNeeded; {create handle if it does not exist yet}
   TabWidget := TQtTabWidget(ATabControl.Handle);
   Index := AChild.PageIndex;
   if Index < 0 then
@@ -503,5 +502,6 @@ end;
 class procedure TQtWSCustomTabControl.UpdateProperties(const ATabControl: TCustomTabControl);
 begin
   TQtTabWidget(ATabControl.Handle).setTabsClosable(nboShowCloseButtons in ATabControl.Options);
+  TQtTabWidget(ATabControl.Handle).SwitchTabsByKeyboard := nboKeyboardTabSwitch in ATabControl.Options;
 end;
 

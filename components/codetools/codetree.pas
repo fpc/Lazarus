@@ -43,7 +43,7 @@ uses
   MemCheck,
   {$ENDIF}
   Classes, SysUtils, FileProcs, CodeToolsStructs, BasicCodeTools,
-  AVL_Tree, CodeToolMemManager;
+  AVL_Tree;
 
 //-----------------------------------------------------------------------------
 
@@ -289,7 +289,7 @@ type
     constructor Create;
     destructor Destroy; override;
     procedure ConsistencyCheck;
-    procedure WriteDebugReport(WithChilds: boolean);
+    procedure WriteDebugReport(WithChildren: boolean);
   end;
 
 
@@ -1051,11 +1051,11 @@ begin
     raise Exception.Create('');
 end;
 
-procedure TCodeTree.WriteDebugReport(WithChilds: boolean);
+procedure TCodeTree.WriteDebugReport(WithChildren: boolean);
 begin
   DebugLn('[TCodeTree.WriteDebugReport] Root=',dbgs(Root<>nil));
   if Root<>nil then
-    Root.WriteDebugReport(' ',true);
+    Root.WriteDebugReport(' ',WithChildren);
 end;
 
 { TCodeTreeNodeExtension }

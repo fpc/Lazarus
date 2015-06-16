@@ -452,6 +452,8 @@ type
     procedure MakeIDEWindowDockSite(AForm: TCustomForm; ASides: TDockSides = [alBottom]); virtual; abstract; // make AForm a dock site, AForm can not be docked, its Parent must be kept nil, this does not make it visible
     procedure ShowForm(AForm: TCustomForm; BringToFront: boolean); virtual; abstract; // make a form visible, set BringToFront=true if form should be shown on active screen and on front of other windows, normally this focus the form
     function AddableInWindowMenu({%H-}AForm: TCustomForm): boolean; virtual;
+    procedure AdjustMainIDEWindowHeight(const {%H-}AIDEWindow: TCustomForm;
+      const {%H-}AAdjustHeight: Boolean; const {%H-}ANewHeight: Integer); virtual;
     procedure CloseAll; virtual; // close all forms, called after IDE has saved all and shuts down
     property HideSimpleLayoutOptions: boolean read FHideSimpleLayoutOptions;
   end;
@@ -2118,6 +2120,13 @@ end;
 function TIDEDockMaster.AddableInWindowMenu(AForm: TCustomForm): boolean;
 begin
   Result:=true;
+end;
+
+procedure TIDEDockMaster.AdjustMainIDEWindowHeight(
+  const AIDEWindow: TCustomForm; const AAdjustHeight: Boolean;
+  const ANewHeight: Integer);
+begin
+
 end;
 
 procedure TIDEDockMaster.CloseAll;

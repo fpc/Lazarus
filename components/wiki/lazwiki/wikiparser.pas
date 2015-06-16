@@ -268,6 +268,7 @@ type
     FOnToken: TWikiTokenEvent;
     FVerbosity: TWikiPageVerbosity;
     FInPre: integer; // >0 means in a pre range
+    FInTableHeader: Boolean;
     procedure HandleAngleBracket; // tags
     procedure HandleCode; // <code>
     procedure HandleApostroph; // bold, italic
@@ -1089,10 +1090,19 @@ begin
   CloseTableCell;
   if TopToken=wptTable then
     EmitFlag(wptTableRow, wprOpen, 0);
-  if AtLineStart(FCurP) then
-    EmitFlag(wptTableCell, wprOpen, 1) // linestart | or linestart !
-  else
-    EmitFlag(wptTableCell, wprOpen, 2); // ||
+
+  if AtLineStart(FCurP) then begin
+    FInTableHeader := (FCurP^='!');
+    if FInTableHeader then
+      EmitFlag(wptTableHeadCell, wprOpen, 1)    // linestart !
+    else
+      EmitFlag(wptTableCell, wprOpen, 1)        // linestart |
+  end else begin
+    if FInTableHeader then
+      EmitFlag(wptTableHeadCell, wprOpen, 2)    // !!
+    else
+      EmitFlag(wptTableCell, wprOpen, 2);       // ||
+  end;
   NextBar:=FCurP;
   while not (NextBar^ in [#0, #10, #13, '|']) do begin
     if NextBar^='[' then begin

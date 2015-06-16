@@ -1,0 +1,111 @@
+object MainForm: TMainForm
+  Left = 456
+  Height = 345
+  Top = 191
+  Width = 702
+  Caption = 'Google Tasks demo'
+  ClientHeight = 345
+  ClientWidth = 702
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  LCLVersion = '1.5'
+  object BFetchTaskLists: TButton
+    Left = 8
+    Height = 25
+    Top = 8
+    Width = 112
+    Caption = 'Fetch task lists'
+    OnClick = BFetchTaskListsClick
+    TabOrder = 0
+  end
+  object GBAccess: TGroupBox
+    Left = 0
+    Height = 73
+    Top = 272
+    Width = 702
+    Align = alBottom
+    Caption = 'Please provide Google API access code'
+    ClientHeight = 45
+    ClientWidth = 698
+    TabOrder = 1
+    Visible = False
+    object LEAccess: TLabel
+      Left = 16
+      Height = 12
+      Top = 8
+      Width = 56
+      Caption = 'Access code'
+      ParentColor = False
+    end
+    object BSetAccess: TButton
+      Left = 528
+      Height = 25
+      Top = 1
+      Width = 75
+      Anchors = [akTop, akRight]
+      Caption = 'OK'
+      OnClick = BSetAccessClick
+      TabOrder = 0
+    end
+    object BCancel: TButton
+      Left = 608
+      Height = 25
+      Top = 0
+      Width = 75
+      Anchors = [akTop, akRight]
+      Caption = 'Cancel'
+      OnClick = BCancelClick
+      TabOrder = 1
+    end
+    object EAccessCode: TEdit
+      Left = 112
+      Height = 18
+      Top = 8
+      Width = 400
+      TabOrder = 2
+    end
+  end
+  object BFetchTasks: TButton
+    Left = 560
+    Height = 25
+    Top = 8
+    Width = 112
+    Anchors = [akTop, akRight]
+    Caption = 'Fetch tasks'
+    Enabled = False
+    OnClick = BFetchTasksClick
+    TabOrder = 2
+  end
+  object LBTaskLists: TListBox
+    Left = 8
+    Height = 210
+    Top = 40
+    Width = 360
+    Anchors = [akTop, akLeft, akBottom]
+    ItemHeight = 0
+    OnSelectionChange = LBTaskListsSelectionChange
+    ScrollWidth = 356
+    TabOrder = 3
+    TopIndex = -1
+  end
+  object LBTasks: TListBox
+    Left = 384
+    Height = 218
+    Top = 40
+    Width = 304
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    ItemHeight = 0
+    ScrollWidth = 300
+    TabOrder = 4
+    TopIndex = -1
+  end
+  object LTasks: TLabel
+    Left = 392
+    Height = 12
+    Top = 16
+    Width = 161
+    Anchors = [akTop, akLeft, akRight]
+    Caption = 'Tasks for list : <select a tasklist>'
+    ParentColor = False
+  end
+end

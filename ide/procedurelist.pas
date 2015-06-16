@@ -75,6 +75,7 @@ type
     procedure LVDblClick(Sender: TObject);
     procedure LVSelectItem(Sender: TObject; Item: TListItem; Selected: Boolean);
     procedure tbAboutClick(Sender: TObject);
+    procedure tbChangeFontClick(Sender: TObject);
     procedure tbCopyClick(Sender: TObject);
   private
     FCaret: TCodeXYPosition;
@@ -234,6 +235,11 @@ end;
 procedure TProcedureListForm.tbAboutClick(Sender: TObject);
 begin
   ShowMessage(cAbout);
+end;
+
+procedure TProcedureListForm.tbChangeFontClick(Sender: TObject);
+begin
+
 end;
 
 

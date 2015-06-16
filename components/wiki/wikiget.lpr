@@ -30,7 +30,7 @@ uses
   cthreads,
   {$ENDIF}
   Classes, SysUtils, LazFileUtils, laz2_XMLRead, laz2_DOM, laz2_XMLWrite,
-  LazLogger, LazUTF8, CodeToolsStructs, CustApp, AVL_Tree,
+  LazLogger, LazUTF8, CodeToolsStructs, CustApp, AVL_Tree, strutils,
   {$IF FPC_FULLVERSION<20701}
   myfphttpclient,
   {$ELSE}
@@ -523,7 +523,7 @@ begin
     if ColonPos<1 then exit;
     if ColonPos=length(Link) then exit;
     Prefix:=lowercase(copy(Link,1,ColonPos-1));
-    if Prefix<>'image' then exit;
+    if (Prefix<>'image') and (Prefix<>'file') then exit;
     Link:=UTF8Trim(copy(Link,ColonPos+1,length(Link)));
     if Link='' then exit;
     Filename:=ImageToFilename(Link,true,true);
@@ -539,7 +539,7 @@ begin
       try
         Client:=TFPHTTPClient.Create(nil);
         Response:=TMemoryStream.Create;
-        URL:=BaseURL+EscapeDocumentName('Image:'+WikiTitleToPage(Link));
+        URL:=BaseURL+EscapeDocumentName(AnsiPropercase(Prefix, StdWordDelims)+':'+WikiTitleToPage(Link));
         writeln('getting image page "',URL,'" ...');
         Client.Get(URL,Response);
         //Client.ResponseHeaders.SaveToFile('responseheaders.txt');

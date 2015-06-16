@@ -726,7 +726,7 @@ Var
         If Not Assigned(TvParagraph(oEntity).Style) Then
           TvParagraph(oEntity).Style := AList.Style;
 
-        ProcessParagraph(TvParagraph(oEntity), AList.Level, FData.FindListStyleIndex(AList.ListStyle) + 1);
+        ProcessParagraph(TvParagraph(oEntity), AList.GetLevel(), FData.FindListStyleIndex(AList.ListStyle) + 1);
       End
       Else If oEntity Is TvList Then
         ProcessList(TvList(oEntity))
@@ -892,8 +892,8 @@ Var
     If Assigned(ATable.Style) Then
       oDocXML.Add('<w:tblStyle w:val="' + StyleNameToStyleID(ATable.Style) + '" />');
 
-    If ATable.CellSpacing <> 0 Then
-      oDocXML.Add('<w:tblCellSpacing w:w="' + mmToTwipsS(ATable.CellSpacing) +
+    If ATable.SpacingBetweenCells <> 0 Then
+      oDocXML.Add('<w:tblCellSpacing w:w="' + mmToTwipsS(ATable.SpacingBetweenCells) +
         '" w:type="dxa" />');
 
     If ATable.BackgroundColor <> FPColor(0, 0, 0, 0) Then

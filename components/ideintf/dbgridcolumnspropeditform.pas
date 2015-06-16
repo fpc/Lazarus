@@ -474,8 +474,11 @@ begin
         if CollectionListBox.Selected[I] then
           NewSelection.Add(Collection.Items[I]);
     end;
-    GlobalDesignHook.SetSelection(NewSelection);
-    GlobalDesignHook.LookupRoot := GetLookupRootForComponent(OwnerPersistent);
+    if GlobalDesignHook <> nil then
+    begin
+      GlobalDesignHook.SetSelection(NewSelection);
+      GlobalDesignHook.LookupRoot := GetLookupRootForComponent(OwnerPersistent);
+    end;
   finally
     NewSelection.Free;
   end;
@@ -517,7 +520,8 @@ end;
 
 procedure TDBGridColumnsPropertyEditorForm.Modified;
 begin
-  GlobalDesignHook.Modified(Self);
+  if GlobalDesignHook <> nil then
+    GlobalDesignHook.Modified(Self);
 end;
 
 end.

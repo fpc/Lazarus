@@ -79,7 +79,7 @@ msgstr "Nincs előzmény megjegyezve"
 
 #: debuggerstrconst.drshistorycolwidthcurrent
 msgid "Current column"
-msgstr "Jelenlegi oszlop"
+msgstr "Aktuális oszlop"
 
 #: debuggerstrconst.drshistorycolwidthlocation
 msgid "Location column"

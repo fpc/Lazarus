@@ -311,13 +311,13 @@ begin
     FImplUsedUnits.CaseSensitive := False;
   end;
   if SrcEdit.GetProjectFile is TUnitInfo then
-    CurrentUnitName := TUnitInfo(SrcEdit.GetProjectFile).Unit_Name
+    CurrentUnitName := TUnitInfo(SrcEdit.GetProjectFile).SrcUnitName
   else
     CurrentUnitName := '';
   // Add available unit names to list
   ProjFile:=Project1.FirstPartOfProject;
   while ProjFile <> nil do begin
-    s := ProjFile.Unit_Name;
+    s := ProjFile.SrcUnitName;
     if s = CurrentUnitName then       // current unit
       s := '';
     if (ProjFile <> Project1.MainUnitInfo) and (s <> '') then
@@ -401,7 +401,7 @@ begin
   CodeToolBoss.Explore(ACode,Tool,false);
   if Tool=nil then exit;
   // collect implementation use unit nodes
-  ImplUsesNode := Tool.FindImplementationUsesSection;
+  ImplUsesNode := Tool.FindImplementationUsesNode;
   if Assigned(ImplUsesNode) then
     for i := 0 to FImplUsedUnits.Count - 1 do
       FImplUsedUnits.Objects[i] := ImplUsesNode;

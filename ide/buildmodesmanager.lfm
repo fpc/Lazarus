@@ -1,158 +1,22 @@
 object BuildModesForm: TBuildModesForm
-  Left = 335
-  Height = 366
-  Top = 486
+  Left = 396
+  Height = 354
+  Top = 484
   Width = 612
+  ActiveControl = BuildModesStringGrid
+  BorderIcons = [biSystemMenu]
   Caption = 'BuildModesForm'
-  ClientHeight = 366
+  ClientHeight = 354
   ClientWidth = 612
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnShow = FormShow
   Position = poScreenCenter
   LCLVersion = '1.5'
-  object BuildModesGroupBox: TGroupBox
-    Left = 6
-    Height = 305
-    Top = 6
-    Width = 600
-    Align = alTop
-    Anchors = [akTop, akLeft, akRight, akBottom]
-    BorderSpacing.Around = 6
-    Caption = 'BuildModesGroupBox'
-    ClientHeight = 286
-    ClientWidth = 596
-    TabOrder = 0
-    object BuildModesStringGrid: TStringGrid
-      AnchorSideTop.Control = AddSpeedButton
-      AnchorSideTop.Side = asrBottom
-      Left = 0
-      Height = 254
-      Top = 32
-      Width = 596
-      Align = alBottom
-      Anchors = [akTop, akLeft, akRight, akBottom]
-      AutoFillColumns = True
-      BorderSpacing.Top = 10
-      ColCount = 3
-      Columns = <      
-        item
-          ButtonStyle = cbsCheckboxColumn
-          MaxSize = 50
-          Title.Caption = 'Active'
-          Width = 197
-        end      
-        item
-          ButtonStyle = cbsCheckboxColumn
-          MaxSize = 50
-          Title.Caption = 'InSession'
-          Width = 197
-        end      
-        item
-          MaxSize = 500
-          SizePriority = 100
-          Title.Caption = 'Title'
-          Width = 198
-        end>
-      FixedCols = 0
-      Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goEditing, goSmoothScroll]
-      TabOrder = 0
-      OnCheckboxToggled = BuildModesCheckboxToggled
-      OnDrawCell = BuildModesStringGridDrawCell
-      OnSelection = BuildModesStringGridSelection
-      OnValidateEntry = BuildModesStringGridValidateEntry
-      ColWidths = (
-        197
-        197
-        198
-      )
-    end
-    object AddSpeedButton: TSpeedButton
-      AnchorSideLeft.Control = BuildModesGroupBox
-      AnchorSideTop.Control = BuildModesGroupBox
-      Left = 0
-      Height = 22
-      Top = 0
-      Width = 23
-      OnClick = AddSpeedButtonClick
-      ShowHint = True
-      ParentShowHint = False
-    end
-    object DeleteSpeedButton: TSpeedButton
-      AnchorSideLeft.Control = AddSpeedButton
-      AnchorSideLeft.Side = asrBottom
-      AnchorSideTop.Control = BuildModesGroupBox
-      Left = 23
-      Height = 22
-      Top = 0
-      Width = 23
-      OnClick = DeleteSpeedButtonClick
-      ShowHint = True
-      ParentShowHint = False
-    end
-    object MoveUpSpeedButton: TSpeedButton
-      AnchorSideLeft.Control = DeleteSpeedButton
-      AnchorSideLeft.Side = asrBottom
-      AnchorSideTop.Control = BuildModesGroupBox
-      Left = 46
-      Height = 22
-      Top = 0
-      Width = 23
-      OnClick = MoveUpSpeedButtonClick
-      ShowHint = True
-      ParentShowHint = False
-    end
-    object MoveDownSpeedButton: TSpeedButton
-      AnchorSideLeft.Control = MoveUpSpeedButton
-      AnchorSideLeft.Side = asrBottom
-      AnchorSideTop.Control = BuildModesGroupBox
-      Left = 69
-      Height = 22
-      Top = 0
-      Width = 23
-      OnClick = MoveDownSpeedButtonClick
-      ShowHint = True
-      ParentShowHint = False
-    end
-    object DiffSpeedButton: TSpeedButton
-      AnchorSideLeft.Control = MoveDownSpeedButton
-      AnchorSideLeft.Side = asrBottom
-      AnchorSideTop.Control = BuildModesGroupBox
-      Left = 102
-      Height = 22
-      Top = 0
-      Width = 23
-      BorderSpacing.Left = 10
-      OnClick = DiffSpeedButtonClick
-      ShowHint = True
-      ParentShowHint = False
-    end
-    object NoteLabel: TLabel
-      AnchorSideTop.Control = DiffSpeedButton
-      AnchorSideTop.Side = asrCenter
-      Left = 160
-      Height = 15
-      Top = 4
-      Width = 62
-      Caption = 'NoteLabel'
-      ParentColor = False
-    end
-    object btnCreateDefaultModes: TButton
-      Left = 374
-      Height = 27
-      Top = -3
-      Width = 216
-      Anchors = [akTop, akRight]
-      AutoSize = True
-      Caption = 'Create Debug and Release modes'
-      OnClick = btnCreateDefaultModesClick
-      TabOrder = 1
-    end
-  end
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 36
-    Top = 324
+    Height = 29
+    Top = 319
     Width = 600
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
@@ -164,11 +28,175 @@ object BuildModesForm: TBuildModesForm
     CancelButton.Name = 'CancelButton'
     CancelButton.DefaultCaption = True
     CancelButton.OnClick = CancelButtonClick
-    TabOrder = 1
+    TabOrder = 2
     ShowButtons = [pbOK, pbCancel, pbHelp]
+    ShowBevel = False
+  end
+  object ToolBar1: TToolBar
+    AnchorSideLeft.Control = cbDebugReleaseProject
+    AnchorSideTop.Control = cbDebugReleaseProject
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 28
+    Top = 37
+    Width = 154
+    Align = alNone
+    BorderSpacing.Top = 9
+    ButtonHeight = 26
+    ButtonWidth = 26
+    Caption = 'ToolBar1'
+    EdgeBorders = []
+    EdgeInner = esNone
+    EdgeOuter = esNone
+    Images = ImageList1
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 0
+    object ToolButtonAdd: TToolButton
+      Left = 1
+      Top = 0
+      Caption = 'ToolButtonAdd'
+      OnClick = AddSpeedButtonClick
+    end
+    object ToolButtonDelete: TToolButton
+      Left = 27
+      Top = 0
+      Caption = 'ToolButtonDelete'
+      OnClick = DeleteSpeedButtonClick
+    end
+    object ToolButtonMoveUp: TToolButton
+      Left = 58
+      Top = 0
+      Caption = 'ToolButtonMoveUp'
+      OnClick = MoveUpSpeedButtonClick
+    end
+    object ToolButtonMoveDown: TToolButton
+      Left = 84
+      Top = 0
+      Caption = 'ToolButtonMoveDown'
+      OnClick = MoveDownSpeedButtonClick
+    end
+    object ToolButton5: TToolButton
+      Left = 110
+      Height = 26
+      Top = 0
+      Width = 5
+      Caption = 'ToolButton5'
+      Style = tbsDivider
+    end
+    object ToolButtonDiff: TToolButton
+      Left = 115
+      Top = 0
+      Caption = 'ToolButtonDiff'
+      OnClick = DiffSpeedButtonClick
+    end
+    object ToolButton1: TToolButton
+      Left = 53
+      Height = 26
+      Top = 0
+      Width = 5
+      Caption = 'ToolButton1'
+      Style = tbsDivider
+    end
+  end
+  object NoteLabel: TLabel
+    AnchorSideLeft.Control = ToolBar1
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = ToolBar1
+    AnchorSideTop.Side = asrCenter
+    Left = 166
+    Height = 17
+    Top = 43
+    Width = 56
+    BorderSpacing.Left = 6
+    Caption = 'NoteLabel'
+    Font.Color = clMaroon
+    Font.Style = [fsItalic]
+    ParentColor = False
+    ParentFont = False
+  end
+  object BuildModesStringGrid: TStringGrid
+    AnchorSideLeft.Control = ToolBar1
+    AnchorSideTop.Control = ToolBar1
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 244
+    Top = 71
+    Width = 602
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    AutoFillColumns = True
+    BorderSpacing.Top = 6
+    ColCount = 3
+    Columns = <    
+      item
+        ButtonStyle = cbsCheckboxColumn
+        MaxSize = 50
+        Title.Caption = 'Active'
+        Width = 199
+      end    
+      item
+        ButtonStyle = cbsCheckboxColumn
+        MaxSize = 50
+        Title.Caption = 'InSession'
+        Width = 199
+      end    
+      item
+        MaxSize = 500
+        SizePriority = 100
+        Title.Caption = 'Title'
+        Width = 200
+      end>
+    FixedCols = 0
+    Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goEditing, goRowSelect, goThumbTracking, goSmoothScroll]
+    TabOrder = 1
+    OnCheckboxToggled = BuildModesCheckboxToggled
+    OnDrawCell = BuildModesStringGridDrawCell
+    OnSelection = BuildModesStringGridSelection
+    OnValidateEntry = BuildModesStringGridValidateEntry
+    ColWidths = (
+      199
+      199
+      200
+    )
+  end
+  object cbDebugReleaseProject: TCheckBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    Left = 6
+    Height = 22
+    Top = 6
+    Width = 310
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
+    Caption = 'Create Debug and Release modes for new projects'
+    OnClick = cbDebugReleaseProjectClick
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 3
+  end
+  object btnCreateDefaultModes: TButton
+    AnchorSideLeft.Control = cbDebugReleaseProject
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = cbDebugReleaseProject
+    AnchorSideTop.Side = asrCenter
+    Left = 322
+    Height = 29
+    Top = 3
+    Width = 162
+    AutoSize = True
+    BorderSpacing.Left = 6
+    Caption = 'Create now for this project'
+    OnClick = btnCreateDefaultModesClick
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 4
   end
   object BuildModesPopupMenu: TPopupMenu
-    left = 208
-    top = 88
+    left = 168
+    top = 260
+  end
+  object ImageList1: TImageList
+    left = 240
+    top = 280
   end
 end

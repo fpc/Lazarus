@@ -31,14 +31,12 @@ interface
 
 uses
   Math, Classes, SysUtils, LCLProc, LCLType, Forms, Controls, Buttons, ExtDlgs,
-  StdCtrls, ExtCtrls, Dialogs, FileUtil, ComCtrls, AVL_Tree,
+  StdCtrls, ExtCtrls, Dialogs, FileUtil, ComCtrls, ButtonPanel, AVL_Tree,
   // IDEIntf
-  NewItemIntf, ProjectIntf, PackageIntf, FormEditingIntf, IDEWindowIntf,
-  IDEDialogs,
+  NewItemIntf, ProjectIntf, PackageIntf, FormEditingIntf, IDEWindowIntf, IDEDialogs,
   // IDE
-  LazarusIDEStrConsts, InputHistory, CodeToolManager, IDEDefs,
-  IDEProcs, EnvironmentOpts, PackageSystem, PackageDefs, ComponentReg,
-  AddDirToPkgDlg;
+  LazarusIDEStrConsts, InputHistory, IDEDefs, IDEProcs, EnvironmentOpts,
+  PackageSystem, PackageDefs, ComponentReg, AddDirToPkgDlg;
   
 type
   TAddToPkgType = (
@@ -47,8 +45,7 @@ type
     d2ptNewComponent,
     d2ptRequiredPkg,
     d2ptFile,
-    d2ptFiles,
-    d2ptNewFile
+    d2ptFiles
     );
     
   { TAddToPkgResult }
@@ -81,46 +78,38 @@ type
   { TAddToPackageDlg }
 
   TAddToPackageDlg = class(TForm)
-    FilesDirButton: TBitBtn;
-    // PageControl1
-    PageControl1: TPageControl;
-    NewFilePage: TTabSheet;
-    NewComponentPage: TTabSheet;
-    NewRequirementPage: TTabSheet;
+    AddFilesBtnPanel: TPanel;
     AddFilesPage: TTabSheet;
-    // new file page
-    NewFileTreeView: TTreeView;
-    NewFileDescriptionGroupBox: TGroupBox;
-    NewFileHelpLabel: TLabel;
-    CancelButton: TBitBtn;
-    OkButton: TBitBtn;
-    AncestorTypeLabel: TLabel;
     AncestorComboBox: TComboBox;
     AncestorShowAllCheckBox: TCheckBox;
-    ClassNameLabel: TLabel;
+    AncestorTypeLabel: TLabel;
+    ButtonPanel1: TButtonPanel;
     ClassNameEdit: TEdit;
-    PalettePageLabel: TLabel;
-    PalettePageCombobox: TCombobox;
+    ClassNameLabel: TLabel;
     ComponentIconLabel: TLabel;
     ComponentIconSpeedButton: TSpeedButton;
-    ComponentUnitFileLabel: TLabel;
-    ComponentUnitFileEdit: TEdit;
     ComponentUnitFileBrowseButton: TButton;
+    ComponentUnitFileEdit: TEdit;
+    ComponentUnitFileLabel: TLabel;
     ComponentUnitFileShortenButton: TButton;
-    ComponentUnitNameLabel: TLabel;
     ComponentUnitNameEdit: TEdit;
-    NewDepPanel: TPanel;
-    DependPkgNameLabel: TLabel;
-    DependPkgNameComboBox: TComboBox;
-    DependMinVersionLabel: TLabel;
-    DependMinVersionEdit: TEdit;
-    DependMaxVersionLabel: TLabel;
+    ComponentUnitNameLabel: TLabel;
     DependMaxVersionEdit: TEdit;
+    DependMaxVersionLabel: TLabel;
+    DependMinVersionEdit: TEdit;
+    DependMinVersionLabel: TLabel;
+    DependPkgNameComboBox: TComboBox;
+    DependPkgNameLabel: TLabel;
     FilesDeleteButton: TBitBtn;
-    FilesShortenButton: TBitBtn;
+    FilesDirButton: TBitBtn;
     FilesListView: TListView;
-    NewFileBtnPanel: TPanel;
-    AddFilesBtnPanel: TPanel;
+    FilesShortenButton: TBitBtn;
+    NewComponentPage: TTabSheet;
+    NewDepPanel: TPanel;
+    NewRequirementPage: TTabSheet;
+    PageControl1: TPageControl;
+    PalettePageCombobox: TComboBox;
+    PalettePageLabel: TLabel;
     procedure AddToPackageDlgClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure AddToPackageDlgKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure AncestorComboBoxChange(Sender: TObject);
@@ -141,14 +130,10 @@ type
     procedure FilesShortenButtonClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
+    procedure FormShow(Sender: TObject);
     procedure NewComponentButtonClick(Sender: TObject);
     procedure NewComponentPageResize(Sender: TObject);
     procedure NewDependButtonClick(Sender: TObject);
-    procedure NewFileOkButtonClick(Sender: TObject);
-    procedure NewFilePageResize(Sender: TObject);
-    procedure NewFileTreeViewClick(Sender: TObject);
-    procedure NewFileTreeViewDblClick(Sender: TObject);
-    procedure NewFileTreeViewSelectionChanged(Sender: TObject);
     procedure PageControl1Change(Sender: TObject);
   private
     fLastNewComponentAncestorType: string;
@@ -163,7 +148,6 @@ type
     procedure SetActivatePage(AValue: TAddToPkgType);
     procedure SetLazPackage(const AValue: TLazPackage);
     procedure SetupComponents;
-    procedure SetupNewFilePage;
     procedure SetupNewComponentPage;
     procedure SetupAddDependencyPage;
     procedure SetupAddFilesPage;
@@ -175,7 +159,6 @@ type
     procedure AutoCompleteNewComponent;
     procedure AutoCompleteNewComponentUnitName;
     function SwitchRelativeAbsoluteFilename(const Filename: string): string;
-    procedure FillNewFileTreeView;
     function FindFileInFilesList(AFilename: string): Integer;
     procedure LoadComponentIcon(AFilename: string);
   public
@@ -223,6 +206,14 @@ begin
   AddDlg.OnGetUnitRegisterInfo:=OnGetUnitRegisterInfo;
   AddDlg.LazPackage:=Pkg;
   AddDlg.ActivatePage:=Page;
+
+  //auto press AddFiles if called with "Add files" page
+  if Page=d2ptFiles then
+    AddDlg.FilesDirButton.Click;
+  //hide tabs for simpler use
+  AddDlg.PageControl1.ShowTabs:=false;
+  AddDlg.PageControl1.TabStop:=false;
+
   Result:=AddDlg.ShowModal;
   Page:=AddDlg.ActivatePage;
   if Result=mrOk then begin
@@ -535,12 +526,14 @@ begin
   try
     InputHistories.ApplyFileDialogSettings(Dlg);
     Dlg.InitialDir:=LazPackage.GetFileDialogInitialDir(ExtractFilePath(ComponentUnitFileEdit.Text));
-    Dlg.Title := 'Choose a component icon 24x24';
-    Dlg.Options := Dlg.Options+[ofPathMustExist];
-    Dlg.Filter:='PNG|*.png'
-              +'|Bitmap, bmp|*.bmp'
-              +'|Pixmap, xpm|*.xpm'
-              +'|'+lisAllFiles+'|'+GetAllFilesMask;
+    Dlg.Title:=lisTitleOpenComponentIcon24x24;
+    Dlg.Options:=Dlg.Options+[ofPathMustExist];
+    Dlg.Filter:=Format('%s|*.png|%s|*.bmp|%s|*.xpm|%s|%s',
+      [dlgFilterImagesPng,
+       dlgFilterImagesBitmap,
+       dlgFilterImagesPixmap,
+       dlgFilterAll, GetAllFilesMask]);
+
     if Dlg.Execute then begin
       LoadComponentIcon(Dlg.FileName);
     end;
@@ -561,6 +554,7 @@ begin
     SaveDialog.InitialDir := LazPackage.GetFileDialogInitialDir(SaveDialog.InitialDir);
     SaveDialog.Title := lisSaveAs;
     SaveDialog.Options := SaveDialog.Options+[ofPathMustExist];
+    SaveDialog.Filter := Format('%s|*.pas;*.pp', [dlgFilterPascalFile]);
     if SaveDialog.Execute then begin
       AFilename := CleanAndExpandFilename(SaveDialog.Filename);
       if FilenameIsPascalUnit(AFilename) then begin
@@ -667,7 +661,7 @@ begin
       LastParams:=CurParams;
       inc(i);
     end;
-    OkButton.Enabled:=FilesListView.SelCount>0;
+    ButtonPanel1.OKButton.Enabled:=FilesListView.SelCount>0;
     ok:=LastParams<>nil;
   finally
     if not ok then Params.Clear;
@@ -747,7 +741,7 @@ begin
   FilesDeleteButton.Enabled:=FilesListView.SelCount>0;
   Result:=FilesListView.Items.Count>0;
   FilesShortenButton.Enabled:=Result;
-  OkButton.Enabled:=FilesListView.SelCount>0;
+  ButtonPanel1.OKButton.Enabled:=FilesListView.SelCount>0;
 end;
 
 procedure TAddToPackageDlg.FormCreate(Sender: TObject);
@@ -766,6 +760,11 @@ begin
   FreeAndNil(fPkgComponents);
   FreeAndNil(fPackages);
   FreeAndNil(Params);
+end;
+
+procedure TAddToPackageDlg.FormShow(Sender: TObject);
+begin
+  SelectNext(PageControl1.ActivePage, True, True);
 end;
 
 procedure TAddToPackageDlg.NewComponentButtonClick(Sender: TObject);
@@ -939,52 +938,6 @@ begin
   end;
 end;
 
-procedure TAddToPackageDlg.NewFileOkButtonClick(Sender: TObject);
-var
-  ANode: TTreeNode;
-begin
-  ANode:=NewFileTreeView.Selected;
-  if (ANode<>nil) and (ANode.Data<>nil) and (TObject(ANode.Data) is TNewItemProjectFile)
-  then begin
-    Params.Clear;
-    Params.AddType:=d2ptNewFile;
-    Params.NewItem:=TNewIDEItemTemplate(ANode.Data);
-    ModalResult:=mrOk;
-  end
-  else
-    IDEMessageDialog(lisNewDlgNoItemSelected,lisNewDlgPleaseSelectAnItemFirst,mtInformation,[mbOk]);
-end;
-
-procedure TAddToPackageDlg.NewFilePageResize(Sender: TObject);
-begin
-  NewFileTreeView.Width:=NewFilePage.ClientWidth div 2;
-end;
-
-procedure TAddToPackageDlg.NewFileTreeViewClick(Sender: TObject);
-var
-  Desc: String;
-  ANode: TTreeNode;
-begin
-  ANode:=NewFileTreeView.Selected;
-  Desc:='';
-  if (ANode<>nil) and (ANode.Data<>nil) then begin
-    if TObject(ANode.Data) is TNewIDEItemTemplate then
-      Desc:=TNewIDEItemTemplate(ANode.Data).Description;
-  end;
-  NewFileHelpLabel.Caption:=Desc;
-end;
-
-procedure TAddToPackageDlg.NewFileTreeViewDblClick(Sender: TObject);
-begin
-  NewFileOkButtonClick(Self);
-end;
-
-procedure TAddToPackageDlg.NewFileTreeViewSelectionChanged(Sender: TObject);
-begin
-  OkButton.Enabled:=(NewFileTreeView.Selected<>nil)
-            and (TObject(NewFileTreeView.Selected.Data) is TNewIDEItemTemplate);
-end;
-
 procedure TAddToPackageDlg.SetLazPackage(const AValue: TLazPackage);
 begin
   if FLazPackage=AValue then exit;
@@ -1001,10 +954,13 @@ begin
     Result:=d2ptNewComponent
   else if PageControl1.ActivePage=NewRequirementPage then
     Result:=d2ptRequiredPkg
-  else if PageControl1.ActivePage=AddFilesPage then
-    Result:=d2ptFiles
-  else
-    Result:=d2ptNewFile;
+  else {if PageControl1.ActivePage=AddFilesPage then } begin
+    Assert(PageControl1.ActivePage=AddFilesPage,
+      'TAddToPackageDlg.GetActivatePage: PageControl1.ActivePage <> AddFilesPage');
+    Result:=d2ptFiles;
+  end;
+  //else
+  //  Result:=d2ptNewFile;
 end;
 
 procedure TAddToPackageDlg.SetActivatePage(AValue: TAddToPkgType);
@@ -1012,45 +968,39 @@ begin
   case AValue of
   d2ptNewComponent: PageControl1.ActivePage:=NewComponentPage;
   d2ptRequiredPkg: PageControl1.ActivePage:=NewRequirementPage;
-  d2ptFile,d2ptFiles: PageControl1.ActivePage:=AddFilesPage;
-  else PageControl1.ActivePage:=NewFilePage;
+  d2ptFiles: PageControl1.ActivePage:=AddFilesPage;
+  else raise Exception.Create('TAddToPackageDlg.SetActivatePage: invalid value.');
   end;
 end;
 
 function TAddToPackageDlg.CheckNewCompOk: Boolean;
 begin
   Result:=(AncestorComboBox.Text<>'') and (ClassNameEdit.Text<>'') and (ComponentUnitNameEdit.Text<>'');
-  OkButton.Enabled:=Result;
+  ButtonPanel1.OKButton.Enabled:=Result;
 end;
 
 function TAddToPackageDlg.CheckNewReqOk: Boolean;
 begin
   Result:=(DependPkgNameComboBox.Text<>'');
-  OkButton.Enabled:=Result;
+  ButtonPanel1.OKButton.Enabled:=Result;
 end;
 
 procedure TAddToPackageDlg.PageControl1Change(Sender: TObject);
 begin
   case PageControl1.PageIndex of
-    0: begin              // New File
-      OkButton.Caption:=lisA2PCreateNewFile;
-      OkButton.OnClick:=@NewFileOkButtonClick;
-      OkButton.Enabled:=(NewFileTreeView.Selected<>nil)
-                and (TObject(NewFileTreeView.Selected.Data) is TNewIDEItemTemplate);
-    end;
-    1: begin              // New Component
-      OkButton.Caption:=lisA2PCreateNewComp;
-      OkButton.OnClick:=@NewComponentButtonClick;
+    0: begin              // New Component
+      ButtonPanel1.OkButton.Caption:=lisA2PCreateNewComp;
+      ButtonPanel1.OkButton.OnClick:=@NewComponentButtonClick;
       CheckNewCompOk;
     end;
-    2: begin              // New Requirement
-      OkButton.Caption:=lisA2PCreateNewReq;
-      OkButton.OnClick:=@NewDependButtonClick;
+    1: begin              // New Requirement
+      ButtonPanel1.OkButton.Caption:=lisA2PCreateNewReq;
+      ButtonPanel1.OkButton.OnClick:=@NewDependButtonClick;
       CheckNewReqOk;
     end;
-    3: begin              // Add Files
-      OkButton.Caption:=lisA2PAddFilesToPackage;
-      OkButton.OnClick:=@FilesAddButtonClick;
+    2: begin              // Add Files
+      ButtonPanel1.OkButton.Caption:=lisA2PAddFilesToPackage;
+      ButtonPanel1.OkButton.OnClick:=@FilesAddButtonClick;
       CheckFilesButtonsOk;
     end;
   end;
@@ -1058,25 +1008,18 @@ end;
 
 procedure TAddToPackageDlg.SetupComponents;
 begin
-  NewFilePage.Caption:=lisA2PNewFile;
+  //NewFilePage.Caption:=lisA2PNewFile;
   NewComponentPage.Caption:=lisA2PNewComponent;
   NewRequirementPage.Caption:=lisProjAddNewRequirement;
   AddFilesPage.Caption:=lisA2PAddFiles;
-  CancelButton.Caption:=lisCancel;
+  ButtonPanel1.CancelButton.Caption:=lisCancel;
   PageControl1.PageIndex:=0;
   PageControl1Change(PageControl1);
 
-  SetupNewFilePage;
+  //SetupNewFilePage;
   SetupNewComponentPage;
   SetupAddDependencyPage;
   SetupAddFilesPage;
-end;
-
-procedure TAddToPackageDlg.SetupNewFilePage;
-begin
-  NewFileDescriptionGroupBox.Caption:=lisCodeHelpDescrTag;
-  NewFileHelpLabel.Caption:='';
-  FillNewFileTreeView;
 end;
 
 procedure TAddToPackageDlg.SetupNewComponentPage;
@@ -1102,7 +1045,7 @@ begin
   end;
   ComponentUnitNameLabel.Caption:=lisA2PUnitName;
   ComponentUnitNameEdit.Text:='';
-  ComponentIconLabel.Caption:='Icon (maximum 24x24)';
+  ComponentIconLabel.Caption:=lisA2PIconAndSize;
   ComponentIconSpeedButton.Width:=ComponentPaletteBtnWidth;
   ComponentIconSpeedButton.Height:=ComponentPaletteBtnHeight;
 end;
@@ -1176,11 +1119,12 @@ begin
     ClassNameEdit.Text:=IDEComponentPalette.CreateNewClassName(
                                                  fLastNewComponentAncestorType);
   // choose the same page name
-  if (PalettePageCombobox.Text='') and (PkgComponent<>nil) then
+  if (PalettePageCombobox.Text='')
+  and (PkgComponent<>nil) and (PkgComponent.RealPage<>nil) then
     PalettePageCombobox.Text:=PkgComponent.RealPage.PageName;
   // filename
   AutoCompleteNewComponentUnitName;
-  OkButton.Enabled := True;
+  ButtonPanel1.OkButton.Enabled:=True;
 end;
 
 procedure TAddToPackageDlg.AutoCompleteNewComponentUnitName;
@@ -1229,28 +1173,6 @@ begin
     Result:=TrimFilename(CreateRelativePath(Filename,LazPackage.Directory))
   else
     Result:=TrimFilename(CreateAbsoluteSearchPath(Filename,LazPackage.Directory));
-end;
-
-procedure TAddToPackageDlg.FillNewFileTreeView;
-var
-  NewParentNode: TTreeNode;
-  Category: TNewIDEItemCategory;
-  TemplateID: Integer;
-  Template: TNewIDEItemTemplate;
-begin
-  NewFileTreeView.BeginUpdate;
-  NewFileTreeView.Items.Clear;
-  Category:=NewIDEItems.FindByName(FileDescGroupName);
-  NewParentNode:=NewFileTreeView.Items.AddObject(nil,Category.LocalizedName,
-                                                 Category);
-  for TemplateID:=0 to Category.Count-1 do begin
-    Template:=Category[TemplateID];
-    if Template.VisibleInNewDialog and (Template is TNewItemProjectFile) then
-      NewFileTreeView.Items.AddChildObject(NewParentNode,Template.LocalizedName,
-                                           Template);
-  end;
-  NewParentNode.Expand(true);
-  NewFileTreeView.EndUpdate;
 end;
 
 function TAddToPackageDlg.FindFileInFilesList(AFilename: string): Integer;

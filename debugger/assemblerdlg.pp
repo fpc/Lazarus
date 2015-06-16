@@ -141,7 +141,7 @@ type
     procedure SetSelection(ALine: Integer; AMakeVisible: Boolean; AKeepSelEnd: Boolean = False);
     procedure SetLineCount(ALineCount: Integer);
     procedure SetTopLine(ALine: Integer);
-    function  IndexOfAddr(const AAddr: TDBGPtr): Integer;
+    function IndexOfAddr(const AnAddr: TDBGPtr): Integer;
     procedure UpdateLocation(const AAddr: TDBGPtr);
     procedure DoEditorOptsChanged(Sender: TObject; Restore: boolean);
   protected
@@ -803,11 +803,11 @@ begin
   UpdateView;
 end;
 
-function TAssemblerDlg.IndexOfAddr(const AAddr: TDBGPtr): Integer;
+function TAssemblerDlg.IndexOfAddr(const AnAddr: TDBGPtr): Integer;
 begin
   Result := length(FLineMap) - 1;
   while Result >= 0  do begin
-    if (FLineMap[Result].State = lmsStatement) and (FLineMap[Result].Addr = FCurrentLocation)
+    if (FLineMap[Result].State = lmsStatement) and (FLineMap[Result].Addr = AnAddr)
     then exit;
     dec(Result);
   end;

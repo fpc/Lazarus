@@ -11,7 +11,7 @@ msgstr ""
 
 #: msgjsonviewer.sarray
 msgid "Array (%d elements)"
-msgstr ""
+msgstr "Matriz (%d elementos)"
 
 #: msgjsonviewer.scancelclose
 msgid "Do not close the window"
@@ -39,8 +39,8 @@ msgid ""
 "The JSON data was changed but not saved.\n"
 "What do want to do ?\n"
 msgstr ""
-"Los datos JSON fue cambiados pero no guardados.\n"
-"¿Quieres hacer?\n"
+"Los datos JSON fueron cambiados pero no guardados.\n"
+"¿Que deseas hacer?\n"
 
 #: msgjsonviewer.sduplicatemembername
 msgid "Duplicate member name \"%s\"."
@@ -55,10 +55,8 @@ msgid "Empty document"
 msgstr "Documento vacío"
 
 #: msgjsonviewer.serrcreatingconfigdir
-#, fuzzy
-#| msgid "Could not create the configuration files directory \"s\""
 msgid "Could not create the configuration files directory \"%s\""
-msgstr "No se pudo crear el directorio de archivos de configuración \"s\""
+msgstr "No se pudo crear el directorio de archivos de configuración \"%s\""
 
 #: msgjsonviewer.serrinvalidvalue
 msgid "Invalid value or wrong type: \"%s\""
@@ -102,7 +100,7 @@ msgstr "Copia el nodo seleccionado en el Portapapeles como JSON"
 
 #: tmainform.acut.caption
 msgid "C&ut"
-msgstr "Cortar"
+msgstr "Cor&tar"
 
 #: tmainform.acut.hint
 msgid "Cut selected node to clipboard as JSON"
@@ -126,11 +124,11 @@ msgstr "Expandir todos los nodos del documento"
 
 #: tmainform.aexpandcurrentcontainer.caption
 msgid "Expand &current object/array"
-msgstr "Expandir a&ctual objeto/matriz"
+msgstr "Expandir el objeto/matriz a&ctual"
 
 #: tmainform.aexpandcurrentcontainer.hint
 msgid "Expand all nodes in the current object/array"
-msgstr "Expandir todos los nodos en el actual objeto/matriz"
+msgstr "Expandir todos los nodos en el objeto/matriz actual"
 
 #: tmainform.afind.caption
 msgid "&Find"
@@ -142,7 +140,7 @@ msgstr "Buscar siguiente ocurrencia"
 
 #: tmainform.anew.caption
 msgid "&New"
-msgstr "&Nuevo"
+msgstr "Nue&vo"
 
 #: tmainform.anew.hint
 msgid "Create new JSON document"
@@ -150,7 +148,7 @@ msgstr "Crear nuevo documento JSON"
 
 #: tmainform.anewarray.caption
 msgid "New &Array"
-msgstr "Nuevo M&atriz"
+msgstr "Nueva M&atriz"
 
 #: tmainform.anewarray.hint
 msgid "Add a new JSON array"
@@ -166,7 +164,7 @@ msgstr "Agregar un nuevo valor booleano"
 
 #: tmainform.anewnullvalue.caption
 msgid "New N&ull value"
-msgstr "Nuevo valor de N&ulo"
+msgstr "Nuevo valor Nu&lo"
 
 #: tmainform.anewnullvalue.hint
 msgid "Add a new null value"
@@ -190,7 +188,7 @@ msgstr "Agregar un nuevo objeto JSON"
 
 #: tmainform.anewstringvalue.caption
 msgid "New &string value"
-msgstr "Nuevo valor de cadena"
+msgstr "Nue&vo valor de cadena"
 
 #: tmainform.anewstringvalue.hint
 msgid "Add a new string value"
@@ -222,7 +220,7 @@ msgstr "Pegar datos JSON en el Portapapeles como nuevo documento"
 
 #: tmainform.aquit.caption
 msgid "&Quit"
-msgstr "Salir"
+msgstr "Sali&r"
 
 #: tmainform.aquit.hint
 msgid "Exit the program"
@@ -230,7 +228,7 @@ msgstr "Salir del programa"
 
 #: tmainform.asave.caption
 msgid "&Save"
-msgstr "Guardar"
+msgstr "&Guardar"
 
 #: tmainform.asave.hint
 msgid "Save the JSON document to file"
@@ -275,7 +273,7 @@ msgstr "-"
 
 #: tmainform.mfile.caption
 msgid "&File"
-msgstr "Archivo"
+msgstr "Archiv&o"
 
 #: tmainform.midocument.caption
 msgid "&New document with object"

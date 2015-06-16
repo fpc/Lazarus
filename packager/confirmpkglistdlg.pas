@@ -25,17 +25,16 @@ unit ConfirmPkgListDlg;
 interface
 
 uses
-  Buttons, Classes, ExtCtrls, Grids, Forms, Controls;
+  Buttons, Classes, ExtCtrls, Grids, Forms, Controls, ButtonPanel;
 
 type
 
   { TConfirmPackageListDialog }
 
   TConfirmPackageListDialog = class(TForm)
-    BtnPanel: TPanel;
-    CancelButton: TBitBtn;
-    OkButton: TBitBtn;
+    ButtonPanel1: TButtonPanel;
     PackagesGrid: TStringGrid;
+    procedure FormCreate(Sender: TObject);
   private
     function Confirm(AChangesReport: TStrings): Boolean;
   end; 
@@ -63,6 +62,13 @@ end;
 
 { TConfirmPackageListDialog }
 
+procedure TConfirmPackageListDialog.FormCreate(Sender: TObject);
+begin
+  Caption := lisConfirmNewPackageSetForTheIDE;
+  ButtonPanel1.OkButton.Caption := lisContinue;
+  ButtonPanel1.CancelButton.Caption := lisCancel;
+end;
+
 function TConfirmPackageListDialog.Confirm(AChangesReport: TStrings): Boolean;
 var
   s: String;
@@ -78,9 +84,6 @@ begin
   // Auto-grow dialog up to 3/4 of the screen height.
   d := Min(d, Screen.Height * 3 div 4 - Height);
   Height := Height + d;
-  Caption := lisConfirmNewPackageSetForTheIDE;
-  OkButton.Caption := lisContinue;
-  CancelButton.Caption := lisCancel;
 
   for i := 1 to AChangesReport.Count do begin
     s := AChangesReport[i - 1];

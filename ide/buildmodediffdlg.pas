@@ -41,7 +41,7 @@ type
 
   TBuildModeDiffDialog = class(TForm)
     ButtonPanel: TButtonPanel;
-    DiffsGroupBox: TGroupBox;
+    DiffLabel: TLabel;
     DiffTreeView: TTreeView;
     ModeComboBox: TComboBox;
     ModeLabel: TLabel;
@@ -84,7 +84,7 @@ begin
   Caption:=lisBuildModeDiffDifferencesBetweenBuildModes;
 
   ModeLabel.Caption:=lisBuildModeDiffMode;
-  DiffsGroupBox.Caption:=lisBuildModeDiffDifferencesToOtherBuildModes;
+  DiffLabel.Caption:=lisBuildModeDiffDifferencesToOtherBuildModes;
   ButtonPanel.CloseButton.Caption:=lisBtnClose;
 end;
 

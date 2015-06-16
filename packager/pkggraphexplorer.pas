@@ -38,7 +38,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, Forms, Controls, Buttons, ComCtrls,
-  StdCtrls, Menus, Dialogs, Graphics, LCLType, ExtCtrls,
+  StdCtrls, Menus, Dialogs, Graphics, LCLType, ExtCtrls, ButtonPanel,
   AVL_Tree, contnrs,
   IDECommands, PackageIntf, IDEImagesIntf, LazIDEIntf,
   LvlGraphCtrl,
@@ -55,6 +55,7 @@ type
   { TPkgGraphExplorerDlg }
 
   TPkgGraphExplorerDlg = class(TForm)
+    ButtonPanel1: TButtonPanel;
     CleanPkgDepsMenuItem: TMenuItem;
     PkgTreeView: TTreeView;
     InfoMemo: TMemo;
@@ -65,8 +66,10 @@ type
     VerticalSplitter: TSplitter;
     UninstallMenuItem: TMenuItem;
     procedure CleanPkgDepsMenuItemClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
     procedure LvlGraphControl1DblClick(Sender: TObject);
     procedure LvlGraphControl1SelectionChanged(Sender: TObject);
+    procedure OKButtonClick(Sender: TObject);
     procedure PkgGraphExplorerShow(Sender: TObject);
     procedure PkgPopupMenuPopup(Sender: TObject);
     procedure InfoMemoKeyDown(Sender: TObject; var Key: Word;
@@ -201,6 +204,11 @@ begin
   end;
 end;
 
+procedure TPkgGraphExplorerDlg.FormCreate(Sender: TObject);
+begin
+  ButtonPanel1.OKButton.Caption:= lisClose;
+end;
+
 procedure TPkgGraphExplorerDlg.LvlGraphControl1SelectionChanged(Sender: TObject
   );
 var
@@ -217,6 +225,11 @@ begin
     FUpdatingSelection:=false;
   end;
   UpdateInfo;
+end;
+
+procedure TPkgGraphExplorerDlg.OKButtonClick(Sender: TObject);
+begin
+  Close;
 end;
 
 procedure TPkgGraphExplorerDlg.PkgPopupMenuPopup(Sender: TObject);

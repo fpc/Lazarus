@@ -33,7 +33,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls, Buttons,
-  Menus, ExtCtrls, EditBtn, ButtonPanel,
+  Menus, ExtCtrls, ButtonPanel,
   IDEProcs, FileUtil, Laz2_XMLCfg, LazFileCache, LCLType, LazarusIDEStrConsts,
   IDEOptionsIntf, InputHistory, Project, CompilerOptions;
 
@@ -41,27 +41,23 @@ type
   { TImExportCompOptsDlg }
 
   TImExportCompOptsDlg = class(TForm)
+    ButtonBrowse: TButton;
     ButtonPanel1: TButtonPanel;
     ExportRadioGroup: TRadioGroup;
     FileLabel: TLabel;
-    FileNameEdit: TFileNameEdit;
-    HistoryLabel: TLabel;
-    MenuItem1: TMenuItem;
-    HistoryButton: TButton;
-    RecentPopupMenu: TPopupMenu;
-    procedure FileNameEditChangeImport(Sender: TObject);
-    procedure FileNameEditChangeExport(Sender: TObject);
+    FileNameEdit: TComboBox;
+    OpenDlg: TOpenDialog;
+    SaveDlg: TSaveDialog;
+    procedure ButtonBrowseClick(Sender: TObject);
+    procedure FileNameEditChange(Sender: TObject);
     procedure ImExportCompOptsDlgCLOSE(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure ImExportCompOptsDlgCREATE(Sender: TObject);
     procedure OpenButtonCLICK(Sender: TObject);
-    procedure PopupClick(Sender: TObject);
-    procedure HistoryButtonClick(Sender: TObject);
-    //procedure RecentSaveButton1Click(Sender: TObject);
     procedure SaveButtonCLICK(Sender: TObject);
   private
     FFilename: string;
     FParentDialog: TAbstractOptionsEditorDialog;
-    procedure HideRadioButtons;
+    FExport: boolean;
     procedure InitExport;
     procedure InitImport;
     procedure LoadRecentList;
@@ -249,23 +245,27 @@ end;
 
 { TImExportCompOptsDlg }
 
-procedure TImExportCompOptsDlg.HideRadioButtons;
-begin
-  Width:=FileNameEdit.Left + FileNameEdit.Width + 70; // Room for localized "File"
-  ExportRadioGroup.Visible:=False;
-end;
-
 procedure TImExportCompOptsDlg.InitImport;
 begin
+  FExport:=false;
   Caption:=lisIECOImportCompilerOptions;
-  HideRadioButtons;
-  FileNameEdit.Filter:='XML file (*.xml)|*.xml|'
-                      +'Project file (*.lpi)|*.lpi|'
-                      +'Package file (*.lpk)|*.lpk|'
-                      +'Session file (*.lps)|*.lps|'
-                      +'All files (*)|*';
-  FileNameEdit.DialogOptions:=FileNameEdit.DialogOptions+[ofFileMustExist];
-  FileNameEdit.OnChange:=@FileNameEditChangeImport;
+  // ToDo: Later when the XML file is selected, ExportRadioGroup can be made
+  //  Visible but disabled. Then ItemIndex must be set according to file contents.
+  //  If file contains one mode -> ItemIndex:=0. If more modes -> ItemIndex:=1.
+  ExportRadioGroup.Visible:=False;
+
+  OpenDlg.Filter:=Format(
+                       '%s|*.xml|'
+                      +'%s|*.lpi|'
+                      +'%s|*.lpk|'
+                      +'%s|*.lps|'
+                      +'%s|%s',
+                      [dlgFilterXML,
+                       dlgFilterLazarusProject,
+                       dlgFilterLazarusPackage,
+                       dlgFilterLazarusSession,
+                       dlgFilterAll, GetAllFilesMask]);
+
   with ButtonPanel1 do begin
     OKButton.Caption:=lisIECOLoadFromFile;
     OKButton.LoadGlyphFromStock(idButtonOpen);
@@ -278,12 +278,13 @@ end;
 
 procedure TImExportCompOptsDlg.InitExport;
 begin
+  FExport:=true;
   Caption:=lisIECOExportCompilerOptions;
-  FileNameEdit.Filter:='XML file (*.xml)|*.xml|All files (*)|*';
-  FileNameEdit.DialogKind:=dkSave;
-  FileNameEdit.OnChange:=@FileNameEditChangeExport;
+  SaveDlg.Filter:=Format('%s|*.xml|%s|%s',
+                     [dlgFilterXML, dlgFilterAll, GetAllFilesMask]);
+
   if Project1.BuildModes.Count <= 1 then
-    HideRadioButtons;
+    ExportRadioGroup.Enabled:=False;
   with ButtonPanel1 do begin
     OKButton.Caption:=lisIECOSaveToFile;
     OKButton.LoadGlyphFromStock(idButtonSave);
@@ -296,8 +297,6 @@ end;
 
 procedure TImExportCompOptsDlg.ImExportCompOptsDlgCREATE(Sender: TObject);
 begin
-  HistoryLabel.Caption:=lisIECORecentFiles;
-  HistoryLabel.Hint:=lisIECORecentFiles;
   FileLabel.Caption:=lisFile;
   ExportRadioGroup.Caption:=lisIECOCompilerOptionsOf;
   ExportRadioGroup.Items.Strings[0]:=lisIECOCurrentBuildMode;
@@ -305,39 +304,40 @@ begin
   LoadRecentList;
 end;
 
-procedure TImExportCompOptsDlg.FileNameEditChangeImport(Sender: TObject);
+procedure TImExportCompOptsDlg.ButtonBrowseClick(Sender: TObject);
+var
+  Dlg: TFileDialog;
 begin
-  ButtonPanel1.OKButton.Enabled := FileExistsUTF8((Sender as TFileNameEdit).FileName);
+  if FExport then Dlg:= SaveDlg
+    else Dlg:= OpenDlg;
+
+  with Dlg do
+  begin
+    FileName := '';
+    if Execute then
+    begin
+      FileNameEdit.Text := FileName;
+      FileNameEditChange(nil);
+    end;
+  end;
 end;
 
-procedure TImExportCompOptsDlg.FileNameEditChangeExport(Sender: TObject);
+procedure TImExportCompOptsDlg.FileNameEditChange(Sender: TObject);
 begin
-  ButtonPanel1.OKButton.Enabled := (Sender as TFileNameEdit).FileName <> '';
+  if FExport then
+    ButtonPanel1.OKButton.Enabled := FileNameEdit.Text <> ''
+  else
+    ButtonPanel1.OKButton.Enabled := FileExistsUTF8(FileNameEdit.Text);
 end;
 
 procedure TImExportCompOptsDlg.OpenButtonCLICK(Sender: TObject);
 begin
-  DoOpenFile(CleanAndExpandFilename(FileNameEdit.FileName));
+  DoOpenFile(CleanAndExpandFilename(FileNameEdit.Text));
 end;
 
-procedure TImExportCompOptsDlg.PopupClick(Sender: TObject);
-begin
-  FileNameEdit.Text := (Sender as TMenuItem).Caption;
-end;
-
-procedure TImExportCompOptsDlg.HistoryButtonClick(Sender: TObject);
-begin
-  RecentPopupMenu.PopUp;
-end;
-{
-procedure TImExportCompOptsDlg.RecentSaveButton1Click(Sender: TObject);
-begin
-  RecentPopupMenu.PopUp;
-end;
-}
 procedure TImExportCompOptsDlg.SaveButtonCLICK(Sender: TObject);
 begin
-  DoSaveFile(CleanAndExpandFilename(FileNameEdit.FileName));
+  DoSaveFile(CleanAndExpandFilename(FileNameEdit.Text));
 end;
 
 procedure TImExportCompOptsDlg.ImExportCompOptsDlgCLOSE(Sender: TObject; var CloseAction: TCloseAction);
@@ -346,32 +346,15 @@ begin
 end;
 
 procedure TImExportCompOptsDlg.LoadRecentList;
-var
-  sl: TStringList;
-  mi: TMenuItem;
-  i: Integer;
 begin
-  sl := TStringList.Create;
-  try
-    RecentPopupMenu.Items.Clear;
-    sl.Assign(InputHistories.HistoryLists.GetList(hlCompilerOptsImExport,true,rltFile));
-    for i := 0 to sl.Count-1 do begin
-      mi := TMenuItem.Create(RecentPopupMenu);
-      mi.Caption:=sl[i];
-      mi.OnClick:=@PopupClick;
-      RecentPopupMenu.Items.Add(mi);
-    end;
-    HistoryLabel.Visible := sl.Count > 0;
-    HistoryButton.Visible := HistoryLabel.Visible;
-  finally
-    sl.Free;
-  end;
+  FileNameEdit.Items.Assign(
+    InputHistories.HistoryLists.GetList(hlCompilerOptsImExport,true,rltFile));
 end;
 {
 procedure TImExportCompOptsDlg.SaveRecentList;
 begin
   InputHistories.HistoryLists.GetList(hlCompilerOptsImExport,true,rltFile).Assign(
-    RecentListbox.Items);
+    FileNameEdit.Items);
   InputHistories.Save;
 end;
 }

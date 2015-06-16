@@ -444,6 +444,12 @@ begin
         Node.Expand(False);
     end;
     Key := #0;
+  end else
+  if Key = Char(VK_RETURN) then  //SearchInListEdit passes only OnPress through
+  begin
+    Key := #0;
+    if Assigned(FOnSelectionChanged) then
+      FOnSelectionChanged(Self);
   end;
 end;
 
@@ -706,7 +712,8 @@ begin
   if (Key = VK_RETURN) and (Shift = []) then
   begin
     Key:=VK_UNKNOWN;
-    FOnSelectionChanged(Self);
+    if Assigned(FOnSelectionChanged) then
+      FOnSelectionChanged(Self);
   end;     
 end;
 

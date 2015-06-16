@@ -47,6 +47,7 @@ type
   protected
     procedure DoEnter; override;
     procedure DoExit; override;
+    function PerformTab(ForwardTab: boolean): boolean; override;
   end;
 
   { TCustomEditButton }
@@ -119,6 +120,9 @@ type
     function GetSpacing: Integer;
     function GetTabStop: Boolean;
     function GetText: TCaption;
+    function GetTextHint: TTranslateString;
+    function GetTextHintFontColor: TColor;
+    function GetTextHintFontStyle: TFontStyles;
     function IsCustomGlyph : Boolean;
 
     procedure FocusAndMaybeSelectAll;
@@ -181,6 +185,9 @@ type
     procedure SetSelText(AValue: String);
     procedure SetSpacing(const Value: integer);
     procedure SetTabStop(AValue: Boolean);
+    procedure SetTextHint(AValue: TTranslateString);
+    procedure SetTextHintFontColor(AValue: TColor);
+    procedure SetTextHintFontStyle(AValue: TFontStyles);
   protected
     class function GetControlClassDefaultSize: TSize; override;
     function CalcButtonVisible: Boolean; virtual;
@@ -293,6 +300,9 @@ type
     property SelText: String read GetSelText write SetSelText;
     property TabStop: Boolean read GetTabStop write SetTabStop default True;
     property Text: TCaption read GetText write SetText;
+    property TextHint: TTranslateString read GetTextHint write SetTextHint;
+    property TextHintFontColor: TColor read GetTextHintFontColor write SetTextHintFontColor default clGrayText;
+    property TextHintFontStyle: TFontStyles read GetTextHintFontStyle write SetTextHintFontStyle default [fsItalic];
 
     property OnChange: TNotifyEvent read FOnEditChange write FOnEditChange;
     property OnClick: TNotifyEvent read FOnEditClick write FOnEditClick;
@@ -392,6 +402,9 @@ type
     property TabOrder;
     property TabStop;
     property Text;
+    property TextHint;
+    property TextHintFontColor;
+    property TextHintFontStyle;
     property Visible;
   end;
 
@@ -631,6 +644,9 @@ type
     property OnStartDrag;
     property OnUTF8KeyPress;
     property Text;
+    property TextHint;
+    property TextHintFontColor;
+    property TextHintFontStyle;
   end;
 
 
@@ -721,6 +737,9 @@ type
     property OnStartDrag;
     property OnUTF8KeyPress;
     property Text;
+    property TextHint;
+    property TextHintFontColor;
+    property TextHintFontStyle;
   end;
 
 
@@ -837,6 +856,9 @@ type
     property Spacing;
     property Visible;
     property Text;
+    property TextHint;
+    property TextHintFontColor;
+    property TextHintFontStyle;
   end;
 
 
@@ -930,6 +952,9 @@ type
     property OnStartDrag;
     property OnUTF8KeyPress;
     property Text;
+    property TextHint;
+    property TextHintFontColor;
+    property TextHintFontStyle;
   end;
 
 
@@ -965,6 +990,22 @@ begin
   inherited DoExit;
 end;
 
+function TEbEdit.PerformTab(ForwardTab: boolean): boolean;
+begin
+  //if not Forward then inherited PerFormTab will set focus to the owning
+  //TCustomEditButton, which immediately transfers the focus back to the TEbEdit
+  //so let TCustomEditButton do the Performtab in this case
+  if ForwardTab then
+    Result := inherited PerformTab(ForwardTab)
+  else
+  begin
+    if Assigned(Owner) and (Owner is TCustomEditButton) then
+      Result :=  TCustomEditButton(Owner).PerformTab(ForwardTab)
+    else
+      Result := False;
+  end;
+end;
+
 { TCustomEditButton }
 
 procedure TCustomEditButton.InternalOnButtonClick(Sender: TObject);
@@ -974,7 +1015,8 @@ end;
 
 procedure TCustomEditButton.InternalOnEditChange(Sender: TObject);
 begin
-  EditChange;
+  if not (csLoading in ComponentState) then
+    EditChange;
 end;
 
 procedure TCustomEditButton.InternalOnEditClick(Sender: TObject);
@@ -1152,6 +1194,21 @@ end;
 function TCustomEditButton.GetText: TCaption;
 begin
   Result := FEdit.Text;
+end;
+
+function TCustomEditButton.GetTextHint: TTranslateString;
+begin
+  Result := FEdit.TextHint;
+end;
+
+function TCustomEditButton.GetTextHintFontColor: TColor;
+begin
+  Result := FEdit.TextHintFontColor;
+end;
+
+function TCustomEditButton.GetTextHintFontStyle: TFontStyles;
+begin
+  Result := FEdit.TextHintFontStyle;
 end;
 
 function TCustomEditButton.IsCustomGlyph: Boolean;
@@ -1745,6 +1802,21 @@ begin
   FEdit.TabStop := AValue;
 end;
 
+procedure TCustomEditButton.SetTextHint(AValue: TTranslateString);
+begin
+  FEdit.TextHint := AValue;
+end;
+
+procedure TCustomEditButton.SetTextHintFontColor(AValue: TColor);
+begin
+  FEdit.TextHintFontColor := AValue;
+end;
+
+procedure TCustomEditButton.SetTextHintFontStyle(AValue: TFontStyles);
+begin
+  FEdit.TextHintFontStyle := AValue;
+end;
+
 constructor TCustomEditButton.Create(AOwner: TComponent);
 var
   B: TBitmap;
@@ -1880,6 +1952,7 @@ begin
   Button.Enabled:=False;
   fIsFirstUpdate:=True;
   fIsFirstSetFormActivate:=True;
+  TextHint:=rsFilter;
 end;
 
 destructor TCustomControlFilterEdit.Destroy;
@@ -1945,7 +2018,7 @@ procedure TCustomControlFilterEdit.SetFilter(const AValue: string);
 var
   NewValue: String;
 begin
-  if AValue=rsFilter then
+  if (TextHint<>'') and (AValue=TextHint) then
     NewValue:=''
   else
     NewValue:=AValue;
@@ -1953,11 +2026,6 @@ begin
   if (NewValue<>'') or Focused or fJustActivated or (csDesigning in ComponentState) then
   begin
     Text:=NewValue;
-    Font.Color:=clDefault;
-  end
-  else begin
-    Text:=rsFilter;
-    Font.Color:=clBtnShadow;
   end;
   if fFilter=NewValue then exit;
   fFilter:=NewValue;
@@ -2001,8 +2069,6 @@ procedure TCustomControlFilterEdit.EditEnter;
 begin
 //  inherited;
   fJustActivated:=False;
-  if Text=rsFilter then
-    Text:='';
 end;
 
 procedure TCustomControlFilterEdit.EditExit;
@@ -2015,6 +2081,7 @@ end;
 procedure TCustomControlFilterEdit.ButtonClick;
 begin
   fJustActivated:=False;
+  Text:='';
   Filter:='';
   if FocusOnButtonClick then FEdit.SetFocus; //don't SelectAll here
 end;

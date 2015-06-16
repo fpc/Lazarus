@@ -40,6 +40,7 @@ type
   TCocoaWSScrollBar = class(TWSScrollBar)
   published
     class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class procedure SetKind(const AScrollBar: TCustomScrollBar; const AIsHorizontal: Boolean); override;
     class procedure SetParams(const AScrollBar: TCustomScrollBar); override;
   end;
 
@@ -1017,18 +1018,37 @@ var
 begin
   scr:=NSView(TCocoaScrollBar.alloc).lclInitWithCreateParams(AParams);
   scr.callback:=TLCLCommonCallback.Create(scr, AWinControl);
+
+  // OnChange (scrolling) event handling
+  scr.LCLScrollBar := TCustomScrollBar(AWinControl);
+  scr.setTarget(scr);
+  scr.setAction(objcselector('actionScrolling:'));
+
   Result:=TLCLIntfHandle(scr);
 end;
 
-class procedure TCocoaWSScrollBar.SetParams(const AScrollBar:TCustomScrollBar);
+// vertical/horizontal in Cocoa is set automatically according to
+// the geometry of the scrollbar, it cannot be forced to an unusual value
+class procedure TCocoaWSScrollBar.SetKind(const AScrollBar: TCustomScrollBar; const AIsHorizontal: Boolean);
 begin
-  if not Assigned(AScrollBar) or (AScrollBar.Handle=0) then Exit;
-  with AScrollBar do
-   if Max>0 then begin
-     TCocoaScrollBar(Handle).setFloatValue_knobProportion( Position/Max, PageSize/Max);
-     //if TCocoaScrollBar(Handle).setKnobProportion( PageSize/Max );
-     //if TCocoaScrollBar(Handle).setDoubleValue( Position/Max );
-   end;
+  // do nothing
+end;
+
+class procedure TCocoaWSScrollBar.SetParams(const AScrollBar:TCustomScrollBar);
+var
+  lScroller: TCocoaScrollBar;
+begin
+  if not Assigned(AScrollBar) then Exit;
+  lScroller := TCocoaScrollBar(AScrollBar.Handle);
+  if (lScroller = nil) then Exit;
+  if AScrollBar.Max > 0 then
+  begin
+    lScroller.setFloatValue_knobProportion(
+      AScrollBar.Position / AScrollBar.Max,
+      AScrollBar.PageSize / AScrollBar.Max);
+    //if TCocoaScrollBar(Handle).setKnobProportion( PageSize/Max );
+    //if TCocoaScrollBar(Handle).setDoubleValue( Position/Max );
+  end;
 end;
 
 { TCocoaWSCustomGroupBox }

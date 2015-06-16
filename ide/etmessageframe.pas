@@ -32,14 +32,19 @@ unit etMessageFrame;
 interface
 
 uses
-  Math, strutils, Classes, SysUtils, UTF8Process, FileProcs, LazFileCache,
+  Math, strutils, Classes, SysUtils,
+  UTF8Process, FileProcs, LazFileCache,
   LazUTF8Classes, LazFileUtils, LazUTF8, AvgLvlTree, SynEdit,
-  SynEditMarks, LResources, Forms, Buttons, ExtCtrls, Controls, LMessages,
+  LResources, Forms, Buttons, ExtCtrls, Controls, LMessages,
   LCLType, Graphics, LCLIntf, Themes, ImgList, GraphType, Menus, Clipbrd,
-  Dialogs, StdCtrls, IDEExternToolIntf, IDEImagesIntf, MenuIntf, PackageIntf,
-  IDECommands, IDEDialogs, ProjectIntf, CompOptsIntf,
+  Dialogs, StdCtrls,
+  SynEditMarks,
+  // IDEIntf
+  IDEExternToolIntf, IDEImagesIntf, MenuIntf, PackageIntf,
+  IDECommands, IDEDialogs, ProjectIntf, CompOptsIntf, LazIDEIntf,
+  // IDE
   LazarusIDEStrConsts, EnvironmentOpts, HelpFPCMessages, etSrcEditMarks,
-  etQuickFixes, ExtTools, IDEOptionDefs, CompilerOptions;
+  MsgWnd_Options, etQuickFixes, ExtTools, IDEOptionDefs, CompilerOptions;
 
 const
   CustomViewCaption = '------------------------------';
@@ -330,6 +335,7 @@ type
     procedure FilterMsgOfTypeMenuItemClick(Sender: TObject);
     procedure FilterUrgencyMenuItemClick(Sender: TObject);
     procedure HideSearchSpeedButtonClick(Sender: TObject);
+    procedure MoreOptionsMenuItemClick(Sender: TObject);
     procedure MsgCtrlPopupMenuPopup(Sender: TObject);
     procedure OnSelectFilterClick(Sender: TObject);
     procedure OpenToolsOptionsMenuItemClick(Sender: TObject);
@@ -337,8 +343,6 @@ type
     procedure SaveAllToFileMenuItemClick(Sender: TObject);
     procedure SaveShownToFileMenuItemClick(Sender: TObject);
     procedure SearchEditChange(Sender: TObject);
-    procedure SearchEditEnter(Sender: TObject);
-    procedure SearchEditExit(Sender: TObject);
     procedure SearchEditKeyDown(Sender: TObject; var Key: Word;
       {%H-}Shift: TShiftState);
     procedure SearchNextSpeedButtonClick(Sender: TObject);
@@ -397,9 +401,6 @@ type
     function AddCustomMessage(TheUrgency: TMessageLineUrgency; Msg: string;
       aFilename: string = ''; LineNumber: integer = 0; Column: integer = 0;
       const ViewCaption: string = CustomViewCaption): TMessageLine;
-
-    // misc
-    function GetDefaultSearchText: string;
   end;
 
 const
@@ -445,6 +446,7 @@ var
       MsgFileStyleFullMenuItem: TIDEMenuCommand;
     MsgTranslateMenuItem: TIDEMenuCommand;
     MsgShowIDMenuItem: TIDEMenuCommand;
+    MsgMoreOptionsMenuItem: TIDEMenuCommand;
 
 procedure RegisterStandardMessagesViewMenuItems;
 
@@ -556,6 +558,8 @@ begin
       lisTranslateTheEnglishMessages);
     MsgShowIDMenuItem:=RegisterIDEMenuCommand(Parent, 'ShowID',
       lisShowMessageTypeID);
+    MsgMoreOptionsMenuItem:=RegisterIDEMenuCommand(Parent, 'More Options',
+      lisMore2);
 end;
 
 {$R *.lfm}
@@ -1589,9 +1593,9 @@ begin
         inc(NodeRect.Left,Images.Width+2);
       end;
       // message text
-      col:=TextColor;
+      col:=UrgencyStyles[Line.Urgency].Color;
       if col=clDefault then
-        col:=UrgencyStyles[Line.Urgency].Color;
+        col:=TextColor;
       DrawText(NodeRect,GetLineText(Line),IsSelected,col);
       inc(y,ItemHeight);
       inc(j);
@@ -1620,9 +1624,9 @@ begin
       if (y+ItemHeight>0) and (y<ClientHeight) then begin
         // progress text
         NodeRect:=Rect(Indent,y,ClientWidth,y+ItemHeight);
-        col:=TextColor;
+        col:=UrgencyStyles[View.ProgressLine.Urgency].Color;
         if col=clDefault then
-          col:=UrgencyStyles[View.ProgressLine.Urgency].Color;
+          col:=TextColor;
         DrawText(NodeRect,View.ProgressLine.Msg,
           (fSelectedView=View) and (FSelectedLine=View.Lines.Count),col);
       end;
@@ -2422,6 +2426,7 @@ end;
 procedure TMessagesCtrl.ApplyEnvironmentOptions;
 var
   NewOptions: TMsgCtrlOptions;
+  u: TMessageLineUrgency;
 
   procedure SetOption(Option: TMsgCtrlOption; State: boolean);
   begin
@@ -2432,6 +2437,8 @@ var
   end;
 
 begin
+  for u in TMessageLineUrgency do
+    UrgencyStyles[u].Color := EnvironmentOptions.MsgColors[u];
   BackgroundColor:=EnvironmentOptions.MsgViewColors[mwBackground];
   AutoHeaderBackground:=EnvironmentOptions.MsgViewColors[mwAutoHeader];
   HeaderBackground[lmvtsRunning]:=EnvironmentOptions.MsgViewColors[mwRunning];
@@ -2878,6 +2885,7 @@ begin
     MsgTranslateMenuItem.OnClick:=@TranslateMenuItemClick;
     MsgShowIDMenuItem.Checked:=mcoShowMessageID in MessagesCtrl.Options;
     MsgShowIDMenuItem.OnClick:=@ShowIDMenuItemClick;
+    MsgMoreOptionsMenuItem.OnClick:=@MoreOptionsMenuItemClick;
 
     UpdateRemoveCompOptHideMsgItems;
     UpdateRemoveMsgTypeFilterItems;
@@ -2958,21 +2966,7 @@ var
   s: TCaption;
 begin
   s:=SearchEdit.Text;
-  if s=GetDefaultSearchText then
-    s:='';
   MessagesCtrl.SearchText:=s;
-end;
-
-procedure TMessagesFrame.SearchEditEnter(Sender: TObject);
-begin
-  if SearchEdit.Text=GetDefaultSearchText then
-    SearchEdit.Text:='';
-end;
-
-procedure TMessagesFrame.SearchEditExit(Sender: TObject);
-begin
-  if SearchEdit.Text='' then
-    SearchEdit.Text:=GetDefaultSearchText;
 end;
 
 procedure TMessagesFrame.SearchEditKeyDown(Sender: TObject; var Key: Word;
@@ -3152,6 +3146,11 @@ begin
   HideSearch;
 end;
 
+procedure TMessagesFrame.MoreOptionsMenuItemClick(Sender: TObject);
+begin
+  LazarusIDE.DoOpenIDEOptions(TMsgWndOptionsFrame);
+end;
+
 procedure TMessagesFrame.CopyFilenameMenuItemClick(Sender: TObject);
 begin
   CopyMsgToClipboard(true);
@@ -3274,7 +3273,6 @@ procedure TMessagesFrame.HideSearch;
 begin
   SearchPanel.Visible:=false;
   MessagesCtrl.SearchText:='';
-  SearchEdit.Text:=GetDefaultSearchText;
 end;
 
 procedure TMessagesFrame.SaveClicked(OnlyShown: boolean);
@@ -3424,22 +3422,31 @@ begin
     Align:=alClient;
     Parent:=Self;
 
-    UrgencyStyles[mluNone].SetValues('?',ImgIDInfo,clDefault);
-    UrgencyStyles[mluProgress].SetValues(lisPDProgress, ImgIDInfo, clDefault);
-    UrgencyStyles[mluDebug].SetValues(lisDebug, ImgIDInfo, clDefault);
+    UrgencyStyles[mluNone].SetValues('?',ImgIDInfo,EnvironmentOptions.MsgColors[mluNone]);
+    UrgencyStyles[mluProgress].SetValues(lisPDProgress, ImgIDInfo,
+      EnvironmentOptions.MsgColors[mluProgress]);
+    UrgencyStyles[mluDebug].SetValues(lisDebug, ImgIDInfo,
+      EnvironmentOptions.MsgColors[mluDebug]);
     UrgencyStyles[mluVerbose3].SetValues(lisExtremelyVerbose, ImgIDInfo,
-      clDefault);
-    UrgencyStyles[mluVerbose2].SetValues(lisVeryVerbose, ImgIDInfo, clDefault);
-    UrgencyStyles[mluVerbose].SetValues(lisVerbose, ImgIDInfo, clDefault);
-    UrgencyStyles[mluHint].SetValues(lisHint, ImgIDHint, clDefault);
-    UrgencyStyles[mluNote].SetValues(lisNote, ImgIDNote, clDefault);
+      EnvironmentOptions.MsgColors[mluVerbose3]);
+    UrgencyStyles[mluVerbose2].SetValues(lisVeryVerbose, ImgIDInfo,
+      EnvironmentOptions.MsgColors[mluVerbose2]);
+    UrgencyStyles[mluVerbose].SetValues(lisVerbose, ImgIDInfo,
+      EnvironmentOptions.MsgColors[mluVerbose]);
+    UrgencyStyles[mluHint].SetValues(lisHint, ImgIDHint,
+      EnvironmentOptions.MsgColors[mluHint]);
+    UrgencyStyles[mluNote].SetValues(lisNote, ImgIDNote,
+      EnvironmentOptions.MsgColors[mluNote]);
     UrgencyStyles[mluWarning].SetValues(lisCCOWarningCaption, ImgIDWarning,
-      clDefault);
-    UrgencyStyles[mluImportant].SetValues(lisImportant, ImgIDInfo, clDefault);
-    UrgencyStyles[mluError].SetValues(lisCCOErrorCaption, ImgIDError, clDefault
-      );
-    UrgencyStyles[mluFatal].SetValues(lisFatal, ImgIDFatal, clDefault);
-    UrgencyStyles[mluPanic].SetValues(lisPanic, ImgIDFatal, clDefault);
+      EnvironmentOptions.MsgColors[mluWarning]);
+    UrgencyStyles[mluImportant].SetValues(lisImportant, ImgIDInfo,
+      EnvironmentOptions.MsgColors[mluImportant]);
+    UrgencyStyles[mluError].SetValues(lisCCOErrorCaption, ImgIDError,
+      EnvironmentOptions.MsgColors[mluError]);
+    UrgencyStyles[mluFatal].SetValues(lisFatal, ImgIDFatal,
+      EnvironmentOptions.MsgColors[mluFatal]);
+    UrgencyStyles[mluPanic].SetValues(lisPanic, ImgIDFatal,
+      EnvironmentOptions.MsgColors[mluPanic]);
     Images:=IDEImages.Images_12;
     PopupMenu:=MsgCtrlPopupMenu;
   end;
@@ -3449,11 +3456,11 @@ begin
   SearchPanel.Visible:=false; // by default the search is hidden
   HideSearchSpeedButton.Hint:=lisHideSearch;
   HideSearchSpeedButton.LoadGlyphFromResourceName(HInstance, 'debugger_power_grey');
-  SearchEdit.Text:=GetDefaultSearchText;
   SearchNextSpeedButton.Hint:=lisUDSearchNextOccurrenceOfThisPhrase;
   SearchNextSpeedButton.LoadGlyphFromResourceName(HInstance, 'callstack_bottom');
   SearchPrevSpeedButton.Hint:=lisUDSearchPreviousOccurrenceOfThisPhrase;
   SearchPrevSpeedButton.LoadGlyphFromResourceName(HInstance, 'callstack_top');
+  SearchEdit.TextHint:=lisUDSearch;
 end;
 
 destructor TMessagesFrame.Destroy;
@@ -3583,11 +3590,6 @@ end;
 procedure TMessagesFrame.SelectMsgLine(Msg: TMessageLine; DoScroll: boolean);
 begin
   MessagesCtrl.Select(Msg,DoScroll);
-end;
-
-function TMessagesFrame.GetDefaultSearchText: string;
-begin
-  Result:=lisUDSearch;
 end;
 
 function TMessagesFrame.SelectFirstUrgentMessage(

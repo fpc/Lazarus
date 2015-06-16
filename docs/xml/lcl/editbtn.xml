@@ -2631,6 +2631,26 @@ only a file name, without path.</p>
       </element>
     <element name="TCustomEditButton.Autosize"><short>TCustomEditBtn sets default to True</short>
       </element>
+    <element name="TCustomControlFilterEdit"><short>Base class for filter controls which associate to a container control like Listbox or Treeview.</short>
+      <descr>When the container control is connected to the filter control, the filtering happens automatically as a user enters text. When the filter is empty and does not have focus, it shows a grey "(filter)" text.
+</descr>
+      </element>
+    <element name="TCustomControlFilterEdit.OnFilterItem"><short>An event handler to give extra conditions for filtering, in addition to the default behavior. Returns True if the passes the filter.</short><descr>This feature has for example enabled filtering the Options windows in Lazarus IDE, based on captions of all controls on the options pages.
+</descr>
+      </element><element name="TCustomControlFilterEdit.OnCheckItem"><short>Has effect when items in the filtered container can be checked. Typically a CheckListbox.</short>
+      </element><element name="TCustomControlFilterEdit.OnAfterFilter"><short>Called after all items are filtered.</short>
+      </element><element name="TCustomControlFilterEdit.Filter"><short>The actual filter text.</short><descr>Typically a user types it in the edit control but it can also be set in code.
+Filtering is done during idle time after the value of Filter text has changed.
+</descr>
+      </element><element name="TCustomControlFilterEdit.SortData"><short>Items can be sorted while they are filtered.</short>
+      </element><element name="TCustomControlFilterEdit.SelectedPart"><short>For retaining selection in the filtered control. The actual type depends on the control.</short>
+      </element><element name="TCustomControlFilterEdit.InvalidateFilter"><short>Should be called when data was changed and it must be filtered again.</short><descr>Connects to OnIdle handler which filters the data later.</descr>
+      </element><element name="TCustomControlFilterEdit.ResetFilter"><short>Removes the filter text and shows all items in the container.</short>
+      </element><element name="TCustomControlFilterEdit.ForceFilter"><short>Applies a new filter immediately without waiting for idle. Returns the previous filter.</short>
+      </element><element name="TCustomControlFilterEdit.ApplyFilterCore"><short>Method that actually filters data in the container component. Must be implementation inherited classes.</short>
+      </element><element name="TCustomControlFilterEdit.ApplyFilter"><short>Filters the data and updates the container.</short><descr>Does its job at once if Immediately=True. Otherwise connects to OnIdle handler which does it later.
+</descr>
+      </element>
     </module>
     <!-- EditBtn -->
   </package>

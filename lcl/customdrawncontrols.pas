@@ -63,7 +63,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure LCLWSCalculatePreferredSize(var PreferredWidth,
-      PreferredHeight: integer; WithThemeSpace, AAutoSize: Boolean);
+      PreferredHeight: integer; WithThemeSpace, AAutoSize, AAllowUseOfMeasuresEx: Boolean);
     procedure EraseBackground(DC: HDC); override;
     procedure Paint; override;
     // Methods for use by LCL-CustomDrawn
@@ -205,6 +205,8 @@ type
     function GetLeftTextMargin: Integer;
     function GetMultiLine: Boolean;
     function GetRightTextMargin: Integer;
+    function GetText: string;
+    function GetPasswordChar: Char;
     procedure HandleCaretTimer(Sender: TObject);
     procedure DoDeleteSelection;
     procedure DoClearSelection;
@@ -214,6 +216,8 @@ type
     procedure SetLines(AValue: TStrings);
     procedure SetMultiLine(AValue: Boolean);
     procedure SetRightTextMargin(AValue: Integer);
+    procedure SetText(AValue: string);
+    procedure SetPasswordChar(AValue: Char);
     function MousePosToCaretPos(X, Y: Integer): TPoint;
     function IsSomethingSelected: Boolean;
   protected
@@ -258,8 +262,10 @@ type
     property Enabled;
     property Lines: TStrings read FLines write SetLines;
     property MultiLine: Boolean read GetMultiLine write SetMultiLine default False;
+    property PasswordChar: Char read GetPasswordChar write SetPasswordChar default #0;
     property ReadOnly: Boolean read FReadOnly write FReadOnly default False;
     property TabStop default True;
+    property Text : string read GetText write SetText stored false; // This is already stored in Lines
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
   end;
 
@@ -603,6 +609,40 @@ type
     property ViewStyle: TViewStyle read FViewStyle write SetViewStyle default vsList;
   end;
 
+  { TCDToolBar }
+
+  TCDToolBar = class(TCDControl)
+  private
+    // fields
+    FShowCaptions: Boolean;
+    FItems: TFPList;
+    procedure SetShowCaptions(AValue: Boolean);
+  protected
+    FTBState: TCDToolBarStateEx;
+    function GetControlId: TCDControlID; override;
+    procedure CreateControlStateEx; override;
+    procedure PrepareControlStateEx; override;
+    // mouse
+    procedure MouseMove(Shift: TShiftState; X, Y: integer); override;
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
+      X, Y: integer); override;
+    procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: integer); override;
+    procedure MouseLeave; override;
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+    function InsertItem(AKind: TCDToolbarItemKind; AIndex: Integer): TCDToolBarItem;
+    function AddItem(AKind: TCDToolbarItemKind): TCDToolBarItem;
+    procedure DeleteItem(AIndex: Integer);
+    function GetItem(AIndex: Integer): TCDToolBarItem;
+    function GetItemCount(): Integer;
+    function GetItemWithMousePos(APosInControl: TPoint): TCDToolBarItem;
+    function IsPosInButton(APosInControl: TPoint; AItem: TCDToolBarItem; AItemX: Integer): Boolean;
+  published
+    property ShowCaptions: Boolean read FShowCaptions write SetShowCaptions;
+    property DrawStyle;
+  end;
+
   { TCDTabControl }
 
   { TCDCustomTabControl }
@@ -776,7 +816,7 @@ begin
   PrepareControlState;
   PrepareControlStateEx;
   FDrawer.CalculatePreferredSize(Canvas, GetControlId(), FState, FStateEx,
-    PreferredWidth, PreferredHeight, WithThemeSpace);
+    PreferredWidth, PreferredHeight, WithThemeSpace, True);
 end;
 
 procedure TCDControl.SetState(const AValue: TCDControlState);
@@ -927,13 +967,13 @@ end;
 
 // A CalculatePreferredSize which is utilized by LCL-CustomDrawn
 procedure TCDControl.LCLWSCalculatePreferredSize(var PreferredWidth,
-  PreferredHeight: integer; WithThemeSpace, AAutoSize: Boolean);
+  PreferredHeight: integer; WithThemeSpace, AAutoSize, AAllowUseOfMeasuresEx: Boolean);
 begin
   PrepareControlState;
   PrepareControlStateEx;
   FStateEx.AutoSize := AAutoSize;
   FDrawer.CalculatePreferredSize(Canvas, GetControlId(), FState, FStateEx,
-    PreferredWidth, PreferredHeight, WithThemeSpace);
+    PreferredWidth, PreferredHeight, WithThemeSpace, AAllowUseOfMeasuresEx);
 end;
 
 { TCDComboBox }
@@ -1017,7 +1057,7 @@ begin
     begin
       // Call the combobox dialog
       LCLIntf.OnShowSelectItemDialogResult := @OnShowSelectItemDialogResult;
-      LCLIntf.ShowSelectItemDialog(FItems);
+      LCLIntf.ShowSelectItemDialog(FItems, Self.ClientToScreen(Point(Left, Top+Height)));
 
       Exit;
     end;
@@ -1421,6 +1461,18 @@ begin
   Invalidate;
 end;
 
+procedure TCDEdit.SetText(AValue: string);
+begin
+  Lines.Text := aValue;
+end;
+
+procedure TCDEdit.SetPasswordChar(AValue: Char);
+begin
+  if AValue=FEditState.PasswordChar then Exit;
+  FEditState.PasswordChar := AValue;
+  Invalidate;
+end;
+
 function TCDEdit.GetControlId: TCDControlID;
 begin
   Result := cidEdit;
@@ -1474,6 +1526,21 @@ end;
 function TCDEdit.GetRightTextMargin: Integer;
 begin
   Result := FEditState.RightTextMargin;
+end;
+
+function TCDEdit.GetText: string;
+begin
+  if Multiline then
+    result := Lines.Text
+  else if Lines.Count = 0 then
+    result := ''
+  else
+    result := Lines[0];
+end;
+
+function TCDEdit.GetPasswordChar: Char;
+begin
+  Result := FEditState.PasswordChar;
 end;
 
 procedure TCDEdit.DoDeleteSelection;
@@ -1579,6 +1646,7 @@ begin
   Canvas.Font := Font;
   lVisibleStr := FLines.Strings[Result.Y];
   lVisibleStr := LazUTF8.UTF8Copy(lVisibleStr, FEditState.VisibleTextStart.X, Length(lVisibleStr));
+  lVisibleStr := TCDDrawer.VisibleText(lVisibleStr, FEditState.PasswordChar);
   lStrLen := LazUTF8.UTF8Length(lVisibleStr);
   lPos := FDrawer.GetMeasures(TCDEDIT_LEFT_TEXT_SPACING);
   lBestMatch := 0;
@@ -1860,7 +1928,11 @@ begin
     lKeyWasProcessed := False;
   end; // case
 
-  if lKeyWasProcessed then FEditState.EventArrived := True;
+  if lKeyWasProcessed then
+  begin
+    FEditState.EventArrived := True;
+    Key := 0;
+  end;
 end;
 
 procedure TCDEdit.KeyUp(var Key: word; Shift: TShiftState);
@@ -1967,6 +2039,7 @@ begin
   FLines := TStringList.Create;
   FEditState.VisibleTextStart := Point(1, 0);
   FEditState.Lines := FLines;
+  FEditState.PasswordChar := #0;
 
   // Caret code
   FCaretTimer := TTimer.Create(Self);
@@ -2841,6 +2914,195 @@ begin
   FColumns.Free;
   FListItems.Free;
   inherited Destroy;
+end;
+
+{ TCDToolBar }
+
+procedure TCDToolBar.SetShowCaptions(AValue: Boolean);
+begin
+  if FShowCaptions = AValue then Exit;
+  FShowCaptions := AValue;
+  if not (csLoading in ComponentState) then Invalidate;
+end;
+
+function TCDToolBar.GetControlId: TCDControlID;
+begin
+  Result := cidToolBar;
+end;
+
+procedure TCDToolBar.CreateControlStateEx;
+begin
+  FTBState := TCDToolBarStateEx.Create;
+  FStateEx := FTBState;
+end;
+
+procedure TCDToolBar.PrepareControlStateEx;
+var
+  i, lX: Integer;
+  lCursorPos: TPoint;
+  lCurItem: TCDToolBarItem;
+begin
+  inherited PrepareControlStateEx;
+  FTBState.ShowCaptions := FShowCaptions;
+  FTBState.Items := FItems;
+  FTBState.ToolBarHeight := Height;
+
+  // Handle mouse over items
+  lCursorPos := Mouse.CursorPos;
+  lCursorPos := ScreenToClient(lCursorPos);
+  lX := 0;
+  for i := 0 to GetItemCount()-1 do
+  begin
+    lCurItem := GetItem(i);
+    lCurItem.State := lCurItem.State - [csfMouseOver];
+    if IsPosInButton(lCursorPos, lCurItem, lX) then
+      lCurItem.State := lCurItem.State + [csfMouseOver];
+    if lCurItem.Down then
+      lCurItem.State := lCurItem.State + [csfSunken];
+    lX := lX + lCurItem.Width;
+  end;
+end;
+
+procedure TCDToolBar.MouseMove(Shift: TShiftState; X, Y: integer);
+begin
+  inherited MouseMove(Shift, X, Y);
+  Invalidate;
+end;
+
+procedure TCDToolBar.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: integer);
+var
+  lCurItem: TCDToolBarItem;
+begin
+  inherited MouseDown(Button, Shift, X, Y);
+  lCurItem := GetItemWithMousePos(Point(X, Y));
+  if lCurItem = nil then Exit;
+  if lCurItem.Kind in [tikButton, tikCheckButton] then
+  begin
+    lCurItem.State := lCurItem.State + [csfSunken];
+    Invalidate();
+  end;
+end;
+
+procedure TCDToolBar.MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: integer);
+var
+  i: Integer;
+  lCurItem: TCDToolBarItem;
+  DoInvalidate: Boolean = False;
+begin
+  inherited MouseUp(Button, Shift, X, Y);
+  lCurItem := GetItemWithMousePos(Point(X, Y));
+  if lCurItem = nil then Exit;
+
+  // click the selected checkbutton if applicable
+  if lCurItem.Kind in [tikCheckButton] then
+  begin
+    lCurItem.Down := not lCurItem.Down;
+    DoInvalidate := True;
+  end;
+
+  // up all buttons
+  for i := 0 to GetItemCount()-1 do
+  begin
+    lCurItem := GetItem(i);
+    if lCurItem.Kind in [tikButton, tikCheckButton] then
+    begin
+      lCurItem.State := lCurItem.State - [csfSunken];
+      DoInvalidate := True;
+    end;
+  end;
+
+  if DoInvalidate then Invalidate;
+end;
+
+procedure TCDToolBar.MouseLeave;
+begin
+  inherited MouseLeave;
+  Invalidate;
+end;
+
+constructor TCDToolBar.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  Height := GetDrawer(dsDefault).GetMeasures(TCDTOOLBAR_DEFAULT_HEIGHT);
+  Align := alTop;
+  FItems := TFPList.Create();
+  TabStop := False;
+end;
+
+destructor TCDToolBar.Destroy;
+begin
+  while FItems.Count > 0 do
+    DeleteItem(0);
+  FItems.Free;
+  inherited Destroy;
+end;
+
+function TCDToolBar.InsertItem(AKind: TCDToolbarItemKind; AIndex: Integer): TCDToolBarItem;
+var
+  lNewItem: TCDToolBarItem;
+begin
+  lNewItem := TCDToolBarItem.Create;
+  lNewItem.Kind := AKind;
+  FItems.Insert(AIndex, lNewItem);
+  Result := lNewItem;
+  PrepareCurrentDrawer();
+  case AKind of
+  tikButton, tikCheckButton: Result.Width := FDrawer.GetMeasures(TCDTOOLBAR_ITEM_BUTTON_DEFAULT_WIDTH);
+  tikDropDownButton:
+    Result.Width := FDrawer.GetMeasures(TCDTOOLBAR_ITEM_BUTTON_DEFAULT_WIDTH)
+      + FDrawer.GetMeasures(TCDTOOLBAR_ITEM_ARROW_RESERVED_WIDTH);
+  tikSeparator, tikDivider:  Result.Width := FDrawer.GetMeasures(TCDTOOLBAR_ITEM_SEPARATOR_DEFAULT_WIDTH);
+  end;
+end;
+
+function TCDToolBar.AddItem(AKind: TCDToolbarItemKind): TCDToolBarItem;
+begin
+  Result := InsertItem(AKind, FItems.Count);
+end;
+
+procedure TCDToolBar.DeleteItem(AIndex: Integer);
+begin
+  if (AIndex < 0) or (AIndex >= FItems.Count) then Exit;
+  FItems.Delete(AIndex);
+end;
+
+function TCDToolBar.GetItem(AIndex: Integer): TCDToolBarItem;
+begin
+  Result := nil;
+  if (AIndex < 0) or (AIndex >= FItems.Count) then Exit;
+  Result := TCDToolBarItem(FItems.Items[AIndex]);
+end;
+
+function TCDToolBar.GetItemCount: Integer;
+begin
+  Result := FItems.Count;
+end;
+
+function TCDToolBar.GetItemWithMousePos(APosInControl: TPoint): TCDToolBarItem;
+var
+  i, lX: Integer;
+  lCurItem: TCDToolBarItem;
+begin
+  Result := nil;
+  lX := 0;
+  for i := 0 to FItems.Count-1 do
+  begin
+    lCurItem := GetItem(i);
+    if IsPosInButton(APosInControl, lCurItem, lX) then
+      Exit(lCurItem);
+    lX := lX + lCurItem.Width;
+  end;
+end;
+
+function TCDToolBar.IsPosInButton(APosInControl: TPoint; AItem: TCDToolBarItem;
+  AItemX: Integer): Boolean;
+var
+  lSize: TSize;
+begin
+  lSize.CY := Height;
+  lSize.CX := AItem.Width;
+  Result := (APosInControl.X > AItemX) and (APosInControl.X < AItemX + lSize.CX) and
+    (APosInControl.Y > 0) and (APosInControl.Y < lSize.CY);
 end;
 
 { TCDTabSheet }

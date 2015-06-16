@@ -8,7 +8,7 @@ object ObjectInspectorDlg: TObjectInspectorDlg
   ClientHeight = 669
   ClientWidth = 300
   KeyPreview = True
-  LCLVersion = '1.3'
+  LCLVersion = '1.5'
   object StatusBar: TStatusBar
     Left = 0
     Height = 23
@@ -37,10 +37,11 @@ object ObjectInspectorDlg: TObjectInspectorDlg
     Left = 0
     Height = 184
     Top = 23
-    Width = 300
+    Width = 406
     Align = alTop
+    BevelOuter = bvNone
     ClientHeight = 184
-    ClientWidth = 300
+    ClientWidth = 406
     TabOrder = 2
     object CompFilterEdit: TTreeFilterEdit
       AnchorSideLeft.Control = FilterLabel
@@ -50,7 +51,7 @@ object ObjectInspectorDlg: TObjectInspectorDlg
       Left = 92
       Height = 28
       Top = 3
-      Width = 204
+      Width = 311
       UseFormActivate = True
       ButtonWidth = 23
       NumGlyphs = 1

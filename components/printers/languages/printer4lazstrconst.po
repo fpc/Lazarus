@@ -1,0 +1,75 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8"
+
+#: printer4lazstrconst.p4lrsadvanced
+msgid "Advanced"
+msgstr ""
+
+#: printer4lazstrconst.p4lrsbanners
+msgid "Banners"
+msgstr ""
+
+#: printer4lazstrconst.p4lrscancel
+msgid "Cancel"
+msgstr ""
+
+#: printer4lazstrconst.p4lrsend
+msgid "End"
+msgstr ""
+
+#: printer4lazstrconst.p4lrsgeneral
+msgid "General"
+msgstr ""
+
+#: printer4lazstrconst.p4lrslandscape
+msgid "Landscape"
+msgstr ""
+
+#: printer4lazstrconst.p4lrsmargins
+msgid "Margins"
+msgstr ""
+
+#: printer4lazstrconst.p4lrsok
+msgid "Ok"
+msgstr ""
+
+#: printer4lazstrconst.p4lrsorientation
+msgid "Orientation"
+msgstr ""
+
+#: printer4lazstrconst.p4lrspagespersheet
+msgid "Pages per sheet"
+msgstr ""
+
+#: printer4lazstrconst.p4lrspapersize
+msgid "Paper size"
+msgstr ""
+
+#: printer4lazstrconst.p4lrspapersource
+msgid "Paper source"
+msgstr ""
+
+#: printer4lazstrconst.p4lrspapertype
+msgid "Paper type"
+msgstr ""
+
+#: printer4lazstrconst.p4lrsportrait
+msgid "Portrait"
+msgstr ""
+
+#: printer4lazstrconst.p4lrsresolution
+msgid "Resolution"
+msgstr ""
+
+#: printer4lazstrconst.p4lrsreverselandscape
+msgid "Reverse landscape"
+msgstr ""
+
+#: printer4lazstrconst.p4lrsreverseportrait
+msgid "Reverse portrait"
+msgstr ""
+
+#: printer4lazstrconst.p4lrsstart
+msgid "Start"
+msgstr ""
+

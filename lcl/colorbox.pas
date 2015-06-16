@@ -23,6 +23,10 @@ uses
   LResources, SysUtils, LCLProc, LCLType, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, LCLStrConsts;
 
+const
+  cDefaultColorRectWidth = 14;
+  cDefaultColorRectOffset = 3;
+
 type
   { TCustomColorBox }
 
@@ -41,6 +45,7 @@ type
   TCustomColorBox = class(TCustomComboBox)
   private
     FColorRectWidth: Integer;
+    FColorRectOffset: Integer;
     FDefaultColorColor: TColor;
     FNoneColorColor: TColor;
     FOnGetColors: TGetColorsEvent;
@@ -50,6 +55,7 @@ type
     function GetColorName(Index: Integer): string;
     function GetSelected: TColor;
     procedure SetColorRectWidth(AValue: Integer);
+    procedure SetColorRectOffset(AValue: Integer);
     procedure SetDefaultColorColor(const AValue: TColor);
     procedure SetNoneColorColor(const AValue: TColor);
     procedure SetSelected(Value: TColor);
@@ -66,7 +72,8 @@ type
     function PickCustomColor: Boolean; virtual;
   public
     constructor Create(AOwner: TComponent); override;
-    property ColorRectWidth: Integer read FColorRectWidth write SetColorRectWidth default 14;
+    property ColorRectWidth: Integer read FColorRectWidth write SetColorRectWidth default cDefaultColorRectWidth;
+    property ColorRectOffset: Integer read FColorRectOffset write SetColorRectOffset default cDefaultColorRectOffset;
     property Style: TColorBoxStyle read FStyle write SetStyle
       default [cbStandardColors, cbExtendedColors, cbSystemColors];
     property Colors[Index: Integer]: TColor read GetColor;
@@ -82,6 +89,7 @@ type
   TColorBox = class(TCustomColorBox)
   published
     property ColorRectWidth;
+    property ColorRectOffset;
     property DefaultColorColor;
     property NoneColorColor;
     property Selected;
@@ -153,6 +161,7 @@ type
   TCustomColorListBox = class(TCustomListBox)
   private
     FColorRectWidth: Integer;
+    FColorRectOffset: Integer;
     FDefaultColorColor: TColor;
     FNoneColorColor: TColor;
     FOnGetColors: TLBGetColorsEvent;
@@ -161,6 +170,7 @@ type
     function GetColors(Index : Integer): TColor;
     function GetColorName(Index: Integer): string;
     function GetSelected: TColor;
+    procedure SetColorRectOffset(AValue: Integer);
     procedure SetColorRectWidth(AValue: Integer);
     procedure SetColors(Index: Integer; AValue: TColor);
     procedure SetDefaultColorColor(const AValue: TColor);
@@ -178,7 +188,8 @@ type
     function PickCustomColor: Boolean; virtual;
   public
     constructor Create(AOwner: TComponent); override;
-    property ColorRectWidth: Integer read FColorRectWidth write SetColorRectWidth default 14;
+    property ColorRectWidth: Integer read FColorRectWidth write SetColorRectWidth default cDefaultColorRectWidth;
+    property ColorRectOffset: Integer read FColorRectOffset write SetColorRectOffset default cDefaultColorRectOffset;
     property Style: TColorBoxStyle read FStyle write SetStyle
       default [cbStandardColors, cbExtendedColors, cbSystemColors];
     property Colors[Index: Integer]: TColor read GetColors write SetColors;
@@ -194,6 +205,7 @@ type
   TColorListBox = class(TCustomColorListBox)
   published
     property ColorRectWidth;
+    property ColorRectOffset;
     property DefaultColorColor;
     property NoneColorColor;
     property Selected;
@@ -360,7 +372,8 @@ begin
   inherited Style := csOwnerDrawFixed;
   inherited ReadOnly := True;
 
-  FColorRectWidth := 14;
+  FColorRectWidth := cDefaultColorRectWidth;
+  FColorRectOffset := cDefaultColorRectOffset;
   FStyle := [cbStandardColors, cbExtendedColors, cbSystemColors];
   FNoneColorColor := clBlack;
   FDefaultColorColor := clBlack;
@@ -400,6 +413,13 @@ procedure TCustomColorBox.SetColorRectWidth(AValue: Integer);
 begin
   if FColorRectWidth = AValue then Exit;
   FColorRectWidth := AValue;
+  Invalidate;
+end;
+
+procedure TCustomColorBox.SetColorRectOffset(AValue: Integer);
+begin
+  if FColorRectOffset = AValue then Exit;
+  FColorRectOffset := AValue;
   Invalidate;
 end;
 
@@ -553,9 +573,9 @@ begin
   if Index = -1 then
     Exit;
 
-  r.top := Rect.top + 3;
-  r.bottom := Rect.bottom - 3;
-  r.left := Rect.left + 3;
+  r.top := Rect.top + FColorRectOffset;
+  r.bottom := Rect.bottom - FColorRectOffset;
+  r.left := Rect.left + FColorRectOffset;
   r.right := r.left + FColorRectWidth;
   Exclude(State, odPainted);
 
@@ -595,7 +615,7 @@ begin
     Pen.Color := PenColor;
   end;
   r := Rect;
-  r.left := r.left + FColorRectWidth + 4;
+  r.left := r.left + FColorRectWidth + FColorRectOffset + 1;
 
   inherited DrawItem(Index, BidiFlipRect(r, Rect, UseRightToLeftAlignment), State);
 end;
@@ -691,7 +711,8 @@ constructor TCustomColorListBox.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   inherited Style := lbOwnerDrawFixed;
-  FColorRectWidth := 14;
+  FColorRectWidth := cDefaultColorRectWidth;
+  FColorRectOffset := cDefaultColorRectOffset;
   FStyle := [cbStandardColors, cbExtendedColors, cbSystemColors];
   FNoneColorColor := clBlack;
   FDefaultColorColor := clBlack;
@@ -718,6 +739,13 @@ begin
   end
   else
     Result := FSelected;
+end;
+
+procedure TCustomColorListBox.SetColorRectOffset(AValue: Integer);
+begin
+  if FColorRectOffset = AValue then Exit;
+  FColorRectOffset := AValue;
+  Invalidate;
 end;
 
 procedure TCustomColorListBox.SetColorRectWidth(AValue: Integer);
@@ -873,9 +901,9 @@ begin
   if Index < 0 then
     Exit;
 
-  r.top := Rect.top + 3;
-  r.bottom := Rect.bottom - 3;
-  r.left := Rect.left + 3;
+  r.top := Rect.top + FColorRectOffset;
+  r.bottom := Rect.bottom - FColorRectOffset;
+  r.left := Rect.left + FColorRectOffset;
   r.right := r.left + FColorRectWidth;
   Exclude(State,odPainted);
   with Canvas do
@@ -902,7 +930,7 @@ begin
     Pen.Color := PenColor;
   end;
   r := Rect;
-  r.left := r.left + FColorRectWidth + 4;
+  r.left := r.left + FColorRectWidth + FColorRectOffset + 1;
 
   inherited DrawItem(Index, BidiFlipRect(r, Rect, UseRightToLeftAlignment), State);
 end;

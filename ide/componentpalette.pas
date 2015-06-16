@@ -97,6 +97,7 @@ type
     FPageControl: TPageControl;
     FOnOpenPackage: TNotifyEvent;
     FOnOpenUnit: TNotifyEvent;
+    FOnChangeActivePage: TNotifyEvent;
     fUnregisteredIcon: TCustomBitmap;
     fSelectButtonIcon: TCustomBitmap;
     fUpdatingPageControl: boolean;
@@ -137,6 +138,7 @@ type
     property PageControl: TPageControl read FPageControl write SetPageControl;
     property OnOpenPackage: TNotifyEvent read FOnOpenPackage write FOnOpenPackage;
     property OnOpenUnit: TNotifyEvent read FOnOpenUnit write FOnOpenUnit;
+    property OnChangeActivePage: TNotifyEvent read FOnChangeActivePage write FOnChangeActivePage;
   end;
 
 function CompareControlsWithTag(Control1, Control2: Pointer): integer;
@@ -241,12 +243,9 @@ begin
         ' IsScrollBarVisible=',ScrollBox.HorzScrollBar.IsScrollBarVisible
         ]);
     {$ENDIF}
-    MaxBtnPerRow:=ButtonTree.Count;
-    {$IFnDEF LCLCarbon}
-    // This condition prevents a mysterious repagination on Windows during startup.
-    if MainIDE.IDEStarted then
-      MaxBtnPerRow:=((ScrollBox.VertScrollBar.ClientSizeWithoutBar - ButtonX) div ComponentPaletteBtnWidth);
-    {$ENDIF}
+
+    MaxBtnPerRow:=((ScrollBox.VertScrollBar.ClientSizeWithoutBar - ButtonX) div ComponentPaletteBtnWidth);
+
     // If we need to wrap, make sure we have space for the scrollbar
     if MaxBtnPerRow < ButtonTree.Count then
       MaxBtnPerRow:=((ScrollBox.VertScrollBar.ClientSizeWithBar - ButtonX) div ComponentPaletteBtnWidth);
@@ -331,6 +330,7 @@ begin
       AutoScroll:=false;
       {$ENDIF}
       VertScrollBar.Increment := ComponentPaletteBtnHeight;
+      VertScrollBar.Tracking := True;
       Parent := PageComponent;
     end;
     PanelRight := TPanel.Create(PageComponent);
@@ -350,8 +350,9 @@ begin
       LoadGlyphFromResourceName(HInstance, 'SelCompPage');
       Flat := True;
       SetBounds(2,1,16,16);
-      Hint := 'Click to Select Palette Page';
+      Hint := lisClickToSelectPalettePage;
       ShowHint := True;
+      OnMouseDown := @MainIDE.SelComponentPageButtonMouseDown;
       OnClick := @MainIDE.SelComponentPageButtonClick;
       OnMouseWheel := @Pal.OnPageMouseWheel;
       Parent := PanelRight;
@@ -514,6 +515,9 @@ begin
   {$ENDIF}
   ReAlignButtons(FPageControl.ActivePage);
   Selected:=nil;
+
+  if Assigned(FOnChangeActivePage) then
+    FOnChangeActivePage(Sender);
 end;
 
 procedure TComponentPalette.OnScrollBoxResize(Sender: TObject);
@@ -735,7 +739,8 @@ begin
   if not fComponentButtons.Find(Selected.ComponentClass.ClassName, i) then
     ReAlignButtons(FPageControl.ActivePage);
   // Select button
-  fComponentButtons[Selected.ComponentClass.ClassName].Down := true;
+  if fComponentButtons.Find(Selected.ComponentClass.ClassName, i) then //find again!
+    fComponentButtons.Data[i].Down := true;
 end;
 
 procedure TComponentPalette.CreatePopupMenu;

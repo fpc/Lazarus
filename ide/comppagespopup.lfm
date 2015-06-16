@@ -9,7 +9,7 @@ object DlgCompPagesPopup: TDlgCompPagesPopup
   ClientWidth = 293
   OnDeactivate = FormDeactivate
   OnShow = FormShow
-  LCLVersion = '1.1'
+  LCLVersion = '1.5'
   object Panel1: TPanel
     Left = 0
     Height = 536

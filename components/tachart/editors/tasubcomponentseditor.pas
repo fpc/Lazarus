@@ -188,15 +188,15 @@ begin
     FDesigner := FindRootDesigner(FParent) as TComponentEditorDesigner;
   BuildCaption;
   EnumerateSubcomponentClasses;
-
   RefreshList;
-
-  GlobalDesignHook.AddHandlerComponentRenamed(@OnComponentRenamed);
-  GlobalDesignHook.AddHandlerPersistentDeleting(@OnPersistentDeleting);
-  GlobalDesignHook.AddHandlerGetSelection(@OnGetSelection);
-  GlobalDesignHook.AddHandlerSetSelection(@OnSetSelection);
-  GlobalDesignHook.AddHandlerPersistentAdded(@OnPersistentAdded);
-
+  if Assigned(GlobalDesignHook) then
+  begin
+    GlobalDesignHook.AddHandlerComponentRenamed(@OnComponentRenamed);
+    GlobalDesignHook.AddHandlerPersistentDeleting(@OnPersistentDeleting);
+    GlobalDesignHook.AddHandlerGetSelection(@OnGetSelection);
+    GlobalDesignHook.AddHandlerSetSelection(@OnSetSelection);
+    GlobalDesignHook.AddHandlerPersistentAdded(@OnPersistentAdded);
+  end;
   SelectionChanged;
 end;
 
@@ -233,14 +233,12 @@ end;
 
 procedure TComponentListEditorForm.FormDestroy(Sender: TObject);
 begin
-  if
-    (FComponentEditor <> nil) and (FParent <> nil) and
-    (not (csDestroying in FParent.ComponentState)) and
-    (ChildrenListBox.SelCount > 0)
-  then
+  if (FComponentEditor <> nil) and (FParent <> nil) and Assigned(GlobalDesignHook)
+  and not (csDestroying in FParent.ComponentState) and (ChildrenListBox.SelCount > 0) then
+  begin
     GlobalDesignHook.SelectOnlyThis(FParent);
-  if Assigned(GlobalDesignHook) then
     GlobalDesignHook.RemoveAllHandlersForObject(Self);
+  end;
 end;
 
 procedure TComponentListEditorForm.miAddClick(Sender: TObject);
@@ -365,6 +363,7 @@ procedure TComponentListEditorForm.SelectionChanged(AOrderChanged: Boolean);
 var
   sel: TPersistentSelectionList;
 begin
+  if GlobalDesignHook=nil then exit;
   GlobalDesignHook.RemoveHandlerSetSelection(@OnSetSelection);
   try
     sel := TPersistentSelectionList.Create;

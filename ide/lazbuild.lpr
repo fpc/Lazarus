@@ -31,7 +31,7 @@ uses
   Classes, SysUtils, math,
   Interfaces, // this includes the NoGUI widgetset
   CustApp, LCLProc, Dialogs, Forms, Controls,
-  FileUtil, Masks, InterfaceBase, UTF8Process, LConvEncoding,
+  FileUtil, Masks, InterfaceBase, LConvEncoding,
   // codetools
   CodeCache, CodeToolManager, DefineTemplates, FileProcs, Laz2_XMLCfg, LazUTF8,
   // IDEIntf
@@ -40,7 +40,7 @@ uses
   // IDE
   IDEProcs, InitialSetupProc, ExtTools, CompilerOptions, ApplicationBundle,
   TransferMacros, EnvironmentOpts, IDETranslations, LazarusIDEStrConsts,
-  IDECmdLine, ExtToolDialog, MiscOptions, Project, LazConf, PackageDefs,
+  IDECmdLine, MiscOptions, Project, LazConf, PackageDefs,
   PackageLinks, PackageSystem, InterPkgConflictFiles, BuildLazDialog,
   BuildProfileManager, BuildManager, BaseBuildManager, ModeMatrixOpts;
   
@@ -394,7 +394,7 @@ begin
       else
         Result:=BuildPackage(Filename)
     else if FileUtil.CompareFileExt(Filename,'.lpi')=0 then
-        Result:=BuildProject(Filename)
+      Result:=BuildProject(Filename)
     else if FileUtil.CompareFileExt(Filename,'.lpr')=0 then begin
       Filename:=ChangeFileExt(Filename,'.lpi');
       if FileExists(Filename) then
@@ -414,6 +414,9 @@ begin
   Result:=false;
   
   if not Init then exit;
+
+  if ConsoleVerbosity>=0 then
+    debugln(['Hint: (lazarus) compile package "',AFilename,'"']);
 
   APackage:=LoadPackage(AFilename);
   if APackage=nil then
@@ -438,7 +441,9 @@ begin
     DoCreateMakefile(APackage)
   else
     CompilePackage(APackage,Flags);
-  
+
+  PkgLinks.SaveUserLinks(true);
+
   Result:=true;
 end;
 
@@ -687,23 +692,17 @@ procedure TLazBuildApplication.CheckPackageGraphForCompilation(
   begin
     Result:='';
     for i:=0 to PathList.Count-1 do begin
-      Item:=TObject(PathList[0]);
+      Item:=TObject(PathList[i]);
+      if Result<>'' then
+        Result:=Result+'->';
       if Item is TPkgDependency then begin
-        if Result<>'' then
-          Result:=Result+'>';
         Result:=Result+TPkgDependency(Item).AsString;
       end else if Item is TProject then begin
-        if Result<>'' then
-          Result:=Result+'>';
         Result:=Result
                 +'Project:'+ExtractFileNameOnly(TProject(Item).ProjectInfoFile);
       end else if Item is TLazPackage then begin
-        if Result<>'' then
-          Result:=Result+'>';
         Result:=Result+TLazPackage(Item).IDAsString;
       end else begin
-        if Result<>'' then
-          Result:=Result+'>';
         Result:=Result+'Unknown:'+dbgsName(Item);
       end;
     end;
@@ -950,6 +949,19 @@ begin
   end
   else
     Result := StartBuilding;
+
+  // Auto increment build number
+  if Result then
+  begin
+    with Project1.ProjResources.VersionInfo do
+    begin
+      if UseVersionInfo and AutoIncrementBuild then
+      begin
+        BuildNr := BuildNr + 1;
+        Project1.WriteProject(Project1.PublishOptions.WriteFlags,AFileName,EnvironmentOptions.BuildMatrixOptions);
+      end;
+    end;
+  end;
 end;
 
 function TLazBuildApplication.LoadProject(const AFilename: string): TProject;
@@ -1505,7 +1517,7 @@ begin
       exit;
     end;
 
-    // Add package to list of to be installed packages)
+    // Add package to list of to be installed packages
     if HasOption('add-package') then begin
       AddPackage:=true;
       if ConsoleVerbosity>=0 then
@@ -1643,37 +1655,51 @@ const
   begin
     Result:=UTF8ToConsole(BreakString(s,75, length(space)))
   end;
+
+  procedure w(Msg: string);
+  begin
+    writeln(LongToConsole(Msg));
+  end;
+
 begin
   TranslateResourceStrings(ProgramDirectory(true),'');
   writeln('');
   writeln('lazbuild [options] <project/package filename or package name>');
   writeln('');
-  writeln(UTF8ToConsole(lisEdtExtToolParameters));
+  w(lisEdtExtToolParameters);
   writeln('');
-  writeln('--help or -?              ', UTF8ToConsole(listhisHelpMessage));
-  writeln('');
-  writeln('-B or --build-all         ', UTF8ToConsole(lisBuildAllFilesOfProjectPackageIDE));
-  writeln('-r or --recursive         ', UTF8ToConsole(lisApplyBuildFlagsBToDependenciesToo));
-  writeln('-d or --skip-dependencies ', UTF8ToConsole(lisDoNotCompileDependencies));
-  writeln('--build-ide=<options>     ', UTF8ToConsole(lisBuildIDEWithPackages));
-  writeln('-v or --version           ', UTF8ToConsole(lisShowVersionAndExit));
-  writeln('-q or --quiet             ', UTF8ToConsole(lisBeLessVerboseCanBeGivenMultipleTimes));
-  writeln('--verbose                 ', UTF8ToConsole(lisBeMoreVerboseCanBeGivenMultipleTimes));
+  writeln('--help or -?');
+  w(space+listhisHelpMessage);
+  writeln('-B or --build-all');
+  w(space+lisBuildAllFilesOfProjectPackageIDE);
+  writeln('-r or --recursive');
+  w(space+lisApplyBuildFlagsBToDependenciesToo);
+  writeln('-d or --skip-dependencies');
+  w(space+lisDoNotCompileDependencies);
+  writeln('--build-ide=<options>');
+  w(space+lisBuildIDEWithPackages);
+  writeln('-v or --version');
+  w(space+lisShowVersionAndExit);
+  writeln('-q or --quiet');
+  w(space+lisBeLessVerboseCanBeGivenMultipleTimes);
+  w(space+'Passing quiet two times, will pass -vw-n-h-i-l-d-u-t-p-c-x- to the compiler');
+  writeln('--verbose');
+  w(space+lisBeMoreVerboseCanBeGivenMultipleTimes);
   writeln('');
 
   writeln('--add-package');
-  writeln(LongToConsole(space+lisAddPackageSToListOfInstalledPackagesCombineWithBui));
+  w(space+lisAddPackageSToListOfInstalledPackagesCombineWithBui);
   writeln('--create-makefile');
-  writeln(LongToConsole(space+lisInsteadOfCompilePackageCreateASimpleMakefile));
+  w(space+lisInsteadOfCompilePackageCreateASimpleMakefile);
   writeln('');
 
   writeln(PrimaryConfPathOptLong,'<path>');
   writeln('or ',PrimaryConfPathOptShort,'<path>');
-  writeln(LongToConsole(space+lisprimaryConfigDirectoryWhereLazarusStoresItsConfig+LazConf.GetPrimaryConfigPath));
+  w(space+lisprimaryConfigDirectoryWhereLazarusStoresItsConfig+LazConf.GetPrimaryConfigPath);
   writeln('');
   writeln(SecondaryConfPathOptLong,'<path>');
   writeln('or ',SecondaryConfPathOptShort,'<path>');
-  writeln(LongToConsole(space+lissecondaryConfigDirectoryWhereLazarusSearchesFor+LazConf.GetSecondaryConfigPath));
+  w(space+lissecondaryConfigDirectoryWhereLazarusSearchesFor+LazConf.GetSecondaryConfigPath);
   writeln('');
   writeln('--operating-system=<operating-system>');
   writeln('or --os=<operating-system>');
@@ -1701,14 +1727,13 @@ begin
     lisOverrideTheDefaultCompilerEGPpc386Ppcx64PpcppcEtcD, [space])));
   writeln('');
   writeln(LanguageOpt);
-  writeln(LongToConsole(space+lisOverrideLanguage));
+  w(space+lisOverrideLanguage);
   writeln('');
   writeln('--lazarusdir=<Lazarus directory>');
-  writeln(LongToConsole(space+lisLazarusDirOverride));
+  w(space+lisLazarusDirOverride);
   writeln('');
   writeln('--max-process-count=<count>');
-  writeln(LongToConsole(space+
-    lisMaximumNumberOfThreadsForCompilingInParallelDefaul));
+  w(space+lisMaximumNumberOfThreadsForCompilingInParallelDefaul);
   writeln('');
 end;
 

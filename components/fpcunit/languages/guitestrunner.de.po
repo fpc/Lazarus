@@ -132,7 +132,7 @@ msgid "C&ut"
 msgstr "Ausschneiden"
 
 #: guitestrunner.smiruntest
-msgid "  &Run all selected (checked) tests"
+msgid "&Run all selected (checked) tests"
 msgstr ""
 
 #: guitestrunner.smishowfail

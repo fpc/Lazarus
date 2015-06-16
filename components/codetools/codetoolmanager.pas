@@ -49,7 +49,7 @@ uses
   PPUCodeTools, LFMTrees, DirectivesTree, CodeCompletionTemplater,
   PascalParserTool, CodeToolsConfig, CustomCodeTool, FindDeclarationTool,
   IdentCompletionTool, StdCodeTools, ResourceCodeTool, CodeToolsStructs,
-  CTUnitGraph, CodeTemplatesTool, ExtractProcTool;
+  CTUnitGraph, ExtractProcTool;
 
 type
   TCodeToolManager = class;
@@ -163,14 +163,14 @@ type
     procedure DoOnFABGetExamples(Sender: TObject; Code: TCodeBuffer;
       Step: integer; var CodeBuffers: TFPList; var ExpandedFilenames: TStrings);
     procedure DoOnLoadFileForTool(Sender: TObject; const ExpandedFilename: string;
-                                out Code: TCodeBuffer; var Abort: boolean);
+                                out Code: TCodeBuffer; var {%H-}Abort: boolean);
     function DoOnGetCodeToolForBuffer(Sender: TObject;
       Code: TCodeBuffer; GoToMainCode: boolean): TFindDeclarationTool;
     function DoOnGetDirectoryCache(const ADirectory: string): TCTDirectoryCache;
     procedure DoOnToolSetWriteLock(Lock: boolean);
     procedure DoOnToolGetChangeSteps(out SourcesChangeStep, FilesChangeStep: int64;
                                    out InitValuesChangeStep: integer);
-    function DoOnParserProgress(Tool: TCustomCodeTool): boolean;
+    function DoOnParserProgress({%H-}Tool: TCustomCodeTool): boolean;
     procedure DoOnToolTreeChange(Tool: TCustomCodeTool; NodesDeleting: boolean);
     function DoOnScannerProgress(Sender: TLinkScanner): boolean;
     function GetResourceTool: TResourceCodeTool;
@@ -325,11 +325,11 @@ type
     function GetPPUSrcPathForDirectory(const Directory: string): string;
     function GetDCUSrcPathForDirectory(const Directory: string): string;
     function GetCompiledSrcPathForDirectory(const Directory: string;
-                                            UseCache: boolean = true): string;
+                                            {%H-}UseCache: boolean = true): string;
     function GetNestedCommentsFlagForFile(const Filename: string): boolean;
     function GetPascalCompilerForDirectory(const Directory: string): TPascalCompiler;
     function GetCompilerModeForDirectory(const Directory: string): TCompilerMode;
-    function GetCompiledSrcExtForDirectory(const Directory: string): string;
+    function GetCompiledSrcExtForDirectory(const {%H-}Directory: string): string;
     function FindUnitInUnitLinks(const Directory, AUnitName: string): string;
     function GetUnitLinksForDirectory(const Directory: string;
                                       UseCache: boolean = false): string;
@@ -611,8 +611,6 @@ type
                 const AClassName: string; out CodeTool: TCodeTool): boolean;
 
     // insert/replace
-    function ReplaceCode(Code: TCodeBuffer; StartX, StartY: integer;
-          EndX, EndY: integer; const NewCode: string): boolean;
     function InsertStatements(InsertPos: TInsertStatementPosDescription;
           const Statements: string): boolean;
 
@@ -639,14 +637,6 @@ type
           out InheritedDeclContext: TFindContext;
           ProcName: string = '' // default: Assign
           ): boolean;
-
-    // code templates
-    function InsertCodeTemplate(Code: TCodeBuffer;
-          SelectionStart, SelectionEnd: TPoint;
-          TopLine: integer;
-          CodeTemplate: TCodeToolTemplate;
-          var NewCode: TCodeBuffer;
-          var NewX, NewY, NewTopLine: integer): boolean;
 
     // source name  e.g. 'unit AUnitName;'
     function GetSourceName(Code: TCodeBuffer; SearchMainCode: boolean): string;
@@ -721,7 +711,7 @@ type
           const NewFilename: string; KeepPath: boolean): boolean;// in cleaned source
     procedure DefaultFindDefinePropertyForContext(Sender: TObject;
                        const ClassContext, AncestorClassContext: TFindContext;
-                       LFMNode: TLFMTreeNode;
+                       {%H-}LFMNode: TLFMTreeNode;
                        const IdentName: string; var IsDefined: boolean);
 
     // register proc
@@ -3006,30 +2996,6 @@ begin
   end;
 end;
 
-function TCodeToolManager.ReplaceCode(Code: TCodeBuffer; StartX,
-  StartY: integer; EndX, EndY: integer; const NewCode: string): boolean;
-var
-  StartCursorPos, EndCursorPos: TCodeXYPosition;
-begin
-  Result:=false;
-  {$IFDEF CTDEBUG}
-  DebugLn('TCodeToolManager.ReplaceCode A ',Code.Filename);
-  {$ENDIF}
-  if not InitCurCodeTool(Code) then exit;
-  StartCursorPos.X:=StartX;
-  StartCursorPos.Y:=StartY;
-  StartCursorPos.Code:=Code;
-  EndCursorPos.X:=EndX;
-  EndCursorPos.Y:=EndY;
-  EndCursorPos.Code:=Code;
-  try
-    Result:=FCurCodeTool.ReplaceCode(StartCursorPos,EndCursorPos,NewCode,
-                                     SourceChangeCache);
-  except
-    on e: Exception do HandleException(e);
-  end;
-end;
-
 function TCodeToolManager.InsertStatements(
   InsertPos: TInsertStatementPosDescription; const Statements: string): boolean;
 begin
@@ -4696,39 +4662,6 @@ begin
   end;
 end;
 
-function TCodeToolManager.InsertCodeTemplate(Code: TCodeBuffer;
-  SelectionStart, SelectionEnd: TPoint; TopLine: integer;
-  CodeTemplate: TCodeToolTemplate; var NewCode: TCodeBuffer; var NewX, NewY,
-  NewTopLine: integer): boolean;
-var
-  CursorPos: TCodeXYPosition;
-  EndPos: TCodeXYPosition;
-  NewPos: TCodeXYPosition;
-begin
-  {$IFDEF CTDEBUG}
-  DebugLn('TCodeToolManager.InsertCodeTemplate A ',Code.Filename);
-  {$ENDIF}
-  Result:=false;
-  if not InitCurCodeTool(Code) then exit;
-  CursorPos.X:=SelectionStart.X;
-  CursorPos.Y:=SelectionStart.Y;
-  CursorPos.Code:=Code;
-  EndPos.X:=SelectionStart.X;
-  EndPos.Y:=SelectionStart.Y;
-  EndPos.Code:=Code;
-  try
-    Result:=FCurCodeTool.InsertCodeTemplate(CursorPos,EndPos,TopLine,
-                              CodeTemplate,NewPos,NewTopLine,SourceChangeCache);
-    if Result then begin
-      NewX:=NewPos.X;
-      NewY:=NewPos.Y;
-      NewCode:=NewPos.Code;
-    end;
-  except
-    on e: Exception do Result:=HandleException(e);
-  end;
-end;
-
 function TCodeToolManager.GetSourceName(Code: TCodeBuffer;
   SearchMainCode: boolean): string;
 begin
@@ -6003,6 +5936,7 @@ end;
 function TCodeToolManager.GetDirectivesToolForSource(Code: TCodeBuffer;
   ExceptionOnError: boolean): TCompilerDirectivesTree;
 begin
+  if ExceptionOnError then ;
   Result:=FindDirectivesToolForSource(Code);
   if Result=nil then begin
     Result:=TDirectivesTool.Create;

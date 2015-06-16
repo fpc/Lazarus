@@ -633,6 +633,33 @@ var
   ListItem: TListItem;
   Size, ItemCount, SubCount: Integer;
   StartPos: Int64;
+
+  {$ifdef FPC_BIG_ENDIAN}
+
+    { This is a local redefinition of TStream.ReadAnsiString(), which ensures
+      that the string length is read in little-endian order to conform to the
+      convention of the remaining resources.
+    }
+    function stream_readAnsiStringLE(): AnsiString;
+
+    Var
+      TheSize : Longint;
+      P : PByte ;
+    begin
+      Stream.ReadBuffer (TheSize,SizeOf(TheSize));
+      TheSize := LEtoN(TheSize);
+      SetLength(Result,TheSize);
+      // Illegal typecast if no AnsiStrings defined.
+      if TheSize>0 then
+       begin
+         Stream.ReadBuffer (Pointer(Result)^,TheSize);
+         P:=Pointer(Result)+TheSize;
+         p^:=0;
+       end
+    end { stream_readAnsiStringLE } ;
+
+  {$endif FPC_BIG_ENDIAN}
+
 begin
   Clear;
   StartPos := Stream.Position;
@@ -644,7 +671,11 @@ begin
     begin
       Stream.ReadBuffer(ItemInfo, SizeOf(ItemInfo));
       ListItem := Add;
-      ListItem.Caption := Stream.ReadAnsiString;
+      {$ifndef FPC_BIG_ENDIAN}
+        ListItem.Caption := Stream.ReadAnsiString();
+      {$else}
+        ListItem.Caption := stream_readAnsiStringLE;
+      {$endif FPC_BIG_ENDIAN}
       ListItem.ImageIndex := LEtoN(ItemInfo.ImageIndex);
       // ListItem.StateIndex := LEtoN(ItemInfo.StateIndex);
       // ListItem.OverlayIndex := LEtoN(ItemInfo.OverlayIndex);
@@ -652,7 +683,11 @@ begin
       SubCount := LEtoN(ItemInfo.SubItemCount);
       for J := 0 to SubCount - 1 do
       begin
-        ListItem.SubItems.Add(Stream.ReadAnsiString);
+        {$ifndef FPC_BIG_ENDIAN}
+          ListItem.SubItems.Add(Stream.ReadAnsiString);
+        {$else}
+          ListItem.SubItems.Add(stream_readAnsiStringLE())
+        {$endif FPC_BIG_ENDIAN}
       end;
     end;
 
@@ -679,6 +714,24 @@ var
   ItemHeader    : TItemHeader;
   ItemInfo      : TLazItemInfo;
   ListItem      : TListItem;
+
+  {$ifdef FPC_BIG_ENDIAN}
+
+    { This is a local redefinition of TStream.WriteAnsiString(), which ensures
+      that the string length is written in little-endian order to conform to the
+      convention of the remaining resources.
+    }
+    procedure stream_writeAnsiStringLE(const S: AnsiString);
+
+    Var L : Longint;
+
+    begin
+      L:=NtoLE(Length(S));
+      Stream.WriteBuffer (L,SizeOf(L));
+      Stream.WriteBuffer (Pointer(S)^,L)
+    end { stream_writeAnsiStringLE } ;
+
+  {$endif FPC_BIG_ENDIAN}
 
 begin
   Size := SizeOf(ItemHeader);
@@ -712,11 +765,19 @@ begin
     Stream.WriteBuffer(ItemInfo, SizeOf(ItemInfo));
 
     // Write the strings
-    Stream.WriteAnsiString(ListItem.Caption);
-    
+    {$ifndef FPC_BIG_ENDIAN}
+      Stream.WriteAnsiString(ListItem.Caption);
+    {$else}
+      stream_writeAnsiStringLE(ListItem.Caption);
+    {$endif FPC_BIG_ENDIAN}
+
     for J := 0 to ItemInfo.SubItemCount - 1 do
     begin
-      Stream.WriteAnsiString(ListItem.SubItems[J]);
+      {$ifndef FPC_BIG_ENDIAN}
+        Stream.WriteAnsiString(ListItem.SubItems[J]);
+      {$else}
+        stream_writeAnsiStringLE(ListItem.SubItems[J])
+      {$endif FPC_BIG_ENDIAN}
     end;
   end;
   

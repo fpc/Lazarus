@@ -1,21 +1,24 @@
 object EdtTbConfigForm: TEdtTbConfigForm
-  Left = 375
+  Left = 676
   Height = 457
-  Top = 200
+  Top = 302
   Width = 772
   Caption = 'EdtTbConfigForm'
   ClientHeight = 457
   ClientWidth = 772
+  Constraints.MinHeight = 375
+  Constraints.MinWidth = 500
   OnCreate = FormCreate
   OnDestroy = FormDestroy
+  Position = poScreenCenter
   LCLVersion = '1.5'
   object lblMenuTree: TLabel
     AnchorSideLeft.Control = TV
     AnchorSideLeft.Side = asrCenter
-    Left = 170
-    Height = 17
+    Left = 173
+    Height = 15
     Top = 14
-    Width = 73
+    Width = 67
     Caption = 'lblMenuTree'
     ParentColor = False
   end
@@ -23,10 +26,10 @@ object EdtTbConfigForm: TEdtTbConfigForm
     AnchorSideLeft.Control = lvToolbar
     AnchorSideLeft.Side = asrCenter
     AnchorSideTop.Control = lblMenuTree
-    Left = 573
-    Height = 17
+    Left = 572
+    Height = 15
     Top = 14
-    Width = 58
+    Width = 54
     Caption = 'lblToolbar'
     ParentColor = False
   end
@@ -87,126 +90,11 @@ object EdtTbConfigForm: TEdtTbConfigForm
     ShowHint = True
     ParentShowHint = False
   end
-  object pnlButtons: TPanel
-    Left = 0
-    Height = 42
-    Top = 415
-    Width = 772
-    Align = alBottom
-    BevelOuter = bvNone
-    ClientHeight = 42
-    ClientWidth = 772
-    Color = clGreen
-    ParentColor = False
-    TabOrder = 2
-    object Bevel1: TBevel
-      Left = 0
-      Height = 2
-      Top = 0
-      Width = 772
-      Align = alTop
-    end
-    object btnOK: TButton
-      AnchorSideRight.Control = btnCancel
-      AnchorSideBottom.Control = pnlButtons
-      AnchorSideBottom.Side = asrBottom
-      Left = 609
-      Height = 25
-      Top = 11
-      Width = 75
-      Anchors = [akRight, akBottom]
-      AutoSize = True
-      BorderSpacing.Right = 6
-      BorderSpacing.Bottom = 6
-      BorderSpacing.InnerBorder = 4
-      Caption = 'btnOK'
-      Constraints.MaxHeight = 25
-      Constraints.MinHeight = 25
-      Constraints.MinWidth = 75
-      ModalResult = 1
-      OnClick = btnOKClick
-      TabOrder = 0
-    end
-    object btnCancel: TButton
-      AnchorSideRight.Control = pnlButtons
-      AnchorSideRight.Side = asrBottom
-      AnchorSideBottom.Control = pnlButtons
-      AnchorSideBottom.Side = asrBottom
-      Left = 690
-      Height = 25
-      Top = 11
-      Width = 76
-      Anchors = [akRight, akBottom]
-      AutoSize = True
-      BorderSpacing.Right = 6
-      BorderSpacing.Bottom = 6
-      BorderSpacing.InnerBorder = 4
-      Cancel = True
-      Caption = 'btnCancel'
-      Constraints.MaxHeight = 25
-      Constraints.MinHeight = 25
-      Constraints.MinWidth = 75
-      ModalResult = 2
-      TabOrder = 1
-    end
-    object btnHelp: TBitBtn
-      AnchorSideBottom.Control = pnlButtons
-      AnchorSideBottom.Side = asrBottom
-      Left = 16
-      Height = 25
-      Top = 11
-      Width = 75
-      Anchors = [akLeft, akBottom]
-      BorderSpacing.Bottom = 6
-      Caption = 'Help'
-      OnClick = btnHelpClick
-      TabOrder = 2
-    end
-    object cbProfile: TComboBox
-      AnchorSideLeft.Control = pnlButtons
-      AnchorSideLeft.Side = asrCenter
-      AnchorSideBottom.Control = pnlButtons
-      AnchorSideBottom.Side = asrCenter
-      Left = 336
-      Height = 23
-      Top = 9
-      Width = 100
-      Anchors = [akLeft, akBottom]
-      BorderSpacing.Bottom = 6
-      ItemHeight = 17
-      ItemIndex = 0
-      Items.Strings = (
-        'All'
-        'Design'
-        'Debug'
-        'HTML'
-        'Custom'
-        ''
-      )
-      OnChange = cbProfileChange
-      TabOrder = 3
-      Text = 'All'
-    end
-    object lblProfile: TLabel
-      AnchorSideTop.Control = cbProfile
-      AnchorSideTop.Side = asrCenter
-      AnchorSideRight.Control = cbProfile
-      Left = 288
-      Height = 17
-      Top = 12
-      Width = 38
-      Anchors = [akTop, akRight]
-      BorderSpacing.Right = 10
-      Caption = 'Profile'
-      ParentColor = False
-    end
-  end
   object TV: TTreeView
     AnchorSideLeft.Control = FilterEdit
     AnchorSideTop.Control = FilterEdit
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Splitter1
-    AnchorSideBottom.Control = pnlButtons
     Left = 16
     Height = 343
     Top = 66
@@ -215,6 +103,7 @@ object EdtTbConfigForm: TEdtTbConfigForm
     BorderSpacing.Top = 6
     BorderSpacing.Right = 3
     BorderSpacing.Bottom = 6
+    DefaultItemHeight = 18
     ReadOnly = True
     ScrollBars = ssAutoBoth
     TabOrder = 1
@@ -242,14 +131,13 @@ object EdtTbConfigForm: TEdtTbConfigForm
     AnchorSideTop.Side = asrCenter
     AnchorSideRight.Control = lvToolbar
     AnchorSideRight.Side = asrBottom
-    AnchorSideBottom.Control = pnlButtons
-    Left = 661
+    Left = 655
     Height = 23
     Top = 386
     Width = 100
     Anchors = [akRight, akBottom]
     BorderSpacing.Bottom = 6
-    ItemHeight = 17
+    ItemHeight = 15
     ItemIndex = 0
     Items.Strings = (
       'Top'
@@ -258,7 +146,7 @@ object EdtTbConfigForm: TEdtTbConfigForm
       'Left'
     )
     OnChange = cbPosChange
-    TabOrder = 3
+    TabOrder = 2
     Text = 'Top'
   end
   object lblpos: TLabel
@@ -266,10 +154,10 @@ object EdtTbConfigForm: TEdtTbConfigForm
     AnchorSideTop.Control = cbPos
     AnchorSideTop.Side = asrCenter
     AnchorSideRight.Control = cbPos
-    Left = 620
-    Height = 17
-    Top = 389
-    Width = 35
+    Left = 617
+    Height = 15
+    Top = 390
+    Width = 32
     Anchors = [akTop, akRight]
     BorderSpacing.Right = 6
     Caption = 'lblpos'
@@ -292,19 +180,18 @@ object EdtTbConfigForm: TEdtTbConfigForm
     AnchorSideLeft.Control = btnAdd
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = TV
-    AnchorSideBottom.Control = pnlButtons
     Left = 443
     Height = 312
     Top = 66
-    Width = 318
-    Anchors = [akTop, akLeft, akBottom]
+    Width = 312
+    Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Left = 6
     BorderSpacing.Bottom = 37
     Columns = <    
       item
         AutoSize = True
         Caption = 'Name'
-        Width = 314
+        Width = 308
       end    
       item
         AutoSize = True
@@ -317,7 +204,7 @@ object EdtTbConfigForm: TEdtTbConfigForm
     ReadOnly = True
     ScrollBars = ssAutoBoth
     ShowColumnHeaders = False
-    TabOrder = 5
+    TabOrder = 4
     ViewStyle = vsReport
     OnDrawItem = lvToolbarDrawItem
     OnSelectItem = lvToolbarSelectItem
@@ -328,8 +215,9 @@ object EdtTbConfigForm: TEdtTbConfigForm
     AnchorSideTop.Side = asrBottom
     Left = 415
     Height = 26
-    Top = 272
+    Top = 320
     Width = 22
+    Anchors = [akLeft, akBottom]
     BorderSpacing.Top = 50
     OnClick = btnAddDividerClick
     ShowHint = True
@@ -340,10 +228,10 @@ object EdtTbConfigForm: TEdtTbConfigForm
     AnchorSideTop.Control = FilterEdit
     AnchorSideRight.Control = lvToolbar
     AnchorSideRight.Side = asrBottom
-    Left = 715
-    Height = 17
+    Left = 714
+    Height = 15
     Top = 37
-    Width = 46
+    Width = 41
     Anchors = [akTop, akRight]
     Caption = 'lbSelect'
     ParentColor = False
@@ -356,7 +244,7 @@ object EdtTbConfigForm: TEdtTbConfigForm
     Left = 415
     Height = 26
     Top = 352
-    Width = 23
+    Width = 22
     Anchors = [akLeft, akBottom]
     Enabled = False
     OnClick = btnClearClick
@@ -370,7 +258,7 @@ object EdtTbConfigForm: TEdtTbConfigForm
     Width = 50
     Caption = 'Show'
     OnClick = btnShowClick
-    TabOrder = 6
+    TabOrder = 5
     Visible = False
   end
   object btnHide: TButton
@@ -380,8 +268,62 @@ object EdtTbConfigForm: TEdtTbConfigForm
     Width = 50
     Caption = 'Hide'
     OnClick = btnHideClick
-    TabOrder = 7
+    TabOrder = 6
     Visible = False
+  end
+  object pnlButtons: TButtonPanel
+    Left = 6
+    Height = 34
+    Top = 417
+    Width = 760
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    OKButton.OnClick = OKButtonClick
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    HelpButton.OnClick = HelpButtonClick
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
+    TabOrder = 7
+    OnResize = pnlButtonsResize
+    ShowButtons = [pbOK, pbCancel, pbHelp]
+    ShowGlyphs = [pbOK, pbCancel, pbHelp]
+    object cbProfile: TComboBox
+      AnchorSideLeft.Side = asrCenter
+      AnchorSideBottom.Side = asrCenter
+      Left = 336
+      Height = 23
+      Top = 9
+      Width = 100
+      Anchors = [akRight, akBottom]
+      BorderSpacing.Bottom = 6
+      ItemHeight = 15
+      ItemIndex = 0
+      Items.Strings = (
+        'All'
+        'Design'
+        'Debug'
+        'HTML'
+        'Custom'
+        ''
+      )
+      OnChange = cbProfileChange
+      TabOrder = 4
+      Text = 'All'
+    end
+    object lblProfile: TLabel
+      AnchorSideTop.Side = asrCenter
+      Left = 292
+      Height = 15
+      Top = 13
+      Width = 34
+      Anchors = [akLeft, akBottom]
+      BorderSpacing.Right = 10
+      Caption = 'Profile'
+      ParentColor = False
+    end
   end
   object puMenuItems: TPopupMenu
     OnPopup = puMenuItemsPopup

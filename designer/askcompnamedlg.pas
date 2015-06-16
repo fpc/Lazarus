@@ -26,53 +26,49 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, FileUtil, Forms, Controls, Graphics,
-  Dialogs, StdCtrls, PropEdits, LazarusIDEStrConsts;
+  Dialogs, StdCtrls, ButtonPanel, ExtCtrls, PropEdits, LazarusIDEStrConsts;
 
 type
 
   { TAskCompNameDialog }
 
   TAskCompNameDialog = class(TForm)
-    OkButton: TButton;
+    ButtonPanel1: TButtonPanel;
+    InfoPanel: TPanel;
     NameEdit: TEdit;
     Label1: TLabel;
     procedure FormCreate(Sender: TObject);
     procedure NameEditChange(Sender: TObject);
-    procedure OkButtonClick(Sender: TObject);
   private
     FLookupRoot: TComponent;
     FNewComponent: TComponent;
     function GetNewName: TComponentName;
-    procedure SetLookupRoot(const AValue: TComponent);
-    procedure SetNewComponent(const AValue: TComponent);
     procedure SetNewName(const AValue: TComponentName);
   public
     function IsValidName(AName: TComponentName; out ErrorMsg: string): boolean;
-    property LookupRoot: TComponent read FLookupRoot write SetLookupRoot;
+    property LookupRoot: TComponent read FLookupRoot write FLookupRoot;
     property NewName: TComponentName read GetNewName write SetNewName;
-    property NewComponent: TComponent read FNewComponent write SetNewComponent;
+    property NewComponent: TComponent read FNewComponent write FNewComponent;
   end; 
 
-function ShowComponentNameDialog(LookupRoot: TComponent; NewComponent: TComponent): string;
+function ShowComponentNameDialog(ALookupRoot: TComponent; ANewComponent: TComponent): string;
 
 implementation
 
 {$R *.lfm}
 
-function ShowComponentNameDialog(LookupRoot: TComponent; NewComponent: TComponent): string;
-var
-  AskCompNameDialog: TAskCompNameDialog;
+function ShowComponentNameDialog(ALookupRoot: TComponent; ANewComponent: TComponent): string;
 begin
-  AskCompNameDialog:=TAskCompNameDialog.Create(nil);
+  with TAskCompNameDialog.Create(nil) do
   try
-    AskCompNameDialog.LookupRoot:=LookupRoot;
-    AskCompNameDialog.NewComponent:=NewComponent;
-    AskCompNameDialog.NewName:=NewComponent.Name;
-    Result:=NewComponent.Name;   // Default name is the component's current name.
-    if AskCompNameDialog.ShowModal=mrOk then
-      Result:=AskCompNameDialog.NewName;
+    LookupRoot:=ALookupRoot;
+    NewComponent:=ANewComponent;
+    NewName:=NewComponent.Name;
+    Result:=NewComponent.Name; // Default name is the component's current name.
+    if ShowModal=mrOk then
+      Result:=NewName;
   finally
-    AskCompNameDialog.Free;
+    Free;
   end;
 end;
 
@@ -83,34 +79,20 @@ begin
   Caption:=lisChooseName;
   Label1.Caption:=lisChooseANameForTheComponent;
   NameEdit.Hint:=lisTheComponentNameMustBeUniqueInAllComponentsOnTheFo;
-  OkButton.Caption:=lisMenuOk;
-  OkButton.Enabled:=false;
+  ButtonPanel1.OKButton.Caption:=lisOk;
+  ButtonPanel1.CancelButton.Caption:=lisCancel;
+  ButtonPanel1.OKButton.Enabled:=false;
 end;
 
 procedure TAskCompNameDialog.NameEditChange(Sender: TObject);
 var
+  Ok: boolean;
   ErrorMsg: string;
 begin
-  OkButton.Enabled:=IsValidName(NameEdit.Text,ErrorMsg);
-  OkButton.ShowHint:=ErrorMsg<>'';
-  OkButton.Hint:=ErrorMsg;
-end;
-
-procedure TAskCompNameDialog.OkButtonClick(Sender: TObject);
-begin
-  ModalResult:=mrOk;
-end;
-
-procedure TAskCompNameDialog.SetLookupRoot(const AValue: TComponent);
-begin
-  if FLookupRoot=AValue then exit;
-  FLookupRoot:=AValue;
-end;
-
-procedure TAskCompNameDialog.SetNewComponent(const AValue: TComponent);
-begin
-  if FNewComponent=AValue then exit;
-  FNewComponent:=AValue;
+  Ok:=IsValidName(NameEdit.Text, ErrorMsg);
+  ButtonPanel1.OKButton.Enabled:=Ok;
+  InfoPanel.Caption:=ErrorMsg;
+  InfoPanel.Visible:=not Ok;
 end;
 
 function TAskCompNameDialog.GetNewName: TComponentName;

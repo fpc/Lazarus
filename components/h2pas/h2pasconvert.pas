@@ -4325,7 +4325,7 @@ var
     if (InsertPos<1) then begin
       if DefaultTypeSectionPos<1 then begin
         // start a type section at the beginning
-        Node:=Tool.FindMainUsesSection(false);
+        Node:=Tool.FindMainUsesNode(false);
         if Node<>nil then begin
           if Node.NextBrother<>nil then
             Node:=Node.NextBrother;

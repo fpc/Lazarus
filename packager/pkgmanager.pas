@@ -414,8 +414,8 @@ begin
     InputHistories.ApplyFileDialogSettings(OpenDialog);
     OpenDialog.Title:=lisOpenPackageFile;
     OpenDialog.Options:=OpenDialog.Options+[ofAllowMultiSelect];
-    OpenDialog.Filter:=lisLazarusPackage+' (*.lpk)|*.lpk'
-                     +'|'+dlgAllFiles+' ('+FileMask+')|'+FileMask;
+    OpenDialog.Filter:=dlgFilterLazarusPackage+' (*.lpk)|*.lpk'
+                     +'|'+dlgFilterAll+' ('+FileMask+')|'+FileMask;
     if OpenDialog.Execute and (OpenDialog.Files.Count>0) then begin
       OpenFlags:=[pofAddToRecent];
       For I := 0 to OpenDialog.Files.Count-1 do
@@ -1132,8 +1132,8 @@ begin
   try
     InputHistories.ApplyFileDialogSettings(SaveDialog);
     SaveDialog.Title:=Format(lisPkgMangSavePackageLpk, [APackage.IDAsString]);
-    SaveDialog.Filter:=lisLazarusPackage+' (*.lpk)|*.lpk'
-                     +'|'+dlgAllFiles+' ('+FileMask+')|'+FileMask;
+    SaveDialog.Filter:=dlgFilterLazarusPackage+' (*.lpk)|*.lpk'
+                     +'|'+dlgFilterAll+' ('+FileMask+')|'+FileMask;
     if APackage.HasDirectory then
       SaveDialog.InitialDir:=APackage.Directory;
 
@@ -2415,9 +2415,9 @@ var
       if LoadCodeBuffer(Code,OldFilename,[lbfUpdateFromDisk,lbfCheckIfText],false)<>mrOk
       then exit;
       CodeToolBoss.Explore(Code,Tool,false);
-      if not CheckUsesSection(Tool,Tool.FindMainUsesSection,NewFilename) then
+      if not CheckUsesSection(Tool,Tool.FindMainUsesNode,NewFilename) then
         Result:=false;
-      if not CheckUsesSection(Tool,Tool.FindImplementationUsesSection,NewFilename) then
+      if not CheckUsesSection(Tool,Tool.FindImplementationUsesNode,NewFilename) then
         Result:=false;
     end;
     if not Result then begin
@@ -2562,7 +2562,7 @@ var
       NewHasRegisterProc:=OldPkgFile.HasRegisterProc;
       NewAddToUses:=OldPkgFile.AddToUsesPkgSection;
     end else begin
-      NewUnitName:=OldProjFile.Unit_Name;
+      NewUnitName:=OldProjFile.SrcUnitName;
       NewFileType:=FileNameToPkgFileType(OldFilename);
       NewCompPrio:=ComponentPriorityNormal;
       NewResourceBaseClass:=OldProjFile.ResourceBaseClass;
@@ -4332,7 +4332,7 @@ var
       end else begin
         ClassUnitInfo:=Project1.UnitWithComponentClassName(ComponentClassnames[i]);
         if ClassUnitInfo<>nil then
-          NewUnitName:=ClassUnitInfo.Unit_Name;
+          NewUnitName:=ClassUnitInfo.SrcUnitName;
       end;
       if (NewUnitName<>'') and (UnitNames.IndexOf(NewUnitName)<0) then begin
         // new needed unit
@@ -5138,10 +5138,12 @@ begin
     SaveFlags:=[sfCanAbort];
     if not FilenameIsAbsolute(AFilename) then
       SaveFlags:=[sfSaveAs];
-    debugln(['Error: (lazarus) [TPkgManager.SavePackageFiles] failed writing "',AFilename,'"']);
     Result:=LazarusIDE.DoSaveEditorFile(SrcEdit,SaveFlags);
     if Result=mrIgnore then Result:=mrOk;
-    if Result<>mrOk then exit;
+    if Result<>mrOk then begin
+      debugln(['Error: (lazarus) [TPkgManager.SavePackageFiles] failed writing "',AFilename,'"']);
+      exit;
+    end;
   end;
 end;
 

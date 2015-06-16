@@ -16,7 +16,7 @@
     <Description Value="Useful units for Lazarus packages."/>
     <License Value="Modified LGPL-2"/>
     <Version Major="1"/>
-    <Files Count="75">
+    <Files Count="80">
       <Item1>
         <Filename Value="laz2_dom.pas"/>
         <UnitName Value="Laz2_DOM"/>
@@ -139,7 +139,7 @@
       </Item30>
       <Item31>
         <Filename Value="lazutf8sysutils.pas"/>
-        <UnitName Value="lazutf8sysutils"/>
+        <UnitName Value="LazUTF8SysUtils"/>
       </Item31>
       <Item32>
         <Filename Value="lazmethodlist.pas"/>
@@ -316,8 +316,28 @@
       </Item74>
       <Item75>
         <Filename Value="lazutilities.pas"/>
-        <UnitName Value="lazutilities"/>
+        <UnitName Value="LazUtilities"/>
       </Item75>
+      <Item76>
+        <Filename Value="lazfglhash.pas"/>
+        <UnitName Value="lazfglhash"/>
+      </Item76>
+      <Item77>
+        <Filename Value="lcsvutils.pas"/>
+        <UnitName Value="lcsvutils"/>
+      </Item77>
+      <Item78>
+        <Filename Value="lazcollections.pas"/>
+        <UnitName Value="lazCollections"/>
+      </Item78>
+      <Item79>
+        <Filename Value="lazlistclasses.pas"/>
+        <UnitName Value="LazListClasses"/>
+      </Item79>
+      <Item80>
+        <Filename Value="lazfreetypefpimagedrawer.pas"/>
+        <UnitName Value="LazFreeTypeFPImageDrawer"/>
+      </Item80>
     </Files>
     <LazDoc Paths="../../docs/xml/lazutils"/>
     <i18n>

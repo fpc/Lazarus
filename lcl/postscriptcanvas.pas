@@ -133,18 +133,16 @@ Type
     function GetClipping: Boolean; override;
     procedure SetClipping(const AValue: boolean); override;
     
-    procedure BeginDoc; override;
-    procedure EndDoc;   override;
-    procedure NewPage;  override;
-
     procedure DoMoveTo(X1,Y1: Integer); override;
     procedure DoLineTo(X1,Y1: Integer); override;
   public
     constructor Create(APrinter : TPrinter); override;
     destructor Destroy; override;
-    
+    procedure BeginDoc; override;
+    procedure EndDoc;   override;
+    procedure NewPage;  override;
+
     procedure SaveToFile(aFileName : string);
-    
 
     procedure Polyline(Points: PPoint; NumPts: Integer); override;
     procedure PolyBezier(Points: PPoint; NumPts: Integer;

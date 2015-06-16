@@ -3,15 +3,14 @@ msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: Beuselinck Vincent <vincent@beuselinck.fr>\n"
-"Language-Team: \n"
+"Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
+"Language-Team: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=iso-8859-1\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: fr\n"
+"X-Generator: Poedit 1.7.5\n"
 
 #: synunireg.sedituni
-#, fuzzy
-#| msgid "Edit..."
 msgid "Edit ..."
-msgstr "Editer..."
-
+msgstr "Éditer..."

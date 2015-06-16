@@ -81,7 +81,7 @@ msgstr "%s no es ejecutable"
 #: lazutilsstrconsts.lrsmodified
 msgctxt "lazutilsstrconsts.lrsmodified"
 msgid "  modified "
-msgstr "  por última vez "
+msgstr "  modificado "
 
 #: lazutilsstrconsts.lrsnodeset
 msgid "node set"

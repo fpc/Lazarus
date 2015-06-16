@@ -17,8 +17,8 @@ msgstr ""
 msgid "Cannot handle this type of subcontent. \"%s\" for url:%s%s"
 msgstr ""
 
-#: lhelpstrconsts.slhelp_closeall
-msgid "&Close All"
+#: lhelpstrconsts.slhelp_close
+msgid "&Close"
 msgstr ""
 
 #: lhelpstrconsts.slhelp_contents
@@ -47,6 +47,10 @@ msgstr ""
 
 #: lhelpstrconsts.slhelp_help
 msgid "&Help"
+msgstr ""
+
+#: lhelpstrconsts.slhelp_helpfileschmchmallfiles
+msgid "Help files (*.chm)|*.chm|All files (*.*)|*"
 msgstr ""
 
 #: lhelpstrconsts.slhelp_helpshowthisinformation
@@ -111,6 +115,18 @@ msgstr ""
 
 #: lhelpstrconsts.slhelp_open
 msgid "&Open ..."
+msgstr ""
+
+#: lhelpstrconsts.slhelp_openexistingfile
+msgid "Open existing file"
+msgstr ""
+
+#: lhelpstrconsts.slhelp_opennewfileinseparatetab
+msgid "Open new file in separate tab"
+msgstr ""
+
+#: lhelpstrconsts.slhelp_opennewtabwithstatusbar
+msgid "Open new tab with status bar"
 msgstr ""
 
 #: lhelpstrconsts.slhelp_openrecent

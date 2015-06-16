@@ -432,7 +432,6 @@ msgid "Whitespace"
 msgstr "Matomas tarpas"
 
 #: syneditstrconst.syns_duplicateshortcutmsg
-#| msgid "Shortcut already exists"
 msgid "The keystroke \"%s\" is already assigned to another editor command. (%s)"
 msgstr "Klavišo paspaudimas „%s“ jau yra priskirtas kitai rengyklės komandai. (%s)"
 

@@ -111,6 +111,7 @@
       <Unit6>
         <Filename Value="basecontentprovider.pas"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="BaseContentProvider"/>
       </Unit6>
       <Unit7>
         <Filename Value="chmcontentprovider.pas"/>
@@ -119,11 +120,11 @@
       <Unit8>
         <Filename Value="httpcontentprovider.pas"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="HTTPContentProvider"/>
       </Unit8>
       <Unit9>
         <Filename Value="lhelpstrconsts.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="lhelpstrconsts"/>
       </Unit9>
     </Units>
   </ProjectOptions>

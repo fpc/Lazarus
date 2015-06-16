@@ -30,7 +30,7 @@ type
       AState: TCDControlState; AStateEx: TCDControlStateEx): Integer; override;
     procedure CalculatePreferredSize(ADest: TCanvas; AControlId: TCDControlID;
       AState: TCDControlState; AStateEx: TCDControlStateEx;
-      var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean); override;
+      var PreferredWidth, PreferredHeight: integer; WithThemeSpace, AAllowUseOfMeasuresEx: Boolean); override;
     function GetColor(AColorID: Integer): TColor; override;
     function GetClientArea(ADest: TCanvas; ASize: TSize; AControlId: TCDControlID;
       AState: TCDControlState; AStateEx: TCDControlStateEx): TRect; override;
@@ -109,6 +109,12 @@ type
       AState: TCDControlState; AStateEx: TCDListViewStateEx); override;
     procedure DrawReportListViewItem(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
       ACurItem: TCDListItems; AState: TCDControlState; AStateEx: TCDListViewStateEx); override;
+    // TCDToolBar
+    procedure DrawToolBar(ADest: TCanvas; ASize: TSize;
+      AState: TCDControlState; AStateEx: TCDToolBarStateEx); override;
+    procedure DrawToolBarItem(ADest: TCanvas; ASize: TSize;
+      ACurItem: TCDToolBarItem; AX, AY: Integer;
+      AState: TCDControlState; AStateEx: TCDToolBarStateEx); override;
     // TCDCustomTabControl
     procedure DrawCTabControl(ADest: TCanvas; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDCTabControlStateEx); override;
@@ -206,6 +212,8 @@ begin
   TCDCHECKBOX_SQUARE_HALF_HEIGHT: Result := Floor(GetMeasures(TCDCHECKBOX_SQUARE_HEIGHT)/2);
   TCDCHECKBOX_SQUARE_HEIGHT: Result := DPIAdjustment(15);
   //
+  TCDCOMBOBOX_DEFAULT_HEIGHT: Result := 21;
+  //
   TCDRADIOBUTTON_CIRCLE_HEIGHT: Result := 15;
   //
   TCDSCROLLBAR_BUTTON_WIDTH: Result := 17;
@@ -224,6 +232,13 @@ begin
   TCDLISTVIEW_COLUMN_TEXT_LEFT_SPACING:  Result := 5;
   TCDLISTVIEW_LINE_TOP_SPACING: Result := 3;
   TCDLISTVIEW_LINE_BOTTOM_SPACING: Result := 3;
+  //
+  TCDTOOLBAR_ITEM_SPACING: Result := 2;
+  TCDTOOLBAR_ITEM_ARROW_WIDTH: Result := 7;
+  TCDTOOLBAR_ITEM_BUTTON_DEFAULT_WIDTH: Result := 23;
+  TCDTOOLBAR_ITEM_ARROW_RESERVED_WIDTH: Result := 35 - 23;
+  TCDTOOLBAR_ITEM_SEPARATOR_DEFAULT_WIDTH: Result := 8;
+  TCDTOOLBAR_DEFAULT_HEIGHT: Result := 26;
   //
   TCDCTABCONTROL_CLOSE_TAB_BUTTON_WIDTH: Result := 10;
   TCDCTABCONTROL_CLOSE_TAB_BUTTON_EXTRA_SPACING: Result := 10;
@@ -299,7 +314,7 @@ end;
 procedure TCDDrawerCommon.CalculatePreferredSize(ADest: TCanvas;
   AControlId: TCDControlID; AState: TCDControlState;
   AStateEx: TCDControlStateEx; var PreferredWidth, PreferredHeight: integer;
-  WithThemeSpace: Boolean);
+  WithThemeSpace, AAllowUseOfMeasuresEx: Boolean);
 begin
   PreferredWidth := 0;
   PreferredHeight := 0;
@@ -308,17 +323,27 @@ begin
   // In the LCL TEdit AutoSizes only its Height, so follow this here
   cidEdit: PreferredHeight := GetMeasuresEx(ADest, TCDCONTROL_CAPTION_HEIGHT, AState, AStateEx)+8;
   cidCheckBox, cidRadioButton:
+  begin
+    if AStateEx.AutoSize and AAllowUseOfMeasuresEx then
     begin
-      if AStateEx.AutoSize then begin
-        PreferredWidth := GetMeasures(TCDCHECKBOX_SQUARE_HEIGHT);
-        PreferredWidth := PreferredWidth
-          + GetMeasuresEx(ADest, TCDCONTROL_CAPTION_WIDTH, AState, AStateEx) + 6;
-      end;
-
-      PreferredHeight :=
-        Max(GetMeasuresEx(ADest, TCDCONTROL_CAPTION_HEIGHT, AState, AStateEx),
-         GetMeasures(TCDCHECKBOX_SQUARE_HEIGHT));
+      PreferredWidth := GetMeasures(TCDCHECKBOX_SQUARE_HEIGHT);
+      PreferredWidth := PreferredWidth
+        + GetMeasuresEx(ADest, TCDCONTROL_CAPTION_WIDTH, AState, AStateEx) + 6;
     end;
+
+    PreferredHeight := GetMeasures(TCDCHECKBOX_SQUARE_HEIGHT);
+    if AAllowUseOfMeasuresEx then
+      PreferredHeight := Max(PreferredHeight,
+        GetMeasuresEx(ADest, TCDCONTROL_CAPTION_HEIGHT, AState, AStateEx));
+  end;
+  // In the LCL TComboBox AutoSizes only its Height, so follow this here
+  cidComboBox:
+  begin
+    PreferredHeight := GetMeasures(TCDCOMBOBOX_DEFAULT_HEIGHT);
+    if AAllowUseOfMeasuresEx then
+      PreferredHeight := Max(PreferredHeight,
+        GetMeasuresEx(ADest, TCDCONTROL_CAPTION_HEIGHT, AState, AStateEx));
+  end;
   end;
 end;
 
@@ -833,6 +858,7 @@ begin
   lLineTop := lTextTopSpacing + AStateEx.CaretPos.Y * lLineHeight;
 
   lTmpText := UTF8Copy(lControlText, AStateEx.VisibleTextStart.X, AStateEx.CaretPos.X-AStateEx.VisibleTextStart.X+1);
+  lTmpText :=  VisibleText(lTmpText, AStateEx.PasswordChar);
   lCaretPixelPos := ADest.TextWidth(lTmpText) + GetMeasures(TCDEDIT_LEFT_TEXT_SPACING)
     + AStateEx.LeftTextMargin;
   ADest.Pen.Color := clBlack;
@@ -889,6 +915,7 @@ begin
   for i := 0 to lVisibleLinesCount - 1 do
   begin
     lControlText := AStateEx.Lines.Strings[AStateEx.VisibleTextStart.Y+i];
+    lControlText :=  VisibleText(lControlText, AStateEx.PasswordChar);
     lControlTextLen := UTF8Length(lControlText);
     lLineTop := lTextTopSpacing + i * lLineHeight;
 
@@ -1609,6 +1636,111 @@ begin
     ADestPos.X+GetMeasures(TCDLISTVIEW_COLUMN_TEXT_LEFT_SPACING),
     ADestPos.Y+GetMeasures(TCDLISTVIEW_LINE_TOP_SPACING),
     ACurItem.Caption);
+end;
+
+procedure TCDDrawerCommon.DrawToolBar(ADest: TCanvas; ASize: TSize;
+  AState: TCDControlState; AStateEx: TCDToolBarStateEx);
+var
+  lX, lY, lX2: Integer;
+  lItemSize: TSize;
+  i: Integer;
+  lCurItem: TCDToolBarItem;
+  lItemState: TCDControlState = [];
+begin
+  // Background
+  ADest.Pen.Style := psSolid;
+  ADest.Pen.Color := AStateEx.ParentRGBColor;
+  ADest.Brush.Style := bsSolid;
+  ADest.Brush.Color := AStateEx.ParentRGBColor;
+  ADest.Rectangle(0, 0, ASize.cx, ASize.cy);
+
+  // Items
+  lX := GetMeasures(TCDTOOLBAR_ITEM_SPACING);
+  lY := GetMeasures(TCDTOOLBAR_ITEM_SPACING);
+  lItemSize.CY := AStateEx.ToolBarHeight - GetMeasures(TCDTOOLBAR_ITEM_SPACING) * 2;
+  for i := 0 to AStateEx.Items.Count-1 do
+  begin
+    lCurItem := TCDToolBarItem(AStateEx.Items[i]);
+
+    // make space for the arrow if necessary
+    if lCurItem.Kind = tikDropDownButton then
+      lItemSize.CX := lCurItem.Width - GetMeasures(TCDTOOLBAR_ITEM_ARROW_RESERVED_WIDTH)
+    else
+      lItemSize.CX := lCurItem.Width;
+
+    lCurItem.SubpartKind := tiskMain;
+    DrawToolBarItem(ADest, lItemSize, lCurItem, lX, lY, lCurItem.State, AStateEx);
+
+    if lCurItem.Kind = tikDropDownButton then
+    begin
+      lCurItem.SubpartKind := tiskArrow;
+      lX2 := lX + lCurItem.Width - GetMeasures(TCDTOOLBAR_ITEM_ARROW_RESERVED_WIDTH);
+      lItemSize.CX := GetMeasures(TCDTOOLBAR_ITEM_ARROW_RESERVED_WIDTH);
+      DrawToolBarItem(ADest, lItemSize, lCurItem, lX2, lY, lCurItem.State, AStateEx);
+    end;
+
+    lX := lX + lCurItem.Width;
+  end;
+end;
+
+procedure TCDDrawerCommon.DrawToolBarItem(ADest: TCanvas; ASize: TSize;
+  ACurItem: TCDToolBarItem; AX, AY: Integer; AState: TCDControlState; AStateEx: TCDToolBarStateEx);
+var
+  lX, lY1, lY2: Integer;
+
+  procedure DrawToolBarItemBorder();
+  begin
+    ADest.Pen.Style := psSolid;
+    ADest.Pen.Color := $AFAFAF;
+    ADest.Brush.Style := bsClear;
+    ADest.Rectangle(Bounds(AX, AY, ASize.cx, ASize.cy));
+  end;
+
+begin
+  // tikDivider is centralized, tikSeparator is left-aligned
+  case ACurItem.Kind of
+  tikSeparator, tikDivider:
+  begin
+    lX := AX;
+    if ACurItem.Kind = tikDivider then
+      lX := AX + ASize.CX div 2 - 1;
+
+    lY1 := AY;
+    lY2 := AY+ASize.CY;
+
+    ADest.Pen.Style := psSolid;
+    ADest.Pen.Color := $DCDEE1;
+    ADest.Line(lX+1, lY1, lX+1, lY2);
+    ADest.Line(lX+3, lY1, lX+3, lY2);
+    ADest.Pen.Style := psSolid;
+    ADest.Pen.Color := $93979E;
+    ADest.Line(lX+2, lY1, lX+2, lY2);
+  end;
+  tikButton, tikCheckButton, tikDropDownButton:
+  begin
+    if ACurItem.SubpartKind = tiskArrow then
+    begin
+      // Centralize the arrow in the available space
+      lX := AX + ASize.CX div 2 - GetMeasures(TCDTOOLBAR_ITEM_ARROW_WIDTH) div 2;
+      lY1 := AY + ASize.CY div 2 - GetMeasures(TCDTOOLBAR_ITEM_ARROW_WIDTH) div 2;
+      DrawArrow(ADest, Point(lX, lY1), [csfDownArrow], GetMeasures(TCDTOOLBAR_ITEM_ARROW_WIDTH));
+      Exit;
+    end;
+
+    if csfSunken in AState then
+    begin
+      ADest.GradientFill(Bounds(AX, AY, ASize.CX, ASize.CY),
+        $C4C4C4, $DBDBDB, gdVertical);
+      DrawToolBarItemBorder();
+    end
+    else if csfMouseOver in AState then
+    begin
+      ADest.GradientFill(Bounds(AX, AY, ASize.CX, ASize.CY),
+        $E3E3E3, $F7F7F7, gdVertical);
+      DrawToolBarItemBorder();
+    end;
+  end;
+  end;
 end;
 
 procedure TCDDrawerCommon.DrawCTabControl(ADest: TCanvas;

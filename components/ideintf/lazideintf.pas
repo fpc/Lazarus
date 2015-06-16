@@ -247,7 +247,8 @@ type
     function DoPublishProject(Flags: TSaveFlags;
                               ShowDialog: boolean): TModalResult; virtual; abstract;
     function DoBuildProject(const AReason: TCompileReason;
-                            Flags: TProjectBuildFlags): TModalResult; virtual; abstract;
+                            Flags: TProjectBuildFlags;
+                            FinalizeResources: boolean = True): TModalResult; virtual; abstract;
     function GetProjectFileForProjectEditor(AEditor: TSourceEditorInterface): TLazProjectFile; virtual; abstract;
     function DoCallProjectChangedHandler(HandlerType: TLazarusIDEHandlerType;
                                          AProject: TLazProject): TModalResult;
@@ -273,6 +274,7 @@ type
 
     // codetools
     function BeginCodeTools: boolean; virtual; abstract;
+    function DoShowCodeToolBossError: TMessageLine; virtual; abstract;
     procedure DoJumpToCodeToolBossError; virtual; abstract;
 
     function NeedSaveSourceEditorChangesToCodeCache(AEditor: TSourceEditorInterface): boolean; virtual; abstract;

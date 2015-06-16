@@ -6,15 +6,14 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls,
-  Grids, ProjectTemplates, Buttons, StdCtrls, EditBtn;
+  Grids, ProjectTemplates, Buttons, StdCtrls, EditBtn, ButtonPanel;
 
 type
 
   { TProjectVariablesForm }
 
   TProjectVariablesForm = class(TForm)
-    BOK: TButton;
-    BCancel: TButton;
+    ButtonPanel1: TButtonPanel;
     DEProject: TDirectoryEdit;
     EProjectName: TEdit;
     Label1: TLabel;
@@ -73,7 +72,6 @@ procedure TProjectVariablesForm.BOKClick(Sender: TObject);
 Var
   N,V : String;
   I : Integer;
-
 begin
   For I:=0 to FVariables.Count-1 do
     begin
@@ -91,8 +89,8 @@ begin
   Label1.Caption:= SNameforProject;
   Label2.Caption:= SCreateinDir;
   PDescription.Caption:= SThisProject;
-  BCancel.Caption:= SbtnCancel;
-  BOK.Caption:= SbtnOK;
+  ButtonPanel1.CancelButton.Caption:= SbtnCancel;
+  ButtonPanel1.OKButton.Caption:= SbtnOK;
 end;
 
 procedure TProjectVariablesForm.SetVariables(const AValue: TStrings);

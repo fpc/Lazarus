@@ -52,7 +52,7 @@ uses
   IDEOptionsIntf,
   // IDE
   LazarusIDEStrConsts, IDEProcs, LazConf, TransferMacros, etFPCMsgParser,
-  ModeMatrixOpts, CompOptsModes, EnvironmentOpts;
+  IDECmdLine, ModeMatrixOpts, CompOptsModes, EnvironmentOpts;
 
 const
   DefaultCompilerPath = '$(CompPath)';
@@ -1923,7 +1923,7 @@ function TBaseCompilerOptions.CreateTargetFilename: string;
     PathName: String;
     CurTargetOS: String;
     aSrcOS: String;
- begin
+  begin
     //debugln ( 'Filename result is ',Result, ' in PrependDefaultType' );
     if (ExtractFileName(Result)='') or
     (CompareText(copy(ExtractFileName(Result),1,3), 'lib') = 0) then exit;
@@ -1952,17 +1952,11 @@ var
   Dir: String;
 begin
   Result:=TargetFilename;
-  if Result='' then
+  if Assigned(ParsedOpts.OnLocalSubstitute) then
   begin
-    // the compiler cuts off the source extension
-    TargetFilename:=ExtractFileNameOnly(GetDefaultMainSourceFileName);
+    Result:=ParsedOpts.OnLocalSubstitute(Result,false);
   end else begin
-    if Assigned(ParsedOpts.OnLocalSubstitute) then
-    begin
-      Result:=ParsedOpts.OnLocalSubstitute(Result,false);
-    end else begin
-      Result:=ParseString(ParsedOpts,Result,false);
-    end;
+    Result:=ParseString(ParsedOpts,Result,false);
   end;
   if (Result<>'') and FilenameIsAbsolute(Result) then begin
     // fully specified target filename
@@ -2454,7 +2448,7 @@ end;
 function TBaseCompilerOptions.MakeOptionsString(
   Flags: TCompilerCmdLineOptions): String;
 var
-  switches, tempsw, t: String;
+  switches, tempsw, quietsw, t: String;
   InhLinkerOpts: String;
   NewTargetFilename: String;
   NewTargetDirectory: String;
@@ -2478,13 +2472,22 @@ var
   FPCompilerFilename: String;
   s: string;
   CurFPCMsgFile: TFPCMsgFilePoolItem;
+  Quiet: Boolean;
 
   procedure EnableDisableVerbosityFlag(Enable: boolean; c: char);
   begin
-    if Enable then
-      tempsw+=c
+    if Quiet or not Enable then
+      quietsw+=c+'-'
     else
-      switches+=' -v'+c+'-';
+      tempsw+=c;
+  end;
+
+  procedure EnableVerbosityFlag(Enable: boolean; c: char);
+  begin
+    if Quiet then
+      quietsw+=c+'-'
+    else if Enable then
+      tempsw+=c;
   end;
 
 begin
@@ -2740,7 +2743,7 @@ begin
 
     Supported Microcontroller types:
   }
-
+  Quiet:=ConsoleVerbosity<=-3; // lazbuild -q -q, lazarus -q -q -q
 
   CurTargetOS:='';
   CurTargetCPU:='';
@@ -2781,9 +2784,9 @@ begin
 
   { Assembler reading style  -Ratt = AT&T    -Rintel = Intel  -Rdirect = direct }
   case AssemblerStyle of
-    1: switches := switches + '-Rintel';
-    2: switches := switches + '-Ratt';
-    3: switches := switches + '-Rdirect';
+    1: switches := switches + ' -Rintel';
+    2: switches := switches + ' -Ratt';
+    3: switches := switches + ' -Rdirect';
   end;
 
   // Syntax Options
@@ -2938,42 +2941,40 @@ begin
   { ---------------- Other Tab -------------------- }
 
   { Verbosity }
-  if (WriteFPCLogo) then
+  if Quiet then
+    switches := switches + ' -l-'
+  else if WriteFPCLogo then
     switches := switches + ' -l';
 
   tempsw := '';
+  quietsw := '';
   // the default fpc.cfg normally contains -viwn, if the user does not want
-  // to see warning pass -vw-
+  // to see warnings pass -vw-
   tempsw := tempsw + 'e'; // always pass -ve, you cannot ignore errors
   EnableDisableVerbosityFlag(ShowWarn,'w');
   EnableDisableVerbosityFlag(ShowNotes,'n');
   EnableDisableVerbosityFlag(ShowHints,'h');
-  tempsw := tempsw + 'i'; // always pass -vi, (e.g. (3104) Compiling) needed to resolve filenames in fpc messages without path
-  if ShowLineNum then
-    tempsw := tempsw + 'l';
-  if ShowDebugInfo then
-    tempsw := tempsw + 'd';
-  if ShowUsedFiles then
-    tempsw := tempsw + 'u';
-  if ShowTriedFiles then
-    tempsw := tempsw + 't';
-  if ShowCompProc then
-    tempsw := tempsw + 'p';
-  if ShowCond then
-    tempsw := tempsw + 'c';
-  if ShowExecInfo then
-    tempsw := tempsw + 'x';
+  // always pass -vi for IDE, (e.g. (3104) Compiling) needed to resolve filenames in fpc messages without path
+  EnableVerbosityFlag(true,'i');
+  // optional verbosity flags, usually off in fpc.cfg, pass them only if wanted
+  EnableVerbosityFlag(ShowLineNum,'l');
+  EnableVerbosityFlag(ShowDebugInfo,'d');
+  EnableVerbosityFlag(ShowUsedFiles,'u');
+  EnableVerbosityFlag(ShowTriedFiles,'t');
+  EnableVerbosityFlag(ShowCompProc,'p');
+  EnableVerbosityFlag(ShowCond,'c');
+  EnableVerbosityFlag(ShowExecInfo,'x');
 
-  if ShowAll or (ccloAddVerboseAll in Flags) then
+  if (ShowAll and not (Quiet)) or (ccloAddVerboseAll in Flags) then
     tempsw := 'a';
   tempsw := tempsw + 'bq'; // b = full file names, q = message ids
 
-  if (tempsw <> '') then begin
-    tempsw := '-v' + tempsw;
-    switches := switches + ' ' + tempsw;
-  end;
+  if (tempsw <> '') then
+    switches := switches + ' -v' + tempsw;
+  if (quietsw <> '') then
+    switches := switches + ' -v' + quietsw;
 
-  // -vm flags allow to enable/disable types of messages
+// -vm flags allow to enable/disable types of messages
   // Passing a -vm ID, unknown by the current compiler will create an error
   // => check the compiler message file
   if IDEMessageFlags.Count>0 then begin
@@ -3003,9 +3004,8 @@ begin
 
   { Use Custom Config File     @ = yes and path }
   if not (ccloNoMacroParams in Flags)
-  and (CustomConfigFile) and (ConfigFilePath<>'') then begin
+  and (CustomConfigFile) and (ConfigFilePath<>'') then
     switches := switches + ' ' + PrepareCmdLineOption('@' + ConfigFilePath);
-  end;
 
   { ------------- Search Paths ---------------- }
   CurOutputDir:='';

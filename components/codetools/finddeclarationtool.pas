@@ -615,7 +615,7 @@ type
     // node caches
     procedure DoDeleteNodes(StartNode: TCodeTreeNode); override;
     function CheckDependsOnNodeCaches(CheckedTools: TAVLTree = nil): boolean;
-    procedure ClearNodeCaches(Force: boolean);
+    procedure ClearNodeCaches;
     procedure ClearDependentNodeCaches;
     procedure ClearDependsOnToolRelationships;
     procedure AddToolDependency(DependOnTool: TFindDeclarationTool);
@@ -667,7 +667,7 @@ type
       out ExprType: TExpressionType): boolean;
     function CheckOperatorEnumerator(Params: TFindDeclarationParams;
       const FoundContext: TFindContext): TIdentifierFoundResult;
-    function CheckModifierEnumeratorCurrent(Params: TFindDeclarationParams;
+    function CheckModifierEnumeratorCurrent({%H-}Params: TFindDeclarationParams;
       const FoundContext: TFindContext): TIdentifierFoundResult;
     function IsTermEdgedBracket(TermPos: TAtomPosition;
       out EdgedBracketsStartPos: integer): boolean;
@@ -676,7 +676,7 @@ type
     function FindSetOfEnumerationType(EnumNode: TCodeTreeNode): TCodeTreeNode;
     function FindPointerOfIdentifier(TypeNode: TCodeTreeNode): TCodeTreeNode;
     function FindExprTypeAsString(const ExprType: TExpressionType;
-      TermCleanPos: integer; Params: TFindDeclarationParams;
+      TermCleanPos: integer;
       AliasType: PFindContext = nil): string;
   protected
     function CheckSrcIdentifier(Params: TFindDeclarationParams;
@@ -691,7 +691,7 @@ type
       FindClassContext, ExceptionOnNotFound: boolean): TCodeTreeNode;
     function FindClassMember(aClassNode: TCodeTreeNode; Identifier: PChar): TCodeTreeNode;
     function FindForwardIdentifier(Params: TFindDeclarationParams;
-      var IsForward: boolean): boolean;
+      out IsForward: boolean): boolean;
     function FindNonForwardClass(ForwardNode: TCodeTreeNode): TCodeTreeNode;
     function FindNonForwardClass(Params: TFindDeclarationParams): boolean;
     function FindCodeToolForUsedUnit(const AnUnitName, AnUnitInFilename: string;
@@ -729,7 +729,7 @@ type
       out ParameterIndex: integer): boolean;
     procedure OnFindUsedUnitIdentifier(Sender: TPascalParserTool;
       IdentifierCleanPos: integer; Range: TEPRIRange;
-      Node: TCodeTreeNode; Data: Pointer; var Abort: boolean);
+      Node: TCodeTreeNode; Data: Pointer; var {%H-}Abort: boolean);
   protected
   public
     constructor Create;
@@ -768,8 +768,8 @@ type
       ): TCodeTreeNode; // search for type, const, var, proc, prop
 
     function FindInitializationSection: TCodeTreeNode; deprecated; // use FindInitializationNode
-    function FindMainUsesSection(UseContainsSection: boolean = false): TCodeTreeNode;
-    function FindImplementationUsesSection: TCodeTreeNode;
+    function FindMainUsesSection(UseContainsSection: boolean = false): TCodeTreeNode; deprecated; // use FindMainUsesNode
+    function FindImplementationUsesSection: TCodeTreeNode; deprecated; // use FindImplementationUsesNode
     function FindNameInUsesSection(UsesNode: TCodeTreeNode;
           const AUnitName: string): TCodeTreeNode;
     function FindUnitInUsesSection(UsesNode: TCodeTreeNode;
@@ -1719,7 +1719,7 @@ begin
   Result:=false;
   if Identifier='' then exit;
   BuildTree(lsrMainUsesSectionEnd);
-  UsesNode:=FindMainUsesSection;
+  UsesNode:=FindMainUsesNode;
   if UsesNode=nil then exit;
 
   Params:=TFindDeclarationParams.Create;
@@ -1957,34 +1957,12 @@ end;
 function TFindDeclarationTool.FindMainUsesSection(UseContainsSection: boolean
   ): TCodeTreeNode;
 begin
-  Result:=Tree.Root;
-  if Result=nil then exit;
-  if UseContainsSection then begin
-    if Result.Desc<>ctnPackage then exit(nil);
-    Result:=Result.FirstChild;
-    while (Result<>nil) and (Result.Desc<>ctnContainsSection) do
-      Result:=Result.NextBrother;
-  end else begin
-    if Result.Desc=ctnUnit then begin
-      Result:=Result.NextBrother;
-      if Result=nil then exit;
-    end;
-    Result:=Result.FirstChild;
-    if (Result=nil) then exit;
-    if (Result.Desc<>ctnUsesSection) then Result:=nil;
-  end;
+  Result := FindMainUsesNode(UseContainsSection);
 end;
 
 function TFindDeclarationTool.FindImplementationUsesSection: TCodeTreeNode;
 begin
-  Result:=Tree.Root;
-  if Result=nil then exit;
-  while (Result<>nil) and (Result.Desc<>ctnImplementation) do
-    Result:=Result.NextBrother;
-  if Result=nil then exit;
-  Result:=Result.FirstChild;
-  if (Result=nil) then exit;
-  if (Result.Desc<>ctnUsesSection) then Result:=nil;
+  Result := FindImplementationUsesNode;
 end;
 
 function TFindDeclarationTool.FindNameInUsesSection(UsesNode: TCodeTreeNode;
@@ -2084,13 +2062,13 @@ begin
   end;
 
   // check if already there
-  UsesNode:=FindMainUsesSection;
+  UsesNode:=FindMainUsesNode;
   if (UsesNode<>nil) and (FindNameInUsesSection(UsesNode,Result)<>nil)
   then begin
     Result:='';
     exit;
   end;
-  UsesNode:=FindImplementationUsesSection;
+  UsesNode:=FindImplementationUsesNode;
   if (UsesNode<>nil) and (FindNameInUsesSection(UsesNode,Result)<>nil)
   then begin
     Result:='';
@@ -2230,12 +2208,12 @@ begin
   //debugln(['TFindDeclarationTool.FindUnitFileInAllUsesSections Self=',ExtractFilename(MainFilename),' Search=',ExtractFilename(AFilename)]);
   if AFilename='' then exit;
   if CheckMain then begin
-    Result:=FindUnitFileInUsesSection(FindMainUsesSection,AFilename);
+    Result:=FindUnitFileInUsesSection(FindMainUsesNode,AFilename);
     //debugln(['TFindDeclarationTool.FindUnitFileInAllUsesSections Self=',ExtractFilename(MainFilename),' Search=',ExtractFilename(AFilename),' used in main uses=',Result<>nil]);
     if Result<>nil then exit;
   end;
   if CheckImplementation then
-    Result:=FindUnitFileInUsesSection(FindImplementationUsesSection,AFilename);
+    Result:=FindUnitFileInUsesSection(FindImplementationUsesNode,AFilename);
 end;
 
 function TFindDeclarationTool.FindUnitSource(const AnUnitName,
@@ -5139,6 +5117,8 @@ var
     MoveCursorToCleanPos(StartPos);
     repeat
       ReadNextAtom;
+      if not SkipComments then
+        ; // ToDo
       if UpAtomIs(UpperUnitName)
       and not LastAtomIs(0,'.') then begin
         if CleanPosToCaret(CurPos.StartPos,ReferencePos) then begin
@@ -5166,14 +5146,14 @@ begin
   try
     BuildTree(lsrEnd);
 
-    InterfaceUsesNode:=FindMainUsesSection;
+    InterfaceUsesNode:=FindMainUsesNode;
     if not CheckUsesSection(InterfaceUsesNode,Found) then exit;
 
     StartPos:=-1;
     if Found then begin
       StartPos:=InterfaceUsesNode.EndPos;
     end else begin
-      ImplementationUsesNode:=FindImplementationUsesSection;
+      ImplementationUsesNode:=FindImplementationUsesNode;
       if not CheckUsesSection(ImplementationUsesNode,Found) then exit;
       if Found then
         StartPos:=ImplementationUsesNode.EndPos;
@@ -5946,7 +5926,7 @@ begin
 end;
 
 function TFindDeclarationTool.FindForwardIdentifier(
-  Params: TFindDeclarationParams; var IsForward: boolean): boolean;
+  Params: TFindDeclarationParams; out IsForward: boolean): boolean;
 { first search the identifier in the normal way via FindIdentifierInContext
   then search the other direction }
 var
@@ -7653,8 +7633,6 @@ var
       ExprType.Context.Tool.RaiseExceptionFmt(ctsStrExpectedButAtomFound,
                                               [ctsIdentifier,GetAtom]);
     end;
-  const
-    EdgedBracketContexts = xtAllStringTypes+[xtNone];
   begin
     {$IFDEF ShowExprEval}
     debugln(['  FindExpressionTypeOfTerm ResolveEdgedBracketOpen']);
@@ -9734,7 +9712,7 @@ end;
 
 procedure TFindDeclarationTool.DoDeleteNodes(StartNode: TCodeTreeNode);
 begin
-  ClearNodeCaches(true);
+  ClearNodeCaches;
   if FInterfaceIdentifierCache<>nil then begin
     FInterfaceIdentifierCache.Clear;
     FInterfaceIdentifierCache.Complete:=false;
@@ -9798,7 +9776,7 @@ begin
     {$ENDIF}
     FCheckingNodeCacheDependencies:=false;
     if FreeCheckedTools then FreeAndNil(CheckedTools);
-    if Result then ClearNodeCaches(true);
+    if Result then ClearNodeCaches;
   end;
 end;
 
@@ -9817,7 +9795,7 @@ begin
   inherited Destroy;
 end;
 
-procedure TFindDeclarationTool.ClearNodeCaches(Force: boolean);
+procedure TFindDeclarationTool.ClearNodeCaches;
 var
   NodeCache: TCodeTreeNodeCache;
   BaseTypeCache: TBaseTypeCache;
@@ -9869,7 +9847,7 @@ begin
     ANode:=FDependentCodeTools.FindLowest;
     while ANode<>nil do begin
       DependentTool:=TFindDeclarationTool(ANode.Data);
-      DependentTool.ClearNodeCaches(true);
+      DependentTool.ClearNodeCaches;
       ANode:=FDependentCodeTools.FindSuccessor(ANode);
     end;
     FDependentCodeTools.Clear;
@@ -10303,7 +10281,7 @@ begin
     ExprType.Desc:=xtContext;
     ExprType.Context:=AliasType;
   end;
-  Result:=FindExprTypeAsString(ExprType,TermPos.StartPos,Params);
+  Result:=FindExprTypeAsString(ExprType,TermPos.StartPos);
 end;
 
 function TFindDeclarationTool.FindForInTypeAsString(TermPos: TAtomPosition;
@@ -10345,7 +10323,7 @@ begin
     DebugLn(['TFindDeclarationTool.FindForInTypeAsString Operator=',ExprTypeToString(OperatorExprType)]);
     {$ENDIF}
     ExprType:=OperatorExprType;
-    Result:=FindExprTypeAsString(ExprType,TermPos.StartPos,Params);
+    Result:=FindExprTypeAsString(ExprType,TermPos.StartPos);
     exit;
   end;
 
@@ -10360,7 +10338,7 @@ begin
               TermExprType.Context.Node,true,ExprType,@AliasType)
             then
               RaiseTermHasNoIterator;
-            Result:=FindExprTypeAsString(ExprType,TermPos.StartPos,Params,@AliasType);
+            Result:=FindExprTypeAsString(ExprType,TermPos.StartPos,@AliasType);
           end;
         ctnEnumerationType:
           begin
@@ -10373,13 +10351,13 @@ begin
                                   TermExprType.Context.Node,ExprType.Context)
           then begin
             ExprType.Desc:=xtContext;
-            Result:=FindExprTypeAsString(ExprType,TermPos.StartPos,Params);
+            Result:=FindExprTypeAsString(ExprType,TermPos.StartPos);
           end;
         ctnRangedArrayType,ctnOpenArrayType:
           if TermExprType.Context.Tool.FindElementTypeOfArrayType(
                                   TermExprType.Context.Node,ExprType)
           then begin
-            Result:=FindExprTypeAsString(ExprType,TermPos.StartPos,Params);
+            Result:=FindExprTypeAsString(ExprType,TermPos.StartPos);
           end;
         else
           RaiseTermHasNoIterator;
@@ -10975,7 +10953,7 @@ end;
 
 function TFindDeclarationTool.FindExprTypeAsString(
   const ExprType: TExpressionType; TermCleanPos: integer;
-  Params: TFindDeclarationParams; AliasType: PFindContext): string;
+  AliasType: PFindContext): string;
 
   procedure RaiseTermNotSimple;
   begin

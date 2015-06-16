@@ -39,7 +39,7 @@ uses
   {$ENDIF}
   Classes, SysUtils, FileProcs, CodeToolsStrConsts, CodeTree, CodeCache,
   CodeAtom, CustomCodeTool, PascalParserTool, KeywordFuncLists, BasicCodeTools,
-  SourceChanger, LinkScanner, AVL_Tree;
+  LinkScanner, AVL_Tree;
 
 type
   TPascalHintModifier = (
@@ -70,7 +70,7 @@ type
   public
     // comments
     function CleanPosIsInComment(CleanPos, CleanCodePosInFront: integer;
-        var CommentStart, CommentEnd: integer;
+        out CommentStart, CommentEnd: integer;
         OuterCommentBounds: boolean = true): boolean;
 
     // general extraction
@@ -121,6 +121,8 @@ type
         Attr: TProcHeadAttributes): string;
     function ExtractProcHead(ProcNode: TCodeTreeNode;
         Attr: TProcHeadAttributes): string;
+    function ExtractProcedureHeader(CursorPos: TCodeXYPosition;
+      Attributes: TProcHeadAttributes; var ProcHead: string): boolean;
     function ExtractClassNameOfProcNode(ProcNode: TCodeTreeNode;
         AddParentClasses: boolean = true): string;
     function ProcNodeHasSpecifier(ProcNode: TCodeTreeNode;
@@ -274,13 +276,15 @@ begin
 end;
 
 function TPascalReaderTool.CleanPosIsInComment(CleanPos,
-  CleanCodePosInFront: integer; var CommentStart, CommentEnd: integer;
+  CleanCodePosInFront: integer; out CommentStart, CommentEnd: integer;
   OuterCommentBounds: boolean): boolean;
 var CommentLvl, CurCommentPos: integer;
   CurEnd: Integer;
   CurCommentInnerEnd: Integer;
 begin
   Result:=false;
+  CommentStart:=0;
+  CommentEnd:=0;
   if CleanPos>SrcLen then exit;
   if CleanCodePosInFront>CleanPos then
     RaiseException(
@@ -651,6 +655,24 @@ begin
   if ([phpWithoutSemicolon,phpDoNotAddSemicolon]*Attr=[])
   and (Result<>'') and (Result[length(Result)]<>';') then
     Result:=Result+';';
+end;
+
+function TPascalReaderTool.ExtractProcedureHeader(CursorPos: TCodeXYPosition;
+  Attributes: TProcHeadAttributes; var ProcHead: string): boolean;
+var
+  CleanCursorPos: integer;
+  ANode: TCodeTreeNode;
+begin
+  Result:=false;
+  ProcHead:='';
+  BuildTreeAndGetCleanPos(trTillCursor,lsrEnd,CursorPos,CleanCursorPos,
+    [btSetIgnoreErrorPos,btCursorPosOutAllowed]);
+  ANode:=FindDeepestNodeAtPos(CleanCursorPos,True);
+  while (ANode<>nil) and (ANode.Desc<>ctnProcedure) do
+    ANode:=ANode.Parent;
+  if ANode=nil then exit;
+  ProcHead:=ExtractProcHead(ANode,Attributes);
+  Result:=true;
 end;
 
 function TPascalReaderTool.ExtractClassName(Node: TCodeTreeNode;

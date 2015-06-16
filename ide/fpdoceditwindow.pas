@@ -1578,7 +1578,7 @@ begin
   if Doc=nil then exit;
   InitIDEFileDialog(OpenDialog);
   OpenDialog.Title:=lisChooseAnExampleFile;
-  OpenDialog.Filter:=lisPascalFile+'|*.pas;*.pp;*.p|'+dlgAllFiles+'|'+FileMask;
+  OpenDialog.Filter:=dlgFilterPascalFile+'|*.pas;*.pp;*.p|'+dlgFilterAll+'|'+FileMask;
   OpenDialog.InitialDir:=ExtractFilePath(DocFile.Filename);
   if OpenDialog.Execute then begin
     ExampleEdit.Text := ExtractRelativepath(

@@ -30,7 +30,7 @@
     <License Value="LGPL
 "/>
     <Version Minor="5"/>
-    <Files Count="37">
+    <Files Count="39">
       <Item1>
         <Filename Value="printersdlgs.pp"/>
         <HasRegisterProc Value="True"/>
@@ -191,7 +191,20 @@
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="ppdresolution"/>
       </Item37>
+      <Item38>
+        <Filename Value="cocoa\cocoaprintcanvas.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="cocoaprintcanvas"/>
+      </Item38>
+      <Item39>
+        <Filename Value="printer4lazstrconst.pas"/>
+        <UnitName Value="printer4lazstrconst"/>
+      </Item39>
     </Files>
+    <i18n>
+      <EnableI18N Value="True"/>
+      <OutDir Value="languages"/>
+    </i18n>
     <RequiredPkgs Count="1">
       <Item1>
         <PackageName Value="cairocanvas_pkg"/>

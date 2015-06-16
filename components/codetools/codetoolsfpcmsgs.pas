@@ -127,8 +127,8 @@ type
 
 type
   TFPCMsgFileToEncoding = record
-    Filename: PChar;
-    Encoding: PChar;
+    Filename: String;
+    Encoding: String;
   end;
 const
   FPCMsgFileToEncoding: array[1..20] of TFPCMsgFileToEncoding = (
@@ -251,16 +251,16 @@ begin
     while MaskPos^ in ['0'..'9','A'..'Z','a'..'z','_'] do inc(MaskPos);
     // get next pattern in mask
     MaskStartPos:=MaskPos;
-    while (MaskPos^<>#0) and (MaskPos^<>'$') do inc(MaskPos);
-    if MaskPos^=#0 then begin
+    if MaskStartPos^=#0 then begin
       // variable at end of mask
       Ranges.Add(TxtPos-BaseTxtPos,length(Txt)+1);
       exit;
     end;
+    while (MaskPos^<>#0) and (MaskPos^<>'$') do inc(MaskPos);
     // search pattern in txt
     TxtEndPos:=FindEndOfNextMatch(MaskStartPos,MaskPos,TxtPos);
     if TxtEndPos=nil then exit;
-    Ranges.Add(TxtPos-BaseTxtPos,TxtEndPos-BaseTxtPos);
+    Ranges.Add(TxtPos-BaseTxtPos,TxtEndPos-BaseTxtPos-(MaskPos-MaskStartPos));
     TxtPos:=TxtEndPos;
   end;
 end;
@@ -269,7 +269,7 @@ function GetDefaultFPCErrorMsgFileEncoding(Filename: string): string;
 var
   i: Integer;
 begin
-  Filename:=ExtractFileNameOnly(Filename);
+  Filename:=ExtractFileName(Filename);
   for i:=low(FPCMsgFileToEncoding) to high(FPCMsgFileToEncoding) do
     if FPCMsgFileToEncoding[i].Filename=Filename then
       exit(FPCMsgFileToEncoding[i].Encoding);
@@ -667,18 +667,16 @@ begin
         Item.Index:=FItems.Count;
         FItems.Add(Item);
         fSortedForID.Add(Item);
-        case Item.ID of
-        1012: fSpecialItems[fmisiFatal]:=Item;
-        1013: fSpecialItems[fmisiError]:=Item;
-        1014: fSpecialItems[fmisiWarning]:=Item;
-        1015: fSpecialItems[fmisiNote]:=Item;
-        1016: fSpecialItems[fmisiHint]:=Item;
-        end;
       end;
     end;
     inc(Line);
   end;
   CreateArray;
+  fSpecialItems[fmisiFatal]:=FindWithID(1012);
+  fSpecialItems[fmisiError]:=FindWithID(1013);
+  fSpecialItems[fmisiWarning]:=FindWithID(1014);
+  fSpecialItems[fmisiNote]:=FindWithID(1015);
+  fSpecialItems[fmisiHint]:=FindWithID(1016);
 end;
 
 procedure TFPCMsgFile.LoadFromText(s: string);
@@ -841,7 +839,7 @@ end;
 procedure TFPCMsgRanges.Clear(FreeMemory: boolean);
 begin
   FCount:=0;
-  if not FreeMemory then begin
+  if FreeMemory then begin
     ReAllocMem(Ranges,0);
     FCapacity:=0;
   end;

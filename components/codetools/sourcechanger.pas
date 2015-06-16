@@ -43,7 +43,7 @@ interface
 
 uses
   Classes, SysUtils, FileProcs, CodeToolsStrConsts, CodeCache, BasicCodeTools,
-  typinfo, LinkScanner, AVL_Tree, CodeBeautifier, KeywordFuncLists;
+  typinfo, LinkScanner, AVL_Tree, KeywordFuncLists;
   
 type
   // Insert policy types for class parts (properties, variables, method defs)
@@ -131,7 +131,7 @@ type
     procedure SetTabWidth(AValue: integer);
     procedure SetUseTabs(AValue: boolean);
     procedure StartComment(p: integer);
-    function EndComment(CommentStart: char; p: integer): boolean;
+    function EndComment(CommentStart: char; {%H-}p: integer): boolean;
   public
     LineLength: integer;
     LineEnd: string;
@@ -1380,6 +1380,28 @@ begin
           if WordIsKeyWord.DoItCaseInsensitive(Src,AtomStart,CurPos-AtomStart)
           then
             CurAtomType:=atKeyword;
+        end;
+      '&': //identifier prefixed with '&' or octal number
+        begin
+          inc(CurPos);
+          if CurPos<=SrcLen then
+          case Src[CurPos] of
+            'a'..'z','A'..'Z','_'://identifier prefixed with '&'
+            begin
+              CurAtomType:=atIdentifier;
+              repeat
+                inc(CurPos);
+              until (CurPos>SrcLen) or (not IsIdentChar[Src[CurPos]]);
+            end;
+            '0'..'7'://octal number
+            begin
+              CurAtomType:=atNumber;
+              repeat
+                inc(CurPos);
+              until (CurPos>SrcLen) or (not IsOctNumberChar[Src[CurPos]]);
+            end;
+          end else
+            CurAtomType:=atNone;
         end;
       #128..#255: // UTF8
         begin

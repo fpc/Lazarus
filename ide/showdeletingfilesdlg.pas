@@ -34,7 +34,7 @@ procedure TShowDeletingFilesDialog.FormCreate(Sender: TObject);
 begin
   Caption:=lisDeleteAllTheseFiles;
   FileList.Clear;
-  UnCheckAll.Caption := 'Check/uncheck all';
+  UnCheckAll.Caption := lisCheckUncheckAll;
 end;
 
 procedure TShowDeletingFilesDialog.UnCheckAllChange(Sender: TObject);

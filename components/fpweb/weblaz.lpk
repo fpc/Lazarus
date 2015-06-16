@@ -2,6 +2,7 @@
 <CONFIG>
   <Package Version="4">
     <Name Value="weblaz"/>
+    <Type Value="RunAndDesignTime"/>
     <Author Value="Michael Van Canneyt"/>
     <CompilerOptions>
       <Version Value="11"/>
@@ -15,7 +16,6 @@
       </Parsing>
       <Other>
         <CustomOptions Value="$(IDEBuildOptions)"/>
-        <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
     <Description Value="Web functionality for Lazarus"/>
@@ -24,8 +24,8 @@
     <Files Count="61">
       <Item1>
         <Filename Value="custcgi.pp"/>
-        <AddToUsesPkgSection Value="False"/>
         <Type Value="Virtual Unit"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="custcgi"/>
       </Item1>
       <Item2>
@@ -40,8 +40,8 @@
       </Item3>
       <Item4>
         <Filename Value="fpapache.pp"/>
-        <AddToUsesPkgSection Value="False"/>
         <Type Value="Virtual Unit"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="fpapache"/>
       </Item4>
       <Item5>
@@ -275,29 +275,28 @@
         <UnitName Value="WebLazIDEIntf"/>
       </Item57>
       <Item58>
-        <Filename Value="websession.pp"/>
-        <Type Value="Virtual Unit"/>
-        <UnitName Value="websession"/>
-      </Item58>
-      <Item59>
         <Filename Value="webutil.pp"/>
         <Type Value="Virtual Unit"/>
         <UnitName Value="webutil"/>
-      </Item59>
-      <Item60>
+      </Item58>
+      <Item59>
         <Filename Value="frmrpcmoduleoptions.lfm"/>
         <Type Value="LFM"/>
-      </Item60>
-      <Item61>
+      </Item59>
+      <Item60>
         <Filename Value="frmrpcmoduleoptions.pp"/>
         <UnitName Value="frmrpcmoduleoptions"/>
+      </Item60>
+      <Item61>
+        <Filename Value="iniwebsession.pp"/>
+        <Type Value="Virtual Unit"/>
+        <UnitName Value="iniwebsession"/>
       </Item61>
     </Files>
     <i18n>
       <EnableI18N Value="True"/>
       <OutDir Value="languages"/>
     </i18n>
-    <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="2">
       <Item1>
         <PackageName Value="SQLDBLaz"/>

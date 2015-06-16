@@ -50,9 +50,16 @@ function CoordToCanvasY(ACoord: Double; ADestY: Integer; AMulY: Double): Integer
 function SeparateString(AString: string; ASeparator: char): T10Strings;
 function Make3DPoint(AX, AY, AZ: Double): T3DPoint;
 // Mathematical routines
+function LineEquation_GetPointAndTangentForLength(AStart, AEnd: T3DPoint; ADistance: Double; out AX, AY, ATangentAngle: Double): Boolean;
 procedure EllipticalArcToBezier(Xc, Yc, Rx, Ry, startAngle, endAngle: Double; var P1, P2, P3, P4: T3DPoint);
 procedure CircularArcToBezier(Xc, Yc, R, startAngle, endAngle: Double; var P1, P2, P3, P4: T3DPoint);
 procedure AddBezierToPoints(P1, P2, P3, P4: T3DPoint; var Points: TPointsArray);
+function BezierEquation_GetPoint(t: Double; P1, P2, P3, P4: T3DPoint): T3DPoint;
+function BezierEquation_GetTangent(t: Double; P1, P2, P3, P4: T3DPoint): Double;
+function BezierEquation_GetLength(P1, P2, P3, P4: T3DPoint; AMaxT: Double = 1; ASteps: Integer = 30): Double;
+function BezierEquation_GetT_ForLength(P1, P2, P3, P4: T3DPoint; ALength: Double; ASteps: Integer = 30): Double;
+function BezierEquation_GetPointAndTangentForLength(P1, P2, P3, P4: T3DPoint;
+  ADistance: Double; out AX, AY, ATangentAngle: Double; ASteps: Integer = 30): Boolean;
 procedure ConvertPathToPoints(APath: TPath; ADestX, ADestY: Integer; AMulX, AMulY: Double; var Points: TPointsArray);
 function Rotate2DPoint(P, RotCenter: TPoint; alpha:double): TPoint;
 function Rotate3DPointInXY(P, RotCenter: T3DPoint; alpha:double): T3DPoint;
@@ -223,6 +230,18 @@ begin
   P3.Y := P4.Y - alfa * Ry * cos(endAngle);
 end;
 
+// (x2,y2)=(x1+L⋅cos(a),y1+L⋅sin(a)).
+// ATangentAngle - in Radians
+function LineEquation_GetPointAndTangentForLength(AStart, AEnd: T3DPoint; ADistance: Double; out AX, AY, ATangentAngle: Double): Boolean;
+var
+  lLineAngle: Double; // to X axis
+begin
+  Result := False;
+  lLineAngle := arctan((AEnd.Y-AStart.Y) / (AEnd.X - AStart.X));
+  AX := AStart.X + ADistance * Cos(lLineAngle);
+  AY := AStart.Y + ADistance * Sin(lLineAngle);
+end;
+
 procedure CircularArcToBezier(Xc, Yc, R, startAngle, endAngle: Double; var P1,
   P2, P3, P4: T3DPoint);
 begin
@@ -233,13 +252,16 @@ end;
   to the end of the provided Points output variables }
 procedure AddBezierToPoints(P1, P2, P3, P4: T3DPoint; var Points: TPointsArray);
 var
-  CurveLength, k, CurX, CurY, LastPoint: Integer;
+  CurveLength, k, LastPoint: Integer;
+  CurPoint: T3DPoint;
   t: Double;
 begin
   {$ifdef FPVECTORIAL_BEZIERTOPOINTS_DEBUG}
   Write(Format('[AddBezierToPoints] P1=%f,%f P2=%f,%f P3=%f,%f P4=%f,%f =>', [P1.X, P1.Y, P2.X, P2.Y, P3.X, P3.Y, P4.X, P4.Y]));
   {$endif}
 
+  // there is no problem here using a number larger than the real one
+  // so to be fast, just connect the 4 points...
   CurveLength :=
     Round(sqrt(sqr(P2.X - P1.X) + sqr(P2.Y - P1.Y))) +
     Round(sqrt(sqr(P3.X - P2.X) + sqr(P3.Y - P2.Y))) +
@@ -250,17 +272,108 @@ begin
   for k := 1 to CurveLength do
   begin
     t := k / CurveLength;
-    CurX := Round(sqr(1 - t) * (1 - t) * P1.X + 3 * t * sqr(1 - t) * P2.X + 3 * t * t * (1 - t) * P3.X + t * t * t * P4.X);
-    CurY := Round(sqr(1 - t) * (1 - t) * P1.Y + 3 * t * sqr(1 - t) * P2.Y + 3 * t * t * (1 - t) * P3.Y + t * t * t * P4.Y);
-    Points[LastPoint+k].X := CurX;
-    Points[LastPoint+k].Y := CurY;
+    CurPoint := BezierEquation_GetPoint(t, P1, P2, P3, P4);
+    Points[LastPoint+k].X := Round(CurPoint.X);
+    Points[LastPoint+k].Y := Round(CurPoint.Y);
     {$ifdef FPVECTORIAL_BEZIERTOPOINTS_DEBUG}
-    Write(Format(' P=%d,%d', [CurX, CurY]));
+    Write(Format(' P=%d,%d', [CurPoint.X, CurPoint.Y]));
     {$endif}
   end;
   {$ifdef FPVECTORIAL_BEZIERTOPOINTS_DEBUG}
   WriteLn(Format(' CurveLength=%d', [CurveLength]));
   {$endif}
+end;
+
+// B(t) = (1-t)³ [Prev.X, Prev.Y] + 3 (1-t)² t [X2, Y2] + 3 (1-t) t² [X3, Y3] + t³ [X,Y], 0<=t<=1
+function BezierEquation_GetPoint(t: Double; P1, P2, P3, P4: T3DPoint): T3DPoint;
+begin
+  Result.X := sqr(1 - t) * (1 - t) * P1.X + 3 * t * sqr(1 - t) * P2.X + 3 * t * t * (1 - t) * P3.X + t * t * t * P4.X;
+  Result.Y := sqr(1 - t) * (1 - t) * P1.Y + 3 * t * sqr(1 - t) * P2.Y + 3 * t * t * (1 - t) * P3.Y + t * t * t * P4.Y;
+end;
+
+// B'(t) = 3 (1-t)² [X2-Prev.X, Y2-Prev.Y] + 6 (1-t) t [X3-X2, Y3-Y2] + 3 t² [X-X3,Y-Y3]
+function BezierEquation_GetTangent(t: Double; P1, P2, P3, P4: T3DPoint): Double;
+var
+  lDerivateVector: T3DPoint;
+begin
+  lDerivateVector.X := 3 * sqr(1 - t) * (P2.X-P1.X) + 6 * t * (1 - t) * (P3.X-P2.X) + 3 * t * t * (P4.X - P3.X);
+  lDerivateVector.Y := 3 * sqr(1 - t) * (P2.Y-P1.Y) + 6 * t * (1 - t) * (P3.Y-P2.Y) + 3 * t * t * (P4.Y - P3.Y);
+  Result := arctan(lDerivateVector.Y / lDerivateVector.X)
+end;
+
+// See http://www.lemoda.net/maths/bezier-length/index.html
+// See http://steve.hollasch.net/cgindex/curves/cbezarclen.html for a more complex method
+function BezierEquation_GetLength(P1, P2, P3, P4: T3DPoint; AMaxT: Double; ASteps: Integer): Double;
+var
+  lCurT, x_diff, y_diff: Double;
+  i, lCurStep: Integer;
+  lCurPoint, lPrevPoint: T3DPoint;
+begin
+  Result := 0.0;
+
+  for i := 0 to ASteps do
+  begin
+    lCurT := i / ASteps;
+    if lCurT > AMaxT then Exit;
+    lCurPoint := BezierEquation_GetPoint(lCurT, P1, P2, P3, P4);
+    if i = 0 then
+    begin
+      lPrevPoint := lCurPoint;
+      Continue;
+    end;
+
+    x_diff := lCurPoint.x - lPrevPoint.x;
+    y_diff := lCurPoint.y - lPrevPoint.y;
+    Result := Result + sqrt(sqr(x_diff) + sqr(y_diff));
+    lPrevPoint := lCurPoint;
+  end;
+end;
+
+function BezierEquation_GetT_ForLength(P1, P2, P3, P4: T3DPoint; ALength: Double; ASteps: Integer): Double;
+var
+  i: Integer;
+  LeftT, RightT: Double;
+
+  function IsLeftBetter(): Boolean;
+  var
+    lLeftLen, lRightLen: Double;
+  begin
+    lLeftLen := BezierEquation_GetLength(P1, P2, P3, P4, LeftT, ASteps);
+    lRightLen := BezierEquation_GetLength(P1, P2, P3, P4, RightT, ASteps);
+    Result := Abs(lLeftLen - ALength) < Abs(lRightLen - ALength);
+  end;
+
+begin
+  LeftT := 0;
+  RightT := 1;
+
+  for i := 0 to ASteps do
+  begin
+    if IsLeftBetter() then
+      RightT := (RightT + LeftT) / 2
+    else
+      LeftT := (RightT + LeftT) / 2;
+  end;
+
+  if IsLeftBetter() then
+    Result := RightT
+  else
+    Result := LeftT;
+end;
+
+function BezierEquation_GetPointAndTangentForLength(P1, P2, P3, P4: T3DPoint;
+  ADistance: Double; out AX, AY, ATangentAngle: Double; ASteps: Integer): Boolean;
+var
+  lCurT: Double;
+  lCurPoint: T3DPoint;
+begin
+  Result := False;
+  lCurT := BezierEquation_GetT_ForLength(P1, P2, P3, P4, ADistance, ASteps);
+  lCurPoint := BezierEquation_GetPoint(lCurT, P1, P2, P3, P4);
+  AX := lCurPoint.X;
+  AY := lCurPoint.Y;
+  ATangentAngle := BezierEquation_GetTangent(lCurT, P1, P2, P3, P4);
+  Result := True;
 end;
 
 procedure ConvertPathToPoints(APath: TPath; ADestX, ADestY: Integer; AMulX, AMulY: Double; var Points: TPointsArray);

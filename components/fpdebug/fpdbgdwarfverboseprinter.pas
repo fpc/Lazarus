@@ -600,7 +600,7 @@ p := AData;
         DW_AT_type: begin
           DebugLn(FPDBG_DWARF_VERBOSE, ['-->']);
           try
-            p := FCU.Owner.Sections[dsInfo].RawData + Value - FCU.Owner.ImageBase - FCU.Owner.Sections[dsInfo].VirtualAddress;
+            p := FCU.DebugFile^.Sections[dsInfo].RawData + Value - FCU.Owner.ImageBase - FCU.DebugFile^.Sections[dsInfo].VirtualAddress;
             InternalDecode(p, p, Indent + '  ');
           except
             on E: Exception do DebugLn(FPDBG_DWARF_WARNINGS, [AIndent, '  ', E.Message]);
@@ -642,7 +642,7 @@ begin
     DebugLn(FPDBG_DWARF_WARNINGS, ['No lineinfo']);
     Exit;
   end;
-  InternalDecode(AData, FCU.Owner.Sections[dsInfo].RawData + FCU.Owner.Sections[dsInfo].Size);
+  InternalDecode(AData, FCU.DebugFile^.Sections[dsInfo].RawData + FCU.DebugFile^.Sections[dsInfo].Size);
 end;
 
 procedure TDwarfStatementDecoder.InternalDecode(AData: Pointer; AMaxData: Pointer; const AIndent: String);

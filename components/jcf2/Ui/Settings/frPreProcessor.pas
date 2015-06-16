@@ -31,8 +31,7 @@ interface
 { preprocessor symbols }
 
 uses
-  Classes, Controls, Forms, StdCtrls,
-  IDEOptionsIntf;
+  Classes, StdCtrls, IDEOptionsIntf;
 
 type
 
@@ -61,7 +60,7 @@ implementation
 {$R *.lfm}
 
 uses 
-  JcfHelp, JcfSettings, jcfuiconsts;
+  JcfSettings, jcfuiconsts;
 
 constructor TfPreProcessor.Create(AOwner: TComponent);
 begin

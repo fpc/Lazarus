@@ -42,6 +42,7 @@ type
     ICAddSemicolonCheckBox: TCheckBox;
     ICAddDividerBevel: TDividerBevel;
     ICReplaceCheckBox: TCheckBox;
+    ICJumpToErrorCheckBox: TCheckBox;
     ICShowHelpCheckBox: TCheckBox;
     ICSortDividerBevel: TDividerBevel;
     ICSortForHistoryCheckBox: TCheckBox;
@@ -88,6 +89,8 @@ begin
   ICMiscDividerBevel.Caption:=dlgEnvMisc;
   ICReplaceCheckBox.Caption:=lisReplaceWholeIdentifier;
   ICReplaceCheckBox.Hint:=lisEnableReplaceWholeIdentifierDisableReplacePrefix;
+  ICJumpToErrorCheckBox.Caption:=lisJumpToError;
+  ICJumpToErrorCheckBox.Hint:=lisJumpToErrorAtIdentifierCompletion;
 end;
 
 procedure TCodetoolsIndentifierCompletionOptionsFrame.ReadSettings(
@@ -101,6 +104,7 @@ begin
     ICAutoStartAfterPointCheckBox.Checked := IdentComplAutoStartAfterPoint;
     ICAutoAddParameterBracketsCheckBox.Checked:=IdentComplAddParameterBrackets;
     ICReplaceCheckBox.Checked:=IdentComplReplaceIdentifier;
+    ICJumpToErrorCheckBox.Checked:=IdentComplJumpToError;
     ICShowHelpCheckBox.Checked:=IdentComplShowHelp;
     ICSortForHistoryCheckBox.Checked:=IdentComplSortForHistory;
     ICSortForScopeCheckBox.Checked:=IdentComplSortForScope;
@@ -118,6 +122,7 @@ begin
     IdentComplAutoStartAfterPoint := ICAutoStartAfterPointCheckBox.Checked;
     IdentComplAddParameterBrackets:=ICAutoAddParameterBracketsCheckBox.Checked;
     IdentComplReplaceIdentifier:=ICReplaceCheckBox.Checked;
+    IdentComplJumpToError:=ICJumpToErrorCheckBox.Checked;
     IdentComplShowHelp:=ICShowHelpCheckBox.Checked;
     IdentComplSortForHistory:=ICSortForHistoryCheckBox.Checked;
     IdentComplSortForScope:=ICSortForScopeCheckBox.Checked;

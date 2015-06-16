@@ -86,7 +86,10 @@ uses
   CodeCache, CustomCodeTool, PascalParserTool, MethodJumpTool,
   FindDeclarationTool, KeywordFuncLists, CodeToolsStructs, BasicCodeTools,
   LinkScanner, SourceChanger, CodeGraph, AVL_Tree, contnrs,
-  CodeCompletionTemplater, StdCodeTools;
+  {$IFDEF EnableCodeCompleteTemplates}
+  CodeCompletionTemplater,
+  {$ENDIF}
+  StdCodeTools;
 
 type
   TNewClassPart = (ncpPrivateProcs, ncpPrivateVars,
@@ -180,7 +183,7 @@ type
       Visibility: TPascalClassSection): boolean;
     procedure FindInsertPositionForForwardProc(
            SourceChangeCache: TSourceChangeCache;
-           ProcNode: TCodeTreeNode; var Indent, InsertPos: integer);
+           ProcNode: TCodeTreeNode; out Indent, InsertPos: integer);
     procedure FindInsertPositionForProcInterface(var Indent, InsertPos: integer;
            SourceChangeCache: TSourceChangeCache);
     function CheckLocalVarAssignmentSyntax(CleanCursorPos: integer;
@@ -479,12 +482,12 @@ var
   TrimmedIdentifier: string;
 begin
   if not (fdfTopLvlResolving in Params.Flags) then exit(ifrProceedSearch);
-  with Params do begin
-    case NewNode.Desc of
+  with FoundContext do begin
+    case Node.Desc of
     ctnTypeDefinition,ctnVarDefinition,ctnConstDefinition,ctnGenericType:
-      TrimmedIdentifier:=NewCodeTool.ExtractDefinitionName(NewNode);
+      TrimmedIdentifier:=Tool.ExtractDefinitionName(Node);
     ctnProperty:
-      TrimmedIdentifier:=NewCodeTool.ExtractPropName(NewNode,false);
+      TrimmedIdentifier:=Tool.ExtractPropName(Node,false);
     else
       TrimmedIdentifier:=GetIdentifier(Params.Identifier);
     end;
@@ -673,7 +676,7 @@ begin
 end;
 
 procedure TCodeCompletionCodeTool.FindInsertPositionForForwardProc(
-  SourceChangeCache: TSourceChangeCache; ProcNode: TCodeTreeNode; var Indent,
+  SourceChangeCache: TSourceChangeCache; ProcNode: TCodeTreeNode; out Indent,
   InsertPos: integer);
 var
   Beauty: TBeautifyCodeOptions;
@@ -701,6 +704,8 @@ var
   EmptyLinesInFront: Integer;
   EmptyLinesBehind: Integer;
 begin
+  Indent:=0;
+  InsertPos:=0;
   Beauty:=SourceChangeCache.BeautifyCodeOptions;
   IsInInterface:=ProcNode.HasParentOfType(ctnInterface);
   if IsInInterface then begin
@@ -1303,7 +1308,7 @@ begin
     Indent:=Beauty.GetLineIndent(Src,InFrontOfNode.StartPos);
     InsertPos:=FindLineEndOrCodeInFrontOfPosition(InFrontOfNode.StartPos);
   end else begin
-    Node:=FindMainUsesSection(false);
+    Node:=FindMainUsesNode(false);
     if Node<>nil then begin
       // insert behind uses section
       Indent:=Beauty.GetLineIndent(Src,Node.StartPos);
@@ -1931,7 +1936,7 @@ var
     DebugLn('  CompleteLocalIdentifierByParameter.AddProcedure: jumping to new method body...');
     {$ENDIF}
     // jump to new method body
-    if not JumpToMethod(AMethodDefinition,AMethodAttr,NewPos,NewTopLine,false)
+    if not JumpToMethod(AMethodDefinition,AMethodAttr,NewPos,NewTopLine)
     then
       RaiseException('CompleteLocalIdentifierByParameter.AddProcedure JumpToMethod failed');
   end;
@@ -1959,6 +1964,7 @@ begin
   then
     exit;
   IsEventAssignment:=true;
+  if OldTopLine=0 then ;
 
   ProcNode:=nil;
   AClassNode:=nil;
@@ -2044,7 +2050,7 @@ begin
   DebugLn('  CompleteEventAssignment: jumping to new method body...');
   {$ENDIF}
   // jump to new method body
-  if not JumpToMethod(AMethodDefinition,AMethodAttr,NewPos,NewTopLine,false)
+  if not JumpToMethod(AMethodDefinition,AMethodAttr,NewPos,NewTopLine)
   then
     RaiseException('CompleteEventAssignment Internal Error 2');
 
@@ -2152,7 +2158,7 @@ function TCodeCompletionCodeTool.CompleteLocalIdentifierByParameter(
     DebugLn('  CompleteLocalIdentifierByParameter.AddMethod: jumping to new method body...');
     {$ENDIF}
     // jump to new method body
-    if not JumpToMethod(AMethodDefinition,AMethodAttr,NewPos,NewTopLine,false)
+    if not JumpToMethod(AMethodDefinition,AMethodAttr,NewPos,NewTopLine)
     then
       RaiseException('CompleteLocalIdentifierByParameter.AddMethod JumpToMethod failed');
   end;
@@ -2178,7 +2184,7 @@ function TCodeCompletionCodeTool.CompleteLocalIdentifierByParameter(
     DebugLn('  CompleteLocalIdentifierByParameter.AddProcedure: jumping to new method body...');
     {$ENDIF}
     // jump to new method body
-    if not JumpToMethod(AMethodDefinition,AMethodAttr,NewPos,NewTopLine,false)
+    if not JumpToMethod(AMethodDefinition,AMethodAttr,NewPos,NewTopLine)
     then
       RaiseException('CompleteLocalIdentifierByParameter.AddProcedure JumpToMethod failed');
   end;
@@ -2705,7 +2711,7 @@ begin
       //DebugLn(['TCodeCompletionCodeTool.CreateParamListFromStatement Param=',copy(Src,ExprStartPos,ExprEndPos-ExprStartPos)]);
       // get type
       ParamExprType:=ExprList.Items[i];
-      ParamType:=FindExprTypeAsString(ParamExprType,ExprStartPos,Params);
+      ParamType:=FindExprTypeAsString(ParamExprType,ExprStartPos);
       // create a nice parameter name
       ParamName:=CreateParamName(ExprStartPos,ExprEndPos,ParamType);
       //DebugLn(['TCodeCompletionCodeTool.CreateParamListFromStatement ',i,' ',ParamName,':',ParamType]);
@@ -2942,6 +2948,7 @@ begin
   Result:=false;
   if not CheckProcSyntax(BeginNode,ProcNameAtom,BracketOpenPos,BracketClosePos)
   then exit;
+  if OldTopLine=0 then ;
 
   CheckWholeUnitParsed(CursorNode,BeginNode);
 
@@ -3763,7 +3770,7 @@ var
         if (NodeExt.Node.Desc=ctnProcedure) and IsPCharInSrc(Identifier) then
         begin
           // read atom behind identifier name
-          NewPos:=PtrInt(PtrUInt(Identifier))-PtrInt(PtrUInt(@Src[1]))+1;
+          NewPos:=PtrInt({%H-}PtrUInt(Identifier))-PtrInt({%H-}PtrUInt(@Src[1]))+1;
           inc(NewPos,GetIdentLen(Identifier));
           ReadRawNextPascalAtom(Src,NewPos,AtomStart,Scanner.NestedComments,true);
           if (AtomStart<=SrcLen) and (Src[AtomStart]<>'(') then begin
@@ -4488,7 +4495,7 @@ function TCodeCompletionCodeTool.FixForwardDefinitions(
       Result:=true;
   end;
 
-  function CreateTypeSectionForCircle(CycleOfGraphNodes: TFPList;
+  function CreateTypeSectionForCycle(CycleOfGraphNodes: TFPList;
     var Definitions: TAVLTree; var Graph: TCodeGraph): boolean;
   // CycleOfGraphNodes is a list of TCodeGraphNode that should be moved
   // to a new type section
@@ -4593,10 +4600,10 @@ function TCodeCompletionCodeTool.FixForwardDefinitions(
     Result:=UpdateGraph(Definitions,Graph,true);
   end;
 
-  function FixCircle(var Definitions: TAVLTree;
+  function FixCycle(var Definitions: TAVLTree;
     var Graph: TCodeGraph; CircleNode: TCodeGraphNode): boolean;
   var
-    CircleOfGraphNodes: TFPList; // list of TCodeGraphNode
+    CycleOfGraphNodes: TFPList; // list of TCodeGraphNode
 
     procedure RaiseCanNotFixCircle(const Msg: string);
     var
@@ -4606,8 +4613,8 @@ function TCodeCompletionCodeTool.FixForwardDefinitions(
     begin
       DebugLn(['RaiseCanNotFixCircle Msg="',Msg,'"']);
       s:='Can not auto fix a circle in definitions: '+Msg;
-      for i:=0 to CircleOfGraphNodes.Count-1 do begin
-        GraphNode:=TCodeGraphNode(CircleOfGraphNodes[i]);
+      for i:=0 to CycleOfGraphNodes.Count-1 do begin
+        GraphNode:=TCodeGraphNode(CycleOfGraphNodes[i]);
         DebugLn(['  ',i,': ',GetRedefinitionNodeText(GraphNode.Node)]);
       end;
       raise Exception.Create(s);
@@ -4621,37 +4628,37 @@ function TCodeCompletionCodeTool.FixForwardDefinitions(
     NeedsMoving: Boolean;
   begin
     Result:=false;
-    CircleOfGraphNodes:=nil;
+    CycleOfGraphNodes:=nil;
     try
-      // get all nodes of this CircleOfGraphNodes
-      Graph.GetMaximumCircle(CircleNode,CircleOfGraphNodes);
+      // get all nodes of this CycleOfGraphNodes
+      Graph.GetMaximumCircle(CircleNode,CycleOfGraphNodes);
       // check if all nodes are types
-      for i:=0 to CircleOfGraphNodes.Count-1 do begin
-        GraphNode:=TCodeGraphNode(CircleOfGraphNodes[i]);
+      for i:=0 to CycleOfGraphNodes.Count-1 do begin
+        GraphNode:=TCodeGraphNode(CycleOfGraphNodes[i]);
         if not (GraphNode.Node.Desc in [ctnTypeDefinition,ctnGenericType])
         then begin
           RaiseCanNotFixCircle('Only types can build circles, not '+GraphNode.Node.DescAsString);
         end;
       end;
       NeedsMoving:=false;
-      // check if the whole type CircleOfGraphNodes has one parent
-      ParentNode:=TCodeGraphNode(CircleOfGraphNodes[0]).Node.Parent;
-      for i:=1 to CircleOfGraphNodes.Count-1 do begin
-        GraphNode:=TCodeGraphNode(CircleOfGraphNodes[i]);
+      // check if the whole type CycleOfGraphNodes has one parent
+      ParentNode:=TCodeGraphNode(CycleOfGraphNodes[0]).Node.Parent;
+      for i:=1 to CycleOfGraphNodes.Count-1 do begin
+        GraphNode:=TCodeGraphNode(CycleOfGraphNodes[i]);
         if GraphNode.Node.Parent<>ParentNode then begin
-          DebugLn(['FixCircle circle is not yet in one type section -> needs moving']);
+          DebugLn(['FixCycle cycle is not yet in one type section -> needs moving']);
           NeedsMoving:=true;
           break;
         end;
       end;
-      // check if the parent only contains the CircleOfGraphNodes nodes
+      // check if the parent only contains the CycleOfGraphNodes nodes
       if not NeedsMoving then begin
         Node:=ParentNode.FirstChild;
         while Node<>nil do begin
-          i:=CircleOfGraphNodes.Count-1;
-          while (i>=0) and (TCodeGraphNode(CircleOfGraphNodes[i]).Node<>Node) do dec(i);
+          i:=CycleOfGraphNodes.Count-1;
+          while (i>=0) and (TCodeGraphNode(CycleOfGraphNodes[i]).Node<>Node) do dec(i);
           if i<0 then begin
-            DebugLn(['FixCircle circle has not yet its own type section -> needs moving']);
+            DebugLn(['FixCycle cycle has not yet its own type section -> needs moving']);
             NeedsMoving:=true;
             break;
           end;
@@ -4660,26 +4667,26 @@ function TCodeCompletionCodeTool.FixForwardDefinitions(
       end;
       
       if NeedsMoving then begin
-        DebugLn(['TCodeCompletionCodeTool.FixForwardDefinitions.FixCircle moving types into one type section']);
-        Result:=CreateTypeSectionForCircle(CircleOfGraphNodes,Definitions,Graph);
+        DebugLn(['TCodeCompletionCodeTool.FixForwardDefinitions.FixCycle moving types into one type section']);
+        Result:=CreateTypeSectionForCycle(CycleOfGraphNodes,Definitions,Graph);
         exit;
       end else begin
         // remove definitions nodes and use the type section instead
-        DebugLn(['FixCircle already ok']);
-        Graph.CombineNodes(CircleOfGraphNodes,Graph.GetGraphNode(ParentNode,true));
+        DebugLn(['FixCycle already ok']);
+        Graph.CombineNodes(CycleOfGraphNodes,Graph.GetGraphNode(ParentNode,true));
       end;
 
     finally
-      CircleOfGraphNodes.Free;
+      CycleOfGraphNodes.Free;
     end;
     Result:=true;
   end;
   
-  function CheckCircles(var Definitions: TAVLTree;
+  function BreakCycles(var Definitions: TAVLTree;
     var Graph: TCodeGraph): boolean;
   var
     ListOfGraphNodes: TFPList;
-    CircleEdge: TCodeGraphEdge;
+    CycleEdge: TCodeGraphEdge;
   begin
     Result:=false;
     ListOfGraphNodes:=nil;
@@ -4687,13 +4694,13 @@ function TCodeCompletionCodeTool.FixForwardDefinitions(
       Graph.DeleteSelfCircles;
       repeat
         //WriteCodeGraphDebugReport(Graph);
-        CircleEdge:=Graph.GetTopologicalSortedList(ListOfGraphNodes,true,false,false);
-        if CircleEdge=nil then break;
+        CycleEdge:=Graph.GetTopologicalSortedList(ListOfGraphNodes,true,false,false);
+        if CycleEdge=nil then break;
         DebugLn(['FixForwardDefinitions.CheckCircles Circle found containing ',
-          GetRedefinitionNodeText(CircleEdge.FromNode.Node),
+          GetRedefinitionNodeText(CycleEdge.FromNode.Node),
           ' and ',
-          GetRedefinitionNodeText(CircleEdge.ToNode.Node)]);
-        if not FixCircle(Definitions,Graph,CircleEdge.FromNode) then exit;
+          GetRedefinitionNodeText(CycleEdge.ToNode.Node)]);
+        if not FixCycle(Definitions,Graph,CycleEdge.FromNode) then exit;
       until false;
     finally
       ListOfGraphNodes.Free;
@@ -5119,6 +5126,8 @@ function TCodeCompletionCodeTool.FixForwardDefinitions(
       end;
       
       Result:=MoveNodes(NodeMoveEdges);
+      // ToDo: maybe need UpdateGraph?
+      if Definitions<>nil then ;
     finally
       DisposeAVLTree(NodeMoveEdges);
       ListOfGraphNodes.Free;
@@ -5151,8 +5160,8 @@ begin
       exit(true);
     end;
     SourceChangeCache.MainScanner:=Scanner;
-    // fix circles
-    if not CheckCircles(Definitions,Graph) then begin
+    // fix cycles
+    if not BreakCycles(Definitions,Graph) then begin
       DebugLn(['TCodeCompletionCodeTool.FixForwardDefinitions CheckCircles failed']);
       exit;
     end;
@@ -5348,7 +5357,7 @@ begin
   Result:=false;
   DefinitionsTreeOfCodeTreeNodeExt:=nil;
   Graph:=nil;
-  if not GatherUnitDefinitions(DefinitionsTreeOfCodeTreeNodeExt,false,true) then
+  if not GatherUnitDefinitions(DefinitionsTreeOfCodeTreeNodeExt,OnlyInterface,true) then
   begin
     DebugLn(['TCodeCompletionCodeTool.BuildUnitDefinitionGraph GatherUnitDefinitions failed']);
     exit;
@@ -7908,7 +7917,7 @@ begin
   Result:=true;
   if (fNewMainUsesSectionUnits=nil) then exit;
   //DebugLn(['TCodeCompletionCodeTool.InsertAllNewUnitsToMainUsesSection ']);
-  UsesNode:=FindMainUsesSection;
+  UsesNode:=FindMainUsesNode;
 
   // remove units, that are already in the uses section
   CurSourceName:=GetSourceName(false);

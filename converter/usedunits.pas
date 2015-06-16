@@ -61,7 +61,7 @@ type
     fUnitsToFixCase: TStringToStringTree;// Like rename but done for every target.
     fUnitsToComment: TStringList;        // List of units to be commented.
     fMissingUnits: TStringList;          // Units not found in search path.
-    function FindMissingUnits(AUnitUpdater: TStringMapUpdater): boolean;
+    function FindMissingUnits: boolean;
     procedure ToBeRenamedOrRemoved(AOldName, ANewName: string);
     procedure FindReplacement(AUnitUpdater: TStringMapUpdater;
                               AMapToEdit: TStringToStringTree);
@@ -210,7 +210,7 @@ begin
   inherited Destroy;
 end;
 
-function TUsedUnits.FindMissingUnits(AUnitUpdater: TStringMapUpdater): boolean;
+function TUsedUnits.FindMissingUnits: boolean;
 var
   UsesNode: TCodeTreeNode;
   InAtom, UnitNameAtom: TAtomPosition;
@@ -361,7 +361,7 @@ var
     with fCTLink do begin
       ResetMainScanner;
       ParseToUsesSectionEnd;
-      // Calls either FindMainUsesSection or FindImplementationUsesSection
+      // Calls either FindMainUsesNode or FindImplementationUsesNode
       UsesNode:=UsesSectionNode;
       Assert(Assigned(UsesNode),
             'UsesNode should be assigned in AddDelphiAndLCLSections->MoveToDelphi');
@@ -511,7 +511,7 @@ var
 begin
   s:=ExtractFileExt(fOwnerTool.fFilename);
   IsPackage := (s='.dpk') or (s='.lpk');
-  Result:=fCTLink.CodeTool.FindMainUsesSection(IsPackage);
+  Result:=fCTLink.CodeTool.FindMainUsesNode(IsPackage);
 end;
 
 procedure TMainUsedUnits.ParseToUsesSectionEnd;
@@ -539,7 +539,7 @@ end;
 
 function TImplUsedUnits.UsesSectionNode: TCodeTreeNode;
 begin
-  Result:=fCTLink.CodeTool.FindImplementationUsesSection;
+  Result:=fCTLink.CodeTool.FindImplementationUsesNode;
 end;
 
 procedure TImplUsedUnits.ParseToUsesSectionEnd;
@@ -595,8 +595,8 @@ begin
     if fCTLink.Settings.UnitsReplaceMode=rlInteractive then
       MapToEdit:=TStringToStringTree.Create(false);
     fCTLink.CodeTool.BuildTree(lsrEnd);
-    if not (fMainUsedUnits.FindMissingUnits(UnitUpdater) and
-            fImplUsedUnits.FindMissingUnits(UnitUpdater)) then
+    if not (fMainUsedUnits.FindMissingUnits and
+            fImplUsedUnits.FindMissingUnits) then
       exit(mrCancel);
 
     // Find replacements for missing units from settings.
@@ -690,10 +690,10 @@ begin
         CodeTool.BuildTree(lsrInitializationStart);
         if fMainUsedUnits.fUnitsToComment.Count > 0 then
           if not CodeTool.CommentUnitsInUsesSection(fMainUsedUnits.fUnitsToComment,
-            SrcCache, CodeTool.FindMainUsesSection) then exit;
+            SrcCache, CodeTool.FindMainUsesNode) then exit;
         if fImplUsedUnits.fUnitsToComment.Count > 0 then
           if not CodeTool.CommentUnitsInUsesSection(fImplUsedUnits.fUnitsToComment,
-            SrcCache, CodeTool.FindImplementationUsesSection) then exit;
+            SrcCache, CodeTool.FindImplementationUsesNode) then exit;
         if not SrcCache.Apply then exit;
       end;
       // Add more units meant for only LCL.

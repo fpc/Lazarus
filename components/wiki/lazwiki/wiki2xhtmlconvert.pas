@@ -68,6 +68,7 @@ type
     FLinkToBaseDocument: string;
     FMaxH: integer;
     FPageFileExt: string;
+    FUseTemplateIcons: Boolean;
     procedure DoAddLinksToTranslations(Page: TW2XHTMLPage);
     procedure DoAddLinkToBaseDocument(Page: TW2XHTMLPage);
     procedure OnHeaderToken(Token: TWPToken);
@@ -106,9 +107,14 @@ type
     property AddLinksToTranslations: boolean read FAddLinksToTranslations write FAddLinksToTranslations default true;
     property AddTOCIfHeaderCountMoreThan: integer read FAddTOCIfHeaderCountMoreThan
                  write FAddTOCIfHeaderCountMoreThan default 2;
+    property UseTemplateIcons: Boolean read FUseTemplateIcons write FUseTemplateIcons;
   end;
 
 implementation
+
+const
+  NOTE_ICON = 'note.png';
+  WARNING_ICON = 'warning.png';
 
 { TWiki2XHTMLConverter }
 
@@ -236,9 +242,7 @@ begin
     if HeaderTxt<>'' then begin
       HRef:=WikiHeaderToLink(HeaderTxt);
       // add anchor
-      LinkNode:=doc.CreateElement('a');
-      LinkNode.SetAttribute('name', HRef);
-      Page.CurDOMNode.ParentNode.InsertBefore(LinkNode, Page.CurDOMNode);
+      Page.CurDOMNode.SetAttribute('id', HRef);
       // add TOC link
       LINode:=doc.CreateElement('li');
       LINode.SetAttribute('class', 'toclevel-'+IntToStr(Page.SectionLevel));
@@ -294,12 +298,157 @@ var
     Result:=true;
   end;
 
+  procedure HandleImgLink(const AFileName, Value: String);
+  type
+    THorPos = (hpDefault, hpLeft, hpCenter, hpRight);
+  var
+    L: TStringList;
+    hpos: THorPos;
+    thumb: Boolean;
+    factor: Double;
+    frame: Boolean;
+    alt: String;
+    cap: String;
+    w, h: Integer;   // -2 auto, -1 not used, else: pixels
+    i, p: Integer;
+    s: String;
+    node: TDOMElement;
+    imgnode: TDOMElement;
+    capnode: TDOMElement;
+  begin
+    hpos := hpDefault;
+    w := -1;  // not used
+    h := -1;
+    thumb := false;
+    frame := false;
+    factor := 1.0;
+    cap := '';
+    alt := '';
+
+    L := TStringList.Create;
+    try
+      L.Delimiter := '|';
+      L.StrictDelimiter := true;
+      L.DelimitedText := Value;
+
+      for i:=0 to L.Count-1 do begin
+        s := L[i];
+        case Lowercase(s) of
+          'thumb', 'thumbnail':
+            begin
+              w := 220;
+              h := -2;  // auto
+              thumb := true;
+              factor := 1.0;
+              frame := true;
+            end;
+          'frame':
+            frame := true;
+          'frameless':
+            frame := false;
+          'left':
+            hpos := hpLeft;
+          'center':
+            hpos := hpCenter;
+          'right':
+            hpos := hpRight;
+          'none':
+            hpos := hpDefault;
+          else
+            if pos('alt=', s) = 1 then
+              alt := copy(s, Length('alt='), MaxInt)
+            else
+            if pos('link=', s) = 1 then
+              // currently not supported
+            else
+            if pos('px', s) = Length(s)-1 then
+            begin
+              if s[1]='x' then   // e.g: "x100px" -- height
+                h := StrToInt(Copy(s, 2, Length(s)-3))
+              else begin
+                p := pos('x', s);
+                if p = Length(s) then   // e.g: "200px" --> width
+                  w := StrToInt(Copy(s, 1, Length(s)-2))
+                else
+                if p > 0 then   // e.g: "200x100px" --> width x height
+                begin
+                  w := StrToInt(copy(s, 1, p-1));
+                  h := StrToInt(copy(s, p+1, Length(s)-p-2));
+                end else
+                  cap := s;
+              end;
+            end else
+            if (pos('upright', s) = 1) then
+            begin
+              thumb := true;
+              s := trim(copy(s, Length('upright')+1, MaxInt));
+              if s <> '' then val(s, factor, p) else factor := 1.0;
+            end
+            else
+              cap := s;
+        end;
+      end;
+
+      if thumb or frame then begin
+        node := doc.CreateElement('div');
+        if frame then
+          node.SetAttribute('class', 'image')
+        else
+          node.SetAttribute('class', 'image-no-border');
+        case hpos of
+          hpDefault: node.SetAttribute('style', 'float:right;');
+          hpLeft   : node.SetAttribute('style', 'float:left;');
+          hpCenter : node.SetAttribute('style', 'display:block; margin:0px auto;');
+          hpRight  : node.SetAttribute('style', 'float:right;');
+        end;
+        Page.CurDOMNode.AppendChild(node);
+        imgnode := doc.CreateElement('img');
+        node.AppendChild(imgnode);
+        if cap <> '' then begin
+          capnode := doc.CreateElement('figcaption');
+          capnode.SetAttribute('style', 'margin-top: 4px');
+          capnode.AppendChild(doc.CreateTextNode(cap));
+          node.AppendChild(capnode);
+        end;
+      end else
+      begin
+        imgnode := doc.CreateElement('img');
+        imgnode.SetAttribute('class', 'image-no-border');
+        Page.CurDOMNode.AppendChild(imgnode);
+      end;
+
+      imgnode.SetAttribute('src', AFileName);
+      if alt <> '' then
+        imgnode.SetAttribute('alt', alt);
+      if w > 0 then
+      begin
+        if thumb and (factor <> 1.0) then w := round(w*factor);
+        imgnode.SetAttribute('width', IntToStr(w)+'px');
+      end;
+      if h = -2 then
+        imgnode.SetAttribute('height', 'auto')
+      else
+      if h > 0 then
+      begin
+        if thumb and (factor <> 1.0) then h := round(h * factor);
+        imgnode.SetAttribute('height', IntToStr(h)+'px');
+      end;
+      case hpos of
+         hpLeft  : imgnode.SetAttribute('style', 'float:left');
+         hpCenter: imgnode.SetAttribute('style', 'display:block; margin:0px auto;');
+         hpRight : imgNode.SetAttribute('style', 'float:right');
+      end;
+
+    finally
+      L.Free;
+    end;
+  end;
+
   function HandleLink(var URL, Caption: string): boolean;
   var
     p: SizeInt;
     Scheme: String;
     Filename: String;
-    Node: TDOMElement;
     TargetPage: TW2XHTMLPage;
     FoundImgFile: String;
     DocumentName: String;
@@ -320,7 +469,7 @@ var
         URL:=''; // show category without link
         exit;
       end
-      else if Scheme='image' then begin
+      else if (Scheme='image') or (Scheme='file') then begin
         URL:=copy(URL,p+1,length(URL));
         URL:=UTF8Trim(URL);
         URL:=WikiTitleToPage(URL);
@@ -330,11 +479,7 @@ var
         if FoundImgFile<>'' then begin
           Filename:=GetImageLink(FoundImgFile);
           MarkImageAsUsed(Filename,Page);
-          Node:=doc.CreateElement('img');
-          Node.SetAttribute('src', Filename);
-          if Caption<>'' then
-            Node.SetAttribute('alt', Caption);
-          Page.CurDOMNode.AppendChild(Node);
+          HandleImgLink(FileName, Caption);
           exit(true);
         end;
         if WarnURL(LinkToken.Link) then
@@ -381,7 +526,7 @@ var
         URL:=GetPageLink(TargetPage);
         if Anchor<>'' then
           URL+='#'+Anchor;
-      end else if (not FileExistsUTF8(Filename)) then begin
+      end else if ((FileName <> '') and not FileExistsUTF8(Filename)) then begin
         if WarnMissingPageLinks and WarnURL(LinkToken.Link) then
           Log('WARNING: TWiki2XHTMLConverter.InsertLink "'+dbgstr(LinkToken.Link)+'": file not found: "'+Filename+'" at '+W.PosToStr(LinkToken.LinkStartPos,true));
         URL:='';
@@ -402,7 +547,6 @@ begin
   if URL='' then exit;
   Caption:=copy(W.Src, LinkToken.CaptionStartPos, LinkToken.CaptionEndPos-
     LinkToken.CaptionStartPos);
-  if Caption='' then exit(true);
   if HandleLink(URL,Caption) then exit;
 
   if URL<>'' then begin
@@ -507,11 +651,14 @@ var
   doc: TXMLDocument;
   NodeName: string;
   Node: TDOMElement;
+  childNode1, childNode2: TDOMElement;
   LinkToken: TWPLinkToken;
   NodeClass: String;
   NameValueToken: TWPNameValueToken;
   CurName: String;
   CurValue: String;
+  fn: String;
+  captn, iconfile: String;
 begin
   Page:=TW2XHTMLPage(Token.UserData);
   W:=Page.WikiPage;
@@ -673,6 +820,58 @@ begin
         exit;
       end;
       CurValue:=copy(W.Src,NameValueToken.ValueStartPos,NameValueToken.ValueEndPos-NameValueToken.ValueStartPos);
+
+      case Lowercase(CurName) of
+        'note', 'warning':
+          begin
+            case Lowercase(CurName) of
+              'note'   : begin captn := 'Note'; iconfile := NOTE_ICON; end;
+              'warning': begin captn := 'Warning'; iconfile := WARNING_ICON; end;
+            end;
+            Node := doc.CreateElement('div');
+            Node.SetAttribute('class', 'template-with-icon');
+            Page.CurDOMNode.AppendChild(Node);
+
+            childnode1 := doc.CreateElement('div');
+            Node.AppendChild(childnode1);
+            childnode1.SetAttribute('class', 'icon');
+            if FUseTemplateIcons then begin
+              fn := FindImage(iconfile);
+              if fn <> '' then
+                fn := GetImageLink(fn);
+              MarkImageAsUsed(fn, Page);
+              childnode2 := doc.CreateElement('img');
+              childnode2.SetAttribute('src', fn);
+              childnode1.AppendChild(childnode2);
+            end;
+
+            childnode2 := doc.CreateElement('b');
+            childnode2.AppendChild(doc.createTextNode(captn + ': '));
+            Node.AppendChild(childnode2);
+            Node.AppendChild(doc.CreateTextNode(CurValue));
+              // to do: CurValue can contain further html tags!
+            exit;
+          end;
+
+        'mantislink':
+          begin
+            Node := doc.CreateElement('a');
+            Node.SetAttribute('href', 'http://bugs.freepascal.org/view.php?id='+CurValue);
+            Node.AppendChild(doc.CreateTextNode('MantisLink #'));
+            Node.AppendChild(doc.CreateTextNode(Curvalue));
+            Page.CurDOMNode.AppendChild(Node);
+            exit;
+          end;
+
+        else
+          Node := doc.CreateElement('span');
+          if CurName <> '' then Node.SetAttribute('class', CurName);
+          Page.CurDOMNode.AppendChild(Node);
+          if CurValue <> '' then
+            Node.AppendChild(doc.CreateTextNode(CurValue));
+          exit;
+      end;
+
       Node:=doc.CreateElement('span');
       if CurName<>'' then
         Node.SetAttribute('class',CurName);
@@ -825,55 +1024,62 @@ begin
   doc:=Page.XHTML;
   CurName:=lowercase(copy(W.Src,Token.NameStartPos,Token.NameEndPos-Token.NameStartPos));
   CurValue:=copy(W.Src,Token.ValueStartPos,Token.ValueEndPos-Token.ValueStartPos);
-  CodeNode:=doc.CreateElement('pre');
-  if (CurName='pascal')
-  or (CurName='delphi')
-  or (CurName='code')
-  or (CurName='syntaxhighlight')
-  or (CurName='source')
-  or (CurName='fpc')
-  then
-    CurName:='pascal';
-  if CurName<>'' then
-    CodeNode.SetAttribute('class',CurName);
-  Page.CurDOMNode.AppendChild(CodeNode);
-  if CurValue<>'' then begin
-    if (CurName='pascal') then begin
-      p:=PChar(CurValue);
-      AtomStart:=p;
-      LastToken:=pNone;
-      LastRangeStart:=p;
-      repeat
-        // skip space
-        while p^ in [#1..#31,' '] do inc(p);
-        // read token
-        if (p^='{') or ((p^='/') and (p[1]='/')) or ((p^='(') and (p[1]='*'))
-        then begin
-          // comment
-          AddSpan(pComment,p);
-          p:=FindCommentEnd(p,false);
-        end else begin
-          ReadRawNextPascalAtom(p,AtomStart);
-          if AtomStart^=#0 then break;
-          case AtomStart^ of
-          '''','#':
-            AddSpan(pString,AtomStart);
-          '0'..'9','%','$','&':
-            AddSpan(pNumber,AtomStart);
-          'a'..'z','A'..'Z','_':
-            if WordIsKeyWord.DoIdentifier(AtomStart) then
-              AddSpan(pKey,AtomStart)
+
+  if CurName = 'code' then begin
+    CodeNode := doc.CreateElement('code');
+    Page.CurDomNode.AppendChild(CodeNode);
+    CodeNode.AppendChild(doc.CreateTextNode(CurValue));
+  end else
+  begin
+    CodeNode:=doc.CreateElement('pre');
+    if (CurName='pascal')
+    or (CurName='delphi')
+    or (CurName='syntaxhighlight')
+    or (CurName='source')
+    or (CurName='fpc')
+    then
+      CurName:='pascal';
+    if CurName<>'' then
+      CodeNode.SetAttribute('class',CurName);
+    Page.CurDOMNode.AppendChild(CodeNode);
+    if CurValue<>'' then begin
+      if (CurName='pascal') then begin
+        p:=PChar(CurValue);
+        AtomStart:=p;
+        LastToken:=pNone;
+        LastRangeStart:=p;
+        repeat
+          // skip space
+          while p^ in [#1..#31,' '] do inc(p);
+          // read token
+          if (p^='{') or ((p^='/') and (p[1]='/')) or ((p^='(') and (p[1]='*'))
+          then begin
+            // comment
+            AddSpan(pComment,p);
+            p:=FindCommentEnd(p,false);
+          end else begin
+            ReadRawNextPascalAtom(p,AtomStart);
+            if AtomStart^=#0 then break;
+            case AtomStart^ of
+            '''','#':
+              AddSpan(pString,AtomStart);
+            '0'..'9','%','$','&':
+              AddSpan(pNumber,AtomStart);
+            'a'..'z','A'..'Z','_':
+              if WordIsKeyWord.DoIdentifier(AtomStart) then
+                AddSpan(pKey,AtomStart)
+              else
+                AddSpan(pNone,AtomStart);
             else
-              AddSpan(pNone,AtomStart);
-          else
-            AddSpan(pSymbol,AtomStart);
+              AddSpan(pSymbol,AtomStart);
+            end;
           end;
-        end;
-      until false;
-      Flush(p);
-    end else begin
-      // default: add as text
-      CodeNode.AppendChild(doc.CreateTextNode(CurValue));
+        until false;
+        Flush(p);
+      end else begin
+        // default: add as text
+        CodeNode.AppendChild(doc.CreateTextNode(CurValue));
+      end;
     end;
   end;
 end;
@@ -933,6 +1139,7 @@ begin
   fLinkToBaseDocument:='Online version';
   FAddLinksToTranslations:=true;
   FAddTOCIfHeaderCountMoreThan:=2;
+  FUseTemplateIcons := true;
 end;
 
 destructor TWiki2XHTMLConverter.Destroy;

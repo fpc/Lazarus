@@ -296,9 +296,13 @@ end;
  ------------------------------------------------------------------------------}
 class procedure TCDWSWinControl.SetBounds(const AWinControl: TWinControl;
   const ALeft, ATop, AWidth, AHeight: Integer);
+var
+  lCDWinControl: TCDWinControl;
 begin
   //WriteLn(Format('[TCDWSWinControl.SetBounds Control=%s:%s x=%d y=%d w=%d h=%d',
   //  [AWinControl.Name, AWinControl.ClassName, ALeft, ATop, AWidth, AHeight]));
+  lCDWinControl := TCDWinControl(AWinControl.Handle);
+  lCDWinControl.Region.SetAsSimpleRectRegion(Bounds(ALeft, ATop, AWidth, AHeight));
   Invalidate(AWinControl);
 end;
 

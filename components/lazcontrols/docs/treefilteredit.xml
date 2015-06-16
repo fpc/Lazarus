@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fpdoc-descriptions><package name="LazControls"><module name="TreeFilterEdit"><element name="TTreeFilterEdit"><short>Filter for an associated TreeView.</short>
+      <descr>This control has 2 different operation modes. One mode maintains and filters sub-items of root-nodes in a tree, another mode filters a whole existing tree using TreeNode.Visible property.
+
+<b>Mode 1</b>: Sub-branches under root nodes
+Items for each branch are maintained in TTreeFilterBranch class instance.
+
+<b>Mode 2</b>: A whole tree
+When no branches are defined (no calls made to GetBranch), the TreeFilterEdit control filters the whole tree automatically. It uses each TreeNode's Visible property to show/hide it.
+</descr>
+      </element><element name="TTreeFilterEdit.FilteredTreeview"><short>The associated TreeView.</short>
+      </element>
+    <element name="TTreeFilterEdit.SelectionList"><short>List of selected items. They are restored after filtering.</short>
+      </element><element name="TTreeFilterEdit.ShowDirHierarchy"><short>When a filtered text is a directory name, it is split and shown as a tree structure.</short><descr>This has effect only in the "sub-branches" mode.
+The "whole tree" mode uses the existing tree nodes as is and only changes their visibility.
+</descr>
+      </element><element name="TTreeFilterEdit.ExpandAllInitially"><short>Tree branches are expanded also initially.</short><descr>The branches are expanded in any case when the tree is filtered and matches are found. This setting only affects the initial state.
+</descr>
+      </element><element name="TTreeFilterEdit.OnGetImageIndex"><short>ImageIndex can be queried while filtering based on the node data.</short>
+      </element><element name="TTreeFilterEdit.GetExistingBranch"><short>Get an existing branch for a given tree-node, or Nil if there is none.</short><descr>This can be used only with the "sub-branches" mode.
+</descr>
+      </element><element name="TTreeFilterEdit.GetCleanBranch"><short>Get a new or existing branch with data cleared for a given tree-node.</short><descr>This can be used only with the "sub-branches" mode. In fact calling this method switches the filter into "sub-branches" mode. This is the way to add those branches.
+</descr>
+      </element><element name="TTreeFilterBranch"><short>A branch associated with an existing TreeNode when the filter is used in "sub-branches" mode.</short>
+      </element><element name="TTreeFilterBranch.Create"><short>An existing TreeNode must be passed for the constructor.</short>
+      </element><element name="TTreeFilterBranch.AddNodeData"><short>Add a data item for this branch. Text, data reference and an associalted file name can be added.</short>
+      </element>
+    </module>
+  </package>
+</fpdoc-descriptions>

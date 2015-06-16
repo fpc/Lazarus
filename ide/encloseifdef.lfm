@@ -1,0 +1,183 @@
+object EncloseIfDefForm: TEncloseIfDefForm
+  Left = 415
+  Height = 384
+  Top = 298
+  Width = 374
+  ActiveControl = FirstTest
+  BorderIcons = [biSystemMenu]
+  Caption = 'Conditional Defines'
+  ClientHeight = 384
+  ClientWidth = 374
+  OnCreate = CondFormCREATE
+  OnShow = FormShow
+  Position = poScreenCenter
+  LCLVersion = '1.5'
+  object NewTestGroupBox: TGroupBox
+    Left = 6
+    Height = 163
+    Top = 6
+    Width = 362
+    Align = alTop
+    AutoSize = True
+    BorderSpacing.Around = 6
+    Caption = 'NewTestGroupBox'
+    ClientHeight = 147
+    ClientWidth = 360
+    TabOrder = 0
+    object FirstLabel: TLabel
+      Left = 6
+      Height = 15
+      Top = 6
+      Width = 348
+      Align = alTop
+      BorderSpacing.Around = 6
+      Caption = '&First test'
+      ParentColor = False
+    end
+    object SecondLabel: TLabel
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 15
+      Top = 60
+      Width = 348
+      Align = alTop
+      BorderSpacing.Around = 6
+      Caption = '&Second test'
+      ParentColor = False
+    end
+    object FirstTest: TComboBox
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 27
+      Top = 27
+      Width = 348
+      Align = alTop
+      BorderSpacing.Around = 6
+      ItemHeight = 0
+      ItemIndex = 0
+      Items.Strings = (
+        'MSWINDOWS'
+        'UNIX'
+        'LINUX'
+        'WIN32'
+        'CLX_'
+        'LCL_'
+        'VCL_'
+        'FPC'
+        'KYLIX'
+        'VER1_0'
+      )
+      OnChange = TestEditChange
+      TabOrder = 0
+      Text = 'MSWINDOWS'
+    end
+    object SecondTest: TComboBox
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 27
+      Top = 81
+      Width = 348
+      Align = alTop
+      BorderSpacing.Around = 6
+      ItemHeight = 0
+      ItemIndex = 0
+      Items.Strings = (
+        'NONE'
+        'ELSE'
+      )
+      OnChange = TestEditChange
+      TabOrder = 1
+      Text = 'NONE'
+    end
+    object AddBtn: TBitBtn
+      AnchorSideTop.Control = SecondTest
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = AddInverse
+      Left = 108
+      Height = 27
+      Top = 114
+      Width = 75
+      Anchors = [akTop, akRight]
+      AutoSize = True
+      BorderSpacing.Around = 6
+      Caption = '&Add'
+      Constraints.MinHeight = 25
+      Constraints.MinWidth = 75
+      OnClick = AddBtnClick
+      TabOrder = 2
+    end
+    object RemoveBtn: TBitBtn
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = SecondTest
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = NewTestGroupBox
+      AnchorSideRight.Side = asrBottom
+      Left = 279
+      Height = 27
+      Top = 114
+      Width = 75
+      Anchors = [akTop, akRight]
+      AutoSize = True
+      BorderSpacing.Around = 6
+      Caption = '&Remove'
+      Constraints.MinHeight = 25
+      Constraints.MinWidth = 75
+      OnClick = RemoveBtnClick
+      TabOrder = 4
+    end
+    object AddInverse: TBitBtn
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = SecondTest
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = RemoveBtn
+      Left = 189
+      Height = 27
+      Top = 114
+      Width = 84
+      HelpType = htKeyword
+      Anchors = [akTop, akRight]
+      AutoSize = True
+      BorderSpacing.Around = 6
+      Caption = 'Add Inverse'
+      Constraints.MinHeight = 25
+      Constraints.MinWidth = 75
+      OnClick = AddInverseCLICK
+      TabOrder = 3
+    end
+  end
+  object ListBox: TListBox
+    Left = 6
+    Height = 163
+    Top = 175
+    Width = 362
+    Align = alClient
+    Anchors = [akTop]
+    BorderSpacing.Around = 6
+    ItemHeight = 0
+    OnClick = ListBoxClick
+    OnDblClick = ListBoxDblClick
+    OnKeyDown = ListBoxKeyDown
+    ScrollWidth = 360
+    TabOrder = 1
+    TopIndex = -1
+  end
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 34
+    Top = 344
+    Width = 362
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    OKButton.OnClick = OKButtonClick
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    HelpButton.OnClick = HelpButtonClick
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CloseButton.OnClick = btnSaveClick
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
+    TabOrder = 2
+    ShowBevel = False
+  end
+end

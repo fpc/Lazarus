@@ -85,7 +85,7 @@ type
 
 procedure TSitemapEditForm.CancelBtnClick(Sender: TObject);
 begin
-
+  //
 end;
 
 procedure TSitemapEditForm.DeleteBtnClick(Sender: TObject);
@@ -288,9 +288,8 @@ begin
   BackgroundClrBtn.ButtonColor := TColor(ChmSiteMap.BackgroundColor);
   FolderViewCheck.Checked := ChmSiteMap.UseFolderImages;
   FontEdit.Text := ChmSiteMap.Font;
-  
-  
-  //ChmSiteMap.Free;
+
+  ChmSiteMap.Free;
 end;
 
 function TSitemapEditForm.Execute(AStream: TStream; SiteType: TSiteMapType;

@@ -56,7 +56,6 @@ type
     BtnPanel: TPanel;
     SelectAllBitBtn: TBitBtn;
     SelectNoneBitBtn: TBitBtn;
-    TransitivityGroupBox: TGroupBox;
     TransitivityLabel: TLabel;
     TransitivityTreeView: TTreeView;
     procedure FormCreate(Sender: TObject);
@@ -148,7 +147,6 @@ begin
   ImgIndexKeep             := IDEImages.LoadImage(16, 'menu_run');
 
   Caption:=lisPkgCleanUpPackageDependencies;
-  TransitivityGroupBox.Caption:=lisPkgTransitivity;
   TransitivityLabel.Caption:=
     lisPkgTheFollowingDependenciesAreNotNeededBecauseOfTheAu;
   TransitivityTreeView.Images:=IDEImages.Images_16;

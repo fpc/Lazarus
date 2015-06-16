@@ -14,35 +14,35 @@ msgstr ""
 #: stringsunit.rsbeer
 msgctxt "stringsunit.rsbeer"
 msgid "Beer"
-msgstr "cerveza"
+msgstr "Cerveza"
 
 #: stringsunit.rseight
 msgid "Eight"
-msgstr "ocho"
+msgstr "Ocho"
 
 #: stringsunit.rsfive
 msgid "Five"
-msgstr "cinco"
+msgstr "Cinco"
 
 #: stringsunit.rsfour
 msgid "Four"
-msgstr "cuatro"
+msgstr "Cuatro"
 
 #: stringsunit.rsnine
 msgid "Nine"
-msgstr "nueve"
+msgstr "Nueve"
 
 #: stringsunit.rsone
 msgid "One"
-msgstr "uno"
+msgstr "Uno"
 
 #: stringsunit.rsseven
 msgid "Seven"
-msgstr "siete"
+msgstr "Siete"
 
 #: stringsunit.rssix
 msgid "Six"
-msgstr "seis"
+msgstr "Seis"
 
 #: stringsunit.rssumofselectednumbers
 msgid "Sum of selected numbers: %s"
@@ -50,7 +50,7 @@ msgstr "Suma de números seleccionados: %s"
 
 #: stringsunit.rsthree
 msgid "Three"
-msgstr "tres"
+msgstr "Tres"
 
 #: stringsunit.rstodayis
 msgctxt "stringsunit.rstodayis"
@@ -59,17 +59,17 @@ msgstr "Hoy es %s."
 
 #: stringsunit.rstwo
 msgid "Two"
-msgstr "dos"
+msgstr "Dos"
 
 #: stringsunit.rswater
 msgctxt "stringsunit.rswater"
 msgid "Water"
-msgstr "agua"
+msgstr "Agua"
 
 #: stringsunit.rswine
 msgctxt "stringsunit.rswine"
 msgid "Wine"
-msgstr "vino"
+msgstr "Vino"
 
 #: stringsunit.rsyouselected
 msgctxt "stringsunit.rsyouselected"
@@ -83,12 +83,12 @@ msgstr "A las %1:s usted ha elegido %0:s."
 
 #: tform2.caption
 msgid "Second Form"
-msgstr "Segunda Forma"
+msgstr "Segundo Formulario"
 
 #: tform2.checkgroup.caption
 msgctxt "tform2.checkgroup.caption"
 msgid "Several items"
-msgstr "Varios artículos"
+msgstr "Varios elementos"
 
 #: tform2.groupbox1.caption
 msgid "Please select"
@@ -96,39 +96,39 @@ msgstr "Por favor seleccione"
 
 #: tform2.lblmoney.caption
 msgid "LblMoney"
-msgstr ""
+msgstr "Dinero Lbl"
 
 #: tform2.lblsum.caption
 msgid "LblSum"
-msgstr ""
+msgstr "Suma Lbl"
 
 #: tform2.lbltodayis.caption
 msgid "LblTodayIs"
-msgstr ""
+msgstr "Hoy es Lbl"
 
 #: tform2.radiogroup.caption
 msgctxt "tform2.radiogroup.caption"
 msgid "Single item"
-msgstr "Un solo artículo"
+msgstr "Un solo elemento"
 
 #: tlocalizedform.caption
 msgid "LocalizedForm"
-msgstr ""
+msgstr "Formulario Localizado"
 
 #: tmainform.button1.caption
 msgctxt "tmainform.button1.caption"
 msgid "Open second form"
-msgstr "La apertura de una segunda forma"
+msgstr "Abrir un segundo formulario"
 
 #: tmainform.button2.caption
 msgctxt "tmainform.button2.caption"
 msgid "What did you select?"
-msgstr "¿Qué es lo que seleccione?"
+msgstr "¿Qué es lo que seleccionaste?"
 
 #: tmainform.caption
 msgctxt "tmainform.caption"
 msgid "Translation demo"
-msgstr "Demostración Traducción"
+msgstr "Demostración de traducción"
 
 #: tmainform.label1.caption
 msgctxt "tmainform.label1.caption"
@@ -143,5 +143,5 @@ msgstr "Ninguna bebida seleccionada."
 #: tmainform.rgdrinks.caption
 msgctxt "tmainform.rgdrinks.caption"
 msgid "Please select a drink"
-msgstr "Por favor seleccione una copa"
+msgstr "Por favor seleccione una bebida"
 

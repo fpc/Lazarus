@@ -1,0 +1,181 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: 2015-04-14 07:54+0100\n"
+"PO-Revision-Date: 2015-04-15 16:34+0100\n"
+"Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: fr\n"
+"X-Generator: Poedit 1.7.5\n"
+
+#: editortoolbar_str.rsadddivider
+msgid "Add Divider"
+msgstr "Ajouter un diviseur"
+
+#: editortoolbar_str.rsaddselected
+msgid "Add selected item to toolbar"
+msgstr "Ajouter l'élément sélectionné à la barre d'outils"
+
+#: editortoolbar_str.rsall
+msgid "All"
+msgstr "Tout"
+
+#: editortoolbar_str.rsbottom
+msgid "Bottom"
+msgstr "Bas"
+
+#: editortoolbar_str.rscancel
+msgid "Cancel"
+msgstr "Annuler"
+
+#: editortoolbar_str.rsclearselection
+msgid "Clear selection"
+msgstr "Mettre à zéro la sélection"
+
+#: editortoolbar_str.rscodeexplorer
+msgid "Code Explorer"
+msgstr "Explorateur de code"
+
+#: editortoolbar_str.rscodetemplates
+msgid "Code Templates"
+msgstr "Modèles de code"
+
+#: editortoolbar_str.rsconfiguretoo
+msgid "Configure Toolbar"
+msgstr "Configurer la barre d'outils"
+
+#: editortoolbar_str.rscustom
+msgid "Custom"
+msgstr "Personnalisé"
+
+#: editortoolbar_str.rsdebug
+msgid "Debug"
+msgstr "Déboguer"
+
+#: editortoolbar_str.rsdesign
+msgid "Design"
+msgstr "Conception"
+
+#: editortoolbar_str.rsdesigner
+msgid "Designer"
+msgstr "Concepteur"
+
+#: editortoolbar_str.rseditortoolbar
+msgid "Editor ToolBar"
+msgstr "Barre d'outils d'éditeur"
+
+#: editortoolbar_str.rseditortoolbarconfigform
+msgid "Editor Toolbar Configuration"
+msgstr "Configuration de la barre d'outils d'éditeur"
+
+#: editortoolbar_str.rshelp
+msgid "Help"
+msgstr "Aide"
+
+#: editortoolbar_str.rshelp1
+msgid "The \"Add\" button inserts a Menu Item before the selected Item of the Toolbar."
+msgstr "Le bouton \"Ajouter\" insère un élément de menu avant l'élément sélectionné de la barre d'outils."
+
+#: editortoolbar_str.rshelp2
+msgid "If none is selected, the Item will be appended at the end of the Toolbar."
+msgstr "Si rien n'est sélectionné, l'élément sera ajouté à la fin de la barre d'outils."
+
+#: editortoolbar_str.rshelp3
+msgid "You may rearrange Toolbar Items with \"Move Up\" and \"Move Down\" buttons."
+msgstr "Vous pouvez modifier l'arrangement des éléments de la barre d'outils avec les boutons \"Déplacer vers le haut\" et \"Déplacer vers le bas\"."
+
+#: editortoolbar_str.rshelp4
+msgid "Hint: to append an Item at the end, use \"Clear selection\""
+msgstr "Conseil : afin d'ajouter un élément à la fin, utilisez \"Mettre à zéro la sélection\""
+
+#: editortoolbar_str.rshint
+msgid "You may add here your favorite commands"
+msgstr "Vous pouvez ajouter ici vos commandes préférées"
+
+#: editortoolbar_str.rshtml
+msgid "HTML"
+msgstr "HTML"
+
+#: editortoolbar_str.rsidemainmenu
+msgid "IDE Main Menu"
+msgstr "Menu principal de l'EDI"
+
+#: editortoolbar_str.rsjumpto
+msgid "Jump To"
+msgstr "Aller à"
+
+#: editortoolbar_str.rsleft
+msgid "Left"
+msgstr "Gauche"
+
+#: editortoolbar_str.rsmenutree
+msgid "Available Menu Items"
+msgstr "Éléments de menu disponibles"
+
+#: editortoolbar_str.rsmenuview
+msgid "View"
+msgstr "Afficher"
+
+#: editortoolbar_str.rsmessages
+msgid "Messages"
+msgstr "Messages"
+
+#: editortoolbar_str.rsmoveselecteddown
+msgid "Move selected toolbar item down"
+msgstr "Déplacer l'élément choisi de la barre d'outils vers le bas"
+
+#: editortoolbar_str.rsmoveselectedup
+msgid "Move selected toolbar item up"
+msgstr "Déplacer l'élément choisi de la barre d'outils vers le haut"
+
+#: editortoolbar_str.rsok
+msgid "OK"
+msgstr "Ok"
+
+#: editortoolbar_str.rspackageeditor
+msgid "Package Editor"
+msgstr "Éditeur de paquet"
+
+#: editortoolbar_str.rspackageeditorfiles
+msgid "Package Editor Files"
+msgstr "Fichiers de l'éditeur de paquet"
+
+#: editortoolbar_str.rsposition
+msgid "Position"
+msgstr "Position"
+
+#: editortoolbar_str.rsprofile
+msgid "Profile"
+msgstr "Profil"
+
+#: editortoolbar_str.rsremoveselected
+msgid "Remove selected item from toolbar"
+msgstr "Retirer l'élément sélectionné de la barre d'outils"
+
+#: editortoolbar_str.rsright
+msgid "Right"
+msgstr "Droite"
+
+#: editortoolbar_str.rssourceeditor
+msgid "Source Editor"
+msgstr "Éditeur de source"
+
+#: editortoolbar_str.rssourcetab
+msgid "Source Tab"
+msgstr "Onglet Source"
+
+#: editortoolbar_str.rstoolbar
+msgid "Toolbar Items"
+msgstr "Éléments de la barre d'outils"
+
+#: editortoolbar_str.rstop
+msgid "Top"
+msgstr "Haut"
+
+#: editortoolbar_str.serrcouldnotfind
+msgid "Could not find <%s>"
+msgstr "Impossible de trouver <%s>"
+

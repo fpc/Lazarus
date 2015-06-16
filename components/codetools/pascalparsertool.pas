@@ -43,7 +43,7 @@ uses
   MemCheck,
   {$ENDIF}
   Classes, SysUtils, FileProcs, CodeToolsStrConsts, CodeTree, CodeAtom, ExprEval,
-  CustomCodeTool, MultiKeyWordListTool, KeywordFuncLists, BasicCodeTools,
+  CustomCodeTool, MultiKeyWordListTool, KeywordFuncLists,
   CodeToolsStructs, LinkScanner, CodeCache, AVL_Tree;
 
 type
@@ -143,7 +143,7 @@ type
     FLastDefineStatic: Boolean;
     FLastDefineEmbedded: Boolean;
     FLastDefineTargetCPU: String;
-    procedure FetchScannerSource(Range: TLinkScannerRange); override;
+    procedure FetchScannerSource; override;
     // sections
     function KeyWordFuncSection: boolean;
     function KeyWordFuncEndPoint: boolean;
@@ -193,7 +193,7 @@ type
     // keyword lists
     procedure BuildDefaultKeyWordFunctions; override;
     function ParseType(StartPos: integer): boolean;
-    function ParseInnerClass(StartPos, WordLen: integer): boolean;
+    function ParseInnerClass(StartPos: integer): boolean;
     function UnexpectedKeyWord: boolean;
     function EndOfSourceExpected: boolean;
     // read functions
@@ -267,7 +267,9 @@ type
     // sections / scan range
     function FindRootNode(Desc: TCodeTreeNodeDesc): TCodeTreeNode;
     function FindInterfaceNode: TCodeTreeNode;
+    function FindMainUsesNode(UseContainsSection: boolean = false): TCodeTreeNode;
     function FindImplementationNode: TCodeTreeNode;
+    function FindImplementationUsesNode: TCodeTreeNode;
     function FindInitializationNode: TCodeTreeNode;
     function FindFinalizationNode: TCodeTreeNode;
     function FindMainBeginEndNode: TCodeTreeNode;
@@ -435,7 +437,7 @@ begin
   Result:=KeyWordFuncTypeDefault;
 end;
 
-function TPascalParserTool.ParseInnerClass(StartPos, WordLen: integer
+function TPascalParserTool.ParseInnerClass(StartPos: integer
   ): boolean;
 // KeyWordFunctions for parsing in a class/object/record/interface
 var
@@ -2938,7 +2940,7 @@ begin
     RaiseUnknownBlockType;
   repeat
     ReadPriorAtom;
-    if (CurPos.StartPos<1) then begin
+    if (CurPos.EndPos<=1) then begin
       SaveRaiseExceptionFmt(ctsWordNotFound,['begin']);
     end else if WordIsBlockKeyWord.DoIdentifier(@Src[CurPos.StartPos]) then begin
       if (CurPos.Flag=cafEND) or (UpAtomIs('UNTIL')) then begin
@@ -3179,13 +3181,17 @@ function TPascalParserTool.ReadOnStatement(ExceptionOnError,
 var
   NeedUndo: Boolean;
 begin
+  Result:=false;
   if CreateNodes then begin
     CreateChildNode;
     CurNode.Desc:=ctnOnBlock;
   end;
   // read variable name
   ReadNextAtom;
-  AtomIsIdentifierSaveE;
+  if ExceptionOnError then
+    AtomIsIdentifierSaveE
+  else if not AtomIsIdentifier then
+    exit;
   if CreateNodes then begin
     // ctnOnIdentifier for the variable or the type
     CreateChildNode;
@@ -3198,7 +3204,10 @@ begin
     if CreateNodes then
       CurNode.Desc:=ctnVarDefinition;
     ReadNextAtom;
-    AtomIsIdentifierSaveE;
+    if ExceptionOnError then
+      AtomIsIdentifierSaveE
+    else if not AtomIsIdentifier then
+      exit;
     if CreateNodes then begin
       // ctnIdentifier for the type
       CreateChildNode;
@@ -3211,7 +3220,10 @@ begin
     // for example: on Unit.Exception do ;
     // or: on E:Unit.Exception do ;
     ReadNextAtom;
-    AtomIsIdentifierSaveE;
+    if ExceptionOnError then
+      AtomIsIdentifierSaveE
+    else if not AtomIsIdentifier then
+      exit;
     if CreateNodes then begin
       CurNode.EndPos:=CurPos.EndPos;
     end;
@@ -3228,13 +3240,16 @@ begin
   end;
   // read 'do'
   if not UpAtomIs('DO') then
-    SaveRaiseStringExpectedButAtomFound('DO');
+    if ExceptionOnError then
+      SaveRaiseStringExpectedButAtomFound('DO')
+    else
+      exit;
   // ctnOnStatement
   if CreateNodes then begin
     CreateChildNode;
     CurNode.Desc:=ctnOnStatement;
   end;
-  ReadTilStatementEnd(true,CreateNodes);
+  ReadTilStatementEnd(ExceptionOnError,CreateNodes);
   if CreateNodes then begin
     CurNode.EndPos:=CurPos.EndPos;
     EndChildNode; // ctnOnStatement
@@ -3250,7 +3265,7 @@ begin
   if UpAtomIs('ELSE') then begin
     // for example: on E: Exception do else ;
     ReadNextAtom;
-    ReadTilStatementEnd(true,CreateNodes);
+    ReadTilStatementEnd(ExceptionOnError,CreateNodes);
     NeedUndo:=false;
   end;
   if NeedUndo then
@@ -4126,7 +4141,7 @@ begin
     if CurPos.Flag<>cafSemicolon then begin
       // parse till "end" of interface/dispinterface/objcprotocol
       repeat
-        if not ParseInnerClass(CurPos.StartPos,CurPos.EndPos-CurPos.StartPos) then
+        if not ParseInnerClass(CurPos.StartPos) then
         begin
           if CurPos.Flag<>cafEnd then
             SaveRaiseStringExpectedButAtomFound('end');
@@ -4352,7 +4367,7 @@ begin
     // parse till "end" of class/object
     repeat
       //DebugLn(['TPascalParserTool.KeyWordFuncTypeClass Atom=',GetAtom,' ',CurPos.StartPos>=ClassNode.EndPos]);
-      if not ParseInnerClass(CurPos.StartPos,CurPos.EndPos-CurPos.StartPos) then
+      if not ParseInnerClass(CurPos.StartPos) then
       begin
         if CurPos.Flag<>cafEnd then
           SaveRaiseStringExpectedButAtomFound('end');
@@ -5113,6 +5128,7 @@ begin
     exit;
   end;
   ExtractMemStream.Position:=ExtractMemStream.Position-1;
+  c:=#0;
   ExtractMemStream.Read(c,1);
   Result:=IsIdentChar[c];
 end;
@@ -5156,7 +5172,7 @@ begin
       // -> check if a space must be inserted
       if AddAtom
       and ( ((phpCommentsToSpace in Attr) and (CurPos.StartPos>LastAtomEndPos))
-         or ((CurPos.StartPos<=SrcLen) and (IsIdentChar[Src[CurPos.StartPos]])
+         or ((CurPos.StartPos<=SrcLen) and (IsIdentChar[Src[CurPos.StartPos]] or (Src[CurPos.StartPos] = '&'))
              and ExtractStreamEndIsIdentChar)
          )
       then begin
@@ -5177,7 +5193,7 @@ begin
   ReadNextAtom;
 end;
 
-procedure TPascalParserTool.FetchScannerSource(Range: TLinkScannerRange);
+procedure TPascalParserTool.FetchScannerSource;
 var
   AllChanged: Boolean;
   NewSrc: String;
@@ -5852,6 +5868,18 @@ begin
   Result:=FindRootNode(ctnImplementation);
 end;
 
+function TPascalParserTool.FindImplementationUsesNode: TCodeTreeNode;
+begin
+  Result:=Tree.Root;
+  if Result=nil then exit;
+  while (Result<>nil) and (Result.Desc<>ctnImplementation) do
+    Result:=Result.NextBrother;
+  if Result=nil then exit;
+  Result:=Result.FirstChild;
+  if (Result=nil) then exit;
+  if (Result.Desc<>ctnUsesSection) then Result:=nil;
+end;
+
 function TPascalParserTool.FindInitializationNode: TCodeTreeNode;
 begin
   Result:=FindRootNode(ctnInitialization);
@@ -5875,6 +5903,27 @@ begin
   end;
   if Result=nil then exit;
   if Result.Desc<>ctnBeginBlock then Result:=nil;
+end;
+
+function TPascalParserTool.FindMainUsesNode(UseContainsSection: boolean
+  ): TCodeTreeNode;
+begin
+  Result:=Tree.Root;
+  if Result=nil then exit;
+  if UseContainsSection then begin
+    if Result.Desc<>ctnPackage then exit(nil);
+    Result:=Result.FirstChild;
+    while (Result<>nil) and (Result.Desc<>ctnContainsSection) do
+      Result:=Result.NextBrother;
+  end else begin
+    if Result.Desc=ctnUnit then begin
+      Result:=Result.NextBrother;
+      if Result=nil then exit;
+    end;
+    Result:=Result.FirstChild;
+    if (Result=nil) then exit;
+    if (Result.Desc<>ctnUsesSection) then Result:=nil;
+  end;
 end;
 
 function TPascalParserTool.FindFirstSectionChild: TCodeTreeNode;

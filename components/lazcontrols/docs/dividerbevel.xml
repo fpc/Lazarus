@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fpdoc-descriptions><package name="LazControls"><module name="DividerBevel"><element name="TDividerBevel"><short>Line with text in the middle, used as a divider or header.</short>
+      </element>
+    </module>
+  </package>
+</fpdoc-descriptions>

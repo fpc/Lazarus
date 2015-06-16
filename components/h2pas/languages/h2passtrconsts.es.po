@@ -3,35 +3,37 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: h2pass\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2013-1-13 18:21+0100\n"
+"PO-Revision-Date: 2015-04-25 17:37-0600\n"
 "Last-Translator: Lucas Martin <codedeep@hotmail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: es\n"
+"X-Generator: Poedit 1.7.6\n"
 
 #: h2passtrconsts.h2padd
 msgid "&Add"
-msgstr ""
+msgstr "&Añadir"
 
 #: h2passtrconsts.h2paddacopy
 msgid "Add a copy"
-msgstr ""
+msgstr "Añadir una copia"
 
 #: h2passtrconsts.h2paddfromclipboard
 msgid "Add from clipboard"
-msgstr ""
+msgstr "Añadir desde portapapeles"
 
 #: h2passtrconsts.h2paddhfiles
 msgid "Add .h files ..."
-msgstr ""
+msgstr "Añadir ficheros .h ..."
 
 #: h2passtrconsts.h2paddhfiles2
 msgid "Add *.h files ..."
-msgstr ""
+msgstr "Añadir ficheros *.h ..."
 
 #: h2passtrconsts.h2paddhfiles3
 msgid "Add .h files?"
-msgstr ""
+msgstr "¿Añadir ficheros .h?"
 
 #: h2passtrconsts.h2paddincludedhfiles
 msgid "Add included .h files"
@@ -39,55 +41,55 @@ msgstr ""
 
 #: h2passtrconsts.h2paddmissingbracketsaroundmacrovalues
 msgid "Add missing brackets around macro values"
-msgstr ""
+msgstr "Añadir corchetes alrrededor de valores macro"
 
 #: h2passtrconsts.h2paddmissingh2pasifdefsforfunctionbodies
 msgid "Add missing h2pas IFDEFs for function bodies"
-msgstr ""
+msgstr "Añadir h2pas IFDEFS perdidos para cuerpos de función"
 
 #: h2passtrconsts.h2paddmissingpointertypeslikepppchar
 msgid "Add missing pointer types like PPPChar"
-msgstr ""
+msgstr "Añadir tipos puntero perdidos tales como PPPChar"
 
 #: h2passtrconsts.h2paddnewtool
 msgid "Add new tool"
-msgstr ""
+msgstr "Añadir nueva utilidad"
 
 #: h2passtrconsts.h2paddsearchandreplacetoolbeforeh2pas
 msgid "Add \"search and replace\" tool before h2pas"
-msgstr ""
+msgstr "Añadir utilidad \"buscar y reemplazar\" antes de h2pas"
 
 #: h2passtrconsts.h2paddthesehfilestoh2pasproject
 msgid "Add these .h files to h2pas project?%s%s%s"
-msgstr ""
+msgstr "¿Añadir éstos ficheros .h al proyecto h2pas?%s%s%s"
 
 #: h2passtrconsts.h2paddunitstousessection
 msgid "Add units to uses section"
-msgstr ""
+msgstr "Añadir unidades a la sección uses"
 
 #: h2passtrconsts.h2pafterh2pas
 msgid "After h2pas"
-msgstr ""
+msgstr "Después de h2pas"
 
 #: h2passtrconsts.h2pambiguousmerges
 msgid "Ambiguous merges:%s%s"
-msgstr ""
+msgstr "Mezcla ambigua:%s%s"
 
 #: h2passtrconsts.h2pbeforeh2pas
 msgid "Before h2pas"
-msgstr ""
+msgstr "Antes de h2pas"
 
 #: h2passtrconsts.h2pcancel
 msgid "Cancel"
-msgstr ""
+msgstr "Cancelar"
 
 #: h2passtrconsts.h2pcancel2
 msgid "&Cancel"
-msgstr ""
+msgstr "&Cancelar"
 
 #: h2passtrconsts.h2pccompactoutputmodelessspacesandemptylines
 msgid "-c  Compact outputmode, less spaces and empty lines"
-msgstr ""
+msgstr "-c  modo de compactación de salida, menos espacios y líneas vacios"
 
 #: h2passtrconsts.h2pcheaderfileconverter
 msgid "C header file converter"
@@ -95,19 +97,19 @@ msgstr "Archivo cabezera C conversor"
 
 #: h2passtrconsts.h2pcheaderfilehhallfiles
 msgid "C header file (*.h)|*.h|All files (*.*)|%s"
-msgstr ""
+msgstr "Archivo de cabecera C (*.h)|*.h|All files (*.*)|%s"
 
 #: h2passtrconsts.h2pcheaderfilenotfound
 msgid "C header file \"%s\" not found"
-msgstr ""
+msgstr "Archivo de cabecera C \"%s\" no encontrado"
 
 #: h2passtrconsts.h2pcheaderfiles
 msgid "C header files"
-msgstr ""
+msgstr "Ficheros de cabecera de C"
 
 #: h2passtrconsts.h2pclose
 msgid "&Close"
-msgstr ""
+msgstr "&Cerrar"
 
 #: h2passtrconsts.h2pcommentfunctionsthataretoocomplexforh2pas
 msgid "Comment functions that are too complex for h2pas"
@@ -115,35 +117,35 @@ msgstr ""
 
 #: h2passtrconsts.h2pcommentmacrosthataretoocomplexforh2pas
 msgid "Comment macros that are too complex for h2pas"
-msgstr ""
+msgstr "Comentar macros que son demasiado complicadas para h2pas"
 
 #: h2passtrconsts.h2pconfirmdelete
 msgid "Confirm delete"
-msgstr ""
+msgstr "Confirmar borrado"
 
 #: h2passtrconsts.h2pconfirmremoval
 msgid "Confirm removal"
-msgstr ""
+msgstr "Confirmar remover"
 
 #: h2passtrconsts.h2pconversionsafterrunningh2pas
 msgid "Conversions after running h2pas"
-msgstr ""
+msgstr "Conversiones despues de ejecutar h2pas"
 
 #: h2passtrconsts.h2pconversionsbeforerunningh2pas
 msgid "Conversions before running h2pas"
-msgstr ""
+msgstr "Conversiones antes de ejecutar h2pas"
 
 #: h2passtrconsts.h2pconvertfunctiontypestopointers
 msgid "Convert function types to pointers"
-msgstr ""
+msgstr "Convertir tipos de funciona a punteros"
 
 #: h2passtrconsts.h2pcopyingfilefailed
 msgid "Copying file failed"
-msgstr ""
+msgstr "Copiado de fichero fallido"
 
 #: h2passtrconsts.h2pcopytooltoclipboard
 msgid "Copy tool to clipboard"
-msgstr ""
+msgstr "Copiar utilidad al portapapeles"
 
 #: h2passtrconsts.h2pcreateunitsfromcheaderfiles
 msgid "Create units from C header files"
@@ -151,135 +153,135 @@ msgstr "Crear unidades desde archivos cabezera C"
 
 #: h2passtrconsts.h2pcusetypesinctypesunit
 msgid "-C  Use types in ctypes unit"
-msgstr ""
+msgstr "C  Usar tipos en la unidad ctypes"
 
 #: h2passtrconsts.h2pdelete
 msgid "Delete"
-msgstr ""
+msgstr "Eliminar"
 
 #: h2passtrconsts.h2pdeleteselectedhfiles
 msgid "Delete selected .h files"
-msgstr ""
+msgstr "Eliminar ficheros .h seleccionados"
 
 #: h2passtrconsts.h2pdeletethesehfilesfromlist
 msgid "Delete these .h files from list?%s%s%s"
-msgstr ""
+msgstr "¿Eliminar estos ficheros .h desde listado?%s%s%s"
 
 #: h2passtrconsts.h2pdeletetool
 msgid "Delete tool"
-msgstr ""
+msgstr "Eliminar utilidad"
 
 #: h2passtrconsts.h2pdeletionoffailed
 msgid "deletion of \"%s\" failed"
-msgstr ""
+msgstr "eliminación de \"%s\" fallido"
 
 #: h2passtrconsts.h2pdisableallhfiles
 msgid "Disable all .h files"
-msgstr ""
+msgstr "Deshabilitar todos los ficheros .h"
 
 #: h2passtrconsts.h2pdiscardchangesandexit
 msgid "Discard changes and exit"
-msgstr ""
+msgstr "Descartar cambios y salir"
 
 #: h2passtrconsts.h2pdonotexit
 msgid "Do not exit"
-msgstr ""
+msgstr "No salir"
 
 #: h2passtrconsts.h2pdoyoureallywanttodelete
 msgid "Do you really want to delete \"%s\"?"
-msgstr ""
+msgstr "¿Realmente necesitar eliminar \"%s\"?"
 
 #: h2passtrconsts.h2pduseexternalforallprocedures
 msgid "-d  Use external; for all procedures"
-msgstr ""
+msgstr "-d utilizar externo; para todos los procedimientos"
 
 #: h2passtrconsts.h2pduseexternallibnamenamefunc__nameforfunctions
 msgid "-D  Use external libname name \"func__name\" for functions"
-msgstr ""
+msgstr "-D utilizar nombre de librería (libname) \"func__name\" para funciones"
 
 #: h2passtrconsts.h2peconstantsinsteadofenumerationtypeforcenums
 msgid "-e  constants instead of enumeration type for C enums"
-msgstr ""
+msgstr "-e constantes en lugar de tipos de enumeración para enums C"
 
 #: h2passtrconsts.h2penableallhfiles
 msgid "Enable all .h files"
-msgstr ""
+msgstr "Habilitar todos los ficheros .h"
 
 #: h2passtrconsts.h2perror
 msgid "Error"
-msgstr ""
+msgstr "Error"
 
 #: h2passtrconsts.h2perrorconvertingclipboardtexttotexttool
 msgid "Error converting clipboard text to text tool:%s%s"
-msgstr ""
+msgstr "Error de conversión al convertir texto del portapapeles a texto de la utilidad:%s%s"
 
 #: h2passtrconsts.h2perrorconvertingputtingtoolontoclipboard
 msgid "Error converting putting tool onto clipboard:%s%s"
-msgstr ""
+msgstr "Error convirtiendo al poner utilidad en el portapapeles:%s%s"
 
 #: h2passtrconsts.h2perrorfilenotfound2
 msgid "ERROR: file not found"
-msgstr ""
+msgstr "ERROR: fichero no encontrado"
 
 #: h2passtrconsts.h2perrorreadingglobalconfig
 msgid "Error reading global config:%s%s"
-msgstr ""
+msgstr "Error leyendo configuración global:%s%s"
 
 #: h2passtrconsts.h2perrorreadingprojectfromfile
 msgid "Error reading project from file%s%s%s%s%s"
-msgstr ""
+msgstr "Error leyendo proyecto desde fichero%s%s%s%s%s"
 
 #: h2passtrconsts.h2perrorwritingglobalconfig
 msgid "Error writing global config:%s%s"
-msgstr ""
+msgstr "Error al escribir configuración global:%s%s"
 
 #: h2passtrconsts.h2pfile
 msgid "File: %s"
-msgstr ""
+msgstr "fichero: %s"
 
 #: h2passtrconsts.h2pfileinformation
 msgid "File information"
-msgstr ""
+msgstr "Información de fichero"
 
 #: h2passtrconsts.h2pfilenameofh2pasprogram
 msgid "Filename of h2pas program"
-msgstr ""
+msgstr "Nombre de fichero de programa h2pas"
 
 #: h2passtrconsts.h2pfilenotfound
 msgid "File not found"
-msgstr ""
+msgstr "fichero no encontrado"
 
 #: h2passtrconsts.h2pfilenotfound2
 msgid "File not found: \"%s\""
-msgstr ""
+msgstr "Fichero no encontrado: \"%s\""
 
 #: h2passtrconsts.h2pfindexplicittypesfailedreadingconstsection
 msgid "FindExplicitTypes FAILED reading const section"
-msgstr ""
+msgstr "FindExplicitTypes FALLÓ al leer la sección const"
 
 #: h2passtrconsts.h2pfindexplicittypesfailedreadingtypedefinition
 msgid "FindExplicitTypes FAILED reading type definition %s"
-msgstr ""
+msgstr "FindExplicitTypes FALLÓ al leer la definición de tipo %s"
 
 #: h2passtrconsts.h2pfindexplicittypesfailedrereadingtypedefinition
 msgid "FindExplicitTypes FAILED Rereading type definition %s"
-msgstr ""
+msgstr "FindExplicitTypes FALLÓ al releer la definiciónde tipo %s"
 
 #: h2passtrconsts.h2pfixessectiontypeofaliasdefinitionsinpascalunitchec
 msgid "Fixes section type of alias definitions in pascal unit%sChecks all alias definitions of the form%sconst LeftSide = RightSide;%slooks up RightSide in the unit and if RightSide is a type or var, changes the section accordingly"
-msgstr ""
+msgstr "Soluciona la seccion de tipos de las definiciones de alias en unidad Pascal%sComprueba todas las definiciones de alias del formulario%sconst LeftSide = RightSide;%slooks up RightSide en la unidad y si RightSide es un tipo o variable, cambia la sección acorde a esto"
 
 #: h2passtrconsts.h2pfixforwarddefinitionsbyreordering
 msgid "Fix forward definitions by reordering"
-msgstr ""
+msgstr "Soluciona defniciones forward mediante la reordenación"
 
 #: h2passtrconsts.h2pfixopenarraysreplacearrayofwitharrayofconst
 msgid "Fix open arrays%sReplace \"array of )\" with \"array of const)\""
-msgstr ""
+msgstr "Soluciona abrir matrices%sReemplaza \"array of )\" con \"array of const)\""
 
 #: h2passtrconsts.h2pgiveanoymouscenumsatypedefname
 msgid "Give anoymous c enums a typedef name"
-msgstr ""
+msgstr "Dar a las enumeraciones anónimas C un nombre typedef"
 
 #: h2passtrconsts.h2ph2pas
 msgid "H2Pas ..."
@@ -287,15 +289,15 @@ msgstr "H2Pas ..."
 
 #: h2passtrconsts.h2ph2pasoptions
 msgid "h2pas Options"
-msgstr ""
+msgstr "Opciones h2pas"
 
 #: h2passtrconsts.h2ph2pasprogrampath
 msgid "h2pas program path"
-msgstr ""
+msgstr "Ruta a programa h2pas"
 
 #: h2passtrconsts.h2ph2pasproject
 msgid "h2pas project"
-msgstr ""
+msgstr "Proyecto h2pas"
 
 #: h2passtrconsts.h2ph2pasprojecth2ph2pallfiles
 msgid "h2pas project (*.h2p)|*.h2p|All files (*.*)|%s"
@@ -307,317 +309,316 @@ msgstr "H2Pas Herramienta"
 
 #: h2passtrconsts.h2picreateanincludefileinsteadofaunit
 msgid "-i  Create an include file instead of a unit"
-msgstr ""
+msgstr "-i  Crea un fichero include en lugar de una unidad"
 
 #: h2passtrconsts.h2pincludedby
 msgid "Included by:"
-msgstr ""
+msgstr "Incluido por"
 
 #: h2passtrconsts.h2pincludedby2
 msgid "%s (included by %s)"
-msgstr ""
+msgstr "%s (incluido por %s"
 
 #: h2passtrconsts.h2pincludes
 msgid "Includes:"
-msgstr ""
+msgstr "Inlcuido:"
 
 #: h2passtrconsts.h2pinvalidclass
 msgid "Invalid class"
-msgstr ""
+msgstr "Clase no válida"
 
 #: h2passtrconsts.h2pllibraryname
 msgid "-l Library name"
-msgstr ""
+msgstr "-l Nombre de librería"
 
 #: h2passtrconsts.h2pmergeallbutthis
 msgid "Merge all but this"
-msgstr ""
+msgstr "Combinar todo menos esta"
 
 #: h2passtrconsts.h2pmergedinto
 msgid "Merged into: %s"
-msgstr ""
+msgstr "Combinado dentro: %s"
 
 #: h2passtrconsts.h2pmergefile
 msgid "Merge file"
-msgstr ""
+msgstr "Combinar fichero"
 
 #: h2passtrconsts.h2pmovedown
 msgid "Move down"
-msgstr ""
+msgstr "Mover hacia abajo"
 
 #: h2passtrconsts.h2pmovefiledown
 msgid "Move file down"
-msgstr ""
+msgstr "Mover fichero hacia abajo"
 
 #: h2passtrconsts.h2pmovefileup
 msgid "Move file up"
-msgstr ""
+msgstr "Mover fichero hacia arriba"
 
 #: h2passtrconsts.h2pmoveup
 msgid "Move up"
-msgstr ""
+msgstr "Mover arriba"
 
 #: h2passtrconsts.h2pnewclearsettings
 msgid "New/Clear settings"
-msgstr ""
+msgstr "Nuevo/Limpiar configuraciones"
 
 #: h2passtrconsts.h2pnofileselected
 msgid "No file selected."
-msgstr ""
+msgstr "No hay fichero seleccionado."
 
 #: h2passtrconsts.h2pnotatcustomtextconvertertool
 msgid "not a TCustomTextConverterTool"
-msgstr ""
+msgstr "no es un TCustomTextConverterTool"
 
 #: h2passtrconsts.h2pnothingtodo
 msgid "Nothing to do"
-msgstr ""
+msgstr "Nada que hacer"
 
 #: h2passtrconsts.h2popenlastsettingsonstart
 msgid "Open last settings on start"
-msgstr ""
+msgstr "Abri las últimas configuraciones al iniciar"
 
 #: h2passtrconsts.h2popenprojecth2p
 msgid "Open project (*.h2p) ..."
-msgstr ""
+msgstr "Abrir proyecto (*.h2p) ..."
 
 #: h2passtrconsts.h2popensettings
 msgid "&Open Settings"
-msgstr ""
+msgstr "Abri configuraciones"
 
 #: h2passtrconsts.h2poptions
 msgid "Options"
-msgstr ""
+msgstr "Opciones"
 
 #: h2passtrconsts.h2poutput
 msgid "Output: %s"
-msgstr ""
+msgstr "Salida: %s"
 
 #: h2passtrconsts.h2poutputdirectory
 msgid "Output directory"
-msgstr ""
+msgstr "Directorio de salida"
 
 #: h2passtrconsts.h2poutputextensionofnewfile
 msgid "Output extension of new file"
-msgstr ""
+msgstr "Extensión de salida para nuevo fichero"
 
 #: h2passtrconsts.h2poverwrite
 msgid "Overwrite"
-msgstr ""
+msgstr "Sobreescribir"
 
 #: h2passtrconsts.h2ppleaseenableatleastonecheaderfilethatisnotmerged
 msgid "Please enable at least one c header file that is not merged."
-msgstr ""
+msgstr "Por favor habilita al menos un fichero de cabecera C que no esté combinado."
 
 #: h2passtrconsts.h2pposth2pasasetofcommontoolstorunafterh2pasphreplace
 msgid "Post H2Pas - a set of common tools to run after h2pas%sphReplaceUnitFilenameWithUnitName - Replace \"unit filename;\" with \"unit name;\"%sphRemoveIncludeDirectives - Remove include directivesphRemoveSystemTypes - Remove type redefinitons like PLongint%sphFixH2PasMissingIFDEFsInUnit - add missing IFDEFs for function bodies%sphReduceCompilerDirectivesInUnit - removes unneeded directives%sphRemoveRedefinedPointerTypes - Remove redefined pointer types%sphRemoveEmptyTypeVarConstSections - Remove empty type/var/const sections%sphReplaceImplicitTypes - Search implicit types in parameters and add types for them%sphFixArrayOfParameterType - Replace \"array of )\" with \"array of const)\"%sphRemoveRedefinitionsInUnit - Removes redefinitions of types, variables, constants and resourcestrings%sphFixAliasDefinitionsInUnit - fix section type of alias definitions%sphReplaceConstFunctionsInUnit - replace simple assignment functions with constants%sphReplaceTypeCastFunctionsInUnit - replace simple type cast functions with types%sphFixForwardDefinitions - fix forward definitions by reordering%sphAddUnitsToUsesSection - add units to uses section%s"
-msgstr ""
+msgstr "Post H2Pas - un conjunto de utilidades habituales para ejecutar después h2pas%sphReplaceUnitFilenameWithUnitName - Reemplaza \"nombrefichero unidad;\" con \"nombre unidad;\"%sphRemoveIncludeDirectives - Remueve include directivesphRemoveSystemTypes - Remueve redefiniciones de tipo como PLongint%sphFixH2PasMissingIFDEFsInUnit - añade IFDEFs perdidos para la función bodies%sphReduceCompilerDirectivesInUnit - remueve directives%sphRemoveRedefinedPointerTypes innecesarias- Remueve punteros redefinidos types%sphRemoveEmptyTypeVarConstSections - Remueve type/var/const sections%sphReplaceImplicitTypes - Busca tipo implícitos en parámetros y añade tipos para them%sphFixArrayOfParameterType - Reemplaza \"array of )\" with \"array of const)\"%sphRemoveRedefinitionsInUnit - Remueve redefinitions de tipos, variables, constantes y resourcestrings%sphFixAliasDefinitionsInUnit - corrije la sección de tipos de alias definitions%sphReplaceConstFunctionsInUnit - reemplaza las funciones de asignación simples con constants%sphReplaceTypeCastFunctionsInUnit - reemplaza las funciones de caracterización simples con types%sphFixForwardDefinitions - repara las definiciones forward mediante reordering%sphAddUnitsToUsesSection - añade unidades a la sección uses%s"
 
 #: h2passtrconsts.h2ppreh2pasasetofcommontoolstorunbeforeh2pasphremovec
 msgid "Pre H2Pas - a set of common tools to run before h2pas%sphRemoveCPlusPlusExternCTool - Remove C++ 'extern \"C\"' lines%sphRemoveEmptyCMacrosTool - Remove empty C macros%sphReplaceEdgedBracketPairWithStar - Replace [] with *%sphReplace0PointerWithNULL - Replace macro values 0 pointer like (char *)0%sphConvertFunctionTypesToPointers - Convert function types to pointers%sphConvertEnumsToTypeDef - Convert anonymous enums to typedef enums%sphCommentComplexCMacros - Comment macros too complex for h2pas%sphCommentComplexCFunctions - Comment functions too complex for h2pas%s"
-msgstr ""
+msgstr "Pre H2Pas - un conjunto de utilidades habituales para ejecutar antes de h2pas%sphRemoveCPlusPlusExternCTool - Remueve C++ 'extern \"C\"'lines%sphRemoveEmptyCMacrosTool - Remueve  C macros%sphReplaceEdgedBracketPairWithStar vacíos - Reemplaza [] con *%sphReplace0PointerWithNULL - Reemplazae macro values 0 pointer como (char *)0%sphConvertFunctionTypesToPointers - Convierte tipos de función a pointers%sphConvertEnumsToTypeDef - Convierte enumeraciones anónimas a typedef enums%sphCommentComplexCMacros - Comenta macros demasiado complejas para h2pas%sphCommentComplexCFunctions - Comenta funciones demasiado complejas para h2pas%s"
 
 #: h2passtrconsts.h2pprpackallrecords1bytealignment
 msgid "-pr Pack all records (1 byte alignment)"
-msgstr ""
+msgstr "-pr Empaqueta todos los registro (1 byte de alineación)"
 
 #: h2passtrconsts.h2ppuseletterpforpointertypesinsteadof
 msgid "-p  Use letter P for pointer types instead of \"^\""
-msgstr ""
+msgstr "-p  utiliza la letra P para tipos puntero en lugar de \"^\""
 
 #: h2passtrconsts.h2ppuseprocvarsforimports
 msgid "-P  use proc. vars for imports"
-msgstr ""
+msgstr "-P  utiliza variables proc. vars para importaciones"
 
 #: h2passtrconsts.h2preaderror
 msgid "Read error"
-msgstr ""
+msgstr "Error de lectura"
 
 #: h2passtrconsts.h2preducecompilerdirectivesinpascalfileshortensexpres
 msgid "Reduce compiler directives in pascal file%sShortens expressions in $IF directives%sand removes unneeded $IFDEF and $DEFINE directives."
-msgstr ""
+msgstr "Reduce las directivas de compilador en pascal%sReduce las expresiones en las directivas $IF%s y remueve las directivas $IFDEF y $DEFine innecesarios "
 
 #: h2passtrconsts.h2premoveallfiles
 msgid "Remove all files"
-msgstr ""
+msgstr "Remover todos los ficheros"
 
 #: h2passtrconsts.h2premoveallincludedirectives
 msgid "Remove all include directives"
-msgstr ""
+msgstr "Remover todas las directivas include"
 
 #: h2passtrconsts.h2premovecexternclines
 msgid "Remove C++ 'extern \"C\"' lines"
-msgstr ""
+msgstr "Remueve líneas C++ externas\"C\"'"
 
 #: h2passtrconsts.h2premovedoublesemicolons
 msgid "Remove double semicolons"
-msgstr ""
+msgstr "Remueve dobles punto y coma"
 
 #: h2passtrconsts.h2premoveemptycmacros
 msgid "Remove empty C macros"
-msgstr ""
+msgstr "Remueve las macros C vacías"
 
 #: h2passtrconsts.h2premoveemptytypevarconstsections
 msgid "Remove empty type/var/const sections"
-msgstr ""
+msgstr "Remueve las secciones vacias type/var/const"
 
 #: h2passtrconsts.h2premoveredefinedpointertypes
 msgid "Remove redefined pointer types"
-msgstr ""
+msgstr "Remueve los tipos de puntero redefinidos"
 
 #: h2passtrconsts.h2premoveredefinitionsinpascalunit
 msgid "Remove redefinitions in pascal unit"
-msgstr ""
+msgstr "Remueve las redefniciones en la unidad Pascal"
 
 #: h2passtrconsts.h2premovetyperedefinitionslikeplongint
 msgid "Remove type redefinitions like PLongint"
-msgstr ""
+msgstr "Remuev tipos redefinidos como PLongint"
 
 #: h2passtrconsts.h2preplacefile
 msgid "Replace file?"
-msgstr ""
+msgstr "¿Reemplazar dichero?"
 
 #: h2passtrconsts.h2preplaceimplicittypesforexampleprocedureprocnameaar
 msgid "Replace implicit types%sFor example:%s    procedure ProcName(a: array[0..2] of char)%s  is replaced with%s    procedure ProcName(a: Tarray_0to2_of_char)%s  and a new type is added%s    Tarray_0to2_of_char = array[0..2] of char"
-msgstr ""
+msgstr "Reemplazar tipos implícitos%sPor ejemplo:%s   procedure ProcName(a: array[0..2] of char)%s  se reemplaza con%s    procedure ProcName(a: Tarray_0to2_of_char)%s  y se añade un nuevo tipo%s    Tarray_0to2_of_char = array[0..2] of char"
 
 #: h2passtrconsts.h2preplacemacrovalues0pointerlikechar0withnull
 msgid "Replace macro values 0 pointer like (char *)0 with NULL"
-msgstr ""
+msgstr "Reemplaza valores macro 0 puntero como (char *)0 with NULL"
 
 #: h2passtrconsts.h2preplacesimplefunctionswithconstants
 msgid "Replace simple functions with constants"
-msgstr ""
+msgstr "Reemplaza funciones simples con constantes"
 
 #: h2passtrconsts.h2preplacesimplefunctionswithtypecasts
 msgid "Replace simple functions with type casts"
-msgstr ""
+msgstr "Reemplaza funciones simples con caracterizado de tipo"
 
 #: h2passtrconsts.h2preplaceunitfilenamewithunitname
 msgid "Replace \"unit filename;\" with \"unit name;\""
-msgstr ""
+msgstr "Reemplaza \"nombrefichero unidad;\" con \"nombre unidad;\""
 
 #: h2passtrconsts.h2preplacewith
 msgid "Replace [] with *"
-msgstr ""
+msgstr "Reemplaza [] con *"
 
 #: h2passtrconsts.h2preplacingofnullwithnilfailed
 msgid "replacing of NULL with nil failed"
-msgstr ""
+msgstr "e reemplazado de NULL con nil ha fallado"
 
 #: h2passtrconsts.h2prunh2pas
 msgid "Run h2pas"
-msgstr ""
+msgstr "Ejecuta h2pas"
 
 #: h2passtrconsts.h2prunh2pasandcompile
 msgid "Run h2pas and compile"
-msgstr ""
+msgstr "Ejecuta h2pas y compila"
 
 #: h2passtrconsts.h2psaveandexit
 msgid "Save and exit"
-msgstr ""
+msgstr "Salvar y salir"
 
 #: h2passtrconsts.h2psavechanges
 msgid "Save changes?"
-msgstr ""
+msgstr "¿Salvar cambios?"
 
 #: h2passtrconsts.h2psaveprojectash2p
 msgid "Save project as ... (*.h2p)"
-msgstr ""
+msgstr "Salvar proyecto como ... (*.h2p)"
 
 #: h2passtrconsts.h2psavesettings
 msgid "&Save Settings"
-msgstr ""
+msgstr "&Salvar configuraciones"
 
 #: h2passtrconsts.h2psavesettings2
 msgid "Save settings?"
-msgstr ""
+msgstr "¿Salvar configuraciones?"
 
 #: h2passtrconsts.h2psavesettingsas
 msgid "Save settings as ..."
-msgstr ""
+msgstr "Salvar configuraciones como ..."
 
 #: h2passtrconsts.h2pselectaclass
 msgid "&Select a class"
-msgstr ""
+msgstr "&Selecciona una clase"
 
 #: h2passtrconsts.h2psettings
 msgid "Settings"
-msgstr ""
+msgstr "Configuraciones"
 
 #: h2passtrconsts.h2psstripcomments
 msgid "-s  Strip comments"
-msgstr ""
+msgstr "-s  Seccionar comentarios "
 
 #: h2passtrconsts.h2psstripcommentsandinfo
 msgid "-S  Strip comments and info"
-msgstr ""
+msgstr "-S Seccionar comentarios e información"
 
 #: h2passtrconsts.h2ptaddtousessectionexecutefileisnotpascal
 msgid "TAddToUsesSection.Execute file is not pascal: "
-msgstr ""
+msgstr "El fichero TAddToUsesSection.Execute no es de Pascal: "
 
 #: h2passtrconsts.h2ptaddtousessectionexecuteinvalidunitname
 msgid "TAddToUsesSection.Execute invalid unitname \"%s\""
-msgstr ""
+msgstr "Nombre de unidad TAddToUsesSection.Execute no válido \"%s\""
 
 #: h2passtrconsts.h2ptextconversiontoolseditor
 msgid "Text conversion tools editor"
-msgstr ""
+msgstr "Editor de utilidades de conversión de texto"
 
 #: h2passtrconsts.h2pth2pasdialogh2pasoptionscheckgroupitemclickunknown
 msgid "TH2PasDialog.h2pasOptionsCheckGroupItemClick: Unknown option %s"
-msgstr ""
+msgstr "TH2PasDialog.h2pasOptionsCheckGroupItemClick: Opcióno desconocida %s"
 
 #: h2passtrconsts.h2pthefilealreadyexists
 msgid "The file \"%s\"%salready exists."
-msgstr ""
+msgstr "El fichero \"%s\"%s ya existe."
 
 #: h2passtrconsts.h2ptools
 msgid "Tools:"
-msgstr ""
+msgstr "Utilidades:"
 
 #: h2passtrconsts.h2ptposth2pastoolsexecuteaddtousessectioninvalidunitn
 msgid "TPostH2PasTools.Execute.AddToUsesSection invalid unitname \"%s\""
-msgstr ""
+msgstr "TPostH2PasTools.Execute.AddToUsesSection  nombre de unidad no válida \"%s\""
 
 #: h2passtrconsts.h2ptprependtypedeftypeswitht
 msgid "-t  Prepend  typedef  types with T"
-msgstr ""
+msgstr "-t Precede tipos typedef con T"
 
 #: h2passtrconsts.h2ptprependtypedeftypeswithtandremove__
 msgid "-T  Prepend  typedef  types with T, and remove __"
-msgstr ""
+msgstr "-T Precede tipo typedef con T, y remueve __"
 
 #: h2passtrconsts.h2punabletocopyfileto
 msgid "Unable to copy file \"%s\"%sto \"%s\""
-msgstr ""
+msgstr "Incapaz copiar fichero \"%s\"%sto \"%s\""
 
 #: h2passtrconsts.h2punabletomergefileinto
 msgid "Unable to merge file \"%s\" into \"%s\""
-msgstr ""
+msgstr "Incapaz de combinar fichero \"%s\" en \"%s\""
 
 #: h2passtrconsts.h2pvreplacepointerparametersbyvar
 msgid "-v  Replace pointer parameters by  var"
-msgstr ""
+msgstr "-v Reemplaza parámetros de puntero por var"
 
 #: h2passtrconsts.h2pwarning
 msgid "Warning"
-msgstr ""
+msgstr "Advertencia"
 
 #: h2passtrconsts.h2pwarningthefilewillbemergedintomultiplefiles
 msgid "%sWarning: the file \"%s\"%swill be merged into multiple files:%s"
-msgstr ""
+msgstr "%sAdvertencia: el fichero \"%s\"%sse combinará con múltiples ficheros:%s"
 
 #: h2passtrconsts.h2pwhandlespecialwin32macros
 msgid "-w  Handle special win32 macros"
-msgstr ""
+msgstr "-w Maneja macros especiales para win32"
 
 #: h2passtrconsts.h2pwriteerror
 msgid "Write error"
-msgstr ""
+msgstr "Error de escritura"
 
 #: h2passtrconsts.h2pxhandlesys__trapofthepalmosheaderfiles
 msgid "-x  Handle SYS__TRAP of the PalmOS header files"
-msgstr ""
-
+msgstr "-x Maneja SYS__TRAP de los ficheros cabecera de PalmOS"

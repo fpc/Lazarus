@@ -245,7 +245,9 @@ type
     procedure mouseExited(event: NSEvent); override;
     procedure mouseMoved(event: NSEvent); override;
     procedure resetCursorRects; override;
+    // lcl overrides
     function lclIsHandle: Boolean; override;
+    procedure lclSetFrame(const r: TRect); override;
   end;
 
   TCocoaFieldEditor = objcclass;
@@ -528,6 +530,9 @@ type
   TCocoaScrollBar = objcclass(NSScroller)
   public
     callback: ICommonCallback;
+    LCLScrollBar: TCustomScrollBar;
+    procedure actionScrolling(sender: NSObject); message 'actionScrolling:';
+    function IsHorizontal: Boolean; message 'IsHorizontal';
     function acceptsFirstResponder: Boolean; override;
     function becomeFirstResponder: Boolean; override;
     function resignFirstResponder: Boolean; override;
@@ -1411,6 +1416,30 @@ end;
 
 { TCocoaScrollBar }
 
+procedure TCocoaScrollBar.actionScrolling(sender: NSObject);
+var
+  LMScroll: TLMScroll;
+  b: Boolean;
+begin
+  FillChar(LMScroll{%H-}, SizeOf(LMScroll), #0);
+  LMScroll.ScrollBar := PtrUInt(Self);
+
+  if IsHorizontal() then
+    LMScroll.Msg := LM_HSCROLL
+  else
+    LMScroll.Msg := LM_VSCROLL;
+
+  LMScroll.Pos := Round(floatValue * LCLScrollBar.Max);
+  LMScroll.ScrollCode := SIF_POS;
+
+  LCLMessageGlue.DeliverMessage(LCLScrollBar, LMScroll);
+end;
+
+function TCocoaScrollBar.IsHorizontal: Boolean;
+begin
+  Result := frame.size.width > frame.size.height;
+end;
+
 function TCocoaScrollBar.lclIsHandle: Boolean;
 begin
   Result := True;
@@ -1498,6 +1527,29 @@ end;
 function TCocoaButton.lclIsHandle: Boolean;
 begin
   Result := True;
+end;
+
+procedure TCocoaButton.lclSetFrame(const r: TRect);
+var
+  lBtnHeight, lDiff: Integer;
+  lRoundBtnSize: NSSize;
+begin
+  // NSTexturedRoundedBezelStyle should be the preferred style, but it has a fixed height!
+  // fittingSize is 10.7+
+  if respondsToSelector(objcselector('fittingSize')) then
+  begin
+    lBtnHeight := r.Bottom - r.Top;
+    lRoundBtnSize := fittingSize();
+    lDiff := Abs(Round(lRoundBtnSize.Height) - lBtnHeight);
+    if lDiff < 4 then // this nr of pixels maximum size difference is arbitrary and we could choose another number
+      setBezelStyle(NSTexturedRoundedBezelStyle)
+    else
+      setBezelStyle(NSTexturedSquareBezelStyle);
+  end
+  else
+    setBezelStyle(NSTexturedSquareBezelStyle);
+
+  inherited lclSetFrame(r);
 end;
 
 procedure TCocoaButton.actionButtonClick(sender: NSObject);

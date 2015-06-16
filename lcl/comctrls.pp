@@ -2112,6 +2112,8 @@ type
   end;
 
   { TToolBar }
+
+  TToolBarOnPaintButton = procedure(Sender: TToolButton; State: integer) of object;
   
   TToolBarFlag = (
     tbfUpdateVisibleBarNeeded,
@@ -2122,6 +2124,8 @@ type
   
   TToolBar = class(TToolWindow)
   private
+    FOnPaint: TNotifyEvent;
+    FOnPaintButton: TToolBarOnPaintButton;
     FButtonHeight: Integer;
     FRealizedButtonHeight,
     FRealizedButtonWidth: integer;
@@ -2257,6 +2261,7 @@ type
     property OnDblClick;
     property OnDragDrop;
     property OnDragOver;
+    property OnPaintButton: TToolBarOnPaintButton read FOnPaintButton write FOnPaintButton;
     property OnEndDrag;
     property OnEnter;
     property OnExit;
@@ -2268,6 +2273,7 @@ type
     property OnMouseWheel;
     property OnMouseWheelDown;
     property OnMouseWheelUp;
+    property OnPaint: TNotifyEvent read FOnPaint write FOnPaint;
     property OnResize;
     property OnChangeBounds;
     property OnStartDrag;

@@ -19,7 +19,7 @@ unit AdvLed;
 interface
 
 uses
-  LCLIntf, LCLType,LResources,Classes, Types, ExtCtrls, Controls, Graphics;
+  LCLType, Classes, ExtCtrls, Controls, Graphics;
 
 type
 

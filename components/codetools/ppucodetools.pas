@@ -30,7 +30,7 @@ unit PPUCodeTools;
 interface
 
 uses
-  Classes, SysUtils, PPUParser, CodeCache, AVL_Tree, FileProcs;
+  Classes, SysUtils, PPUParser, AVL_Tree, FileProcs;
 
 type
 

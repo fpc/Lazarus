@@ -47,7 +47,8 @@ type
     procedure DrawHorizLine(x1,y,x2: integer; const c: TFPColor);
     procedure FillRect(x,y,x2,y2: integer; const c: TFPColor; ASetPixels: boolean = True);
     procedure FillPixels(const c: TFPColor; ASetPixels: boolean = True);
-    procedure DrawText(AText: string; AFont: TFreeTypeRenderableFont; x,y: single; AColor: TFPColor); override;
+    procedure DrawText(AText: string; AFont: TFreeTypeRenderableFont; x,y: single; AColor: TFPColor); override; overload;
+    procedure DrawGlyph(AGlyph: integer; AFont: TFreeTypeRenderableFont; x,y: single; AColor: TFPColor); override; overload;
     property Destination: TLazIntfImage read FDestination write SetDestination;
     destructor Destroy; override;
   end;
@@ -721,6 +722,21 @@ begin
     AFont.RenderText(AText, x, y, rect(0,0,Destination.Width,Destination.Height), @RenderDirectlyClearType)
   else
     AFont.RenderText(AText, x, y, rect(0,0,Destination.Width,Destination.Height), @RenderDirectly);
+end;
+
+procedure TIntfFreeTypeDrawer.DrawGlyph(AGlyph: integer;
+  AFont: TFreeTypeRenderableFont; x, y: single; AColor: TFPColor);
+var f: TFreeTypeFont;
+begin
+  if AFont is TFreeTypeFont then
+  begin
+    f := TFreeTypeFont(AFont);
+    FColor := AColor;
+    if AFont.ClearType then
+      f.RenderGlyph(AGlyph, x, y, rect(0,0,Destination.Width,Destination.Height), @RenderDirectlyClearType)
+    else
+      f.RenderGlyph(AGlyph, x, y, rect(0,0,Destination.Width,Destination.Height), @RenderDirectly);
+  end;
 end;
 
 destructor TIntfFreeTypeDrawer.Destroy;

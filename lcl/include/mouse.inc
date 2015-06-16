@@ -14,7 +14,7 @@
 
 function TMouse.GetCapture: HWND;
 begin
-  Result := FCapture;
+  Result := LCLIntf.GetCapture;
 end;
 
 procedure TMouse.SetCapture(const Value: HWND);
@@ -22,12 +22,10 @@ begin
   {$IFDEF VerboseMouseCapture}
   DebugLn('TMouse.SetCapture ');
   {$ENDIF}
-  FCapture := Value;
   if Value = 0 then
     ReleaseCapture
   else
     LCLIntf.SetCapture(Value);
-  FCapture := GetCapture;
 end;
 
 function TMouse.GetCursorPos: TPoint;

@@ -79,7 +79,7 @@ type
 
   IQtEdit = interface
     ['{035CA259-4442-4E82-9E70-96A114DD3BC6}']
-    function getCursorPosition: Integer;
+    function getCursorPosition: TPoint;
     function getMaxLength: Integer;
     function getSelectionStart: Integer;
     function getSelectionLength: Integer;
@@ -812,7 +812,7 @@ type
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
     function getAlignment: QtAlignment;
-    function getCursorPosition: Integer;
+    function getCursorPosition: TPoint;
     function getMaxLength: Integer;
     function getSelectedText: WideString;
     function getSelectionStart: Integer;
@@ -868,7 +868,7 @@ type
     procedure ClearText;
     function getAlignment: QtAlignment;
     function getBlockCount: Integer;
-    function getCursorPosition: Integer;
+    function getCursorPosition: TPoint;
     function getMaxLength: Integer;
     function getText: WideString; override;
     function getTextStatic: Boolean; override;
@@ -932,6 +932,7 @@ type
     FCurrentChangedHook: QTabWidget_hookH;
     FCloseRequestedHook: QTabWidget_hookH;
     FStackedWidgetHook: QObject_hookH;
+    FSwitchTabsByKeyboard: boolean;
     FTabBar: TQtTabBar;
     FStackWidget: QWidgetH;
     function getShowTabs: Boolean;
@@ -970,6 +971,7 @@ type
     property ShowTabs: Boolean read getShowTabs write setShowTabs;
     property TabBar: TQtTabBar read getTabBar;
     property StackWidget: QWidgetH read getStackWidget;
+    property SwitchTabsByKeyboard: boolean read FSwitchTabsByKeyboard write FSwitchTabsByKeyboard;
   end;
 
   { TQtComboBox }
@@ -995,7 +997,7 @@ type
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
     // IQtEdit implementation
-    function getCursorPosition: Integer;
+    function getCursorPosition: TPoint;
     function getMaxLength: Integer;
     function getSelectionStart: Integer;
     function getSelectionLength: Integer;
@@ -1067,7 +1069,7 @@ type
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
     // IQtEdit implementation
-    function getCursorPosition: Integer;
+    function getCursorPosition: TPoint;
     function getMaxLength: Integer;
     function getSelectionStart: Integer;
     function getSelectionLength: Integer;
@@ -2069,7 +2071,7 @@ begin
       if (csNoFocus in LCLObject.ControlStyle) then
       begin
         if LCLObject.TabStop then
-          setFocusPolicy(QtWheelFocus)
+          setFocusPolicy(QtTabFocus)
         else
           setFocusPolicy(QtNoFocus);
       end else
@@ -2201,6 +2203,9 @@ end;
 procedure TQtWidget.Release;
 begin
   LCLObject := nil;
+  {always hide widget since we use QObject_deleteLater(). issue #27781}
+  if (Widget <> nil) then
+    Hide;
   inherited Release;
 end;
 
@@ -3960,7 +3965,10 @@ end;
 procedure TQtWidget.SlotMove(Event: QEventH); cdecl;
 var
   Msg: TLMMove;
-  APos, ACurrPos: TQtPoint;
+  APos: TQtPoint;
+  {$IFDEF HASX11}
+  ACurrPos: TQtPoint;
+  {$ENDIF}
   FrameRect, WindowRect: TRect;
 begin
   {$ifdef VerboseQt}
@@ -6693,13 +6701,30 @@ begin
       if Screen.ActiveForm <> nil then
         NewParent := TQtWidget(Screen.ActiveForm.Handle).Widget;
     pmExplicit:
+    begin
       // parent is FPopupParent
       if FPopupParent <> nil then
-        NewParent := FPopupParent;
+        NewParent := FPopupParent
+      {$IFDEF HASX11}
+      else
+      begin
+        if not IsMainForm then
+        begin
+          NewParent := TQtMainWindow(Application.MainForm.Handle).Widget;
+          setWindowFlags(windowFlags or QtSheet);
+        end;
+      end;
+      {$ENDIF}
+    end;
   end;
-  if (NewParent = nil) and not FShowOnTaskBar and not IsMainForm then
-    NewParent := TQtMainWindow(Application.MainForm.Handle).Widget;
-
+  if (NewParent = nil) and (FPopupMode <> pmNone) and
+    not FShowOnTaskBar and not IsMainForm then
+      NewParent := TQtMainWindow(Application.MainForm.Handle).Widget;
+  {$IFDEF MSWINDOWS}
+  if (NewParent = nil) and (FPopupMode = pmNone) and
+    not FShowOnTaskBar and not IsMainForm then
+      NewParent := TQtMainWindow(Application.MainForm.Handle).Widget;
+  {$ENDIF}
   ChangeParent(NewParent);
 end;
 
@@ -8689,6 +8714,7 @@ begin
  {$endif}
   if SliderPressed and not InUpdate then
   begin
+    Msg.Msg := 0; // shutup compiler
     FillChar(Msg, SizeOf(Msg), #0);
     Msg.Msg := LM_CHANGED;
     DeliverMessage(Msg);
@@ -8733,9 +8759,10 @@ begin
   Result := QLineEdit_alignment(QLineEditH(Widget));
 end;
 
-function TQtLineEdit.getCursorPosition: Integer;
+function TQtLineEdit.getCursorPosition: TPoint;
 begin
-  Result := QLineEdit_cursorPosition(QLineEditH(Widget));
+  Result.Y := 0;
+  Result.X := QLineEdit_cursorPosition(QLineEditH(Widget));
 end;
 
 function TQtLineEdit.getMaxLength: Integer;
@@ -8757,7 +8784,7 @@ begin
     if (CachedSelectionStart <> -1) and not hasFocus then
       Result := CachedSelectionStart
     else
-      Result := getCursorPosition;
+      Result := getCursorPosition.X;
   end;
 end;
 
@@ -9056,16 +9083,19 @@ begin
   Result := QTextDocument_blockCount(QTextEdit_document(QTextEditH(Widget)));
 end;
 
-function TQtTextEdit.getCursorPosition: Integer;
+function TQtTextEdit.getCursorPosition: TPoint;
 var
   TextCursor: QTextCursorH;
 begin
   TextCursor := QTextCursor_create();
   QTextEdit_textCursor(QTextEditH(Widget), TextCursor);
   if QTextCursor_isNull(TextCursor) then
-    Result := 0
+    Result := Point(0, 0)
   else
-    Result := QTextCursor_position(TextCursor);
+  begin
+    Result.X := QTextCursor_position(TextCursor);
+    Result.Y := QTextCursor_blockNumber(TextCursor);
+  end;
   QTextCursor_destroy(TextCursor);
 end;
 
@@ -9649,6 +9679,14 @@ begin
 end;
 
 function TQtTabBar.EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
+
+  function StopShortcutEvent: boolean;
+  begin
+    Result := Assigned(FOwner) and (FOwner.ChildOfComplexWidget <> ccwTTabControl) and
+      not TQtTabWidget(FOwner).FSwitchTabsByKeyboard and (QKeyEvent_matches(QKeyEventH(Event), QKeySequenceNextChild) or
+      QKeyEvent_matches(QKeyEventH(Event), QKeySequencePreviousChild));
+  end;
+
 {$IFDEF QT_ENABLE_LCL_PAINT_TABS}
 var
   R: TRect;
@@ -9679,6 +9717,7 @@ begin
           QEvent_ignore(Event);
         end;
       {$ENDIF}
+      QEventShortcutOverride: Result := StopShortcutEvent;
       QEventKeyPress,
       QEventKeyRelease:
       begin
@@ -9688,6 +9727,8 @@ begin
         if (LCLObject = nil) or
           ((LCLObject <> nil) and not LCLObject.HandleAllocated) then
           Result := True;
+        if not Result then
+          Result := StopShortcutEvent;
       end;
       QEventMouseButtonPress,
       QEventMouseButtonRelease,
@@ -9781,6 +9822,7 @@ begin
   {$ifdef VerboseQt}
     WriteLn('TQtTabWidget.Create');
   {$endif}
+  FSwitchTabsByKeyboard := False; {shortcuts are enabled by default under qt, but not under LCL}
   FWidgetNeedFontColorInitialization := True;
   if AParams.WndParent <> 0 then
     Parent := TQtWidget(AParams.WndParent).GetContainerWidget
@@ -10200,12 +10242,11 @@ begin
   FOwnerDrawn := False;
 end;
 
-function TQtComboBox.getCursorPosition: Integer;
+function TQtComboBox.getCursorPosition: TPoint;
 begin
+  Result := Point(0, 0);
   if LineEdit <> nil then
-    Result := LineEdit.getCursorPosition
-  else
-    Result := 0;
+    Result.X := LineEdit.getCursorPosition.X;
 end;
 
 function TQtComboBox.getMaxLength: Integer;
@@ -11014,12 +11055,11 @@ begin
     QLineEdit_undo(LineEdit);
 end;
 
-function TQtAbstractSpinBox.getCursorPosition: Integer;
+function TQtAbstractSpinBox.getCursorPosition: TPoint;
 begin
+  Result := Point(0, 0);
   if LineEdit <> nil then
-    Result := QLineEdit_cursorPosition(LineEdit)
-  else
-    Result := 0;
+    Result.X := QLineEdit_cursorPosition(LineEdit);
 end;
 
 function TQtAbstractSpinBox.getReadOnly: Boolean;
@@ -11559,7 +11599,6 @@ var
   v: QVariantH;
   WStr: WideString;
   DataStr: WideString;
-  ASelected: Boolean;
   ImgList: TCustomImageList;
   AImageIndex: TImageIndex;
   Bmp: TBitmap;
@@ -13637,7 +13676,7 @@ var
   R: TRect;
   TopItem: Integer;
   i: Integer;
-  j, x: Integer;
+  j: Integer;
   ChildCount: Integer;
   VHeight: Integer; // viewport height
   RowHeight: Integer;
@@ -16702,7 +16741,9 @@ begin
   begin
     QLCLAbstractScrollArea_override_viewportEvent(QLCLAbstractScrollAreaH(Widget),
       QLCLAbstractScrollArea_viewportEvent_Override(NilMethod));
-    FreeAndNil(FViewPortWidget);
+    FViewPortWidget.FOwner := nil;
+    FViewPortWidget.Release;
+    FViewPortWidget := nil;
   end;
 end;
 
@@ -18275,8 +18316,10 @@ end;
 function TQtFilePreviewDialog.CreateWidget(parent: QWidgetH; f: QtWindowFlags
   ): QWidgetH;
 begin
+  {$ifndef QT_NATIVE_DIALOGS}
   FPreviewWidget := nil;
   FTextWidget := nil;
+  {$endif}
   Result := inherited CreateWidget(parent, f);
 end;
 

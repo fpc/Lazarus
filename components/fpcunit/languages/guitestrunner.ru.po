@@ -132,8 +132,8 @@ msgid "C&ut"
 msgstr "&Вырезать"
 
 #: guitestrunner.smiruntest
-msgid "  &Run all selected (checked) tests"
-msgstr " Запустить все выбранные (&отмеченные) тесты"
+msgid "&Run all selected (checked) tests"
+msgstr "Запустить все выбранные (&отмеченные) тесты"
 
 #: guitestrunner.smishowfail
 msgid "Copy message to clipboard"

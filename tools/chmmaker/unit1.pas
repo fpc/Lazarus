@@ -71,6 +71,7 @@ type
       ARect: TRect; {%H-}State: TOwnerDrawState);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
     procedure IndexEditAcceptFileName(Sender: TObject; var Value: String);
     procedure IndexEditBtnClick(Sender: TObject);
     procedure ProjCloseItemClick(Sender: TObject);
@@ -245,6 +246,7 @@ var
   LHelpName: String;
   LHelpConn: TLHelpConnection;
   Proc: TProcess;
+  ext: String;
 begin
   if ChmFileNameEdit.FileName = '' then
   begin
@@ -254,12 +256,13 @@ begin
   CompileBtnClick(Sender);
   // open
   // ...
-  LHelpName := '../../components/chmhelp/lhelp/lhelp' + ExtractFileExt(Application.Name);
+  ext := ExtractFileExt(Application.ExeName);
+  LHelpName := '../../components/chmhelp/lhelp/lhelp' + ext;
   if not FileExists(LHelpName) then
   begin
     if MessageDlg('LHelp could not be located at '+ LHelpName +' Try to build using lazbuild?', mtError, [mbCancel, mbYes], 0) = mrYes then
     begin
-      if not FileExists('../../lazbuild') then
+      if not FileExists('../../lazbuild' + ext) then
       begin
         MessageDlg('lazbuild coul not be found.', mtError, [mbCancel], 0);
         Exit;
@@ -292,6 +295,7 @@ end;
 procedure TCHMForm.FileListBoxDrawItem(Control: TWinControl; Index: Integer;
   ARect: TRect; State: TOwnerDrawState);
 begin
+  FileListbox.Canvas.FillRect(ARect);
   if Pos('..', FileListBox.Items.Strings[Index]) > 0 then
   begin
     // These items won't be added to the chm because they are not within the project dir
@@ -302,7 +306,10 @@ begin
     FileListBox.Canvas.Frame(ARect);
   end;
   // Draw item text
-  FileListBox.Canvas.TextRect(ARect, 2, ARect.Top+2, FileListBox.Items[Index]);
+  FileListBox.Canvas.TextRect(ARect,
+    2, (ARect.Top + ARect.Bottom - FileListbox.Canvas.TextHeight('Tg')) div 2,
+    FileListBox.Items[Index]
+  );
 end;
 
 procedure TCHMForm.FormClose(Sender: TObject; var CloseAction: TCloseAction);
@@ -322,6 +329,11 @@ begin
 end;
 
 procedure TCHMForm.FormCreate(Sender: TObject);
+begin
+  CloseProject;
+end;
+
+procedure TCHMForm.FormDestroy(Sender: TObject);
 begin
   CloseProject;
 end;
@@ -354,7 +366,11 @@ begin
     Stream := TFileStream.Create(FileName, fmCreate or fmOpenReadWrite);
   end;
 
-  if SitemapEditForm.Execute(Stream, stIndex, FileListBox.Items) then IndexEdit.FileName := FileName;
+  try
+    if SitemapEditForm.Execute(Stream, stIndex, FileListBox.Items) then IndexEdit.FileName := FileName;
+  finally
+    Stream.Free;
+  end;
 end;
 
 procedure TCHMForm.ProjCloseItemClick(Sender: TObject);
@@ -436,12 +452,13 @@ begin
     Stream := TFileStream.Create(FileName, fmCreate or fmOpenReadWrite);
   end;
 
-  BDir := ExtractFilePath(Project.FileName);
-
-  FileName := ExtractRelativepath(BDir, FileName);
-
-  
-  if SitemapEditForm.Execute(Stream, stTOC, FileListBox.Items) then TOCEdit.FileName := FileName;
+  try
+    BDir := ExtractFilePath(Project.FileName);
+    FileName := ExtractRelativepath(BDir, FileName);
+    if SitemapEditForm.Execute(Stream, stTOC, FileListBox.Items) then TOCEdit.FileName := FileName;
+  finally
+    Stream.Free;
+  end;
 end;
 
 function TCHMForm.GetModified: Boolean;

@@ -60,7 +60,7 @@ uses
   ProjectIntf, CompOptsIntf, IDEWindowIntf, LazIDEIntf, IDEImagesIntf,
   IDEMsgIntf, IDEExternToolIntf,
   // IDE
-  CompilerOptions, EnvironmentOpts, IDEProcs, DialogProcs,
+  CompilerOptions, EnvironmentOpts, IDEProcs, DialogProcs, LazarusIDEStrConsts,
   TransferMacros, LazConf, IDECmdLine, PackageDefs, PackageSystem, InputHistory;
 
 type
@@ -177,11 +177,11 @@ begin
   if (SrcFile=nil) and (PPUFile=nil) then
     RaiseException('');
   if (SrcFile<>nil) and (PPUFile<>nil) and (PPUFile.OwnerInfo<>SrcFile.OwnerInfo) then
-    RaiseException('');
+    RaiseException('bug: not equal: PPUFile.OwnerInfo='+PPUFile.OwnerInfo.Name+' SrcFile.OwnerInfo='+SrcFile.OwnerInfo.Name);
   if (SrcFile<>nil) and FilenameIsCompiledSource(SrcFile.ShortFilename) then
-    RaiseException('');
+    RaiseException('bug: src is compiled file: SrcFile.Filename='+SrcFile.FullFilename);
   if (PPUFile<>nil) and not FilenameIsCompiledSource(PPUFile.ShortFilename) then
-    RaiseException('');
+    RaiseException('bug: compiled file is source:'+PPUFile.FullFilename);
   Result:=length(CompiledFiles);
   SetLength(CompiledFiles,Result+1);
   SetLength(Sources,Result+1);
@@ -614,7 +614,7 @@ var
   end;
 
   procedure CollectFilesInDir(OwnerInfo: TPGInterPkgOwnerInfo; Dir: string;
-    var SearchedDirs: string; IsIncDir: boolean);
+    var SearchedDirs: string; {%H-}IsIncDir: boolean);
   var
     Files: TStrings;
     aFilename: String;
@@ -641,7 +641,6 @@ var
         AnUnitName:='';
         case Ext of
         '.ppu','.o','.rst','.rsj','.pas','.pp','.p':
-          if not IsIncDir then
           begin
             AnUnitName:=ExtractFileNameOnly(aFilename);
             if not IsDottedIdentifier(AnUnitName) then continue;
@@ -759,6 +758,9 @@ var
 
   function CheckIfFilesCanConflict(FileGroup: TPGIPAmbiguousFileGroup;
     File1, File2: TPGInterPkgFile): boolean;
+  var
+    FileDir1: String;
+    FileDir2: String;
   begin
     Result:=false;
     // report only one unit per package
@@ -777,6 +779,19 @@ var
       // => skip
       exit;
     end;
+    FileDir1:=ExtractFilePath(File1.FullFilename);
+    FileDir2:=ExtractFilePath(File2.FullFilename);
+    if (FindPathInSearchPath(FileDir1,File2.OwnerInfo.SrcDirs)>0)
+    or (FindPathInSearchPath(FileDir2,File1.OwnerInfo.SrcDirs)>0) then
+    begin
+      // File1 in SrcDirs of file owner 2
+      // or File2 in SrcDirs of file owner 1
+      // => a warning about sharing source directories is enough
+      //    don't warn every shared file
+      // => skip
+      exit;
+    end;
+
     Result:=true;
   end;
 
@@ -910,14 +925,14 @@ var
           PPUFile:=FileGroup.CompiledFiles[i];
           if SrcFile<>nil then
           begin
-            Msg:='Duplicate unit "'+SrcFile.AnUnitName+'"';
-            Msg+=' in "'+SrcFile.OwnerInfo.Name+'"';
+            Msg:=Format(lisDuplicateUnitIn, [SrcFile.AnUnitName, SrcFile.
+              OwnerInfo.Name]);
             if PPUFile<>nil then
               Msg+=', ppu="'+PPUFile.FullFilename+'"';
             Msg+=', source="'+SrcFile.FullFilename+'"';
           end else begin
-            Msg:='Duplicate unit "'+PPUFile.AnUnitName+'"';
-            Msg+=' in "'+PPUFile.OwnerInfo.Name+'"';
+            Msg:=Format(lisDuplicateUnitIn, [PPUFile.AnUnitName, PPUFile.
+              OwnerInfo.Name]);
             Msg+=', orphaned ppu "'+PPUFile.FullFilename+'"';
           end;
           if IDEMessagesWindow<>nil then
@@ -965,6 +980,9 @@ var
         OtherFile:=TPGInterPkgFile(OtherNode.Data);
         if (ComparePGInterPkgShortFilename(CurFile,OtherFile)<>0) then break;
         OtherNode:=OtherNode.Successor;
+
+        if OtherFile.AnUnitName<>'' then
+          continue; // units were already checked in CheckDuplicateUnits
 
         // other file with same short name found
         if not CheckIfFilesCanConflict(FileGroup,CurFile,OtherFile) then

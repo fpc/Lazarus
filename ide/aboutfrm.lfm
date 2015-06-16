@@ -4,6 +4,7 @@ object AboutForm: TAboutForm
   Top = 282
   Width = 460
   ActiveControl = Notebook
+  BorderIcons = [biSystemMenu, biMaximize]
   Caption = 'About Lazarus'
   ClientHeight = 376
   ClientWidth = 460
@@ -11,25 +12,27 @@ object AboutForm: TAboutForm
   OnCreate = AboutFormCreate
   PopupMenu = PopupMenu1
   Position = poScreenCenter
-  LCLVersion = '0.9.29'
+  LCLVersion = '1.5'
   object Notebook: TPageControl
     Left = 0
     Height = 326
     Top = 0
     Width = 460
+    ActivePage = VersionPage
     Align = alClient
-    OnChange = NotebookPageChanged
+    TabIndex = 0
     TabOrder = 0
+    OnChange = NotebookPageChanged
     object VersionPage: TTabSheet
       Caption = 'Version'
-      ClientWidth = 458
-      ClientHeight = 299
+      ClientHeight = 298
+      ClientWidth = 452
       object LogoImage: TImage
         AnchorSideLeft.Control = VersionPage
         AnchorSideLeft.Side = asrCenter
         AnchorSideTop.Control = VersionPage
         AnchorSideTop.Side = asrCenter
-        Left = 4
+        Left = 1
         Height = 300
         Top = -1
         Width = 450
@@ -39,10 +42,10 @@ object AboutForm: TAboutForm
         AnchorSideLeft.Control = LogoImage
         AnchorSideLeft.Side = asrCenter
         AnchorSideTop.Control = LogoImage
-        Left = 191
-        Height = 18
+        Left = 199
+        Height = 15
         Top = 120
-        Width = 76
+        Width = 55
         Alignment = taCenter
         BorderSpacing.Top = 115
         BorderSpacing.Around = 6
@@ -57,10 +60,10 @@ object AboutForm: TAboutForm
         AnchorSideLeft.Side = asrCenter
         AnchorSideTop.Control = VersionLabel
         AnchorSideTop.Side = asrBottom
-        Left = 211
-        Height = 18
-        Top = 144
-        Width = 36
+        Left = 213
+        Height = 15
+        Top = 141
+        Width = 27
         Alignment = taCenter
         BorderSpacing.Around = 6
         Caption = 'Date:'
@@ -73,10 +76,10 @@ object AboutForm: TAboutForm
         AnchorSideLeft.Side = asrCenter
         AnchorSideTop.Control = FPCVersionLabel
         AnchorSideTop.Side = asrBottom
-        Left = 186
-        Height = 18
-        Top = 192
-        Width = 86
+        Left = 190
+        Height = 15
+        Top = 183
+        Width = 72
         BorderSpacing.Around = 6
         Caption = 'RevisionLabel'
         Font.Color = clSilver
@@ -88,10 +91,10 @@ object AboutForm: TAboutForm
         AnchorSideLeft.Side = asrCenter
         AnchorSideTop.Control = RevisionLabel
         AnchorSideTop.Side = asrBottom
-        Left = 185
-        Height = 18
-        Top = 216
-        Width = 89
+        Left = 189
+        Height = 15
+        Top = 204
+        Width = 74
         BorderSpacing.Around = 6
         Caption = 'PlatformLabel'
         Font.Color = clSilver
@@ -103,10 +106,10 @@ object AboutForm: TAboutForm
         AnchorSideLeft.Side = asrCenter
         AnchorSideTop.Control = BuildDateLabel
         AnchorSideTop.Side = asrBottom
-        Left = 176
-        Height = 18
-        Top = 168
-        Width = 106
+        Left = 182
+        Height = 15
+        Top = 162
+        Width = 88
         BorderSpacing.Around = 6
         Caption = 'FPCVersionLabel'
         Font.Color = clSilver
@@ -116,8 +119,8 @@ object AboutForm: TAboutForm
     end
     object AboutPage: TTabSheet
       Caption = 'About'
-      ClientWidth = 458
       ClientHeight = 299
+      ClientWidth = 458
       object OfficialLabel: TLabel
         AnchorSideLeft.Control = AboutPage
         AnchorSideBottom.Control = DocumentationLabel
@@ -209,6 +212,7 @@ object AboutForm: TAboutForm
     Top = 326
     Width = 460
     Align = alBottom
+    BevelOuter = bvNone
     ClientHeight = 50
     ClientWidth = 460
     TabOrder = 1
@@ -219,17 +223,16 @@ object AboutForm: TAboutForm
       AnchorSideTop.Side = asrCenter
       AnchorSideBottom.Control = Owner
       AnchorSideBottom.Side = asrBottom
-      Left = 195
-      Height = 32
-      Top = 9
-      Width = 70
+      Left = 193
+      Height = 26
+      Top = 12
+      Width = 75
       AutoSize = True
       BorderSpacing.Around = 6
       Cancel = True
       Caption = '&Close'
       Kind = bkClose
       ModalResult = 1
-      NumGlyphs = 0
       TabOrder = 0
     end
   end

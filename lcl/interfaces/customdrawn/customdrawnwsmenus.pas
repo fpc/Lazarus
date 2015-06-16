@@ -26,7 +26,8 @@ uses
   {$ifdef CD_Windows}Windows, customdrawn_WinProc,{$endif}
   {$ifdef CD_Cocoa}MacOSAll, CocoaAll, customdrawn_cocoaproc, CocoaGDIObjects, CocoaUtils,{$endif}
   // LCL
-  SysUtils, Classes, Types, LCLType, LCLProc, Graphics, Controls, Forms, Menus,
+  SysUtils, Classes, Types, Math,
+  LCLType, LCLProc, Graphics, Controls, Forms, Menus,
   // Widgetset
   WSMenus, WSLCLClasses;
 
@@ -78,6 +79,31 @@ implementation
   {$define CD_HasNativeWSMenusINC}
 {$endif}
 {$ifndef CD_HasNativeWSMenusINC}
+
+uses
+  StdCtrls, LCLIntf;
+
+type
+  TCDPopUpMenuForm = class(TForm)
+  public
+    Items: array of TStaticText;
+    LCLMenu: TPopUpMenu;
+    procedure HandleItemClick(ASender: TObject);
+  end;
+
+procedure TCDPopUpMenuForm.HandleItemClick(ASender: TObject);
+var
+  lSelectedItem: PtrInt;
+begin
+  Self.Close;
+  lSelectedItem := TStaticText(ASender).Tag;
+  if LCLIntf.OnShowSelectItemDialogResult <> nil then
+    LCLIntf.OnShowSelectItemDialogResult(lSelectedItem);
+end;
+
+var
+  CDPopUpMenus: TFPList; // of TCDPopUpMenuForm
+
 { TCDWSMenuItem }
 
 class procedure TCDWSMenuItem.AttachMenu(const AMenuItem: TMenuItem);
@@ -154,11 +180,49 @@ end;
 
 { TCDWSPopupMenu }
 
-class procedure TCDWSPopupMenu.Popup(const APopupMenu: TPopupMenu; const X,
-  Y: integer);
+class procedure TCDWSPopupMenu.Popup(const APopupMenu: TPopupMenu; const X, Y: integer);
+var
+  i, CurY, MaxWidth, CurWidth, ItemHeight: Integer;
+  CurItem: TStaticText;
+  CurCDPopUpMenu: TCDPopUpMenuForm;
 begin
-  inherited Popup(APopupMenu, X, Y);
+  if APopUpMenu.Items.Count = 0 then Exit;
+
+  CurCDPopUpMenu := TCDPopUpMenuForm.CreateNew(nil);
+  CDPopUpMenus.Add(CurCDPopUpMenu);
+  CurCDPopUpMenu.Left := X;
+  CurCDPopUpMenu.Top := Y;
+  ItemHeight := CurCDPopUpMenu.Canvas.TextHeight('Áç') + 5;
+  CurCDPopUpMenu.Height := ItemHeight * APopUpMenu.Items.Count;
+  CurY := 0;
+  MaxWidth := 0;
+
+  SetLength(CurCDPopUpMenu.Items, APopUpMenu.Items.Count);
+  for i := 0 to APopUpMenu.Items.Count-1 do
+  begin
+    CurItem := TStaticText.Create(CurCDPopUpMenu);
+    CurCDPopUpMenu.Items[i] := CurItem;
+    CurItem.Top := CurY;
+    Inc(CurY, ItemHeight);
+    CurItem.Left := 0;
+    CurItem.AutoSize := True;
+    CurItem.Parent := CurCDPopUpMenu;
+    CurItem.Caption := APopUpMenu.Items[i].Caption;
+    CurItem.Tag := i;
+    CurItem.OnClick := @CurCDPopUpMenu.HandleItemClick;
+    CurWidth := CurCDPopUpMenu.Canvas.TextWidth(CurItem.Caption);
+    MaxWidth := Max(MaxWidth, CurWidth);
+  end;
+
+  CurCDPopUpMenu.Width := MaxWidth;
+
+  CurCDPopUpMenu.Show;
 end;
+
+initialization
+
+  CDPopUpMenus := TFPList.Create;
+
 {$endif}
 
 end.

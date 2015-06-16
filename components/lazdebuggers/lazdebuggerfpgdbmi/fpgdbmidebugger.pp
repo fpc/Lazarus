@@ -67,7 +67,7 @@ type
   TFpGDBMIDebugger = class(TGDBMIDebugger)
   private
     FWatchEvalList: TList;
-    FImageLoader: TDbgImageLoader;
+    FImageLoaderList: TDbgImageLoaderList;
     FDwarfInfo: TFpDwarfInfo;
     FPrettyPrinter: TFpPascalPrettyPrinter;
     FMemReader: TFpGDBMIDbgMemReader;
@@ -739,14 +739,18 @@ begin
 end;
 
 procedure TFpGDBMIDebugger.LoadDwarf;
+var
+  AnImageLoader: TDbgImageLoader;
 begin
   UnLoadDwarf;
   debugln(FPGDBDBG_VERBOSE, ['TFpGDBMIDebugger.LoadDwarf ']);
-  FImageLoader := TDbgImageLoader.Create(FileName);
-  if not FImageLoader.IsValid then begin
-    FreeAndNil(FImageLoader);
+  AnImageLoader := TDbgImageLoader.Create(FileName);
+  if not AnImageLoader.IsValid then begin
+    FreeAndNil(AnImageLoader);
     exit;
   end;
+  FImageLoaderList := TDbgImageLoaderList.Create(True);
+  FImageLoaderList.Add(AnImageLoader);
 {$IFdef WithWinMemReader}
   FMemReader := TFpGDBMIAndWin32DbgMemReader.Create(Self);
 {$Else}
@@ -754,7 +758,7 @@ begin
 {$ENDIF}
   FMemManager := TFpDbgMemManager.Create(FMemReader, TFpDbgMemConvertorLittleEndian.Create);
 
-  FDwarfInfo := TFpDwarfInfo.Create(FImageLoader);
+  FDwarfInfo := TFpDwarfInfo.Create(FImageLoaderList);
   FDwarfInfo.MemManager := FMemManager;
   FDwarfInfo.LoadCompilationUnits;
   FPrettyPrinter := TFpPascalPrettyPrinter.Create(SizeOf(Pointer));
@@ -764,7 +768,7 @@ procedure TFpGDBMIDebugger.UnLoadDwarf;
 begin
   debugln(FPGDBDBG_VERBOSE, ['TFpGDBMIDebugger.UnLoadDwarf ']);
   FreeAndNil(FDwarfInfo);
-  FreeAndNil(FImageLoader);
+  FreeAndNil(FImageLoaderList);
   FreeAndNil(FMemReader);
   if FMemManager <> nil then
     FMemManager.TargetMemConvertor.Free;

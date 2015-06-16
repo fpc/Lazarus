@@ -50,7 +50,7 @@ uses
   {$ENDIF}
   Classes, SysUtils, typinfo, FileProcs, CodeTree, CodeAtom, CodeCache,
   CustomCodeTool, CodeToolsStrConsts, KeywordFuncLists, BasicCodeTools,
-  LinkScanner, AvgLvlTree, AVL_Tree, CodeToolMemManager, DefineTemplates, SourceChanger,
+  LinkScanner, AvgLvlTree, AVL_Tree, DefineTemplates, SourceChanger,
   FindDeclarationTool, PascalReaderTool, PascalParserTool, CodeToolsStructs,
   ExprEval;
   
@@ -99,7 +99,8 @@ type
     iliIsExperimental,
     iliIsUnimplemented,
     iliIsLibrary,
-    iliAtCursor // the item is the identifier at the completion
+    iliAtCursor, // the item is the identifier at the completion
+    iliNeedsAmpersand //the item has to be prefixed with '&'
     );
   TIdentListItemFlags = set of TIdentListItemFlag;
   
@@ -219,7 +220,7 @@ type
     FIdentSearchItem: TIdentifierListSearchItem;
     FPrefix: string;
     FStartContext: TFindContext;
-    function CompareIdentListItems(Tree: TAvgLvlTree; Data1, Data2: Pointer): integer;
+    function CompareIdentListItems({%H-}Tree: TAvgLvlTree; Data1, Data2: Pointer): integer;
     procedure SetHistory(const AValue: TIdentifierHistoryList);
     procedure SetSortForHistory(AValue: boolean);
     procedure SetSortForScope(AValue: boolean);
@@ -815,7 +816,7 @@ var
   SamePos: Integer;
   l: Integer;
 begin
-  Result:=Prefix;
+  Result:=OldPrefix;
   FoundFirst:=false;
   AnAVLNode:=FItems.FindLowest;
   while AnAVLNode<>nil do begin
@@ -1238,6 +1239,11 @@ begin
                             FoundContext.Node,
                             FoundContext.Tool,
                             ctnNone);
+
+  //Add the '&' character to prefixed identifiers
+  if (Ident^='&') and (IsIdentStartChar[Ident[1]]) then
+    Include(NewItem.Flags,iliNeedsAmpersand);
+
   if (FoundContext.Node=CurrentIdentifierList.StartContext.Node) then begin
     // found identifier is in cursor node
     Include(NewItem.Flags,iliAtCursor);
@@ -1292,6 +1298,7 @@ var
   p: PChar;
 begin
   if not (ilcfStartOfOperand in CurrentIdentifierList.ContextFlags) then exit;
+  if CleanPos=0 then ;
 
   if Context.Node.Desc in AllPascalStatements then begin
     // see fpc/compiler/psystem.pp
@@ -2300,6 +2307,7 @@ begin
           AddKeyWord('FPCTargetCPU');
           AddKeyWord('FPCVersion');
           AddKeyWord('Time');
+          AddKeyWord('CurrentRoutine'); // since FPC 3.1+
         end else if (Directive='codepage') then begin
           // see fpcsrc/compiler/widestr.pas
           AddKeyWord('UTF8');
@@ -3980,7 +3988,7 @@ end;
 function TCodeContextInfo.CalcMemSize: PtrUInt;
 begin
   Result:=PtrUInt(InstanceSize)
-    +PtrUInt(TCodeContextInfoItem)*SizeOf(FItems.Count)
+    +{%H-}PtrUInt(TCodeContextInfoItem)*SizeOf(FItems.Count)
     +MemSizeString(FProcName);
 end;
 

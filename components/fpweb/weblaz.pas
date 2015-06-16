@@ -15,8 +15,8 @@ uses
   fpWebNewHtmlTagPreUnit, fpwebNewHtmlTagTDUnit, fpwebNewHtmlTagTRUnit, 
   fpWebSelectOptionsUnit, fpWebSelectTagUnit, fpWebStrConsts, fpWebToolsUnit, 
   frmnewhttpapp, HTMLDefs, htmlelements, htmlwriter, HTTPDefs, lazweb, 
-  sqldbwebdata, webjsonrpc, WebLazIDEIntf, websession, webutil, 
-  frmrpcmoduleoptions, LazarusPackageIntf;
+  sqldbwebdata, webjsonrpc, WebLazIDEIntf, webutil, frmrpcmoduleoptions, 
+  iniwebsession, LazarusPackageIntf;
 
 implementation
 

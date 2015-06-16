@@ -86,9 +86,16 @@ type
   { TProjectInspectorForm }
 
   TProjectInspectorForm = class(TForm,IFilesEditorInterface)
+    AddPopupMenu: TPopupMenu;
     BtnPanel: TPanel;
     DirectoryHierarchyButton: TSpeedButton;
     FilterEdit: TTreeFilterEdit;
+    MenuItem1: TMenuItem;
+    MenuItem2: TMenuItem;
+    mnuAddEditorFiles: TMenuItem;
+    mnuAddDiskFile: TMenuItem;
+    mnuAddDiskFiles: TMenuItem;
+    mnuAddReq: TMenuItem;
     OpenButton: TSpeedButton;
     ItemsTreeView: TTreeView;
     ItemsPopupMenu: TPopupMenu;
@@ -97,12 +104,9 @@ type
     ToolBar: TToolBar;
     // toolbuttons
     AddBitBtn: TToolButton;
-    AddMoreBitBtn: TToolButton;
     RemoveBitBtn: TToolButton;
     OptionsBitBtn: TToolButton;
     HelpBitBtn: TToolButton;
-    procedure AddBitBtnClick(Sender: TObject);
-    procedure AddMoreBitBtnClick(Sender: TObject);
     procedure CopyMoveToDirMenuItemClick(Sender: TObject);
     procedure DirectoryHierarchyButtonClick(Sender: TObject);
     procedure FormDropFiles(Sender: TObject; const FileNames: array of String);
@@ -116,6 +120,10 @@ type
       State: TDragState; var Accept: Boolean);
     procedure ItemsTreeViewKeyDown(Sender: TObject; var Key: Word; {%H-}Shift: TShiftState);
     procedure ItemsTreeViewSelectionChanged(Sender: TObject);
+    procedure mnuAddBitBtnClick(Sender: TObject);
+    procedure mnuAddDiskFilesClick(Sender: TObject);
+    procedure mnuAddEditorFilesClick(Sender: TObject);
+    procedure mnuAddReqClick(Sender: TObject);
     procedure MoveDependencyUpClick(Sender: TObject);
     procedure MoveDependencyDownClick(Sender: TObject);
     procedure SetDependencyDefaultFilenameMenuItemClick(Sender: TObject);
@@ -161,7 +169,9 @@ type
     ImageIndexDirectory: integer;
     FFlags: TProjectInspectorFlags;
     FProjectNodeDataList : array [TPENodeType] of TPENodeData;
+    procedure AddMenuItemClick(Sender: TObject);
     function AddOneFile(aFilename: string): TModalResult;
+    procedure DoAddMoreDialog(AInitTab: TAddToProjectType);
     procedure FreeNodeData(Typ: TPENodeType);
     function CreateNodeData(Typ: TPENodeType; aName: string; aRemoved: boolean): TPENodeData;
     procedure SetDependencyDefaultFilename(AsPreferred: boolean);
@@ -306,7 +316,7 @@ begin
     else if Key = VK_DELETE then
       RemoveBitBtnClick(Nil)
     else if Key = VK_INSERT then
-      AddBitBtnClick(Nil)
+      AddMenuItemClick(Nil)
     else
       Handled := False;
   finally
@@ -318,6 +328,51 @@ end;
 procedure TProjectInspectorForm.ItemsTreeViewSelectionChanged(Sender: TObject);
 begin
   UpdateButtons;
+end;
+
+procedure TProjectInspectorForm.mnuAddBitBtnClick(Sender: TObject);
+var
+  OpenDialog: TOpenDialog;
+  i: Integer;
+  ADirectory: String;
+begin
+  OpenDialog:=TOpenDialog.Create(nil);
+  try
+    InputHistories.ApplyFileDialogSettings(OpenDialog);
+    ADirectory:=LazProject.ProjectDirectory;
+    if not FilenameIsAbsolute(ADirectory) then ADirectory:='';
+    if ADirectory<>'' then
+      OpenDialog.InitialDir:=ADirectory;
+    OpenDialog.Title:=lisOpenFile;
+    OpenDialog.Options:=OpenDialog.Options
+                          +[ofFileMustExist,ofPathMustExist,ofAllowMultiSelect];
+    OpenDialog.Filter:=dlgFilterAll+' ('+GetAllFilesMask+')|'+GetAllFilesMask
+                 +'|'+dlgFilterLazarusUnit+' (*.pas;*.pp)|*.pas;*.pp'
+                 +'|'+dlgFilterLazarusInclude+' (*.inc)|*.inc'
+                 +'|'+dlgFilterLazarusForm+' (*.lfm;*.dfm)|*.lfm;*.dfm';
+    if OpenDialog.Execute then begin
+      for i:=0 to OpenDialog.Files.Count-1 do
+        if not (AddOneFile(OpenDialog.Files[i]) in [mrOk, mrIgnore]) then break;
+    end;
+    InputHistories.StoreFileDialogSettings(OpenDialog);
+  finally
+    OpenDialog.Free;
+  end;
+end;
+
+procedure TProjectInspectorForm.mnuAddDiskFilesClick(Sender: TObject);
+begin
+  DoAddMoreDialog(a2pFiles);
+end;
+
+procedure TProjectInspectorForm.mnuAddEditorFilesClick(Sender: TObject);
+begin
+  DoAddMoreDialog(a2pEditorFiles);
+end;
+
+procedure TProjectInspectorForm.mnuAddReqClick(Sender: TObject);
+begin
+  DoAddMoreDialog(a2pRequiredPkg);
 end;
 
 procedure TProjectInspectorForm.MoveDependencyUpClick(Sender: TObject);
@@ -398,43 +453,32 @@ begin
   FNextSelectedPart:=NewFile;
 end;
 
-procedure TProjectInspectorForm.AddBitBtnClick(Sender: TObject);
-var
-  OpenDialog: TOpenDialog;
-  i: Integer;
-  ADirectory: String;
-begin
-  OpenDialog:=TOpenDialog.Create(nil);
-  try
-    InputHistories.ApplyFileDialogSettings(OpenDialog);
-    ADirectory:=LazProject.ProjectDirectory;
-    if not FilenameIsAbsolute(ADirectory) then ADirectory:='';
-    if ADirectory<>'' then
-      OpenDialog.InitialDir:=ADirectory;
-    OpenDialog.Title:=lisOpenFile;
-    OpenDialog.Options:=OpenDialog.Options
-                          +[ofFileMustExist,ofPathMustExist,ofAllowMultiSelect];
-    OpenDialog.Filter:=dlgAllFiles+' ('+GetAllFilesMask+')|'+GetAllFilesMask
-                 +'|'+lisLazarusUnit+' (*.pas;*.pp)|*.pas;*.pp'
-                 +'|'+lisLazarusInclude+' (*.inc)|*.inc'
-                 +'|'+lisLazarusForm+' (*.lfm;*.dfm)|*.lfm;*.dfm';
-    if OpenDialog.Execute then begin
-      for i:=0 to OpenDialog.Files.Count-1 do
-        if not (AddOneFile(OpenDialog.Files[i]) in [mrOk, mrIgnore]) then break;
-    end;
-    InputHistories.StoreFileDialogSettings(OpenDialog);
-  finally
-    OpenDialog.Free;
+procedure TProjectInspectorForm.AddMenuItemClick(Sender: TObject);
+
+  function _NodeTreeIsIn(xIterNode, xParentNode: TTreeNode): Boolean;
+  begin
+    Result := (xIterNode = xParentNode);
+    if not Result and Assigned(xIterNode) then
+      Result := _NodeTreeIsIn(xIterNode.Parent, xParentNode);
   end;
+
+begin
+  //check the selected item in ItemsTreeView
+  // -> if it's "Required Packages", call "New Requirement" (mnuAddReqClick)
+  // -> otherwise (selected = "Files") call "Add files from file system" (AddBitBtnClick)
+  if _NodeTreeIsIn(ItemsTreeView.Selected, FDependenciesNode) then
+    mnuAddReqClick(Sender)
+  else
+    mnuAddBitBtnClick(Sender);
 end;
 
-procedure TProjectInspectorForm.AddMoreBitBtnClick(Sender: TObject);
+procedure TProjectInspectorForm.DoAddMoreDialog(AInitTab: TAddToProjectType);
 var
   AddResult: TAddToProjectResult;
   i: Integer;
 begin
   AddResult:=nil;
-  if ShowAddToProjectDlg(LazProject,AddResult)<>mrOk then exit;
+  if ShowAddToProjectDlg(LazProject,AddResult,AInitTab)<>mrOk then exit;
 
   case AddResult.AddType of
   a2pFiles:
@@ -456,6 +500,8 @@ begin
       EndUpdate;
     end;
 
+  else
+    Showmessage('Not implemented');
   end;
 
   AddResult.Free;
@@ -495,7 +541,7 @@ var
   ItemCnt: integer;
 
   function AddPopupMenuItem(const ACaption: string; AnEvent: TNotifyEvent;
-    EnabledFlag: boolean): TMenuItem;
+    EnabledFlag: boolean = True): TMenuItem;
   begin
     if ItemsPopupMenu.Items.Count<=ItemCnt then begin
       Result:=TMenuItem.Create(Self);
@@ -579,16 +625,30 @@ begin
     end;
   end;
 
-  // general
-  AddPopupMenuItem(lisOpen, @OpenButtonClick, CanOpenCount>0);
-  AddPopupMenuItem(lisBtnDlgAdd, @AddBitBtnClick, AddBitBtn.Enabled);
-  AddPopupMenuItem(lisRemove, @RemoveBitBtnClick, CanRemoveCount>0);
+  if ItemsTreeView.Selected = FFilesNode then
+  begin
+    // Only the Files node is selected.
+    Assert(AddBitBtn.Enabled, 'AddBitBtn not Enabled');
+    AddPopupMenuItem(lisBtnDlgAdd, @mnuAddBitBtnClick);
+    if not LazProject.IsVirtual then
+      AddPopupMenuItem(lisRemoveNonExistingFiles,@RemoveNonExistingFilesMenuItemClick);
+  end
+  else if ItemsTreeView.Selected = FDependenciesNode then
+  begin
+    // Only the Required Packages node is selected.
+    AddPopupMenuItem(lisBtnDlgAdd, @mnuAddReqClick);
+  end
+  else begin
+    // Files, dependencies or everything mixed is selected.
+    if CanOpenCount>0 then
+      AddPopupMenuItem(lisOpen, @OpenButtonClick);
+    if CanRemoveCount>0 then
+      AddPopupMenuItem(lisRemove, @RemoveBitBtnClick);
+    // files section
+    if CanMoveFileCount>0 then
+      AddPopupMenuItem(lisCopyMoveFileToDirectory,@CopyMoveToDirMenuItemClick);
+  end;
 
-  // files section
-  AddPopupMenuItem(lisCopyMoveFileToDirectory,@CopyMoveToDirMenuItemClick,
-                   (CanMoveFileCount>0));
-  AddPopupMenuItem(lisRemoveNonExistingFiles,@RemoveNonExistingFilesMenuItemClick,
-                   not LazProject.IsVirtual);
   if LazProject.EnableI18N and LazProject.EnableI18NForLFM
   and (HasLFMCount>0) then begin
     AddPopupMenuItem(lisEnableI18NForLFM,
@@ -937,12 +997,17 @@ begin
   ToolBar.Images            := IDEImages.Images_16;
   FilterEdit.OnGetImageIndex:=@OnTreeViewGetImageIndex;
 
-  AddBitBtn     := CreateToolButton('AddBitBtn', lisAdd, lisPckEditAddFiles, 'laz_add', @AddBitBtnClick);
-  AddMoreBitBtn := CreateToolButton('AddMoreBitBtn', lisDlgAdd, lisPckEditAddOtherItems, 'laz_addmore', @AddMoreBitBtnClick);
+  AddBitBtn     := CreateToolButton('AddBitBtn', lisAddSub, lisClickToSeeTheChoices, 'laz_add', nil);
   RemoveBitBtn  := CreateToolButton('RemoveBitBtn', lisRemove, lisPckEditRemoveSelectedItem, 'laz_delete', @RemoveBitBtnClick);
   CreateDivider;
   OptionsBitBtn := CreateToolButton('OptionsBitBtn', lisOptions, lisPckEditEditGeneralOptions, 'menu_environment_options', @OptionsBitBtnClick);
-  HelpBitBtn    := CreateToolButton('HelpBitBtn', GetButtonCaption(idButtonHelp), lisPkgEdThereAreMoreFunctionsInThePopupmenu, 'menu_help', @HelpBitBtnClick);
+  HelpBitBtn    := CreateToolButton('HelpBitBtn', GetButtonCaption(idButtonHelp), lisMenuOnlineHelp, 'menu_help', @HelpBitBtnClick);
+
+  AddBitBtn.DropdownMenu:=AddPopupMenu;
+  mnuAddDiskFile.Caption:=lisPckEditAddFilesFromFileSystem;
+  mnuAddDiskFiles.Caption:=lisAddFilesInDirectory;
+  mnuAddEditorFiles.Caption:=lisProjAddEditorFile;
+  mnuAddReq.Caption:=lisProjAddNewRequirement;
 
   OpenButton.LoadGlyphFromResourceName(HInstance, 'laz_open');
   OpenButton.Caption:='';
@@ -1151,8 +1216,7 @@ begin
     Result:=TPkgDependency(Item);
 end;
 
-function TProjectInspectorForm.TreeViewToInspector(TV: TTreeView
-  ): TProjectInspectorForm;
+function TProjectInspectorForm.TreeViewToInspector(TV: TTreeView): TProjectInspectorForm;
 begin
   if TV=ItemsTreeView then
     Result:=Self
@@ -1185,14 +1249,12 @@ begin
     ProjInspector:=nil;
 end;
 
-function TProjectInspectorForm.ExtendIncSearchPath(NewIncPaths: string
-  ): boolean;
+function TProjectInspectorForm.ExtendIncSearchPath(NewIncPaths: string): boolean;
 begin
   Result:=MainIDEInterface.ExtendProjectIncSearchPath(LazProject,NewIncPaths);
 end;
 
-function TProjectInspectorForm.ExtendUnitSearchPath(NewUnitPaths: string
-  ): boolean;
+function TProjectInspectorForm.ExtendUnitSearchPath(NewUnitPaths: string): boolean;
 begin
   Result:=MainIDEInterface.ExtendProjectUnitSearchPath(LazProject,NewUnitPaths);
 end;

@@ -44,15 +44,15 @@ uses
   ProjectIntf, NewItemIntf, MenuIntf, LazIDEIntf, LazFileCache,
   EnvironmentOpts, LazarusIDEStrConsts, IDEImagesIntf, ToolbarData;
 
+
 type
   { TMainIDEBar }
-
 
   TMainIDEBar = class(TForm)
     //Coolbar and PopUpMenus
     CoolBar: TCoolBar;
-    pmOptions: TPopupMenu;
-    miOptions: TMenuItem;
+    OptionsPopupMenu: TPopupMenu;
+    OptionsMenuItem: TMenuItem;
     OpenFilePopUpMenu: TPopupMenu;
     SetBuildModePopupMenu: TPopupMenu;
     NewUnitFormPopupMenu: TPopupMenu;
@@ -131,6 +131,11 @@ type
         itmAddJumpPoint: TIDEMenuCommand;
         itmJumpToNextError: TIDEMenuCommand;
         itmJumpToPrevError: TIDEMenuCommand;
+        itmJumpToInterface: TIDEMenuCommand;
+        itmJumpToInterfaceUses: TIDEMenuCommand;
+        itmJumpToImplementation: TIDEMenuCommand;
+        itmJumpToImplementationUses: TIDEMenuCommand;
+        itmJumpToInitialization: TIDEMenuCommand;
       //itmBookmarks: TIDEMenuSection;
         itmSetFreeBookmark: TIDEMenuCommand;
         itmJumpToNextBookmark: TIDEMenuCommand;
@@ -362,14 +367,20 @@ type
       const FileNames: array of String);
     procedure CoolBarOnChange(Sender: TObject);
     procedure MainSplitterMoved(Sender: TObject);
+    procedure SetMainIDEHeightEvent(Sender: TObject);
   private
     FOldWindowState: TWindowState;
     FOnActive: TNotifyEvent;
-    procedure NewUFDefaultClick(Sender: TObject);
+    procedure NewUnitFormDefaultClick(Sender: TObject);
     procedure NewUnitFormPopupMenuPopup(Sender: TObject);
+    function CalcMainIDEHeight: Integer;
+    function CalcNonClientHeight: Integer;
   protected
     procedure DoActive;
+    procedure DoShow; override;
     procedure WndProc(var Message: TLMessage); override;
+
+    procedure Resizing(State: TWindowState); override;
   public
     constructor Create(TheOwner: TComponent); override;
     procedure HideIDE;
@@ -378,12 +389,17 @@ type
     property OnActive: TNotifyEvent read FOnActive write FOnActive;
     procedure UpdateDockCaption({%H-}Exclude: TControl); override;
     procedure RefreshCoolbar;
+    procedure SetMainIDEHeight;
+    procedure DoSetMainIDEHeight(const AIDEIsMaximized: Boolean; ANewHeight: Integer = 0);
   end;
 
 var
   MainIDEBar: TMainIDEBar = nil;
 
 implementation
+
+uses
+  LCLIntf, LCLType, Math, IDEWindowIntf;
 
 { TMainIDEBar }
 
@@ -396,7 +412,7 @@ begin
   LazarusIDE.DoDropFiles(Sender,FileNames);
 end;
 
-procedure TMainIDEBar.NewUFDefaultClick(Sender: TObject);
+procedure TMainIDEBar.NewUnitFormDefaultClick(Sender: TObject);
 var
   Category: TNewIDEItemCategory;
   i: Integer;
@@ -449,7 +465,7 @@ begin
     else begin
       Item:=TMenuItem.Create(NewUFSetDefaultMenuItem);
       Item.Name:='NewUFSetDefaultMenuItem'+IntToStr(Index);
-      Item.OnClick:=@NewUFDefaultClick;
+      Item.OnClick:=@NewUnitFormDefaultClick;
       NewUFSetDefaultMenuItem.Add(Item);
     end;
     Item.Caption:=CurTemplate.LocalizedName;
@@ -466,6 +482,99 @@ procedure TMainIDEBar.DoActive;
 begin
   if Assigned(FOnActive) then
     FOnActive(Self);
+end;
+
+procedure TMainIDEBar.DoSetMainIDEHeight(const AIDEIsMaximized: Boolean;
+  ANewHeight: Integer);
+begin
+  if not Showing then
+    Exit;
+
+  if ANewHeight <= 0 then
+    ANewHeight := CalcMainIDEHeight;
+
+  if Assigned(IDEDockMaster) then
+  begin
+    if EnvironmentOptions.AutoAdjustIDEHeight then
+      IDEDockMaster.AdjustMainIDEWindowHeight(Self, True, ANewHeight)
+    else
+      IDEDockMaster.AdjustMainIDEWindowHeight(Self, False, 0);
+  end else
+  begin
+    if (AIDEIsMaximized or EnvironmentOptions.AutoAdjustIDEHeight) then
+    begin
+      ANewHeight := ANewHeight + CalcNonClientHeight;
+      if ANewHeight <> Constraints.MaxHeight then
+      begin
+        Constraints.MaxHeight := ANewHeight;
+        Constraints.MinHeight := Constraints.MaxHeight;
+        ClientHeight := Constraints.MaxHeight;
+      end;
+    end else
+    if Constraints.MaxHeight <> 0 then
+    begin
+      Constraints.MaxHeight := 0;
+      Constraints.MinHeight := 0;
+    end;
+  end;
+end;
+
+procedure TMainIDEBar.DoShow;
+begin
+  inherited DoShow;
+  RefreshCoolbar;
+  ComponentPageControl.OnChange(Self);//refresh component palette with button reposition
+end;
+
+function TMainIDEBar.CalcNonClientHeight: Integer;
+{$IF DEFINED(LCLWin32) OR DEFINED(LCLGtk2) OR DEFINED(LCLQt)}
+var
+  WindowRect, WindowClientRect: TRect;
+{$ENDIF}
+begin
+  {
+    This function is a bug-workaround for various LCL widgetsets.
+    Every widgetset handles constrained height differently.
+    In an ideal word (when the bugs are fixed), this function shouldn't be
+    needed at all - it should return always 0.
+
+    Currently tested: Win32, Gtk2, Carbon, Qt.
+
+    List of bugs related to this workaround:
+      http://bugs.freepascal.org/view.php?id=28033
+      http://bugs.freepascal.org/view.php?id=28034
+      http://bugs.freepascal.org/view.php?id=28036
+
+  }
+
+  if not Showing then
+    Exit(0);
+
+  {$IF DEFINED(LCLWin32) OR DEFINED(LCLGtk2) OR DEFINED(LCLQt)}
+  //Gtk2 + Win32 + Qt
+  //retrieve real main menu height because
+  // - Win32: multi-line is possible (SM_CYMENU reflects only single line)
+  // - Gtk2, Qt:  SM_CYMENU does not work
+  LclIntf.GetWindowRect(Handle, WindowRect{%H-});
+  LclIntf.GetClientRect(Handle, WindowClientRect{%H-});
+  LclIntf.ClientToScreen(Handle, WindowClientRect.TopLeft);
+
+  Result := WindowClientRect.Top - WindowRect.Top;
+
+  {$IFDEF LCLWin32}
+  //Win32 the constrained height has to be without SM_CYSIZEFRAME and SM_CYMENU
+  Result := Result - (LCLIntf.GetSystemMetrics(SM_CYSIZEFRAME) + LCLIntf.GetSystemMetrics(SM_CYMENU));
+  {$ENDIF LCLWin32}
+  {$ELSE}
+  //other widgetsets
+  //Carbon tested - behaves correctly
+  Result := 0;
+  {$ENDIF}
+end;
+
+procedure TMainIDEBar.SetMainIDEHeightEvent(Sender: TObject);
+begin
+  SetMainIDEHeight;
 end;
 
 procedure TMainIDEBar.WndProc(var Message: TLMessage);
@@ -522,10 +631,10 @@ begin
   NewUFSetDefaultMenuItem.Caption:=lisSetDefault;
   NewUnitFormPopupMenu.Items.Add(NewUFSetDefaultMenuItem);
 
-  pmOptions := TPopupMenu.Create(TheOwner);
-  pmOptions.Images := IDEImages.Images_16;
-  miOptions := TMenuItem.Create(TheOwner);
-  with MainIDEBar.miOptions do
+  OptionsPopupMenu := TPopupMenu.Create(TheOwner);
+  OptionsPopupMenu.Images := IDEImages.Images_16;
+  OptionsMenuItem := TMenuItem.Create(TheOwner);
+  with MainIDEBar.OptionsMenuItem do
   begin
      Name := 'miToolbarOption';
      Caption := lisOptions;
@@ -533,7 +642,7 @@ begin
      Visible := True;
      ImageIndex := IDEImages.LoadImage(16, 'menu_environment_options');
    end;
-  MainIDEBar.pmOptions.Items.Add(MainIDEBar.miOptions);
+  MainIDEBar.OptionsPopupMenu.Items.Add(MainIDEBar.OptionsMenuItem);
 end;
 
 procedure TMainIDEBar.RefreshCoolbar;
@@ -543,7 +652,6 @@ var
   CoolBarOpts: TIDECoolBarOptions;
 begin
   CoolBarOpts := EnvironmentOptions.IDECoolBarOptions;
-  IDECoolBar.Sort;
   //read general settings
   if not (CoolBarOpts.IDECoolBarGrabStyle in [0..5]) then
     CoolBarOpts.IDECoolBarGrabStyle := 4;
@@ -552,8 +660,11 @@ begin
     CoolBarOpts.IDECoolBarGrabWidth := 5;
   Coolbar.GrabWidth := CoolBarOpts.IDECoolBarGrabWidth;
   Coolbar.BandBorderStyle := TBorderStyle(CoolBarOpts.IDECoolBarBorderStyle);
+  Coolbar.Width := CoolBarOpts.IDECoolBarWidth;
   //read toolbars
   CoolBar.Bands.Clear;
+  IDECoolBar.CopyFromOptions(CoolBarOpts);
+  IDECoolBar.Sort;
   for I := 0 to IDECoolBar.ToolBars.Count - 1 do
   begin
     CoolBand := CoolBar.Bands.Add;
@@ -573,17 +684,71 @@ begin
   MainSplitter.Align := alLeft;
   MainSplitter.Visible := MainIDEBar.Coolbar.Visible and
                           MainIDEBar.ComponentPageControl.Visible;
+end;
 
+procedure TMainIDEBar.Resizing(State: TWindowState);
+begin
+  case State of
+    wsMaximized, wsNormal: DoSetMainIDEHeight(State = wsMaximized);
+  end;
+
+  inherited Resizing(State);
 end;
 
 procedure TMainIDEBar.MainSplitterMoved(Sender: TObject);
 begin
   EnvironmentOptions.IDECoolBarOptions.IDECoolBarWidth := CoolBar.Width;
+  SetMainIDEHeight;
+end;
+
+function TMainIDEBar.CalcMainIDEHeight: Integer;
+var
+  NewHeight: Integer;
+  I: Integer;
+  ComponentScrollBox: TScrollBox;
+  SBControl: TControl;
+begin
+  Result := 0;
+  if not (Assigned(EnvironmentOptions) and Assigned(CoolBar) and Assigned(ComponentPageControl)) then
+    Exit;
+
+  if EnvironmentOptions.IDECoolBarOptions.IDECoolBarVisible then
+  begin
+    for I := 0 to CoolBar.Bands.Count-1 do
+    begin
+      NewHeight := CoolBar.Bands[I].Top + CoolBar.Bands[I].Height;
+      Result := Max(Result, NewHeight);
+    end;
+  end;
+
+  if EnvironmentOptions.ComponentPaletteVisible and Assigned(ComponentPageControl.ActivePage) then
+  begin
+    ComponentScrollBox := nil;
+    for I := 0 to ComponentPageControl.ActivePage.ControlCount-1 do
+    if (ComponentPageControl.ActivePage.Controls[I] is TScrollBox) then
+    begin
+      ComponentScrollBox := TScrollBox(ComponentPageControl.ActivePage.Controls[I]);
+      Break;
+    end;
+
+    if Assigned(ComponentScrollBox) then
+    for I := 0 to ComponentScrollBox.ControlCount-1 do
+    begin
+      SBControl := ComponentScrollBox.Controls[I];
+      NewHeight :=
+        SBControl.Top + SBControl.Height +  //button height
+        ComponentPageControl.Height - ComponentScrollBox.ClientHeight;  //page control non-client height (tabs, borders).
+      Result := Max(Result, NewHeight);
+
+      if not EnvironmentOptions.AutoAdjustIDEHeightFullComponentPalette then
+        Break;  //we need only one button (we calculate one line only)
+    end;
+  end;
 end;
 
 procedure TMainIDEBar.CoolBarOnChange(Sender: TObject);
 var
-  I, J: integer;
+  I, J: Integer;
   ToolBar: TToolBar;
 begin
   for I := 0 to Coolbar.Bands.Count - 1 do
@@ -599,8 +764,14 @@ begin
     end
   end;
   IDECoolBar.Sort;
+  IDECoolBar.CopyToOptions(EnvironmentOptions.IDECoolBarOptions);
+  SetMainIDEHeight;
 end;
 
+procedure TMainIDEBar.SetMainIDEHeight;
+begin
+  DoSetMainIDEHeight(WindowState = wsMaximized);
+end;
 
 end.
 

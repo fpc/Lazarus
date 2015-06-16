@@ -66,9 +66,10 @@ unit registersqldb;
 {$DEFINE HASMYSQL56CONNECTION}
 {$ENDIF}
 
-{$IFNDEF Solaris}
+{ IFNDEF Solaris}
+// Reflects missing fcl-db support around FPC 2.6.1.
 {$DEFINE HASIBCONNECTION}
-{$ENDIF}
+{ ENDIF}
 
 interface
 

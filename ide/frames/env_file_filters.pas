@@ -146,12 +146,12 @@ end;
 
 function GetDefaultFileDialogFilter: string;
 begin
-  Result := lisLazarusUnit + ' (*.pas;*.pp)|*.pas;*.pp'
-    + '|' + lisLazarusProject + ' (*.lpi)|*.lpi'
-    + '|' + lisLazarusForm + ' (*.lfm;*.dfm)|*.lfm;*.dfm'
-    + '|' + lisLazarusPackage + ' (*.lpk)|*.lpk'
-    + '|' + lisLazarusProjectSource + ' (*.lpr)|*.lpr'
-    + '|' + lisLazarusOtherFile + ' (*.inc;*.lrs;*.lpl)|*.inc;*.lrs;*.lpl';
+  Result := dlgFilterLazarusUnit + ' (*.pas;*.pp)|*.pas;*.pp'
+    + '|' + dlgFilterLazarusProject + ' (*.lpi)|*.lpi'
+    + '|' + dlgFilterLazarusForm + ' (*.lfm;*.dfm)|*.lfm;*.dfm'
+    + '|' + dlgFilterLazarusPackage + ' (*.lpk)|*.lpk'
+    + '|' + dlgFilterLazarusProjectSource + ' (*.lpr)|*.lpr'
+    + '|' + dlgFilterLazarusOtherFile + ' (*.inc;*.lrs;*.lpl)|*.inc;*.lrs;*.lpl';
 end;
 
 function GetFileDialogFilterFromGrid(Grid: TStringGrid): string;

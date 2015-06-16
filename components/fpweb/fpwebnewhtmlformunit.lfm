@@ -56,7 +56,7 @@ object fpwebNewHTMLFormForm: TfpwebNewHTMLFormForm
         Top = 56
         Width = 35
         BorderSpacing.Around = 6
-        Caption = 'Metod'
+        Caption = 'Method'
         ParentColor = False
       end
       object Label3: TLabel

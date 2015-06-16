@@ -35,8 +35,6 @@ begin
   { Creates the application NSApp object }
   FNsApp := NSApplication.sharedApplication;
 
-  InitClipboard();
-
   // Sandboxing
   lDict := NSProcessInfo.processInfo.environment;
   SandboxingOn := lDict.valueForKey(NSStr('APP_SANDBOX_CONTAINER_ID')) <> nil;
@@ -116,6 +114,8 @@ begin
   ScreenContext := TCocoaContext.Create(DefaultContext.ctx);
 
   InitStockItems;
+
+  InitClipboard(); // must be here otherwise clipboard calls before Application.Initialize crash
 end;
 
 {------------------------------------------------------------------------------

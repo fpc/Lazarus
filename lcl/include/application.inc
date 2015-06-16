@@ -82,8 +82,6 @@ end;
        TApplication Constructor
 ------------------------------------------------------------------------------}
 constructor TApplication.Create(AOwner: TComponent);
-var
-  LangDefault, LangFallback: String;
 begin
   LCLProc.SendApplicationMessageFunction:=@SendApplicationMsg;
 
@@ -116,15 +114,7 @@ begin
   FFindGlobalComponentEnabled:=true;
   RegisterFindGlobalComponentProc(@FindApplicationComponent);
 
-  {$ifndef wince}// remove ifdef when gettext is fixed
-  LazGetLanguageIDs(LangDefault, LangFallback);
-  if LangDefault <> '' then
-    FBidiMode := Direction(LangDefault)
-  else
-    FBidiMode := Direction(LangFallback);
-  {$else}
-    FBidiMode := bdLeftToRight;
-  {$endif}
+  FBidiMode := DefaultApplicationBiDiMode;
 
   FMainFormOnTaskBar := False;
 

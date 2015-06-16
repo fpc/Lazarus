@@ -80,6 +80,7 @@ type
   end;
 
 implementation
+uses LR_Utils;
 
 // missing cairo functions to make shared images posible
 const
@@ -752,8 +753,8 @@ begin
   aStyle.Layout:=tlTop;    //       background painting, set to false for the moment
   aStyle.Wordbreak:= TfrMemoView_(View).WordWrap;
 
-  gapx := trunc(View.FrameWidth / 2 + 0.5) + 2;
-  gapy := trunc(View.FrameWidth / 4 + 0.5) + 1;
+  gapx := trunc(View.FrameWidth / 2 + 0.5);
+  gapy := trunc(View.FrameWidth / 4 + 0.5);
   sgapx := trunc( gapx * ScaleX + 0.5);
   sgapy := trunc( gapy * ScaleY + 0.5);
   nx := trunc((x+gapx) * ScaleX + 0.5);
@@ -767,7 +768,12 @@ begin
   if fCairoPrinter.Canvas.Font.Orientation<>0 then
     fCairoPrinter.Canvas.TextRect(R, nx, R.Bottom, Text, aStyle)
   else
-    fCairoPrinter.Canvas.TextRect(R, R.Left, ny, Text, aStyle);
+  begin
+    if TfrMemoView_(View).Justify and not TfrMemoView_(View).LastLine then
+      CanvasTextRectJustify(fCairoPrinter.Canvas, R, nx, R.Right, ny, Text, true)
+    else
+      fCairoPrinter.Canvas.TextRect(R, {R.Left} nx, ny, Text, aStyle);
+  end;
 
   // restore previous clipping
   //if OldClipping then
@@ -783,8 +789,8 @@ begin
 
   nx := Trunc( x * ScaleX + 0.5 );
   ny := Trunc( y * ScaleY + 0.5 );
-  ndx := Trunc( View.dx * ScaleX + 1.5 );
-  ndy := Trunc( View.dy * ScaleY + 1.5 );
+  ndx := Trunc( View.dx * ScaleX + 0.5 );
+  ndy := Trunc( View.dy * ScaleY + 0.5 );
 
   DataRect := Rect(nx, ny, nx+ndx, ny+ndy);
 

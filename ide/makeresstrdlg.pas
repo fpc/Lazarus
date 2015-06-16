@@ -40,7 +40,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, Forms, Controls, Buttons, StdCtrls,
-  Dialogs, ExtCtrls, IDEWindowIntf,
+  Dialogs, ExtCtrls, ButtonPanel, IDEWindowIntf,
   SynHighlighterPas, SynEdit,
   CodeToolManager, CodeToolsStructs, CodeCache,
   IDEHelpIntf, IDEDialogs,
@@ -52,6 +52,7 @@ type
   { TMakeResStrDialog }
 
   TMakeResStrDialog = class(TForm)
+    ButtonPanel1: TButtonPanel;
     CustomIdentifierCheckBox: TCheckBox;
     IdentifierGroupBox: TGroupBox;
     IdentifierEdit: TEdit;
@@ -63,7 +64,6 @@ type
     // options
     ConversionGroupBox: TGroupBox;
     CodePanel: TPanel;
-    BtnPanel: TPanel;
     // resourcestring section
     ResStrSectionLabel: TLabel;
     ResStrSectionComboBox: TComboBox;
@@ -84,14 +84,8 @@ type
     // highlighter
     SynPasSyn: TSynPasSyn;
 
-    // ok+cancel buttons
-    OkButton: TBitBtn;
-    CancelButton: TBitBtn;
-    HelpButton: TBitBtn;
 
-    procedure CancelButtonClick(Sender: TObject);
     procedure CustomIdentifierCheckBoxClick(Sender: TObject);
-    procedure FormCreate(Sender: TObject);
     procedure HelpButtonClick(Sender: TObject);
     procedure IdentLengthComboBoxChange(Sender: TObject);
     procedure IdentPrefixComboBoxChange(Sender: TObject);
@@ -196,19 +190,9 @@ end;
 
 { TMakeResStrDialog }
 
-procedure TMakeResStrDialog.CancelButtonClick(Sender: TObject);
-begin
-  ModalResult:=mrCancel;
-end;
-
 procedure TMakeResStrDialog.CustomIdentifierCheckBoxClick(Sender: TObject);
 begin
   UpdateIdentifier;
-end;
-
-procedure TMakeResStrDialog.FormCreate(Sender: TObject);
-begin
-  ActiveControl:=OkButton;
 end;
 
 procedure TMakeResStrDialog.HelpButtonClick(Sender: TObject);
@@ -291,9 +275,9 @@ begin
   StringConstGroupBox.Caption:=lisMakeResStrStringConstantInSource;
 
   // OK, Cancel, Help buttons
-  OkButton.Caption:=lisMenuOk;
-  CancelButton.Caption:=lisCancel;
-  HelpButton.Caption:=lisMenuHelp;
+  ButtonPanel1.OkButton.Caption:=lisMenuOk;
+  ButtonPanel1.CancelButton.Caption:=lisCancel;
+  ButtonPanel1.HelpButton.Caption:=lisMenuHelp;
 end;
 
 constructor TMakeResStrDialog.Create(TheOwner: TComponent);

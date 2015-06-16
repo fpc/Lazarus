@@ -398,8 +398,7 @@ begin
     SetFilename(Filename);              // Load the XML config file
 end;
 
-function TXMLConfig.FindNode(const APath: String;
-  PathHasValue: boolean): TDomNode;
+function TXMLConfig.FindNode(const APath: String; PathHasValue: boolean): TDomNode;
 var
   PathLen: Integer;
 begin
@@ -411,8 +410,7 @@ begin
   Result:=InternalFindNode(APath,PathLen);
 end;
 
-function TXMLConfig.HasPath(const APath: string; PathHasValue: boolean
-  ): boolean;
+function TXMLConfig.HasPath(const APath: string; PathHasValue: boolean): boolean;
 begin
   Result:=FindNode(APath,PathHasValue)<>nil;
 end;

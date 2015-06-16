@@ -281,7 +281,7 @@ object ProjectVersionInfoOptionsFrame: TProjectVersionInfoOptionsFrame
           Width = 300
         end>
       FixedCols = 0
-      Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goColSizing, goEditing, goAlwaysShowEditor, goSmoothScroll]
+      Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goColSizing, goEditing, goAlwaysShowEditor, goThumbTracking, goSmoothScroll]
       TabOrder = 0
       TitleStyle = tsNative
       ColWidths = (

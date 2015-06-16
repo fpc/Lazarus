@@ -8,23 +8,23 @@ object NewOtherDialog: TNewOtherDialog
   ClientHeight = 421
   ClientWidth = 561
   Position = poScreenCenter
-  LCLVersion = '1.1'
+  LCLVersion = '1.5'
   object Panel1: TPanel
     Left = 6
-    Height = 370
+    Height = 374
     Top = 6
     Width = 549
     Align = alClient
     BorderSpacing.Around = 6
     BevelOuter = bvNone
-    ClientHeight = 370
+    ClientHeight = 374
     ClientWidth = 549
     TabOrder = 0
     object ItemsTreeView: TTreeView
       AnchorSideLeft.Control = Owner
       AnchorSideTop.Control = Owner
       Left = 0
-      Height = 370
+      Height = 374
       Top = 0
       Width = 263
       Align = alClient
@@ -41,19 +41,19 @@ object NewOtherDialog: TNewOtherDialog
       AnchorSideTop.Control = Owner
       AnchorSideRight.Control = Owner
       Left = 268
-      Height = 370
+      Height = 374
       Top = 0
       Width = 281
       Align = alRight
       Caption = 'DescriptionGroupBox'
-      ClientHeight = 349
-      ClientWidth = 273
+      ClientHeight = 353
+      ClientWidth = 277
       TabOrder = 1
       object DescriptionLabel: TLabel
         Left = 6
         Height = 17
         Top = 6
-        Width = 261
+        Width = 265
         Align = alTop
         BorderSpacing.Around = 6
         Caption = 'DescriptionLabel'
@@ -62,9 +62,9 @@ object NewOtherDialog: TNewOtherDialog
       end
       object InheritableComponentsListView: TListView
         Left = 0
-        Height = 320
+        Height = 324
         Top = 29
-        Width = 273
+        Width = 277
         Align = alClient
         Columns = <        
           item
@@ -86,7 +86,7 @@ object NewOtherDialog: TNewOtherDialog
     end
     object Splitter1: TSplitter
       Left = 263
-      Height = 370
+      Height = 374
       Top = 0
       Width = 5
       Align = alRight
@@ -95,8 +95,8 @@ object NewOtherDialog: TNewOtherDialog
   end
   object ButtonPanel: TButtonPanel
     Left = 6
-    Height = 33
-    Top = 382
+    Height = 29
+    Top = 386
     Width = 549
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True

@@ -263,6 +263,11 @@ begin
   FillAutoCreateFormsListbox;
   FillAvailFormsListBox;
   FormsAutoCreateNewFormsCheckBox.Checked := Project.AutoCreateForms;
+
+  FormsMoveAutoCreatedFormUpBtn.ShowHint := true;
+  FormsMoveAutoCreatedFormsDownBtn.ShowHint := true;
+  FormsMoveAutoCreatedFormUpBtn.Hint := lisMMMoveSelectedItemUp;
+  FormsMoveAutoCreatedFormsDownBtn.Hint := lisMMMoveSelectedItemDown;
 end;
 
 procedure TProjectFormsOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);

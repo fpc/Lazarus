@@ -1,7 +1,7 @@
 object CodeBrowserView: TCodeBrowserView
-  Left = 355
+  Left = 378
   Height = 563
-  Top = 321
+  Top = 309
   Width = 645
   ActiveControl = ScopeComboBox
   Caption = 'CodeBrowserView'
@@ -10,28 +10,29 @@ object CodeBrowserView: TCodeBrowserView
   OnCreate = FormCreate
   OnDeactivate = FormDeactivate
   OnDestroy = FormDestroy
-  LCLVersion = '1.3'
+  Position = poScreenCenter
+  LCLVersion = '1.5'
   object ScopeGroupBox: TGroupBox
     Left = 6
-    Height = 62
+    Height = 57
     Top = 6
     Width = 633
     Align = alTop
     AutoSize = True
     BorderSpacing.Around = 6
     Caption = 'ScopeGroupBox'
-    ClientHeight = 43
+    ClientHeight = 37
     ClientWidth = 629
     TabOrder = 0
     object ScopeComboBox: TComboBox
       AnchorSideLeft.Control = ScopeGroupBox
       AnchorSideTop.Control = ScopeGroupBox
       Left = 6
-      Height = 31
+      Height = 23
       Top = 6
       Width = 315
       BorderSpacing.Around = 6
-      ItemHeight = 0
+      ItemHeight = 15
       OnChange = ScopeComboBoxChange
       Style = csDropDownList
       TabOrder = 0
@@ -42,9 +43,9 @@ object CodeBrowserView: TCodeBrowserView
       AnchorSideTop.Control = ScopeComboBox
       AnchorSideTop.Side = asrCenter
       Left = 327
-      Height = 24
-      Top = 9
-      Width = 289
+      Height = 19
+      Top = 8
+      Width = 225
       BorderSpacing.Left = 6
       BorderSpacing.Right = 50
       Caption = 'ScopeWithRequiredPackagesCheckBox'
@@ -52,10 +53,10 @@ object CodeBrowserView: TCodeBrowserView
       TabOrder = 1
     end
     object RescanButton: TButton
-      Left = 518
-      Height = 31
+      Left = 524
+      Height = 25
       Top = 6
-      Width = 105
+      Width = 99
       Align = alRight
       AutoSize = True
       BorderSpacing.Around = 6
@@ -73,8 +74,8 @@ object CodeBrowserView: TCodeBrowserView
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Side = asrBottom
     Left = 6
-    Height = 55
-    Top = 204
+    Height = 51
+    Top = 188
     Width = 633
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
@@ -85,45 +86,47 @@ object CodeBrowserView: TCodeBrowserView
     ChildSizing.EnlargeHorizontal = crsHomogenousSpaceResize
     ChildSizing.ShrinkHorizontal = crsHomogenousSpaceResize
     ChildSizing.Layout = cclTopToBottomThenLeftToRight
-    ClientHeight = 36
+    ClientHeight = 31
     ClientWidth = 629
-    TabOrder = 1
+    TabOrder = 2
     object ShowPrivateCheckBox: TCheckBox
       AnchorSideLeft.Control = OptionsGroupBox
       AnchorSideTop.Control = OptionsGroupBox
       Left = 6
-      Height = 24
+      Height = 19
       Top = 6
-      Width = 176
+      Width = 137
       BorderSpacing.Left = 6
       BorderSpacing.Top = 6
+      BorderSpacing.Bottom = 6
       Caption = 'ShowPrivateCheckBox'
       OnChange = ShowPrivateCheckBoxChange
       TabOrder = 0
     end
     object ShowProtectedCheckBox: TCheckBox
-      AnchorSideLeft.Control = OptionsGroupBox
-      AnchorSideLeft.Side = asrCenter
-      AnchorSideTop.Control = OptionsGroupBox
-      Left = 216
-      Height = 24
+      AnchorSideLeft.Control = ShowPrivateCheckBox
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = ShowPrivateCheckBox
+      Left = 167
+      Height = 19
       Top = 6
-      Width = 196
-      BorderSpacing.Around = 6
+      Width = 152
+      BorderSpacing.Left = 24
       Caption = 'ShowProtectedCheckBox'
       OnChange = ShowPrivateCheckBoxChange
       TabOrder = 1
     end
     object ShowEmptyNodesCheckBox: TCheckBox
-      AnchorSideTop.Control = OptionsGroupBox
+      AnchorSideLeft.Control = ShowProtectedCheckBox
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = ShowPrivateCheckBox
       AnchorSideRight.Control = OptionsGroupBox
       AnchorSideRight.Side = asrBottom
-      Left = 408
-      Height = 24
+      Left = 343
+      Height = 19
       Top = 6
-      Width = 215
-      Anchors = [akTop, akRight]
-      BorderSpacing.Around = 6
+      Width = 169
+      BorderSpacing.Left = 24
       Caption = 'ShowEmptyNodesCheckBox'
       OnEditingDone = ShowPrivateCheckBoxChange
       TabOrder = 2
@@ -133,19 +136,20 @@ object CodeBrowserView: TCodeBrowserView
     AnchorSideTop.Control = OptionsGroupBox
     AnchorSideTop.Side = asrBottom
     Left = 0
-    Height = 257
-    Top = 265
+    Height = 275
+    Top = 245
     Width = 645
     Align = alBottom
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Top = 6
+    DefaultItemHeight = 18
     Images = ImageList1
     ParentShowHint = False
     PopupMenu = PopupMenu1
     ReadOnly = True
     RightClickSelect = True
     ShowHint = True
-    TabOrder = 2
+    TabOrder = 3
     OnMouseDown = BrowseTreeViewMouseDown
     OnMouseMove = BrowseTreeViewMouseMove
     OnShowHint = BrowseTreeViewShowHint
@@ -153,8 +157,8 @@ object CodeBrowserView: TCodeBrowserView
   end
   object StatusBar1: TStatusBar
     Left = 0
-    Height = 21
-    Top = 542
+    Height = 23
+    Top = 540
     Width = 645
     Panels = <>
   end
@@ -165,16 +169,16 @@ object CodeBrowserView: TCodeBrowserView
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 6
-    Height = 124
-    Top = 74
+    Height = 113
+    Top = 69
     Width = 633
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
     BorderSpacing.Around = 6
     Caption = 'LevelsGroupBox'
-    ClientHeight = 105
+    ClientHeight = 93
     ClientWidth = 629
-    TabOrder = 3
+    TabOrder = 1
     object PackageFilterBeginsSpeedButton: TSpeedButton
       AnchorSideLeft.Control = PackageFilterEdit
       AnchorSideLeft.Side = asrBottom
@@ -215,7 +219,7 @@ object CodeBrowserView: TCodeBrowserView
       AnchorSideRight.Control = UnitFilterContainsSpeedButton
       Left = 451
       Height = 22
-      Top = 41
+      Top = 35
       Width = 86
       Anchors = [akTop, akRight]
       GroupIndex = 2
@@ -232,7 +236,7 @@ object CodeBrowserView: TCodeBrowserView
       AnchorSideRight.Side = asrBottom
       Left = 537
       Height = 22
-      Top = 41
+      Top = 35
       Width = 86
       Anchors = [akTop, akRight]
       BorderSpacing.Right = 6
@@ -249,7 +253,7 @@ object CodeBrowserView: TCodeBrowserView
       AnchorSideRight.Control = IdentifierFilterContainsSpeedButton
       Left = 451
       Height = 22
-      Top = 74
+      Top = 64
       Width = 86
       Anchors = [akTop, akRight]
       GroupIndex = 3
@@ -266,7 +270,7 @@ object CodeBrowserView: TCodeBrowserView
       AnchorSideRight.Side = asrBottom
       Left = 537
       Height = 22
-      Top = 74
+      Top = 64
       Width = 86
       Anchors = [akTop, akRight]
       BorderSpacing.Right = 6
@@ -280,9 +284,9 @@ object CodeBrowserView: TCodeBrowserView
       AnchorSideTop.Control = PackageFilterEdit
       AnchorSideTop.Side = asrCenter
       Left = 6
-      Height = 24
-      Top = 7
-      Width = 191
+      Height = 19
+      Top = 8
+      Width = 150
       BorderSpacing.Left = 6
       BorderSpacing.Top = 6
       Caption = 'ShowPackagesCheckBox'
@@ -294,9 +298,9 @@ object CodeBrowserView: TCodeBrowserView
       AnchorSideTop.Control = UnitFilterEdit
       AnchorSideTop.Side = asrCenter
       Left = 6
-      Height = 24
-      Top = 40
-      Width = 163
+      Height = 19
+      Top = 37
+      Width = 128
       BorderSpacing.Left = 6
       Caption = 'ShowUnitsCheckBox'
       OnChange = ShowUnitsCheckBoxChange
@@ -307,9 +311,9 @@ object CodeBrowserView: TCodeBrowserView
       AnchorSideTop.Control = IdentifierFilterEdit
       AnchorSideTop.Side = asrCenter
       Left = 6
-      Height = 24
-      Top = 73
-      Width = 197
+      Height = 19
+      Top = 66
+      Width = 153
       BorderSpacing.Left = 6
       BorderSpacing.Bottom = 6
       Caption = 'ShowIdentifiersCheckBox'
@@ -320,7 +324,7 @@ object CodeBrowserView: TCodeBrowserView
       AnchorSideTop.Control = LevelsGroupBox
       AnchorSideRight.Control = PackageFilterBeginsSpeedButton
       Left = 250
-      Height = 27
+      Height = 23
       Top = 6
       Width = 201
       Anchors = [akTop, akRight]
@@ -335,8 +339,8 @@ object CodeBrowserView: TCodeBrowserView
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = UnitFilterBeginsSpeedButton
       Left = 250
-      Height = 27
-      Top = 39
+      Height = 23
+      Top = 35
       Width = 201
       Anchors = [akTop, akRight]
       BorderSpacing.Top = 6
@@ -350,8 +354,8 @@ object CodeBrowserView: TCodeBrowserView
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = IdentifierFilterBeginsSpeedButton
       Left = 250
-      Height = 27
-      Top = 72
+      Height = 23
+      Top = 64
       Width = 201
       Anchors = [akTop, akRight]
       BorderSpacing.Top = 6
@@ -365,12 +369,12 @@ object CodeBrowserView: TCodeBrowserView
   object ProgressBar1: TProgressBar
     Left = 0
     Height = 20
-    Top = 522
+    Top = 520
     Width = 645
     Align = alBottom
     Max = 10000
     Smooth = True
-    TabOrder = 5
+    TabOrder = 4
   end
   object ImageList1: TImageList
     Height = 18

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fpdoc-descriptions><package name="LazControls"><module name="ListViewFilterEdit"><element name="TListViewFilterEdit"><short>Filter for an associated ListView.</short>
+      </element><element name="TListViewFilterEdit.FilteredListview"><short>The associated ListView.</short>
+      </element>
+    <element name="TListViewFilterEdit.ByAllFields"><short>Use all ListView fields when searching filter matches. Otherwise just the first field (ListView caption) is used.</short>
+      </element><element name="TListViewFilterEdit.Items"><short>Maintains the data which is filtered and shown in the ListView.</short>
+      </element><element name="TListViewFilterEdit.SelectionList"><short>List of selected items. They are restored after filtering.</short>
+      </element>
+    </module>
+  </package>
+</fpdoc-descriptions>

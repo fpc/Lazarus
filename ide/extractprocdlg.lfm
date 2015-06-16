@@ -1,21 +1,21 @@
 object ExtractProcDialog: TExtractProcDialog
   Left = 374
-  Height = 355
+  Height = 344
   Top = 360
   Width = 425
   ActiveControl = CreateFunctionCheckBox
   BorderIcons = [biSystemMenu]
   Caption = 'ExtractProcDialog'
-  ClientHeight = 355
+  ClientHeight = 344
   ClientWidth = 425
   OnClose = ExtractProcDialogClose
   OnCreate = ExtractProcDialogCREATE
   Position = poScreenCenter
-  LCLVersion = '0.9.31'
+  LCLVersion = '1.5'
   object TypeRadiogroup: TRadioGroup
     AnchorSideBottom.Control = NameGroupbox
     Left = 6
-    Height = 95
+    Height = 99
     Top = 6
     Width = 413
     Align = alClient
@@ -38,108 +38,44 @@ object ExtractProcDialog: TExtractProcDialog
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
-    AnchorSideBottom.Control = CancelButton
     Left = 6
-    Height = 56
-    Top = 192
+    Height = 51
+    Top = 191
     Width = 413
     Align = alBottom
     AutoSize = True
     BorderSpacing.Around = 6
     Caption = 'NameGroupbox'
-    ClientHeight = 34
-    ClientWidth = 405
+    ClientHeight = 33
+    ClientWidth = 409
     TabOrder = 0
     object NameEdit: TEdit
       Left = 6
-      Height = 22
+      Height = 21
       Top = 6
-      Width = 393
+      Width = 397
       Align = alTop
       BorderSpacing.Around = 6
       TabOrder = 0
       Text = 'NameEdit'
     end
   end
-  object BtnPanel: TPanel
-    Left = 0
-    Height = 37
-    Top = 318
-    Width = 425
-    Align = alBottom
-    AutoSize = True
-    BevelOuter = bvNone
-    ClientHeight = 37
-    ClientWidth = 425
-    TabOrder = 2
-    object CancelButton: TBitBtn
-      Left = 344
-      Height = 25
-      Top = 6
-      Width = 75
-      Align = alRight
-      AutoSize = True
-      BorderSpacing.Around = 6
-      Cancel = True
-      Caption = 'Cancel'
-      Constraints.MinHeight = 25
-      Constraints.MinWidth = 75
-      Kind = bkCancel
-      ModalResult = 2
-      NumGlyphs = 0
-      TabOrder = 0
-    end
-    object OkButton: TBitBtn
-      Left = 263
-      Height = 25
-      Top = 6
-      Width = 75
-      Align = alRight
-      AutoSize = True
-      BorderSpacing.Around = 6
-      Caption = '&OK'
-      Constraints.MinHeight = 25
-      Constraints.MinWidth = 75
-      Default = True
-      Kind = bkOK
-      ModalResult = 1
-      NumGlyphs = 0
-      OnClick = OkButtonCLICK
-      TabOrder = 1
-    end
-    object HelpButton: TBitBtn
-      Left = 6
-      Height = 25
-      Top = 6
-      Width = 75
-      Align = alLeft
-      AutoSize = True
-      BorderSpacing.Around = 6
-      Caption = '&Help'
-      Constraints.MinHeight = 25
-      Constraints.MinWidth = 75
-      Kind = bkHelp
-      NumGlyphs = 0
-      OnClick = HelpButtonClick
-      TabOrder = 2
-    end
-  end
   object MissingIdentifiersGroupBox: TGroupBox
     Left = 6
     Height = 58
-    Top = 254
+    Top = 248
     Width = 413
     Align = alBottom
     BorderSpacing.Around = 6
     Caption = 'MissingIdentifiersGroupBox'
-    ClientHeight = 36
-    ClientWidth = 405
-    TabOrder = 3
+    ClientHeight = 40
+    ClientWidth = 409
+    TabOrder = 2
     object MissingIdentifiersListBox: TListBox
       Left = 0
-      Height = 36
+      Height = 40
       Top = 0
-      Width = 405
+      Width = 409
       Align = alClient
       ItemHeight = 0
       TabOrder = 0
@@ -147,24 +83,24 @@ object ExtractProcDialog: TExtractProcDialog
   end
   object FunctionGroupBox: TGroupBox
     Left = 6
-    Height = 79
-    Top = 107
+    Height = 74
+    Top = 111
     Width = 413
     Align = alBottom
     AutoSize = True
     BorderSpacing.Around = 6
     Caption = 'FunctionGroupBox'
-    ClientHeight = 57
-    ClientWidth = 405
-    TabOrder = 4
+    ClientHeight = 56
+    ClientWidth = 409
+    TabOrder = 3
     object FuncVariableLabel: TLabel
       AnchorSideLeft.Control = CreateFunctionCheckBox
       AnchorSideTop.Control = FuncVariableComboBox
       AnchorSideTop.Side = asrCenter
       Left = 6
-      Height = 17
-      Top = 32
-      Width = 115
+      Height = 13
+      Top = 33
+      Width = 86
       Caption = 'FuncVariableLabel'
       Enabled = False
       ParentColor = False
@@ -173,9 +109,9 @@ object ExtractProcDialog: TExtractProcDialog
       AnchorSideLeft.Control = FunctionGroupBox
       AnchorSideTop.Control = FunctionGroupBox
       Left = 6
-      Height = 18
+      Height = 17
       Top = 6
-      Width = 178
+      Width = 139
       BorderSpacing.Around = 6
       Caption = 'CreateFunctionCheckBox'
       OnChange = CreateFunctionCheckBoxChange
@@ -188,16 +124,35 @@ object ExtractProcDialog: TExtractProcDialog
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = FunctionGroupBox
       AnchorSideRight.Side = asrBottom
-      Left = 127
+      Left = 98
       Height = 21
-      Top = 30
-      Width = 272
+      Top = 29
+      Width = 305
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Around = 6
       Enabled = False
-      ItemHeight = 0
+      ItemHeight = 13
       TabOrder = 1
       Text = 'FuncVariableComboBox'
     end
+  end
+  object ButtonPanel: TButtonPanel
+    Left = 6
+    Height = 26
+    Top = 312
+    Width = 413
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    OKButton.OnClick = OkButtonCLICK
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    HelpButton.OnClick = HelpButtonClick
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
+    TabOrder = 4
+    ShowButtons = [pbOK, pbCancel, pbHelp]
+    ShowBevel = False
   end
 end

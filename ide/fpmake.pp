@@ -230,7 +230,6 @@ begin
     P.Sources.AddSrc('componentlist.pas');
     P.Sources.AddSrc('componentpalette.pas');
     P.Sources.AddSrc('compoptsmodes.pas');
-    P.Sources.AddSrc('condef.pas');
     P.Sources.AddSrc('customformeditor.pp');
     P.Sources.AddSrc('debugmanager.pas');
     P.Sources.AddSrc('dialogprocs.pas');
@@ -241,6 +240,7 @@ begin
     P.Sources.AddSrc('editmsgscannersdlg.pas');
     P.Sources.AddSrc('editoroptions.pp');
     P.Sources.AddSrc('emptymethodsdlg.pas');
+    P.Sources.AddSrc('encloseifdef.pas');
     P.Sources.AddSrc('encloseselectiondlg.pas');
     P.Sources.AddSrc('extractprocdlg.pas');
     P.Sources.AddSrc('exttooldialog.pas');

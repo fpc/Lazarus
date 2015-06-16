@@ -476,8 +476,12 @@ begin
       end;
     end;
 
+    // save settings that do not belong to any group
     if stag=sWrite then
-      TraverseSettings(nil,iodaWrite); // save settings that does not belong to any group
+      if Restore then
+        TraverseSettings(nil,iodaRestore)
+      else
+        TraverseSettings(nil,iodaWrite);
   end;
 end;
 

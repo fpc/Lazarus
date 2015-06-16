@@ -131,7 +131,6 @@ type
     procedure CodeExplorerViewCreate(Sender: TObject);
     procedure CodeExplorerViewDestroy(Sender: TObject);
     procedure CodeFilterEditEnter(Sender: TObject);
-    procedure CodeFilterEditExit(Sender: TObject);
     procedure CodeTreeviewDblClick(Sender: TObject);
     procedure CodeTreeviewDeletion(Sender: TObject; Node: TTreeNode);
     procedure CodeTreeviewKeyUp(Sender: TObject; var Key: Word;
@@ -139,14 +138,12 @@ type
     procedure CodeFilterEditChange(Sender: TObject);
     procedure DirectivesFilterEditChange(Sender: TObject);
     procedure DirectivesFilterEditEnter(Sender: TObject);
-    procedure DirectivesFilterEditExit(Sender: TObject);
     procedure DirectivesTreeViewDblClick(Sender: TObject);
     procedure DirectivesTreeViewDeletion(Sender: TObject; Node: TTreeNode);
     procedure DirectivesTreeViewKeyUp(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure IdleTimer1Timer(Sender: TObject);
     procedure JumpToMenuItemClick(Sender: TObject);
-    procedure JumpToImplementationMenuItemClick(Sender: TObject);
     procedure OnCloseIDE(Sender: TObject);
     procedure ShowSrcEditPosMenuItemClick(Sender: TObject);
     procedure MainNotebookPageChanged(Sender: TObject);
@@ -280,7 +277,6 @@ const
 var
   CodeExplorerView: TCodeExplorerView = nil;
   CEJumpToIDEMenuCommand: TIDEMenuCommand;
-  CEJumpToImplementationIDEMenuCommand: TIDEMenuCommand;
   CEShowSrcEditPosIDEMenuCommand: TIDEMenuCommand;
   CERefreshIDEMenuCommand: TIDEMenuCommand;
   CERenameIDEMenuCommand: TIDEMenuCommand;
@@ -371,8 +367,6 @@ begin
   CodeExplorerMenuRoot:=RegisterIDEMenuRoot(CodeExplorerMenuRootName);
   Path:=CodeExplorerMenuRoot.Name;
   CEJumpToIDEMenuCommand:=RegisterIDEMenuCommand(Path, 'Jump to', lisMenuJumpTo);
-  CEJumpToImplementationIDEMenuCommand:=RegisterIDEMenuCommand(Path,
-    'Jump to implementation', lisMenuJumpToImplementation);
   CEShowSrcEditPosIDEMenuCommand:=RegisterIDEMenuCommand(Path, 'Show position of source editor',
     lisShowPositionOfSourceEditor);
   CERefreshIDEMenuCommand:=RegisterIDEMenuCommand(Path, 'Refresh', dlgUnitDepRefresh);
@@ -471,11 +465,13 @@ begin
   CodePage.Caption:=lisCode;
   CodeRefreshSpeedButton.Hint:=dlgUnitDepRefresh;
   CodeOptionsSpeedButton.Hint:=lisOptions;
-  CodeFilterEdit.Text:=lisCEFilter;
+  CodeFilterEdit.Text:='';
   DirectivesPage.Caption:=lisDirectives;
-  DirectivesFilterEdit.Text:=lisCEFilter;
+  DirectivesFilterEdit.Text:='';
   DirRefreshSpeedButton.Hint:=dlgUnitDepRefresh;
   DirOptionsSpeedButton.Hint:=lisOptions;
+  CodeFilterEdit.TextHint:=lisCEFilter;
+  DirectivesFilterEdit.TextHint:=lisCEFilter;
 
   CodeRefreshSpeedButton.LoadGlyphFromResourceName(HInstance, 'laz_refresh');
   CodeOptionsSpeedButton.LoadGlyphFromResourceName(HInstance, 'menu_environment_options');
@@ -507,7 +503,6 @@ begin
   //CodeExplorerMenuRoot.Items.WriteDebugReport(' ');
 
   CEJumpToIDEMenuCommand.OnClick:=@JumpToMenuItemClick;
-  CEJumpToImplementationIDEMenuCommand.OnClick:=@JumpToImplementationMenuItemClick;
   CEShowSrcEditPosIDEMenuCommand.OnClick:=@ShowSrcEditPosMenuItemClick;
   CERefreshIDEMenuCommand.OnClick:=@RefreshMenuItemClick;
   CERenameIDEMenuCommand.OnClick:=@RenameMenuItemClick;
@@ -530,16 +525,7 @@ end;
 
 procedure TCodeExplorerView.CodeFilterEditEnter(Sender: TObject);
 begin
-  if CodeFilterEdit.Text = lisCEFilter then
-    CodeFilterEdit.Text:=''
-  else
-    CodeFilterEdit.SelectAll;
-end;
-
-procedure TCodeExplorerView.CodeFilterEditExit(Sender: TObject);
-begin
-  if CodeFilterEdit.Text='' then
-    CodeFilterEdit.Text:=lisCEFilter;
+  CodeFilterEdit.SelectAll;
 end;
 
 procedure TCodeExplorerView.CodeTreeviewDblClick(Sender: TObject);
@@ -575,16 +561,7 @@ end;
 
 procedure TCodeExplorerView.DirectivesFilterEditEnter(Sender: TObject);
 begin
-  if DirectivesFilterEdit.Text = lisCEFilter then
-    DirectivesFilterEdit.Text:=''
-  else
-    DirectivesFilterEdit.SelectAll;
-end;
-
-procedure TCodeExplorerView.DirectivesFilterEditExit(Sender: TObject);
-begin
-  if DirectivesFilterEdit.Text='' then
-    DirectivesFilterEdit.Text:=lisCEFilter;
+  DirectivesFilterEdit.SelectAll;
 end;
 
 procedure TCodeExplorerView.DirectivesTreeViewDblClick(Sender: TObject);
@@ -625,11 +602,6 @@ end;
 procedure TCodeExplorerView.JumpToMenuItemClick(Sender: TObject);
 begin
   JumpToSelection(false);
-end;
-
-procedure TCodeExplorerView.JumpToImplementationMenuItemClick(Sender: TObject);
-begin
-  JumpToSelection(true);
 end;
 
 procedure TCodeExplorerView.OnCloseIDE(Sender: TObject);
@@ -696,10 +668,8 @@ var
   CurItem: TTreeNode;
   CanRename: boolean;
   CurNode: TViewNodeData;
-  HasImplementation: Boolean;
 begin
   CanRename:=false;
-  HasImplementation:=false;
   CurTreeView:=GetCurrentTreeView;
   if CurTreeView<>nil then begin
     if tvoAllowMultiselect in CurTreeView.Options then
@@ -718,13 +688,9 @@ begin
           ;
         end;
       end;
-      if (CurNode.ImplementationNode<>nil)
-      and (CurNode.ImplementationNode.StartPos>0) then
-        HasImplementation:=true;
     end;
   end;
   CERenameIDEMenuCommand.Visible:=CanRename;
-  CEJumpToImplementationIDEMenuCommand.Visible:=HasImplementation;
   //DebugLn(['TCodeExplorerView.TreePopupmenuPopup ',CERenameIDEMenuCommand.Visible]);
 end;
 
@@ -813,7 +779,6 @@ end;
 function TCodeExplorerView.GetCodeFilter: string;
 begin
   Result:=CodeFilterEdit.Text;
-  if Result=lisCEFilter then Result:='';
 end;
 
 function TCodeExplorerView.GetCurrentPage: TCodeExplorerPage;
@@ -829,7 +794,6 @@ end;
 function TCodeExplorerView.GetDirectivesFilter: string;
 begin
   Result:=DirectivesFilterEdit.Text;
-  if Result=lisCEFilter then Result:='';
 end;
 
 function TCodeExplorerView.GetCodeNodeImage(Tool: TFindDeclarationTool;

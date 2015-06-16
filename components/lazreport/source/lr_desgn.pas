@@ -43,6 +43,7 @@ type
     SaveAs: Boolean; var Saved: Boolean) of object;
 
   TfrDesignerForm = class;
+  TlrTabEditControl = class(TCustomTabControl);
 
   { TfrDesigner }
 
@@ -623,6 +624,14 @@ type
     procedure DuplicateView(View: TfrView; Data: PtrInt);
     procedure ResetDuplicateCount;
     function lrDesignAcceptDrag(const Source: TObject): TControl;
+  private
+    FTabMouseDown:boolean;
+    FTabsPage:TlrTabEditControl;
+    procedure TabsEditDragOver(Sender, Source: TObject; X, Y: Integer; State: TDragState; var Accept: Boolean);
+    procedure TabsEditDragDrop(Sender, Source: TObject; X, Y: Integer);
+    procedure TabsEditMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+    procedure TabsEditMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
+    procedure TabsEditMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
   protected
     procedure SetModified(AValue: Boolean);override;
     function IniFileName:string;
@@ -1777,11 +1786,8 @@ var
   
   procedure CreateSubReport;
   begin
-{    Objects.Add(TfrSubReportView.Create(FDesigner.Page));
-    t := TfrView(Objects.Last);}
     t:=TfrSubReportView.Create(FDesigner.Page);
-    (t as TfrSubReportView).SubPage := CurReport.Pages.Count;
-    CurReport.Pages.Add;
+    (t as TfrSubReportView).SubPage := CurReport.Pages.Add;
   end;
 
 begin
@@ -2907,6 +2913,14 @@ begin
   StatusBar1.OnDrawPanel := @StatusBar1Drawpanel;
   Panel7.Visible := false;
   {$endif}
+
+  FTabsPage:=TlrTabEditControl((Tab1.Tabs as TTabControlNoteBookStrings).NoteBook);
+  FTabsPage.DragMode:=dmManual;
+  FTabsPage.OnDragOver:=@TabsEditDragOver;
+  FTabsPage.OnDragDrop:=@TabsEditDragDrop;
+  FTabsPage.OnMouseDown:=@TabsEditMouseDown;
+  FTabsPage.OnMouseMove:=@TabsEditMouseMove;
+  FTabsPage.OnMouseUp:=@TabsEditMouseUp;
 end;
 
 destructor TfrDesignerForm.Destroy;
@@ -3759,30 +3773,28 @@ begin
 end;
 
 procedure TfrDesignerForm.RemovePage(n: Integer);
-  procedure AdjustSubReports;
-  var
-    i, j: Integer;
-    t: TfrView;
+
+procedure AdjustSubReports(APage:TfrPage);
+var
+  i, j: Integer;
+  t: TfrView;
+begin
+  for i := 0 to CurReport.Pages.Count - 1 do
   begin
-    with CurReport do
-      for i := 0 to Pages.Count - 1 do
+    j := 0;
+    while j < CurReport.Pages[i].Objects.Count do
+    begin
+      t := TfrView(CurReport.Pages[i].Objects[j]);
+      if (T is TfrSubReportView) and (TfrSubReportView(t).SubPage = APage) then
       begin
-        j := 0;
-        while j < Pages[i].Objects.Count do
-        begin
-          t := TfrView(Pages[i].Objects[j]);
-          if t.Typ = gtSubReport then
-            if TfrSubReportView(t).SubPage = n then
-            begin
-              Pages[i].Delete(j);
-              Dec(j);
-            end
-            else if TfrSubReportView(t).SubPage > n then
-              Dec(TfrSubReportView(t).SubPage);
-          Inc(j);
-        end;
+        CurReport.Pages[i].Delete(j);
+        Dec(j);
       end;
+      Inc(j);
+    end;
   end;
+end;
+
 begin
   fInBuildPage:=True;
   try
@@ -3794,10 +3806,10 @@ begin
           Pages[n].Clear
         else
         begin
+          AdjustSubReports(Pages[n]);
           CurReport.Pages.Delete(n);
           Tab1.Tabs.Delete(n);
           Tab1.TabIndex := 0;
-          AdjustSubReports;
           CurPage := 0;
         end;
     end;
@@ -3813,37 +3825,35 @@ var
   i: Integer;
   s: String;
   
-  function IsSubreport(PageN: Integer): Boolean;
-  var
-    i, j: Integer;
-    t: TfrView;
-  begin
-    Result := False;
-    with CurReport do
-      for i := 0 to Pages.Count - 1 do
-        for j := 0 to Pages[i].Objects.Count - 1 do
-        begin
-          t := TfrView(Pages[i].Objects[j]);
-          if t.Typ = gtSubReport then
-            if TfrSubReportView(t).SubPage = PageN then
-            begin
-              s := t.Name;
-              Result := True;
-              Exit;
-            end;
-        end;
-  end;
+function IsSubreport(PageN: Integer): Boolean;
+var
+  i, j: Integer;
+  t: TfrView;
+begin
+  Result := False;
+  for i := 0 to CurReport.Pages.Count - 1 do
+    for j := 0 to CurReport.Pages[i].Objects.Count - 1 do
+    begin
+      t := TfrView(CurReport.Pages[i].Objects[j]);
+      if (T is TfrSubReportView) and (TfrSubReportView(t).SubPage = CurReport.Pages[PageN]) then
+      begin
+        s := t.Name;
+        Result := True;
+        Exit;
+      end;
+    end;
+end;
   
 begin
-   if Tab1.Tabs.Count = CurReport.Pages.Count then
+  if Tab1.Tabs.Count = CurReport.Pages.Count then
+  begin
+   for i := 0 to Tab1.Tabs.Count - 1 do
    begin
-    for i := 0 to Tab1.Tabs.Count - 1 do
-    begin
-      if not IsSubreport(i) then
-        s := sPg + IntToStr(i + 1);
-      if Tab1.Tabs[i] <> s then
-        Tab1.Tabs[i] := s;
-    end;
+     if not IsSubreport(i) then
+       s := sPg + IntToStr(i + 1);
+     if Tab1.Tabs[i] <> s then
+       Tab1.Tabs[i] := s;
+   end;
   end
   else
   begin
@@ -4464,6 +4474,52 @@ begin
 end;
 
 {$endif}
+
+procedure TfrDesignerForm.TabsEditDragOver(Sender, Source: TObject; X,
+  Y: Integer; State: TDragState; var Accept: Boolean);
+begin
+  Accept:=(Source = FTabsPage) and (FTabsPage.IndexOfTabAt(X, Y) <> Tab1.TabIndex);
+end;
+
+procedure TfrDesignerForm.TabsEditDragDrop(Sender, Source: TObject; X,
+  Y: Integer);
+var
+  NewIndex: Integer;
+begin
+  NewIndex:=FTabsPage.IndexOfTabAt(X, Y);
+  //ShowMessageFmt('New index = %d', [NewIndex]);
+  if (NewIndex>-1) and (NewIndex < CurReport.Pages.Count) then
+  begin
+    CurReport.Pages.Move(CurPage, NewIndex);
+    Tab1.Tabs.Move(CurPage, NewIndex);
+    SetPageTitles;
+
+    ClearUndoBuffer;
+    ClearRedoBuffer;
+    Modified := True;
+    Tab1.TabIndex:=NewIndex;
+    RedrawPage;
+  end;
+end;
+
+procedure TfrDesignerForm.TabsEditMouseDown(Sender: TObject;
+  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+begin
+  FTabMouseDown:=true;
+end;
+
+procedure TfrDesignerForm.TabsEditMouseMove(Sender: TObject;
+  Shift: TShiftState; X, Y: Integer);
+begin
+  if FTabMouseDown then
+    FTabsPage.BeginDrag(false);
+end;
+
+procedure TfrDesignerForm.TabsEditMouseUp(Sender: TObject;
+  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+begin
+  FTabMouseDown:=false;
+end;
 
 procedure TfrDesignerForm.SetModified(AValue: Boolean);
 begin
@@ -5290,7 +5346,7 @@ begin
   end
   else
   if t.Typ = gtSubReport then
-    CurPage := (t as TfrSubReportView).SubPage
+    CurPage := (t as TfrSubReportView).SubPage.PageIndex
   else
   if t.Typ = gtAddIn then
   begin
@@ -6271,7 +6327,7 @@ var
   end;
 
 begin
-  Ini:=TIniFile.Create(IniFileName);
+  Ini:=TIniFile.Create(UTF8ToSys(IniFileName));
   Ini.WriteString('frEditorForm', 'ScriptFontName', edtScriptFontName);
   Ini.WriteInteger('frEditorForm', 'ScriptFontSize', edtScriptFontSize);
 
@@ -6318,7 +6374,7 @@ var
 begin
   if FileExistsUTF8(IniFileName) then
   begin
-    Ini:=TIniFile.Create(IniFileName);
+    Ini:=TIniFile.Create(UTF8ToSys(IniFileName));
     edtScriptFontName:=Ini.ReadString('frEditorForm', 'ScriptFontName', edtScriptFontName);
     edtScriptFontSize:=Ini.ReadInteger('frEditorForm', 'ScriptFontSize', edtScriptFontSize);
     GridSize := Ini.ReadInteger('frEditorForm', rsGridSize, 4);
@@ -7634,6 +7690,35 @@ type
     procedure Edit; override;
   end;
 
+  { TTfrBandViewChildProperty }
+
+  TTfrBandViewChildProperty = class(TStringProperty)
+  public
+    function  GetAttributes: TPropertyAttributes; override;
+    procedure GetValues(Proc: TGetStrProc); override;
+  end;
+
+{ TTfrBandViewChildProperty }
+
+function TTfrBandViewChildProperty.GetAttributes: TPropertyAttributes;
+begin
+  Result:=inherited GetAttributes + [paValueList, paSortList];
+end;
+
+procedure TTfrBandViewChildProperty.GetValues(Proc: TGetStrProc);
+var
+  I: Integer;
+begin
+  if Assigned(frDesigner) and Assigned(frDesigner.Page) then
+  begin
+    for i:=0 to frDesigner.Page.Objects.Count-1 do
+      if TObject(frDesigner.Page.Objects[i]) is TfrBandView then
+        if (TfrBandView(frDesigner.Page.Objects[i]).BandType = btChild) and
+           (TfrBandView(GetComponent(0)) <> TfrBandView(frDesigner.Page.Objects[i])) then
+          Proc(TfrBandView(frDesigner.Page.Objects[i]).Name);
+  end;
+end;
+
 { TfrPictureViewDataFieldProperty }
 
 function TfrViewDataFieldProperty.GetAttributes: TPropertyAttributes;
@@ -8091,6 +8176,8 @@ initialization
 
   RegisterPropertyEditor(TypeInfo(String), TfrCustomMemoView, 'DetailReport', TfrCustomMemoViewDetailReportProperty);
   RegisterPropertyEditor(TypeInfo(String), TfrView, 'DataField', TfrViewDataFieldProperty);
+
+  RegisterPropertyEditor(TypeInfo(String), TfrBandView, 'Child', TTfrBandViewChildProperty);
 
   FlrInternalTools:=TlrInternalTools.Create;
 finalization

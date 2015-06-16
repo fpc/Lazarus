@@ -550,6 +550,11 @@ begin
     ecJumpToNextError         : Result:= lisMenuJumpToNextError;
     ecJumpToPrevError         : Result:= lisMenuJumpToPrevError;
     ecGotoIncludeDirective    : Result:= srkmecGotoIncludeDirective;
+    ecJumpToInterface         : Result:= lisMenuJumpToInterface;
+    ecJumpToInterfaceUses     : Result:= lisMenuJumpToInterfaceUses;
+    ecJumpToImplementation    : Result:= lisMenuJumpToImplementation;
+    ecJumpToImplementationUses: Result:= lisMenuJumpToImplementationUses;
+    ecJumpToInitialization    : Result:= lisMenuJumpToInitialization;
     ecOpenFileAtCursor        : Result:= srkmecOpenFileAtCursor;
     ecProcedureList           : Result:= lisPListProcedureList;
 
@@ -2758,6 +2763,11 @@ begin
   AddDefault(C, 'Find block other end', srkmecFindBlockOtherEnd, ecFindBlockOtherEnd);
   AddDefault(C, 'Find block start', srkmecFindBlockStart, ecFindBlockStart);
   AddDefault(C, 'Goto include directive', lisMenuGotoIncludeDirective, ecGotoIncludeDirective);
+  AddDefault(C, 'Jump to Interface', lisMenuJumpToInterface, ecJumpToInterface);
+  AddDefault(C, 'Jump to Interface uses', lisMenuJumpToInterfaceUses, ecJumpToInterfaceUses);
+  AddDefault(C, 'Jump to Implementation', lisMenuJumpToImplementation, ecJumpToImplementation);
+  AddDefault(C, 'Jump to Implementation uses', lisMenuJumpToImplementationUses, ecJumpToImplementationUses);
+  AddDefault(C, 'Jump to Initialization', lisMenuJumpToInitialization, ecJumpToInitialization);
   AddDefault(C, 'Show abstract methods', srkmecShowAbstractMethods, ecShowAbstractMethods);
   AddDefault(C, 'Remove empty methods', srkmecRemoveEmptyMethods, ecRemoveEmptyMethods);
   AddDefault(C, 'Remove unused units', srkmecRemoveUnusedUnits, ecRemoveUnusedUnits);

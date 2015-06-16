@@ -85,6 +85,7 @@ type
     sfDynArray,     // skArray is known to be a dynamic array
     sfStatArray,    // skArray is known to be a static array
     sfVirtual,      // skProcedure,skFunction:  virtual function (or overriden)
+    sfParameter,    // Parameter to a function
     // unimplemented:
     sfInternalRef,  // TODO: (May not always be present) Internal ref/pointer e.g. var/constref parameters
     sfConst,         // The sym is a constant and cannot be modified
@@ -474,7 +475,7 @@ type
   protected
     procedure SetHasInfo;
   public
-    constructor Create({%H-}ALoader: TDbgImageLoader); virtual;
+    constructor Create({%H-}ALoaderList: TDbgImageLoaderList); virtual;
     (* Context should be searched by Thread, and StackFrame. The Address can be
        derived from this.
        However a different Address may be froced.
@@ -1352,7 +1353,7 @@ end;
 
 { TDbgInfo }
 
-constructor TDbgInfo.Create(ALoader: TDbgImageLoader);
+constructor TDbgInfo.Create(ALoaderList: TDbgImageLoaderList);
 begin
   inherited Create;
 end;

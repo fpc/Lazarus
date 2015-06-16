@@ -257,15 +257,17 @@ begin
   begin
     PDev.DevModeSize := DocumentPropertiesW(0, FPrinterHandle, Pwidechar(UTF8Decode(PDev.Name)),
                         nil, nil, 0);
-    ReallocMem(Pdev.DevModeW, PDev.DevModeSize);
+    if PDev.DevModeSize>0 then
+      ReallocMem(Pdev.DevModeW, PDev.DevModeSize);
   end
   else
   begin
     PDev.DevModeSize := DocumentProperties(0, FPrinterHandle, pchar(PDev.Name),
                         nil, nil, 0);
-    ReallocMem(Pdev.DevModeA, PDev.DevModeSize);
+    if PDev.DevModeSize>0 then
+      ReallocMem(Pdev.DevModeA, PDev.DevModeSize);
   end;
-  if PDev.DevModeSize=0 then begin
+  if PDev.DevModeSize<=0 then begin
     result := false;
     exit;
   end;

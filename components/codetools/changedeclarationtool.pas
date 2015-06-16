@@ -590,11 +590,12 @@ var
     end;
   end;
 
-  procedure ChangeParam(aParam: TChgPrmModify; ChgPos: integer);
+  procedure ChangeParam(aParam: TChgPrmModify; aParamIndex: integer);
   var
     Code: String;
     p: LongInt;
   begin
+    if aParamIndex=0 then ;
     if aParam.Delete then begin
       if ReplaceStartPos<1 then begin
         // ToDo: delete the last parameter => delete separator from previous parameter
@@ -876,6 +877,7 @@ var
 begin
   Result:=false;
   if (Changes=nil) or (Changes.Count=0) then exit(true);
+  if TreeOfPCodeXYPosition=nil then ;
   BuildTree(lsrEnd);
   SourceChanger.MainScanner:=Scanner;
   if (ProcPos.Code<>nil) and (CaretToCleanPos(ProcPos,CleanPos)=0) then begin

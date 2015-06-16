@@ -24,7 +24,6 @@ interface
 
 uses
   Classes
-  ,jumpto_impl
   ,Forms
   ,ComCtrls
   ,Controls
@@ -52,16 +51,13 @@ type
 
   TEditorToolbar = class(TComponent)
   private
-    FJumpHandler: TJumpHandler;
     FWindow: TSourceEditorWindowInterface;
     TB: TToolbar;
-    PM: TPopupMenu;
     PPUP: TPopupMenu;
     CfgButton: TToolButton;
     FButtonList: TList;
     UpdateTimer: TTimer;
     procedure   CreateEditorToolbar(AW: TForm; var ATB: TToolbar);
-    function    CreateJumpItem(AJumpType: TJumpType; O: TComponent): TMenuItem;
     function    CreateProfileItem(ProfIndx: Integer; O: TComponent): TMenuItem;
     procedure   DoConfigureToolbar(Sender: TObject);
     procedure   UpdateBar(Sender: TObject);
@@ -121,7 +117,8 @@ uses
   ,EdtTbConfigFrm
   ,LazConfigStorage
   ,BaseIDEIntf
-  ,LCLProc;
+  ,LCLProc
+  ,LCLType;
 
 type
 
@@ -241,14 +238,6 @@ begin
   ATB.PopupMenu := PPUP;
 end;
 
-function TEditorToolbar.CreateJumpItem(AJumpType: TJumpType; O: TComponent): TMenuItem;
-begin
-  Result := TMenuItem.Create(O);
-  Result.Tag      := Ord(AJumpType);
-  Result.OnClick  := @FJumpHandler.DoJump;
-  Result.Caption  := cJumpNames[AJumpType];
-end;
-
 function TEditorToolbar.CreateProfileItem(ProfIndx: Integer; O: TComponent
   ): TMenuItem;
 begin
@@ -310,7 +299,6 @@ end;
 
 constructor TEditorToolbar.Create(AOwner: TComponent);
 var
-  T: TJumpType;
   c: integer;
   cfg: TConfigStorage;
 begin
@@ -325,7 +313,6 @@ begin
   sLocalizedProfileNames[3] := rsHTML;
   sLocalizedProfileNames[4] := rsCustom;
 
-  FJumpHandler := TJumpHandler.Create(nil);
   FWindow := TSourceEditorWindowInterface(AOwner);
 
   PPUP := TPopupMenu.Create(FWindow);
@@ -334,10 +321,6 @@ begin
   end;
 
   CreateEditorToolBar(FWindow, TB);
-
-  PM := TPopupMenu.Create(FWindow);
-  for T := Low(TJumpType) to High(TJumpType) do
-    PM.Items.Add(CreateJumpItem(T, FWindow));
 
   AddStaticItems;
   // Let's verify if it's a first start
@@ -361,7 +344,6 @@ end;
 destructor TEditorToolbar.Destroy;
 begin
   uEditorToolbarList.DelBar(Self);
-  FJumpHandler.Free;
   FButtonList.Free;
   inherited Destroy;
 end;
@@ -514,19 +496,6 @@ begin
     CfgButton.OnClick     := @DoConfigureToolbar;
     PositionAtEnd(TB, CfgButton);
     AddDivider;
-
-    // JumpTo Button
-    B := TToolbutton.Create(TB);
-    B.Caption       := rsJumpTo;
-    B.Hint          := B.Caption;
-    B.ImageIndex    := IDEImages.LoadImage(16, 'jumpto16');
-    B.Style         := tbsDropDown;
-    B.OnClick       := @FJumpHandler.DoJumpToImplementation;
-    B.DropdownMenu  := PM;
-    PositionAtEnd(TB, B);
-
-    if TB.ButtonCount <> 0 then
-      AddDivider;
   finally
     TB.EndUpdate;
   end;
@@ -579,7 +548,8 @@ procedure Register;
 var
   MenuIcon: string;
 begin
-  if uEditorToolbarList = nil then begin
+  if uEditorToolbarList = nil then
+  begin
     TEditorToolbarList.Create;
     EditorMenuCommand:= RegisterIDEMenuCommand(itmViewSecondaryWindows,'EditorToolBar',
       rsEditorToolbar,nil,@ToggleToolbar);
@@ -589,7 +559,6 @@ begin
     //MenuIcon:= 'menu_editor_toolbar'; TODO!
     EditorMenuCommand.ImageIndex := IDEImages.LoadImage(16, MenuIcon);
   end;
-
 end;
 
 

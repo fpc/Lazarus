@@ -159,7 +159,7 @@ begin
   ExportButton.Caption := lisDlgExport;
   // File dialogs
   ImportDialog.Title := lisImport;
-  ImportDialog.Filter := 'XML file (*.xml)|*.xml|All files (*)|*';
+  ImportDialog.Filter := Format('%s|*.xml|%s|%s|', [dlgFilterXML, dlgFilterAll, GetAllFilesMask]);
   ExportDialog.Title := lisExport;
   ExportDialog.Filter := ImportDialog.Filter;
   // Components in one page

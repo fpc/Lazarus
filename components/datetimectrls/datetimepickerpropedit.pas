@@ -130,7 +130,8 @@ begin
 
             DTPicker.DateTime := F.DateTimePicker1.DateTime;
             Modified;
-            GlobalDesignHook.RefreshPropertyValues;
+            if Assigned(GlobalDesignHook) then
+              GlobalDesignHook.RefreshPropertyValues;
           end;
         end;
       finally
@@ -482,7 +483,8 @@ begin
         end;
 
         Modified;
-        GlobalDesignHook.RefreshPropertyValues;
+        if Assigned(GlobalDesignHook) then
+          GlobalDesignHook.RefreshPropertyValues;
       end;
     end;
   finally

@@ -200,7 +200,7 @@ begin
      (Application.MainForm.HandleAllocated) and
      (Application.MainForm <> AForm) then
   begin
-    if (AForm.ShowInTaskBar in [stDefault, stNever])
+    if (AForm.ShowInTaskBar = stNever)
        {$ifdef HASX11}
        {QtTool have not minimize button !}
        and (not (AForm.BorderStyle in [bsSizeToolWin, bsToolWindow]) and
@@ -395,8 +395,10 @@ const
 var
   Widget: TQtMainWindow;
   R: TRect;
+  {$IFDEF HASX11}
   ActiveWin: HWND;
   W: QWidgetH;
+  {$ENDIF}
   Flags: Cardinal;
 
   function ShowNonModalOverModal: Boolean;

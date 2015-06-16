@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fpdoc-descriptions><package name="LazControls"><module name="ListFilterEdit"><element name="TListFilterEdit"><short>Filter for an associated ListBox.</short>
+      </element><element name="TListFilterEdit.FilteredListbox"><short>The associated Listbox.</short>
+      </element>
+    <element name="TListFilterEdit.SelectionList"><short>List of selected items. They are restored after filtering.</short>
+      </element><element name="TListFilterEdit.Items"><short>Maintains the data which is filtered and shown in the Listbox.</short>
+      </element>
+    </module>
+  </package>
+</fpdoc-descriptions>

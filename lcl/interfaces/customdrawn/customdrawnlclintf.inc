@@ -757,10 +757,29 @@ begin
 end;*)
 
 {$ifndef CD_HasNativeSelectItemDialog}
-function TCDWidgetset.ShowSelectItemDialog(const AItems: TStrings): Boolean;
+function TCDWidgetset.ShowSelectItemDialog(const AItems: TStrings; APos: TPoint): Boolean;
+var
+  i: Integer;
+  lPopUpMenu: TPopUpMenu;
+  lCurItem: TMenuItem;
 begin
-  Result := False;
+  lPopUpMenu := TPopUpMenu.Create(nil);
+  for i := 0 to AItems.Count-1 do
+  begin
+    lCurItem := TMenuItem.Create(lPopUpMenu);
+    lPopUpMenu.Items.Add(lCurItem);
+    lCurItem.Caption := AItems[i];
+  end;
+  lPopUpMenu.OnClose := @HandleSelectItemDialogClose;
+  lPopUpMenu.PopUp(APos.X, APos.Y);
+  Result := True;
 end;
+
+procedure TCDWidgetset.HandleSelectItemDialogClose(ASender: TObject);
+begin
+  //ASender.Free; Crashes in X11 =( Fix me!!!
+end;
+
 {$endif}
 
 (*function TQtWidgetSet.TextUTF8Out(DC: HDC; X, Y: Integer; Str: PChar; Count: Longint): Boolean;

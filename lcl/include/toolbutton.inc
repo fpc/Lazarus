@@ -248,6 +248,20 @@ begin
     ButtonRect := PaintRect;
     Details := GetButtonDrawDetail;
 
+    // OnDrawItem
+    if Assigned(FToolBar.OnPaintButton) then
+    begin
+      if (Style in [tbsButton, tbsDropDown, tbsCheck]) then
+      begin
+        TempDetails := Details;
+        if ((FToolBar <> nil) and not FToolBar.Flat) and (TempDetails.State in [1, 4]) then
+          TempDetails.State := 2;
+      end;
+
+      FToolBar.OnPaintButton(Self, TempDetails.State);
+      exit;
+    end;
+
     if Style = tbsDropDown then
     begin
       DropDownButtonRect := ButtonRect;

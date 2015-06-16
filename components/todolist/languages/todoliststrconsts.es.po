@@ -1,4 +1,4 @@
-﻿msgid ""
+msgid ""
 msgstr ""
 "Last-Translator: Lucas Martín <codedeep@hotmail.com>\n"
 "PO-Revision-Date: \n"
@@ -31,7 +31,7 @@ msgstr "Imprimir"
 
 #: todoliststrconsts.listddinserttodo
 msgid "Insert ToDo"
-msgstr "Insertar ToDo"
+msgstr "Insertar Pendiente (ToDo)"
 
 #: todoliststrconsts.listodoexport
 msgid "Export"

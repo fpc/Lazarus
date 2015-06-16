@@ -1,4 +1,4 @@
-unit lazutf8sysutils;
+unit LazUTF8SysUtils;
 
 {$mode objfpc}{$H+}
 

@@ -65,13 +65,16 @@ type
     function GetFontIndexByStyles(AStyles: string): integer;
     function GetStyle(AIndex: integer): string; override;
     procedure AddStyle(AName: string);
+    function RemoveStyle(AName: string): boolean;
     function GetStyles: string; override;
     function GetFamilyName: string; override;
     function GetFontCount: integer; override;
     function GetStyleCount: integer; override;
+    procedure RebuildStyleList(out ADuplicates: boolean);
   public
     constructor Create(AName: string);
     procedure AddFont(AFontItem: TFontCollectionItem);
+    function RemoveFont(AFontItem: TCustomFontCollectionItem): boolean;
     function GetFont(const AStyles: array of string; NeedAllStyles: boolean = false; NoMoreStyle: boolean = false): TCustomFontCollectionItem; override;
     function GetFont(AStyle: string; NeedAllStyles: boolean = false; NoMoreStyle: boolean = false): TCustomFontCollectionItem; override;
     function GetFontIndex(const AStyles: array of string; NeedAllStyles: boolean = false; NoMoreStyle: boolean = false): integer; override;
@@ -101,13 +104,15 @@ type
     function GetFamily(AName: string): TCustomFamilyCollectionItem; override;
     function GetFamilyCount: integer; override;
     function GetFontCount: integer; override;
-
+    function RemoveAndFreeFamily(AFamily: TCustomFamilyCollectionItem): boolean;
   public
     constructor Create; override;
     procedure Clear; override;
     procedure BeginUpdate; override;
     procedure AddFolder(AFolder: string); override;
+    procedure RemoveFolder(AFolder: string); override;
     function AddFile(AFilename: string): boolean; override;
+    function RemoveFile(AFilename: string): boolean; override;
     function AddStream(AStream: TStream; AOwned: boolean): boolean; override;
     procedure EndUpdate; override;
     destructor Destroy; override;
@@ -118,6 +123,12 @@ type
 procedure SetDefaultFreeTypeFontCollection(ACollection : TCustomFreeTypeFontCollection);
 
 implementation
+
+const
+  //one of these files will be used as a default font
+  ArialLikeFonts: array[0..8] of string = ('Helvetica', 'Helvetica Neue',
+  'Arial', 'Nimbus Sans L', 'Microsoft Sans Serif', 'FreeSans',
+  'Liberation Sans', 'DejaVu Sans Condensed', 'Tahoma');
 
 type
   { TFamilyEnumerator }
@@ -268,10 +279,17 @@ begin
 end;
 
 procedure TFontCollectionItem.NotifyDestroy;
-var i: integer;
+var
+  listener: TFontCollectionItemDestroyListener;
 begin
-  for i := 0 to high(FDestroyListeners) do
-    FDestroyListeners[i]();
+  //the list of listeners may change during the process
+  //so it is safer to avoid the 'for' loop
+  while length(FDestroyListeners) > 0 do
+  begin
+    listener := FDestroyListeners[high(FDestroyListeners)];
+    setlength(FDestroyListeners, length(FDestroyListeners)-1);
+    listener.NotifyProc();
+  end;
   FDestroyListeners := nil;
 end;
 
@@ -336,7 +354,7 @@ begin
   end;
   result := FFace;
   inc(FFaceUsage);
-  if Assigned(AListener) then
+  if Assigned(AListener.NotifyProc) then
   begin
     setlength(FDestroyListeners,length(FDestroyListeners)+1);
     FDestroyListeners[high(FDestroyListeners)] := AListener;
@@ -347,7 +365,8 @@ procedure TFontCollectionItem.ReleaseFace(AListener: TFontCollectionItemDestroyL
 var i,j: integer;
 begin
   for i := 0 to high(FDestroyListeners) do
-    if FDestroyListeners[i] = AListener then
+    if (FDestroyListeners[i].TargetObject = AListener.TargetObject) and
+       (FDestroyListeners[i].NotifyProc = AListener.NotifyProc) then
     begin
       for j := i to high(FDestroyListeners)-1 do
         FDestroyListeners[j] := FDestroyListeners[j+1];
@@ -457,6 +476,21 @@ begin
   inc(FStyleCount);
 end;
 
+function TFamilyCollectionItem.RemoveStyle(AName: string): boolean;
+var i,j: integer;
+begin
+  for i := 0 to FStyleCount-1 do
+    if CompareText(FStyles[i],AName)=0 then
+    begin
+      for j := i to FStyleCount-2 do
+        FStyles[j] := FStyles[j+1];
+      dec(FStyleCount);
+      result := true;
+      exit;
+    end;
+  result := false;
+end;
+
 function TFamilyCollectionItem.GetStyles: string;
 var i: integer;
 begin
@@ -483,6 +517,31 @@ begin
   result := FStyleCount;
 end;
 
+procedure TFamilyCollectionItem.RebuildStyleList(out ADuplicates: boolean);
+var
+  i: Integer;
+  j: Integer;
+begin
+  FStyleCount := 0;
+  ADuplicates := false;
+  for i := 0 to FFontCount-1 do
+  begin
+    FFonts[i].UsePostscriptStyle := true;
+    for j := 0 to FFonts[i].StyleCount -1 do
+     AddStyle(FFonts[i].Style[j]);
+
+    //add regular style if no other style
+    if FFonts[i].StyleCount = 0 then AddStyle('Regular');
+
+    for j := 0 to i-1 do
+      if FFonts[j].Styles = FFonts[i].Styles then
+      begin
+        ADuplicates:= true;
+        break;
+      end;
+  end;
+end;
+
 constructor TFamilyCollectionItem.Create(AName: string);
 begin
   FFamilyName:= AName;
@@ -494,21 +553,33 @@ begin
 end;
 
 procedure TFamilyCollectionItem.AddFont(AFontItem: TFontCollectionItem);
-var i,j: integer;
+var i: integer;
     DuplicateStyle: boolean;
     StyleNumber: integer;
     TempStyles,BaseStyle: string;
 begin
+  if AFontItem = nil then exit;
+
+  for i := 0 to FFontCount-1 do
+    if FFonts[i] = AFontItem then exit;
+
+  if AFontItem.Family <> nil then
+    raise exception.Create('This font already belongs to another family');
+
   if FFontCount = length(FFonts) then
     setlength(FFonts, length(FFonts)+4);
 
   FFonts[FFontCount] := AFontItem;
+  AFontItem.Family := self;
   inc(FFontCount);
 
   if FUsePostscriptStyle then AFontItem.UsePostscriptStyle := true;
 
   for i := 0 to AFontItem.StyleCount -1 do
     AddStyle(AFontItem.Style[i]);
+
+  //add regular style if no other style
+  if AFontItem.StyleCount = 0 then AddStyle('Regular');
 
   DuplicateStyle := false;
   for i := 0 to FFontCount-2 do
@@ -521,21 +592,7 @@ begin
   if DuplicateStyle and not FUsePostscriptStyle then
   begin //try with postscript styles instead
     FUsePostscriptStyle:= true;
-    FStyleCount := 0;
-    DuplicateStyle := false;
-    for i := 0 to FFontCount-1 do
-    begin
-      FFonts[i].UsePostscriptStyle := true;
-      for j := 0 to FFonts[i].StyleCount -1 do
-       AddStyle(FFonts[i].Style[j]);
-
-      for j := 0 to i-1 do
-        if FFonts[j].Styles = FFonts[i].Styles then
-        begin
-          DuplicateStyle:= true;
-          break;
-        end;
-    end;
+    RebuildStyleList(DuplicateStyle);
   end;
 
   if DuplicateStyle then
@@ -558,8 +615,6 @@ begin
     until not DuplicateStyle;
     AFontItem.Information[ftiStyle] := TempStyles;
   end;
-
-  if AFontItem.StyleCount = 0 then AddStyle('Regular');
 end;
 
 function TFamilyCollectionItem.GetFont(const AStyles: array of string;
@@ -627,6 +682,25 @@ begin
     result := GetFontIndex(StylesToArray(AStyle),NeedAllStyles,NoMoreStyle);
 end;
 
+function TFamilyCollectionItem.RemoveFont(AFontItem: TCustomFontCollectionItem
+  ): boolean;
+var i,j: integer;
+  dummy: boolean;
+begin
+  for i := 0 to FFontCount-1 do
+    if FFonts[i] = AFontItem then
+    begin
+      for j := i to FFontCount-2 do
+        FFonts[j] := FFonts[j+1];
+      dec(FFontCount);
+      AFontItem.Family := nil;
+      RebuildStyleList(dummy);
+      result := true;
+      exit;
+    end;
+  result := false;
+end;
+
 function TFamilyCollectionItem.GetFont(AStyle: string; NeedAllStyles: boolean; NoMoreStyle: boolean): TCustomFontCollectionItem;
 begin
   result := GetFontByStyles(AStyle); //exact match
@@ -651,6 +725,17 @@ end;
 function TFreeTypeFontCollection.GetFontCount: integer;
 begin
   result := FFontList.Count;
+end;
+
+function TFreeTypeFontCollection.RemoveAndFreeFamily(
+  AFamily: TCustomFamilyCollectionItem): boolean;
+begin
+  if FFamilyList.Remove(Pointer(AFamily)) then
+  begin
+    result := true;
+    AFamily.Free;
+  end else
+    result := false;
 end;
 
 function TFreeTypeFontCollection.GetFamilyCount: integer;
@@ -680,6 +765,8 @@ end;
 
 function TFreeTypeFontCollection.GetFamily(AName: string
   ): TCustomFamilyCollectionItem;
+var
+  i,j: Integer;
 begin
   if AName = '' then
   begin
@@ -687,14 +774,43 @@ begin
     exit;
   end;
   result := FindFamily(AName);
-  if (result = nil) and (CompareText(AName,'Arial')=0) then result := FindFamily('Helvetica');
-  if (result = nil) and (CompareText(AName,'Helvetica')=0) then result := FindFamily('Arial');
+  if result <> nil then exit;
+
+  if (CompareText(AName,'Arial')=0) then
+  begin
+    if result = nil then result := FindFamily('Helvetica Neue');
+    if result = nil then result := FindFamily('Helvetica');
+  end else
+  if (CompareText(AName,'Helvetica')=0) then
+  begin
+    if result = nil then result := FindFamily('Helvetica Neue');
+    if result = nil then result := FindFamily('Arial');
+  end else
+  if (CompareText(AName,'Helvetica Neue')=0) then
+  begin
+    if result = nil then result := FindFamily('Helvetica');
+    if result = nil then result := FindFamily('Arial');
+  end;
+  if result <> nil then exit;
+
+  for i := low(ArialLikeFonts) to high(ArialLikeFonts) do
+    if CompareText(AName,ArialLikeFonts[i])=0 then
+    begin
+      for j := 0 to high(ArialLikeFonts) do
+      begin
+        result := FindFamily(ArialLikeFonts[j]);
+        if result <> nil then break;
+      end;
+      break;
+    end;
+
   if (result = nil) and (CompareText(AName,'Courier New')=0) then result := FindFamily('Nimbus Monospace');
   if (result = nil) and (CompareText(AName,'Courier New')=0) then result := FindFamily('Courier');
   if (result = nil) and (CompareText(AName,'Nimbus Monospace')=0) then result := FindFamily('Courier New');
   if (result = nil) and (CompareText(AName,'Nimbus Monospace')=0) then result := FindFamily('Courier');
   if (result = nil) and (CompareText(AName,'Courier')=0) then result := FindFamily('Courier New');
   if (result = nil) and (CompareText(AName,'Courier')=0) then result := FindFamily('Nimbus Monospace');
+
   if (result = nil) and (CompareText(AName,'Times')=0) then result := FindFamily('Times New Roman');
   if (result = nil) and (CompareText(AName,'Times')=0) then result := FindFamily('CG Times');
   if (result = nil) and (CompareText(AName,'Times New Roman')=0) then result := FindFamily('Times');
@@ -751,6 +867,7 @@ end;
 function TFreeTypeFontCollection.GetFont(AFileName: string
   ): TCustomFontCollectionItem;
 begin
+  AFilename:= ExpandFileName(AFilename);
   result := FindFont(AFilename);
 end;
 
@@ -780,6 +897,7 @@ var sr: TSearchRec;
     files: TStringList;
     i: integer;
 begin
+  AFolder := ExpandFileName(AFolder);
   if (length(AFolder) <> 0) and (AFolder[length(AFolder)] <> PathDelim) then
     AFolder += PathDelim;
 
@@ -801,12 +919,39 @@ begin
   files.Free;
 end;
 
+procedure TFreeTypeFontCollection.RemoveFolder(AFolder: string);
+var toBeDeleted: TStringList;
+    enumerator: TAvgLvlTreeNodeEnumerator;
+    i: Integer;
+begin
+  AFolder := ExpandFileName(AFolder);
+  if (length(AFolder) <> 0) and (AFolder[length(AFolder)] <> PathDelim) then
+    AFolder += PathDelim;
+
+  toBeDeleted := TStringList.Create;
+  enumerator := FFontList.GetEnumerator;
+  while enumerator.MoveNext do
+  begin
+    with TCustomFontCollectionItem(enumerator.Current.Data) do
+    begin
+      if copy(Filename, 1, length(AFolder)) = AFolder then
+        toBeDeleted.Add(Filename);
+    end;
+  end;
+  enumerator.Free;
+
+  for i := 0 to toBeDeleted.Count-1 do
+    RemoveFile(toBeDeleted[i]);
+  toBeDeleted.Free;
+end;
+
 function TFreeTypeFontCollection.AddFile(AFilename: string): boolean;
 var info: TFreeTypeInformation;
     fName: string;
     item: TFontCollectionItem;
     f: TFamilyCollectionItem;
 begin
+  AFilename:= ExpandFileName(AFilename);
   result := false;
   BeginUpdate;
   try
@@ -828,6 +973,27 @@ begin
     end;
   finally
     EndUpdate;
+  end;
+end;
+
+function TFreeTypeFontCollection.RemoveFile(AFilename: string): boolean;
+var fontItem : TCustomFontCollectionItem;
+    f: TFamilyCollectionItem;
+begin
+  AFilename:= ExpandFileName(AFilename);
+  fontItem := GetFont(AFilename);
+  if (fontItem = nil) or not (fontItem.Family is TFamilyCollectionItem) then
+  begin
+    result := false;
+    exit;
+  end;
+  FFontList.Remove(Pointer(fontItem));
+  f := fontItem.Family as TFamilyCollectionItem;
+  result := f.RemoveFont(fontItem);
+  if result then
+  begin
+    if f.FontCount = 0 then
+      RemoveAndFreeFamily(f);
   end;
 end;
 

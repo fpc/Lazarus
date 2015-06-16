@@ -176,7 +176,9 @@ var
   R: TRect;
   P: TQtPoint;
   AHint: WideString;
+  {$IFDEF HASX11}
   PaintData: TSysTrayIconPaintData;
+  {$ENDIF}
 begin
   Result := False;
   if Sender <> FSysTrayWidget then

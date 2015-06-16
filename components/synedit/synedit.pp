@@ -1583,7 +1583,7 @@ begin
     AddCommand(emcStartColumnSelections, True,  mbXLeft, ccSingle, cdDown, [ssShift, ssAlt], [ssShift, ssAlt], emcoSelectionContinue);
   end;
   if (emShowCtrlMouseLinks in AnOptions) then
-    AddCommand(emcMouseLink,             False, mbXLeft, ccSingle, cdUp, [SYNEDIT_LINK_MODIFIER], [ssShift, ssAlt, ssCtrl]);
+    AddCommand(emcMouseLink,             False, mbXLeft, ccSingle, cdUp, [SYNEDIT_LINK_MODIFIER], [ssShift, ssAlt, ssCtrl] + [SYNEDIT_LINK_MODIFIER]);
 
   if (emDoubleClickSelectsLine in AnOptions) then begin
     AddCommand(emcSelectLine,            True,  mbXLeft, ccDouble, cdDown, [], []);
@@ -3268,8 +3268,11 @@ begin
         begin
           if assigned(fMarkupCtrlMouse) and fMarkupCtrlMouse.IsMouseOverLink and
              assigned(FOnClickLink)
-          then
-            FOnClickLink(Self, SynMouseButtonBackMap[AnInfo.Button], AnInfo.Shift, AnInfo.MouseX, AnInfo.MouseY)
+          then begin
+            if AnAction.MoveCaret then
+              MoveCaret;
+            FOnClickLink(Self, SynMouseButtonBackMap[AnInfo.Button], AnInfo.Shift, AnInfo.MouseX, AnInfo.MouseY);
+          end
           else
             Result := False;
         end;

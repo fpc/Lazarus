@@ -84,11 +84,8 @@ type
     procedure CopyCellToClipboardMenuItemClick(Sender: TObject);
     procedure DeleteSelectedButtonClick(Sender: TObject);
     procedure FilterEditChange(Sender: TObject);
-    procedure FilterEditEnter(Sender: TObject);
-    procedure FilterEditExit(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
-    procedure GridPopupMenuPopup(Sender: TObject);
     procedure LPKFileValidCheckBoxChange(Sender: TObject);
     procedure LPKFileInvalidCheckBoxChange(Sender: TObject);
     procedure LPKParsingTimerTimer(Sender: TObject);
@@ -141,12 +138,12 @@ end;
 procedure TPackageLinksDialog.FormCreate(Sender: TObject);
 begin
   Caption:=lisPLDPackageLinks;
-  ScopeGroupBox.Caption:=dlgScope;
+  ScopeGroupBox.Caption:=dlgSearchScope;
   CopyCellToClipboardMenuItem.Caption:=srkmecCopy;
   DeleteSelectedButton.Caption:=lrsPLDDeleteSelected;
   UpdateGlobalLinksButton.Caption:=lrsRescanLplFiles;
   CloseBitBtn.Caption:=lisClose;
-  FilterEdit.Text:=lisCEFilter;
+  FilterEdit.TextHint:=lisCEFilter;
 
   ProgressBar1.Style:=pbstMarquee;
   ProgressBar1.Visible:=true;
@@ -195,28 +192,11 @@ begin
   PkgLinks.SaveUserLinks;
 end;
 
-procedure TPackageLinksDialog.FilterEditEnter(Sender: TObject);
-begin
-  if FilterEdit.Text=lisCEFilter then
-    FilterEdit.Text:='';
-end;
-
-procedure TPackageLinksDialog.FilterEditExit(Sender: TObject);
-begin
-  if FilterEdit.Text='' then
-    FilterEdit.Text:=lisCEFilter;
-end;
-
 procedure TPackageLinksDialog.FormDestroy(Sender: TObject);
 begin
   LPKInfoCache.EndLPKReader;
   LPKInfoCache.RemoveOnQueueEmpty(@OnAllLPKParsed);
   ClearLinks;
-end;
-
-procedure TPackageLinksDialog.GridPopupMenuPopup(Sender: TObject);
-begin
-
 end;
 
 procedure TPackageLinksDialog.LPKFileValidCheckBoxChange(Sender: TObject);
@@ -312,7 +292,6 @@ begin
     FCountUserLinks:=0;
     Node:=FLinks.FindLowest;
     FilterCase:=FilterEdit.Text;
-    if FilterCase=lisCEFilter then FilterCase:='';
     FilterLo:=UTF8LowerCase(FilterCase);
     while Node<>nil do begin
       Link:=TPkgLinkInfo(Node.Data);
@@ -371,7 +350,7 @@ begin
   PkgStringGrid.Columns[3].Title.Caption:=lisGroup;
   PkgStringGrid.Columns[4].Title.Caption:=lisOIPState;
   PkgStringGrid.Columns[5].Title.Caption:=lisA2PFilename2;
-  PkgStringGrid.Columns[6].Title.Caption:='Last opened';
+  PkgStringGrid.Columns[6].Title.Caption:=lisLastOpened;
 
   i:=1;
   Node:=FLinks.FindLowest;
@@ -395,7 +374,11 @@ begin
       s:=lrsPLDInvalid;
     PkgStringGrid.Cells[4,i]:=s;
     PkgStringGrid.Cells[5,i]:=Link.EffectiveFilename;
-    PkgStringGrid.Cells[6,i]:=DateTimeToStr(Link.LastUsed);
+
+    if Link.LastUsed=0 then
+      PkgStringGrid.Cells[6,i]:= lisNever
+    else
+      PkgStringGrid.Cells[6,i]:= DateTimeToStr(Link.LastUsed);
 
     inc(i);
   end;
@@ -408,11 +391,11 @@ end;
 
 procedure TPackageLinksDialog.UpdateFacets;
 begin
-  ShowGlobalLinksCheckBox.Caption:=lisPLDShowGlobalLinks
-     +' in '+PkgLinks.GetGlobalLinkDirectory+'*.lpl'
+  ShowGlobalLinksCheckBox.Caption:=lisPLDShowGlobalLinksIn
+     +PkgLinks.GetGlobalLinkDirectory+'*.lpl'
      +' ('+IntToStr(CountGlobalLinks)+')';
-  ShowUserLinksCheckBox.Caption:=lisPLDShowUserLinks
-     +' in '+PkgLinks.GetUserLinkFile
+  ShowUserLinksCheckBox.Caption:=lisPLDShowUserLinksIn
+     +PkgLinks.GetUserLinkFile
      +' ('+IntToStr(CountUserLinks)+')';
   LPKFileValidCheckBox.Caption:=Format(lrsPLDLpkFileValid, [IntToStr(
     CountLPKValid)]);

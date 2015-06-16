@@ -385,6 +385,7 @@ type
     function GetTop: Integer;
     procedure SetFindText(const AValue: string);
     procedure SetLeft(const AValue: Integer);
+    procedure SetOptions(AValue: TFindOptions);
     procedure SetPosition(const AValue: TPoint);
     procedure SetTop(const AValue: Integer);
     procedure SetReplaceText(const AValue: string);
@@ -405,16 +406,14 @@ type
 
     function GetHeight: Integer; override;
     function GetWidth: Integer; override;
-    procedure UpdatePosition;
     procedure DoCloseForm(Sender: TObject; var CloseAction: TCloseAction);virtual;
     procedure Find; virtual;
     procedure Help; virtual;
     procedure Replace; virtual;
     function CreateForm:TForm;virtual;
     procedure SetFormValues;virtual;
-
     procedure GetFormValues; virtual;
-
+    Procedure CalcPosition(aForm:Tform);
     property ReplaceText: string read GetReplaceText write SetReplaceText;
     property OnReplace: TNotifyEvent read FOnReplace write FOnReplace;
   public
@@ -427,7 +426,7 @@ type
     property Top: Integer read GetTop write SetTop;
   published
     property FindText: string read GetFindText write SetFindText;
-    property Options: TFindOptions read FOptions write FOptions default [frDown];
+    property Options: TFindOptions read FOptions write SetOptions default [frDown];
     property OnFind: TNotifyEvent read FOnFind write FOnFind;
     property OnHelpClicked: TNotifyEvent read FOnHelpClicked write FOnHelpClicked;
   end;
@@ -502,6 +501,8 @@ function MessageDlg(const aCaption, aMsg: string; DlgType: TMsgDlgType;
             Buttons: TMsgDlgButtons; HelpCtx: Longint): TModalResult; overload;
 function MessageDlg(const aCaption, aMsg: string; DlgType: TMsgDlgType;
             Buttons: TMsgDlgButtons; HelpCtx: Longint; DefaultButton: TMsgDlgBtn): TModalResult; overload;
+function MessageDlg(const aMsg: string; DlgType: TMsgDlgType;
+            Buttons: TMsgDlgButtons; HelpCtx: Longint; DefaultButton: TMsgDlgBtn): TModalResult; overload;
 function MessageDlg(const aCaption, aMsg: string; DlgType: TMsgDlgType;
             Buttons: TMsgDlgButtons; const HelpKeyword: string): TModalResult; overload;
 function MessageDlgPos(const aMsg: string; DlgType: TMsgDlgType;
@@ -516,19 +517,23 @@ function QuestionDlg(const aCaption, aMsg: string; DlgType: TMsgDlgType;
 function QuestionDlg(const aCaption, aMsg: string; DlgType: TMsgDlgType;
             Buttons: array of const; const HelpKeyword: string): TModalResult; overload;
 
-            
 procedure ShowMessage(const aMsg: string);
 procedure ShowMessageFmt(const aMsg: string; Params: array of const);
 procedure ShowMessagePos(const aMsg: string; X, Y: Integer);
 
-function InputQuery(const ACaption, APrompt : String; MaskInput : Boolean; var Value : String) : Boolean;
-function InputQuery(const ACaption, APrompt : String; var Value : String) : Boolean;
 function InputBox(const ACaption, APrompt, ADefault : String) : String;
 function PasswordBox(const ACaption, APrompt : String) : String;
-  
+
+const
+  cInputQueryEditSizePixels: integer = 260; // Edit size in pixels
+  cInputQueryEditSizePercents: integer = 25; // Edit size in % of monitor width
+  cInputQuerySpacingSize: integer = 6;
+
 type
   TSelectDirOpt = (sdAllowCreate, sdPerformCreate, sdPrompt);
   TSelectDirOpts = set of TSelectDirOpt;
+  TInputCloseQueryEvent = procedure(Sender: TObject; const AValues: array of string;
+    var ACanClose: boolean) of object;
 
 function SelectDirectory(const Caption, InitialDirectory: string;
   out Directory: string): boolean;
@@ -536,6 +541,11 @@ function SelectDirectory(const Caption, InitialDirectory: string;
   out Directory: string; ShowHidden: boolean; HelpCtx: Longint = 0): boolean;
 function SelectDirectory(out Directory: string;
   Options: TSelectDirOpts; HelpCtx: Longint): Boolean;
+
+function InputQuery(const ACaption, APrompt : String; MaskInput : Boolean; var Value : String) : Boolean;
+function InputQuery(const ACaption, APrompt : String; var Value : String) : Boolean;
+function InputQuery(const ACaption: string; const APrompts: array of string;
+  var AValues: array of string; ACloseEvent: TInputCloseQueryEvent = nil): boolean;
 
 function ExtractColorIndexAndColor(const AColorList: TStrings; const AIndex: Integer;
   out ColorIndex: Integer; out ColorValue: TColor): Boolean;
@@ -729,6 +739,7 @@ begin
   FPrintRange:=prAllPages;
   FCopies:=1;
 end;
+
 
 initialization
   Forms.MessageBoxFunction := @ShowMessageBox;

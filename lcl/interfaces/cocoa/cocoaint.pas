@@ -156,6 +156,10 @@ var
 
 implementation
 
+// NSCursor doesn't support any wait cursor, so we need to use a non-native one
+// Not supporting it at all would result in crashes in Screen.Cursor := crHourGlass;
+{$R ../../cursor_hourglass.res}
+
 uses
   CocoaCaret,
   CocoaThemes;

@@ -8,20 +8,19 @@
  *****************************************************************************
 }
 
+function _InputQueryActiveMonitor: TMonitor;
+begin
+  if Screen.ActiveCustomForm <> nil then
+    Result := Screen.ActiveCustomForm.Monitor
+  else
+  if Application.MainForm <> nil then
+    Result := Application.MainForm.Monitor
+  else
+    Result := Screen.PrimaryMonitor;
+end;
+
 function ShowInputDialog(const InputCaption, InputPrompt : String;
   MaskInput : Boolean; var Value : String) : Boolean;
-
-  function ActiveMonitor: TMonitor; inline;
-  begin
-    if Screen.ActiveCustomForm <> nil then
-      Result := Screen.ActiveCustomForm.Monitor
-    else
-    if Application.MainForm <> nil then
-      Result := Application.MainForm.Monitor
-    else
-      Result := Screen.PrimaryMonitor;
-  end;
-
 var
   Form: TForm;
   Prompt: TLabel;
@@ -54,10 +53,12 @@ begin
       Top := Prompt.Height;
       Align := alTop;
       BorderSpacing.Top := 3;
-      AMonitor := ActiveMonitor;
+      AMonitor := _InputQueryActiveMonitor;
       // check that edit is smaller than our monitor, it must be smaller at least
       // by 6 * 2 pixels (spacing from window borders) + window border
-      MinEditWidth := Min(AMonitor.Width - 20, Max(260, AMonitor.Width div 4));
+      MinEditWidth := Min(AMonitor.Width - 20,
+        Max(cInputQueryEditSizePixels,
+            AMonitor.Width * cInputQueryEditSizePercents div 100));
       Constraints.MinWidth := MinEditWidth;
       Text := Value;
       TabStop := True;

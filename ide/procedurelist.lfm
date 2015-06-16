@@ -12,11 +12,11 @@ object ProcedureListForm: TProcedureListForm
   OnResize = FormResize
   OnShow = FormShow
   Position = poScreenCenter
-  LCLVersion = '1.1'
+  LCLVersion = '1.5'
   object StatusBar: TStatusBar
     Left = 0
-    Height = 22
-    Top = 666
+    Height = 23
+    Top = 665
     Width = 952
     Panels = <    
       item
@@ -33,6 +33,7 @@ object ProcedureListForm: TProcedureListForm
     Top = 0
     Width = 952
     Caption = 'TB'
+    EdgeBorders = []
     TabOrder = 1
     object tbAbout: TToolButton
       Left = 136
@@ -46,6 +47,7 @@ object ProcedureListForm: TProcedureListForm
     end
     object ToolButton2: TToolButton
       Left = 131
+      Height = 22
       Top = 2
       Width = 5
       Caption = 'ToolButton2'
@@ -63,6 +65,7 @@ object ProcedureListForm: TProcedureListForm
     end
     object ToolButton4: TToolButton
       Left = 103
+      Height = 22
       Top = 2
       Width = 5
       Caption = 'ToolButton4'
@@ -93,10 +96,12 @@ object ProcedureListForm: TProcedureListForm
     end
     object ToolButton7: TToolButton
       Left = 52
+      Height = 22
       Top = 2
       Width = 5
       Caption = 'ToolButton7'
       Style = tbsDivider
+      Visible = False
     end
     object tbChangeFont: TToolButton
       Left = 29
@@ -104,11 +109,14 @@ object ProcedureListForm: TProcedureListForm
       Top = 2
       Caption = 'tbChangeFont'
       ImageIndex = 4
+      OnClick = tbChangeFontClick
       ParentShowHint = False
       ShowHint = True
+      Visible = False
     end
     object ToolButton9: TToolButton
       Left = 24
+      Height = 22
       Top = 2
       Width = 5
       Caption = 'ToolButton9'
@@ -127,13 +135,13 @@ object ProcedureListForm: TProcedureListForm
   end
   object pnlHeader: TPanel
     Left = 0
-    Height = 41
+    Height = 35
     Top = 26
     Width = 952
     Align = alTop
     AutoSize = True
     BevelOuter = bvNone
-    ClientHeight = 41
+    ClientHeight = 35
     ClientWidth = 952
     ParentColor = False
     TabOrder = 2
@@ -141,9 +149,9 @@ object ProcedureListForm: TProcedureListForm
       AnchorSideTop.Control = pnlHeader
       AnchorSideTop.Side = asrCenter
       Left = 6
-      Height = 17
-      Top = 12
-      Width = 45
+      Height = 15
+      Top = 10
+      Width = 35
       BorderSpacing.Around = 6
       Caption = '&Search'
       ParentColor = False
@@ -154,9 +162,9 @@ object ProcedureListForm: TProcedureListForm
       AnchorSideTop.Control = pnlHeader
       AnchorSideTop.Side = asrCenter
       Left = 581
-      Height = 17
-      Top = 12
-      Width = 48
+      Height = 15
+      Top = 10
+      Width = 40
       BorderSpacing.Left = 12
       BorderSpacing.Around = 6
       Caption = '&Objects'
@@ -169,10 +177,10 @@ object ProcedureListForm: TProcedureListForm
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Control = cbObjects
       AnchorSideBottom.Side = asrBottom
-      Left = 57
-      Height = 29
+      Left = 47
+      Height = 23
       Top = 6
-      Width = 506
+      Width = 516
       Anchors = [akTop, akLeft, akRight, akBottom]
       BorderSpacing.Left = 6
       BorderSpacing.Top = 6
@@ -188,13 +196,13 @@ object ProcedureListForm: TProcedureListForm
       AnchorSideTop.Control = pnlHeader
       AnchorSideRight.Control = pnlHeader
       AnchorSideRight.Side = asrBottom
-      Left = 635
-      Height = 29
+      Left = 627
+      Height = 23
       Top = 6
-      Width = 311
+      Width = 319
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Around = 6
-      ItemHeight = 0
+      ItemHeight = 15
       OnChange = cbObjectsChange
       Sorted = True
       Style = csDropDownList
@@ -203,8 +211,8 @@ object ProcedureListForm: TProcedureListForm
   end
   object LV: TListView
     Left = 0
-    Height = 599
-    Top = 67
+    Height = 604
+    Top = 61
     Width = 952
     Align = alClient
     Columns = <    

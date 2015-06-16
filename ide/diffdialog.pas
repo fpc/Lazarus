@@ -356,12 +356,12 @@ begin
   
   // dialogs
   dlgOpen.Title:=lisOpenExistingFile;
-  dlgOpen.Filter:=dlgAllFiles+' ('+GetAllFilesMask+')|'+GetAllFilesMask
-                 +'|'+lisLazarusUnit+' (*.pas;*.pp)|*.pas;*.pp'
-                 +'|'+lisLazarusProject+' (*.lpi)|*.lpi'
-                 +'|'+lisLazarusForm+' (*.lfm;*.dfm)|*.lfm;*.dfm'
-                 +'|'+lisLazarusPackage+' (*.lpk)|*.lpk'
-                 +'|'+lisLazarusProjectSource+' (*.lpr)|*.lpr';
+  dlgOpen.Filter:=dlgFilterAll+' ('+GetAllFilesMask+')|'+GetAllFilesMask
+                 +'|'+dlgFilterLazarusUnit+' (*.pas;*.pp)|*.pas;*.pp'
+                 +'|'+dlgFilterLazarusProject+' (*.lpi)|*.lpi'
+                 +'|'+dlgFilterLazarusForm+' (*.lfm;*.dfm)|*.lfm;*.dfm'
+                 +'|'+dlgFilterLazarusPackage+' (*.lpk)|*.lpk'
+                 +'|'+dlgFilterLazarusProjectSource+' (*.lpr)|*.lpr';
 
   // diff
   EditorOpts.GetSynEditSettings(DiffSynEdit);
@@ -461,7 +461,7 @@ end;
 procedure TDiffDlg.SaveSettings;
 begin
   InputHistories.DiffFlags:=GetDiffOptions;
-  if fSelectedFile2<>nil then begin
+  if (fSelectedFile2<>nil) and (fSelectedFile2.fFile<>nil) then begin
     InputHistories.DiffText2:=fSelectedFile2.fFile.Name;
     InputHistories.DiffText2OnlySelection:=Text2OnlySelectionCheckBox.Checked;
   end else begin

@@ -287,6 +287,9 @@ type
     FSingleTaskBarButton: boolean;
     FHideIDEOnRun: boolean;
     FComponentPaletteVisible: boolean;
+    FAutoAdjustIDEHeight: boolean;
+    FAutoAdjustIDEHeightFullComponentPalette: boolean;
+
     // CompletionWindow
     FCompletionWindowWidth: Integer;
     FCompletionWindowHeight: Integer;
@@ -347,6 +350,7 @@ type
     FMsgViewAlwaysDrawFocused: boolean;
     FMsgViewFilenameStyle: TMsgWndFileNameStyle;
     fMsgViewColors: array[TMsgWndColor] of TColor;
+    fMsgColors: array[TMessageLineUrgency] of TColor;
     FShowCompileDialog: Boolean;       // show dialog during compile
     FAutoCloseCompileDialog: Boolean;  // auto close dialog after succesed compile
     FMsgViewFilters: TLMsgViewFilters;
@@ -429,6 +433,7 @@ type
     function GetFPDocPaths: string;
     function GetLazarusDirectory: string;
     function GetMakeFilename: string;
+    function GetMsgColors(u: TMessageLineUrgency): TColor;
     function GetMsgViewColors(c: TMsgWndColor): TColor;
     function GetTestBuildDirectory: string;
     procedure SetCompilerFilename(const AValue: string);
@@ -441,6 +446,7 @@ type
     procedure SetDebuggerFilename(AValue: string);
     procedure SetFPCSourceDirectory(const AValue: string);
     procedure SetLazarusDirectory(const AValue: string);
+    procedure SetMsgColors(u: TMessageLineUrgency; AValue: TColor);
     procedure SetMsgViewColors(c: TMsgWndColor; AValue: TColor);
     procedure SetParseValue(o: TEnvOptParseType; const NewValue: string);
 
@@ -514,6 +520,8 @@ type
                                                     write FIDEProjectDirectoryInIdeTitle;
     property ComponentPaletteVisible: boolean read FComponentPaletteVisible
                                               write FComponentPaletteVisible;
+    property AutoAdjustIDEHeight: Boolean read FAutoAdjustIDEHeight write FAutoAdjustIDEHeight;
+    property AutoAdjustIDEHeightFullComponentPalette: Boolean read FAutoAdjustIDEHeightFullComponentPalette write FAutoAdjustIDEHeightFullComponentPalette;
     property CompletionWindowWidth: Integer read FCompletionWindowWidth
                                             write FCompletionWindowWidth;
     property CompletionWindowHeight: Integer read FCompletionWindowHeight
@@ -717,6 +725,7 @@ type
                        write FMsgViewFilenameStyle;
     property MsgViewColors[c: TMsgWndColor]: TColor read GetMsgViewColors write SetMsgViewColors;
     property MsgViewFilters: TLMsgViewFilters read FMsgViewFilters;
+    property MsgColors[u: TMessageLineUrgency]: TColor read GetMsgColors write SetMsgColors;
 
     // glyphs
     property ShowButtonGlyphs: TApplicationShowGlyphs read FShowButtonGlyphs write FShowButtonGlyphs;
@@ -759,6 +768,7 @@ const
   );
 
 function dbgs(o: TEnvOptParseType): string; overload;
+function dbgs(u: TMessageLineUrgency): string; overload;
 
 implementation
 
@@ -833,12 +843,18 @@ begin
   Result:=EnvOptParseTypeNames[o];
 end;
 
+function dbgs(u: TMessageLineUrgency): string;
+begin
+  WriteStr(Result, u);
+end;
+
 { TEnvironmentOptions }
 
 constructor TEnvironmentOptions.Create;
 var
   o: TEnvOptParseType;
   c: TMsgWndColor;
+  u: TMessageLineUrgency;
 begin
   inherited Create;
   for o:=low(FParseValues) to high(FParseValues) do
@@ -867,6 +883,8 @@ begin
   FIDETitleIncludesBuildMode:=false;
   FIDEProjectDirectoryInIdeTitle:=false;
   FComponentPaletteVisible:=true;
+  FAutoAdjustIDEHeight:=true;
+  FAutoAdjustIDEHeightFullComponentPalette := true;
 
   // window menu
   FIDENameForDesignedFormList:=false;
@@ -930,6 +948,8 @@ begin
   FMsgViewFilenameStyle:=mwfsShort;
   for c:=low(TMsgWndColor) to high(TMsgWndColor) do
     fMsgViewColors[c]:=MsgWndDefaultColors[c];
+  for u:=low(TMessageLineUrgency) to high(TMessageLineUrgency) do
+    fMsgColors[u] := clDefault;
   FMsgViewFilters:=TLMsgViewFilters.Create(nil);
 
   // glyphs
@@ -1127,7 +1147,6 @@ var
 
 var
   Path: String;
-  SubPath: String;
   CurPath: String;
   i, j: Integer;
   Rec: PIDEOptionsGroupRec;
@@ -1135,6 +1154,7 @@ var
   EventType: TDBGEventType;
   NodeName: String;
   mwc: TMsgWndColor;
+  u: TMessageLineUrgency;
 begin
   Cfg:=nil;
   try
@@ -1191,6 +1211,10 @@ begin
         Path+'Desktop/IDEProjectDirectoryInIdeTitle/Value',false);
       FComponentPaletteVisible:=XMLConfig.GetValue(
         Path+'Desktop/ComponentPaletteVisible/Value',true);
+      FAutoAdjustIDEHeight:=XMLConfig.GetValue(
+        Path+'Desktop/AutoAdjustIDEHeight/Value',true);
+      FAutoAdjustIDEHeightFullComponentPalette:=XMLConfig.GetValue(
+        Path+'Desktop/AutoAdjustIDEHeightFullComponentPalette/Value',true);
       FCompletionWindowWidth:=XMLConfig.GetValue(
         Path+'Desktop/CompletionWindowWidth/Value', 320);
       FCompletionWindowHeight:=XMLConfig.GetValue(
@@ -1390,6 +1414,9 @@ begin
       for mwc:=low(TMsgWndColor) to high(TMsgWndColor) do
         fMsgViewColors[mwc]:=XMLConfig.GetValue(
           Path+'MsgView/Colors/'+MsgWndColorNames[mwc],MsgWndDefaultColors[mwc]);
+      for u:=low(TMessageLineUrgency) to high(TMessageLineUrgency) do
+        fMsgColors[u] := XMLConfig.GetValue(
+          Path+'MsgView/MsgColors/'+dbgs(u),clDefault);
       MsgViewFilters.LoadFromXMLConfig(XMLConfig,'MsgView/Filters/');
 
       // glyphs
@@ -1525,7 +1552,6 @@ var
 
 var
   Path: String;
-  SubPath: String;
   i, j: Integer;
   NodeName: String;
   Rec: PIDEOptionsGroupRec;
@@ -1534,6 +1560,7 @@ var
   CurLazDir: String;
   BaseDir: String;
   mwc: TMsgWndColor;
+  u: TMessageLineUrgency;
 begin
   Cfg:=nil;
   try
@@ -1577,6 +1604,10 @@ begin
                                FIDEProjectDirectoryInIdeTitle,false);
       XMLConfig.SetDeleteValue(Path+'Desktop/ComponentPaletteVisible/Value',
                                FComponentPaletteVisible,true);
+      XMLConfig.SetDeleteValue(Path+'Desktop/AutoAdjustIDEHeight/Value',
+                               FAutoAdjustIDEHeight,true);
+      XMLConfig.SetDeleteValue(Path+'Desktop/AutoAdjustIDEHeightFullComponentPalette/Value',
+                               FAutoAdjustIDEHeightFullComponentPalette,true);
       XMLConfig.SetDeleteValue(Path+'Desktop/CompletionWindowWidth/Value',
                                FCompletionWindowWidth, 320);
       XMLConfig.SetDeleteValue(Path+'Desktop/CompletionWindowHeight/Value',
@@ -1776,6 +1807,9 @@ begin
       for mwc:=low(TMsgWndColor) to high(TMsgWndColor) do
         XMLConfig.SetDeleteValue(Path+'MsgView/Colors/'+MsgWndColorNames[mwc],
         fMsgViewColors[mwc],MsgWndDefaultColors[mwc]);
+      for u:=low(TMessageLineUrgency) to high(TMessageLineUrgency) do
+        XMLConfig.SetDeleteValue(Path+'MsgView/MsgColors/'+dbgs(u),
+        fMsgColors[u],clDefault);
       MsgViewFilters.SaveToXMLConfig(XMLConfig,'MsgView/Filters/');
 
       // glyphs
@@ -2238,6 +2272,11 @@ begin
   SetParseValue(eopLazarusDirectory,NewValue);
 end;
 
+procedure TEnvironmentOptions.SetMsgColors(u: TMessageLineUrgency; AValue: TColor);
+begin
+  fMsgColors[u] := AValue;
+end;
+
 procedure TEnvironmentOptions.SetMsgViewColors(c: TMsgWndColor; AValue: TColor);
 begin
   fMsgViewColors[c]:=AValue;
@@ -2312,6 +2351,11 @@ end;
 function TEnvironmentOptions.GetMakeFilename: string;
 begin
   Result:=FParseValues[eopMakeFilename].UnparsedValue;
+end;
+
+function TEnvironmentOptions.GetMsgColors(u: TMessageLineUrgency): TColor;
+begin
+  Result:=fMsgColors[u];
 end;
 
 function TEnvironmentOptions.GetMsgViewColors(c: TMsgWndColor): TColor;

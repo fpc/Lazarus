@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fpdoc-descriptions><package name="LazControls"><module name="CheckBoxThemed"><element name="TCheckBoxThemed"><short>Custom drawn checkbox, planned to be used in Object Inspector boolean editor.</short>
+      </element>
+    </module>
+  </package>
+</fpdoc-descriptions>

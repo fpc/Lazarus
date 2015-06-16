@@ -291,9 +291,9 @@ function RemoveUnitFromUsesSection(Source:TSourceLog;
 
 // compiler directives
 function FindIncludeDirective(const Source,Section:string; Index:integer;
-   var IncludeStart,IncludeEnd:integer):boolean;
+   out IncludeStart,IncludeEnd:integer):boolean;
 function SplitCompilerDirective(const Directive:string;
-   var DirectiveName,Parameters:string):boolean;
+   out DirectiveName,Parameters:string):boolean;
 
 // createform
 function AddCreateFormToProgram(Source:TSourceLog;
@@ -306,7 +306,7 @@ function ListAllCreateFormsInProgram(const Source:string):TStrings;
 
 // resource code
 function FindResourceInCode(const Source, AddCode:string;
-   var Position,EndPosition:integer):boolean;
+   out Position,EndPosition:integer):boolean;
 function AddResourceCode(Source:TSourceLog; const AddCode:string):boolean;
 
 // form components
@@ -324,12 +324,11 @@ function FindClassAncestorName(const Source, FormClassName: string): string;
 
 // procedure specifiers
 function FindFirstProcSpecifier(const ProcText: string;
-   NestedComments: boolean = false; CaseSensitive: boolean = false): integer;
+   NestedComments: boolean = false): integer;
 function SearchProcSpecifier(const ProcText, Specifier: string;
    out SpecifierEndPosition: integer;
    NestedComments: boolean = false;
-   WithSpaceBehindSemicolon: boolean = true;
-   CaseSensitive: boolean = false): integer;
+   WithSpaceBehindSemicolon: boolean = true): integer;
 function RemoveProcSpecifier(const ProcText, Specifier: string;
    NestedComments: boolean = false): string;
 
@@ -338,7 +337,7 @@ function SearchCodeInSource(const Source, Find: string; StartPos: integer;
    out EndFoundPosition: integer; CaseSensitive: boolean;
    NestedComments: boolean = false): integer;
 function ReadNextPascalAtom(const Source: string;
-   var Position, AtomStart: integer; NestedComments: boolean = false;
+   var Position: integer; out AtomStart: integer; NestedComments: boolean = false;
    SkipDirectives: boolean = false): string;
 procedure ReadRawNextPascalAtom(const Source: string;
    var Position: integer; out AtomStart: integer;
@@ -377,7 +376,7 @@ end;
 { most simple code tools - just methods }
 
 function FindIncludeDirective(const Source,Section:string; Index:integer;
-   var IncludeStart,IncludeEnd:integer):boolean;
+   out IncludeStart,IncludeEnd:integer):boolean;
 var Atom,DirectiveName:string;
   Position,EndPos,AtomStart:integer;
   Filename:string;
@@ -407,7 +406,7 @@ begin
 end;
 
 function SplitCompilerDirective(const Directive:string;
-   var DirectiveName,Parameters:string):boolean;
+   out DirectiveName,Parameters:string):boolean;
 var EndPos,DirStart,DirEnd:integer;
 begin
   if (copy(Directive,1,2)='{$') or (copy(Directive,1,3)='(*$') then begin
@@ -879,7 +878,7 @@ begin
 end;
 
 function FindResourceInCode(const Source, AddCode:string;
-   var Position,EndPosition:integer):boolean;
+   out Position,EndPosition:integer):boolean;
 var Find,Atom:string;
   FindPosition,FindAtomStart,SemicolonPos:integer;
 begin
@@ -1691,8 +1690,8 @@ begin
   while (IsIdentChar[Identifier[Result]]) do inc(Result);
 end;
 
-function FindFirstProcSpecifier(const ProcText: string;
-  NestedComments: boolean; CaseSensitive: boolean): integer;
+function FindFirstProcSpecifier(const ProcText: string; NestedComments: boolean
+  ): integer;
 // length(ProcText)+1 on failure
 var
   AtomStart: integer;
@@ -1715,9 +1714,9 @@ begin
   end;
 end;
 
-function SearchProcSpecifier(const ProcText, Specifier: string;
-  out SpecifierEndPosition: integer; NestedComments: boolean;
-  WithSpaceBehindSemicolon: boolean; CaseSensitive: boolean): integer;
+function SearchProcSpecifier(const ProcText, Specifier: string; out
+  SpecifierEndPosition: integer; NestedComments: boolean;
+  WithSpaceBehindSemicolon: boolean): integer;
 // Result = -1 on failure
 // Result = start of Specifier on success
 // SpecifierEndPosition on semicolon or >length(ProcText)
@@ -1771,9 +1770,8 @@ begin
     Result:=copy(Result,1,StartPos-1)+copy(Result,EndPos,length(Result));
 end;
 
-function ReadNextPascalAtom(const Source:string;
-  var Position, AtomStart: integer; NestedComments: boolean;
-  SkipDirectives: boolean):string;
+function ReadNextPascalAtom(const Source: string; var Position: integer; out
+  AtomStart: integer; NestedComments: boolean; SkipDirectives: boolean): string;
 begin
   ReadRawNextPascalAtom(Source,Position,AtomStart,NestedComments,SkipDirectives);
   Result:=copy(Source,AtomStart,Position-AtomStart);

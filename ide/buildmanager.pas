@@ -48,6 +48,7 @@ uses
   IDECmdLine, LazarusIDEStrConsts, DialogProcs, IDEProcs, CodeToolsOptions,
   InputHistory, EditDefineTree, ProjectResources, MiscOptions, LazConf,
   EnvironmentOpts, TransferMacros, CompilerOptions,
+  ExtToolEditDlg{needed for environment options ExternalUserTools},
   ExtTools, etMakeMsgParser, etFPCMsgParser,
   Compiler, FPCSrcScan, PackageDefs, PackageSystem, Project, ProjectIcon,
   ModeMatrixOpts, BaseBuildManager, ApplicationBundle;
@@ -380,7 +381,7 @@ begin
   GlobalMacroList.Add(TTransferMacro.Create('FPC_FULLVERSION','',
                       lisFPCFullVersionEG20701, @MacroFuncFPC_FULLVERSION, []));
   GlobalMacroList.Add(TTransferMacro.Create('FPCMsgFile','',
-                     lisFPCMessageFile, @MacroFuncFPCMsgFile, []));
+                     dlgFilterFPCMessageFile, @MacroFuncFPCMsgFile, []));
   GlobalMacroList.Add(TTransferMacro.Create('Params','',
                       lisCommandLineParamsOfProgram,@MacroFuncParams,[]));
   GlobalMacroList.Add(TTransferMacro.Create('ProjFile','',
@@ -468,7 +469,7 @@ begin
   tr('ProjSrcPath',lisProjectSrcPath);
   tr('ProjOutDir',lisProjectOutDir);
   tr('Env',lisEnvironmentVariableNameAsParameter);
-  tr('FPCMsgFile',lisFPCMessageFile);
+  tr('FPCMsgFile',dlgFilterFPCMessageFile);
   tr('MakeExe',lisMakeExe);
   tr('MakeLib',lisMakeExe);
   tr('Make',lisPathOfTheMakeUtility);
@@ -2565,7 +2566,7 @@ begin
   end else if Sender is TLazPackage then begin
     Result:=TLazPackage(Sender).Name;
   end else
-    Result:='#';
+    Result:=BuildMatrixIDEName;
   //debugln(['TBuildManager.GetModeMatrixTarget ',DbgSName(Sender),' Target="',Result,'"']);
 end;
 

@@ -163,7 +163,7 @@ begin
   FromCursorRadioButton.Caption := dlgFromCursor;
   EntireScopeRadioButton.Caption := dlgFromBeginning;
 
-  ScopeGroupBox.Caption := dlgScope;
+  ScopeGroupBox.Caption := dlgSearchScope;
   GlobalRadioButton.Caption := dlgGlobal;
   SelectedRadioButton.Caption := dlgSelectedText;
 
@@ -452,6 +452,7 @@ begin
   ReplaceWithCheckbox.Checked := ssoReplace in NewOptions;
   ReplaceTextComboBox.Enabled := ssoReplace in NewOptions;
   PromptOnReplaceCheckBox.Enabled := ssoReplace in NewOptions;
+  fReplaceAllClickedLast := ssoReplaceAll in NewOptions;
 
   if ssoReplace in NewOptions then
   begin

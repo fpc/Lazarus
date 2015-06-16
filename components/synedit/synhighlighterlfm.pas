@@ -250,7 +250,7 @@ begin
       #10: fProcTable[I] := @LFProc;
       #0: fProcTable[I] := @NullProc;
       '0'..'9': fProcTable[I] := @NumberProc;
-      '(', ')', '/', '=', '<', '>', '.', ',', '[', ']':
+      '(', ')', '/', '=', '<', '>', '.', ',', '[', ']', ':':
         fProcTable[I] := @SymbolProc;
       #1..#9, #11, #12, #14..#32: fProcTable[I] := @SpaceProc;
       #39: fProcTable[I] := @StringProc;

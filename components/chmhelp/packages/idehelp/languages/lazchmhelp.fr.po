@@ -1,0 +1,32 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
+"Language-Team: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: fr\n"
+"X-Generator: Poedit 1.7.5\n"
+
+#: lazchmhelp.help_category_idecmd
+msgid "CHM Help"
+msgstr "Aide CHM"
+
+#: lazchmhelp.help_current_idecmd
+msgid "Show help"
+msgstr "Afficher l'aide"
+
+#: lazchmhelp.help_current_menu
+msgid "&Help"
+msgstr "&Aide"
+
+#: lazchmhelp.help_missinglhelp
+msgid "Missing lhelp"
+msgstr "\"lhelp\" absent"
+
+#: lazchmhelp.help_unabletofindthelhelpviewerpleasecompilethelhelppro
+msgid "Unable to find the lhelp viewer:%s%s%sPlease compile the lhelp project:%s%s"
+msgstr "Impossible de trouver l'afficheur d'aide \"lhelp\" :%s%s%sVeuillez compiler le projet \"lhelp\" :%s%s"

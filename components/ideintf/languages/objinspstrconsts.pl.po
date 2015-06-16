@@ -156,6 +156,10 @@ msgstr ""
 msgid "This will replace all captions from dataset. Continue?"
 msgstr ""
 
+#: objinspstrconsts.dpeunabletoretrievefieldsdefinitions
+msgid "Unable to retrieve fields definition from dataset."
+msgstr ""
+
 #: objinspstrconsts.fescalculated
 msgid "&Calculated"
 msgstr ""
@@ -508,7 +512,7 @@ msgid "&Delete"
 msgstr "Usuń komponenty"
 
 #: objinspstrconsts.oisdeleteitem
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Delete item %s%s%s?"
 msgid "Delete item \"%s\"?"
 msgstr "Usuń element %s%s%s?"
@@ -538,7 +542,7 @@ msgid "Error loading image"
 msgstr "Błąd ładowania obrazu"
 
 #: objinspstrconsts.oiserrorloadingimage2
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Error loading image %s%s%s:%s%s"
 msgid "Error loading image \"%s\":%s%s"
 msgstr "Błąd ładowania obrazu %s%s%s:%s%s"
@@ -719,6 +723,10 @@ msgstr "Obraz"
 msgid "Save image as"
 msgstr "Zapisz plik obrazu"
 
+#: objinspstrconsts.oispressakey
+msgid "Press a key ..."
+msgstr ""
+
 #: objinspstrconsts.oisproperties
 msgid "Properties"
 msgstr "Właściwości"
@@ -738,6 +746,10 @@ msgstr "Usuń z ulubionych"
 #: objinspstrconsts.oisrestricted
 msgid "Restricted"
 msgstr "Ograniczenia"
+
+#: objinspstrconsts.oisreverttoinherited
+msgid "Revert to inherited"
+msgstr ""
 
 #: objinspstrconsts.oissamplemasks
 msgid "Sample Masks:"

@@ -43,7 +43,7 @@ uses
   LCLType,
   FpImgReaderBase, FpImgReaderWinPE, FpImgReaderElf, FpImgReaderMacho,
   fpDbgSymTable,
-  Classes, SysUtils;
+  Classes, SysUtils, contnrs;
 
 type
 
@@ -56,6 +56,8 @@ type
   private
     FFileLoader: TDbgFileLoader;
     FImgReader: TDbgImageReader;
+    function GetAddressMapList: TDbgAddressMapList;
+    function GetSubFiles: TStrings;
     function GetImage64Bit: Boolean;
     function GetUUID: TGuid;
   protected
@@ -65,10 +67,10 @@ type
     property ImgReader: TDbgImageReader read FImgReader write FImgReader;
   public
     constructor Create; virtual;
-    constructor Create(AFileName: String);
+    constructor Create(AFileName: String; ADebugMap: TObject = nil);
     procedure ParseSymbolTable(AFpSymbolInfo: TfpSymbolList);
     {$ifdef USE_WIN_FILE_MAPPING}
-    constructor Create(AFileHandle: THandle);
+    constructor Create(AFileHandle: THandle; ADebugMap: TObject = nil);
     {$endif}
     destructor Destroy; override;
     function IsValid: Boolean;
@@ -76,11 +78,61 @@ type
     Property Image64Bit: Boolean read GetImage64Bit;
     property UUID: TGuid read GetUUID;
     property Section[const AName: String]: PDbgImageSection read GetSection;
+    // On Darwin, the Dwarf-debuginfo is not linked into the main
+    // executable, but has to be read from the object files.
+    property SubFiles: TStrings read GetSubFiles;
+    // This is to map the addresses inside the object file
+    // to their corresponding addresses in the executable. (Darwin)
+    property AddressMapList: TDbgAddressMapList read GetAddressMapList;
   end;
 
+  { TDbgImageLoaderList }
 
+  TDbgImageLoaderList = class(TFPObjectList)
+  private
+    function GetImage64Bit: Boolean;
+    function GetImageBase: QWord;
+    function GetItem(Index: Integer): TDbgImageLoader;
+    procedure SetItem(Index: Integer; AValue: TDbgImageLoader);
+  public
+    property Items[Index: Integer]: TDbgImageLoader read GetItem write SetItem; default;
+    property ImageBase: QWord read GetImageBase;
+    Property Image64Bit: Boolean read GetImage64Bit;
+  end;
 
 implementation
+
+{ TDbgImageLoaderList }
+
+function TDbgImageLoaderList.GetImage64Bit: Boolean;
+begin
+  if Count<0 then
+    result := Items[0].Image64Bit
+  else
+    {$ifdef CPU64}
+    result := true
+    {$else}
+    result := false;
+    {$endif}
+end;
+
+function TDbgImageLoaderList.GetImageBase: QWord;
+begin
+  if Count<0 then
+    result := Items[0].ImageBase
+  else
+    result := 0;
+end;
+
+function TDbgImageLoaderList.GetItem(Index: Integer): TDbgImageLoader;
+begin
+  result := TDbgImageLoader(inherited GetItem(Index));
+end;
+
+procedure TDbgImageLoaderList.SetItem(Index: Integer; AValue: TDbgImageLoader);
+begin
+  inherited SetItem(Index, AValue);
+end;
 
 { TDbgImageLoader }
 
@@ -94,6 +146,22 @@ begin
     {$endif}
   else
     result := ImgReader.Image64Bit;
+end;
+
+function TDbgImageLoader.GetAddressMapList: TDbgAddressMapList;
+begin
+  if IsValid then
+    result := FImgReader.AddressMapList
+  else
+    result := nil
+end;
+
+function TDbgImageLoader.GetSubFiles: TStrings;
+begin
+  if IsValid then
+    result := FImgReader.SubFiles
+  else
+    result := nil;
 end;
 
 function TDbgImageLoader.GetUUID: TGuid;
@@ -117,10 +185,10 @@ begin
   inherited Create;
 end;
 
-constructor TDbgImageLoader.Create(AFileName: String);
+constructor TDbgImageLoader.Create(AFileName: String; ADebugMap: TObject = nil);
 begin
   FFileLoader := TDbgFileLoader.Create(AFileName);
-  FImgReader := GetImageReader(FFileLoader, True);
+  FImgReader := GetImageReader(FFileLoader, ADebugMap, True);
 end;
 
 procedure TDbgImageLoader.ParseSymbolTable(AFpSymbolInfo: TfpSymbolList);
@@ -130,10 +198,10 @@ begin
 end;
 
 {$ifdef USE_WIN_FILE_MAPPING}
-constructor TDbgImageLoader.Create(AFileHandle: THandle);
+constructor TDbgImageLoader.Create(AFileHandle: THandle; ADebugMap: TObject = nil);
 begin
   FFileLoader := TDbgFileLoader.Create(AFileHandle);
-  FImgReader := GetImageReader(FFileLoader, True);
+  FImgReader := GetImageReader(FFileLoader, ADebugMap, True);
 end;
 {$endif}
 

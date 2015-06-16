@@ -1,24 +1,24 @@
 object SysVarUserOverrideDialog: TSysVarUserOverrideDialog
   Left = 348
-  Height = 161
+  Height = 145
   Top = 397
-  Width = 400
+  Width = 417
   HorzScrollBar.Page = 399
   VertScrollBar.Page = 146
   ActiveControl = VariableEdit
   Align = alTop
-  AutoSize = True
+  BorderIcons = [biSystemMenu]
+  BorderStyle = bsDialog
   Caption = 'SysVarUserOverrideDialog'
-  ClientHeight = 161
-  ClientWidth = 400
-  OnCreate = FormCreate
+  ClientHeight = 145
+  ClientWidth = 417
   Position = poScreenCenter
-  LCLVersion = '0.9.29'
+  LCLVersion = '1.5'
   object VariableLabel: TLabel
     Left = 6
-    Height = 18
+    Height = 15
     Top = 6
-    Width = 388
+    Width = 405
     Align = alTop
     BorderSpacing.Around = 6
     Caption = 'VariableLabel'
@@ -26,9 +26,9 @@ object SysVarUserOverrideDialog: TSysVarUserOverrideDialog
   end
   object ValueLabel: TLabel
     Left = 6
-    Height = 18
-    Top = 63
-    Width = 388
+    Height = 15
+    Top = 56
+    Width = 405
     Align = alTop
     BorderSpacing.Around = 6
     Caption = 'ValueLabel'
@@ -36,9 +36,9 @@ object SysVarUserOverrideDialog: TSysVarUserOverrideDialog
   end
   object ValueEdit: TEdit
     Left = 6
-    Height = 27
-    Top = 87
-    Width = 388
+    Height = 23
+    Top = 77
+    Width = 405
     Align = alTop
     BorderSpacing.Around = 6
     TabOrder = 1
@@ -46,9 +46,9 @@ object SysVarUserOverrideDialog: TSysVarUserOverrideDialog
   end
   object VariableEdit: TEdit
     Left = 6
-    Height = 27
-    Top = 30
-    Width = 388
+    Height = 23
+    Top = 27
+    Width = 405
     Align = alTop
     BorderSpacing.Around = 6
     TabOrder = 0
@@ -56,10 +56,18 @@ object SysVarUserOverrideDialog: TSysVarUserOverrideDialog
   end
   object ButtonPanel: TButtonPanel
     Left = 6
-    Height = 34
-    Top = 120
-    Width = 388
-    Align = alTop
+    Height = 26
+    Top = 113
+    Width = 405
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    OKButton.OnClick = OkButtonClick
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
     TabOrder = 2
     ShowButtons = [pbOK, pbCancel]
     ShowBevel = False

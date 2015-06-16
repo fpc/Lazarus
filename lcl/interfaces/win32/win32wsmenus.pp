@@ -725,6 +725,11 @@ begin
     begin
       ImageRect := CheckRect;
       IconSize := AMenuItem.GetIconSize;
+      if AMenuItem.Checked then // draw checked rectangle around
+      begin
+        Tmp := ThemeServices.GetElementDetails(PopupCheckBgStates[AMenuItem.Enabled]);
+        ThemeDrawElement(AHDC, Tmp, CheckRect, nil);
+      end;
       ImageRect.Left := (ImageRect.Left + ImageRect.Right - IconSize.x) div 2;
       ImageRect.Top := (ImageRect.Top + ImageRect.Bottom - IconSize.y) div 2;
       if IsRightToLeft then
@@ -736,11 +741,6 @@ begin
       end;
       ImageRect.Right := IconSize.x;
       ImageRect.Bottom := IconSize.y;
-      if AMenuItem.Checked then // draw checked rectangle around
-      begin
-        Tmp := ThemeServices.GetElementDetails(PopupCheckBgStates[AMenuItem.Enabled]);
-        ThemeDrawElement(AHDC, Tmp, CheckRect, nil);
-      end;
       DrawMenuItemIcon(AMenuItem, AHDC, ImageRect, ASelected);
       if IsRightToLeft then
         SetLayout(AHDC, LAYOUT_RTL);
@@ -1296,15 +1296,10 @@ var
 begin
   FillChar(MenuInfo, SizeOf(MenuInfo), 0);
   if OldMenuWin95 then
-    begin
-      MenuInfo.cbSize := W95_MENUITEMINFO_SIZE;
-      MenuInfo.fMask := MIIM_TYPE;          // caption not retrieved (dwTypeData = nil)
-    end
+      MenuInfo.cbSize := W95_MENUITEMINFO_SIZE
   else
-    begin
       MenuInfo.cbSize := sizeof(TMenuItemInfo);
-      MenuInfo.fMask := MIIM_FTYPE;         // don't retrieve caption (MIIM_STRING not included)
-    end;
+  MenuInfo.fMask := MIIM_TYPE;  //MIIM_FTYPE not work here please use only MIIM_TYPE, caption not retrieved (dwTypeData = nil)
 {$ifdef WindowsUnicodeSupport}
   if UnicodeEnabledOS then
     GetMenuItemInfoW(Menu, 0, True, @MenuInfo)
@@ -1567,8 +1562,8 @@ begin
         fType := fType or MFT_RIGHTJUSTIFY;
     end
     else
-    if AMenuItem.RightJustify then
-      fType := fType or MFT_RIGHTJUSTIFY;
+      if AMenuItem.RightJustify then
+        fType := fType or MFT_RIGHTJUSTIFY;
   end;
 {$ifdef WindowsUnicodeSupport}
   if UnicodeEnabledOS then
@@ -1704,7 +1699,7 @@ begin
   if not TCustomForm(AMenu.Parent).HandleAllocated then Exit;
   if csDestroying in AMenu.Parent.ComponentState then Exit;
 
-  AddToChangedMenus(TCustomForm(AMenu.Parent).Handle);
+  AddToChangedMenus((AMenu.Parent as TCustomForm).Handle);
 end;
 
 

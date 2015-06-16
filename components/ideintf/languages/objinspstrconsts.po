@@ -148,6 +148,10 @@ msgstr ""
 msgid "This will replace all captions from dataset. Continue?"
 msgstr ""
 
+#: objinspstrconsts.dpeunabletoretrievefieldsdefinitions
+msgid "Unable to retrieve fields definition from dataset."
+msgstr ""
+
 #: objinspstrconsts.fescalculated
 msgid "&Calculated"
 msgstr ""
@@ -683,6 +687,10 @@ msgstr ""
 msgid "Save image as"
 msgstr ""
 
+#: objinspstrconsts.oispressakey
+msgid "Press a key ..."
+msgstr ""
+
 #: objinspstrconsts.oisproperties
 msgid "Properties"
 msgstr ""
@@ -701,6 +709,10 @@ msgstr ""
 
 #: objinspstrconsts.oisrestricted
 msgid "Restricted"
+msgstr ""
+
+#: objinspstrconsts.oisreverttoinherited
+msgid "Revert to inherited"
 msgstr ""
 
 #: objinspstrconsts.oissamplemasks

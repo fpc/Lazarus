@@ -2601,6 +2601,7 @@ begin
   FWidth := w;
   FHeight := h;
   FCreated := True;
+  FShowing := False;
   Result := True;
 end;
 
@@ -3050,8 +3051,8 @@ end;
 
 constructor TSynEditScreenCaret.Create(AHandleOwner: TWinControl);
 begin
-//  Create(AHandleOwner, TSynEditScreenCaretPainterSystem);
-  Create(AHandleOwner, TSynEditScreenCaretPainterInternal);
+  Create(AHandleOwner, TSynEditScreenCaretPainterSystem);
+  //Create(AHandleOwner, TSynEditScreenCaretPainterInternal);
 end;
 
 constructor TSynEditScreenCaret.Create(AHandleOwner: TWinControl;

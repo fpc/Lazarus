@@ -91,6 +91,8 @@ type
     FMemReader: TDbgMemReader;
     FMemManager: TFpDbgMemManager;
     FConsoleOutputThread: TThread;
+    FReleaseLock: Integer;
+    FReleaseNeeded: Boolean;
     {$ifdef linux}
     FCacheLine: cardinal;
     FCacheFileName: string;
@@ -113,6 +115,8 @@ type
     procedure DoWatchFreed(Sender: TObject);
     procedure ProcessASyncWatches({%H-}Data: PtrInt);
     procedure DoLog({%H-}Data: PtrInt);
+    procedure IncReleaseLock;
+    procedure DecReleaseLock;
   protected
     procedure ScheduleWatchValueEval(AWatchValue: TWatchValue);
     function EvaluateExpression(AWatchValue: TWatchValue;
@@ -140,6 +144,7 @@ type
     procedure StartDebugLoop;
     procedure DebugLoopFinished;
     procedure QuickPause;
+    procedure DoRelease; override;
     procedure DoState(const OldState: TDBGState); override;
     {$ifdef linux}
     procedure DoAddBreakLine;
@@ -202,9 +207,14 @@ type
   { TFPCallStackSupplier }
 
   TFPCallStackSupplier = class(TCallStackSupplier)
+  private
+    FPrettyPrinter: TFpPascalPrettyPrinter;
   protected
+    function  FpDebugger: TFpDebugDebugger;
     procedure DoStateLeavePause; override;
   public
+    constructor Create(const ADebugger: TDebuggerIntf);
+    destructor Destroy; override;
     procedure RequestCount(ACallstack: TCallStackBase); override;
     procedure RequestEntries(ACallstack: TCallStackBase); override;
     procedure RequestCurrent(ACallstack: TCallStackBase); override;
@@ -400,6 +410,11 @@ end;
 
 { TFPCallStackSupplier }
 
+function TFPCallStackSupplier.FpDebugger: TFpDebugDebugger;
+begin
+  Result := TFpDebugDebugger(Debugger);
+end;
+
 procedure TFPCallStackSupplier.DoStateLeavePause;
 begin
   if (TFpDebugDebugger(Debugger).FDbgController <> nil) and
@@ -408,6 +423,18 @@ begin
   then
     TFpDebugDebugger(Debugger).FDbgController.CurrentProcess.MainThread.ClearCallStack;
   inherited DoStateLeavePause;
+end;
+
+constructor TFPCallStackSupplier.Create(const ADebugger: TDebuggerIntf);
+begin
+  inherited Create(ADebugger);
+  FPrettyPrinter := TFpPascalPrettyPrinter.Create(sizeof(pointer));
+end;
+
+destructor TFPCallStackSupplier.Destroy;
+begin
+  inherited Destroy;
+  FPrettyPrinter.Free;
 end;
 
 procedure TFPCallStackSupplier.RequestCount(ACallstack: TCallStackBase);
@@ -421,6 +448,8 @@ begin
   end;
   TFpDebugDebugger(Debugger).PrepareCallStackEntryList;
   ThreadCallStack := TFpDebugDebugger(Debugger).FDbgController.CurrentProcess.MainThread.CallStackEntryList;
+  if ThreadCallStack = nil then
+    exit;
 
   if ThreadCallStack.Count = 0 then
   begin
@@ -439,27 +468,76 @@ var
   e: TCallStackEntry;
   It: TMapIterator;
   ThreadCallStack: TDbgCallstackEntryList;
+  v, params: String;
+  i: Integer;
+  ProcVal, m: TFpDbgValue;
+  RegList: TDbgRegisterValueList;
+  Reg: TDbgRegisterValue;
+  AController: TDbgController;
+  CurThreadId: Integer;
+  AContext: TFpDbgInfoContext;
+  OldContext: TFpDbgAddressContext;
 begin
   It := TMapIterator.Create(ACallstack.RawEntries);
   //TFpDebugDebugger(Debugger).FDbgController.CurrentProcess.MainThread.PrepareCallStackEntryList;
-  ThreadCallStack := TFpDebugDebugger(Debugger).FDbgController.CurrentProcess.MainThread.CallStackEntryList;
+  //CurThreadId := FpDebugger.Threads.CurrentThreads.CurrentThreadId;
+  //ThreadCallStack := FpDebugger.Threads.CurrentThreads.Entries[CurThreadId].CallStackEntryList;
+
+  CurThreadId := FpDebugger.FDbgController.CurrentProcess.MainThread.ID;
+  ThreadCallStack := FpDebugger.FDbgController.CurrentProcess.MainThread.CallStackEntryList;
 
   if not It.Locate(ACallstack.LowestUnknown )
   then if not It.EOM
   then It.Next;
+
+  AController := FpDebugger.FDbgController;
+  OldContext := FpDebugger.FMemManager.DefaultContext;
 
   while (not IT.EOM) and (TCallStackEntry(It.DataPtr^).Index < ACallstack.HighestUnknown)
   do begin
     e := TCallStackEntry(It.DataPtr^);
     if e.Validity = ddsRequested then
     begin
+      if ThreadCallStack[e.Index].ProcSymbol <> nil then
+        ProcVal := ThreadCallStack[e.Index].ProcSymbol.Value;
+
+      params := '';
+      if (ProcVal <> nil) then begin
+        if e.Index = 0 then
+          RegList := AController.CurrentProcess.MainThread.RegisterValueList
+        else
+          RegList := ThreadCallStack[e.Index].RegisterValueList;
+        if AController.CurrentProcess.Mode=dm32 then
+          Reg := RegList.FindRegisterByDwarfIndex(8)
+        else
+          Reg := RegList.FindRegisterByDwarfIndex(16);
+        if Reg <> nil then begin
+          AContext := AController.CurrentProcess.DbgInfo.FindContext(CurThreadId, e.Index, Reg.NumValue);
+          if AContext <> nil then begin
+            AContext.MemManager.DefaultContext := AContext;
+            FPrettyPrinter.AddressSize := AContext.SizeOfAddress;
+
+            for i := 0 to ProcVal.MemberCount - 1 do begin
+              m := ProcVal.Member[i];
+              if (m <> nil) and (sfParameter in m.DbgSymbol.Flags) then begin
+                FPrettyPrinter.PrintValue(v, m, wdfDefault, -1, [ppoStackParam]);
+                if params <> '' then params := params + ', ';
+                params := params + v;
+              end;
+            end;
+          end;
+        end;
+      end;
+      if params <> '' then
+        params := '(' + params + ')';
       e.Init(ThreadCallStack[e.Index].AnAddress, nil,
-        ThreadCallStack[e.Index].FunctionName, ThreadCallStack[e.Index].SourceFile,
+        ThreadCallStack[e.Index].FunctionName+params, ThreadCallStack[e.Index].SourceFile,
         '', ThreadCallStack[e.Index].Line, ddsValid);
     end;
     It.Next;
   end;
   It.Free;
+  FpDebugger.FMemManager.DefaultContext := OldContext;
 end;
 
 procedure TFPCallStackSupplier.RequestCurrent(ACallstack: TCallStackBase);
@@ -1047,8 +1125,13 @@ begin
   {$PUSH}{$R-}
   DoDbgEvent(ecProcess, etProcessExit, Format('Process exited with exit-code %d',[AExitCode]));
   {$POP}
-  SetState(dsStop);
-  FreeDebugThread;
+  IncReleaseLock;
+  try
+    SetState(dsStop);
+    FreeDebugThread;
+  finally
+    DecReleaseLock;
+  end;
 end;
 
 procedure TFpDebugDebugger.FDbgControllerExceptionEvent(var continue: boolean;
@@ -1298,6 +1381,18 @@ begin
   finally
     AnObjList.Free;
   end;
+end;
+
+procedure TFpDebugDebugger.IncReleaseLock;
+begin
+  inc(FReleaseLock);
+end;
+
+procedure TFpDebugDebugger.DecReleaseLock;
+begin
+  dec(FReleaseLock);
+  if FReleaseNeeded and (FReleaseLock = 0) then
+    DoRelease;
 end;
 
 function TFpDebugDebugger.GetClassInstanceName(AnAddr: TDBGPtr): string;
@@ -1613,19 +1708,24 @@ procedure TFpDebugDebugger.DebugLoopFinished;
 var
   Cont: boolean;
 begin
-  {$ifdef DBG_FPDEBUG_VERBOSE}
-  DebugLn('DebugLoopFinished');
-  {$endif DBG_FPDEBUG_VERBOSE}
+  IncReleaseLock;
+  try
+    {$ifdef DBG_FPDEBUG_VERBOSE}
+    DebugLn('DebugLoopFinished');
+    {$endif DBG_FPDEBUG_VERBOSE}
 
-  FDbgController.SendEvents(Cont);
+    FDbgController.SendEvents(Cont); // This may free the TFpDebugDebugger (self)
 
-  FQuickPause:=false;
+    FQuickPause:=false;
 
-  if Cont then
-    begin
-    SetState(dsRun);
-    StartDebugLoop;
-    end
+    if Cont then
+      begin
+      SetState(dsRun);
+      StartDebugLoop;
+      end
+  finally
+    DecReleaseLock;
+  end;
 end;
 
 procedure TFpDebugDebugger.QuickPause;
@@ -1633,14 +1733,28 @@ begin
   FQuickPause:=FDbgController.Pause;
 end;
 
+procedure TFpDebugDebugger.DoRelease;
+begin
+  if FReleaseLock > 0 then begin
+    FReleaseNeeded := True;
+    exit;
+  end;
+  inherited DoRelease;
+end;
+
 procedure TFpDebugDebugger.DoState(const OldState: TDBGState);
 begin
-  inherited DoState(OldState);
-  if not (State in [dsPause, dsInternalPause]) then
-    begin
-    FWatchEvalList.Clear;
-    FWatchAsyncQueued := False;
-    end;
+  IncReleaseLock;
+  try
+    inherited DoState(OldState);
+    if not (State in [dsPause, dsInternalPause]) then
+      begin
+      FWatchEvalList.Clear;
+      FWatchAsyncQueued := False;
+      end;
+  finally
+    DecReleaseLock;
+  end;
 end;
 
 {$ifdef linux}
@@ -1813,7 +1927,7 @@ begin
 
     if assigned(symproc) then
       result.FuncName:=symproc.Name;
-    sym.Free;
+    sym.ReleaseReference;
     end
 end;
 

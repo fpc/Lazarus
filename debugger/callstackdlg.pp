@@ -268,8 +268,16 @@ begin
 end;
 
 procedure TCallStackDlg.UpdateView;
+  function LastDelimPos(const FileName: string): Integer;
+  begin
+    Result := Length(FileName);
+    if FileName[Result] in ['/', '\'] then
+      exit(-1);
+    while (Result > 0) and not (FileName[Result] in ['/', '\']) do
+      Dec(Result);
+  end;
 var
-  n: Integer;
+  i, n: Integer;
   Item: TListItem;
   Entry: TIdeCallStackEntry;
   First, Count, MaxCnt: Integer;
@@ -372,7 +380,12 @@ begin
         if (Source = '') and (Entry.UnitInfo <> nil) and (Entry.UnitInfo.LocationFullFile <> '') then
           Source := Entry.UnitInfo.LocationFullFile;
         if Source = '' then // we do not have a source file => just show an adress
-          Source := ':' + IntToHex(Entry.Address, 8);
+          Source := ':' + IntToHex(Entry.Address, 8)
+        else begin
+          i := LastDelimPos(Source);
+          if i > 1 then
+            Source := copy(Source, i+1, length(Source)) + ' (' + copy(Source, 1, i) + ')'
+        end;
         Item.SubItems[1] := Source;
         if (Entry.Line = 0) and (Entry.UnitInfo <> nil) and (Entry.UnitInfo.SrcLine > 0) then
           Item.SubItems[2] := '~'+IntToStr(Entry.UnitInfo.SrcLine)
@@ -721,10 +734,11 @@ begin
   ToolButtonPower.Hint := lisDbgWinPowerHint;
   for i:= 0 to mnuLimit.Items.Count-1 do
     mnuLimit.Items[i].Caption:= Format(lisMaxS, [mnuLimit.Items[i].Tag]);
+  actViewLimit.Caption := mnuLimit.Items[0].Caption;
   actViewMore.Caption := lisMore;
   actViewTop.Caption := lisCSTop;
   actViewBottom.Caption := lisCSBottom;
-  actViewGoto.Caption := lisGotoSelectedSourceLine;
+  actViewGoto.Caption := lisGotoSelected;
   actShow.Caption := lisViewSource;
   actShowDisass.Caption := lisViewSourceDisass;
   actToggleBreakPoint.Caption := uemToggleBreakpoint;
@@ -732,7 +746,7 @@ begin
   actCopyAll.Caption := lisCopyAll;
 
   lvCallStack.Columns[1].Caption:= lisIndex;
-  lvCallStack.Columns[2].Caption:= lisCEOModeSource;
+  lvCallStack.Columns[2].Caption:= histdlgColumnLoc;
   lvCallStack.Columns[3].Caption:= dlgAddHiAttrGroupLine;
   lvCallStack.Columns[4].Caption:= lisFunction;
 

@@ -1,7 +1,7 @@
 object Form1: TForm1
-  Left = 291
+  Left = 353
   Height = 353
-  Top = 215
+  Top = 194
   Width = 535
   BorderStyle = bsSingle
   Caption = 'TDictionaryStringList Demo'
@@ -11,11 +11,11 @@ object Form1: TForm1
   OnDestroy = FormDestroy
   OnShow = FormShow
   Position = poScreenCenter
-  LCLVersion = '1.1'
+  LCLVersion = '1.4.0.4'
   object btnDedupeMemo: TButton
     Left = 346
     Height = 25
-    Top = 8
+    Top = 72
     Width = 183
     Anchors = [akTop, akRight]
     Caption = 'Dedupe Memo'
@@ -26,8 +26,7 @@ object Form1: TForm1
     Left = 0
     Height = 281
     Top = 72
-    Width = 535
-    Align = alBottom
+    Width = 336
     ScrollBars = ssAutoBoth
     TabOrder = 1
   end
@@ -35,7 +34,7 @@ object Form1: TForm1
     Left = 16
     Height = 15
     Top = 48
-    Width = 33
+    Width = 30
     Caption = 'Time:'
     ParentColor = False
   end
@@ -43,7 +42,7 @@ object Form1: TForm1
     Left = 130
     Height = 15
     Top = 48
-    Width = 107
+    Width = 90
     Caption = 'Duplicated Lines:'
     ParentColor = False
   end
@@ -70,12 +69,22 @@ object Form1: TForm1
     AnchorSideRight.Control = btnDedupeMemo
     AnchorSideRight.Side = asrBottom
     Left = 346
-    Height = 25
-    Top = 38
+    Height = 32
+    Top = 232
     Width = 183
     Anchors = [akTop, akLeft, akRight]
     Caption = 'Create File and Dedupe it'
     OnClick = btnDedupeFileClick
     TabOrder = 4
+  end
+  object Label1: TLabel
+    Left = 346
+    Height = 64
+    Top = 168
+    Width = 182
+    AutoSize = False
+    Caption = 'Deduplicating from a file is very much faster than using a GUI control. Use the button below to see the whole process.'
+    ParentColor = False
+    WordWrap = True
   end
 end

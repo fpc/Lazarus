@@ -39,6 +39,8 @@ interface
 uses
   Classes, SysUtils, Maps, FpDbgDwarf, FpDbgUtil, FpDbgLoader,
   FpDbgInfo, FpdMemoryTools, LazLoggerBase, LazClasses, DbgIntfBaseTypes, fgl,
+  DbgIntfDebuggerBase,
+  FpPascalBuilder,
   fpDbgSymTableContext,
   FpDbgDwarfDataClasses;
 
@@ -93,19 +95,23 @@ type
     FIsSymbolResolved: boolean;
     FSymbol: TFpDbgSymbol;
     FRegisterValueList: TDbgRegisterValueList;
+    FIndex: integer;
     function GetFunctionName: string;
     function GetSymbol: TFpDbgSymbol;
     function GetLine: integer;
     function GetSourceFile: string;
   public
-    constructor create(AThread: TDbgThread; AFrameAddress, AnAddress: TDBGPtr);
+    constructor create(AThread: TDbgThread; AnIndex: integer; AFrameAddress, AnAddress: TDBGPtr);
     destructor Destroy; override;
+    function GetParamsAsString: string;
     property AnAddress: TDBGPtr read FAnAddress;
     property FrameAdress: TDBGPtr read FFrameAdress;
     property SourceFile: string read GetSourceFile;
     property FunctionName: string read GetFunctionName;
     property Line: integer read GetLine;
     property RegisterValueList: TDbgRegisterValueList read FRegisterValueList;
+    property ProcSymbol: TFpDbgSymbol read GetSymbol;
+    property Index: integer read FIndex;
   end;
 
   TDbgCallstackEntryList = specialize TFPGObjectList<TDbgCallstackEntry>;
@@ -118,6 +124,8 @@ type
   protected
     function GetDbgProcess: TDbgProcess; virtual; abstract;
   public
+    function ReadMemory(AnAddress: TDbgPtr; ASize: Cardinal; ADest: Pointer): Boolean; override;
+    function ReadMemoryEx(AnAddress, AnAddressSpace: TDbgPtr; ASize: Cardinal; ADest: Pointer): Boolean; override;
     function ReadRegister(ARegNum: Cardinal; out AValue: TDbgPtr; AContext: TFpDbgAddressContext): Boolean; override;
     function RegisterSize(ARegNum: Cardinal): Integer; override;
   end;
@@ -190,13 +198,13 @@ type
     FName: String;
     FProcess: TDbgProcess;
     FSymbolTableInfo: TFpSymbolInfo;
-    FLoader: TDbgImageLoader;
+    FLoaderList: TDbgImageLoaderList;
 
   protected
     FDbgInfo: TDbgInfo;
-    function InitializeLoader: TDbgImageLoader; virtual;
+    procedure InitializeLoaders; virtual;
     procedure SetName(const AValue: String);
-    property Loader: TDbgImageLoader read FLoader write FLoader;
+    property LoaderList: TDbgImageLoaderList read FLoaderList write FLoaderList;
   public
     constructor Create(const AProcess: TDbgProcess); virtual;
     destructor Destroy; override;
@@ -400,6 +408,46 @@ begin
     result := '';
 end;
 
+function TDbgCallstackEntry.GetParamsAsString: string;
+var
+  ProcVal: TFpDbgValue;
+  InstrPointerValue: TDBGPtr;
+  AContext: TFpDbgInfoContext;
+  APrettyPrinter: TFpPascalPrettyPrinter;
+  m: TFpDbgValue;
+  v: String;
+  i: Integer;
+begin
+  result := '';
+  if assigned(ProcSymbol) then begin
+    ProcVal := ProcSymbol.Value;
+    if (ProcVal <> nil) then begin
+      InstrPointerValue := FThread.Process.GetInstructionPointerRegisterValue;
+      if InstrPointerValue <> 0 then begin
+        AContext := FThread.Process.DbgInfo.FindContext(FThread.ID, Index, InstrPointerValue);
+        if AContext <> nil then begin
+          AContext.MemManager.DefaultContext := AContext;
+          APrettyPrinter:=TFpPascalPrettyPrinter.Create(DBGPTRSIZE[FThread.Process.Mode]);
+          try
+            for i := 0 to ProcVal.MemberCount - 1 do begin
+              m := ProcVal.Member[i];
+              if (m <> nil) and (sfParameter in m.DbgSymbol.Flags) then begin
+                APrettyPrinter.PrintValue(v, m, wdfDefault, -1, [ppoStackParam]);
+                if result <> '' then result := result + ', ';
+                result := result + v;
+              end;
+            end;
+          finally
+            APrettyPrinter.Free;
+          end;
+        end;
+      end;
+    end;
+    if result <> '' then
+      result := '(' + result + ')';
+  end;
+end;
+
 function TDbgCallstackEntry.GetLine: integer;
 var
   Symbol: TFpDbgSymbol;
@@ -422,11 +470,12 @@ begin
     result := '';
 end;
 
-constructor TDbgCallstackEntry.create(AThread: TDbgThread; AFrameAddress, AnAddress: TDBGPtr);
+constructor TDbgCallstackEntry.create(AThread: TDbgThread; AnIndex: integer; AFrameAddress, AnAddress: TDBGPtr);
 begin
   FThread := AThread;
   FFrameAdress:=AFrameAddress;
   FAnAddress:=AnAddress;
+  FIndex:=AnIndex;
   FRegisterValueList := TDbgRegisterValueList.Create;
 end;
 
@@ -437,6 +486,17 @@ begin
 end;
 
 { TDbgMemReader }
+
+function TDbgMemReader.ReadMemory(AnAddress: TDbgPtr; ASize: Cardinal; ADest: Pointer): Boolean;
+begin
+  result := GetDbgProcess.ReadData(AnAddress, ASize, ADest^);
+end;
+
+function TDbgMemReader.ReadMemoryEx(AnAddress, AnAddressSpace: TDbgPtr; ASize: Cardinal; ADest: Pointer): Boolean;
+begin
+  Assert(AnAddressSpace>0,'TDbgMemReader.ReadMemoryEx ignores AddressSpace');
+  result := GetDbgProcess.ReadData(AnAddress, ASize, ADest^);
+end;
 
 function TDbgMemReader.ReadRegister(ARegNum: Cardinal; out AValue: TDbgPtr; AContext: TFpDbgAddressContext): Boolean;
 var
@@ -577,12 +637,13 @@ end;
 
 function TDbgInstance.AddrOffset: Int64;
 begin
-  Result := FLoader.ImageBase;
+  Result := FLoaderList.ImageBase;
 end;
 
 constructor TDbgInstance.Create(const AProcess: TDbgProcess);
 begin
   FProcess := AProcess;
+  FLoaderList := TDbgImageLoaderList.Create(True);
 
   inherited Create;
 end;
@@ -591,7 +652,7 @@ destructor TDbgInstance.Destroy;
 begin
   FreeAndNil(FDbgInfo);
   FreeAndNil(FSymbolTableInfo);
-  FreeAndNil(FLoader);
+  FreeAndNil(FLoaderList);
   inherited;
 end;
 
@@ -604,14 +665,14 @@ end;
 
 procedure TDbgInstance.LoadInfo;
 begin
-  FLoader := InitializeLoader;
-  if FLoader.Image64Bit then
+  InitializeLoaders;
+  if FLoaderList.Image64Bit then
     FMode:=dm64
   else
     FMode:=dm32;
-  FDbgInfo := TFpDwarfInfo.Create(FLoader);
+  FDbgInfo := TFpDwarfInfo.Create(FLoaderList);
   TFpDwarfInfo(FDbgInfo).LoadCompilationUnits;
-  FSymbolTableInfo := TFpSymbolInfo.Create(FLoader);
+  FSymbolTableInfo := TFpSymbolInfo.Create(FLoaderList);
 end;
 
 function TDbgInstance.RemoveBreak(const AFileName: String; ALine: Cardinal): Boolean;
@@ -630,9 +691,9 @@ begin
   FName := AValue;
 end;
 
-function TDbgInstance.InitializeLoader: TDbgImageLoader;
+procedure TDbgInstance.InitializeLoaders;
 begin
-  result := nil;
+  // Do nothing;
 end;
 
 { TDbgLibrary }
@@ -649,6 +710,11 @@ end;
 
 function TDbgProcess.AddBreak(const ALocation: TDbgPtr): TDbgBreakpoint;
 begin
+  if FBreakMap.HasId(ALocation) then begin
+    debugln(['TDbgProcess.AddBreak breakpoint already exists at ', dbgs(ALocation)]);
+    Result := nil;
+    exit;
+  end;
   Result := OSDbgClasses.DbgBreakpointClass.Create(Self, ALocation);
   FBreakMap.Add(ALocation, Result);
   if (GetInstructionPointerRegisterValue=ALocation) and not assigned(FCurrentBreakpoint) then
@@ -709,6 +775,7 @@ begin
 
   FreeItemsInMap(FBreakMap);
   FreeItemsInMap(FThreadMap);
+  FreeItemsInMap(FLibMap);
 
   FreeAndNil(FBreakMap);
   FreeAndNil(FThreadMap);
@@ -1127,6 +1194,8 @@ begin
 end;
 
 procedure TDbgThread.PrepareCallStackEntryList(AFrameRequired: Integer);
+const
+  MaxFrames = 25;
 var
   Address, Frame, LastFrame: QWord;
   Size, Count: integer;
@@ -1145,19 +1214,19 @@ begin
   Size := sizeof(pointer); // TODO: Context.AddressSize
 
   FCallStackEntryList.FreeObjects:=true;
-  AnEntry := TDbgCallstackEntry.create(Self, Frame, Address);
+  AnEntry := TDbgCallstackEntry.create(Self, 0, Frame, Address);
   // Top level entry needs no registerlist / same as GetRegisterValueList
   FCallStackEntryList.Add(AnEntry);
 
   LastFrame := 0;
-  Count := 25;
+  Count := MaxFrames;
   while (Frame <> 0) and (Frame > LastFrame) do
   begin
     if not Process.ReadData(Frame + Size, Size, Address) or (Address = 0) then Break;
     if not Process.ReadData(Frame, Size, Frame) then Break;
-    AnEntry := TDbgCallstackEntry.create(Self, Frame, Address);
+    AnEntry := TDbgCallstackEntry.create(Self, MaxFrames+1-Count, Frame, Address);
     AnEntry.RegisterValueList.DbgRegisterAutoCreate['eip'].SetValue(Address, IntToStr(Address),Size,8);
-    AnEntry.RegisterValueList.DbgRegisterAutoCreate['esp'].SetValue(Address, IntToStr(Address),Size,5);
+    AnEntry.RegisterValueList.DbgRegisterAutoCreate['ebp'].SetValue(Frame, IntToStr(Frame),Size,5);
     FCallStackEntryList.Add(AnEntry);
     Dec(count);
     if Count <= 0 then Break;

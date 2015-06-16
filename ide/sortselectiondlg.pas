@@ -115,6 +115,7 @@ begin
     SortSelectionDialog.TheText:=TheText;
     SortSelectionDialog.PreviewSynEdit.Highlighter:=Highlighter;
     EditorOpts.SetMarkupColor(Highlighter, ahaTextBlock, SortSelectionDialog.PreviewSynEdit.SelectedColor);
+    EditorOpts.ApplyFontSettingsTo(SortSelectionDialog.PreviewSynEdit);
     SortSelectionDialog.UpdatePreview;
     SortSelectionDialog.EndUpdate;
     Result:=SortSelectionDialog.ShowModal;

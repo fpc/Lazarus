@@ -36,8 +36,10 @@ uses
   CodeToolManager,
   CodyStrConsts, CodyUtils, CodyCtrls, CodyOpts,
   PPUListDlg, AddAssignMethodDlg, AddWithBlockDlg,
-  CodyNodeInfoDlg, CodyFrm, DeclareVarDlg, CodyCopyDeclaration,
-  CodyIdentifiersDlg, CodyMiscOptsFrame;
+  {$IFDEF EnableCodyExperiments}
+  CodyCopyDeclaration,
+  {$ENDIF}
+  CodyNodeInfoDlg, CodyFrm, DeclareVarDlg, CodyIdentifiersDlg, CodyMiscOptsFrame;
 
 procedure Register;
 

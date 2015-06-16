@@ -111,11 +111,6 @@ type
 
   TSelectedControl = class
   private
-    FCachedFormRelativeLeftTop: TPoint;
-    FCachedHeight: integer;
-    FCachedLeft: integer;
-    FCachedTop: integer;
-    FCachedWidth: integer;
     FDesignerForm: TCustomForm;
     FFlags: TSelectedControlFlags;
     FIsNonVisualComponent: boolean;
@@ -124,6 +119,7 @@ type
     FIsTWinControl: boolean;
     FIsVisible: boolean;
     FMarkerPaintedBounds: TRect;
+    FMovedResizedBounds: TRect;
     FOldFormRelativeLeftTop: TPoint;
     FOldHeight: integer;
     FOldLeft: integer;
@@ -131,7 +127,6 @@ type
     FOldWidth: integer;
     FOwner: TControlSelection;
     FPersistent: TPersistent;
-    FUseCache: boolean;
     FUsedHeight: integer;
     FUsedLeft: integer;
     FUsedTop: integer;
@@ -142,7 +137,6 @@ type
     function GetTop: integer;
     procedure SetTop(ATop: integer);
     function GetWidth: integer;
-    procedure SetUseCache(const AValue: boolean);
     procedure SetWidth(AWidth: integer);
     function GetHeight: integer;
     procedure SetHeight(AHeight: integer);
@@ -150,12 +144,13 @@ type
     constructor Create(AnOwner: TControlSelection; APersistent: TPersistent);
     destructor Destroy; override;
     procedure SetBounds(ALeft, ATop, AWidth, AHeight: integer);
+    function GetBounds: TRect;
     procedure SetFormRelativeBounds(ALeft, ATop, AWidth, AHeight: integer);
     procedure GetFormRelativeBounds(out ALeft, ATop, AWidth, AHeight: integer;
                                     StoreAsUsed: boolean = false);
     procedure SetUsedBounds(ALeft, ATop, AWidth, AHeight: integer);
     procedure SaveBounds;
-    procedure UpdateCache;
+    function BoundsHaveChangedSinceLastResize: boolean;
     function IsTopLvl: boolean;
     function ChildInSelection: boolean;
     function ParentInSelection: boolean;
@@ -163,29 +158,33 @@ type
 
     property Persistent: TPersistent read FPersistent;
     property Owner: TControlSelection read FOwner;
+    // current bounds
     property Left: integer read GetLeft write SetLeft;
     property Top: integer read GetTop write SetTop;
     property Width: integer read GetWidth write SetWidth;
     property Height: integer read GetHeight write SetHeight;
+    // bounds at start of moving/resizing
     property OldLeft:integer read FOldLeft write FOldLeft;
     property OldTop:integer read FOldTop write FOldTop;
     property OldWidth:integer read FOldWidth write FOldWidth;
     property OldHeight:integer read FOldHeight write FOldHeight;
     property OldFormRelativeLeftTop: TPoint read FOldFormRelativeLeftTop
                                             write FOldFormRelativeLeftTop;
+    property MovedResizedBounds: TRect read FMovedResizedBounds write FMovedResizedBounds;
+    // bounds last used for painting helpers, e.g. guidelines
     property UsedLeft: integer read FUsedLeft write FUsedLeft;// form relative (not Left)
     property UsedTop: integer read FUsedTop write FUsedTop;// form relative (not Top)
     property UsedWidth: integer read FUsedWidth write FUsedWidth;
     property UsedHeight: integer read FUsedHeight write FUsedHeight;
+    property MarkerPaintedBounds: TRect read FMarkerPaintedBounds write FMarkerPaintedBounds;
+
     property Flags: TSelectedControlFlags read FFlags write FFlags;
-    property UseCache: boolean read FUseCache write SetUseCache;
     property IsVisible: boolean read FIsVisible;
     property IsTComponent: boolean read FIsTComponent;
     property IsTControl: boolean read FIsTControl;
     property IsTWinControl: boolean read FIsTWinControl;
     property IsNonVisualComponent: boolean read GetIsNonVisualComponent;
     property DesignerForm: TCustomForm read FDesignerForm;
-    property MarkerPaintedBounds: TRect read FMarkerPaintedBounds write FMarkerPaintedBounds;
   end;
 
 
@@ -429,7 +428,8 @@ type
     function IsResizing: boolean;
     procedure BeginResizing(IsStartUndo: boolean);
     procedure EndResizing(ApplyUserBounds, ActionIsProcess: boolean);
-    procedure SaveBounds;
+    procedure SaveBounds(OnlyIfChanged: boolean = true); // store current bounds as base for resizing
+    function BoundsHaveChangedSinceLastResize: boolean;
     procedure UpdateBounds;
     procedure RestoreBounds;
 
@@ -627,12 +627,12 @@ end;
 
 procedure TSelectedControl.SetBounds(ALeft, ATop, AWidth, AHeight: integer);
 begin
-  if FIsTControl then begin
+  FMovedResizedBounds:=Bounds(ALeft,ATop,AWidth,AHeight);
+  if Owner.Mediator<>nil then begin
+    Owner.Mediator.SetBounds(TComponent(FPersistent),FMovedResizedBounds);
+  end
+  else if FIsTControl then begin
     TControl(FPersistent).SetBounds(ALeft, ATop, AWidth, AHeight);
-    FCachedLeft:=ALeft;
-    FCachedTop:=ATop;
-    FCachedWidth:=AWidth;
-    FCachedHeight:=AHeight;
   end else if FIsNonVisualComponent then begin
     if (Left<>ALeft) or (Top<>ATop) then begin
       //debugln(['TSelectedControl.SetBounds Old=',Left,',',Top,' New=',ALeft,',',ATop]);
@@ -642,13 +642,25 @@ begin
       InvalidateNonVisualPersistent;
       //debugln(['TSelectedControl.SetBounds Now=',Left,',',Top,' Expected=',ALeft,',',ATop]);
     end;
-  end else if (Owner.Mediator<>nil) and FIsTComponent then begin
-    FCachedLeft:=ALeft;
-    FCachedTop:=ATop;
-    FCachedWidth:=AWidth;
-    FCachedHeight:=AHeight;
-    Owner.Mediator.SetBounds(TComponent(FPersistent),Bounds(ALeft,ATop,AWidth,AHeight));
   end;
+end;
+
+function TSelectedControl.GetBounds: TRect;
+var
+  aLeft: integer;
+  aTop: integer;
+  aWidth: integer;
+  aHeight: integer;
+begin
+  if FIsTComponent then begin
+    if Owner.Mediator<>nil then begin
+      Owner.Mediator.GetBounds(TComponent(FPersistent),Result);
+    end else begin
+      GetComponentBounds(TComponent(FPersistent),aLeft,aTop,aWidth,aHeight);
+      Result:=Bounds(aLeft,aTop,aWidth,aHeight);
+    end;
+  end else
+    Result:=Rect(0,0,0,0);
 end;
 
 procedure TSelectedControl.SetFormRelativeBounds(ALeft, ATop, AWidth,
@@ -662,16 +674,14 @@ begin
   begin
     if Owner.Mediator.ComponentIsIcon(TComponent(FPersistent)) then
     begin
-      Owner.Mediator.SetBounds(TComponent(FPersistent),
-                               Bounds(ALeft, ATop, AWidth, AHeight));
+      SetBounds(ALeft, ATop, AWidth, AHeight);
     end
     else begin
       Owner.Mediator.GetBounds(TComponent(FPersistent),OldBounds);
       ParentOffset:=Owner.Mediator.GetComponentOriginOnForm(TComponent(FPersistent));
       dec(ParentOffset.X,OldBounds.Left);
       dec(ParentOffset.Y,OldBounds.Top);
-      Owner.Mediator.SetBounds(TComponent(FPersistent),
-        Bounds(ALeft-ParentOffset.X,ATop-ParentOffset.Y,AWidth,AHeight));
+      SetBounds(ALeft-ParentOffset.X,ATop-ParentOffset.Y,AWidth,AHeight);
     end;
   end 
   else 
@@ -753,12 +763,12 @@ begin
   end;
 end;
 
-procedure TSelectedControl.UpdateCache;
+function TSelectedControl.BoundsHaveChangedSinceLastResize: boolean;
+var
+  r: TRect;
 begin
-  if not FIsTComponent then exit;
-  GetComponentBounds(TComponent(FPersistent),
-                     FCachedLeft,FCachedTop,FCachedWidth,FCachedHeight);
-  FCachedFormRelativeLeftTop:= GetParentFormRelativeTopLeft(TComponent(FPersistent));
+  r:=GetBounds;
+  Result:=not CompareRect(@r,@FMovedResizedBounds);
 end;
 
 function TSelectedControl.IsTopLvl: boolean;
@@ -809,9 +819,7 @@ function TSelectedControl.GetLeft: integer;
 var
   r: TRect;
 begin
-  if FUseCache then
-    Result:=FCachedLeft
-  else if FIsTComponent then begin
+  if FIsTComponent then begin
     if Owner.Mediator<>nil then begin
       Owner.Mediator.GetBounds(TComponent(FPersistent),r);
       Result:=r.Left;
@@ -822,7 +830,7 @@ begin
     Result:=0;
 end;
 
-procedure TSelectedControl.SetLeft(ALeft: Integer);
+procedure TSelectedControl.SetLeft(ALeft: integer);
 var
   r: TRect;
 begin
@@ -840,17 +848,12 @@ begin
       TComponent(FPersistent).DesignInfo := LeftTopToDesignInfo(ALeft, Top);
     end;
   end;
-     
-  FCachedLeft := ALeft;
 end;
 
 function TSelectedControl.GetTop: integer;
 var
   r: TRect;
 begin
-  if FUseCache then
-    Result := FCachedTop
-  else 
   if FIsTComponent then begin
     if Owner.Mediator<>nil then begin
       Owner.Mediator.GetBounds(TComponent(FPersistent),r);
@@ -880,8 +883,6 @@ begin
       TComponent(FPersistent).DesignInfo := LeftTopToDesignInfo(Left, ATop);
     end;
   end;
-    
-  FCachedTop := ATop;
 end;
 
 function TSelectedControl.GetWidth: integer;
@@ -889,9 +890,6 @@ var
   r: TRect;
 begin
   Result := 0;
-  if FUseCache then
-    Result := FCachedWidth
-  else 
   if FIsTComponent then begin
     if Owner.Mediator<>nil then begin
       Owner.Mediator.GetBounds(TComponent(FPersistent),r);
@@ -900,13 +898,6 @@ begin
       Result := GetComponentWidth(TComponent(FPersistent));
     end;
   end;
-end;
-
-procedure TSelectedControl.SetUseCache(const AValue: boolean);
-begin
-  if FUseCache=AValue then exit;
-  FUseCache:=AValue;
-  if FUseCache then UpdateCache;
 end;
 
 procedure TSelectedControl.SetWidth(AWidth: integer);
@@ -920,16 +911,12 @@ begin
     r.Right:=r.Left+AWidth;
     Owner.Mediator.SetBounds(TComponent(FPersistent),r);
   end;
-  FCachedWidth:=AWidth;
 end;
 
 function TSelectedControl.GetHeight: integer;
 var
   r: TRect;
 begin
-  if FUseCache then
-    Result := FCachedHeight
-  else 
   if FIsTComponent then begin
     if Owner.Mediator<>nil then begin
       Owner.Mediator.GetBounds(TComponent(FPersistent),r);
@@ -952,7 +939,6 @@ begin
     r.Bottom:=r.Top+AHeight;
     Owner.Mediator.SetBounds(TComponent(FPersistent),r);
   end;
-  FCachedHeight:=AHeight;
 end;
 
 
@@ -1347,6 +1333,7 @@ begin
           and (not ComponentBoundsDesignable(TComponent(Item.Persistent))) then
             continue;
           OldLeftTop:=Items[i].OldFormRelativeLeftTop;
+          //if i=0 then debugln(['TControlSelection.DoApplyUserBounds OldLeftTop=',dbgs(OldLeftTop),' FWidth=',FWidth,' FHeight=',FHeight]);
           NewLeft:=FLeft + round((single(OldLeftTop.X-FOldLeft) * single(FWidth))/single(FOldWidth));
           NewTop:=FTop + round((single(OldLeftTop.Y-FOldTop) * single(FHeight))/single(FOldHeight));
           NewWidth:=round(single(Item.OldWidth*FWidth)/single(FOldWidth));
@@ -2180,13 +2167,15 @@ begin
   FControls[Index]:=ASelectedControl;
 end;
 
-procedure TControlSelection.SaveBounds;
+procedure TControlSelection.SaveBounds(OnlyIfChanged: boolean);
 var
   i: integer;
   g: TGrabIndex;
 begin
   if cssDoNotSaveBounds in FStates then exit;
   //debugln('TControlSelection.SaveBounds');
+  if OnlyIfChanged and not BoundsHaveChangedSinceLastResize then exit;
+
   if FUpdateLock > 0 then
   begin
     Include(FStates, cssBoundsNeedsSaving);
@@ -2200,6 +2189,16 @@ begin
   FOldWidth := FRealWidth;
   FOldHeight := FRealHeight;
   Exclude(FStates, cssBoundsNeedsSaving);
+end;
+
+function TControlSelection.BoundsHaveChangedSinceLastResize: boolean;
+var
+  i: Integer;
+begin
+  for i:=0 to FControls.Count-1 do
+    if Items[i].BoundsHaveChangedSinceLastResize then
+      exit(true);
+  Result:=false;
 end;
 
 function TControlSelection.IsResizing: boolean;

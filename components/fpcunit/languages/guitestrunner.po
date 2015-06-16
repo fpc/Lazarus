@@ -124,7 +124,7 @@ msgid "C&ut"
 msgstr ""
 
 #: guitestrunner.smiruntest
-msgid "  &Run all selected (checked) tests"
+msgid "&Run all selected (checked) tests"
 msgstr ""
 
 #: guitestrunner.smishowfail

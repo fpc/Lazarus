@@ -110,7 +110,6 @@ msgid "Left"
 msgstr ""
 
 #: editortoolbar_str.rsmenutree
-#| msgid "Menu Tree"
 msgid "Available Menu Items"
 msgstr "Itens disponíveis de menu"
 
@@ -167,7 +166,6 @@ msgid "Source Tab"
 msgstr ""
 
 #: editortoolbar_str.rstoolbar
-#| msgid "Toolbar"
 msgid "Toolbar Items"
 msgstr "Itens da barra ferramentas"
 

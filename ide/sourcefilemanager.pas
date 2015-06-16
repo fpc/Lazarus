@@ -435,7 +435,7 @@ begin
       if AnUnitInfo.OpenEditorInfoCount > 0 then
         AShareEditor := TSourceEditor(AnUnitInfo.OpenEditorInfo[0].EditorComponent);
       NewSrcEdit:=SrcNotebook.NewFile(
-        CreateSrcEditPageName(AnUnitInfo.Unit_Name, AFilename, AShareEditor),
+        CreateSrcEditPageName(AnUnitInfo.SrcUnitName, AFilename, AShareEditor),
         AnUnitInfo.Source, False, AShareEditor);
       NewSrcEdit.EditorComponent.BeginUpdate;
       MainIDEBar.itmFileClose.Enabled:=True;
@@ -1719,7 +1719,8 @@ begin
   end else
     NewUnitInfo:=TUnitInfo.Create(NewBuffer);
   //debugln(['TLazSourceFileManager.NewFile ',NewUnitInfo.Filename,' ',NewFilename]);
-  NewUnitInfo.ImproveUnitNameCache(NewUnitName);
+  if (CompareText(NewUnitInfo.SrcUnitName,NewUnitName)=0) then
+    NewUnitInfo.SrcUnitName:=NewUnitName;
   NewUnitInfo.BuildFileIfActive:=NewFileDescriptor.BuildFileIfActive;
   NewUnitInfo.RunFileIfActive:=NewFileDescriptor.RunFileIfActive;
 
@@ -1765,7 +1766,7 @@ begin
     if NewUnitInfo.OpenEditorInfoCount > 0 then
       AShareEditor := TSourceEditor(NewUnitInfo.OpenEditorInfo[0].EditorComponent);
     NewSrcEdit := SrcNoteBook.NewFile(
-      CreateSrcEditPageName(NewUnitInfo.Unit_Name, NewUnitInfo.Filename, AShareEditor),
+      CreateSrcEditPageName(NewUnitInfo.SrcUnitName, NewUnitInfo.Filename, AShareEditor),
       NewUnitInfo.Source, True, AShareEditor);
     MainIDEBar.itmFileClose.Enabled:=True;
     MainIDEBar.itmFileCloseAll.Enabled:=True;
@@ -1990,10 +1991,8 @@ begin
   WasVirtual:=AnUnitInfo.IsVirtual;
   WasPascalSource:=FilenameIsPascalSource(AnUnitInfo.Filename);
 
-  // if this file is part of the project and the project is virtual then save
-  // project first
-  if (not (sfProjectSaving in Flags)) and Project1.IsVirtual
-  and AnUnitInfo.IsPartOfProject then
+  // if this file is part of a virtual project then save the project first
+  if (not (sfProjectSaving in Flags)) and Project1.IsVirtual and AnUnitInfo.IsPartOfProject then
   begin
     SaveProjectFlags:=Flags*[sfSaveToTestDir];
     if AnUnitInfo=Project1.MainUnitInfo then
@@ -2020,10 +2019,8 @@ begin
       MacroListViewer.UpdateDisplay;
       AnUnitInfo.ClearModifieds;
       AEditor.Modified:=false;
-      Result := mrOK;
-      exit;
     end;
-    // unknown internal file => skip
+    // otherwise unknown internal file => skip
     exit(mrOk);
   end;
 
@@ -2058,8 +2055,7 @@ begin
   end;
 
   // check if file is writable on disk
-  if (not AnUnitInfo.IsVirtual)
-  and FileExistsUTF8(AnUnitInfo.Filename) then
+  if (not AnUnitInfo.IsVirtual) and FileExistsUTF8(AnUnitInfo.Filename) then
     AnUnitInfo.FileReadOnly:=not FileIsWritable(AnUnitInfo.Filename)
   else
     AnUnitInfo.FileReadOnly:=false;
@@ -2080,7 +2076,7 @@ begin
 
   OldUnitName:='';
   if WasPascalSource then
-    OldUnitName:=AnUnitInfo.ParseUnitNameFromSource(true);
+    OldUnitName:=AnUnitInfo.ReadUnitNameFromSource(true);
   OldFilename:=AnUnitInfo.Filename;
 
   if [sfSaveAs,sfSaveToTestDir]*Flags=[sfSaveAs] then begin
@@ -2156,11 +2152,10 @@ begin
   // fix all references
   NewUnitName:='';
   if FilenameIsPascalSource(AnUnitInfo.Filename) then
-    NewUnitName:=AnUnitInfo.ParseUnitNameFromSource(true);
+    NewUnitName:=AnUnitInfo.ReadUnitNameFromSource(true);
   NewFilename:=AnUnitInfo.Filename;
   if (NewUnitName<>'')
-  and  ((OldUnitName<>NewUnitName)
-        or (CompareFilenames(OldFilename,NewFilename)<>0))
+  and ((OldUnitName<>NewUnitName) or (CompareFilenames(OldFilename,NewFilename)<>0))
   then begin
     if EnvironmentOptions.UnitRenameReferencesAction<>urraNever then
     begin
@@ -2251,8 +2246,8 @@ begin
         // ask user
         if AnUnitInfo.Filename<>'' then
           AText:=Format(lisFileHasChangedSave, [AnUnitInfo.Filename])
-        else if AnUnitInfo.Unit_Name<>'' then
-          AText:=Format(lisUnitHasChangedSave, [AnUnitInfo.Unit_name])
+        else if AnUnitInfo.SrcUnitName<>'' then
+          AText:=Format(lisUnitHasChangedSave, [AnUnitInfo.SrcUnitName])
         else
           AText:=Format(lisSourceOfPageHasChangedSave, [TSourceEditor(AEditor).PageName]);
         ACaption:=lisSourceModified;
@@ -2942,7 +2937,7 @@ begin
         if FileExistsCached(LFMFilename)
         and ReadLFMHeaderFromFile(LFMFilename,LFMType,LFMComponentName,LFMClassName)
         then begin
-          anUnitName:=CurUnitInfo.Unit_Name;
+          anUnitName:=CurUnitInfo.SrcUnitName;
           if anUnitName='' then
             anUnitName:=ExtractFileNameOnly(LFMFilename);
           ItemList.Add(LFMComponentName, CurUnitInfo.Filename,
@@ -3097,7 +3092,7 @@ begin
           AnUnitInfo.ResourceBaseClass:=FindLFMBaseClass(AnUnitInfo.Filename);
           if not ResourceFits(AnUnitInfo.ResourceBaseClass) then continue;
         end;
-        AddUnit(AnUnitInfo.Unit_Name,AnUnitInfo.Filename);
+        AddUnit(AnUnitInfo.SrcUnitName,AnUnitInfo.Filename);
       end;
     end else if APackage<>nil then begin
       // add package units
@@ -3163,8 +3158,8 @@ begin
     s:='"'+ActiveUnitInfo.Filename+'"'
   else
     s:='"'+ActiveSourceEditor.PageName+'"';
-  if (ActiveUnitInfo.Unit_Name<>'')
-  and (Project1.IndexOfUnitWithName(ActiveUnitInfo.Unit_Name,true,ActiveUnitInfo)>=0) then
+  if (ActiveUnitInfo.SrcUnitName<>'')
+  and (Project1.IndexOfUnitWithName(ActiveUnitInfo.SrcUnitName,true,ActiveUnitInfo)>=0) then
   begin
     IDEMessageDialog(lisInformation, Format(
       lisUnableToAddToProjectBecauseThereIsAlreadyAUnitWith, [s]),
@@ -3524,9 +3519,9 @@ Begin
     InputHistories.ApplyFileDialogSettings(OpenDialog);
     OpenDialog.Title:=lisChooseProgramSourcePpPasLpr;
     OpenDialog.Options:=OpenDialog.Options+[ofPathMustExist,ofFileMustExist];
-    Filter := lisLazarusUnit + ' (*.pas;*.pp;*.p)|*.pas;*.pp;*.p'
-      + '|' + lisLazarusProjectSource + ' (*.lpr)|*.lpr';
-    Filter:=Filter+ '|' + dlgAllFiles + ' (' + GetAllFilesMask + ')|' + GetAllFilesMask;
+    Filter := dlgFilterLazarusUnit + ' (*.pas;*.pp;*.p)|*.pas;*.pp;*.p'
+      + '|' + dlgFilterLazarusProjectSource + ' (*.lpr)|*.lpr';
+    Filter:=Filter+ '|' + dlgFilterAll + ' (' + GetAllFilesMask + ')|' + GetAllFilesMask;
     OpenDialog.Filter := Filter;
     if OpenDialog.Execute then begin
       AFilename:=ExpandFileNameUTF8(OpenDialog.Filename);
@@ -3798,8 +3793,8 @@ begin
     try
       InputHistories.ApplyFileDialogSettings(OpenDialog);
       OpenDialog.Title:=lisOpenProjectFile+' (*.lpi)';
-      OpenDialog.Filter := lisLazarusProjectInfoFile+' (*.lpi)|*.lpi|'
-                          +lisAllFiles+'|'+GetAllFilesMask;
+      OpenDialog.Filter := dlgFilterLazarusProject+' (*.lpi)|*.lpi|'
+                          +dlgFilterAll+'|'+GetAllFilesMask;
       if OpenDialog.Execute then begin
         AFilename:=GetPhysicalFilenameCached(ExpandFileNameUTF8(OpenDialog.Filename),false);
         if FileUtil.CompareFileExt(AFilename,'.lpi')<>0 then begin
@@ -4021,13 +4016,13 @@ function TLazSourceFileManager.BuildManyModes(): Boolean;
 var
   ModeCnt: Integer;
 
-  function BuildOneMode: Boolean;
+  function BuildOneMode(LastMode: boolean): Boolean;
   begin
     Inc(ModeCnt);
     DebugLn('');
     DebugLn(Format('Building mode %d: %s ...', [ModeCnt, Project1.ActiveBuildMode.Identifier]));
     DebugLn('');
-    Result := MainIDE.DoBuildProject(crBuild,[]) = mrOK;
+    Result := MainIDE.DoBuildProject(crBuild, [], LastMode) = mrOK;
   end;
 
 var
@@ -4035,6 +4030,7 @@ var
   md, ActiveMode: TProjectBuildMode;
   BuildActiveMode: Boolean;
   i: Integer;
+  LastMode: boolean;
 begin
   Result := False;
   ModeCnt := 0;
@@ -4057,12 +4053,16 @@ begin
     end;
     // Build first the active mode so we don't have to switch many times.
     if BuildActiveMode then
-      if not BuildOneMode then Exit;
+    begin
+      LastMode := (ModeList.Count=0);
+      if not BuildOneMode(LastMode) then Exit;
+    end;
     // Build rest of the modes.
     for i := 0 to ModeList.Count-1 do
     begin
+      LastMode := (i=(ModeList.Count-1));
       Project1.ActiveBuildMode := TProjectBuildMode(ModeList[i]);
-      if not BuildOneMode then Exit;
+      if not BuildOneMode(LastMode) then Exit;
     end;
     // Switch back to original mode.
     Project1.ActiveBuildMode := ActiveMode;
@@ -4272,7 +4272,7 @@ function TLazSourceFileManager.NewUniqueComponentName(Prefix: string): string;
         if CompareText(AnUnitInfo.Component.ClassName,Identifier)=0 then exit;
       end else if (AnUnitInfo.ComponentName<>'')
       and ((AnUnitInfo.IsPartOfProject) or AnUnitInfo.Loaded) then begin
-        if SysUtils.CompareText(AnUnitInfo.Unit_Name,Identifier)=0 then exit;
+        if SysUtils.CompareText(AnUnitInfo.SrcUnitName,Identifier)=0 then exit;
         if SysUtils.CompareText(AnUnitInfo.ComponentName,Identifier)=0 then exit;
       end;
     end;
@@ -4368,7 +4368,7 @@ begin
   IsPascal:=FilenameIsPascalSource(AFilename);
   if IsPascal then begin
     if AnUnitInfo<>nil then
-      OldUnitName:=AnUnitInfo.ParseUnitNameFromSource(false)
+      OldUnitName:=AnUnitInfo.ReadUnitNameFromSource(false)
     else
       OldUnitName:=ExtractFileNameOnly(AFilename);
   end else
@@ -4391,25 +4391,25 @@ begin
     SaveDialog.Title:=lisSaveSpace+SaveAsFilename+' (*'+SaveAsFileExt+')';
     SaveDialog.FileName:=SaveAsFilename+SaveAsFileExt;
 
-    Filter := lisLazarusUnit + ' (*.pas;*.pp)|*.pas;*.pp';
+    Filter := dlgFilterLazarusUnit + ' (*.pas;*.pp)|*.pas;*.pp';
     if (SaveAsFileExt='.lpi') then
-      Filter:=Filter+ '|' + lisLazarusProject + ' (*.lpi)|*.lpi';
+      Filter:=Filter+ '|' + dlgFilterLazarusProject + ' (*.lpi)|*.lpi';
     if (SaveAsFileExt='.lfm') or (SaveAsFileExt='.dfm') then
-      Filter:=Filter+ '|' + lisLazarusForm + ' (*.lfm;*.dfm)|*.lfm;*.dfm';
+      Filter:=Filter+ '|' + dlgFilterLazarusForm + ' (*.lfm;*.dfm)|*.lfm;*.dfm';
     if (SaveAsFileExt='.lpk') then
-      Filter:=Filter+ '|' + lisLazarusPackage + ' (*.lpk)|*.lpk';
+      Filter:=Filter+ '|' + dlgFilterLazarusPackage + ' (*.lpk)|*.lpk';
     if (SaveAsFileExt='.lpr') then
-      Filter:=Filter+ '|' + lisLazarusProjectSource + ' (*.lpr)|*.lpr';
+      Filter:=Filter+ '|' + dlgFilterLazarusProjectSource + ' (*.lpr)|*.lpr';
     // append a filter for all editor files
     CreateFileDialogFilterForSourceEditorFiles(Filter,AllEditorExt,AllFilter);
     if AllEditorExt<>'' then
-      Filter:=Filter+ '|' + lisEditorFileTypes + ' (' + AllEditorExt + ')|' + AllEditorExt;
+      Filter:=Filter+ '|' + dlgFilterLazarusEditorFile + ' (' + AllEditorExt + ')|' + AllEditorExt;
 
     // append an any file filter *.*
-    Filter:=Filter+ '|' + dlgAllFiles + ' (' + GetAllFilesMask + ')|' + GetAllFilesMask;
+    Filter:=Filter+ '|' + dlgFilterAll + ' (' + GetAllFilesMask + ')|' + GetAllFilesMask;
 
     // prepend an all filter
-    Filter:=  lisLazarusFile + ' ('+AllFilter+')|' + AllFilter + '|' + Filter;
+    Filter:=  dlgFilterLazarusFile + ' ('+AllFilter+')|' + AllFilter + '|' + Filter;
     SaveDialog.Filter := Filter;
 
     // if this is a project file, start in project directory
@@ -4976,7 +4976,8 @@ var
   OldFileExisted: Boolean;
   ConvTool: TConvDelphiCodeTool;
 begin
-  Project1.BeginUpdate(false);
+  // Project is marked as changed already here. ToDo: Mark changed only if really renamed.
+  Project1.BeginUpdate(true);
   try
     OldFilename:=AnUnitInfo.Filename;
     OldFilePath:=ExtractFilePath(OldFilename);
@@ -4988,8 +4989,8 @@ begin
         OldLFMFilename:=ChangeFileExt(OldFilename,'.dfm');
     end;
     if NewUnitName='' then
-      NewUnitName:=AnUnitInfo.Unit_Name;
-    debugln(['TLazSourceFileManager.RenameUnit ',AnUnitInfo.Filename,' NewUnitName=',NewUnitName,' OldUnitName=',AnUnitInfo.Unit_Name,' LFMCode=',LFMCode<>nil,' LRSCode=',LRSCode<>nil,' NewFilename="',NewFilename,'"']);
+      NewUnitName:=AnUnitInfo.SrcUnitName;
+    debugln(['TLazSourceFileManager.RenameUnit ',AnUnitInfo.Filename,' NewUnitName=',NewUnitName,' OldUnitName=',AnUnitInfo.SrcUnitName,' LFMCode=',LFMCode<>nil,' LRSCode=',LRSCode<>nil,' NewFilename="',NewFilename,'"']);
 
     // check new resource file
     NewLFMFilename:='';
@@ -5130,7 +5131,7 @@ begin
         // the code is not changed, therefore the marks are kept
 
     // change unitname in lpi and in main source file
-    AnUnitInfo.Unit_Name:=NewUnitName;
+    AnUnitInfo.SrcUnitName:=NewUnitName;
     if LRSCode<>nil then begin
       // change resource filename in the source include directive
       if not CodeToolBoss.RenameMainInclude(AnUnitInfo.Source,
@@ -5339,7 +5340,7 @@ begin
       mtConfirmation,[mrYes,mrIgnore,lisNo,mrAbort],'');
     if Result<>mrYes then exit;
   end;
-  NewUnitName:=AnUnitInfo.Unit_Name;
+  NewUnitName:=AnUnitInfo.SrcUnitName;
   if NewUnitName='' then begin
     AnUnitInfo.ReadUnitNameFromSource(false);
     NewUnitName:=AnUnitInfo.CreateUnitName;
@@ -5711,7 +5712,7 @@ begin
           FormEditor1.ClearSelection;
 
         // create JIT component
-        NewUnitName:=AnUnitInfo.Unit_Name;
+        NewUnitName:=AnUnitInfo.SrcUnitName;
         if NewUnitName='' then
           NewUnitName:=ExtractFileNameOnly(AnUnitInfo.Filename);
         DisableAutoSize:=true;
@@ -7146,7 +7147,7 @@ begin
       AFilename:='';
       // build a nice project info filename suggestion
       if UseMainSourceFile and (Project1.MainUnitID>=0) then
-        AFilename:=Project1.MainUnitInfo.Unit_Name;
+        AFilename:=Project1.MainUnitInfo.SrcUnitName;
       if AFilename='' then
         AFilename:=ExtractFileName(Project1.ProjectInfoFile);
       if AFilename='' then
@@ -7327,7 +7328,7 @@ begin
         MainUnitSrcEdit.CodeBuffer:=NewBuf;
 
       // change program name
-      MainUnitInfo.Unit_Name:=NewProgramName;
+      MainUnitInfo.SrcUnitName:=NewProgramName;
       MainUnitInfo.Modified:=true;
 
       // update source notebook page names
@@ -7472,10 +7473,11 @@ var
   OnlyEditorFiles: Boolean;
   aFilename: String;
 begin
-  if (CompareFilenames(OldFilename,NewFilename)=0)
-  and (OldUnitName=NewUnitName) then // compare unitnames case sensitive, maybe only the case changed
+  // compare unitnames case sensitive, maybe only the case changed
+  if (CompareFilenames(OldFilename,NewFilename)=0) and (OldUnitName=NewUnitName) then
     exit(mrOk);
-  OnlyEditorFiles:=not FilenameIsAbsolute(OldFilename); // this was a new file, files on disk can not refer to it
+  // this was a new file, files on disk can not refer to it
+  OnlyEditorFiles:=not FilenameIsAbsolute(OldFilename);
 
   OwnerList:=nil;
   OldCode:=nil;

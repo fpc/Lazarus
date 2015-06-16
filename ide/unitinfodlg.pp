@@ -39,31 +39,18 @@ type
   TUnitInfoDialog = class(TForm)
     GotoIncludeDirectiveButton: TButton;
     CodeToolsDefsButton: TButton;
+    ListValues: TListView;
     OkButton: TBitBtn;
     ClearIncludedBy: TButton;
     UnitPathMemo: TMemo;
     IncludePathMemo: TMemo;
     SrcPathMemo: TMemo;
     Notebook: TPageControl;
-    OutIncludedBy: TLabel;
-    OutInProject: TLabel;
-    OutLines: TLabel;
-    OutName: TLabel;
-    OutPath: TLabel;
-    OutSize: TLabel;
-    OutType: TLabel;
     GeneralPage: TTabSheet;
     UnitPathsPage: TTabSheet;
     IncludePathsPage: TTabSheet;
     CompleteUnitPathsPage: TTabSheet;
     PathsGroupBox: TGroupBox;
-    UIncludedBy: TLabel;
-    UInProject: TLabel;
-    ULines: TLabel;
-    UName: TLabel;
-    UPath: TLabel;
-    USize: TLabel;
-    UType: TLabel;
     procedure CodeToolsDefsButtonClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure clearIncludedByClick(Sender: TObject);
@@ -99,30 +86,28 @@ begin
 
     FFilePath:=FilePath;
 
-    OutName.Caption:=AnUnitName;
-    OutType.Caption:=AType;
+    ListValues.Items[0].SubItems[0]:=AnUnitName;
+    ListValues.Items[1].SubItems[0]:=AType;
 
-    if IsPartOfProject then
-      OutInProject.Caption:=lisUIDyes
-    else
-      OutInProject.Caption:=lisUIDno;
+    if IsPartOfProject then s:=lisUIDyes else s:=lisUIDno;
+    ListValues.Items[2].SubItems[0]:=s;
 
     s:=Format(lisUIDbytes, [IntToStr(SizeInBytes)]);
     if UnitSizeWithIncludeFiles<>SizeInBytes then
       s:=s+lisWithIncludes2+IntToStr(UnitSizeWithIncludeFiles);
     if UnitSizeParsed<>UnitSizeWithIncludeFiles then
       s:=s+lisParsed+IntToStr(UnitSizeParsed);
-    OutSize.Caption:=s;
+    ListValues.Items[3].SubItems[0]:=s;
 
     s:=IntToStr(LineCount);
     if UnitLineCountWithIncludes<>LineCount then
       s:=s+lisWithIncludes2+IntToStr(UnitLineCountWithIncludes);
     if UnitLineCountParsed<>LineCount then
       s:=s+lisParsed+IntToStr(UnitLineCountParsed);
-    OutLines.Caption:=s;
+    ListValues.Items[4].SubItems[0]:=s;
 
-    OutPath.Caption:=FilePath;
-    OutIncludedBy.Caption:=IncludedBy;
+    ListValues.Items[5].SubItems[0]:=FilePath;
+    ListValues.Items[6].SubItems[0]:=IncludedBy;
 
     UnitPathMemo.Lines.Delimiter := ';';
     UnitPathMemo.Lines.StrictDelimiter := true;
@@ -161,13 +146,17 @@ begin
   Notebook.Page[3].Caption := lisSourcePaths;
   Notebook.PageIndex := 0;
 
-  UName.Caption:=lisUIDName;
-  UType.Caption:=lisUIDType;
-  UInProject.Caption:=lisUIDinProject;
-  USize.Caption:=lisUIDSize;
-  ULines.Caption:=lisUIDLines;
-  UPath.Caption:=lisToFPCPath;
-  UIncludedBy.Caption:=lisUIDIncludedBy;
+  with ListValues do
+  begin
+    with Items.Add do begin Caption:= lisUIDName; SubItems.Add(''); end;
+    with Items.Add do begin Caption:= lisUIDType; SubItems.Add(''); end;
+    with Items.Add do begin Caption:= lisUIDinProject; SubItems.Add(''); end;
+    with Items.Add do begin Caption:= lisUIDSize; SubItems.Add(''); end;
+    with Items.Add do begin Caption:= lisUIDLines; SubItems.Add(''); end;
+    with Items.Add do begin Caption:= lisToFPCPath; SubItems.Add(''); end;
+    with Items.Add do begin Caption:= lisUIDIncludedBy; SubItems.Add(''); end;
+  end;
+
   ClearIncludedBy.Caption:=lisUIClearIncludedByReference;
   CodeToolsDefsButton.Caption:=lisUIShowCodeToolsValues;
   GotoIncludeDirectiveButton.Caption:=lisMenuGotoIncludeDirective;
@@ -175,12 +164,12 @@ end;
 
 procedure TUnitInfoDialog.clearIncludedByClick(Sender: TObject);
 begin
-  OutIncludedBy.Caption:='';
+  ListValues.Items[6].SubItems[0]:='';
 end;
 
 function TUnitInfoDialog.getIncludedBy: string;
 begin
-  Result:=OutIncludedBy.Caption;
+  Result:=ListValues.Items[6].SubItems[0];
 end;
 
 end.

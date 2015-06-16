@@ -43,7 +43,7 @@ uses
   {$IFDEF MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, math, FileProcs, CodeToolsStrConsts, CodeTree, CodeAtom,
+  Classes, SysUtils, FileProcs, CodeToolsStrConsts, CodeTree, CodeAtom,
   KeywordFuncLists, BasicCodeTools, LinkScanner, CodeCache,
   AVL_Tree;
 
@@ -133,7 +133,7 @@ type
     procedure RaiseLastError;
     procedure DoProgress; inline;
     procedure NotifyAboutProgress;
-    procedure FetchScannerSource(Range: TLinkScannerRange); virtual;
+    procedure FetchScannerSource; virtual;
     function InternalAtomIsIdentifier: boolean; inline;
   public
     Tree: TCodeTree;
@@ -309,8 +309,7 @@ type
       const ErrorCleanPos: integer;
       const ErrorNiceCleanPos: TCodeXYPosition
       ): TCodeTreeNodeParseError;
-    procedure RaiseNodeParserError(Node: TCodeTreeNode;
-      CheckIgnoreErrorPos: boolean = true);
+    procedure RaiseNodeParserError(Node: TCodeTreeNode);
     procedure RaiseCursorOutsideCode(CursorPos: TCodeXYPosition);
     property OnParserProgress: TOnParserProgress
       read FOnParserProgress write FOnParserProgress;
@@ -494,7 +493,7 @@ begin
   end;
 end;
 
-procedure TCustomCodeTool.FetchScannerSource(Range: TLinkScannerRange);
+procedure TCustomCodeTool.FetchScannerSource;
 begin
   // update scanned code
   if FLastScannerChangeStep=Scanner.ChangeStep then begin
@@ -834,7 +833,7 @@ begin
   if CurPos.StartPos>SrcLen then exit(false);
   p:=@Src[CurPos.StartPos];
   if p^ in ['0'..'9','%','$'] then exit(true);
-  if (p^='&') and (p[1] in ['0'..'7']) then exit(true);
+  if (p^='&') and IsOctNumberChar[p[1]] then exit(true);
   Result:=false;
 end;
 
@@ -1230,10 +1229,10 @@ begin
     '&': // octal number or keyword as identifier
       begin
         inc(p);
-        if p^ in ['0'..'7'] then begin
-          while p^ in ['0'..'7'] do
+        if IsOctNumberChar[p^] then begin
+          while IsOctNumberChar[p^] do
             inc(p);
-        end else if IsIdentChar[p^] then begin
+        end else if IsIdentStartChar[p^] then begin
           CurPos.Flag:=cafWord;
           while IsIdentChar[p^] do
             inc(p);
@@ -1530,7 +1529,7 @@ begin
             dec(CurPos.StartPos);
             while (CurPos.StartPos>=1) do begin
               if (Src[CurPos.StartPos]=#3) and (CurPos.StartPos>1)
-              and (Src[CurPos.StartPos-1]='}') then begin
+              and (Src[CurPos.StartPos-1]='{') then begin
                 dec(CurPos.StartPos,2);
                 break;
               end;
@@ -1983,7 +1982,7 @@ begin
   // scan
   FLastProgressPos:=0;
   Scanner.Scan(Range,CheckFilesOnDisk);
-  FetchScannerSource(Range);
+  FetchScannerSource;
   // init parsing values
   CurPos:=StartAtomPosition;
   LastAtoms.Clear;
@@ -2135,8 +2134,7 @@ begin
   Result.NicePos:=ErrorNiceCleanPos;
 end;
 
-procedure TCustomCodeTool.RaiseNodeParserError(Node: TCodeTreeNode;
-  CheckIgnoreErrorPos: boolean);
+procedure TCustomCodeTool.RaiseNodeParserError(Node: TCodeTreeNode);
 var
   NodeError: TCodeTreeNodeParseError;
 begin
@@ -2272,7 +2270,7 @@ var NewPos: integer;
 begin
   if Src='' then
     RaiseSrcEmpty;
-  NewPos:=PtrInt(PtrUInt(ACleanPos))-PtrInt(PtrUInt(@Src[1]))+1;
+  NewPos:=PtrInt({%H-}PtrUInt(ACleanPos))-PtrInt({%H-}PtrUInt(@Src[1]))+1;
   if (NewPos<1) or (NewPos>SrcLen) then
     RaiseNotInSrc;
   MoveCursorToCleanPos(NewPos);

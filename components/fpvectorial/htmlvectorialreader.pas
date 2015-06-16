@@ -37,6 +37,7 @@ type
     function ReadMathFromNode(ANode: TDOMNode; AData: TvTextPageSequence; ADoc: TvVectorialDocument): TvEntity;
     function ReadTableFromNode(ANode: TDOMNode; AData: TvTextPageSequence; ADoc: TvVectorialDocument): TvEntity;
     function ReadTableRowNode(ATable: TvTable; ANode: TDOMNode; AData: TvTextPageSequence; ADoc: TvVectorialDocument): TvEntity;
+    function ReadUListFromNode(ANode: TDOMNode; AData: TvTextPageSequence; ADoc: TvVectorialDocument): TvEntity;
   public
     { General reading methods }
     constructor Create; override;
@@ -74,6 +75,8 @@ begin
   end;
 end;
 
+// if something is returned, it will be added to the base document
+// if nothing is returned, either nothing was written, or it was already added
 function TvHTMLVectorialReader.ReadEntityFromNode(ANode: TDOMNode;
   AData: TvTextPageSequence; ADoc: TvVectorialDocument): TvEntity;
 var
@@ -93,7 +96,12 @@ begin
     'svg': Result := ReadSVGFromNode(ANode, AData, ADoc);
     'math': Result := ReadMathFromNode(ANode, AData, ADoc);
     'table': Result := ReadTableFromNode(ANode, AData, ADoc);
-    'br': Result := AData.AddParagraph().AddText(LineEnding);
+    'br':
+    begin
+      AData.AddParagraph().AddText(LineEnding);
+      Result := nil;
+    end;
+    'ul': Result := ReadUListFromNode(ANode, AData, ADoc);
   end;
 end;
 
@@ -124,8 +132,8 @@ end;
 procedure TvHTMLVectorialReader.ReadParagraphFromNode(ADest: TvParagraph; ANode: TDOMNode;
   AData: TvTextPageSequence; ADoc: TvVectorialDocument);
 var
-  lText: TvText;
-  lTextStr: string;
+  lText: TvText = nil;
+  lTextStr: string = '';
   lCurNode: TDOMNode;
   lNodeName, lNodeValue, lAttrName, lAttrValue: DOMString;
   lCurAttr: TDOMNode;
@@ -141,22 +149,40 @@ var
   lImageData: array of Byte;
   lImageDataStream: TMemoryStream;
   lImageReader: TFPCustomImageReader;
+
+  procedure TextMerging();
+  begin
+    if lTextStr <> '' then
+    begin
+      if lText = nil then
+        lText := ADest.AddText(lTextStr)
+      else
+        lText.Value.Add(lTextStr);
+      lTextStr := '';
+    end;
+  end;
+
 begin
   ADest.Style := ADoc.StyleTextBody;
 
   lCurNode := ANode.FirstChild;
   while Assigned(lCurNode) do
   begin
-    lNodeName := lCurNode.NodeName;
+    lNodeName := LowerCase(lCurNode.NodeName);
     lNodeValue := lCurNode.NodeValue;
 
-    if lCurNode is TDOMText then
+    if (lCurNode is TDOMText) then
     begin
-      lTextStr := lNodeValue;
-      lText := ADest.AddText(lTextStr);
+      lTextStr += RemoveLineEndingsAndTrim(lNodeValue);
       lCurNode := lCurNode.NextSibling;
       Continue;
     end;
+
+    // text merging
+    TextMerging();
+    // reset text merging
+    if lNodeName <> 'br' then
+      lText := nil;
 
     case lNodeName of
     // <image width="100" height="100" xlink:href="data:image/png;base64,UgAAA....QSK5CYII="/>
@@ -171,8 +197,9 @@ begin
 
       for i := 0 to lCurNode.Attributes.Length - 1 do
       begin
-        lAttrName := lCurNode.Attributes.Item[i].NodeName;
-        lAttrValue := lCurNode.Attributes.Item[i].NodeValue;
+        lCurAttr := lCurNode.Attributes.Item[i];
+        lAttrName := lCurAttr.NodeName;
+        lAttrValue := lCurAttr.NodeValue;
 
         case lAttrName of
         'alt':
@@ -257,6 +284,8 @@ begin
 
     lCurNode := lCurNode.NextSibling;
   end;
+
+  TextMerging();
 end;
 
 function TvHTMLVectorialReader.ReadSVGFromNode(ANode: TDOMNode;
@@ -311,9 +340,25 @@ var
   // attributes
   i, lBorderNr: Integer;
   lAttrName, lAttrValue: DOMString;
+
+  procedure SetBorderLineType(AType: TvTableBorderType);
+  begin
+    CurTable.Borders.Left.LineType := AType;
+    CurTable.Borders.Right.LineType := AType;
+    CurTable.Borders.Top.LineType := AType;
+    CurTable.Borders.Bottom.LineType := AType;
+    CurTable.Borders.InsideHoriz.LineType := AType;
+    CurTable.Borders.InsideVert.LineType := AType;
+  end;
+
 begin
   Result := nil;
   CurTable := AData.AddTable();
+  CurTable.CellSpacingLeft := 3;
+  CurTable.CellSpacingTop := 2;
+
+  // Default to no border without "border" attribute
+  SetBorderLineType(tbtNone);
 
   // table attributes
   for i := 0 to ANode.Attributes.Length - 1 do
@@ -326,6 +371,7 @@ begin
     begin
       lBorderNr := StrToInt(lAttrValue);
 
+      SetBorderLineType(tbtSingle);
       CurTable.Borders.Left.Width := lBorderNr;
       CurTable.Borders.Right.Width := lBorderNr;
       CurTable.Borders.Top.Width := lBorderNr;
@@ -334,14 +380,7 @@ begin
       CurTable.Borders.InsideVert.Width := lBorderNr;
 
       if lBorderNr = 0 then
-      begin
-        CurTable.Borders.Left.LineType := tbtNone;
-        CurTable.Borders.Right.LineType := tbtNone;
-        CurTable.Borders.Top.LineType := tbtNone;
-        CurTable.Borders.Bottom.LineType := tbtNone;
-        CurTable.Borders.InsideHoriz.LineType := tbtNone;
-        CurTable.Borders.InsideVert.LineType := tbtNone;
-      end;
+        SetBorderLineType(tbtNone);
     end;
     end;
   end;
@@ -357,6 +396,10 @@ begin
     begin
       CurRow := CurTable.AddRow();
       Caption_Cell := CurRow.AddCell();
+      {Caption_Cell.Borders.Left.LineType := tbtNone;
+      Caption_Cell.Borders.Top.LineType := tbtNone;
+      Caption_Cell.Borders.Right.LineType := tbtNone;
+      Caption_Cell.Borders.Bottom.LineType := tbtNone;}
       CurCellPara := Caption_Cell.AddParagraph();
       CurCellPara.Style := ADoc.StyleTextBodyCentralized;
       CurCellPara.AddText(GetTextContentFromNode(lCurNode));
@@ -402,7 +445,7 @@ begin
     begin
       CurCell := CurRow.AddCell();
       CurCellPara := CurCell.AddParagraph();
-      CurCellPara.Style := ADoc.StyleTextSpanBold;
+      CurCellPara.Style := ADoc.StyleTextBodyBold;
       CurCellPara.AddText(GetTextContentFromNode(lCurNode));
     end;
     'td':
@@ -411,6 +454,36 @@ begin
 
       CurCellPara := CurCell.AddParagraph();
       Self.ReadParagraphFromNode(CurCellPara, lCurNode, AData, ADoc);
+    end;
+    end;
+
+    lCurNode := lCurNode.NextSibling;
+  end;
+end;
+
+function TvHTMLVectorialReader.ReadUListFromNode(ANode: TDOMNode;
+  AData: TvTextPageSequence; ADoc: TvVectorialDocument): TvEntity;
+var
+  lCurNode: TDOMNode;
+  lNodeName, lNodeValue: DOMString;
+  lNodeText: string;
+  //
+  lList: TvList;
+  lCurPara: TvParagraph;
+begin
+  Result := nil;
+  lList := AData.AddList();
+
+  lCurNode := ANode.FirstChild;
+  while Assigned(lCurNode) do
+  begin
+    lNodeName := lCurNode.NodeName;
+    lNodeValue := lCurNode.NodeValue;
+    case lNodeName of
+    'li':
+    begin
+      lNodeText := GetTextContentFromNode(lCurNode);
+      lCurPara := lList.AddParagraph(lNodeText);
     end;
     end;
 

@@ -62,8 +62,7 @@ type
     SynDiffSyn1: TSynDiffSyn;
     procedure DiskDiffsDlgKeyDown(Sender: TObject; var Key: Word;
           {%H-}Shift: TShiftState);
-    procedure FilesListBoxMouseUp(Sender: TOBject; {%H-}Button: TMouseButton;
-          {%H-}Shift: TShiftState; {%H-}X, {%H-}Y: Integer);
+    procedure FilesListBoxSelectionChange(Sender: TObject; User: boolean);
     procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
   private
     FPackageList: TStringList;
@@ -208,10 +207,11 @@ begin
     ModalResult := mrYesToAll;
 end;
 
-procedure TDiskDiffsDlg.FilesListBoxMouseUp(Sender: TOBject;
-  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+procedure TDiskDiffsDlg.FilesListBoxSelectionChange(Sender: TObject;
+  User: boolean);
 begin
-  ShowDiff;
+  if User then
+    ShowDiff;
 end;
 
 procedure TDiskDiffsDlg.FormClose(Sender: TObject; var CloseAction: TCloseAction);

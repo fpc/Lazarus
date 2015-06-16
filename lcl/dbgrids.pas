@@ -34,7 +34,7 @@ interface
 uses
   Classes, SysUtils, Math, FileUtil, DB,
   LazUTF8, LazLoggerBase, LCLStrConsts, LCLIntf, LCLType, LMessages, LResources,
-  Controls, StdCtrls, Graphics, Grids, Dialogs, Themes, Variants, Clipbrd;
+  Controls, StdCtrls, Graphics, Grids, Dialogs, Themes, Variants, Clipbrd, Laz2_XMLCfg;
 
 {$if FPC_FULLVERSION<20701}
   {$DEFINE noautomatedbookmark}
@@ -82,8 +82,8 @@ type
   );
   TDbGridExtraOptions = set of TDbGridExtraOption;
 
-  TDbGridStatusItem = (gsUpdatingData, gsAddingAutoColumns,
-                       gsRemovingAutoColumns, gsAutoSized, gsStartEditing);
+  TDbGridStatusItem = (gsUpdatingData, gsAddingAutoColumns, gsRemovingAutoColumns,
+                       gsAutoSized, gsStartEditing, gsLoadingGrid);
   TDbGridStatus = set of TDbGridStatusItem;
 
   TDataSetScrolledEvent =
@@ -389,6 +389,10 @@ type
     function  DoMouseWheelUp(Shift: TShiftState; MousePos: TPoint): Boolean; override;
     procedure DoOnChangeBounds; override;
     procedure DoPrepareCanvas(aCol,aRow:Integer; aState: TGridDrawState); override;
+    procedure DoLoadColumn(sender: TCustomGrid; aColumn: TGridColumn; aColIndex: Integer;
+                            aCfg: TXMLConfig; aVersion: Integer; aPath: string); override;
+    procedure DoSaveColumn(sender: TCustomGrid; aColumn: TGridColumn; aColIndex: Integer;
+                            aCfg: TXMLConfig; aVersion: Integer; aPath: string); override;
     procedure DrawAllRows; override;
     procedure DrawFocusRect(aCol,aRow:Integer; ARect:TRect); override;
     procedure DrawRow(ARow: Integer); override;
@@ -437,6 +441,7 @@ type
     procedure LinkActive(Value: Boolean); virtual;
     procedure LayoutChanged; virtual;
     procedure Loaded; override;
+    procedure LoadGridOptions(cfg: TXMLConfig; Version: Integer); override;
     procedure MoveSelection; override;
     function  MouseButtonAllowed(Button: TMouseButton): boolean; override;
     procedure MouseDown(Button: TMouseButton; Shift:TShiftState; X,Y:Integer); override;
@@ -445,6 +450,7 @@ type
     procedure PrepareCellHints(aCol,aRow: Integer); override;
     procedure RemoveAutomaticColumns;
     procedure ResetSizes; override;
+    procedure SaveGridOptions(Cfg: TXMLConfig); override;
     procedure SelectEditor; override;
     procedure SetEditText(ACol, ARow: Longint; const Value: string); override;
     procedure SetFixedCols(const AValue: Integer); override;
@@ -494,6 +500,12 @@ type
     function MouseToRecordOffset(const x,y: Integer; out Column: TColumn; out RecordOffset: Integer): TGridZone;
     function ExecuteAction(AAction: TBasicAction): Boolean; override;
     function UpdateAction(AAction: TBasicAction): Boolean; override;
+
+    procedure SaveToFile(FileName: string); override;
+    procedure SaveToStream(AStream: TStream); override;
+    procedure LoadFromFile(FileName: string); override;
+    procedure LoadFromStream(AStream: TStream); override;
+
     property AllowOutboundEvents;
     property SelectedField: TField read GetCurrentField write SetCurrentField;
     property SelectedIndex: Integer read GetSelectedIndex write SetSelectedIndex;
@@ -1138,14 +1150,14 @@ begin
       if (dgIndicator in FOptions) then
         FixedCols := FixedCols + 1
       else
-        FixedCols := FixedCols - 1;
+        FixedCols := Max(FixedCols - 1, 0);
     end;
 
     if (dgTitles in ChangedOptions) then begin
       if dgTitles in FOptions then
         FixedRows := FixedRows + 1
       else
-        FixedRows := FixedRows - 1;
+        FixedRows := Max(FixedRows - 1, 0);
     end;
 
     if (dgAutoSizeColumns in ChangedOptions) then begin
@@ -1717,7 +1729,7 @@ begin
   // add as many columns as there are fields in the dataset
   // do this only at runtime.
   if (csDesigning in ComponentState) or not FDatalink.Active or
-    (gsRemovingAutoColumns in FGridStatus) or
+    (gsRemovingAutoColumns in FGridStatus) or  (gsLoadingGrid in FGridStatus) or
     not (dgeAutoColumns in OptionsExtra)
   then
     exit;
@@ -1906,6 +1918,46 @@ begin
   inherited Loaded;
 end;
 
+procedure TCustomDBGrid.LoadGridOptions(cfg: TXMLConfig; Version: Integer);
+var
+  Opt: TDBGridOptions;
+  Path: string;
+  procedure GetValue(optStr:string; aOpt:TDBGridOption);
+  begin
+    if Cfg.GetValue(Path+OptStr+'/value', False) then Opt:=Opt+[aOpt];
+  end;
+begin
+  Opt:=[];
+  Path:='grid/design/options/';
+  GetValue('dgEditing', dgEditing);
+  GetValue('dgTitles', dgTitles);
+  GetValue('dgIndicator', dgIndicator);
+  GetValue('dgColumnResize', dgColumnResize);
+  GetValue('dgColumnMove', dgColumnMove);
+  GetValue('dgColLines', dgColLines);
+  GetValue('dgRowLines', dgRowLines);
+  GetValue('dgTabs', dgTabs);
+  GetValue('dgAlwaysShowEditor', dgAlwaysShowEditor);
+  GetValue('dgRowSelect', dgRowSelect);
+  GetValue('dgAlwaysShowSelection', dgAlwaysShowSelection);
+  GetValue('dgConfirmDelete', dgConfirmDelete);
+  GetValue('dgCancelOnExit', dgCancelOnExit);
+  GetValue('dgMultiselect', dgMultiselect);
+  GetValue('dgHeaderHotTracking', dgHeaderHotTracking);
+  GetValue('dgHeaderPushedLook', dgHeaderPushedLook);
+  GetValue('dgPersistentMultiSelect', dgPersistentMultiSelect);
+  GetValue('dgAutoSizeColumns', dgAutoSizeColumns);
+  GetValue('dgAnyButtonCanSelect', dgAnyButtonCanSelect);
+  GetValue('dgDisableDelete', dgDisableDelete);
+  GetValue('dgDisableInsert', dgDisableInsert);
+  GetValue('dgCellHints', dgCellHints);
+  GetValue('dgTruncCellHints', dgTruncCellHints);
+  GetValue('dgCellEllipsis', dgCellEllipsis);
+  GetValue('dgRowHighlight', dgRowHighlight);
+  GetValue('dgThumbTracking', dgThumbTracking);
+  Options:=Opt;
+end;
+
 type
   TProtFields=class(TFields)
   end;
@@ -2084,6 +2136,33 @@ begin
     end;
 
   end;
+end;
+
+procedure TCustomDBGrid.DoLoadColumn(sender: TCustomGrid; aColumn: TGridColumn;
+  aColIndex: Integer; aCfg: TXMLConfig; aVersion: Integer; aPath: string);
+var
+  c: TColumn;
+  s: string;
+begin
+  c:=TColumn(aColumn);
+  s := aCfg.GetValue(aPath + '/fieldname/value', '');
+  if s<>'' then
+    c.FieldName := s;
+  s := aCfg.GetValue(aPath + '/displayformat/value', '');
+  if s<>'' then
+    c.DisplayFormat := s;
+  inherited DoLoadColumn(sender, aColumn, aColIndex, aCfg, aVersion, aPath);
+end;
+
+procedure TCustomDBGrid.DoSaveColumn(sender: TCustomGrid; aColumn: TGridColumn;
+  aColIndex: Integer; aCfg: TXMLConfig; aVersion: Integer; aPath: string);
+var
+  c: TColumn;
+begin
+  c:=TColumn(aColumn);
+  aCfg.SetValue(aPath + '/fieldname/value', c.FieldName);
+  aCfg.SetValue(aPath + '/displayformat/value', c.DisplayFormat);
+  inherited DoSaveColumn(sender, aColumn, aColIndex, aCfg, aVersion, aPath);
 end;
 
 procedure TCustomDBGrid.BeforeMoveSelection(const DCol,DRow: Integer);
@@ -2553,6 +2632,8 @@ begin
             if InsertCancelable and IsEOF then
               doCancel;
             doMoveBy;
+            if IsMouseOverCellButton(X, Y) then
+              StartPushCell;
           end;
           if ssCtrl in Shift then
             ToggleSelectedRow
@@ -2601,6 +2682,39 @@ procedure TCustomDBGrid.ResetSizes;
 begin
   LayoutChanged;
   inherited ResetSizes;
+end;
+
+procedure TCustomDBGrid.SaveGridOptions(Cfg: TXMLConfig);
+var
+  Path: string;
+begin
+  Path:='grid/design/options/';
+  Cfg.SetValue(Path+'dgEditing/value', dgEditing in Options);
+  Cfg.SetValue(Path+'dgTitles/value', dgTitles in Options);
+  Cfg.SetValue(Path+'dgIndicator/value', dgIndicator in Options);
+  Cfg.SetValue(Path+'dgColumnResize/value', dgColumnResize in Options);
+  Cfg.SetValue(Path+'dgColumnMove/value', dgColumnMove in Options);
+  Cfg.SetValue(Path+'dgColLines/value', dgColLines in Options);
+  Cfg.SetValue(Path+'dgRowLines/value', dgRowLines in Options);
+  Cfg.SetValue(Path+'dgTabs/value', dgTabs in Options);
+  Cfg.SetValue(Path+'dgAlwaysShowEditor/value', dgAlwaysShowEditor in Options);
+  Cfg.SetValue(Path+'dgRowSelect/value', dgRowSelect in Options);
+  Cfg.SetValue(Path+'dgAlwaysShowSelection/value', dgAlwaysShowSelection in Options);
+  Cfg.SetValue(Path+'dgConfirmDelete/value', dgConfirmDelete in Options);
+  Cfg.SetValue(Path+'dgCancelOnExit/value', dgCancelOnExit in Options);
+  Cfg.SetValue(Path+'dgMultiselect/value', dgMultiselect in Options);
+  Cfg.SetValue(Path+'dgHeaderHotTracking/value', dgHeaderHotTracking in Options);
+  Cfg.SetValue(Path+'dgHeaderPushedLook/value', dgHeaderPushedLook in Options);
+  Cfg.SetValue(Path+'dgPersistentMultiSelect/value', dgPersistentMultiSelect in Options);
+  cfg.SetValue(Path+'dgAutoSizeColumns/value', dgAutoSizeColumns in Options);
+  cfg.SetValue(Path+'dgAnyButtonCanSelect/value', dgAnyButtonCanSelect in Options);
+  Cfg.SetValue(Path+'dgDisableDelete/value', dgDisableDelete in Options);
+  Cfg.SetValue(Path+'dgDisableInsert/value', dgDisableInsert in Options);
+  Cfg.SetValue(Path+'dgCellHints/value', dgCellHints in Options);
+  cfg.SetValue(Path+'dgTruncCellHints/value', dgTruncCellHints in Options);
+  Cfg.SetValue(Path+'dgCellEllipsis/value', dgCellEllipsis in Options);
+  Cfg.SetValue(Path+'dgRowHighlight/value', dgRowHighlight in Options);
+  Cfg.SetValue(Path+'dgThumbTracking/value', dgThumbTracking in Options);
 end;
 
 procedure TCustomDBGrid.SelectEditor;
@@ -3558,6 +3672,34 @@ function TCustomDBGrid.UpdateAction(AAction: TBasicAction): Boolean;
 begin
   Result := (DataLink <> nil)
             and DataLink.UpdateAction(AAction);
+end;
+
+procedure TCustomDBGrid.SaveToFile(FileName: string);
+begin
+  SaveOptions:=[ soDesign ];
+  inherited SaveToFile(Filename);
+end;
+
+procedure TCustomDBGrid.SaveToStream(AStream: TStream);
+begin
+  SaveOptions:=[ soDesign ];
+  inherited SaveToStream(AStream);
+end;
+
+procedure TCustomDBGrid.LoadFromFile(FileName: string);
+begin
+  SaveOptions:=[ soDesign ];
+  Include(FGridStatus, gsLoadingGrid);
+  inherited LoadFromFile(Filename);
+  Exclude(FGridStatus, gsLoadingGrid);
+end;
+
+procedure TCustomDBGrid.LoadFromStream(AStream: TStream);
+begin
+  SaveOptions:=[ soDesign ];
+  Include(FGridStatus, gsLoadingGrid);
+  inherited LoadFromStream(AStream);
+  Exclude(FGridStatus, gsLoadingGrid);
 end;
 
 { TComponentDataLink }

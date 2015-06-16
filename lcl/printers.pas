@@ -78,15 +78,15 @@ type
     procedure SetXDPI(const AValue: Integer);
     procedure SetYDPI(const AValue: Integer);
   protected
-    procedure BeginDoc; virtual;
-    procedure NewPage;  virtual;
-    procedure EndDoc; virtual;
     function GetLeftMargin: Integer;
     function GetTopMargin: Integer;
     function GetBottomMargin: Integer;
     function GetRightMargin: Integer;
   public
     constructor Create(APrinter: TPrinter); virtual;
+    procedure BeginDoc; virtual;
+    procedure NewPage;  virtual;
+    procedure EndDoc; virtual;
     procedure Changing; override;
 
     property Printer : TPrinter read fPrinter;
@@ -277,6 +277,7 @@ type
      procedure SetPrinter(aName : String);
      Procedure RestoreDefaultBin; virtual;
      function  Write(const Buffer; Count:Integer; var Written: Integer): Boolean; virtual;
+     function  Write(const s: ansistring): boolean; overload;
 
      property PrinterIndex : integer read GetPrinterIndex write SetPrinterIndex;
      property PrinterName: string read GetPrinterName;
@@ -481,6 +482,13 @@ end;
 function TPrinter.Write(const Buffer; Count:Integer; var Written: Integer): Boolean;
 begin
   result := False;
+end;
+
+function TPrinter.Write(const S: ansistring): Boolean; overload;
+var
+  Written: integer;
+begin
+  Result := Write(S[1], Length(S), Written);
 end;
 
 //Return an Canvas object

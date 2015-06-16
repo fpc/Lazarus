@@ -81,7 +81,7 @@ Type
   private
     FFormDescr: TCustomFormDescr;
   Public
-    Constructor Create(ADescr : TCustomFormDescr);
+    Constructor Create(ADescr : TCustomFormDescr); overload;
     Property FormDescr : TCustomFormDescr Read FFormDescr;
     Function GetLocalizedName : String; override;
     Function GetLocalizedDescription : String; override;
