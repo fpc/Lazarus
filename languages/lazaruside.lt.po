@@ -4815,6 +4815,10 @@ msgstr ""
 msgid "Building Lazarus failed"
 msgstr "Lazarus darymas nepavyko"
 
+#: lazarusidestrconsts.lisbuildmode
+msgid "Build Mode: %s"
+msgstr ""
+
 #: lazarusidestrconsts.lisbuildmodediffdifferencesbetweenbuildmodes
 msgid "Differences between build modes"
 msgstr "Darymo veiksenų skirtumai"
@@ -5560,6 +5564,10 @@ msgstr "Nurodykit Delphi modulį (*.pas)"
 #: lazarusidestrconsts.lischoosedirectory
 msgid "Choose directory"
 msgstr "Nurodykite aplanką"
+
+#: lazarusidestrconsts.lischooseexecutable
+msgid "Choose an executable"
+msgstr ""
 
 #: lazarusidestrconsts.lischoosefpcsourcedir
 msgid "Choose FPC source directory"
@@ -7360,8 +7368,8 @@ msgstr ""
 msgid "Create a project first!"
 msgstr "Pirma sukurkite projektą!"
 
-#: lazarusidestrconsts.liscreatedebugandreleasemodes
-msgid "Create Debug and Release modes"
+#: lazarusidestrconsts.liscreatedebugandreleasemodesnewproj
+msgid "Create Debug and Release modes for new projects"
 msgstr ""
 
 #: lazarusidestrconsts.liscreatedirectory
@@ -7399,6 +7407,10 @@ msgstr "(Kurti naują paketą)"
 #: lazarusidestrconsts.liscreatenewpackagecomponent
 msgid "Create new package component"
 msgstr "Kurti naują paketo komponentę"
+
+#: lazarusidestrconsts.liscreatenowforthisproject
+msgid "Create now for this project"
+msgstr ""
 
 #: lazarusidestrconsts.liscreateproject
 msgid "Create project"
@@ -10235,6 +10247,14 @@ msgstr "Klaidinga komanda"
 msgid "Invalid delete"
 msgstr "Klaidingas šalinimas"
 
+#: lazarusidestrconsts.lisinvalidexecutable
+msgid "Invalid Executable"
+msgstr ""
+
+#: lazarusidestrconsts.lisinvalidexecutablemessagetext
+msgid "The file \"%s\" is not executable."
+msgstr ""
+
 #: lazarusidestrconsts.lisinvalidexpression
 msgid "Invalid expression:%s%s%s%s"
 msgstr "Klaidingas reiškinys: %s%s%s%s"
@@ -10353,6 +10373,14 @@ msgstr "Stebėtina, kaip tai įmanoma - pagrindiniame aplanke yra klaida:"
 msgctxt "lazarusidestrconsts.lisjhjumphistory"
 msgid "Jump History"
 msgstr "Peršokimų praeitis"
+
+#: lazarusidestrconsts.lisjumptoerror
+msgid "Jump to error"
+msgstr ""
+
+#: lazarusidestrconsts.lisjumptoerroratidentifiercompletion
+msgid "When an error in the sources is found at identifier completion, jump to it."
+msgstr ""
 
 #: lazarusidestrconsts.lisjumptoprocedure
 msgid "Jump to procedure %s"

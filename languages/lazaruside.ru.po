@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2015-06-11 02:24+0300\n"
+"PO-Revision-Date: 2015-06-17 02:20+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -4672,6 +4672,10 @@ msgstr "Сборка"
 msgid "Building Lazarus failed"
 msgstr "Сборка Lazarus не удалась"
 
+#: lazarusidestrconsts.lisbuildmode
+msgid "Build Mode: %s"
+msgstr "Режим сборки: %s"
+
 #: lazarusidestrconsts.lisbuildmodediffdifferencesbetweenbuildmodes
 msgid "Differences between build modes"
 msgstr "Различия между режимами сборки"
@@ -5398,6 +5402,10 @@ msgstr "Выберите модуль Delphi (*.pas)"
 #: lazarusidestrconsts.lischoosedirectory
 msgid "Choose directory"
 msgstr "Выберите каталог"
+
+#: lazarusidestrconsts.lischooseexecutable
+msgid "Choose an executable"
+msgstr "Выберите исполнимый файл"
 
 #: lazarusidestrconsts.lischoosefpcsourcedir
 msgid "Choose FPC source directory"
@@ -7145,9 +7153,9 @@ msgstr ", процессор: %s"
 msgid "Create a project first!"
 msgstr "Сначала необходимо создать проект!"
 
-#: lazarusidestrconsts.liscreatedebugandreleasemodes
-msgid "Create Debug and Release modes"
-msgstr "Создать режимы отладочной и конечной сборки"
+#: lazarusidestrconsts.liscreatedebugandreleasemodesnewproj
+msgid "Create Debug and Release modes for new projects"
+msgstr "Создавать режимы отладочной и конечной сборки в новых проектах"
 
 #: lazarusidestrconsts.liscreatedirectory
 msgid "Create directory?"
@@ -7184,6 +7192,10 @@ msgstr "(Создать новый пакет)"
 #: lazarusidestrconsts.liscreatenewpackagecomponent
 msgid "Create new package component"
 msgstr "Создать новый компонент пакета"
+
+#: lazarusidestrconsts.liscreatenowforthisproject
+msgid "Create now for this project"
+msgstr "Создать в текущем проекте"
 
 #: lazarusidestrconsts.liscreateproject
 msgid "Create project"
@@ -9958,6 +9970,14 @@ msgstr "Неверная команда"
 msgid "Invalid delete"
 msgstr "Недопустимое удаление"
 
+#: lazarusidestrconsts.lisinvalidexecutable
+msgid "Invalid Executable"
+msgstr "Некорректный исполнимый файл"
+
+#: lazarusidestrconsts.lisinvalidexecutablemessagetext
+msgid "The file \"%s\" is not executable."
+msgstr "Файл \"%s\" не является исполнимым."
+
 #: lazarusidestrconsts.lisinvalidexpression
 msgid "Invalid expression:%s%s%s%s"
 msgstr "Неверное выражение:%s%s%s%s"
@@ -10070,6 +10090,14 @@ msgstr "Интересно, как вам удалось добиться так
 msgctxt "lazarusidestrconsts.lisjhjumphistory"
 msgid "Jump History"
 msgstr "История переходов"
+
+#: lazarusidestrconsts.lisjumptoerror
+msgid "Jump to error"
+msgstr "Переходить к ошибке"
+
+#: lazarusidestrconsts.lisjumptoerroratidentifiercompletion
+msgid "When an error in the sources is found at identifier completion, jump to it."
+msgstr "Переходить к ошибке, обнаруженной в исходном коде при завершении идентификатора."
 
 #: lazarusidestrconsts.lisjumptoprocedure
 msgid "Jump to procedure %s"

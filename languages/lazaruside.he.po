@@ -4996,6 +4996,10 @@ msgstr ""
 msgid "Building Lazarus failed"
 msgstr "בניית לזארוס נכשלה"
 
+#: lazarusidestrconsts.lisbuildmode
+msgid "Build Mode: %s"
+msgstr ""
+
 #: lazarusidestrconsts.lisbuildmodediffdifferencesbetweenbuildmodes
 msgid "Differences between build modes"
 msgstr "הבדלים בין אופני בניה"
@@ -5775,6 +5779,10 @@ msgstr "בחר יחידת דלפי (*.pas)"
 #: lazarusidestrconsts.lischoosedirectory
 msgid "Choose directory"
 msgstr "בחר ספרייה"
+
+#: lazarusidestrconsts.lischooseexecutable
+msgid "Choose an executable"
+msgstr ""
 
 #: lazarusidestrconsts.lischoosefpcsourcedir
 msgid "Choose FPC source directory"
@@ -7626,8 +7634,8 @@ msgstr ""
 msgid "Create a project first!"
 msgstr "צור קודם פרויקט!"
 
-#: lazarusidestrconsts.liscreatedebugandreleasemodes
-msgid "Create Debug and Release modes"
+#: lazarusidestrconsts.liscreatedebugandreleasemodesnewproj
+msgid "Create Debug and Release modes for new projects"
 msgstr ""
 
 #: lazarusidestrconsts.liscreatedirectory
@@ -7664,6 +7672,10 @@ msgstr ""
 
 #: lazarusidestrconsts.liscreatenewpackagecomponent
 msgid "Create new package component"
+msgstr ""
+
+#: lazarusidestrconsts.liscreatenowforthisproject
+msgid "Create now for this project"
 msgstr ""
 
 #: lazarusidestrconsts.liscreateproject
@@ -10544,6 +10556,14 @@ msgstr "פקודה לא חוקית"
 msgid "Invalid delete"
 msgstr "מחיקה לא חוקית"
 
+#: lazarusidestrconsts.lisinvalidexecutable
+msgid "Invalid Executable"
+msgstr ""
+
+#: lazarusidestrconsts.lisinvalidexecutablemessagetext
+msgid "The file \"%s\" is not executable."
+msgstr ""
+
 #: lazarusidestrconsts.lisinvalidexpression
 #, fuzzy,badformat
 msgid "Invalid expression:%s%s%s%s"
@@ -10664,6 +10684,14 @@ msgstr "אני מתפלא איך עשית זאת. שגיאה בתיקיית הב
 msgctxt "lazarusidestrconsts.lisjhjumphistory"
 msgid "Jump History"
 msgstr "היסטוריית קפיצות"
+
+#: lazarusidestrconsts.lisjumptoerror
+msgid "Jump to error"
+msgstr ""
+
+#: lazarusidestrconsts.lisjumptoerroratidentifiercompletion
+msgid "When an error in the sources is found at identifier completion, jump to it."
+msgstr ""
 
 #: lazarusidestrconsts.lisjumptoprocedure
 msgid "Jump to procedure %s"

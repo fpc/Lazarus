@@ -4772,6 +4772,10 @@ msgstr ""
 msgid "Building Lazarus failed"
 msgstr "Lazarusの構築の失敗"
 
+#: lazarusidestrconsts.lisbuildmode
+msgid "Build Mode: %s"
+msgstr ""
+
 #: lazarusidestrconsts.lisbuildmodediffdifferencesbetweenbuildmodes
 msgid "Differences between build modes"
 msgstr "構築モード間の違い"
@@ -5505,6 +5509,10 @@ msgstr "Delphiのユニット(*.pas)選択してください"
 #: lazarusidestrconsts.lischoosedirectory
 msgid "Choose directory"
 msgstr "ディレクトリを選択してください"
+
+#: lazarusidestrconsts.lischooseexecutable
+msgid "Choose an executable"
+msgstr ""
 
 #: lazarusidestrconsts.lischoosefpcsourcedir
 msgid "Choose FPC source directory"
@@ -7291,9 +7299,9 @@ msgstr ""
 msgid "Create a project first!"
 msgstr "初めにプロジェクトを作成してください！"
 
-#: lazarusidestrconsts.liscreatedebugandreleasemodes
-msgid "Create Debug and Release modes"
-msgstr "デバッグとリリースモードを作成"
+#: lazarusidestrconsts.liscreatedebugandreleasemodesnewproj
+msgid "Create Debug and Release modes for new projects"
+msgstr ""
 
 #: lazarusidestrconsts.liscreatedirectory
 msgid "Create directory?"
@@ -7330,6 +7338,10 @@ msgstr "（新しいパッケージを作成）"
 #: lazarusidestrconsts.liscreatenewpackagecomponent
 msgid "Create new package component"
 msgstr "新しいパッケージコンポーネントを作成"
+
+#: lazarusidestrconsts.liscreatenowforthisproject
+msgid "Create now for this project"
+msgstr ""
 
 #: lazarusidestrconsts.liscreateproject
 msgid "Create project"
@@ -10152,6 +10164,14 @@ msgstr "無効なコマンド"
 msgid "Invalid delete"
 msgstr "無効な削除"
 
+#: lazarusidestrconsts.lisinvalidexecutable
+msgid "Invalid Executable"
+msgstr ""
+
+#: lazarusidestrconsts.lisinvalidexecutablemessagetext
+msgid "The file \"%s\" is not executable."
+msgstr ""
+
 #: lazarusidestrconsts.lisinvalidexpression
 msgid "Invalid expression:%s%s%s%s"
 msgstr "無効な式：%s%s%s%s"
@@ -10268,6 +10288,14 @@ msgstr "どうやったらこうなったのか不思議です。基底ディレ
 msgctxt "lazarusidestrconsts.lisjhjumphistory"
 msgid "Jump History"
 msgstr "移動履歴"
+
+#: lazarusidestrconsts.lisjumptoerror
+msgid "Jump to error"
+msgstr ""
+
+#: lazarusidestrconsts.lisjumptoerroratidentifiercompletion
+msgid "When an error in the sources is found at identifier completion, jump to it."
+msgstr ""
 
 #: lazarusidestrconsts.lisjumptoprocedure
 msgid "Jump to procedure %s"

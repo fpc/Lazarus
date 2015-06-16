@@ -4675,6 +4675,10 @@ msgstr ""
 msgid "Building Lazarus failed"
 msgstr "Neukompilieren von Lazarus fehlgeschlagen"
 
+#: lazarusidestrconsts.lisbuildmode
+msgid "Build Mode: %s"
+msgstr ""
+
 #: lazarusidestrconsts.lisbuildmodediffdifferencesbetweenbuildmodes
 msgid "Differences between build modes"
 msgstr "Unterschiede zwischen den Erstellmodi"
@@ -5401,6 +5405,10 @@ msgstr "Delphi-Unit (*.pas) auswählen"
 #: lazarusidestrconsts.lischoosedirectory
 msgid "Choose directory"
 msgstr "Verzeichnis auswählen"
+
+#: lazarusidestrconsts.lischooseexecutable
+msgid "Choose an executable"
+msgstr ""
 
 #: lazarusidestrconsts.lischoosefpcsourcedir
 msgid "Choose FPC source directory"
@@ -7151,9 +7159,9 @@ msgstr ""
 msgid "Create a project first!"
 msgstr "Erzeugen Sie zuerst ein Projekt!"
 
-#: lazarusidestrconsts.liscreatedebugandreleasemodes
-msgid "Create Debug and Release modes"
-msgstr "Debug- und Release-Modi erstellen"
+#: lazarusidestrconsts.liscreatedebugandreleasemodesnewproj
+msgid "Create Debug and Release modes for new projects"
+msgstr ""
 
 #: lazarusidestrconsts.liscreatedirectory
 msgid "Create directory?"
@@ -7190,6 +7198,10 @@ msgstr "(Neues Package erstellen)"
 #: lazarusidestrconsts.liscreatenewpackagecomponent
 msgid "Create new package component"
 msgstr "Neue Komponente erstellen in..."
+
+#: lazarusidestrconsts.liscreatenowforthisproject
+msgid "Create now for this project"
+msgstr ""
 
 #: lazarusidestrconsts.liscreateproject
 msgid "Create project"
@@ -9965,6 +9977,14 @@ msgstr "Ungültiger Befehl"
 msgid "Invalid delete"
 msgstr "Ungültiger Löschvorgang"
 
+#: lazarusidestrconsts.lisinvalidexecutable
+msgid "Invalid Executable"
+msgstr ""
+
+#: lazarusidestrconsts.lisinvalidexecutablemessagetext
+msgid "The file \"%s\" is not executable."
+msgstr ""
+
 #: lazarusidestrconsts.lisinvalidexpression
 msgid "Invalid expression:%s%s%s%s"
 msgstr "Ungültiger Ausdruck:%s%s%s%s"
@@ -10077,6 +10097,14 @@ msgstr "Wie haben Sie das geschafft? Fehler im Basisverzeichnis:"
 msgctxt "lazarusidestrconsts.lisjhjumphistory"
 msgid "Jump History"
 msgstr "Sprungliste"
+
+#: lazarusidestrconsts.lisjumptoerror
+msgid "Jump to error"
+msgstr ""
+
+#: lazarusidestrconsts.lisjumptoerroratidentifiercompletion
+msgid "When an error in the sources is found at identifier completion, jump to it."
+msgstr ""
 
 #: lazarusidestrconsts.lisjumptoprocedure
 msgid "Jump to procedure %s"
@@ -19944,3 +19972,4 @@ msgstr "Schreibgeschützt"
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"
 msgstr "Versionsinformation"
+
