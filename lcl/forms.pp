@@ -1560,6 +1560,8 @@ type
   end;
 
 const
+  DefaultApplicationBiDiMode: TBiDiMode = bdLeftToRight;
+
   DefHintColor = clInfoBk;           // default hint window color
   DefHintPause = 500;                // default pause before hint window displays (ms)
   DefHintShortPause = 0;             // default reshow pause
