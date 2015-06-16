@@ -268,8 +268,10 @@ type
     function FindRootNode(Desc: TCodeTreeNodeDesc): TCodeTreeNode;
     function FindInterfaceNode: TCodeTreeNode;
     function FindMainUsesNode(UseContainsSection: boolean = false): TCodeTreeNode;
+    function FindMainUsesSection(UseContainsSection: boolean = false): TCodeTreeNode; deprecated; // use FindMainUsesNode
     function FindImplementationNode: TCodeTreeNode;
     function FindImplementationUsesNode: TCodeTreeNode;
+    function FindImplementationUsesSection: TCodeTreeNode; deprecated; // use FindImplementationUsesNode
     function FindInitializationNode: TCodeTreeNode;
     function FindFinalizationNode: TCodeTreeNode;
     function FindMainBeginEndNode: TCodeTreeNode;
@@ -5880,6 +5882,11 @@ begin
   if (Result.Desc<>ctnUsesSection) then Result:=nil;
 end;
 
+function TPascalParserTool.FindImplementationUsesSection: TCodeTreeNode;
+begin
+  Result:=FindImplementationUsesNode;
+end;
+
 function TPascalParserTool.FindInitializationNode: TCodeTreeNode;
 begin
   Result:=FindRootNode(ctnInitialization);
@@ -5924,6 +5931,12 @@ begin
     if (Result=nil) then exit;
     if (Result.Desc<>ctnUsesSection) then Result:=nil;
   end;
+end;
+
+function TPascalParserTool.FindMainUsesSection(UseContainsSection: boolean
+  ): TCodeTreeNode;
+begin
+  Result:=FindMainUsesNode(UseContainsSection);
 end;
 
 function TPascalParserTool.FindFirstSectionChild: TCodeTreeNode;
