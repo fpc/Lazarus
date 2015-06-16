@@ -5418,6 +5418,8 @@ resourcestring
   lisReplaceWholeIdentifier = 'Replace whole identifier';
   lisEnableReplaceWholeIdentifierDisableReplacePrefix = 'Enable = replace '
     +'whole identifier, Disable = replace prefix';
+  lisJumpToError = 'Jump to error';
+  lisJumpToErrorAtIdentifierCompletion = 'When an error in the sources is found at identifier completion, jump to it.';
   lisShowHelp = 'Show help';
   lisBestViewedByInstallingAHTMLControlLikeTurbopowerip = 'Best viewed by '
     +'installing a HTML control like turbopoweriprodsgn';

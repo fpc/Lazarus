@@ -274,6 +274,7 @@ type
 
     // codetools
     function BeginCodeTools: boolean; virtual; abstract;
+    function DoShowCodeToolBossError: TMessageLine; virtual; abstract;
     procedure DoJumpToCodeToolBossError; virtual; abstract;
 
     function NeedSaveSourceEditorChangesToCodeCache(AEditor: TSourceEditorInterface): boolean; virtual; abstract;

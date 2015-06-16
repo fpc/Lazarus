@@ -1904,7 +1904,7 @@ Begin
      if Editor.Owner is TSourceNoteBook then
      begin
         SourceNoteBook := Editor.Owner as TSourceNoteBook;
-        SourceNotebook.StartShowCodeContext(true);
+        SourceNotebook.StartShowCodeContext(CodeToolsOpts.IdentComplJumpToError);
      end;
   end;
 
@@ -3411,10 +3411,10 @@ Begin
     FindHelpForSourceAtCursor;
 
   ecIdentCompletion :
-    StartIdentCompletionBox(true);
+    StartIdentCompletionBox(CodeToolsOpts.IdentComplJumpToError);
 
   ecShowCodeContext :
-    SourceNotebook.StartShowCodeContext(true);
+    SourceNotebook.StartShowCodeContext(CodeToolsOpts.IdentComplJumpToError);
 
   ecWordCompletion :
     StartWordCompletionBox;

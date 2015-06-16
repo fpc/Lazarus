@@ -863,6 +863,7 @@ type
                         ActiveUnitInfo: TUnitInfo;
                         NewSource: TCodeBuffer; NewX, NewY, NewTopLine: integer;
                         Flags: TJumpToCodePosFlags = [jfFocusEditor]): TModalResult; override;
+    function DoShowCodeToolBossError: TMessageLine; override;
     procedure DoJumpToCodeToolBossError; override;
     function NeedSaveSourceEditorChangesToCodeCache(AEditor: TSourceEditorInterface): boolean; override;
     function SaveSourceEditorChangesToCodeCache(AEditor: TSourceEditorInterface): boolean; override;
@@ -5822,6 +5823,24 @@ begin
   end;
 end;
 
+function TMainIDE.DoShowCodeToolBossError: TMessageLine;
+begin
+  if CodeToolBoss.ErrorMessage='' then
+    Result := nil
+  else
+  begin
+    MessagesView.ClearCustomMessages('Codetools');
+    if CodeToolBoss.ErrorCode<>nil then begin
+      Result:=MessagesView.AddCustomMessage(mluError,CodeToolBoss.ErrorMessage,
+        CodeToolBoss.ErrorCode.Filename,CodeToolBoss.ErrorLine,CodeToolBoss.ErrorColumn,
+        'Codetools');
+      Result.Flags:=Result.Flags+[mlfLeftToken];
+    end else
+      Result:=MessagesView.AddCustomMessage(mluError,CodeToolBoss.ErrorMessage,'Codetools');
+    MessagesView.SelectMsgLine(Result);
+  end;
+end;
+
 procedure TMainIDE.DoShowCodeBrowser(State: TIWGetFormState);
 begin
   CreateCodeBrowser(State=iwgfDisabled);
@@ -9296,7 +9315,6 @@ var
   ErrorTopLine: integer;
   AnUnitInfo: TUnitInfo;
   AnEditorInfo: TUnitEditorInfo;
-  Msg: TMessageLine;
 begin
   if (Screen.GetCurrentModalForm<>nil) or (CodeToolBoss.ErrorMessage='') then
   begin
@@ -9307,15 +9325,7 @@ begin
   // syntax error -> show error and jump
   // show error in message view
   SourceFileMgr.ArrangeSourceEditorAndMessageView(false);
-  MessagesView.ClearCustomMessages;
-  if CodeToolBoss.ErrorCode<>nil then begin
-    Msg:=MessagesView.AddCustomMessage(mluError,CodeToolBoss.ErrorMessage,
-      CodeToolBoss.ErrorCode.Filename,CodeToolBoss.ErrorLine,CodeToolBoss.ErrorColumn,
-      'Codetools');
-    Msg.Flags:=Msg.Flags+[mlfLeftToken];
-  end else
-    Msg:=MessagesView.AddCustomMessage(mluError,CodeToolBoss.ErrorMessage,'Codetools');
-  MessagesView.SelectMsgLine(Msg);
+  DoShowCodeToolBossError;
 
   // jump to error in source editor
   if CodeToolBoss.ErrorCode<>nil then begin
@@ -9737,7 +9747,9 @@ begin
                                          LogCaretXY.X,LogCaretXY.Y);
   if not Result then begin
     if JumpToError then
-      DoJumpToCodeToolBossError;
+      DoJumpToCodeToolBossError
+    else
+      DoShowCodeToolBossError;
     exit;
   end;
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.DoInitIdentCompletion B');{$ENDIF}
@@ -9758,7 +9770,9 @@ begin
   Result:=ShowCodeContext(ActiveUnitInfo.Source);
   if not Result then begin
     if JumpToError then
-      DoJumpToCodeToolBossError;
+      DoJumpToCodeToolBossError
+    else
+      DoShowCodeToolBossError;
     exit;
   end;
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.DoShowCodeContext B');{$ENDIF}
