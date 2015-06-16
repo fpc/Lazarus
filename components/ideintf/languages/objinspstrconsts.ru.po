@@ -5,9 +5,11 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2015-05-13 00:24+0300\n"
+"PO-Revision-Date: 2015-06-17 02:54+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
+"Language: ru\n"
+"X-Generator: Poedit 1.7.7\n"
 
 #: objinspstrconsts.cactionlisteditorallcategory
 msgid "(All)"
@@ -234,7 +236,7 @@ msgstr "Список полей недоступен, невозможно пр�
 #: objinspstrconsts.fesokbtn
 msgctxt "objinspstrconsts.fesokbtn"
 msgid "OK"
-msgstr "OK"
+msgstr "ОК"
 
 #: objinspstrconsts.fespersistentcompname
 msgid "Co&mponent Name:"
@@ -1221,7 +1223,7 @@ msgstr "Переместить вверх"
 #: objinspstrconsts.rscdok
 msgctxt "objinspstrconsts.rscdok"
 msgid "OK"
-msgstr "OK"
+msgstr "ОК"
 
 #: objinspstrconsts.rscdright
 msgctxt "objinspstrconsts.rscdright"
@@ -1568,4 +1570,3 @@ msgstr "Переместить вкладку влево"
 #: objinspstrconsts.tccesmovetabright
 msgid "Move tab right"
 msgstr "Переместить вкладку вправо"
-

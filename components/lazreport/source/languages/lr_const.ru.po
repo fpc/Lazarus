@@ -5,9 +5,11 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2015-01-23 00:22+0300\n"
+"PO-Revision-Date: 2015-06-17 02:53+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
+"Language: ru\n"
+"X-Generator: Poedit 1.7.7\n"
 
 #: lr_const.saboutformcapt
 msgid "About FastReport"
@@ -1556,7 +1558,7 @@ msgstr "Объект \"%s\" не найден"
 
 #: lr_const.sok
 msgid "Ok"
-msgstr "OK"
+msgstr "ОК"
 
 #: lr_const.sonfirstpage
 msgid "On first page"
@@ -2594,4 +2596,3 @@ msgstr "Перенос слов"
 #: lr_const.syes
 msgid "Yes"
 msgstr "Да"
-
