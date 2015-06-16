@@ -31,6 +31,11 @@ type
     dmcapfOnlySelectable
     );
   TDMCompAtPosFlags = set of TDMCompAtPosFlag;
+  
+  { TNonFormProxyDesignerForm }
+  
+  TNonFormProxyDesignerForm = class
+  end;
 
   { TDesignerMediator
     To edit designer forms which do not use the LCL, register a TDesignerMediator,
@@ -188,6 +193,8 @@ procedure SetDesignInfoLeft(AComponent: TComponent; const aLeft: SmallInt); inli
 procedure SetDesignInfoTop(AComponent: TComponent; const aTop: SmallInt); inline;
 function LeftTopToDesignInfo(const ALeft, ATop: SmallInt): LongInt; inline;
 procedure DesignInfoToLeftTop(ADesignInfo: LongInt; out ALeft, ATop: SmallInt); inline;
+function IsFormDesign(AForm: TCustomForm): boolean;
+function LookupRoot(AForm: TCustomForm): TComponent;
 
 implementation
 
@@ -278,6 +285,25 @@ procedure DesignInfoToLeftTop(ADesignInfo: LongInt; out ALeft, ATop: SmallInt);
 begin
   ALeft := LazLongRec(ADesignInfo).Lo;
   ATop := LazLongRec(ADesignInfo).Hi;
+end;
+
+function IsFormDesign(AForm: TCustomForm): boolean;
+begin
+  if AForm = nil then
+    Exit(False);
+  Result := (csDesignInstance in AForm.ComponentState)
+     or ((csDesigning in AForm.ComponentState) and (AForm.Designer <> nil))
+     or (AForm is TNonFormProxyDesignerForm);
+end;
+
+function LookupRoot(AForm: TCustomForm): TComponent;
+begin
+  if AForm is TNonFormProxyDesignerForm then
+    Result := TNonFormProxyDesignerForm(AForm).LookupRoot
+  else if csDesignInstance in AForm.ComponentState then
+    Result := AForm
+  else
+    Result := nil;
 end;
 
 { TDesignerMediator }
