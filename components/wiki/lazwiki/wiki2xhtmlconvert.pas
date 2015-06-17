@@ -81,6 +81,7 @@ type
     procedure OnWikiToken(Token: TWPToken); virtual;
     procedure RaiseNodeNotOpen(Token: TWPToken);
     function GetImageLink(ImgFilename: string): string; virtual;
+    function GetInternalImageLink(ImgFilename: string): string; virtual;
     function FindImage(const ImgFilename: string): string; virtual;
     procedure MarkImageAsUsed(const ImgFilename: string; Page: TW2XHTMLPage); virtual;
     function GetPageLink(Page: TW2XHTMLPage): string; virtual;
@@ -845,9 +846,9 @@ begin
             Node.AppendChild(childnode1);
             childnode1.SetAttribute('class', 'icon');
             if FUseTemplateIcons then begin
-              fn := FindImage('internal\'+iconfile);
+              fn := FindImage('internal/'+iconfile);
               if fn <> '' then
-                fn := GetImageLink(fn);
+                fn := GetInternalImageLink(fn);
               MarkImageAsUsed(fn, Page);
               childnode2 := doc.CreateElement('img');
               childnode2.SetAttribute('src', fn);
@@ -920,6 +921,11 @@ end;
 function TWiki2XHTMLConverter.GetImageLink(ImgFilename: string): string;
 begin
   Result:=CreateRelativePath(ImgFilename,OutputDir);
+end;
+
+function TWiki2XHTMLConverter.GetInternalImagelink(ImgFilename: String): string;
+begin
+  Result := CreateRelativepath(ImgFilename,OutputDir);
 end;
 
 function TWiki2XHTMLConverter.FindImage(const ImgFilename: string): string;

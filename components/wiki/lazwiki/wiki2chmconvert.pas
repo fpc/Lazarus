@@ -70,6 +70,7 @@ type
     procedure WriteIndexToStream(aStream: TStream);
     procedure OnWriterLastFileAdded(Sender: TObject);
     function GetImageLink(ImgFilename: string): string; override;
+    function GetInternalImageLink(ImgFilename: String): String; override;
     function GetPageLink(Page: TW2XHTMLPage): string; override;
     procedure SaveAllPages; override;
   public
@@ -206,9 +207,15 @@ begin
   Result:=CHMImagesDir+ExtractFileName(ImgFilename);
 end;
 
+function TWiki2CHMConverter.GetInternalImageLink(ImgFilename: String): String;
+begin
+  Result := CHMImagesDir + 'internal/' + ExtractFilename(ImgFilename);
+end;
+
 function TWiki2CHMConverter.GetPageLink(Page: TW2XHTMLPage): string;
 begin
-  Result:=Page.WikiDocumentName+'.html';
+//  Result:=Page.WikiDocumentName+'.html';
+  Result :=Page.Filename;
 end;
 
 procedure TWiki2CHMConverter.SetCHMFile(AValue: string);
