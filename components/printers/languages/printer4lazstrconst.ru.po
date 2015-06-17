@@ -65,7 +65,7 @@ msgstr "Тип бумаги"
 
 #: printer4lazstrconst.p4lrsportrait
 msgid "Portrait"
-msgstr "Портретная"
+msgstr "Книжная"
 
 #: printer4lazstrconst.p4lrsresolution
 msgid "Resolution"
@@ -77,7 +77,7 @@ msgstr "Обратная альбомная"
 
 #: printer4lazstrconst.p4lrsreverseportrait
 msgid "Reverse portrait"
-msgstr "Обратная портретная"
+msgstr "Обратная книжная"
 
 #: printer4lazstrconst.p4lrsstart
 msgid "Start"

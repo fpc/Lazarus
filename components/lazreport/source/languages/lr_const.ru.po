@@ -5,7 +5,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2015-06-17 02:53+0300\n"
+"PO-Revision-Date: 2015-06-18 00:58+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -2060,11 +2060,11 @@ msgstr "Страница"
 
 #: lr_const.spgoptformbottom
 msgid "&Bottom, mm"
-msgstr "&Нижнее, мм"
+msgstr "Н&ижнее, мм"
 
 #: lr_const.spgoptformbycolumns
 msgid "By Colum&ns"
-msgstr "По &столбцам"
+msgstr "По стол&бцам"
 
 #: lr_const.spgoptformbyrows
 msgid "By Row&s"
@@ -2130,7 +2130,7 @@ msgstr "Поля страницы"
 
 #: lr_const.spgoptformport
 msgid "&Portrait"
-msgstr "&Портретная"
+msgstr "&Книжная"
 
 #: lr_const.spgoptformprint
 msgid "&Print to previous page"
@@ -2138,7 +2138,7 @@ msgstr "&Печать на предыдущей странице"
 
 #: lr_const.spgoptformright
 msgid "&Right, mm"
-msgstr "&Правое, мм"
+msgstr "П&равое, мм"
 
 #: lr_const.spgoptformsize
 msgid "Size"
