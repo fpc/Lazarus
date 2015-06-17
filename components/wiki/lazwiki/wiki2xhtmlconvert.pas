@@ -845,7 +845,7 @@ begin
             Node.AppendChild(childnode1);
             childnode1.SetAttribute('class', 'icon');
             if FUseTemplateIcons then begin
-              fn := FindImage(iconfile);
+              fn := FindImage('internal\'+iconfile);
               if fn <> '' then
                 fn := GetImageLink(fn);
               MarkImageAsUsed(fn, Page);

@@ -4248,8 +4248,8 @@ components/vlc/vlcqt.inc svneol=native#text/plain
 components/wiki/README.txt svneol=native#text/plain
 components/wiki/chm/wiki.css svneol=native#text/plain
 components/wiki/html/wiki.css svneol=native#text/plain
-components/wiki/images/note.png -text
-components/wiki/images/warning.png -text
+components/wiki/images/internal/note.png -text
+components/wiki/images/internal/warning.png -text
 components/wiki/lazwiki/lazwiki.lpk svneol=native#text/plain
 components/wiki/lazwiki/lazwiki.pas svneol=native#text/plain
 components/wiki/lazwiki/wiki2chmconvert.pas svneol=native#text/plain
