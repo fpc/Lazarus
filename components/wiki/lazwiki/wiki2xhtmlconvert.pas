@@ -526,10 +526,19 @@ var
         URL:=GetPageLink(TargetPage);
         if Anchor<>'' then
           URL+='#'+Anchor;
-      end else if ((FileName <> '') and not FileExistsUTF8(Filename)) then begin
-        if WarnMissingPageLinks and WarnURL(LinkToken.Link) then
-          Log('WARNING: TWiki2XHTMLConverter.InsertLink "'+dbgstr(LinkToken.Link)+'": file not found: "'+Filename+'" at '+W.PosToStr(LinkToken.LinkStartPos,true));
-        URL:='';
+      end else
+      if (FileName <> '') then begin
+        if FileExistsUTF8(OutputDir+Filename) or
+           (GetPageWithDocumentName(DocumentName) <> nil)  // will be converted lated
+        then
+          URL := Filename
+        else begin
+          if WarnMissingPageLinks and WarnURL(LinkToken.Link) then
+            Log('WARNING: TWiki2XHTMLConverter.InsertLink "'+
+                dbgstr(LinkToken.Link)+'": file not found: "'+Filename+'" at '+
+                W.PosToStr(LinkToken.LinkStartPos,true)+'. Linking to online version.');
+          URL := Page.WikiPage.BaseURL + '/' + DocumentName;
+        end;
       end;
     end;
   end;
