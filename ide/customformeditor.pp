@@ -103,6 +103,10 @@ type
                                var ComponentClass: TComponentClass);
 
     function GetDesignerBaseClasses(Index: integer): TComponentClass; override;
+    // DaThoX begin
+    function GetStandardDesignerBaseClasses(Index: integer): TComponentClass; override;
+    procedure SetStandardDesignerBaseClasses(Index: integer; AValue: TComponentClass); override;
+    // DaThoX end
     procedure OnDesignerMenuItemClick(Sender: TObject); virtual;
     function FindNonFormFormNode(LookupRoot: TComponent): TAvgLvlTreeNode;
 
@@ -141,9 +145,9 @@ type
                                 ): TJITComponentList;
     function GetDesignerForm(APersistent: TPersistent): TCustomForm; override;
 
-    function FindNonFormForm(LookupRoot: TComponent): TCustomNonFormDesignerForm;
+    function FindNonFormForm(LookupRoot: TComponent): TNonFormProxyDesignerForm; // DaThoX
 
-    function CreateNonFormForm(LookupRoot: TComponent): TCustomNonFormDesignerForm;
+    function CreateNonFormForm(LookupRoot: TComponent): TNonFormProxyDesignerForm; // DaThoX
 
     procedure RenameJITComponent(AComponent: TComponent;
                                  const NewClassName: shortstring);
@@ -178,6 +182,7 @@ type
     function DescendFromDesignerBaseClass(AClass: TComponentClass): integer; override;
     function FindDesignerBaseClassByName(const AClassName: shortstring; WithDefaults: boolean): TComponentClass; override;
 
+    function StandardDesignerBaseClassesCount: Integer; override; // DaThoX
     // designers
     function DesignerCount: integer; override;
     function GetDesigner(Index: integer): TIDesigner; override;
@@ -303,8 +308,8 @@ type
   end;
   
 
-const
-  StandardDesignerBaseClasses: array[1..3] of TComponentClass = 
+var // DaThoX
+  StandardDesignerBaseClasses: array[0..2] of TComponentClass =
   (
     Forms.TForm,
     TDataModule,
@@ -462,7 +467,7 @@ begin
   FSelection := TPersistentSelectionList.Create;
   FDesignerBaseClasses:=TFPList.Create;
   FDesignerMediatorClasses:=TFPList.Create;
-  for l:=Low(StandardDesignerBaseClasses) to High(StandardDesignerBaseClasses) do
+  for l:=0 to StandardDesignerBaseClassesCount - 1 do // DaThoX
     FDesignerBaseClasses.Add(StandardDesignerBaseClasses[l]);
 
   JITFormList := TJITForms.Create(nil);
@@ -568,7 +573,7 @@ Begin
     end else if JITNonFormList.IsJITNonForm(AComponent) then begin
       // free/unbind a non form component and its designer form
       aForm:=GetDesignerForm(AComponent);
-      if (AForm<>nil) and (not (AForm is TCustomNonFormDesignerForm)) then
+      if (AForm<>nil) and (not (AForm is TNonFormProxyDesignerForm)) then // DaThoX
         RaiseException(Format(
           lisCFETCustomFormEditorDeleteComponentWhereIsTheTCustomN, [AComponent.
           ClassName]));
@@ -576,7 +581,7 @@ Begin
       if (AForm <> nil) then
       begin
         FNonFormForms.Remove(AForm);
-        TCustomNonFormDesignerForm(AForm).LookupRoot := nil;
+        (AForm as INonFormDesigner).LookupRoot := nil; // DaThoX
         Application.ReleaseComponent(AForm);
       end;
 
@@ -813,39 +818,52 @@ begin
     exit;
 end;
 
-function TCustomFormEditor.FindNonFormForm(LookupRoot: TComponent): TCustomNonFormDesignerForm;
+// DaThoX
+function TCustomFormEditor.FindNonFormForm(LookupRoot: TComponent): TNonFormProxyDesignerForm;
 var
   AVLNode: TAvgLvlTreeNode;
 begin
   AVLNode := FindNonFormFormNode(LookupRoot);
   if AVLNode <> nil then
-    Result := TCustomNonFormDesignerForm(AVLNode.Data)
+    Result := TNonFormProxyDesignerForm(AVLNode.Data) // DaThoX
   else
     Result := nil;
 end;
 
-function TCustomFormEditor.CreateNonFormForm(LookupRoot: TComponent): TCustomNonFormDesignerForm;
+// DaThoX
+function TCustomFormEditor.CreateNonFormForm(LookupRoot: TComponent): TNonFormProxyDesignerForm;
 var
   MediatorClass: TDesignerMediatorClass;
+  LNonFormProxyDesignerClass: TNonFormProxyDesignerFormClass; // DaThoX
 begin
   Result := Nil;
   if FindNonFormFormNode(LookupRoot) <> nil then
     RaiseException(lisCFETCustomFormEditorCreateNonFormFormAlreadyExists);
   if LookupRoot is TComponent then
   begin
+    // DaThoX begin
     if LookupRoot is TCustomFrame then
-      Result := TFrameDesignerForm.Create(nil)
+    begin
+      LNonFormProxyDesignerClass := BaseFormEditor1.NonFormProxyDesignerForm[FRAME_PROXY_DESIGNER_FORM_ID];
+      Result := TNonFormProxyDesignerForm(LNonFormProxyDesignerClass.NewInstance);
+      Result.Create(nil, TFrameDesignerForm.Create(Result));
+    end
     else
-      Result := TNonControlDesignerForm.Create(nil);
+    begin
+      LNonFormProxyDesignerClass := BaseFormEditor1.NonFormProxyDesignerForm[NON_CONTROL_PROXY_DESIGNER_FORM_ID];
+      Result := TNonFormProxyDesignerForm(LNonFormProxyDesignerClass.NewInstance);
+      Result.Create(nil, TNonControlDesignerForm.Create(Result));
+    end;
+    // DaThoX end
     Result.Name:='_Designer_'+LookupRoot.Name;
-    Result.LookupRoot := LookupRoot;
+    (Result as INonFormDesigner).LookupRoot := LookupRoot;
     FNonFormForms.Add(Result);
 
-    if Result is TNonControlDesignerForm then begin
+    if Result is BaseFormEditor1.NonFormProxyDesignerForm[NON_CONTROL_PROXY_DESIGNER_FORM_ID] then begin
       // create the mediator
       MediatorClass:=GetDesignerMediatorClass(TComponentClass(LookupRoot.ClassType));
       if MediatorClass<>nil then
-        TNonControlDesignerForm(Result).Mediator:=MediatorClass.CreateMediator(nil,LookupRoot);
+        (Result as INonControlDesigner).Mediator:=MediatorClass.CreateMediator(nil,LookupRoot);
     end;
   end else
     RaiseException(Format(lisCFETCustomFormEditorCreateNonFormFormUnknownType, [
@@ -876,7 +894,7 @@ end;
 
 procedure TCustomFormEditor.UpdateDesignerFormName(AComponent: TComponent);
 var
-  ANonFormForm: TCustomNonFormDesignerForm;
+  ANonFormForm: TNonFormProxyDesignerForm; // DaThoX
 begin
   ANonFormForm := FindNonFormForm(AComponent);
   //DebugLn(['TCustomFormEditor.UpdateDesignerFormName ',ANonFormForm<>nil, ' ',AComponent.Name]);
@@ -923,11 +941,11 @@ end;
 
 procedure TCustomFormEditor.SaveHiddenDesignerFormProperties(AComponent: TComponent);
 var
-  NonFormForm: TCustomNonFormDesignerForm;
+  NonFormForm: TNonFormProxyDesignerForm; // DaThoX
 begin
   NonFormForm := FindNonFormForm(AComponent);
   if NonFormForm <> nil then
-    NonFormForm.DoSaveBounds;
+    (NonFormForm as INonFormDesigner).DoSaveBounds; // DaThoX
 end;
 
 function TCustomFormEditor.FindJITComponentByClassName(
@@ -1670,7 +1688,7 @@ procedure TCustomFormEditor.UnregisterDesignerBaseClass(AClass: TComponentClass)
 var
   l: Integer;
 begin
-  for l:=Low(StandardDesignerBaseClasses) to High(StandardDesignerBaseClasses)
+  for l := 0 to StandardDesignerBaseClassesCount - 1 // DaThoX
   do
     if StandardDesignerBaseClasses[l]=AClass then
       RaiseGDBException('TCustomFormEditor.UnregisterDesignerBaseClass');
@@ -1696,11 +1714,31 @@ function TCustomFormEditor.FindDesignerBaseClassByName(
   const AClassName: shortstring; WithDefaults: boolean): TComponentClass;
 var
   i: Integer;
+
+  // DaThoX begin
+  function SearchInParent(AParent: TComponentClass): TComponentClass;
+  begin
+    Result := nil;
+    while AParent <> nil do
+    begin
+      if CompareText(AClassName,AParent.ClassName)=0 then
+        begin
+          Result:=AParent;
+          exit;
+        end;
+      AParent:=TComponentClass(AParent.ClassParent);
+      if AParent = TComponent then
+        Exit;
+    end;
+  end;
+  // DaThoX end
+
 begin
   if WithDefaults then begin
-    for i:=Low(StandardDesignerBaseClasses) to high(StandardDesignerBaseClasses)
+    for i := 0 to StandardDesignerBaseClassesCount - 1 // DaThoX
     do begin
-      if CompareText(AClassName,StandardDesignerBaseClasses[i].ClassName)=0 then
+      Result := SearchInParent(StandardDesignerBaseClasses[i]); // DaThoX
+      if Result <> nil then
       begin
         Result:=StandardDesignerBaseClasses[i];
         exit;
@@ -1713,6 +1751,13 @@ begin
   end;
   Result:=nil;
 end;
+
+// DaThoX begin
+function TCustomFormEditor.StandardDesignerBaseClassesCount: Integer;
+begin
+  Result := Succ(High(CustomFormEditor.StandardDesignerBaseClasses) - Low(CustomFormEditor.StandardDesignerBaseClasses));
+end;
+// DaThoX end
 
 procedure TCustomFormEditor.FindDefineProperty(
   const APersistentClassName, AncestorClassName, Identifier: string;
@@ -2186,6 +2231,20 @@ begin
   Result:=TComponentClass(FDesignerBaseClasses[Index]);
 end;
 
+// DaThoX begin
+function TCustomFormEditor.GetStandardDesignerBaseClasses(Index: integer
+  ): TComponentClass;
+begin
+  Result := CustomFormEditor.StandardDesignerBaseClasses[Index];
+end;
+
+procedure TCustomFormEditor.SetStandardDesignerBaseClasses(Index: integer;
+  AValue: TComponentClass);
+begin
+  CustomFormEditor.StandardDesignerBaseClasses[Index] := AValue;
+end;
+// DaThoX end
+
 procedure TCustomFormEditor.FrameCompGetCreationClass(Sender: TObject;
   var NewComponentClass: TComponentClass);
 begin
@@ -2319,7 +2378,7 @@ var
   i: Integer;
   CurComponent: TComponent;
   P: TPoint;
-  AForm: TCustomNonFormDesignerForm;
+  AForm: TNonFormProxyDesignerForm; // DaThoX
   MinX: Integer;
   MinY: Integer;
   MaxX: Integer;
@@ -2443,8 +2502,8 @@ begin
   DesignerForm := GetDesignerForm(APersistent);
 
   // ask TMediator
-  if DesignerForm is TNonControlDesignerForm then begin
-    Mediator:=TNonControlDesignerForm(DesignerForm).Mediator;
+  if DesignerForm is BaseFormEditor1.NonFormProxyDesignerForm[NON_CONTROL_PROXY_DESIGNER_FORM_ID] then begin // DaThoX
+    Mediator:=(DesignerForm as INonControlDesigner).Mediator; // DaThoX
     if Mediator<>nil then
       Mediator.GetObjInspNodeImageIndex(APersistent, AImageIndex);
   end;

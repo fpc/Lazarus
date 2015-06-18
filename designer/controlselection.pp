@@ -1160,8 +1160,10 @@ begin
   InvalidateGrabbers;
   OldCustomForm:=FForm;
   FForm:=NewCustomForm;
-  if FForm is TNonControlDesignerForm then
-    FMediator:=TNonControlDesignerForm(FForm).Mediator
+  // DaThoX begin
+  if FForm is FormEditingHook.NonFormProxyDesignerForm[NON_CONTROL_PROXY_DESIGNER_FORM_ID] then
+    FMediator:=(FForm as INonControlDesigner).Mediator
+  // DaThoX end
   else
     FMediator:=nil;
   FLookupRoot:=GetSelectionOwner;

@@ -31,27 +31,32 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, Graphics, GraphType, Forms, Controls,
-  IDEProcs;
+  IDEProcs, FormEditingIntf;
   
 type
 
   { TCustomNonFormDesignerForm }
 
-  TCustomNonFormDesignerForm = class(TForm)
+  TCustomNonFormDesignerForm = class(TInterfacedObject, INonFormDesigner)
   private
-    FLookupRoot: TComponent;
+    FNonFormProxyDesignerForm: TNonFormProxyDesignerForm;
     FOnLoadBounds: TNotifyEvent;
     FOnSaveBounds: TNotifyEvent;
   protected
+    function GetLookupRoot: TComponent; virtual;
     procedure SetLookupRoot(const AValue: TComponent); virtual;
-    procedure Notification(AComponent: TComponent; Operation: TOperation);
-         override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); virtual;
   public
-    constructor Create(AOwner: TComponent); override;
+    procedure Create; virtual; overload;
+    constructor Create(ANonFormProxyDesignerForm: TNonFormProxyDesignerForm); virtual; overload;
+    destructor Destroy; override;
     procedure DoLoadBounds; virtual;
     procedure DoSaveBounds; virtual;
+    procedure SetBounds(ALeft, ATop, AWidth, AHeight: integer); virtual;
+    procedure Paint; virtual;
   public
-    property LookupRoot: TComponent read FLookupRoot write SetLookupRoot;
+    property LookupRoot: TComponent read GetLookupRoot write SetLookupRoot;
+    property NonFormProxyDesignerForm: TNonFormProxyDesignerForm read FNonFormProxyDesignerForm;
     property OnLoadBounds: TNotifyEvent read FOnLoadBounds write FOnLoadBounds;
     property OnSaveBounds: TNotifyEvent read FOnSaveBounds write FOnSaveBounds;
   end;
@@ -65,42 +70,42 @@ implementation
 
 function CompareNonFormDesignerForms(Data1, Data2: Pointer): integer;
 var
-  Form1: TCustomNonFormDesignerForm;
-  Form2: TCustomNonFormDesignerForm;
+  Form1: INonFormDesigner;
+  Form2: INonFormDesigner;
 begin
-  Form1 := TCustomNonFormDesignerForm(Data1);
-  Form2 := TCustomNonFormDesignerForm(Data2);
+  Form1 := TNonFormProxyDesignerForm(Data1) as INonFormDesigner;
+  Form2 := TNonFormProxyDesignerForm(Data2) as INonFormDesigner;
   Result := PtrInt(Form1.LookupRoot) - PtrInt(Form2.LookupRoot);
 end;
 
 function CompareLookupRootAndNonFormDesignerForm(Key, Data: Pointer): integer;
 var
   LookupRoot: TComponent;
-  Form: TCustomNonFormDesignerForm;
+  Form: INonFormDesigner;
 begin
   LookupRoot := TComponent(Key);
-  Form := TCustomNonFormDesignerForm(Data);
+  Form := TNonFormProxyDesignerForm(Data) as INonFormDesigner;
   Result := PtrInt(LookupRoot) - PtrInt(Form.LookupRoot);
 end;
 
 { TCustomNonFormDesignerForm }
 
-constructor TCustomNonFormDesignerForm.Create(AOwner: TComponent);
+function TCustomNonFormDesignerForm.GetLookupRoot: TComponent;
 begin
-  inherited CreateNew(AOwner, 1);
+  Result := FNonFormProxyDesignerForm.LookupRoot;
 end;
 
 procedure TCustomNonFormDesignerForm.SetLookupRoot(const AValue: TComponent);
 begin
-  if FLookupRoot = AValue then 
+  if FNonFormProxyDesignerForm.LookupRoot = AValue then
     Exit;
-  if FLookupRoot<>nil then
-    FLookupRoot.RemoveFreeNotification(Self);
+  if FNonFormProxyDesignerForm.LookupRoot<>nil then
+    FNonFormProxyDesignerForm.LookupRoot.RemoveFreeNotification(FNonFormProxyDesignerForm);
   DoSaveBounds;
-  FLookupRoot := AValue;
-  if FLookupRoot <> nil then begin
-    FLookupRoot.FreeNotification(Self);
-    Caption := FLookupRoot.Name;
+  FNonFormProxyDesignerForm.LookupRoot := AValue;
+  if FNonFormProxyDesignerForm.LookupRoot <> nil then begin
+    FNonFormProxyDesignerForm.LookupRoot.FreeNotification(FNonFormProxyDesignerForm);
+    FNonFormProxyDesignerForm.Caption := FNonFormProxyDesignerForm.LookupRoot.Name;
   end;
   DoLoadBounds;
 end;
@@ -108,22 +113,47 @@ end;
 procedure TCustomNonFormDesignerForm.Notification(AComponent: TComponent;
   Operation: TOperation);
 begin
-  inherited Notification(AComponent, Operation);
   if Operation=opRemove then begin
-    if AComponent=FLookupRoot then FLookupRoot:=nil;
+    if AComponent=FNonFormProxyDesignerForm.LookupRoot then FNonFormProxyDesignerForm.LookupRoot:=nil;
   end;
+end;
+
+constructor TCustomNonFormDesignerForm.Create(
+  ANonFormProxyDesignerForm: TNonFormProxyDesignerForm);
+begin
+  FNonFormProxyDesignerForm := ANonFormProxyDesignerForm;
+end;
+
+destructor TCustomNonFormDesignerForm.Destroy;
+begin
+  inherited Destroy;
+end;
+
+procedure TCustomNonFormDesignerForm.Create;
+begin
+  inherited Create;
 end;
 
 procedure TCustomNonFormDesignerForm.DoLoadBounds;
 begin
-  if Assigned(OnLoadBounds) then 
+  if Assigned(OnLoadBounds) then
     OnLoadBounds(Self);
 end;
 
 procedure TCustomNonFormDesignerForm.DoSaveBounds;
 begin
-  if Assigned(OnSaveBounds) then 
+  if Assigned(OnSaveBounds) then
     OnSaveBounds(Self);
+end;
+
+procedure TCustomNonFormDesignerForm.SetBounds(ALeft, ATop, AWidth,
+  AHeight: integer);
+begin
+end;
+
+procedure TCustomNonFormDesignerForm.Paint;
+begin
+
 end;
 
 end.

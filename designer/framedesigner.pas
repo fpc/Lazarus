@@ -37,7 +37,7 @@ type
 
   { TFrameDesignerForm }
 
-  TFrameDesignerForm = class(TCustomNonFormDesignerForm)
+  TFrameDesignerForm = class(TCustomNonFormDesignerForm, INonFormDesigner, IFrameDesigner)
   protected
     FChangingBounds: Boolean;
     FResizing: Boolean;
@@ -45,7 +45,8 @@ type
     procedure OnControlChangeBounds(Sender: TObject);
     procedure OnControlResize(Sender: TObject);
   public
-    constructor Create(AOwner: TComponent); override;
+    procedure Create; override;
+    constructor Create(ANonFormProxyDesignerForm: TNonFormProxyDesignerForm); override;
     destructor Destroy; override;
     procedure DoLoadBounds; override;
     procedure DoSaveBounds; override;
@@ -56,14 +57,6 @@ type
 implementation
 
 { TFrameDesignerForm }
-
-constructor TFrameDesignerForm.Create(AOwner: TComponent);
-begin
-  Position := poDesigned; 
-  inherited Create(AOwner);
-  // workaround problem with out assumption that Width = ClientWidth, Height = ClientHeight
-  AutoScroll := False; 
-end;
 
 destructor TFrameDesignerForm.Destroy;
 begin
@@ -82,7 +75,7 @@ begin
   if (AValue is TControl) then
   begin
     AControl := TControl(AValue);
-    AControl.Parent := Self;
+    AControl.Parent := NonFormProxyDesignerForm;
     AControl.AddHandlerOnChangeBounds(@OnControlChangeBounds, True);
     AControl.AddHandlerOnResize(@OnControlResize, True);
   end;
@@ -102,7 +95,7 @@ begin
     for a := Low(TAnchorKind) to High(TAnchorKind) do
       AControl.AnchorSide[a].Control := nil;
     // reset left, top but save width and height
-    AControl.SetBounds(0, 0, AControl.Width, AControl.Height);
+    NonFormProxyDesignerForm.SetLookupRootBounds(0, 0, AControl.Width, AControl.Height);
   finally
     FChangingBounds := False;
   end;
@@ -117,22 +110,48 @@ begin
   FResizing := True;
   try
     // update form bounds
-    SetBounds(Left, Top, AControl.Width, AControl.Height);
+    with NonFormProxyDesignerForm do
+    SetPublishedBounds(Left, Top, AControl.Width, AControl.Height);
   finally
     FResizing := False;
   end;
+end;
+
+procedure TFrameDesignerForm.Create;
+begin
+  inherited Create;
+  // workaround problem with out assumption that Width = ClientWidth, Height = ClientHeight
+  NonFormProxyDesignerForm.AutoScroll := False;
+end;
+
+constructor TFrameDesignerForm.Create(
+  ANonFormProxyDesignerForm: TNonFormProxyDesignerForm);
+begin
+  inherited Create(ANonFormProxyDesignerForm);
+  NonFormProxyDesignerForm.Position := poDesigned;
 end;
 
 procedure TFrameDesignerForm.DoLoadBounds;
 
   procedure SetNewBounds(NewLeft, NewTop, NewWidth, NewHeight: integer);
   begin
-    if NewWidth <= 0 then NewWidth := Width;
-    if NewHeight <= 0 then NewHeight := Height;
+    with NonFormProxyDesignerForm do
+    begin
+      if NewWidth <= 0 then NewWidth := Width;
+      if NewHeight <= 0 then NewHeight := Height;
 
-    NewWidth := Max(20, Min(NewWidth, Screen.Width - 50));
-    NewHeight := Max(20, Min(NewHeight, Screen.Height - 50));
-    SetBounds(NewLeft, NewTop, Max(20, NewWidth), Max(NewHeight, 20));
+      if DockedDesigner then
+      begin
+        NewLeft:=Max(0,NewLeft);
+        NewTop:=Max(0,NewTop);
+      end
+      else
+      begin
+        NewWidth := Max(20, Min(NewWidth, Screen.Width - 50));
+        NewHeight := Max(20, Min(NewHeight, Screen.Height - 50));
+      end;
+      SetPublishedBounds(NewLeft, NewTop, NewWidth, NewHeight);
+    end;
   end;
 
 var
@@ -159,11 +178,12 @@ end;
 procedure TFrameDesignerForm.DoSaveBounds;
 begin
   if LookupRoot is TControl then
+  with NonFormProxyDesignerForm do
   begin
     // store designer position
     LookupRoot.DesignInfo := LeftTopToDesignInfo(Left, Top);
     // always fill the whole designer form
-    TControl(LookupRoot).SetBounds(0, 0, Width, Height);
+    SetLookupRootBounds(0, 0, Width, Height);
     //DebugLn(['TFrameDesignerForm.DoSaveBounds ',Left,',',Top,' ',LazLongRec(LookupRoot.DesignInfo).Lo,',',LazLongRec(LookupRoot.DesignInfo).hi]);
   end
   else
@@ -176,8 +196,9 @@ procedure TFrameDesignerForm.SetBounds(aLeft, aTop, aWidth, aHeight: integer);
 begin
   // auto apply width and height
   inherited SetBounds(aLeft, aTop, aWidth, aHeight);
-  if (LookupRoot is TControl) then
-    TControl(LookupRoot).SetBounds(0, 0, Width, Height);
+
+  with NonFormProxyDesignerForm do
+    SetLookupRootBounds(0, 0, Width, Height);
 end;
 
 end.
