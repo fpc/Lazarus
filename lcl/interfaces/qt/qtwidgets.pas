@@ -1461,8 +1461,6 @@ type
     function currentItem: QTreeWidgetItemH;
     procedure setCurrentItem(AItem: QTreeWidgetItemH);
 
-    function SetItemSizeHint(AItem: QTreeWidgetItemH;
-      AColumn: integer; AText: widestring; AIconSize: integer): boolean;
     function getRow(AItem: QTreeWidgetItemH): integer;
     function headerItem: QTreeWidgetItemH;
     function itemAt(APoint: TPoint): QTreeWidgetItemH; overload;
@@ -1911,6 +1909,7 @@ implementation
 
 uses
   Buttons,
+  math,
   qtCaret,
   qtproc,
   qtprivate,
@@ -5167,7 +5166,7 @@ class procedure TQtWidget.removeProperty(AObject: QObjectH; APropName: PAnsiChar
 var
   AVariant: QVariantH;
 begin
-  AVariant := QVariant_create(QVariantInvalid);
+  AVariant := QVariant_create;
   QObject_setProperty(AObject, APropName, AVariant);
   QVariant_destroy(AVariant);
 end;
@@ -12573,7 +12572,10 @@ var
 begin
   Item := QListWidgetItem_create(AText, nil, QListWidgetItemType);
   if Checkable then
-    QListWidgetItem_setCheckState(Item, QtUnChecked);
+    QListWidgetItem_setCheckState(Item, QtUnChecked)
+  else
+  if (ViewStyle = Ord(vsIcon)) and not (FChildOfComplexWidget = ccwComboBox) then
+    QListWidgetItem_setTextAlignment(Item, QtAlignHCenter);
   QListWidget_insertItem(QListWidgetH(Widget), AIndex, Item);
 end;
 
@@ -14190,33 +14192,6 @@ begin
   QTreeWidget_setCurrentItem(QTreeWidgetH(Widget), AItem);
 end;
 
-function TQtTreeWidget.SetItemSizeHint(AItem: QTreeWidgetItemH;
-  AColumn: integer; AText: widestring; AIconSize: integer): boolean;
-var
-  R: TRect;
-  ATextWidth: Integer;
-  AMargin: Integer;
-  ASizeHint: TSize;
-begin
-  Result := False;
-  if AIconSize = 0 then
-    exit;
-  R := measureText(AText, 0);
-  ATextWidth := R.Right - R.Left;
-  if AIconSize > 0 then
-  begin
-    AMargin := QStyle_pixelMetric(QApplication_style(), QStylePM_ButtonMargin, nil, Widget);
-    if AColumn = 0 then
-      ATextWidth += AIconSize + (AMargin * 2)
-    else
-      ATextWidth += AMargin;
-  end;
-  QTreeWidgetItem_sizeHint(AItem, @ASizeHint, AColumn);
-  ASizeHint.cx := ATextWidth;
-  QTreeWidgetItem_setSizeHint(AItem, AColumn, @ASizeHint);
-  Result := True;
-end;
-
 function TQtTreeWidget.getRow(AItem: QTreeWidgetItemH): integer;
 begin
   Result := QTreeWidget_indexOfTopLevelItem(QTreeWidgetH(Widget), AItem);
@@ -14350,7 +14325,7 @@ var
   v: QVariantH;
 begin
   if Data = nil then
-    v := QVariant_create(QVariantInvalid)
+    v := QVariant_create
   else
     v := QVariant_create(Int64({%H-}PtrUInt(Data)));
   QTreeWidgetItem_setData(AItem, AColumn, ARole, v);
@@ -17798,10 +17773,14 @@ procedure TQtAbstractItemView.ItemDelegateSizeHint(
 var
   Msg: TLMMeasureItem;
   MeasureItemStruct: TMeasureItemStruct;
+  decorationSize: TSize;
+  Metric: Integer;
 begin
+  QStyleOptionViewItem_decorationSize(option, @decorationSize);
+  Metric := QStyle_pixelMetric(QApplication_style(), QStylePM_FocusFrameVMargin, nil, nil) * 2;
   MeasureItemStruct.itemID := UINT(QModelIndex_row(index));
   MeasureItemStruct.itemWidth := UINT(Size^.cx);
-  MeasureItemStruct.itemHeight := UINT(Size^.cy);
+  MeasureItemStruct.itemHeight := UINT(Max(Size^.cy, (decorationSize.cy + Metric)));
   Msg.Msg := LM_MEASUREITEM;
   Msg.MeasureItemStruct := @MeasureItemStruct;
   DeliverMessage(Msg);
