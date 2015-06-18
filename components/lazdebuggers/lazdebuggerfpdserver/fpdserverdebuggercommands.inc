@@ -260,16 +260,18 @@ begin
   AJsonObject.Add('command','disassemble');
   if FStartAddr>0 then
     AJsonObject.Add('address', Dec2Numb(FStartAddr, 8, 16));
-  if FLinesCount>0 then
-    AJsonObject.Add('lines', FLinesCount);
+  if FLinesAfter>0 then
+    AJsonObject.Add('linesafter', FLinesAfter);
+  if FLinesBefore>0 then
+    AJsonObject.Add('linesbefore', FLinesBefore);
 end;
 
-constructor TFPDSendDisassembleCommand.create(ADisassembler: TDBGDisassembler;
-  AStartAddr: TDBGPtr; ALinesCount: integer);
+constructor TFPDSendDisassembleCommand.create(ADisassembler: TDBGDisassembler; AStartAddr: TDBGPtr; ALinesBefore, ALinesAfter: integer);
 begin
   inherited create(true);
   FDisassembler := ADisassembler;
-  FLinesCount:=ALinesCount;
+  FLinesBefore:=ALinesBefore;
+  FLinesAfter:=ALinesAfter;
   FStartAddr:=AStartAddr;
 end;
 

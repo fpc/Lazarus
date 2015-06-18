@@ -223,11 +223,12 @@ type
   private
     FDisassembler: TDBGDisassembler;
     FStartAddr: TDBGPtr;
-    FLinesCount: integer;
+    FLinesAfter: integer;
+    FLinesBefore: integer;
   protected
     procedure ComposeJSon(AJsonObject: TJSONObject); override;
   public
-    constructor create(ADisassembler: TDBGDisassembler; AStartAddr: TDBGPtr; ALinesCount: integer);
+    constructor create(ADisassembler: TDBGDisassembler; AStartAddr: TDBGPtr; ALinesBefore, ALinesAfter: integer);
     procedure DoOnCommandSuccesfull(ACommandResponse: TJSonObject); override;
   end;
 
@@ -383,9 +384,7 @@ var GCommandUID: integer = 0;
 
 function TFPDBGDisassembler.PrepareEntries(AnAddr: TDbgPtr; ALinesBefore, ALinesAfter: Integer): boolean;
 begin
-  Assert(ALinesBefore<>0,'TFPDBGDisassembler.PrepareEntries LinesBefore not supported');
-
-  TFPDServerDebugger(Debugger).QueueCommand(TFPDSendDisassembleCommand.create(self, AnAddr, ALinesAfter+1));
+  TFPDServerDebugger(Debugger).QueueCommand(TFPDSendDisassembleCommand.create(self, AnAddr, ALinesBefore, ALinesAfter));
   result := false;
 end;
 
