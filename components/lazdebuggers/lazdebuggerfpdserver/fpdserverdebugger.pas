@@ -1089,7 +1089,6 @@ var
   NotificationType: string;
   UID: integer;
   SendCommand: TFPDSendCommand;
-  Message: string;
 begin
   // Ignore notifications from other connections
   if ANotification.get('connIdentifier',-1)=FSocketThread.ConnectionIdentifier then
