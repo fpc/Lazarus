@@ -557,9 +557,8 @@ var
   Str: WideString;
   i: Integer;
 begin
-  Str := '';
-  //clean up. http://bugs.freepascal.org/view.php?id=18683
-  Widget.showMessage(@Str);
+  // issues #18683 and #28307
+  QStatusBar_clearMessage(QStatusBarH(Widget.Widget));
   ClearPanels(Widget);
   if AStatusBar.SimplePanel then
   begin
