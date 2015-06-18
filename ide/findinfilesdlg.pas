@@ -309,7 +309,7 @@ begin
 end;
 
 const
-  SharedOptions = [ssoWholeWord,ssoEntireScope,ssoRegExpr,ssoRegExprMultiLine];
+  SharedOptions = [ssoMatchCase,ssoWholeWord,ssoRegExpr,ssoRegExprMultiLine];
 
 procedure TLazFindInFilesDialog.LoadHistory;
 
