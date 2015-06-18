@@ -172,8 +172,10 @@ begin
   try
     Result := List.AddResourceName(HInstance, ImageName);
   except
-    on E: Exception do
+    on E: Exception do begin
       DebugLn('While loading IDEImages: ' + e.Message);
+      Result := -1;
+    end;
   end;
   Names.AddObject(ImageName, TObject(PtrInt(Result)));
 end;
