@@ -137,8 +137,8 @@ function TJSonInOutputProcessor.EventToText(AnEvent: TFpDebugEvent): string;
 var
   JSonEvent: TJSONObject;
   JSonLocationRec: TJSONObject;
-  JSonStackArray: TJSONArray;
-  JSonStackEntry: TJSONObject;
+  JSonArray: TJSONArray;
+  JSonArrayEntry: TJSONObject;
   i: Integer;
 begin
   JSonEvent := TJSONObject.Create;
@@ -192,40 +192,52 @@ begin
     JSonEvent.Add('message',AnEvent.Message);
     if length(AnEvent.StackEntryArray)>0 then
       begin
-      JSonStackArray := TJSONArray.Create;
+      JSonArray := TJSONArray.Create;
       for i := 0 to high(AnEvent.StackEntryArray) do
         begin
-        JSonStackEntry := TJSONObject.Create;
-        JSonStackEntry.Add('address', FormatAddress(AnEvent.StackEntryArray[i].AnAddress));
-        JSonStackEntry.Add('frameaddress', FormatAddress(AnEvent.StackEntryArray[i].FrameAdress));
-        JSonStackEntry.Add('sourcefile', AnEvent.StackEntryArray[i].SourceFile);
-        JSonStackEntry.Add('line', AnEvent.StackEntryArray[i].Line);
-        JSonStackEntry.Add('functionname', AnEvent.StackEntryArray[i].FunctionName);
-        JSonStackArray.Add(JSonStackEntry);
+        JSonArrayEntry := TJSONObject.Create;
+        JSonArrayEntry.Add('address', FormatAddress(AnEvent.StackEntryArray[i].AnAddress));
+        JSonArrayEntry.Add('frameaddress', FormatAddress(AnEvent.StackEntryArray[i].FrameAdress));
+        JSonArrayEntry.Add('sourcefile', AnEvent.StackEntryArray[i].SourceFile);
+        JSonArrayEntry.Add('line', AnEvent.StackEntryArray[i].Line);
+        JSonArrayEntry.Add('functionname', AnEvent.StackEntryArray[i].FunctionName);
+        JSonArray.Add(JSonArrayEntry);
         end;
-      JSonEvent.Add('callstack', JSonStackArray);
+      JSonEvent.Add('callstack', JSonArray);
       end;
     if length(AnEvent.DisassemblerEntryArray)>0 then
       begin
-      JSonStackArray := TJSONArray.Create;
+      JSonArray := TJSONArray.Create;
       for i := 0 to high(AnEvent.DisassemblerEntryArray) do
         begin
-        JSonStackEntry := TJSONObject.Create;
-        JSonStackEntry.Add('address', FormatAddress(AnEvent.DisassemblerEntryArray[i].Addr));
-        JSonStackEntry.Add('dump', AnEvent.DisassemblerEntryArray[i].Dump);
-        JSonStackEntry.Add('statement', AnEvent.DisassemblerEntryArray[i].Statement);
-        JSonStackEntry.Add('srcfilename', AnEvent.DisassemblerEntryArray[i].SrcFileName);
-        JSonStackEntry.Add('srcfileline', AnEvent.DisassemblerEntryArray[i].SrcFileLine);
-        JSonStackEntry.Add('srcstatementindex', AnEvent.DisassemblerEntryArray[i].SrcStatementIndex);
-        JSonStackEntry.Add('srcstatementcount', AnEvent.DisassemblerEntryArray[i].SrcStatementCount);
-        JSonStackEntry.Add('functionname', AnEvent.DisassemblerEntryArray[i].FuncName);
-        JSonStackEntry.Add('offset', AnEvent.DisassemblerEntryArray[i].Offset);
-        JSonStackArray.Add(JSonStackEntry);
+        JSonArrayEntry := TJSONObject.Create;
+        JSonArrayEntry.Add('address', FormatAddress(AnEvent.DisassemblerEntryArray[i].Addr));
+        JSonArrayEntry.Add('dump', AnEvent.DisassemblerEntryArray[i].Dump);
+        JSonArrayEntry.Add('statement', AnEvent.DisassemblerEntryArray[i].Statement);
+        JSonArrayEntry.Add('srcfilename', AnEvent.DisassemblerEntryArray[i].SrcFileName);
+        JSonArrayEntry.Add('srcfileline', AnEvent.DisassemblerEntryArray[i].SrcFileLine);
+        JSonArrayEntry.Add('srcstatementindex', AnEvent.DisassemblerEntryArray[i].SrcStatementIndex);
+        JSonArrayEntry.Add('srcstatementcount', AnEvent.DisassemblerEntryArray[i].SrcStatementCount);
+        JSonArrayEntry.Add('functionname', AnEvent.DisassemblerEntryArray[i].FuncName);
+        JSonArrayEntry.Add('offset', AnEvent.DisassemblerEntryArray[i].Offset);
+        JSonArray.Add(JSonArrayEntry);
         end;
-      JSonEvent.Add('disassembly', JSonStackArray);
+      JSonEvent.Add('disassembly', JSonArray);
       JSonEvent.Add('startaddress', FormatAddress(AnEvent.Addr1));
       JSonEvent.Add('endaddress', FormatAddress(AnEvent.Addr2));
       JSonEvent.Add('lastentryendaddress', FormatAddress(AnEvent.Addr3));
+      end;
+    if length(AnEvent.WatchEntryArray)>0 then
+      begin
+      JSonArray := TJSONArray.Create;
+      for i := 0 to high(AnEvent.WatchEntryArray) do
+        begin
+        JSonArrayEntry := TJSONObject.Create;
+        JSonArrayEntry.Add('name', AnEvent.WatchEntryArray[i].Expression);
+        JSonArrayEntry.Add('value', AnEvent.WatchEntryArray[i].TextValue);
+        JSonArray.Add(JSonArrayEntry);
+        end;
+      JSonEvent.Add('variables', JSonArray);
       end;
     result := JSonEvent.AsJSON;
   finally

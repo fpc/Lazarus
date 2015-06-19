@@ -48,8 +48,14 @@ type
     FunctionName: string;
     Line: integer;
   end;
+  TFpDebugEventWatchEntry = record
+    TextValue: string;
+    Expression: string;
+  end;
+
   TFpDebugEventCallStackEntryArray = array of TFpDebugEventCallStackEntry;
   TFpDebugEventDisassemblerEntryArray = array of TDisassemblerEntry;
+  TFpDebugEventWatchEntryArray = array of TFpDebugEventWatchEntry;
 
   // This record is used to pass debugging-events. Not every field is applicable for each type of event.
   TFpDebugEvent = record
@@ -69,6 +75,7 @@ type
     Addr3: TDBGPtr;
     StackEntryArray: TFpDebugEventCallStackEntryArray;
     DisassemblerEntryArray: TFpDebugEventDisassemblerEntryArray;
+    WatchEntryArray: TFpDebugEventWatchEntryArray;
   end;
 
   // Each listener should implement this interface.
@@ -323,6 +330,7 @@ begin
   AnEvent.Validity:=ddsUnknown;
   SetLength(AnEvent.StackEntryArray,0);
   SetLength(AnEvent.DisassemblerEntryArray,0);
+  SetLength(AnEvent.WatchEntryArray,0);
   AnEvent.Addr1:=0;
   AnEvent.Addr2:=0;
   AnEvent.Addr3:=0;

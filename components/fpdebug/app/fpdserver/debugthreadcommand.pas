@@ -225,10 +225,89 @@ type
     property LinesBefore: integer read FLinesBefore write FLinesBefore;
   end;
 
+  { TFpDebugLocalsCommand }
+
+  TFpDebugLocalsCommand = class(TFpDebugThreadCommand)
+  private
+    FWatchEntryArray: TFpDebugEventWatchEntryArray;
+  public
+    function Execute(AController: TDbgController; out DoProcessLoop: boolean): boolean; override;
+    class function TextName: string; override;
+    procedure ComposeSuccessEvent(var AnEvent: TFpDebugEvent); override;
+  end;
+
+
 implementation
 
 uses
   FpDbgDisasX86;
+
+{ TFpDebugLocalsCommand }
+
+function TFpDebugLocalsCommand.Execute(AController: TDbgController; out DoProcessLoop: boolean): boolean;
+var
+  AContext: TFpDbgInfoContext;
+  ProcVal: TFpDbgValue;
+  i: Integer;
+  m: TFpDbgValue;
+  n, v: String;
+  Reg: TDBGPtr;
+  PrettyPrinter: TFpPascalPrettyPrinter;
+begin
+  result := false;
+  if (AController = nil) or (AController.CurrentProcess = nil) or
+     (AController.CurrentProcess.DbgInfo = nil) then
+    exit;
+
+  Reg := AController.CurrentProcess.GetInstructionPointerRegisterValue;
+  AContext := AController.CurrentProcess.DbgInfo.FindContext(AController.CurrentThread.ID, 0, Reg);
+
+  if (AContext = nil) or (AContext.SymbolAtAddress = nil) then
+    exit;
+
+  ProcVal := AContext.ProcedureAtAddress;
+
+  if (ProcVal = nil) then
+    exit;
+
+  PrettyPrinter := TFpPascalPrettyPrinter.Create(sizeof(pointer));
+  try
+    PrettyPrinter.AddressSize := AContext.SizeOfAddress;
+
+    SetLength(FWatchEntryArray, ProcVal.MemberCount);
+    for i := 0 to ProcVal.MemberCount - 1 do
+      begin
+      m := ProcVal.Member[i];
+      if m <> nil then
+        begin
+        if m.DbgSymbol <> nil then
+          n := m.DbgSymbol.Name
+        else
+          n := '';
+        PrettyPrinter.PrintValue(v, m);
+        FWatchEntryArray[i].TextValue := v;
+        FWatchEntryArray[i].Expression := n;
+        end;
+      end;
+  finally
+    PrettyPrinter.Free;
+  end;
+
+  AContext.ReleaseReference;
+  DoProcessLoop:=false;
+  result := true;
+end;
+
+class function TFpDebugLocalsCommand.TextName: string;
+begin
+  result := 'locals';
+end;
+
+procedure TFpDebugLocalsCommand.ComposeSuccessEvent(var AnEvent: TFpDebugEvent);
+begin
+  inherited ComposeSuccessEvent(AnEvent);
+  AnEvent.WatchEntryArray := FWatchEntryArray;
+end;
 
 { TFpDebugThreadDisassembleCommand }
 
@@ -900,6 +979,7 @@ initialization
   TFpDebugThreadCommandList.instance.Add(TFpDebugThreadEvaluateCommand);
   TFpDebugThreadCommandList.instance.Add(TFpDebugThreadStackTraceCommand);
   TFpDebugThreadCommandList.instance.Add(TFpDebugThreadDisassembleCommand);
+  TFpDebugThreadCommandList.instance.Add(TFpDebugLocalsCommand);
 finalization
   GFpDebugThreadCommandList.Free;
 end.
