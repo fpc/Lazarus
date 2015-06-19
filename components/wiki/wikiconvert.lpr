@@ -109,7 +109,8 @@ begin
   if not HasOption('format') then begin
     writeln('Error: missing option --format=');
     writeln('use option -h to see all options');
-    Terminate; exit;
+    Terminate;
+    exit;
   end;
 
   // wiki files
@@ -181,7 +182,11 @@ begin
           end;
           TWiki2CHMConverter(Converter).CHMFile:=ParamValue;
           continue;
-        end
+        end else
+        if ParamName='root' then begin
+          TWiki2CHMConverter(Converter).TOCRootName := ParamValue;
+          Continue;
+        end;
       end;
     end else if Param[1]<>'-' then begin
       AddFiles(Param);
@@ -323,6 +328,7 @@ begin
   writeln('Options for --format=chm :');
   writeln('   Note: the default page is the first page');
   writeln('  --chm=<output chm file> : default: ',CHMConverter.CHMFile);
+  writeln('  --root=<text used for root of table-of-contents> : default: "', CHMConverter.TocRootName, '"');
   writeln;
   writeln('Options for --format=fpdoc :');
   writeln('  --root=<fpdoc xml root node> : default: ',FPDocConverter.RootName);

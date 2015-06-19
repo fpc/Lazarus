@@ -93,6 +93,7 @@ type
     procedure ConvertInit; virtual;
     procedure ConvertAllPages; virtual;
     procedure SaveAllPages; virtual;
+    procedure AddTocItem({%H-}ALevel:Integer; {%H-}AText, {%H-}AUrl: String); virtual;
   public
     constructor Create; override;
     destructor Destroy; override;
@@ -253,6 +254,7 @@ begin
       LinkNode.AppendChild(doc.CreateTextNode(HeaderTxt));
       LINode.AppendChild(LinkNode);
       inc(Page.TOCNodeCount);
+      AddTocItem(Page.SectionLevel, HeaderTxt, Page.Filename+'#'+HRef);
     end;
     Page.CurDOMNode:=Page.CurDOMNode.ParentNode as TDOMElement;
     Page.Pop;
@@ -582,6 +584,8 @@ var
   Node: TDOMElement;
   CurCSSFilename: String;
 begin
+  AddTocItem(1, UTF8Trim(Page.WikiPage.Title), Page.FileName);
+
   Page.ClearConversion;
   if Page.WikiPage=nil then exit;
   Page.XHTML:=TXMLDocument.Create;
@@ -629,8 +633,8 @@ begin
     Page.TOCNodeCount:=0;
     Page.CurTOCNode:=Page.TOCNode;
     Page.BodyDOMNode.AppendChild(Page.TOCNode);
-
     Page.CurDOMNode:=Page.BodyDOMNode;
+
     Page.WikiPage.Parse(@OnWikiToken,Page);
 
     if LinkToBaseDocument<>'' then
@@ -768,7 +772,6 @@ begin
         Node:=doc.CreateElement('ul');
         Page.CurTOCNode.AppendChild(Node);
         Page.CurTOCNode:=Node;
-
         Page.Push(Node,Token.Token);
         exit;
       end else if Token.Range=wprClose then begin
@@ -1140,6 +1143,11 @@ var
 begin
   for i:=0 to Count-1 do
     SavePage(TW2XHTMLPage(Pages[i]));
+end;
+
+procedure TWiki2XHTMLConverter.AddTocItem(ALevel: Integer; AText, AUrl: String);
+begin
+  // nothing to do here - will be overridden by CHMConverter
 end;
 
 constructor TWiki2XHTMLConverter.Create;
