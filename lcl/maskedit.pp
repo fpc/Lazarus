@@ -1062,6 +1062,12 @@ end;
 
 procedure TCustomMaskEdit.RealSetText(const AValue: TCaption);
 begin
+  //Setting Text while loading has unwanted side-effects
+  if (csLoading in ComponentState) {and (not FSettingInitialText)} then
+  begin
+    FInitialText := AValue;
+    Exit;
+  end;
   if not IsMasked then
     inherited RealSetText(AValue)
   else
@@ -1080,12 +1086,6 @@ procedure TCustomMaskEdit.SetTextApplyMask(Value: TCaption);
 var
   S: TCaption;
 Begin
-  //Setting Text while loading has unwanted side-effects
-  if (csLoading in ComponentState) {and (not FSettingInitialText)} then
-  begin
-    FInitialText := Value;
-    Exit;
-  end;
   if IsMasked then
   begin
     try
