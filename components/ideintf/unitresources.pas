@@ -69,6 +69,9 @@ function GetUnitResourcefileFormats: TUnitResourcefileFormatArr;
 
 implementation
 
+uses
+  FormEditingIntf;
+
 var
   GUnitResourcefileFormats: TUnitResourcefileFormatArr;
 
@@ -146,11 +149,11 @@ class function TCustomLFMUnitResourceFileFormat.FindComponentClass(
   aClassName: string): TComponentClass;
 begin
   if CompareText(aClassName,'TForm')=0 then
-    Result:=TForm
+    Result:=FormEditingHook.StandardDesignerBaseClasses[STD_DESIGNER_BASE_TFORM_CLASS_ID] // DaThoX
   else if CompareText(aClassName,'TFrame')=0 then
-    Result:=TFrame
+    Result:=FormEditingHook.StandardDesignerBaseClasses[STD_DESIGNER_BASE_TFRAME_CLASS_ID] // DaThoX
   else if CompareText(aClassName,'TDataModule')=0 then
-    Result:=TDataModule
+    Result:=FormEditingHook.StandardDesignerBaseClasses[STD_DESIGNER_BASE_TDATAMODULE_CLASS_ID] // DaThoX
   else
     Result:=nil;
 end;
