@@ -431,6 +431,14 @@ type
   TPropertyEditorFilterFunc =
     function(const ATestEditor: TPropertyEditor): Boolean of object;
 
+// DaThoX begin
+  TIDEComponentsMaster = class
+    function DrawNonVisualComponents(ALookupRoot: TComponent): Boolean; virtual; abstract;
+  end;
+
+var
+  IDEComponentsMaster: TIDEComponentsMaster = nil;
+// DaThoX end
 
 procedure RegisterEditorForm(const AEditorForm: TObject; const AReference: TPersistent);
 procedure UnregisterEditorForm(const AEditorForm: TObject);

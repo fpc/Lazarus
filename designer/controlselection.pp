@@ -2815,6 +2815,12 @@ var
         ARight:=ALeft+TControl(AComponent).Width;
         ABottom:=ATop+TControl(AComponent).Height;
       end else begin
+        // DaThoX begin
+        if Assigned(IDEComponentsMaster) then
+          if not IDEComponentsMaster.DrawNonVisualComponents(ALookupRoot) then
+            Exit;
+        // DaThoX end
+
         ARight:=ALeft+NonVisualCompWidth;
         ABottom:=ATop+NonVisualCompWidth;
       end;
