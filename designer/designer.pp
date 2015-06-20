@@ -71,6 +71,7 @@ type
     const NewName: string) of object;
   TOnProcessCommand = procedure(Sender: TObject; Command: word;
     var Handled: boolean) of object;
+  TOnComponentAdded = procedure(Sender: TObject; AComponent: TComponent; ARegisteredComponent: TRegisteredComponent) of object;  // DaThoX
 
   TDesignerFlag = (
     dfHasSized,
@@ -121,7 +122,7 @@ type
     FOnSaveAsXML: TNotifyEvent;
     FOnSetDesigning: TOnSetDesigning;
     FOnShowOptions: TNotifyEvent;
-    FOnComponentAdded: TNotifyEvent;
+    FOnComponentAdded: TOnComponentAdded; // DaThoX
     FOnViewLFM: TNotifyEvent;
     FShiftState: TShiftState;
     FTheFormEditor: TCustomFormEditor;
@@ -360,8 +361,8 @@ type
     property OnRenameComponent: TOnRenameComponent
                                read FOnRenameComponent write FOnRenameComponent;
     property OnSetDesigning: TOnSetDesigning read FOnSetDesigning write FOnSetDesigning;
-    property OnComponentAdded: TNotifyEvent read FOnComponentAdded
-                                           write FOnComponentAdded;
+    property OnComponentAdded: TOnComponentAdded read FOnComponentAdded
+                                           write FOnComponentAdded; // DaThoX
     property OnShowOptions: TNotifyEvent read FOnShowOptions write FOnShowOptions;
     property OnViewLFM: TNotifyEvent read FOnViewLFM write FOnViewLFM;
     property OnSaveAsXML: TNotifyEvent read FOnSaveAsXML write FOnSaveAsXML;
@@ -2299,7 +2300,7 @@ var
     // -> select new component
     SelectOnlyThisComponent(NewComponent);
     if Assigned(FOnComponentAdded) then // this resets the component palette to the selection tool
-      FOnComponentAdded(Self);
+      FOnComponentAdded(Self, NewComponent, SelectedCompClass); // DaThoX
 
     {$IFDEF VerboseDesigner}
     DebugLn('NEW COMPONENT ADDED: Form.ComponentCount=',DbgS(Form.ComponentCount),

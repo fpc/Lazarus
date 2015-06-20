@@ -86,7 +86,7 @@ type
     FKeepSelected: Boolean;
     procedure ClearSelection;
     procedure SelectionWasChanged;
-    procedure ComponentWasAdded;
+    procedure ComponentWasAdded(ALookupRoot, AComponent: TComponent; ARegisteredComponent: TRegisteredComponent); // DaThoX;
     procedure DoComponentInheritence(Comp: TRegisteredComponent);
     procedure UpdateComponents;
     procedure UpdateButtonState;
@@ -224,7 +224,7 @@ begin
     Result := GetSelectedTreeComp(InheritanceTree)
 end;
 
-procedure TComponentListForm.ComponentWasAdded;
+procedure TComponentListForm.ComponentWasAdded(ALookupRoot, AComponent: TComponent; ARegisteredComponent: TRegisteredComponent); // DaThoX
 begin
   ClearSelection;
   UpdateButtonState;
