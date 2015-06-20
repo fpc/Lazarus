@@ -69,6 +69,8 @@ type
     FMaxH: integer;
     FPageFileExt: string;
     FUseTemplateIcons: Boolean;
+    FAddCategories: Boolean;
+    procedure DoAddCategories(Page: TW2XHTMLPage);
     procedure DoAddLinksToTranslations(Page: TW2XHTMLPage);
     procedure DoAddLinkToBaseDocument(Page: TW2XHTMLPage);
     procedure OnHeaderToken(Token: TWPToken);
@@ -105,11 +107,16 @@ type
     function PageToFilename(Page: string; IsInternalLink, Full: boolean): string; virtual;
     function PageToFilename(Page: TW2XHTMLPage; Full: boolean): string; virtual;
     property PageFileExt: string read FPageFileExt write SetPageFileExt;
-    property LinkToBaseDocument: string read FLinkToBaseDocument write FLinkToBaseDocument;
-    property AddLinksToTranslations: boolean read FAddLinksToTranslations write FAddLinksToTranslations default true;
-    property AddTOCIfHeaderCountMoreThan: integer read FAddTOCIfHeaderCountMoreThan
-                 write FAddTOCIfHeaderCountMoreThan default 2;
-    property UseTemplateIcons: Boolean read FUseTemplateIcons write FUseTemplateIcons;
+    property LinkToBaseDocument: string
+      read FLinkToBaseDocument write FLinkToBaseDocument;
+    property AddLinksToTranslations: boolean
+      read FAddLinksToTranslations write FAddLinksToTranslations default true;
+    property AddTOCIfHeaderCountMoreThan: integer
+      read FAddTOCIfHeaderCountMoreThan write FAddTOCIfHeaderCountMoreThan default 2;
+    property AddCategories: Boolean
+      read FAddCategories write FAddCategories default true;
+    property UseTemplateIcons: Boolean
+      read FUseTemplateIcons write FUseTemplateIcons;
   end;
 
 implementation
@@ -125,6 +132,48 @@ begin
   if FCSSFilename=AValue then Exit;
   FCSSFilename:=AValue;
 end;
+
+procedure TWiki2XHTMLConverter.DoAddCategories(Page: TW2XHTMLPage);
+var
+  doc: TXMLDocument;
+  CategoriesNode: TDOMElement;
+  node: TDOMElement;
+  category, url, txt: String;
+  i: Integer;
+begin
+  if FCategoryList.Count = 0 then
+    exit;
+
+  doc := Page.XHTML;
+  url := Page.WikiPage.BaseURL;
+  if (url <> '') and (url[Length(url)] <> '/') then
+    url += '/';
+
+  CategoriesNode := doc.CreateElement('div');
+  CategoriesNode.SetAttribute('class', 'categories');
+  Page.BodyDOMNode.AppendChild(CategoriesNode);
+
+  // Add "Categories:"
+  node := doc.CreateElement('a');
+  node.SetAttribute('href', url+'Special:Categories');
+  CategoriesNode.AppendChild(node);
+  CategoriesNode.AppendChild(doc.CreateTextNode('Categories:  '));
+
+  for i:=0 to FCategoryList.Count-1 do begin
+    category := FCategoryList[i];
+    // Add link to category
+    node := doc.CreateElement('a');
+    node.SetAttribute('href', url + category);
+    txt := Copy(category, pos(':', category)+1, MaxInt);
+    node.AppendChild(doc.CreateTextNode(txt));
+    CategoriesNode.AppendChild(node);
+
+    // Add separator
+    if i < FCategoryList.Count-1 then
+      CategoriesNode.AppendChild(doc.CreateTextNode(' | '));
+  end;
+end;
+
 
 procedure TWiki2XHTMLConverter.DoAddLinksToTranslations(Page: TW2XHTMLPage);
 var
@@ -186,21 +235,23 @@ end;
 procedure TWiki2XHTMLConverter.DoAddLinkToBaseDocument(Page: TW2XHTMLPage);
 var
   Link: String;
+  MainNode: TDOMElement;
   Node: TDOMElement;
   doc: TXMLDocument;
 begin
   // add <a href="BaseURL+WikiDocumentName">LinkToBaseDocument</a><br>
   doc:=Page.XHTML;
+  MainNode := doc.CreateElement('p');
+  Page.BodyDOMNode.AppendChild(MainNode);
+
   Node:=doc.CreateElement('a');
-  Page.BodyDOMNode.AppendChild(Node);
+  MainNode.AppendChild(Node);
   Link:=Page.WikiPage.BaseURL;
   if (Link<>'') and (Link[length(Link)]<>'/') then
     Link+='/';
   Link+=Page.WikiDocumentName;
   Node.SetAttribute('href', Link);
   Node.AppendChild(doc.CreateTextNode(LinkToBaseDocument));
-  Node:=doc.CreateElement('br');
-  Page.BodyDOMNode.AppendChild(Node);
 end;
 
 procedure TWiki2XHTMLConverter.OnHeaderToken(Token: TWPToken);
@@ -469,7 +520,9 @@ var
         exit;
       end
       else if Scheme='category' then begin
-        URL:=''; // show category without link
+        FCategoryList.Add(URL);
+        URL:='';
+        Caption := '';
         exit;
       end
       else if (Scheme='image') or (Scheme='file') then begin
@@ -636,6 +689,9 @@ begin
     Page.CurDOMNode:=Page.BodyDOMNode;
 
     Page.WikiPage.Parse(@OnWikiToken,Page);
+
+    if FAddCategories then
+      DoAddCategories(Page);
 
     if LinkToBaseDocument<>'' then
       DoAddLinkToBaseDocument(Page);
@@ -1160,6 +1216,7 @@ begin
   ShortFilenameToPage:=TFilenameToPointerTree.Create(false);
   UsedImages:=TFilenameToPointerTree.Create(false);
   fLinkToBaseDocument:='Online version';
+  FAddCategories := true;
   FAddLinksToTranslations:=true;
   FAddTOCIfHeaderCountMoreThan:=2;
   FUseTemplateIcons := true;

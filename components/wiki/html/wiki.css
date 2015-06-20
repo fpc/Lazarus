@@ -179,6 +179,16 @@ span.keypress {
     white-space: nowrap;
 }
 
+div.categories {
+    background-color: #F9F9F9;
+    border: 1px solid #2F6FAB;
+    color: black;
+    padding: 1em;
+    padding-top: 0.75em;
+    line-height: 1.25em;
+    font-color: #2F6FAB;
+}
+
 
 /* images */
 

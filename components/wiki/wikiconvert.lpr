@@ -169,7 +169,16 @@ begin
         if ParamName='css' then begin
           TWiki2XHTMLConverter(Converter).CSSFilename:=ParamValue;
           continue;
-        end
+        end;
+        if ParamName='wikicategories' then begin
+          case ParamValue of
+            'yes', 'true': TWiki2XHTMLConverter(Converter).AddCategories := true;
+            'no', 'false': TWiki2XHTMLConverter(Converter).AddCategories := false;
+            else
+              E('Incorrect parameter value ('+Param+')');
+          end;
+          Continue;
+        end;
       end;
       if Converter is TWiki2CHMConverter then begin
         // CHM parameters
@@ -177,7 +186,7 @@ begin
           ParamValue:=TrimAndExpandFilename(ParamValue);
           if (ParamValue='') or (not DirPathExists(ExtractFilePath(ParamValue)))
           then begin
-            E('directory of chm file does not exists: '+ParamValue);
+            E('directory of chm file does not exist: '+ParamValue);
             exit;
           end;
           TWiki2CHMConverter(Converter).CHMFile:=ParamValue;
@@ -324,6 +333,7 @@ begin
   writeln;
   writeln('Options for --format=xhtml,html,chm :');
   writeln('  --css=<path of stylesheet> : default: ',XHTMLConverter.CSSFilename);
+  writeln('  --wikicategories=<yes|true|false|no> : default: ', XHTMLConverter.AddCategories);
   writeln;
   writeln('Options for --format=chm :');
   writeln('   Note: the default page is the first page');
