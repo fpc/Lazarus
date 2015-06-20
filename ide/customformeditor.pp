@@ -603,6 +603,7 @@ Begin
       DebugLn(['TCustomFormEditor.DeleteComponent Hiding: ',dbgsName(AWinControl)]);
     end;
   end;
+  PropertyEditorHook.PersistentDeleted; // DaThoX
 end;
 
 function TCustomFormEditor.FindComponentByName(const Name: ShortString

@@ -1197,6 +1197,7 @@ type
   TPropHookPersistentAdded = procedure(APersistent: TPersistent; Select: boolean
                                       ) of object;
   TPropHookPersistentDeleting = procedure(APersistent: TPersistent) of object;
+  TPropHookPersistentDeleted = procedure of object; // DaThoX
   TPropHookDeletePersistent = procedure(var APersistent: TPersistent) of object;
   TPropHookGetSelection = procedure(const ASelection: TPersistentSelectionList
                                              ) of object;
@@ -1244,6 +1245,7 @@ type
     htBeforeAddPersistent,
     htPersistentAdded,
     htPersistentDeleting,
+    htPersistentDeleted, // DaThoX
     htDeletePersistent,
     htGetSelectedPersistents,
     htSetSelectedPersistents,
@@ -1320,6 +1322,7 @@ type
     procedure ComponentRenamed(AComponent: TComponent);
     procedure PersistentAdded(APersistent: TPersistent; Select: boolean);
     procedure PersistentDeleting(APersistent: TPersistent);
+    procedure PersistentDeleted; // DaThoX
     procedure DeletePersistent(var APersistent: TPersistent);
     procedure GetSelection(const ASelection: TPersistentSelectionList);
     procedure SetSelection(const ASelection: TPersistentSelectionList);
@@ -1423,6 +1426,12 @@ type
                        const OnPersistentDeleting: TPropHookPersistentDeleting);
     procedure RemoveHandlerPersistentDeleting(
                        const OnPersistentDeleting: TPropHookPersistentDeleting);
+    // DaThoX begin
+    procedure AddHandlerPersistentDeleted(
+                       const OnPersistentDeleted: TPropHookPersistentDeleted);
+    procedure RemoveHandlerPersistentDeleted(
+                       const OnPersistentDeleted: TPropHookPersistentDeleted);
+    // DaThoX end
     procedure AddHandlerDeletePersistent(
                            const OnDeletePersistent: TPropHookDeletePersistent);
     procedure RemoveHandlerDeletePersistent(
@@ -5847,6 +5856,17 @@ begin
     TPropHookPersistentDeleting(FHandlers[htPersistentDeleting][i])(APersistent);
 end;
 
+// DaThoX begin
+procedure TPropertyEditorHook.PersistentDeleted;
+var
+  i: Integer;
+begin
+  i:=GetHandlerCount(htPersistentDeleted);
+  while GetNextHandlerIndex(htPersistentDeleted,i) do
+    TPropHookPersistentDeleted(FHandlers[htPersistentDeleted][i])();
+end;
+// DaThoX end
+
 procedure TPropertyEditorHook.DeletePersistent(var APersistent: TPersistent);
 // Call this to actually free APersistent
 // One of the hooks will free it.
@@ -6343,6 +6363,20 @@ procedure TPropertyEditorHook.RemoveHandlerPersistentDeleting(
 begin
   RemoveHandler(htPersistentDeleting,TMethod(OnPersistentDeleting));
 end;
+
+// DaThoX begin
+procedure TPropertyEditorHook.AddHandlerPersistentDeleted(
+  const OnPersistentDeleted: TPropHookPersistentDeleted);
+begin
+  AddHandler(htPersistentDeleted,TMethod(OnPersistentDeleted));
+end;
+
+procedure TPropertyEditorHook.RemoveHandlerPersistentDeleted(
+  const OnPersistentDeleted: TPropHookPersistentDeleted);
+begin
+  RemoveHandler(htPersistentDeleted,TMethod(OnPersistentDeleted));
+end;
+// DaThoX end
 
 procedure TPropertyEditorHook.AddHandlerDeletePersistent(
   const OnDeletePersistent: TPropHookDeletePersistent);

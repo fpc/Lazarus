@@ -2926,6 +2926,8 @@ begin
   // call ComponentDeleted handler
   if Assigned(FOnPersistentDeleted) then
     FOnPersistentDeleted(Self,APersistent);
+  if Hook<>nil then // DaThoX
+    Hook.PersistentDeleted; // DaThoX
 end;
 
 procedure TDesigner.MarkPersistentForDeletion(APersistent: TPersistent);
