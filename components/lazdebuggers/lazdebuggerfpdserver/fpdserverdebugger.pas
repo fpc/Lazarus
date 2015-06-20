@@ -217,6 +217,21 @@ type
     procedure DoOnCommandFailed(ACommandResponse: TJSonObject); override;
   end;
 
+  { TFPDSendLocalsCommand }
+
+  TFPDSendLocalsCommand = class(TFPDSendCommand)
+  private
+    FLocals: TLocals;
+    procedure DoLocalsFreed(Sender: TObject);
+  protected
+    procedure ComposeJSon(AJsonObject: TJSONObject); override;
+  public
+    constructor create(ALocals: TLocals);
+    destructor Destroy; override;
+    procedure DoOnCommandSuccesfull(ACommandResponse: TJSonObject); override;
+    procedure DoOnCommandFailed(ACommandResponse: TJSonObject); override;
+  end;
+
   { TFPDSendDisassembleCommand }
 
   TFPDSendDisassembleCommand = class(TFPDSendCommand)
@@ -292,6 +307,7 @@ type
     class function Caption: String; override;
     function CreateBreakPoints: TDBGBreakPoints; override;
     function CreateWatches: TWatchesSupplier; override;
+    function CreateLocals: TLocalsSupplier; override;
     function CreateCallStack: TCallStackSupplier; override;
     function CreateDisassembler: TDBGDisassembler; override;
     function RequestCommand(const ACommand: TDBGCommand; const AParams: array of const): Boolean; override;
@@ -351,6 +367,13 @@ type
     procedure AddRange(ARange: TDBGDisassemblerEntryRange);
   end;
 
+  { TFPLocals }
+
+  TFPLocals = class(TLocalsSupplier)
+  public
+    procedure RequestData(ALocals: TLocals); override;
+  end;
+
   { TFPWatches }
 
   TFPWatches = class(TWatchesSupplier)
@@ -379,6 +402,74 @@ end;
 { TFPDSendCommand }
 
 var GCommandUID: integer = 0;
+
+{ TFPDSendLocalsCommand }
+
+procedure TFPDSendLocalsCommand.DoLocalsFreed(Sender: TObject);
+begin
+  FLocals:=nil;
+end;
+
+procedure TFPDSendLocalsCommand.ComposeJSon(AJsonObject: TJSONObject);
+begin
+  inherited ComposeJSon(AJsonObject);
+  AJsonObject.Add('command','locals');
+end;
+
+constructor TFPDSendLocalsCommand.create(ALocals: TLocals);
+begin
+  inherited create(True);
+  ALocals.AddFreeNotification(@DoLocalsFreed);
+  FLocals := ALocals;
+end;
+
+destructor TFPDSendLocalsCommand.Destroy;
+begin
+  if assigned(FLocals) then
+    FLocals.RemoveFreeNotification(@DoLocalsFreed);
+  inherited Destroy;
+end;
+
+procedure TFPDSendLocalsCommand.DoOnCommandSuccesfull(ACommandResponse: TJSonObject);
+var
+  JSonLocalsArr: TJSONArray;
+  JSonLocalsEntryObj: TJSONObject;
+  i: Integer;
+begin
+  inherited DoOnCommandSuccesfull(ACommandResponse);
+  if assigned(FLocals) then
+    begin
+    FLocals.Clear;
+    JSonLocalsArr := ACommandResponse.Get('variables', TJSONArray(nil));
+    if assigned(JSonLocalsArr) and (JSonLocalsArr.Count>0) then
+      begin
+      for i := 0 to JSonLocalsArr.Count - 1 do
+        begin
+        JSonLocalsEntryObj := JSonLocalsArr.Items[i] as TJSONObject;
+        FLocals.Add(JSonLocalsEntryObj.Get('name', ''), JSonLocalsEntryObj.Get('value', ''));
+        end;
+      FLocals.SetDataValidity(ddsValid);
+      end;
+    FLocals.SetDataValidity(ddsValid);
+    end;
+end;
+
+procedure TFPDSendLocalsCommand.DoOnCommandFailed(ACommandResponse: TJSonObject);
+begin
+  FLocals.SetDataValidity(ddsInvalid);
+end;
+
+procedure TFPLocals.RequestData(ALocals: TLocals);
+begin
+  if (Debugger = nil) or not(Debugger.State = dsPause)
+  then begin
+    ALocals.SetDataValidity(ddsInvalid);
+    exit;
+  end;
+
+  TFPDServerDebugger(Debugger).QueueCommand(TFPDSendLocalsCommand.create(ALocals));
+  ALocals.SetDataValidity(ddsRequested);
+end;
 
 { TFPDBGDisassembler }
 
@@ -1217,6 +1308,11 @@ end;
 function TFPDServerDebugger.CreateWatches: TWatchesSupplier;
 begin
   Result := TFPWatches.Create(Self);
+end;
+
+function TFPDServerDebugger.CreateLocals: TLocalsSupplier;
+begin
+  Result := TFPLocals.Create(Self);
 end;
 
 function TFPDServerDebugger.CreateCallStack: TCallStackSupplier;
