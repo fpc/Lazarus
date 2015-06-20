@@ -119,6 +119,12 @@ begin
     if Param='' then continue;
     if (length(Param)>2) and (Param[1]='-') and (Param[2]='-') then begin
       ParamName:=copy(Param,3,length(Param));
+      if (Converter is TWiki2XHTMLConverter) then begin
+        if ParamName = 'nowikicategories' then begin
+          TWiki2XHTMLConverter(FConverter).AddCategories:= false;
+          continue;
+        end;
+      end;
       p:=Pos('=',ParamName);
       if p<1 then begin
         E('invalid parameter "'+Param+'"');
@@ -147,7 +153,7 @@ begin
         Converter.ImagesDir:=Param;
         continue;
       end else if ParamName='title' then begin
-        Converter.Title:=Param;
+        Converter.Title:=ParamValue;
         continue;
       end else if ParamName='nowarnurl' then begin
         Converter.NoWarnBaseURLs[ParamName]:='1';
@@ -169,15 +175,6 @@ begin
         if ParamName='css' then begin
           TWiki2XHTMLConverter(Converter).CSSFilename:=ParamValue;
           continue;
-        end;
-        if ParamName='wikicategories' then begin
-          case ParamValue of
-            'yes', 'true': TWiki2XHTMLConverter(Converter).AddCategories := true;
-            'no', 'false': TWiki2XHTMLConverter(Converter).AddCategories := false;
-            else
-              E('Incorrect parameter value ('+Param+')');
-          end;
-          Continue;
         end;
       end;
       if Converter is TWiki2CHMConverter then begin
@@ -333,7 +330,7 @@ begin
   writeln;
   writeln('Options for --format=xhtml,html,chm :');
   writeln('  --css=<path of stylesheet> : default: ',XHTMLConverter.CSSFilename);
-  writeln('  --wikicategories=<yes|true|false|no> : default: ', XHTMLConverter.AddCategories);
+  writeln('  --nowikicategories : do not add links to wiki categories', XHTMLConverter.AddCategories);
   writeln;
   writeln('Options for --format=chm :');
   writeln('   Note: the default page is the first page');

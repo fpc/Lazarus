@@ -70,6 +70,7 @@ type
     FPageFileExt: string;
     FUseTemplateIcons: Boolean;
     FAddCategories: Boolean;
+    FIndexInternalLinksOnly: Boolean;
     procedure DoAddCategories(Page: TW2XHTMLPage);
     procedure DoAddLinksToTranslations(Page: TW2XHTMLPage);
     procedure DoAddLinkToBaseDocument(Page: TW2XHTMLPage);
@@ -95,6 +96,7 @@ type
     procedure ConvertInit; virtual;
     procedure ConvertAllPages; virtual;
     procedure SaveAllPages; virtual;
+    procedure AddIndexItem({%H-}AText, {%H-}AUrl: String); virtual;
     procedure AddTocItem({%H-}ALevel:Integer; {%H-}AText, {%H-}AUrl: String); virtual;
   public
     constructor Create; override;
@@ -115,6 +117,8 @@ type
       read FAddTOCIfHeaderCountMoreThan write FAddTOCIfHeaderCountMoreThan default 2;
     property AddCategories: Boolean
       read FAddCategories write FAddCategories default true;
+    property IndexInternalLinksOnly: Boolean
+      read FIndexInternalLinksOnly write FIndexInternalLinksOnly default true;
     property UseTemplateIcons: Boolean
       read FUseTemplateIcons write FUseTemplateIcons;
   end;
@@ -158,6 +162,8 @@ begin
   node.SetAttribute('href', url+'Special:Categories');
   CategoriesNode.AppendChild(node);
   CategoriesNode.AppendChild(doc.CreateTextNode('Categories:  '));
+  if not FIndexInternalLinksOnly then
+    AddIndexItem('Categories (external)', url+'Special:Categories');
 
   for i:=0 to FCategoryList.Count-1 do begin
     category := FCategoryList[i];
@@ -167,6 +173,8 @@ begin
     txt := Copy(category, pos(':', category)+1, MaxInt);
     node.AppendChild(doc.CreateTextNode(txt));
     CategoriesNode.AppendChild(node);
+    if not FIndexInternalLinksOnly then
+      AddIndexItem('Category: '+txt+' (external)', url+category);
 
     // Add separator
     if i < FCategoryList.Count-1 then
@@ -252,6 +260,9 @@ begin
   Link+=Page.WikiDocumentName;
   Node.SetAttribute('href', Link);
   Node.AppendChild(doc.CreateTextNode(LinkToBaseDocument));
+
+  if not FIndexInternalLinksOnly then
+    AddIndexItem(LinkToBaseDocument + ' (external)', Link);
 end;
 
 procedure TWiki2XHTMLConverter.OnHeaderToken(Token: TWPToken);
@@ -306,6 +317,7 @@ begin
       LINode.AppendChild(LinkNode);
       inc(Page.TOCNodeCount);
       AddTocItem(Page.SectionLevel, HeaderTxt, Page.Filename+'#'+HRef);
+      AddIndexItem(HeaderTxt, page.Filename+'#'+HRef);
     end;
     Page.CurDOMNode:=Page.CurDOMNode.ParentNode as TDOMElement;
     Page.Pop;
@@ -617,8 +629,18 @@ begin
   if URL<>'' then begin
     Node:=doc.CreateElement('a');
     Node.SetAttribute('href', URL);
-    if Caption<>'' then
+    if Caption<>'' then begin
       Node.AppendChild(doc.CreateTextNode(Caption));
+      if ((pos('http', URL) = 1) or (pos('wiki.', URL) = 1) or (pos('bugs.', URL) = 1))
+      then begin
+        if not FIndexInternalLinksOnly then
+          AddIndexItem(Caption + ' (external)', URL);
+      end else begin
+        if URL[1]='#' then
+          URL := Page.Filename + URL;
+        AddIndexItem(Caption, URL);
+      end;
+    end;
     Page.CurDOMNode.AppendChild(Node);
   end else if Caption<>'' then begin
     InsertText(LinkToken, Caption);
@@ -929,6 +951,8 @@ begin
             Node.AppendChild(doc.CreateTextNode('MantisLink #'));
             Node.AppendChild(doc.CreateTextNode(Curvalue));
             Page.CurDOMNode.AppendChild(Node);
+            if not FIndexInternalLinksOnly then
+              AddIndexItem('MantisLink #'+CurValue+' (external)', 'http://bugs.freepascal.org/view.php?id='+CurValue);
             exit;
           end;
 
@@ -1201,6 +1225,11 @@ begin
     SavePage(TW2XHTMLPage(Pages[i]));
 end;
 
+procedure TWiki2XHTMLConverter.AddIndexItem(AText, AUrl: String);
+begin
+  // nothing to do here - will be overridden by CHMConverter
+end;
+
 procedure TWiki2XHTMLConverter.AddTocItem(ALevel: Integer; AText, AUrl: String);
 begin
   // nothing to do here - will be overridden by CHMConverter
@@ -1220,6 +1249,7 @@ begin
   FAddLinksToTranslations:=true;
   FAddTOCIfHeaderCountMoreThan:=2;
   FUseTemplateIcons := true;
+  FIndexInternalLinksOnly := true;
 end;
 
 destructor TWiki2XHTMLConverter.Destroy;

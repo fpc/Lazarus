@@ -68,16 +68,16 @@ type
     Writer: TChmWriter;
     FilesCompressed: integer;
     DocumentNameToPage: TStringToPointerTree; // Page.WikiDocumentName+'.html' to Page
+    procedure AddIndexItem(AText, AUrl: String); override;
+    procedure AddTocItem(ALevel: Integer; AText, AUrl: String); override;
     procedure ConvertInit; override;
     function OnWriterGetFileData(const DataName: String; out PathInChm: String;
       out FileName: String; var Stream: TStream): Boolean;
     procedure OnWriterLastFileAdded(Sender: TObject);
-    procedure WriteIndexToStream(aStream: TStream);
     function GetImageLink(ImgFilename: string): string; override;
     function GetInternalImageLink(ImgFilename: String): String; override;
     function GetPageLink(Page: TW2XHTMLPage): string; override;
     procedure SaveAllPages; override;
-    procedure AddTocItem(ALevel: Integer; AText, AUrl: String); override;
   public
     constructor Create; override;
     destructor Destroy; override;
@@ -123,60 +123,32 @@ begin
    raise Exception.Create('TWiki2CHMConverter.OnWriterGetFileData failed DataName="'+dbgstr(DataName)+'"');
 end;
 
-procedure TWiki2CHMConverter.WriteIndexToStream(aStream: TStream);
-
-  procedure w(const s: string);
-  begin
-    if s='' then exit;
-    aStream.Write(s[1],length(s));
-    {$IFDEF VerboseCHMIndex}
-    dbgout(s);
-    {$ENDIF}
-  end;
-
-  procedure wl(const s: string);
-  begin
-    w(s);
-    w(#13#10);
-  end;
-
+procedure TWiki2CHMConverter.AddIndexItem(AText, AUrl: String);
 var
+  item: TCHMSiteMapItem;
   i: Integer;
-  Page: TW2CHMPage;
-  List: TStringList;
-  CurTitle: String;
+  txt, url, itemtxt, itemurl, itemlocal: String;
 begin
-  wl('<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">');
-  wl('<html>');
-  wl('<head>');
-  wl('<meta name="generator" content="lazwiki">');
-  wl('</head>');
-  wl('<body>');
-  wl('<object type="text/site properties">');
-  wl('</object>');
-  wl('<ul>');
-  List:=TStringList.Create;
-  try
-    // add pages sorted by title
-    for i:=0 to Count-1 do begin
-      Page:=TW2CHMPage(Pages[i]);
-      CurTitle:=UTF8Trim(Page.WikiPage.Title);
-      if CurTitle='' then continue;
-      List.AddObject(CurTitle,Page);
-    end;
-    List.Sort;
-    for i:=0 to List.Count-1 do begin
-      Page:=TW2CHMPage(List.Objects[i]);
-      wl('  <li> <object type="text/sitemap">');
-      wl('       <param name="Name" value="'+StrToXMLValue(Page.WikiPage.Title)+'">');
-      wl('       <param name="Local" value="'+StrToXMLValue(GetPageLink(Page))+'">');
-    end;
-  finally
-    List.Free;
+  // Avoid empty index data
+  if (AText = '') or (AUrl = '') then
+    exit;
+
+  // Avoid duplicate index items.
+  txt := UTF8Trim(UTF8Lowercase(AText));
+  url := UTF8Trim(UTF8Lowercase(AUrl));
+  for i:=0 to FIndexSiteMap.Items.Count-1 do begin
+    item := FIndexSiteMap.Items.Item[i];
+    itemtxt := UTF8Lowercase(item.Text);
+    itemurl := UTF8Lowercase(item.URL);
+    itemlocal := UTF8Lowercase(item.Local);
+    if (txt = itemtxt) and ((url = itemurl) or (url = itemlocal)) then
+      exit;
   end;
-  wl('</ul>');
-  wl('</body>');
-  wl('</html>');
+
+  item := FIndexSiteMap.Items.NewItem;
+  item.Local := Trim(AUrl);
+  item.Text := UTF8Trim(AText);
+  item.Keyword := UTF8Trim(AText);
 end;
 
 procedure TWiki2CHMConverter.AddTocItem(ALevel: Integer; AText, AUrl: String);
@@ -210,6 +182,15 @@ begin
   item.ImageNumber := 0;
 end;
 
+function CompareIndex(Item1, Item2: Pointer): Integer;
+var
+  indexItem1, indexItem2: TChmSiteMapItem;
+begin
+  indexItem1 := TChmSiteMapItem(Item1);
+  indexItem2 := TChmSiteMapItem(Item2);
+  Result := UTF8CompareStr(UTF8Lowercase(indexItem1.Text), UTF8Lowercase(indexItem2.Text));
+end;
+
 procedure TWiki2CHMConverter.OnWriterLastFileAdded(Sender: TObject);
 var
   CurWriter: TChmWriter;
@@ -220,14 +201,11 @@ begin
 
   // write Index (see TChmProject.LastFileAdded)
   if (IndexFileName <> '') then begin
-    FreeAndNil(FIndexSitemap);
     FIndexStream := TMemoryStream.Create;
-    WriteIndexToStream(FIndexStream);
+    FIndexSiteMap.Items.Sort(@CompareIndex);
+    FIndexSiteMap.SaveToStream(FIndexStream);
     CurWriter.AppendIndex(FIndexStream);
-    FIndexStream.Position := 0;
-    FIndexSitemap := TChmSiteMap.Create(stIndex);
-    FIndexSitemap.LoadFromStream(FIndexStream);
-    CurWriter.AppendBinaryIndexFromSiteMap(FIndexSitemap,False);
+    CurWriter.AppendBinaryIndexFromSitemap(FIndexSitemap,false);
   end;
 
   // write TOC (see TChmProject.LastFileAdded)
@@ -259,7 +237,7 @@ procedure TWiki2CHMConverter.SetCHMFile(AValue: string);
 var
   NewValue: String;
 begin
-  NewValue:=AppendPathDelim(TrimFilename(AValue));
+  NewValue:=TrimFilename(AValue);
   if FCHMFile=NewValue then Exit;
   FCHMFile:=NewValue;
 end;
@@ -286,6 +264,7 @@ begin
   if CHMFile='' then
     raise Exception.Create('chm file not set');
 
+  FIndexSitemap := TChmSitemap.Create(stIndex);
   FTOCSitemap := TChmSitemap.Create(stTOC);
   AddTocItem(0, FTOCRootName, '');
 

@@ -1065,12 +1065,11 @@ begin
     while not (FCurP^ in [#0..#31, ']']) do inc(FCurP);
     FLinkToken.CaptionEndPos:=StrPos(FCurP);
   end;
+
   if FCurP^=']' then begin
     inc(FCurP);
     if (FLinkToken.SubToken=wptInternLink) and (FCurP^=']') then
       inc(FCurP);
-
-
     DoToken(FLinkToken);
   end;
   FLastEmitPos:=FCurP;
