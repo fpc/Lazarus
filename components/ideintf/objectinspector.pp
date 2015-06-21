@@ -1219,6 +1219,10 @@ begin
   if (not ASelection.ForceUpdate) and FSelection.IsEqual(ASelection) then exit;
 
   OldSelectedRowPath:=PropertyPath(ItemIndex);
+  // DaThoX begin
+  if FCurrentEdit = ValueEdit then
+    ValueEditExit(Self);
+  // DaThoX end
   ItemIndex:=-1;
   ClearRows;
   FSelection.Assign(ASelection);
