@@ -4577,6 +4577,12 @@ msgstr "Lihavoi muutetut arvot"
 msgid "Border space"
 msgstr "Reuna-alue"
 
+#: lazarusidestrconsts.lisbottom
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisbottom"
+msgid "Bottom"
+msgstr "Alhaalla"
+
 #: lazarusidestrconsts.lisbottomborderspacespinedithint
 msgid "Bottom borderspace. This value is added to base borderspace and used for the space below the control."
 msgstr "Alapuolen reuna-alue. Tämä arvo lisätään yhteiseen reuna-alueeseen."
@@ -6413,6 +6419,10 @@ msgstr "Konfiguroi %s:n kokoaminen"
 msgid "Configure \"Build Lazarus\""
 msgstr "Konfiguroi \"Lazaruksen kokoaminen\""
 
+#: lazarusidestrconsts.lisconfigureeditortoolbar
+msgid "Configure Toolbar"
+msgstr ""
+
 #: lazarusidestrconsts.lisconfigurelazaruside
 msgid "Configure Lazarus IDE"
 msgstr "Konfiguroi Lazarus IDE"
@@ -8208,6 +8218,18 @@ msgstr "Editorin värit"
 #: lazarusidestrconsts.liseditormacros
 msgid "Editor macros"
 msgstr "Editorin makrot"
+
+#: lazarusidestrconsts.liseditortoolbar
+msgid "Editor ToolBar"
+msgstr ""
+
+#: lazarusidestrconsts.liseditortoolbarhint
+msgid "You may add here your favorite commands"
+msgstr ""
+
+#: lazarusidestrconsts.liseditortoolbarvisible
+msgid "EditorToolbar is &visible"
+msgstr ""
 
 #: lazarusidestrconsts.lisedoptsloadascheme
 msgid "Load a scheme"
@@ -14438,6 +14460,10 @@ msgstr "Tallenna istunnon tiedot"
 msgid ".lpi is the project main info file, .lps is a separate file for session data only."
 msgstr ".lpi on projektin määrittelytiedosto, .lps on erillinen tiedosto vain istunnon tietoja varten."
 
+#: lazarusidestrconsts.lisposition
+msgid "Position"
+msgstr ""
+
 #: lazarusidestrconsts.lispositionoutsideofsource
 msgid "%s (position outside of source)"
 msgstr "%s (sijainti lähdekoodin ulkopuolella)"
@@ -16814,6 +16840,12 @@ msgstr ""
 msgid "tool stopped with exit code %s. Use context menu to get more information."
 msgstr ""
 
+#: lazarusidestrconsts.listop
+#, fuzzy
+msgctxt "lazarusidestrconsts.listop"
+msgid "Top"
+msgstr "Ylhäällä"
+
 #: lazarusidestrconsts.listopanchoring
 msgid "Top anchoring"
 msgstr "Yläosan ankkurointi"
@@ -18871,6 +18903,18 @@ msgstr "tutki"
 msgctxt "lazarusidestrconsts.srkmecinvertassignment"
 msgid "Invert Assignment"
 msgstr "Käännä asettaminen"
+
+#: lazarusidestrconsts.srkmeckeymapleft
+#, fuzzy
+msgctxt "lazarusidestrconsts.srkmeckeymapleft"
+msgid "Left"
+msgstr "Vasen"
+
+#: lazarusidestrconsts.srkmeckeymapright
+#, fuzzy
+msgctxt "lazarusidestrconsts.srkmeckeymapright"
+msgid "Right"
+msgstr "Oikea"
 
 #: lazarusidestrconsts.srkmecleft
 msgid "Move cursor left"

@@ -4561,6 +4561,12 @@ msgstr "Nem alapértelmezett értékek félkövérré tétele"
 msgid "Border space"
 msgstr "Keret-térköz"
 
+#: lazarusidestrconsts.lisbottom
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisbottom"
+msgid "Bottom"
+msgstr "Lent"
+
 #: lazarusidestrconsts.lisbottomborderspacespinedithint
 msgid "Bottom borderspace. This value is added to base borderspace and used for the space below the control."
 msgstr "Alsó keret-térköz. Ez az érték hozzáadódik az alap oldaltérközhöz és a vezérlő aljára vonatkozik."
@@ -6409,6 +6415,10 @@ msgstr "%s építésének beállítása"
 msgid "Configure \"Build Lazarus\""
 msgstr "\"Lazarus építés\" beállítása"
 
+#: lazarusidestrconsts.lisconfigureeditortoolbar
+msgid "Configure Toolbar"
+msgstr ""
+
 #: lazarusidestrconsts.lisconfigurelazaruside
 msgid "Configure Lazarus IDE"
 msgstr "Lazarus IDE beállítása"
@@ -8207,6 +8217,18 @@ msgstr "Szerkesztő színei"
 #: lazarusidestrconsts.liseditormacros
 msgid "Editor macros"
 msgstr "Szerkesztő makrók"
+
+#: lazarusidestrconsts.liseditortoolbar
+msgid "Editor ToolBar"
+msgstr ""
+
+#: lazarusidestrconsts.liseditortoolbarhint
+msgid "You may add here your favorite commands"
+msgstr ""
+
+#: lazarusidestrconsts.liseditortoolbarvisible
+msgid "EditorToolbar is &visible"
+msgstr ""
 
 #: lazarusidestrconsts.lisedoptsloadascheme
 msgid "Load a scheme"
@@ -14497,6 +14519,10 @@ msgstr "Munkamenet információk mentése ide:"
 msgid ".lpi is the project main info file, .lps is a separate file for session data only."
 msgstr "Az .lpi a projekt fő információs fájlja, az .lps egy különálló fájl csak a munkamenet adatai számára."
 
+#: lazarusidestrconsts.lisposition
+msgid "Position"
+msgstr ""
+
 #: lazarusidestrconsts.lispositionoutsideofsource
 msgid "%s (position outside of source)"
 msgstr "%s (a pozíció a forráson kívül van)"
@@ -16887,6 +16913,12 @@ msgstr "Eszköz-fejléc: Sikerült"
 msgid "tool stopped with exit code %s. Use context menu to get more information."
 msgstr "az eszköz kilépési kóddal állt le: %s. A helyi menüből további információ érhető el."
 
+#: lazarusidestrconsts.listop
+#, fuzzy
+msgctxt "lazarusidestrconsts.listop"
+msgid "Top"
+msgstr "Fent"
+
 #: lazarusidestrconsts.listopanchoring
 msgid "Top anchoring"
 msgstr "Felső oldal horgonyozása"
@@ -18946,6 +18978,18 @@ msgstr "vizsgálat"
 msgctxt "lazarusidestrconsts.srkmecinvertassignment"
 msgid "Invert Assignment"
 msgstr "Hozzárendelés megfordítása"
+
+#: lazarusidestrconsts.srkmeckeymapleft
+#, fuzzy
+msgctxt "lazarusidestrconsts.srkmeckeymapleft"
+msgid "Left"
+msgstr "Balra"
+
+#: lazarusidestrconsts.srkmeckeymapright
+#, fuzzy
+msgctxt "lazarusidestrconsts.srkmeckeymapright"
+msgid "Right"
+msgstr "Jobbra"
 
 #: lazarusidestrconsts.srkmecleft
 msgid "Move cursor left"

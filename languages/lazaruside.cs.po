@@ -4616,6 +4616,12 @@ msgstr "Tlustě nevýchozí hodnoty"
 msgid "Border space"
 msgstr "Okrajový prostor"
 
+#: lazarusidestrconsts.lisbottom
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisbottom"
+msgid "Bottom"
+msgstr "Dolní"
+
 #: lazarusidestrconsts.lisbottomborderspacespinedithint
 msgid "Bottom borderspace. This value is added to base borderspace and used for the space below the control."
 msgstr "Dolní okrajový prostor. Tato hodnota je přidána k základnímu okraji a je použita pro místo pod prvkem."
@@ -6473,6 +6479,10 @@ msgstr "Nastavit sestavení %s"
 msgid "Configure \"Build Lazarus\""
 msgstr "Nastavení \"Sestavení Lazarusu\""
 
+#: lazarusidestrconsts.lisconfigureeditortoolbar
+msgid "Configure Toolbar"
+msgstr ""
+
 #: lazarusidestrconsts.lisconfigurelazaruside
 msgid "Configure Lazarus IDE"
 msgstr "Nastavit Lazarus IDE"
@@ -8287,6 +8297,18 @@ msgstr "Barvy Editoru"
 #: lazarusidestrconsts.liseditormacros
 msgid "Editor macros"
 msgstr "Návrhář maker"
+
+#: lazarusidestrconsts.liseditortoolbar
+msgid "Editor ToolBar"
+msgstr ""
+
+#: lazarusidestrconsts.liseditortoolbarhint
+msgid "You may add here your favorite commands"
+msgstr ""
+
+#: lazarusidestrconsts.liseditortoolbarvisible
+msgid "EditorToolbar is &visible"
+msgstr ""
 
 #: lazarusidestrconsts.lisedoptsloadascheme
 msgid "Load a scheme"
@@ -14624,6 +14646,10 @@ msgstr "Uložit informace o sezení"
 msgid ".lpi is the project main info file, .lps is a separate file for session data only."
 msgstr ""
 
+#: lazarusidestrconsts.lisposition
+msgid "Position"
+msgstr ""
+
 #: lazarusidestrconsts.lispositionoutsideofsource
 #, fuzzy
 #| msgid "%s (position outside of source"
@@ -17059,6 +17085,12 @@ msgstr "Hlavička Nástroje: Úspěch"
 msgid "tool stopped with exit code %s. Use context menu to get more information."
 msgstr "nástro skončil s kódem %s. Použijte kontextové menu pro více informací."
 
+#: lazarusidestrconsts.listop
+#, fuzzy
+msgctxt "lazarusidestrconsts.listop"
+msgid "Top"
+msgstr "Nahoře"
+
 #: lazarusidestrconsts.listopanchoring
 msgid "Top anchoring"
 msgstr "Přichycení nahoru"
@@ -19134,6 +19166,18 @@ msgstr "zkoumat"
 msgctxt "lazarusidestrconsts.srkmecinvertassignment"
 msgid "Invert Assignment"
 msgstr "Převrátit přiřazení"
+
+#: lazarusidestrconsts.srkmeckeymapleft
+#, fuzzy
+msgctxt "lazarusidestrconsts.srkmeckeymapleft"
+msgid "Left"
+msgstr "Vlevo"
+
+#: lazarusidestrconsts.srkmeckeymapright
+#, fuzzy
+msgctxt "lazarusidestrconsts.srkmeckeymapright"
+msgid "Right"
+msgstr "Vpravo"
 
 #: lazarusidestrconsts.srkmecleft
 msgid "Move cursor left"

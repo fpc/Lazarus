@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2015-06-17 02:20+0300\n"
+"PO-Revision-Date: 2015-06-21 20:22+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -4562,6 +4562,11 @@ msgstr "Выделять значения не по умолчанию жирн�
 msgid "Border space"
 msgstr "Зазор"
 
+#: lazarusidestrconsts.lisbottom
+msgctxt "lazarusidestrconsts.lisbottom"
+msgid "Bottom"
+msgstr "Снизу"
+
 #: lazarusidestrconsts.lisbottomborderspacespinedithint
 msgid "Bottom borderspace. This value is added to base borderspace and used for the space below the control."
 msgstr "Нижний зазор. Его значение добавляется к базовуму зазору и используется для определения пространства под компонентом."
@@ -6407,6 +6412,10 @@ msgstr "Параметры сборки %s"
 msgid "Configure \"Build Lazarus\""
 msgstr "Параметры \"Сборки Lazarus\""
 
+#: lazarusidestrconsts.lisconfigureeditortoolbar
+msgid "Configure Toolbar"
+msgstr "Настроить инструментальную панель"
+
 #: lazarusidestrconsts.lisconfigurelazaruside
 msgid "Configure Lazarus IDE"
 msgstr "Настройка Lazarus"
@@ -8205,6 +8214,18 @@ msgstr "Цвета редактора"
 #: lazarusidestrconsts.liseditormacros
 msgid "Editor macros"
 msgstr "Макросы редактора"
+
+#: lazarusidestrconsts.liseditortoolbar
+msgid "Editor ToolBar"
+msgstr "Инструментальная панель редактора"
+
+#: lazarusidestrconsts.liseditortoolbarhint
+msgid "You may add here your favorite commands"
+msgstr "Сюда можно добавить часто используемые команды"
+
+#: lazarusidestrconsts.liseditortoolbarvisible
+msgid "EditorToolbar is &visible"
+msgstr "&Показывать инструментальную панель редактора"
 
 #: lazarusidestrconsts.lisedoptsloadascheme
 msgid "Load a scheme"
@@ -10925,7 +10946,7 @@ msgstr "Модулем %s не владеет ни один из пакетов 
 #: lazarusidestrconsts.lisleft
 msgctxt "lazarusidestrconsts.lisleft"
 msgid "Left"
-msgstr "Влево"
+msgstr "Слева"
 
 #: lazarusidestrconsts.lisleftborderspacespinedithint
 msgid "Left borderspace. This value is added to base borderspace and used for the space left to the control."
@@ -14497,6 +14518,10 @@ msgstr "Сохранять сведения о сеансе работы в"
 msgid ".lpi is the project main info file, .lps is a separate file for session data only."
 msgstr "Файл .lpi является главным хранилищем сведений о проекте, в то время как .lps содержит только сведения о сеансе работы"
 
+#: lazarusidestrconsts.lisposition
+msgid "Position"
+msgstr "Положение"
+
 #: lazarusidestrconsts.lispositionoutsideofsource
 msgid "%s (position outside of source)"
 msgstr "%s (положение вне границ исходного кода)"
@@ -15254,7 +15279,7 @@ msgstr "Возвращение не удалось"
 #: lazarusidestrconsts.lisright
 msgctxt "lazarusidestrconsts.lisright"
 msgid "Right"
-msgstr "Вправо"
+msgstr "Справа"
 
 #: lazarusidestrconsts.lisrightanchoring
 msgid "Right anchoring"
@@ -16886,6 +16911,11 @@ msgstr "Заголовок средства: успешное завершени
 #: lazarusidestrconsts.listoolstoppedwithexitcodeusecontextmenutogetmoreinfo
 msgid "tool stopped with exit code %s. Use context menu to get more information."
 msgstr "средство завершило работу с кодом %s. Для получения дополнительных сведений воспользуйтесь контекстным меню."
+
+#: lazarusidestrconsts.listop
+msgctxt "lazarusidestrconsts.listop"
+msgid "Top"
+msgstr "Сверху"
 
 #: lazarusidestrconsts.listopanchoring
 msgid "Top anchoring"
@@ -18946,6 +18976,16 @@ msgstr "просмотреть"
 msgctxt "lazarusidestrconsts.srkmecinvertassignment"
 msgid "Invert Assignment"
 msgstr "Инвертировать присваивание"
+
+#: lazarusidestrconsts.srkmeckeymapleft
+msgctxt "lazarusidestrconsts.srkmeckeymapleft"
+msgid "Left"
+msgstr "Влево"
+
+#: lazarusidestrconsts.srkmeckeymapright
+msgctxt "lazarusidestrconsts.srkmeckeymapright"
+msgid "Right"
+msgstr "Вправо"
 
 #: lazarusidestrconsts.srkmecleft
 msgid "Move cursor left"

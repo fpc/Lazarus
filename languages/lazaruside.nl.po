@@ -4787,6 +4787,11 @@ msgstr ""
 msgid "Border space"
 msgstr "Randruimte"
 
+#: lazarusidestrconsts.lisbottom
+msgctxt "lazarusidestrconsts.lisbottom"
+msgid "Bottom"
+msgstr ""
+
 #: lazarusidestrconsts.lisbottomborderspacespinedithint
 msgid "Bottom borderspace. This value is added to base borderspace and used for the space below the control."
 msgstr "Bodem randruimte. Deze waarde wordt toegevoegd aan de basis randruimte en gebruikt voor de ruimte onder het control."
@@ -6679,6 +6684,10 @@ msgstr ""
 msgid "Configure \"Build Lazarus\""
 msgstr ""
 
+#: lazarusidestrconsts.lisconfigureeditortoolbar
+msgid "Configure Toolbar"
+msgstr ""
+
 #: lazarusidestrconsts.lisconfigurelazaruside
 msgid "Configure Lazarus IDE"
 msgstr ""
@@ -8504,6 +8513,18 @@ msgstr ""
 
 #: lazarusidestrconsts.liseditormacros
 msgid "Editor macros"
+msgstr ""
+
+#: lazarusidestrconsts.liseditortoolbar
+msgid "Editor ToolBar"
+msgstr ""
+
+#: lazarusidestrconsts.liseditortoolbarhint
+msgid "You may add here your favorite commands"
+msgstr ""
+
+#: lazarusidestrconsts.liseditortoolbarvisible
+msgid "EditorToolbar is &visible"
 msgstr ""
 
 #: lazarusidestrconsts.lisedoptsloadascheme
@@ -15141,6 +15162,10 @@ msgstr "Sessie informatie opslaan in"
 msgid ".lpi is the project main info file, .lps is a separate file for session data only."
 msgstr ""
 
+#: lazarusidestrconsts.lisposition
+msgid "Position"
+msgstr ""
+
 #: lazarusidestrconsts.lispositionoutsideofsource
 msgid "%s (position outside of source)"
 msgstr ""
@@ -17646,6 +17671,11 @@ msgstr ""
 msgid "tool stopped with exit code %s. Use context menu to get more information."
 msgstr ""
 
+#: lazarusidestrconsts.listop
+msgctxt "lazarusidestrconsts.listop"
+msgid "Top"
+msgstr ""
+
 #: lazarusidestrconsts.listopanchoring
 msgid "Top anchoring"
 msgstr "Top verankering"
@@ -19798,6 +19828,18 @@ msgstr "inspecteer"
 msgctxt "lazarusidestrconsts.srkmecinvertassignment"
 msgid "Invert Assignment"
 msgstr "Draai toekenning om"
+
+#: lazarusidestrconsts.srkmeckeymapleft
+#, fuzzy
+msgctxt "lazarusidestrconsts.srkmeckeymapleft"
+msgid "Left"
+msgstr "Links"
+
+#: lazarusidestrconsts.srkmeckeymapright
+#, fuzzy
+msgctxt "lazarusidestrconsts.srkmeckeymapright"
+msgid "Right"
+msgstr "Rechts"
 
 #: lazarusidestrconsts.srkmecleft
 msgid "Move cursor left"

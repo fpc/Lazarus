@@ -4604,6 +4604,12 @@ msgstr "Grassetto per valori non predefiniti"
 msgid "Border space"
 msgstr "Spazio del bordo"
 
+#: lazarusidestrconsts.lisbottom
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisbottom"
+msgid "Bottom"
+msgstr "Basso"
+
 #: lazarusidestrconsts.lisbottomborderspacespinedithint
 msgid "Bottom borderspace. This value is added to base borderspace and used for the space below the control."
 msgstr "Spazio del bordo inferiore. Questo valore viene aggiunto al bordo inferiore, ed è usato per lo spazio sotto il controllo."
@@ -6451,6 +6457,10 @@ msgstr "Configura la costruzione %s"
 msgid "Configure \"Build Lazarus\""
 msgstr "Configura \"Build Lazarus\""
 
+#: lazarusidestrconsts.lisconfigureeditortoolbar
+msgid "Configure Toolbar"
+msgstr ""
+
 #: lazarusidestrconsts.lisconfigurelazaruside
 msgid "Configure Lazarus IDE"
 msgstr "Configura l'IDE di Lazarus"
@@ -8259,6 +8269,18 @@ msgstr "Colori dell'editor"
 #: lazarusidestrconsts.liseditormacros
 msgid "Editor macros"
 msgstr "Macro dell'editor"
+
+#: lazarusidestrconsts.liseditortoolbar
+msgid "Editor ToolBar"
+msgstr ""
+
+#: lazarusidestrconsts.liseditortoolbarhint
+msgid "You may add here your favorite commands"
+msgstr ""
+
+#: lazarusidestrconsts.liseditortoolbarvisible
+msgid "EditorToolbar is &visible"
+msgstr ""
 
 #: lazarusidestrconsts.lisedoptsloadascheme
 msgid "Load a scheme"
@@ -14560,6 +14582,10 @@ msgstr "Salva l'informazione di sessione in "
 msgid ".lpi is the project main info file, .lps is a separate file for session data only."
 msgstr ".lpi è il file principale di informazioni sul progetto, .lps è un file separato per i soli dati della sessione."
 
+#: lazarusidestrconsts.lisposition
+msgid "Position"
+msgstr ""
+
 #: lazarusidestrconsts.lispositionoutsideofsource
 msgid "%s (position outside of source)"
 msgstr "%s (posizione fuori dal sorgente)"
@@ -16950,6 +16976,12 @@ msgstr "Intestazione strumento: Successo"
 msgid "tool stopped with exit code %s. Use context menu to get more information."
 msgstr "lo strumento ha terminato con codice di uscita %s. Usare il menu contestuale per maggiori informazioni."
 
+#: lazarusidestrconsts.listop
+#, fuzzy
+msgctxt "lazarusidestrconsts.listop"
+msgid "Top"
+msgstr "Cima"
+
 #: lazarusidestrconsts.listopanchoring
 msgid "Top anchoring"
 msgstr "Ancoraggio superiore"
@@ -19016,6 +19048,18 @@ msgstr "analizza"
 msgctxt "lazarusidestrconsts.srkmecinvertassignment"
 msgid "Invert Assignment"
 msgstr "Inverti assegnamento"
+
+#: lazarusidestrconsts.srkmeckeymapleft
+#, fuzzy
+msgctxt "lazarusidestrconsts.srkmeckeymapleft"
+msgid "Left"
+msgstr "Sinistra"
+
+#: lazarusidestrconsts.srkmeckeymapright
+#, fuzzy
+msgctxt "lazarusidestrconsts.srkmeckeymapright"
+msgid "Right"
+msgstr "Destra"
 
 #: lazarusidestrconsts.srkmecleft
 msgid "Move cursor left"
