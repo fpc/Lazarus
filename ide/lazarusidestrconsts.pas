@@ -1290,6 +1290,8 @@ resourcestring
   dlgProjFiles = 'Project Files';
   dlgEnvType = 'Type';
   dlgEnvNone = 'None';
+  srkmecKeyMapLeft = 'Left';
+  srkmecKeyMapRight = 'Right';
   dlgSmbFront = 'Symbol in front (.~pp)';
   lisNoBackupFiles = 'No backup files';
   dlgSmbBehind = 'Symbol behind (.pp~)';

@@ -315,8 +315,8 @@ function EditorCommandToDescriptionString(cmd: word): String;
 begin
   case cmd of
     ecNone                    : Result:= dlgEnvNone;
-    ecLeft                    : Result:= lisLeft;
-    ecRight                   : Result:= lisRight;
+    ecLeft                    : Result:= srkmecKeyMapLeft;
+    ecRight                   : Result:= srkmecKeyMapRight;
     ecUp                      : Result:= lisUp;
     ecDown                    : Result:= lisDown;
     ecWordLeft                : Result:= srkmecWordLeft;
