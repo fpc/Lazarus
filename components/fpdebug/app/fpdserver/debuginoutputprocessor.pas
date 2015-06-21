@@ -235,9 +235,14 @@ begin
         JSonArrayEntry := TJSONObject.Create;
         JSonArrayEntry.Add('name', AnEvent.WatchEntryArray[i].Expression);
         JSonArrayEntry.Add('value', AnEvent.WatchEntryArray[i].TextValue);
+        if AnEvent.EventName='registers' then
+          begin
+          JSonArrayEntry.Add('numvalue', AnEvent.WatchEntryArray[i].NumValue);
+          JSonArrayEntry.Add('size', AnEvent.WatchEntryArray[i].Size);
+          end;
         JSonArray.Add(JSonArrayEntry);
         end;
-      JSonEvent.Add('variables', JSonArray);
+      JSonEvent.Add(AnEvent.EventName, JSonArray);
       end;
     result := JSonEvent.AsJSON;
   finally

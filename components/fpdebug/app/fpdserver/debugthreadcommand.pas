@@ -236,11 +236,57 @@ type
     procedure ComposeSuccessEvent(var AnEvent: TFpDebugEvent); override;
   end;
 
+  { TFpDebugRegistersCommand }
+
+  TFpDebugRegistersCommand = class(TFpDebugThreadCommand)
+  private
+    FWatchEntryArray: TFpDebugEventWatchEntryArray;
+  public
+    function Execute(AController: TDbgController; out DoProcessLoop: boolean): boolean; override;
+    class function TextName: string; override;
+    procedure ComposeSuccessEvent(var AnEvent: TFpDebugEvent); override;
+  end;
 
 implementation
 
 uses
   FpDbgDisasX86;
+
+{ TFpDebugRegistersCommand }
+
+function TFpDebugRegistersCommand.Execute(AController: TDbgController; out DoProcessLoop: boolean): boolean;
+var
+  ARegisterList: TDbgRegisterValueList;
+  i: Integer;
+begin
+  result := false;
+  if (AController = nil) or (AController.CurrentProcess = nil) or
+     (AController.CurrentProcess.DbgInfo = nil) then
+    exit;
+
+  ARegisterList := AController.CurrentProcess.MainThread.RegisterValueList;
+  SetLength(FWatchEntryArray, ARegisterList.Count);
+  for i := 0 to ARegisterList.Count-1 do
+    begin
+    FWatchEntryArray[i].Expression := ARegisterList[i].Name;
+    FWatchEntryArray[i].TextValue := ARegisterList[i].StrValue;
+    FWatchEntryArray[i].NumValue := ARegisterList[i].NumValue;
+    FWatchEntryArray[i].Size := ARegisterList[i].Size;
+    end;
+  result := true;
+  DoProcessLoop := false;
+end;
+
+class function TFpDebugRegistersCommand.TextName: string;
+begin
+  result := 'registers';
+end;
+
+procedure TFpDebugRegistersCommand.ComposeSuccessEvent(var AnEvent: TFpDebugEvent);
+begin
+  inherited ComposeSuccessEvent(AnEvent);
+  AnEvent.WatchEntryArray := FWatchEntryArray;
+end;
 
 { TFpDebugLocalsCommand }
 
@@ -980,6 +1026,7 @@ initialization
   TFpDebugThreadCommandList.instance.Add(TFpDebugThreadStackTraceCommand);
   TFpDebugThreadCommandList.instance.Add(TFpDebugThreadDisassembleCommand);
   TFpDebugThreadCommandList.instance.Add(TFpDebugLocalsCommand);
+  TFpDebugThreadCommandList.instance.Add(TFpDebugRegistersCommand);
 finalization
   GFpDebugThreadCommandList.Free;
 end.

@@ -51,6 +51,8 @@ type
   TFpDebugEventWatchEntry = record
     TextValue: string;
     Expression: string;
+    NumValue: TDBGPtr;
+    Size: byte;
   end;
 
   TFpDebugEventCallStackEntryArray = array of TFpDebugEventCallStackEntry;
