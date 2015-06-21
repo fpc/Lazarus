@@ -232,6 +232,21 @@ type
     procedure DoOnCommandFailed(ACommandResponse: TJSonObject); override;
   end;
 
+  { TFPDSendRegistersCommand }
+
+  TFPDSendRegistersCommand = class(TFPDSendCommand)
+  private
+    FRegisters: TRegisters;
+    procedure DoRegistersFreed(Sender: TObject);
+  protected
+    procedure ComposeJSon(AJsonObject: TJSONObject); override;
+  public
+    constructor create(ARegisters: TRegisters);
+    destructor Destroy; override;
+    procedure DoOnCommandSuccesfull(ACommandResponse: TJSonObject); override;
+    procedure DoOnCommandFailed(ACommandResponse: TJSonObject); override;
+  end;
+
   { TFPDSendDisassembleCommand }
 
   TFPDSendDisassembleCommand = class(TFPDSendCommand)
@@ -308,6 +323,7 @@ type
     function CreateBreakPoints: TDBGBreakPoints; override;
     function CreateWatches: TWatchesSupplier; override;
     function CreateLocals: TLocalsSupplier; override;
+    function CreateRegisters: TRegisterSupplier; override;
     function CreateCallStack: TCallStackSupplier; override;
     function CreateDisassembler: TDBGDisassembler; override;
     function RequestCommand(const ACommand: TDBGCommand; const AParams: array of const): Boolean; override;
@@ -374,6 +390,13 @@ type
     procedure RequestData(ALocals: TLocals); override;
   end;
 
+  { TFPRegisters }
+
+  TFPRegisters = class(TRegisterSupplier)
+  public
+    procedure RequestData(ARegisters: TRegisters); override;
+  end;
+
   { TFPWatches }
 
   TFPWatches = class(TWatchesSupplier)
@@ -402,6 +425,82 @@ end;
 { TFPDSendCommand }
 
 var GCommandUID: integer = 0;
+
+{ TFPRegisters }
+
+procedure TFPRegisters.RequestData(ARegisters: TRegisters);
+begin
+  if (Debugger = nil) or not(Debugger.State = dsPause)
+  then begin
+    ARegisters.DataValidity:=ddsInvalid;
+    exit;
+  end;
+
+  TFPDServerDebugger(Debugger).QueueCommand(TFPDSendRegistersCommand.create(ARegisters));
+  ARegisters.DataValidity := ddsRequested;
+end;
+
+{ TFPDSendRegistersCommand }
+
+procedure TFPDSendRegistersCommand.DoRegistersFreed(Sender: TObject);
+begin
+  FRegisters := nil;
+end;
+
+procedure TFPDSendRegistersCommand.ComposeJSon(AJsonObject: TJSONObject);
+begin
+  inherited ComposeJSon(AJsonObject);
+  AJsonObject.Add('command','registers');
+end;
+
+constructor TFPDSendRegistersCommand.create(ARegisters: TRegisters);
+begin
+  inherited create(true);
+  ARegisters.AddFreeNotification(@DoRegistersFreed);
+  FRegisters := ARegisters;
+end;
+
+destructor TFPDSendRegistersCommand.Destroy;
+begin
+  if assigned(FRegisters) then
+    FRegisters.RemoveFreeNotification(@DoRegistersFreed);
+  inherited Destroy;
+end;
+
+procedure TFPDSendRegistersCommand.DoOnCommandSuccesfull(ACommandResponse: TJSonObject);
+var
+  JSonRegisterArr: TJSONArray;
+  JSonRegisterEntryObj: TJSONObject;
+  i: Integer;
+  RegisterValue: TRegisterValue;
+begin
+  inherited DoOnCommandSuccesfull(ACommandResponse);
+  if assigned(FRegisters) then
+    begin
+    FRegisters.Clear;
+
+    JSonRegisterArr := ACommandResponse.Get('registers', TJSONArray(nil));
+    if assigned(JSonRegisterArr) and (JSonRegisterArr.Count>0) then
+      begin
+      for i := 0 to JSonRegisterArr.Count - 1 do
+        begin
+        JSonRegisterEntryObj := JSonRegisterArr.Items[i] as TJSONObject;
+        RegisterValue := FRegisters.EntriesByName[JSonRegisterEntryObj.Get('name', '')];
+        RegisterValue.ValueObj.SetAsNum(JSonRegisterEntryObj.Get('numvalue', 0), JSonRegisterEntryObj.Get('size', 4));
+        RegisterValue.ValueObj.SetAsText(JSonRegisterEntryObj.Get('value', ''));
+        RegisterValue.DataValidity:=ddsValid;
+        end;
+      FRegisters.DataValidity := ddsValid;
+      end
+    else
+      FRegisters.DataValidity := ddsInvalid;
+    end;
+end;
+
+procedure TFPDSendRegistersCommand.DoOnCommandFailed(ACommandResponse: TJSonObject);
+begin
+  FRegisters.DataValidity := ddsInvalid;
+end;
 
 { TFPDSendLocalsCommand }
 
@@ -440,7 +539,7 @@ begin
   if assigned(FLocals) then
     begin
     FLocals.Clear;
-    JSonLocalsArr := ACommandResponse.Get('variables', TJSONArray(nil));
+    JSonLocalsArr := ACommandResponse.Get('locals', TJSONArray(nil));
     if assigned(JSonLocalsArr) and (JSonLocalsArr.Count>0) then
       begin
       for i := 0 to JSonLocalsArr.Count - 1 do
@@ -448,7 +547,6 @@ begin
         JSonLocalsEntryObj := JSonLocalsArr.Items[i] as TJSONObject;
         FLocals.Add(JSonLocalsEntryObj.Get('name', ''), JSonLocalsEntryObj.Get('value', ''));
         end;
-      FLocals.SetDataValidity(ddsValid);
       end;
     FLocals.SetDataValidity(ddsValid);
     end;
@@ -1313,6 +1411,11 @@ end;
 function TFPDServerDebugger.CreateLocals: TLocalsSupplier;
 begin
   Result := TFPLocals.Create(Self);
+end;
+
+function TFPDServerDebugger.CreateRegisters: TRegisterSupplier;
+begin
+  Result:=TFPRegisters.Create(Self);
 end;
 
 function TFPDServerDebugger.CreateCallStack: TCallStackSupplier;
