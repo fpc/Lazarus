@@ -57,7 +57,6 @@
       <Unit0>
         <Filename Value="lazdatadesktop.lpr"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="lazdatadesktop"/>
       </Unit0>
       <Unit1>
         <Filename Value="frmmain.pp"/>
@@ -65,12 +64,10 @@
         <ComponentName Value="MainForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <UnitName Value="frmmain"/>
       </Unit1>
       <Unit2>
         <Filename Value="dicteditor.pp"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="dicteditor"/>
       </Unit2>
       <Unit3>
         <Filename Value="frmimportdd.pp"/>
@@ -78,7 +75,6 @@
         <ComponentName Value="ImportDDform"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <UnitName Value="frmimportdd"/>
       </Unit3>
       <Unit4>
         <Filename Value="frmgeneratesql.pp"/>
@@ -86,34 +82,30 @@
         <ComponentName Value="GenerateSQLForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <UnitName Value="frmgeneratesql"/>
       </Unit4>
       <Unit5>
         <Filename Value="frmsqlconnect.pp"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="SQLConnectionForm"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="frmSQLConnect"/>
       </Unit5>
       <Unit6>
         <Filename Value="ddfiles.pp"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="ddfiles"/>
       </Unit6>
       <Unit7>
         <Filename Value="conneditor.pp"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="conneditor"/>
       </Unit7>
       <Unit8>
         <Filename Value="datapanel.pp"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="datapanel"/>
       </Unit8>
       <Unit9>
         <Filename Value="querypanel.pp"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="querypanel"/>
       </Unit9>
       <Unit10>
         <Filename Value="README.txt"/>
@@ -124,12 +116,10 @@
         <IsPartOfProject Value="True"/>
         <ComponentName Value="SelectConnectionTypeForm"/>
         <ResourceBaseClass Value="Form"/>
-        <UnitName Value="frmselectconnectiontype"/>
       </Unit11>
       <Unit12>
         <Filename Value="lazdatadeskstr.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="lazdatadeskstr"/>
       </Unit12>
     </Units>
   </ProjectOptions>
@@ -153,11 +143,5 @@
         </Win32>
       </Options>
     </Linking>
-    <Other>
-      <CompilerMessages>
-        <UseMsgFile Value="True"/>
-      </CompilerMessages>
-      <CompilerPath Value="$(CompPath)"/>
-    </Other>
   </CompilerOptions>
 </CONFIG>
