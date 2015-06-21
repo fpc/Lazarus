@@ -5,7 +5,7 @@ object MainForm: TMainForm
   Width = 666
   ActiveControl = PCDD
   Caption = 'Lazarus Database Desktop'
-  ClientHeight = 464
+  ClientHeight = 460
   ClientWidth = 666
   Menu = MainMenu1
   OnClose = FormClose
@@ -15,7 +15,7 @@ object MainForm: TMainForm
   OnShow = FormShow
   Position = poScreenCenter
   SessionProperties = 'Height;Left;Top;Width;WindowState'
-  LCLVersion = '1.1'
+  LCLVersion = '1.5'
   object TBMain: TToolBar
     Left = 0
     Height = 26
@@ -46,6 +46,7 @@ object MainForm: TMainForm
     end
     object ToolButton1: TToolButton
       Left = 73
+      Height = 24
       Top = 2
       Width = 10
       Style = tbsSeparator
@@ -62,6 +63,7 @@ object MainForm: TMainForm
     end
     object ToolButton2: TToolButton
       Left = 227
+      Height = 24
       Top = 2
       Width = 10
       Style = tbsSeparator
@@ -73,6 +75,7 @@ object MainForm: TMainForm
     end
     object ToolButton3: TToolButton
       Left = 261
+      Height = 24
       Top = 2
       Width = 10
       Style = tbsSeparator
@@ -110,7 +113,7 @@ object MainForm: TMainForm
   end
   object PCDD: TPageControl
     Left = 0
-    Height = 418
+    Height = 414
     Top = 26
     Width = 666
     ActivePage = TSRecent
@@ -119,11 +122,11 @@ object MainForm: TMainForm
     TabOrder = 1
     object TSRecent: TTabSheet
       Caption = 'Dictionaries'
-      ClientHeight = 384
+      ClientHeight = 388
       ClientWidth = 658
       object LVDicts: TListView
         Left = 0
-        Height = 384
+        Height = 388
         Top = 0
         Width = 658
         Align = alClient
@@ -191,7 +194,7 @@ object MainForm: TMainForm
   object PStatus: TPanel
     Left = 0
     Height = 20
-    Top = 444
+    Top = 440
     Width = 666
     Align = alBottom
     BevelOuter = bvNone
@@ -262,7 +265,6 @@ object MainForm: TMainForm
           00FF000000FF000000FF000000FF000000FF000000FF000000FF000000000000
           0000000000000000000000000000000000000000000000000000
         }
-        OnClick = ANewExecute
       end
       object MIOpen: TMenuItem
         Action = AOpen
@@ -302,7 +304,6 @@ object MainForm: TMainForm
           000000000000000000000000000000000000000000FF000000FF000000FF0000
           00FF000000000000000000000000000000000000000000000000
         }
-        OnClick = AOpenExecute
       end
       object MISave: TMenuItem
         Action = ASave
@@ -342,22 +343,18 @@ object MainForm: TMainForm
           01FF010101FF010101FF010101FF010101FF010101FF010101FF010101FF0101
           01FF010101FF010101FF010101FF010101FF010101FF010101FF
         }
-        OnClick = ASaveExecute
       end
       object MISaveAs: TMenuItem
         Action = ASaveAs
-        OnClick = SaveAsExecute
       end
       object MICloseSep: TMenuItem
         Caption = '-'
       end
       object MIClose: TMenuItem
         Action = AClose
-        OnClick = ACloseExecute
       end
       object MICloseAll: TMenuItem
         Action = ACloseAll
-        OnClick = ACloseAllExecute
       end
       object MISep: TMenuItem
         Caption = '-'
@@ -400,7 +397,6 @@ object MainForm: TMainForm
           FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
           FF00FFFFFF00FFFFFF00FFFFFF006D9CD4FF6A9AD2FF6697CFFF
         }
-        OnClick = AExitExecute
       end
     end
     object MenuItem2: TMenuItem
@@ -462,7 +458,6 @@ object MainForm: TMainForm
           0000000000000000000000000000000000000000000000000000000000000000
           0000000000000000000000000000000000000000000000000000
         }
-        OnClick = ANewTableExecute
       end
       object MINewField: TMenuItem
         Action = ANewField
@@ -502,7 +497,6 @@ object MainForm: TMainForm
           FF00F0FBFF00F0FBFF00F0FBFF00F0FBFF00F0FBFF00F0FBFF00F0FBFF00F0FB
           FF00F0FBFF00F0FBFF00F0FBFF00F0FBFF00F0FBFF00F0FBFF00
         }
-        OnClick = ANewFieldExecute
       end
       object MenuItem4: TMenuItem
         Action = ANewIndex
@@ -542,7 +536,6 @@ object MainForm: TMainForm
           31FF6C4E31FF6C4E31FF6C4E3100000000000000000000000000000000000000
           0000000000000000000000000000000000000000000000000000
         }
-        OnClick = ANewIndexExecute
       end
       object MenuItem7: TMenuItem
         Action = AAddForeignKey
@@ -582,7 +575,6 @@ object MainForm: TMainForm
           00FF000000FF000000FF000000FF000000FF000000FF00000000000000000000
           0000000000000000000000000000000000000000000000000000
         }
-        OnClick = AAddForeignKeyExecute
       end
       object MenuItem5: TMenuItem
         Action = AAddDomain
@@ -622,7 +614,6 @@ object MainForm: TMainForm
           FAFFFAFAFAFFFAFAFAFFFAFAFAFFFAFAFAFFFAFAFAFFFAFAFAFFFAFAFAFFFAFA
           FAFFFAFAFAFFFAFAFAFFFAFAFAFFFAFAFAFFFAFAFAFFFAFAFAFF
         }
-        OnClick = AAddDomainExecute
       end
       object MenuItem6: TMenuItem
         Action = AAddSequence
@@ -662,7 +653,6 @@ object MainForm: TMainForm
           0000000000000000000000000000000000000000000000000000000000000000
           0000000000000000000000000000000000000000000000000000
         }
-        OnClick = AAddSequenceExecute
       end
       object MIDDSep2: TMenuItem
         Caption = '-'
@@ -705,7 +695,6 @@ object MainForm: TMainForm
           00000000000006060600060606000E0E0EFF424242FF4A4A4AFF3E3E3EFF2C2C
           2CFF000000FF0606060006060600000000000000000000000000
         }
-        OnClick = ADeleteObjectExecute
       end
       object MIDDSep3: TMenuItem
         Caption = '-'
@@ -748,7 +737,6 @@ object MainForm: TMainForm
           FFFFC0C0C0FFC0C0C0FFC0C0C0FFC0C0C0FFC0DCC0FFC0DCC0FFC0DCC0FFC0DC
           C0FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
         }
-        OnClick = AGenerateSQLExecute
       end
       object MICreateCode: TMenuItem
         Action = ACreateCode
@@ -788,22 +776,18 @@ object MainForm: TMainForm
           00FF000000FF000000FF000000FF000000FF000000FF000000FF000000FF0000
           00FF000000FF000000FF000000FF000000FF0000000000000000
         }
-        OnClick = ACreateCodeExecute
       end
     end
     object MIConnection: TMenuItem
       Caption = 'Connections'
       object MINewConnection: TMenuItem
         Action = ANewConnection
-        OnClick = ANewConnectionExecute
       end
       object MIOpenRecentConnection: TMenuItem
         Action = AOpenConnection
-        OnClick = OpenRecentConnection
       end
       object MIDeleteRecentConnection: TMenuItem
         Action = ADeleteConnection
-        OnClick = ADeleteConnectionExecute
       end
     end
   end
