@@ -39,6 +39,7 @@ type
   TW2FormatPage = class
   public
     Converter: TWiki2FormatConverter;
+    CategoryList: TStringList;
     WikiFilename: string;
     WikiErrorMsg: string;
     WikiDoc: TXMLDocument;
@@ -72,7 +73,6 @@ type
     fPagesSortFilename: TAvgLvlTree; // TW2FormatPage sorted for WikiFilename
     fPagesSortDocumentName: TAvgLvlTree; // TW2FormatPage sorted for WikiDocumentName
     FPageClass: TW2FormatPageClass;
-    FCategoryList: TStringList;
     function GetPages(Index: integer): TW2FormatPage;
     procedure SetOutputDir(AValue: string);
     procedure SetImagesDir(AValue: string);
@@ -169,13 +169,11 @@ begin
   FTitle:='FPC/Lazarus Wiki (offline, generated '+DatetoStr(Now)+')';
   FImagesDir:='images';
   FNoWarnBaseURLs:=TStringToStringTree.Create(true);
-  FCategoryList := TStringList.Create;
 end;
 
 destructor TWiki2FormatConverter.Destroy;
 begin
   Clear;
-  FreeAndNil(FCategoryList);
   FreeAndNil(FNoWarnBaseURLs);
   FreeAndNil(fPagesSortFilename);
   FreeAndNil(fPagesSortDocumentName);
@@ -312,12 +310,14 @@ end;
 constructor TW2FormatPage.Create(TheConverter: TWiki2FormatConverter);
 begin
   Converter:=TheConverter;
+  CategoryList := TStringList.Create;
 end;
 
 destructor TW2FormatPage.Destroy;
 begin
   ClearPageConnections;
   ClearConversion;
+  FreeAndNil(CategoryList);
   FreeAndNil(WikiDoc);
   FreeAndNil(WikiPage);
   inherited Destroy;

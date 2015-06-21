@@ -145,13 +145,13 @@ var
   category, url, txt: String;
   i: Integer;
 begin
-  if FCategoryList.Count = 0 then
-    exit;
-
   doc := Page.XHTML;
   url := Page.WikiPage.BaseURL;
   if (url <> '') and (url[Length(url)] <> '/') then
     url += '/';
+
+  if Page.CategoryList.Count = 0 then
+    exit;
 
   CategoriesNode := doc.CreateElement('div');
   CategoriesNode.SetAttribute('class', 'categories');
@@ -165,8 +165,8 @@ begin
   if not FIndexInternalLinksOnly then
     AddIndexItem('Categories (external)', url+'Special:Categories');
 
-  for i:=0 to FCategoryList.Count-1 do begin
-    category := FCategoryList[i];
+  for i:=0 to Page.CategoryList.Count-1 do begin
+    category := Page.CategoryList[i];
     // Add link to category
     node := doc.CreateElement('a');
     node.SetAttribute('href', url + category);
@@ -177,7 +177,7 @@ begin
       AddIndexItem('Category: '+txt+' (external)', url+category);
 
     // Add separator
-    if i < FCategoryList.Count-1 then
+    if i < Page.CategoryList.Count-1 then
       CategoriesNode.AppendChild(doc.CreateTextNode(' | '));
   end;
 end;
@@ -532,7 +532,7 @@ var
         exit;
       end
       else if Scheme='category' then begin
-        FCategoryList.Add(URL);
+        Page.CategoryList.Add(URL);
         URL:='';
         Caption := '';
         exit;
