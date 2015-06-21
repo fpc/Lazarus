@@ -687,7 +687,7 @@ type
     procedure EditorChanged(Sender: TObject);
     procedure DoClose(var CloseAction: TCloseAction); override;
     procedure DoShow; override;
-
+    procedure DoHide; override; // DaThoX
   protected
     function GetActiveCompletionPlugin: TSourceEditorCompletionPlugin; override;
     function GetCompletionPlugins(Index: integer): TSourceEditorCompletionPlugin; override;
@@ -864,6 +864,10 @@ type
     function  GetUniqueSourceEditors(Index: integer): TSourceEditorInterface; override;
     function GetMarklingProducers(Index: integer): TSourceMarklingProducer; override;
     procedure SyncMessageWnd(Sender: TObject);
+    // DaThoX begin
+    procedure DoWindowShow(AWindow: TSourceNotebook);
+    procedure DoWindowHide(AWindow: TSourceNotebook);
+    // DaThoX end
   public
     procedure BeginAutoFocusLock;
     procedure EndAutoFocusLock;
@@ -6729,7 +6733,18 @@ begin
   // statusbar was not updated when visible=false, update now
   if snUpdateStatusBarNeeded in States then
     UpdateStatusBar;
+  if Assigned(Manager) and (Parent <> nil) then // DaThoX
+    Manager.DoWindowShow(Self); // DaThoX
 end;
+
+// DaThoX begin
+procedure TSourceNotebook.DoHide;
+begin
+  inherited DoHide;
+  if Assigned(Manager) and (Parent <> nil) then
+    Manager.DoWindowHide(Self);
+end;
+// DaThoX end
 
 function TSourceNotebook.IndexOfEditorInShareWith(AnOtherEditor: TSourceEditor): Integer;
 var
@@ -8815,6 +8830,18 @@ function TSourceEditorManagerBase.GetMarklingProducers(Index: integer
 begin
   Result:=TSourceMarklingProducer(fProducers[Index]);
 end;
+
+// DaThoX begin
+procedure TSourceEditorManagerBase.DoWindowShow(AWindow: TSourceNotebook);
+begin
+  FChangeNotifyLists[semWindowShow].CallNotifyEvents(AWindow);
+end;
+
+procedure TSourceEditorManagerBase.DoWindowHide(AWindow: TSourceNotebook);
+begin
+  FChangeNotifyLists[semWindowHide].CallNotifyEvents(AWindow);
+end;
+// DaThoX end
 
 procedure TSourceEditorManagerBase.SyncMessageWnd(Sender: TObject);
 begin
