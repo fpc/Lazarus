@@ -781,7 +781,8 @@ object MainForm: TMainForm
     object MIConnection: TMenuItem
       Caption = 'Connections'
       object MINewConnection: TMenuItem
-        Action = ANewConnection
+        Caption = '&New connection'
+        ShortCut = 49230
       end
       object MIOpenRecentConnection: TMenuItem
         Action = AOpenConnection
