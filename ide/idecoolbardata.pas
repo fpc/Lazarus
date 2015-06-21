@@ -25,7 +25,7 @@
    Extract an interface from here and put it to IdeIntf package.
 }
 
-unit ToolbarData;
+unit IdeCoolbarData;
 
 
 {$mode objfpc}{$H+}

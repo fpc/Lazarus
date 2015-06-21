@@ -94,7 +94,7 @@ uses
   // help manager
   IDEContextHelpEdit, IDEHelpIntf, IDEHelpManager, CodeHelp, HelpOptions,
   // designer
-  JITForms, ComponentPalette, ComponentList, CompPagesPopup, ToolbarData,
+  JITForms, ComponentPalette, ComponentList, CompPagesPopup, IdeCoolbarData,
   ObjInspExt, Designer, FormEditor, CustomFormEditor, lfmUnitResource,
   ControlSelection, AnchorEditor, TabOrderDlg, MenuEditorForm,
   // LRT stuff

@@ -30,7 +30,7 @@ interface
 uses
   Classes, SysUtils, Forms, ExtCtrls, ComCtrls, Buttons, Controls, Menus,
   Graphics, Dialogs, StdCtrls, DividerBevel, Spin,
-  LazarusIDEStrConsts, IDEOptionsIntf, EnvironmentOpts, ToolbarData;
+  LazarusIDEStrConsts, IDEOptionsIntf, EnvironmentOpts, IdeCoolbarData;
 
 type
 

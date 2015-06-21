@@ -42,7 +42,7 @@ uses
   ComCtrls, ExtCtrls, LMessages,
   // IDEIntf
   ProjectIntf, NewItemIntf, MenuIntf, LazIDEIntf, LazFileCache,
-  EnvironmentOpts, LazarusIDEStrConsts, IDEImagesIntf, ToolbarData;
+  EnvironmentOpts, LazarusIDEStrConsts, IDEImagesIntf, IdeCoolbarData;
 
 
 type

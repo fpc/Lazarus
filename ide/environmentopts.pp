@@ -45,7 +45,8 @@ uses
   DbgIntfDebuggerBase,
   // IDE
   IDEProcs, DialogProcs, LazarusIDEStrConsts, IDETranslations, LazConf,
-  IDEOptionDefs, TransferMacros, ModeMatrixOpts, Debugger, ToolbarData, EditorToolbarStatic;
+  IDEOptionDefs, TransferMacros, ModeMatrixOpts, Debugger,
+  IdeCoolbarData, EditorToolbarStatic;
 
 const
   EnvOptsVersion: integer = 108;

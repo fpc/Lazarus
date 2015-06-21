@@ -778,6 +778,7 @@
       <Unit122>
         <Filename Value="environmentopts.pp"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="EnvironmentOpts"/>
       </Unit122>
       <Unit123>
         <Filename Value="lazarusidestrconsts.pas"/>
@@ -822,6 +823,7 @@
       <Unit132>
         <Filename Value="mainbar.pas"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="MainBar"/>
       </Unit132>
       <Unit133>
         <Filename Value="procedurelist.pas"/>
