@@ -5971,6 +5971,7 @@ images/actions/arrow_down.png -text svneol=unset#image/png
 images/actions/arrow_left.png -text svneol=unset#image/png
 images/actions/arrow_right.png -text svneol=unset#image/png
 images/actions/arrow_up.png -text svneol=unset#image/png
+images/actions/execute.xpm svneol=native#text/plain
 images/actions/laz_add.png -text svneol=unset#image/png
 images/actions/laz_addmore.png -text svneol=unset#image/png
 images/actions/laz_delete.png -text svneol=unset#image/png
@@ -5982,6 +5983,7 @@ images/actions/laz_save.png -text svneol=unset#image/png
 images/actions/laz_set_color_default.png -text svneol=unset#image/png
 images/actions/laz_set_colors_default.png -text svneol=unset#image/png
 images/actions/laz_wand.png -text svneol=unset#image/png
+images/actions/preferences.xpm svneol=native#text/plain
 images/bookmark.res -text
 images/bookmark.sh svneol=native#text/plain
 images/bookmark_list.txt svneol=native#text/plain
