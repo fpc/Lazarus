@@ -1,6 +1,14 @@
 unit DebugThreadCommand;
 
-{$mode objfpc}{$H+}{$modeswitch nestedprocvars}
+{$mode objfpc}{$H+}
+
+{$ifndef VER2}
+  {$define disassemblernestedproc}
+{$endif VER2}
+
+{$ifdef disassemblernestedproc}
+  {$modeswitch nestedprocvars}
+{$endif disassemblernestedproc}
 
 interface
 
@@ -214,6 +222,12 @@ type
     FLastEntryEndAddr: TDBGPtr;
     function GetAddress: string;
     procedure SetAddress(AValue: string);
+    {$ifndef disassemblernestedproc}
+  private
+    FController: TDbgController;
+    function OnAdjustToKnowFunctionStart(var AStartAddr: TDisassemblerAddress): Boolean;
+    function OnDoDisassembleRange(AnEntryRanges: TDBGDisassemblerEntryMap; AFirstAddr, ALastAddr: TDisassemblerAddress; AStopAfterAddress: TDBGPtr; AStopAfterNumLines: Integer): Boolean;
+    {$endif}
   public
     constructor Create(AListenerIdentifier: integer; AnUID: variant; AOnLog: TOnLog); override;
     function Execute(AController: TDbgController; out DoProcessLoop: boolean): boolean; override;
@@ -374,13 +388,15 @@ begin
   FLinesBefore:=5;
 end;
 
+{$ifdef disassemblernestedproc}
 function TFpDebugThreadDisassembleCommand.Execute(AController: TDbgController; out DoProcessLoop: boolean): boolean;
+{$endif}
 
-  function OnAdjustToKnowFunctionStart(var AStartAddr: TDisassemblerAddress): Boolean;
+  function {$ifndef disassemblernestedproc}TFpDebugThreadDisassembleCommand.{$endif}OnAdjustToKnowFunctionStart(var AStartAddr: TDisassemblerAddress): Boolean;
   var
     Sym: TFpDbgSymbol;
   begin
-    Sym := AController.CurrentProcess.FindSymbol(AStartAddr.GuessedValue);
+    Sym := {$ifndef disassemblernestedproc}FController{$else}AController{$endif}.CurrentProcess.FindSymbol(AStartAddr.GuessedValue);
     if assigned(Sym) and (Sym.Kind in [skProcedure, skFunction]) then
       begin
       AStartAddr.Value:=Sym.Address.Address;
@@ -392,7 +408,7 @@ function TFpDebugThreadDisassembleCommand.Execute(AController: TDbgController; o
       result := false;
   end;
 
-  function OnDoDisassembleRange(AnEntryRanges: TDBGDisassemblerEntryMap; AFirstAddr, ALastAddr: TDisassemblerAddress; AStopAfterAddress: TDBGPtr; AStopAfterNumLines: Integer): Boolean;
+  function {$ifndef disassemblernestedproc}TFpDebugThreadDisassembleCommand.{$endif}OnDoDisassembleRange(AnEntryRanges: TDBGDisassemblerEntryMap; AFirstAddr, ALastAddr: TDisassemblerAddress; AStopAfterAddress: TDBGPtr; AStopAfterNumLines: Integer): Boolean;
 
   var
     AnAddr: TDBGPtr;
@@ -426,7 +442,7 @@ function TFpDebugThreadDisassembleCommand.Execute(AController: TDbgController; o
     while ((AStopAfterAddress=0) or (AStopAfterNumLines > -1)) and (AnAddr <= ALastAddr.Value) do
       begin
       AnEntry.Addr:=AnAddr;
-      if not AController.CurrentProcess.ReadData(AnAddr, sizeof(CodeBin),CodeBin) then
+      if not {$ifndef disassemblernestedproc}FController{$else}AController{$endif}.CurrentProcess.ReadData(AnAddr, sizeof(CodeBin),CodeBin) then
         begin
         Log(Format('Disassemble: Failed to read memory at %s.', [FormatAddress(AnAddr)]), dllDebug);
         AnEntry.Statement := 'Failed to read memory';
@@ -435,9 +451,9 @@ function TFpDebugThreadDisassembleCommand.Execute(AController: TDbgController; o
       else
         begin
         p := @CodeBin;
-        FpDbgDisasX86.Disassemble(p, AController.CurrentProcess.Mode=dm64, ADump, AStatement);
+        FpDbgDisasX86.Disassemble(p, {$ifndef disassemblernestedproc}FController{$else}AController{$endif}.CurrentProcess.Mode=dm64, ADump, AStatement);
 
-        Sym := AController.CurrentProcess.FindSymbol(AnAddr);
+        Sym := {$ifndef disassemblernestedproc}FController{$else}AController{$endif}.CurrentProcess.FindSymbol(AnAddr);
 
         // If this is the last statement for this source-code-line, fill the
         // SrcStatementCount from the prior statements.
@@ -484,6 +500,10 @@ function TFpDebugThreadDisassembleCommand.Execute(AController: TDbgController; o
     result := true;
   end;
 
+{$ifndef disassemblernestedproc}
+function TFpDebugThreadDisassembleCommand.Execute(AController: TDbgController; out DoProcessLoop: boolean): boolean;
+{$endif disassemblernestedproc}
+
 var
   i: Integer;
   DisassembleRangeExtender: TDBGDisassemblerRangeExtender;
@@ -493,6 +513,10 @@ var
   ARange: TDBGDisassemblerEntryRange;
 
 begin
+  {$ifndef disassemblernestedproc}
+  FController := AController;
+  {$endif}
+
   result := false;
   DoProcessLoop:=false;
   if not assigned(AController.CurrentProcess) then

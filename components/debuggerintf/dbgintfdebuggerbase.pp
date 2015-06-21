@@ -32,7 +32,14 @@
 unit DbgIntfDebuggerBase;
 
 {$mode objfpc}{$H+}
-{$modeswitch nestedprocvars}
+
+{$ifndef VER2}
+  {$define disassemblernestedproc}
+{$endif VER2}
+
+{$ifdef disassemblernestedproc}
+  {$modeswitch nestedprocvars}
+{$endif disassemblernestedproc}
 
 interface
 
@@ -1337,9 +1344,9 @@ type
 
   { TDBGDisassemblerRangeExtender }
 
-  TDoDisassembleRangeProc = function(AnEntryRanges: TDBGDisassemblerEntryMap; AFirstAddr, ALastAddr: TDisassemblerAddress; StopAfterAddress: TDBGPtr; StopAfterNumLines: Integer): Boolean is nested;
-  TDisassembleCancelProc = function(): Boolean is nested;
-  TDisassembleAdjustToKnowFunctionStart = function (var AStartAddr: TDisassemblerAddress): Boolean is nested;
+  TDoDisassembleRangeProc = function(AnEntryRanges: TDBGDisassemblerEntryMap; AFirstAddr, ALastAddr: TDisassemblerAddress; StopAfterAddress: TDBGPtr; StopAfterNumLines: Integer): Boolean {$ifdef disassemblernestedproc} is nested {$else} of object{$endif};
+  TDisassembleCancelProc = function(): Boolean {$ifdef disassemblernestedproc} is nested {$else} of object {$endif};
+  TDisassembleAdjustToKnowFunctionStart = function (var AStartAddr: TDisassemblerAddress): Boolean {$ifdef disassemblernestedproc} is nested {$else} of object {$endif};
 
   TDBGDisassemblerRangeExtender = class
   private

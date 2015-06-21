@@ -33,7 +33,14 @@ unit GDBMIDebugger;
 
 {$mode objfpc}
 {$H+}
-{$modeswitch nestedprocvars}
+
+{$ifndef VER2}
+  {$define disassemblernestedproc}
+{$endif VER2}
+
+{$ifdef disassemblernestedproc}
+  {$modeswitch nestedprocvars}
+{$endif disassemblernestedproc}
 
 {$IFDEF linux} {$DEFINE DBG_ENABLE_TERMINAL} {$ENDIF}
 
@@ -1425,6 +1432,14 @@ type
     FRangeIterator: TDBGDisassemblerEntryMapIterator;
     FMemDumpsNeeded: array of TGDBMIDisAssAddrRange;
     procedure DoProgress;
+    {$ifndef disassemblernestedproc}
+    function AdjustToKnowFunctionStart(var AStartAddr: TDisassemblerAddress): Boolean;
+    function DoDisassembleRange(AnEntryRanges: TDBGDisassemblerEntryMap; AFirstAddr, ALastAddr: TDisassemblerAddress; StopAfterAddress: TDBGPtr; StopAfterNumLines: Integer): Boolean;
+    function ExecDisassmble(AStartAddr, AnEndAddr: TDbgPtr; WithSrc: Boolean;
+                            AResultList: TGDBMIDisassembleResultList = nil;
+                            ACutBeforeEndAddr: Boolean = False): TGDBMIDisassembleResultList;
+    function OnCheckCancel: boolean;
+    {$endif}
   protected
     function DoExecute: Boolean; override;
   public
@@ -3831,7 +3846,9 @@ begin
   then FOnProgress(Self);
 end;
 
+{$ifdef disassemblernestedproc}
 function TGDBMIDebuggerCommandDisassemble.DoExecute: Boolean;
+{$endif}
   const
     TrustedValidity = [avFoundFunction, avFoundRange, avFoundStatement];
 
@@ -3844,7 +3861,7 @@ function TGDBMIDebuggerCommandDisassemble.DoExecute: Boolean;
     AnAddr.Offset   := -1;
   end;
 
-  function ExecDisassmble(AStartAddr, AnEndAddr: TDbgPtr; WithSrc: Boolean;
+  function {$ifndef disassemblernestedproc}TGDBMIDebuggerCommandDisassemble.{$endif}ExecDisassmble(AStartAddr, AnEndAddr: TDbgPtr; WithSrc: Boolean;
     AResultList: TGDBMIDisassembleResultList = nil;
     ACutBeforeEndAddr: Boolean = False): TGDBMIDisassembleResultList;
   var
@@ -3865,20 +3882,8 @@ function TGDBMIDebuggerCommandDisassemble.DoExecute: Boolean;
     do Result.Count :=  Result.Count - 1;
   end;
 
-  function ExecMemDump(AStartAddr: TDbgPtr; ACount: Cardinal;
-    AResultList: TGDBMIMemoryDumpResultList = nil): TGDBMIMemoryDumpResultList;
-  var
-    R: TGDBMIExecResult;
-  begin
-    Result := AResultList;
-    ExecuteCommand('-data-read-memory %u x 1 1 %u', [AStartAddr, ACount], R);
-    if Result <> nil
-    then Result.Init(R)
-    else Result := TGDBMIMemoryDumpResultList.Create(R);
-  end;
-
   // Set Value, based on GuessedValue
-  function AdjustToKnowFunctionStart(var AStartAddr: TDisassemblerAddress): Boolean;
+  function {$ifndef disassemblernestedproc}TGDBMIDebuggerCommandDisassemble.{$endif}AdjustToKnowFunctionStart(var AStartAddr: TDisassemblerAddress): Boolean;
   var
     DisAssList: TGDBMIDisassembleResultList;
     DisAssItm: PDisassemblerEntry;
@@ -4094,7 +4099,7 @@ function TGDBMIDebuggerCommandDisassemble.DoExecute: Boolean;
   *)
   // Returns   True: If some data was added
   //           False: if failed to add anything
-  function DoDisassembleRange(AnEntryRanges: TDBGDisassemblerEntryMap;AFirstAddr,
+  function {$ifndef disassemblernestedproc}TGDBMIDebuggerCommandDisassemble.{$endif}DoDisassembleRange(AnEntryRanges: TDBGDisassemblerEntryMap;AFirstAddr,
     ALastAddr: TDisassemblerAddress; StopAfterAddress: TDBGPtr;
     StopAfterNumLines: Integer): Boolean;
 
@@ -4477,6 +4482,27 @@ function TGDBMIDebuggerCommandDisassemble.DoExecute: Boolean;
     end;
   end;
 
+  function {$ifndef disassemblernestedproc}TGDBMIDebuggerCommandDisassemble.{$endif}OnCheckCancel: boolean;
+  begin
+    result := dcsCanceled in SeenStates;
+  end;
+
+{$ifndef disassemblernestedproc}
+function TGDBMIDebuggerCommandDisassemble.DoExecute: Boolean;
+{$endif disassemblernestedproc}
+
+  function ExecMemDump(AStartAddr: TDbgPtr; ACount: Cardinal;
+    AResultList: TGDBMIMemoryDumpResultList = nil): TGDBMIMemoryDumpResultList;
+  var
+    R: TGDBMIExecResult;
+  begin
+    Result := AResultList;
+    ExecuteCommand('-data-read-memory %u x 1 1 %u', [AStartAddr, ACount], R);
+    if Result <> nil
+    then Result.Init(R)
+    else Result := TGDBMIMemoryDumpResultList.Create(R);
+  end;
+
   procedure AddMemDumps;
   var
     i: Integer;
@@ -4502,11 +4528,6 @@ function TGDBMIDebuggerCommandDisassemble.DoExecute: Boolean;
       end;
     end;
     FreeAndNil(MemDump);
-  end;
-
-  function OnCheckCancel: boolean;
-  begin
-    result := dcsCanceled in SeenStates;
   end;
 
 var
