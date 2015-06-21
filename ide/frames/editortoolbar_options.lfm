@@ -1,0 +1,132 @@
+object EditorToolbarOptionsFrame: TEditorToolbarOptionsFrame
+  Left = 0
+  Height = 342
+  Top = 0
+  Width = 503
+  ClientHeight = 342
+  ClientWidth = 503
+  TabOrder = 0
+  DesignLeft = 521
+  DesignTop = 251
+  object pnTop: TPanel
+    Left = 0
+    Height = 342
+    Top = 0
+    Width = 503
+    Align = alClient
+    BevelOuter = bvNone
+    ClientHeight = 342
+    ClientWidth = 503
+    Constraints.MinWidth = 350
+    TabOrder = 0
+    object dbGeneralSettings: TDividerBevel
+      Left = 0
+      Height = 17
+      Top = 5
+      Width = 503
+      Caption = 'Editor Toolbars Settings'
+      Align = alTop
+      BorderSpacing.Top = 5
+      BorderSpacing.Bottom = 5
+      Font.Style = [fsBold]
+      ParentColor = False
+      ParentFont = False
+    end
+    object cbCoolBarVisible: TCheckBox
+      AnchorSideLeft.Control = pnTop
+      AnchorSideTop.Control = dbGeneralSettings
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 22
+      Top = 34
+      Width = 119
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 12
+      Caption = 'Toolbar is visible'
+      OnClick = cbCoolBarVisibleClick
+      TabOrder = 0
+    end
+    object pnTopCenterLabel: TLabel
+      AnchorSideLeft.Control = pnTop
+      AnchorSideLeft.Side = asrCenter
+      AnchorSideTop.Control = pnTop
+      Left = 251
+      Height = 1
+      Top = 0
+      Width = 1
+      ParentColor = False
+    end
+    object bConfig: TBitBtn
+      AnchorSideLeft.Control = cbCoolBarVisible
+      AnchorSideTop.Control = cbCoolBarVisible
+      AnchorSideTop.Side = asrBottom
+      AnchorSideBottom.Side = asrBottom
+      Left = 12
+      Height = 29
+      Top = 77
+      Width = 69
+      AutoSize = True
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 21
+      Caption = 'Configure'
+      OnClick = bConfigClick
+      TabOrder = 1
+    end
+    object bDefaultToolbar: TBitBtn
+      AnchorSideTop.Control = bConfig
+      AnchorSideRight.Control = pnTop
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Side = asrBottom
+      Left = 435
+      Height = 29
+      Top = 77
+      Width = 56
+      Anchors = [akTop, akRight]
+      AutoSize = True
+      BorderSpacing.Right = 12
+      Caption = 'Default'
+      OnClick = bDefaultToolbarClick
+      TabOrder = 2
+    end
+    object lblpos: TLabel
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = cbPos
+      AnchorSideTop.Side = asrCenter
+      AnchorSideRight.Control = cbPos
+      Left = 207
+      Height = 17
+      Top = 37
+      Width = 35
+      Anchors = [akTop, akRight]
+      BorderSpacing.Right = 6
+      Caption = 'lblpos'
+      ParentColor = False
+    end
+    object cbPos: TComboBox
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = cbCoolBarVisible
+      AnchorSideTop.Side = asrCenter
+      AnchorSideRight.Side = asrBottom
+      Left = 248
+      Height = 23
+      Top = 34
+      Width = 100
+      Anchors = [akTop, akRight]
+      BorderSpacing.Bottom = 6
+      ItemHeight = 17
+      ItemIndex = 0
+      Items.Strings = (
+        'Top'
+        'Bottom'
+        'Right'
+        'Left'
+      )
+      OnChange = cbPosChange
+      TabOrder = 3
+      Text = 'Top'
+    end
+  end
+  object imButtons: TImageList
+    left = 464
+  end
+end
