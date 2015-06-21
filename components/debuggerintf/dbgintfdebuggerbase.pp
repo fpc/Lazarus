@@ -5073,6 +5073,8 @@ begin
     FCount := FCount + AnotherRange.Count - i;
     FRangeEndAddr := AnotherRange.FRangeEndAddr;
     FLastEntryEndAddr := AnotherRange.FLastEntryEndAddr;
+    if FRangeStartAddr = 0 then
+      FRangeStartAddr := AnotherRange.FRangeStartAddr;
   end;
   debugln(DBG_DISASSEMBLER, ['INFO: TDBGDisassemblerEntryRange.Merge AFTER MERGE: ', dbgs(self) ]);
 end;
