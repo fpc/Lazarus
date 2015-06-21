@@ -181,6 +181,7 @@ type
     procedure OnApplicationQueryEndSession(var Cancel: Boolean);
     procedure OnApplicationEndSession(Sender: TObject);
     procedure OnScreenChangedForm(Sender: TObject; {%H-}Form: TCustomForm);
+    procedure OnScreenChangedControl(Sender: TObject; LastControl: TControl); // DaThoX
     procedure OnScreenRemoveForm(Sender: TObject; AForm: TCustomForm);
     procedure OnRemoteControlTimer(Sender: TObject);
     procedure OnSelectFrame(Sender: TObject; var AComponentClass: TComponentClass);
@@ -810,6 +811,9 @@ type
                                 StartPos, {%H-}EndPos: integer): boolean;
 
     // useful information methods
+    // DaThoX
+    procedure GetUnit(SourceEditor: TSourceEditor; out UnitInfo: TUnitInfo);
+    // DaThoX
     procedure GetCurrentUnit(out ActiveSourceEditor: TSourceEditor;
                              out ActiveUnitInfo: TUnitInfo); override;
     procedure GetDesignerUnit(ADesigner: TDesigner;
@@ -919,7 +923,12 @@ type
     // form editor and designer
     procedure DoBringToFrontFormOrUnit;
     procedure DoBringToFrontFormOrInspector(ForceInspector: boolean);
-    procedure DoShowDesignerFormOfCurrentSrc; override;
+    // DaThoX begin
+    procedure DoShowDesignerFormOfCurrentSrc(AComponentPaletteClassSelected: Boolean); override;
+    procedure DoShowDesignerFormOfSrc(AEditor: TSourceEditorInterface); override;
+    procedure DoShowMethod(AEditor: TSourceEditorInterface; const AMethodName: String); override;
+    procedure DoShowDesignerFormOfSrc(AEditor: TSourceEditorInterface; out AForm: TCustomForm); override;
+    // DaThoX end
     procedure DoShowSourceOfActiveDesignerForm;
     procedure SetDesigning(AComponent: TComponent; Value: Boolean);
     procedure SetDesignInstance(AComponent: TComponent; Value: Boolean);
@@ -948,6 +957,11 @@ var
   ShowSplashScreen: boolean = false;
 
 implementation
+
+// DaThoX begin
+type
+  TIDEDockMasterAccess = class(TIDEDockMaster);
+// DaThoX end
 
 var
   ParamBaseDirectory: string = '';
@@ -1478,8 +1492,8 @@ begin
   try
     SetupStandardIDEMenuItems;
     SetupMainMenu;
+    SetupComponentPalette; // dathox - move one up
     SetupSpeedButtons;
-    SetupComponentPalette;
     ConnectMainBarEvents;
   finally
     MainIDEBar.EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TMainIDE.Create'){$ENDIF};
@@ -1546,6 +1560,7 @@ begin
   Application.AddOnEndSessionHandler(@OnApplicationEndSession);
   Screen.AddHandlerRemoveForm(@OnScreenRemoveForm);
   Screen.AddHandlerActiveFormChanged(@OnScreenChangedForm);
+  Screen.AddHandlerActiveControlChanged(@OnScreenChangedControl); // DaThoX
   IDEComponentPalette.OnClassSelected := @ComponentPaletteClassSelected;
   SetupHints;
   SetupIDEWindowsLayout;
@@ -2784,7 +2799,12 @@ end;
 
 procedure TMainIDE.mnuToggleFormUnitClicked(Sender: TObject);
 begin
-  DoBringToFrontFormOrUnit;
+  // DaThoX begin
+  if IDETabMaster <> nil then
+    IDETabMaster.ToggleFormUnit
+  else
+  // DaThox end
+    DoBringToFrontFormOrUnit;
 end;
 
 procedure TMainIDE.mnuViewAnchorEditorClicked(Sender: TObject);
@@ -3643,6 +3663,8 @@ begin
   {$ENDIF}
   IDEComponentPalette.Update(False);
   SetupHints;
+
+  DoCallNotifyHandler(lihtUpdateIDEComponentPalette, LastFormActivated); // DaThoX
 end;
 
 procedure TMainIDE.ShowDesignerForm(AForm: TCustomForm);
@@ -5054,12 +5076,18 @@ end;
 
 procedure TMainIDE.ComponentPaletteClassSelected(Sender: TObject);
 begin
-  if (Screen.CustomFormZOrderCount > 1)
-  and Assigned(Screen.CustomFormsZOrdered[1].Designer) then
+  // code below cant be handled correctly by integrated IDE
+  if
+    (IDETabMaster = nil) and // DaThoX
+    (Screen.CustomFormZOrderCount > 1)
+  and Assigned(Screen.CustomFormsZOrdered[1].Designer) then begin
     // previous active form was designer form
-    ShowDesignerForm(Screen.CustomFormsZOrdered[1])
-  else
-    DoShowDesignerFormOfCurrentSrc;
+    ShowDesignerForm(Screen.CustomFormsZOrdered[1]);
+    // dathox begin
+    DoCallShowDesignerFormOfSourceHandler(lihtShowDesignerFormOfSource, Screen.CustomFormsZOrdered[1], nil, True);
+    // dathox end
+  end else
+    DoShowDesignerFormOfCurrentSrc(True);
 end;
 
 procedure TMainIDE.SelComponentPageButtonClick(Sender: TObject);
@@ -7793,6 +7821,16 @@ end;
 
 //-----------------------------------------------------------------------------
 
+// DaThoX begin
+procedure TMainIDE.GetUnit(SourceEditor: TSourceEditor; out UnitInfo: TUnitInfo);
+begin
+  if SourceEditor=nil then
+    UnitInfo:=nil
+  else
+    UnitInfo := Project1.UnitWithEditorComponent(SourceEditor);
+end;
+// DaThoX end
+
 procedure TMainIDE.GetCurrentUnit(out ActiveSourceEditor:TSourceEditor;
   out ActiveUnitInfo:TUnitInfo);
 begin
@@ -8108,7 +8146,7 @@ begin
   if DisplayState <> dsSource then begin
     DoShowSourceOfActiveDesignerForm;
   end else begin
-    DoShowDesignerFormOfCurrentSrc;
+    DoShowDesignerFormOfCurrentSrc(false); // DaThoX
   end;
 end;
 
@@ -8122,24 +8160,97 @@ begin
   debugln(['TMainIDE.DoBringToFrontFormOrInspector old=',dbgs(DisplayState)]);
   {$ENDIF}
   case DisplayState of
-  dsInspector: DoShowDesignerFormOfCurrentSrc;
+  dsInspector: DoShowDesignerFormOfCurrentSrc(false); // DaThoX
   dsInspector2: DoShowSourceOfActiveDesignerForm;
   else
     DoShowInspector(iwgfShowOnTop);
   end;
 end;
 
-procedure TMainIDE.DoShowDesignerFormOfCurrentSrc;
+// === DaThoX begin
+procedure TMainIDE.DoShowDesignerFormOfCurrentSrc(AComponentPaletteClassSelected: Boolean);
+var
+  LForm: TCustomForm;
+begin
+  DoShowDesignerFormOfSrc(SourceEditorManager.ActiveEditor, LForm);
+  if LForm <> nil then
+    DoCallShowDesignerFormOfSourceHandler(lihtShowDesignerFormOfSource, LForm, SourceEditorManager.ActiveEditor, AComponentPaletteClassSelected);
+end;
+
+procedure TMainIDE.DoShowDesignerFormOfSrc(AEditor: TSourceEditorInterface);
+var
+  LForm: TCustomForm;
+begin
+  DoShowDesignerFormOfSrc(AEditor, LForm);
+end;
+
+procedure TMainIDE.DoShowMethod(AEditor: TSourceEditorInterface;
+  const AMethodName: String);
+var
+  //ActiveSrcEdit: TSourceEditor;
+  ActiveUnitInfo: TUnitInfo;
+  NewSource: TCodeBuffer;
+  NewX, NewY, NewTopLine: integer;
+  AClassName: string;
+  AInheritedMethodName: string;
+  AnInheritedClassName: string;
+  CurMethodName: String;
+begin
+  // DaThoX begin
+  if SourceEditorManagerIntf.ActiveEditor <> AEditor then
+    SourceEditorManagerIntf.ActiveEditor := AEditor;
+  // DaThoX end;
+
+  GetUnit(TSourceEditor(AEditor), ActiveUnitInfo);
+  if not BeginCodeTool(TSourceEditor(AEditor),ActiveUnitInfo,[ctfSwitchToFormSource])
+  then exit;
+  {$IFDEF IDE_DEBUG}
+  debugln('');
+  debugln('[TMainIDE.OnPropHookShowMethod] ************ "',AMethodName,'" ',ActiveUnitInfo.Filename);
+  {$ENDIF}
+
+  AClassName:=ActiveUnitInfo.Component.ClassName;
+  CurMethodName:=AMethodName;
+
+  if IsValidIdentPair(AMethodName,AnInheritedClassName,AInheritedMethodName)
+  then begin
+    AEditor:=nil;
+    ActiveUnitInfo:=Project1.UnitWithComponentClassName(AnInheritedClassName);
+    if ActiveUnitInfo=nil then begin
+      IDEMessageDialog(lisMethodClassNotFound,
+        Format(lisClassOfMethodNotFound, ['"', AnInheritedClassName, '"', '"',
+          AInheritedMethodName, '"']),
+        mtError,[mbCancel],'');
+      exit;
+    end;
+    AClassName:=AnInheritedClassName;
+    CurMethodName:=AInheritedMethodName;
+  end;
+
+  if CodeToolBoss.JumpToPublishedMethodBody(ActiveUnitInfo.Source,
+    AClassName,CurMethodName,
+    NewSource,NewX,NewY,NewTopLine) then
+  begin
+    DoJumpToCodePosition(AEditor, ActiveUnitInfo,
+      NewSource, NewX, NewY, NewTopLine, [jfAddJumpPoint, jfFocusEditor]);
+  end else begin
+    DebugLn(['TMainIDE.OnPropHookShowMethod failed finding the method in code']);
+    DoJumpToCodeToolBossError;
+    raise Exception.Create(lisUnableToShowMethod+' '+lisPleaseFixTheErrorInTheMessageWindow);
+  end;
+end;
+
+procedure TMainIDE.DoShowDesignerFormOfSrc(AEditor: TSourceEditorInterface; out
+  AForm: TCustomForm);
 var
   ActiveSourceEditor: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
-  AForm: TCustomForm;
   UnitCodeBuf: TCodeBuffer;
 begin
   {$IFDEF VerboseIDEDisplayState}
   debugln(['TMainIDE.DoShowDesignerFormOfCurrentSrc ']);
   {$ENDIF}
-  GetCurrentUnit(ActiveSourceEditor,ActiveUnitInfo);
+  GetUnit(TSourceEditor(AEditor), ActiveUnitInfo);
   if (ActiveUnitInfo = nil) then exit;
 
   if (ActiveUnitInfo.Component=nil)
@@ -8170,17 +8281,23 @@ begin
     TheControlSelection.AssignPersistent(ActiveUnitInfo.Component);
   end;
 end;
+// === DaThoX end
 
 procedure TMainIDE.DoShowSourceOfActiveDesignerForm;
 var
   ActiveUnitInfo: TUnitInfo;
+  ActiveSourceEditor: TSourceEditor; // DaThoX
 begin
   if SourceEditorManager.SourceEditorCount = 0 then exit;
-  if LastFormActivated <> nil then begin
-    ActiveUnitInfo := Project1.UnitWithComponent(LastFormActivated.Designer.LookupRoot);
+  if LastFormActivated <> nil then
+  begin
+    GetCurrentUnit(ActiveSourceEditor,ActiveUnitInfo); // DaThoX
+
     if (ActiveUnitInfo <> nil) and (ActiveUnitInfo.OpenEditorInfoCount > 0) then
-      SourceEditorManager.ActiveEditor :=
-                 TSourceEditor(ActiveUnitInfo.OpenEditorInfo[0].EditorComponent);
+    begin
+      SourceEditorManager.ActiveEditor := TSourceEditor(ActiveUnitInfo.OpenEditorInfo[0].EditorComponent); // DaThoX
+      DoCallNotifyHandler(lihtShowSourceOfActiveDesignerForm, SourceEditorManager.ActiveEditor); // DaThoX
+    end;
   end;
   SourceEditorManager.ShowActiveWindowOnTop(False);
   {$IFDEF VerboseIDEDisplayState}
@@ -8290,6 +8407,10 @@ begin
         IDEWindowCreators.ShowForm(MessagesView,true);
         SourceEditorManager.ShowActiveWindowOnTop(True);
       end;
+      // DaThoX begin
+      if IDETabMaster <> nil then
+        IDETabMaster.JumpToCompilerMessage(SrcEdit);
+      // DaThoX end
       SrcEdit.EditorComponent.LogicalCaretXY:=LogCaretXY;
       SrcEdit.EditorComponent.TopLine:=TopLine;
       SrcEdit.CenterCursorHoriz(hcmSoftKeepEOL);
@@ -11543,6 +11664,23 @@ begin
   and (aForm<>WindowMenuActiveForm) then
     WindowMenuActiveForm := aForm;
 end;
+
+// DaThoX begin
+procedure TMainIDE.OnScreenChangedControl(Sender: TObject; LastControl: TControl);
+var
+  LOwner: TComponent;
+begin
+  if LastControl = nil then
+    Exit;
+
+  LOwner := LastControl.Owner;
+  if LOwner is TOICustomPropertyGrid then
+  case DisplayState of
+    dsSource: DisplayState:=dsInspector;
+    dsForm: DisplayState:=dsInspector2;
+  end;
+end;
+// DaThoX end
 
 procedure TMainIDE.OnScreenRemoveForm(Sender: TObject; AForm: TCustomForm);
 begin

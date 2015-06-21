@@ -469,6 +469,11 @@ procedure Register;
 
 implementation
 
+// DaThoX begin
+uses
+  LazIDEIntf;
+// DaThoX end
+
 function StrToIDEWindowPlacement(const s: string): TIDEWindowPlacement;
 begin
   for Result:=Low(TIDEWindowPlacement) to High(TIDEWindowPlacement) do
@@ -2063,7 +2068,12 @@ begin
     // show dockable if it has a creator and is not a designer form
     IDEDockMaster.ShowForm(AForm,BringToFront)
   else
-    SimpleLayoutStorage.ApplyAndShow(Self,AForm,BringToFront,AMoveToVisbleMode);
+    // DaThoX begin
+    if (IDETabMaster <> nil) and (csDesigning in AForm.ComponentState) then
+      IDETabMaster.ShowForm(AForm)
+    else
+    // DaThoX end
+      SimpleLayoutStorage.ApplyAndShow(Self,AForm,BringToFront,AMoveToVisbleMode);
 end;
 
 function TIDEWindowCreatorList.ShowForm(AFormName: string; BringToFront: boolean

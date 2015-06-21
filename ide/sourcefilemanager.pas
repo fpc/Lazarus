@@ -1844,7 +1844,7 @@ begin
     if NewUnitInfo.Component<>nil then begin
       // show form
       IDEWindowCreators.ShowForm(DefaultObjectInspectorName,false);
-      MainIDE.DoShowDesignerFormOfCurrentSrc;
+      MainIDE.DoShowDesignerFormOfCurrentSrc(False); // DaThoX
     end else begin
       MainIDE.DisplayState:= dsSource;
     end;
