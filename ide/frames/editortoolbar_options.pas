@@ -97,6 +97,7 @@ begin
   sLocalizedPosValues[3] := lisLeft;
   for i := 0 to high(sLocalizedPosValues) do
     cbPos.Items[i] := sLocalizedPosValues[i]; // localized
+  cbPos.Caption := cbPos.Items[cbPos.ItemIndex];
 
   dbGeneralSettings.Caption := 'Editor Toolbars Settings'; // ToDo: Will be removed ...
   cbCoolBarVisible.Caption := lisEditorToolbarVisible;
@@ -111,7 +112,7 @@ var
 begin
   Opts := (AOptions as TEnvironmentOptions).EditorToolBarOptions;
   cbCoolBarVisible.Checked := Opts.Visible;
-  cbPos.Caption := Opts.Position;
+  cbPos.ItemIndex := IndexFromEnglish(Opts.Position);
   // Disable controls when toolbar is hidden.
   cbPos.Enabled := Opts.Visible;
   bConfig.Enabled := Opts.Visible;
