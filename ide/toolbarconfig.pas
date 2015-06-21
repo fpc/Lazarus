@@ -24,8 +24,8 @@ interface
 
 uses
   Classes, SysUtils, Forms, Graphics, Dialogs, ExtCtrls, Buttons, StdCtrls,
-  ComCtrls, Menus, TreeFilterEdit, LazarusIDEStrConsts,
-  MenuIntf, IDEImagesIntf, LCLProc, ButtonPanel;
+  Controls, ComCtrls, Menus, TreeFilterEdit, LazarusIDEStrConsts,
+  IDECommands, MenuIntf, IDEImagesIntf, LCLProc, ButtonPanel;
 
 type
   { TLvItem }
@@ -95,22 +95,53 @@ type
     procedure AddDivider;
     procedure FillToolBar;
   public
-    procedure LoadSettings(const SL: TStringList);
+    procedure LoadSettings(SL: TStringList);
     procedure SaveSettings(SL: TStringList);
   end;
 
-var
-  fToolBarConfig: TToolBarConfig;
+function ShowToolBarConfig(aNames: TStringList): TModalResult;
+function GetShortcut(AMenuItem: TIDEMenuItem): string;
+
 
 implementation
 
 {$R *.lfm}
 
-uses
-   ToolBarData;
-
 const
   cDivider = '---------------';
+
+function ShowToolBarConfig(aNames: TStringList): TModalResult;
+var
+  Conf: TToolBarConfig;
+begin
+  Conf := TToolBarConfig.Create(Nil);
+  try
+    if Assigned(aNames) then
+      Conf.LoadSettings(aNames);
+    Result := Conf.ShowModal;
+    if (Result = mrOK) and Assigned(aNames) then
+      Conf.SaveSettings(aNames);
+  finally
+    Conf.Free;
+  end;
+end;
+
+function GetShortcut(AMenuItem: TIDEMenuItem): string;
+var
+  ACommand: TIDECommand;
+  AShortcut: string;
+begin
+  Result := '';
+  AShortcut := '';
+  if AMenuItem is TIDEMenuCommand then
+  begin
+    ACommand := TIDEMenuCommand(AMenuItem).Command;
+    if Assigned(ACommand) then
+      AShortcut := ShortCutToText(ACommand.AsShortCut);
+    if AShortcut <> '' then
+      Result := ' (' + AShortcut + ')';
+  end;
+end;
 
 { TToolBarConfig }
 
@@ -202,12 +233,9 @@ function TToolBarConfig.GetMainListIndex(Item: TListItem): Integer;
 var
   I: Integer;
 begin
-  for I:= 0 to MainList.Count -1 do begin
-    if TLvItem(MainList.Objects[I]).LvIndex = Item.Index then begin
-      Result := I;
-      Exit;
-    end;
-  end;
+  for I:= 0 to MainList.Count -1 do
+    if TLvItem(MainList.Objects[I]).LvIndex = Item.Index then
+      Exit(I);
   Result := -1;
 end;
 
@@ -349,18 +377,10 @@ begin
 
     if AItem.Caption = cDivider then
       ImageIndex := divImageIndex
+    else if Assigned(AItem.Data) and (TIDEMenuItem(AItem.Data).ImageIndex > -1) then
+      ImageIndex := TIDEMenuItem(AItem.Data).ImageIndex
     else
-    begin
-      if Assigned(AItem.Data) then
-      begin
-        if TIDEMenuItem(AItem.Data).ImageIndex > -1 then
-          ImageIndex := TIDEMenuItem(AItem.Data).ImageIndex
-        else
-          ImageIndex := defImageIndex;
-      end
-      else
-        ImageIndex := defImageIndex;
-    end;
+      ImageIndex := defImageIndex;
     Image.Clear;
     lvToolBar.SmallImages.GetBitmap(ImageIndex, Image);
     Draw(ARect.Left + 2, ARect.Top + 2, Image);
@@ -416,7 +436,7 @@ begin
     lvToolbar.Items[Index2].Selected := False;
     lvToolbar.Selected := nil;
     lvToolbar.ItemIndex:= Index2;
-    end;
+  end;
 end;
 
 procedure TToolBarConfig.btnMoveUpClick(Sender: TObject);
@@ -583,7 +603,7 @@ begin
   begin
     aListItem := TLvItem(MainList.Objects[I]);
     mi := aListItem.Item;
-    aCaption  := MainList.Strings[I];
+    aCaption := MainList.Strings[I];
     if aCaption = cDivider then
       AddDivider
     else
@@ -592,7 +612,7 @@ begin
   end;
 end;
 
-procedure TToolBarConfig.LoadSettings(const SL: TStringList);
+procedure TToolBarConfig.LoadSettings(SL: TStringList);
 var
   I: Integer;
   Value: string;
@@ -601,16 +621,12 @@ begin
   for I := 0 to SL.Count - 1 do
   begin
     Value := SL.Strings[I];
-    if Value <> '' then
-    begin
-      if Value = cDivider then
-      begin
-        AddListItem(nil);
-        Continue;
-      end;
+    if Value = '' then Continue;
+    if Value = cDivider then
+      MI := nil
+    else
       MI := IDEMenuRoots.FindByPath(Value, false);
-      AddListItem(MI);
-    end;
+    AddListItem(MI);
   end;
   FillToolBar;
 end;

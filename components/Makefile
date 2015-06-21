@@ -1580,7 +1580,6 @@ bigide:
 	$(MAKE) -C sdf
 	$(MAKE) -C tachart
 	$(MAKE) -C todolist
-	$(MAKE) -C editortoolbar
 	$(MAKE) -C datetimectrls
 	$(MAKE) -C jcf2/IdePlugin/lazarus
 	$(MAKE) -C chmhelp/packages/help
@@ -1615,7 +1614,6 @@ clean:
 	$(MAKE) -C sdf clean
 	$(MAKE) -C tachart clean
 	$(MAKE) -C todolist clean
-	$(MAKE) -C editortoolbar clean
 	$(MAKE) -C datetimectrls clean
 	$(MAKE) -C jcf2/IdePlugin/lazarus clean
 	$(MAKE) -C chmhelp/packages/help clean
@@ -1650,7 +1648,6 @@ distclean:
 	$(MAKE) -C sdf distclean
 	$(MAKE) -C tachart distclean
 	$(MAKE) -C todolist distclean
-	$(MAKE) -C editortoolbar distclean
 	$(MAKE) -C datetimectrls distclean
 	$(MAKE) -C jcf2/IdePlugin/lazarus distclean
 	$(MAKE) -C chmhelp/packages/help distclean

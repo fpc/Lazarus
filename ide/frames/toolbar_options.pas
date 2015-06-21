@@ -86,7 +86,6 @@ type
     procedure ToolBarClick(Sender: TObject);
     procedure PopulateToolBar;
     procedure EnableDisableButtons(const bType: Integer);
-    //function OptionsChanged(OldOptions: TIDECoolBarOptions): boolean;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -419,26 +418,19 @@ begin
     MessageDlg(lisCoolbarSelectToolBar, mtInformation, [mbOk], 0);
     Exit;
   end;
-  fToolBarConfig := TToolBarConfig.Create(Self);
-  try
-    ToolBar := (Coolbar.Bands.Items[ToConfig].Control as TToolBar);
-    if ToolBar <> nil then
+  ToolBar := (Coolbar.Bands.Items[ToConfig].Control as TToolBar);
+  if ToolBar <> nil then
+  begin
+    ToConfig := FTempCoolBar.FindByToolBar(ToolBar);
+    if ToConfig <> -1 then
     begin
-      ToConfig := FTempCoolBar.FindByToolBar(ToolBar);
-      if ToConfig <> -1 then
+      if ShowToolBarConfig(FTempCoolBar.ToolBars[ToConfig].ButtonNames) = mrOK then
       begin
-        fToolBarConfig.LoadSettings(FTempCoolBar.ToolBars[ToConfig].ButtonNames);
-        if fToolBarConfig.ShowModal  = mrOK then
-        begin
-          FTempCoolBar.ToolBars[ToConfig].ClearToolbar;
-          fToolBarConfig.SaveSettings(FTempCoolBar.ToolBars[ToConfig].ButtonNames);
-          for I := 0 to FTempCoolBar.ToolBars[ToConfig].ButtonNames.Count - 1 do
-            FTempCoolBar.ToolBars[ToConfig].AddCustomItems(I);
-        end;
+        FTempCoolBar.ToolBars[ToConfig].ClearToolbar;
+        for I := 0 to FTempCoolBar.ToolBars[ToConfig].ButtonNames.Count - 1 do
+          FTempCoolBar.ToolBars[ToConfig].AddCustomItems(I);
       end;
     end;
-  finally
-    fToolBarConfig.Free;
   end;
   Coolbar.AutosizeBands;
   EnableDisableButtons(1);

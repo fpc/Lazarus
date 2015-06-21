@@ -68,9 +68,7 @@ uses
     TurboPowerIPro, TurboPowerIProDsgn,
     jcfidelazarus, chmhelppkg,
     FPCUnitTestRunner, FPCUnitIDE, ProjTemplates, TAChartLazarusPkg,
-    TodoListLaz, EditorToolbar, DateTimeCtrls,
-    SQLDBLaz, DBFLaz,
-    pascalscript, EditorMacroScript,
+    TodoListLaz, DateTimeCtrls, SQLDBLaz, DBFLaz, pascalscript, EditorMacroScript,
   {$ENDIF}
   MainBase;
 

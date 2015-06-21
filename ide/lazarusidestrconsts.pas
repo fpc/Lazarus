@@ -100,8 +100,8 @@ resourcestring
   lisUp   = 'Up';
   lisRight = 'Right';
   lisLeft = 'Left';
-//  lisTop = 'Top';
-//  lisBottom = 'Bottom';
+  lisTop = 'Top';
+  lisBottom = 'Bottom';
   lisName = 'Name';
   lisKey = 'Key';
   lisValue = 'Value';
@@ -4532,7 +4532,7 @@ resourcestring
   lisProjInspRemovedRequiredPackages = 'Removed required packages';
   lisProjInspProjectInspector = 'Project Inspector - %s';
   
-  //Coolbar
+  // IDE Coolbar
   lisCoolbarOptions = 'IDE CoolBar';
   lisCoolbarDeleteToolBar = 'Are you sure you want to delete the selected toolbar?';
   lisCoolbarSelectToolBar = 'Please select a toolbar first!';
@@ -4581,6 +4581,13 @@ resourcestring
   lisCoolbarBorderStyleItem1 = 'Single';
   lisCoolbarDeleteWarning = 'There must be at least one toolbar!';
   lisCoolbarRestoreDefaults = 'Restore defaults';
+
+  // Editor Toolbar
+  lisEditorToolbar = 'Editor ToolBar';
+  lisEditorToolbarHint = 'You may add here your favorite commands';
+  lisConfigureEditorToolbar = 'Configure Toolbar';
+  lisEditorToolbarVisible = 'EditorToolbar is &visible';
+  lisPosition = 'Position';
 
   // components palette settings and list form
   lisCmpPages = 'Pages';

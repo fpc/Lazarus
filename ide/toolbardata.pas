@@ -33,8 +33,8 @@ unit ToolbarData;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, ComCtrls, ExtCtrls, ToolWin, Controls,
-  MenuIntf, IDEImagesIntf, IDECommands, Laz2_XMLCfg, fgl;
+  Classes, SysUtils, LCLProc, ComCtrls, ExtCtrls, ToolWin, Controls, fgl,
+  MenuIntf, IDEImagesIntf, Laz2_XMLCfg, ToolbarConfig;
 
 type
 
@@ -170,8 +170,6 @@ type
     property IsVisible: Boolean read FIsVisible write SetIsVisible;
     property Width: Integer read FWidth write FWidth;
   end;
-
-  function GetShortcut(AMenuItem: TIDEMenuItem): string;
 
 var
   IDECoolBar: TIDECoolBar;
@@ -711,23 +709,6 @@ begin
     Result := TempOpts.EqualToolbars(FDefaultOptions);
   finally
     TempOpts.Free;
-  end;
-end;
-
-function GetShortcut(AMenuItem: TIDEMenuItem): string;
-var
-  ACommand: TIDECommand;
-  AShortcut: string;
-begin
-  Result := '';
-  AShortcut := '';
-  if AMenuItem is TIDEMenuCommand then
-  begin
-    ACommand := TIDEMenuCommand(AMenuItem).Command;
-    if Assigned(ACommand) then
-      AShortcut := ShortCutToText(ACommand.AsShortCut);
-    if AShortcut <> '' then
-      Result:= ' (' + AShortcut + ')';
   end;
 end;
 

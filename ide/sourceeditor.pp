@@ -69,7 +69,7 @@ uses
   editor_general_options,
   SortSelectionDlg, EncloseSelectionDlg, EncloseIfDef, InvertAssignTool,
   SourceEditProcs, SourceMarks, CharacterMapDlg, SearchFrm,
-  FPDocHints, EditorMacroListViewer,
+  FPDocHints, EditorMacroListViewer, EditorToolbarStatic, editortoolbar_options,
   DbgIntfBaseTypes, DbgIntfDebuggerBase, BaseDebugManager, Debugger, MainIntf,
   GotoFrm;
 
@@ -951,6 +951,7 @@ type
 
   TSourceEditorManager = class(TSourceEditorManagerBase)
   private
+    procedure DoConfigureEditorToolbar(Sender: TObject);
     function GetActiveSourceNotebook: TSourceNotebook;
     function GetActiveSrcEditor: TSourceEditor;
     function GetSourceEditorsByPage(WindowIndex, PageIndex: integer): TSourceEditor;
@@ -10357,6 +10358,11 @@ begin
   Result := FGotoDialog;
 end;
 
+procedure TSourceEditorManager.DoConfigureEditorToolbar(Sender: TObject);
+begin
+  LazarusIDE.DoOpenIDEOptions(TEditorToolbarOptionsFrame, '', [], []);
+end;
+
 constructor TSourceEditorManager.Create(AOwner: TComponent);
 var
   DCIFilename: String;
@@ -10439,6 +10445,9 @@ begin
     OnExecuteCompletion := @OnCodeTemplateExecuteCompletion;
     EndOfTokenChr:=' ()[]{},.;:"+-*^@$\<>=''';
   end;
+
+  // EditorToolBar
+  CreateEditorToolBar(@DoConfigureEditorToolbar);
 
   // layout
   IDEWindowCreators.Add(NonModalIDEWindowNames[nmiwSourceNoteBookName],

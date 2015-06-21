@@ -45,7 +45,7 @@ uses
   DbgIntfDebuggerBase,
   // IDE
   IDEProcs, DialogProcs, LazarusIDEStrConsts, IDETranslations, LazConf,
-  IDEOptionDefs, TransferMacros, ModeMatrixOpts, Debugger, ToolbarData;
+  IDEOptionDefs, TransferMacros, ModeMatrixOpts, Debugger, ToolbarData, EditorToolbarStatic;
 
 const
   EnvOptsVersion: integer = 108;
@@ -296,6 +296,8 @@ type
 
     // IDE Coolbar
     FIDECoolBarOptions: TIDECoolBarOptions;
+    // Editor Toolbar
+    FEditorToolBarOptions: TEditorToolBarOptions;
     // component palette
     FComponentPaletteOptions: TCompPaletteOptions;
 
@@ -526,13 +528,13 @@ type
                                             write FCompletionWindowWidth;
     property CompletionWindowHeight: Integer read FCompletionWindowHeight
                                              write FCompletionWindowHeight;
-
     // window menu list
     property IDENameForDesignedFormList: boolean read FIDENameForDesignedFormList
                                                write FIDENameForDesignedFormList;
-
     // IDE Coolbar
     property IDECoolBarOptions: TIDECoolBarOptions read FIDECoolBarOptions;
+    // Editor Toolbar
+    property EditorToolBarOptions: TEditorToolBarOptions read FEditorToolBarOptions;
     // component palette
     property ComponentPaletteOptions: TCompPaletteOptions read FComponentPaletteOptions;
 
@@ -919,6 +921,8 @@ begin
 
   // IDE Coolbar
   FIDECoolBarOptions:=TIDECoolBarOptions.Create;
+  // Editor Toolbar
+  FEditorToolBarOptions:=TEditorToolBarOptions.Create;
   // component palette
   FComponentPaletteOptions:=TCompPaletteOptions.Create;
 
@@ -1029,6 +1033,7 @@ begin
   FreeAndNil(FRecentPackageFiles);
   FreeAndNil(FObjectInspectorOptions);
   FreeAndNil(FComponentPaletteOptions);
+  FreeAndNil(FEditorToolBarOptions);
   FreeAndNil(FIDECoolBarOptions);
   FreeAndNil(FLazarusDirHistory);
   FreeAndNil(FCompilerFileHistory);
@@ -1484,6 +1489,8 @@ begin
 
       // IDE Coolbar
       FIDECoolBarOptions.Load(XMLConfig);
+      // Editor Toolbar
+      FEditorToolBarOptions.Load(XMLConfig);
       // component palette
       FComponentPaletteOptions.Load(XMLConfig);
 
@@ -1855,6 +1862,8 @@ begin
 
       // IDE Coolbar
       FIDECoolBarOptions.Save(XMLConfig);
+      // Editor Toolbar
+      FEditorToolBarOptions.Save(XMLConfig);
       // component palette
       FComponentPaletteOptions.Save(XMLConfig);
 

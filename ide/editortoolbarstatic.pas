@@ -26,7 +26,7 @@ interface
 uses
   SysUtils, Classes, Forms, ComCtrls, Controls, ExtCtrls, fgl,
   MenuIntf, IDEImagesIntf, SrcEditorIntf, BaseIDEIntf,
-  IDECommands, LazarusIDEStrConsts, LazConfigStorage, Laz2_XMLCfg, LCLProc;
+  LazarusIDEStrConsts, LazConfigStorage, Laz2_XMLCfg, LCLProc, ToolbarConfig;
 
 const
   cSettingsFile = 'editortoolbar.xml';
@@ -104,7 +104,6 @@ type
     procedure ReloadAll;
   end;
 
-function GetShortcut(AMenuItem: TIDEMenuItem): string;
 procedure CreateEditorToolBar(aConfigEvent: TNotifyEvent);
 
 var
@@ -514,23 +513,6 @@ begin
     TB.EndUpdate;
   end;
   TB.Visible:= Options.Visible;
-end;
-
-function GetShortcut(AMenuItem: TIDEMenuItem): string;
-var
-  ACommand: TIDECommand;
-  AShortcut: string;
-begin
-  Result := '';
-  AShortcut:= '';
-  if AMenuItem is TIDEMenuCommand then
-  begin
-    ACommand := TIDEMenuCommand(AMenuItem).Command;
-    if Assigned(ACommand) then
-      AShortcut:= ShortCutToText(ACommand.AsShortCut);
-    if AShortcut <> '' then
-      Result:= ' (' + AShortcut +')';
-  end;
 end;
 
 procedure CreateEditorToolBar(aConfigEvent: TNotifyEvent);

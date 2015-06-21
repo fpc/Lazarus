@@ -48,9 +48,6 @@ dbexport
 debuggerintf
   ?
 
-editortoolbar
-  A customizable toolbar for the source editor.
-
 educationlaz
   Extends/configures the IDE for education, training, courses
 
