@@ -115,7 +115,7 @@ uses
   // environment option frames
   editor_general_options, componentpalette_options, formed_options, OI_options,
   MsgWnd_Options, files_options, desktop_options, window_options,
-  Backup_Options, naming_options, fpdoc_options, toolbar_options, editortoolbar_options,
+  Backup_Options, naming_options, fpdoc_options, idecoolbar_options, editortoolbar_options,
   editor_display_options, editor_keymapping_options, editor_mouseaction_options,
   editor_mouseaction_options_advanced, editor_color_options, editor_markup_options,
   editor_markup_userdefined, editor_codetools_options, editor_codefolding_options,
@@ -12752,7 +12752,7 @@ end;
 
 procedure TMainIDE.ToolBarOptionsClick(Sender: TObject);
 begin
-  DoOpenIDEOptions(TToolbarOptionsFrame, '', [], []);
+  DoOpenIDEOptions(TIdeCoolbarOptionsFrame, '', [], []);
 end;
 
 
