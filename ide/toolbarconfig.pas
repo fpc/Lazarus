@@ -171,7 +171,7 @@ begin
   TV.Images := IDEImages.Images_16;
   lvToolbar.SmallImages := IDEImages.Images_16;
   // default image to be used when none is available
-  defImageIndex := IDEImages.LoadImage(16, 'execute16');
+  defImageIndex := IDEImages.LoadImage(16, 'execute');
   // Image for divider
   divImageIndex := IDEImages.Images_16.Add(sbAddDivider.Glyph,nil);
 
