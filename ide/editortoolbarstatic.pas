@@ -193,7 +193,7 @@ end;
 function TEditorToolBarOptions.Load(XMLConfig: TXMLConfig): Boolean;
 var
   ButtonCount: Integer;
-  s: string;
+  ButtonName: string;
   I: Integer;
   cfg: TConfigStorage;
 begin
@@ -205,9 +205,11 @@ begin
     ButtonCount := XMLConfig.GetValue(BasePath + 'Count', 0);
     for I := 1 to ButtonCount do
     begin
-      s := Trim(XMLConfig.GetValue(BasePath + 'Buttons/Name' + IntToStr(I) + '/Value', ''));
-      if s <> '' then
-        FButtonNames.Add(s);
+      ButtonName := XMLConfig.GetValue(BasePath + 'Button' + IntToStr(I) + '/Name', '');
+      if ButtonName = '' then  // Old format
+        ButtonName := XMLConfig.GetValue(BasePath + 'Buttons/Name' + IntToStr(I) + '/Value', '');
+      if ButtonName <> '' then
+        FButtonNames.Add(ButtonName);
     end;
   end
   else begin
@@ -222,9 +224,9 @@ begin
       begin
         for I := 1 to ButtonCount do
         begin
-          s := Trim(cfg.GetValue('Button' + Format('%2.2d', [I]) + '/Value', ''));
-          if s <> '' then
-            FButtonNames.Add(s);
+          ButtonName := Trim(cfg.GetValue('Button' + Format('%2.2d', [I]) + '/Value', ''));
+          if ButtonName <> '' then
+            FButtonNames.Add(ButtonName);
         end;
       end
       else
@@ -244,8 +246,7 @@ begin
   XMLConfig.SetDeleteValue(BasePath + 'Position', FPosition, 'Top');
   XMLConfig.SetDeleteValue(BasePath + 'Count', ButtonNames.Count, 0);
   for I := 0 to ButtonNames.Count-1 do
-    XMLConfig.SetDeleteValue(BasePath + 'Buttons/Name' + IntToStr(I+1) + '/Value',
-                             ButtonNames[I], '');
+    XMLConfig.SetDeleteValue(BasePath + 'Button' + IntToStr(I+1) + '/Name', ButtonNames[I], '');
 end;
 
 { TAllEditorToolbars }
