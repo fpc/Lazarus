@@ -432,6 +432,10 @@ msgstr "gtk2 interfeiso aplankas"
 msgid "HasError"
 msgstr "TuriKlaida"
 
+#: codetoolsstrconsts.ctshelperisnotallowed
+msgid "Helper after %s is not allowed"
+msgstr ""
+
 #: codetoolsstrconsts.ctsidedirectory
 msgid "IDE Directory"
 msgstr "IKA aplankas"

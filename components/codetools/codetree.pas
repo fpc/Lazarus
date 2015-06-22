@@ -91,14 +91,15 @@ const
   ctnObjCCategory       = 35;
   ctnObjCProtocol       = 36;
   ctnCPPClass           = 37;
-  ctnTypeHelper         = 38;
+  ctnTypeHelper         = 38;//"type helper"
+  ctnRecordHelper       = 39;//"record helper"
 
   ctnClassAbstract      = 40;
   ctnClassSealed        = 41;
   ctnClassExternal      = 42;
-  ctnClassHelper        = 43;
+  ctnClassHelper        = 43;//"class helper"
   ctnClassInheritance   = 44;
-  ctnClassHelperFor     = 45;
+  ctnHelperFor          = 45;//class/record/type helper for
   ctnClassGUID          = 46;
   ctnClassClassVar      = 47; // child of visibility section
   ctnClassPrivate       = 48; // child of AllClassObjects
@@ -167,9 +168,10 @@ const
      [ctnConstSection, ctnTypeSection, ctnVarSection, ctnClassClassVar];
   AllClassSections =
     AllClassBaseSections+AllClassSubSections;
-  AllClassInterfaces = [ctnClassInterface,ctnDispinterface,ctnObjCProtocol,ctnTypeHelper];
+  AllClassInterfaces = [ctnClassInterface,ctnDispinterface,ctnObjCProtocol];
   AllClassObjects = [ctnClass,ctnObject,ctnRecordType,
-                     ctnObjCClass,ctnObjCCategory,ctnCPPClass];
+                     ctnObjCClass,ctnObjCCategory,ctnCPPClass,
+                     ctnClassHelper,ctnRecordHelper,ctnTypeHelper];
   AllClasses = AllClassObjects+AllClassInterfaces;
   AllClassModifiers = [ctnClassAbstract, ctnClassSealed, ctnClassExternal];
   AllDefinitionSections =
@@ -192,7 +194,7 @@ const
                          ctnInitialization,ctnFinalization];
   AllFindContextDescs = AllIdentifierDefinitions + AllCodeSections + AllClasses +
      [ctnProcedure];
-  AllPointContexts = AllClasses+AllSourceTypes+[ctnEnumerationType,ctnInterface,ctnImplementation];
+  AllPointContexts = AllClasses+AllSourceTypes+[ctnEnumerationType,ctnInterface,ctnImplementation,ctnTypeType];
 
 
   // CodeTreeNodeSubDescriptors
@@ -367,6 +369,7 @@ begin
   ctnObjCProtocol: Result:='ObjCProtocol';
   ctnCPPClass: Result:='CPPClass';
   ctnTypeHelper: Result:='Type Helper';
+  ctnRecordHelper: Result:='Record Helper';
 
   ctnClassInheritance: Result:='Class inheritance';
   ctnClassGUID: Result:='GUID';
@@ -380,8 +383,8 @@ begin
   ctnClassAbstract: Result:='abstract';
   ctnClassSealed: Result:='sealed';
   ctnClassExternal: Result:='external';
-  ctnClassHelper: Result:='helper';
-  ctnClassHelperFor: Result:='(helper) for';
+  ctnClassHelper: Result:='Class Helper';
+  ctnHelperFor: Result:='(helper) for';
 
   ctnProcedure: Result:='Procedure';
   ctnProcedureHead: Result:='ProcedureHead';

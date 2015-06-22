@@ -429,6 +429,10 @@ msgstr "répertoire d'interface pour gtk2"
 msgid "HasError"
 msgstr "Contient une erreur"
 
+#: codetoolsstrconsts.ctshelperisnotallowed
+msgid "Helper after %s is not allowed"
+msgstr ""
+
 #: codetoolsstrconsts.ctsidedirectory
 msgid "IDE Directory"
 msgstr "Répertoire de l'EDI"
@@ -954,3 +958,4 @@ msgstr "Répertoire des éléments graphiques (\"widgets\")"
 #: codetoolsstrconsts.ctswordnotfound
 msgid "\"%s\" not found"
 msgstr "\"%s\" non trouvé"
+

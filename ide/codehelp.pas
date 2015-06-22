@@ -310,12 +310,18 @@ type
                      XYPos: TCodeXYPosition; Options: TCodeHelpHintOptions;
                      out BaseURL, HTMLHint: string;
                      out CacheWasUsed: boolean): TCodeHelpParseResult;
+    function GetHTMLHintForExpr(CTExprType: TExpressionType;
+                     XYPos: TCodeXYPosition; Options: TCodeHelpHintOptions;
+                     out BaseURL, HTMLHint: string;
+                     out CacheWasUsed: boolean): TCodeHelpParseResult;
     function GetHTMLHintForUnit(AUnitName, InFilename: string; BaseDir: string;
                      Options: TCodeHelpHintOptions;
                      out BaseURL, HTMLHint: string;
                      out CacheWasUsed: boolean): TCodeHelpParseResult;
     function GetHTMLDeclarationHeader(Tool: TFindDeclarationTool;
                            Node: TCodeTreeNode; XYPos: TCodeXYPosition): string;
+    function GetHTMLDeclarationHeader(Tool: TFindDeclarationTool;
+      Node: TCodeTreeNode; Desc: TExpressionTypeDesc; XYPos: TCodeXYPosition): string;
     function GetPasDocCommentsAsHTML(Tool: TFindDeclarationTool; Node: TCodeTreeNode): string;
     function GetFPDocNodeAsHTML(FPDocFile: TLazFPDocFile; DOMNode: TDOMNode): string;
     function TextToHTML(Txt: string): string;
@@ -2363,10 +2369,9 @@ function TCodeHelpManager.GetHTMLHint(Code: TCodeBuffer; X, Y: integer;
   out CacheWasUsed: boolean): TCodeHelpParseResult;
 var
   CursorPos: TCodeXYPosition;
-  CTTool: TFindDeclarationTool;
-  CTNode: TCodeTreeNode;
   XYPos: TCodeXYPosition;
   TopLine: integer;
+  CTExprType: TExpressionType;
 begin
   Result:=chprFailed;
   BaseURL:='lazdoc://';
@@ -2381,17 +2386,18 @@ begin
   try
     // find declaration
     if not CodeToolBoss.CurCodeTool.FindDeclaration(CursorPos,
-      DefaultFindSmartHintFlags+[fsfSearchSourceName],CTTool,CTNode,XYPos,TopLine)
+      DefaultFindSmartHintFlags+[fsfSearchSourceName],CTExprType,XYPos,TopLine)
     then
       exit;
-    if (CTNode=nil) then begin
+    if (CTExprType.Desc=xtContext) and (CTExprType.Context.Node=nil) then begin
       // codetools found a source file, not a declararion
       debugln(['TCodeHelpManager.GetHTMLHint not a declaration']);
       exit;
     end;
-    Result:=GetHTMLHintForNode(CTTool,CTNode,XYPos,Options,BaseURL,HTMLHint,CacheWasUsed);
+    Result:=GetHTMLHintForExpr(CTExprType,XYPos,Options,BaseURL,HTMLHint,CacheWasUsed);
     // Property details are like "published property TType.PropName:Integer"
-    PropDetails:=CTTool.GetSmartHint(CTNode,XYPos,false);
+    if (CTExprType.Desc=xtContext) and (CTExprType.Context.Tool<>nil) then
+      PropDetails:=CTExprType.Context.Tool.GetSmartHint(CTExprType.Context.Node,XYPos,false);
   except
     on E: ECodeToolError do begin
       //debugln(['TCodeHelpManager.GetHTMLHint ECodeToolError: ',E.Message]);
@@ -2403,9 +2409,9 @@ begin
   end;
 end;
 
-function TCodeHelpManager.GetHTMLHintForNode(CTTool: TFindDeclarationTool;
-  CTNode: TCodeTreeNode; XYPos: TCodeXYPosition; Options: TCodeHelpHintOptions;
-  out BaseURL, HTMLHint: string; out CacheWasUsed: boolean): TCodeHelpParseResult;
+function TCodeHelpManager.GetHTMLHintForExpr(CTExprType: TExpressionType;
+  XYPos: TCodeXYPosition; Options: TCodeHelpHintOptions; out BaseURL,
+  HTMLHint: string; out CacheWasUsed: boolean): TCodeHelpParseResult;
 var
   aTopLine: integer;
   ListOfPCodeXYPosition: TFPList;
@@ -2423,11 +2429,22 @@ var
   n: Integer;
   s: String;
   Cmd: TKeyCommandRelation;
+  CTTool: TFindDeclarationTool;
+  CTNode: TCodeTreeNode;
 begin
   Result:=chprFailed;
   BaseURL:='lazdoc://';
   HTMLHint:='';
   CacheWasUsed:=true;
+  AnOwner := nil;
+
+  if (CTExprType.Desc in xtAllPredefinedTypes) then
+    CTExprType.Context.Tool := CodeToolBoss.CurCodeTool.FindCodeToolForUsedUnit('system','',false);
+  CTTool := CTExprType.Context.Tool;
+  CTNode := CTExprType.Context.Node;
+
+  if CTTool=nil then
+    Exit(chprFailed);
 
   ListOfPCodeXYPosition:=nil;
   Complete:=not (chhoSmallStep in Options);
@@ -2435,10 +2452,15 @@ begin
   try
     try
       if chhoDeclarationHeader in Options then
-        HTMLHint:=HTMLHint+GetHTMLDeclarationHeader(CTTool,CTNode,XYPos);
+        HTMLHint:=HTMLHint+GetHTMLDeclarationHeader(CTTool,CTNode,CTExprType.Desc,XYPos);
 
       for n:=1 to 30 do begin
-        ElementName:=CodeNodeToElementName(CTTool,CTNode);
+        if (CTExprType.Desc=xtContext) and (CTNode<>nil) then
+          ElementName:=CodeNodeToElementName(CTTool,CTNode)
+        else if (CTExprType.Desc in xtAllPredefinedTypes) then
+          ElementName:=ExpressionTypeDescNames[CTExprType.Desc]
+        else
+          break;
         //debugln(['TCodeHelpManager.GetHTMLHintForNode ElementName=',ElementName]);
         i:=ElementNames.Count-1;
         while (i>=0) do begin
@@ -2493,9 +2515,10 @@ begin
         end;
 
         // find inherited node
-        if (CTNode.Desc=ctnProperty)
-        or ((CTNode.Desc in [ctnProcedure,ctnProcedureHead])
-            and (CTTool.ProcNodeHasSpecifier(CTNode,psOVERRIDE)))
+        if  (CTNode<>nil) and (
+             (CTNode.Desc=ctnProperty) or
+             ((CTNode.Desc in [ctnProcedure,ctnProcedureHead])
+              and (CTTool.ProcNodeHasSpecifier(CTNode,psOVERRIDE))))
         then begin
           {$ifdef VerboseCodeHelp}
           debugln(['TCodeHelpManager.GetHTMLHintForNode: searching for inherited of ',CTNode.DescAsString,' ',dbgs(XYPos)]);
@@ -2560,6 +2583,19 @@ begin
   {$endif}
 end;
 
+function TCodeHelpManager.GetHTMLHintForNode(CTTool: TFindDeclarationTool;
+  CTNode: TCodeTreeNode; XYPos: TCodeXYPosition; Options: TCodeHelpHintOptions;
+  out BaseURL, HTMLHint: string; out CacheWasUsed: boolean
+  ): TCodeHelpParseResult;
+var
+  ExprType: TExpressionType;
+begin
+  ExprType.Desc:=xtContext;
+  ExprType.Context.Tool:=CTTool;
+  ExprType.Context.Node:=CTNode;
+  Result := GetHTMLHintForExpr(ExprType, XYPos, Options, BaseURL, HTMLHint, CacheWasUsed);
+end;
+
 function TCodeHelpManager.GetHTMLHintForUnit(AUnitName, InFilename: string;
   BaseDir: string; Options: TCodeHelpHintOptions; out BaseURL,
   HTMLHint: string; out CacheWasUsed: boolean): TCodeHelpParseResult;
@@ -2615,21 +2651,35 @@ begin
 end;
 
 function TCodeHelpManager.GetHTMLDeclarationHeader(Tool: TFindDeclarationTool;
-  Node: TCodeTreeNode; XYPos: TCodeXYPosition): string;
+  Node: TCodeTreeNode; Desc: TExpressionTypeDesc; XYPos: TCodeXYPosition
+  ): string;
 var
   CTHint: String;
 begin
   Result:='<div class="header">';
   // add declaration
-  CTHint:=Tool.GetSmartHint(Node,XYPos,false);
+  if Desc=xtContext then
+    CTHint:=Tool.GetSmartHint(Node,XYPos,false)
+  else if Desc in xtAllPredefinedTypes then
+    CTHint:='type '+ExpressionTypeDescNames[Desc];
   Result:=Result+'  <nobr>'+SourceToFPDocHint(CTHint)+'</nobr>';
 
   // add link to declaration
   Result:=Result+'<br>'+LineEnding;
-  if XYPos.Code=nil then
-    Tool.CleanPosToCaret(Node.StartPos,XYPos);
+  if XYPos.Code=nil then begin
+    if (Node<>nil) then
+      Tool.CleanPosToCaret(Node.StartPos,XYPos)
+    else if Desc in xtAllPredefinedTypes then
+      Tool.CleanPosToCaret(Tool.Tree.Root.StartPos,XYPos);
+  end;
   Result:=Result+'  '+SourcePosToFPDocHint(XYPos)+LineEnding;
   Result:=Result+'</div>'+LineEnding;
+end;
+
+function TCodeHelpManager.GetHTMLDeclarationHeader(Tool: TFindDeclarationTool;
+  Node: TCodeTreeNode; XYPos: TCodeXYPosition): string;
+begin
+  Result := GetHTMLDeclarationHeader(Tool, Node, xtContext, XYPos);
 end;
 
 function TCodeHelpManager.GetPasDocCommentsAsHTML(Tool: TFindDeclarationTool;

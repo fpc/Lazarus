@@ -388,7 +388,7 @@ type
                                       ): TCodeXYPosition;
     procedure FindCollectionContext(Params: TFindDeclarationParams;
       IdentStartPos: integer; CursorNode: TCodeTreeNode;
-      out GatherContext: TFindContext; out ContextExprStartPos: LongInt;
+      out ExprType: TExpressionType; out ContextExprStartPos: LongInt;
       out StartInSubContext: Boolean);
     function CollectAllContexts(Params: TFindDeclarationParams;
       const FoundContext: TFindContext): TIdentifierFoundResult;
@@ -1692,6 +1692,7 @@ begin
 
     case Node.Desc of
     ctnClass,ctnObject,ctnRecordType,ctnObjCCategory,ctnObjCClass,
+    ctnClassHelper, ctnRecordHelper, ctnTypeHelper,
     ctnClassPrivate,ctnClassProtected,ctnClassPublic,ctnClassPublished:
       begin
         Add('public');
@@ -1949,7 +1950,7 @@ end;
 procedure TIdentCompletionTool.FindCollectionContext(
   Params: TFindDeclarationParams; IdentStartPos: integer;
   CursorNode: TCodeTreeNode;
-  out GatherContext: TFindContext;
+  out ExprType: TExpressionType;
   out ContextExprStartPos: LongInt;
   out StartInSubContext: Boolean);
 
@@ -1979,10 +1980,11 @@ procedure TIdentCompletionTool.FindCollectionContext(
   end;
 
 var
-  ExprType: TExpressionType;
   IgnoreCurContext: Boolean;
+  GatherContext: TFindContext;
 begin
   GatherContext:=CreateFindContext(Self,CursorNode);
+  ExprType := CleanExpressionType;
 
   IgnoreCurContext:=false;
   //DebugLn(['TIdentCompletionTool.FindCollectionContext IdentStartPos=',dbgstr(copy(Src,IdentStartPos,20)),' ',CursorNode.DescAsString]);
@@ -2010,17 +2012,18 @@ begin
     Params.ContextNode:=CursorNode;
     Params.SetIdentifier(Self,nil,nil);
     Params.Flags:=[fdfExceptionOnNotFound,
-                   fdfSearchInParentNodes,fdfSearchInAncestors];
+                   fdfSearchInParentNodes,fdfSearchInAncestors,fdfSearchInHelpers,fdfTypeType];
     if IgnoreCurContext then
       Params.Flags:=Params.Flags+[fdfIgnoreCurContextNode];
     ExprType:=FindExpressionTypeOfTerm(ContextExprStartPos,IdentStartPos,
                                        Params,false);
-    if (ExprType.Desc=xtContext) then begin
+    if (ExprType.Desc in xtAllIdentTypes) then begin
       GatherContext:=ExprType.Context;
       debugln(['TIdentCompletionTool.FindCollectionContext ',ExprTypeToString(ExprType)]);
       StartInSubContext:=true;
     end;
   end;
+  ExprType.Context := GatherContext;
 end;
 
 function TIdentCompletionTool.CollectAllContexts(
@@ -2470,6 +2473,7 @@ var
   CursorContext: TFindContext;
   IdentStartXY: TCodeXYPosition;
   InFrontOfDirective: Boolean;
+  ExprType: TExpressionType;
   
   procedure CheckProcedureDeclarationContext;
   var
@@ -2515,7 +2519,7 @@ begin
   Result:=false;
 
   ActivateGlobalWriteLock;
-  Params:=TFindDeclarationParams.Create;
+  Params:=TFindDeclarationParams.Create;//FindHelpersInContext called later
   try
     InitCollectIdentifiers(CursorPos,IdentifierList);
     IdentStartXY:=FindIdentifierStartPos(CursorPos);
@@ -2523,6 +2527,8 @@ begin
 
     ParseSourceTillCollectionStart(IdentStartXY,CleanCursorPos,CursorNode,
                                    IdentStartPos,IdentEndPos);
+    Params.ContextNode:=CursorNode;
+    FindHelpersInContext(Params);
     if CleanCursorPos=0 then ;
     if IdentStartPos>0 then begin
       MoveCursorToCleanPos(IdentStartPos);
@@ -2553,8 +2559,9 @@ begin
       GatherSourceNames(GatherContext);
     end else begin
       FindCollectionContext(Params,IdentStartPos,CursorNode,
-                           GatherContext,ContextExprStartPos,StartInSubContext);
+                           ExprType,ContextExprStartPos,StartInSubContext);
 
+      GatherContext := ExprType.Context;
       // find class and ancestors if existing (needed for protected identifiers)
       if GatherContext.Tool = Self then
         FindContextClassAndAncestors(IdentStartXY, FICTClassAndAncestors);
@@ -2574,7 +2581,7 @@ begin
         // gather all identifiers in context
         Params.ContextNode:=GatherContext.Node;
         Params.SetIdentifier(Self,nil,@CollectAllIdentifiers);
-        Params.Flags:=[fdfSearchInAncestors,fdfCollect,fdfFindVariable];
+        Params.Flags:=[fdfSearchInAncestors,fdfCollect,fdfFindVariable,fdfSearchInHelpers];
         if (Params.ContextNode.Desc=ctnInterface) and StartInSubContext then
           Include(Params.Flags,fdfIgnoreUsedUnits);
         if not StartInSubContext then
@@ -2588,6 +2595,15 @@ begin
         if GatherContext.Node.Desc=ctnIdentifier then
           Params.Flags:=Params.Flags+[fdfIgnoreCurContextNode];
         GatherContext.Tool.FindIdentifierInContext(Params);
+      end else
+      if ExprType.Desc in xtAllIdentPredefinedTypes then
+      begin
+        // gather all identifiers in cursor context for basic types (strings etc.)
+        Params.ContextNode:=CursorNode;
+        Params.SetIdentifier(Self,nil,@CollectAllIdentifiers);
+        Params.Flags:=[fdfSearchInAncestors,fdfCollect,fdfFindVariable,fdfSearchInHelpers];
+        CurrentIdentifierList.Context:=GatherContext;
+        FindIdentifierInBasicTypeHelpers(ExprType.Desc, Params);
       end;
 
       // check for incomplete context
@@ -2823,9 +2839,9 @@ var
   var
     VarNameAtom, ProcNameAtom: TAtomPosition;
     ParameterIndex: integer;
-    GatherContext: TFindContext;
     ContextExprStartPos: LongInt;
     StartInSubContext: Boolean;
+    ExprType: TExpressionType;
   begin
     Result:=false;
     // check if in a begin..end block
@@ -2865,24 +2881,37 @@ var
       CurrentIdentifierContexts.EndPos:=SrcLen+1;
 
     FindCollectionContext(Params,ProcNameAtom.StartPos,CursorNode,
-                          GatherContext,ContextExprStartPos,StartInSubContext);
+                          ExprType,ContextExprStartPos,StartInSubContext);
 
     if ContextExprStartPos=0 then ;
     {$IFDEF VerboseCodeContext}
-    DebugLn(['CheckContextIsParameter StartInSubContext=',StartInSubContext,' ',GatherContext.Node.DescAsString,' "',copy(GatherContext.Tool.Src,GatherContext.Node.StartPos-20,25),'"']);
+    DebugLn(['CheckContextIsParameter StartInSubContext=',StartInSubContext,' ',ExprType.Context.Node.DescAsString,' "',copy(ExprType.Context.Tool.Src,GatherContext.Node.StartPos-20,25),'"']);
     {$ENDIF}
 
     // gather declarations of all parameter lists
-    Params.ContextNode:=GatherContext.Node;
+    if (ExprType.Context.Node = nil) or (ExprType.Context.Tool = nil) then
+    begin
+      if ExprType.Desc in xtAllIdentPredefinedTypes then
+      begin
+        ExprType.Context.Node := CursorNode;
+        ExprType.Context.Tool := Self;
+      end else
+        Exit;
+    end;
+
+    Params.ContextNode:=ExprType.Context.Node;
     Params.SetIdentifier(Self,@Src[ProcNameAtom.StartPos],@CollectAllContexts);
-    Params.Flags:=[fdfSearchInAncestors,fdfCollect,fdfFindVariable];
+    Params.Flags:=[fdfSearchInAncestors,fdfCollect,fdfFindVariable,fdfSearchInHelpers];
     if not StartInSubContext then
       Include(Params.Flags,fdfSearchInParentNodes);
-    CurrentIdentifierList.Context:=GatherContext;
+    CurrentIdentifierList.Context:=ExprType.Context;
     {$IFDEF VerboseCodeContext}
     DebugLn('CheckContextIsParameter searching procedures, properties and variables ...');
     {$ENDIF}
-    GatherContext.Tool.FindIdentifierInContext(Params);
+    if ExprType.Desc in xtAllIdentPredefinedTypes then
+      ExprType.Context.Tool.FindIdentifierInBasicTypeHelpers(ExprType.Desc, Params)
+    else
+      ExprType.Context.Tool.FindIdentifierInContext(Params);
     {$IFDEF VerboseCodeContext}
     DebugLn('CheckContextIsParameter END');
     {$ENDIF}
@@ -2900,11 +2929,13 @@ begin
   CurrentIdentifierContexts:=CodeContexts;
 
   ActivateGlobalWriteLock;
-  Params:=TFindDeclarationParams.Create;
+  Params:=TFindDeclarationParams.Create;//FindHelpersInContext called later
   try
     InitCollectIdentifiers(CursorPos,IdentifierList);
     ParseSourceTillCollectionStart(CursorPos,CleanCursorPos,CursorNode,
                                    IdentStartPos,IdentEndPos);
+    Params.ContextNode:=CursorNode;
+    FindHelpersInContext(Params);
     if IdentStartPos=0 then ;
     if IdentEndPos=0 then ;
 
@@ -3212,7 +3243,7 @@ begin
       EndPos:=CleanCursorPos;
     //DebugLn(['TIdentCompletionTool.GetValuesOfCaseVariable Expr=',dbgstr(copy(Src,CaseAtom.EndPos,EndPos-CaseAtom.EndPos))]);
 
-    Params:=TFindDeclarationParams.Create;
+    Params:=TFindDeclarationParams.Create(Self, CursorNode);
     Params.ContextNode:=CursorNode;
     Params.Flags:=fdfDefaultForExpressions+[fdfFunctionResult];
     ExprType:=FindExpressionTypeOfTerm(CaseAtom.EndPos,EndPos,Params,true);
@@ -3598,7 +3629,7 @@ begin
   ANode:=Node;
   if (ANode<>nil) and (Tool<>nil) then begin
     Tool.ActivateGlobalWriteLock;
-    Params:=TFindDeclarationParams.Create;
+    Params:=TFindDeclarationParams.Create(Tool, ANode);
     try
       if ANode.HasParentOfType(ctnGenericType) then exit;
       BaseExprType.Context:=Tool.FindBaseTypeOfNode(Params,ANode);

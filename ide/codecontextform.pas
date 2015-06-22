@@ -378,7 +378,7 @@ procedure TCodeContextFrm.CreateHints(const CodeContexts: TCodeContextInfo);
     ExprNode: TCodeTreeNode;
   begin
     Result:=false;
-    Params:=TFindDeclarationParams.Create;
+    Params:=TFindDeclarationParams.Create(Tool, Node);
     try
       try
         Expr:=Tool.ConvertNodeToExpressionType(Node,Params);

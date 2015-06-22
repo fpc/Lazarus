@@ -140,6 +140,9 @@ states/state_unit_circular_reference.png
 states/state_unknown.png
 states/state_warning.png
 codeexplorer/ce_class.png
+codeexplorer/ce_classinterface.png
+codeexplorer/ce_record.png
+codeexplorer/ce_helper.png
 codeexplorer/ce_const.png
 codeexplorer/ce_default.png
 codeexplorer/ce_deprecated.png

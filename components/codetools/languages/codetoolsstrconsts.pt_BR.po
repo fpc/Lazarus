@@ -431,6 +431,10 @@ msgstr "diretório de interface gtk2"
 msgid "HasError"
 msgstr "Há Erros"
 
+#: codetoolsstrconsts.ctshelperisnotallowed
+msgid "Helper after %s is not allowed"
+msgstr ""
+
 #: codetoolsstrconsts.ctsidedirectory
 msgid "IDE Directory"
 msgstr "Diretório do IDE"

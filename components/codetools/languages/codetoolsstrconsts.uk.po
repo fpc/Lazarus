@@ -432,6 +432,10 @@ msgstr "тека інтерфейсу gtk2"
 msgid "HasError"
 msgstr "HasError"
 
+#: codetoolsstrconsts.ctshelperisnotallowed
+msgid "Helper after %s is not allowed"
+msgstr ""
+
 #: codetoolsstrconsts.ctsidedirectory
 msgid "IDE Directory"
 msgstr "Тека IDE"

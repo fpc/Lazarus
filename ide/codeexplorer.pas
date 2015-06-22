@@ -179,6 +179,9 @@ type
     fSortCodeTool: TCodeTool;
     FUpdateCount: integer;
     ImgIDClass: Integer;
+    ImgIDClassInterface: Integer;
+    ImgIDRecord: Integer;
+    ImgIDHelper: Integer;
     ImgIDConst: Integer;
     ImgIDSection: Integer;
     ImgIDDefault: integer;
@@ -489,6 +492,9 @@ begin
   ImgIDVariable := Imagelist1.AddResourceName(HInstance, 'ce_variable');
   ImgIDConst := Imagelist1.AddResourceName(HInstance, 'ce_const');
   ImgIDClass := Imagelist1.AddResourceName(HInstance, 'ce_class');
+  ImgIDClassInterface := Imagelist1.AddResourceName(HInstance, 'ce_classinterface');
+  ImgIDHelper := Imagelist1.AddResourceName(HInstance, 'ce_helper');
+  ImgIDRecord := Imagelist1.AddResourceName(HInstance, 'ce_record');
   ImgIDProcedure := Imagelist1.AddResourceName(HInstance, 'ce_procedure');
   ImgIDFunction := Imagelist1.AddResourceName(HInstance, 'ce_function');
   ImgIDProperty := Imagelist1.AddResourceName(HInstance, 'ce_property');
@@ -702,6 +708,8 @@ end;
 
 function TCodeExplorerView.GetCodeNodeDescription(ACodeTool: TCodeTool;
   CodeNode: TCodeTreeNode): string;
+var
+  ClassIdentNode, HelperForNode, InhNode: TCodeTreeNode;
 begin
   Result:='?';
 
@@ -726,8 +734,26 @@ begin
     ctnResStrSection:
       Result:='Resourcestring';
 
-    ctnTypeDefinition,ctnVarDefinition,ctnConstDefinition,ctnUseUnit:
+    ctnVarDefinition,ctnConstDefinition,ctnUseUnit:
       Result:=ACodeTool.ExtractIdentifier(CodeNode.StartPos);
+
+    ctnTypeDefinition:
+      begin
+        Result:=ACodeTool.ExtractIdentifier(CodeNode.StartPos);
+        ClassIdentNode := CodeNode.FirstChild;
+        if Assigned(ClassIdentNode) then
+        begin
+          if ClassIdentNode.Desc in [ctnClassHelper, ctnRecordHelper, ctnTypeHelper] then
+            HelperForNode := ACodeTool.FindHelperForNode(ClassIdentNode)
+          else
+            HelperForNode := nil;
+          InhNode:=ACodeTool.FindInheritanceNode(ClassIdentNode);
+          if InhNode<>nil then
+            Result:=Result+ACodeTool.ExtractNode(InhNode,[]);
+          if HelperForNode<>nil then
+            Result:=Result+' '+ACodeTool.ExtractNode(HelperForNode,[]);
+        end;
+      end;
 
     ctnGenericType:
       Result:=ACodeTool.ExtractDefinitionName(CodeNode);
@@ -809,9 +835,19 @@ begin
     ctnTypeSection:                   Result:=ImgIDSection;
     ctnTypeDefinition:
       begin
-        if (CodeNode.FirstChild <> nil)
-        and (CodeNode.FirstChild.Desc in AllClasses) then
-          Result := ImgIDClass
+        if (CodeNode.FirstChild <> nil) then
+          case CodeNode.FirstChild.Desc of
+            ctnClassInterface,ctnDispinterface,ctnObjCProtocol:
+              Result := ImgIDClassInterface;
+            ctnClass,ctnObjCClass,ctnObjCCategory,ctnCPPClass:
+              Result := ImgIDClass;
+            ctnObject,ctnRecordType:
+              Result := ImgIDRecord;
+            ctnClassHelper,ctnRecordHelper,ctnTypeHelper:
+              Result := ImgIDHelper;
+          else
+            Result := ImgIDType;
+          end
         else
           Result := ImgIDType;
       end;
@@ -819,9 +855,14 @@ begin
     ctnVarDefinition:                 Result:=ImgIDVariable;
     ctnConstSection,ctnResStrSection: Result:=ImgIDSection;
     ctnConstDefinition:               Result:=ImgIDConst;
-    ctnClass,ctnClassInterface,ctnObject,
-    ctnObjCClass,ctnObjCProtocol,ctnObjCCategory,ctnCPPClass:
+    ctnClassInterface,ctnDispinterface,ctnObjCProtocol:
+      Result := ImgIDClassInterface;
+    ctnClass,ctnObject,
+    ctnObjCClass,ctnObjCCategory,ctnCPPClass:
                                       Result:=ImgIDClass;
+    ctnRecordType:                    Result:=ImgIDRecord;
+    ctnClassHelper,ctnRecordHelper,ctnTypeHelper:
+                                      Result:=ImgIDHelper;
     ctnProcedure:                     if Tool.NodeIsFunction(CodeNode) then
                                         Result:=ImgIDFunction
                                       else
@@ -905,8 +946,10 @@ begin
     if CodeNode.Desc=ctnEnumerationType then
       ShowNode:=false;
 
-    // don't show special nodes
-    if CodeNode.Desc in [ctnEndPoint] then
+    // don't show end node and class modification nodes
+    if CodeNode.Desc in [ctnEndPoint,ctnClassInheritance,ctnHelperFor,
+                         ctnClassAbstract,ctnClassExternal,ctnClassSealed]
+    then
       ShowNode:=false;
       
     // don't show class visibility section nodes

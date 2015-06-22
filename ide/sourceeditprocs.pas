@@ -238,6 +238,7 @@ var
   ImageIndex: longint;
   HintModifiers: TPascalHintModifiers;
   HintModifier: TPascalHintModifier;
+  HelperForNode: TCodeTreeNode;
 begin
   ForegroundColor := ColorToRGB(ACanvas.Font.Color);
   Result.X := 0;
@@ -421,10 +422,14 @@ begin
             case ANode.Desc of
             ctnClass,ctnObject,ctnObjCClass,ctnObjCCategory,
             ctnCPPClass,
-            ctnClassInterface,ctnObjCProtocol,ctnDispinterface:
+            ctnClassInterface,ctnObjCProtocol,ctnDispinterface,
+            ctnClassHelper,ctnRecordHelper,ctnTypeHelper:
               begin
                 case ANode.Desc of
                 ctnClass: s:=s+'class';
+                ctnClassHelper: s:=s+'class helper';
+                ctnRecordHelper: s:=s+'record helper';
+                ctnTypeHelper: s:=s+'type helper';
                 ctnObject: s:=s+'object';
                 ctnObjCClass: s:=s+'objcclass';
                 ctnObjCCategory: s:=s+'objccategory';
@@ -438,9 +443,15 @@ begin
                 except
                   on ECodeToolError do ;
                 end;
+                if ANode.Desc in [ctnClassHelper, ctnRecordHelper, ctnTypeHelper] then
+                  HelperForNode := IdentItem.Tool.FindHelperForNode(ANode)
+                else
+                  HelperForNode := nil;
                 SubNode:=IdentItem.Tool.FindInheritanceNode(ANode);
                 if SubNode<>nil then
                   s:=s+IdentItem.Tool.ExtractNode(SubNode,[]);
+                if HelperForNode<>nil then
+                  s:=s+' '+IdentItem.Tool.ExtractNode(HelperForNode,[]);
               end;
             ctnRecordType:
               s:=s+'record';
