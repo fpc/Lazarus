@@ -155,13 +155,13 @@ object MainForm: TMainForm
     end
     object TSConnections: TTabSheet
       Caption = 'Connections'
-      ClientHeight = 384
+      ClientHeight = 388
       ClientWidth = 658
       object LVConnections: TListView
         Left = 0
-        Height = 374
+        Height = 388
         Top = 0
-        Width = 662
+        Width = 658
         Align = alClient
         Columns = <        
           item
@@ -782,7 +782,6 @@ object MainForm: TMainForm
       Caption = 'Connections'
       object MINewConnection: TMenuItem
         Caption = '&New connection'
-        ShortCut = 49230
       end
       object MIOpenRecentConnection: TMenuItem
         Action = AOpenConnection
@@ -1500,7 +1499,6 @@ object MainForm: TMainForm
     end
     object PMINewConnection: TMenuItem
       Action = ANewConnection
-      OnClick = ANewConnectionExecute
     end
     object PMIDeleteConnection: TMenuItem
       Action = ADeleteConnection

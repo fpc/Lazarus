@@ -315,6 +315,7 @@ begin
   MIDDSep.Caption:= sld_Separator;
   MIDDSep2.Caption:= sld_Separator;
   MIDDSep3.Caption:= sld_Separator;
+  MINewConnection.Caption:= sld_Actionnewconnection;
   //
   ASave.Caption:= sld_Actionsave;
   ASave.Hint:= sld_ActionsaveH;
