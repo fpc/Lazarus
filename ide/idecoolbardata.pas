@@ -225,6 +225,7 @@ begin
     if ButtonName <> '' then
       FButtonNames.Add(ButtonName);
   end;
+  Result:=true;
 end;
 
 function TIDEToolBarOptions.Save(XMLConfig: TXMLConfig; SubPath: String; aPos: Integer): Boolean;
@@ -238,6 +239,7 @@ begin
   for I := 0 to ButtonNames.Count-1 do
     XMLConfig.SetDeleteValue(SubPath + PosStr + '/Buttons/Name' + IntToStr(I+1) + '/Value',
                              ButtonNames[I], '');
+  Result:=true;
 end;
 
 { TIDECoolBarOptions }
