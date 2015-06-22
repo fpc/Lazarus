@@ -5943,7 +5943,6 @@ images/actions/arrow_right.png -text svneol=unset#image/png
 images/actions/arrow_up.png -text svneol=unset#image/png
 images/actions/execute.xpm svneol=native#text/plain
 images/actions/laz_add.png -text svneol=unset#image/png
-images/actions/laz_addmore.png -text svneol=unset#image/png
 images/actions/laz_delete.png -text svneol=unset#image/png
 images/actions/laz_edit.png -text svneol=unset#image/png
 images/actions/laz_highlighter.png -text svneol=unset#image/png
