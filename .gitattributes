@@ -7576,6 +7576,7 @@ packager/globallinks/lazdaemon-0.9.9.lpl svneol=native#text/plain
 packager/globallinks/lazdatadict-0.lpl svneol=native#text/plain
 packager/globallinks/lazdbexport-1.lpl svneol=native#text/plain
 packager/globallinks/lazdebuggerfp-0.lpl svneol=native#text/plain
+packager/globallinks/lazdebuggerfpdserver-0.1.lpl svneol=native#text/plain
 packager/globallinks/lazdebuggerfpgdbmi-0.1.lpl svneol=native#text/plain
 packager/globallinks/lazdebuggergdbmi-0.1.lpl svneol=native#text/plain
 packager/globallinks/lazgoogleapis-1.lpl svneol=native#text/plain
