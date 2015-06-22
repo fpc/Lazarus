@@ -50,6 +50,51 @@ type
   
 implementation
 
+uses
+  LConvEncoding, LazUTF8, HTMLDefs;
+
+function ToUTF8(AText: ansistring): String;
+var
+  encoding: String;
+begin
+  encoding := GuessEncoding(AText);
+  if (encoding <> EncodingUTF8) then
+    Result := ConvertEncoding(AText, encoding, EncodingUTF8)
+  else
+    Result := AText;
+end;
+
+function FixEscapedHTML(AText: string): string;
+var
+  i: Integer;
+  ampstr: string;
+  ws: widestring;
+  entity: widechar;
+begin
+  Result := '';
+  i := 1;
+  while i <= Length(AText) do begin
+    if AText[i]='&' then begin
+      ampStr := '';
+      inc(i);
+      while AText[i] <> ';' do begin
+        ampStr := ampStr + AText[i];
+        inc(i);
+      end;
+      ws := UTF8Encode(ampStr);
+      if ResolveHTMLEntityReference(ws, entity) then
+        Result := Result + UnicodeToUTF8(cardinal(entity))
+      else
+        Result := Result + '?';
+    end else
+      Result := Result + AText[i];
+    inc(i);
+  end;
+end;
+
+
+{ TForm1 }
+
 // Replace %20 with space, \ with /
 function FixURL(URL: String):String;
 var
@@ -77,7 +122,7 @@ begin
   txt := AItem.KeyWord;
   // Fallback:
   if txt = '' then txt := AItem.Text;
-  txt := Trim(txt);
+  txt := FixEscapedHTML(ToUTF8(Trim(txt)));
   if not Assigned(fLastNode) or (fLastNode.Text <> txt) then
   begin
     // Add new child node
