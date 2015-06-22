@@ -70,7 +70,7 @@ type
     FPageFileExt: string;
     FUseTemplateIcons: Boolean;
     FAddCategories: Boolean;
-    FIndexInternalLinksOnly: Boolean;
+    FIndexOfflineLinksOnly: Boolean;
     procedure DoAddCategories(Page: TW2XHTMLPage);
     procedure DoAddLinksToTranslations(Page: TW2XHTMLPage);
     procedure DoAddLinkToBaseDocument(Page: TW2XHTMLPage);
@@ -117,17 +117,55 @@ type
       read FAddTOCIfHeaderCountMoreThan write FAddTOCIfHeaderCountMoreThan default 2;
     property AddCategories: Boolean
       read FAddCategories write FAddCategories default true;
-    property IndexInternalLinksOnly: Boolean
-      read FIndexInternalLinksOnly write FIndexInternalLinksOnly default true;
+    property IndexOfflineLinksOnly: Boolean
+      read FIndexOfflineLinksOnly write FIndexOfflineLinksOnly default true;
     property UseTemplateIcons: Boolean
       read FUseTemplateIcons write FUseTemplateIcons;
   end;
+
+function EscapeToHTML(AText: String): String;
 
 implementation
 
 const
   NOTE_ICON = 'note.png';
   WARNING_ICON = 'warning.png';
+
+{ Replaces some special characters by their HTML code }
+function EscapeToHTML(AText: string): string;
+var
+  i: Integer;
+  ampStr: string;
+begin
+  Result := '';
+
+  for i := 1 to Length(AText) do
+  begin
+    case AText[i] of
+      '&':  begin
+              ampStr := Copy(AText, i, 6);
+              if (Pos('&amp;',  ampStr) = 1) or
+                 (Pos('&lt;',   ampStr) = 1) or
+                 (Pos('&gt;',   ampStr) = 1) or
+                 (Pos('&quot;', ampStr) = 1) or
+                 (Pos('&apos;', ampStr) = 1) or
+                 (Pos('&#37;',  ampStr) = 1)     // %
+              then
+                //'&' is the first char of a special char, it must not be converted
+                Result := Result + AText[i]
+              else
+                Result := Result + '&amp;';
+            end;
+      '<':  Result := Result + '&lt;';
+      '>':  Result := Result + '&gt;';
+      '"':  Result := Result + '&quot;';
+      '''': Result := Result + '&apos;';
+      '%':  Result := Result + '&#37;';
+      else  Result := Result + AText[i];
+    end;
+  end;
+end;
+
 
 { TWiki2XHTMLConverter }
 
@@ -162,7 +200,7 @@ begin
   node.SetAttribute('href', url+'Special:Categories');
   CategoriesNode.AppendChild(node);
   CategoriesNode.AppendChild(doc.CreateTextNode('Categories:  '));
-  if not FIndexInternalLinksOnly then
+  if not FIndexOfflineLinksOnly then
     AddIndexItem('Categories (external)', url+'Special:Categories');
 
   for i:=0 to Page.CategoryList.Count-1 do begin
@@ -173,7 +211,7 @@ begin
     txt := Copy(category, pos(':', category)+1, MaxInt);
     node.AppendChild(doc.CreateTextNode(txt));
     CategoriesNode.AppendChild(node);
-    if not FIndexInternalLinksOnly then
+    if not FIndexOfflineLinksOnly then
       AddIndexItem('Category: '+txt+' (external)', url+category);
 
     // Add separator
@@ -261,7 +299,7 @@ begin
   Node.SetAttribute('href', Link);
   Node.AppendChild(doc.CreateTextNode(LinkToBaseDocument));
 
-  if not FIndexInternalLinksOnly then
+  if not FIndexOfflineLinksOnly then
     AddIndexItem(LinkToBaseDocument + ' (external)', Link);
 end;
 
@@ -633,7 +671,7 @@ begin
       Node.AppendChild(doc.CreateTextNode(Caption));
       if ((pos('http', URL) = 1) or (pos('wiki.', URL) = 1) or (pos('bugs.', URL) = 1))
       then begin
-        if not FIndexInternalLinksOnly then
+        if not FIndexOfflineLinksOnly then
           AddIndexItem(Caption + ' (external)', URL);
       end else begin
         if URL[1]='#' then
@@ -951,7 +989,7 @@ begin
             Node.AppendChild(doc.CreateTextNode('MantisLink #'));
             Node.AppendChild(doc.CreateTextNode(Curvalue));
             Page.CurDOMNode.AppendChild(Node);
-            if not FIndexInternalLinksOnly then
+            if not FIndexOfflineLinksOnly then
               AddIndexItem('MantisLink #'+CurValue+' (external)', 'http://bugs.freepascal.org/view.php?id='+CurValue);
             exit;
           end;
@@ -1249,7 +1287,7 @@ begin
   FAddLinksToTranslations:=true;
   FAddTOCIfHeaderCountMoreThan:=2;
   FUseTemplateIcons := true;
-  FIndexInternalLinksOnly := true;
+  FIndexOfflineLinksOnly := true;
 end;
 
 destructor TWiki2XHTMLConverter.Destroy;

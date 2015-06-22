@@ -133,6 +133,8 @@ begin
   if (AText = '') or (AUrl = '') then
     exit;
 
+  AText := EscapeToHTML(AText);
+
   // Avoid duplicate index items.
   txt := UTF8Trim(UTF8Lowercase(AText));
   url := UTF8Trim(UTF8Lowercase(AUrl));
@@ -178,7 +180,7 @@ var
 begin
   item := NewItemAtLevel(ALevel);
   item.Local := AUrl;
-  item.Text := AText;
+  item.Text := EscapeToHTML(AText);
   item.ImageNumber := 0;
 end;
 
