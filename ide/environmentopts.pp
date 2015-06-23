@@ -258,6 +258,7 @@ type
     // config file
     FFilename: string;
     FFileAge: longint;
+    FFileVersion: integer;
     FFileHasChangedOnDisk: boolean;
     FMaxExtToolsInParallel: integer;
     FOldLazarusVersion: string;
@@ -439,6 +440,8 @@ type
     function GetMsgColors(u: TMessageLineUrgency): TColor;
     function GetMsgViewColors(c: TMsgWndColor): TColor;
     function GetTestBuildDirectory: string;
+    procedure LoadNonDesktop(XMLConfig: TXMLConfig; Cfg: TXMLOptionsStorage;
+      Path: String);
     procedure SetCompilerFilename(const AValue: string);
     procedure SetCompilerMessagesFilename(AValue: string);
     procedure SetDebuggerEventLogColors(AIndex: TDBGEventType;
@@ -1099,22 +1102,8 @@ begin
   FFileHasChangedOnDisk:=true;
 end;
 
-procedure TEnvironmentOptions.Load(OnlyDesktop:boolean);
-var
-  XMLConfig: TXMLConfig;
-  FileVersion: integer;
-
-  procedure AddRecentProjectInitial(aProjPath, aProjFile: string);
-  // Add a project to the list of recent projects if the project has write access.
-  // The check can be removed when the IDE allows compiling read-only projects.
-  var
-    WholeFilePath: String;
-  begin
-    aProjPath:=SwitchPathDelims(aProjPath, True);
-    WholeFilePath:=ExtractFilePath(Application.ExeName) + aProjPath + aProjFile;
-    if FileIsWritable(aProjPath) and FileIsWritable(WholeFilePath) then
-      AddToRecentList(WholeFilePath,FRecentProjectFiles,FMaxRecentProjectFiles,rltFile);
-  end;
+procedure TEnvironmentOptions.LoadNonDesktop(XMLConfig: TXMLConfig; Cfg: TXMLOptionsStorage;
+  Path: String);
 
   procedure LoadBackupInfo(var BackupInfo: TBackupInfo; const Path:string);
   var i:integer;
@@ -1132,11 +1121,99 @@ var
       end;
       AdditionalExtension:=XMLConfig.GetValue(Path+'AdditionalExtension','bak');
       MaxCounter:=XMLConfig.GetValue(Path+'MaxCounter',9);
-      if FileVersion<101 then
+      if FFileVersion<101 then
         SubDirectory:=''
       else
         SubDirectory:=XMLConfig.GetValue(Path+'SubDirectory','backup');
     end;
+  end;
+
+var
+  EventType: TDBGEventType;
+begin
+  // files
+  LazarusDirectory:=XMLConfig.GetValue(Path+'LazarusDirectory/Value',LazarusDirectory);
+  LoadRecentList(XMLConfig,FLazarusDirHistory,Path+'LazarusDirectory/History/',rltFile);
+  if FLazarusDirHistory.Count=0 then
+    FLazarusDirHistory.Add(ProgramDirectory(true));
+  CompilerFilename:=TrimFilename(XMLConfig.GetValue(
+                        Path+'CompilerFilename/Value',CompilerFilename));
+  LoadRecentList(XMLConfig,FCompilerFileHistory,Path+'CompilerFilename/History/',rltFile);
+  if FCompilerFileHistory.Count=0 then
+    GetDefaultCompilerFilenames(FCompilerFileHistory);
+  FPCSourceDirectory:=XMLConfig.GetValue(Path+'FPCSourceDirectory/Value',FPCSourceDirectory);
+  LoadRecentList(XMLConfig,FFPCSourceDirHistory,Path+'FPCSourceDirectory/History/',rltFile);
+  MakeFilename:=TrimFilename(XMLConfig.GetValue(Path+'MakeFilename/Value',MakeFilename));
+  LoadRecentList(XMLConfig,FMakeFileHistory,Path+'MakeFilename/History/',rltFile);
+  if FMakeFileHistory.Count=0 then
+    GetDefaultMakeFilenames(FMakeFileHistory);
+
+  TestBuildDirectory:=XMLConfig.GetValue(Path+'TestBuildDirectory/Value',TestBuildDirectory);
+  LoadRecentList(XMLConfig,FTestBuildDirHistory,Path+'TestBuildDirectory/History/',rltFile);
+  if FTestBuildDirHistory.Count=0 then
+    GetDefaultTestBuildDirs(FTestBuildDirHistory);
+  CompilerMessagesFilename:=XMLConfig.GetValue(Path+'CompilerMessagesFilename/Value',CompilerMessagesFilename);
+  LoadRecentList(XMLConfig,FCompilerMessagesFileHistory,Path+'CompilerMessagesFilename/History/',rltFile);
+
+  // Primary-config verification
+  FLastCalledByLazarusFullPath:=XMLConfig.GetValue(Path+'LastCalledByLazarusFullPath/Value','');
+
+  // global build options, additions and overrides
+  Cfg.AppendBasePath('BuildMatrix');
+  FBuildMatrixOptions.LoadFromConfig(Cfg);
+  Cfg.UndoAppendBasePath;
+  FUseBuildModes:=XMLConfig.GetValue(Path+'Build/UseBuildModes',false);
+
+  // backup
+  LoadBackupInfo(FBackupInfoProjectFiles,Path+'BackupProjectFiles/');
+  LoadBackupInfo(FBackupInfoOtherFiles,Path+'BackupOtherFiles/');
+
+  // Debugger
+  FDebuggerConfig.Load;
+  DebuggerFilename:=XMLConfig.GetValue(Path+'DebuggerFilename/Value','');
+  LoadRecentList(XMLConfig,FDebuggerFileHistory,Path+'DebuggerFilename/History/',rltFile);
+  DebuggerSearchPath:=XMLConfig.GetValue(Path+'DebuggerSearchPath/Value','');
+  // Debugger General Options
+  DebuggerShowStopMessage:=XMLConfig.GetValue(Path+'DebuggerOptions/ShowStopMessage/Value', True);
+  DebuggerResetAfterRun :=XMLConfig.GetValue(Path+'DebuggerOptions/DebuggerResetAfterRun/Value', False);
+  FDebuggerEventLogClearOnRun := XMLConfig.GetValue(Path+'Debugger/EventLogClearOnRun', True);
+  FDebuggerEventLogCheckLineLimit := XMLConfig.GetValue(Path+'Debugger/EventLogCheckLineLimit', False);
+  FDebuggerEventLogLineLimit := XMLConfig.GetValue(Path+'Debugger/EventLogLineLimit', 1000);
+  FDebuggerEventLogShowBreakpoint := XMLConfig.GetValue(Path+'Debugger/EventLogShowBreakpoint', False);
+  FDebuggerEventLogShowProcess := XMLConfig.GetValue(Path+'Debugger/EventLogShowProcess', True);
+  FDebuggerEventLogShowThread := XMLConfig.GetValue(Path+'Debugger/EventLogShowThread', True);
+  FDebuggerEventLogShowModule := XMLConfig.GetValue(Path+'Debugger/EventLogShowModule', False);
+  FDebuggerEventLogShowOutput := XMLConfig.GetValue(Path+'Debugger/EventLogShowOutput', True);
+  FDebuggerEventLogShowWindows := XMLConfig.GetValue(Path+'Debugger/EventLogShowWindows', False);
+  FDebuggerEventLogShowDebugger := XMLConfig.GetValue(Path+'Debugger/EventLogShowDebugger', True);
+  FDebuggerEventLogUseColors := XMLConfig.GetValue(Path+'Debugger/EventLogUseColors', True);
+  for EventType := Low(TDBGEventType) to High(TDBGEventType) do
+  begin
+    FDebuggerEventLogColors[EventType].Background :=
+      XMLConfig.GetValue(Path+'Debugger/EventLogColors/' +
+      GetEnumName(TypeInfo(EventType), Ord(EventType)) + '/Background',
+      DebuggerDefaultColors[EventType].Background);
+    FDebuggerEventLogColors[EventType].Foreground :=
+      XMLConfig.GetValue(Path+'Debugger/EventLogColors/' +
+      GetEnumName(TypeInfo(EventType), Ord(EventType)) + '/Foreground',
+      DebuggerDefaultColors[EventType].Foreground);
+  end;
+end;
+
+procedure TEnvironmentOptions.Load(OnlyDesktop:boolean);
+var
+  XMLConfig: TXMLConfig;
+
+  procedure AddRecentProjectInitial(aProjPath, aProjFile: string);
+  // Add a project to the list of recent projects if the project has write access.
+  // The check can be removed when the IDE allows compiling read-only projects.
+  var
+    WholeFilePath: String;
+  begin
+    aProjPath:=SwitchPathDelims(aProjPath, True);
+    WholeFilePath:=ExtractFilePath(Application.ExeName) + aProjPath + aProjFile;
+    if FileIsWritable(aProjPath) and FileIsWritable(WholeFilePath) then
+      AddToRecentList(WholeFilePath,FRecentProjectFiles,FMaxRecentProjectFiles,rltFile);
   end;
 
   procedure LoadPascalFileExt(const Path: string);
@@ -1147,18 +1224,11 @@ var
       fPascalFileExtension:=petPAS;
   end;
   
-  procedure LoadLanguage;
-  begin
-    fLanguageID:=XMLConfig.GetValue('EnvironmentOptions/Language/ID','');
-  end;
-
 var
-  Path: String;
-  CurPath: String;
+  Path, CurPath: String;
+  Cfg: TXMLOptionsStorage;
   i, j: Integer;
   Rec: PIDEOptionsGroupRec;
-  Cfg: TXMLOptionsStorage;
-  EventType: TDBGEventType;
   NodeName: String;
   mwc: TMsgWndColor;
   u: TMessageLineUrgency;
@@ -1169,7 +1239,7 @@ begin
     Cfg:=TXMLOptionsStorage.Create(XMLConfig);
     try
       Path:='EnvironmentOptions/';
-      FileVersion:=XMLConfig.GetValue(Path+'Version/Value',0);
+      FFileVersion:=XMLConfig.GetValue(Path+'Version/Value',0);
       FOldLazarusVersion:=XMLConfig.GetValue(Path+'Version/Lazarus','');
       if FOldLazarusVersion='' then begin
         // 108 added LastCalledByLazarusFullPath
@@ -1183,7 +1253,7 @@ begin
       end;
 
       // language
-      LoadLanguage;
+      fLanguageID:=XMLConfig.GetValue('EnvironmentOptions/Language/ID','');
 
       // auto save
       FAskSaveSessionOnly:=XMLConfig.GetValue(Path+'AutoSave/AskSaveSessionOnly',false);
@@ -1242,75 +1312,8 @@ begin
          Path+'FormEditor/CreateComponentFocusNameProperty/Value',false);
       FSwitchToFavoritesOITab:=XMLConfig.GetValue(Path+'FormEditor/SwitchToFavoritesOITab/Value',false);
 
-      if not OnlyDesktop then begin
-        // files
-        LazarusDirectory:=XMLConfig.GetValue(Path+'LazarusDirectory/Value',LazarusDirectory);
-        LoadRecentList(XMLConfig,FLazarusDirHistory,Path+'LazarusDirectory/History/',rltFile);
-        if FLazarusDirHistory.Count=0 then
-          FLazarusDirHistory.Add(ProgramDirectory(true));
-        CompilerFilename:=TrimFilename(XMLConfig.GetValue(
-                              Path+'CompilerFilename/Value',CompilerFilename));
-        LoadRecentList(XMLConfig,FCompilerFileHistory,Path+'CompilerFilename/History/',rltFile);
-        if FCompilerFileHistory.Count=0 then
-          GetDefaultCompilerFilenames(FCompilerFileHistory);
-        FPCSourceDirectory:=XMLConfig.GetValue(Path+'FPCSourceDirectory/Value',FPCSourceDirectory);
-        LoadRecentList(XMLConfig,FFPCSourceDirHistory,Path+'FPCSourceDirectory/History/',rltFile);
-        MakeFilename:=TrimFilename(XMLConfig.GetValue(Path+'MakeFilename/Value',MakeFilename));
-        LoadRecentList(XMLConfig,FMakeFileHistory,Path+'MakeFilename/History/',rltFile);
-        if FMakeFileHistory.Count=0 then
-          GetDefaultMakeFilenames(FMakeFileHistory);
-
-        TestBuildDirectory:=XMLConfig.GetValue(Path+'TestBuildDirectory/Value',TestBuildDirectory);
-        LoadRecentList(XMLConfig,FTestBuildDirHistory,Path+'TestBuildDirectory/History/',rltFile);
-        if FTestBuildDirHistory.Count=0 then
-          GetDefaultTestBuildDirs(FTestBuildDirHistory);
-        CompilerMessagesFilename:=XMLConfig.GetValue(Path+'CompilerMessagesFilename/Value',CompilerMessagesFilename);
-        LoadRecentList(XMLConfig,FCompilerMessagesFileHistory,Path+'CompilerMessagesFilename/History/',rltFile);
-
-        // Primary-config verification
-        FLastCalledByLazarusFullPath:=XMLConfig.GetValue(Path+'LastCalledByLazarusFullPath/Value','');
-
-        // global build options, additions and overrides
-        Cfg.AppendBasePath('BuildMatrix');
-        FBuildMatrixOptions.LoadFromConfig(Cfg);
-        Cfg.UndoAppendBasePath;
-        FUseBuildModes:=XMLConfig.GetValue(Path+'Build/UseBuildModes',false);
-
-        // backup
-        LoadBackupInfo(FBackupInfoProjectFiles,Path+'BackupProjectFiles/');
-        LoadBackupInfo(FBackupInfoOtherFiles,Path+'BackupOtherFiles/');
-
-        // Debugger
-        FDebuggerConfig.Load;
-        DebuggerFilename:=XMLConfig.GetValue(Path+'DebuggerFilename/Value','');
-        LoadRecentList(XMLConfig,FDebuggerFileHistory,Path+'DebuggerFilename/History/',rltFile);
-        DebuggerSearchPath:=XMLConfig.GetValue(Path+'DebuggerSearchPath/Value','');
-        // Debugger General Options
-        DebuggerShowStopMessage:=XMLConfig.GetValue(Path+'DebuggerOptions/ShowStopMessage/Value', True);
-        DebuggerResetAfterRun :=XMLConfig.GetValue(Path+'DebuggerOptions/DebuggerResetAfterRun/Value', False);
-        FDebuggerEventLogClearOnRun := XMLConfig.GetValue(Path+'Debugger/EventLogClearOnRun', True);
-        FDebuggerEventLogCheckLineLimit := XMLConfig.GetValue(Path+'Debugger/EventLogCheckLineLimit', False);
-        FDebuggerEventLogLineLimit := XMLConfig.GetValue(Path+'Debugger/EventLogLineLimit', 1000);
-        FDebuggerEventLogShowBreakpoint := XMLConfig.GetValue(Path+'Debugger/EventLogShowBreakpoint', False);
-        FDebuggerEventLogShowProcess := XMLConfig.GetValue(Path+'Debugger/EventLogShowProcess', True);
-        FDebuggerEventLogShowThread := XMLConfig.GetValue(Path+'Debugger/EventLogShowThread', True);
-        FDebuggerEventLogShowModule := XMLConfig.GetValue(Path+'Debugger/EventLogShowModule', False);
-        FDebuggerEventLogShowOutput := XMLConfig.GetValue(Path+'Debugger/EventLogShowOutput', True);
-        FDebuggerEventLogShowWindows := XMLConfig.GetValue(Path+'Debugger/EventLogShowWindows', False);
-        FDebuggerEventLogShowDebugger := XMLConfig.GetValue(Path+'Debugger/EventLogShowDebugger', True);
-        FDebuggerEventLogUseColors := XMLConfig.GetValue(Path+'Debugger/EventLogUseColors', True);
-        for EventType := Low(TDBGEventType) to High(TDBGEventType) do
-        begin
-          FDebuggerEventLogColors[EventType].Background :=
-            XMLConfig.GetValue(Path+'Debugger/EventLogColors/' +
-            GetEnumName(TypeInfo(EventType), Ord(EventType)) + '/Background',
-            DebuggerDefaultColors[EventType].Background);
-          FDebuggerEventLogColors[EventType].Foreground :=
-            XMLConfig.GetValue(Path+'Debugger/EventLogColors/' +
-            GetEnumName(TypeInfo(EventType), Ord(EventType)) + '/Foreground',
-            DebuggerDefaultColors[EventType].Foreground);
-        end;
-      end;
+      if not OnlyDesktop then
+        LoadNonDesktop(XMLConfig, Cfg, Path);
 
       // project inspector
       FProjInspSortAlphabetically:=XMLConfig.GetValue(Path+'ProjInspSortAlphabetically/Value',false);
@@ -1374,7 +1377,7 @@ begin
 
       // naming
       LoadPascalFileExt(Path+'');
-      if FileVersion>=103 then begin
+      if FFileVersion>=103 then begin
         fCharcaseFileAction:=CharCaseFileActionNameToType(XMLConfig.GetValue(
           Path+'CharcaseFileAction/Value',''));
       end else begin
@@ -1386,7 +1389,7 @@ begin
         else
           fCharcaseFileAction:=ccfaIgnore;
       end;
-      if FileVersion>=104 then
+      if FFileVersion>=104 then
         CurPath:=Path+'AmbiguousFileAction/Value'
       else
         CurPath:=Path+'AmbigiousFileAction/Value';
@@ -1406,7 +1409,7 @@ begin
 
       // fpdoc
       FPDocPaths := XMLConfig.GetValue(Path+'LazDoc/Paths','');
-      if FileVersion<=105 then
+      if FFileVersion<=105 then
         FPDocPaths:=LineBreaksToDelimiter(FPDocPaths,';');
 
       // 'new items'
