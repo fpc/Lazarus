@@ -1495,14 +1495,12 @@ object MainForm: TMainForm
     top = 200
     object PMIOpenConnection: TMenuItem
       Action = AOpenConnection
-      OnClick = OpenRecentConnection
     end
     object PMINewConnection: TMenuItem
-      Action = ANewConnection
+      Caption = '&New connection'
     end
     object PMIDeleteConnection: TMenuItem
       Action = ADeleteConnection
-      OnClick = ADeleteConnectionExecute
     end
   end
   object PMDataDict: TPopupMenu
