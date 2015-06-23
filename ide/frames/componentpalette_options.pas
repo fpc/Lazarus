@@ -792,7 +792,7 @@ begin
     XMLConfig := OpenXML(ImportDialog.Filename);
     if Assigned(XMLConfig) then
     try
-      fLocalOptions.Load(XMLConfig);
+      fLocalOptions.Load(XMLConfig, '');
       ActualReadSettings;                  // Read from options to GUI.
       ShowMessageFmt(lisSuccessfullyImported, [ImportDialog.Filename]);
       fConfigChanged := True;
@@ -812,7 +812,7 @@ begin
     if Assigned(XMLConfig) then
     try
       ActualWriteSettings(fLocalOptions);  // Write from GUI to options.
-      fLocalOptions.Save(XMLConfig);
+      fLocalOptions.Save(XMLConfig, '');
       ShowMessageFmt(lisSuccessfullyExported, [ExportDialog.Filename]);
     finally
       XMLConfig.Free;

@@ -48,8 +48,8 @@ type
     function Equals(Opts: TEditorToolBarOptions): boolean; overload;
     procedure Assign(Source: TEditorToolBarOptions);
     procedure CreateDefaults;
-    function Load(XMLConfig: TXMLConfig): Boolean;
-    function Save(XMLConfig: TXMLConfig): Boolean;
+    procedure Load(XMLConfig: TXMLConfig; Path: String);
+    procedure Save(XMLConfig: TXMLConfig; Path: String);
   published
     property Visible: Boolean read FVisible write FVisible;
     property Position: string read FPosition write FPosition;
@@ -190,24 +190,24 @@ begin
   FButtonNames.Add('---------------');
 end;
 
-function TEditorToolBarOptions.Load(XMLConfig: TXMLConfig): Boolean;
+procedure TEditorToolBarOptions.Load(XMLConfig: TXMLConfig; Path: String);
 var
   ButtonCount: Integer;
   ButtonName: string;
   I: Integer;
   cfg: TConfigStorage;
 begin
-  Result := True;
-  if XMLConfig.HasPath(BasePath + 'Count', True) then
+  Path := Path + BasePath;
+  if XMLConfig.HasPath(Path + 'Count', True) then
   begin
-    FVisible := XMLConfig.GetValue(BasePath + 'Visible', True);
-    FPosition := XMLConfig.GetValue(BasePath + 'Position', 'Top');
-    ButtonCount := XMLConfig.GetValue(BasePath + 'Count', 0);
+    FVisible := XMLConfig.GetValue(Path + 'Visible', True);
+    FPosition := XMLConfig.GetValue(Path + 'Position', 'Top');
+    ButtonCount := XMLConfig.GetValue(Path + 'Count', 0);
     for I := 1 to ButtonCount do
     begin
-      ButtonName := XMLConfig.GetValue(BasePath + 'Button' + IntToStr(I) + '/Name', '');
+      ButtonName := XMLConfig.GetValue(Path + 'Button' + IntToStr(I) + '/Name', '');
       if ButtonName = '' then  // Old format
-        ButtonName := XMLConfig.GetValue(BasePath + 'Buttons/Name' + IntToStr(I) + '/Value', '');
+        ButtonName := XMLConfig.GetValue(Path + 'Buttons/Name' + IntToStr(I) + '/Value', '');
       if ButtonName <> '' then
         FButtonNames.Add(ButtonName);
     end;
@@ -237,16 +237,16 @@ begin
   end;
 end;
 
-function TEditorToolBarOptions.Save(XMLConfig: TXMLConfig): Boolean;
+procedure TEditorToolBarOptions.Save(XMLConfig: TXMLConfig; Path: String);
 var
   I: Integer;
 begin
-  Result := True;
-  XMLConfig.SetDeleteValue(BasePath + 'Visible', FVisible, False);
-  XMLConfig.SetDeleteValue(BasePath + 'Position', FPosition, 'Top');
-  XMLConfig.SetDeleteValue(BasePath + 'Count', ButtonNames.Count, 0);
+  Path := Path + BasePath;
+  XMLConfig.SetDeleteValue(Path + 'Visible', FVisible, False);
+  XMLConfig.SetDeleteValue(Path + 'Position', FPosition, 'Top');
+  XMLConfig.SetDeleteValue(Path + 'Count', ButtonNames.Count, 0);
   for I := 0 to ButtonNames.Count-1 do
-    XMLConfig.SetDeleteValue(BasePath + 'Button' + IntToStr(I+1) + '/Name', ButtonNames[I], '');
+    XMLConfig.SetDeleteValue(Path + 'Button' + IntToStr(I+1) + '/Name', ButtonNames[I], '');
 end;
 
 { TAllEditorToolbars }

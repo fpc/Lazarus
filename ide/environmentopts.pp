@@ -37,8 +37,8 @@ uses
 {$ifdef Windows}
   ShlObj,
 {$endif}
-  Classes, SysUtils, TypInfo, Graphics, Controls, Forms, LCLProc, FileProcs,
-  Dialogs, LazConfigStorage, Laz2_XMLCfg, LazUTF8,
+  Classes, SysUtils, TypInfo, strutils, Graphics, Controls, Forms, LCLProc,
+  FileProcs, Dialogs, LazConfigStorage, Laz2_XMLCfg, LazUTF8,
   // IDEIntf
   ProjectIntf, ObjectInspector, IDEWindowIntf, IDEOptionsIntf,
   ComponentReg, IDEExternToolIntf, MacroDefIntf,
@@ -49,9 +49,10 @@ uses
   IdeCoolbarData, EditorToolbarStatic;
 
 const
-  EnvOptsVersion: integer = 108;
+  EnvOptsVersion: integer = 109;
   // 107 added Lazarus version
   // 108 added LastCalledByLazarusFullPath
+  // 109 changed paths for desktop settings, supporting multiple desktops.
 
   {$IFDEF Windows}
   DefaultMakefilename = '$Path($(CompPath))make.exe';
@@ -265,6 +266,9 @@ type
     FXMLCfg: TRttiXMLConfig;
     FConfigStore: TXMLOptionsStorage;
     FDbgConfigStore: TXMLOptionsStorage; // for debugger
+    // Options are saved / loaded using these.
+    XMLConfig: TXMLConfig;
+    FCfg: TXMLOptionsStorage;
 
     // title
     FIDETitleStartsWithProject: boolean;
@@ -440,8 +444,10 @@ type
     function GetMsgColors(u: TMessageLineUrgency): TColor;
     function GetMsgViewColors(c: TMsgWndColor): TColor;
     function GetTestBuildDirectory: string;
-    procedure LoadNonDesktop(XMLConfig: TXMLConfig; Cfg: TXMLOptionsStorage; Path: String);
-    procedure SaveNonDesktop(XMLConfig: TXMLConfig; Cfg: TXMLOptionsStorage; Path: String);
+    procedure LoadDesktop(Path: String);
+    procedure LoadNonDesktop(Path: String);
+    procedure SaveDesktop(Path: String);
+    procedure SaveNonDesktop(Path: String);
     procedure SetCompilerFilename(const AValue: string);
     procedure SetCompilerMessagesFilename(AValue: string);
     procedure SetDebuggerEventLogColors(AIndex: TDBGEventType;
@@ -1102,8 +1108,7 @@ begin
   FFileHasChangedOnDisk:=true;
 end;
 
-procedure TEnvironmentOptions.LoadNonDesktop(XMLConfig: TXMLConfig; Cfg: TXMLOptionsStorage;
-  Path: String);
+procedure TEnvironmentOptions.LoadNonDesktop(Path: String);
 
   procedure LoadBackupInfo(var BackupInfo: TBackupInfo; const Path:string);
   var i:integer;
@@ -1159,9 +1164,9 @@ begin
   FLastCalledByLazarusFullPath:=XMLConfig.GetValue(Path+'LastCalledByLazarusFullPath/Value','');
 
   // global build options, additions and overrides
-  Cfg.AppendBasePath('BuildMatrix');
-  FBuildMatrixOptions.LoadFromConfig(Cfg);
-  Cfg.UndoAppendBasePath;
+  FCfg.AppendBasePath('BuildMatrix');
+  FBuildMatrixOptions.LoadFromConfig(FCfg);
+  FCfg.UndoAppendBasePath;
   FUseBuildModes:=XMLConfig.GetValue(Path+'Build/UseBuildModes',false);
 
   // backup
@@ -1200,9 +1205,35 @@ begin
   end;
 end;
 
+procedure TEnvironmentOptions.LoadDesktop(Path: String);
+begin
+  // Windows layout
+  IDEWindowCreators.SimpleLayoutStorage.LoadFromConfig(FCfg,Path);
+  FIDEDialogLayoutList.LoadFromConfig(FConfigStore, Path+'Dialogs/');
+  FSingleTaskBarButton:=XMLConfig.GetValue(Path+'SingleTaskBarButton/Value', False);
+  FHideIDEOnRun:=XMLConfig.GetValue(Path+'HideIDEOnRun/Value',false);
+  FIDETitleStartsWithProject:=XMLConfig.GetValue(Path+'IDETitleStartsWithProject/Value',false);
+  FIDETitleIncludesBuildMode:=XMLConfig.GetValue(Path+'IDETitleIncludesBuildMode/Value',false);
+  IDEProjectDirectoryInIdeTitle:=XMLConfig.GetValue(Path+'IDEProjectDirectoryInIdeTitle/Value',false);
+  FComponentPaletteVisible:=XMLConfig.GetValue(Path+'ComponentPaletteVisible/Value',true);
+  FAutoAdjustIDEHeight:=XMLConfig.GetValue(Path+'AutoAdjustIDEHeight/Value',true);
+  FAutoAdjustIDEHeightFullCompPal:=XMLConfig.GetValue(Path+'AutoAdjustIDEHeightFullComponentPalette/Value',true);
+  FCompletionWindowWidth:=XMLConfig.GetValue(Path+'CompletionWindowWidth/Value', 320);
+  FCompletionWindowHeight:=XMLConfig.GetValue(Path+'CompletionWindowHeight/Value', 6);
+  // Window menu
+  FIDENameForDesignedFormList:=XMLConfig.GetValue(Path+'IDENameForDesignedFormList/Value',false);
+
+  if AnsiStartsStr('EnvironmentOptions', Path) then
+    Path := '';             // Toolbars and palette were at the top level in XML.
+  // IDE Coolbar
+  FIDECoolBarOptions.Load(XMLConfig, Path);
+  // Editor Toolbar
+  FEditorToolBarOptions.Load(XMLConfig, Path);
+  // component palette
+  FComponentPaletteOptions.Load(XMLConfig, Path);
+end;
+
 procedure TEnvironmentOptions.Load(OnlyDesktop:boolean);
-var
-  XMLConfig: TXMLConfig;
 
   procedure AddRecentProjectInitial(aProjPath, aProjFile: string);
   // Add a project to the list of recent projects if the project has write access.
@@ -1226,17 +1257,16 @@ var
   
 var
   Path, CurPath: String;
-  Cfg: TXMLOptionsStorage;
   i, j: Integer;
   Rec: PIDEOptionsGroupRec;
   NodeName: String;
   mwc: TMsgWndColor;
   u: TMessageLineUrgency;
 begin
-  Cfg:=nil;
+  FCfg:=nil;
   try
     XMLConfig:=GetXMLCfg(false);
-    Cfg:=TXMLOptionsStorage.Create(XMLConfig);
+    FCfg:=TXMLOptionsStorage.Create(XMLConfig);
     try
       Path:='EnvironmentOptions/';
       FFileVersion:=XMLConfig.GetValue(Path+'Version/Value',0);
@@ -1253,7 +1283,7 @@ begin
       end;
 
       // language
-      fLanguageID:=XMLConfig.GetValue('EnvironmentOptions/Language/ID','');
+      fLanguageID:=XMLConfig.GetValue(Path+'Language/ID','');
 
       // auto save
       FAskSaveSessionOnly:=XMLConfig.GetValue(Path+'AutoSave/AskSaveSessionOnly',false);
@@ -1264,23 +1294,6 @@ begin
       FOpenLastProjectAtStart:=XMLConfig.GetValue(Path+'AutoSave/OpenLastProjectAtStart',true);
       FShowCompileDialog:=XMLConfig.GetValue(Path+'ShowCompileDialog/Value',false);
       FAutoCloseCompileDialog:=XMLConfig.GetValue(Path+'AutoCloseCompileDialog/Value',false);
-
-      // Windows layout
-      IDEWindowCreators.SimpleLayoutStorage.LoadFromConfig(Cfg,Path+'Desktop/');
-      FIDEDialogLayoutList.LoadFromConfig(FConfigStore, Path+'Desktop/Dialogs/');
-      FSingleTaskBarButton := XMLConfig.GetValue(Path+'Desktop/SingleTaskBarButton/Value', False);
-      FHideIDEOnRun:=XMLConfig.GetValue(Path+'Desktop/HideIDEOnRun/Value',false);
-      FIDETitleStartsWithProject:=XMLConfig.GetValue(Path+'Desktop/IDETitleStartsWithProject/Value',false);
-      FIDETitleIncludesBuildMode:=XMLConfig.GetValue(Path+'Desktop/IDETitleIncludesBuildMode/Value',false);
-      IDEProjectDirectoryInIdeTitle:=XMLConfig.GetValue(Path+'Desktop/IDEProjectDirectoryInIdeTitle/Value',false);
-      FComponentPaletteVisible:=XMLConfig.GetValue(Path+'Desktop/ComponentPaletteVisible/Value',true);
-      FAutoAdjustIDEHeight:=XMLConfig.GetValue(Path+'Desktop/AutoAdjustIDEHeight/Value',true);
-      FAutoAdjustIDEHeightFullCompPal:=XMLConfig.GetValue(Path+'Desktop/AutoAdjustIDEHeightFullComponentPalette/Value',true);
-      FCompletionWindowWidth:=XMLConfig.GetValue(Path+'Desktop/CompletionWindowWidth/Value', 320);
-      FCompletionWindowHeight:=XMLConfig.GetValue(Path+'Desktop/CompletionWindowHeight/Value', 6);
-
-      // Window menu
-      FIDENameForDesignedFormList:=XMLConfig.GetValue(Path+'Desktop/IDENameForDesignedFormList/Value',false);
 
       // form editor
       FShowGrid:=XMLConfig.GetValue(Path+'FormEditor/ShowGrid',true);
@@ -1313,7 +1326,7 @@ begin
       FSwitchToFavoritesOITab:=XMLConfig.GetValue(Path+'FormEditor/SwitchToFavoritesOITab/Value',false);
 
       if not OnlyDesktop then
-        LoadNonDesktop(XMLConfig, Cfg, Path);
+        LoadNonDesktop(Path);
 
       // project inspector
       FProjInspSortAlphabetically:=XMLConfig.GetValue(Path+'ProjInspSortAlphabetically/Value',false);
@@ -1400,13 +1413,6 @@ begin
       FAskForFilenameOnNewFile:=XMLConfig.GetValue(Path+'AskForFilenameOnNewFile/Value',false);
       FLowercaseDefaultFilename:=XMLConfig.GetValue(Path+'LowercaseDefaultFilename/Value',true);
 
-      // IDE Coolbar
-      FIDECoolBarOptions.Load(XMLConfig);
-      // Editor Toolbar
-      FEditorToolBarOptions.Load(XMLConfig);
-      // component palette
-      FComponentPaletteOptions.Load(XMLConfig);
-
       // fpdoc
       FPDocPaths := XMLConfig.GetValue(Path+'LazDoc/Paths','');
       if FFileVersion<=105 then
@@ -1421,7 +1427,8 @@ begin
       FObjectInspectorOptions.SaveBounds:=false;
 
       // IDEEditorGroups
-      for i := 0 to IDEEditorGroups.Count - 1 do begin
+      for i := 0 to IDEEditorGroups.Count - 1 do
+      begin
         Rec := IDEEditorGroups[i];
         NodeName := Rec^.GroupClass.ClassName;
         Rec^.Collapsed := XMLConfig.GetValue(Path+'OptionDialog/Tree/' + NodeName + '/Value',
@@ -1435,8 +1442,20 @@ begin
         end;
       end;
 
+      // The user can define many desktops. They are saved under path Desktops/.
+      CurPath:='Desktops/';
+      if XMLConfig.HasPath(CurPath, True) then
+      begin
+        // New path under Desktops/.
+        j := XMLConfig.GetValue(CurPath+'Count/', 1);
+        for i := 0 to j-1 do
+          LoadDesktop(CurPath+'Desktop'+IntToStr(i+1)+'/');
+      end
+      else // Old path was under EnvironmentOptions/.
+        LoadDesktop(Path+'Desktop/');
+
     finally
-      Cfg.Free;
+      FCfg.Free;
     end;
     FileUpdated;
   except
@@ -1446,8 +1465,7 @@ begin
   end;
 end;
 
-procedure TEnvironmentOptions.SaveNonDesktop(XMLConfig: TXMLConfig; Cfg: TXMLOptionsStorage;
-  Path: String);
+procedure TEnvironmentOptions.SaveNonDesktop(Path: String);
 
   procedure SaveBackupInfo(var BackupInfo: TBackupInfo; Path:string);
   var i:integer;
@@ -1504,9 +1522,9 @@ begin
   XMLConfig.SetDeleteValue(Path+'LastCalledByLazarusFullPath/Value',FLastCalledByLazarusFullPath,'');
 
   // global buid options
-  Cfg.AppendBasePath('BuildMatrix');
-  FBuildMatrixOptions.SaveToConfig(Cfg,IsGlobalMode);
-  Cfg.UndoAppendBasePath;
+  FCfg.AppendBasePath('BuildMatrix');
+  FBuildMatrixOptions.SaveToConfig(FCfg,IsGlobalMode);
+  FCfg.UndoAppendBasePath;
   XMLConfig.SetDeleteValue(Path+'Build/UseBuildModes',FUseBuildModes,false);
 
   // backup
@@ -1547,22 +1565,45 @@ begin
   end;
 end;
 
+procedure TEnvironmentOptions.SaveDesktop(Path: String);
+begin
+  // windows
+  IDEWindowCreators.SimpleLayoutStorage.SaveToConfig(FCfg,Path);
+  FIDEDialogLayoutList.SaveToConfig(FConfigStore,Path+'Dialogs/');
+  XMLConfig.SetDeleteValue(Path+'SingleTaskBarButton/Value',FSingleTaskBarButton, False);
+  XMLConfig.SetDeleteValue(Path+'HideIDEOnRun/Value',FHideIDEOnRun,false);
+  XMLConfig.SetDeleteValue(Path+'IDETitleStartsWithProject/Value',FIDETitleStartsWithProject,false);
+  XMLConfig.SetDeleteValue(Path+'IDETitleIncludesBuildMode/Value',FIDETitleIncludesBuildMode,false);
+  XMLConfig.SetDeleteValue(Path+'IDEProjectDirectoryInIdeTitle/Value',FIDEProjectDirectoryInIdeTitle,false);
+  XMLConfig.SetDeleteValue(Path+'ComponentPaletteVisible/Value',FComponentPaletteVisible,true);
+  XMLConfig.SetDeleteValue(Path+'AutoAdjustIDEHeight/Value',FAutoAdjustIDEHeight,true);
+  XMLConfig.SetDeleteValue(Path+'AutoAdjustIDEHeightFullComponentPalette/Value',
+                           FAutoAdjustIDEHeightFullCompPal,true);
+  XMLConfig.SetDeleteValue(Path+'CompletionWindowWidth/Value',FCompletionWindowWidth, 320);
+  XMLConfig.SetDeleteValue(Path+'CompletionWindowHeight/Value',FCompletionWindowHeight, 6);
+  // Window menu
+  XMLConfig.SetDeleteValue(Path+'IDENameForDesignedFormList/Value',FIDENameForDesignedFormList,false);
+
+  // IDE Coolbar
+  FIDECoolBarOptions.Save(XMLConfig, Path);
+  // Editor Toolbar
+  FEditorToolBarOptions.Save(XMLConfig, Path);
+  // component palette
+  FComponentPaletteOptions.Save(XMLConfig, Path);
+end;
+
 procedure TEnvironmentOptions.Save(OnlyDesktop: boolean);
 var
-  XMLConfig: TXMLConfig;
-var
-  Path: String;
+  Path, CurPath, NodeName: String;
   i, j: Integer;
-  NodeName: String;
   Rec: PIDEOptionsGroupRec;
-  Cfg: TXMLOptionsStorage;
   mwc: TMsgWndColor;
   u: TMessageLineUrgency;
 begin
-  Cfg:=nil;
+  FCfg:=nil;
   try
     XMLConfig:=GetXMLCfg(true);
-    Cfg:=TXMLOptionsStorage.Create(XMLConfig);
+    FCfg:=TXMLOptionsStorage.Create(XMLConfig);
     try
       Path:='EnvironmentOptions/';
 
@@ -1579,34 +1620,6 @@ begin
       XMLConfig.SetDeleteValue(Path+'AutoSave/IntervalInSecs',FAutoSaveIntervalInSecs,600);
       XMLConfig.SetDeleteValue(Path+'AutoSave/LastSavedProjectFile',FLastSavedProjectFile,'');
       XMLConfig.SetDeleteValue(Path+'AutoSave/OpenLastProjectAtStart',FOpenLastProjectAtStart,true);
-
-      // windows
-      IDEWindowCreators.SimpleLayoutStorage.SaveToConfig(Cfg,Path+'Desktop/');
-      FIDEDialogLayoutList.SaveToConfig(FConfigStore,Path+'Desktop/Dialogs/');
-      XMLConfig.SetDeleteValue(Path+'Desktop/SingleTaskBarButton/Value',
-                               FSingleTaskBarButton, False);
-      XMLConfig.SetDeleteValue(Path+'Desktop/HideIDEOnRun/Value',FHideIDEOnRun,
-                               false);
-      XMLConfig.SetDeleteValue(Path+'Desktop/IDETitleStartsWithProject/Value',
-                               FIDETitleStartsWithProject,false);
-      XMLConfig.SetDeleteValue(Path+'Desktop/IDETitleIncludesBuildMode/Value',
-                               FIDETitleIncludesBuildMode,false);
-      XMLConfig.SetDeleteValue(Path+'Desktop/IDEProjectDirectoryInIdeTitle/Value',
-                               FIDEProjectDirectoryInIdeTitle,false);
-      XMLConfig.SetDeleteValue(Path+'Desktop/ComponentPaletteVisible/Value',
-                               FComponentPaletteVisible,true);
-      XMLConfig.SetDeleteValue(Path+'Desktop/AutoAdjustIDEHeight/Value',
-                               FAutoAdjustIDEHeight,true);
-      XMLConfig.SetDeleteValue(Path+'Desktop/AutoAdjustIDEHeightFullComponentPalette/Value',
-                               FAutoAdjustIDEHeightFullCompPal,true);
-      XMLConfig.SetDeleteValue(Path+'Desktop/CompletionWindowWidth/Value',
-                               FCompletionWindowWidth, 320);
-      XMLConfig.SetDeleteValue(Path+'Desktop/CompletionWindowHeight/Value',
-                               FCompletionWindowHeight, 6);
-
-      // Window menu
-      XMLConfig.SetDeleteValue(Path+'Desktop/IDENameForDesignedFormList/Value',
-                               FIDENameForDesignedFormList,false);
 
       // form editor
       XMLConfig.SetDeleteValue(Path+'FormEditor/ShowBorderSpacing',FShowBorderSpacing,false);
@@ -1641,7 +1654,7 @@ begin
       XMLConfig.SetDeleteValue(Path+'AutoCloseCompileDialog/Value',FAutoCloseCompileDialog,False);
 
       if not OnlyDesktop then
-        SaveNonDesktop(XMLConfig, Cfg, Path);
+        SaveNonDesktop(Path);
 
       // project inspector
       XMLConfig.SetDeleteValue(Path+'ProjInspSortAlphabetically/Value',FProjInspSortAlphabetically,false);
@@ -1702,17 +1715,9 @@ begin
         AmbiguousFileActionNames[fAmbiguousFileAction],
         AmbiguousFileActionNames[afaAsk]);
       XMLConfig.SetDeleteValue(Path+'AskForFilenameOnNewFile/Value',
-                     FAskForFilenameOnNewFile,false);
+                               FAskForFilenameOnNewFile,false);
       XMLConfig.SetDeleteValue(Path+'LowercaseDefaultFilename/Value',
                                FLowercaseDefaultFilename,true);
-
-      // IDE Coolbar
-      FIDECoolBarOptions.Save(XMLConfig);
-      // Editor Toolbar
-      FEditorToolBarOptions.Save(XMLConfig);
-      // component palette
-      FComponentPaletteOptions.Save(XMLConfig);
-
       // fpdoc
       XMLConfig.SetDeleteValue(Path+'LazDoc/Paths',FPDocPaths,'');
 
@@ -1725,7 +1730,8 @@ begin
       FObjectInspectorOptions.Save;
 
       // IDEEditorGroups
-      for i := 0 to IDEEditorGroups.Count - 1 do begin
+      for i := 0 to IDEEditorGroups.Count - 1 do
+      begin
         Rec := IDEEditorGroups[i];
         NodeName := Rec^.GroupClass.ClassName;
         XMLConfig.SetDeleteValue(Path+'OptionDialog/Tree/' + NodeName + '/Value',
@@ -1740,8 +1746,16 @@ begin
           end;
         end;
       end;
+
+      // The user can define many desktops. They are saved under path Desktops/.
+      CurPath:='Desktops/';
+      XMLConfig.SetDeleteValue(CurPath+'Count', 1, 0); // ToDo: use count from collection.
+      j := 1;
+      for i := 0 to j-1 do                             // ToDo: iterate collection.
+        SaveDesktop(CurPath+'Desktop'+IntToStr(i+1)+'/');
+
     finally
-      Cfg.Free;
+      FCfg.Free;
     end;
     XMLConfig.Flush;
     FileUpdated;

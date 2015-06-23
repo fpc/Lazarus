@@ -78,8 +78,8 @@ type
     destructor Destroy; override;
     procedure Clear;
     function EqualToolbars(Opts: TIDECoolBarOptions): boolean;
-    procedure Load(XMLConfig: TXMLConfig);
-    procedure Save(XMLConfig: TXMLConfig);
+    procedure Load(XMLConfig: TXMLConfig; Path: String);
+    procedure Save(XMLConfig: TXMLConfig; Path: String);
   public
     property IDECoolBarVisible: Boolean read FIDECoolBarVisible write FIDECoolBarVisible;
     property IDECoolBarWidth: Integer read FIDECoolBarWidth write FIDECoolBarWidth;
@@ -307,20 +307,21 @@ begin
   FIDECoolBarToolBars.Add(ToolBarOpts);
 end;
 
-procedure TIDECoolBarOptions.Load(XMLConfig: TXMLConfig);
+procedure TIDECoolBarOptions.Load(XMLConfig: TXMLConfig; Path: String);
 var
   ToolBarOpt: TIDEToolBarOptions;
   ToolBarCount: Integer;
   I: Integer;
 begin
-  ToolbarCount := XMLConfig.GetValue(BasePath + 'Count', 0);
+  Path := Path + BasePath;
+  ToolbarCount := XMLConfig.GetValue(Path + 'Count', 0);
   if ToolBarCount = 0 then  // Old format
-    ToolbarCount := XMLConfig.GetValue(BasePath + 'ToolBarCount/Value', 0);
-  FIDECoolBarVisible := XMLConfig.GetValue(BasePath + 'Visible/Value', True);
-  FIDECoolBarWidth := XMLConfig.GetValue(BasePath + 'Width/Value', 230);
-  FIDECoolBarGrabStyle := XMLConfig.GetValue(BasePath + 'GrabStyle/Value', 1);
-  FIDECoolBarGrabWidth := XMLConfig.GetValue(BasePath + 'GrabWidth/Value', 5);
-  FIDECoolBarBorderStyle := XMLConfig.GetValue(BasePath + 'BorderStyle/Value', 1);
+    ToolbarCount := XMLConfig.GetValue(Path + 'ToolBarCount/Value', 0);
+  FIDECoolBarVisible := XMLConfig.GetValue(Path + 'Visible/Value', True);
+  FIDECoolBarWidth := XMLConfig.GetValue(Path + 'Width/Value', 230);
+  FIDECoolBarGrabStyle := XMLConfig.GetValue(Path + 'GrabStyle/Value', 1);
+  FIDECoolBarGrabWidth := XMLConfig.GetValue(Path + 'GrabWidth/Value', 5);
+  FIDECoolBarBorderStyle := XMLConfig.GetValue(Path + 'BorderStyle/Value', 1);
   if ToolBarCount > 0 then
   begin
     FIDECoolBarToolBars.Clear;
@@ -329,32 +330,33 @@ begin
       ToolBarOpt := TIDEToolBarOptions.Create;
       FIDECoolBarToolBars.Add(ToolBarOpt);
       ToolBarOpt.FPosition := I;
-      ToolBarOpt.Load(XMLConfig, BasePath + 'ToolBar' + IntToStr(I+1) + '/');
+      ToolBarOpt.Load(XMLConfig, Path + 'ToolBar' + IntToStr(I+1) + '/');
     end;
   end;
   if ToolBarCount = 0 then
     CreateDefaultToolbars;
 end;
 
-procedure TIDECoolBarOptions.Save(XMLConfig: TXMLConfig);
+procedure TIDECoolBarOptions.Save(XMLConfig: TXMLConfig; Path: String);
 var
   DefaultOpts: TDefaultCoolBarOptions;
   I: Integer;
 begin
   DefaultOpts := TDefaultCoolBarOptions.Create;
   try
-    XMLConfig.DeletePath(BasePath);
-    XMLConfig.SetDeleteValue(BasePath + 'Visible/Value', FIDECoolBarVisible, True);
-    XMLConfig.SetDeleteValue(BasePath + 'Width/Value', FIDECoolBarWidth, 0);
-    XMLConfig.SetDeleteValue(BasePath + 'GrabStyle/Value', FIDECoolBarGrabStyle, 1);
-    XMLConfig.SetDeleteValue(BasePath + 'GrabWidth/Value', FIDECoolBarGrabWidth, 5);
-    XMLConfig.SetDeleteValue(BasePath + 'BorderStyle/Value', FIDECoolBarBorderStyle, 1);
+    Path := Path + BasePath;
+    XMLConfig.DeletePath(Path);
+    XMLConfig.SetDeleteValue(Path + 'Visible/Value', FIDECoolBarVisible, True);
+    XMLConfig.SetDeleteValue(Path + 'Width/Value', FIDECoolBarWidth, 0);
+    XMLConfig.SetDeleteValue(Path + 'GrabStyle/Value', FIDECoolBarGrabStyle, 1);
+    XMLConfig.SetDeleteValue(Path + 'GrabWidth/Value', FIDECoolBarGrabWidth, 5);
+    XMLConfig.SetDeleteValue(Path + 'BorderStyle/Value', FIDECoolBarBorderStyle, 1);
     if EqualToolbars(DefaultOpts) then Exit;
     if FIDECoolBarToolBars.Count > 0 then
     begin
-      XMLConfig.SetDeleteValue(BasePath + 'Count', FIDECoolBarToolBars.Count, 0);
+      XMLConfig.SetDeleteValue(Path + 'Count', FIDECoolBarToolBars.Count, 0);
       for I := 0 to FIDECoolBarToolBars.Count - 1 do
-        FIDECoolBarToolBars[I].Save(XMLConfig, BasePath + 'ToolBar' + IntToStr(I+1) + '/');
+        FIDECoolBarToolBars[I].Save(XMLConfig, Path + 'ToolBar' + IntToStr(I+1) + '/');
     end;
   finally
     DefaultOpts.Free;
