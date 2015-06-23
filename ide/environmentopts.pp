@@ -1331,7 +1331,7 @@ begin
       // messages view
       fMsgViewDblClickJumps:=XMLConfig.GetValue(Path+'MsgViewDblClickJumps/Value',false);
       fMsgViewFocus:=XMLConfig.GetValue(Path+'MsgViewFocus/Value',DefaultMsgViewFocus);
-      FShowMessagesIcons:=XMLConfig.GetValue(Path+'Desktop/ShowMessagesIcons/Value',true);
+      FShowMessagesIcons:=XMLConfig.GetValue(Path+'MsgView/ShowMessagesIcons/Value',true);
       FMsgViewStayOnTop:=XMLConfig.GetValue(Path+'MsgView/StayOnTop/Value',false);
       FMsgViewShowTranslations:=XMLConfig.GetValue(Path+'MsgView/ShowTranslations/Value',false);
       FMsgViewAlwaysDrawFocused:=XMLConfig.GetValue(Path+'MsgView/AlwaysDrawFocused/Value',false);
@@ -1659,7 +1659,7 @@ begin
       // messages view
       XMLConfig.SetDeleteValue(Path+'MsgViewDblClickJumps/Value',fMsgViewDblClickJumps,false);
       XMLConfig.SetDeleteValue(Path+'MsgViewFocus/Value',fMsgViewFocus,DefaultMsgViewFocus);
-      XMLConfig.SetDeleteValue(Path+'Desktop/ShowMessagesIcons/Value',FShowMessagesIcons,true);
+      XMLConfig.SetDeleteValue(Path+'MsgView/ShowMessagesIcons/Value',FShowMessagesIcons,true);
       XMLConfig.SetDeleteValue(Path+'MsgView/StayOnTop/Value',FMsgViewStayOnTop,false);
       XMLConfig.SetDeleteValue(Path+'MsgView/ShowTranslations/Value',FMsgViewShowTranslations,false);
       XMLConfig.SetDeleteValue(Path+'MsgView/AlwaysDrawFocused/Value',FMsgViewAlwaysDrawFocused,false);
