@@ -440,8 +440,8 @@ type
     function GetMsgColors(u: TMessageLineUrgency): TColor;
     function GetMsgViewColors(c: TMsgWndColor): TColor;
     function GetTestBuildDirectory: string;
-    procedure LoadNonDesktop(XMLConfig: TXMLConfig; Cfg: TXMLOptionsStorage;
-      Path: String);
+    procedure LoadNonDesktop(XMLConfig: TXMLConfig; Cfg: TXMLOptionsStorage; Path: String);
+    procedure SaveNonDesktop(XMLConfig: TXMLConfig; Cfg: TXMLOptionsStorage; Path: String);
     procedure SetCompilerFilename(const AValue: string);
     procedure SetCompilerMessagesFilename(AValue: string);
     procedure SetDebuggerEventLogColors(AIndex: TDBGEventType;
@@ -1446,9 +1446,8 @@ begin
   end;
 end;
 
-procedure TEnvironmentOptions.Save(OnlyDesktop: boolean);
-var
-  XMLConfig: TXMLConfig;
+procedure TEnvironmentOptions.SaveNonDesktop(XMLConfig: TXMLConfig; Cfg: TXMLOptionsStorage;
+  Path: String);
 
   procedure SaveBackupInfo(var BackupInfo: TBackupInfo; Path:string);
   var i:integer;
@@ -1471,14 +1470,92 @@ var
   end;
 
 var
+  BaseDir, CurLazDir: String;
+  EventType: TDBGEventType;
+begin
+  // files
+  CurLazDir:=ChompPathDelim(LazarusDirectory);
+  if not GlobalMacroList.StrHasMacros(CurLazDir) then begin
+    BaseDir:=ExtractFilePath(ChompPathDelim(GetPrimaryConfigPath));
+    if (CompareFilenames(BaseDir,CurLazDir)=0)
+    or FileIsInPath(CurLazDir,BaseDir) then begin
+      // the pcp directory is in the lazarus directory
+      // or the lazarus directory is a sibling or a sub dir of a sibling of the pcp
+      // examples:
+      //   pcp=C:\Lazarus\config, lazdir=C:\Lazarus => store '..'
+      //   pcp=/home/user/.lazarus, lazdir=/home/user/freepascal/lazarus => store ../freepascal/lazarus
+      CurLazDir:=CreateRelativePath(CurLazDir,GetPrimaryConfigPath);
+    end;
+    XMLConfig.SetValue(Path+'LazarusDirectory/Value',CurLazDir); // always store, no SetDeleteValue
+  end;
+  SaveRecentList(XMLConfig,FLazarusDirHistory,Path+'LazarusDirectory/History/');
+  XMLConfig.SetDeleteValue(Path+'CompilerFilename/Value',CompilerFilename,'');
+  SaveRecentList(XMLConfig,FCompilerFileHistory,Path+'CompilerFilename/History/');
+  XMLConfig.SetDeleteValue(Path+'FPCSourceDirectory/Value',FPCSourceDirectory,'');
+  SaveRecentList(XMLConfig,FFPCSourceDirHistory,Path+'FPCSourceDirectory/History/');
+  XMLConfig.SetDeleteValue(Path+'MakeFilename/Value',MakeFilename,DefaultMakefilename);
+  SaveRecentList(XMLConfig,FMakeFileHistory,Path+'MakeFilename/History/');
+  XMLConfig.SetDeleteValue(Path+'TestBuildDirectory/Value',TestBuildDirectory,'');
+  SaveRecentList(XMLConfig,FTestBuildDirHistory,Path+'TestBuildDirectory/History/');
+  XMLConfig.SetDeleteValue(Path+'CompilerMessagesFilename/Value',CompilerMessagesFilename,'');
+  SaveRecentList(XMLConfig,FCompilerMessagesFileHistory,Path+'CompilerMessagesFilename/History/');
+
+  // Primary-conyfig vurification
+  XMLConfig.SetDeleteValue(Path+'LastCalledByLazarusFullPath/Value',FLastCalledByLazarusFullPath,'');
+
+  // global buid options
+  Cfg.AppendBasePath('BuildMatrix');
+  FBuildMatrixOptions.SaveToConfig(Cfg,IsGlobalMode);
+  Cfg.UndoAppendBasePath;
+  XMLConfig.SetDeleteValue(Path+'Build/UseBuildModes',FUseBuildModes,false);
+
+  // backup
+  SaveBackupInfo(FBackupInfoProjectFiles,Path+'BackupProjectFiles/');
+  SaveBackupInfo(FBackupInfoOtherFiles,Path+'BackupOtherFiles/');
+
+  // debugger
+  FDebuggerConfig.Save;
+  SaveDebuggerPropertiesList;
+  XMLConfig.SetDeleteValue(Path+'DebuggerFilename/Value',DebuggerFilename,'');
+  XMLConfig.SetDeleteValue(Path+'DebuggerOptions/ShowStopMessage/Value',
+      FDebuggerShowStopMessage, True);
+  XMLConfig.SetDeleteValue(Path+'DebuggerOptions/DebuggerResetAfterRun/Value',
+      FDebuggerResetAfterRun, False);
+  SaveRecentList(XMLConfig,FDebuggerFileHistory,Path+'DebuggerFilename/History/');
+  XMLConfig.SetDeleteValue(Path+'DebuggerSearchPath/Value',DebuggerSearchPath,'');
+  XMLConfig.SetDeleteValue(Path+'Debugger/EventLogClearOnRun',FDebuggerEventLogClearOnRun, True);
+  XMLConfig.SetDeleteValue(Path+'Debugger/EventLogCheckLineLimit',FDebuggerEventLogCheckLineLimit, False);
+  XMLConfig.SetDeleteValue(Path+'Debugger/EventLogLineLimit',FDebuggerEventLogLineLimit, 1000);
+  XMLConfig.SetDeleteValue(Path+'Debugger/EventLogShowBreakpoint',FDebuggerEventLogShowBreakpoint, False);
+  XMLConfig.SetDeleteValue(Path+'Debugger/EventLogShowProcess',FDebuggerEventLogShowProcess, True);
+  XMLConfig.SetDeleteValue(Path+'Debugger/EventLogShowThread',FDebuggerEventLogShowThread, True);
+  XMLConfig.SetDeleteValue(Path+'Debugger/EventLogShowModule',FDebuggerEventLogShowModule, False);
+  XMLConfig.SetDeleteValue(Path+'Debugger/EventLogShowOutput',FDebuggerEventLogShowOutput, True);
+  XMLConfig.SetDeleteValue(Path+'Debugger/EventLogShowWindows',FDebuggerEventLogShowWindows, False);
+  XMLConfig.SetDeleteValue(Path+'Debugger/EventLogShowDebugger',FDebuggerEventLogShowDebugger, True);
+  XMLConfig.SetDeleteValue(Path+'Debugger/EventLogUseColors',FDebuggerEventLogUseColors, True);
+  for EventType := Low(TDBGEventType) to High(TDBGEventType) do
+  begin
+    XMLConfig.SetDeleteValue(Path+'Debugger/EventLogColors/' +
+      GetEnumName(TypeInfo(EventType), Ord(EventType)) + '/Background',
+        FDebuggerEventLogColors[EventType].Background,
+        DebuggerDefaultColors[EventType].Background);
+    XMLConfig.SetDeleteValue(Path+'Debugger/EventLogColors/' +
+      GetEnumName(TypeInfo(EventType), Ord(EventType)) + '/Foreground',
+        FDebuggerEventLogColors[EventType].Foreground,
+        DebuggerDefaultColors[EventType].Foreground);
+  end;
+end;
+
+procedure TEnvironmentOptions.Save(OnlyDesktop: boolean);
+var
+  XMLConfig: TXMLConfig;
+var
   Path: String;
   i, j: Integer;
   NodeName: String;
   Rec: PIDEOptionsGroupRec;
   Cfg: TXMLOptionsStorage;
-  EventType: TDBGEventType;
-  CurLazDir: String;
-  BaseDir: String;
   mwc: TMsgWndColor;
   u: TMessageLineUrgency;
 begin
@@ -1563,80 +1640,8 @@ begin
       XMLConfig.SetDeleteValue(Path+'ShowCompileDialog/Value',FShowCompileDialog,False);
       XMLConfig.SetDeleteValue(Path+'AutoCloseCompileDialog/Value',FAutoCloseCompileDialog,False);
 
-      if not OnlyDesktop then begin
-        // files
-        CurLazDir:=ChompPathDelim(LazarusDirectory);
-        if not GlobalMacroList.StrHasMacros(CurLazDir) then begin
-          BaseDir:=ExtractFilePath(ChompPathDelim(GetPrimaryConfigPath));
-          if (CompareFilenames(BaseDir,CurLazDir)=0)
-          or FileIsInPath(CurLazDir,BaseDir) then begin
-            // the pcp directory is in the lazarus directory
-            // or the lazarus directory is a sibling or a sub dir of a sibling of the pcp
-            // examples:
-            //   pcp=C:\Lazarus\config, lazdir=C:\Lazarus => store '..'
-            //   pcp=/home/user/.lazarus, lazdir=/home/user/freepascal/lazarus => store ../freepascal/lazarus
-            CurLazDir:=CreateRelativePath(CurLazDir,GetPrimaryConfigPath);
-          end;
-          XMLConfig.SetValue(Path+'LazarusDirectory/Value',CurLazDir); // always store, no SetDeleteValue
-        end;
-        SaveRecentList(XMLConfig,FLazarusDirHistory,Path+'LazarusDirectory/History/');
-        XMLConfig.SetDeleteValue(Path+'CompilerFilename/Value',CompilerFilename,'');
-        SaveRecentList(XMLConfig,FCompilerFileHistory,Path+'CompilerFilename/History/');
-        XMLConfig.SetDeleteValue(Path+'FPCSourceDirectory/Value',FPCSourceDirectory,'');
-        SaveRecentList(XMLConfig,FFPCSourceDirHistory,Path+'FPCSourceDirectory/History/');
-        XMLConfig.SetDeleteValue(Path+'MakeFilename/Value',MakeFilename,DefaultMakefilename);
-        SaveRecentList(XMLConfig,FMakeFileHistory,Path+'MakeFilename/History/');
-        XMLConfig.SetDeleteValue(Path+'TestBuildDirectory/Value',TestBuildDirectory,'');
-        SaveRecentList(XMLConfig,FTestBuildDirHistory,Path+'TestBuildDirectory/History/');
-        XMLConfig.SetDeleteValue(Path+'CompilerMessagesFilename/Value',CompilerMessagesFilename,'');
-        SaveRecentList(XMLConfig,FCompilerMessagesFileHistory,Path+'CompilerMessagesFilename/History/');
-
-        // Primary-conyfig vurification
-        XMLConfig.SetDeleteValue(Path+'LastCalledByLazarusFullPath/Value',FLastCalledByLazarusFullPath,'');
-
-        // global buid options
-        Cfg.AppendBasePath('BuildMatrix');
-        FBuildMatrixOptions.SaveToConfig(Cfg,IsGlobalMode);
-        Cfg.UndoAppendBasePath;
-        XMLConfig.SetDeleteValue(Path+'Build/UseBuildModes',FUseBuildModes,false);
-
-        // backup
-        SaveBackupInfo(FBackupInfoProjectFiles,Path+'BackupProjectFiles/');
-        SaveBackupInfo(FBackupInfoOtherFiles,Path+'BackupOtherFiles/');
-
-        // debugger
-        FDebuggerConfig.Save;
-        SaveDebuggerPropertiesList;
-        XMLConfig.SetDeleteValue(Path+'DebuggerFilename/Value',DebuggerFilename,'');
-        XMLConfig.SetDeleteValue(Path+'DebuggerOptions/ShowStopMessage/Value',
-            FDebuggerShowStopMessage, True);
-        XMLConfig.SetDeleteValue(Path+'DebuggerOptions/DebuggerResetAfterRun/Value',
-            FDebuggerResetAfterRun, False);
-        SaveRecentList(XMLConfig,FDebuggerFileHistory,Path+'DebuggerFilename/History/');
-        XMLConfig.SetDeleteValue(Path+'DebuggerSearchPath/Value',DebuggerSearchPath,'');
-        XMLConfig.SetDeleteValue(Path+'Debugger/EventLogClearOnRun',FDebuggerEventLogClearOnRun, True);
-        XMLConfig.SetDeleteValue(Path+'Debugger/EventLogCheckLineLimit',FDebuggerEventLogCheckLineLimit, False);
-        XMLConfig.SetDeleteValue(Path+'Debugger/EventLogLineLimit',FDebuggerEventLogLineLimit, 1000);
-        XMLConfig.SetDeleteValue(Path+'Debugger/EventLogShowBreakpoint',FDebuggerEventLogShowBreakpoint, False);
-        XMLConfig.SetDeleteValue(Path+'Debugger/EventLogShowProcess',FDebuggerEventLogShowProcess, True);
-        XMLConfig.SetDeleteValue(Path+'Debugger/EventLogShowThread',FDebuggerEventLogShowThread, True);
-        XMLConfig.SetDeleteValue(Path+'Debugger/EventLogShowModule',FDebuggerEventLogShowModule, False);
-        XMLConfig.SetDeleteValue(Path+'Debugger/EventLogShowOutput',FDebuggerEventLogShowOutput, True);
-        XMLConfig.SetDeleteValue(Path+'Debugger/EventLogShowWindows',FDebuggerEventLogShowWindows, False);
-        XMLConfig.SetDeleteValue(Path+'Debugger/EventLogShowDebugger',FDebuggerEventLogShowDebugger, True);
-        XMLConfig.SetDeleteValue(Path+'Debugger/EventLogUseColors',FDebuggerEventLogUseColors, True);
-        for EventType := Low(TDBGEventType) to High(TDBGEventType) do
-        begin
-          XMLConfig.SetDeleteValue(Path+'Debugger/EventLogColors/' +
-            GetEnumName(TypeInfo(EventType), Ord(EventType)) + '/Background',
-              FDebuggerEventLogColors[EventType].Background,
-              DebuggerDefaultColors[EventType].Background);
-          XMLConfig.SetDeleteValue(Path+'Debugger/EventLogColors/' +
-            GetEnumName(TypeInfo(EventType), Ord(EventType)) + '/Foreground',
-              FDebuggerEventLogColors[EventType].Foreground,
-              DebuggerDefaultColors[EventType].Foreground);
-        end;
-      end;
+      if not OnlyDesktop then
+        SaveNonDesktop(XMLConfig, Cfg, Path);
 
       // project inspector
       XMLConfig.SetDeleteValue(Path+'ProjInspSortAlphabetically/Value',FProjInspSortAlphabetically,false);
