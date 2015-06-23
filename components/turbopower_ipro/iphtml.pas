@@ -4815,9 +4815,9 @@ begin
                 SeenEqual := False;
                 SeenQuotes := False;
               end;
-            ' ' :
+            ' ', '/' :
               if InQuote then
-                AddParmChar(' ')
+                AddParmChar(ch)
               else
               if InAttr then begin
                 InAttr := False;
