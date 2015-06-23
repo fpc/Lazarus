@@ -35,7 +35,7 @@ type
 
   TWindowOptionsFrame = class(TAbstractIDEOptionsEditor)
     ApplyButton: TButton;
-    AutoAdjustIDEHeightFullComponentPaletteCheckBox: TCheckBox;
+    AutoAdjustIDEHeightFullCompPalCheckBox: TCheckBox;
     lblWindowPosition: TDividerBevel;
     lblShowingWindows: TDividerBevel;
     lblWindowCaption: TDividerBevel;
@@ -126,8 +126,8 @@ begin
   NameForDesignedFormList.Hint:=lisWindowMenuWithNameForDesignedFormHint;
   AutoAdjustIDEHeightCheckBox.Caption:=lisAutoAdjustIDEHeight;
   AutoAdjustIDEHeightCheckBox.Hint:=lisAutoAdjustIDEHeightHint;
-  AutoAdjustIDEHeightFullComponentPaletteCheckBox.Caption:=lisAutoAdjustIDEHeightFullComponentPalette;
-  AutoAdjustIDEHeightFullComponentPaletteCheckBox.Hint:=lisAutoAdjustIDEHeightFullComponentPaletteHint;
+  AutoAdjustIDEHeightFullCompPalCheckBox.Caption:=lisAutoAdjustIDEHeightFullComponentPalette;
+  AutoAdjustIDEHeightFullCompPalCheckBox.Hint:=lisAutoAdjustIDEHeightFullComponentPaletteHint;
   ProjectDirInIdeTitleCheckBox.Caption:=lisIDETitleShowsProjectDir;
   ProjectDirInIdeTitleCheckBox.Hint:=lisProjectDirectoryIsShowedInIdeTitleBar;
 end;
@@ -146,7 +146,7 @@ begin
     TitleIncludesBuildMode.Checked:=IDETitleIncludesBuildMode;
     NameForDesignedFormList.Checked:=IDENameForDesignedFormList;
     AutoAdjustIDEHeightCheckBox.Checked:=AutoAdjustIDEHeight;
-    AutoAdjustIDEHeightFullComponentPaletteCheckBox.Checked:=AutoAdjustIDEHeightFullComponentPalette;
+    AutoAdjustIDEHeightFullCompPalCheckBox.Checked:=AutoAdjustIDEHeightFullCompPal;
     ProjectDirInIdeTitleCheckBox.Checked:=IDEProjectDirectoryInIdeTitle;
   end;
 
@@ -228,7 +228,7 @@ begin
     IDETitleIncludesBuildMode := TitleIncludesBuildMode.Checked;
     IDENameForDesignedFormList := NameForDesignedFormList.Checked;
     AutoAdjustIDEHeight := AutoAdjustIDEHeightCheckBox.Checked;
-    AutoAdjustIDEHeightFullComponentPalette := AutoAdjustIDEHeightFullComponentPaletteCheckBox.Checked;
+    AutoAdjustIDEHeightFullCompPal := AutoAdjustIDEHeightFullCompPalCheckBox.Checked;
     IDEProjectDirectoryInIdeTitle:=ProjectDirInIdeTitleCheckBox.Checked;
   end;
 end;

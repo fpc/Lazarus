@@ -740,7 +740,7 @@ begin
         ComponentPageControl.Height - ComponentScrollBox.ClientHeight;  //page control non-client height (tabs, borders).
       Result := Max(Result, NewHeight);
 
-      if not EnvironmentOptions.AutoAdjustIDEHeightFullComponentPalette then
+      if not EnvironmentOptions.AutoAdjustIDEHeightFullCompPal then
         Break;  //we need only one button (we calculate one line only)
     end;
   end;

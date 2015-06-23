@@ -289,7 +289,7 @@ type
     FHideIDEOnRun: boolean;
     FComponentPaletteVisible: boolean;
     FAutoAdjustIDEHeight: boolean;
-    FAutoAdjustIDEHeightFullComponentPalette: boolean;
+    FAutoAdjustIDEHeightFullCompPal: boolean;
 
     // CompletionWindow
     FCompletionWindowWidth: Integer;
@@ -524,7 +524,8 @@ type
     property ComponentPaletteVisible: boolean read FComponentPaletteVisible
                                               write FComponentPaletteVisible;
     property AutoAdjustIDEHeight: Boolean read FAutoAdjustIDEHeight write FAutoAdjustIDEHeight;
-    property AutoAdjustIDEHeightFullComponentPalette: Boolean read FAutoAdjustIDEHeightFullComponentPalette write FAutoAdjustIDEHeightFullComponentPalette;
+    property AutoAdjustIDEHeightFullCompPal: Boolean read FAutoAdjustIDEHeightFullCompPal
+                                                     write FAutoAdjustIDEHeightFullCompPal;
     property CompletionWindowWidth: Integer read FCompletionWindowWidth
                                             write FCompletionWindowWidth;
     property CompletionWindowHeight: Integer read FCompletionWindowHeight
@@ -887,7 +888,7 @@ begin
   FIDEProjectDirectoryInIdeTitle:=false;
   FComponentPaletteVisible:=true;
   FAutoAdjustIDEHeight:=true;
-  FAutoAdjustIDEHeightFullComponentPalette := true;
+  FAutoAdjustIDEHeightFullCompPal := true;
 
   // window menu
   FIDENameForDesignedFormList:=false;
@@ -1219,7 +1220,7 @@ begin
         Path+'Desktop/ComponentPaletteVisible/Value',true);
       FAutoAdjustIDEHeight:=XMLConfig.GetValue(
         Path+'Desktop/AutoAdjustIDEHeight/Value',true);
-      FAutoAdjustIDEHeightFullComponentPalette:=XMLConfig.GetValue(
+      FAutoAdjustIDEHeightFullCompPal:=XMLConfig.GetValue(
         Path+'Desktop/AutoAdjustIDEHeightFullComponentPalette/Value',true);
       FCompletionWindowWidth:=XMLConfig.GetValue(
         Path+'Desktop/CompletionWindowWidth/Value', 320);
@@ -1615,7 +1616,7 @@ begin
       XMLConfig.SetDeleteValue(Path+'Desktop/AutoAdjustIDEHeight/Value',
                                FAutoAdjustIDEHeight,true);
       XMLConfig.SetDeleteValue(Path+'Desktop/AutoAdjustIDEHeightFullComponentPalette/Value',
-                               FAutoAdjustIDEHeightFullComponentPalette,true);
+                               FAutoAdjustIDEHeightFullCompPal,true);
       XMLConfig.SetDeleteValue(Path+'Desktop/CompletionWindowWidth/Value',
                                FCompletionWindowWidth, 320);
       XMLConfig.SetDeleteValue(Path+'Desktop/CompletionWindowHeight/Value',
