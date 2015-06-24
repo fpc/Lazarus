@@ -186,7 +186,7 @@ end;
 
 procedure TCompPaletteOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 begin
-  fLocalOptions.Assign((AOptions as TEnvironmentOptions).ComponentPaletteOptions);
+  fLocalOptions.Assign((AOptions as TEnvironmentOptions).Desktop.ComponentPaletteOptions);
   fLocalUserOrder.Options:=fLocalOptions;
   ActualReadSettings;
 end;
@@ -204,7 +204,7 @@ end;
 procedure TCompPaletteOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
   if not fConfigChanged then Exit;
-  ActualWriteSettings((AOptions as TEnvironmentOptions).ComponentPaletteOptions);
+  ActualWriteSettings((AOptions as TEnvironmentOptions).Desktop.ComponentPaletteOptions);
   IDEComponentPalette.IncChangeStamp;
 end;
 

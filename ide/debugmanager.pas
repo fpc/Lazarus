@@ -1173,7 +1173,7 @@ begin
   if (FDebugger.State in [dsRun])
   then begin
     // hide IDE during run
-    if EnvironmentOptions.HideIDEOnRun and (MainIDE.ToolStatus=itDebugger) and not FStepping
+    if EnvironmentOptions.Desktop.HideIDEOnRun and (MainIDE.ToolStatus=itDebugger) and not FStepping
     then MainIDE.HideIDE;
 
     if (FPrevShownWindow <> 0) and not FStepping then
@@ -1194,10 +1194,10 @@ begin
       if not FStepping then
       begin
         FPrevShownWindow := GetForegroundWindow;
-        if EnvironmentOptions.HideIDEOnRun then
+        if EnvironmentOptions.Desktop.HideIDEOnRun then
           MainIDE.UnhideIDE;
-        if not EnvironmentOptions.SingleTaskBarButton and
-          not EnvironmentOptions.HideIDEOnRun then
+        if not EnvironmentOptions.Desktop.SingleTaskBarButton and
+          not EnvironmentOptions.Desktop.HideIDEOnRun then
             Application.BringToFront;
       end;
     end;

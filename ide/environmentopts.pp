@@ -37,8 +37,8 @@ uses
 {$ifdef Windows}
   ShlObj,
 {$endif}
-  Classes, SysUtils, TypInfo, strutils, Graphics, Controls, Forms, LCLProc,
-  FileProcs, Dialogs, LazConfigStorage, Laz2_XMLCfg, LazUTF8,
+  Classes, SysUtils, TypInfo, strutils, fgl, Graphics, Controls, Forms,
+  LCLProc, FileProcs, Dialogs, LazConfigStorage, Laz2_XMLCfg, LazUTF8,
   // IDEIntf
   ProjectIntf, ObjectInspector, IDEWindowIntf, IDEOptionsIntf,
   ComponentReg, IDEExternToolIntf, MacroDefIntf,
@@ -252,6 +252,67 @@ type
 
 type
 
+  { TDesktopOpt }
+
+  TDesktopOpt = class
+  private
+    FXMLCfg: TRttiXMLConfig;
+    FConfigStore: TXMLOptionsStorage;
+    // window layout
+    FIDEDialogLayoutList: TIDEDialogLayoutList;
+    FSingleTaskBarButton: boolean;
+    FHideIDEOnRun: boolean;
+    FComponentPaletteVisible: boolean;
+    FAutoAdjustIDEHeight: boolean;
+    FAutoAdjustIDEHeightFullCompPal: boolean;
+    // window menu
+    FIDENameForDesignedFormList: boolean;
+    // CompletionWindow
+    FCompletionWindowWidth: Integer;
+    FCompletionWindowHeight: Integer;
+    // title
+    FIDETitleStartsWithProject: boolean;
+    FIDETitleIncludesBuildMode: boolean;
+    FIDEProjectDirectoryInIdeTitle: boolean;
+    // IDE Coolbar
+    FIDECoolBarOptions: TIDECoolBarOptions;
+    // Editor Toolbar
+    FEditorToolBarOptions: TEditorToolBarOptions;
+    // component palette
+    FComponentPaletteOptions: TCompPaletteOptions;
+    procedure InitLayoutList;
+    procedure Load(Path: String);
+    procedure Save(Path: String);
+  public
+    constructor Create;
+    destructor Destroy; override;
+
+    property IDEDialogLayoutList: TIDEDialogLayoutList read FIDEDialogLayoutList;
+    property SingleTaskBarButton: boolean read FSingleTaskBarButton write FSingleTaskBarButton;
+    property HideIDEOnRun: boolean read FHideIDEOnRun write FHideIDEOnRun;
+    property ComponentPaletteVisible: boolean read FComponentPaletteVisible
+                                              write FComponentPaletteVisible;
+    property AutoAdjustIDEHeight: Boolean read FAutoAdjustIDEHeight write FAutoAdjustIDEHeight;
+    property AutoAdjustIDEHeightFullCompPal: Boolean read FAutoAdjustIDEHeightFullCompPal
+                                                     write FAutoAdjustIDEHeightFullCompPal;
+    property IDENameForDesignedFormList: boolean read FIDENameForDesignedFormList
+                                               write FIDENameForDesignedFormList;
+    property CompletionWindowWidth: Integer read FCompletionWindowWidth write FCompletionWindowWidth;
+    property CompletionWindowHeight: Integer read FCompletionWindowHeight write FCompletionWindowHeight;
+    property IDETitleStartsWithProject: boolean read FIDETitleStartsWithProject
+                                               write FIDETitleStartsWithProject;
+    property IDETitleIncludesBuildMode: boolean read FIDETitleIncludesBuildMode
+                                               write FIDETitleIncludesBuildMode;
+    property IDEProjectDirectoryInIdeTitle: boolean read FIDEProjectDirectoryInIdeTitle
+                                                    write FIDEProjectDirectoryInIdeTitle;
+    property IDECoolBarOptions: TIDECoolBarOptions read FIDECoolBarOptions;
+    property EditorToolBarOptions: TEditorToolBarOptions read FEditorToolBarOptions;
+    property ComponentPaletteOptions: TCompPaletteOptions read FComponentPaletteOptions;
+
+  end;
+
+  TDesktopOptList = specialize TFPGObjectList<TDesktopOpt>;
+
   { TEnvironmentOptions - class for storing environment options }
 
   TEnvironmentOptions = class(TAbstractIDEEnvironmentOptions)
@@ -401,29 +462,9 @@ type
     FNewUnitTemplate: string;
     FFileDialogFilter: string;
 
-    // --- The following is part of desktop settings ---
-    // window layout
-    FIDEDialogLayoutList: TIDEDialogLayoutList;
-    FSingleTaskBarButton: boolean;
-    FHideIDEOnRun: boolean;
-    FComponentPaletteVisible: boolean;
-    FAutoAdjustIDEHeight: boolean;
-    FAutoAdjustIDEHeightFullCompPal: boolean;
-    // window menu
-    FIDENameForDesignedFormList: boolean;
-    // CompletionWindow
-    FCompletionWindowWidth: Integer;
-    FCompletionWindowHeight: Integer;
-    // title
-    FIDETitleStartsWithProject: boolean;
-    FIDETitleIncludesBuildMode: boolean;
-    FIDEProjectDirectoryInIdeTitle: boolean;
-    // IDE Coolbar
-    FIDECoolBarOptions: TIDECoolBarOptions;
-    // Editor Toolbar
-    FEditorToolBarOptions: TEditorToolBarOptions;
-    // component palette
-    FComponentPaletteOptions: TCompPaletteOptions;
+    // Desktop
+    FDesktop: TDesktopOpt;
+    //DesktopOptions: TDesktopOptList;  // ToDo
 
     function GetCompilerFilename: string;
     function GetCompilerMessagesFilename: string;
@@ -437,9 +478,7 @@ type
     function GetMsgColors(u: TMessageLineUrgency): TColor;
     function GetMsgViewColors(c: TMsgWndColor): TColor;
     function GetTestBuildDirectory: string;
-    procedure LoadDesktop(Path: String);
     procedure LoadNonDesktop(Path: String);
-    procedure SaveDesktop(Path: String);
     procedure SaveNonDesktop(Path: String);
     procedure SetCompilerFilename(const AValue: string);
     procedure SetCompilerMessagesFilename(AValue: string);
@@ -455,7 +494,6 @@ type
     procedure SetMsgViewColors(c: TMsgWndColor; AValue: TColor);
     procedure SetParseValue(o: TEnvOptParseType; const NewValue: string);
 
-    procedure InitLayoutList;
     procedure SetFileName(const NewFilename: string);
     function FileHasChangedOnDisk: boolean;
     procedure InitXMLCfg(CleanConfig: boolean);
@@ -512,36 +550,6 @@ type
     property AutoSaveProject: boolean read FAutoSaveProject write FAutoSaveProject;
     property AutoSaveIntervalInSecs: integer read FAutoSaveIntervalInSecs write FAutoSaveIntervalInSecs;
        
-    // window layouts
-    property IDEDialogLayoutList: TIDEDialogLayoutList read FIDEDialogLayoutList;
-    property SingleTaskBarButton: boolean read FSingleTaskBarButton
-                                               write FSingleTaskBarButton;
-    property HideIDEOnRun: boolean read FHideIDEOnRun write FHideIDEOnRun;
-    property IDETitleStartsWithProject: boolean read FIDETitleStartsWithProject
-                                               write FIDETitleStartsWithProject;
-    property IDETitleIncludesBuildMode: boolean read FIDETitleIncludesBuildMode
-                                               write FIDETitleIncludesBuildMode;
-    property IDEProjectDirectoryInIdeTitle: boolean read FIDEProjectDirectoryInIdeTitle
-                                                    write FIDEProjectDirectoryInIdeTitle;
-    property ComponentPaletteVisible: boolean read FComponentPaletteVisible
-                                              write FComponentPaletteVisible;
-    property AutoAdjustIDEHeight: Boolean read FAutoAdjustIDEHeight write FAutoAdjustIDEHeight;
-    property AutoAdjustIDEHeightFullCompPal: Boolean read FAutoAdjustIDEHeightFullCompPal
-                                                     write FAutoAdjustIDEHeightFullCompPal;
-    property CompletionWindowWidth: Integer read FCompletionWindowWidth
-                                            write FCompletionWindowWidth;
-    property CompletionWindowHeight: Integer read FCompletionWindowHeight
-                                             write FCompletionWindowHeight;
-    // window menu list
-    property IDENameForDesignedFormList: boolean read FIDENameForDesignedFormList
-                                               write FIDENameForDesignedFormList;
-    // IDE Coolbar
-    property IDECoolBarOptions: TIDECoolBarOptions read FIDECoolBarOptions;
-    // Editor Toolbar
-    property EditorToolBarOptions: TEditorToolBarOptions read FEditorToolBarOptions;
-    // component palette
-    property ComponentPaletteOptions: TCompPaletteOptions read FComponentPaletteOptions;
-
     // form editor
     property ShowBorderSpacing: boolean read FShowBorderSpacing write FShowBorderSpacing;
     property ShowGrid: boolean read FShowGrid write FShowGrid;
@@ -585,15 +593,15 @@ type
 
     // project inspector
     property ProjInspSortAlphabetically: boolean read FProjInspSortAlphabetically
-                                             write FProjInspSortAlphabetically;
+                                                write FProjInspSortAlphabetically;
     property ProjInspShowDirHierarchy: boolean read FProjInspShowDirHierarchy
-                                             write FProjInspShowDirHierarchy;
+                                              write FProjInspShowDirHierarchy;
 
     // package editor
     property PackageEditorSortAlphabetically: boolean read FPackageEditorSortAlphabetically
-                                             write FPackageEditorSortAlphabetically;
+                                                     write FPackageEditorSortAlphabetically;
     property PackageEditorShowDirHierarchy: boolean read FPackageEditorShowDirHierarchy
-                                             write FPackageEditorShowDirHierarchy;
+                                                   write FPackageEditorShowDirHierarchy;
 
     // hints
     property CheckDiskChangesWithLoading: boolean read FCheckDiskChangesWithLoading
@@ -604,33 +612,24 @@ type
                                                   write FShowHintsForMainSpeedButtons;
     
     // files
-    property LazarusDirectory: string read GetLazarusDirectory
-                                      write SetLazarusDirectory;
-    property LazarusDirHistory: TStringList read FLazarusDirHistory
-                                            write FLazarusDirHistory;
-    property CompilerFilename: string read GetCompilerFilename
-                                      write SetCompilerFilename;
-    property CompilerFileHistory: TStringList read FCompilerFileHistory
-                                              write FCompilerFileHistory;
-    property FPCSourceDirectory: string read GetFPCSourceDirectory
-                                        write SetFPCSourceDirectory;
+    property LazarusDirectory: string read GetLazarusDirectory write SetLazarusDirectory;
+    property LazarusDirHistory: TStringList read FLazarusDirHistory write FLazarusDirHistory;
+    property CompilerFilename: string read GetCompilerFilename write SetCompilerFilename;
+    property CompilerFileHistory: TStringList read FCompilerFileHistory write FCompilerFileHistory;
+    property FPCSourceDirectory: string read GetFPCSourceDirectory write SetFPCSourceDirectory;
     property FPCSourceDirHistory: TStringList read FFPCSourceDirHistory;
     property MakeFilename: string read GetMakeFilename write SetMakeFilename;
     property MakeFileHistory: TStringList read FMakeFileHistory;
     property DebuggerFilename: string read GetDebuggerFilename write SetDebuggerFilename;
     property DebuggerFileHistory: TStringList read FDebuggerFileHistory;
-    property DebuggerSearchPath: string read GetDebuggerSearchPath
-                                      write SetDebuggerSearchPath;
-    property DebuggerShowStopMessage: boolean read FDebuggerShowStopMessage
-                                              write FDebuggerShowStopMessage;
-    property DebuggerResetAfterRun: boolean read FDebuggerResetAfterRun
-                                              write FDebuggerResetAfterRun;
+    property DebuggerSearchPath: string read GetDebuggerSearchPath write SetDebuggerSearchPath;
+    property DebuggerShowStopMessage: boolean read FDebuggerShowStopMessage write FDebuggerShowStopMessage;
+    property DebuggerResetAfterRun: boolean read FDebuggerResetAfterRun write FDebuggerResetAfterRun;
     // ShowCompileDialog and AutoCloseCompileDialog are currently not used.
     // But maybe someone will implement them again. Keep them till 1.4.2
     property ShowCompileDialog: boolean read  FShowCompileDialog write FShowCompileDialog;
     property AutoCloseCompileDialog: boolean read  FAutoCloseCompileDialog write FAutoCloseCompileDialog;
-    property TestBuildDirectory: string read GetTestBuildDirectory
-                                        write SetTestBuildDirectory;
+    property TestBuildDirectory: string read GetTestBuildDirectory write SetTestBuildDirectory;
     property TestBuildDirHistory: TStringList read FTestBuildDirHistory;
     property CompilerMessagesFilename: string read GetCompilerMessagesFilename
               write SetCompilerMessagesFilename; // non English translation file
@@ -740,6 +739,8 @@ type
     // default template for each 'new item' category: Name=Path, Value=TemplateName
     property NewUnitTemplate: string read FNewUnitTemplate write FNewUnitTemplate;
     property NewFormTemplate: string read FNewFormTemplate write FNewFormTemplate;
+    // Desktop
+    property Desktop: TDesktopOpt read FDesktop;
   end;
 
 var
@@ -852,6 +853,126 @@ end;
 function dbgs(u: TMessageLineUrgency): string;
 begin
   WriteStr(Result, u);
+end;
+
+{ TDesktopOpt }
+
+constructor TDesktopOpt.Create;
+begin
+  FSingleTaskBarButton:=false;
+  FHideIDEOnRun:=false;
+  FComponentPaletteVisible:=true;
+  FAutoAdjustIDEHeight:=true;
+  FAutoAdjustIDEHeightFullCompPal := true;
+  // window menu
+  FIDENameForDesignedFormList:=false;
+  // CompletionWindow
+  FCompletionWindowWidth := 320;
+  FCompletionWindowHeight := 6;
+  // title
+  FIDETitleStartsWithProject:=false;
+  FIDETitleIncludesBuildMode:=false;
+  FIDEProjectDirectoryInIdeTitle:=false;
+  // IDE Coolbar
+  FIDECoolBarOptions:=TIDECoolBarOptions.Create;
+  // Editor Toolbar
+  FEditorToolBarOptions:=TEditorToolBarOptions.Create;
+  // component palette
+  FComponentPaletteOptions:=TCompPaletteOptions.Create;
+  // Windows layout
+  InitLayoutList;
+  FIDEDialogLayoutList:=TIDEDialogLayoutList.Create;
+  if IDEWindowIntf.IDEDialogLayoutList=nil then
+    IDEWindowIntf.IDEDialogLayoutList:=FIDEDialogLayoutList;
+end;
+
+destructor TDesktopOpt.Destroy;
+begin
+  if IDEWindowIntf.IDEDialogLayoutList=FIDEDialogLayoutList then
+    IDEWindowIntf.IDEDialogLayoutList:=nil;
+  FreeAndNil(FIDEDialogLayoutList);
+  FreeAndNil(FComponentPaletteOptions);
+  FreeAndNil(FEditorToolBarOptions);
+  FreeAndNil(FIDECoolBarOptions);
+  inherited Destroy;
+end;
+
+procedure TDesktopOpt.Load(Path: String);
+begin
+  // Windows layout
+  IDEWindowCreators.SimpleLayoutStorage.LoadFromConfig(FConfigStore,Path);
+  FIDEDialogLayoutList.LoadFromConfig(FConfigStore, Path+'Dialogs/');
+
+  FSingleTaskBarButton:=FXMLCfg.GetValue(Path+'SingleTaskBarButton/Value', False);
+  FHideIDEOnRun:=FXMLCfg.GetValue(Path+'HideIDEOnRun/Value',false);
+  FComponentPaletteVisible:=FXMLCfg.GetValue(Path+'ComponentPaletteVisible/Value',true);
+  FAutoAdjustIDEHeight:=FXMLCfg.GetValue(Path+'AutoAdjustIDEHeight/Value',true);
+  FAutoAdjustIDEHeightFullCompPal:=FXMLCfg.GetValue(Path+'AutoAdjustIDEHeightFullComponentPalette/Value',true);
+  // Window menu
+  FIDENameForDesignedFormList:=FXMLCfg.GetValue(Path+'IDENameForDesignedFormList/Value',false);
+  // title
+  FIDETitleStartsWithProject:=FXMLCfg.GetValue(Path+'IDETitleStartsWithProject/Value',false);
+  FIDETitleIncludesBuildMode:=FXMLCfg.GetValue(Path+'IDETitleIncludesBuildMode/Value',false);
+  FIDEProjectDirectoryInIdeTitle:=FXMLCfg.GetValue(Path+'IDEProjectDirectoryInIdeTitle/Value',false);
+  // CompletionWindow
+  FCompletionWindowWidth:=FXMLCfg.GetValue(Path+'CompletionWindowWidth/Value', 320);
+  FCompletionWindowHeight:=FXMLCfg.GetValue(Path+'CompletionWindowHeight/Value', 6);
+
+  if AnsiStartsStr('EnvironmentOptions', Path) then
+    Path := '';             // Toolbars and palette were at the top level in XML.
+  // IDE Coolbar
+  FIDECoolBarOptions.Load(FXMLCfg, Path);
+  // Editor Toolbar
+  FEditorToolBarOptions.Load(FXMLCfg, Path);
+  // component palette
+  FComponentPaletteOptions.Load(FXMLCfg, Path);
+end;
+
+procedure TDesktopOpt.Save(Path: String);
+begin
+  // windows
+  FXMLCfg.SetDeleteValue(Path+'Name', 'default', '');
+  IDEWindowCreators.SimpleLayoutStorage.SaveToConfig(FConfigStore,Path);
+  FIDEDialogLayoutList.SaveToConfig(FConfigStore,Path+'Dialogs/');
+
+  FXMLCfg.SetDeleteValue(Path+'SingleTaskBarButton/Value',FSingleTaskBarButton, False);
+  FXMLCfg.SetDeleteValue(Path+'HideIDEOnRun/Value',FHideIDEOnRun,false);
+  FXMLCfg.SetDeleteValue(Path+'ComponentPaletteVisible/Value',FComponentPaletteVisible,true);
+  FXMLCfg.SetDeleteValue(Path+'AutoAdjustIDEHeight/Value',FAutoAdjustIDEHeight,true);
+  FXMLCfg.SetDeleteValue(Path+'AutoAdjustIDEHeightFullComponentPalette/Value',
+                           FAutoAdjustIDEHeightFullCompPal,true);
+  // Window menu
+  FXMLCfg.SetDeleteValue(Path+'IDENameForDesignedFormList/Value',FIDENameForDesignedFormList,false);
+  // title
+  FXMLCfg.SetDeleteValue(Path+'IDETitleStartsWithProject/Value',FIDETitleStartsWithProject,false);
+  FXMLCfg.SetDeleteValue(Path+'IDETitleIncludesBuildMode/Value',FIDETitleIncludesBuildMode,false);
+  FXMLCfg.SetDeleteValue(Path+'IDEProjectDirectoryInIdeTitle/Value',FIDEProjectDirectoryInIdeTitle,false);
+  // CompletionWindow
+  FXMLCfg.SetDeleteValue(Path+'CompletionWindowWidth/Value',FCompletionWindowWidth, 320);
+  FXMLCfg.SetDeleteValue(Path+'CompletionWindowHeight/Value',FCompletionWindowHeight, 6);
+  // IDE Coolbar
+  FIDECoolBarOptions.Save(FXMLCfg, Path);
+  // Editor Toolbar
+  FEditorToolBarOptions.Save(FXMLCfg, Path);
+  // component palette
+  FComponentPaletteOptions.Save(FXMLCfg, Path);
+end;
+
+procedure InitLayoutHelper(const FormID: string);
+begin
+  with IDEWindowCreators.SimpleLayoutStorage do
+    if not Assigned(ItemByFormID(FormID)) then
+      CreateWindowLayout(FormID);
+end;
+
+procedure TDesktopOpt.InitLayoutList;
+var
+  l: TNonModalIDEWindow;
+begin
+  for l:=Low(TNonModalIDEWindow) to High(TNonModalIDEWindow) do
+    if l<>nmiwNone then
+      InitLayoutHelper(NonModalIDEWindowNames[l]);
+  InitLayoutHelper(DefaultObjectInspectorName);
 end;
 
 { TEnvironmentOptions }
@@ -997,38 +1118,15 @@ begin
   // global build options
   FBuildMatrixOptions:=TBuildMatrixOptions.Create;
 
-  // --- The following is part of desktop settings ---
-  // windows layout
-  InitLayoutList;
-  FIDEDialogLayoutList:=TIDEDialogLayoutList.Create;
-  if IDEWindowIntf.IDEDialogLayoutList=nil then
-    IDEWindowIntf.IDEDialogLayoutList:=FIDEDialogLayoutList;
-  FSingleTaskBarButton:=false;
-  FHideIDEOnRun:=false;
-  FComponentPaletteVisible:=true;
-  FAutoAdjustIDEHeight:=true;
-  FAutoAdjustIDEHeightFullCompPal := true;
-  // window menu
-  FIDENameForDesignedFormList:=false;
-  // CompletionWindow
-  FCompletionWindowWidth := 320;
-  FCompletionWindowHeight := 6;
-  // title
-  FIDETitleStartsWithProject:=false;
-  FIDETitleIncludesBuildMode:=false;
-  FIDEProjectDirectoryInIdeTitle:=false;
-  // IDE Coolbar
-  FIDECoolBarOptions:=TIDECoolBarOptions.Create;
-  // Editor Toolbar
-  FEditorToolBarOptions:=TEditorToolBarOptions.Create;
-  // component palette
-  FComponentPaletteOptions:=TCompPaletteOptions.Create;
+  // Desktop
+  FDesktop := TDesktopOpt.Create;
 end;
 
 destructor TEnvironmentOptions.Destroy;
 var
   i: Integer;
 begin
+  FreeAndNil(FDesktop);
   FreeAndNil(FBuildMatrixOptions);
   FreeAndNil(FMsgViewFilters);
   FreeAndNil(fExternalUserTools);
@@ -1036,9 +1134,6 @@ begin
   FreeAndNil(FRecentProjectFiles);
   FreeAndNil(FRecentPackageFiles);
   FreeAndNil(FObjectInspectorOptions);
-  FreeAndNil(FComponentPaletteOptions);
-  FreeAndNil(FEditorToolBarOptions);
-  FreeAndNil(FIDECoolBarOptions);
   FreeAndNil(FLazarusDirHistory);
   FreeAndNil(FCompilerFileHistory);
   FreeAndNil(FFPCSourceDirHistory);
@@ -1049,9 +1144,6 @@ begin
   FreeAndNil(FDebuggerProperties);
   FreeAndNil(FTestBuildDirHistory);
   FreeAndNil(FCompilerMessagesFileHistory);
-  if IDEWindowIntf.IDEDialogLayoutList=FIDEDialogLayoutList then
-    IDEWindowIntf.IDEDialogLayoutList:=nil;
-  FreeAndNil(FIDEDialogLayoutList);
   FreeAndNil(FDebuggerConfig);
   FreeAndNil(FConfigStore);
   FreeAndNil(FDbgConfigStore);
@@ -1196,37 +1288,6 @@ begin
       GetEnumName(TypeInfo(EventType), Ord(EventType)) + '/Foreground',
       DebuggerDefaultColors[EventType].Foreground);
   end;
-end;
-
-procedure TEnvironmentOptions.LoadDesktop(Path: String);
-begin
-  // Windows layout
-  IDEWindowCreators.SimpleLayoutStorage.LoadFromConfig(FConfigStore,Path);
-  FIDEDialogLayoutList.LoadFromConfig(FConfigStore, Path+'Dialogs/');
-
-  FSingleTaskBarButton:=FXMLCfg.GetValue(Path+'SingleTaskBarButton/Value', False);
-  FHideIDEOnRun:=FXMLCfg.GetValue(Path+'HideIDEOnRun/Value',false);
-  FComponentPaletteVisible:=FXMLCfg.GetValue(Path+'ComponentPaletteVisible/Value',true);
-  FAutoAdjustIDEHeight:=FXMLCfg.GetValue(Path+'AutoAdjustIDEHeight/Value',true);
-  FAutoAdjustIDEHeightFullCompPal:=FXMLCfg.GetValue(Path+'AutoAdjustIDEHeightFullComponentPalette/Value',true);
-  // Window menu
-  FIDENameForDesignedFormList:=FXMLCfg.GetValue(Path+'IDENameForDesignedFormList/Value',false);
-  // title
-  FIDETitleStartsWithProject:=FXMLCfg.GetValue(Path+'IDETitleStartsWithProject/Value',false);
-  FIDETitleIncludesBuildMode:=FXMLCfg.GetValue(Path+'IDETitleIncludesBuildMode/Value',false);
-  FIDEProjectDirectoryInIdeTitle:=FXMLCfg.GetValue(Path+'IDEProjectDirectoryInIdeTitle/Value',false);
-  // CompletionWindow
-  FCompletionWindowWidth:=FXMLCfg.GetValue(Path+'CompletionWindowWidth/Value', 320);
-  FCompletionWindowHeight:=FXMLCfg.GetValue(Path+'CompletionWindowHeight/Value', 6);
-
-  if AnsiStartsStr('EnvironmentOptions', Path) then
-    Path := '';             // Toolbars and palette were at the top level in XML.
-  // IDE Coolbar
-  FIDECoolBarOptions.Load(FXMLCfg, Path);
-  // Editor Toolbar
-  FEditorToolBarOptions.Load(FXMLCfg, Path);
-  // component palette
-  FComponentPaletteOptions.Load(FXMLCfg, Path);
 end;
 
 procedure TEnvironmentOptions.Load(OnlyDesktop:boolean);
@@ -1436,16 +1497,18 @@ begin
     end;
 
     // The user can define many desktops. They are saved under path Desktops/.
+    FDesktop.FXMLCfg := FXMLCfg;
+    FDesktop.FConfigStore := FConfigStore;
     CurPath:='Desktops/';
     if FXMLCfg.HasPath(CurPath, True) then
     begin
       // New path under Desktops/.
       j := FXMLCfg.GetValue(CurPath+'Count/', 1);
       for i := 0 to j-1 do
-        LoadDesktop(CurPath+'Desktop'+IntToStr(i+1)+'/');
+        FDesktop.Load(CurPath+'Desktop'+IntToStr(i+1)+'/');
     end
     else // Old path was under EnvironmentOptions/.
-      LoadDesktop(Path+'Desktop/');
+      FDesktop.Load(Path+'Desktop/');
 
     FileUpdated;
   except
@@ -1553,35 +1616,6 @@ begin
         FDebuggerEventLogColors[EventType].Foreground,
         DebuggerDefaultColors[EventType].Foreground);
   end;
-end;
-
-procedure TEnvironmentOptions.SaveDesktop(Path: String);
-begin
-  // windows
-  IDEWindowCreators.SimpleLayoutStorage.SaveToConfig(FConfigStore,Path);
-  FIDEDialogLayoutList.SaveToConfig(FConfigStore,Path+'Dialogs/');
-
-  FXMLCfg.SetDeleteValue(Path+'SingleTaskBarButton/Value',FSingleTaskBarButton, False);
-  FXMLCfg.SetDeleteValue(Path+'HideIDEOnRun/Value',FHideIDEOnRun,false);
-  FXMLCfg.SetDeleteValue(Path+'ComponentPaletteVisible/Value',FComponentPaletteVisible,true);
-  FXMLCfg.SetDeleteValue(Path+'AutoAdjustIDEHeight/Value',FAutoAdjustIDEHeight,true);
-  FXMLCfg.SetDeleteValue(Path+'AutoAdjustIDEHeightFullComponentPalette/Value',
-                           FAutoAdjustIDEHeightFullCompPal,true);
-  // Window menu
-  FXMLCfg.SetDeleteValue(Path+'IDENameForDesignedFormList/Value',FIDENameForDesignedFormList,false);
-  // title
-  FXMLCfg.SetDeleteValue(Path+'IDETitleStartsWithProject/Value',FIDETitleStartsWithProject,false);
-  FXMLCfg.SetDeleteValue(Path+'IDETitleIncludesBuildMode/Value',FIDETitleIncludesBuildMode,false);
-  FXMLCfg.SetDeleteValue(Path+'IDEProjectDirectoryInIdeTitle/Value',FIDEProjectDirectoryInIdeTitle,false);
-  // CompletionWindow
-  FXMLCfg.SetDeleteValue(Path+'CompletionWindowWidth/Value',FCompletionWindowWidth, 320);
-  FXMLCfg.SetDeleteValue(Path+'CompletionWindowHeight/Value',FCompletionWindowHeight, 6);
-  // IDE Coolbar
-  FIDECoolBarOptions.Save(FXMLCfg, Path);
-  // Editor Toolbar
-  FEditorToolBarOptions.Save(FXMLCfg, Path);
-  // component palette
-  FComponentPaletteOptions.Save(FXMLCfg, Path);
 end;
 
 procedure TEnvironmentOptions.Save(OnlyDesktop: boolean);
@@ -1737,11 +1771,14 @@ begin
     end;
 
     // The user can define many desktops. They are saved under path Desktops/.
+    FDesktop.FXMLCfg := FXMLCfg;
+    FDesktop.FConfigStore := FConfigStore;
     CurPath:='Desktops/';
     FXMLCfg.SetDeleteValue(CurPath+'Count', 1, 0); // ToDo: use count from collection.
+    FXMLCfg.SetDeleteValue(CurPath+'Active', 'default', '');
     j := 1;
     for i := 0 to j-1 do                             // ToDo: iterate collection.
-      SaveDesktop(CurPath+'Desktop'+IntToStr(i+1)+'/');
+      FDesktop.Save(CurPath+'Desktop'+IntToStr(i+1)+'/');
 
     FXMLCfg.Flush;
     FileUpdated;
@@ -1776,27 +1813,9 @@ begin
   {$endif}
 end;
 
-procedure TEnvironmentOptions.RemoveFromRecentProjectFiles(
-  const AFilename: string);
+procedure TEnvironmentOptions.RemoveFromRecentProjectFiles(const AFilename: string);
 begin
   RemoveFromRecentList(AFilename,FRecentProjectFiles,rltFile);
-end;
-
-procedure InitLayoutHelper(const FormID: string);
-begin
-  with IDEWindowCreators.SimpleLayoutStorage do
-    if not Assigned(ItemByFormID(FormID)) then
-      CreateWindowLayout(FormID);
-end;
-
-procedure TEnvironmentOptions.InitLayoutList;
-var
-  l: TNonModalIDEWindow;
-begin
-  for l:=Low(TNonModalIDEWindow) to High(TNonModalIDEWindow) do
-    if l<>nmiwNone then
-      InitLayoutHelper(NonModalIDEWindowNames[l]);
-  InitLayoutHelper(DefaultObjectInspectorName);
 end;
 
 function TEnvironmentOptions.GetParsedTestBuildDirectory: string;
@@ -1804,8 +1823,7 @@ begin
   Result:=GetParsedValue(eopTestBuildDirectory);
 end;
 
-function TEnvironmentOptions.GetParsedFPCSourceDirectory(FPCVer: string
-  ): string;
+function TEnvironmentOptions.GetParsedFPCSourceDirectory(FPCVer: string): string;
 var
   s: String;
 begin

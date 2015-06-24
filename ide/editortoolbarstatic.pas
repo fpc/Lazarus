@@ -133,9 +133,9 @@ procedure ToggleToolbar (Sender:TObject);
 var
   ToolBarVisible: Boolean;
 begin
-  ToolBarVisible := not EnvironmentOptions.EditorToolBarOptions.Visible;
+  ToolBarVisible := not EnvironmentOptions.Desktop.EditorToolBarOptions.Visible;
   EditorMenuCommand.Checked := ToolBarVisible;
-  EnvironmentOptions.EditorToolBarOptions.Visible := ToolBarVisible;
+  EnvironmentOptions.Desktop.EditorToolBarOptions.Visible := ToolBarVisible;
   uAllEditorToolbars.ReloadAll;
 end;
 
@@ -278,7 +278,7 @@ begin
   ETB := TEditorToolbar.Create(Sender as TSourceEditorWindowInterface, Self);
   i := FToolBars.Add(ETB);
   FToolBars[i].AddStaticItems;
-  FToolBars[i].CopyFromOptions(EnvironmentOptions.EditorToolBarOptions);
+  FToolBars[i].CopyFromOptions(EnvironmentOptions.Desktop.EditorToolBarOptions);
 end;
 
 procedure TAllEditorToolbars.SourceWindowDestroyed(Sender: TObject);
@@ -312,7 +312,7 @@ begin
   begin
     FToolBars[i].ClearToolbar;
     FToolBars[i].AddStaticItems;
-    FToolBars[i].CopyFromOptions(EnvironmentOptions.EditorToolBarOptions);
+    FToolBars[i].CopyFromOptions(EnvironmentOptions.Desktop.EditorToolBarOptions);
   end;
 end;
 
@@ -423,7 +423,7 @@ end;
 
 procedure TEditorToolbar.SetTbPos;
 begin
-  case EnvironmentOptions.EditorToolBarOptions.Position of
+  case EnvironmentOptions.Desktop.EditorToolBarOptions.Position of
     'Top': begin
       TB.Align:= alTop;
       TB.Height:= 26;

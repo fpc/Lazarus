@@ -137,7 +137,7 @@ var
   Creator: TIDEWindowCreator;
   i, j: Integer;
 begin
-  with AOptions as TEnvironmentOptions do
+  with (AOptions as TEnvironmentOptions).Desktop do
   begin
     // window minimizing and hiding
     SingleTaskBarButtonCheckBox.Checked := SingleTaskBarButton;
@@ -219,7 +219,7 @@ begin
   SaveLayout;
   IDEWindowCreators.SimpleLayoutStorage.Assign(FLayouts);
 
-  with AOptions as TEnvironmentOptions do
+  with (AOptions as TEnvironmentOptions).Desktop do
   begin
     // window minimizing
     SingleTaskBarButton := SingleTaskBarButtonCheckBox.Checked;

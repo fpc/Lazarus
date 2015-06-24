@@ -138,7 +138,7 @@ procedure TIdeCoolbarOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 var
   Opts: TIDECoolBarOptions;
 begin
-  Opts := (AOptions as TEnvironmentOptions).IDECoolBarOptions;
+  Opts := (AOptions as TEnvironmentOptions).Desktop.IDECoolBarOptions;
   cbCoolBarVisible.Checked := Opts.IDECoolBarVisible;
   FTempCoolBar.IsVisible := Opts.IDECoolBarVisible;
 
@@ -176,7 +176,7 @@ var
   ToolBar: TToolBar;
   Opts: TIDECoolBarOptions;
 begin
-  Opts := (AOptions as TEnvironmentOptions).IDECoolBarOptions;
+  Opts := (AOptions as TEnvironmentOptions).Desktop.IDECoolBarOptions;
   for I := 0 to Coolbar.Bands.Count - 1 do
   begin
     if Coolbar.Bands[I].Control = nil then

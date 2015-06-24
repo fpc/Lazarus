@@ -227,12 +227,14 @@ procedure TMainIDEBase.mnuWindowItemClick(Sender: TObject);
 var
   i: Integer;
   Form: TCustomForm;
+  nfd: Boolean;
 begin
   i:=Screen.CustomFormCount-1;
   while (i>=0) do begin
     Form:=Screen.CustomForms[i];
-    if (EnvironmentOptions.IDENameForDesignedFormList and (Form.Name=(Sender as TIDEMenuCommand).Caption)) or
-      ((not EnvironmentOptions.IDENameForDesignedFormList) and (Form.Caption=(Sender as TIDEMenuCommand).Caption)) then
+    nfd := EnvironmentOptions.Desktop.IDENameForDesignedFormList;
+    if (nfd and (Form.Name=(Sender as TIDEMenuCommand).Caption))
+    or ((not nfd) and (Form.Caption=(Sender as TIDEMenuCommand).Caption)) then
       begin
         IDEWindowCreators.ShowForm(Form,true);
         break;
@@ -246,12 +248,14 @@ var
   i: Integer;
   Form: TCustomForm;
   r, NewBounds: TRect;
+  nfd: Boolean;
 begin
   i:=Screen.CustomFormCount-1;
   while (i>=0) do begin
     Form:=Screen.CustomForms[i];
-    if (EnvironmentOptions.IDENameForDesignedFormList and (Form.Name=(Sender as TIDEMenuCommand).Caption)) or
-      ((not EnvironmentOptions.IDENameForDesignedFormList) and (Form.Caption=(Sender as TIDEMenuCommand).Caption)) then
+    nfd := EnvironmentOptions.Desktop.IDENameForDesignedFormList;
+    if (nfd and (Form.Name=(Sender as TIDEMenuCommand).Caption))
+    or ((not nfd) and (Form.Caption=(Sender as TIDEMenuCommand).Caption)) then
     begin
       // show
       if not Form.IsVisible then
@@ -779,9 +783,9 @@ begin
       {$ENDIF}
     end;
     CreateMenuItem(ParentMI,itmViewComponentPalette,'itmViewComponentPalette',lisMenuViewComponentPalette, '',
-      true, EnvironmentOptions.ComponentPaletteVisible);
+      true, EnvironmentOptions.Desktop.ComponentPaletteVisible);
     CreateMenuItem(ParentMI,itmViewIDESpeedButtons,'itmViewIDESpeedButtons',lisMenuViewIDESpeedButtons, '',
-      true, EnvironmentOptions.IDECoolBarOptions.IDECoolBarVisible);
+      true, EnvironmentOptions.Desktop.IDECoolBarOptions.IDECoolBarVisible);
   end;
 end;
 
@@ -1389,7 +1393,8 @@ begin
   begin
     // in the 'bring to front' list
     CurMenuItem := GetMenuItem(i, itmWindowLists);
-    if EnvironmentOptions.IDENameForDesignedFormList and (TCustomForm(WindowsList[i]).Designer<>nil) then
+    if EnvironmentOptions.Desktop.IDENameForDesignedFormList
+    and (TCustomForm(WindowsList[i]).Designer<>nil) then
       CurMenuItem.Caption:=TCustomForm(WindowsList[i]).Name
     else
        CurMenuItem.Caption:=TCustomForm(WindowsList[i]).Caption;
@@ -1397,7 +1402,8 @@ begin
     CurMenuItem.OnClick:=@mnuWindowItemClick;
     // in the 'center' list
     CurMenuItem := GetMenuItem(i, itmCenterWindowLists);
-    if EnvironmentOptions.IDENameForDesignedFormList and (TCustomForm(WindowsList[i]).Designer<>nil) then
+    if EnvironmentOptions.Desktop.IDENameForDesignedFormList
+    and (TCustomForm(WindowsList[i]).Designer<>nil) then
       CurMenuItem.Caption:=TCustomForm(WindowsList[i]).Name
     else
       CurMenuItem.Caption:=TCustomForm(WindowsList[i]).Caption;

@@ -495,13 +495,13 @@ begin
 
   if Assigned(IDEDockMaster) then
   begin
-    if EnvironmentOptions.AutoAdjustIDEHeight then
+    if EnvironmentOptions.Desktop.AutoAdjustIDEHeight then
       IDEDockMaster.AdjustMainIDEWindowHeight(Self, True, ANewHeight)
     else
       IDEDockMaster.AdjustMainIDEWindowHeight(Self, False, 0);
   end else
   begin
-    if (AIDEIsMaximized or EnvironmentOptions.AutoAdjustIDEHeight) then
+    if (AIDEIsMaximized or EnvironmentOptions.Desktop.AutoAdjustIDEHeight) then
     begin
       ANewHeight := ANewHeight + CalcNonClientHeight;
       if ANewHeight <> Constraints.MaxHeight then
@@ -651,7 +651,7 @@ var
   CoolBand: TCoolBand;
   CoolBarOpts: TIDECoolBarOptions;
 begin
-  CoolBarOpts := EnvironmentOptions.IDECoolBarOptions;
+  CoolBarOpts := EnvironmentOptions.Desktop.IDECoolBarOptions;
   //read general settings
   if not (CoolBarOpts.IDECoolBarGrabStyle in [0..5]) then
     CoolBarOpts.IDECoolBarGrabStyle := 4;
@@ -697,7 +697,7 @@ end;
 
 procedure TMainIDEBar.MainSplitterMoved(Sender: TObject);
 begin
-  EnvironmentOptions.IDECoolBarOptions.IDECoolBarWidth := CoolBar.Width;
+  EnvironmentOptions.Desktop.IDECoolBarOptions.IDECoolBarWidth := CoolBar.Width;
   SetMainIDEHeight;
 end;
 
@@ -712,7 +712,7 @@ begin
   if not (Assigned(EnvironmentOptions) and Assigned(CoolBar) and Assigned(ComponentPageControl)) then
     Exit;
 
-  if EnvironmentOptions.IDECoolBarOptions.IDECoolBarVisible then
+  if EnvironmentOptions.Desktop.IDECoolBarOptions.IDECoolBarVisible then
   begin
     for I := 0 to CoolBar.Bands.Count-1 do
     begin
@@ -721,7 +721,7 @@ begin
     end;
   end;
 
-  if EnvironmentOptions.ComponentPaletteVisible and Assigned(ComponentPageControl.ActivePage) then
+  if EnvironmentOptions.Desktop.ComponentPaletteVisible and Assigned(ComponentPageControl.ActivePage) then
   begin
     ComponentScrollBox := nil;
     for I := 0 to ComponentPageControl.ActivePage.ControlCount-1 do
@@ -740,7 +740,7 @@ begin
         ComponentPageControl.Height - ComponentScrollBox.ClientHeight;  //page control non-client height (tabs, borders).
       Result := Max(Result, NewHeight);
 
-      if not EnvironmentOptions.AutoAdjustIDEHeightFullCompPal then
+      if not EnvironmentOptions.Desktop.AutoAdjustIDEHeightFullCompPal then
         Break;  //we need only one button (we calculate one line only)
     end;
   end;
@@ -764,7 +764,7 @@ begin
     end
   end;
   IDECoolBar.Sort;
-  IDECoolBar.CopyToOptions(EnvironmentOptions.IDECoolBarOptions);
+  IDECoolBar.CopyToOptions(EnvironmentOptions.Desktop.IDECoolBarOptions);
   SetMainIDEHeight;
 end;
 

@@ -110,7 +110,7 @@ procedure TEditorToolbarOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions)
 var
   Opts: TEditorToolBarOptions;
 begin
-  Opts := (AOptions as TEnvironmentOptions).EditorToolBarOptions;
+  Opts := (AOptions as TEnvironmentOptions).Desktop.EditorToolBarOptions;
   cbCoolBarVisible.Checked := Opts.Visible;
   cbPos.ItemIndex := IndexFromEnglish(Opts.Position);
   // Disable controls when toolbar is hidden.
@@ -125,7 +125,7 @@ procedure TEditorToolbarOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions
 var
   Opts: TEditorToolBarOptions;
 begin
-  Opts := (AOptions as TEnvironmentOptions).EditorToolBarOptions;
+  Opts := (AOptions as TEnvironmentOptions).Desktop.EditorToolBarOptions;
   Opts.Assign(FLocalOptions);
   uAllEditorToolbars.ReloadAll;
 end;

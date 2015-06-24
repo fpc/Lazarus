@@ -829,7 +829,7 @@ end;
 
 constructor TComponentPalette.Create;
 begin
-  inherited Create(EnvironmentOptions.ComponentPaletteOptions);
+  inherited Create(EnvironmentOptions.Desktop.ComponentPaletteOptions);
   fComponentButtons:=TComponentButtonMap.Create;
   fComponentButtons.Sorted:=True;
   OnComponentIsInvisible:=@CheckComponentDesignerVisible;

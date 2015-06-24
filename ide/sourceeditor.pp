@@ -1662,8 +1662,8 @@ end;
 
 procedure TSourceEditCompletion.CompletionFormResized(Sender: TObject);
 begin
-  EnvironmentOptions.CompletionWindowWidth  := TheForm.Width;
-  EnvironmentOptions.CompletionWindowHeight := TheForm.NbLinesInWindow;
+  EnvironmentOptions.Desktop.CompletionWindowWidth  := TheForm.Width;
+  EnvironmentOptions.Desktop.CompletionWindowHeight := TheForm.NbLinesInWindow;
 end;
 
 procedure TSourceEditCompletion.ccExecute(Sender: TObject);
@@ -2257,8 +2257,8 @@ begin
   OnPositionChanged:=@OnSynCompletionPositionChanged;
   ShortCut:=Menus.ShortCut(VK_UNKNOWN,[]);
   TheForm.ShowSizeDrag := True;
-  TheForm.Width := Max(50, EnvironmentOptions.CompletionWindowWidth);
-  TheForm.NbLinesInWindow := Max(3, EnvironmentOptions.CompletionWindowHeight);
+  TheForm.Width := Max(50, EnvironmentOptions.Desktop.CompletionWindowWidth);
+  TheForm.NbLinesInWindow := Max(3, EnvironmentOptions.Desktop.CompletionWindowHeight);
   TheForm.OnDragResized  := @CompletionFormResized;
 end;
 

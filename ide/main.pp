@@ -1435,7 +1435,7 @@ begin
   LoadGlobalOptions;
   if Application.Terminated then exit;
 
-  if EnvironmentOptions.SingleTaskBarButton then
+  if EnvironmentOptions.Desktop.SingleTaskBarButton then
     Application.TaskBarBehavior := tbSingleButton;
 
   // setup code templates
@@ -2011,17 +2011,17 @@ begin
 
   MainIDEBar.CoolBar := TCoolBar.Create(OwningComponent);
   MainIDEBar.CoolBar.Parent := MainIDEBar;
-  if EnvironmentOptions.ComponentPaletteVisible then
+  if EnvironmentOptions.Desktop.ComponentPaletteVisible then
   begin
     MainIDEBar.CoolBar.Align := alLeft;
-    MainIDEBar.CoolBar.Width := EnvironmentOptions.IDECoolBarOptions.IDECoolBarWidth;
+    MainIDEBar.CoolBar.Width := EnvironmentOptions.Desktop.IDECoolBarOptions.IDECoolBarWidth;
   end
   else
     MainIDEBar.CoolBar.Align := alClient;
 
   // IDE Coolbar object wraps MainIDEBar.CoolBar.
   IDECoolBar := TIDECoolBar.Create(MainIDEBar.CoolBar);
-  IDECoolBar.IsVisible := EnvironmentOptions.IDECoolBarOptions.IDECoolBarVisible;;
+  IDECoolBar.IsVisible := EnvironmentOptions.Desktop.IDECoolBarOptions.IDECoolBarVisible;;
   MainIDEBar.CoolBar.OnChange := @MainIDEBar.CoolBarOnChange;
 
   MainIDEBar.CreatePopupMenus(OwningComponent);
@@ -2049,7 +2049,7 @@ begin
   with MainIDEBar.ComponentPageControl do begin
     Name := 'ComponentPageControl';
     Align := alClient;
-    Visible:=EnvironmentOptions.ComponentPaletteVisible;
+    Visible:=EnvironmentOptions.Desktop.ComponentPaletteVisible;
     Parent := MainIDEBar;
   end;
 end;
@@ -3696,13 +3696,13 @@ begin
   ComponentPaletteVisible:=not MainIDEBar.ComponentPageControl.Visible;
   MainIDEBar.itmViewComponentPalette.Checked:=ComponentPaletteVisible;
   MainIDEBar.ComponentPageControl.Visible:=ComponentPaletteVisible;
-  EnvironmentOptions.ComponentPaletteVisible:=ComponentPaletteVisible;
+  EnvironmentOptions.Desktop.ComponentPaletteVisible:=ComponentPaletteVisible;
   if ComponentPaletteVisible then
   begin
     if MainIDEBar.CoolBar.Align = alClient then
     begin
       MainIDEBar.CoolBar.Width := 230;
-      EnvironmentOptions.IDECoolBarOptions.IDECoolBarWidth := 230;
+      EnvironmentOptions.Desktop.IDECoolBarOptions.IDECoolBarWidth := 230;
     end;
     MainIDEBar.CoolBar.Align := alLeft;
     MainIDEBar.CoolBar.Vertical := False;
@@ -3726,7 +3726,7 @@ begin
   MainIDEBar.itmViewIDESpeedButtons.Checked := SpeedButtonsVisible;
   MainIDEBar.CoolBar.Visible := SpeedButtonsVisible;
   MainIDEBar.MainSplitter.Visible := SpeedButtonsVisible;
-  EnvironmentOptions.IDECoolBarOptions.IDECoolBarVisible := SpeedButtonsVisible;
+  EnvironmentOptions.Desktop.IDECoolBarOptions.IDECoolBarVisible := SpeedButtonsVisible;
   MainIDEBar.MainSplitter.Visible := MainIDEBar.Coolbar.Visible and
                                      MainIDEBar.ComponentPageControl.Visible;
   MainIDEBar.SetMainIDEHeight;
@@ -4738,7 +4738,7 @@ begin
       if Assigned(PaletteOpt) and PaletteOpt.ConfigChanged then
         IDEComponentPalette.Update(True);
       // Update TaskBarBehavior immediately.
-      if EnvironmentOptions.SingleTaskBarButton then
+      if EnvironmentOptions.Desktop.SingleTaskBarButton then
         Application.TaskBarBehavior := tbSingleButton
       else
         Application.TaskBarBehavior := tbDefault;
@@ -4855,7 +4855,7 @@ begin
   SetupHints;
   Application.ShowButtonGlyphs := EnvironmentOptions.ShowButtonGlyphs;
   Application.ShowMenuGlyphs := EnvironmentOptions.ShowMenuGlyphs;
-  if EnvironmentOptions.SingleTaskBarButton then
+  if EnvironmentOptions.Desktop.SingleTaskBarButton then
     Application.TaskBarBehavior := tbSingleButton
   else
     Application.TaskBarBehavior := tbDefault;
@@ -7918,7 +7918,7 @@ procedure TMainIDE.UpdateCaption;
 
   function AddToCaption(const CurrentCaption, CaptAddition: string): String;
   begin
-    if EnvironmentOptions.IDETitleStartsWithProject then
+    if EnvironmentOptions.Desktop.IDETitleStartsWithProject then
       Result := CaptAddition + ' - ' + CurrentCaption
     else
       Result := CurrentCaption + ' - ' + CaptAddition;
@@ -7940,7 +7940,7 @@ begin
       ProjectName := Project1.GetTitleOrName;
       if ProjectName <> '' then
       begin
-        if EnvironmentOptions.IDEProjectDirectoryInIdeTitle then
+        if EnvironmentOptions.Desktop.IDEProjectDirectoryInIdeTitle then
         begin
           DirName := ExtractFileDir(Project1.ProjectInfoFile);
           if DirName <> '' then
@@ -7950,8 +7950,8 @@ begin
       else
         ProjectName := lisnewProject;
       NewTitle := AddToCaption(NewCaption, ProjectName);
-      if EnvironmentOptions.IDETitleIncludesBuildMode and (Project1.BuildModes.Count > 1)
-      then
+      if EnvironmentOptions.Desktop.IDETitleIncludesBuildMode
+      and (Project1.BuildModes.Count > 1) then
         ProjectName:= ProjectName + ' - ' +Project1.ActiveBuildMode.GetCaption;
       NewCaption := AddToCaption(NewCaption, ProjectName);
     end;
@@ -11429,8 +11429,8 @@ var
   i: Integer;
   AForm: TCustomForm;
 begin
-  if EnvironmentOptions.SingleTaskBarButton and FApplicationIsActivate
-    and (MainIDEBar.WindowState=wsNormal) then
+  if EnvironmentOptions.Desktop.SingleTaskBarButton and FApplicationIsActivate
+  and (MainIDEBar.WindowState=wsNormal) then
   begin
     for i:=Screen.CustomFormCount-1 downto 0 do
     begin
@@ -11449,7 +11449,7 @@ var
   i, FormCount: integer;
   AForm: TCustomForm;
 begin
-  if EnvironmentOptions.SingleTaskBarButton and not FApplicationIsActivate
+  if EnvironmentOptions.Desktop.SingleTaskBarButton and not FApplicationIsActivate
   and (MainIDEBar.WindowState=wsNormal) then
   begin
     FApplicationIsActivate:=true;
