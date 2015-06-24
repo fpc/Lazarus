@@ -9618,7 +9618,7 @@ begin
             ,Point(NewCodePos.X,NewCodePos.Y), NewTopLine, -1,-1
             ,[ofRegularFile,ofUseCache]) = mrOk)
       then
-        SrcEditor.EditorControl.SetFocus;
+        ActiveEditor.EditorControl.SetFocus;
     end
     else
       ShowMessage(Format(lisCannotFind, [cJumpNames[JumpType]]));
