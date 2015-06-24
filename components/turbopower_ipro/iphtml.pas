@@ -9714,7 +9714,9 @@ begin
   SetRectEmpty(R);
   for i := 0 to Pred(AreaList.Count) do
     UnionRect(R, R, PRect(AreaList[i])^);
-  Owner.MakeVisible(R{$IFDEF IP_LAZARUS}, False{$ENDIF});
+
+  Owner.MakeVisible(R{$IFDEF IP_LAZARUS}, true {$ENDIF});
+  //Owner.MakeVisible(R{$IFDEF IP_LAZARUS}, False {$ENDIF});  // original
 end;
 
 procedure TIpHtmlNodeA.SetProps(const RenderProps: TIpHtmlProps);
