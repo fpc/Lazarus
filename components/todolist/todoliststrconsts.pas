@@ -49,6 +49,7 @@ resourcestring
   lisViewToDoList = 'View ToDo List';
   lisToDoList = 'ToDo List';
   lisPkgFileTypeText = 'Text';
+  dlgFilterCsv = 'CSV files';
 
 implementation
 

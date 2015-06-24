@@ -223,6 +223,8 @@ begin
   acGoto.ImageIndex := IDEImages.LoadImage(16, 'menu_goto_line');
   acRefresh.ImageIndex := IDEImages.LoadImage(16, 'laz_refresh');
   acExport.ImageIndex := IDEImages.LoadImage(16, 'menu_saveas');
+
+  SaveDialog1.Filter:= dlgFilterCsv+'|*.csv';
 end;
 
 destructor TIDETodoWindow.Destroy;
@@ -286,7 +288,7 @@ begin
     //debugln(['TIDETodoWindow.UpdateTodos Owner=',DbgSName(CurOwner)]);
     if CurProject<>nil then begin
       // scan all units of project
-      Caption:=lisToDoList+' '+CurProject.ProjectInfoFile;
+      Caption:=lisToDoList+' - '+ExtractFileName(CurProject.ProjectInfoFile);
       FBaseDirectory:=ExtractFilePath(CurProject.ProjectInfoFile);
       if (CurProject.MainFile<>nil) and (pfMainUnitIsPascalSource in CurProject.Flags)
       then
@@ -300,7 +302,7 @@ begin
       end;
     end else if CurPackage<>nil then begin
       // scan all units of package
-      Caption:=lisToDoList+' '+CurPackage.Filename;
+      Caption:=lisToDoList+' - '+ExtractFilename(CurPackage.Filename);
       FBaseDirectory:=ExtractFilePath(CurPackage.Filename);
       for i:=0 to CurPackage.FileCount-1 do begin
         CurPkgFile:=CurPackage.Files[i];

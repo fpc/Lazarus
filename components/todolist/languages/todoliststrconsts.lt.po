@@ -11,6 +11,10 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Lokalize 1.5\n"
 
+#: todoliststrconsts.dlgfiltercsv
+msgid "CSV files"
+msgstr ""
+
 #: todoliststrconsts.dlgfropts
 msgid "Options"
 msgstr "Parinktys"
