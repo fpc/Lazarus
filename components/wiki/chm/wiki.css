@@ -127,7 +127,6 @@ pre, .pascal {
     /*padding: 1em;*/
     padding: 10px;
     overflow: auto;
-/*    line-height: 1.25em;*/
     line-height: 125%;
 }
 
@@ -185,17 +184,15 @@ span.keypress {
     background: #f0ece8;
     padding: 0.1em 0.4em;
     font-size: 80%;
-/*    font-size: 0.8em;*/
     white-space: nowrap;
 }
 
 div.categories {
     background-color: #F9F9F9;
-    border: 1px solid #2F6FAB;
+    border: 1px solid #aaa;
     color: black;
-    padding: 1em;
-    padding-top: 0.75em;
-    line-height: 1.25em;
+    padding: 10px;
+    margin-top: 20px;
 }
 
 
@@ -221,8 +218,6 @@ div.image {
 /* roadmap.css */
 
 table {
-/*    margin-top: 1em;
-    margin-bottom: 1em;*/
     margin-top: 10px;
     margin-bottom: 10px;
     border-collapse: collapse;

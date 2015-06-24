@@ -161,6 +161,7 @@ begin
       '"':  Result := Result + '&quot;';
       '''': Result := Result + '&apos;';
       '%':  Result := Result + '&#37;';
+      '\':  Result := Result + '&#92;';
       else  Result := Result + AText[i];
     end;
   end;
