@@ -13957,6 +13957,7 @@ begin
   E := FHtml.FindElement(URL);
   FCurAnchor := '';
   if E <> nil then begin
+    HyperPanel.GetPageRect;  // Make sure that layout is valid
     E.MakeVisible;
     FCurAnchor := '#'+URL;
   end else
