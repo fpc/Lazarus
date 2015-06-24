@@ -344,8 +344,17 @@ begin
     if HeaderTxt<>'' then begin
       HRef:=WikiHeaderToLink(HeaderTxt);
       // add anchor
-      Page.CurDOMNode.SetAttribute('id', HRef);
+      // modern version: <h2 id="something">Text</h> - commented because not understood by IpHTMLPanel:
+      // Page.CurDOMNode.SetAttribute('id', HRef);
+
+      // old version: <h2><a name="something">Text</a></h2>
+      Node := doc.CreateElement('a');
+      Node.SetAttribute('name', HRef);
+      Node.AppendChild(Page.CurDOMNode.DetachChild(Page.CurDOMNode.FirstChild));
+      Page.CurDOMNode.AppendChild(Node);
+
       // add TOC link
+      //   <li class="toclevel-2"><a href="#something">Text</a></li>
       LINode:=doc.CreateElement('li');
       LINode.SetAttribute('class', 'toclevel-'+IntToStr(Page.SectionLevel));
       Page.CurTOCNode.AppendChild(LINode);
