@@ -369,7 +369,8 @@ begin
           Candidates.Free;
         end;
         Caption := Format(lisTabOrderOf, [TWinControl(LookupRoot).Name]);
-      end;
+      end else
+        Caption := lisMenuViewTabOrder;
     finally
       ItemTreeview.EndUpdate;
       FUpdating := false;
