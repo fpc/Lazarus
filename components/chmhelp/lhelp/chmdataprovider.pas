@@ -181,8 +181,15 @@ begin
   Result := NewURL;
 
   fNewURL := NewURL;
-  if Pos('ms-its:', NewURL) = 1 then
-    Exit;
+  if OldURL = '' then
+    exit;
+
+  if Pos('ms-its:', NewURL) = 1 then begin
+    if Pos('#', NewURL) = 0 then
+      exit;
+    X := Pos('::', fNewURL);
+    fNewURL := Copy(fNewURL, X+3, MaxInt);
+  end;
 
   ParentDirs := GetDirsParents(OldURL);
   RemoveDirCount := 0;
