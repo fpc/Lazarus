@@ -611,10 +611,9 @@ begin
     end;
   end else if Anchor<>'' then begin
     // same page
-//    PageIpHtmlPanel.MakeAnchorVisible(Anchor+'/'); // ipHTML stores anchor names with / at end
-    PageIpHtmlPanel.MakeAnchorVisible(Anchor);       // ... not any longer, fixed in r49421
-  end else begin
-    exit;
+    // PageIpHtmlPanel.MakeAnchorVisible(Anchor+'/'); // ipHTML stores anchor names with / at end
+    PageIpHtmlPanel.MakeAnchorVisible(Anchor);        // ... not any longer, fixed in r49421
+    FPageAnchor := Anchor;
   end;
   if AddToHistory and (FPageDocumentName<>'') then begin
     PageHistory.AddAfterCurrent(FPageDocumentName,FPageAnchor,FPageTitle);
@@ -654,9 +653,9 @@ begin
     NewHTML:=TIpHtml.Create; // Beware: Will be freed automatically by IpHtmlPanel
     Target.SetHtml(NewHTML);
     NewHTML.LoadFromStream(aStream);
-    // ToDo: fix TIpHtmlNodeA.MakeVisible, the areas are all 0,0,0,0 at this time
     if Anchor<>'' then
-      Target.MakeAnchorVisible(Anchor+'/'); // ipHTML stores anchor names with / at end
+      //Target.MakeAnchorVisible(Anchor+'/'); // ipHTML stores anchor names with / at end
+      Target.MakeAnchorVisible(Anchor);       // ... not any longer, fixed in r49421
   except
     on E: Exception do begin
       debugln(['TWikiSearchDemoForm.LoadHTML ',E.Message]);
