@@ -21,7 +21,7 @@
     <Description Value="Web functionality for Lazarus"/>
     <License Value="LGPL with static linking exception, see Copying.fcl in FCL"/>
     <Version Major="1"/>
-    <Files Count="61">
+    <Files Count="64">
       <Item1>
         <Filename Value="custcgi.pp"/>
         <Type Value="Virtual Unit"/>
@@ -292,6 +292,24 @@
         <Type Value="Virtual Unit"/>
         <UnitName Value="iniwebsession"/>
       </Item61>
+      <Item62>
+        <Filename Value="fphttpwebclient.pp"/>
+        <Type Value="Virtual Unit"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="fphttpwebclient"/>
+      </Item62>
+      <Item63>
+        <Filename Value="fpoauth2.pp"/>
+        <Type Value="Virtual Unit"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="fpoauth2"/>
+      </Item63>
+      <Item64>
+        <Filename Value="fpoauth2ini.pp"/>
+        <Type Value="Virtual Unit"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="fpoauth2ini"/>
+      </Item64>
     </Files>
     <i18n>
       <EnableI18N Value="True"/>
