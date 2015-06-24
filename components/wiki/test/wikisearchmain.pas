@@ -611,7 +611,8 @@ begin
     end;
   end else if Anchor<>'' then begin
     // same page
-    PageIpHtmlPanel.MakeAnchorVisible(Anchor+'/'); // ipHTML stores anchor names with / at end
+//    PageIpHtmlPanel.MakeAnchorVisible(Anchor+'/'); // ipHTML stores anchor names with / at end
+    PageIpHtmlPanel.MakeAnchorVisible(Anchor);       // ... not any longer, fixed in r49421
   end else begin
     exit;
   end;
