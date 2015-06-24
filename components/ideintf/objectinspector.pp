@@ -5278,17 +5278,16 @@ var
     Candidates: TFPList;
     i: Integer;
   begin
-    Result := False;
     Candidates := GetChangeParentCandidates;
     try
-      if Candidates.Count = 0 then Exit;
+      Result := Candidates.Count>0;
+      ChangeParentPopupmenuItem.Clear;
       for i := 0 to Candidates.Count-1 do
       begin
         Item := NewItem(TWinControl(Candidates[i]).Name, 0, False, True,
                         @DoChangeParentItemClick, 0, '');
         ChangeParentPopupmenuItem.Add(Item);
       end;
-      Result := True;
     finally
       Candidates.Free;
     end;
