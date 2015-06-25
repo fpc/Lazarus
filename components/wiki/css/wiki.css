@@ -64,29 +64,25 @@ ul li {
 
 /* Headers */
 
-h1 {
-    font-family:"Century Gothic", "Trebuchet MS", "Arial Narrow", Arial, sans-serif;
+h1 { 
+    font-family: "Century Gothic", "Trebuchet MS", "Arial Narrow", Arial, sans-serif;
     font-size:150%;
     font-weight:normal;
-    color: navy;
     text-transform:uppercase;
     border-bottom:1px solid #eeeeee;
-    color:#253183;
     margin-top: 10px;
 }
 
-#content h1{
+#content h1 {
     font-family:"Century Gothic", "Trebuchet MS", "Arial Narrow", Arial, sans-serif;
     font-size:150%;
     margin-bottom: 10px;
-/*    margin-bottom: 0.6em;*/
 }
 
-h2{
+h2 {
     font-family: "Century Gothic", "Trebuchet MS", "Arial Narrow", Arial, sans-serif;
     font-size: 130%;
-    color: navy;
-    marginm-top: 25px;
+    margin-top: 25px;
     margin-bottom: 10px;
     border-bottom: 1px solid #CCCCCC;
 }
@@ -94,16 +90,14 @@ h2{
 h3 {
     font-family: "Century Gothic", "Trebuchet MS", "Arial Narrow", Arial, sans-serif;
     font-size:120%;
-    color: navy;
     margin-top: 15px;
     margin-bottom: 5px;
 }
 
-h4, h5, h6, .subTitle{
+h4, h5, h6, .subTitle {
     font-family: sans-serif;
-    font-size:100%;
-    font-weight:bold;
-    color: navy;
+    font-size: 100%;
+    font-weight: bold;
     margin-bottom: 5px;
 }
 
@@ -114,8 +108,7 @@ pre, .pascal {
     background-color: #F9F9F9;
     border: 1px dashed #2F6FAB;
     color: black;
-    /*padding: 1em;*/
-    padding: 10px;
+    padding: 8px;
     overflow: auto;
     line-height: 125%;
 }
@@ -146,7 +139,7 @@ pre, .pascal {
 }
 
 blockquote {
-        margin: 0 3%;
+    margin: 0 3%;
 }
 
 
@@ -158,7 +151,7 @@ div.template-with-icon {
     padding: 4px 8px 8px 8px;
     border-style:solid;
     display: block;
-    margin-top:0px;
+    margin-top: 10px;
     min-height: 28px;
 }
 

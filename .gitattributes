@@ -4216,8 +4216,7 @@ components/vlc/tvlcmedialistplayer.png -text svneol=unset#image/png
 components/vlc/vlcgtk2.inc svneol=native#text/plain
 components/vlc/vlcqt.inc svneol=native#text/plain
 components/wiki/README.txt svneol=native#text/plain
-components/wiki/chm/wiki.css svneol=native#text/plain
-components/wiki/html/wiki.css svneol=native#text/plain
+components/wiki/css/wiki.css svneol=native#text/plain
 components/wiki/images/internal/note.png -text
 components/wiki/images/internal/warning.png -text
 components/wiki/lazwiki/lazwiki.lpk svneol=native#text/plain
@@ -4245,7 +4244,6 @@ components/wiki/wikiconvert.lpi svneol=native#text/plain
 components/wiki/wikiconvert.lpr svneol=native#text/plain
 components/wiki/wikiget.lpi svneol=native#text/plain
 components/wiki/wikiget.lpr svneol=native#text/plain
-components/wiki/xhtml/wiki.css svneol=native#text/plain
 converter/chgencodingdlg.lfm svneol=native#text/plain
 converter/chgencodingdlg.pas svneol=native#text/plain
 converter/convcodetool.pas svneol=native#text/plain

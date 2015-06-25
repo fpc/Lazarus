@@ -77,6 +77,7 @@ type
     function GetImageLink(ImgFilename: string): string; override;
     function GetInternalImageLink(ImgFilename: String): String; override;
     function GetPageLink(Page: TW2XHTMLPage): string; override;
+    function GetRelativeCSSFileName: String; override;
     procedure SaveAllPages; override;
   public
     constructor Create; override;
@@ -233,6 +234,11 @@ function TWiki2CHMConverter.GetPageLink(Page: TW2XHTMLPage): string;
 begin
 //  Result:=Page.WikiDocumentName+'.html';
   Result :=Page.Filename;
+end;
+
+function TWiki2CHMConverter.GetRelativeCSSFilename: String;
+begin
+  Result := ExtractFileName(CSSFilename);
 end;
 
 procedure TWiki2CHMConverter.SetCHMFile(AValue: string);
