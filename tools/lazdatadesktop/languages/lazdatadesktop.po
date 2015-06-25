@@ -174,7 +174,7 @@ msgid "Save SQL statement to file"
 msgstr ""
 
 #: lazdatadeskstr.simportdictinto
-msgid "Import datadictionary"
+msgid "Import data dictionary"
 msgstr ""
 
 #: lazdatadeskstr.sindex
@@ -339,7 +339,7 @@ msgid "Open"
 msgstr ""
 
 #: lazdatadeskstr.sld_actionopenrecentdatadicth
-msgid "Open selected recent datadictionary"
+msgid "Open selected recent data dictionary"
 msgstr ""
 
 #: lazdatadeskstr.sld_actionpaste
@@ -359,7 +359,7 @@ msgid "Save &as"
 msgstr ""
 
 #: lazdatadeskstr.sld_actionsaveash
-msgid "Save datadictionary as"
+msgid "Save data dictionary as"
 msgstr ""
 
 #: lazdatadeskstr.sld_actionsaveh
@@ -440,7 +440,7 @@ msgid "Host"
 msgstr ""
 
 #: lazdatadeskstr.sld_importupdatedatadictionary
-msgid "Import/Update datadictionary"
+msgid "Import/Update data dictionary"
 msgstr ""
 
 #: lazdatadeskstr.sld_indent
@@ -589,7 +589,7 @@ msgid "New connection"
 msgstr ""
 
 #: lazdatadeskstr.snewdictionary
-msgid "New database"
+msgid "New data dictionary"
 msgstr ""
 
 #: lazdatadeskstr.snewdomain
@@ -654,7 +654,7 @@ msgid "Database"
 msgstr ""
 
 #: lazdatadeskstr.snodedatadictionary
-msgid "Datadictionary"
+msgid "Data dictionary"
 msgstr ""
 
 #: lazdatadeskstr.snodedomains

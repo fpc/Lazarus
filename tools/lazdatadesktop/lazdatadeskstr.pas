@@ -28,7 +28,7 @@ resourcestring
   SNodeTables         = 'Tables';
   SNodeFields         = 'Fields';
   SNodeIndexes        = 'Indexes';
-  SNewDictionary      = 'New database';
+  SNewDictionary      = 'New data dictionary';
   SNodeDataBase       = 'Database';
   SNodeTableData      = 'Table Data';
   SNodeIndexOptions   = 'Index options: ';
@@ -46,7 +46,7 @@ resourcestring
   SSelectedObject     = 'Selected object';
 
   // Dict Editor
-  SNodeDataDictionary = 'Datadictionary';
+  SNodeDataDictionary = 'Data dictionary';
   SNodeDomains        = 'Domains';
   SNodeSequences      = 'Sequences';
   SNodeForeignkeys    = 'Foreign keys';
@@ -93,8 +93,8 @@ resourcestring
   eoAddTerminator = 'Add terminator';
   eoSkipForeignKeys = 'Skip foreign keys';
 
-  // Import/Update datadictionary form
-  sld_Importupdatedatadictionary = 'Import/Update datadictionary';
+  // Import/Update data dictionary form
+  sld_Importupdatedatadictionary = 'Import/Update data dictionary';
   sld_Selectall      = 'Select &all';
   sld_Selectnone     = 'Select &none';
   sld_Updateexistingtables = 'Update existing tables';
@@ -138,7 +138,7 @@ resourcestring
   SConfirmClose = 'Confirm close';
   SDDModified   = 'Data dictionary "%s" has changed.'#13#10+
                   'What do you want to do with the changes?';
-  SImportDictInto = 'Import datadictionary';
+  SImportDictInto = 'Import data dictionary';
   SWhichCurrentDictToUse = 'A data dictionary is active.'+
                            'Would you like to import into this data dictionary ?';
   SUseCurrentDict = 'Yes, use the active dictionary';
@@ -184,9 +184,9 @@ resourcestring
   sld_Actioncloseall       = 'Close &All';
   sld_ActioncloseallH      = 'Close all Data Dictionaries';
   sld_Actionsaveas         = 'Save &as';
-  sld_ActionsaveasH        = 'Save datadictionary as';
+  sld_ActionsaveasH        = 'Save data dictionary as';
   sld_Actionopenrecentdatadict  = 'Open';
-  sld_ActionopenrecentdatadictH = 'Open selected recent datadictionary';
+  sld_ActionopenrecentdatadictH = 'Open selected recent data dictionary';
   sld_Actiondeleterecentdatadict= '&Delete';
   //
   sld_Actioncut            = 'Cu&t';
