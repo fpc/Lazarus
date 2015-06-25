@@ -187,10 +187,10 @@ span.keypress {
     white-space: nowrap;
 }
 
-div.categories {
+div.catlinks {
     background-color: #F9F9F9;
     border: 1px solid #aaa;
-    color: black;
+    color: #aaa;
     padding: 10px;
     margin-top: 20px;
 }

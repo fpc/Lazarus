@@ -193,17 +193,17 @@ begin
     exit;
 
   CategoriesNode := doc.CreateElement('div');
-  CategoriesNode.SetAttribute('class', 'categories');
+  CategoriesNode.SetAttribute('class', 'catlinks');
   Page.BodyDOMNode.AppendChild(CategoriesNode);
 
   // Add "Categories:"
   node := doc.CreateElement('a');
   node.SetAttribute('href', url+'Special:Categories');
+  node.AppendChild(doc.CreateTextNode('Categories:'));
   CategoriesNode.AppendChild(node);
-  CategoriesNode.AppendChild(doc.CreateTextNode('Categories:  '));
   if not FIndexOfflineLinksOnly then
     AddIndexItem('Categories (external)', url+'Special:Categories');
-
+  CategoriesNode.AppendChild(doc.CreateTextNode('&nbsp;&nbsp;'));
   for i:=0 to Page.CategoryList.Count-1 do begin
     category := Page.CategoryList[i];
     // Add link to category
@@ -344,10 +344,9 @@ begin
       HeaderTxt:=TDOMText(Page.CurDOMNode.FirstChild).Data;
     if HeaderTxt<>'' then begin
       HRef:=WikiHeaderToLink(HeaderTxt);
-      // add anchor
+      // add anchor - use both old an new syntax:
       // modern version: <h2 id="something">Text</h> - commented because not understood by IpHTMLPanel:
-      // Page.CurDOMNode.SetAttribute('id', HRef);
-
+      Page.CurDOMNode.SetAttribute('id', HRef);
       // old version: <h2><a name="something">Text</a></h2>
       Node := doc.CreateElement('a');
       Node.SetAttribute('name', HRef);
