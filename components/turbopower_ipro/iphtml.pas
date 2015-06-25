@@ -6431,7 +6431,10 @@ begin
     ParseMAP(Parent, EndTokens);
   IpHtmlTagText :
     begin
-      TIpHtmlNodeText.Create(Parent).FEscapedText := GetTokenString;
+      if InPre > 0 then
+        TIpHtmlNodeText.Create(Parent).ANSIText := GetTokenString
+      else
+        TIpHtmlNodeText.Create(Parent).FEscapedText := GetTokenString;
       NextToken;
     end;
   IpHtmlTagINPUT,
