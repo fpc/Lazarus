@@ -32,7 +32,6 @@ body[lang="he"], body[lang="ar"]
 p {
     line-height: 1.25em;
     margin: 5px 0 5px 0;
-/*    margin: 0.5em 0 0.5em 0;*/
 }
 
 a {
@@ -49,12 +48,6 @@ ul li {
     margin-bottom: 2px;
     margin-top: 2px;
 }
-
-/*
-ul li p {
-    margin: 0;
-}
-*/
 
 #logoheader {
     width:80%;
@@ -95,7 +88,6 @@ h2{
     color: navy;
     marginm-top: 25px;
     margin-bottom: 10px;
-/*    margin-bottom: 0.3em;*/
     border-bottom: 1px solid #CCCCCC;
 }
 
@@ -105,7 +97,6 @@ h3 {
     color: navy;
     margin-top: 15px;
     margin-bottom: 5px;
-/*    margin-bottom: 0.3em;*/
 }
 
 h4, h5, h6, .subTitle{
@@ -114,7 +105,6 @@ h4, h5, h6, .subTitle{
     font-weight:bold;
     color: navy;
     margin-bottom: 5px;
-/*    margin-bottom: 0.3em;*/
 }
 
 
@@ -135,7 +125,7 @@ pre, .pascal {
 }
 
 .string {
-    color: #0000DD;
+    color: #800080;
 }
 
 .var {
@@ -151,7 +141,7 @@ pre, .pascal {
 }
 
 .cmt {
-    color: grey;
+    color: #777777;
     font-style: italic;
 }
 
@@ -164,7 +154,7 @@ blockquote {
 
 div.template-with-icon {
     border-width: 1px;
-    border-color: lightgrey;
+    border-color: #C0C0C0;
     padding: 4px 8px 8px 8px;
     border-style:solid;
     display: block;
@@ -199,7 +189,7 @@ div.catlinks {
 /* images */
 
 div.image {
-    border: 1px solid lightgrey;
+    border: 1px solid $C0C0C0;
     padding: 3px;
     margin: 8px;
     font-size: 80%;
@@ -230,10 +220,10 @@ th {
     border: 1px solid #999;
     border-collapse: collapse;
     padding: 4px;
-    background-color: lightgrey;
-    font-family: "Segoe UI", "Trebuchet MS", Arial, Verdana, sans-serif;
+    background-color: #CCCCCC;
     font-size: 10pt;
     font-weight: bold;
+    text-align: center;
 }
 
 td {
@@ -241,7 +231,6 @@ td {
     border-collapse: collapse;
     background-color: #F7F7F7;
     padding: 3px;
-    font-family: "Segoe UI", "Trebuchet MS", Arial, Verdana, sans-serif;
     font-size: 10pt;
 }
 
@@ -304,5 +293,3 @@ tr.progress {
     padding: 3px;
     text-align: center;
 }
-
-
