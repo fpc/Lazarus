@@ -600,6 +600,8 @@ begin
     FValueMax := GetTransform.AxisToGraph(axisMax);
     FMinForMarks := Min(FMinForMarks, GetTransform.AxisToGraph(d.FMin));
     FMaxForMarks := Max(FMaxForMarks, GetTransform.AxisToGraph(d.FMax));
+    EnsureOrder(FValueMin, FValueMax);
+    EnsureOrder(FMinForMarks, FMaxForMarks);
   end;
 
   if Assigned(FOnMarkToText) then
