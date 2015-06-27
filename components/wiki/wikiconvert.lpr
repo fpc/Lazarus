@@ -170,11 +170,17 @@ begin
           continue;
         end;
       end;
-      if Converter is TWiki2XHTMLConverter then begin
+      if Converter is TWiki2HTMLConverter then begin
         // HTML parameters
-        if ParamName='css' then begin
-          TWiki2XHTMLConverter(Converter).CSSFilename:=ParamValue;
-          continue;
+        if ParamName='html' then begin
+          ParamValue := TrimAndExpandFilename(ParamValue);
+          if (ParamValue='') or (not DirPathExists(ExtractFilepath(ParamValue)))
+          then begin
+            E('Directory for html files does not exist: '+Paramvalue);
+            exit;
+          end;
+          TWiki2HTMLConverter(Converter).OutputDir := ExtractFilepath(Paramvalue);
+          Continue;
         end;
       end;
       if Converter is TWiki2CHMConverter then begin
@@ -187,11 +193,19 @@ begin
             exit;
           end;
           TWiki2CHMConverter(Converter).CHMFile:=ParamValue;
+          TWiki2CHMConverter(Converter).OutputDir := ExtractFilepath(ParamValue);
           continue;
         end else
         if ParamName='root' then begin
           TWiki2CHMConverter(Converter).TOCRootName := ParamValue;
           Continue;
+        end;
+      end;
+      if Converter is TWiki2XHTMLConverter then begin
+        // shared parameters for HTML and CHM
+        if ParamName='css' then begin
+          TWiki2XHTMLConverter(Converter).CSSFilename:=ParamValue;
+          continue;
         end;
       end;
     end else if Param[1]<>'-' then begin
