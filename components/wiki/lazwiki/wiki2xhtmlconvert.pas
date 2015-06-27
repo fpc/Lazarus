@@ -268,7 +268,7 @@ begin
       else begin
         // add link to other translations
         LinkNode:=doc.CreateElement('a');
-        LinkNode.SetAttribute('href',TranslationPage.WikiDocumentName);
+        LinkNode.SetAttribute('href',TranslationPage.FileName);
         TranslationsNode.AppendChild(LinkNode);
         LinkNode.AppendChild(doc.CreateTextNode(LinkCaption));
       end;
@@ -1002,6 +1002,10 @@ begin
               AddIndexItem('MantisLink #'+CurValue+' (external)', 'http://bugs.freepascal.org/view.php?id='+CurValue);
             exit;
           end;
+
+        'menutranslate':
+          // Translation menu is written by DoAddLinksToTranslations
+          exit;
 
         else
           Node := doc.CreateElement('span');

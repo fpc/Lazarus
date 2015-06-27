@@ -330,7 +330,7 @@ begin
   writeln;
   writeln('Options for --format=xhtml,html,chm :');
   writeln('  --css=<path of stylesheet> : default: ',XHTMLConverter.CSSFilename);
-  writeln('  --nowikicategories : do not add links to wiki categories', XHTMLConverter.AddCategories);
+  writeln('  --nowikicategories : do not add links to wiki categories.');
   writeln;
   writeln('Options for --format=chm :');
   writeln('   Note: the default page is the first page');
