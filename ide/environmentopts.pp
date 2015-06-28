@@ -256,6 +256,7 @@ type
 
   TDesktopOpt = class
   private
+    FName: String;
     FXMLCfg: TRttiXMLConfig;
     FConfigStore: TXMLOptionsStorage;
     // window layout
@@ -280,6 +281,7 @@ type
     FEditorToolBarOptions: TEditorToolBarOptions;
     // component palette
     FComponentPaletteOptions: TCompPaletteOptions;
+    procedure SetConfig(aXMLCfg: TRttiXMLConfig; aConfigStore: TXMLOptionsStorage);
     procedure InitLayoutList;
     procedure Load(Path: String);
     procedure Save(Path: String);
@@ -287,6 +289,7 @@ type
     constructor Create;
     destructor Destroy; override;
 
+    property Name: String read FName write FName;
     property IDEDialogLayoutList: TIDEDialogLayoutList read FIDEDialogLayoutList;
     property SingleTaskBarButton: boolean read FSingleTaskBarButton write FSingleTaskBarButton;
     property HideIDEOnRun: boolean read FHideIDEOnRun write FHideIDEOnRun;
@@ -311,7 +314,19 @@ type
 
   end;
 
-  TDesktopOptList = specialize TFPGObjectList<TDesktopOpt>;
+  { TDesktopOptList }
+
+  dtol = specialize TFPGObjectList<TDesktopOpt>;
+  TDesktopOptList = class (dtol)
+  private
+    FXMLCfg: TRttiXMLConfig;
+    FConfigStore: TXMLOptionsStorage;
+    procedure SetConfig(aXMLCfg: TRttiXMLConfig; aConfigStore: TXMLOptionsStorage);
+  public
+    function IndexOf(aName: string): integer;
+    function Find(aName: string): TDesktopOpt;
+    procedure AddFromCfg(Path: String);
+  end;
 
   { TEnvironmentOptions - class for storing environment options }
 
@@ -448,7 +463,7 @@ type
 
     // naming conventions
     fPascalFileExtension: TPascalExtType;
-    fCharcaseFileAction : TCharCaseFileAction;
+    fCharcaseFileAction: TCharCaseFileAction;
     fAmbiguousFileAction: TAmbiguousFileAction;
     FUnitRenameReferencesAction: TUnitRenameReferencesAction;
     FAskForFilenameOnNewFile: boolean;
@@ -463,14 +478,15 @@ type
     FFileDialogFilter: string;
 
     // Desktop
-    FDesktop: TDesktopOpt;
-    //DesktopOptions: TDesktopOptList;  // ToDo
+    FDesktops: TDesktopOptList;
+    FDesktop: TDesktopOpt;           // Active desktop
 
     function GetCompilerFilename: string;
     function GetCompilerMessagesFilename: string;
     function GetDebuggerEventLogColors(AIndex: TDBGEventType): TDebuggerEventLogColor;
     function GetDebuggerFilename: string;
     function GetDebuggerSearchPath: string;
+    function GetDesktop: TDesktopOpt;
     function GetFPCSourceDirectory: string;
     function GetFPDocPaths: string;
     function GetLazarusDirectory: string;
@@ -541,11 +557,9 @@ type
                               var {%H-}Abort: boolean): string;
     function MacroFuncConfDir(const {%H-}s:string; const {%H-}Data: PtrInt;
                               var {%H-}Abort: boolean): string;
-
     // auto save
     // ask even if only project session needs saving
     property AskSaveSessionOnly: boolean read FAskSaveSessionOnly write FAskSaveSessionOnly;
-    //
     property AutoSaveEditorFiles: boolean read FAutoSaveEditorFiles write FAutoSaveEditorFiles;
     property AutoSaveProject: boolean read FAutoSaveProject write FAutoSaveProject;
     property AutoSaveIntervalInSecs: integer read FAutoSaveIntervalInSecs write FAutoSaveIntervalInSecs;
@@ -587,7 +601,6 @@ type
                                                       write FCreateComponentFocusNameProperty;
     property SwitchToFavoritesOITab: boolean read FSwitchToFavoritesOITab
                                              write FSwitchToFavoritesOITab;
-
     // object inspector
     property ObjectInspectorOptions: TOIOptions read FObjectInspectorOptions;
 
@@ -596,13 +609,11 @@ type
                                                 write FProjInspSortAlphabetically;
     property ProjInspShowDirHierarchy: boolean read FProjInspShowDirHierarchy
                                               write FProjInspShowDirHierarchy;
-
     // package editor
     property PackageEditorSortAlphabetically: boolean read FPackageEditorSortAlphabetically
                                                      write FPackageEditorSortAlphabetically;
     property PackageEditorShowDirHierarchy: boolean read FPackageEditorShowDirHierarchy
                                                    write FPackageEditorShowDirHierarchy;
-
     // hints
     property CheckDiskChangesWithLoading: boolean read FCheckDiskChangesWithLoading
                                                  write FCheckDiskChangesWithLoading;
@@ -610,7 +621,6 @@ type
                                                   write FShowHintsForComponentPalette;
     property ShowHintsForMainSpeedButtons: boolean read FShowHintsForMainSpeedButtons
                                                   write FShowHintsForMainSpeedButtons;
-    
     // files
     property LazarusDirectory: string read GetLazarusDirectory write SetLazarusDirectory;
     property LazarusDirHistory: TStringList read FLazarusDirHistory write FLazarusDirHistory;
@@ -688,12 +698,10 @@ type
                                                  write FBackupInfoProjectFiles;
     property BackupInfoOtherFiles: TBackupInfo read FBackupInfoOtherFiles
                                                write FBackupInfoOtherFiles;
-       
     // external tools
     property ExternalToolMenuItems: TBaseExternalUserTools read fExternalUserTools;
     property MaxExtToolsInParallel: integer read FMaxExtToolsInParallel
                                             write FMaxExtToolsInParallel; // 0=automatic
-
     // naming conventions
     property PascalFileExtension: TPascalExtType read fPascalFileExtension
                                                  write fPascalFileExtension;
@@ -708,7 +716,6 @@ type
                                               write FAskForFilenameOnNewFile;
     property LowercaseDefaultFilename: boolean read FLowercaseDefaultFilename
                                                write FLowercaseDefaultFilename;
-
     // fpdoc
     property FPDocPaths: string read GetFPDocPaths write SetFPDocPaths;
 
@@ -740,7 +747,7 @@ type
     property NewUnitTemplate: string read FNewUnitTemplate write FNewUnitTemplate;
     property NewFormTemplate: string read FNewFormTemplate write FNewFormTemplate;
     // Desktop
-    property Desktop: TDesktopOpt read FDesktop;
+    property Desktop: TDesktopOpt read GetDesktop;
   end;
 
 var
@@ -855,6 +862,44 @@ begin
   WriteStr(Result, u);
 end;
 
+{ TDesktopOptList }
+
+procedure TDesktopOptList.SetConfig(aXMLCfg: TRttiXMLConfig; aConfigStore: TXMLOptionsStorage);
+begin
+  FXMLCfg := aXMLCfg;
+  FConfigStore := aConfigStore;
+end;
+
+function TDesktopOptList.IndexOf(aName: string): integer;
+begin
+  Result:=Count-1;
+  while (Result>=0)
+  and (CompareText(aName, Items[Result].Name)<>0) do
+    dec(Result);
+end;
+
+function TDesktopOptList.Find(aName: string): TDesktopOpt;
+var
+  i: LongInt;
+begin
+  i:=IndexOf(aName);
+  if i>=0 then
+    Result:=Items[i]
+  else
+    Result:=nil;
+end;
+
+procedure TDesktopOptList.AddFromCfg(Path: String);
+var
+  dsk: TDesktopOpt;
+begin
+  dsk := TDesktopOpt.Create;
+  Add(dsk);
+  dsk.SetConfig(FXMLCfg, FConfigStore);
+  dsk.Load(Path);
+end;
+
+
 { TDesktopOpt }
 
 constructor TDesktopOpt.Create;
@@ -899,6 +944,7 @@ end;
 
 procedure TDesktopOpt.Load(Path: String);
 begin
+  FName:=FXMLCfg.GetValue(Path+'Name', 'default');
   // Windows layout
   IDEWindowCreators.SimpleLayoutStorage.LoadFromConfig(FConfigStore,Path);
   FIDEDialogLayoutList.LoadFromConfig(FConfigStore, Path+'Dialogs/');
@@ -931,7 +977,7 @@ end;
 procedure TDesktopOpt.Save(Path: String);
 begin
   // windows
-  FXMLCfg.SetDeleteValue(Path+'Name', 'default', '');
+  FXMLCfg.SetDeleteValue(Path+'Name', FName, '');
   IDEWindowCreators.SimpleLayoutStorage.SaveToConfig(FConfigStore,Path);
   FIDEDialogLayoutList.SaveToConfig(FConfigStore,Path+'Dialogs/');
 
@@ -963,6 +1009,12 @@ begin
   with IDEWindowCreators.SimpleLayoutStorage do
     if not Assigned(ItemByFormID(FormID)) then
       CreateWindowLayout(FormID);
+end;
+
+procedure TDesktopOpt.SetConfig(aXMLCfg: TRttiXMLConfig; aConfigStore: TXMLOptionsStorage);
+begin
+  FXMLCfg := aXMLCfg;
+  FConfigStore := aConfigStore;
 end;
 
 procedure TDesktopOpt.InitLayoutList;
@@ -1118,15 +1170,15 @@ begin
   // global build options
   FBuildMatrixOptions:=TBuildMatrixOptions.Create;
 
-  // Desktop
-  FDesktop := TDesktopOpt.Create;
+  // Desktop collection (FDesktop will point to the active desktop).
+  FDesktops := TDesktopOptList.Create;
 end;
 
 destructor TEnvironmentOptions.Destroy;
 var
   i: Integer;
 begin
-  FreeAndNil(FDesktop);
+  FreeAndNil(FDesktops);
   FreeAndNil(FBuildMatrixOptions);
   FreeAndNil(FMsgViewFilters);
   FreeAndNil(fExternalUserTools);
@@ -1290,7 +1342,7 @@ begin
   end;
 end;
 
-procedure TEnvironmentOptions.Load(OnlyDesktop:boolean);
+procedure TEnvironmentOptions.Load(OnlyDesktop: boolean);
 
   procedure AddRecentProjectInitial(aProjPath, aProjFile: string);
   // Add a project to the list of recent projects if the project has write access.
@@ -1497,18 +1549,25 @@ begin
     end;
 
     // The user can define many desktops. They are saved under path Desktops/.
-    FDesktop.FXMLCfg := FXMLCfg;
-    FDesktop.FConfigStore := FConfigStore;
+    FDesktops.Clear;
+    FDesktops.SetConfig(FXMLCfg, FConfigStore);
     CurPath:='Desktops/';
     if FXMLCfg.HasPath(CurPath, True) then
     begin
-      // New path under Desktops/.
+      // New path under Desktops/. Default=1 forces reading default values always.
       j := FXMLCfg.GetValue(CurPath+'Count/', 1);
       for i := 0 to j-1 do
-        FDesktop.Load(CurPath+'Desktop'+IntToStr(i+1)+'/');
+        FDesktops.AddFromCfg(CurPath+'Desktop'+IntToStr(i+1)+'/');
+      Assert(FDesktops.Count>0, 'FDesktops.Count=0');
+      // Find active desktop
+      FDesktop:=FDesktops.Find(FXMLCfg.GetValue(CurPath+'Active','default'));
     end
-    else // Old path was under EnvironmentOptions/.
-      FDesktop.Load(Path+'Desktop/');
+    else begin // Old path was under EnvironmentOptions/.
+      FDesktops.AddFromCfg(Path+'Desktop/');
+      FDesktop := nil;
+    end;
+    if FDesktop=nil then
+      FDesktop:=FDesktops[0];
 
     FileUpdated;
   except
@@ -1771,14 +1830,13 @@ begin
     end;
 
     // The user can define many desktops. They are saved under path Desktops/.
-    FDesktop.FXMLCfg := FXMLCfg;
-    FDesktop.FConfigStore := FConfigStore;
     CurPath:='Desktops/';
-    FXMLCfg.SetDeleteValue(CurPath+'Count', 1, 0); // ToDo: use count from collection.
-    FXMLCfg.SetDeleteValue(CurPath+'Active', 'default', '');
-    j := 1;
-    for i := 0 to j-1 do                             // ToDo: iterate collection.
-      FDesktop.Save(CurPath+'Desktop'+IntToStr(i+1)+'/');
+    FXMLCfg.SetDeleteValue(CurPath+'Count', FDesktops.Count, 0);
+    FXMLCfg.SetDeleteValue(CurPath+'Active', FDesktop.Name, '');
+    for i := 0 to FDesktops.Count-1 do begin
+      FDesktops[i].SetConfig(FXMLCfg, FConfigStore);
+      FDesktops[i].Save(CurPath+'Desktop'+IntToStr(i+1)+'/');
+    end;
 
     FXMLCfg.Flush;
     FileUpdated;
@@ -2193,6 +2251,18 @@ end;
 function TEnvironmentOptions.GetDebuggerSearchPath: string;
 begin
   Result:=FParseValues[eopDebuggerSearchPath].UnparsedValue;
+end;
+
+function TEnvironmentOptions.GetDesktop: TDesktopOpt;
+begin
+  // Can be Nil if desktops are not read from config files -> create a default desktop.
+  if not Assigned(FDesktop) then
+  begin
+    FDesktop := TDesktopOpt.Create;
+    FDesktop.Name := 'default';
+    FDesktops.Add(FDesktop);
+  end;
+  Result := FDesktop;
 end;
 
 function TEnvironmentOptions.GetCompilerFilename: string;
