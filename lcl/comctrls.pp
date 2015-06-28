@@ -1990,6 +1990,7 @@ type
     FToolButtonFlags: TToolButtonFlags;
     FUpdateCount: Integer;
     FWrap: Boolean;
+    FLastDropDownTick: QWord;
     procedure GetGroupBounds(var StartIndex, EndIndex: integer);
     function GetIndex: Integer;
     function GetTextSize: TSize;
