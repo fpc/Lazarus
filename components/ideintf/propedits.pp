@@ -6832,14 +6832,14 @@ end;
 procedure TCustomShortCutGrabBox.OnGrabButtonClick(Sender: TObject);
 begin
   FGrabForm:=TForm.Create(Self);
-  FGrabForm.BorderStyle:=bsToolWindow;
+  FGrabForm.BorderStyle:=bsDialog;
   FGrabForm.KeyPreview:=true;
   FGrabForm.Position:=poScreenCenter;
   FGrabForm.OnKeyDown:=@OnGrabFormKeyDown;
   FGrabForm.Caption:=oisPressAKey;
   with TLabel.Create(Self) do begin
     Caption:=oisPressAKey;
-    BorderSpacing.Around:=25;
+    BorderSpacing.Around:=50;
     Parent:=FGrabForm;
   end;
   FGrabForm.Width:=200;
