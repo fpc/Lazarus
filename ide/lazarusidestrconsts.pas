@@ -1232,9 +1232,9 @@ resourcestring
   lisIfOnlySessionInfoChangedThenAsk = 'If only the session info changed, ask about saving it.';
   dlgEdFiles = 'Editor Files';
   dlgIntvInSec = 'Interval in secs';
-  dlgDesktopFiles = 'Desktop Files';
-  dlgSaveDFile = 'Save desktop settings to file';
-  dlgLoadDFile = 'Load desktop settings from file';
+  dlgExportDesktop = 'Export desktop';
+  dlgImportDesktop = 'Import desktop';
+  dlgSaveCurrentDesktop = 'Save current desktop';
   dlgDesktopHints = 'Hints';
   dlgDesktopButtons = 'Buttons - ';
   dlgDesktopMenus = 'Menus - ';
@@ -1244,8 +1244,6 @@ resourcestring
   dlgPreferDoubleClickOverSingleClick = 'Prefer double-click over single-click';
   dlgCurrentlyRespectedByMessagesWindow = 'Currently respected by messages window, '
     +'jump history and search results.';
-  lisSavedSuccessfully = 'Saved successfully';
-  lisLoadedSuccessfully = 'Loaded successfully';
 
   // Window options
   dlgShowingWindows = 'Showing Windows';
@@ -3139,6 +3137,7 @@ resourcestring
   lisMenuCodeToolsDefinesEditor          = 'CodeTools Defines Editor ...';
   lisMenuRescanFPCSourceDirectory = 'Rescan FPC Source Directory';
   srkmecMakeResourceString        = 'Make Resource String';
+  lisDesktops                     = 'Desktops ...';
   lisKMDiffEditorFiles            = 'Diff Editor Files';
   lisKMConvertDFMFileToLFM        = 'Convert DFM File to LFM';
   lisKMConvertDelphiUnitToLazarusUnit = 'Convert Delphi Unit to Lazarus Unit';

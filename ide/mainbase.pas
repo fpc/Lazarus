@@ -1011,6 +1011,7 @@ begin
 
     CreateMenuSeparatorSection(mnuTools,itmSecondaryTools,'itmSecondaryTools');
     ParentMI:=itmSecondaryTools;
+    CreateMenuItem(ParentMI,itmToolManageDesktops,'itmToolManageDesktops', lisDesktops);
     CreateMenuItem(ParentMI,itmToolManageExamples,'itmToolManageExamples',lisMenuExampleProjects, 'camera');
     CreateMenuItem(ParentMI,itmToolDiff,'itmToolDiff',lisMenuCompareFiles, 'menu_tool_diff');
 
@@ -1294,6 +1295,9 @@ begin
     itmEnvCodeToolsDefinesEditor.Command:=GetCommand(ecCodeToolsDefinesEd);
 
     itmToolConfigure.Command:=GetCommand(ecExtToolSettings);
+
+    itmToolManageDesktops.Command:=GetCommand(ecManageDesktops);
+    itmToolManageExamples.Command:=GetCommand(ecManageExamples);
     itmToolDiff.Command:=GetCommand(ecDiff);
 
     itmToolConvertDFMtoLFM.Command:=GetCommand(ecConvertDFM2LFM);
@@ -1302,7 +1306,6 @@ begin
     itmToolConvertDelphiProject.Command:=GetCommand(ecConvertDelphiProject);
     itmToolConvertDelphiPackage.Command:=GetCommand(ecConvertDelphiPackage);
     itmToolConvertEncoding.Command:=GetCommand(ecConvertEncoding);
-    itmToolManageExamples.Command:=GetCommand(ecManageExamples);
     itmToolBuildLazarus.Command:=GetCommand(ecBuildLazarus);
     itmToolConfigureBuildLazarus.Command:=GetCommand(ecConfigBuildLazarus);
 

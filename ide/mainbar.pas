@@ -332,6 +332,8 @@ type
       //itmCustomTools: TIDEMenuSection;
         itmToolConfigure: TIDEMenuCommand;
       //itmSecondaryTools: TIDEMenuSection;
+        itmToolManageDesktops: TIDEMenuCommand;
+        itmToolManageExamples: TIDEMenuCommand;
         itmToolDiff: TIDEMenuCommand;
       //itmDelphiConversion: TIDEMenuSection;
         itmToolCheckLFM: TIDEMenuCommand;
@@ -341,7 +343,6 @@ type
         itmToolConvertDFMtoLFM: TIDEMenuCommand;
         itmToolConvertEncoding: TIDEMenuCommand;
       //itmBuildingLazarus: TIDEMenuSection;
-        itmToolManageExamples: TIDEMenuCommand;
         itmToolBuildLazarus: TIDEMenuCommand;
         itmToolConfigureBuildLazarus: TIDEMenuCommand;
 

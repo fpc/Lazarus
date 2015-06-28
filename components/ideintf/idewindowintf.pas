@@ -42,6 +42,7 @@ type
     procedure SetHeight(const AValue: integer);
   public
     constructor Create(const TheName: string; TheList: TIDEDialogLayoutList);
+    procedure Assign(Source: TIDEDialogLayout);
     function SizeValid: boolean;
     property Width: integer read FWidth write SetWidth;
     property Height: integer read FHeight write SetHeight;
@@ -66,6 +67,7 @@ type
   public
     constructor Create;
     destructor Destroy; override;
+    procedure Assign(Source: TIDEDialogLayoutList);
     procedure ApplyLayout(ADialog: TControl;
                           DefaultWidth, DefaultHeight: integer;
                           UseAsMin: boolean = true);
@@ -852,13 +854,20 @@ begin
   FList:=TheList;
 end;
 
+procedure TIDEDialogLayout.Assign(Source: TIDEDialogLayout);
+begin
+  FName := Source.FName;
+  FWidth := Source.FWidth;
+  FHeight := Source.FHeight;
+  FModified := True;
+end;
+
 function TIDEDialogLayout.SizeValid: boolean;
 begin
   Result:=(Width>10) and (Height>10);
 end;
 
-procedure TIDEDialogLayout.LoadFromConfig(Config: TConfigStorage;
-  const Path: string);
+procedure TIDEDialogLayout.LoadFromConfig(Config: TConfigStorage; const Path: string);
 begin
   FName:=Config.GetValue(Path+'Name/Value','');
   FWidth:=Config.GetValue(Path+'Size/Width',0);
@@ -866,8 +875,7 @@ begin
   Modified:=false;
 end;
 
-procedure TIDEDialogLayout.SaveToConfig(Config: TConfigStorage;
-  const Path: string);
+procedure TIDEDialogLayout.SaveToConfig(Config: TConfigStorage; const Path: string);
 begin
   Config.SetValue(Path+'Name/Value',Name);
   Config.SetValue(Path+'Size/Width',Width);
@@ -900,6 +908,21 @@ begin
   Clear;
   FreeAndNil(FItems);
   inherited Destroy;
+end;
+
+procedure TIDEDialogLayoutList.Assign(Source: TIDEDialogLayoutList);
+var
+  i: Integer;
+  Layout: TIDEDialogLayout;
+begin
+  FItemClass := Source.FItemClass;
+  Clear;
+  for i:=0 to Source.FItems.Count-1 do begin
+    Layout := TIDEDialogLayout.Create(Source.Items[i].Name, Self);
+    Layout.Assign(Source.Items[i]);
+    FItems.Add(Layout);
+  end;
+  FModified := True;
 end;
 
 procedure TIDEDialogLayoutList.ApplyLayout(ADialog: TControl;

@@ -61,7 +61,11 @@ type
   end;
 
 
-  TIDEToolBarOptionList = specialize TFPGObjectList<TIDEToolBarOptions>;
+  { TIDEToolBarOptionList }
+  Ttbo = specialize TFPGObjectList<TIDEToolBarOptions>;
+  TIDEToolBarOptionList = class(Ttbo)
+    procedure Assign(Source: TIDEToolBarOptionList);
+  end;
 
   { TIDECoolBarOptions }
   TIDECoolBarOptions = class
@@ -77,6 +81,7 @@ type
     constructor Create;
     destructor Destroy; override;
     procedure Clear;
+    procedure Assign(Source: TIDECoolBarOptions);
     function EqualToolbars(Opts: TIDECoolBarOptions): boolean;
     procedure Load(XMLConfig: TXMLConfig; Path: String);
     procedure Save(XMLConfig: TXMLConfig; Path: String);
@@ -238,6 +243,22 @@ begin
     XMLConfig.SetDeleteValue(SubPath + 'Button' + IntToStr(I+1) + '/Name', ButtonNames[I], '');
 end;
 
+{ TIDEToolBarOptionList }
+
+procedure TIDEToolBarOptionList.Assign(Source: TIDEToolBarOptionList);
+var
+  tbo: TIDEToolBarOptions;
+  i: Integer;
+begin
+  Clear;
+  for i := 0 to Source.Count-1 do
+  begin
+    tbo := TIDEToolBarOptions.Create;
+    tbo.Assign(Source[i]);
+    Add(tbo);
+  end;
+end;
+
 { TIDECoolBarOptions }
 constructor TIDECoolBarOptions.Create;
 begin
@@ -254,6 +275,16 @@ end;
 procedure TIDECoolBarOptions.Clear;
 begin
   FIDECoolBarToolBars.Clear;
+end;
+
+procedure TIDECoolBarOptions.Assign(Source: TIDECoolBarOptions);
+begin
+  FIDECoolBarVisible := Source.FIDECoolBarVisible;
+  FIDECoolBarWidth := Source.FIDECoolBarWidth;
+  FIDECoolBarGrabStyle := Source.FIDECoolBarGrabStyle;
+  FIDECoolBarGrabWidth := Source.FIDECoolBarGrabWidth;
+  FIDECoolBarBorderStyle := Source.FIDECoolBarBorderStyle;
+  FIDECoolBarToolBars.Assign(Source.FIDECoolBarToolBars);
 end;
 
 function TIDECoolBarOptions.EqualToolbars(Opts: TIDECoolBarOptions): boolean;

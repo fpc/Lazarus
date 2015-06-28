@@ -146,7 +146,7 @@ uses
   CodeTemplatesDlg, CodeBrowser, FindUnitDlg, InspectChksumChangedDlg,
   IdeOptionsDlg, EditDefineTree, PublishModule, EnvironmentOpts, TransferMacros,
   KeyMapping, IDETranslations, IDEProcs, ExtToolDialog, ExtToolEditDlg,
-  JumpHistoryView, ExampleManager,
+  JumpHistoryView, DesktopManager, ExampleManager,
   BuildLazDialog, BuildProfileManager, BuildManager, CheckCompOptsForNewUnitDlg,
   MiscOptions, InputHistory, UnitDependencies,
   IDEFPCInfo, IDEInfoDlg, IDEInfoNeedBuild, ProcessList, InitialSetupDlgs,
@@ -356,6 +356,7 @@ type
     procedure mnuToolConvertDelphiProjectClicked(Sender: TObject);
     procedure mnuToolConvertDelphiPackageClicked(Sender: TObject);
     procedure mnuToolConvertEncodingClicked(Sender: TObject);
+    procedure mnuToolManageDesktopsClicked(Sender: TObject);
     procedure mnuToolManageExamplesClicked(Sender: TObject);
     procedure mnuToolBuildLazarusClicked(Sender: TObject);
     procedure mnuToolBuildAdvancedLazarusClicked(Sender: TObject);
@@ -2735,6 +2736,11 @@ begin
     itmEnvCodeToolsDefinesEditor.OnClick := @mnuEnvCodeToolsDefinesEditorClicked;
 
     itmToolConfigure.OnClick := @mnuToolConfigureUserExtToolsClicked;
+    itmToolManageDesktops.OnClick := @mnuToolManageDesktopsClicked;
+    {$IFnDEF EnableDesktops}
+    itmToolManageDesktops.Visible := False;
+    {$ENDIF}
+    itmToolManageExamples.OnClick := @mnuToolManageExamplesClicked;
     itmToolDiff.OnClick := @mnuToolDiffClicked;
 
     itmToolCheckLFM.OnClick := @mnuToolCheckLFMClicked;
@@ -2743,7 +2749,6 @@ begin
     itmToolConvertDelphiProject.OnClick := @mnuToolConvertDelphiProjectClicked;
     itmToolConvertDelphiPackage.OnClick := @mnuToolConvertDelphiPackageClicked;
     itmToolConvertEncoding.OnClick := @mnuToolConvertEncodingClicked;
-    itmToolManageExamples.OnClick := @mnuToolManageExamplesClicked;
     itmToolBuildLazarus.OnClick := @mnuToolBuildLazarusClicked;
     itmToolConfigureBuildLazarus.OnClick := @mnuToolConfigBuildLazClicked;
     // Set initial caption for Build Lazarus item. Will be changed in BuildLazDialog.
@@ -4549,6 +4554,11 @@ end;
 procedure TMainIDE.mnuToolConvertEncodingClicked(Sender: TObject);
 begin
   ShowConvertEncodingDlg;
+end;
+
+procedure TMainIDE.mnuToolManageDesktopsClicked(Sender: TObject);
+begin
+  ShowDesktopManagerDlg;
 end;
 
 procedure TMainIDE.mnuToolManageExamplesClicked(Sender: TObject);

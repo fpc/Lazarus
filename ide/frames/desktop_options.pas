@@ -25,8 +25,8 @@ unit desktop_options;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, StdCtrls, Dialogs, LCLProc,
-  ExtCtrls, EnvironmentOpts, LazarusIDEStrConsts, IDETranslations, InputHistory,
+  Classes, SysUtils, FileUtil, Forms, StdCtrls, Dialogs, LCLProc, ExtCtrls,
+  Buttons, EnvironmentOpts, LazarusIDEStrConsts, IDETranslations, InputHistory,
   IDEProcs, IDEOptionsIntf, IDEWindowIntf, IDEUtils, DividerBevel;
 
 type
@@ -40,7 +40,7 @@ type
     AutoSaveIntervalInSecsLabel: TLabel;
     AutoSaveProjectCheckBox: TCheckBox;
     lblCheckAndAutoSave: TDividerBevel;
-    lblDesktopFiles: TDividerBevel;
+    lblImportExport: TDividerBevel;
     lblGlyphs: TDividerBevel;
     lblHints: TDividerBevel;
     lblLanguage: TDividerBevel;
@@ -51,7 +51,7 @@ type
     lblCenter: TLabel;
     lblMenus: TLabel;
     LanguageComboBox: TComboBox;
-    LoadDesktopSettingsFromFileButton: TButton;
+    ImportDesktopButton: TButton;
     PanelGlyphsButtonsOptions: TPanel;
     PanelGlyphsMenusOptions: TPanel;
     rbMenuGlyphShowAlways: TRadioButton;
@@ -60,11 +60,11 @@ type
     rbBtnGlyphShowAlways: TRadioButton;
     rbBtnGlyphShowNever: TRadioButton;
     rbBtnGlyphShowSystem: TRadioButton;
-    SaveDesktopSettingsToFileButton: TButton;
+    ExportDesktopButton: TButton;
     ShowHintsForComponentPaletteCheckBox: TCheckBox;
     ShowHintsForMainSpeedButtonsCheckBox: TCheckBox;
-    procedure SaveDesktopSettingsToFileButtonClick(Sender: TObject);
-    procedure LoadDesktopSettingsFromFileButtonClick(Sender: TObject);
+    procedure ExportDesktopButtonClick(Sender: TObject);
+    procedure ImportDesktopButtonClick(Sender: TObject);
   private
     function LangIDToCaption(const LangID: string): string;
     function CaptionToLangID(const ACaption: string): string;
@@ -146,9 +146,9 @@ begin
   AutoSaveIntervalInSecsLabel.Caption := dlgIntvInSec;
 
   // desktop files
-  lblDesktopFiles.Caption := dlgDesktopFiles;
-  SaveDesktopSettingsToFileButton.Caption := dlgSaveDFile;
-  LoadDesktopSettingsFromFileButton.Caption := dlgLoadDFile;
+  lblImportExport.Caption := lisImportExport;
+  ExportDesktopButton.Caption := dlgExportDesktop;
+  ImportDesktopButton.Caption := dlgImportDesktop;
 end;
 
 procedure TDesktopOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
@@ -229,19 +229,19 @@ begin
   end;
 end;
 
-procedure TDesktopOptionsFrame.SaveDesktopSettingsToFileButtonClick(Sender: TObject);
+procedure TDesktopOptionsFrame.ExportDesktopButtonClick(Sender: TObject);
 var
   AnEnvironmentOptions: TEnvironmentOptions;
   SaveDialog: TSaveDialog;
   AFilename: String;
 begin
-  //debugln('TEnvironmentOptionsDialog.SaveDesktopSettingsToFileButtonClick A');
+  //debugln('TDesktopOptionsFrame.ExportDesktopButtonClick A');
   SaveDialog := TSaveDialog.Create(nil);
   try
     try
       InputHistories.ApplyFileDialogSettings(SaveDialog);
       SaveDialog.Filter:=dlgFilterLazarusDesktopSettings+' (*.lds)|*.lds'
-           +'|'+dlgFilterXML+' (*.xml)|*.xml'
+           //+'|'+dlgFilterXML+' (*.xml)|*.xml'
            +'|'+dlgFilterAll+' ('+GetAllFilesMask+')|' + GetAllFilesMask;
       if SaveDialog.Execute then
       begin
@@ -253,7 +253,7 @@ begin
           AnEnvironmentOptions.Filename := AFilename;
           DoSaveSettings(AnEnvironmentOptions);
           AnEnvironmentOptions.Save(true);
-          ShowMessage(lisSavedSuccessfully);
+          ShowMessageFmt(lisSuccessfullyExported, [SaveDialog.Filename]);
         finally
           AnEnvironmentOptions.Free;
         end;
@@ -262,7 +262,7 @@ begin
     except
       on E: Exception do
       begin
-        DebugLn('ERROR: [TEnvironmentOptionsDialog.SaveDesktopSettingsToFileButtonClick] ', E.Message);
+        DebugLn('ERROR: [TDesktopOptionsFrame.ExportDesktopButtonClick] ', E.Message);
       end;
     end;
   finally
@@ -270,18 +270,18 @@ begin
   end;
 end;
 
-procedure TDesktopOptionsFrame.LoadDesktopSettingsFromFileButtonClick(Sender: TObject);
+procedure TDesktopOptionsFrame.ImportDesktopButtonClick(Sender: TObject);
 var
   AnEnvironmentOptions: TEnvironmentOptions;
   OpenDialog: TOpenDialog;
 begin
-  //debugln('TEnvironmentOptionsDialog.LoadDesktopSettingsFromFileButtonClick A');
+  //debugln('TDesktopOptionsFrame.ImportDesktopButtonClick A');
   OpenDialog := TOpenDialog.Create(nil);
   try
     try
       InputHistories.ApplyFileDialogSettings(OpenDialog);
       OpenDialog.Filter:=dlgFilterLazarusDesktopSettings+' (*.lds)|*.lds'
-           +'|'+dlgFilterXML+' (*.xml)|*.xml'
+           //+'|'+dlgFilterXML+' (*.xml)|*.xml'
            +'|'+dlgFilterAll+' ('+GetAllFilesMask+')|' + GetAllFilesMask;
       if OpenDialog.Execute then
       begin
@@ -292,7 +292,7 @@ begin
           DoLoadSettings(AnEnvironmentOptions);
           if IDEDockMaster=nil then
             IDEWindowCreators.RestoreSimpleLayout;
-          ShowMessage(lisLoadedSuccessfully);
+          ShowMessageFmt(lisSuccessfullyImported, [OpenDialog.Filename]);
         finally
           AnEnvironmentOptions.Free;
         end;
@@ -302,7 +302,7 @@ begin
       on E: Exception do
       begin
         // ToDo
-        DebugLn('ERROR: [TEnvironmentOptionsDialog.SaveDesktopSettingsToFileButtonClick] ', E.Message);
+        DebugLn('ERROR: [TDesktopOptionsFrame.ImportDesktopButtonClick] ', E.Message);
       end;
     end;
   finally
