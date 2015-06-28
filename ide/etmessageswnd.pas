@@ -30,7 +30,7 @@ unit etMessagesWnd;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, IDEMsgIntf, IDEImagesIntf,
+  Classes, SysUtils, FileUtil, IDEMsgIntf, IDEImagesIntf, IDEOptionDefs,
   IDEExternToolIntf, LazIDEIntf, SynEditMarks,
   Forms, Controls, Graphics, Dialogs, LCLProc, etMessageFrame,
   etQuickFixes, LazarusIDEStrConsts;
@@ -96,6 +96,7 @@ implementation
 
 procedure TMessagesView.FormCreate(Sender: TObject);
 begin
+  Name := NonModalIDEWindowNames[nmiwMessagesViewName];
   IDEMessagesWindow:=Self;
   Caption:=lisMenuViewMessages;
   try

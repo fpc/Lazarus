@@ -32,7 +32,7 @@ unit TabOrderDlg;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Dialogs, Buttons, ComCtrls,
+  Classes, SysUtils, Forms, Controls, Dialogs, Buttons, ComCtrls, IDEOptionDefs,
   LCLType, LCLProc, PropEdits, IDEDialogs, LazarusIDEStrConsts, AvgLvlTree;
 
 type
@@ -60,9 +60,9 @@ type
       Candidates: TAvgLvlTree);
     procedure RefreshTree;
     procedure OnSomethingChanged;
-    procedure OnPersistentAdded(APersistent: TPersistent; Select: boolean);
-    procedure OnPersistentDeleting(APersistent: TPersistent);
-    procedure OnDeletePersistent(var APersistent: TPersistent);
+    procedure OnPersistentAdded({%H-}APersistent: TPersistent; {%H-}Select: boolean);
+    procedure OnPersistentDeleting({%H-}APersistent: TPersistent);
+    procedure OnDeletePersistent(var {%H-}APersistent: TPersistent);
     procedure OnSetSelection(const ASelection: TPersistentSelectionList);
   end;
 
@@ -123,6 +123,8 @@ end;
 
 procedure TTabOrderDialog.TabOrderDialogCreate(Sender: TObject);
 begin
+  Name := NonModalIDEWindowNames[nmiwTabOrderEditor];
+
   GlobalDesignHook.AddHandlerChangeLookupRoot(@OnSomethingChanged);
   GlobalDesignHook.AddHandlerRefreshPropertyValues(@OnSomethingChanged);
   GlobalDesignHook.AddHandlerPersistentAdded(@OnPersistentAdded);

@@ -34,7 +34,7 @@ interface
 uses
   Classes, SysUtils, LCLType, Forms, Controls, Graphics, StdCtrls, ExtCtrls,
   ComCtrls, ButtonPanel, Menus, LazarusIDEStrConsts, ComponentReg, PackageDefs,
-  IDEImagesIntf, TreeFilterEdit, FormEditingIntf;
+  IDEImagesIntf, TreeFilterEdit, FormEditingIntf, IDEOptionDefs;
 
 type
 
@@ -110,6 +110,9 @@ implementation
 constructor TComponentListForm.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+
+  Name:=NonModalIDEWindowNames[nmiwComponentList];
+
   //Translations
   LabelSearch.Caption := lisMenuFind;
   Caption := lisCmpLstComponents;
@@ -432,10 +435,14 @@ begin
 end;
 
 procedure TComponentListForm.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
-//Close the form on escape key like every other IDE dialog does
 begin
   if Key=VK_ESCAPE then
-    Close;
+  begin
+    if ListTree.Selected = nil then //close only if no component is selected
+      Close
+    else
+      ListTree.Selected := nil; //unselect if component is selected
+  end;
 end;
 
 procedure TComponentListForm.OKButtonClick(Sender: TObject);

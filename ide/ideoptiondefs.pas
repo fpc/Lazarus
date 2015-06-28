@@ -82,7 +82,6 @@ type
     nmiwPkgGraphExplorer,
     nmiwProjectInspector,
     nmiwEditorFileManager,
-    // not shown at startup
     nmiwSearchResultsViewName,
     nmiwAnchorEditor,
     nmiwTabOrderEditor,

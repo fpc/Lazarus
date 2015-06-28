@@ -5878,7 +5878,6 @@ begin
   begin
     IDEWindowCreators.CreateForm(ComponentListForm,TComponentListForm,
        State=iwgfDisabled,OwningComponent);
-    ComponentListForm.Name:=NonModalIDEWindowNames[nmiwComponentList];
   end else if State=iwgfDisabled then
     ComponentListForm.DisableAutoSizing;
   if State>=iwgfShow then

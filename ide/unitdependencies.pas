@@ -39,7 +39,7 @@ uses
   Forms, Controls, ExtCtrls, ComCtrls, StdCtrls, Buttons, Dialogs, Menus,
   Clipbrd, LvlGraphCtrl, LazIDEIntf, ProjectIntf, IDEWindowIntf, PackageIntf,
   SrcEditorIntf, IDEImagesIntf, IDECommands, IDEDialogs, IDEMsgIntf,
-  IDEExternToolIntf,
+  IDEExternToolIntf, IDEOptionDefs,
   CodeToolManager, DefineTemplates, CodeToolsStructs,
   CTUnitGraph, CTUnitGroupGraph, FileProcs, CodeCache, LazarusIDEStrConsts,
   UnusedUnitsDlg;
@@ -533,6 +533,8 @@ end;
 
 procedure TUnitDependenciesWindow.FormCreate(Sender: TObject);
 begin
+  Name := NonModalIDEWindowNames[nmiwUnitDependenciesName];
+
   FPendingUnitDependencyRoute:=TStringList.Create;
   CreateUsesGraph(FUsesGraph,FGroups);
 

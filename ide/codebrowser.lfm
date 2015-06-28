@@ -10,7 +10,6 @@ object CodeBrowserView: TCodeBrowserView
   OnCreate = FormCreate
   OnDeactivate = FormDeactivate
   OnDestroy = FormDestroy
-  Position = poScreenCenter
   LCLVersion = '1.5'
   object ScopeGroupBox: TGroupBox
     Left = 6

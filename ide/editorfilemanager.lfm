@@ -10,7 +10,6 @@ object EditorFileManagerForm: TEditorFileManagerForm
   KeyPreview = True
   OnCreate = FormCreate
   OnKeyDown = FormKeyDown
-  Position = poScreenCenter
   LCLVersion = '1.5'
   object CheckListBox1: TCheckListBox
     AnchorSideTop.Control = FilterPanel

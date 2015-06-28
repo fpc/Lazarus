@@ -9,7 +9,6 @@ object PkgGraphExplorerDlg: TPkgGraphExplorerDlg
   KeyPreview = True
   OnCreate = FormCreate
   OnShow = PkgGraphExplorerShow
-  Position = poScreenCenter
   LCLVersion = '1.5'
   object InfoMemo: TMemo
     Left = 0
