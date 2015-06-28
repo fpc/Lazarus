@@ -242,7 +242,7 @@ var
   I: Integer;
 begin
   Path := Path + BasePath;
-  XMLConfig.SetDeleteValue(Path + 'Visible', FVisible, False);
+  XMLConfig.SetDeleteValue(Path + 'Visible', FVisible, True);
   XMLConfig.SetDeleteValue(Path + 'Position', FPosition, 'Top');
   XMLConfig.SetDeleteValue(Path + 'Count', ButtonNames.Count, 0);
   for I := 0 to ButtonNames.Count-1 do
