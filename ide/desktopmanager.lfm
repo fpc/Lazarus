@@ -1,0 +1,53 @@
+object DesktopForm: TDesktopForm
+  Left = 463
+  Height = 159
+  Top = 670
+  Width = 394
+  Caption = 'DesktopForm'
+  ClientHeight = 159
+  ClientWidth = 394
+  OnCreate = FormCreate
+  Position = poScreenCenter
+  LCLVersion = '1.5'
+  object DesktopComboBox: TComboBox
+    Left = 6
+    Height = 23
+    Top = 12
+    Width = 212
+    ItemHeight = 17
+    OnSelect = DesktopComboBoxSelect
+    TabOrder = 0
+    Text = 'DesktopComboBox'
+  end
+  object SaveBitBtn: TBitBtn
+    AnchorSideLeft.Control = DesktopComboBox
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = DesktopComboBox
+    AnchorSideTop.Side = asrCenter
+    Left = 229
+    Height = 29
+    Top = 9
+    Width = 133
+    AutoSize = True
+    BorderSpacing.Left = 11
+    Caption = 'Save current desktop'
+    OnClick = SaveBitBtnClick
+    TabOrder = 1
+  end
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 37
+    Top = 116
+    Width = 382
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
+    TabOrder = 2
+    ShowButtons = [pbOK, pbCancel]
+  end
+end
