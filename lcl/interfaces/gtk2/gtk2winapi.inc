@@ -7250,22 +7250,22 @@ begin
   CurrentGroupIndex := integer({%H-}PtrUInt(g_object_get_data({%H-}Pointer(hndMenu), GROUPIDX_DATANAME)));
 
   // Update needed ?
-  if GroupIndex = CurrentGroupIndex
+ { if GroupIndex = CurrentGroupIndex
   then begin
     Result := True;
     Exit;
-  end;
+  end;}
 
   // Remove current group
   gtk_radio_menu_item_set_group({%H-}PGtkRadioMenuItem(hndMenu), nil);
   g_object_set_data({%H-}Pointer(hndMenu), GROUPIDX_DATANAME, nil);
 
   // Check remove only
-  if GroupIndex = 0
+ { if GroupIndex = 0
   then begin
     Result := True;
     Exit;
-  end;
+  end;  }
 
   // Try to find new group
   RadioGroup := GetGroup;
