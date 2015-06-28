@@ -693,7 +693,7 @@ begin
     ecDiff                    : Result:= srkmecDiff;
 
     // window menu
-    ecManageSourceEditors           : Result:= lisSourceEditorWindowManager;
+    ecManageSourceEditors     : Result:= lisSourceEditorWindowManager;
 
     // help menu
     ecAboutLazarus            : Result:= lisAboutLazarus;
