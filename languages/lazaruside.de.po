@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2015-06-13 19:51+0100\n"
+"PO-Revision-Date: 2015-06-28 20:19+0100\n"
 "Last-Translator: Swen Heinig <swen@heinig.email>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -4566,7 +4566,6 @@ msgid "Border space"
 msgstr "Randbreite"
 
 #: lazarusidestrconsts.lisbottom
-#, fuzzy
 msgctxt "lazarusidestrconsts.lisbottom"
 msgid "Bottom"
 msgstr "Unten"
@@ -4683,7 +4682,7 @@ msgstr "Neukompilieren von Lazarus fehlgeschlagen"
 
 #: lazarusidestrconsts.lisbuildmode
 msgid "Build Mode: %s"
-msgstr ""
+msgstr "Erstellmodus: %s"
 
 #: lazarusidestrconsts.lisbuildmodediffdifferencesbetweenbuildmodes
 msgid "Differences between build modes"
@@ -5547,7 +5546,7 @@ msgstr "Aufräumen und Projekt kompilieren"
 
 #: lazarusidestrconsts.liscleanuppackage
 msgid "Clean up package \"%s\"."
-msgstr ""
+msgstr "Package \"%s\" aufräumen."
 
 #: lazarusidestrconsts.liscleanupunitpath
 msgid "Clean up unit path?"
@@ -6421,7 +6420,7 @@ msgstr "\"Lazarus kompilieren\" einstellen"
 
 #: lazarusidestrconsts.lisconfigureeditortoolbar
 msgid "Configure Toolbar"
-msgstr ""
+msgstr "Symbolleiste konfigurieren"
 
 #: lazarusidestrconsts.lisconfigurelazaruside
 msgid "Configure Lazarus IDE"
@@ -6968,7 +6967,7 @@ msgstr ""
 
 #: lazarusidestrconsts.liscoolbarhelp2
 msgid "If none is selected, the Item will be appended at the end of the Toolbar."
-msgstr ""
+msgstr "Wenn nichts ausgewählt ist, dann wird das Element am Ende der Symbolleiste angehängt."
 
 #: lazarusidestrconsts.liscoolbarhelp3
 msgid "You may rearrange Toolbar Items with \"Move Up\" and \"Move Down\" buttons."
@@ -7335,7 +7334,7 @@ msgstr "Ausschneiden"
 
 #: lazarusidestrconsts.lisdadattach
 msgid "Attach"
-msgstr ""
+msgstr "Anhängen"
 
 #: lazarusidestrconsts.lisdadimagename
 msgid "Image Name"
@@ -8225,7 +8224,7 @@ msgstr "Editormakros"
 
 #: lazarusidestrconsts.liseditortoolbar
 msgid "Editor ToolBar"
-msgstr ""
+msgstr "Editor-Symbolleiste"
 
 #: lazarusidestrconsts.liseditortoolbarhint
 msgid "You may add here your favorite commands"
@@ -8233,7 +8232,7 @@ msgstr ""
 
 #: lazarusidestrconsts.liseditortoolbarvisible
 msgid "EditorToolbar is &visible"
-msgstr ""
+msgstr "Editor-Symbolleiste ist sichtbar"
 
 #: lazarusidestrconsts.lisedoptsloadascheme
 msgid "Load a scheme"
@@ -10005,7 +10004,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisinvalidexecutablemessagetext
 msgid "The file \"%s\" is not executable."
-msgstr ""
+msgstr "Die Datei \"%s\" ist nicht ausführbar."
 
 #: lazarusidestrconsts.lisinvalidexpression
 msgid "Invalid expression:%s%s%s%s"
@@ -10122,7 +10121,7 @@ msgstr "Sprungliste"
 
 #: lazarusidestrconsts.lisjumptoerror
 msgid "Jump to error"
-msgstr ""
+msgstr "Zum Fehler springen"
 
 #: lazarusidestrconsts.lisjumptoerroratidentifiercompletion
 msgid "When an error in the sources is found at identifier completion, jump to it."
@@ -12493,7 +12492,7 @@ msgstr "Weiter"
 
 #: lazarusidestrconsts.lismore2
 msgid "More ..."
-msgstr ""
+msgstr "Mehr ..."
 
 #: lazarusidestrconsts.lismoresub
 msgctxt "lazarusidestrconsts.lismoresub"
@@ -14520,7 +14519,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisposition
 msgid "Position"
-msgstr ""
+msgstr "Position"
 
 #: lazarusidestrconsts.lispositionoutsideofsource
 msgid "%s (position outside of source)"
@@ -16870,7 +16869,7 @@ msgstr "Symbolleiste"
 
 #: lazarusidestrconsts.listoolbaroptionshighlight
 msgid "Highlight toolbars buttons"
-msgstr ""
+msgstr "Symbolleisten-Schaltflächen hervorheben"
 
 #: lazarusidestrconsts.listoolbaroptionsraise
 msgid "Raise toolbars"
@@ -16878,11 +16877,11 @@ msgstr ""
 
 #: lazarusidestrconsts.listoolbaroptionsstandardvisible
 msgid "Standard toolbar visible"
-msgstr ""
+msgstr "Standard-Symbolleiste sichtbar"
 
 #: lazarusidestrconsts.listoolbaroptionstoolbarsvisible
 msgid "Toolbars visible"
-msgstr ""
+msgstr "Symbolleisten sichtbar"
 
 #: lazarusidestrconsts.listoolbaroptionsviewdebugvisible
 msgid "Debug toolbar visible"
@@ -16913,7 +16912,6 @@ msgid "tool stopped with exit code %s. Use context menu to get more information.
 msgstr ""
 
 #: lazarusidestrconsts.listop
-#, fuzzy
 msgctxt "lazarusidestrconsts.listop"
 msgid "Top"
 msgstr "Oben"
@@ -18092,7 +18090,7 @@ msgstr "Umgekehrt zufügen"
 
 #: lazarusidestrconsts.rsattachto
 msgid "Attach to"
-msgstr ""
+msgstr "Anhängen an"
 
 #: lazarusidestrconsts.rsattributes
 msgid "Attributes"
@@ -18511,7 +18509,7 @@ msgstr "Neuer überwachter Ausdruck"
 
 #: lazarusidestrconsts.srkmecattach
 msgid "Attach to program"
-msgstr ""
+msgstr "An Prozess anhängen"
 
 #: lazarusidestrconsts.srkmecautocompletion
 msgid "Code template completion"
@@ -18728,7 +18726,7 @@ msgstr "Bis zum Wortende löschen"
 
 #: lazarusidestrconsts.srkmecdetach
 msgid "Detach from program"
-msgstr ""
+msgstr "Vom Prozess abtrennen"
 
 #: lazarusidestrconsts.srkmecdiff
 msgctxt "lazarusidestrconsts.srkmecdiff"
@@ -18979,13 +18977,11 @@ msgid "Invert Assignment"
 msgstr "Umgekehrte Zuweisung"
 
 #: lazarusidestrconsts.srkmeckeymapleft
-#, fuzzy
 msgctxt "lazarusidestrconsts.srkmeckeymapleft"
 msgid "Left"
 msgstr "Links"
 
 #: lazarusidestrconsts.srkmeckeymapright
-#, fuzzy
 msgctxt "lazarusidestrconsts.srkmeckeymapright"
 msgid "Right"
 msgstr "Rechts"
@@ -20016,4 +20012,3 @@ msgstr "Schreibgeschützt"
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"
 msgstr "Versionsinformation"
-
