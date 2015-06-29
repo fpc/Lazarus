@@ -3400,8 +3400,8 @@ var
 begin
   if not (Brush.Kind in [bkVerticalGradient, bkHorizontalGradient]) then
     Exit;
-  lColor1 := Brush.Gradient_colors[0];
-  lColor2 := Brush.Gradient_colors[1];
+  lColor1 := Brush.Gradient_colors[1];
+  lColor2 := Brush.Gradient_colors[0];
   if Brush.Kind = bkVerticalGradient then
   begin
     for i := y1 to y2 do
