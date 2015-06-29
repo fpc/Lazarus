@@ -7237,7 +7237,7 @@ const
 
 var
   RadioGroup: PGSList;
-  CurrentGroupIndex: Integer;
+  //CurrentGroupIndex: Integer;
 begin
   Result := False;
 
@@ -7247,7 +7247,7 @@ begin
     Exit;
   end;
 
-  CurrentGroupIndex := integer({%H-}PtrUInt(g_object_get_data({%H-}Pointer(hndMenu), GROUPIDX_DATANAME)));
+  //CurrentGroupIndex := integer({%H-}PtrUInt(g_object_get_data({%H-}Pointer(hndMenu), GROUPIDX_DATANAME)));
 
   // Update needed ?
  { if GroupIndex = CurrentGroupIndex
