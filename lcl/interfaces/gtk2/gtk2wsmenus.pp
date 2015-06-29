@@ -365,7 +365,7 @@ var
 begin
   if not WSCheckMenuItem(AMenuItem, 'SetCaption') then
     Exit;
-  if gtk_is_separator_menu_item(PGTKWidget(AMenuItem.Handle)) Or (ACaption = cLineCaption) then
+  if gtk_is_separator_menu_item({%H-}PGTKWidget(AMenuItem.Handle)) Or (ACaption = cLineCaption) then
    AMenuItem.RecreateHandle
   else
    begin
