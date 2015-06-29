@@ -1,0 +1,85 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Swen Heinig <swen@heinig.email>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.7.5\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language: de\n"
+
+#: printer4lazstrconst.p4lrsadvanced
+msgid "Advanced"
+msgstr "Erweitert"
+
+#: printer4lazstrconst.p4lrsbanners
+msgid "Banners"
+msgstr "Banner"
+
+#: printer4lazstrconst.p4lrscancel
+msgid "Cancel"
+msgstr "Abbrechen"
+
+#: printer4lazstrconst.p4lrsend
+msgid "End"
+msgstr "Ende"
+
+#: printer4lazstrconst.p4lrsgeneral
+msgid "General"
+msgstr "Allgemein"
+
+#: printer4lazstrconst.p4lrslandscape
+msgid "Landscape"
+msgstr "Querformat"
+
+#: printer4lazstrconst.p4lrsmargins
+msgid "Margins"
+msgstr "Ränder"
+
+#: printer4lazstrconst.p4lrsok
+msgid "Ok"
+msgstr "OK"
+
+#: printer4lazstrconst.p4lrsorientation
+msgid "Orientation"
+msgstr "Ausrichtung"
+
+#: printer4lazstrconst.p4lrspagespersheet
+msgid "Pages per sheet"
+msgstr "Seiten pro Blatt"
+
+#: printer4lazstrconst.p4lrspapersize
+msgid "Paper size"
+msgstr "Papiergröße"
+
+#: printer4lazstrconst.p4lrspapersource
+msgid "Paper source"
+msgstr "Papierschacht"
+
+#: printer4lazstrconst.p4lrspapertype
+msgid "Paper type"
+msgstr "Papiertyp"
+
+#: printer4lazstrconst.p4lrsportrait
+msgid "Portrait"
+msgstr "Hochformat"
+
+#: printer4lazstrconst.p4lrsresolution
+msgid "Resolution"
+msgstr "Auflösung"
+
+#: printer4lazstrconst.p4lrsreverselandscape
+msgid "Reverse landscape"
+msgstr "Querformat gedreht"
+
+#: printer4lazstrconst.p4lrsreverseportrait
+msgid "Reverse portrait"
+msgstr "Hochformat gedreht"
+
+#: printer4lazstrconst.p4lrsstart
+msgid "Start"
+msgstr "Start"
