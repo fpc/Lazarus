@@ -438,7 +438,8 @@ type
     function  GetHeight(ADest: TFPCustomCanvas): Double;
     function  GetWidth(ADest: TFPCustomCanvas): Double;
     {@@ ASubpart is only valid if this routine returns vfrSubpartFound }
-    function TryToSelect(APos: TPoint; var ASubpart: Cardinal): TvFindEntityResult; virtual;
+    function GetLineIntersectionPoints(ACoord: Double; ACoordIsX: Boolean): TDoubleDynArray; virtual; // get all points where the entity inner area crosses a line
+    function TryToSelect(APos: TPoint; var ASubpart: Cardinal; ASnapFlexibility: Integer = 5): TvFindEntityResult; virtual;
     procedure Move(ADeltaX, ADeltaY: Double); virtual;
     procedure MoveSubpart(ADeltaX, ADeltaY: Double; ASubpart: Cardinal); virtual;
     function  GetSubpartCount: Integer; virtual;
@@ -496,6 +497,9 @@ type
     procedure ApplyBrushToCanvas(ADest: TFPCustomCanvas); overload;
     procedure ApplyBrushToCanvas(ADest: TFPCustomCanvas; ABrush: TvBrush); overload;
     procedure AssignBrush(ABrush: TvBrush);
+    procedure DrawBrushGradient(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo;
+      x1, y1, x2, y2: Integer;
+      ADestX: Integer = 0; ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0);
     procedure Render(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0; ADoDraw: Boolean = True); override;
     function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; override;
@@ -589,7 +593,7 @@ type
     Render_Use_NextText_X: Boolean;
     constructor Create(APage: TvPage); override;
     destructor Destroy; override;
-    function TryToSelect(APos: TPoint; var ASubpart: Cardinal): TvFindEntityResult; override;
+    function TryToSelect(APos: TPoint; var ASubpart: Cardinal; ASnapFlexibility: Integer = 5): TvFindEntityResult; override;
     procedure CalculateBoundingBox(ADest: TFPCustomCanvas; var ALeft, ATop, ARight, ABottom: Double); override;
     procedure Render(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0; ADoDraw: Boolean = True); override;
@@ -666,6 +670,8 @@ type
     VertHalfAxis: Double; // This half-axis is the vertical one when Angle=0
     {@@ The Angle is measured in degrees in relation to the positive X axis }
     Angle: Double;
+    function GetLineIntersectionPoints(ACoord: Double; ACoordIsX: Boolean): TDoubleDynArray; override;
+    function TryToSelect(APos: TPoint; var ASubpart: Cardinal; ASnapFlexibility: Integer = 5): TvFindEntityResult; override;
     procedure CalculateBoundingBox(ADest: TFPCustomCanvas; var ALeft, ATop, ARight, ABottom: Double); override;
     procedure Render(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0; ADoDraw: Boolean = True); override;
@@ -1031,7 +1037,7 @@ type
     function AddRasterImage: TvRasterImage;
     function AddEmbeddedVectorialDoc: TvEmbeddedVectorialDoc;
     procedure CalculateBoundingBox(ADest: TFPCustomCanvas; var ALeft, ATop, ARight, ABottom: Double); override;
-    function TryToSelect(APos: TPoint; var ASubpart: Cardinal): TvFindEntityResult; override;
+    function TryToSelect(APos: TPoint; var ASubpart: Cardinal; ASnapFlexibility: Integer = 5): TvFindEntityResult; override;
     procedure Render(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0; ADoDraw: Boolean = True); override;
     function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; override;
@@ -1104,7 +1110,7 @@ type
     procedure GetEffectiveCellSpacing(out ATopSpacing, ALeftSpacing, ARightSpacing, ABottomSpacing: Double); virtual;
     function CalculateCellHeight_ForWidth(ADest: TFPCustomCanvas; AWidth: Double): Double; virtual;
     function CalculateMaxNeededWidth(ADest: TFPCustomCanvas): Double; virtual;
-    function TryToSelect(APos: TPoint; var ASubpart: Cardinal): TvFindEntityResult; override;
+    function TryToSelect(APos: TPoint; var ASubpart: Cardinal; ASnapFlexibility: Integer = 5): TvFindEntityResult; override;
     procedure Render(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0; ADoDraw: Boolean = True); override;
     function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; override;
@@ -3167,7 +3173,12 @@ begin
   Result := Abs(ALeft - ARight);
 end;
 
-function TvEntity.TryToSelect(APos: TPoint; var ASubpart: Cardinal): TvFindEntityResult;
+function TvEntity.GetLineIntersectionPoints(ACoord: Double; ACoordIsX: Boolean): TDoubleDynArray;
+begin
+  SetLength(Result, 0);
+end;
+
+function TvEntity.TryToSelect(APos: TPoint; var ASubpart: Cardinal; ASnapFlexibility: Integer = 5): TvFindEntityResult;
 begin
   Result := vfrNotFound;
 end;
@@ -3348,6 +3359,71 @@ procedure TvEntityWithPenAndBrush.AssignBrush(ABrush: TvBrush);
 begin
   Brush.Style := ABrush.Style;
   Brush.Color := ABrush.Color;
+end;
+
+procedure TvEntityWithPenAndBrush.DrawBrushGradient(ADest: TFPCustomCanvas;
+  var ARenderInfo: TvRenderInfo; x1, y1, x2, y2: Integer;
+  ADestX: Integer; ADestY: Integer; AMulX: Double; AMulY: Double);
+
+  function CoordToCanvasX(ACoord: Double): Integer;
+  begin
+    Result := Round(ADestX + AmulX * ACoord);
+  end;
+
+  function CoordToCanvasY(ACoord: Double): Integer;
+  begin
+    Result := Round(ADestY + AmulY * ACoord);
+  end;
+
+  function CanvasToCoordY(ACanvas: Integer): Double;
+  begin
+    Result := (ACanvas - ADestY) / AmulY;
+  end;
+
+  function CanvasToCoordX(ACanvas: Integer): Double;
+  begin
+    Result := (ACanvas - ADestX) / AmulX;
+  end;
+
+  function MixColors(AColor1, AColor2: TFPColor; APos, AMax: Double): TFPColor;
+  begin
+    Result.Alpha := Round(AColor1.Alpha * APos / AMax + AColor2.Alpha * (AMax - APos) / AMax);
+    Result.Red := Round(AColor1.Red * APos / AMax + AColor2.Red * (AMax - APos) / AMax);
+    Result.Green := Round(AColor1.Green * APos / AMax + AColor2.Green * (AMax - APos) / AMax);
+    Result.Blue := Round(AColor1.Blue * APos / AMax + AColor2.Blue * (AMax - APos) / AMax);
+  end;
+
+var
+  i: Integer;
+  lPoints: TDoubleDynArray;
+  lColor, lColor1, lColor2: TFPColor;
+begin
+  if not (Brush.Kind in [bkVerticalGradient, bkHorizontalGradient]) then
+    Exit;
+  lColor1 := Brush.Gradient_colors[0];
+  lColor2 := Brush.Gradient_colors[1];
+  if Brush.Kind = bkVerticalGradient then
+  begin
+    for i := y1 to y2 do
+    begin
+      lPoints := GetLineIntersectionPoints(CanvasToCoordY(i), False);
+      lColor := MixColors(lColor1, lColor2, i-y1, y2-y1);
+      ADest.Pen.FPColor := lColor;
+      ADest.Pen.Style := psSolid;
+      ADest.Line(CoordToCanvasX(lPoints[0]), i, CoordToCanvasX(lPoints[1]), i);
+    end;
+  end
+  else if Brush.Kind = bkHorizontalGradient then
+  begin
+    for i := x1 to x2 do
+    begin
+      lPoints := GetLineIntersectionPoints(CanvasToCoordX(i), True);
+      lColor := MixColors(lColor1, lColor2, i-x1, x2-x1);
+      ADest.Pen.FPColor := lColor;
+      ADest.Pen.Style := psSolid;
+      ADest.Line(i, CoordToCanvasY(lPoints[0]), i, CoordToCanvasY(lPoints[1]));
+    end;
+  end;
 end;
 
 procedure TvEntityWithPenAndBrush.Render(ADest: TFPCustomCanvas;
@@ -4170,11 +4246,11 @@ begin
   inherited Destroy;
 end;
 
-function TvText.TryToSelect(APos: TPoint; var ASubpart: Cardinal): TvFindEntityResult;
+function TvText.TryToSelect(APos: TPoint; var ASubpart: Cardinal; ASnapFlexibility: Integer = 5): TvFindEntityResult;
 var
   lProximityFactor: Integer;
 begin
-  lProximityFactor := 5;
+  lProximityFactor := ASnapFlexibility;
   if (APos.X > X - lProximityFactor) and (APos.X < X + lProximityFactor)
     and (APos.Y > Y - lProximityFactor) and (APos.Y < Y + lProximityFactor) then
     Result := vfrFound
@@ -4537,6 +4613,37 @@ end;
 
 { TvEllipse }
 
+function TvEllipse.GetLineIntersectionPoints(ACoord: Double; ACoordIsX: Boolean): TDoubleDynArray;
+begin
+  SetLength(Result, 2);
+  // this is for axis-aligned ellipses
+  // (X-Xcenter)^2 / Rx^2 + (Y-Ycenter)^2 / Ry^2 <= 1
+  if ACoordIsX then
+  begin
+    // Y = sqrt( 1 - (X-Xcenter)^2 / Rx^2 ) * Ry + Xcenter
+    Result[0] := Max(0, 1-sqr(ACoord-X) / sqr(HorzHalfAxis));
+    Result[0] := sqrt(Result[0]) * VertHalfAxis + X;
+    Result[1] := Max(0, 1-sqr(ACoord-X) / sqr(HorzHalfAxis));
+    Result[1] := -1 * sqrt(Result[1]) * VertHalfAxis + X;
+  end
+  else
+  begin
+    Result[0] := Max(0, 1-sqr(ACoord-Y) / sqr(VertHalfAxis));
+    Result[0] := sqrt(Result[0]) * HorzHalfAxis + Y;
+    Result[1] := Max(0, 1-sqr(ACoord-Y) / sqr(VertHalfAxis));
+    Result[1] := -1 * sqrt(Result[1]) * HorzHalfAxis + Y;
+  end;
+end;
+
+function TvEllipse.TryToSelect(APos: TPoint; var ASubpart: Cardinal;
+  ASnapFlexibility: Integer): TvFindEntityResult;
+begin
+  // this is for axis-aligned ellipses
+  // (X-Xcenter)^2 / Rx^2 + (Y-Ycenter)^2 / Ry^2 <= 1
+  Result := vfrNotFound;
+  //Result := vfrFound;
+end;
+
 procedure TvEllipse.CalculateBoundingBox(ADest: TFPCustomCanvas; var ALeft, ATop, ARight, ABottom: Double);
 var
   t, tmp: Double;
@@ -4632,13 +4739,19 @@ begin
     ADest.Ellipse(x1, y1, x2, y2);
   end;
   // Apply brush gradient
-  if Brush.Kind in [bkHorizontalGradient, bkVerticalGradient] then
+  if x1 > x2 then
   begin
-    {PrepareBrushBitmap(x2, y2);
-    BrushBitmap.Canvas.Ellipse(0, 0, x2-x1, y2-y1);
-    AlphaBlendBrushBitmap(ADest, x1, y1);
-    FreeAndNil(BrushBitmap);}
+    dk := x1;
+    x1 := x2;
+    x2 := dk;
   end;
+  if y1 > y2 then
+  begin
+    dk := y1;
+    y1 := y2;
+    y2 := dk;
+  end;
+  DrawBrushGradient(ADest, ARenderInfo, x1, y1, x2, y2, ADestX, ADestY, AMulX, AMulY);
 end;
 
 { TvRectangle }
@@ -6472,9 +6585,9 @@ begin
   ABottom := Y;
 end;
 
-function TvParagraph.TryToSelect(APos: TPoint; var ASubpart: Cardinal): TvFindEntityResult;
+function TvParagraph.TryToSelect(APos: TPoint; var ASubpart: Cardinal; ASnapFlexibility: Integer = 5): TvFindEntityResult;
 begin
-  Result:=inherited TryToSelect(APos, ASubpart);
+  Result:=inherited TryToSelect(APos, ASubpart, ASnapFlexibility);
 end;
 
 procedure TvParagraph.Render(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo;
@@ -6845,9 +6958,9 @@ begin
   Result := Result + SpacingLeft + SpacingRight;
 end;
 
-function TvRichText.TryToSelect(APos: TPoint; var ASubpart: Cardinal): TvFindEntityResult;
+function TvRichText.TryToSelect(APos: TPoint; var ASubpart: Cardinal; ASnapFlexibility: Integer = 5): TvFindEntityResult;
 begin
-  Result:=inherited TryToSelect(APos, ASubpart);
+  Result:=inherited TryToSelect(APos, ASubpart, ASnapFlexibility);
 end;
 
 procedure TvRichText.Render(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo;
