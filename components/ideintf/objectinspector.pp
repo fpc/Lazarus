@@ -1551,8 +1551,7 @@ var CurRow: TOIPropertyGridRow;
 begin
   if (pgsUpdatingEditControl in FStates) or not IsCurrentEditorAvailable then exit;
   CurRow:=Rows[FItemIndex];
-  if paAutoUpdate in CurRow.Editor.GetAttributes then
-    SetRowValue(true);
+  SetRowValue(true);
 end;
 
 procedure TOICustomPropertyGrid.ValueEditMouseUp(Sender: TObject;

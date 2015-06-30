@@ -110,9 +110,6 @@ type
                         one component is selected. Some properties are not
                         appropriate for multi-selection (e.g. the Name
                         property).
-        paAutoUpdate:   Causes the SetValue method to be called on each
-                        change made to the editor instead of after the change
-                        has been approved (e.g. the Caption property).
         paReadOnly:     Value is not allowed to change. But if paDialog is set
                         a Dialog can change the value. This disables only the
                         edit and combobox in the object inspector.
@@ -234,7 +231,6 @@ type
     paDynamicSubProps,
     paDialog,
     paMultiSelect,
-    paAutoUpdate,
     paSortList,
     paReadOnly,
     paRevertable,
@@ -5184,7 +5180,7 @@ end;
 
 function TCaptionPropertyEditor.GetAttributes: TPropertyAttributes;
 begin
-  Result := [paMultiSelect, paAutoUpdate, paRevertable];
+  Result := [paMultiSelect, paRevertable];
 end;
 
 { TStringsPropertyEditor }
@@ -5271,7 +5267,7 @@ end;
 
 function TStringMultilinePropertyEditor.GetAttributes: TPropertyAttributes;
 begin
-  Result := [paMultiSelect, paDialog, paRevertable, paAutoUpdate];
+  Result := [paMultiSelect, paDialog, paRevertable];
 end;
 
 { TCursorPropertyEditor }
