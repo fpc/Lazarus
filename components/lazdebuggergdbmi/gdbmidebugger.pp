@@ -7854,7 +7854,8 @@ begin
                 '" Addr=', dbgs(ExceptAddr), ' Dbg.State=', dbgs(State)]);
   end;
 
-  if (FCommandQueue.Count = 0) and assigned(OnIdle) and (FInExecuteCount=0) and (not FInIdle)
+  if (FCommandQueue.Count = 0) and assigned(OnIdle) and (FInExecuteCount=0) and
+     (not FInIdle) and not(State in [dsError, dsDestroying])
   then begin
     repeat
       DebugLnEnter(DBGMI_QUEUE_DEBUG, ['>> Run OnIdle']);
@@ -7869,7 +7870,7 @@ begin
         FInIdle := False;
       end;
       DebugLnExit(DBGMI_QUEUE_DEBUG, ['<< Run OnIdle']);
-    until not R;
+    until (not R) or (not assigned(OnIdle)) or (State in [dsError, dsDestroying]);
     DebugLn(DBGMI_QUEUE_DEBUG, ['OnIdle: Finished ']);
   end;
 
