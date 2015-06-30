@@ -289,7 +289,7 @@ begin
         else
         begin
           AColor:=clNavy;
-          if IdentItem.IsContructor then
+          if IdentItem.IsConstructor then
             s := 'constructor'
           else
           if IdentItem.IsDestructor then

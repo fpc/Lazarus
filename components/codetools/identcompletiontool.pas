@@ -158,7 +158,7 @@ type
     function HasChilds: boolean;
     function HasIndex: boolean;
     function IsFunction: boolean;
-    function IsContructor: boolean;
+    function IsConstructor: boolean;
     function IsDestructor: boolean;
     function IsAbstractMethod: boolean;
     function TryIsAbstractMethod: boolean;
@@ -677,7 +677,7 @@ var
   AnAVLNode: TAVLTreeNode;
 begin
   if (ilcfDontAllowProcedures in ContextFlags) and (NewItem.GetDesc = ctnProcedure) and
-     not (NewItem.IsFunction or NewItem.IsContructor)
+     not (NewItem.IsFunction or NewItem.IsConstructor)
   then
   begin
     NewItem.Free;
@@ -3693,7 +3693,7 @@ begin
   Result := iliIsFunction in Flags;
 end;
 
-function TIdentifierListItem.IsContructor: boolean;
+function TIdentifierListItem.IsConstructor: boolean;
 var
   ANode: TCodeTreeNode;
 begin
