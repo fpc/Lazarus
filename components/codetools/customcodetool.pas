@@ -1740,7 +1740,7 @@ begin
         if CurPos.StartPos>1 then begin
           c1:=Src[CurPos.StartPos-1];
           // test for double char operators :=, +=, -=, /=, *=, <>, <=, >=, **, ><
-          if ((c2='=') and  (IsEqualOperatorStartChar[c1]))
+          if ((c2='=') and (IsEqualOperatorStartChar[c1]))
           or ((c1='<') and (c2='>'))
           or ((c1='>') and (c2='<'))
           or ((c1='.') and (c2='.'))
@@ -1748,7 +1748,7 @@ begin
           or ((c1='@') and (c2='@'))
           then begin
             dec(CurPos.StartPos);
-            CurPos.Flag:=cafNone;
+            CurPos.Flag:=cafOtherOperator;
           end else begin
             case c2 of
             '=': CurPos.Flag:=cafEqual;

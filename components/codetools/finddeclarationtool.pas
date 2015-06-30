@@ -7894,7 +7894,7 @@ var
 
       if (Context.Node = nil) then
       begin
-        if (ExprType.Desc in xtAllPredefinedTypes) then
+        if (ExprType.Desc in xtAllIdentPredefinedTypes) then
         begin
           //no problem, we found predefined basic type (e.g. string) without a context!
           //find class helpers!
@@ -8089,7 +8089,7 @@ var
       RaiseIdentExpected;
     end;
     ResolveChildren;
-    if ExprType.Desc in xtAllPredefinedTypes then begin
+    if ExprType.Desc in xtAllIdentPredefinedTypes then begin
       //Lazarus supports record helpers for basic types (string) as well (with TYPEHELPERS modeswitch!).
     end else if (ExprType.Context.Node=nil) then begin
       MoveCursorToCleanPos(CurAtom.StartPos);

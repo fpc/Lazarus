@@ -194,7 +194,8 @@ type
     ilcfNeedsDo,           // after context a 'do' is needed. e.g. 'with Form1| do'
     ilcfIsExpression,      // is expression part of statement. e.g. 'if expr'
     ilcfCanProcDeclaration,// context allows one to declare a procedure/method
-    ilcfEndOfLine          // atom at end of line
+    ilcfEndOfLine,         // atom at end of line
+    ilcfDontAllowProcedures// context doesn't allow procedures (e.g. in function parameter, after assignment or other operator, in if codition etc.)
     );
   TIdentifierListContextFlags = set of TIdentifierListContextFlag;
   
@@ -372,9 +373,9 @@ type
     function CollectAllIdentifiers(Params: TFindDeclarationParams;
       const FoundContext: TFindContext): TIdentifierFoundResult;
     procedure GatherPredefinedIdentifiers(CleanPos: integer;
-      const Context: TFindContext);
+      const Context, GatherContext: TFindContext);
     procedure GatherUsefulIdentifiers(CleanPos: integer;
-      const Context: TFindContext);
+      const Context, GatherContext: TFindContext);
     procedure GatherUnitnames;
     procedure GatherSourceNames(const Context: TFindContext);
     procedure GatherContextKeywords(const Context: TFindContext;
@@ -675,6 +676,14 @@ procedure TIdentifierList.Add(NewItem: TIdentifierListItem);
 var
   AnAVLNode: TAVLTreeNode;
 begin
+  if (ilcfDontAllowProcedures in ContextFlags) and (NewItem.GetDesc = ctnProcedure) and
+     not (NewItem.IsFunction or NewItem.IsContructor)
+  then
+  begin
+    NewItem.Free;
+    Exit;
+  end;
+
   AnAVLNode:=FIdentView.FindKey(NewItem,@CompareIdentListItemsForIdents);
   if AnAVLNode=nil then begin
     if History<>nil then
@@ -904,8 +913,7 @@ var
   NewItem: TIdentifierListItem;
 begin
   //DebugLn(['AddCompilerProcedure ',AProcName,' ',ilcfStartOfStatement in CurrentIdentifierList.ContextFlags]);
-  if not (ilcfStartOfStatement in CurrentIdentifierList.ContextFlags) then exit;
-  if not (ilcfStartOfOperand in CurrentIdentifierList.ContextFlags) then exit;
+  if (ilcfDontAllowProcedures in CurrentIdentifierList.ContextFlags) then exit;
 
   NewItem:=TIdentifierListItem.Create(
       icompUnknown,
@@ -939,8 +947,6 @@ procedure TIdentCompletionTool.AddCompilerFunction(const AProcName, AParameterLi
 var
   NewItem: TIdentifierListItem;
 begin
-  if not (ilcfStartOfOperand in CurrentIdentifierList.ContextFlags) then exit;
-
   NewItem:=TIdentifierListItem.Create(
       icompUnknown,
       false,
@@ -1258,7 +1264,7 @@ begin
 end;
 
 procedure TIdentCompletionTool.GatherPredefinedIdentifiers(CleanPos: integer;
-  const Context: TFindContext);
+  const Context, GatherContext: TFindContext);
 // Add predefined identifiers
 
   function StatementLevel: integer;
@@ -1296,11 +1302,21 @@ var
   ProcNode: TCodeTreeNode;
   HidddnUnits: String;
   p: PChar;
+  SystemTool: TFindDeclarationTool;
+  I: TExpressionTypeDesc;
+  InSystemContext: Boolean;
 begin
-  if not (ilcfStartOfOperand in CurrentIdentifierList.ContextFlags) then exit;
   if CleanPos=0 then ;
 
-  if Context.Node.Desc in AllPascalStatements then begin
+  SystemTool := FindCodeToolForUsedUnit('System','',False);
+  InSystemContext :=
+     (ilcfStartOfOperand in CurrentIdentifierList.ContextFlags) or
+       ((ilcfStartIsSubIdent in CurrentIdentifierList.ContextFlags) and
+        (GatherContext.Tool<>nil) and (GatherContext.Node<>nil) and (SystemTool<>nil) and
+        (GatherContext.Tool = SystemTool) and (GatherContext.Node = SystemTool.FindInterfaceNode));
+
+  if InSystemContext and (Context.Node.Desc in AllPascalStatements) then
+  begin
     // see fpc/compiler/psystem.pp
     AddCompilerProcedure('Assert','Condition:Boolean;const Message:String');
     AddCompilerFunction('Assigned','P:Pointer','Boolean');
@@ -1347,7 +1363,12 @@ begin
     AddCompilerProcedure('Write','Args:Arguments');
     AddCompilerProcedure('WriteLn','Args:Arguments');
     AddCompilerProcedure('WriteStr','var S:String;Args:Arguments');
+  end;
 
+  if (ilcfStartOfOperand in CurrentIdentifierList.ContextFlags) and
+     (Context.Node.Desc in AllPascalStatements)
+  then
+  begin
     if (ilcfStartOfOperand in CurrentIdentifierList.ContextFlags)
     and Context.Tool.NodeIsInAMethod(Context.Node)
     and (not CurrentIdentifierList.HasIdentifier('Self','')) then begin
@@ -1382,57 +1403,41 @@ begin
   end;
 
   // system types
-  AddBaseType('Char');
-  AddBaseType('WideChar');
-  AddBaseType('Real');
-  AddBaseType('Single');
-  AddBaseType('Double');
-  AddBaseType('Extended');
-  AddBaseType('CExtended');
-  AddBaseType('Currency');
-  AddBaseType('Comp');
-  AddBaseType('Int64');
-  AddBaseType('Cardinal');
-  AddBaseType('QWord');
-  AddBaseType('Boolean');
-  AddBaseType('ByteBool');
-  AddBaseType('WordBool');
-  AddBaseType('LongBool');
-  AddBaseType('QWordBool');
-  AddBaseType('String');
-  AddBaseType('AnsiString');
-  AddBaseType('ShortString');
-  AddBaseType('WideString');
-  AddBaseType('UnicodeString');
-  AddBaseType('Pointer');
-  AddBaseType('LongInt');
-  AddBaseType('Word');
-  AddBaseType('SmallInt');
-  AddBaseType('ShortInt');
-  AddBaseType('Byte');
-  if not (ilcfStartInStatement in CurrentIdentifierList.ContextFlags) then begin
-    AddBaseType('File');
-    AddBaseType('Text');
+  if InSystemContext then
+  begin
+    for I := Low(I) to High(I) do
+    begin
+      case I of
+        xtChar..xtPointer, xtLongint..xtByte:
+          AddBaseType(PChar(ExpressionTypeDescNames[I]));
+        xtFile, xtText:
+          if not (ilcfStartInStatement in CurrentIdentifierList.ContextFlags) then
+            AddBaseType(PChar(ExpressionTypeDescNames[I]));
+      end;
+    end;
+    AddBaseConstant('True');
+    AddBaseConstant('False');
+    //the nil constant doesn't belong to system context, therefore it is added in next step
   end;
-  AddBaseConstant('Nil');
-  AddBaseConstant('True');
-  AddBaseConstant('False');
-
-  // system units
-  HidddnUnits:=Scanner.GetHiddenUsedUnits;
-  if HidddnUnits<>'' then begin
-    p:=PChar(HidddnUnits);
-    while p^<>#0 do begin
-      while p^=',' do inc(p);
-      if GetIdentLen(p)>0 then
-        AddSystemUnit(p);
-      while not (p^ in [',',#0]) do inc(p);
+  if (ilcfStartOfOperand in CurrentIdentifierList.ContextFlags) then
+  begin
+    AddBaseConstant(PChar(ExpressionTypeDescNames[xtNil]));
+    // system units
+    HidddnUnits:=Scanner.GetHiddenUsedUnits;
+    if HidddnUnits<>'' then begin
+      p:=PChar(HidddnUnits);
+      while p^<>#0 do begin
+        while p^=',' do inc(p);
+        if GetIdentLen(p)>0 then
+          AddSystemUnit(p);
+        while not (p^ in [',',#0]) do inc(p);
+      end;
     end;
   end;
 end;
 
 procedure TIdentCompletionTool.GatherUsefulIdentifiers(CleanPos: integer;
-  const Context: TFindContext);
+  const Context, GatherContext: TFindContext);
 
   procedure AddPropertyProc(ProcName: string);
   var
@@ -1449,7 +1454,7 @@ var
   PropertyName: String;
 begin
   //debugln(['TIdentCompletionTool.GatherUsefulIdentifiers ',CleanPosToStr(CleanPos),' ',dbgsFC(Context)]);
-  GatherPredefinedIdentifiers(CleanPos,Context);
+  GatherPredefinedIdentifiers(CleanPos,Context,GatherContext);
   if Context.Node.Desc=ctnProperty then begin
     PropertyName:=ExtractPropName(Context.Node,false);
     //debugln('TIdentCompletionTool.GatherUsefulIdentifiers Property ',PropertyName);
@@ -2569,43 +2574,6 @@ begin
       CursorContext:=CreateFindContext(Self,CursorNode);
       GatherContextKeywords(CursorContext,IdentStartPos,Beautifier);
 
-      // search and gather identifiers in context
-      if (GatherContext.Tool<>nil) and (GatherContext.Node<>nil) then begin
-        {$IFDEF CTDEBUG}
-        DebugLn('TIdentCompletionTool.GatherIdentifiers D CONTEXT: ',
-          GatherContext.Tool.MainFilename,
-          ' ',GatherContext.Node.DescAsString,
-          ' "',StringToPascalConst(copy(GatherContext.Tool.Src,GatherContext.Node.StartPos,50)),'"');
-        {$ENDIF}
-
-        // gather all identifiers in context
-        Params.ContextNode:=GatherContext.Node;
-        Params.SetIdentifier(Self,nil,@CollectAllIdentifiers);
-        Params.Flags:=[fdfSearchInAncestors,fdfCollect,fdfFindVariable,fdfSearchInHelpers];
-        if (Params.ContextNode.Desc=ctnInterface) and StartInSubContext then
-          Include(Params.Flags,fdfIgnoreUsedUnits);
-        if not StartInSubContext then
-          Include(Params.Flags,fdfSearchInParentNodes);
-        if Params.ContextNode.Desc in AllClasses then
-          Exclude(Params.Flags,fdfSearchInParentNodes);
-        {$IFDEF CTDEBUG}
-        DebugLn('TIdentCompletionTool.GatherIdentifiers F');
-        {$ENDIF}
-        CurrentIdentifierList.Context:=GatherContext;
-        if GatherContext.Node.Desc=ctnIdentifier then
-          Params.Flags:=Params.Flags+[fdfIgnoreCurContextNode];
-        GatherContext.Tool.FindIdentifierInContext(Params);
-      end else
-      if ExprType.Desc in xtAllIdentPredefinedTypes then
-      begin
-        // gather all identifiers in cursor context for basic types (strings etc.)
-        Params.ContextNode:=CursorNode;
-        Params.SetIdentifier(Self,nil,@CollectAllIdentifiers);
-        Params.Flags:=[fdfSearchInAncestors,fdfCollect,fdfFindVariable,fdfSearchInHelpers];
-        CurrentIdentifierList.Context:=GatherContext;
-        FindIdentifierInBasicTypeHelpers(ExprType.Desc, Params);
-      end;
-
       // check for incomplete context
       
       // context bracket level
@@ -2653,8 +2621,12 @@ begin
           then begin
             // todo: check at start of expression, not only in front of variable
             CurrentIdentifierList.ContextFlags:=
-              CurrentIdentifierList.ContextFlags+[ilcfIsExpression];
+              CurrentIdentifierList.ContextFlags+[ilcfIsExpression, ilcfDontAllowProcedures];
           end;
+          // check if procedure is allowed
+          if CurPos.Flag in [cafComma, cafRoundBracketOpen, cafEdgedBracketOpen, cafEqual, cafOtherOperator] then
+            CurrentIdentifierList.ContextFlags:=
+              CurrentIdentifierList.ContextFlags+[ilcfDontAllowProcedures];
         end;
       end;
       // context behind
@@ -2728,6 +2700,43 @@ begin
           CurrentIdentifierList.ContextFlags+[ilcfEndOfLine];
       end;
 
+      // search and gather identifiers in context
+      if (GatherContext.Tool<>nil) and (GatherContext.Node<>nil) then begin
+        {$IFDEF CTDEBUG}
+        DebugLn('TIdentCompletionTool.GatherIdentifiers D CONTEXT: ',
+          GatherContext.Tool.MainFilename,
+          ' ',GatherContext.Node.DescAsString,
+          ' "',StringToPascalConst(copy(GatherContext.Tool.Src,GatherContext.Node.StartPos,50)),'"');
+        {$ENDIF}
+
+        // gather all identifiers in context
+        Params.ContextNode:=GatherContext.Node;
+        Params.SetIdentifier(Self,nil,@CollectAllIdentifiers);
+        Params.Flags:=[fdfSearchInAncestors,fdfCollect,fdfFindVariable,fdfSearchInHelpers];
+        if (Params.ContextNode.Desc=ctnInterface) and StartInSubContext then
+          Include(Params.Flags,fdfIgnoreUsedUnits);
+        if not StartInSubContext then
+          Include(Params.Flags,fdfSearchInParentNodes);
+        if Params.ContextNode.Desc in AllClasses then
+          Exclude(Params.Flags,fdfSearchInParentNodes);
+        {$IFDEF CTDEBUG}
+        DebugLn('TIdentCompletionTool.GatherIdentifiers F');
+        {$ENDIF}
+        CurrentIdentifierList.Context:=GatherContext;
+        if GatherContext.Node.Desc=ctnIdentifier then
+          Params.Flags:=Params.Flags+[fdfIgnoreCurContextNode];
+        GatherContext.Tool.FindIdentifierInContext(Params);
+      end else
+      if ExprType.Desc in xtAllIdentPredefinedTypes then
+      begin
+        // gather all identifiers in cursor context for basic types (strings etc.)
+        Params.ContextNode:=CursorNode;
+        Params.SetIdentifier(Self,nil,@CollectAllIdentifiers);
+        Params.Flags:=[fdfSearchInAncestors,fdfCollect,fdfFindVariable,fdfSearchInHelpers];
+        CurrentIdentifierList.Context:=GatherContext;
+        FindIdentifierInBasicTypeHelpers(ExprType.Desc, Params);
+      end;
+
       // check for procedure/method declaration context
       CheckProcedureDeclarationContext;
 
@@ -2735,7 +2744,7 @@ begin
       {$IFDEF CTDEBUG}
       DebugLn('TIdentCompletionTool.GatherIdentifiers G');
       {$ENDIF}
-      GatherUsefulIdentifiers(IdentStartPos,CursorContext);
+      GatherUsefulIdentifiers(IdentStartPos,CursorContext,GatherContext);
     end;
 
     Result:=true;

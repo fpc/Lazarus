@@ -2438,7 +2438,7 @@ begin
   CacheWasUsed:=true;
   AnOwner := nil;
 
-  if (CTExprType.Desc in xtAllPredefinedTypes) then
+  if (CTExprType.Desc in xtAllIdentPredefinedTypes) then
     CTExprType.Context.Tool := CodeToolBoss.CurCodeTool.FindCodeToolForUsedUnit('system','',false);
   CTTool := CTExprType.Context.Tool;
   CTNode := CTExprType.Context.Node;
@@ -2457,7 +2457,7 @@ begin
       for n:=1 to 30 do begin
         if (CTExprType.Desc=xtContext) and (CTNode<>nil) then
           ElementName:=CodeNodeToElementName(CTTool,CTNode)
-        else if (CTExprType.Desc in xtAllPredefinedTypes) then
+        else if (CTExprType.Desc in xtAllIdentPredefinedTypes) then
           ElementName:=ExpressionTypeDescNames[CTExprType.Desc]
         else
           break;
@@ -2660,7 +2660,7 @@ begin
   // add declaration
   if Desc=xtContext then
     CTHint:=Tool.GetSmartHint(Node,XYPos,false)
-  else if Desc in xtAllPredefinedTypes then
+  else if Desc in xtAllIdentPredefinedTypes then
     CTHint:='type '+ExpressionTypeDescNames[Desc];
   Result:=Result+'  <nobr>'+SourceToFPDocHint(CTHint)+'</nobr>';
 
@@ -2669,7 +2669,7 @@ begin
   if XYPos.Code=nil then begin
     if (Node<>nil) then
       Tool.CleanPosToCaret(Node.StartPos,XYPos)
-    else if Desc in xtAllPredefinedTypes then
+    else if Desc in xtAllIdentPredefinedTypes then
       Tool.CleanPosToCaret(Tool.Tree.Root.StartPos,XYPos);
   end;
   Result:=Result+'  '+SourcePosToFPDocHint(XYPos)+LineEnding;
