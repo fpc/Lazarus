@@ -3660,7 +3660,7 @@ begin
   if ReadOnly then exit;
   if not EditorComponent.SelAvail then exit;
   FEditor.SetTextBetweenPoints(FEditor.BlockBegin, FEditor.BlockEnd,
-                               UpperCase(EditorComponent.SelText),
+                               UTF8UpperCase(EditorComponent.SelText),
                                [setSelect], scamIgnore, smaKeep, smCurrent
                               );
 end;
@@ -3675,7 +3675,7 @@ begin
   if ReadOnly then exit;
   if not EditorComponent.SelAvail then exit;
   FEditor.SetTextBetweenPoints(FEditor.BlockBegin, FEditor.BlockEnd,
-                               LowerCase(EditorComponent.SelText),
+                               UTF8LowerCase(EditorComponent.SelText),
                                [setSelect], scamIgnore, smaKeep, smCurrent
                               );
 end;
@@ -3685,7 +3685,7 @@ begin
   if ReadOnly then exit;
   if not EditorComponent.SelAvail then exit;
   FEditor.SetTextBetweenPoints(FEditor.BlockBegin, FEditor.BlockEnd,
-                               SwapCase(EditorComponent.SelText),
+                               UTF8SwapCase(EditorComponent.SelText),
                                [setSelect], scamIgnore, smaKeep, smCurrent
                               );
 end;
