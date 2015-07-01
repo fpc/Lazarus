@@ -624,6 +624,7 @@ type
     procedure ComponentTreeGetNodeImageIndex(APersistent: TPersistent; var AIndex: integer);
     procedure ComponentTreeKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure ComponentTreeSelectionChanged(Sender: TObject);
+    procedure MainPopupMenuClose(Sender: TObject);
     procedure OnGridKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure OnGridKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure OnGridDblClick(Sender: TObject);
@@ -650,6 +651,7 @@ type
     procedure DoUpdateRestricted;
     procedure DoViewRestricted;
   private
+    StateOfHintsOnMainPopupMenu:Boolean;
     FFavorites: TOIFavoriteProperties;
     FInfoBoxHeight: integer;
     FOnPropertyHint: TOIPropertyHint;
@@ -4491,6 +4493,11 @@ begin
     FOnSelectPersistentsInOI(Self);
 end;
 
+procedure TObjectInspectorDlg.MainPopupMenuClose(Sender: TObject);
+begin
+  if StateOfHintsOnMainPopupMenu then OnShowHintPopupMenuItemClick(nil);
+end;
+
 procedure TObjectInspectorDlg.OnGridKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 var
@@ -5296,10 +5303,15 @@ var
   b, AtLeastOneComp, CanChangeClass, HasParentCandidates: Boolean;
   CurRow: TOIPropertyGridRow;
   Persistent: TPersistent;
+  Page: TObjectInspectorPage;
 begin
   RemovePropertyEditorMenuItems;
   RemoveComponentEditorMenuItems;
   ShowHintsPopupMenuItem.Checked := PropertyGrid.ShowHint;
+  StateOfHintsOnMainPopupMenu:=PropertyGrid.ShowHint;
+  for Page := Low(TObjectInspectorPage) to High(TObjectInspectorPage) do
+    if GridControl[Page] <> nil then
+      GridControl[Page].ShowHint := False;
   Persistent := GetSelectedPersistent;
   AtLeastOneComp := False;
   CanChangeClass := False;
