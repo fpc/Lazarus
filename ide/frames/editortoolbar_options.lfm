@@ -63,29 +63,29 @@ object EditorToolbarOptionsFrame: TEditorToolbarOptionsFrame
       AnchorSideBottom.Side = asrBottom
       Left = 6
       Height = 29
-      Top = 66
+      Top = 70
       Width = 69
-      Anchors = [akLeft]
       AutoSize = True
-      BorderSpacing.Top = 6
+      BorderSpacing.Top = 14
       Caption = 'Configure'
       OnClick = bConfigClick
       TabOrder = 2
     end
     object bDefaultToolbar: TBitBtn
-      AnchorSideLeft.Control = bConfig
+      AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = bConfig
-      AnchorSideTop.Side = asrBottom
-      AnchorSideRight.Control = pnTop
+      AnchorSideTop.Side = asrCenter
+      AnchorSideRight.Control = cbPos
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Side = asrBottom
-      Left = 6
+      Left = 379
       Height = 29
-      Top = 101
-      Width = 56
+      Top = 70
+      Width = 105
+      Anchors = [akTop, akRight]
       AutoSize = True
       BorderSpacing.Top = 6
-      Caption = 'Default'
+      Caption = 'Restore defaults'
       OnClick = bDefaultToolbarClick
       TabOrder = 3
     end

@@ -102,7 +102,7 @@ begin
   dbGeneralSettings.Caption := 'Editor Toolbars Settings'; // ToDo: Will be removed ...
   cbCoolBarVisible.Caption := lisEditorToolbarVisible;
   lblpos.Caption := lisPosition;
-  bDefaultToolbar.Caption := lisCoolbarRestoreDefaults;
+  bDefaultToolbar.Caption := lisCmpRestoreDefaults;
   bConfig.Caption := lisCoolbarConfigure;
 end;
 
