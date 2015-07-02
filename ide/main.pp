@@ -185,7 +185,6 @@ type
     procedure OnRemoteControlTimer(Sender: TObject);
     procedure OnSelectFrame(Sender: TObject; var AComponentClass: TComponentClass);
     procedure OIChangedTimerTimer(Sender: TObject);
-    procedure OnMainBarActive(Sender: TObject);
 
     // file menu
     procedure mnuNewUnitClicked(Sender: TObject);
@@ -626,7 +625,6 @@ type
   private
     FUserInputSinceLastIdle: boolean;
     FDesignerToBeFreed: TFilenameToStringTree; // form file names to be freed OnIdle.
-    FApplicationIsActivate: boolean;
     fNeedSaveEnvironment: boolean;
     FRemoteControlTimer: TTimer;
     FRemoteControlFileAge: integer;
@@ -1455,8 +1453,6 @@ begin
 
   // build and position the MainIDE form
   Application.CreateForm(TMainIDEBar,MainIDEBar);
-  MainIDEBar.OnActive:=@OnMainBarActive;
-
   MainIDEBar.Name := NonModalIDEWindowNames[nmiwMainIDEName];
   FormCreator:=IDEWindowCreators.Add(MainIDEBar.Name);
   FormCreator.Right:='100%';
@@ -1468,20 +1464,17 @@ begin
     IDEDockMaster.MakeIDEWindowDockSite(MainIDEBar);
 
   HiddenWindowsOnRun:=TFPList.Create;
-  LastActivatedWindows:=TFPList.Create;
+  FLastActivatedWindows:=TFPList.Create;
 
   // menu
   MainIDEBar.DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TMainIDE.Create'){$ENDIF};
   try
     SetupStandardIDEMenuItems;
     SetupMainMenu;
-    // ToDo: Move more stuff to MainBar
-    MainIDEBar.SetupSpeedButtons(OwningComponent);
+    MainIDEBar.Setup(OwningComponent);
     MainIDEBar.OptionsMenuItem.OnClick := @ToolBarOptionsClick;
     MainIDEBar.OpenFilePopupMenu.OnPopup := @OpenFilePopupMenuPopup;
     MainIDEBar.SetBuildModePopupMenu.OnPopup := @SetBuildModePopupMenuPopup;
-
-    MainIDEBar.SetupComponentPalette(OwningComponent);
     ConnectMainBarEvents;
   finally
     MainIDEBar.EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TMainIDE.Create'){$ENDIF};
@@ -1562,7 +1555,7 @@ begin
   end;
   DoShowMessagesView(false);           // reopen extra windows
   fUserInputSinceLastIdle:=true; // Idle work gets done initially before user action.
-  FApplicationIsActivate:=true;
+  MainIDEBar.ApplicationIsActivate:=true;
   FIDEStarted:=true;
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.StartIDE END');{$ENDIF}
 end;
@@ -1625,7 +1618,7 @@ begin
   FreeThenNil(DebugBoss);
   FreeThenNil(TheCompiler);
   FreeThenNil(HiddenWindowsOnRun);
-  FreeThenNil(LastActivatedWindows);
+  FreeThenNil(FLastActivatedWindows);
   FreeThenNil(GlobalMacroList);
   FreeThenNil(IDEMacros);
   FreeThenNil(IDECodeMacros);
@@ -11337,7 +11330,7 @@ var
   i: Integer;
   AForm: TCustomForm;
 begin
-  if EnvironmentOptions.Desktop.SingleTaskBarButton and FApplicationIsActivate
+  if EnvironmentOptions.Desktop.SingleTaskBarButton and MainIDEBar.ApplicationIsActivate
   and (MainIDEBar.WindowState=wsNormal) then
   begin
     for i:=Screen.CustomFormCount-1 downto 0 do
@@ -11348,37 +11341,7 @@ begin
       and not (fsModal in AForm.FormState) then
         LastActivatedWindows.Add(AForm);
     end;
-    FApplicationIsActivate:=false;
-  end;
-end;
-
-procedure TMainIDE.OnMainBarActive(Sender: TObject);
-var
-  i, FormCount: integer;
-  AForm: TCustomForm;
-begin
-  if EnvironmentOptions.Desktop.SingleTaskBarButton and not FApplicationIsActivate
-  and (MainIDEBar.WindowState=wsNormal) then
-  begin
-    FApplicationIsActivate:=true;
-    FormCount:=0;
-    for i:=Screen.CustomFormCount-1 downto 0 do
-    begin
-      AForm:=Screen.CustomForms[i];
-      if (AForm.Parent=nil) and (AForm<>MainIDEBar) and (AForm.IsVisible)
-      and (AForm.Designer=nil) and (not (csDesigning in AForm.ComponentState))
-      and not (fsModal in AForm.FormState) then
-        inc(FormCount);
-    end;
-    while LastActivatedWindows.Count>0 do
-    begin
-      AForm:=TCustomForm(LastActivatedWindows[0]);
-      if Assigned(AForm) and (not (CsDestroying in AForm.ComponentState)) and
-      AForm.IsVisible then
-        AForm.BringToFront;
-      LastActivatedWindows.Delete(0);
-    end;
-    MainIDEBar.BringToFront;
+    MainIDEBar.ApplicationIsActivate:=false;
   end;
 end;
 

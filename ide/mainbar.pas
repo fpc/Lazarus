@@ -63,6 +63,7 @@ type
     procedure WndProc(var Message: TLMessage); override;
     procedure Resizing(State: TWindowState); override;
   public
+    ApplicationIsActivate: boolean;
     //Coolbar and PopUpMenus
     CoolBar: TCoolBar;
     OptionsMenuItem: TMenuItem;
@@ -378,8 +379,8 @@ type
     procedure CoolBarOnChange(Sender: TObject);
     procedure MainSplitterMoved(Sender: TObject);
     procedure SetMainIDEHeightEvent(Sender: TObject);
-    procedure SetupSpeedButtons(TheOwner: TComponent);
-    procedure SetupComponentPalette(TheOwner: TComponent);
+    procedure OnMainBarActive(Sender: TObject);
+    procedure Setup(TheOwner: TComponent);
     procedure HideIDE;
     procedure UnhideIDE;
     property OnActive: TNotifyEvent read FOnActive write FOnActive;
@@ -574,6 +575,36 @@ begin
   SetMainIDEHeight;
 end;
 
+procedure TMainIDEBar.OnMainBarActive(Sender: TObject);
+var
+  i, FormCount: integer;
+  AForm: TCustomForm;
+begin
+  if EnvironmentOptions.Desktop.SingleTaskBarButton and not ApplicationIsActivate
+  and (WindowState=wsNormal) then
+  begin
+    ApplicationIsActivate:=true;
+    FormCount:=0;
+    for i:=Screen.CustomFormCount-1 downto 0 do
+    begin
+      AForm:=Screen.CustomForms[i];
+      if (AForm.Parent=nil) and (AForm<>Self) and (AForm.IsVisible)
+      and (AForm.Designer=nil) and (not (csDesigning in AForm.ComponentState))
+      and not (fsModal in AForm.FormState) then
+        inc(FormCount);
+    end;
+    while LazarusIDE.LastActivatedWindows.Count>0 do
+    begin
+      AForm:=TCustomForm(LazarusIDE.LastActivatedWindows[0]);
+      if Assigned(AForm) and (not (CsDestroying in AForm.ComponentState)) and
+      AForm.IsVisible then
+        AForm.BringToFront;
+      LazarusIDE.LastActivatedWindows.Delete(0);
+    end;
+    Self.BringToFront;
+  end;
+end;
+
 procedure TMainIDEBar.WndProc(var Message: TLMessage);
 begin
   inherited WndProc(Message);
@@ -639,14 +670,17 @@ begin
   OptionsPopupMenu.Items.Add(OptionsMenuItem);
 end;
 
-procedure TMainIDEBar.SetupSpeedButtons(TheOwner: TComponent);
+procedure TMainIDEBar.Setup(TheOwner: TComponent);
 begin
+  OnActive:=@OnMainBarActive;
+
   MainSplitter := TSplitter.Create(TheOwner);
   MainSplitter.Parent := Self;
   MainSplitter.Align := alLeft;
   MainSplitter.MinSize := 50;
   MainSplitter.OnMoved := @MainSplitterMoved;
 
+  // IDE Coolbar
   CoolBar := TCoolBar.Create(TheOwner);
   CoolBar.Parent := Self;
   if EnvironmentOptions.Desktop.ComponentPaletteOptions.Visible then
@@ -657,16 +691,13 @@ begin
   else
     CoolBar.Align := alClient;
 
-  // IDE Coolbar object wraps CoolBar.
+  // IDE Coolbar object wraps the actual CoolBar.
   IDECoolBar := TIDECoolBar.Create(CoolBar);
   IDECoolBar.IsVisible := EnvironmentOptions.Desktop.IDECoolBarOptions.IDECoolBarVisible;;
   CoolBar.OnChange := @CoolBarOnChange;
   CreatePopupMenus(TheOwner);
   CoolBar.PopupMenu := OptionsPopupMenu;
-end;
 
-procedure TMainIDEBar.SetupComponentPalette(TheOwner: TComponent);
-begin
   // Component palette
   ComponentPageControl := TPageControl.Create(TheOwner);
   ComponentPageControl.Name := 'ComponentPageControl';

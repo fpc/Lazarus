@@ -183,7 +183,7 @@ type
   protected
     FLazarusIDEHandlers: array[TLazarusIDEHandlerType] of TMethodList;
     fOwningComponent: TComponent;
-    LastActivatedWindows: TFPList;
+    FLastActivatedWindows: TFPList;
 
     function GetActiveProject: TLazProject; virtual; abstract;
     procedure DoCallNotifyHandler(HandlerType: TLazarusIDEHandlerType);
@@ -368,8 +368,10 @@ type
     procedure RemoveHandlerGetFPCFrontEndPath(
                                           const Handler: TGetFPCFrontEndPath);
     function CallHandlerGetFPCFrontEndPath(Sender: TObject; var Path: string): boolean;
+
+    property LastActivatedWindows: TFPList read FLastActivatedWindows;
   end;
-  
+
 var
   LazarusIDE: TLazIDEInterface = nil; // will be set by the IDE
 
