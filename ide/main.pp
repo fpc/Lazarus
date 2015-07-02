@@ -4611,7 +4611,6 @@ procedure TMainIDE.DoOpenIDEOptions(AEditor: TAbstractIDEOptionsEditorClass;
 var
   IDEOptionsDialog: TIDEOptionsDialog;
   OptionsFilter: TIDEOptionsEditorFilter;
-  PaletteOpt: TCompPaletteOptionsFrame;
   i: Integer;
 begin
   IDEOptionsDialog := TIDEOptionsDialog.Create(nil);
@@ -4641,10 +4640,6 @@ begin
     if IDEOptionsDialog.ShowModal = mrOk then begin
       IDEOptionsDialog.WriteAll(false);
       DebugLn(['TMainIDE.DoOpenIDEOptions: Options saved, updating Palette and TaskBar.']);
-      // Update component palette only when needed.
-      PaletteOpt := TCompPaletteOptionsFrame(IDEOptionsDialog.FindEditor(TCompPaletteOptionsFrame));
-      if Assigned(PaletteOpt) and PaletteOpt.ConfigChanged then
-        IDEComponentPalette.Update(True);
       // Update TaskBarBehavior immediately.
       if EnvironmentOptions.Desktop.SingleTaskBarButton then
         Application.TaskBarBehavior := tbSingleButton

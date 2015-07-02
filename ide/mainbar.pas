@@ -394,6 +394,7 @@ type
     procedure RefreshCoolbar;
     procedure SetMainIDEHeight;
     procedure DoSetMainIDEHeight(const AIDEIsMaximized: Boolean; ANewHeight: Integer = 0);
+    procedure DoSetViewComponentPalette(aVisible: Boolean);
     procedure DoToggleViewComponentPalette;
     procedure DoToggleViewIDESpeedButtons;
     procedure AllowCompilation(aAllow: Boolean);
@@ -658,7 +659,7 @@ begin
 
   CoolBar := TCoolBar.Create(TheOwner);
   CoolBar.Parent := Self;
-  if EnvironmentOptions.Desktop.ComponentPaletteVisible then
+  if EnvironmentOptions.Desktop.ComponentPaletteOptions.Visible then
   begin
     CoolBar.Align := alLeft;
     CoolBar.Width := EnvironmentOptions.Desktop.IDECoolBarOptions.IDECoolBarWidth;
@@ -680,7 +681,7 @@ begin
   ComponentPageControl := TPageControl.Create(TheOwner);
   ComponentPageControl.Name := 'ComponentPageControl';
   ComponentPageControl.Align := alClient;
-  ComponentPageControl.Visible:=EnvironmentOptions.Desktop.ComponentPaletteVisible;
+  ComponentPageControl.Visible:=EnvironmentOptions.Desktop.ComponentPaletteOptions.Visible;
   ComponentPageControl.Parent := Self;
 end;
 
@@ -759,7 +760,8 @@ begin
     end;
   end;
 
-  if EnvironmentOptions.Desktop.ComponentPaletteVisible and Assigned(ComponentPageControl.ActivePage) then
+  if EnvironmentOptions.Desktop.ComponentPaletteOptions.Visible
+  and Assigned(ComponentPageControl.ActivePage) then
   begin
     ComponentScrollBox := nil;
     for I := 0 to ComponentPageControl.ActivePage.ControlCount-1 do
@@ -811,15 +813,13 @@ begin
   DoSetMainIDEHeight(WindowState = wsMaximized);
 end;
 
-procedure TMainIDEBar.DoToggleViewComponentPalette;
-var
-  ComponentPaletteVisible: Boolean;
+procedure TMainIDEBar.DoSetViewComponentPalette(aVisible: Boolean);
 begin
-  ComponentPaletteVisible:=not ComponentPageControl.Visible;
-  itmViewComponentPalette.Checked:=ComponentPaletteVisible;
-  ComponentPageControl.Visible:=ComponentPaletteVisible;
-  EnvironmentOptions.Desktop.ComponentPaletteVisible:=ComponentPaletteVisible;
-  if ComponentPaletteVisible then
+  if aVisible = ComponentPageControl.Visible then Exit;
+  ComponentPageControl.Visible := aVisible;
+  itmViewComponentPalette.Checked := aVisible;
+  EnvironmentOptions.Desktop.ComponentPaletteOptions.Visible := aVisible;
+  if aVisible then
   begin
     if CoolBar.Align = alClient then
     begin
@@ -832,11 +832,16 @@ begin
   end
   else
     CoolBar.Align := alClient;
-  MainSplitter.Visible := Coolbar.Visible and ComponentPageControl.Visible;
+  MainSplitter.Visible := Coolbar.Visible and aVisible;
 
-  if ComponentPaletteVisible then//when showing component palette, it must be visible to calculate it correctly
+  if aVisible then//when showing component palette, it must be visible to calculate it correctly
     DoSetMainIDEHeight(WindowState = wsMaximized, 55);//it will cause the IDE to flicker, but it's better than to have wrongly calculated IDE height
   SetMainIDEHeight;
+end;
+
+procedure TMainIDEBar.DoToggleViewComponentPalette;
+begin
+  DoSetViewComponentPalette(not ComponentPageControl.Visible);
 end;
 
 procedure TMainIDEBar.DoToggleViewIDESpeedButtons;

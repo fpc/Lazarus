@@ -36,16 +36,15 @@ type
 
   TCompPaletteOptionsFrame = class(TAbstractIDEOptionsEditor)
     AddPageButton: TBitBtn;
+    cbPaletteVisible: TCheckBox;
     ImportButton: TBitBtn;
     ComponentsListView: TListView;
     CompMoveDownBtn: TSpeedButton;
     DeleteMenuItem: TMenuItem;
     RenameMenuItem: TMenuItem;
     PagesPopupMenu: TPopupMenu;
-    RecentLabel: TLabel;
     ExportButton: TBitBtn;
     ImportDividerBevel: TDividerBevel;
-    RecentButton: TButton;
     ImportDialog: TOpenDialog;
     PageMoveDownBtn: TSpeedButton;
     CompMoveUpBtn: TSpeedButton;
@@ -117,6 +116,8 @@ type
 
 implementation
 
+uses MainBar;
+
 {$R *.lfm}
 
 { TCompPaletteOptionsFrame }
@@ -147,6 +148,7 @@ end;
 procedure TCompPaletteOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
   fDialog := ADialog;
+  cbPaletteVisible.Caption := lisCmpPaletteVisible;
   // Component pages
   PagesGroupBox.Caption := lisCmpPages;
   AddPageButton.Caption := lisBtnDlgAdd;
@@ -185,9 +187,13 @@ begin
 end;
 
 procedure TCompPaletteOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
+var
+  Opts: TCompPaletteOptions;
 begin
-  fLocalOptions.Assign((AOptions as TEnvironmentOptions).Desktop.ComponentPaletteOptions);
-  fLocalUserOrder.Options:=fLocalOptions;
+  Opts := (AOptions as TEnvironmentOptions).Desktop.ComponentPaletteOptions;
+  fLocalOptions.Assign(Opts);
+  fLocalUserOrder.Options := fLocalOptions;
+  cbPaletteVisible.Checked := Opts.Visible;
   ActualReadSettings;
 end;
 
@@ -202,9 +208,15 @@ begin
 end;
 
 procedure TCompPaletteOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
+var
+  Opts: TCompPaletteOptions;
 begin
+  Opts := (AOptions as TEnvironmentOptions).Desktop.ComponentPaletteOptions;
+  Opts.Visible := cbPaletteVisible.Checked;
+  MainIDEBar.DoSetViewComponentPalette(cbPaletteVisible.Checked);
   if not fConfigChanged then Exit;
-  ActualWriteSettings((AOptions as TEnvironmentOptions).Desktop.ComponentPaletteOptions);
+  ActualWriteSettings(Opts);
+  IDEComponentPalette.Update(True);
   IDEComponentPalette.IncChangeStamp;
 end;
 

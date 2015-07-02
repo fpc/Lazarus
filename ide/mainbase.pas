@@ -783,7 +783,7 @@ begin
       {$ENDIF}
     end;
     CreateMenuItem(ParentMI,itmViewComponentPalette,'itmViewComponentPalette',lisMenuViewComponentPalette, '',
-      true, EnvironmentOptions.Desktop.ComponentPaletteVisible);
+      true, EnvironmentOptions.Desktop.ComponentPaletteOptions.Visible);
     CreateMenuItem(ParentMI,itmViewIDESpeedButtons,'itmViewIDESpeedButtons',lisMenuViewIDESpeedButtons, '',
       true, EnvironmentOptions.Desktop.IDECoolBarOptions.IDECoolBarVisible);
   end;

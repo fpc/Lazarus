@@ -4592,12 +4592,13 @@ resourcestring
 
   // components palette settings and list form
   lisCmpPages = 'Pages';
-  lisCmpRestoreDefaults = '&Restore defaults';
-  lisImportExport = 'Import / Export';
   lisCmpLstComponents = 'Components';
+  lisCmpPaletteVisible = 'Palette is &visible';
+  lisCmpRestoreDefaults = '&Restore defaults';
   lisCmpLstList = 'List';
   lisCmpLstPalette = 'Palette';
   lisCmpLstInheritance = 'Inheritance';
+  lisImportExport = 'Import / Export';
   lisSuccessfullyImported = 'Successfully imported from "%s".';
   lisSuccessfullyExported = 'Successfully exported to "%s".';
 

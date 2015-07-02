@@ -263,7 +263,6 @@ type
     FIDEDialogLayoutList: TIDEDialogLayoutList;
     FSingleTaskBarButton: boolean;
     FHideIDEOnRun: boolean;
-    FComponentPaletteVisible: boolean;
     FAutoAdjustIDEHeight: boolean;
     FAutoAdjustIDEHeightFullCompPal: boolean;
     // window menu
@@ -296,8 +295,6 @@ type
     property IDEDialogLayoutList: TIDEDialogLayoutList read FIDEDialogLayoutList;
     property SingleTaskBarButton: boolean read FSingleTaskBarButton write FSingleTaskBarButton;
     property HideIDEOnRun: boolean read FHideIDEOnRun write FHideIDEOnRun;
-    property ComponentPaletteVisible: boolean read FComponentPaletteVisible
-                                              write FComponentPaletteVisible;
     property AutoAdjustIDEHeight: Boolean read FAutoAdjustIDEHeight write FAutoAdjustIDEHeight;
     property AutoAdjustIDEHeightFullCompPal: Boolean read FAutoAdjustIDEHeightFullCompPal
                                                      write FAutoAdjustIDEHeightFullCompPal;
@@ -937,7 +934,6 @@ begin
   inherited Create;
   FSingleTaskBarButton:=false;
   FHideIDEOnRun:=false;
-  FComponentPaletteVisible:=true;
   FAutoAdjustIDEHeight:=true;
   FAutoAdjustIDEHeightFullCompPal := true;
   // window menu
@@ -990,7 +986,6 @@ begin
   FIDEDialogLayoutList.Assign(Source.FIDEDialogLayoutList);
   FSingleTaskBarButton := Source.FSingleTaskBarButton;
   FHideIDEOnRun := Source.FHideIDEOnRun;
-  FComponentPaletteVisible := Source.FComponentPaletteVisible;
   FAutoAdjustIDEHeight := Source.FAutoAdjustIDEHeight;
   FAutoAdjustIDEHeightFullCompPal := Source.FAutoAdjustIDEHeightFullCompPal;
   // window menu
@@ -1019,7 +1014,6 @@ begin
 
   FSingleTaskBarButton:=FXMLCfg.GetValue(Path+'SingleTaskBarButton/Value', False);
   FHideIDEOnRun:=FXMLCfg.GetValue(Path+'HideIDEOnRun/Value',false);
-  FComponentPaletteVisible:=FXMLCfg.GetValue(Path+'ComponentPaletteVisible/Value',true);
   FAutoAdjustIDEHeight:=FXMLCfg.GetValue(Path+'AutoAdjustIDEHeight/Value',true);
   FAutoAdjustIDEHeightFullCompPal:=FXMLCfg.GetValue(Path+'AutoAdjustIDEHeightFullComponentPalette/Value',true);
   // Window menu
@@ -1051,7 +1045,6 @@ begin
 
   FXMLCfg.SetDeleteValue(Path+'SingleTaskBarButton/Value',FSingleTaskBarButton, False);
   FXMLCfg.SetDeleteValue(Path+'HideIDEOnRun/Value',FHideIDEOnRun,false);
-  FXMLCfg.SetDeleteValue(Path+'ComponentPaletteVisible/Value',FComponentPaletteVisible,true);
   FXMLCfg.SetDeleteValue(Path+'AutoAdjustIDEHeight/Value',FAutoAdjustIDEHeight,true);
   FXMLCfg.SetDeleteValue(Path+'AutoAdjustIDEHeightFullComponentPalette/Value',
                            FAutoAdjustIDEHeightFullCompPal,true);

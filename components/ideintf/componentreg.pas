@@ -83,6 +83,7 @@ type
   private
     // Pages removed or renamed. They must be hidden in the palette.
     FHiddenPageNames: TStringList;
+    FVisible: boolean;
   public
     constructor Create;
     destructor Destroy; override;
@@ -93,6 +94,7 @@ type
     procedure Save(XMLConfig: TXMLConfig; Path: String);
   public
     property HiddenPageNames: TStringList read FHiddenPageNames;
+    property Visible: boolean read FVisible write FVisible;
   end;
 
   { TCompPaletteUserOrder }
@@ -404,6 +406,7 @@ constructor TCompPaletteOptions.Create;
 begin
   inherited Create;
   FHiddenPageNames := TStringList.Create;
+  FVisible := True;
 end;
 
 destructor TCompPaletteOptions.Destroy;
@@ -422,6 +425,7 @@ procedure TCompPaletteOptions.Assign(Source: TCompPaletteOptions);
 begin
   inherited Assign(Source);
   FHiddenPageNames.Assign(Source.FHiddenPageNames);
+  FVisible := Source.FVisible;
 end;
 
 function TCompPaletteOptions.IsDefault: Boolean;
@@ -441,6 +445,9 @@ var
 begin
   Path := Path + BasePath;
   try
+    FVisible:=XMLConfig.GetValue(Path+'Visible/Value',true);
+
+    // Pages
     FPageNames.Clear;
     SubPath:=Path+'Pages/';
     PageCount:=XMLConfig.GetValue(SubPath+'Count', 0);
@@ -450,6 +457,7 @@ begin
         FPageNames.Add(PageName);
     end;
 
+    // HiddenPages
     FHiddenPageNames.Clear;
     SubPath:=Path+'HiddenPages/';
     PageCount:=XMLConfig.GetValue(SubPath+'Count', 0);
@@ -459,6 +467,7 @@ begin
         FHiddenPageNames.Add(PageName);
     end;
 
+    // ComponentPages
     FComponentPages.Clear;
     SubPath:=Path+'ComponentPages/';
     PageCount:=XMLConfig.GetValue(SubPath+'Count', 0);
@@ -489,6 +498,8 @@ var
 begin
   try
     Path := Path + BasePath;
+    XMLConfig.SetDeleteValue(Path+'Visible/Value', FVisible,true);
+
     SubPath:=Path+'Pages/';
     XMLConfig.DeletePath(SubPath);
     XMLConfig.SetDeleteValue(SubPath+'Count', FPageNames.Count, 0);
