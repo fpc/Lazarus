@@ -38,29 +38,41 @@ uses
 {$IFDEF IDE_MEM_CHECK}
   MemCheck,
 {$ENDIF}
-  Classes, SysUtils, LCLProc, Forms, Controls, Buttons, Menus,
-  ComCtrls, ExtCtrls, LMessages,
+  Classes, SysUtils, Math, Forms, Controls, Buttons, Menus,
+  ComCtrls, ExtCtrls, LMessages, LCLIntf, LCLType, LCLProc,
   // IDEIntf
-  ProjectIntf, NewItemIntf, MenuIntf, LazIDEIntf, LazFileCache,
-  EnvironmentOpts, LazarusIDEStrConsts, IDEImagesIntf, IdeCoolbarData;
-
+  ProjectIntf, NewItemIntf, MenuIntf, LazIDEIntf, IDEWindowIntf, IDEImagesIntf,
+  LazFileCache, EnvironmentOpts, LazarusIDEStrConsts, IdeCoolbarData;
 
 type
   { TMainIDEBar }
 
   TMainIDEBar = class(TForm)
+  private
+    OptionsPopupMenu: TPopupMenu;
+    FOldWindowState: TWindowState;
+    FOnActive: TNotifyEvent;
+    procedure CreatePopupMenus(TheOwner: TComponent);
+    procedure NewUnitFormDefaultClick(Sender: TObject);
+    procedure NewUnitFormPopupMenuPopup(Sender: TObject);
+    function CalcMainIDEHeight: Integer;
+    function CalcNonClientHeight: Integer;
+  protected
+    procedure DoActive;
+    procedure DoShow; override;
+    procedure WndProc(var Message: TLMessage); override;
+    procedure Resizing(State: TWindowState); override;
+  public
     //Coolbar and PopUpMenus
     CoolBar: TCoolBar;
-    OptionsPopupMenu: TPopupMenu;
     OptionsMenuItem: TMenuItem;
     OpenFilePopUpMenu: TPopupMenu;
     SetBuildModePopupMenu: TPopupMenu;
     NewUnitFormPopupMenu: TPopupMenu;
     NewUFSetDefaultMenuItem: TMenuItem;
-
-    //splitter between the Coolbar and MainMenu
-    MainSplitter: TSplitter;
-
+    ComponentPageControl: TPageControl; // component palette
+    //GlobalMouseSpeedButton: TSpeedButton; <- what is this
+    MainSplitter: TSplitter;        // splitter between the Coolbar and MainMenu
     // MainMenu
     mnuMainMenu: TMainMenu;
     //mnuMain: TIDEMenuSection;
@@ -361,30 +373,11 @@ type
         itmHelpAboutLazarus: TIDEMenuCommand;
       //itmHelpTools: TIDEMenuSection;
 
-    // component palette
-    ComponentPageControl: TPageControl;
-    GlobalMouseSpeedButton: TSpeedButton;
-    procedure MainIDEBarDropFiles(Sender: TObject;
-      const FileNames: array of String);
+    constructor Create(TheOwner: TComponent); override;
+    procedure MainIDEBarDropFiles(Sender: TObject; const FileNames: array of String);
     procedure CoolBarOnChange(Sender: TObject);
     procedure MainSplitterMoved(Sender: TObject);
     procedure SetMainIDEHeightEvent(Sender: TObject);
-  private
-    FOldWindowState: TWindowState;
-    FOnActive: TNotifyEvent;
-    procedure CreatePopupMenus(TheOwner: TComponent);
-    procedure NewUnitFormDefaultClick(Sender: TObject);
-    procedure NewUnitFormPopupMenuPopup(Sender: TObject);
-    function CalcMainIDEHeight: Integer;
-    function CalcNonClientHeight: Integer;
-  protected
-    procedure DoActive;
-    procedure DoShow; override;
-    procedure WndProc(var Message: TLMessage); override;
-
-    procedure Resizing(State: TWindowState); override;
-  public
-    constructor Create(TheOwner: TComponent); override;
     procedure SetupSpeedButtons(TheOwner: TComponent);
     procedure SetupComponentPalette(TheOwner: TComponent);
     procedure HideIDE;
@@ -404,9 +397,6 @@ var
   MainIDEBar: TMainIDEBar = nil;
 
 implementation
-
-uses
-  LCLIntf, LCLType, Math, IDEWindowIntf;
 
 { TMainIDEBar }
 
