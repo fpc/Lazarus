@@ -802,6 +802,7 @@ begin
     CreateMenuItem(ParentMI,itmSourceEncloseBlock,'itmSourceEncloseBlock',lisMenuEncloseSelection);
     CreateMenuItem(ParentMI,itmSourceEncloseInIFDEF,'itmSourceEncloseInIFDEF',lisMenuEncloseInIFDEF);
     CreateMenuItem(ParentMI,itmSourceCompleteCode,'itmSourceCompleteCode',lisMenuCompleteCode);
+    CreateMenuItem(ParentMI,itmRefactorInvertAssignment,'itmInvertAssignment',uemInvertAssignment);
     CreateMenuItem(ParentMI,itmSourceUseUnit,'itmSourceUseUnit',lisMenuUseUnit);
     // Refactor
     CreateMenuSeparatorSection(mnuSource,itmSourceRefactor,'itmSourceRefactor');
@@ -811,7 +812,6 @@ begin
       ParentMI:=itmRefactorCodeTools;
       CreateMenuItem(ParentMI,itmRefactorRenameIdentifier,'itmRefactorRenameIdentifier',lisMenuRenameIdentifier);
       CreateMenuItem(ParentMI,itmRefactorExtractProc,'itmRefactorExtractProc',lisMenuExtractProc);
-      CreateMenuItem(ParentMI,itmRefactorInvertAssignment,'itmInvertAssignment',uemInvertAssignment);
 
       CreateMenuSeparatorSection(SubParentMI,itmRefactorAdvanced,'itmRefactorAdvanced');
       ParentMI:=itmRefactorAdvanced;
