@@ -413,8 +413,8 @@ type
                                  const HelpKeyword: string): Integer;
 
     // Environment options dialog events
-    procedure OnLoadIDEOptions(Sender: TObject; AOptions: TAbstractIDEOptions);
-    procedure OnSaveIDEOptions(Sender: TObject; AOptions: TAbstractIDEOptions);
+    procedure DoLoadIDEOptions(Sender: TObject; AOptions: TAbstractIDEOptions);
+    procedure DoSaveIDEOptions(Sender: TObject; AOptions: TAbstractIDEOptions);
     procedure DoOpenIDEOptions(AEditor: TAbstractIDEOptionsEditorClass;
       ACaption: String; AOptionsFilter: array of TAbstractIDEOptionsClass;
       ASettings: TIDEOptionsEditorSettings); override;
@@ -643,6 +643,20 @@ type
 
     procedure RenameInheritedMethods(AnUnitInfo: TUnitInfo; List: TStrings);
     function OIHelpProvider: TAbstractIDEHTMLProvider;
+    // form editor and designer
+    procedure DoBringToFrontFormOrUnit;
+    procedure DoBringToFrontFormOrInspector(ForceInspector: boolean);
+    procedure DoShowSourceOfActiveDesignerForm;
+    procedure SetDesigning(AComponent: TComponent; Value: Boolean);
+    procedure SetDesignInstance(AComponent: TComponent; Value: Boolean);
+    procedure InvalidateAllDesignerForms;
+    procedure UpdateIDEComponentPalette(IfFormChanged: boolean);
+    procedure ShowDesignerForm(AForm: TCustomForm);
+    procedure DoViewAnchorEditor(State: TIWGetFormState = iwgfShowOnTop);
+    procedure DoViewTabOrderEditor(State: TIWGetFormState = iwgfShowOnTop);
+    // editor and environment options
+    procedure LoadDesktopSettings(TheEnvironmentOptions: TEnvironmentOptions);
+    procedure SaveDesktopSettings(TheEnvironmentOptions: TEnvironmentOptions);
   protected
     procedure SetToolStatus(const AValue: TIDEToolStatus); override;
     procedure Notification(AComponent: TComponent;
@@ -915,24 +929,11 @@ type
     procedure DoShowSearchResultsView(State: TIWGetFormState = iwgfShowOnTop); override;
 
     // form editor and designer
-    procedure DoBringToFrontFormOrUnit;
-    procedure DoBringToFrontFormOrInspector(ForceInspector: boolean);
     procedure DoShowDesignerFormOfCurrentSrc; override;
-    procedure DoShowSourceOfActiveDesignerForm;
-    procedure SetDesigning(AComponent: TComponent; Value: Boolean);
-    procedure SetDesignInstance(AComponent: TComponent; Value: Boolean);
     function CreateDesignerForComponent(AnUnitInfo: TUnitInfo;
-                                AComponent: TComponent): TCustomForm; override;
-    procedure InvalidateAllDesignerForms;
-    procedure UpdateIDEComponentPalette(IfFormChanged: boolean);
-    procedure ShowDesignerForm(AForm: TCustomForm);
-    procedure DoViewAnchorEditor(State: TIWGetFormState = iwgfShowOnTop);
-    procedure DoViewTabOrderEditor(State: TIWGetFormState = iwgfShowOnTop);
-
+                                        AComponent: TComponent): TCustomForm; override;
     // editor and environment options
     procedure SaveEnvironment(Immediately: boolean = false); override;
-    procedure LoadDesktopSettings(TheEnvironmentOptions: TEnvironmentOptions);
-    procedure SaveDesktopSettings(TheEnvironmentOptions: TEnvironmentOptions);
     procedure PackageTranslated(APackage: TLazPackage); override;
   end;
 
@@ -4566,9 +4567,19 @@ end;
 
 //------------------------------------------------------------------------------
 
+procedure TMainIDE.LoadDesktopSettings(TheEnvironmentOptions: TEnvironmentOptions);
+begin
+  DebugLn(['* TMainIDE.LoadDesktopSettings']);
+  if ObjectInspector1<>nil then
+    TheEnvironmentOptions.ObjectInspectorOptions.AssignTo(ObjectInspector1);
+  if MessagesView<>nil then
+    MessagesView.ApplyIDEOptions;
+end;
+
 procedure TMainIDE.SaveDesktopSettings(TheEnvironmentOptions: TEnvironmentOptions);
 // Called also before reading EnvironmentOptions
 begin
+  DebugLn(['* TMainIDE.SaveDesktopSettings']);
   IDEWindowCreators.SimpleLayoutStorage.StoreWindowPositions;
   // do not auto show the search results view
   IDEWindowCreators.SimpleLayoutStorage.ItemByFormID(
@@ -4578,29 +4589,18 @@ begin
     TheEnvironmentOptions.ObjectInspectorOptions.Assign(ObjectInspector1);
 end;
 
-procedure TMainIDE.PackageTranslated(APackage: TLazPackage);
+procedure TMainIDE.DoLoadIDEOptions(Sender: TObject; AOptions: TAbstractIDEOptions);
 begin
-  if APackage=PackageGraph.SynEditPackage then begin
-    EditorOpts.TranslateResourceStrings;
-  end;
-end;
-
-procedure TMainIDE.LoadDesktopSettings(TheEnvironmentOptions: TEnvironmentOptions);
-begin
-  if ObjectInspector1<>nil then
-    TheEnvironmentOptions.ObjectInspectorOptions.AssignTo(ObjectInspector1);
-  if MessagesView<>nil then
-    MessagesView.ApplyIDEOptions;
-end;
-
-procedure TMainIDE.OnLoadIDEOptions(Sender: TObject; AOptions: TAbstractIDEOptions);
-begin
+  DebugLn(['** TMainIDE.OnLoadIDEOptions: ', AOptions.ClassName]);
+  // ToDo: Figure out why this is not called.
   if AOptions is TEnvironmentOptions then
     LoadDesktopSettings(AOptions as TEnvironmentOptions);
 end;
 
-procedure TMainIDE.OnSaveIDEOptions(Sender: TObject; AOptions: TAbstractIDEOptions);
+procedure TMainIDE.DoSaveIDEOptions(Sender: TObject; AOptions: TAbstractIDEOptions);
 begin
+  DebugLn(['** TMainIDE.OnSaveIDEOptions: ', AOptions.ClassName]);
+  // ToDo: Figure out why this is not called.
   if AOptions is TEnvironmentOptions then
     SaveDesktopSettings(AOptions as TEnvironmentOptions);
 end;
@@ -4635,11 +4635,12 @@ begin
     IDEOptionsDialog.OptionsFilter := OptionsFilter;
     IDEOptionsDialog.Settings := ASettings;
     IDEOptionsDialog.OpenEditor(AEditor);
-    IDEOptionsDialog.OnLoadIDEOptionsHook:=@Self.OnLoadIDEOptions;
-    IDEOptionsDialog.OnSaveIDEOptionsHook:=@Self.OnSaveIDEOptions;
+    IDEOptionsDialog.OnLoadIDEOptionsHook:=@DoLoadIDEOptions;
+    IDEOptionsDialog.OnSaveIDEOptionsHook:=@DoSaveIDEOptions;
     IDEOptionsDialog.ReadAll;
     if IDEOptionsDialog.ShowModal = mrOk then begin
       IDEOptionsDialog.WriteAll(false);
+      DebugLn(['TMainIDE.DoOpenIDEOptions: Options saved, updating Palette and TaskBar.']);
       // Update component palette only when needed.
       PaletteOpt := TCompPaletteOptionsFrame(IDEOptionsDialog.FindEditor(TCompPaletteOptionsFrame));
       if Assigned(PaletteOpt) and PaletteOpt.ConfigChanged then
@@ -5036,6 +5037,12 @@ begin
   //debugln('TMainIDE.SaveEnvironment A ',dbgsName(ObjectInspector1.Favorites));
   if (ObjectInspector1<>nil) and (ObjectInspector1.Favorites<>nil) then
     SaveOIFavoriteProperties(ObjectInspector1.Favorites);
+end;
+
+procedure TMainIDE.PackageTranslated(APackage: TLazPackage);
+begin
+  if APackage=PackageGraph.SynEditPackage then
+    EditorOpts.TranslateResourceStrings;
 end;
 
 function TMainIDE.DoOpenComponent(const UnitFilename: string;
