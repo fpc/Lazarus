@@ -170,22 +170,23 @@ type
   { TMainIDE }
 
   TMainIDE = class(TMainIDEBase)
+  private
     // event handlers
     procedure MainIDEFormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure MainIDEFormCloseQuery(Sender: TObject; var CanClose: boolean);
-    procedure OnApplicationUserInput(Sender: TObject; {%H-}Msg: Cardinal);
-    procedure OnApplicationIdle(Sender: TObject; var {%H-}Done: Boolean);
-    procedure OnApplicationActivate(Sender: TObject);
-    procedure OnApplicationDeActivate(Sender: TObject);
-    procedure OnApplicationKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
-    procedure OnApplicationQueryEndSession(var Cancel: Boolean);
-    procedure OnApplicationEndSession(Sender: TObject);
-    procedure OnScreenChangedForm(Sender: TObject; {%H-}Form: TCustomForm);
-    procedure OnScreenRemoveForm(Sender: TObject; AForm: TCustomForm);
-    procedure OnRemoteControlTimer(Sender: TObject);
-    procedure OnSelectFrame(Sender: TObject; var AComponentClass: TComponentClass);
+    procedure HandleApplicationUserInput(Sender: TObject; {%H-}Msg: Cardinal);
+    procedure HandleApplicationIdle(Sender: TObject; var {%H-}Done: Boolean);
+    procedure HandleApplicationActivate(Sender: TObject);
+    procedure HandleApplicationDeActivate(Sender: TObject);
+    procedure HandleApplicationKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure HandleApplicationQueryEndSession(var Cancel: Boolean);
+    procedure HandleApplicationEndSession(Sender: TObject);
+    procedure HandleScreenChangedForm(Sender: TObject; {%H-}Form: TCustomForm);
+    procedure HandleScreenRemoveForm(Sender: TObject; AForm: TCustomForm);
+    procedure HandleRemoteControlTimer(Sender: TObject);
+    procedure HandleSelectFrame(Sender: TObject; var AComponentClass: TComponentClass);
     procedure OIChangedTimerTimer(Sender: TObject);
-
+  public
     // file menu
     procedure mnuNewUnitClicked(Sender: TObject);
     procedure mnuNewFormClicked(Sender: TObject);
@@ -393,24 +394,23 @@ type
   private
     fBuilder: TLazarusBuilder;
     function DoBuildLazarusSub(Flags: TBuildLazarusFlags): TModalResult;
-  public
     // Global IDE events
-    procedure OnProcessIDECommand(Sender: TObject; Command: word;
+    procedure HandleProcessIDECommand(Sender: TObject; Command: word;
                                   var Handled: boolean);
-    procedure OnExecuteIDEShortCut(Sender: TObject;
+    procedure HandleExecuteIDEShortCut(Sender: TObject;
                        var Key: word; Shift: TShiftState;
                        IDEWindowClass: TCustomFormClass);
-    function OnExecuteIDECommand(Sender: TObject; Command: word): boolean;
-    function OnSelectDirectory(const Title, InitialDir: string): string;
-    procedure OnInitIDEFileDialog(AFileDialog: TFileDialog);
-    procedure OnStoreIDEFileDialog(AFileDialog: TFileDialog);
-    function OnIDEMessageDialog(const aCaption, aMsg: string;
+    function HandleExecuteIDECommand(Sender: TObject; Command: word): boolean;
+    function HandleSelectDirectory(const Title, InitialDir: string): string;
+    procedure HandleInitIDEFileDialog(AFileDialog: TFileDialog);
+    procedure HandleStoreIDEFileDialog(AFileDialog: TFileDialog);
+    function HandleIDEMessageDialog(const aCaption, aMsg: string;
                                 DlgType: TMsgDlgType; Buttons: TMsgDlgButtons;
                                 const HelpKeyword: string): Integer;
-    function OnIDEQuestionDialog(const aCaption, aMsg: string;
+    function HandleIDEQuestionDialog(const aCaption, aMsg: string;
                                  DlgType: TMsgDlgType; Buttons: array of const;
                                  const HelpKeyword: string): Integer;
-
+  public
     // Environment options dialog events
     procedure DoLoadIDEOptions(Sender: TObject; AOptions: TAbstractIDEOptions);
     procedure DoSaveIDEOptions(Sender: TObject; AOptions: TAbstractIDEOptions);
@@ -1486,7 +1486,7 @@ begin
   // initialize the other IDE managers
   DebugBoss:=TDebugManager.Create(nil);
   DebugBoss.ConnectMainBarEvents;
-  DebuggerDlg.OnProcessCommand := @OnProcessIDECommand;
+  DebuggerDlg.OnProcessCommand := @HandleProcessIDECommand;
 
   PkgMngr:=TPkgManager.Create(nil);
   PkgBoss:=PkgMngr;
@@ -1529,15 +1529,15 @@ procedure TMainIDE.StartIDE;
 begin
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.StartIDE START');{$ENDIF}
   // set Application handlers
-  Application.AddOnUserInputHandler(@OnApplicationUserInput);
-  Application.AddOnIdleHandler(@OnApplicationIdle);
-  Application.AddOnActivateHandler(@OnApplicationActivate);
-  Application.AddOnDeActivateHandler(@OnApplicationDeActivate);
-  Application.AddOnKeyDownHandler(@OnApplicationKeyDown);
-  Application.AddOnQueryEndSessionHandler(@OnApplicationQueryEndSession);
-  Application.AddOnEndSessionHandler(@OnApplicationEndSession);
-  Screen.AddHandlerRemoveForm(@OnScreenRemoveForm);
-  Screen.AddHandlerActiveFormChanged(@OnScreenChangedForm);
+  Application.AddOnUserInputHandler(@HandleApplicationUserInput);
+  Application.AddOnIdleHandler(@HandleApplicationIdle);
+  Application.AddOnActivateHandler(@HandleApplicationActivate);
+  Application.AddOnDeActivateHandler(@HandleApplicationDeActivate);
+  Application.AddOnKeyDownHandler(@HandleApplicationKeyDown);
+  Application.AddOnQueryEndSessionHandler(@HandleApplicationQueryEndSession);
+  Application.AddOnEndSessionHandler(@HandleApplicationEndSession);
+  Screen.AddHandlerRemoveForm(@HandleScreenRemoveForm);
+  Screen.AddHandlerActiveFormChanged(@HandleScreenChangedForm);
   IDEComponentPalette.OnClassSelected := @ComponentPaletteClassSelected;
   MainIDEBar.SetupHints;
   SetupIDEWindowsLayout;
@@ -1718,7 +1718,7 @@ end;
 
 procedure TMainIDE.OIRemainingKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
-  OnExecuteIDEShortCut(Sender,Key,Shift,nil);
+  HandleExecuteIDEShortCut(Sender,Key,Shift,nil);
 end;
 
 procedure TMainIDE.OIOnAddToFavorites(Sender: TObject);
@@ -1994,11 +1994,11 @@ end;
 {------------------------------------------------------------------------------}
 procedure TMainIDE.SetupDialogs;
 begin
-  LazIDESelectDirectory:=@OnSelectDirectory;
-  InitIDEFileDialog:=@OnInitIDEFileDialog;
-  StoreIDEFileDialog:=@OnStoreIDEFileDialog;
-  IDEMessageDialog:=@OnIDEMessageDialog;
-  IDEQuestionDialog:=@OnIDEQuestionDialog;
+  LazIDESelectDirectory:=@HandleSelectDirectory;
+  InitIDEFileDialog:=@HandleInitIDEFileDialog;
+  StoreIDEFileDialog:=@HandleStoreIDEFileDialog;
+  IDEMessageDialog:=@HandleIDEMessageDialog;
+  IDEQuestionDialog:=@HandleIDEQuestionDialog;
   TestCompilerOptions:=@OnCompilerOptionsDialogTest;
   CheckCompOptsAndMainSrcForNewUnitEvent:=@OnCheckCompOptsAndMainSrcForNewUnit;
 end;
@@ -2038,7 +2038,7 @@ begin
 
   CreateFormEditor;
   FormEditor1.Obj_Inspector := ObjectInspector1;
-  FormEditor1.OnSelectFrame := @OnSelectFrame;
+  FormEditor1.OnSelectFrame := @HandleSelectFrame;
 end;
 
 procedure TMainIDE.SetupSourceNotebook;
@@ -2065,7 +2065,7 @@ begin
   SourceEditorManager.OnShowCodeContext :=@OnSrcNotebookShowCodeContext;
   SourceEditorManager.OnJumpToHistoryPoint := @OnSrcNotebookJumpToHistoryPoint;
   SourceEditorManager.OnOpenFileAtCursorClicked := @OnSrcNotebookFileOpenAtCursor;
-  SourceEditorManager.OnProcessUserCommand := @OnProcessIDECommand;
+  SourceEditorManager.OnProcessUserCommand := @HandleProcessIDECommand;
   SourceEditorManager.OnReadOnlyChanged := @OnSrcNotebookReadOnlyChanged;
   SourceEditorManager.OnShowHintForSource := @OnSrcNotebookShowHintForSource;
   SourceEditorManager.OnShowUnitInfo := @OnSrcNoteBookShowUnitInfo;
@@ -2125,8 +2125,8 @@ end;
 procedure TMainIDE.SetupIDECommands;
 begin
   IDECommandList:=EditorOpts.KeyMap;
-  IDECommands.OnExecuteIDECommand:=@OnExecuteIDECommand;
-  IDECommands.OnExecuteIDEShortCut:=@OnExecuteIDEShortCut;
+  IDECommands.OnExecuteIDECommand:=@HandleExecuteIDECommand;
+  IDECommands.OnExecuteIDEShortCut:=@HandleExecuteIDEShortCut;
   CreateStandardIDECommandScopes;
   IDECmdScopeSrcEdit.AddWindowClass(TSourceEditorWindowInterface);
   IDECmdScopeSrcEdit.AddWindowClass(nil);
@@ -2287,7 +2287,7 @@ begin
   // start timer
   FRemoteControlTimer:=TTimer.Create(OwningComponent);
   FRemoteControlTimer.Interval:=500;
-  FRemoteControlTimer.OnTimer:=@OnRemoteControlTimer;
+  FRemoteControlTimer.OnTimer:=@HandleRemoteControlTimer;
   FRemoteControlTimer.Enabled:=true;
 end;
 
@@ -3093,7 +3093,7 @@ begin
   mnuViewInspectorClicked(Sender);
 end;
 
-procedure TMainIDE.OnProcessIDECommand(Sender: TObject;
+procedure TMainIDE.HandleProcessIDECommand(Sender: TObject;
   Command: word;  var Handled: boolean);
 
   function IsOnWindow(Wnd: TWinControl): boolean;
@@ -3245,13 +3245,13 @@ begin
   //DebugLn('TMainIDE.OnProcessIDECommand Handled=',dbgs(Handled),' Command=',dbgs(Command));
 end;
 
-function TMainIDE.OnExecuteIDECommand(Sender: TObject; Command: word): boolean;
+function TMainIDE.HandleExecuteIDECommand(Sender: TObject; Command: word): boolean;
 begin
   Result:=false;
-  OnProcessIDECommand(Sender,Command,Result);
+  HandleProcessIDECommand(Sender,Command,Result);
 end;
 
-function TMainIDE.OnSelectDirectory(const Title, InitialDir: string): string;
+function TMainIDE.HandleSelectDirectory(const Title, InitialDir: string): string;
 var
   Dialog: TSelectDirectoryDialog;
   DummyResult: Boolean;
@@ -3274,31 +3274,31 @@ begin
   end;
 end;
 
-procedure TMainIDE.OnInitIDEFileDialog(AFileDialog: TFileDialog);
+procedure TMainIDE.HandleInitIDEFileDialog(AFileDialog: TFileDialog);
 begin
   InputHistories.ApplyFileDialogSettings(AFileDialog);
 end;
 
-procedure TMainIDE.OnStoreIDEFileDialog(AFileDialog: TFileDialog);
+procedure TMainIDE.HandleStoreIDEFileDialog(AFileDialog: TFileDialog);
 begin
   InputHistories.StoreFileDialogSettings(AFileDialog);
 end;
 
-function TMainIDE.OnIDEMessageDialog(const aCaption, aMsg: string;
+function TMainIDE.HandleIDEMessageDialog(const aCaption, aMsg: string;
   DlgType: TMsgDlgType; Buttons: TMsgDlgButtons; const HelpKeyword: string): Integer;
 begin
   Result:=MessageDlg{ !!! DO NOT REPLACE WITH IDEMessageDialog }
             (aCaption,aMsg,DlgType,Buttons,HelpKeyword);
 end;
 
-function TMainIDE.OnIDEQuestionDialog(const aCaption, aMsg: string;
+function TMainIDE.HandleIDEQuestionDialog(const aCaption, aMsg: string;
   DlgType: TMsgDlgType; Buttons: array of const; const HelpKeyword: string): Integer;
 begin
   Result:=QuestionDlg{ !!! DO NOT REPLACE WITH IDEQuestionDialog }
             (aCaption,aMsg,DlgType,Buttons,HelpKeyword);
 end;
 
-procedure TMainIDE.OnExecuteIDEShortCut(Sender: TObject; var Key: word;
+procedure TMainIDE.HandleExecuteIDEShortCut(Sender: TObject; var Key: word;
   Shift: TShiftState;
   IDEWindowClass: TCustomFormClass);
 var
@@ -3309,7 +3309,7 @@ begin
   Command := EditorOpts.KeyMap.TranslateKey(Key,Shift,IDEWindowClass);
   if (Command = ecNone) then exit;
   Handled := false;
-  OnProcessIDECommand(Sender, Command, Handled);
+  HandleProcessIDECommand(Sender, Command, Handled);
   if Handled then
     Key := VK_UNKNOWN;
 end;
@@ -3517,7 +3517,7 @@ begin
     OnModified:=@OnDesignerModified;
     OnPasteComponents:=@OnDesignerPasteComponents;
     OnPastedComponents:=@OnDesignerPastedComponents;
-    OnProcessCommand:=@OnProcessIDECommand;
+    OnProcessCommand:=@HandleProcessIDECommand;
     OnPropertiesChanged:=@OnDesignerPropertiesChanged;
     OnRenameComponent:=@OnDesignerRenameComponent;
     OnSetDesigning:=@OnDesignerSetDesigning;
@@ -4204,7 +4204,7 @@ var
   H: boolean;
 begin
   H:=false;
-  OnProcessIDECommand(nil, ecAttach, H);
+  HandleProcessIDECommand(nil, ecAttach, H);
 end;
 
 procedure TMainIDE.mnuDetachDebuggerClicked(Sender: TObject);
@@ -4212,7 +4212,7 @@ var
   H: boolean;
 begin
   H:=false;
-  OnProcessIDECommand(nil, ecDetach, H);
+  HandleProcessIDECommand(nil, ecDetach, H);
 end;
 
 procedure TMainIDE.mnuBuildFileClicked(Sender: TObject);
@@ -11185,7 +11185,7 @@ begin
   end;
 end;
 
-procedure TMainIDE.OnApplicationUserInput(Sender: TObject; Msg: Cardinal);
+procedure TMainIDE.HandleApplicationUserInput(Sender: TObject; Msg: Cardinal);
 begin
   fUserInputSinceLastIdle:=true;
   if ToolStatus=itCodeTools then
@@ -11193,7 +11193,7 @@ begin
     ToolStatus:=itCodeToolAborting;
 end;
 
-procedure TMainIDE.OnApplicationIdle(Sender: TObject; var Done: Boolean);
+procedure TMainIDE.HandleApplicationIdle(Sender: TObject; var Done: Boolean);
 var
   SrcEdit: TSourceEditor;
   AnUnitInfo: TUnitInfo;
@@ -11277,7 +11277,7 @@ begin
   end;
 end;
 
-procedure TMainIDE.OnApplicationDeActivate(Sender: TObject);
+procedure TMainIDE.HandleApplicationDeActivate(Sender: TObject);
 var
   i: Integer;
   AForm: TCustomForm;
@@ -11297,12 +11297,12 @@ begin
   end;
 end;
 
-procedure TMainIDE.OnApplicationActivate(Sender: TObject);
+procedure TMainIDE.HandleApplicationActivate(Sender: TObject);
 begin
   DoCheckFilesOnDisk;
 end;
 
-procedure TMainIDE.OnApplicationKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+procedure TMainIDE.HandleApplicationKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
 var
   Command: Word;
   aForm: TCustomForm;
@@ -11344,17 +11344,17 @@ begin
   end;
 end;
 
-procedure TMainIDE.OnApplicationQueryEndSession(var Cancel: Boolean);
+procedure TMainIDE.HandleApplicationQueryEndSession(var Cancel: Boolean);
 begin
   Cancel := False;
 end;
 
-procedure TMainIDE.OnApplicationEndSession(Sender: TObject);
+procedure TMainIDE.HandleApplicationEndSession(Sender: TObject);
 begin
   QuitIDE;
 end;
 
-procedure TMainIDE.OnScreenChangedForm(Sender: TObject; Form: TCustomForm);
+procedure TMainIDE.HandleScreenChangedForm(Sender: TObject; Form: TCustomForm);
 var
   aForm: TForm;
 begin
@@ -11365,7 +11365,7 @@ begin
     WindowMenuActiveForm := aForm;
 end;
 
-procedure TMainIDE.OnScreenRemoveForm(Sender: TObject; AForm: TCustomForm);
+procedure TMainIDE.HandleScreenRemoveForm(Sender: TObject; AForm: TCustomForm);
 begin
   HiddenWindowsOnRun.Remove(AForm);
   LastActivatedWindows.Remove(AForm);
@@ -11375,14 +11375,14 @@ begin
     MainIDEBar.LastCompPaletteForm:=nil;
 end;
 
-procedure TMainIDE.OnRemoteControlTimer(Sender: TObject);
+procedure TMainIDE.HandleRemoteControlTimer(Sender: TObject);
 begin
   FRemoteControlTimer.Enabled:=false;
   DoExecuteRemoteControl;
   FRemoteControlTimer.Enabled:=true;
 end;
 
-procedure TMainIDE.OnSelectFrame(Sender: TObject; var AComponentClass: TComponentClass);
+procedure TMainIDE.HandleSelectFrame(Sender: TObject; var AComponentClass: TComponentClass);
 begin
   AComponentClass := DoSelectFrame;
 end;
