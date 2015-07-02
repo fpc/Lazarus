@@ -1221,6 +1221,8 @@ begin
   if (not ASelection.ForceUpdate) and FSelection.IsEqual(ASelection) then exit;
 
   OldSelectedRowPath:=PropertyPath(ItemIndex);
+  if FCurrentEdit = ValueEdit then
+    ValueEditExit(Self);
   ItemIndex:=-1;
   ClearRows;
   FSelection.Assign(ASelection);
@@ -1553,7 +1555,8 @@ var CurRow: TOIPropertyGridRow;
 begin
   if (pgsUpdatingEditControl in FStates) or not IsCurrentEditorAvailable then exit;
   CurRow:=Rows[FItemIndex];
-  SetRowValue(true);
+  if paAutoUpdate in CurRow.Editor.GetAttributes then
+    SetRowValue(true);
 end;
 
 procedure TOICustomPropertyGrid.ValueEditMouseUp(Sender: TObject;
