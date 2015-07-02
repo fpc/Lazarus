@@ -50,8 +50,10 @@ type
   TMainIDEBar = class(TForm)
   private
     OptionsPopupMenu: TPopupMenu;
+    FMainOwningComponent: TComponent;
     FOldWindowState: TWindowState;
     FOnActive: TNotifyEvent;
+    FOpenFilePopupHandler: TNotifyEvent;
     procedure CreatePopupMenus(TheOwner: TComponent);
     procedure NewUnitFormDefaultClick(Sender: TObject);
     procedure NewUnitFormPopupMenuPopup(Sender: TObject);
@@ -381,12 +383,14 @@ type
     procedure MainSplitterMoved(Sender: TObject);
     procedure SetMainIDEHeightEvent(Sender: TObject);
     procedure OnMainBarActive(Sender: TObject);
+    procedure OpenFilePopupMenuPopup(Sender: TObject);
     procedure Setup(TheOwner: TComponent);
     procedure SetupHints;
     procedure UpdateIDEComponentPalette(IfFormChanged: boolean);
     procedure HideIDE;
     procedure UnhideIDE;
     property OnActive: TNotifyEvent read FOnActive write FOnActive;
+    property OpenFilePopupHandler: TNotifyEvent read FOpenFilePopupHandler write FOpenFilePopupHandler;
     procedure UpdateDockCaption({%H-}Exclude: TControl); override;
     procedure RefreshCoolbar;
     procedure SetMainIDEHeight;
@@ -608,6 +612,57 @@ begin
   end;
 end;
 
+procedure TMainIDEBar.OpenFilePopupMenuPopup(Sender: TObject);
+var
+  CurIndex: integer;
+  OpenMenuItem: TPopupMenu;
+
+  procedure AddFile(const Filename: string);
+  var
+    AMenuItem: TMenuItem;
+  begin
+    if OpenFilePopupMenu.Items.Count > CurIndex then
+      AMenuItem := OpenFilePopupMenu.Items[CurIndex]
+    else
+    begin
+      Assert(Assigned(FMainOwningComponent));
+      AMenuItem := TMenuItem.Create(FMainOwningComponent);
+      AMenuItem.Name := OpenFilePopupMenu.Name + 'Recent' + IntToStr(CurIndex);
+      Assert(Assigned(OpenFilePopupHandler));
+      AMenuItem.OnClick := OpenFilePopupHandler; // mnuOpenFilePopupClick;
+      OpenFilePopupMenu.Items.Add(AMenuItem);
+    end;
+    AMenuItem.Caption := Filename;
+    inc(CurIndex);
+  end;
+
+  procedure AddFiles(List: TStringList; MaxCount: integer);
+  var
+    i: integer;
+  begin
+    i := 0;
+    while (i < List.Count) and (i < MaxCount) do
+    begin
+      AddFile(List[i]);
+      inc(i);
+    end;
+  end;
+
+begin
+  // fill the PopupMenu:
+  CurIndex := 0;
+  // first add 8 recent projects
+  AddFiles(EnvironmentOptions.RecentProjectFiles, 8);
+  // add a separator
+  AddFile('-');
+  // add 12 recent files
+  AddFiles(EnvironmentOptions.RecentOpenFiles, 12);
+  OpenMenuItem := OpenFilePopupMenu;
+  // remove unused menuitems
+  while OpenMenuItem.Items.Count > CurIndex do
+    OpenMenuItem.Items[OpenMenuItem.Items.Count - 1].Free;
+end;
+
 procedure TMainIDEBar.WndProc(var Message: TLMessage);
 begin
   inherited WndProc(Message);
@@ -675,6 +730,7 @@ end;
 
 procedure TMainIDEBar.Setup(TheOwner: TComponent);
 begin
+  FMainOwningComponent := TheOwner;
   OnActive:=@OnMainBarActive;
 
   MainSplitter := TSplitter.Create(TheOwner);
@@ -700,12 +756,13 @@ begin
   CoolBar.OnChange := @CoolBarOnChange;
   CreatePopupMenus(TheOwner);
   CoolBar.PopupMenu := OptionsPopupMenu;
+  OpenFilePopupMenu.OnPopup := @OpenFilePopupMenuPopup;
 
   // Component palette
   ComponentPageControl := TPageControl.Create(TheOwner);
   ComponentPageControl.Name := 'ComponentPageControl';
   ComponentPageControl.Align := alClient;
-  ComponentPageControl.Visible:=EnvironmentOptions.Desktop.ComponentPaletteOptions.Visible;
+  ComponentPageControl.Visible := EnvironmentOptions.Desktop.ComponentPaletteOptions.Visible;
   ComponentPageControl.Parent := Self;
 end;
 

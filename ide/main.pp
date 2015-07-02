@@ -385,7 +385,6 @@ type
     procedure mnuPackageClicked(Sender: TObject);   // package menu
     // see pkgmanager.pas
 
-    procedure OpenFilePopupMenuPopup(Sender: TObject);
     procedure mnuOpenFilePopupClick(Sender: TObject);
     procedure SetBuildModePopupMenuPopup(Sender: TObject);
     procedure mnuChgBuildModeClicked(Sender: TObject);
@@ -1469,8 +1468,8 @@ begin
     SetupStandardIDEMenuItems;
     SetupMainMenu;
     MainIDEBar.Setup(OwningComponent);
+    MainIDEBar.OpenFilePopupHandler := @mnuOpenFilePopupClick;
     MainIDEBar.OptionsMenuItem.OnClick := @ToolBarOptionsClick;
-    MainIDEBar.OpenFilePopupMenu.OnPopup := @OpenFilePopupMenuPopup;
     MainIDEBar.SetBuildModePopupMenu.OnPopup := @SetBuildModePopupMenuPopup;
     ConnectMainBarEvents;
   finally
@@ -2691,9 +2690,7 @@ end;
 procedure TMainIDE.SetupWindowsMenu;
 begin
   inherited SetupWindowsMenu;
-  with MainIDEBar do begin
-    itmWindowManager.OnClick := @mnuWindowManagerClicked;
-  end;
+  MainIDEBar.itmWindowManager.OnClick := @mnuWindowManagerClicked;
 end;
 
 procedure TMainIDE.SetupHelpMenu;
@@ -3332,55 +3329,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------}
-
-procedure TMainIDE.OpenFilePopupMenuPopup(Sender: TObject);
-var
-  CurIndex: integer;
-  OpenMenuItem: TPopupMenu;
-
-  procedure AddFile(const Filename: string);
-  var
-    AMenuItem: TMenuItem;
-  begin
-    if MainIDEBar.OpenFilePopupMenu.Items.Count > CurIndex then
-      AMenuItem := MainIDEBar.OpenFilePopupMenu.Items[CurIndex]
-    else 
-    begin
-      AMenuItem := TMenuItem.Create(OwningComponent);
-      AMenuItem.Name := MainIDEBar.OpenFilePopupMenu.Name + 'Recent' + IntToStr(CurIndex);
-      AMenuItem.OnClick := @mnuOpenFilePopupClick;
-      MainIDEBar.OpenFilePopupMenu.Items.Add(AMenuItem);
-    end;
-    AMenuItem.Caption := Filename;
-    inc(CurIndex);
-  end;
-
-  procedure AddFiles(List: TStringList; MaxCount: integer);
-  var 
-    i: integer;
-  begin
-    i := 0;
-    while (i < List.Count) and (i < MaxCount) do 
-    begin
-      AddFile(List[i]);
-      inc(i);
-    end;
-  end;
-
-begin
-  // fill the PopupMenu:
-  CurIndex := 0;
-  // first add 8 recent projects
-  AddFiles(EnvironmentOptions.RecentProjectFiles, 8);
-  // add a separator
-  AddFile('-');
-  // add 12 recent files
-  AddFiles(EnvironmentOptions.RecentOpenFiles, 12);
-  OpenMenuItem := MainIDEBar.OpenFilePopupMenu;
-  // remove unused menuitems
-  while OpenMenuItem.Items.Count > CurIndex do
-    OpenMenuItem.Items[OpenMenuItem.Items.Count - 1].Free;
-end;
 
 procedure TMainIDE.mnuOpenFilePopupClick(Sender: TObject);
 var
