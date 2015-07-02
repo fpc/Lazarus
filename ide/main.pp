@@ -635,7 +635,6 @@ type
     FOIHelpProvider: TAbstractIDEHTMLProvider;
     FWaitForClose: Boolean;
     FFixingGlobalComponentLock: integer;
-    fLastCompPaletteForm: TCustomForm;
     OldCompilerFilename, OldLanguage: String;
     OIChangedTimer: TIdleTimer;
 
@@ -648,7 +647,6 @@ type
     procedure SetDesigning(AComponent: TComponent; Value: Boolean);
     procedure SetDesignInstance(AComponent: TComponent; Value: Boolean);
     procedure InvalidateAllDesignerForms;
-    procedure UpdateIDEComponentPalette(IfFormChanged: boolean);
     procedure ShowDesignerForm(AForm: TCustomForm);
     procedure DoViewAnchorEditor(State: TIWGetFormState = iwgfShowOnTop);
     procedure DoViewTabOrderEditor(State: TIWGetFormState = iwgfShowOnTop);
@@ -680,7 +678,6 @@ type
     procedure LoadMenuShortCuts; override;
     procedure ConnectMainBarEvents;
     procedure SetupDialogs;
-    procedure SetupHints;
     procedure SetupObjectInspector;
     procedure SetupFormEditor;
     procedure SetupSourceNotebook;
@@ -1542,7 +1539,7 @@ begin
   Screen.AddHandlerRemoveForm(@OnScreenRemoveForm);
   Screen.AddHandlerActiveFormChanged(@OnScreenChangedForm);
   IDEComponentPalette.OnClassSelected := @ComponentPaletteClassSelected;
-  SetupHints;
+  MainIDEBar.SetupHints;
   SetupIDEWindowsLayout;
   RestoreIDEWindows;
   // make sure the main IDE bar is always shown
@@ -2004,25 +2001,6 @@ begin
   IDEQuestionDialog:=@OnIDEQuestionDialog;
   TestCompilerOptions:=@OnCompilerOptionsDialogTest;
   CheckCompOptsAndMainSrcForNewUnitEvent:=@OnCheckCompOptsAndMainSrcForNewUnit;
-end;
-
-procedure TMainIDE.SetupHints;
-var
-  CurShowHint: boolean;
-  AControl: TControl;
-  i, j: integer;
-begin
-  if EnvironmentOptions=nil then exit;
-  // update all hints in the component palette
-  CurShowHint:=EnvironmentOptions.ShowHintsForComponentPalette;
-  for i:=0 to MainIDEBar.ComponentPageControl.PageCount-1 do begin
-    for j:=0 to MainIDEBar.ComponentPageControl.Page[i].ControlCount-1 do begin
-      AControl:=MainIDEBar.ComponentPageControl.Page[i].Controls[j];
-      AControl.ShowHint:=CurShowHint;
-    end;
-  end;
-  // update all hints in main ide toolbars
-  CurShowHint:=EnvironmentOptions.ShowHintsForMainSpeedButtons;
 end;
 
 procedure TMainIDE.SetupObjectInspector;
@@ -3575,32 +3553,6 @@ begin
   end;
 end;
 
-procedure TMainIDE.UpdateIDEComponentPalette(IfFormChanged: boolean);
-var
-  OldLastCompPaletteForm: TCustomForm;
-  AResult: Boolean;
-begin
-  // Package manager updates the palette initially.
-  if not FIDEStarted
-  or (IfFormChanged and (fLastCompPaletteForm=LastFormActivated)) then
-    exit;
-  OldLastCompPaletteForm:=fLastCompPaletteForm;
-  fLastCompPaletteForm:=LastFormActivated;
-  AResult:=(LastFormActivated<>nil) and (LastFormActivated.Designer<>nil)
-    and (LastFormActivated.Designer.LookupRoot<>nil)
-    and not (LastFormActivated.Designer.LookupRoot is TControl);
-  IDEComponentPalette.HideControls:=AResult;
-  // Don't update palette at the first time if not hiding controls.
-  if (OldLastCompPaletteForm = Nil) and not IDEComponentPalette.HideControls then
-    exit;
-  {$IFDEF VerboseComponentPalette}
-  DebugLn(['* TMainIDE.UpdateIDEComponentPalette: Updating palette *',
-           ', HideControls=', IDEComponentPalette.HideControls]);
-  {$ENDIF}
-  IDEComponentPalette.Update(False);
-  SetupHints;
-end;
-
 procedure TMainIDE.ShowDesignerForm(AForm: TCustomForm);
 var
   ARestoreVisible: Boolean;
@@ -4748,7 +4700,7 @@ begin
   UpdateDesigners;
   UpdateObjectInspector;
   UpdateMessagesView;
-  SetupHints;
+  MainIDEBar.SetupHints;
   Application.ShowButtonGlyphs := EnvironmentOptions.ShowButtonGlyphs;
   Application.ShowMenuGlyphs := EnvironmentOptions.ShowMenuGlyphs;
   if EnvironmentOptions.Desktop.SingleTaskBarButton then
@@ -8589,7 +8541,7 @@ begin
   DebugLn('***');
   DebugLn('** TMainIDE.OnControlSelectionFormChanged: Calling UpdateIDEComponentPalette(true)');
   {$ENDIF}
-  UpdateIDEComponentPalette(true);
+  MainIDEBar.UpdateIDEComponentPalette(true);
 end;
 
 procedure TMainIDE.OnGetDesignerSelection(const ASelection: TPersistentSelectionList);
@@ -10530,7 +10482,7 @@ begin
   DebugLn(['** TMainIDE.OnDesignerActivated: Calling UpdateIDEComponentPalette(true)',
            ', IDEStarted=', FIDEStarted, ' **']);
   {$ENDIF}
-  UpdateIDEComponentPalette(true);
+  MainIDEBar.UpdateIDEComponentPalette(true);
 end;
 
 procedure TMainIDE.OnDesignerCloseQuery(Sender: TObject);
@@ -11419,8 +11371,8 @@ begin
   LastActivatedWindows.Remove(AForm);
   if WindowMenuActiveForm=AForm then
     WindowMenuActiveForm:=nil;
-  if fLastCompPaletteForm=AForm then
-    fLastCompPaletteForm:=nil;
+  if MainIDEBar.LastCompPaletteForm=AForm then
+    MainIDEBar.LastCompPaletteForm:=nil;
 end;
 
 procedure TMainIDE.OnRemoteControlTimer(Sender: TObject);
@@ -12009,7 +11961,7 @@ begin
     DebugLn('** TMainIDE.OnPropHookBeforeAddPersistent: Calling UpdateIDEComponentPalette(false) **');
     {$ENDIF}
     // make sure the component palette shows only the available components
-    UpdateIDEComponentPalette(false);
+    MainIDEBar.UpdateIDEComponentPalette(false);
     exit;
   end;
 

@@ -42,7 +42,7 @@ uses
   ComCtrls, ExtCtrls, LMessages, LCLIntf, LCLType, LCLProc,
   // IDEIntf
   ProjectIntf, NewItemIntf, MenuIntf, LazIDEIntf, IDEWindowIntf, IDEImagesIntf,
-  LazFileCache, EnvironmentOpts, LazarusIDEStrConsts, IdeCoolbarData;
+  LazFileCache, EnvironmentOpts, LazarusIDEStrConsts, ComponentReg, IdeCoolbarData;
 
 type
   { TMainIDEBar }
@@ -64,6 +64,7 @@ type
     procedure Resizing(State: TWindowState); override;
   public
     ApplicationIsActivate: boolean;
+    LastCompPaletteForm: TCustomForm;
     //Coolbar and PopUpMenus
     CoolBar: TCoolBar;
     OptionsMenuItem: TMenuItem;
@@ -381,6 +382,8 @@ type
     procedure SetMainIDEHeightEvent(Sender: TObject);
     procedure OnMainBarActive(Sender: TObject);
     procedure Setup(TheOwner: TComponent);
+    procedure SetupHints;
+    procedure UpdateIDEComponentPalette(IfFormChanged: boolean);
     procedure HideIDE;
     procedure UnhideIDE;
     property OnActive: TNotifyEvent read FOnActive write FOnActive;
@@ -704,6 +707,52 @@ begin
   ComponentPageControl.Align := alClient;
   ComponentPageControl.Visible:=EnvironmentOptions.Desktop.ComponentPaletteOptions.Visible;
   ComponentPageControl.Parent := Self;
+end;
+
+procedure TMainIDEBar.SetupHints;
+var
+  CurShowHint: boolean;
+  AControl: TControl;
+  i, j: integer;
+begin
+  if EnvironmentOptions=nil then exit;
+  // update all hints in the component palette
+  CurShowHint:=EnvironmentOptions.ShowHintsForComponentPalette;
+  for i:=0 to ComponentPageControl.PageCount-1 do begin
+    for j:=0 to ComponentPageControl.Page[i].ControlCount-1 do begin
+      AControl:=ComponentPageControl.Page[i].Controls[j];
+      AControl.ShowHint:=CurShowHint;
+    end;
+  end;
+  // update all hints in main ide toolbars
+  //??? CurShowHint:=EnvironmentOptions.ShowHintsForMainSpeedButtons;
+end;
+
+procedure TMainIDEBar.UpdateIDEComponentPalette(IfFormChanged: boolean);
+var
+  OldLastCompPaletteForm, LastActiveForm: TCustomForm;
+  AResult: Boolean;
+begin
+  // Package manager updates the palette initially.
+  LastActiveForm := LazarusIDE.LastFormActivated;
+  if not LazarusIDE.IDEStarted
+  or (IfFormChanged and (LastCompPaletteForm=LastActiveForm)) then
+    exit;
+  OldLastCompPaletteForm:=LastCompPaletteForm;
+  LastCompPaletteForm:=LastActiveForm;
+  AResult:=(LastActiveForm<>nil) and (LastActiveForm.Designer<>nil)
+    and (LastActiveForm.Designer.LookupRoot<>nil)
+    and not (LastActiveForm.Designer.LookupRoot is TControl);
+  IDEComponentPalette.HideControls:=AResult;
+  // Don't update palette at the first time if not hiding controls.
+  if (OldLastCompPaletteForm = Nil) and not IDEComponentPalette.HideControls then
+    exit;
+  {$IFDEF VerboseComponentPalette}
+  DebugLn(['* TMainIDEBar.UpdateIDEComponentPalette: Updating palette *',
+           ', HideControls=', IDEComponentPalette.HideControls]);
+  {$ENDIF}
+  IDEComponentPalette.Update(False);
+  SetupHints;
 end;
 
 procedure TMainIDEBar.RefreshCoolbar;
