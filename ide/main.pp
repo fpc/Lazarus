@@ -393,7 +393,6 @@ type
     procedure ToolBarOptionsClick(Sender: TObject);
   private
     fBuilder: TLazarusBuilder;
-    procedure AllowCompilation(aAllow: Boolean);
     function DoBuildLazarusSub(Flags: TBuildLazarusFlags): TModalResult;
   public
     // Global IDE events
@@ -668,9 +667,7 @@ type
     procedure SetupHelpMenu; override;
     procedure LoadMenuShortCuts; override;
     procedure ConnectMainBarEvents;
-    procedure SetupSpeedButtons;
     procedure SetupDialogs;
-    procedure SetupComponentPalette;
     procedure SetupHints;
     procedure SetupObjectInspector;
     procedure SetupFormEditor;
@@ -931,8 +928,6 @@ type
     procedure ShowDesignerForm(AForm: TCustomForm);
     procedure DoViewAnchorEditor(State: TIWGetFormState = iwgfShowOnTop);
     procedure DoViewTabOrderEditor(State: TIWGetFormState = iwgfShowOnTop);
-    procedure DoToggleViewComponentPalette;
-    procedure DoToggleViewIDESpeedButtons;
 
     // editor and environment options
     procedure SaveEnvironment(Immediately: boolean = false); override;
@@ -1479,8 +1474,13 @@ begin
   try
     SetupStandardIDEMenuItems;
     SetupMainMenu;
-    SetupSpeedButtons;
-    SetupComponentPalette;
+    // ToDo: Move more stuff to MainBar
+    MainIDEBar.SetupSpeedButtons(OwningComponent);
+    MainIDEBar.OptionsMenuItem.OnClick := @ToolBarOptionsClick;
+    MainIDEBar.OpenFilePopupMenu.OnPopup := @OpenFilePopupMenuPopup;
+    MainIDEBar.SetBuildModePopupMenu.OnPopup := @SetBuildModePopupMenuPopup;
+
+    MainIDEBar.SetupComponentPalette(OwningComponent);
     ConnectMainBarEvents;
   finally
     MainIDEBar.EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TMainIDE.Create'){$ENDIF};
@@ -2001,37 +2001,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------}
-procedure TMainIDE.SetupSpeedButtons;
-begin
-  MainIDEBar.MainSplitter := TSplitter.Create(OwningComponent);
-  MainIDEBar.MainSplitter.Parent := MainIDEBar;
-  MainIDEBar.MainSplitter.Align := alLeft;
-  MainIDEBar.MainSplitter.MinSize := 50;
-  MainIDEBar.MainSplitter.OnMoved := @MainIDEBar.MainSplitterMoved;
-
-
-  MainIDEBar.CoolBar := TCoolBar.Create(OwningComponent);
-  MainIDEBar.CoolBar.Parent := MainIDEBar;
-  if EnvironmentOptions.Desktop.ComponentPaletteVisible then
-  begin
-    MainIDEBar.CoolBar.Align := alLeft;
-    MainIDEBar.CoolBar.Width := EnvironmentOptions.Desktop.IDECoolBarOptions.IDECoolBarWidth;
-  end
-  else
-    MainIDEBar.CoolBar.Align := alClient;
-
-  // IDE Coolbar object wraps MainIDEBar.CoolBar.
-  IDECoolBar := TIDECoolBar.Create(MainIDEBar.CoolBar);
-  IDECoolBar.IsVisible := EnvironmentOptions.Desktop.IDECoolBarOptions.IDECoolBarVisible;;
-  MainIDEBar.CoolBar.OnChange := @MainIDEBar.CoolBarOnChange;
-
-  MainIDEBar.CreatePopupMenus(OwningComponent);
-  MainIDEBar.OptionsMenuItem.OnClick := @ToolBarOptionsClick;
-  MainIDEBar.CoolBar.PopupMenu := MainIDEBar.OptionsPopupMenu;
-  MainIDEBar.OpenFilePopupMenu.OnPopup := @OpenFilePopupMenuPopup;
-  MainIDEBar.SetBuildModePopupMenu.OnPopup := @SetBuildModePopupMenuPopup;
-end;
-
 procedure TMainIDE.SetupDialogs;
 begin
   LazIDESelectDirectory:=@OnSelectDirectory;
@@ -2041,18 +2010,6 @@ begin
   IDEQuestionDialog:=@OnIDEQuestionDialog;
   TestCompilerOptions:=@OnCompilerOptionsDialogTest;
   CheckCompOptsAndMainSrcForNewUnitEvent:=@OnCheckCompOptsAndMainSrcForNewUnit;
-end;
-
-procedure TMainIDE.SetupComponentPalette;
-begin
-  // Component palette
-  MainIDEBar.ComponentPageControl := TPageControl.Create(OwningComponent);
-  with MainIDEBar.ComponentPageControl do begin
-    Name := 'ComponentPageControl';
-    Align := alClient;
-    Visible:=EnvironmentOptions.Desktop.ComponentPaletteVisible;
-    Parent := MainIDEBar;
-  end;
 end;
 
 procedure TMainIDE.SetupHints;
@@ -2804,12 +2761,12 @@ end;
 
 procedure TMainIDE.mnuViewComponentPaletteClicked(Sender: TObject);
 begin
-  DoToggleViewComponentPalette;
+  MainIDEBar.DoToggleViewComponentPalette;
 end;
 
 procedure TMainIDE.mnuViewIDESpeedButtonsClicked(Sender: TObject);
 begin
-  DoToggleViewIDESpeedButtons;
+  MainIDEBar.DoToggleViewIDESpeedButtons;
 end;
 
 procedure TMainIDE.mnuViewFPCInfoClicked(Sender: TObject);
@@ -3694,73 +3651,13 @@ begin
     IDEWindowCreators.ShowForm(TabOrderDialog,State=iwgfShowOnTop);
 end;
 
-procedure TMainIDE.DoToggleViewComponentPalette;
-var
-  ComponentPaletteVisible: Boolean;
-begin
-  ComponentPaletteVisible:=not MainIDEBar.ComponentPageControl.Visible;
-  MainIDEBar.itmViewComponentPalette.Checked:=ComponentPaletteVisible;
-  MainIDEBar.ComponentPageControl.Visible:=ComponentPaletteVisible;
-  EnvironmentOptions.Desktop.ComponentPaletteVisible:=ComponentPaletteVisible;
-  if ComponentPaletteVisible then
-  begin
-    if MainIDEBar.CoolBar.Align = alClient then
-    begin
-      MainIDEBar.CoolBar.Width := 230;
-      EnvironmentOptions.Desktop.IDECoolBarOptions.IDECoolBarWidth := 230;
-    end;
-    MainIDEBar.CoolBar.Align := alLeft;
-    MainIDEBar.CoolBar.Vertical := False;
-    MainIDEBar.MainSplitter.Align := alLeft;
-  end
-  else
-    MainIDEBar.CoolBar.Align := alClient;
-  MainIDEBar.MainSplitter.Visible := MainIDEBar.Coolbar.Visible and
-                                     MainIDEBar.ComponentPageControl.Visible;
-
-  if ComponentPaletteVisible then//when showing component palette, it must be visible to calculate it correctly
-    MainIDEBar.DoSetMainIDEHeight(MainIDEBar.WindowState = wsMaximized, 55);//it will cause the IDE to flicker, but it's better than to have wrongly calculated IDE height
-  MainIDEBar.SetMainIDEHeight;
-end;
-
-procedure TMainIDE.DoToggleViewIDESpeedButtons;
-var
-  SpeedButtonsVisible: boolean;
-begin
-  SpeedButtonsVisible := not MainIDEBar.CoolBar.Visible;
-  MainIDEBar.itmViewIDESpeedButtons.Checked := SpeedButtonsVisible;
-  MainIDEBar.CoolBar.Visible := SpeedButtonsVisible;
-  MainIDEBar.MainSplitter.Visible := SpeedButtonsVisible;
-  EnvironmentOptions.Desktop.IDECoolBarOptions.IDECoolBarVisible := SpeedButtonsVisible;
-  MainIDEBar.MainSplitter.Visible := MainIDEBar.Coolbar.Visible and
-                                     MainIDEBar.ComponentPageControl.Visible;
-  MainIDEBar.SetMainIDEHeight;
-end;
-
-procedure TMainIDE.AllowCompilation(aAllow: Boolean);
-// Enables or disables IDE GUI controls associated with compiling and building.
-// Does it interfere with DebugBoss.UpdateButtonsAndMenuItems? Maybe should be refactored and combined.
-begin
-  if MainIDEBar=Nil then Exit;
-  with MainIDEBar do begin
-    itmRunMenuRun.Enabled:=aAllow;
-    itmRunMenuCompile.Enabled:=aAllow;
-    itmRunMenuBuild.Enabled:=aAllow;
-    itmRunMenuQuickCompile.Enabled:=aAllow;
-    itmRunMenuCleanUpAndBuild.Enabled:=aAllow;
-    itmPkgEditInstallPkgs.Enabled:=aAllow;
-    itmToolRescanFPCSrcDir.Enabled:=aAllow;
-    itmToolBuildLazarus.Enabled:=aAllow;
-    //itmToolConfigureBuildLazarus.Enabled:=aAllow;
-  end;
-end;
-
 procedure TMainIDE.SetToolStatus(const AValue: TIDEToolStatus);
 begin
   inherited SetToolStatus(AValue);
   if DebugBoss <> nil then
     DebugBoss.UpdateButtonsAndMenuItems;
-  AllowCompilation(ToolStatus <> itBuilder); // Disable some GUI controls while compiling.
+  if Assigned(MainIDEBar) then
+    MainIDEBar.AllowCompilation(ToolStatus <> itBuilder); // Disable some GUI controls while compiling.
   if FWaitForClose and (ToolStatus = itNone) then
   begin
     FWaitForClose := False;

@@ -372,6 +372,7 @@ type
   private
     FOldWindowState: TWindowState;
     FOnActive: TNotifyEvent;
+    procedure CreatePopupMenus(TheOwner: TComponent);
     procedure NewUnitFormDefaultClick(Sender: TObject);
     procedure NewUnitFormPopupMenuPopup(Sender: TObject);
     function CalcMainIDEHeight: Integer;
@@ -384,14 +385,18 @@ type
     procedure Resizing(State: TWindowState); override;
   public
     constructor Create(TheOwner: TComponent); override;
+    procedure SetupSpeedButtons(TheOwner: TComponent);
+    procedure SetupComponentPalette(TheOwner: TComponent);
     procedure HideIDE;
     procedure UnhideIDE;
-    procedure CreatePopupMenus(TheOwner: TComponent);
     property OnActive: TNotifyEvent read FOnActive write FOnActive;
     procedure UpdateDockCaption({%H-}Exclude: TControl); override;
     procedure RefreshCoolbar;
     procedure SetMainIDEHeight;
     procedure DoSetMainIDEHeight(const AIDEIsMaximized: Boolean; ANewHeight: Integer = 0);
+    procedure DoToggleViewComponentPalette;
+    procedure DoToggleViewIDESpeedButtons;
+    procedure AllowCompilation(aAllow: Boolean);
   end;
 
 var
@@ -616,7 +621,7 @@ end;
 
 procedure TMainIDEBar.CreatePopupMenus(TheOwner: TComponent);
 begin
-  // create the popupmenu for the MainIDEBar.OpenFileArrowSpeedBtn
+  // create the popupmenu for the OpenFileArrowSpeedBtn
   OpenFilePopUpMenu := TPopupMenu.Create(TheOwner);
   OpenFilePopupMenu.Name:='OpenFilePopupMenu';
 
@@ -635,15 +640,48 @@ begin
   OptionsPopupMenu := TPopupMenu.Create(TheOwner);
   OptionsPopupMenu.Images := IDEImages.Images_16;
   OptionsMenuItem := TMenuItem.Create(TheOwner);
-  with MainIDEBar.OptionsMenuItem do
+  OptionsMenuItem.Name := 'miToolbarOption';
+  OptionsMenuItem.Caption := lisOptions;
+  OptionsMenuItem.Enabled := True;
+  OptionsMenuItem.Visible := True;
+  OptionsMenuItem.ImageIndex := IDEImages.LoadImage(16, 'menu_environment_options');
+  OptionsPopupMenu.Items.Add(OptionsMenuItem);
+end;
+
+procedure TMainIDEBar.SetupSpeedButtons(TheOwner: TComponent);
+begin
+  MainSplitter := TSplitter.Create(TheOwner);
+  MainSplitter.Parent := Self;
+  MainSplitter.Align := alLeft;
+  MainSplitter.MinSize := 50;
+  MainSplitter.OnMoved := @MainSplitterMoved;
+
+  CoolBar := TCoolBar.Create(TheOwner);
+  CoolBar.Parent := Self;
+  if EnvironmentOptions.Desktop.ComponentPaletteVisible then
   begin
-     Name := 'miToolbarOption';
-     Caption := lisOptions;
-     Enabled := True;
-     Visible := True;
-     ImageIndex := IDEImages.LoadImage(16, 'menu_environment_options');
-   end;
-  MainIDEBar.OptionsPopupMenu.Items.Add(MainIDEBar.OptionsMenuItem);
+    CoolBar.Align := alLeft;
+    CoolBar.Width := EnvironmentOptions.Desktop.IDECoolBarOptions.IDECoolBarWidth;
+  end
+  else
+    CoolBar.Align := alClient;
+
+  // IDE Coolbar object wraps CoolBar.
+  IDECoolBar := TIDECoolBar.Create(CoolBar);
+  IDECoolBar.IsVisible := EnvironmentOptions.Desktop.IDECoolBarOptions.IDECoolBarVisible;;
+  CoolBar.OnChange := @CoolBarOnChange;
+  CreatePopupMenus(TheOwner);
+  CoolBar.PopupMenu := OptionsPopupMenu;
+end;
+
+procedure TMainIDEBar.SetupComponentPalette(TheOwner: TComponent);
+begin
+  // Component palette
+  ComponentPageControl := TPageControl.Create(TheOwner);
+  ComponentPageControl.Name := 'ComponentPageControl';
+  ComponentPageControl.Align := alClient;
+  ComponentPageControl.Visible:=EnvironmentOptions.Desktop.ComponentPaletteVisible;
+  ComponentPageControl.Parent := Self;
 end;
 
 procedure TMainIDEBar.RefreshCoolbar;
@@ -683,8 +721,7 @@ begin
   CoolBar.Visible := CoolBarOpts.IDECoolBarVisible;
   itmViewIDESpeedButtons.Checked := CoolBar.Visible;
   MainSplitter.Align := alLeft;
-  MainSplitter.Visible := MainIDEBar.Coolbar.Visible and
-                          MainIDEBar.ComponentPageControl.Visible;
+  MainSplitter.Visible := Coolbar.Visible and ComponentPageControl.Visible;
 end;
 
 procedure TMainIDEBar.Resizing(State: TWindowState);
@@ -772,6 +809,62 @@ end;
 procedure TMainIDEBar.SetMainIDEHeight;
 begin
   DoSetMainIDEHeight(WindowState = wsMaximized);
+end;
+
+procedure TMainIDEBar.DoToggleViewComponentPalette;
+var
+  ComponentPaletteVisible: Boolean;
+begin
+  ComponentPaletteVisible:=not ComponentPageControl.Visible;
+  itmViewComponentPalette.Checked:=ComponentPaletteVisible;
+  ComponentPageControl.Visible:=ComponentPaletteVisible;
+  EnvironmentOptions.Desktop.ComponentPaletteVisible:=ComponentPaletteVisible;
+  if ComponentPaletteVisible then
+  begin
+    if CoolBar.Align = alClient then
+    begin
+      CoolBar.Width := 230;
+      EnvironmentOptions.Desktop.IDECoolBarOptions.IDECoolBarWidth := 230;
+    end;
+    CoolBar.Align := alLeft;
+    CoolBar.Vertical := False;
+    MainSplitter.Align := alLeft;
+  end
+  else
+    CoolBar.Align := alClient;
+  MainSplitter.Visible := Coolbar.Visible and ComponentPageControl.Visible;
+
+  if ComponentPaletteVisible then//when showing component palette, it must be visible to calculate it correctly
+    DoSetMainIDEHeight(WindowState = wsMaximized, 55);//it will cause the IDE to flicker, but it's better than to have wrongly calculated IDE height
+  SetMainIDEHeight;
+end;
+
+procedure TMainIDEBar.DoToggleViewIDESpeedButtons;
+var
+  SpeedButtonsVisible: boolean;
+begin
+  SpeedButtonsVisible := not CoolBar.Visible;
+  itmViewIDESpeedButtons.Checked := SpeedButtonsVisible;
+  CoolBar.Visible := SpeedButtonsVisible;
+  MainSplitter.Visible := SpeedButtonsVisible;
+  EnvironmentOptions.Desktop.IDECoolBarOptions.IDECoolBarVisible := SpeedButtonsVisible;
+  MainSplitter.Visible := Coolbar.Visible and ComponentPageControl.Visible;
+  SetMainIDEHeight;
+end;
+
+procedure TMainIDEBar.AllowCompilation(aAllow: Boolean);
+// Enables or disables IDE GUI controls associated with compiling and building.
+// Does it interfere with DebugBoss.UpdateButtonsAndMenuItems? Maybe should be refactored and combined.
+begin
+  itmRunMenuRun.Enabled:=aAllow;
+  itmRunMenuCompile.Enabled:=aAllow;
+  itmRunMenuBuild.Enabled:=aAllow;
+  itmRunMenuQuickCompile.Enabled:=aAllow;
+  itmRunMenuCleanUpAndBuild.Enabled:=aAllow;
+  itmPkgEditInstallPkgs.Enabled:=aAllow;
+  itmToolRescanFPCSrcDir.Enabled:=aAllow;
+  itmToolBuildLazarus.Enabled:=aAllow;
+  //itmToolConfigureBuildLazarus.Enabled:=aAllow;
 end;
 
 end.
