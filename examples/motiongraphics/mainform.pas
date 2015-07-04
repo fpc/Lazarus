@@ -5,8 +5,7 @@ unit mainform;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ExtCtrls,
-  StdCtrls, ComCtrls;
+  Classes, Forms, ExtCtrls, StdCtrls, ComCtrls;
 
 type
 
@@ -20,9 +19,8 @@ type
     procedure timerRedrawTimer(Sender: TObject);
     procedure trackSpeedChange(Sender: TObject);
   private
-    { private declarations }
+
   public
-    { public declarations }
     CurStep: Double;
     procedure RotatePolygon(var APoints: array of TPoint; AAngle: Double);
     function RotatePoint(APoint, ACenter: TPoint; AAngle: Double): TPoint;

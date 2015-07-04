@@ -5,8 +5,7 @@ unit Unit1;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
-  ComCtrls, ExtCtrls, LCLType, Themes, StdCtrls, Buttons;
+  Forms, Graphics, Dialogs, ComCtrls, ExtCtrls, LCLType, StdCtrls, Buttons;
 
 type
 
@@ -30,7 +29,7 @@ type
     procedure UpdateDialogImage;
     procedure UpdateButtonImage;
   public
-    { public declarations }
+
   end; 
 
 var

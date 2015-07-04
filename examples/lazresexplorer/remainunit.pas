@@ -5,9 +5,8 @@ unit reMainUnit;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
-  ComCtrls, ActnList, Menus, ExtCtrls, Grids, resource,
-  bitmapresource, versionresource, groupcursorresource, groupiconresource;
+  SysUtils, resource, LazUTF8, Forms, Controls, Dialogs, ComCtrls, ActnList,
+  Menus, ExtCtrls, Grids, bitmapresource, versionresource, groupiconresource;
 
 type
 
@@ -67,8 +66,7 @@ implementation
 {$R *.lfm}
 
 uses
-  winpeimagereader, elfreader, coffreader, resreader, reAboutUnit,
-  stringtableresource, acceleratorsresource, reConstsUnit;
+  winpeimagereader, elfreader, resreader, reAboutUnit, reConstsUnit;
 
 { TreMainForm }
 

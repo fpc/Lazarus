@@ -11,8 +11,8 @@ uses
   {$IFDEF UNIX}
     Unix,
   {$ENDIF}
-  Classes, SysUtils, types, FileUtil, LResources, Forms, Controls, Graphics,
-  Dialogs, Buttons, Printers, PostScriptCanvas, StdCtrls, ExtCtrls;
+  Classes, SysUtils, types, LazFileUtils, Forms, Graphics,
+  Printers, PostScriptCanvas, StdCtrls, ExtCtrls;
 
 type
 

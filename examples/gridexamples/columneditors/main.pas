@@ -34,8 +34,7 @@ unit main;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, Grids,
-  StdCtrls, ExtDlgs;
+  Classes, SysUtils, Forms, Graphics, Dialogs, Grids, StdCtrls, ExtDlgs;
 
 type
 

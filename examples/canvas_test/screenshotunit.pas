@@ -5,8 +5,7 @@ unit screenshotunit;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
-  ExtCtrls, Buttons, LCLType, LCLIntf;
+  SysUtils, Forms, Graphics, ExtCtrls, Buttons, LCLType, LCLIntf;
 
 type
 
@@ -17,9 +16,9 @@ type
     imgScreenshot: TImage;
     procedure btnScreenshotClick(Sender: TObject);
   private
-    { private declarations }
+
   public
-    { public declarations }
+
   end; 
 
 var

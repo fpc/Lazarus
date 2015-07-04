@@ -17,8 +17,7 @@ Those steps are the same as they would be for any other self writen componont.
 interface
 
 uses
-  Classes, SysUtils, FileUtil, SynEdit, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  SimpleHl, ContextHL, FoldHl;
+  SynEdit, Forms, StdCtrls, SimpleHl, ContextHL, FoldHl;
 
 type
 
@@ -34,12 +33,11 @@ type
     procedure Button3Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
   private
-    { private declarations }
     FSynDemoHl: TSynDemoHl;
     FSynDemoHlContext: TSynDemoHlContext;
     FSynDemoHlFold: TSynDemoHlFold;
   public
-    { public declarations }
+
   end;
 
 var

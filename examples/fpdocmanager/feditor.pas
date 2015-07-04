@@ -5,8 +5,7 @@ unit fEditor;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs,
-  FrmMain;
+  Classes, LazUTF8, FrmMain;
 
 type
 

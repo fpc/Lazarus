@@ -6,8 +6,7 @@ unit Unit1;
 interface
 
 uses
-  LCLIntf, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, DBCtrls, ExtCtrls, DBGrids, DB, dbf, FileUtil, LResources;
+  SysUtils, Forms, StdCtrls, DBCtrls, DBGrids, DB, dbf, LazFileUtils;
 
 type
 
@@ -38,7 +37,7 @@ type
     procedure ShowLongDateCheckBoxChange(Sender: TObject);
   private
   public
-    { Public declarations }
+
   end;
 
 var

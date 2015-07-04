@@ -27,9 +27,9 @@ unit FrmMain;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
-  FileUtil, Menus, ActnList, ExtCtrls, ComCtrls, pgeditor,
-  process, UTF8Process, StdActns, fpdeutil;
+  Classes, SysUtils, LCLProc, Forms, Controls, Graphics, Dialogs,
+  Menus, ActnList, ExtCtrls, ComCtrls, pgeditor,
+  LazFileUtils, LazUTF8, process, UTF8Process, StdActns, fpdeutil;
 
 type
   TNodeType = (ntFile,ntPackage,ntModule,ntElement,ntTopic);

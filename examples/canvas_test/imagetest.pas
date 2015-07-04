@@ -5,9 +5,8 @@ unit imagetest;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
-  StdCtrls, ComCtrls, ExtCtrls, Menus, LCLIntf, LCLType, IntfGraphics, FPImage,
-  Math;
+  Classes, Math, Forms, Graphics, Dialogs,
+  StdCtrls, ComCtrls, ExtCtrls, LCLIntf, LCLType, IntfGraphics, FPImage;
 
 type
 
@@ -26,9 +25,8 @@ type
     procedure btnSaveJPEGClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
   private
-    { private declarations }
+
   public
-    { public declarations }
     procedure RotateBitmap(ASource: TBitmap; ADest: TCanvas; x, y, Angle: integer);
   end; 
 

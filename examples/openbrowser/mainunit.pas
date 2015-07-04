@@ -5,8 +5,8 @@ unit MainUnit;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
-  FileUtil, UTF8Process, StdCtrls, Process, ExtCtrls;
+  SysUtils, LCLProc, Forms, Dialogs,
+  FileUtil, LazFileUtils, LazUTF8, UTF8Process, StdCtrls, Process, ExtCtrls;
 
 type
   { TForm1 }
@@ -45,7 +45,7 @@ end;
 
 procedure TForm1.OpenLazarusButtonClick(Sender: TObject);
 begin
-  OpenURL('http://www.lazarus.freepascal.org/');
+  OpenURL('http://www.lazarus-ide.org/');
 end;
 
 procedure TForm1.OpenURL(const URL: string);

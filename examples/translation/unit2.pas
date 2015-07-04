@@ -5,8 +5,7 @@ unit Unit2;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  ExtCtrls, LocalizedForms;
+  SysUtils, StdCtrls, ExtCtrls, LocalizedForms;
 
 type
 

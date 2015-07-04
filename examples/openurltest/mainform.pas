@@ -5,8 +5,7 @@ unit mainform;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  EditBtn, LCLIntf, LCLProc;
+  SysUtils, Forms, StdCtrls, EditBtn, LCLIntf;
 
 type
 
@@ -26,9 +25,9 @@ type
     procedure btnOpenURLHTTPClick(Sender: TObject);
     procedure btnOpenURLFILEClick(Sender: TObject);
   private
-    { private declarations }
+
   public
-    { public declarations }
+
   end;
 
 var

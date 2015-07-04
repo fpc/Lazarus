@@ -6,8 +6,7 @@ interface
 
 uses
   // RTL, FCL, LCL
-  Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
-  StdCtrls,
+  Forms, StdCtrls,
   // Project units
   rectanglestest, brushtest, pentest, fonttest, shapedwindowtest,
   ellipseunit, screenshotunit, drawtest, imagetest, systemcolorstest;
@@ -40,9 +39,9 @@ type
     procedure btnShapedWindowClick(Sender: TObject);
     procedure btnSystemColorsClick(Sender: TObject);
   private
-    { private declarations }
+
   public
-    { public declarations }
+
   end; 
 
 var

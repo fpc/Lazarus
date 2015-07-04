@@ -53,8 +53,7 @@ unit Main;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ExtCtrls,
-  StdCtrls, LCLTranslator, LocalizedForms;
+  SysUtils, Dialogs, ExtCtrls, StdCtrls, LCLTranslator, LocalizedForms;
 
 type
 
@@ -75,13 +74,12 @@ type
     procedure FormCreate(Sender: TObject);
     procedure RgDrinksClick(Sender: TObject);
   private
-    { private declarations }
     FSelectionTime: TTime;
     procedure SelectLanguage(ALang: String);
   protected
     procedure UpdateTranslation(ALang: String); override;
   public
-    { public declarations }
+
   end;
 
 var

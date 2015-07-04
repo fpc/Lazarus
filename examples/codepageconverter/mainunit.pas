@@ -26,9 +26,8 @@ unit mainunit;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, ExtCtrls,
-  FileUtil, StdCtrls, Buttons, ComCtrls, Menus,
-  DefaultTranslator, FileCtrl;
+  Classes, SysUtils, Forms, Dialogs, ExtCtrls, StdCtrls, ComCtrls, Menus, FileCtrl,
+  LazFileUtils, LazUTF8;
 
 type
 
@@ -57,9 +56,8 @@ type
     procedure Form1Show(Sender: TObject);
     procedure MenuItem1Click(Sender: TObject);
   private
-    { private declarations }
+
   public
-    { public declarations }
     procedure CountFiles;
   end; 
 

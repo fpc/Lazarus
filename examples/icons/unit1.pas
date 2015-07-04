@@ -5,8 +5,7 @@ unit Unit1;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  IntfGraphics, GraphType, FPImage, LCLType, ExtCtrls, ComCtrls, FileUtil;
+  SysUtils, Forms, Graphics, StdCtrls, ExtCtrls, ComCtrls, LazUTF8;
 
 type
   { TForm1 }

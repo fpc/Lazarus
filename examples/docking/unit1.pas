@@ -5,8 +5,8 @@ unit Unit1;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
-  Menus, ExtCtrls, Types, LDockTree, HelpIntfs, LazHelpHTML;
+  Classes, SysUtils, Types, Forms, Controls, Dialogs, Menus, ExtCtrls,
+  {LDockTree,} HelpIntfs, LazHelpHTML;
 
 type
 

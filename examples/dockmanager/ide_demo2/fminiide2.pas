@@ -11,8 +11,7 @@ Problems:
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
-  Menus, StdCtrls, SynEdit;
+  Classes, SysUtils, Forms, Controls, Dialogs, Menus, StdCtrls;
 
 type
 

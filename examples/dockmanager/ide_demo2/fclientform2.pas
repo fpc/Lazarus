@@ -10,8 +10,7 @@ unit fClientForm2;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
-  StdCtrls, ExtCtrls, fEditBook2;
+  Classes, Forms, Controls, StdCtrls, fEditBook2;
 
 type
   TViewWindow = class(TForm)

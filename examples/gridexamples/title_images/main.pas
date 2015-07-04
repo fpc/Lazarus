@@ -5,8 +5,7 @@ unit main;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
-  Grids, ExtCtrls;
+  SysUtils, Forms, Controls, Grids, ExtCtrls;
 
 type
 
@@ -22,7 +21,7 @@ type
   private
     procedure Refresh;
   public
-    { public declarations }
+
   end; 
 
 var

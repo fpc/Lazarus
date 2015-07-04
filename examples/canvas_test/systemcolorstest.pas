@@ -5,8 +5,7 @@ unit systemcolorstest;
 interface
 
 uses
-  Classes, SysUtils, types, FileUtil, LResources, Forms, Controls, Graphics,
-  Dialogs, LCLType, LCLIntf;
+  SysUtils, types, LResources, Forms, Graphics, LCLType, LCLIntf;
 
 type
 
@@ -15,9 +14,9 @@ type
   TfrmSystemColors = class(TForm)
     procedure FormPaint(Sender: TObject);
   private
-    { private declarations }
+
   public
-    { public declarations }
+
   end;
 
 var

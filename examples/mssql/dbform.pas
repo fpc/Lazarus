@@ -5,10 +5,9 @@ unit dbform;
 interface
 
 uses
-  Classes, SysUtils,
-  mssqlconn, // mssqlconn was added to 2.6.1, you need a recent 2.6.1
-  db, sqldb, FileUtil, Forms, Controls, Graphics,
-  Dialogs, DBGrids, dbloginform;
+  SysUtils, db, sqldb, Forms, Controls, Dialogs, DBGrids, dbloginform,
+  mssqlconn; // mssqlconn was added to 2.6.1, you need a recent 2.6.1
+
 
 type
 
@@ -23,9 +22,9 @@ type
     SybaseConnection1: TSybaseConnection;
     procedure FormCreate(Sender: TObject);
   private
-    { private declarations }
+
   public
-    { public declarations }
+
   end;
 
 var

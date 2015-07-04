@@ -13,9 +13,7 @@ unit Unit1;
 interface
 
 uses
-  {$ifdef Windows} Windows, {$Endif}Classes, SysUtils, FileUtil,
-  Forms, Controls, Graphics, Dialogs, ExtCtrls,
-  StdCtrls, Buttons;
+  {$ifdef Windows} Windows, {$Endif}SysUtils, Forms, Graphics, ExtCtrls, StdCtrls;
 
 type
 
@@ -38,9 +36,9 @@ type
     procedure Image1Resize(Sender: TObject);
     procedure PnlImageResize(Sender: TObject);
   private
-    { private declarations }
+
   public
-    { public declarations }
+
   end;
 
 var

@@ -25,7 +25,7 @@ unit frmmain;
 interface
 
 uses
-  LCLIntf, SysUtils, Classes, Graphics, Controls, Forms, FileUtil,
+  SysUtils, Classes, Controls, Forms, LazFileUtils, LazUTF8,
   Dialogs, StdCtrls, ComCtrls, ExtCtrls, ActnList, Menus, LCLType,
   fpreadtiff {adds TIFF format read support to TImage};
 

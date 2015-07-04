@@ -5,8 +5,8 @@ unit Unit1;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, SynEdit,
-  FileUtil, StdCtrls, Menus, SynHighlighterPosition, SynEditHighlighter;
+  Forms, Graphics, Dialogs, SynEdit, Menus, LazUTF8,
+  SynHighlighterPosition, SynEditHighlighter;
 
 type
 

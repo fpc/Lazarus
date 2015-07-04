@@ -5,8 +5,7 @@ unit drawtest;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
-  StdCtrls, ComCtrls;
+  Classes, Forms, Graphics;
 
 type
 
@@ -16,9 +15,9 @@ type
     procedure FormCreate(Sender: TObject);
     procedure FormPaint(Sender: TObject);
   private
-    { private declarations }
+
   public
-    { public declarations }
+
   end; 
 
 var

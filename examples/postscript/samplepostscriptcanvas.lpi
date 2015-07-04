@@ -49,9 +49,6 @@
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="11"/>
-    <SearchPaths>
-      
-    </SearchPaths>
     <Parsing>
       <SyntaxOptions>
         <UseAnsiStrings Value="False"/>

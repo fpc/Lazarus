@@ -40,7 +40,7 @@ interface
 {$ASSERTIONS ON}
 
 
-uses Classes, SysUtils, FileUtil, Forms, Buttons, StdCtrls, Controls, Menus,
+uses Classes, SysUtils, LazUTF8, Forms, Buttons, StdCtrls, Controls, Menus,
      ExtCtrls, ComCtrls, GraphType, Graphics, Dialogs, Inifiles, Spin, ClipBrd,
      LCLIntf, LResources;
 

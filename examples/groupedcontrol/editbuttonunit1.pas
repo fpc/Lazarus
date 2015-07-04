@@ -5,8 +5,7 @@ unit editbuttonunit1;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, RTTIGrids, Forms, Controls, Graphics, Dialogs,
-  StdCtrls, ExtCtrls, EditBtn, GroupedCtrls;
+  RTTIGrids, Forms, StdCtrls, ExtCtrls, EditBtn, GroupedCtrls;
 
 type
 

@@ -5,8 +5,8 @@ unit mainform;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, Grids,
-  StdCtrls, dbconfiggui, dbconfig,
+  Classes, SysUtils, FileUtil, Forms, Controls, Dialogs, StdCtrls,
+  dbconfiggui, dbconfig,
   {General db unit}sqldb,
   {For EDataBaseError}db,
   {Now we add all databases we want to support, otherwise their drivers won't be loaded}
@@ -32,7 +32,6 @@ type
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
   private
-    { private declarations }
     FConn: TSQLConnector;
     FQuery: TSQLQuery;
     FTran: TSQLTransaction;
@@ -41,7 +40,7 @@ type
     // Display script error to the user
     procedure ShowScriptException(Sender: TObject; Statement: TStrings; TheException: Exception; var Continue: boolean);
   public
-    { public declarations }
+
   end;
 
 var
