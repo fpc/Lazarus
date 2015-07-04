@@ -56,8 +56,8 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, LCLType, Forms, Controls, Buttons, ComCtrls,
-  Menus, Dialogs, FileUtil, LazFileCache, ExtCtrls, Graphics,
-  CodeToolManager, TreeFilterEdit,
+  Menus, Dialogs, FileUtil, LazFileUtils, LazFileCache, ExtCtrls, Graphics,
+  TreeFilterEdit,
   // IDEIntf
   IDEHelpIntf, IDECommands, IDEDialogs, IDEImagesIntf, LazIDEIntf, ProjectIntf,
   PackageIntf,

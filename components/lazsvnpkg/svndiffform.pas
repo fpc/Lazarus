@@ -23,7 +23,7 @@ unit SVNDiffForm;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms, Dialogs,
+  Classes, SysUtils, LazFileUtils, Forms, Dialogs,
   ButtonPanel, StdCtrls, Buttons, LazIDEIntf, SynEdit, SynHighlighterDiff;
 
 type

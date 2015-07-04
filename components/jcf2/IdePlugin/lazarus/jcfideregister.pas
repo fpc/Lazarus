@@ -36,7 +36,7 @@ uses
   { rtl }
   SysUtils, Classes,
   { lcl }
-  LCLType, FileUtil;
+  LCLType, LazFileUtils, LazUTF8;
 
 procedure Register;
 

@@ -8,8 +8,9 @@ unit DebugAttachDialog;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, DbgIntfDebuggerBase, Forms, Controls, Graphics, Dialogs,
-  StdCtrls, ComCtrls, LCLType, LazarusIDEStrConsts, BaseDebugManager, Debugger;
+  Classes, SysUtils, Forms, Controls, Dialogs, StdCtrls, ComCtrls,
+  LCLType, LazFileUtils, DbgIntfDebuggerBase,
+  LazarusIDEStrConsts, BaseDebugManager, Debugger;
 
 type
 

@@ -31,9 +31,9 @@ interface
 
 uses
   Math, Classes, SysUtils, LCLProc, LCLType, Forms, Controls, Buttons, ExtDlgs,
-  StdCtrls, ExtCtrls, Dialogs, FileUtil, ComCtrls, ButtonPanel, AVL_Tree,
+  StdCtrls, ExtCtrls, Dialogs, ComCtrls, ButtonPanel, AVL_Tree, FileUtil, LazFileUtils,
   // IDEIntf
-  NewItemIntf, ProjectIntf, PackageIntf, FormEditingIntf, IDEWindowIntf, IDEDialogs,
+  NewItemIntf, PackageIntf, FormEditingIntf, IDEWindowIntf, IDEDialogs,
   // IDE
   LazarusIDEStrConsts, InputHistory, IDEDefs, IDEProcs, EnvironmentOpts,
   PackageSystem, PackageDefs, ComponentReg, AddDirToPkgDlg;

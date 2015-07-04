@@ -39,8 +39,8 @@ unit AddFileToAPackageDlg;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Buttons, ExtCtrls, StdCtrls,
-  Dialogs, AVL_Tree, FileUtil, ButtonPanel,
+  Classes, SysUtils, Forms, Controls, ExtCtrls, StdCtrls,
+  Dialogs, AVL_Tree, FileUtil, LazFileUtils, ButtonPanel,
   IDEWindowIntf, PackageIntf, IDEHelpIntf,
   IDEDefs, LazarusIDEStrConsts, IDEProcs,
   AddToPackageDlg, ComponentReg, PackageDefs, PackageSystem;

@@ -49,7 +49,7 @@ uses
   {$ENDIF}
   Classes, SysUtils, LCLProc, Controls, Forms, Buttons, StdCtrls, ComCtrls,
   Dialogs, ExtCtrls, BaseIDEIntf, IDEHelpIntf, ProjectIntf, IDEDialogs,
-  IDEProcs, SysVarUserOverrideDlg, InputHistory, LazarusIDEStrConsts, FileUtil,
+  IDEProcs, SysVarUserOverrideDlg, InputHistory, LazarusIDEStrConsts, LazFileUtils,
   Laz2_XMLCfg, LazFileCache, ButtonPanel;
 
 { The xml format version:

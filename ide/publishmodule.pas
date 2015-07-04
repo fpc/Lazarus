@@ -36,7 +36,7 @@ interface
 
 uses
   Classes, SysUtils,
-  IDEProcs, SynRegExpr, FileUtil, Laz2_XMLCfg, LCLProc;
+  IDEProcs, SynRegExpr, LazFileUtils, Laz2_XMLCfg, LCLProc;
 
 type
   { TPublishModuleOptions }

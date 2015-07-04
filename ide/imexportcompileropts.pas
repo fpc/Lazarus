@@ -32,9 +32,8 @@ unit ImExportCompilerOpts;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls, Buttons,
-  Menus, ExtCtrls, ButtonPanel,
-  IDEProcs, FileUtil, Laz2_XMLCfg, LazFileCache, LCLType, LazarusIDEStrConsts,
+  SysUtils, Forms, Controls, Dialogs, StdCtrls, Buttons, ExtCtrls, ButtonPanel,
+  IDEProcs, FileUtil, LazFileUtils, Laz2_XMLCfg, LCLType, LazarusIDEStrConsts,
   IDEOptionsIntf, InputHistory, Project, CompilerOptions;
 
 type

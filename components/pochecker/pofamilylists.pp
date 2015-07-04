@@ -5,7 +5,7 @@ unit PoFamilyLists;
 interface
 
 Uses
-  Classes, SysUtils, LCLProc, FileUtil, StringHashList, ContNrs,
+  Classes, SysUtils, ContNrs, LCLProc, LazFileUtils,
   //{$IFDEF UNIX}{$IFNDEF DisableCWString}, cwstring{$ENDIF}{$ENDIF},
   PoFamilies, PoCheckerConsts;
 

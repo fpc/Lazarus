@@ -23,7 +23,7 @@ unit SVNStatusForm;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms, Controls, Dialogs,
+  Classes, SysUtils, FileUtil, LazFileUtils, Forms, Controls, Dialogs,
   ComCtrls, StdCtrls, ButtonPanel, ExtCtrls, LCLProc, Process,
   SVNClasses, Menus, LazIDEIntf, BaseIDEIntf, LazConfigStorage;
 

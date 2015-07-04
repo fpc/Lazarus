@@ -32,8 +32,8 @@ interface
 
 uses
   AVL_Tree, typinfo, math, Classes, SysUtils, Controls, Forms, Dialogs, LCLIntf,
-  LCLType, LCLProc, FileProcs, FileUtil, IDEProcs, DialogProcs, IDEDialogs,
-  LConvEncoding, LazFileCache, LazFileUtils, LResources, PropEdits,
+  LCLType, LCLProc, FileProcs, IDEProcs, DialogProcs, IDEDialogs,
+  LConvEncoding, LazFileCache, FileUtil, LazFileUtils, LazUTF8, LResources, PropEdits,
   DefineTemplates, IDEMsgIntf, IDEProtocol, LazarusIDEStrConsts, NewDialog,
   NewProjectDlg, LazIDEIntf, MainBase, MainBar, MainIntf, MenuIntf, NewItemIntf,
   CompOptsIntf, SrcEditorIntf, IDEWindowIntf, ProjectIntf, Project, ProjectDefs,
@@ -3797,7 +3797,7 @@ begin
                           +dlgFilterAll+'|'+GetAllFilesMask;
       if OpenDialog.Execute then begin
         AFilename:=GetPhysicalFilenameCached(ExpandFileNameUTF8(OpenDialog.Filename),false);
-        if FileUtil.CompareFileExt(AFilename,'.lpi')<>0 then begin
+        if CompareFileExt(AFilename,'.lpi')<>0 then begin
           // not a lpi file
           // check if it is a program source
 

@@ -30,11 +30,10 @@ unit GuiTestRunner;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs,
-  ExtCtrls, Buttons, ComCtrls, ActnList, Menus, Clipbrd, StdCtrls,
-  testdecorator, xmltestreport,
-  fpcunit, testregistry, SynEdit, SynHighlighterXML, gettext, Translations,
-  inifiles;
+  Classes, SysUtils, LazFileUtils, LazUTF8, Forms, Controls, Graphics, Dialogs,
+  ExtCtrls, ComCtrls, ActnList, Menus, Clipbrd, StdCtrls,
+  IniFiles, testdecorator, xmltestreport,
+  fpcunit, testregistry, SynEdit, SynHighlighterXML, gettext, Translations;
 
 type
 

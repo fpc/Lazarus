@@ -41,7 +41,7 @@ uses
   MemCheck,
   {$ENDIF}
   // LCL
-  Classes, SysUtils, Forms, Controls, Dialogs, ExtCtrls, FileUtil,
+  Classes, SysUtils, Forms, Controls, Dialogs, ExtCtrls, LazFileUtils,
   LCLType, LCLIntf, LazLoggerBase, Laz2_XMLCfg, LazFileCache, LazUTF8,
   // codetools
   CodeCache, CodeToolManager, PascalParserTool, CodeTree,
@@ -49,7 +49,7 @@ uses
   IDEWindowIntf, SrcEditorIntf, MenuIntf, IDECommands, LazIDEIntf, ProjectIntf,
   CompOptsIntf, IDEDialogs,
   // IDE
-  LazConf, CompilerOptions, EnvironmentOpts,
+  CompilerOptions, EnvironmentOpts,
   SourceEditor, ProjectDefs, Project, IDEProcs, InputHistory, Debugger,
   LazarusIDEStrConsts, TransferMacros,
   MainBar, MainIntf, MainBase, BaseBuildManager, SourceMarks,

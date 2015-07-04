@@ -5,11 +5,10 @@ unit xmlresourcefile;
 interface
 
 uses
-  Classes, Controls, SysUtils,
-  LCLMemManager, forms,
-  dom, XMLRead,XMLWrite,
-  ProjectIntf,
-  UnitResources;
+  Classes, Controls, SysUtils, RtlConsts,
+  LCLMemManager, forms, LazFileUtils,
+  dom, XMLRead, XMLWrite,
+  ProjectIntf, UnitResources, CodeCache;
 
 type
 
@@ -147,11 +146,6 @@ type
 procedure register;
 
 implementation
-
-uses
-  FileUtil,
-  RtlConsts,
-  CodeCache;
 
 procedure register;
 begin

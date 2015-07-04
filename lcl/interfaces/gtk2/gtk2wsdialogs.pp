@@ -27,7 +27,7 @@ uses
   // LCL
   Gtk2Extra,
   Graphics, Controls, Dialogs, ExtDlgs, LCLType,
-  FileUtil, LCLStrConsts, LCLProc, InterfaceBase,
+  LazFileUtils, LazUTF8, LCLStrConsts, LCLProc, InterfaceBase,
   // Widgetset
   Gtk2Int, Gtk2Globals, Gtk2Def, Gtk2Proc,
   WSDialogs;

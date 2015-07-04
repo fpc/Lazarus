@@ -37,7 +37,7 @@ unit PublishProjectDlg;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Buttons,
+  Classes, SysUtils, LazFileUtils, Forms, Controls, Graphics, Buttons,
   StdCtrls, Dialogs, LCLType,
   IDEWindowIntf, IDEHelpIntf, IDEDialogs,
   ProjectDefs, PackageDefs, PublishModule, IDEOptionDefs, InputHistory,

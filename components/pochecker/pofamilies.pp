@@ -7,7 +7,7 @@ unit PoFamilies;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, FileUtil, StringHashList, ContNrs, Math,
+  Classes, SysUtils, ContNrs, Math, LCLProc, FileUtil, LazFileUtils,
   Masks, Translations, PoCheckerConsts;
 
 Type

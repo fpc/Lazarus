@@ -35,7 +35,7 @@ in directory where your program translation files are placed.
 interface
 
 uses
-  Classes, SysUtils, LResources, GetText, Controls, typinfo, FileUtil,
+  Classes, SysUtils, LResources, GetText, Controls, typinfo, LazFileUtils,
   Translations, Forms, LazUTF8;
 
 type

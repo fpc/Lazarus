@@ -50,12 +50,16 @@ function UTF8ToSys(const AFormatSettings: TFormatSettings): TFormatSettings; ove
 function SysToUTF8(const s: string): string; overload;
 function SysToUTF8(const AFormatSettings: TFormatSettings): TFormatSettings; overload;
 
-function ConsoleToUTF8(const s: string): string;// converts OEM encoded string to UTF8 (used with some Windows specific functions)
-function UTF8ToConsole(const s: string): string;// converts UTF8 string to console encoding (used by Write, WriteLn)
+// converts OEM encoded string to UTF8 (used with some Windows specific functions)
+function ConsoleToUTF8(const s: string): string;
+// converts UTF8 string to console encoding (used by Write, WriteLn)
+function UTF8ToConsole(const s: string): string;
 {$IFDEF MSWindows}
 // for all Windows supporting 8bit codepages (e.g. not WinCE)
-function WinCPToUTF8(const s: string): string;// converts string in Windows code page to UTF8 (used with some Windows specific functions)
-function UTF8ToWinCP(const s: string): string;// converts UTF8 string to Windows code page encoding (used by Write, WriteLn)
+// converts string in Windows code page to UTF8 (used with some Windows specific functions)
+function WinCPToUTF8(const s: string): string;
+// converts UTF8 string to Windows code page encoding (used by Write, WriteLn)
+function UTF8ToWinCP(const s: string): string;
 {$ENDIF}
 
 function ParamStrUTF8(Param: Integer): string;
@@ -64,7 +68,6 @@ function GetEnvironmentStringUTF8(Index: Integer): string;
 function GetEnvironmentVariableUTF8(const EnvVar: string): String;
 
 function SysErrorMessageUTF8(ErrorCode: Integer): String;
-
 
 function UTF8CharacterLength(p: PChar): integer;
 function UTF8Length(const s: string): PtrInt;

@@ -5,7 +5,8 @@ unit lr_design_ins_filed;
 interface
 
 uses
-  Classes, SysUtils, DB, Forms, Controls, ExtCtrls, StdCtrls, Buttons, ComCtrls;
+  Classes, SysUtils, DB, Forms, Controls, ExtCtrls, StdCtrls, Buttons, ComCtrls,
+  IniFiles, LazFileUtils;
 
 type
 
@@ -56,7 +57,7 @@ var
   lrFieldsList:TlrFieldsList = nil;
 
 implementation
-uses LR_Utils, LR_Class, LR_DBRel, IniFiles, FileUtil, LR_Desgn, LR_Const;
+uses LR_Utils, LR_Class, LR_DBRel, LR_Desgn, LR_Const;
 
 {$R *.lfm}
 

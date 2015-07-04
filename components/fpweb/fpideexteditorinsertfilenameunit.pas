@@ -34,7 +34,7 @@ unit fpIDEExtEditorInsertFileNameUnit;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
+  Classes, SysUtils, LazFileUtils, Forms, Controls, Graphics, Dialogs, StdCtrls,
   ButtonPanel;
 
 type

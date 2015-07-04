@@ -43,7 +43,7 @@ uses
 {$IFDEF IDE_MEM_CHECK}
   MemCheck,
 {$ENDIF}
-  TypInfo, Classes, SysUtils, Forms, FileUtil, LCLProc, ComCtrls,
+  TypInfo, Classes, SysUtils, Forms, LazFileUtils, LCLProc, ComCtrls,
   LazIDEIntf, PackageIntf, MenuIntf,
   LazarusIDEStrConsts, EnvironmentOpts,
   CompilerOptions, PackageDefs, PackageSystem, ComponentReg, Project;

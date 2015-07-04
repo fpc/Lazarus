@@ -5,8 +5,8 @@ unit project_i18n_options;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  EditBtn, Project, IDEProcs, IDEOptionsIntf, LazarusIDEStrConsts, IDEDialogs;
+  StdCtrls, EditBtn, LazFileUtils, Project, IDEOptionsIntf,
+  LazarusIDEStrConsts, IDEDialogs;
 
 type
 

@@ -19,7 +19,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs,
-  StdCtrls, Buttons, ExtCtrls, FileUtil, MaskEdit, LazIDEIntf,
+  StdCtrls, Buttons, ExtCtrls, LazUTF8, LazFileUtils, MaskEdit, LazIDEIntf,
   PropEdits, ComponentEditors, ObjInspStrConsts, ButtonPanel;
 
 type

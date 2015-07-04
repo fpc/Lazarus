@@ -42,9 +42,10 @@ uses
   {$IFDEF IDE_MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  SynEditMouseCmds, Classes, SysUtils, Math, Controls, ExtendedNotebook,
-  LCLProc, LCLType, LResources, LCLIntf, FileUtil, Forms, ComCtrls, Dialogs,
-  StdCtrls, Graphics, Translations, ClipBrd, types, Extctrls, Menus, HelpIntfs,
+  SynEditMouseCmds, Classes, SysUtils, types, Math,
+  Controls, Forms, ComCtrls, StdCtrls, Graphics, Dialogs, Extctrls, Menus,
+  ExtendedNotebook, LCLProc, LCLType, LResources, LCLIntf, FileUtil, LazFileUtils,
+  Translations, ClipBrd, HelpIntfs,
   LConvEncoding, Messages, LazLoggerBase, lazutf8classes, LazLogger, AvgLvlTree,
   LazFileCache, LazUTF8,
   // codetools

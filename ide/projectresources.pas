@@ -37,12 +37,11 @@ unit ProjectResources;
 interface
 
 uses
-  Classes, SysUtils, Contnrs, Controls, LCLProc, LResources, FileUtil,
+  Classes, SysUtils, Contnrs, Controls, LCLProc, LResources, LazFileUtils,
   Dialogs, AvgLvlTree, Laz2_XMLCfg, resource, reswriter,
   KeywordFuncLists, BasicCodeTools, CodeToolManager, CodeCache,
   ProjectIntf, ProjectResourcesIntf, CompOptsIntf,
-  LazarusIDEStrConsts,
-  IDEProcs, DialogProcs,
+  LazarusIDEStrConsts, IDEProcs, DialogProcs,
   W32Manifest, W32VersionInfo, ProjectIcon, ProjectUserResources;
 
 type

@@ -28,7 +28,7 @@ unit ExampleForm;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LCLProc, Forms, LResources, Buttons,
+  Classes, SysUtils, LazFileUtils, LazUTF8, LCLProc, Forms, LResources, Buttons,
   StdCtrls, Dialogs, Graphics, IntfGraphics, GL, FPimage, OpenGLContext;
 
 const

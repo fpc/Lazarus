@@ -37,9 +37,9 @@ unit DebuggerDlg;
 interface
 
 uses
-  Classes, Forms, Controls, IDEProcs, FileUtil, LCLProc, LazLoggerBase, Debugger,
-  IDEImagesIntf, MainIntf, EditorOptions, IDECommands, DbgIntfDebuggerBase, DbgIntfMiscClasses,
-  BaseDebugManager;
+  Classes, Forms, Controls, IDEProcs, LazFileUtils, LCLProc, LazLoggerBase, Debugger,
+  IDEImagesIntf, MainIntf, EditorOptions, IDECommands, DbgIntfDebuggerBase,
+  DbgIntfMiscClasses, BaseDebugManager;
 
 type
 

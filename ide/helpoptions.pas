@@ -35,11 +35,9 @@ unit HelpOptions;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
-  FileUtil, Laz2_XMLCfg, LazFileCache, Buttons, ExtCtrls,
-  EnvironmentOpts, ObjectInspector,
-  LazHelpIntf, IDEWindowIntf, IDEOptionsIntf, MacroIntf, LazConf,
-  LazarusIDEStrConsts, IDEProcs, IDEOptionDefs;
+  Classes, SysUtils, LCLProc, LazFileUtils, Laz2_XMLCfg, LazFileCache,
+  LazHelpIntf, IDEOptionsIntf, MacroIntf, LazConf,
+  LazarusIDEStrConsts, IDEOptionDefs;
 
 type
   { THelpOptions }

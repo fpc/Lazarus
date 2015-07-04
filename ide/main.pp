@@ -67,7 +67,7 @@ uses
   LazUTF8, Laz2_XMLCfg,
   // lcl
   LCLProc, LCLType, LCLIntf, LConvEncoding, ComCtrls,
-  FileUtil, LResources, Forms, Buttons, Menus, Controls, GraphType,
+  FileUtil, LazFileUtils, LResources, Forms, Buttons, Menus, Controls, GraphType,
   HelpIntfs, Graphics, ExtCtrls, Dialogs, InterfaceBase, UTF8Process, LazLogger,
   lazutf8classes, LazFileCache,
   // codetools
@@ -6065,7 +6065,7 @@ begin
     Ext:='.lpi';
   end;
 
-  if (not FileUtil.FileIsText(AFilename,FileReadable)) and FileReadable then
+  if (not FileIsText(AFilename,FileReadable)) and FileReadable then
   begin
     ACaption:=lisFileNotText;
     AText:=Format(lisFileDoesNotLookLikeATextFileOpenItAnyway,[AFilename,LineEnding,LineEnding]);

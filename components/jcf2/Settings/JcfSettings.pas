@@ -169,7 +169,7 @@ implementation
 
 uses
   { delphi }
-  {$IFNDEF FPC}Windows,{$ELSE}FileUtil,{$ENDIF} SysUtils, Dialogs,
+  {$IFNDEF FPC}Windows,{$ELSE}LazFileUtils, LazUTF8,{$ENDIF} SysUtils, Dialogs,
   { local }
   JcfStringUtils,
   JcfSetBase,

@@ -39,7 +39,7 @@ uses
   {$ELSE}
   chmwriter, chmfilewriter, chmsitemap,
   {$ENDIF}
-  LazUTF8, FileUtil, CodeToolsStructs;
+  LazUTF8, LazFileUtils, CodeToolsStructs;
 
 const
   CHMImagesDir = '/images/';

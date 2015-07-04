@@ -34,7 +34,7 @@ interface
 
 uses
   Types, Classes, SysUtils, Math, Maps, LCLStrConsts, LCLProc, LCLType, LCLIntf,
-  FileUtil, FPCanvas, Controls, GraphType, Graphics, Forms, DynamicArray,
+  LazFileUtils, FPCanvas, Controls, GraphType, Graphics, Forms, DynamicArray,
   LMessages, StdCtrls, LResources, MaskEdit, Buttons, Clipbrd, Themes,
   LazUTF8, LazUtf8Classes, Laz2_XMLCfg, LCSVUtils
 {$ifdef WINDOWS}

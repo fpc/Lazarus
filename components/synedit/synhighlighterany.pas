@@ -57,7 +57,7 @@ unit SynHighlighterAny;
 interface
 
 uses
-  SysUtils, Classes, FileUtil, Controls, Graphics, Registry,
+  SysUtils, Classes, LazUTF8, LazFileUtils, Controls, Graphics, Registry,
   SynEditTypes, SynEditHighlighter;
 
 type

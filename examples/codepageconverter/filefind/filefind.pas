@@ -82,7 +82,7 @@ unit FileFind;
 interface
 
 uses LResources,
-     SysUtils, Classes, FileUtil, Graphics, Controls, Forms, Dialogs;
+     SysUtils, Classes, LazFileUtils, Graphics, Controls, Forms, Dialogs;
 
 type
     TFindFileEvent = procedure(fullpath:string;info:TSearchRec)of object;

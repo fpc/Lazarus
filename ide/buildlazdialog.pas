@@ -48,8 +48,8 @@ uses
   {$IFDEF Windows}
   Windows,
   {$ENDIF}
-  LCLProc, Forms, Controls, LCLType, StdCtrls, ExtCtrls,
-  Buttons, FileUtil, LazUTF8, LazLogger, lazutf8classes, LazFileCache, Dialogs,
+  LCLProc, Forms, Controls, LCLType, StdCtrls, ExtCtrls, Buttons, Dialogs,
+  FileUtil, LazFileUtils, LazUTF8, LazLogger, lazutf8classes, LazFileCache,
   InterfaceBase, CheckLst, Menus, ComCtrls, DividerBevel, DefineTemplates,
   CodeToolManager,
   // IDEIntf

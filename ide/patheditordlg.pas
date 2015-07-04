@@ -21,10 +21,9 @@ unit PathEditorDlg;
 interface
 
 uses
-  Classes, SysUtils, types, Forms, Controls, Buttons, StdCtrls, Dialogs,
-  FileUtil, ButtonPanel, ExtCtrls, MacroIntf, IDEImagesIntf, LCLType,
-  Graphics, Menus, TransferMacros, LazarusIDEStrConsts, shortpathedit, Clipbrd,
-  LCLProc;
+  Classes, SysUtils, types, Forms, Controls, Buttons, StdCtrls, Dialogs, Graphics,
+  Menus, ButtonPanel, ExtCtrls, FileUtil, LazFileUtils, MacroIntf, IDEImagesIntf,
+  LCLType, TransferMacros, LazarusIDEStrConsts, ShortPathEdit, Clipbrd, LCLProc;
 
 type
 

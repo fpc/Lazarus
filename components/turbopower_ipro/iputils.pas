@@ -37,7 +37,7 @@ interface
 uses
   SysUtils, Classes, Controls, Registry, ComCtrls,
   {$IFDEF IP_LAZARUS}
-  LCLType, GraphType, LCLIntf, LMessages, FileUtil, lazutf8classes, LCLProc;
+  LCLType, GraphType, LCLIntf, LMessages, LazFileUtils, lazutf8classes, LCLProc;
   {$ELSE}
   Messages, Windows, ExtCtrls, SyncObjs;
   {$ENDIF}
@@ -2790,7 +2790,7 @@ end;
 function GetTemporaryFile(const Path : string) : string;
 {$IFDEF IP_LAZARUS}
 begin
-  Result:=FileUtil.GetTempFileName(Path,'IP_');
+  Result:=GetTempFileNameUTF8(Path,'IP_');
 end;
 {$ELSE}
 var

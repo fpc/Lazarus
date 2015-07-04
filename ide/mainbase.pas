@@ -56,7 +56,7 @@ uses
   MemCheck,
 {$ENDIF}
   Math, Classes, LCLType, LCLProc, LCLIntf, Buttons, Menus,
-  SysUtils, types, Controls, Graphics, ExtCtrls, Dialogs, FileUtil, Forms,
+  SysUtils, types, Controls, Graphics, ExtCtrls, Dialogs, LazFileUtils, Forms,
   CodeToolManager, AVL_Tree, SynEditKeyCmds, PackageIntf,
   // IDEIntf
   IDEImagesIntf, SrcEditorIntf, LazIDEIntf, MenuIntf,

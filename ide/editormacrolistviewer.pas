@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils,
-  FileUtil, Laz2_XMLCfg, LazUTF8, LazLoggerBase,
+  LazFileUtils, Laz2_XMLCfg, LazUTF8, LazLoggerBase,
   LCLType, Forms, Controls, Dialogs, StdCtrls, ButtonPanel, ComCtrls, ExtCtrls,
   Spin, Menus,
   SynMacroRecorder, SynEdit, SynEditKeyCmds,

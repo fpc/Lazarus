@@ -46,8 +46,8 @@ uses
   LMessages, LCLProc, LazUTF8, LCLIntf, LCLType, DynHashArray, Masks,
   GraphType, Graphics, LResources, Controls, Forms,
   Buttons, Menus, StdCtrls, ComCtrls, ExtCtrls, Dialogs, ExtDlgs,
-  FileUtil, ImgList, Gtk2FontCache, Gtk2Globals, Gtk2Def, Gtk2Extra, {%H-}Gtk2Debug,
-  LCLMessageGlue;
+  ImgList, Gtk2FontCache, Gtk2Globals, Gtk2Def, Gtk2Extra, {%H-}Gtk2Debug,
+  FileUtil, LazFileUtils, LCLMessageGlue;
 
 const
   GtkListItemGtkListTag = 'GtkList';

@@ -37,7 +37,7 @@ unit FindOverloadsDlg;
 interface
 
 uses
-  Classes, SysUtils, LCLProc,FileUtil, Forms, Controls, Graphics,
+  Classes, SysUtils, LCLProc, LazFileUtils, Forms, Controls, Graphics,
   Dialogs, ExtCtrls, StdCtrls, Buttons, ButtonPanel, ComCtrls, AvgLvlTree,
   // codetools
   FindDeclarationTool, PascalParserTool, CodeTree, CodeCache,

@@ -24,7 +24,7 @@ unit consoletestrunner;
 interface
 
 uses
-  custapp, Classes, SysUtils, FileUtil,
+  custapp, Classes, SysUtils, LazUTF8,
   fpcunit, testregistry, testutils,
   fpcunitreport, latextestreport, xmltestreport, plaintestreport,
   dom;

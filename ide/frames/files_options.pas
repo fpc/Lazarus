@@ -29,9 +29,8 @@ unit files_options;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, FileUtil, CodeToolManager, DefineTemplates, Forms,
-  StdCtrls, Dialogs, Controls, Spin, EnvironmentOpts,
-  IDEOptionsIntf, IDEDialogs,
+  SysUtils, StdCtrls, Dialogs, Controls, Spin, FileUtil, LazFileUtils,
+  EnvironmentOpts, CodeToolManager, DefineTemplates, IDEOptionsIntf, IDEDialogs,
   LazarusIDEStrConsts, InputHistory, LazConf, IDEProcs,
   IDEUtils, InitialSetupProc, DialogProcs;
 

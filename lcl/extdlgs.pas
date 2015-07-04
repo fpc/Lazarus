@@ -21,9 +21,9 @@ unit ExtDlgs;
 interface
 
 uses
-  Types, Classes, SysUtils, LCLProc, LResources, LCLType, LCLStrConsts, FileUtil,
-  Controls, Dialogs, GraphType, Graphics, ExtCtrls, StdCtrls, Forms,
-  Calendar, Buttons, Masks;
+  Types, Classes, SysUtils, LCLProc, LResources, LCLType, LCLStrConsts,
+  FileUtil, LazFileUtils, Controls, Dialogs, GraphType, Graphics, ExtCtrls,
+  StdCtrls, Forms, Calendar, Buttons, Masks;
 
 type
 

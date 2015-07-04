@@ -17,7 +17,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Graphics, Controls, ComCtrls, EditBtn,
-  LResources, LCLType, LCLProc, FileUtil, LazUTF8, AvgLvlTree, fgl;
+  LResources, LCLType, LCLProc, LazFileUtils, LazUTF8, AvgLvlTree, fgl;
 
 type
   TImageIndexEvent = function (Str: String; Data: TObject;

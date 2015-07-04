@@ -51,7 +51,8 @@ uses
   {$IFDEF UNIX}Unix, {$ENDIF}
   {$IFDEF Darwin}MacOSAll, CocoaAll,{$ENDIF}
   Types, Math, Classes, SysUtils, LCLType, LCLProc, GraphType, InterfaceBase,
-  LResources, FileUtil, UTF8Process, Maps, LMessages, LazUTF8, lazutf8sysutils, LCLStrConsts;
+  FileUtil, LazFileUtils, UTF8Process, Maps, LMessages, LazUTF8, lazutf8sysutils,
+  LCLStrConsts;
 
 {$ifdef Trace}
   {$ASSERTIONS ON}
