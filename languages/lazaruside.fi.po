@@ -16063,7 +16063,7 @@ msgstr "Vaihda Suosikit-lehdelle kun komponentin nimi on kysytty."
 
 #: lazarusidestrconsts.lissyntaxmode
 msgid "Syntax mode"
-msgstr "Kielioppi-moodi"
+msgstr "Kielioppimoodi"
 
 #: lazarusidestrconsts.lissystemppunotfoundcheckyourfpccfg
 msgid "system.ppu not found. Check your fpc.cfg."
@@ -18388,7 +18388,7 @@ msgstr "Mallineen muokkaus"
 
 #: lazarusidestrconsts.srkmcattemplateeditoff
 msgid "Template Editing (not in Cell)"
-msgstr "Mallineen muokkaus"
+msgstr "Mallineen muokkaus (ei solussa)"
 
 #: lazarusidestrconsts.srkmcattoolmenu
 msgid "Tools menu commands"
