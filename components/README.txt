@@ -6,6 +6,8 @@ activex
   
 aggpas
   Anti-Grain Geometry - an antialiased graphic library
+  License: 3-clause BSD license - free for open source and commercial software
+    with the exception of aggpas/gpc/gpc.pas which has a "not free for commercial use".
   
 anchordocking
   ?
