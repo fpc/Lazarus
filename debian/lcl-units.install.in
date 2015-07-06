@@ -7,7 +7,6 @@
 /usr/lib/lazarus/${VERSION}/components/dbexport
 /usr/lib/lazarus/${VERSION}/components/images
 /usr/lib/lazarus/${VERSION}/components/jcf2
-/usr/lib/lazarus/${VERSION}/components/editortoolbar
 /usr/lib/lazarus/${VERSION}/components/externhelp
 /usr/lib/lazarus/${VERSION}/components/fpcunit
 /usr/lib/lazarus/${VERSION}/components/fpweb

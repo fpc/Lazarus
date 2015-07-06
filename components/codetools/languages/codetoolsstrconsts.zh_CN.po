@@ -434,6 +434,10 @@ msgstr "gtk2 接口目录"
 msgid "HasError"
 msgstr ""
 
+#: codetoolsstrconsts.ctshelperisnotallowed
+msgid "Helper after %s is not allowed"
+msgstr ""
+
 #: codetoolsstrconsts.ctsidedirectory
 msgid "IDE Directory"
 msgstr "IDE 目录"

@@ -5,7 +5,7 @@ unit brushtest;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs; 
+  Classes, Forms, Graphics;
 
 type
 
@@ -14,9 +14,9 @@ type
   TfrmBrush = class(TForm)
     procedure FormPaint(Sender: TObject);
   private
-    { private declarations }
+
   public
-    { public declarations }
+
   end; 
 
 var

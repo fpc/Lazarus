@@ -3,11 +3,11 @@ folder.png
 template.png
 mainiconproject.ico
 actions/laz_add.png
-actions/laz_addmore.png
 actions/arrow_down.png
 actions/arrow_left.png
 actions/arrow_right.png
 actions/arrow_up.png
+actions/execute.xpm
 actions/laz_delete.png
 actions/laz_edit.png
 actions/laz_highlighter.png
@@ -17,6 +17,7 @@ actions/laz_save.png
 actions/laz_set_color_default.png
 actions/laz_set_colors_default.png
 actions/laz_wand.png
+actions/preferences.xpm
 items/item_character.png
 items/item_filter.png
 items/item_font.png
@@ -139,6 +140,9 @@ states/state_unit_circular_reference.png
 states/state_unknown.png
 states/state_warning.png
 codeexplorer/ce_class.png
+codeexplorer/ce_classinterface.png
+codeexplorer/ce_record.png
+codeexplorer/ce_helper.png
 codeexplorer/ce_const.png
 codeexplorer/ce_default.png
 codeexplorer/ce_deprecated.png

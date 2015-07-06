@@ -1065,12 +1065,11 @@ begin
     while not (FCurP^ in [#0..#31, ']']) do inc(FCurP);
     FLinkToken.CaptionEndPos:=StrPos(FCurP);
   end;
+
   if FCurP^=']' then begin
     inc(FCurP);
     if (FLinkToken.SubToken=wptInternLink) and (FCurP^=']') then
       inc(FCurP);
-
-
     DoToken(FLinkToken);
   end;
   FLastEmitPos:=FCurP;
@@ -1447,7 +1446,9 @@ begin
     FNameValueToken:=TWPNameValueToken.Create(Self,Data);
     while FCurP^<>#0 do begin
       case FCurP^ of
-
+      { wp: this case is responsible that backslashes do no appear in converted
+            windows pathnames. I don't know if a backslash has a special meaning
+            in the wiki syntax.
       '\':
         begin
           // special character as normal character
@@ -1456,7 +1457,7 @@ begin
           FLastEmitPos:=FCurP;
           if FCurP^<>#0 then inc(FCurP);
         end;
-
+      }
       #10,#13:
         begin
           EmitTextToken;

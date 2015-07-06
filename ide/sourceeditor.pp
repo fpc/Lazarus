@@ -42,9 +42,10 @@ uses
   {$IFDEF IDE_MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  SynEditMouseCmds, Classes, SysUtils, Math, Controls, ExtendedNotebook,
-  LCLProc, LCLType, LResources, LCLIntf, FileUtil, Forms, ComCtrls, Dialogs,
-  StdCtrls, Graphics, Translations, ClipBrd, types, Extctrls, Menus, HelpIntfs,
+  SynEditMouseCmds, Classes, SysUtils, types, Math,
+  Controls, Forms, ComCtrls, StdCtrls, Graphics, Dialogs, Extctrls, Menus,
+  ExtendedNotebook, LCLProc, LCLType, LResources, LCLIntf, FileUtil, LazFileUtils,
+  Translations, ClipBrd, HelpIntfs,
   LConvEncoding, Messages, LazLoggerBase, lazutf8classes, LazLogger, AvgLvlTree,
   LazFileCache, LazUTF8,
   // codetools
@@ -69,7 +70,7 @@ uses
   editor_general_options,
   SortSelectionDlg, EncloseSelectionDlg, EncloseIfDef, InvertAssignTool,
   SourceEditProcs, SourceMarks, CharacterMapDlg, SearchFrm,
-  FPDocHints, EditorMacroListViewer,
+  FPDocHints, EditorMacroListViewer, EditorToolbarStatic, editortoolbar_options,
   DbgIntfBaseTypes, DbgIntfDebuggerBase, BaseDebugManager, Debugger, MainIntf,
   GotoFrm;
 
@@ -955,6 +956,7 @@ type
 
   TSourceEditorManager = class(TSourceEditorManagerBase)
   private
+    procedure DoConfigureEditorToolbar(Sender: TObject);
     function GetActiveSourceNotebook: TSourceNotebook;
     function GetActiveSrcEditor: TSourceEditor;
     function GetSourceEditorsByPage(WindowIndex, PageIndex: integer): TSourceEditor;
@@ -1665,8 +1667,8 @@ end;
 
 procedure TSourceEditCompletion.CompletionFormResized(Sender: TObject);
 begin
-  EnvironmentOptions.CompletionWindowWidth  := TheForm.Width;
-  EnvironmentOptions.CompletionWindowHeight := TheForm.NbLinesInWindow;
+  EnvironmentOptions.Desktop.CompletionWindowWidth  := TheForm.Width;
+  EnvironmentOptions.Desktop.CompletionWindowHeight := TheForm.NbLinesInWindow;
 end;
 
 procedure TSourceEditCompletion.ccExecute(Sender: TObject);
@@ -2260,8 +2262,8 @@ begin
   OnPositionChanged:=@OnSynCompletionPositionChanged;
   ShortCut:=Menus.ShortCut(VK_UNKNOWN,[]);
   TheForm.ShowSizeDrag := True;
-  TheForm.Width := Max(50, EnvironmentOptions.CompletionWindowWidth);
-  TheForm.NbLinesInWindow := Max(3, EnvironmentOptions.CompletionWindowHeight);
+  TheForm.Width := Max(50, EnvironmentOptions.Desktop.CompletionWindowWidth);
+  TheForm.NbLinesInWindow := Max(3, EnvironmentOptions.Desktop.CompletionWindowHeight);
   TheForm.OnDragResized  := @CompletionFormResized;
 end;
 
@@ -3663,7 +3665,7 @@ begin
   if ReadOnly then exit;
   if not EditorComponent.SelAvail then exit;
   FEditor.SetTextBetweenPoints(FEditor.BlockBegin, FEditor.BlockEnd,
-                               UpperCase(EditorComponent.SelText),
+                               UTF8UpperCase(EditorComponent.SelText),
                                [setSelect], scamIgnore, smaKeep, smCurrent
                               );
 end;
@@ -3678,7 +3680,7 @@ begin
   if ReadOnly then exit;
   if not EditorComponent.SelAvail then exit;
   FEditor.SetTextBetweenPoints(FEditor.BlockBegin, FEditor.BlockEnd,
-                               LowerCase(EditorComponent.SelText),
+                               UTF8LowerCase(EditorComponent.SelText),
                                [setSelect], scamIgnore, smaKeep, smCurrent
                               );
 end;
@@ -3688,7 +3690,7 @@ begin
   if ReadOnly then exit;
   if not EditorComponent.SelAvail then exit;
   FEditor.SetTextBetweenPoints(FEditor.BlockBegin, FEditor.BlockEnd,
-                               SwapCase(EditorComponent.SelText),
+                               UTF8SwapCase(EditorComponent.SelText),
                                [setSelect], scamIgnore, smaKeep, smCurrent
                               );
 end;
@@ -9696,7 +9698,7 @@ begin
             ,Point(NewCodePos.X,NewCodePos.Y), NewTopLine, -1,-1
             ,[ofRegularFile,ofUseCache]) = mrOk)
       then
-        SrcEditor.EditorControl.SetFocus;
+        ActiveEditor.EditorControl.SetFocus;
     end
     else
       ShowMessage(Format(lisCannotFind, [cJumpNames[JumpType]]));
@@ -10436,6 +10438,11 @@ begin
   Result := FGotoDialog;
 end;
 
+procedure TSourceEditorManager.DoConfigureEditorToolbar(Sender: TObject);
+begin
+  LazarusIDE.DoOpenIDEOptions(TEditorToolbarOptionsFrame, '', [], []);
+end;
+
 constructor TSourceEditorManager.Create(AOwner: TComponent);
 var
   DCIFilename: String;
@@ -10518,6 +10525,9 @@ begin
     OnExecuteCompletion := @OnCodeTemplateExecuteCompletion;
     EndOfTokenChr:=' ()[]{},.;:"+-*^@$\<>=''';
   end;
+
+  // EditorToolBar
+  CreateEditorToolBar(@DoConfigureEditorToolbar);
 
   // layout
   IDEWindowCreators.Add(NonModalIDEWindowNames[nmiwSourceNoteBookName],

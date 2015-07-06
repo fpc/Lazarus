@@ -24,11 +24,11 @@ unit pocheckermain;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs,
+  Classes, SysUtils, FileUtil, LazFileUtils, Forms, Controls, Graphics, Dialogs,
   StdCtrls, CheckLst, Buttons, ExtCtrls, ComCtrls, Types,
   LCLType, LazUTF8, Translations,
   {$IFnDEF POCHECKERSTANDALONE}
-  IDEIntf, MenuIntf,
+  {IDEIntf,} MenuIntf,
   {$ENDIF}
   PoFamilies, ResultDlg, pocheckerconsts, PoCheckerSettings,
   PoFamilyLists, PoCheckerMemoDlg;

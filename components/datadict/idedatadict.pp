@@ -5,7 +5,7 @@ unit idedatadict;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, fpdatadict, ProjectIntf, LazIDEIntf, ldd_consts;
+  Classes, SysUtils, fpdatadict, LazUTF8, LazIDEIntf, ldd_consts;
 
 Type
 

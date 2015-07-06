@@ -217,17 +217,48 @@ type
     procedure DoOnCommandFailed(ACommandResponse: TJSonObject); override;
   end;
 
+  { TFPDSendLocalsCommand }
+
+  TFPDSendLocalsCommand = class(TFPDSendCommand)
+  private
+    FLocals: TLocals;
+    procedure DoLocalsFreed(Sender: TObject);
+  protected
+    procedure ComposeJSon(AJsonObject: TJSONObject); override;
+  public
+    constructor create(ALocals: TLocals);
+    destructor Destroy; override;
+    procedure DoOnCommandSuccesfull(ACommandResponse: TJSonObject); override;
+    procedure DoOnCommandFailed(ACommandResponse: TJSonObject); override;
+  end;
+
+  { TFPDSendRegistersCommand }
+
+  TFPDSendRegistersCommand = class(TFPDSendCommand)
+  private
+    FRegisters: TRegisters;
+    procedure DoRegistersFreed(Sender: TObject);
+  protected
+    procedure ComposeJSon(AJsonObject: TJSONObject); override;
+  public
+    constructor create(ARegisters: TRegisters);
+    destructor Destroy; override;
+    procedure DoOnCommandSuccesfull(ACommandResponse: TJSonObject); override;
+    procedure DoOnCommandFailed(ACommandResponse: TJSonObject); override;
+  end;
+
   { TFPDSendDisassembleCommand }
 
   TFPDSendDisassembleCommand = class(TFPDSendCommand)
   private
     FDisassembler: TDBGDisassembler;
     FStartAddr: TDBGPtr;
-    FLinesCount: integer;
+    FLinesAfter: integer;
+    FLinesBefore: integer;
   protected
     procedure ComposeJSon(AJsonObject: TJSONObject); override;
   public
-    constructor create(ADisassembler: TDBGDisassembler; AStartAddr: TDBGPtr; ALinesCount: integer);
+    constructor create(ADisassembler: TDBGDisassembler; AStartAddr: TDBGPtr; ALinesBefore, ALinesAfter: integer);
     procedure DoOnCommandSuccesfull(ACommandResponse: TJSonObject); override;
   end;
 
@@ -291,6 +322,8 @@ type
     class function Caption: String; override;
     function CreateBreakPoints: TDBGBreakPoints; override;
     function CreateWatches: TWatchesSupplier; override;
+    function CreateLocals: TLocalsSupplier; override;
+    function CreateRegisters: TRegisterSupplier; override;
     function CreateCallStack: TCallStackSupplier; override;
     function CreateDisassembler: TDBGDisassembler; override;
     function RequestCommand(const ACommand: TDBGCommand; const AParams: array of const): Boolean; override;
@@ -350,6 +383,20 @@ type
     procedure AddRange(ARange: TDBGDisassemblerEntryRange);
   end;
 
+  { TFPLocals }
+
+  TFPLocals = class(TLocalsSupplier)
+  public
+    procedure RequestData(ALocals: TLocals); override;
+  end;
+
+  { TFPRegisters }
+
+  TFPRegisters = class(TRegisterSupplier)
+  public
+    procedure RequestData(ARegisters: TRegisters); override;
+  end;
+
   { TFPWatches }
 
   TFPWatches = class(TWatchesSupplier)
@@ -379,13 +426,154 @@ end;
 
 var GCommandUID: integer = 0;
 
+{ TFPRegisters }
+
+procedure TFPRegisters.RequestData(ARegisters: TRegisters);
+begin
+  if (Debugger = nil) or not(Debugger.State = dsPause)
+  then begin
+    ARegisters.DataValidity:=ddsInvalid;
+    exit;
+  end;
+
+  TFPDServerDebugger(Debugger).QueueCommand(TFPDSendRegistersCommand.create(ARegisters));
+  ARegisters.DataValidity := ddsRequested;
+end;
+
+{ TFPDSendRegistersCommand }
+
+procedure TFPDSendRegistersCommand.DoRegistersFreed(Sender: TObject);
+begin
+  FRegisters := nil;
+end;
+
+procedure TFPDSendRegistersCommand.ComposeJSon(AJsonObject: TJSONObject);
+begin
+  inherited ComposeJSon(AJsonObject);
+  AJsonObject.Add('command','registers');
+end;
+
+constructor TFPDSendRegistersCommand.create(ARegisters: TRegisters);
+begin
+  inherited create(true);
+  ARegisters.AddFreeNotification(@DoRegistersFreed);
+  FRegisters := ARegisters;
+end;
+
+destructor TFPDSendRegistersCommand.Destroy;
+begin
+  if assigned(FRegisters) then
+    FRegisters.RemoveFreeNotification(@DoRegistersFreed);
+  inherited Destroy;
+end;
+
+procedure TFPDSendRegistersCommand.DoOnCommandSuccesfull(ACommandResponse: TJSonObject);
+var
+  JSonRegisterArr: TJSONArray;
+  JSonRegisterEntryObj: TJSONObject;
+  i: Integer;
+  RegisterValue: TRegisterValue;
+begin
+  inherited DoOnCommandSuccesfull(ACommandResponse);
+  if assigned(FRegisters) then
+    begin
+    FRegisters.Clear;
+
+    JSonRegisterArr := ACommandResponse.Get('registers', TJSONArray(nil));
+    if assigned(JSonRegisterArr) and (JSonRegisterArr.Count>0) then
+      begin
+      for i := 0 to JSonRegisterArr.Count - 1 do
+        begin
+        JSonRegisterEntryObj := JSonRegisterArr.Items[i] as TJSONObject;
+        RegisterValue := FRegisters.EntriesByName[JSonRegisterEntryObj.Get('name', '')];
+        RegisterValue.ValueObj.SetAsNum(JSonRegisterEntryObj.Get('numvalue', 0), JSonRegisterEntryObj.Get('size', 4));
+        RegisterValue.ValueObj.SetAsText(JSonRegisterEntryObj.Get('value', ''));
+        RegisterValue.DataValidity:=ddsValid;
+        end;
+      FRegisters.DataValidity := ddsValid;
+      end
+    else
+      FRegisters.DataValidity := ddsInvalid;
+    end;
+end;
+
+procedure TFPDSendRegistersCommand.DoOnCommandFailed(ACommandResponse: TJSonObject);
+begin
+  FRegisters.DataValidity := ddsInvalid;
+end;
+
+{ TFPDSendLocalsCommand }
+
+procedure TFPDSendLocalsCommand.DoLocalsFreed(Sender: TObject);
+begin
+  FLocals:=nil;
+end;
+
+procedure TFPDSendLocalsCommand.ComposeJSon(AJsonObject: TJSONObject);
+begin
+  inherited ComposeJSon(AJsonObject);
+  AJsonObject.Add('command','locals');
+end;
+
+constructor TFPDSendLocalsCommand.create(ALocals: TLocals);
+begin
+  inherited create(True);
+  ALocals.AddFreeNotification(@DoLocalsFreed);
+  FLocals := ALocals;
+end;
+
+destructor TFPDSendLocalsCommand.Destroy;
+begin
+  if assigned(FLocals) then
+    FLocals.RemoveFreeNotification(@DoLocalsFreed);
+  inherited Destroy;
+end;
+
+procedure TFPDSendLocalsCommand.DoOnCommandSuccesfull(ACommandResponse: TJSonObject);
+var
+  JSonLocalsArr: TJSONArray;
+  JSonLocalsEntryObj: TJSONObject;
+  i: Integer;
+begin
+  inherited DoOnCommandSuccesfull(ACommandResponse);
+  if assigned(FLocals) then
+    begin
+    FLocals.Clear;
+    JSonLocalsArr := ACommandResponse.Get('locals', TJSONArray(nil));
+    if assigned(JSonLocalsArr) and (JSonLocalsArr.Count>0) then
+      begin
+      for i := 0 to JSonLocalsArr.Count - 1 do
+        begin
+        JSonLocalsEntryObj := JSonLocalsArr.Items[i] as TJSONObject;
+        FLocals.Add(JSonLocalsEntryObj.Get('name', ''), JSonLocalsEntryObj.Get('value', ''));
+        end;
+      end;
+    FLocals.SetDataValidity(ddsValid);
+    end;
+end;
+
+procedure TFPDSendLocalsCommand.DoOnCommandFailed(ACommandResponse: TJSonObject);
+begin
+  FLocals.SetDataValidity(ddsInvalid);
+end;
+
+procedure TFPLocals.RequestData(ALocals: TLocals);
+begin
+  if (Debugger = nil) or not(Debugger.State = dsPause)
+  then begin
+    ALocals.SetDataValidity(ddsInvalid);
+    exit;
+  end;
+
+  TFPDServerDebugger(Debugger).QueueCommand(TFPDSendLocalsCommand.create(ALocals));
+  ALocals.SetDataValidity(ddsRequested);
+end;
+
 { TFPDBGDisassembler }
 
 function TFPDBGDisassembler.PrepareEntries(AnAddr: TDbgPtr; ALinesBefore, ALinesAfter: Integer): boolean;
 begin
-  Assert(ALinesBefore<>0,'TFPDBGDisassembler.PrepareEntries LinesBefore not supported');
-
-  TFPDServerDebugger(Debugger).QueueCommand(TFPDSendDisassembleCommand.create(self, AnAddr, ALinesAfter+1));
+  TFPDServerDebugger(Debugger).QueueCommand(TFPDSendDisassembleCommand.create(self, AnAddr, ALinesBefore, ALinesAfter));
   result := false;
 end;
 
@@ -1090,7 +1278,6 @@ var
   NotificationType: string;
   UID: integer;
   SendCommand: TFPDSendCommand;
-  Message: string;
 begin
   // Ignore notifications from other connections
   if ANotification.get('connIdentifier',-1)=FSocketThread.ConnectionIdentifier then
@@ -1219,6 +1406,16 @@ end;
 function TFPDServerDebugger.CreateWatches: TWatchesSupplier;
 begin
   Result := TFPWatches.Create(Self);
+end;
+
+function TFPDServerDebugger.CreateLocals: TLocalsSupplier;
+begin
+  Result := TFPLocals.Create(Self);
+end;
+
+function TFPDServerDebugger.CreateRegisters: TRegisterSupplier;
+begin
+  Result:=TFPRegisters.Create(Self);
 end;
 
 function TFPDServerDebugger.CreateCallStack: TCallStackSupplier;

@@ -22,7 +22,7 @@ unit UTF8Process;
 interface
 
 uses
-  Classes, SysUtils, Process, FileUtil, LazUTF8, LazUtilsStrConsts;
+  Classes, SysUtils, Process, FileUtil, LazFileUtils, LazUTF8, LazUtilsStrConsts;
 
 type
   { TProcessUTF8 }

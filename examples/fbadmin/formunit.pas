@@ -5,8 +5,7 @@ unit formunit;
 interface
 
 uses
-  Classes, SysUtils, FBAdmin, FileUtil, Forms, Controls, Graphics, Dialogs,
-  StdCtrls, ExtCtrls;
+  Classes, SysUtils, FBAdmin, Forms, StdCtrls, ExtCtrls;
 
 type
 

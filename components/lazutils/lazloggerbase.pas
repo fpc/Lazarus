@@ -11,7 +11,7 @@ unit LazLoggerBase;
 interface
 
 uses
-  Classes, SysUtils, types, math, LazClasses, FileUtil;
+  Classes, SysUtils, types, math, LazClasses, LazUTF8;
 
 type
 

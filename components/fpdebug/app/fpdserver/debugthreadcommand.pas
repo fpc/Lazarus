@@ -1,6 +1,14 @@
 unit DebugThreadCommand;
 
-{$mode objfpc}{$H+}{$modeswitch nestedprocvars}
+{$mode objfpc}{$H+}
+
+{$ifndef VER2}
+  {$define disassemblernestedproc}
+{$endif VER2}
+
+{$ifdef disassemblernestedproc}
+  {$modeswitch nestedprocvars}
+{$endif disassemblernestedproc}
 
 interface
 
@@ -214,6 +222,12 @@ type
     FLastEntryEndAddr: TDBGPtr;
     function GetAddress: string;
     procedure SetAddress(AValue: string);
+    {$ifndef disassemblernestedproc}
+  private
+    FController: TDbgController;
+    function OnAdjustToKnowFunctionStart(var AStartAddr: TDisassemblerAddress): Boolean;
+    function OnDoDisassembleRange(AnEntryRanges: TDBGDisassemblerEntryMap; AFirstAddr, ALastAddr: TDisassemblerAddress; AStopAfterAddress: TDBGPtr; AStopAfterNumLines: Integer): Boolean;
+    {$endif}
   public
     constructor Create(AListenerIdentifier: integer; AnUID: variant; AOnLog: TOnLog); override;
     function Execute(AController: TDbgController; out DoProcessLoop: boolean): boolean; override;
@@ -225,10 +239,135 @@ type
     property LinesBefore: integer read FLinesBefore write FLinesBefore;
   end;
 
+  { TFpDebugLocalsCommand }
+
+  TFpDebugLocalsCommand = class(TFpDebugThreadCommand)
+  private
+    FWatchEntryArray: TFpDebugEventWatchEntryArray;
+  public
+    function Execute(AController: TDbgController; out DoProcessLoop: boolean): boolean; override;
+    class function TextName: string; override;
+    procedure ComposeSuccessEvent(var AnEvent: TFpDebugEvent); override;
+  end;
+
+  { TFpDebugRegistersCommand }
+
+  TFpDebugRegistersCommand = class(TFpDebugThreadCommand)
+  private
+    FWatchEntryArray: TFpDebugEventWatchEntryArray;
+  public
+    function Execute(AController: TDbgController; out DoProcessLoop: boolean): boolean; override;
+    class function TextName: string; override;
+    procedure ComposeSuccessEvent(var AnEvent: TFpDebugEvent); override;
+  end;
+
 implementation
 
 uses
   FpDbgDisasX86;
+
+{ TFpDebugRegistersCommand }
+
+function TFpDebugRegistersCommand.Execute(AController: TDbgController; out DoProcessLoop: boolean): boolean;
+var
+  ARegisterList: TDbgRegisterValueList;
+  i: Integer;
+begin
+  result := false;
+  if (AController = nil) or (AController.CurrentProcess = nil) or
+     (AController.CurrentProcess.DbgInfo = nil) then
+    exit;
+
+  ARegisterList := AController.CurrentProcess.MainThread.RegisterValueList;
+  SetLength(FWatchEntryArray, ARegisterList.Count);
+  for i := 0 to ARegisterList.Count-1 do
+    begin
+    FWatchEntryArray[i].Expression := ARegisterList[i].Name;
+    FWatchEntryArray[i].TextValue := ARegisterList[i].StrValue;
+    FWatchEntryArray[i].NumValue := ARegisterList[i].NumValue;
+    FWatchEntryArray[i].Size := ARegisterList[i].Size;
+    end;
+  result := true;
+  DoProcessLoop := false;
+end;
+
+class function TFpDebugRegistersCommand.TextName: string;
+begin
+  result := 'registers';
+end;
+
+procedure TFpDebugRegistersCommand.ComposeSuccessEvent(var AnEvent: TFpDebugEvent);
+begin
+  inherited ComposeSuccessEvent(AnEvent);
+  AnEvent.WatchEntryArray := FWatchEntryArray;
+end;
+
+{ TFpDebugLocalsCommand }
+
+function TFpDebugLocalsCommand.Execute(AController: TDbgController; out DoProcessLoop: boolean): boolean;
+var
+  AContext: TFpDbgInfoContext;
+  ProcVal: TFpDbgValue;
+  i: Integer;
+  m: TFpDbgValue;
+  n, v: String;
+  Reg: TDBGPtr;
+  PrettyPrinter: TFpPascalPrettyPrinter;
+begin
+  result := false;
+  if (AController = nil) or (AController.CurrentProcess = nil) or
+     (AController.CurrentProcess.DbgInfo = nil) then
+    exit;
+
+  Reg := AController.CurrentProcess.GetInstructionPointerRegisterValue;
+  AContext := AController.CurrentProcess.DbgInfo.FindContext(AController.CurrentThread.ID, 0, Reg);
+
+  if (AContext = nil) or (AContext.SymbolAtAddress = nil) then
+    exit;
+
+  ProcVal := AContext.ProcedureAtAddress;
+
+  if (ProcVal = nil) then
+    exit;
+
+  PrettyPrinter := TFpPascalPrettyPrinter.Create(sizeof(pointer));
+  try
+    PrettyPrinter.AddressSize := AContext.SizeOfAddress;
+
+    SetLength(FWatchEntryArray, ProcVal.MemberCount);
+    for i := 0 to ProcVal.MemberCount - 1 do
+      begin
+      m := ProcVal.Member[i];
+      if m <> nil then
+        begin
+        if m.DbgSymbol <> nil then
+          n := m.DbgSymbol.Name
+        else
+          n := '';
+        PrettyPrinter.PrintValue(v, m);
+        FWatchEntryArray[i].TextValue := v;
+        FWatchEntryArray[i].Expression := n;
+        end;
+      end;
+  finally
+    PrettyPrinter.Free;
+  end;
+
+  AContext.ReleaseReference;
+  DoProcessLoop:=false;
+  result := true;
+end;
+
+class function TFpDebugLocalsCommand.TextName: string;
+begin
+  result := 'locals';
+end;
+
+procedure TFpDebugLocalsCommand.ComposeSuccessEvent(var AnEvent: TFpDebugEvent);
+begin
+  inherited ComposeSuccessEvent(AnEvent);
+  AnEvent.WatchEntryArray := FWatchEntryArray;
+end;
 
 { TFpDebugThreadDisassembleCommand }
 
@@ -249,13 +388,15 @@ begin
   FLinesBefore:=5;
 end;
 
+{$ifdef disassemblernestedproc}
 function TFpDebugThreadDisassembleCommand.Execute(AController: TDbgController; out DoProcessLoop: boolean): boolean;
+{$endif}
 
-  function OnAdjustToKnowFunctionStart(var AStartAddr: TDisassemblerAddress): Boolean;
+  function {$ifndef disassemblernestedproc}TFpDebugThreadDisassembleCommand.{$endif}OnAdjustToKnowFunctionStart(var AStartAddr: TDisassemblerAddress): Boolean;
   var
     Sym: TFpDbgSymbol;
   begin
-    Sym := AController.CurrentProcess.FindSymbol(AStartAddr.GuessedValue);
+    Sym := {$ifndef disassemblernestedproc}FController{$else}AController{$endif}.CurrentProcess.FindSymbol(AStartAddr.GuessedValue);
     if assigned(Sym) and (Sym.Kind in [skProcedure, skFunction]) then
       begin
       AStartAddr.Value:=Sym.Address.Address;
@@ -267,7 +408,7 @@ function TFpDebugThreadDisassembleCommand.Execute(AController: TDbgController; o
       result := false;
   end;
 
-  function OnDoDisassembleRange(AnEntryRanges: TDBGDisassemblerEntryMap; AFirstAddr, ALastAddr: TDisassemblerAddress; AStopAfterAddress: TDBGPtr; AStopAfterNumLines: Integer): Boolean;
+  function {$ifndef disassemblernestedproc}TFpDebugThreadDisassembleCommand.{$endif}OnDoDisassembleRange(AnEntryRanges: TDBGDisassemblerEntryMap; AFirstAddr, ALastAddr: TDisassemblerAddress; AStopAfterAddress: TDBGPtr; AStopAfterNumLines: Integer): Boolean;
 
   var
     AnAddr: TDBGPtr;
@@ -301,7 +442,7 @@ function TFpDebugThreadDisassembleCommand.Execute(AController: TDbgController; o
     while ((AStopAfterAddress=0) or (AStopAfterNumLines > -1)) and (AnAddr <= ALastAddr.Value) do
       begin
       AnEntry.Addr:=AnAddr;
-      if not AController.CurrentProcess.ReadData(AnAddr, sizeof(CodeBin),CodeBin) then
+      if not {$ifndef disassemblernestedproc}FController{$else}AController{$endif}.CurrentProcess.ReadData(AnAddr, sizeof(CodeBin),CodeBin) then
         begin
         Log(Format('Disassemble: Failed to read memory at %s.', [FormatAddress(AnAddr)]), dllDebug);
         AnEntry.Statement := 'Failed to read memory';
@@ -310,9 +451,9 @@ function TFpDebugThreadDisassembleCommand.Execute(AController: TDbgController; o
       else
         begin
         p := @CodeBin;
-        FpDbgDisasX86.Disassemble(p, AController.CurrentProcess.Mode=dm64, ADump, AStatement);
+        FpDbgDisasX86.Disassemble(p, {$ifndef disassemblernestedproc}FController{$else}AController{$endif}.CurrentProcess.Mode=dm64, ADump, AStatement);
 
-        Sym := AController.CurrentProcess.FindSymbol(AnAddr);
+        Sym := {$ifndef disassemblernestedproc}FController{$else}AController{$endif}.CurrentProcess.FindSymbol(AnAddr);
 
         // If this is the last statement for this source-code-line, fill the
         // SrcStatementCount from the prior statements.
@@ -359,6 +500,10 @@ function TFpDebugThreadDisassembleCommand.Execute(AController: TDbgController; o
     result := true;
   end;
 
+{$ifndef disassemblernestedproc}
+function TFpDebugThreadDisassembleCommand.Execute(AController: TDbgController; out DoProcessLoop: boolean): boolean;
+{$endif disassemblernestedproc}
+
 var
   i: Integer;
   DisassembleRangeExtender: TDBGDisassemblerRangeExtender;
@@ -368,6 +513,10 @@ var
   ARange: TDBGDisassemblerEntryRange;
 
 begin
+  {$ifndef disassemblernestedproc}
+  FController := AController;
+  {$endif}
+
   result := false;
   DoProcessLoop:=false;
   if not assigned(AController.CurrentProcess) then
@@ -900,6 +1049,8 @@ initialization
   TFpDebugThreadCommandList.instance.Add(TFpDebugThreadEvaluateCommand);
   TFpDebugThreadCommandList.instance.Add(TFpDebugThreadStackTraceCommand);
   TFpDebugThreadCommandList.instance.Add(TFpDebugThreadDisassembleCommand);
+  TFpDebugThreadCommandList.instance.Add(TFpDebugLocalsCommand);
+  TFpDebugThreadCommandList.instance.Add(TFpDebugRegistersCommand);
 finalization
   GFpDebugThreadCommandList.Free;
 end.

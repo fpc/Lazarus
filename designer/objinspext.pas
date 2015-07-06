@@ -17,11 +17,11 @@ unit ObjInspExt;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, Forms, Controls, Buttons, StdCtrls, TypInfo,
+  Classes, SysUtils, LCLProc, Forms, Controls, Buttons, StdCtrls,
   ExtCtrls, Dialogs, Menus, ComCtrls, Grids, CustomTimer,
   CodeToolManager, CodeCache, PropEdits,
   LazIDEIntf, ProjectIntf, ObjectInspector, OIFavoriteProperties,
-  DialogProcs, FileUtil, LazConf, BaseIDEIntf, IDEDialogs, LazConfigStorage,
+  DialogProcs, LazFileUtils, LazConf, BaseIDEIntf, IDEDialogs, LazConfigStorage,
   LazarusIDEStrConsts;
   
 type

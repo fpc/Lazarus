@@ -5,7 +5,7 @@ unit rectanglestest;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs; 
+  Classes, Forms, Graphics;
 
 type
 
@@ -14,9 +14,9 @@ type
   TfrmRectangles = class(TForm)
     procedure FormPaint(Sender: TObject);
   private
-    { private declarations }
+
   public
-    { public declarations }
+
   end; 
 
 var

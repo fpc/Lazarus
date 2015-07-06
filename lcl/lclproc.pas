@@ -30,7 +30,7 @@ uses
   Win9xWsManager, // Support for Lower/UpperWideStringProc on Win9x, also used by some Utf8 string handling functions
   {$ENDIF}
   {$IFnDEF WithOldDebugln} LazLogger, {$ENDIF}
-  Classes, SysUtils, Math, TypInfo, Types, FPCAdds, AvgLvlTree, FileUtil,
+  Classes, SysUtils, Math, TypInfo, Types, FPCAdds, AvgLvlTree, LazFileUtils,
   LCLStrConsts, LCLType, WSReferences, LazMethodList, LazUTF8, LazUTF8Classes;
 
 type

@@ -5,7 +5,7 @@ unit dbconfiggui;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls, dbconfig;
+  Forms, Dialogs, StdCtrls, dbconfig;
 
 type
   TConnectionTestFunction = function(ChosenConfig: TDBConnectionConfig): boolean of object;
@@ -38,11 +38,9 @@ type
     FConnectionConfig: TDBConnectionConfig;
     FConnectionTestFunction: TConnectionTestFunction;
     FSetupComplete: boolean;
-    { private declarations }
   public
     property Config: TDBConnectionConfig read FConnectionConfig;
     property ConnectionTestCallback: TConnectionTestFunction write FConnectionTestFunction;
-    { public declarations }
   end;
 
 var

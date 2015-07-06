@@ -7,13 +7,12 @@ unit editortoolbar;
 interface
 
 uses
-  editortoolbar_impl, EdtTbConfigFrm, editortoolbar_str, LazarusPackageIntf;
+  Unit1, LazarusPackageIntf;
 
 implementation
 
 procedure Register;
 begin
-  RegisterUnit('editortoolbar_impl', @editortoolbar_impl.Register);
 end;
 
 initialization

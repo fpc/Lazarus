@@ -4662,6 +4662,12 @@ msgstr "デフォルトでない値を太字に"
 msgid "Border space"
 msgstr "境界間隔"
 
+#: lazarusidestrconsts.lisbottom
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisbottom"
+msgid "Bottom"
+msgstr "底"
+
 #: lazarusidestrconsts.lisbottomborderspacespinedithint
 msgid "Bottom borderspace. This value is added to base borderspace and used for the space below the control."
 msgstr "下部の境界間隔。この値は基本境界間隔に加算され、コントロールの下の間隔に用いられます。"
@@ -4771,6 +4777,10 @@ msgstr ""
 #: lazarusidestrconsts.lisbuildinglazarusfailed
 msgid "Building Lazarus failed"
 msgstr "Lazarusの構築の失敗"
+
+#: lazarusidestrconsts.lisbuildmode
+msgid "Build Mode: %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisbuildmodediffdifferencesbetweenbuildmodes
 msgid "Differences between build modes"
@@ -5505,6 +5515,10 @@ msgstr "Delphiのユニット(*.pas)選択してください"
 #: lazarusidestrconsts.lischoosedirectory
 msgid "Choose directory"
 msgstr "ディレクトリを選択してください"
+
+#: lazarusidestrconsts.lischooseexecutable
+msgid "Choose an executable"
+msgstr ""
 
 #: lazarusidestrconsts.lischoosefpcsourcedir
 msgid "Choose FPC source directory"
@@ -6521,6 +6535,10 @@ msgstr "構築 %s を設定"
 msgid "Configure \"Build Lazarus\""
 msgstr "%sLazarus構築 %s を設定"
 
+#: lazarusidestrconsts.lisconfigureeditortoolbar
+msgid "Configure Toolbar"
+msgstr ""
+
 #: lazarusidestrconsts.lisconfigurelazaruside
 msgid "Configure Lazarus IDE"
 msgstr "Lazarus IDEを設定"
@@ -7291,9 +7309,9 @@ msgstr ""
 msgid "Create a project first!"
 msgstr "初めにプロジェクトを作成してください！"
 
-#: lazarusidestrconsts.liscreatedebugandreleasemodes
-msgid "Create Debug and Release modes"
-msgstr "デバッグとリリースモードを作成"
+#: lazarusidestrconsts.liscreatedebugandreleasemodesnewproj
+msgid "Create Debug and Release modes for new projects"
+msgstr ""
 
 #: lazarusidestrconsts.liscreatedirectory
 msgid "Create directory?"
@@ -7330,6 +7348,10 @@ msgstr "（新しいパッケージを作成）"
 #: lazarusidestrconsts.liscreatenewpackagecomponent
 msgid "Create new package component"
 msgstr "新しいパッケージコンポーネントを作成"
+
+#: lazarusidestrconsts.liscreatenowforthisproject
+msgid "Create now for this project"
+msgstr ""
 
 #: lazarusidestrconsts.liscreateproject
 msgid "Create project"
@@ -8364,6 +8386,18 @@ msgstr ""
 #: lazarusidestrconsts.liseditormacros
 msgid "Editor macros"
 msgstr "マクロエディタ"
+
+#: lazarusidestrconsts.liseditortoolbar
+msgid "Editor ToolBar"
+msgstr ""
+
+#: lazarusidestrconsts.liseditortoolbarhint
+msgid "You may add here your favorite commands"
+msgstr ""
+
+#: lazarusidestrconsts.liseditortoolbarvisible
+msgid "EditorToolbar is &visible"
+msgstr ""
 
 #: lazarusidestrconsts.lisedoptsloadascheme
 msgid "Load a scheme"
@@ -10152,6 +10186,14 @@ msgstr "無効なコマンド"
 msgid "Invalid delete"
 msgstr "無効な削除"
 
+#: lazarusidestrconsts.lisinvalidexecutable
+msgid "Invalid Executable"
+msgstr ""
+
+#: lazarusidestrconsts.lisinvalidexecutablemessagetext
+msgid "The file \"%s\" is not executable."
+msgstr ""
+
 #: lazarusidestrconsts.lisinvalidexpression
 msgid "Invalid expression:%s%s%s%s"
 msgstr "無効な式：%s%s%s%s"
@@ -10268,6 +10310,14 @@ msgstr "どうやったらこうなったのか不思議です。基底ディレ
 msgctxt "lazarusidestrconsts.lisjhjumphistory"
 msgid "Jump History"
 msgstr "移動履歴"
+
+#: lazarusidestrconsts.lisjumptoerror
+msgid "Jump to error"
+msgstr ""
+
+#: lazarusidestrconsts.lisjumptoerroratidentifiercompletion
+msgid "When an error in the sources is found at identifier completion, jump to it."
+msgstr ""
 
 #: lazarusidestrconsts.lisjumptoprocedure
 msgid "Jump to procedure %s"
@@ -14761,6 +14811,10 @@ msgstr "セッション情報を次に保存"
 msgid ".lpi is the project main info file, .lps is a separate file for session data only."
 msgstr ""
 
+#: lazarusidestrconsts.lisposition
+msgid "Position"
+msgstr ""
+
 #: lazarusidestrconsts.lispositionoutsideofsource
 msgid "%s (position outside of source)"
 msgstr ""
@@ -17275,6 +17329,12 @@ msgstr ""
 msgid "tool stopped with exit code %s. Use context menu to get more information."
 msgstr ""
 
+#: lazarusidestrconsts.listop
+#, fuzzy
+msgctxt "lazarusidestrconsts.listop"
+msgid "Top"
+msgstr "上端"
+
 #: lazarusidestrconsts.listopanchoring
 msgid "Top anchoring"
 msgstr "上端アンカー"
@@ -19410,6 +19470,18 @@ msgstr "検査"
 msgctxt "lazarusidestrconsts.srkmecinvertassignment"
 msgid "Invert Assignment"
 msgstr "代入を反転"
+
+#: lazarusidestrconsts.srkmeckeymapleft
+#, fuzzy
+msgctxt "lazarusidestrconsts.srkmeckeymapleft"
+msgid "Left"
+msgstr "左"
+
+#: lazarusidestrconsts.srkmeckeymapright
+#, fuzzy
+msgctxt "lazarusidestrconsts.srkmeckeymapright"
+msgid "Right"
+msgstr "右"
 
 #: lazarusidestrconsts.srkmecleft
 msgid "Move cursor left"

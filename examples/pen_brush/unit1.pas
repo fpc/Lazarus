@@ -5,8 +5,8 @@ unit Unit1;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
-  StdCtrls, ExtCtrls, Buttons, ColorBox, LCLIntf, FPCanvas;
+  Classes, SysUtils, Forms, Graphics, StdCtrls, ExtCtrls, Buttons, ColorBox,
+  LCLIntf, FPCanvas;
 
 type
 
@@ -47,7 +47,7 @@ type
   private
     FPattern: TBitmap;
   public
-    { public declarations }
+
   end; 
 
 var

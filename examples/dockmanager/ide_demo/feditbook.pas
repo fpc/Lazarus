@@ -18,8 +18,7 @@ unit fEditBook;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
-  SynEdit, EasyDockSite,
+  Classes, SysUtils, Forms, Controls, SynEdit, EasyDockSite,
   fDockBook;
 
 type

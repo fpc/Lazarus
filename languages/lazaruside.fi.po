@@ -4577,6 +4577,12 @@ msgstr "Lihavoi muutetut arvot"
 msgid "Border space"
 msgstr "Reuna-alue"
 
+#: lazarusidestrconsts.lisbottom
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisbottom"
+msgid "Bottom"
+msgstr "Alhaalla"
+
 #: lazarusidestrconsts.lisbottomborderspacespinedithint
 msgid "Bottom borderspace. This value is added to base borderspace and used for the space below the control."
 msgstr "Alapuolen reuna-alue. Tämä arvo lisätään yhteiseen reuna-alueeseen."
@@ -4686,6 +4692,10 @@ msgstr ""
 #: lazarusidestrconsts.lisbuildinglazarusfailed
 msgid "Building Lazarus failed"
 msgstr "Lazaruksen kokoaminen epäonnistui"
+
+#: lazarusidestrconsts.lisbuildmode
+msgid "Build Mode: %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisbuildmodediffdifferencesbetweenbuildmodes
 msgid "Differences between build modes"
@@ -5408,6 +5418,10 @@ msgstr "Valitse Delphi-käännösyksikkö (*.pas)"
 #: lazarusidestrconsts.lischoosedirectory
 msgid "Choose directory"
 msgstr "Valitse hakemisto"
+
+#: lazarusidestrconsts.lischooseexecutable
+msgid "Choose an executable"
+msgstr ""
 
 #: lazarusidestrconsts.lischoosefpcsourcedir
 msgid "Choose FPC source directory"
@@ -6405,6 +6419,10 @@ msgstr "Konfiguroi %s:n kokoaminen"
 msgid "Configure \"Build Lazarus\""
 msgstr "Konfiguroi \"Lazaruksen kokoaminen\""
 
+#: lazarusidestrconsts.lisconfigureeditortoolbar
+msgid "Configure Toolbar"
+msgstr ""
+
 #: lazarusidestrconsts.lisconfigurelazaruside
 msgid "Configure Lazarus IDE"
 msgstr "Konfiguroi Lazarus IDE"
@@ -7156,9 +7174,9 @@ msgstr ""
 msgid "Create a project first!"
 msgstr "Luo ensin projekti!"
 
-#: lazarusidestrconsts.liscreatedebugandreleasemodes
-msgid "Create Debug and Release modes"
-msgstr "Luo Debug- ja Release-moodit"
+#: lazarusidestrconsts.liscreatedebugandreleasemodesnewproj
+msgid "Create Debug and Release modes for new projects"
+msgstr ""
 
 #: lazarusidestrconsts.liscreatedirectory
 msgid "Create directory?"
@@ -7195,6 +7213,10 @@ msgstr "(Luo uusi paketti)"
 #: lazarusidestrconsts.liscreatenewpackagecomponent
 msgid "Create new package component"
 msgstr "Luo uusi paketin komponentti"
+
+#: lazarusidestrconsts.liscreatenowforthisproject
+msgid "Create now for this project"
+msgstr ""
 
 #: lazarusidestrconsts.liscreateproject
 msgid "Create project"
@@ -8196,6 +8218,18 @@ msgstr "Editorin värit"
 #: lazarusidestrconsts.liseditormacros
 msgid "Editor macros"
 msgstr "Editorin makrot"
+
+#: lazarusidestrconsts.liseditortoolbar
+msgid "Editor ToolBar"
+msgstr ""
+
+#: lazarusidestrconsts.liseditortoolbarhint
+msgid "You may add here your favorite commands"
+msgstr ""
+
+#: lazarusidestrconsts.liseditortoolbarvisible
+msgid "EditorToolbar is &visible"
+msgstr ""
 
 #: lazarusidestrconsts.lisedoptsloadascheme
 msgid "Load a scheme"
@@ -9946,6 +9980,14 @@ msgstr "Kelvoton komento"
 msgid "Invalid delete"
 msgstr "Onnistumaton poisto"
 
+#: lazarusidestrconsts.lisinvalidexecutable
+msgid "Invalid Executable"
+msgstr ""
+
+#: lazarusidestrconsts.lisinvalidexecutablemessagetext
+msgid "The file \"%s\" is not executable."
+msgstr ""
+
 #: lazarusidestrconsts.lisinvalidexpression
 msgid "Invalid expression:%s%s%s%s"
 msgstr "Kelvoton lauseke:%s%s%s%s"
@@ -10058,6 +10100,14 @@ msgstr "Miten onnistuit tekemään sen? Virhe kantahakemistossa:"
 msgctxt "lazarusidestrconsts.lisjhjumphistory"
 msgid "Jump History"
 msgstr "Hyppyhistoria"
+
+#: lazarusidestrconsts.lisjumptoerror
+msgid "Jump to error"
+msgstr ""
+
+#: lazarusidestrconsts.lisjumptoerroratidentifiercompletion
+msgid "When an error in the sources is found at identifier completion, jump to it."
+msgstr ""
 
 #: lazarusidestrconsts.lisjumptoprocedure
 msgid "Jump to procedure %s"
@@ -14410,6 +14460,10 @@ msgstr "Tallenna istunnon tiedot"
 msgid ".lpi is the project main info file, .lps is a separate file for session data only."
 msgstr ".lpi on projektin määrittelytiedosto, .lps on erillinen tiedosto vain istunnon tietoja varten."
 
+#: lazarusidestrconsts.lisposition
+msgid "Position"
+msgstr ""
+
 #: lazarusidestrconsts.lispositionoutsideofsource
 msgid "%s (position outside of source)"
 msgstr "%s (sijainti lähdekoodin ulkopuolella)"
@@ -16009,7 +16063,7 @@ msgstr "Vaihda Suosikit-lehdelle kun komponentin nimi on kysytty."
 
 #: lazarusidestrconsts.lissyntaxmode
 msgid "Syntax mode"
-msgstr "Kielioppi-moodi"
+msgstr "Kielioppimoodi"
 
 #: lazarusidestrconsts.lissystemppunotfoundcheckyourfpccfg
 msgid "system.ppu not found. Check your fpc.cfg."
@@ -16785,6 +16839,12 @@ msgstr ""
 #: lazarusidestrconsts.listoolstoppedwithexitcodeusecontextmenutogetmoreinfo
 msgid "tool stopped with exit code %s. Use context menu to get more information."
 msgstr ""
+
+#: lazarusidestrconsts.listop
+#, fuzzy
+msgctxt "lazarusidestrconsts.listop"
+msgid "Top"
+msgstr "Ylhäällä"
 
 #: lazarusidestrconsts.listopanchoring
 msgid "Top anchoring"
@@ -18328,7 +18388,7 @@ msgstr "Mallineen muokkaus"
 
 #: lazarusidestrconsts.srkmcattemplateeditoff
 msgid "Template Editing (not in Cell)"
-msgstr "Mallineen muokkaus"
+msgstr "Mallineen muokkaus (ei solussa)"
 
 #: lazarusidestrconsts.srkmcattoolmenu
 msgid "Tools menu commands"
@@ -18843,6 +18903,18 @@ msgstr "tutki"
 msgctxt "lazarusidestrconsts.srkmecinvertassignment"
 msgid "Invert Assignment"
 msgstr "Käännä asettaminen"
+
+#: lazarusidestrconsts.srkmeckeymapleft
+#, fuzzy
+msgctxt "lazarusidestrconsts.srkmeckeymapleft"
+msgid "Left"
+msgstr "Vasen"
+
+#: lazarusidestrconsts.srkmeckeymapright
+#, fuzzy
+msgctxt "lazarusidestrconsts.srkmeckeymapright"
+msgid "Right"
+msgstr "Oikea"
 
 #: lazarusidestrconsts.srkmecleft
 msgid "Move cursor left"

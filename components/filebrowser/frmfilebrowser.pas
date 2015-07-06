@@ -5,7 +5,7 @@ unit frmFileBrowser;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, LCLType, Forms, Controls, Graphics,
+  Classes, SysUtils, FileUtil, LazFileUtils, LResources, LCLType, Forms, Controls, Graphics,
   Dialogs, EditBtn, FileCtrl, ComCtrls, StdCtrls, ExtCtrls;
 
 type

@@ -5,7 +5,7 @@ unit fpcodegenerator;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, db, fpddCodegen, fpDataDict, controls, dialogs;
+  Classes, SysUtils, LazUTF8, db, fpddCodegen, fpDataDict, Controls;
   
 Type
   { TFPCodeGenerator }

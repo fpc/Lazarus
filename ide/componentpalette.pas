@@ -40,7 +40,7 @@ interface
 uses
   Classes, SysUtils, AVL_Tree, fgl,
   Controls, Forms, Graphics, ComCtrls, Buttons, Menus, ExtCtrls,
-  FileUtil, LazFileCache, PropEdits, LCLProc, MainBase, LazarusIDEStrConsts,
+  LazFileUtils, LazFileCache, PropEdits, LCLProc, MainBase, LazarusIDEStrConsts,
   FormEditingIntf, LazIDEIntf, IDEImagesIntf,
   ComponentReg, DesignerProcs, PackageDefs, EnvironmentOpts;
 
@@ -829,7 +829,7 @@ end;
 
 constructor TComponentPalette.Create;
 begin
-  inherited Create(EnvironmentOptions.ComponentPaletteOptions);
+  inherited Create(EnvironmentOptions.Desktop.ComponentPaletteOptions);
   fComponentButtons:=TComponentButtonMap.Create;
   fComponentButtons.Sorted:=True;
   OnComponentIsInvisible:=@CheckComponentDesignerVisible;

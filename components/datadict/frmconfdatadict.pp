@@ -5,7 +5,7 @@ unit frmconfdatadict;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs,
+  SysUtils, LazFileUtils, Forms, Controls,
   EditBtn, StdCtrls, idedatadict, ButtonPanel, ldd_consts;
 
 type

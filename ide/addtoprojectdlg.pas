@@ -34,12 +34,11 @@ unit AddToProjectDlg;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, Forms, Controls, Buttons,
-  ComCtrls, StdCtrls, ExtCtrls, Menus, Dialogs, Graphics, FileUtil, ButtonPanel,
-  AVL_Tree,
+  Classes, SysUtils, Forms, Controls, Buttons,
+  ComCtrls, StdCtrls, Dialogs, FileUtil, LazFileUtils, ButtonPanel, AVL_Tree,
   IDEWindowIntf, PackageIntf, IDEDialogs,
-  LazarusIDEStrConsts, IDEProcs, IDEOptionDefs,
-  EnvironmentOpts, Project, PackageDefs, PackageSystem, InputHistory;
+  LazarusIDEStrConsts,
+  Project, PackageDefs, PackageSystem, InputHistory;
   
 type
   TAddToProjectType = (

@@ -34,7 +34,7 @@ interface
 uses
   // LCL FCL
   Classes, SysUtils, Forms, Controls, StdCtrls, ComCtrls, Buttons, Graphics,
-  LCLType, LCLProc, Menus, Dialogs, FileUtil, LazFileCache, ExtCtrls,
+  LCLType, LCLProc, Menus, Dialogs, FileUtil, LazFileUtils, LazFileCache, ExtCtrls,
   contnrs,
   // IDEIntf CodeTools
   CodeToolManager, CodeCache,

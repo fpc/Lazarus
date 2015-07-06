@@ -12,6 +12,10 @@ msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 
+#: todoliststrconsts.dlgfiltercsv
+msgid "CSV files"
+msgstr ""
+
 #: todoliststrconsts.dlgfropts
 msgid "Options"
 msgstr "Opzioni"

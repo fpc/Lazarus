@@ -5,9 +5,8 @@ unit Unit1;
 interface
 
 uses
-  LCLType, LclIntf, Types,
-  Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
-  StdCtrls, ExtCtrls, Grids, Menus, sqldb, Themes;
+  Classes, Types,
+  LCLType, LclIntf, Forms, Controls, Graphics, StdCtrls, ExtCtrls, Themes;
 
 type
 
@@ -23,9 +22,8 @@ type
     procedure PBPaint(Sender: TObject);
     procedure RGClick(Sender: TObject);
   private
-    { private declarations }
+
   public
-    { public declarations }
     FImage: TBitmap;
   end; 
 

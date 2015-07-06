@@ -32,9 +32,8 @@ interface
 uses
   Classes, SysUtils, Math,
   LCLProc, Forms, Controls, Graphics, Dialogs, ButtonPanel,
-  StdCtrls, Buttons, ComCtrls, ExtCtrls, FileUtil, AVGLvlTree,
-  SynEdit, DefineTemplates, ExprEval,
-  IDEWindowIntf, IDEHelpIntf,
+  StdCtrls, Buttons, ComCtrls, ExtCtrls, LazFileUtils, AVGLvlTree,
+  SynEdit, DefineTemplates, ExprEval, IDEWindowIntf, IDEHelpIntf,
   EditorOptions, LazarusIDEStrConsts, InputHistory, CodeToolsOptions, IDEProcs;
 
 type

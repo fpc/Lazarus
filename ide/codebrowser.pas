@@ -1952,7 +1952,8 @@ begin
         case CTNode.FirstChild.Desc of
         ctnClass,ctnClassInterface,ctnObject,
         ctnObjCClass,ctnObjCCategory,ctnObjCProtocol,
-        ctnCPPClass:
+        ctnCPPClass,
+        ctnClassHelper,ctnRecordHelper,ctnTypeHelper:
           begin
             case CTNode.FirstChild.Desc of
             ctnClassInterface:
@@ -1967,6 +1968,12 @@ begin
               Description:=Description+' = objcprotocol';
             ctnCPPClass:
               Description:=Description+' = cppclass';
+            ctnClassHelper:
+              Description:=Description+' = class helper';
+            ctnRecordHelper:
+              Description:=Description+' = record helper';
+            ctnTypeHelper:
+              Description:=Description+' = type helper';
             else
               Description:=Description+' = class';
             end;

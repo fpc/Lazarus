@@ -44,9 +44,8 @@ unit MyIDEHelp;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, FileUtil, Forms, Controls, Graphics, Dialogs,
-  LazHelpIntf, HelpIntfs, ComCtrls, StdCtrls, LazConfigStorage, ExtCtrls,
-  IDEHelpIntf, IDEDialogs, IDEOptionsIntf, BaseIDEIntf;
+  Classes, SysUtils, LCLProc, Dialogs, ComCtrls, StdCtrls, ExtCtrls, IDEDialogs,
+  LazConfigStorage, LazHelpIntf, HelpIntfs, IDEHelpIntf, IDEOptionsIntf, BaseIDEIntf;
 
 const
   MyHelpConfigFilename = 'demo_myidehelp.xml';

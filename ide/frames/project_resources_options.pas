@@ -7,10 +7,9 @@ unit project_resources_options;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Graphics, Forms, Controls, ComCtrls, Dialogs,
-  LCLType, LazUTF8,
-  IDEOptionsIntf, IDEImagesIntf, IDEDialogs, Project,
-  ProjectUserResources, LCLStrConsts, ExtCtrls, StdCtrls, LazarusIDEStrConsts;
+  Classes, SysUtils, Graphics, Controls, ComCtrls, Dialogs, LCLType,
+  FileUtil, LazFileUtils, LazUTF8, IDEOptionsIntf, IDEImagesIntf, IDEDialogs, Project,
+  ProjectUserResources, LCLStrConsts, StdCtrls, LazarusIDEStrConsts;
 
 type
 

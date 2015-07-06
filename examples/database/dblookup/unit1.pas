@@ -5,8 +5,7 @@ unit Unit1;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
-  DbCtrls, db, DBGrids, dbf, ExtCtrls;
+  SysUtils, Forms, DbCtrls, db, DBGrids, dbf, ExtCtrls;
 
 type
 
@@ -37,9 +36,9 @@ type
     Splitter2: TSplitter;
     procedure FormShow(Sender: TObject);
   private
-    { private declarations }
+
   public
-    { public declarations }
+
   end; 
 
 var

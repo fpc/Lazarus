@@ -19,7 +19,7 @@ unit ContextHL;
 interface
 
 uses
-  Classes, SysUtils, Graphics, SynEditTypes, SynEditHighlighter, SimpleHl;
+  SynEditHighlighter, SimpleHl;
 
 type
 

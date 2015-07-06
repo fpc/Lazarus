@@ -109,7 +109,8 @@ begin
   if not HasOption('format') then begin
     writeln('Error: missing option --format=');
     writeln('use option -h to see all options');
-    Terminate; exit;
+    Terminate;
+    exit;
   end;
 
   // wiki files
@@ -118,6 +119,12 @@ begin
     if Param='' then continue;
     if (length(Param)>2) and (Param[1]='-') and (Param[2]='-') then begin
       ParamName:=copy(Param,3,length(Param));
+      if (Converter is TWiki2XHTMLConverter) then begin
+        if ParamName = 'nowikicategories' then begin
+          TWiki2XHTMLConverter(FConverter).AddCategories:= false;
+          continue;
+        end;
+      end;
       p:=Pos('=',ParamName);
       if p<1 then begin
         E('invalid parameter "'+Param+'"');
@@ -146,7 +153,7 @@ begin
         Converter.ImagesDir:=Param;
         continue;
       end else if ParamName='title' then begin
-        Converter.Title:=Param;
+        Converter.Title:=ParamValue;
         continue;
       end else if ParamName='nowarnurl' then begin
         Converter.NoWarnBaseURLs[ParamName]:='1';
@@ -163,12 +170,18 @@ begin
           continue;
         end;
       end;
-      if Converter is TWiki2XHTMLConverter then begin
+      if Converter is TWiki2HTMLConverter then begin
         // HTML parameters
-        if ParamName='css' then begin
-          TWiki2XHTMLConverter(Converter).CSSFilename:=ParamValue;
-          continue;
-        end
+        if ParamName='html' then begin
+          ParamValue := TrimAndExpandFilename(ParamValue);
+          if (ParamValue='') or (not DirPathExists(ExtractFilepath(ParamValue)))
+          then begin
+            E('Directory for html files does not exist: '+Paramvalue);
+            exit;
+          end;
+          TWiki2HTMLConverter(Converter).OutputDir := ExtractFilepath(Paramvalue);
+          Continue;
+        end;
       end;
       if Converter is TWiki2CHMConverter then begin
         // CHM parameters
@@ -176,12 +189,24 @@ begin
           ParamValue:=TrimAndExpandFilename(ParamValue);
           if (ParamValue='') or (not DirPathExists(ExtractFilePath(ParamValue)))
           then begin
-            E('directory of chm file does not exists: '+ParamValue);
+            E('directory of chm file does not exist: '+ParamValue);
             exit;
           end;
           TWiki2CHMConverter(Converter).CHMFile:=ParamValue;
+          TWiki2CHMConverter(Converter).OutputDir := ExtractFilepath(ParamValue);
           continue;
-        end
+        end else
+        if ParamName='root' then begin
+          TWiki2CHMConverter(Converter).TOCRootName := ParamValue;
+          Continue;
+        end;
+      end;
+      if Converter is TWiki2XHTMLConverter then begin
+        // shared parameters for HTML and CHM
+        if ParamName='css' then begin
+          TWiki2XHTMLConverter(Converter).CSSFilename:=ParamValue;
+          continue;
+        end;
       end;
     end else if Param[1]<>'-' then begin
       AddFiles(Param);
@@ -319,10 +344,12 @@ begin
   writeln;
   writeln('Options for --format=xhtml,html,chm :');
   writeln('  --css=<path of stylesheet> : default: ',XHTMLConverter.CSSFilename);
+  writeln('  --nowikicategories : do not add links to wiki categories.');
   writeln;
   writeln('Options for --format=chm :');
   writeln('   Note: the default page is the first page');
   writeln('  --chm=<output chm file> : default: ',CHMConverter.CHMFile);
+  writeln('  --root=<text used for root of table-of-contents> : default: "', CHMConverter.TocRootName, '"');
   writeln;
   writeln('Options for --format=fpdoc :');
   writeln('  --root=<fpdoc xml root node> : default: ',FPDocConverter.RootName);

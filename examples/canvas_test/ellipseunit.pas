@@ -5,7 +5,7 @@ unit ellipseunit;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs; 
+  Forms, Graphics;
 
 type
 
@@ -14,9 +14,9 @@ type
   TfrmEllipse = class(TForm)
     procedure FormPaint(Sender: TObject);
   private
-    { private declarations }
+
   public
-    { public declarations }
+
   end; 
 
 var

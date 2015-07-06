@@ -46,8 +46,8 @@ interface
 {$endif}
 
 uses
-  SysUtils, Classes, InterfaceBase, FileUtil, lazutf8classes, LCLProc,
-  DefineTemplates;
+  SysUtils, Classes, InterfaceBase, FileUtil, LazFileUtils,
+  LazUTF8, lazutf8classes, LCLProc, DefineTemplates;
 
 const
   LazarusVersionStr = {$I version.inc};

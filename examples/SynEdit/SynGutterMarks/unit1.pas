@@ -5,7 +5,7 @@ unit Unit1;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ExtCtrls, StdCtrls, Spin,
+  Forms, Controls, ExtCtrls, StdCtrls, Spin,
   SynEdit, SynEditTypes, SynEditMarks;
 
 type
@@ -38,9 +38,9 @@ type
     procedure spinMarkGutterWidthChange(Sender: TObject);
     procedure SynEdit1StatusChange(Sender: TObject; Changes: TSynStatusChanges);
   private
-    { private declarations }
+
   public
-    { public declarations }
+
   end; 
 
 var

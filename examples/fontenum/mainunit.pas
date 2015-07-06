@@ -5,9 +5,8 @@ unit mainunit;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs,
-  LCLType, LCLIntf, StdCtrls, Buttons, LCLProc, ExtCtrls, Grids,
-  FileUtil, IniFiles;
+  Classes, SysUtils, Forms, Graphics, Dialogs, StdCtrls, Grids, IniFiles,
+  LCLType, LCLIntf, LazUTF8;
 
 type
 
@@ -44,7 +43,6 @@ type
     procedure lbSizesClick(Sender: TObject);
     procedure lbStylesClick(Sender: TObject);
   private
-    { private declarations }
     FTime: LongWord;
     FIniTime: LongWord;
     FCurrentFamily,FCurrentStyle,FCurrentSize,FCurrentCharset: string;
@@ -60,9 +58,8 @@ type
     procedure LoadFontList;
     procedure LoadFamilyFonts(Charset: integer);
     procedure UpdateFont(F: TFont);
-    
   public
-    { public declarations }
+
   end; 
 
 var

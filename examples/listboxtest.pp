@@ -23,7 +23,7 @@ program ListBoxTest;
 {$mode objfpc}{$H+}
 
 uses
-  Interfaces, Buttons, Classes, Forms, StdCtrls, SysUtils, Controls, LazLogger;
+  Interfaces, Classes, Forms, StdCtrls, SysUtils, Controls, LazLogger;
 
 type
   TListBoxTestForm = class(TForm)
@@ -139,6 +139,7 @@ procedure TListBoxTestForm.Button4Click(Sender: TObject);
 var
   X: PtrInt;
 begin
+  if ListBox.ItemIndex < 0 then Exit;
   X := PtrInt(ListBox.Items.Objects[ListBox.ItemIndex]);
   DebugLn(['TListBoxTestForm.Button4Click ',X]);
 end;

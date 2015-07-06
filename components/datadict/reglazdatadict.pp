@@ -17,7 +17,7 @@ uses
   // Code generator units
   fpddCodegen,
   fpCodeGenerator,
-  FileUtil
+  LazFileUtils, LazUTF8
 {$IFNDEF NOSTDCODEGENS}
   ,fpcgSQLConst
   ,fpcgdbcoll

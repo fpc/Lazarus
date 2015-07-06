@@ -1,9 +1,9 @@
 {
  Test with:
-     ./finddeclarationtest --format=plain --suite=TTestFindDeclarationClassHelper
-     ./finddeclarationtest --format=plain --suite=TestFindDeclaration_Base
-     ./finddeclarationtest --format=plain --suite=TestFindDeclaration_NestedClasses
-     ./finddeclarationtest --format=plain --suite=TestFindDeclaration_ClassHelper
+   ./finddeclarationtest --format=plain --suite=TTestFindDeclaration
+   ./finddeclarationtest --format=plain --suite=TestFindDeclaration_Base
+   ./finddeclarationtest --format=plain --suite=TestFindDeclaration_NestedClasses
+   ./finddeclarationtest --format=plain --suite=TestFindDeclaration_ClassHelper
 }
 unit fdtbase;
 

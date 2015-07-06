@@ -38,29 +38,45 @@ uses
 {$IFDEF IDE_MEM_CHECK}
   MemCheck,
 {$ENDIF}
-  Classes, SysUtils, LCLProc, Forms, Controls, Buttons, Menus,
-  ComCtrls, ExtCtrls, LMessages,
+  Classes, SysUtils, Math, Forms, Controls, Buttons, Menus,
+  ComCtrls, ExtCtrls, LMessages, LCLIntf, LCLType, LCLProc,
   // IDEIntf
-  ProjectIntf, NewItemIntf, MenuIntf, LazIDEIntf, LazFileCache,
-  EnvironmentOpts, LazarusIDEStrConsts, IDEImagesIntf, ToolbarData;
-
+  ProjectIntf, NewItemIntf, MenuIntf, LazIDEIntf, IDEWindowIntf, IDEImagesIntf,
+  LazFileCache, EnvironmentOpts, LazarusIDEStrConsts, ComponentReg, IdeCoolbarData;
 
 type
   { TMainIDEBar }
 
   TMainIDEBar = class(TForm)
+  private
+    OptionsPopupMenu: TPopupMenu;
+    FMainOwningComponent: TComponent;
+    FOldWindowState: TWindowState;
+    FOnActive: TNotifyEvent;
+    FOpenFilePopupHandler: TNotifyEvent;
+    procedure CreatePopupMenus(TheOwner: TComponent);
+    procedure NewUnitFormDefaultClick(Sender: TObject);
+    procedure NewUnitFormPopupMenuPopup(Sender: TObject);
+    function CalcMainIDEHeight: Integer;
+    function CalcNonClientHeight: Integer;
+  protected
+    procedure DoActive;
+    procedure DoShow; override;
+    procedure WndProc(var Message: TLMessage); override;
+    procedure Resizing(State: TWindowState); override;
+  public
+    ApplicationIsActivate: boolean;
+    LastCompPaletteForm: TCustomForm;
     //Coolbar and PopUpMenus
     CoolBar: TCoolBar;
-    OptionsPopupMenu: TPopupMenu;
     OptionsMenuItem: TMenuItem;
     OpenFilePopUpMenu: TPopupMenu;
     SetBuildModePopupMenu: TPopupMenu;
     NewUnitFormPopupMenu: TPopupMenu;
     NewUFSetDefaultMenuItem: TMenuItem;
-
-    //splitter between the Coolbar and MainMenu
-    MainSplitter: TSplitter;
-
+    ComponentPageControl: TPageControl; // component palette
+    //GlobalMouseSpeedButton: TSpeedButton; <- what is this
+    MainSplitter: TSplitter;        // splitter between the Coolbar and MainMenu
     // MainMenu
     mnuMainMenu: TMainMenu;
     //mnuMain: TIDEMenuSection;
@@ -332,6 +348,8 @@ type
       //itmCustomTools: TIDEMenuSection;
         itmToolConfigure: TIDEMenuCommand;
       //itmSecondaryTools: TIDEMenuSection;
+        itmToolManageDesktops: TIDEMenuCommand;
+        itmToolManageExamples: TIDEMenuCommand;
         itmToolDiff: TIDEMenuCommand;
       //itmDelphiConversion: TIDEMenuSection;
         itmToolCheckLFM: TIDEMenuCommand;
@@ -341,7 +359,6 @@ type
         itmToolConvertDFMtoLFM: TIDEMenuCommand;
         itmToolConvertEncoding: TIDEMenuCommand;
       //itmBuildingLazarus: TIDEMenuSection;
-        itmToolManageExamples: TIDEMenuCommand;
         itmToolBuildLazarus: TIDEMenuCommand;
         itmToolConfigureBuildLazarus: TIDEMenuCommand;
 
@@ -360,46 +377,34 @@ type
         itmHelpAboutLazarus: TIDEMenuCommand;
       //itmHelpTools: TIDEMenuSection;
 
-    // component palette
-    ComponentPageControl: TPageControl;
-    GlobalMouseSpeedButton: TSpeedButton;
-    procedure MainIDEBarDropFiles(Sender: TObject;
-      const FileNames: array of String);
+    constructor Create(TheOwner: TComponent); override;
+    procedure MainIDEBarDropFiles(Sender: TObject; const FileNames: array of String);
     procedure CoolBarOnChange(Sender: TObject);
     procedure MainSplitterMoved(Sender: TObject);
     procedure SetMainIDEHeightEvent(Sender: TObject);
-  private
-    FOldWindowState: TWindowState;
-    FOnActive: TNotifyEvent;
-    procedure NewUnitFormDefaultClick(Sender: TObject);
-    procedure NewUnitFormPopupMenuPopup(Sender: TObject);
-    function CalcMainIDEHeight: Integer;
-    function CalcNonClientHeight: Integer;
-  protected
-    procedure DoActive;
-    procedure DoShow; override;
-    procedure WndProc(var Message: TLMessage); override;
-
-    procedure Resizing(State: TWindowState); override;
-  public
-    constructor Create(TheOwner: TComponent); override;
+    procedure OnMainBarActive(Sender: TObject);
+    procedure OpenFilePopupMenuPopup(Sender: TObject);
+    procedure Setup(TheOwner: TComponent);
+    procedure SetupHints;
+    procedure UpdateIDEComponentPalette(IfFormChanged: boolean);
     procedure HideIDE;
     procedure UnhideIDE;
-    procedure CreatePopupMenus(TheOwner: TComponent);
     property OnActive: TNotifyEvent read FOnActive write FOnActive;
+    property OpenFilePopupHandler: TNotifyEvent read FOpenFilePopupHandler write FOpenFilePopupHandler;
     procedure UpdateDockCaption({%H-}Exclude: TControl); override;
     procedure RefreshCoolbar;
     procedure SetMainIDEHeight;
     procedure DoSetMainIDEHeight(const AIDEIsMaximized: Boolean; ANewHeight: Integer = 0);
+    procedure DoSetViewComponentPalette(aVisible: Boolean);
+    procedure DoToggleViewComponentPalette;
+    procedure DoToggleViewIDESpeedButtons;
+    procedure AllowCompilation(aAllow: Boolean);
   end;
 
 var
   MainIDEBar: TMainIDEBar = nil;
 
 implementation
-
-uses
-  LCLIntf, LCLType, Math, IDEWindowIntf;
 
 { TMainIDEBar }
 
@@ -495,13 +500,13 @@ begin
 
   if Assigned(IDEDockMaster) then
   begin
-    if EnvironmentOptions.AutoAdjustIDEHeight then
+    if EnvironmentOptions.Desktop.AutoAdjustIDEHeight then
       IDEDockMaster.AdjustMainIDEWindowHeight(Self, True, ANewHeight)
     else
       IDEDockMaster.AdjustMainIDEWindowHeight(Self, False, 0);
   end else
   begin
-    if (AIDEIsMaximized or EnvironmentOptions.AutoAdjustIDEHeight) then
+    if (AIDEIsMaximized or EnvironmentOptions.Desktop.AutoAdjustIDEHeight) then
     begin
       ANewHeight := ANewHeight + CalcNonClientHeight;
       if ANewHeight <> Constraints.MaxHeight then
@@ -577,6 +582,87 @@ begin
   SetMainIDEHeight;
 end;
 
+procedure TMainIDEBar.OnMainBarActive(Sender: TObject);
+var
+  i, FormCount: integer;
+  AForm: TCustomForm;
+begin
+  if EnvironmentOptions.Desktop.SingleTaskBarButton and not ApplicationIsActivate
+  and (WindowState=wsNormal) then
+  begin
+    ApplicationIsActivate:=true;
+    FormCount:=0;
+    for i:=Screen.CustomFormCount-1 downto 0 do
+    begin
+      AForm:=Screen.CustomForms[i];
+      if (AForm.Parent=nil) and (AForm<>Self) and (AForm.IsVisible)
+      and (AForm.Designer=nil) and (not (csDesigning in AForm.ComponentState))
+      and not (fsModal in AForm.FormState) then
+        inc(FormCount);
+    end;
+    while LazarusIDE.LastActivatedWindows.Count>0 do
+    begin
+      AForm:=TCustomForm(LazarusIDE.LastActivatedWindows[0]);
+      if Assigned(AForm) and (not (CsDestroying in AForm.ComponentState)) and
+      AForm.IsVisible then
+        AForm.BringToFront;
+      LazarusIDE.LastActivatedWindows.Delete(0);
+    end;
+    Self.BringToFront;
+  end;
+end;
+
+procedure TMainIDEBar.OpenFilePopupMenuPopup(Sender: TObject);
+var
+  CurIndex: integer;
+  OpenMenuItem: TPopupMenu;
+
+  procedure AddFile(const Filename: string);
+  var
+    AMenuItem: TMenuItem;
+  begin
+    if OpenFilePopupMenu.Items.Count > CurIndex then
+      AMenuItem := OpenFilePopupMenu.Items[CurIndex]
+    else
+    begin
+      Assert(Assigned(FMainOwningComponent));
+      AMenuItem := TMenuItem.Create(FMainOwningComponent);
+      AMenuItem.Name := OpenFilePopupMenu.Name + 'Recent' + IntToStr(CurIndex);
+      Assert(Assigned(OpenFilePopupHandler));
+      AMenuItem.OnClick := OpenFilePopupHandler; // mnuOpenFilePopupClick;
+      OpenFilePopupMenu.Items.Add(AMenuItem);
+    end;
+    AMenuItem.Caption := Filename;
+    inc(CurIndex);
+  end;
+
+  procedure AddFiles(List: TStringList; MaxCount: integer);
+  var
+    i: integer;
+  begin
+    i := 0;
+    while (i < List.Count) and (i < MaxCount) do
+    begin
+      AddFile(List[i]);
+      inc(i);
+    end;
+  end;
+
+begin
+  // fill the PopupMenu:
+  CurIndex := 0;
+  // first add 8 recent projects
+  AddFiles(EnvironmentOptions.RecentProjectFiles, 8);
+  // add a separator
+  AddFile('-');
+  // add 12 recent files
+  AddFiles(EnvironmentOptions.RecentOpenFiles, 12);
+  OpenMenuItem := OpenFilePopupMenu;
+  // remove unused menuitems
+  while OpenMenuItem.Items.Count > CurIndex do
+    OpenMenuItem.Items[OpenMenuItem.Items.Count - 1].Free;
+end;
+
 procedure TMainIDEBar.WndProc(var Message: TLMessage);
 begin
   inherited WndProc(Message);
@@ -615,7 +701,7 @@ end;
 
 procedure TMainIDEBar.CreatePopupMenus(TheOwner: TComponent);
 begin
-  // create the popupmenu for the MainIDEBar.OpenFileArrowSpeedBtn
+  // create the popupmenu for the OpenFileArrowSpeedBtn
   OpenFilePopUpMenu := TPopupMenu.Create(TheOwner);
   OpenFilePopupMenu.Name:='OpenFilePopupMenu';
 
@@ -634,15 +720,96 @@ begin
   OptionsPopupMenu := TPopupMenu.Create(TheOwner);
   OptionsPopupMenu.Images := IDEImages.Images_16;
   OptionsMenuItem := TMenuItem.Create(TheOwner);
-  with MainIDEBar.OptionsMenuItem do
+  OptionsMenuItem.Name := 'miToolbarOption';
+  OptionsMenuItem.Caption := lisOptions;
+  OptionsMenuItem.Enabled := True;
+  OptionsMenuItem.Visible := True;
+  OptionsMenuItem.ImageIndex := IDEImages.LoadImage(16, 'menu_environment_options');
+  OptionsPopupMenu.Items.Add(OptionsMenuItem);
+end;
+
+procedure TMainIDEBar.Setup(TheOwner: TComponent);
+begin
+  FMainOwningComponent := TheOwner;
+  OnActive:=@OnMainBarActive;
+
+  MainSplitter := TSplitter.Create(TheOwner);
+  MainSplitter.Parent := Self;
+  MainSplitter.Align := alLeft;
+  MainSplitter.MinSize := 50;
+  MainSplitter.OnMoved := @MainSplitterMoved;
+
+  // IDE Coolbar
+  CoolBar := TCoolBar.Create(TheOwner);
+  CoolBar.Parent := Self;
+  if EnvironmentOptions.Desktop.ComponentPaletteOptions.Visible then
   begin
-     Name := 'miToolbarOption';
-     Caption := lisOptions;
-     Enabled := True;
-     Visible := True;
-     ImageIndex := IDEImages.LoadImage(16, 'menu_environment_options');
-   end;
-  MainIDEBar.OptionsPopupMenu.Items.Add(MainIDEBar.OptionsMenuItem);
+    CoolBar.Align := alLeft;
+    CoolBar.Width := EnvironmentOptions.Desktop.IDECoolBarOptions.IDECoolBarWidth;
+  end
+  else
+    CoolBar.Align := alClient;
+
+  // IDE Coolbar object wraps the actual CoolBar.
+  IDECoolBar := TIDECoolBar.Create(CoolBar);
+  IDECoolBar.IsVisible := EnvironmentOptions.Desktop.IDECoolBarOptions.IDECoolBarVisible;;
+  CoolBar.OnChange := @CoolBarOnChange;
+  CreatePopupMenus(TheOwner);
+  CoolBar.PopupMenu := OptionsPopupMenu;
+  OpenFilePopupMenu.OnPopup := @OpenFilePopupMenuPopup;
+
+  // Component palette
+  ComponentPageControl := TPageControl.Create(TheOwner);
+  ComponentPageControl.Name := 'ComponentPageControl';
+  ComponentPageControl.Align := alClient;
+  ComponentPageControl.Visible := EnvironmentOptions.Desktop.ComponentPaletteOptions.Visible;
+  ComponentPageControl.Parent := Self;
+end;
+
+procedure TMainIDEBar.SetupHints;
+var
+  CurShowHint: boolean;
+  AControl: TControl;
+  i, j: integer;
+begin
+  if EnvironmentOptions=nil then exit;
+  // update all hints in the component palette
+  CurShowHint:=EnvironmentOptions.ShowHintsForComponentPalette;
+  for i:=0 to ComponentPageControl.PageCount-1 do begin
+    for j:=0 to ComponentPageControl.Page[i].ControlCount-1 do begin
+      AControl:=ComponentPageControl.Page[i].Controls[j];
+      AControl.ShowHint:=CurShowHint;
+    end;
+  end;
+  // update all hints in main ide toolbars
+  //??? CurShowHint:=EnvironmentOptions.ShowHintsForMainSpeedButtons;
+end;
+
+procedure TMainIDEBar.UpdateIDEComponentPalette(IfFormChanged: boolean);
+var
+  OldLastCompPaletteForm, LastActiveForm: TCustomForm;
+  AResult: Boolean;
+begin
+  // Package manager updates the palette initially.
+  LastActiveForm := LazarusIDE.LastFormActivated;
+  if not LazarusIDE.IDEStarted
+  or (IfFormChanged and (LastCompPaletteForm=LastActiveForm)) then
+    exit;
+  OldLastCompPaletteForm:=LastCompPaletteForm;
+  LastCompPaletteForm:=LastActiveForm;
+  AResult:=(LastActiveForm<>nil) and (LastActiveForm.Designer<>nil)
+    and (LastActiveForm.Designer.LookupRoot<>nil)
+    and not (LastActiveForm.Designer.LookupRoot is TControl);
+  IDEComponentPalette.HideControls:=AResult;
+  // Don't update palette at the first time if not hiding controls.
+  if (OldLastCompPaletteForm = Nil) and not IDEComponentPalette.HideControls then
+    exit;
+  {$IFDEF VerboseComponentPalette}
+  DebugLn(['* TMainIDEBar.UpdateIDEComponentPalette: Updating palette *',
+           ', HideControls=', IDEComponentPalette.HideControls]);
+  {$ENDIF}
+  IDEComponentPalette.Update(False);
+  SetupHints;
 end;
 
 procedure TMainIDEBar.RefreshCoolbar;
@@ -651,7 +818,7 @@ var
   CoolBand: TCoolBand;
   CoolBarOpts: TIDECoolBarOptions;
 begin
-  CoolBarOpts := EnvironmentOptions.IDECoolBarOptions;
+  CoolBarOpts := EnvironmentOptions.Desktop.IDECoolBarOptions;
   //read general settings
   if not (CoolBarOpts.IDECoolBarGrabStyle in [0..5]) then
     CoolBarOpts.IDECoolBarGrabStyle := 4;
@@ -682,8 +849,7 @@ begin
   CoolBar.Visible := CoolBarOpts.IDECoolBarVisible;
   itmViewIDESpeedButtons.Checked := CoolBar.Visible;
   MainSplitter.Align := alLeft;
-  MainSplitter.Visible := MainIDEBar.Coolbar.Visible and
-                          MainIDEBar.ComponentPageControl.Visible;
+  MainSplitter.Visible := Coolbar.Visible and ComponentPageControl.Visible;
 end;
 
 procedure TMainIDEBar.Resizing(State: TWindowState);
@@ -697,7 +863,7 @@ end;
 
 procedure TMainIDEBar.MainSplitterMoved(Sender: TObject);
 begin
-  EnvironmentOptions.IDECoolBarOptions.IDECoolBarWidth := CoolBar.Width;
+  EnvironmentOptions.Desktop.IDECoolBarOptions.IDECoolBarWidth := CoolBar.Width;
   SetMainIDEHeight;
 end;
 
@@ -712,7 +878,7 @@ begin
   if not (Assigned(EnvironmentOptions) and Assigned(CoolBar) and Assigned(ComponentPageControl)) then
     Exit;
 
-  if EnvironmentOptions.IDECoolBarOptions.IDECoolBarVisible then
+  if EnvironmentOptions.Desktop.IDECoolBarOptions.IDECoolBarVisible then
   begin
     for I := 0 to CoolBar.Bands.Count-1 do
     begin
@@ -721,7 +887,8 @@ begin
     end;
   end;
 
-  if EnvironmentOptions.ComponentPaletteVisible and Assigned(ComponentPageControl.ActivePage) then
+  if EnvironmentOptions.Desktop.ComponentPaletteOptions.Visible
+  and Assigned(ComponentPageControl.ActivePage) then
   begin
     ComponentScrollBox := nil;
     for I := 0 to ComponentPageControl.ActivePage.ControlCount-1 do
@@ -740,7 +907,7 @@ begin
         ComponentPageControl.Height - ComponentScrollBox.ClientHeight;  //page control non-client height (tabs, borders).
       Result := Max(Result, NewHeight);
 
-      if not EnvironmentOptions.AutoAdjustIDEHeightFullComponentPalette then
+      if not EnvironmentOptions.Desktop.AutoAdjustIDEHeightFullCompPal then
         Break;  //we need only one button (we calculate one line only)
     end;
   end;
@@ -764,13 +931,72 @@ begin
     end
   end;
   IDECoolBar.Sort;
-  IDECoolBar.CopyToOptions(EnvironmentOptions.IDECoolBarOptions);
+  IDECoolBar.CopyToOptions(EnvironmentOptions.Desktop.IDECoolBarOptions);
   SetMainIDEHeight;
 end;
 
 procedure TMainIDEBar.SetMainIDEHeight;
 begin
   DoSetMainIDEHeight(WindowState = wsMaximized);
+end;
+
+procedure TMainIDEBar.DoSetViewComponentPalette(aVisible: Boolean);
+begin
+  if aVisible = ComponentPageControl.Visible then Exit;
+  ComponentPageControl.Visible := aVisible;
+  itmViewComponentPalette.Checked := aVisible;
+  EnvironmentOptions.Desktop.ComponentPaletteOptions.Visible := aVisible;
+  if aVisible then
+  begin
+    if CoolBar.Align = alClient then
+    begin
+      CoolBar.Width := 230;
+      EnvironmentOptions.Desktop.IDECoolBarOptions.IDECoolBarWidth := 230;
+    end;
+    CoolBar.Align := alLeft;
+    CoolBar.Vertical := False;
+    MainSplitter.Align := alLeft;
+  end
+  else
+    CoolBar.Align := alClient;
+  MainSplitter.Visible := Coolbar.Visible and aVisible;
+
+  if aVisible then//when showing component palette, it must be visible to calculate it correctly
+    DoSetMainIDEHeight(WindowState = wsMaximized, 55);//it will cause the IDE to flicker, but it's better than to have wrongly calculated IDE height
+  SetMainIDEHeight;
+end;
+
+procedure TMainIDEBar.DoToggleViewComponentPalette;
+begin
+  DoSetViewComponentPalette(not ComponentPageControl.Visible);
+end;
+
+procedure TMainIDEBar.DoToggleViewIDESpeedButtons;
+var
+  SpeedButtonsVisible: boolean;
+begin
+  SpeedButtonsVisible := not CoolBar.Visible;
+  itmViewIDESpeedButtons.Checked := SpeedButtonsVisible;
+  CoolBar.Visible := SpeedButtonsVisible;
+  MainSplitter.Visible := SpeedButtonsVisible;
+  EnvironmentOptions.Desktop.IDECoolBarOptions.IDECoolBarVisible := SpeedButtonsVisible;
+  MainSplitter.Visible := Coolbar.Visible and ComponentPageControl.Visible;
+  SetMainIDEHeight;
+end;
+
+procedure TMainIDEBar.AllowCompilation(aAllow: Boolean);
+// Enables or disables IDE GUI controls associated with compiling and building.
+// Does it interfere with DebugBoss.UpdateButtonsAndMenuItems? Maybe should be refactored and combined.
+begin
+  itmRunMenuRun.Enabled:=aAllow;
+  itmRunMenuCompile.Enabled:=aAllow;
+  itmRunMenuBuild.Enabled:=aAllow;
+  itmRunMenuQuickCompile.Enabled:=aAllow;
+  itmRunMenuCleanUpAndBuild.Enabled:=aAllow;
+  itmPkgEditInstallPkgs.Enabled:=aAllow;
+  itmToolRescanFPCSrcDir.Enabled:=aAllow;
+  itmToolBuildLazarus.Enabled:=aAllow;
+  //itmToolConfigureBuildLazarus.Enabled:=aAllow;
 end;
 
 end.

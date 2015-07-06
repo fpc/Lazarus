@@ -5,8 +5,7 @@ unit mainform;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  ExtCtrls;
+  SysUtils, Forms, Graphics, ExtCtrls;
 
 type
 
@@ -16,9 +15,9 @@ type
     Image: TImage;
     procedure FormCreate(Sender: TObject);
   private
-    { private declarations }
+
   public
-    { public declarations }
+
   end; 
 
 var

@@ -5,8 +5,8 @@ unit TestXMLReaderUnit;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
-  EditBtn, StdCtrls, Buttons, ComCtrls, ExtCtrls, DOM, XMLRead;
+  SysUtils, LazFileUtils, LazUTF8, Forms, EditBtn, StdCtrls, Buttons,
+  ComCtrls, ExtCtrls, DOM, XMLRead;
 
 type
 
@@ -33,7 +33,7 @@ type
     FDoc: TXMLDocument;
     procedure ParseDoc;
   public
-    { public declarations }
+
   end; 
 
 var

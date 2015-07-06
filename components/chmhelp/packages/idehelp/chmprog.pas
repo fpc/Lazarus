@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils,
-  Dialogs, FileUtil, LazFileUtils, LazLogger,
+  Dialogs, FileUtil, LazFileUtils, LazUTF8, LazLogger,
   LazHelpIntf, HelpIntfs,
   IDEHelpIntf, MacroIntf;
 

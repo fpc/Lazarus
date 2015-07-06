@@ -314,6 +314,7 @@ begin
     AParams.FMin := AParams.FAxisToGraph(AParams.FMin);
     AParams.FMax := AParams.FAxisToGraph(AParams.FMax);
   end;
+  EnsureOrder(AParams.FMin, AParams.FMax);
   CalculateIntervals(AParams, start, step);
   if step <= 0 then exit;
   m := start;

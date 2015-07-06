@@ -21,12 +21,12 @@ Done:
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
+  Forms, Dialogs, Menus,
 {$IFDEF EditBook}
   fEditBook,
 {$ELSE}
 {$ENDIF}
-  Menus, fDockBook, fEditForm, SynEdit;
+  fDockBook, fEditForm;
 
 type
 {$IFDEF EditBook}

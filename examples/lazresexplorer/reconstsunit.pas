@@ -4,9 +4,6 @@ unit reConstsUnit;
 
 interface
 
-uses
-  Classes, SysUtils; 
-
 resourcestring
   sResourceExplorer = 'Resource explorer';
   sSaveResource     = 'Save resource ...';
@@ -40,7 +37,7 @@ resourcestring
 
 function LCLVersionStr: string;
 implementation
-uses gettext, translations, LCLVersion, InterfaceBase;
+uses gettext, translations, InterfaceBase;
 
 function LCLVersionStr: string;
 begin

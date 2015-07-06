@@ -6,9 +6,8 @@ interface
 
 uses
   Classes, SysUtils,
-  Dialogs, FileUtil, LazFileUtils,
-  LazHelpIntf, HelpIntfs,
-  IDEHelpIntf, MacroIntf;
+  Dialogs, FileUtil, LazFileUtils, LazUTF8,
+  LazHelpIntf, HelpIntfs, IDEHelpIntf, MacroIntf;
 
 const
   sFPCLangRef = 'FPC Language Reference';

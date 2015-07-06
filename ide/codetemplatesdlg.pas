@@ -31,20 +31,17 @@ unit CodeTemplatesDlg;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
-  ClipBrd, StdCtrls, Buttons, ExtCtrls, Menus, FileUtil, lazutf8classes,
+  Classes, SysUtils, LCLProc, Forms, Controls, Dialogs,
+  ClipBrd, StdCtrls, ExtCtrls, Menus, FileUtil, LazFileUtils, lazutf8classes,
   ButtonPanel, EditBtn,
   // synedit
   SynEdit, SynHighlighterPas, SynEditAutoComplete, SynRegExpr,
   // codetools
-  CodeToolManager, CodeCache, KeywordFuncLists, BasicCodeTools,
-  PascalParserTool,
+  CodeToolManager, CodeCache, KeywordFuncLists, BasicCodeTools, PascalParserTool,
   // IDEIntf
-  IDECommands, SrcEditorIntf, MenuIntf, IDEWindowIntf, LazIDEIntf,
-  IDEHelpIntf, IDEDialogs,
+  SrcEditorIntf, MenuIntf, IDEWindowIntf, LazIDEIntf, IDEHelpIntf, IDEDialogs,
   // IDE
-  IDEProcs, InputHistory, LazarusIDEStrConsts, EditorOptions, CodeMacroSelect,
-  CodeMacroPrompt;
+  IDEProcs, LazarusIDEStrConsts, EditorOptions, CodeMacroSelect, CodeMacroPrompt;
 
 type
   TAutoCompleteOption = (

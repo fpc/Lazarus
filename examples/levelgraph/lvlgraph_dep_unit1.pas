@@ -5,8 +5,7 @@ unit LvlGraph_Dep_Unit1;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, RTTIGrids, Forms, Controls, Graphics,
-  Dialogs, ExtCtrls, LvlGraphCtrl, PropEdits, ObjectInspector;
+  RTTIGrids, Forms, ExtCtrls, LvlGraphCtrl, PropEdits;
 
 type
 

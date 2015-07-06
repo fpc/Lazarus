@@ -69,6 +69,9 @@ type
     FMaxH: integer;
     FPageFileExt: string;
     FUseTemplateIcons: Boolean;
+    FAddCategories: Boolean;
+    FIndexOfflineLinksOnly: Boolean;
+    procedure DoAddCategories(Page: TW2XHTMLPage);
     procedure DoAddLinksToTranslations(Page: TW2XHTMLPage);
     procedure DoAddLinkToBaseDocument(Page: TW2XHTMLPage);
     procedure OnHeaderToken(Token: TWPToken);
@@ -81,6 +84,7 @@ type
     procedure OnWikiToken(Token: TWPToken); virtual;
     procedure RaiseNodeNotOpen(Token: TWPToken);
     function GetImageLink(ImgFilename: string): string; virtual;
+    function GetInternalImageLink(ImgFilename: string): string; virtual;
     function FindImage(const ImgFilename: string): string; virtual;
     procedure MarkImageAsUsed(const ImgFilename: string; Page: TW2XHTMLPage); virtual;
     function GetPageLink(Page: TW2XHTMLPage): string; virtual;
@@ -92,6 +96,8 @@ type
     procedure ConvertInit; virtual;
     procedure ConvertAllPages; virtual;
     procedure SaveAllPages; virtual;
+    procedure AddIndexItem({%H-}AText, {%H-}AUrl: String); virtual;
+    procedure AddTocItem({%H-}ALevel:Integer; {%H-}AText, {%H-}AUrl: String); virtual;
   public
     constructor Create; override;
     destructor Destroy; override;
@@ -103,18 +109,64 @@ type
     function PageToFilename(Page: string; IsInternalLink, Full: boolean): string; virtual;
     function PageToFilename(Page: TW2XHTMLPage; Full: boolean): string; virtual;
     property PageFileExt: string read FPageFileExt write SetPageFileExt;
-    property LinkToBaseDocument: string read FLinkToBaseDocument write FLinkToBaseDocument;
-    property AddLinksToTranslations: boolean read FAddLinksToTranslations write FAddLinksToTranslations default true;
-    property AddTOCIfHeaderCountMoreThan: integer read FAddTOCIfHeaderCountMoreThan
-                 write FAddTOCIfHeaderCountMoreThan default 2;
-    property UseTemplateIcons: Boolean read FUseTemplateIcons write FUseTemplateIcons;
+    property LinkToBaseDocument: string
+      read FLinkToBaseDocument write FLinkToBaseDocument;
+    property AddLinksToTranslations: boolean
+      read FAddLinksToTranslations write FAddLinksToTranslations default true;
+    property AddTOCIfHeaderCountMoreThan: integer
+      read FAddTOCIfHeaderCountMoreThan write FAddTOCIfHeaderCountMoreThan default 2;
+    property AddCategories: Boolean
+      read FAddCategories write FAddCategories default true;
+    property IndexOfflineLinksOnly: Boolean
+      read FIndexOfflineLinksOnly write FIndexOfflineLinksOnly default true;
+    property UseTemplateIcons: Boolean
+      read FUseTemplateIcons write FUseTemplateIcons;
   end;
+
+function EscapeToHTML(AText: String): String;
 
 implementation
 
 const
   NOTE_ICON = 'note.png';
   WARNING_ICON = 'warning.png';
+
+{ Replaces some special characters by their HTML code }
+function EscapeToHTML(AText: string): string;
+var
+  i: Integer;
+  ampStr: string;
+begin
+  Result := '';
+
+  for i := 1 to Length(AText) do
+  begin
+    case AText[i] of
+      '&':  begin
+              ampStr := Copy(AText, i, 6);
+              if (Pos('&amp;',  ampStr) = 1) or
+                 (Pos('&lt;',   ampStr) = 1) or
+                 (Pos('&gt;',   ampStr) = 1) or
+                 (Pos('&quot;', ampStr) = 1) or
+                 (Pos('&apos;', ampStr) = 1) or
+                 (Pos('&#37;',  ampStr) = 1)     // %
+              then
+                //'&' is the first char of a special char, it must not be converted
+                Result := Result + AText[i]
+              else
+                Result := Result + '&amp;';
+            end;
+      '<':  Result := Result + '&lt;';
+      '>':  Result := Result + '&gt;';
+      '"':  Result := Result + '&quot;';
+      '''': Result := Result + '&apos;';
+      '%':  Result := Result + '&#37;';
+      '\':  Result := Result + '&#92;';
+      else  Result := Result + AText[i];
+    end;
+  end;
+end;
+
 
 { TWiki2XHTMLConverter }
 
@@ -123,6 +175,52 @@ begin
   if FCSSFilename=AValue then Exit;
   FCSSFilename:=AValue;
 end;
+
+procedure TWiki2XHTMLConverter.DoAddCategories(Page: TW2XHTMLPage);
+var
+  doc: TXMLDocument;
+  CategoriesNode: TDOMElement;
+  node: TDOMElement;
+  category, url, txt: String;
+  i: Integer;
+begin
+  doc := Page.XHTML;
+  url := Page.WikiPage.BaseURL;
+  if (url <> '') and (url[Length(url)] <> '/') then
+    url += '/';
+
+  if Page.CategoryList.Count = 0 then
+    exit;
+
+  CategoriesNode := doc.CreateElement('div');
+  CategoriesNode.SetAttribute('class', 'catlinks');
+  Page.BodyDOMNode.AppendChild(CategoriesNode);
+
+  // Add "Categories:"
+  node := doc.CreateElement('a');
+  node.SetAttribute('href', url+'Special:Categories');
+  node.AppendChild(doc.CreateTextNode('Categories:'));
+  CategoriesNode.AppendChild(node);
+  if not FIndexOfflineLinksOnly then
+    AddIndexItem('Categories (external)', url+'Special:Categories');
+  CategoriesNode.AppendChild(doc.CreateTextNode('&nbsp;&nbsp;'));
+  for i:=0 to Page.CategoryList.Count-1 do begin
+    category := Page.CategoryList[i];
+    // Add link to category
+    node := doc.CreateElement('a');
+    node.SetAttribute('href', url + category);
+    txt := Copy(category, pos(':', category)+1, MaxInt);
+    node.AppendChild(doc.CreateTextNode(txt));
+    CategoriesNode.AppendChild(node);
+    if not FIndexOfflineLinksOnly then
+      AddIndexItem('Category: '+txt+' (external)', url+category);
+
+    // Add separator
+    if i < Page.CategoryList.Count-1 then
+      CategoriesNode.AppendChild(doc.CreateTextNode(' | '));
+  end;
+end;
+
 
 procedure TWiki2XHTMLConverter.DoAddLinksToTranslations(Page: TW2XHTMLPage);
 var
@@ -170,7 +268,7 @@ begin
       else begin
         // add link to other translations
         LinkNode:=doc.CreateElement('a');
-        LinkNode.SetAttribute('href',TranslationPage.WikiDocumentName);
+        LinkNode.SetAttribute('href',TranslationPage.FileName);
         TranslationsNode.AppendChild(LinkNode);
         LinkNode.AppendChild(doc.CreateTextNode(LinkCaption));
       end;
@@ -184,21 +282,26 @@ end;
 procedure TWiki2XHTMLConverter.DoAddLinkToBaseDocument(Page: TW2XHTMLPage);
 var
   Link: String;
+  MainNode: TDOMElement;
   Node: TDOMElement;
   doc: TXMLDocument;
 begin
   // add <a href="BaseURL+WikiDocumentName">LinkToBaseDocument</a><br>
   doc:=Page.XHTML;
+  MainNode := doc.CreateElement('p');
+  Page.BodyDOMNode.AppendChild(MainNode);
+
   Node:=doc.CreateElement('a');
-  Page.BodyDOMNode.AppendChild(Node);
+  MainNode.AppendChild(Node);
   Link:=Page.WikiPage.BaseURL;
   if (Link<>'') and (Link[length(Link)]<>'/') then
     Link+='/';
   Link+=Page.WikiDocumentName;
   Node.SetAttribute('href', Link);
   Node.AppendChild(doc.CreateTextNode(LinkToBaseDocument));
-  Node:=doc.CreateElement('br');
-  Page.BodyDOMNode.AppendChild(Node);
+
+  if not FIndexOfflineLinksOnly then
+    AddIndexItem(LinkToBaseDocument + ' (external)', Link);
 end;
 
 procedure TWiki2XHTMLConverter.OnHeaderToken(Token: TWPToken);
@@ -241,9 +344,17 @@ begin
       HeaderTxt:=TDOMText(Page.CurDOMNode.FirstChild).Data;
     if HeaderTxt<>'' then begin
       HRef:=WikiHeaderToLink(HeaderTxt);
-      // add anchor
+      // add anchor - use both old an new syntax:
+      // modern version: <h2 id="something">Text</h> - commented because not understood by IpHTMLPanel:
       Page.CurDOMNode.SetAttribute('id', HRef);
+      // old version: <h2><a name="something">Text</a></h2>
+      Node := doc.CreateElement('a');
+      Node.SetAttribute('name', HRef);
+      Node.AppendChild(Page.CurDOMNode.DetachChild(Page.CurDOMNode.FirstChild));
+      Page.CurDOMNode.AppendChild(Node);
+
       // add TOC link
+      //   <li class="toclevel-2"><a href="#something">Text</a></li>
       LINode:=doc.CreateElement('li');
       LINode.SetAttribute('class', 'toclevel-'+IntToStr(Page.SectionLevel));
       Page.CurTOCNode.AppendChild(LINode);
@@ -252,6 +363,8 @@ begin
       LinkNode.AppendChild(doc.CreateTextNode(HeaderTxt));
       LINode.AppendChild(LinkNode);
       inc(Page.TOCNodeCount);
+      AddTocItem(Page.SectionLevel, HeaderTxt, Page.Filename+'#'+HRef);
+      AddIndexItem(HeaderTxt, page.Filename+'#'+HRef);
     end;
     Page.CurDOMNode:=Page.CurDOMNode.ParentNode as TDOMElement;
     Page.Pop;
@@ -466,7 +579,9 @@ var
         exit;
       end
       else if Scheme='category' then begin
-        URL:=''; // show category without link
+        Page.CategoryList.Add(URL);
+        URL:='';
+        Caption := '';
         exit;
       end
       else if (Scheme='image') or (Scheme='file') then begin
@@ -526,10 +641,19 @@ var
         URL:=GetPageLink(TargetPage);
         if Anchor<>'' then
           URL+='#'+Anchor;
-      end else if ((FileName <> '') and not FileExistsUTF8(Filename)) then begin
-        if WarnMissingPageLinks and WarnURL(LinkToken.Link) then
-          Log('WARNING: TWiki2XHTMLConverter.InsertLink "'+dbgstr(LinkToken.Link)+'": file not found: "'+Filename+'" at '+W.PosToStr(LinkToken.LinkStartPos,true));
-        URL:='';
+      end else
+      if (FileName <> '') then begin
+        if FileExistsUTF8(OutputDir+Filename) or
+           (GetPageWithDocumentName(DocumentName) <> nil)  // will be converted lated
+        then
+          URL := Filename
+        else begin
+          if WarnMissingPageLinks and WarnURL(LinkToken.Link) then
+            Log('WARNING: TWiki2XHTMLConverter.InsertLink "'+
+                dbgstr(LinkToken.Link)+'": file not found: "'+Filename+'" at '+
+                W.PosToStr(LinkToken.LinkStartPos,true)+'. Linking to online version.');
+          URL := Page.WikiPage.BaseURL + '/' + DocumentName;
+        end;
       end;
     end;
   end;
@@ -552,8 +676,18 @@ begin
   if URL<>'' then begin
     Node:=doc.CreateElement('a');
     Node.SetAttribute('href', URL);
-    if Caption<>'' then
+    if Caption<>'' then begin
       Node.AppendChild(doc.CreateTextNode(Caption));
+      if ((pos('http', URL) = 1) or (pos('wiki.', URL) = 1) or (pos('bugs.', URL) = 1))
+      then begin
+        if not FIndexOfflineLinksOnly then
+          AddIndexItem(Caption + ' (external)', URL);
+      end else begin
+        if URL[1]='#' then
+          URL := Page.Filename + URL;
+        AddIndexItem(Caption, URL);
+      end;
+    end;
     Page.CurDOMNode.AppendChild(Node);
   end else if Caption<>'' then begin
     InsertText(LinkToken, Caption);
@@ -572,6 +706,8 @@ var
   Node: TDOMElement;
   CurCSSFilename: String;
 begin
+  AddTocItem(1, UTF8Trim(Page.WikiPage.Title), Page.FileName);
+
   Page.ClearConversion;
   if Page.WikiPage=nil then exit;
   Page.XHTML:=TXMLDocument.Create;
@@ -619,9 +755,12 @@ begin
     Page.TOCNodeCount:=0;
     Page.CurTOCNode:=Page.TOCNode;
     Page.BodyDOMNode.AppendChild(Page.TOCNode);
-
     Page.CurDOMNode:=Page.BodyDOMNode;
+
     Page.WikiPage.Parse(@OnWikiToken,Page);
+
+    if FAddCategories then
+      DoAddCategories(Page);
 
     if LinkToBaseDocument<>'' then
       DoAddLinkToBaseDocument(Page);
@@ -758,7 +897,6 @@ begin
         Node:=doc.CreateElement('ul');
         Page.CurTOCNode.AppendChild(Node);
         Page.CurTOCNode:=Node;
-
         Page.Push(Node,Token.Token);
         exit;
       end else if Token.Range=wprClose then begin
@@ -836,9 +974,9 @@ begin
             Node.AppendChild(childnode1);
             childnode1.SetAttribute('class', 'icon');
             if FUseTemplateIcons then begin
-              fn := FindImage(iconfile);
+              fn := FindImage('internal/'+iconfile);
               if fn <> '' then
-                fn := GetImageLink(fn);
+                fn := GetInternalImageLink(fn);
               MarkImageAsUsed(fn, Page);
               childnode2 := doc.CreateElement('img');
               childnode2.SetAttribute('src', fn);
@@ -860,8 +998,14 @@ begin
             Node.AppendChild(doc.CreateTextNode('MantisLink #'));
             Node.AppendChild(doc.CreateTextNode(Curvalue));
             Page.CurDOMNode.AppendChild(Node);
+            if not FIndexOfflineLinksOnly then
+              AddIndexItem('MantisLink #'+CurValue+' (external)', 'http://bugs.freepascal.org/view.php?id='+CurValue);
             exit;
           end;
+
+        'menutranslate':
+          // Translation menu is written by DoAddLinksToTranslations
+          exit;
 
         else
           Node := doc.CreateElement('span');
@@ -911,6 +1055,11 @@ end;
 function TWiki2XHTMLConverter.GetImageLink(ImgFilename: string): string;
 begin
   Result:=CreateRelativePath(ImgFilename,OutputDir);
+end;
+
+function TWiki2XHTMLConverter.GetInternalImagelink(ImgFilename: String): string;
+begin
+  Result := CreateRelativepath(ImgFilename,OutputDir);
 end;
 
 function TWiki2XHTMLConverter.FindImage(const ImgFilename: string): string;
@@ -1127,6 +1276,16 @@ begin
     SavePage(TW2XHTMLPage(Pages[i]));
 end;
 
+procedure TWiki2XHTMLConverter.AddIndexItem(AText, AUrl: String);
+begin
+  // nothing to do here - will be overridden by CHMConverter
+end;
+
+procedure TWiki2XHTMLConverter.AddTocItem(ALevel: Integer; AText, AUrl: String);
+begin
+  // nothing to do here - will be overridden by CHMConverter
+end;
+
 constructor TWiki2XHTMLConverter.Create;
 begin
   inherited Create;
@@ -1137,9 +1296,11 @@ begin
   ShortFilenameToPage:=TFilenameToPointerTree.Create(false);
   UsedImages:=TFilenameToPointerTree.Create(false);
   fLinkToBaseDocument:='Online version';
+  FAddCategories := true;
   FAddLinksToTranslations:=true;
   FAddTOCIfHeaderCountMoreThan:=2;
   FUseTemplateIcons := true;
+  FIndexOfflineLinksOnly := true;
 end;
 
 destructor TWiki2XHTMLConverter.Destroy;

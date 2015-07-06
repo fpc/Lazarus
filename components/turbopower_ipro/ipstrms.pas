@@ -48,7 +48,7 @@ uses
   LCLType,
   GraphType,
   LCLIntf,
-  FileUtil,
+  LazFileUtils,
   {$ELSE}
   Windows, // put Windows behind Classes because of THandle
   {$ENDIF}

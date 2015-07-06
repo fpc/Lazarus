@@ -20,7 +20,7 @@ unit HelpFPDoc;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, FileUtil, MacroIntf, HelpIntfs, LazHelpIntf,
+  Classes, SysUtils, LCLProc, LazFileUtils, MacroIntf, HelpIntfs, LazHelpIntf,
   LazHelpHTML;
 
 type

@@ -38,14 +38,12 @@ unit PkgVirtualUnitEditor;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, PackageDefs;
+  Classes, SysUtils, Forms, Controls, Dialogs,
+  PackageDefs, FileUtil, LazFileUtils, LazarusIDEStrConsts;
 
 function ShowEditVirtualPackageDialog(PkgFile: TPkgFile): TModalResult;
 
 implementation
-
-uses
-  Dialogs, FileUtil, LazarusIDEStrConsts;
 
 type
   TDummyForClose = class

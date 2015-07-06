@@ -422,6 +422,10 @@ msgstr "gtk2 rajapinnan hakemisto"
 msgid "HasError"
 msgstr ""
 
+#: codetoolsstrconsts.ctshelperisnotallowed
+msgid "Helper after %s is not allowed"
+msgstr ""
+
 #: codetoolsstrconsts.ctsidedirectory
 msgid "IDE Directory"
 msgstr "IDE hakemisto"
@@ -691,6 +695,7 @@ msgid "operand expected, but %s found"
 msgstr "odotettiin operandia, mutta saatiin %s"
 
 #: codetoolsstrconsts.ctsoperatorexpectedbutatomfound
+msgctxt "codetoolsstrconsts.ctsoperatorexpectedbutatomfound"
 msgid "operator expected, but %s found"
 msgstr "odotettiin operaattoria, mutta saatiin %s"
 
@@ -703,6 +708,7 @@ msgid "operator expected but %s found"
 msgstr "odotettiin operaattoria, mutta saatiin %s"
 
 #: codetoolsstrconsts.ctsoperatorexpectedbutfound2
+msgctxt "codetoolsstrconsts.ctsoperatorexpectedbutfound2"
 msgid "operator expected, but %s found"
 msgstr "odotettiin operaattoria, mutta saatiin %s"
 

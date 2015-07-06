@@ -557,9 +557,8 @@ var
   Str: WideString;
   i: Integer;
 begin
-  Str := '';
-  //clean up. http://bugs.freepascal.org/view.php?id=18683
-  Widget.showMessage(@Str);
+  // issues #18683 and #28307
+  QStatusBar_clearMessage(QStatusBarH(Widget.Widget));
   ClearPanels(Widget);
   if AStatusBar.SimplePanel then
   begin
@@ -1467,27 +1466,6 @@ begin
     else
       AIconWidth := 0;
 
-    {issue #27696 for autosized columns we must provide sizehint}
-    if (ALV.ColumnCount > 0) and (ALV.Column[0].AutoSize) then
-      QtTreeWidget.SetItemSizeHint(TWI, 0, Str, AIconWidth);
-
-    // issue #27043
-    if (ALV.Items[AIndex].ImageIndex = -1) then
-    begin
-      AImages := TCustomListViewHack(ALV).LargeImages;
-      if not Assigned(AImages) then
-        AImages := TCustomListViewHack(ALV).SmallImages;
-      if Assigned(AImages) then
-      begin
-        AMetric := QStyle_pixelMetric(QApplication_style(), QStylePM_FocusFrameVMargin, nil, nil) * 2;
-        QTreeWidgetItem_sizeHint(TWI, @ASizeHint, 0);
-        ASizeHint.cy := AImages.Height + AMetric;
-        QTreeWidgetItem_setSizeHint(TWI, 0, @ASizeHint);
-        for i := 0 to AItem.SubItems.Count - 1 do
-          QTreeWidgetItem_setSizeHint(TWI, i + 1, @ASizeHint);
-      end;
-    end;
-
     for i := 0 to AItem.SubItems.Count - 1 do
     begin
       AAlignment := QtAlignLeft or QtAlignVCenter;
@@ -1498,9 +1476,6 @@ begin
         Str := GetUtf8String(AItem.Subitems.Strings[i]);
         QtTreeWidget.setItemText(TWI, i + 1, Str, AAlignment);
         QtTreeWidget.setItemData(TWI, i + 1, AItem);
-        {issue #27696 for autosized columns we must provide sizehint}
-        if (i + 1 < ALV.ColumnCount) and (ALV.Column[i + 1].AutoSize) then
-          QtTreeWidget.SetItemSizeHint(TWI, i + 1, Str, AIconWidth);
       end;
     end;
 
@@ -1522,7 +1497,6 @@ var
   TWI: QTreeWidgetItemH;
   Str: WideString;
   AAlignment: QtAlignment;
-  AIconWidth: integer;
 begin
   if not WSCheckHandleAllocated(ALV, 'ItemSetText') then
     Exit;
@@ -1531,7 +1505,10 @@ begin
   begin
     if ASubIndex >0 Then exit;
     QtListWidget := TQtListWidget(ALV.Handle);
-    AAlignment := QtAlignLeft;
+    if not QtListWidget.Checkable and (TCustomListViewHack(ALV).ViewStyle = vsIcon) then
+      AAlignment := QtAlignHCenter
+    else
+      AAlignment := QtAlignLeft;
     if (TCustomListViewHack(ALV).Columns.Count > 0) and (ASubIndex < TCustomListViewHack(ALV).Columns.Count)  then
       AAlignment := AlignmentToQtAlignmentMap[ALV.Column[ASubIndex].Alignment];
     QtListWidget.setItemText(AIndex, AText, AAlignment);
@@ -1546,17 +1523,6 @@ begin
       if (TCustomListViewHack(ALV).Columns.Count > 0) and (ASubIndex < TCustomListViewHack(ALV).Columns.Count)  then
         AAlignment := AlignmentToQtAlignmentMap[ALV.Column[ASubIndex].Alignment]  or QtAlignVCenter;
       QtTreeWidget.setItemText(TWI, ASubIndex, Str, AAlignment);
-      {issue #27696 for autosized columns we must provide sizehint}
-      if (TCustomListViewHack(ALV).Columns.Count > 0) and (ASubIndex >= 0) and
-        (ASubIndex < TCustomListViewHack(ALV).Columns.Count) and
-        ALV.Column[ASubIndex].AutoSize then
-      begin
-        if Assigned(TCustomListViewHack(ALV).SmallImages) then
-          AIconWidth := TCustomListViewHack(ALV).SmallImages.Width
-        else
-          AIconWidth := 0;
-        QtTreeWidget.SetItemSizeHint(TWI, ASubIndex, Str, AIconWidth);
-      end;
     end;
   end;
 end;
@@ -2302,9 +2268,14 @@ begin
       end;
     vsList, vsReport:
       begin
-        x := GetPixelMetric(QStylePM_ListViewIconSize, nil, ItemViewWidget);
+        x := 0;
         Size.cx := x;
         Size.cy := x;
+        if Assigned(TCustomListViewHack(ALV).SmallImages) then
+        begin
+          Size.cy := TCustomListViewHack(ALV).SmallImages.Height;
+          Size.cx := TCustomListViewHack(ALV).SmallImages.Width;
+        end;
         TQtAbstractItemView(ALV.Handle).OwnerDrawn :=
           TCustomListViewHack(ALV).IsCustomDrawn(dtControl, cdPrePaint) or
           (TCustomListViewHack(ALV).OwnerDraw and

@@ -28,7 +28,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  Buttons, FileUtil, lazutf8classes, LazUTF8, IDEProcs, OldCustomCompAddDlg;
+  Buttons, LazFileUtils, lazutf8classes, LazUTF8, IDEProcs, OldCustomCompAddDlg;
   
 Type
   TRComponent = class(TObject)

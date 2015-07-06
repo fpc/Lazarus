@@ -391,7 +391,7 @@ procedure TUnitsSearcher.DoFileFound;
 var
   RelPath, SubPath, sUnitName, fn: String;
 begin
-  RelPath:=FileUtil.CreateRelativePath(FileName, fConverter.fSettings.MainPath);
+  RelPath:=CreateRelativePath(FileName, fConverter.fSettings.MainPath);
   SubPath:=ExtractFilePath(RelPath);
   fn:=ExtractFileName(RelPath);
   sUnitName:=ExtractFileNameOnly(fn);

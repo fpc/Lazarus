@@ -88,7 +88,6 @@ Name: {app}\components\codetools\units\x86_64-win64\laz_xmlstreaming.ppu; Type: 
 Name: {app}\components\codetools\units\x86_64-win64\laz_xmlwrite.o; Type: files
 Name: {app}\components\codetools\units\x86_64-win64\laz_xmlwrite.ppu; Type: files
 Name: {app}\components\customdrawn\customdrawnutils.pas; Type: files
-Name: {app}\components\editortoolbar\edttbconfigfrm.lrs; Type: files
 Name: {app}\components\fpcunit\guitestrunner.lrs; Type: files
 Name: {app}\components\fpcunit\ide\lib\x86_64-win64\fpcunitide.o; Type: files
 Name: {app}\components\fpcunit\ide\lib\x86_64-win64\fpcunitide.ppu; Type: files

@@ -5,8 +5,7 @@ unit Unit1;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls, ExtCtrls, SynEdit,
-  SynCompletion;
+  SysUtils, Forms, StdCtrls, ExtCtrls, SynEdit, SynCompletion;
 
 type
 
@@ -36,9 +35,9 @@ type
     procedure DoExecute(Sender: TObject);
     procedure DoSearchPosition(var APosition: integer);
   private
-    { private declarations }
+
   public
-    { public declarations }
+
   end; 
 
 var

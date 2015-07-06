@@ -5,7 +5,7 @@ unit mainform;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, Grids,
+  SysUtils, Forms, Controls, Dialogs, Grids,
   dbconfiggui,dbconfig,
   {General db unit}sqldb,
   {For EDataBaseError}db,
@@ -23,14 +23,13 @@ type
     procedure SalaryGridValidateEntry(sender: TObject; aCol, aRow: Integer;
       const OldValue: string; var NewValue: String);
   private
-    { private declarations }
     FConn: TSQLConnector;
     FQuery: TSQLQuery;
     FTran: TSQLTransaction;
     function ConnectionTest(ChosenConfig: TDBConnectionConfig): boolean;
     procedure LoadSalaryGrid;
   public
-    { public declarations }
+
   end;
 
 var

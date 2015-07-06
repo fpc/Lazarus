@@ -29,7 +29,7 @@ unit dbconfig;
 interface
 
 uses
-  Classes, SysUtils, IniFiles;
+  SysUtils, IniFiles;
 
 type
   { TDBConnectionConfig }

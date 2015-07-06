@@ -4697,6 +4697,12 @@ msgstr "Нестандартні значення жирним"
 msgid "Border space"
 msgstr "Простір Межі"
 
+#: lazarusidestrconsts.lisbottom
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisbottom"
+msgid "Bottom"
+msgstr "Нижній"
+
 #: lazarusidestrconsts.lisbottomborderspacespinedithint
 msgid "Bottom borderspace. This value is added to base borderspace and used for the space below the control."
 msgstr "Нижній бордюр. Ця величина додається до базового бордюру і використовується для відступу під контролем."
@@ -4806,6 +4812,10 @@ msgstr ""
 #: lazarusidestrconsts.lisbuildinglazarusfailed
 msgid "Building Lazarus failed"
 msgstr "Побудова Lazarus не вдалась"
+
+#: lazarusidestrconsts.lisbuildmode
+msgid "Build Mode: %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisbuildmodediffdifferencesbetweenbuildmodes
 msgid "Differences between build modes"
@@ -5552,6 +5562,10 @@ msgstr "Виберіть модуль Delphi (*.pas)"
 #: lazarusidestrconsts.lischoosedirectory
 msgid "Choose directory"
 msgstr "Виберіть теку"
+
+#: lazarusidestrconsts.lischooseexecutable
+msgid "Choose an executable"
+msgstr ""
 
 #: lazarusidestrconsts.lischoosefpcsourcedir
 msgid "Choose FPC source directory"
@@ -6580,6 +6594,10 @@ msgstr "Налаштувати Побудову %s"
 msgid "Configure \"Build Lazarus\""
 msgstr "Налаштувати %sПобудову Lazarus%s"
 
+#: lazarusidestrconsts.lisconfigureeditortoolbar
+msgid "Configure Toolbar"
+msgstr ""
+
 #: lazarusidestrconsts.lisconfigurelazaruside
 msgid "Configure Lazarus IDE"
 msgstr "Налаштувати Lazarus IDE"
@@ -7354,8 +7372,8 @@ msgstr ""
 msgid "Create a project first!"
 msgstr "Спочатку створіть проект!"
 
-#: lazarusidestrconsts.liscreatedebugandreleasemodes
-msgid "Create Debug and Release modes"
+#: lazarusidestrconsts.liscreatedebugandreleasemodesnewproj
+msgid "Create Debug and Release modes for new projects"
 msgstr ""
 
 #: lazarusidestrconsts.liscreatedirectory
@@ -7393,6 +7411,10 @@ msgstr "(Створити новий пакунок)"
 #: lazarusidestrconsts.liscreatenewpackagecomponent
 msgid "Create new package component"
 msgstr "Створити новий компонент пакунку"
+
+#: lazarusidestrconsts.liscreatenowforthisproject
+msgid "Create now for this project"
+msgstr ""
 
 #: lazarusidestrconsts.liscreateproject
 msgid "Create project"
@@ -8432,6 +8454,18 @@ msgstr ""
 
 #: lazarusidestrconsts.liseditormacros
 msgid "Editor macros"
+msgstr ""
+
+#: lazarusidestrconsts.liseditortoolbar
+msgid "Editor ToolBar"
+msgstr ""
+
+#: lazarusidestrconsts.liseditortoolbarhint
+msgid "You may add here your favorite commands"
+msgstr ""
+
+#: lazarusidestrconsts.liseditortoolbarvisible
+msgid "EditorToolbar is &visible"
 msgstr ""
 
 #: lazarusidestrconsts.lisedoptsloadascheme
@@ -10227,6 +10261,14 @@ msgstr "Неправильна команда"
 msgid "Invalid delete"
 msgstr "Неприпустиме видалення"
 
+#: lazarusidestrconsts.lisinvalidexecutable
+msgid "Invalid Executable"
+msgstr ""
+
+#: lazarusidestrconsts.lisinvalidexecutablemessagetext
+msgid "The file \"%s\" is not executable."
+msgstr ""
+
 #: lazarusidestrconsts.lisinvalidexpression
 msgid "Invalid expression:%s%s%s%s"
 msgstr "Неприпустимий вираз:%s%s%s%s"
@@ -10345,6 +10387,14 @@ msgstr "Цікаво, як ви це зробили. Помилка в базо�
 msgctxt "lazarusidestrconsts.lisjhjumphistory"
 msgid "Jump History"
 msgstr "Історія Переходів"
+
+#: lazarusidestrconsts.lisjumptoerror
+msgid "Jump to error"
+msgstr ""
+
+#: lazarusidestrconsts.lisjumptoerroratidentifiercompletion
+msgid "When an error in the sources is found at identifier completion, jump to it."
+msgstr ""
 
 #: lazarusidestrconsts.lisjumptoprocedure
 msgid "Jump to procedure %s"
@@ -14851,6 +14901,10 @@ msgstr "Зберегти інформацію про сесію в"
 msgid ".lpi is the project main info file, .lps is a separate file for session data only."
 msgstr ""
 
+#: lazarusidestrconsts.lisposition
+msgid "Position"
+msgstr ""
+
 #: lazarusidestrconsts.lispositionoutsideofsource
 msgid "%s (position outside of source)"
 msgstr ""
@@ -17395,6 +17449,12 @@ msgstr ""
 msgid "tool stopped with exit code %s. Use context menu to get more information."
 msgstr ""
 
+#: lazarusidestrconsts.listop
+#, fuzzy
+msgctxt "lazarusidestrconsts.listop"
+msgid "Top"
+msgstr "Верхній"
+
 #: lazarusidestrconsts.listopanchoring
 msgid "Top anchoring"
 msgstr "Фіксація по верху"
@@ -19539,6 +19599,18 @@ msgstr "перевірити"
 msgctxt "lazarusidestrconsts.srkmecinvertassignment"
 msgid "Invert Assignment"
 msgstr "Інвертувати Присвоєння"
+
+#: lazarusidestrconsts.srkmeckeymapleft
+#, fuzzy
+msgctxt "lazarusidestrconsts.srkmeckeymapleft"
+msgid "Left"
+msgstr "Ліворуч"
+
+#: lazarusidestrconsts.srkmeckeymapright
+#, fuzzy
+msgctxt "lazarusidestrconsts.srkmeckeymapright"
+msgid "Right"
+msgstr "Справа"
 
 #: lazarusidestrconsts.srkmecleft
 msgid "Move cursor left"

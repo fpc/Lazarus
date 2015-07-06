@@ -5,8 +5,8 @@ unit MainUnit;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
-  FileUtil, StdCtrls, Laz_XMLStreaming, Laz2_DOM, Laz2_XMLCfg, Buttons, TypInfo;
+  Classes, SysUtils, TypInfo, LCLProc, Forms, Controls, Graphics, Dialogs,
+  StdCtrls, Buttons, LazUTF8, Laz_XMLStreaming, Laz2_DOM, Laz2_XMLCfg;
 
 type
   TMyEnum = (myEnum1, myEnum2, myEnum3);

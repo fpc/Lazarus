@@ -346,6 +346,7 @@ components/aggpas/image_transforms.dpr svneol=native#text/plain
 components/aggpas/image_transforms.txt svneol=native#text/plain
 components/aggpas/interactive_polygon_.pas svneol=native#text/plain
 components/aggpas/lazarus/aggpaslcl.lpk svneol=native#text/plain
+components/aggpas/lazarus/aggpaslcl.pas svneol=native#text/plain
 components/aggpas/lazarus/example/AggPasInLCLDemo1.lpi svneol=native#text/plain
 components/aggpas/lazarus/example/AggPasInLCLDemo1.lpr svneol=native#text/plain
 components/aggpas/lazarus/example/AggPasInLCLDemo2.lpi svneol=native#text/plain
@@ -1189,39 +1190,9 @@ components/debuggerintf/dbgintfmiscclasses.pas svneol=native#text/pascal
 components/debuggerintf/debuggerintf.lpk svneol=native#text/plain
 components/debuggerintf/debuggerintf.pas svneol=native#text/pascal
 components/debuggerintf/fpmake.pp svneol=native#text/plain
-components/editortoolbar/Makefile svneol=native#text/plain
-components/editortoolbar/Makefile.compiled svneol=native#text/plain
-components/editortoolbar/Makefile.fpc svneol=native#text/plain
 components/editortoolbar/editortoolbar.lpk svneol=native#text/plain
-components/editortoolbar/editortoolbar.pas svneol=native#text/plain
-components/editortoolbar/editortoolbar_impl.pas svneol=native#text/plain
-components/editortoolbar/editortoolbar_str.pas svneol=native#text/pascal
-components/editortoolbar/edttbconfigfrm.lfm svneol=native#text/plain
-components/editortoolbar/edttbconfigfrm.pas svneol=native#text/plain
-components/editortoolbar/images/README.txt svneol=native#text/plain
-components/editortoolbar/images/arrowdown_blue16.xpm -text svneol=unset#image/x-xpixmap
-components/editortoolbar/images/arrowleft_blue16.xpm -text svneol=unset#image/x-xpixmap
-components/editortoolbar/images/arrowright_blue16.xpm -text svneol=unset#image/x-xpixmap
-components/editortoolbar/images/arrowup_blue16.xpm -text svneol=unset#image/x-xpixmap
-components/editortoolbar/images/execute16.xpm -text svneol=unset#image/x-xpixmap
-components/editortoolbar/images/jumpto16.xpm -text svneol=unset#image/x-xpixmap
-components/editortoolbar/images/menu_divider16.xpm svneol=native#text/plain
-components/editortoolbar/images/preferences16.xpm -text svneol=unset#image/x-xpixmap
-components/editortoolbar/images/toolbar.txt svneol=native#text/plain
-components/editortoolbar/jumpto.pas svneol=native#text/plain
-components/editortoolbar/jumpto_impl.pas svneol=native#text/plain
-components/editortoolbar/languages/editortoolbar_str.cs.po svneol=native#text/plain
-components/editortoolbar/languages/editortoolbar_str.de.po svneol=native#text/plain
-components/editortoolbar/languages/editortoolbar_str.es.po svneol=native#text/plain
-components/editortoolbar/languages/editortoolbar_str.fr.po svneol=native#text/plain
-components/editortoolbar/languages/editortoolbar_str.hu.po svneol=native#text/plain
-components/editortoolbar/languages/editortoolbar_str.it.po svneol=native#text/plain
-components/editortoolbar/languages/editortoolbar_str.lt.po svneol=native#text/plain
-components/editortoolbar/languages/editortoolbar_str.po svneol=native#text/plain
-components/editortoolbar/languages/editortoolbar_str.pt_BR.po svneol=native#text/plain
-components/editortoolbar/languages/editortoolbar_str.ru.po svneol=native#text/plain
-components/editortoolbar/languages/editortoolbar_str.uk.po svneol=native#text/plain
-components/editortoolbar/toolbar.res -text
+components/editortoolbar/editortoolbar.pas svneol=native#text/pascal
+components/editortoolbar/unit1.pas svneol=native#text/pascal
 components/education/README.txt svneol=native#text/plain
 components/education/educationlaz.lpk svneol=native#text/plain
 components/education/educationlaz.pas svneol=native#text/plain
@@ -3255,7 +3226,9 @@ components/printers/images/printersdlgs.txt svneol=native#text/plain
 components/printers/images/tpagesetupdialog.png -text svneol=unset#image/png
 components/printers/images/tprintdialog.png -text svneol=unset#image/png
 components/printers/images/tprintersetupdialog.png -text svneol=unset#image/png
+components/printers/languages/printer4lazstrconst.de.po svneol=native#text/plain
 components/printers/languages/printer4lazstrconst.po svneol=native#text/plain
+components/printers/languages/printer4lazstrconst.ru.po svneol=native#text/plain
 components/printers/osprinters.pas svneol=native#text/pascal
 components/printers/printer4lazarus.lpk svneol=native#text/pascal
 components/printers/printer4lazarus.pas svneol=native#text/pascal
@@ -4245,10 +4218,9 @@ components/vlc/tvlcmedialistplayer.png -text svneol=unset#image/png
 components/vlc/vlcgtk2.inc svneol=native#text/plain
 components/vlc/vlcqt.inc svneol=native#text/plain
 components/wiki/README.txt svneol=native#text/plain
-components/wiki/chm/wiki.css svneol=native#text/plain
-components/wiki/html/wiki.css svneol=native#text/plain
-components/wiki/images/note.png -text
-components/wiki/images/warning.png -text
+components/wiki/css/wiki.css svneol=native#text/plain
+components/wiki/images/internal/note.png -text
+components/wiki/images/internal/warning.png -text
 components/wiki/lazwiki/lazwiki.lpk svneol=native#text/plain
 components/wiki/lazwiki/lazwiki.pas svneol=native#text/plain
 components/wiki/lazwiki/wiki2chmconvert.pas svneol=native#text/plain
@@ -4274,7 +4246,6 @@ components/wiki/wikiconvert.lpi svneol=native#text/plain
 components/wiki/wikiconvert.lpr svneol=native#text/plain
 components/wiki/wikiget.lpi svneol=native#text/plain
 components/wiki/wikiget.lpr svneol=native#text/plain
-components/wiki/xhtml/wiki.css svneol=native#text/plain
 converter/chgencodingdlg.lfm svneol=native#text/plain
 converter/chgencodingdlg.pas svneol=native#text/plain
 converter/convcodetool.pas svneol=native#text/plain
@@ -5620,6 +5591,8 @@ ide/customformeditor.pp svneol=native#text/pascal
 ide/debugmanager.pas svneol=native#text/pascal
 ide/definesgui.lfm svneol=native#text/plain
 ide/definesgui.pas svneol=native#text/pascal
+ide/desktopmanager.lfm svneol=native#text/plain
+ide/desktopmanager.pas svneol=native#text/pascal
 ide/dialogprocs.pas svneol=native#text/pascal
 ide/diffdialog.lfm svneol=native#text/plain
 ide/diffdialog.pas svneol=native#text/pascal
@@ -5634,6 +5607,7 @@ ide/editormacrolistviewer.pas svneol=native#text/pascal
 ide/editoroptions.pp svneol=native#text/pascal
 ide/editoroptions.rc svneol=native#text/plain
 ide/editoroptions.res -text
+ide/editortoolbarstatic.pas svneol=native#text/pascal
 ide/emptymethodsdlg.lfm svneol=native#text/plain
 ide/emptymethodsdlg.pas svneol=native#text/plain
 ide/encloseifdef.lfm svneol=native#text/plain
@@ -5756,6 +5730,8 @@ ide/frames/editor_mouseaction_options_advanced.lfm svneol=native#text/plain
 ide/frames/editor_mouseaction_options_advanced.pas svneol=native#text/pascal
 ide/frames/editor_multiwindow_options.lfm svneol=native#text/plain
 ide/frames/editor_multiwindow_options.pas svneol=native#text/pascal
+ide/frames/editortoolbar_options.lfm svneol=native#text/plain
+ide/frames/editortoolbar_options.pas svneol=native#text/pascal
 ide/frames/env_file_filters.lfm svneol=native#text/plain
 ide/frames/env_file_filters.pas svneol=native#text/plain
 ide/frames/files_options.lfm svneol=native#text/plain
@@ -5766,6 +5742,8 @@ ide/frames/fpdoc_options.lfm svneol=native#text/plain
 ide/frames/fpdoc_options.pas svneol=native#text/pascal
 ide/frames/help_general_options.lfm svneol=native#text/plain
 ide/frames/help_general_options.pas svneol=native#text/plain
+ide/frames/idecoolbar_options.lfm svneol=native#text/plain
+ide/frames/idecoolbar_options.pas svneol=native#text/pascal
 ide/frames/modematrixctrl.pas svneol=native#text/plain
 ide/frames/msgwnd_options.lfm svneol=native#text/plain
 ide/frames/msgwnd_options.pas svneol=native#text/plain
@@ -5789,8 +5767,6 @@ ide/frames/project_save_options.lfm svneol=native#text/plain
 ide/frames/project_save_options.pas svneol=native#text/plain
 ide/frames/project_versioninfo_options.lfm svneol=native#text/plain
 ide/frames/project_versioninfo_options.pas svneol=native#text/plain
-ide/frames/toolbar_options.lfm svneol=native#text/plain
-ide/frames/toolbar_options.pas svneol=native#text/pascal
 ide/frames/window_options.lfm svneol=native#text/plain
 ide/frames/window_options.pas svneol=native#text/pascal
 ide/frmcustomapplicationoptions.lfm svneol=native#text/plain
@@ -5808,6 +5784,7 @@ ide/ide.pas svneol=native#text/pascal
 ide/idecmdline.pas svneol=native#text/plain
 ide/idecontexthelpedit.lfm svneol=native#text/plain
 ide/idecontexthelpedit.pas svneol=native#text/plain
+ide/idecoolbardata.pas svneol=native#text/pascal
 ide/idedefs.pas svneol=native#text/pascal
 ide/idefpcinfo.lfm svneol=native#text/plain
 ide/idefpcinfo.pas svneol=native#text/plain
@@ -5945,7 +5922,6 @@ ide/sysvaruseroverridedlg.lfm svneol=native#text/plain
 ide/sysvaruseroverridedlg.pas svneol=native#text/pascal
 ide/toolbarconfig.lfm svneol=native#text/plain
 ide/toolbarconfig.pas svneol=native#text/pascal
-ide/toolbardata.pas svneol=native#text/pascal
 ide/transfermacros.pp svneol=native#text/pascal
 ide/unitdependencies.lfm svneol=native#text/plain
 ide/unitdependencies.pas svneol=native#text/pascal
@@ -5970,8 +5946,8 @@ images/actions/arrow_down.png -text svneol=unset#image/png
 images/actions/arrow_left.png -text svneol=unset#image/png
 images/actions/arrow_right.png -text svneol=unset#image/png
 images/actions/arrow_up.png -text svneol=unset#image/png
+images/actions/execute.xpm svneol=native#text/plain
 images/actions/laz_add.png -text svneol=unset#image/png
-images/actions/laz_addmore.png -text svneol=unset#image/png
 images/actions/laz_delete.png -text svneol=unset#image/png
 images/actions/laz_edit.png -text svneol=unset#image/png
 images/actions/laz_highlighter.png -text svneol=unset#image/png
@@ -5981,11 +5957,13 @@ images/actions/laz_save.png -text svneol=unset#image/png
 images/actions/laz_set_color_default.png -text svneol=unset#image/png
 images/actions/laz_set_colors_default.png -text svneol=unset#image/png
 images/actions/laz_wand.png -text svneol=unset#image/png
+images/actions/preferences.xpm svneol=native#text/plain
 images/bookmark.res -text
 images/bookmark.sh svneol=native#text/plain
 images/bookmark_list.txt svneol=native#text/plain
 images/btn_downarrow.png -text
 images/codeexplorer/ce_class.png -text
+images/codeexplorer/ce_classinterface.png -text svneol=unset#image/png
 images/codeexplorer/ce_const.png -text
 images/codeexplorer/ce_cycleimplementation.png -text svneol=unset#image/png
 images/codeexplorer/ce_cycleinterface.png -text svneol=unset#image/png
@@ -5994,6 +5972,7 @@ images/codeexplorer/ce_deprecated.png -text
 images/codeexplorer/ce_experimental.png -text
 images/codeexplorer/ce_finalization.png -text
 images/codeexplorer/ce_function.png -text
+images/codeexplorer/ce_helper.png -text svneol=unset#image/png
 images/codeexplorer/ce_implementation.png -text
 images/codeexplorer/ce_initialization.png -text
 images/codeexplorer/ce_interface.png -text
@@ -6003,6 +5982,7 @@ images/codeexplorer/ce_procedure.png -text
 images/codeexplorer/ce_program.png -text
 images/codeexplorer/ce_property.png -text
 images/codeexplorer/ce_property_readonly.png -text svneol=unset#image/png
+images/codeexplorer/ce_record.png -text svneol=unset#image/png
 images/codeexplorer/ce_section.png -text svneol=unset#image/png
 images/codeexplorer/ce_type.png -text
 images/codeexplorer/ce_unimplemented.png -text
@@ -7572,7 +7552,6 @@ packager/globallinks/designbaseclassdemopkg-0.lpl svneol=native#text/plain
 packager/globallinks/easydockmgr-1.lpl svneol=native#text/plain
 packager/globallinks/easydockmgrdsgn-0.lpl svneol=native#text/plain
 packager/globallinks/editormacroscript-0.lpl svneol=native#text/pascal
-packager/globallinks/editortoolbar-0.8.2.lpl svneol=native#text/plain
 packager/globallinks/educationlaz-1.0.1.lpl svneol=native#text/plain
 packager/globallinks/exploreidemenu-0.lpl svneol=native#text/plain
 packager/globallinks/externhelp-1.3.lpl svneol=native#text/plain
@@ -7604,6 +7583,7 @@ packager/globallinks/lazdaemon-0.9.9.lpl svneol=native#text/plain
 packager/globallinks/lazdatadict-0.lpl svneol=native#text/plain
 packager/globallinks/lazdbexport-1.lpl svneol=native#text/plain
 packager/globallinks/lazdebuggerfp-0.lpl svneol=native#text/plain
+packager/globallinks/lazdebuggerfpdserver-0.1.lpl svneol=native#text/plain
 packager/globallinks/lazdebuggerfpgdbmi-0.1.lpl svneol=native#text/plain
 packager/globallinks/lazdebuggergdbmi-0.1.lpl svneol=native#text/plain
 packager/globallinks/lazgoogleapis-1.lpl svneol=native#text/plain

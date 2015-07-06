@@ -7,11 +7,11 @@ unit MainUnit;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, Buttons,
+  Classes, SysUtils, Forms, Graphics, Dialogs, ExtCtrls, StdCtrls,
   {$ifdef UsePreview}
   OsPrinters,
   {$endif}
-  FileUtil, IpHtml, ExtCtrls, StdCtrls;
+  LazFileUtils, LazUTF8, IpHtml;
 
 type
   TSimpleIpHtml = class(TIpHtml)

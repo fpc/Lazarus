@@ -56,7 +56,7 @@ uses
   MemCheck,
 {$ENDIF}
   Math, Classes, LCLType, LCLProc, LCLIntf, Buttons, Menus,
-  SysUtils, types, Controls, Graphics, ExtCtrls, Dialogs, FileUtil, Forms,
+  SysUtils, types, Controls, Graphics, ExtCtrls, Dialogs, LazFileUtils, Forms,
   CodeToolManager, AVL_Tree, SynEditKeyCmds, PackageIntf,
   // IDEIntf
   IDEImagesIntf, SrcEditorIntf, LazIDEIntf, MenuIntf,
@@ -84,12 +84,9 @@ type
     FToolStatus: TIDEToolStatus;
     FWindowMenuActiveForm: TCustomForm;
     FDisplayState: TDisplayState;
-    // used to find the last form so you can display the correct tab
-    FLastFormActivated: TCustomForm;
     procedure SetDisplayState(AValue: TDisplayState);
   protected
     FNeedUpdateHighlighters: boolean;
-    FIDEStarted: boolean;
 
     function CreateMenuSeparator : TMenuItem;
     procedure CreateMenuItem(Section: TIDEMenuSection;
@@ -196,8 +193,6 @@ type
     property ToolStatus: TIDEToolStatus read FToolStatus write SetToolStatus;
     property WindowMenuActiveForm: TCustomForm read FWindowMenuActiveForm write FWindowMenuActiveForm;
     property DisplayState: TDisplayState read FDisplayState write SetDisplayState;
-    property IDEStarted: boolean read FIDEStarted;
-    property LastFormActivated: TCustomForm read FLastFormActivated write FLastFormActivated;
   end;
 
 function  GetMainIde: TMainIDEBase;
@@ -227,12 +222,14 @@ procedure TMainIDEBase.mnuWindowItemClick(Sender: TObject);
 var
   i: Integer;
   Form: TCustomForm;
+  nfd: Boolean;
 begin
   i:=Screen.CustomFormCount-1;
   while (i>=0) do begin
     Form:=Screen.CustomForms[i];
-    if (EnvironmentOptions.IDENameForDesignedFormList and (Form.Name=(Sender as TIDEMenuCommand).Caption)) or
-      ((not EnvironmentOptions.IDENameForDesignedFormList) and (Form.Caption=(Sender as TIDEMenuCommand).Caption)) then
+    nfd := EnvironmentOptions.Desktop.IDENameForDesignedFormList;
+    if (nfd and (Form.Name=(Sender as TIDEMenuCommand).Caption))
+    or ((not nfd) and (Form.Caption=(Sender as TIDEMenuCommand).Caption)) then
       begin
         IDEWindowCreators.ShowForm(Form,true);
         break;
@@ -246,12 +243,14 @@ var
   i: Integer;
   Form: TCustomForm;
   r, NewBounds: TRect;
+  nfd: Boolean;
 begin
   i:=Screen.CustomFormCount-1;
   while (i>=0) do begin
     Form:=Screen.CustomForms[i];
-    if (EnvironmentOptions.IDENameForDesignedFormList and (Form.Name=(Sender as TIDEMenuCommand).Caption)) or
-      ((not EnvironmentOptions.IDENameForDesignedFormList) and (Form.Caption=(Sender as TIDEMenuCommand).Caption)) then
+    nfd := EnvironmentOptions.Desktop.IDENameForDesignedFormList;
+    if (nfd and (Form.Name=(Sender as TIDEMenuCommand).Caption))
+    or ((not nfd) and (Form.Caption=(Sender as TIDEMenuCommand).Caption)) then
     begin
       // show
       if not Form.IsVisible then
@@ -779,9 +778,9 @@ begin
       {$ENDIF}
     end;
     CreateMenuItem(ParentMI,itmViewComponentPalette,'itmViewComponentPalette',lisMenuViewComponentPalette, '',
-      true, EnvironmentOptions.ComponentPaletteVisible);
+      true, EnvironmentOptions.Desktop.ComponentPaletteOptions.Visible);
     CreateMenuItem(ParentMI,itmViewIDESpeedButtons,'itmViewIDESpeedButtons',lisMenuViewIDESpeedButtons, '',
-      true, EnvironmentOptions.IDECoolBarOptions.IDECoolBarVisible);
+      true, EnvironmentOptions.Desktop.IDECoolBarOptions.IDECoolBarVisible);
   end;
 end;
 
@@ -798,6 +797,7 @@ begin
     CreateMenuItem(ParentMI,itmSourceEncloseBlock,'itmSourceEncloseBlock',lisMenuEncloseSelection);
     CreateMenuItem(ParentMI,itmSourceEncloseInIFDEF,'itmSourceEncloseInIFDEF',lisMenuEncloseInIFDEF);
     CreateMenuItem(ParentMI,itmSourceCompleteCode,'itmSourceCompleteCode',lisMenuCompleteCode);
+    CreateMenuItem(ParentMI,itmRefactorInvertAssignment,'itmInvertAssignment',uemInvertAssignment);
     CreateMenuItem(ParentMI,itmSourceUseUnit,'itmSourceUseUnit',lisMenuUseUnit);
     // Refactor
     CreateMenuSeparatorSection(mnuSource,itmSourceRefactor,'itmSourceRefactor');
@@ -807,7 +807,6 @@ begin
       ParentMI:=itmRefactorCodeTools;
       CreateMenuItem(ParentMI,itmRefactorRenameIdentifier,'itmRefactorRenameIdentifier',lisMenuRenameIdentifier);
       CreateMenuItem(ParentMI,itmRefactorExtractProc,'itmRefactorExtractProc',lisMenuExtractProc);
-      CreateMenuItem(ParentMI,itmRefactorInvertAssignment,'itmInvertAssignment',uemInvertAssignment);
 
       CreateMenuSeparatorSection(SubParentMI,itmRefactorAdvanced,'itmRefactorAdvanced');
       ParentMI:=itmRefactorAdvanced;
@@ -1007,6 +1006,7 @@ begin
 
     CreateMenuSeparatorSection(mnuTools,itmSecondaryTools,'itmSecondaryTools');
     ParentMI:=itmSecondaryTools;
+    CreateMenuItem(ParentMI,itmToolManageDesktops,'itmToolManageDesktops', lisDesktops);
     CreateMenuItem(ParentMI,itmToolManageExamples,'itmToolManageExamples',lisMenuExampleProjects, 'camera');
     CreateMenuItem(ParentMI,itmToolDiff,'itmToolDiff',lisMenuCompareFiles, 'menu_tool_diff');
 
@@ -1290,6 +1290,9 @@ begin
     itmEnvCodeToolsDefinesEditor.Command:=GetCommand(ecCodeToolsDefinesEd);
 
     itmToolConfigure.Command:=GetCommand(ecExtToolSettings);
+
+    itmToolManageDesktops.Command:=GetCommand(ecManageDesktops);
+    itmToolManageExamples.Command:=GetCommand(ecManageExamples);
     itmToolDiff.Command:=GetCommand(ecDiff);
 
     itmToolConvertDFMtoLFM.Command:=GetCommand(ecConvertDFM2LFM);
@@ -1298,7 +1301,6 @@ begin
     itmToolConvertDelphiProject.Command:=GetCommand(ecConvertDelphiProject);
     itmToolConvertDelphiPackage.Command:=GetCommand(ecConvertDelphiPackage);
     itmToolConvertEncoding.Command:=GetCommand(ecConvertEncoding);
-    itmToolManageExamples.Command:=GetCommand(ecManageExamples);
     itmToolBuildLazarus.Command:=GetCommand(ecBuildLazarus);
     itmToolConfigureBuildLazarus.Command:=GetCommand(ecConfigBuildLazarus);
 
@@ -1389,7 +1391,8 @@ begin
   begin
     // in the 'bring to front' list
     CurMenuItem := GetMenuItem(i, itmWindowLists);
-    if EnvironmentOptions.IDENameForDesignedFormList and (TCustomForm(WindowsList[i]).Designer<>nil) then
+    if EnvironmentOptions.Desktop.IDENameForDesignedFormList
+    and (TCustomForm(WindowsList[i]).Designer<>nil) then
       CurMenuItem.Caption:=TCustomForm(WindowsList[i]).Name
     else
        CurMenuItem.Caption:=TCustomForm(WindowsList[i]).Caption;
@@ -1397,7 +1400,8 @@ begin
     CurMenuItem.OnClick:=@mnuWindowItemClick;
     // in the 'center' list
     CurMenuItem := GetMenuItem(i, itmCenterWindowLists);
-    if EnvironmentOptions.IDENameForDesignedFormList and (TCustomForm(WindowsList[i]).Designer<>nil) then
+    if EnvironmentOptions.Desktop.IDENameForDesignedFormList
+    and (TCustomForm(WindowsList[i]).Designer<>nil) then
       CurMenuItem.Caption:=TCustomForm(WindowsList[i]).Name
     else
       CurMenuItem.Caption:=TCustomForm(WindowsList[i]).Caption;

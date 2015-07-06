@@ -5,8 +5,7 @@ unit fDockable;
 interface
 
 uses
-  LCLIntf, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, LResources, ExtCtrls;
+  SysUtils, Forms, StdCtrls, ExtCtrls;
 
 type
 
@@ -19,9 +18,9 @@ type
     procedure Button1Click(Sender: TObject);
     procedure FormResize(Sender: TObject);
   private
-    { Private declarations }
+
   public
-    { Public declarations }
+
   end;
 
 implementation

@@ -9,6 +9,10 @@ msgstr ""
 "POT-Creation-Date: \n"
 "MIME-Version: 1.0\n"
 
+#: todoliststrconsts.dlgfiltercsv
+msgid "CSV files"
+msgstr ""
+
 #: todoliststrconsts.dlgfropts
 msgid "Options"
 msgstr "Opciones"

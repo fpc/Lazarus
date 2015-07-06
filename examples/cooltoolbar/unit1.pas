@@ -4,7 +4,7 @@ unit Unit1;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ComCtrls,
+  Classes, SysUtils, Forms, Controls, ComCtrls,
   Menus, ActnList, ExtCtrls, StdCtrls, Spin, Toolwin, IniFiles;
 
 type

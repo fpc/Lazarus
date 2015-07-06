@@ -5,7 +5,7 @@ unit testfileutil;
 interface
 
 uses
-  Classes, SysUtils, fpcunit, testglobals, LazFileUtils, FileUtil;
+  Classes, SysUtils, fpcunit, testglobals, FileUtil, LazFileUtils, LazUTF8;
 
 type
 

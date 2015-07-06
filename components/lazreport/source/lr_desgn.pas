@@ -18,13 +18,13 @@ interface
 {$define sbod}  // status bar owner draw
 {$define ppaint}
 uses
-  Classes, SysUtils, FileUtil, LResources, LMessages,
-  Forms, Controls, Graphics, Dialogs,ComCtrls,
-  ExtCtrls, Buttons, StdCtrls,Menus,
+  Classes, SysUtils, LazFileUtils, LazUTF8, LMessages,
+  Forms, Controls, Graphics, Dialogs, ComCtrls,
+  ExtCtrls, Buttons, StdCtrls, Menus,
 
   LCLType,LCLIntf,LCLProc,GraphType,Printers, ActnList,
 
-  ObjectInspector, PropEdits,TypInfo,
+  ObjectInspector, PropEdits,
   
   LR_Class, LR_Color,LR_Edit;
 

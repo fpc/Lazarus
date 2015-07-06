@@ -12,6 +12,10 @@ msgstr ""
 "X-Poedit-Country: POLAND\n"
 "X-Poedit-SourceCharset: utf-8\n"
 
+#: todoliststrconsts.dlgfiltercsv
+msgid "CSV files"
+msgstr ""
+
 #: todoliststrconsts.dlgfropts
 msgid "Options"
 msgstr "Opcje"

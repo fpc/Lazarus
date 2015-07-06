@@ -5,8 +5,8 @@ unit Unit1;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, GraphType, Dialogs,
-  ExtCtrls, FileUtil, StdCtrls, ExtDlgs;
+  Classes, SysUtils, Forms, Controls, Graphics, GraphType, ExtCtrls, StdCtrls,
+  ExtDlgs, LazUTF8;
 
 type
 
@@ -32,7 +32,7 @@ type
     function GetImageMap(AEffect: TGraphicsDrawEffect): TImage;
     procedure ListBox1SelectionChange(Sender: TObject; User: boolean);
   private
-    { private declarations }
+
   public
     procedure ShowImages(AIndex: Integer);
     procedure AddFile(AFileName: String);

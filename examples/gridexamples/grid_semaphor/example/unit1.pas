@@ -26,8 +26,7 @@ unit Unit1;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs,
-  Grids, SemaphorGrids, Buttons, StdCtrls, ExtCtrls;
+  Classes, Forms, Dialogs, Grids, SemaphorGrids, StdCtrls;
 
 type
 

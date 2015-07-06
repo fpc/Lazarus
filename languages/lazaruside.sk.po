@@ -4840,6 +4840,12 @@ msgstr "Zmenené hodnoty tučne"
 msgid "Border space"
 msgstr "Medzera okraja"
 
+#: lazarusidestrconsts.lisbottom
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisbottom"
+msgid "Bottom"
+msgstr "Dole"
+
 #: lazarusidestrconsts.lisbottomborderspacespinedithint
 msgid "Bottom borderspace. This value is added to base borderspace and used for the space below the control."
 msgstr "Spodný okraj. Táto hodnota je pridaná k základnému okraju a použitá pre medzeru pod prvkom."
@@ -4950,6 +4956,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisbuildinglazarusfailed
 msgid "Building Lazarus failed"
+msgstr ""
+
+#: lazarusidestrconsts.lisbuildmode
+msgid "Build Mode: %s"
 msgstr ""
 
 #: lazarusidestrconsts.lisbuildmodediffdifferencesbetweenbuildmodes
@@ -5702,6 +5712,10 @@ msgstr "Zvoliť jednotku Delphi (*.pas)"
 #: lazarusidestrconsts.lischoosedirectory
 msgid "Choose directory"
 msgstr "Zvoľte adresár"
+
+#: lazarusidestrconsts.lischooseexecutable
+msgid "Choose an executable"
+msgstr ""
 
 #: lazarusidestrconsts.lischoosefpcsourcedir
 msgid "Choose FPC source directory"
@@ -6747,6 +6761,10 @@ msgstr "Konfigurovať budovanie %s"
 msgid "Configure \"Build Lazarus\""
 msgstr ""
 
+#: lazarusidestrconsts.lisconfigureeditortoolbar
+msgid "Configure Toolbar"
+msgstr ""
+
 #: lazarusidestrconsts.lisconfigurelazaruside
 msgid "Configure Lazarus IDE"
 msgstr ""
@@ -7509,8 +7527,8 @@ msgstr ""
 msgid "Create a project first!"
 msgstr "Najprv vytvorte projekt!"
 
-#: lazarusidestrconsts.liscreatedebugandreleasemodes
-msgid "Create Debug and Release modes"
+#: lazarusidestrconsts.liscreatedebugandreleasemodesnewproj
+msgid "Create Debug and Release modes for new projects"
 msgstr ""
 
 #: lazarusidestrconsts.liscreatedirectory
@@ -7547,6 +7565,10 @@ msgstr ""
 
 #: lazarusidestrconsts.liscreatenewpackagecomponent
 msgid "Create new package component"
+msgstr ""
+
+#: lazarusidestrconsts.liscreatenowforthisproject
+msgid "Create now for this project"
 msgstr ""
 
 #: lazarusidestrconsts.liscreateproject
@@ -8579,6 +8601,18 @@ msgstr ""
 
 #: lazarusidestrconsts.liseditormacros
 msgid "Editor macros"
+msgstr ""
+
+#: lazarusidestrconsts.liseditortoolbar
+msgid "Editor ToolBar"
+msgstr ""
+
+#: lazarusidestrconsts.liseditortoolbarhint
+msgid "You may add here your favorite commands"
+msgstr ""
+
+#: lazarusidestrconsts.liseditortoolbarvisible
+msgid "EditorToolbar is &visible"
 msgstr ""
 
 #: lazarusidestrconsts.lisedoptsloadascheme
@@ -10377,6 +10411,14 @@ msgstr "Neplatný príkaz"
 msgid "Invalid delete"
 msgstr "Neplatné mazanie"
 
+#: lazarusidestrconsts.lisinvalidexecutable
+msgid "Invalid Executable"
+msgstr ""
+
+#: lazarusidestrconsts.lisinvalidexecutablemessagetext
+msgid "The file \"%s\" is not executable."
+msgstr ""
+
 #: lazarusidestrconsts.lisinvalidexpression
 msgid "Invalid expression:%s%s%s%s"
 msgstr "Neplatný výraz:%s%s%s%s"
@@ -10492,6 +10534,14 @@ msgstr ""
 #: lazarusidestrconsts.lisjhjumphistory
 msgctxt "lazarusidestrconsts.lisjhjumphistory"
 msgid "Jump History"
+msgstr ""
+
+#: lazarusidestrconsts.lisjumptoerror
+msgid "Jump to error"
+msgstr ""
+
+#: lazarusidestrconsts.lisjumptoerroratidentifiercompletion
+msgid "When an error in the sources is found at identifier completion, jump to it."
 msgstr ""
 
 #: lazarusidestrconsts.lisjumptoprocedure
@@ -15287,6 +15337,10 @@ msgstr "Informácie o relácii uložiť v"
 msgid ".lpi is the project main info file, .lps is a separate file for session data only."
 msgstr ""
 
+#: lazarusidestrconsts.lisposition
+msgid "Position"
+msgstr ""
+
 #: lazarusidestrconsts.lispositionoutsideofsource
 msgid "%s (position outside of source)"
 msgstr ""
@@ -17837,6 +17891,12 @@ msgstr ""
 msgid "tool stopped with exit code %s. Use context menu to get more information."
 msgstr ""
 
+#: lazarusidestrconsts.listop
+#, fuzzy
+msgctxt "lazarusidestrconsts.listop"
+msgid "Top"
+msgstr "Hore"
+
 #: lazarusidestrconsts.listopanchoring
 msgid "Top anchoring"
 msgstr "Horné zarovnanie"
@@ -20009,6 +20069,18 @@ msgstr "skontrolovať"
 msgctxt "lazarusidestrconsts.srkmecinvertassignment"
 msgid "Invert Assignment"
 msgstr "Otočiť priradenie"
+
+#: lazarusidestrconsts.srkmeckeymapleft
+#, fuzzy
+msgctxt "lazarusidestrconsts.srkmeckeymapleft"
+msgid "Left"
+msgstr "šípka vľavo"
+
+#: lazarusidestrconsts.srkmeckeymapright
+#, fuzzy
+msgctxt "lazarusidestrconsts.srkmeckeymapright"
+msgid "Right"
+msgstr "šípka vpravo"
 
 #: lazarusidestrconsts.srkmecleft
 msgid "Move cursor left"

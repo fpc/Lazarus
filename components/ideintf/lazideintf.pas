@@ -200,8 +200,11 @@ type
                             const AMethod: TMethod);
   protected
     FLazarusIDEHandlers: array[TLazarusIDEHandlerType] of TMethodList;
-    fOwningComponent: TComponent;
-    LastActivatedWindows: TFPList;
+    FOwningComponent: TComponent;
+    FIDEStarted: boolean;
+    FLastActivatedWindows: TFPList;
+    // used to find the last form so you can display the correct tab
+    FLastFormActivated: TCustomForm;
 
     function GetActiveProject: TLazProject; virtual; abstract;
     procedure DoCallNotifyHandler(HandlerType: TLazarusIDEHandlerType); overload; // DaThoX
@@ -222,7 +225,7 @@ type
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
-    property OwningComponent: TComponent read fOwningComponent;
+    property OwningComponent: TComponent read FOwningComponent;
     
     // the main window with the IDE menu
     function GetMainBar: TComponent; virtual; abstract;
@@ -400,6 +403,10 @@ type
     procedure RemoveHandlerGetFPCFrontEndPath(
                                           const Handler: TGetFPCFrontEndPath);
     function CallHandlerGetFPCFrontEndPath(Sender: TObject; var Path: string): boolean;
+
+    property IDEStarted: boolean read FIDEStarted;
+    property LastActivatedWindows: TFPList read FLastActivatedWindows;
+    property LastFormActivated: TCustomForm read FLastFormActivated write FLastFormActivated;
     // DaThoX begin
     procedure AddHandlerOnUpdateIDEComponentPalette(
                            const OnUpdateIDEComponentPaletteEvent: TNotifyEvent;
@@ -423,7 +430,7 @@ type
                                const OnShowSourceOfActiveDesignerForm: TNotifyEvent);
     // DaThoX end
   end;
-  
+
   // DaThoX begin
   TIDETabMaster = class
   protected

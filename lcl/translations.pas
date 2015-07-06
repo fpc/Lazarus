@@ -86,7 +86,7 @@ unit Translations;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, FileUtil, StringHashList, AvgLvlTree,
+  Classes, SysUtils, LCLProc, FileUtil, LazFileUtils, StringHashList, AvgLvlTree,
   LConvEncoding, LazUTF8, LazUTF8Classes, jsonparser, fpjson;
 
 type

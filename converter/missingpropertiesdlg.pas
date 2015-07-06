@@ -35,7 +35,7 @@ uses
   // FCL+LCL
   Classes, SysUtils, LCLProc, Forms, Controls, Grids, LResources,
   LConvEncoding, Graphics, Dialogs, Buttons, StdCtrls, ExtCtrls, contnrs,
-  FileUtil, LazUTF8Classes, LCLType, LazUTF8,
+  LazFileUtils, LazUTF8Classes, LCLType, LazUTF8,
   // components
   SynHighlighterLFM, SynEdit, SynEditMiscClasses, LFMTrees,
   // codetools

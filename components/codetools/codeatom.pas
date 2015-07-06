@@ -47,7 +47,8 @@ type
     cafSemicolon, cafEqual, cafColon, cafComma, cafPoint,
     cafRoundBracketOpen, cafRoundBracketClose,
     cafEdgedBracketOpen, cafEdgedBracketClose,
-    cafWord, cafEnd
+    cafWord, cafEnd,
+    cafOtherOperator // = other operator
     );
   TCommonAtomFlags = set of TCommonAtomFlag;
     
@@ -58,7 +59,7 @@ const
       'Semicolon', 'Equal', 'Colon', 'Comma', 'Point',
       'RoundBracketOpen', 'RoundBracketClose',
       'EdgedBracketOpen', 'EdgedBracketClose',
-      'Word', 'End'
+      'Word', 'End', 'Operator'
     );
     
 type

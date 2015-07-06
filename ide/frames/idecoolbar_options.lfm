@@ -1,4 +1,4 @@
-object ToolbarOptionsFrame: TToolbarOptionsFrame
+object IdeCoolbarOptionsFrame: TIdeCoolbarOptionsFrame
   Left = 0
   Height = 451
   Top = 0
@@ -17,13 +17,13 @@ object ToolbarOptionsFrame: TToolbarOptionsFrame
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
     Left = 0
-    Height = 264
-    Top = 187
+    Height = 251
+    Top = 200
     Width = 520
     Align = alClient
     BorderSpacing.Top = 6
     BevelOuter = bvNone
-    ClientHeight = 264
+    ClientHeight = 251
     ClientWidth = 520
     Constraints.MinHeight = 115
     TabOrder = 1
@@ -34,7 +34,7 @@ object ToolbarOptionsFrame: TToolbarOptionsFrame
       AnchorSideBottom.Side = asrBottom
       Left = 0
       Height = 35
-      Top = 229
+      Top = 216
       Width = 520
       Align = alBottom
       AutoSize = True
@@ -48,9 +48,9 @@ object ToolbarOptionsFrame: TToolbarOptionsFrame
         AnchorSideBottom.Control = pnButtons
         AnchorSideBottom.Side = asrBottom
         Left = 6
-        Height = 23
-        Top = 6
-        Width = 45
+        Height = 27
+        Top = 2
+        Width = 36
         Anchors = [akLeft, akBottom]
         AutoSize = True
         BorderSpacing.Left = 6
@@ -64,10 +64,10 @@ object ToolbarOptionsFrame: TToolbarOptionsFrame
         AnchorSideLeft.Side = asrBottom
         AnchorSideBottom.Control = pnButtons
         AnchorSideBottom.Side = asrBottom
-        Left = 120
-        Height = 23
-        Top = 6
-        Width = 57
+        Left = 105
+        Height = 27
+        Top = 2
+        Width = 50
         Anchors = [akLeft, akBottom]
         AutoSize = True
         BorderSpacing.Left = 6
@@ -81,10 +81,10 @@ object ToolbarOptionsFrame: TToolbarOptionsFrame
         AnchorSideLeft.Side = asrBottom
         AnchorSideBottom.Control = pnButtons
         AnchorSideBottom.Side = asrBottom
-        Left = 57
-        Height = 23
-        Top = 6
-        Width = 57
+        Left = 48
+        Height = 27
+        Top = 2
+        Width = 51
         Anchors = [akLeft, akBottom]
         AutoSize = True
         BorderSpacing.Left = 6
@@ -98,10 +98,10 @@ object ToolbarOptionsFrame: TToolbarOptionsFrame
         AnchorSideRight.Side = asrBottom
         AnchorSideBottom.Control = pnButtons
         AnchorSideBottom.Side = asrBottom
-        Left = 453
-        Height = 23
-        Top = 6
-        Width = 61
+        Left = 459
+        Height = 27
+        Top = 2
+        Width = 55
         Anchors = [akRight, akBottom]
         AutoSize = True
         BorderSpacing.Right = 6
@@ -113,14 +113,14 @@ object ToolbarOptionsFrame: TToolbarOptionsFrame
     end
     object sbCoolBar: TScrollBox
       Left = 0
-      Height = 201
+      Height = 188
       Top = 0
       Width = 520
       HorzScrollBar.Page = 75
-      VertScrollBar.Page = 25
+      VertScrollBar.Page = 22
       Anchors = [akTop, akLeft, akRight, akBottom]
       BorderStyle = bsNone
-      ClientHeight = 201
+      ClientHeight = 188
       ClientWidth = 520
       Constraints.MinHeight = 75
       TabOrder = 0
@@ -149,19 +149,19 @@ object ToolbarOptionsFrame: TToolbarOptionsFrame
   end
   object pnTop: TPanel
     Left = 0
-    Height = 168
+    Height = 179
     Top = 0
     Width = 520
     Align = alTop
     AutoSize = True
     BevelOuter = bvNone
-    ClientHeight = 168
+    ClientHeight = 179
     ClientWidth = 520
     Constraints.MinWidth = 350
     TabOrder = 0
     object dbGeneralSettings: TDividerBevel
       Left = 0
-      Height = 13
+      Height = 15
       Top = 5
       Width = 520
       Caption = 'General Coolbars Settings'
@@ -178,25 +178,25 @@ object ToolbarOptionsFrame: TToolbarOptionsFrame
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = pnTopCenterLabel
       Left = 0
-      Height = 78
-      Top = 55
+      Height = 80
+      Top = 60
       Width = 257
       Anchors = [akTop, akLeft, akRight]
       AutoSize = True
       BorderSpacing.Top = 6
       BorderSpacing.Right = 3
       Caption = 'Grab Style'
-      ClientHeight = 60
-      ClientWidth = 253
+      ClientHeight = 64
+      ClientWidth = 255
       TabOrder = 1
       object lbGrabWidth: TLabel
         AnchorSideTop.Control = spGrabWidth
         AnchorSideTop.Side = asrCenter
         AnchorSideRight.Control = spGrabWidth
-        Left = 107
-        Height = 13
-        Top = 37
-        Width = 58
+        Left = 94
+        Height = 15
+        Top = 40
+        Width = 73
         Anchors = [akTop, akRight]
         BorderSpacing.Around = 6
         Caption = 'Grab Width:'
@@ -207,9 +207,9 @@ object ToolbarOptionsFrame: TToolbarOptionsFrame
         AnchorSideTop.Side = asrBottom
         AnchorSideRight.Control = gbGrabStyle
         AnchorSideRight.Side = asrBottom
-        Left = 171
+        Left = 173
         Height = 21
-        Top = 33
+        Top = 37
         Width = 76
         Anchors = [akTop, akRight]
         BorderSpacing.Around = 6
@@ -225,12 +225,12 @@ object ToolbarOptionsFrame: TToolbarOptionsFrame
         AnchorSideRight.Control = gbGrabStyle
         AnchorSideRight.Side = asrBottom
         Left = 6
-        Height = 21
+        Height = 25
         Top = 6
-        Width = 241
+        Width = 243
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Around = 6
-        ItemHeight = 13
+        ItemHeight = 0
         ItemIndex = 1
         Items.Strings = (
           'gsSimple'
@@ -253,10 +253,10 @@ object ToolbarOptionsFrame: TToolbarOptionsFrame
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Control = pnTop
       AnchorSideBottom.Side = asrBottom
-      Left = 453
-      Height = 23
-      Top = 139
-      Width = 61
+      Left = 459
+      Height = 27
+      Top = 146
+      Width = 55
       Anchors = [akTop, akRight]
       AutoSize = True
       BorderSpacing.Around = 6
@@ -269,9 +269,9 @@ object ToolbarOptionsFrame: TToolbarOptionsFrame
       AnchorSideTop.Control = dbGeneralSettings
       AnchorSideTop.Side = asrBottom
       Left = 0
-      Height = 17
-      Top = 30
-      Width = 97
+      Height = 22
+      Top = 32
+      Width = 123
       BorderSpacing.Top = 12
       Caption = 'Coolbar is visible'
       OnClick = cbCoolBarVisibleClick
@@ -286,15 +286,15 @@ object ToolbarOptionsFrame: TToolbarOptionsFrame
       AnchorSideBottom.Control = gbGrabStyle
       AnchorSideBottom.Side = asrBottom
       Left = 263
-      Height = 78
-      Top = 55
+      Height = 80
+      Top = 60
       Width = 257
       Anchors = [akTop, akLeft, akRight, akBottom]
       AutoSize = True
       BorderSpacing.Left = 6
       Caption = 'Band Border Style'
-      ClientHeight = 60
-      ClientWidth = 253
+      ClientHeight = 64
+      ClientWidth = 255
       TabOrder = 2
       object cbBorderStyle: TComboBox
         AnchorSideLeft.Control = gbBorderStyle
@@ -302,12 +302,12 @@ object ToolbarOptionsFrame: TToolbarOptionsFrame
         AnchorSideRight.Control = gbBorderStyle
         AnchorSideRight.Side = asrBottom
         Left = 6
-        Height = 21
+        Height = 25
         Top = 6
-        Width = 241
+        Width = 243
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Around = 6
-        ItemHeight = 13
+        ItemHeight = 0
         ItemIndex = 1
         Items.Strings = (
           'None'
@@ -324,10 +324,10 @@ object ToolbarOptionsFrame: TToolbarOptionsFrame
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = cbCoolBarVisible
       AnchorSideTop.Side = asrCenter
-      Left = 129
-      Height = 13
-      Top = 32
-      Width = 66
+      Left = 155
+      Height = 15
+      Top = 36
+      Width = 83
       Alignment = taRightJustify
       BorderSpacing.Left = 32
       Caption = 'Coolbar width'
@@ -338,9 +338,9 @@ object ToolbarOptionsFrame: TToolbarOptionsFrame
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = lbCoolBarWidth
       AnchorSideTop.Side = asrCenter
-      Left = 201
+      Left = 244
       Height = 21
-      Top = 28
+      Top = 33
       Width = 64
       BorderSpacing.Left = 6
       MaxValue = 5000
@@ -366,8 +366,8 @@ object ToolbarOptionsFrame: TToolbarOptionsFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 13
-    Top = 168
+    Height = 15
+    Top = 179
     Width = 520
     Caption = 'Add/Config/Delete Toolbar(s)'
     Align = alTop

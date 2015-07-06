@@ -431,6 +431,10 @@ msgstr "תיקיית הממשק של gtk2"
 msgid "HasError"
 msgstr "יש בו שגיאה"
 
+#: codetoolsstrconsts.ctshelperisnotallowed
+msgid "Helper after %s is not allowed"
+msgstr ""
+
 #: codetoolsstrconsts.ctsidedirectory
 msgid "IDE Directory"
 msgstr "תיקיית ה IDE "

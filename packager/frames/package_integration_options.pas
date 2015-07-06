@@ -5,8 +5,8 @@ unit package_integration_options;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, ExtCtrls, StdCtrls, Dialogs,
-  IDEOptionsIntf, MacroIntf, PackageIntf,
+  Classes, SysUtils, Forms, Controls, ExtCtrls, StdCtrls, Dialogs,
+  LazFileUtils, IDEOptionsIntf, MacroIntf, PackageIntf,
   LazarusIDEStrConsts, PackageDefs, PathEditorDlg, IDEProcs, CodeHelp;
 
 type

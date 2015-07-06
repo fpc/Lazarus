@@ -199,6 +199,7 @@ type
     function ClassSectionNodeStartsWithWord(ANode: TCodeTreeNode): boolean;
     function IsClassNode(Node: TCodeTreeNode): boolean; // class, not object
     function FindInheritanceNode(ClassNode: TCodeTreeNode): TCodeTreeNode;
+    function FindHelperForNode(HelperNode: TCodeTreeNode): TCodeTreeNode;
 
     // records
     function ExtractRecordCaseType(RecordCaseNode: TCodeTreeNode): string;
@@ -2795,6 +2796,16 @@ begin
     end;
     Node:=Next;
   end;
+end;
+
+function TPascalReaderTool.FindHelperForNode(HelperNode: TCodeTreeNode
+  ): TCodeTreeNode;
+begin
+  Result:=HelperNode.FirstChild;
+  while (Result<>nil) and (Result.Desc = ctnClassInheritance) do
+    Result:=Result.NextBrother;
+  if (Result<>nil) and (Result.Desc<>ctnHelperFor) then
+    Result:=nil;
 end;
 
 function TPascalReaderTool.FindTypeOfForwardNode(TypeNode: TCodeTreeNode

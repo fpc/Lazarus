@@ -82,6 +82,7 @@ ResourceString
   crsFoundUnexpectedAt = '%s, found unexpected %s at %s';
   ctsAnonymDefinitionsAreNotAllowed = 'Anonymous %s definitions are not allowed';
   ctsNestedDefinitionsAreNotAllowed = 'Nested %s definitions are not allowed';
+  ctsHelperIsNotAllowed = 'Helper after %s is not allowed';
   ctsEndForRecordNotFound = 'end for record not found';
   ctsMissingEnumList = 'missing enum list';
   ctsMissingTypeIdentifier = 'missing type identifier';

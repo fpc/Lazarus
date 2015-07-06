@@ -2824,8 +2824,7 @@ begin
 
     // Filtering
     if CanFilterMsgType then begin
-      MsgFilterMsgOfTypeMenuItem.Caption:=Format(lisFilterAllMessagesOfType, [
-        MsgType]);
+      MsgFilterMsgOfTypeMenuItem.Caption:=Format(lisFilterAllMessagesOfType, [MsgType]);
       MsgFilterMsgOfTypeMenuItem.Visible:=true;
     end else begin
       //assign default caption if item is not visible (needed for EditorToolBar)

@@ -23,14 +23,13 @@ unit fMain;
 interface
 
 uses
-  LCLIntf,
   SysUtils, Classes, Graphics, Controls, Forms,
 {$IFDEF easy}
   //use EasyDockSite
 {$ELSE}
   LDockTree,
 {$ENDIF}
-  Dialogs, StdCtrls, ComCtrls, Menus, ExtCtrls, LResources;
+  StdCtrls, ComCtrls, ExtCtrls;
 
 type
 
@@ -71,7 +70,7 @@ type
     Docker: TWinControl;
     ShapeCount: integer;
   public
-    { Public declarations }
+
   end;
 
 var
@@ -87,8 +86,6 @@ uses
   EasyDockSite,
 {$ELSE}
 {$ENDIF}
-  LCLProc,
-  Interfacebase,
   fTree;
 
 

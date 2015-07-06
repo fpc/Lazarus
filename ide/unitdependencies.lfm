@@ -9,7 +9,6 @@ object UnitDependenciesWindow: TUnitDependenciesWindow
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnShow = FormShow
-  Position = poScreenCenter
   LCLVersion = '1.5'
   object MainPageControl: TPageControl
     Left = 0

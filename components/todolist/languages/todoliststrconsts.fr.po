@@ -11,6 +11,10 @@ msgstr ""
 "Language: fr\n"
 "X-Generator: Poedit 1.7.5\n"
 
+#: todoliststrconsts.dlgfiltercsv
+msgid "CSV files"
+msgstr ""
+
 #: todoliststrconsts.dlgfropts
 msgid "Options"
 msgstr "Options"

@@ -357,6 +357,7 @@ begin
   // first test if in a class
   ClassNode:=CursorNode.GetNodeOfTypes([ctnClass,ctnClassInterface,
       ctnDispinterface,ctnObject,ctnRecordType,
+      ctnClassHelper,ctnRecordHelper,ctnTypeHelper,
       ctnObjCClass,ctnObjCCategory,ctnObjCProtocol,
       ctnCPPClass]);
   if ClassNode<>nil then begin
@@ -809,7 +810,7 @@ begin
             cmp:=false;
         end;
         if cmp and (phpIgnoreMethods in Attr) then begin
-          if (ANode.GetNodeOfTypes([ctnClass,ctnObject,ctnRecordType,
+          if (ANode.GetNodeOfTypes([ctnClass,ctnObject,ctnRecordType,ctnClassHelper,ctnRecordHelper,ctnTypeHelper,
                                 ctnObjCClass,ctnObjCCategory,ctnCPPClass])<>nil)
           or (ExtractClassNameOfProcNode(ANode,true)<>'')
           then

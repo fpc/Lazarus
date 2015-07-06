@@ -20,15 +20,15 @@ See ./wikiget -h for all options.
 
 
 Creating XHTML pages:
-./wikiconvert --format=xhtml --css=html/wiki.css 'wikixml/*.xml'
+./wikiconvert --format=xhtml --css=css/wiki.css 'wikixml/*.xml'
 
 
 Creating HTML pages:
-./wikiconvert --format=html --css=html/wiki.css 'wikixml/*.xml'
+./wikiconvert --format=html --css=css/wiki.css 'wikixml/*.xml'
 
 
 Creating chm:
-./wikiconvert --format=chm --css=chm/wiki.css wikixml/Lazarus_Documentation.g400.xml 'wikixml/*.xml'
+./wikiconvert --format=chm --css=css/wiki.css wikixml/Lazarus_Documentation.g400.xml 'wikixml/*.xml'
 
 
 ToDos
@@ -36,9 +36,7 @@ ToDos wiki parser: see wikiparser.pas
 
 ToDos iphtml:
 -too big space between paragraphs
--jump to anchor after loading, Note: before first paint the areas are all 0,0,0,0
 -background for pre
--backslashes in text are not shown
 -slow on some pages (e.g. lazarus_documentation)
 
 Todos: convert to fpdoc

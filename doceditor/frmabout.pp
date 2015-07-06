@@ -27,8 +27,7 @@ unit FrmAbout;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, Buttons,
-  StdCtrls, ButtonPanel;
+  SysUtils, Forms, StdCtrls, ButtonPanel, LazFileUtils;
 
 const
   LicenseFile = 'COPYING.GPL.txt';
@@ -54,7 +53,7 @@ var
   AboutForm: TAboutForm;
 
 implementation
-uses LazDEMsg, FileUtil;
+uses LazDEMsg;
 
 {$R *.lfm}
 

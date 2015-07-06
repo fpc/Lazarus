@@ -16,7 +16,7 @@ unit LocalizedForms;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs;
+  Classes, Forms;
 
 type
   TLocalizedForm = class(TForm)
@@ -48,11 +48,6 @@ implementation
 
 {$R *.lfm}
 
-uses
-{$IFDEF MSWINDOWS}
-  Windows,
-{$ENDIF}
-  ExtCtrls;
 
 
 { Local procedures }

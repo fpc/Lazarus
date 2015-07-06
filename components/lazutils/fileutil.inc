@@ -11,7 +11,7 @@
  *****************************************************************************
 }
  
-
+{$IFnDEF NoLazUTF8Wrappers}
 function NeedRTLAnsi: boolean;
 begin
   Result := LazUtf8.NeedRTLAnsi;
@@ -21,7 +21,6 @@ procedure SetNeedRTLAnsi(NewValue: boolean);
 begin
   LazUtf8.SetNeedRTLAnsi(NewValue);
 end;
-
 
 function UTF8ToSys(const s: string): string;
 begin
@@ -58,14 +57,24 @@ begin
   Result := LazUtf8.GetEnvironmentVariableUTF8(EnvVar);
 end;
 
-function FileGetAttrUTF8(const FileName: String): Longint;
+function SysErrorMessageUTF8(ErrorCode: Integer): String;
 begin
-  Result := LazFileUtils.FileGetAttrUtf8(FileName);
+  Result := LazUtf8.SysErrorMessageUTF8(ErrorCode);
 end;
 
-function FileSetAttrUTF8(const Filename: String; Attr: longint): Longint;
+function GetAppConfigDirUTF8(Global: Boolean; Create: boolean = false): string;
 begin
-  Result := LazFileUtils.FileSetAttrUtf8(Filename, Attr);
+  Result := LazFileUtils.GetAppConfigDirUTF8(Global, Create);
+end;
+
+function GetAppConfigFileUTF8(Global: Boolean; SubDir: boolean; CreateDir: boolean): string;
+begin
+  Result := LazFileUtils.GetAppConfigFileUTF8(Global, SubDir, CreateDir);
+end;
+
+function ExtractFileNameOnly(const AFilename: string): string;
+begin
+  Result := LazFileUtils.ExtractFileNameOnly(AFilename);
 end;
 
 function FileExistsUTF8(const Filename: string): boolean;
@@ -73,73 +82,14 @@ begin
   Result := LazFileUtils.FileExistsUTF8(FileName);
 end;
 
-function DirectoryExistsUTF8(const Directory: string): Boolean; inline;
-begin
-  Result := LazFileUtils.DirectoryExistsUTF8(Directory);
-end;
-
 function FileAgeUTF8(const FileName: string): Longint;
 begin
   Result := LazFileUtils.FileAgeUTF8(FileName);
 end;
 
-function FileSetDateUTF8(const FileName: String; Age: Longint): Longint;
+function DirectoryExistsUTF8(const Directory: string): Boolean; inline;
 begin
-  Result := LazFileUtils.FileSetDateUTF8(FileName, Age);
-end;
-
-function FileSize(const Filename: string): int64;
-begin
-  Result := LazFileUtils.FileSizeUtf8(FileName);
-end;
-
-function GetFileDescription(const AFilename: string): string;
-begin
-  Result := LazFileUtils.GetFileDescription(AFilename);
-end;
-
-{$IFDEF darwin}
-function GetDarwinSystemFilename(Filename: string): string;
-begin
-  Result := LazFileUtils.GetDarwinSystemFilename(Filename);
-end;
-{$ENDIF}
-
-function ExpandFileNameUTF8(const FileName: string): string;
-begin
-  Result := LazFileUtils.ExpandFileNameUtf8(Filename);
-end;
-
-// ToDo: For ExpandUNCFileNameUTF8
-//
-// Don't convert to and from Sys, because this RTL routines
-// simply work in simple string operations, without calling native
-// APIs which would really require Ansi
-//
-// The Ansi conversion just ruins Unicode strings
-//
-// See bug http://bugs.freepascal.org/view.php?id=20229
-// It needs fixing like we did for LazFileUtils.ExpandFileNameUtf8(Filename) on Windows
-
-function ExpandUNCFileNameUTF8(const FileName: string): string;
-begin
-  Result:=SysUtils.ExpandUNCFileName(Filename);
-end;
-
-
-function FileOpenUTF8(Const FileName : string; Mode : Integer) : THandle;
-begin
-  Result := LazFileUtils.FileOpenUtf8(FileName, Mode);
-end;
-
-function FileCreateUTF8(Const FileName : string) : THandle;
-begin
-  Result := LazFileUtils.FileCreateUtf8(FileName);
-end;
-
-function FileCreateUTF8(Const FileName : string; Rights: Cardinal) : THandle;
-begin
-  Result := LazFileUtils.FileCreateUtf8(FileName, Rights);
+  Result := LazFileUtils.DirectoryExistsUTF8(Directory);
 end;
 
 function FindFirstUTF8(const Path: string; Attr: Longint; out Rslt: TSearchRec): Longint;
@@ -157,6 +107,21 @@ begin
   LazFileUtils.FindCloseUtf8(F);
 end;
 
+function FileSetDateUTF8(const FileName: String; Age: Longint): Longint;
+begin
+  Result := LazFileUtils.FileSetDateUTF8(FileName, Age);
+end;
+
+function FileGetAttrUTF8(const FileName: String): Longint;
+begin
+  Result := LazFileUtils.FileGetAttrUtf8(FileName);
+end;
+
+function FileSetAttrUTF8(const Filename: String; Attr: longint): Longint;
+begin
+  Result := LazFileUtils.FileSetAttrUtf8(Filename, Attr);
+end;
+
 function DeleteFileUTF8(const FileName: String): Boolean;
 begin
   Result := LazFileUtils.DeleteFileUtf8(FileName);
@@ -165,6 +130,16 @@ end;
 function RenameFileUTF8(const OldName, NewName: String): Boolean;
 begin
   Result := LazFileUtils.RenameFileUtf8(OldName, NewName);
+end;
+
+function FileSearchUTF8(const Name, DirList: String; ImplicitCurrentDir : Boolean = True): String;
+begin
+  Result := LazFileUtils.FileSearchUTF8(Name, DirList, ImplicitCurrentDir);
+end;
+
+function FileIsReadOnlyUTF8(const FileName: String): Boolean;
+begin
+  Result := LazFileUtils.FileIsReadOnlyUTF8(FileName);
 end;
 
 function GetCurrentDirUTF8: String;
@@ -187,27 +162,54 @@ begin
   Result := LazFileUtils.RemoveDirUtf8(Dir);
 end;
 
-
-
-function GetAppConfigDirUTF8(Global: Boolean; Create: boolean = false): string;
+function ForceDirectoriesUTF8(const Dir: string): Boolean;
 begin
-  Result := LazFileUtils.GetAppConfigDirUTF8(Global, Create);
+  Result := LazFileUtils.ForceDirectoriesUTF8(Dir);
 end;
 
-function GetAppConfigFileUTF8(Global: Boolean; SubDir: boolean;
-  CreateDir: boolean): string;
+function FileOpenUTF8(Const FileName : string; Mode : Integer) : THandle;
 begin
-  Result := LazFileUtils.GetAppConfigFileUTF8(Global, SubDir, CreateDir);
+  Result := LazFileUtils.FileOpenUtf8(FileName, Mode);
 end;
 
-function SysErrorMessageUTF8(ErrorCode: Integer): String;
+function FileCreateUTF8(Const FileName : string) : THandle;
 begin
-  Result := LazUtf8.SysErrorMessageUTF8(ErrorCode);
+  Result := LazFileUtils.FileCreateUtf8(FileName);
 end;
 
-function DirPathExists(const FileName: String): Boolean;
+function GetTempFilename(const Directory, Prefix: string): string;
 begin
-  Result := LazFileUtils.DirPathExists(FileName);
+  Result := LazFileUtils.GetTempFileNameUTF8(Directory, Prefix);
+end;
+
+function FileCreateUTF8(Const FileName : string; Rights: Cardinal) : THandle;
+begin
+  Result := LazFileUtils.FileCreateUtf8(FileName, Rights);
+end;
+
+function CleanAndExpandFilename(const Filename: string): string;
+begin
+  Result := LazFileutils.CleanAndExpandFilename(FileName);
+end;
+
+function CleanAndExpandDirectory(const Filename: string): string;
+begin
+  Result := LazFileUtils.CleanAndExpandDirectory(FileName);
+end;
+
+function ExpandFileNameUTF8(const FileName: string): string;
+begin
+  Result := LazFileUtils.ExpandFileNameUtf8(Filename);
+end;
+
+function CompareFileExt(const Filename, Ext: string; CaseSensitive: boolean): integer;
+begin
+  Result := LazFileUtils.CompareFileExt(Filename, Ext, CaseSensitive);
+end;
+
+function CompareFileExt(const Filename, Ext: string): integer;
+begin
+  Result := LazFileUtils.CompareFileExt(Filename, Ext);
 end;
 
 function CompareFilenames(const Filename1, Filename2: string): integer;
@@ -218,6 +220,147 @@ end;
 function CompareFilenamesIgnoreCase(const Filename1, Filename2: string): integer;
 begin
   Result := LazFileUtils.CompareFilenamesIgnoreCase(Filename1, Filename2);
+end;
+
+function FilenameIsAbsolute(const TheFilename: string):boolean;
+begin
+  Result := LazFileUtils.FilenameIsAbsolute(TheFileName);
+end;
+
+function FilenameIsWinAbsolute(const TheFilename: string): boolean;
+begin
+  Result := LazFileUtils.FilenameIsWinAbsolute(TheFileName);
+end;
+
+function FilenameIsUnixAbsolute(const TheFilename: string): boolean;
+begin
+  Result := LazFileUtils.FilenameIsUnixAbsolute(TheFileName);
+end;
+
+procedure CheckIfFileIsExecutable(const AFilename: string);
+begin
+  LazFileUtils.CheckIfFileIsExecutable(AFileName);
+end;
+
+procedure CheckIfFileIsSymlink(const AFilename: string);
+begin
+  LazFileUtils.CheckIfFileIsSymlink(AFilename);
+end;
+
+function FileIsReadable(const AFilename: string): boolean;
+begin
+  Result:= LazFileUtils.FileIsReadable(AFilename);
+end;
+
+function FileIsWritable(const AFilename: string): boolean;
+begin
+  Result := LazFileUtils.FileIsWritable(AFilename);
+end;
+
+function FileIsText(const AFilename: string): boolean;
+begin
+  Result := LazFileUtils.FileIsText(AFilename);
+end;
+
+function FileIsText(const AFilename: string; out FileReadable: boolean): boolean;
+begin
+  Result := LazFileUtils.FileIsText(AFileName, FileReadable);
+end;
+
+function FileIsExecutable(const AFilename: string): boolean;
+begin
+  Result := LazFileUtils.FileIsExecutable(AFileName);
+end;
+
+function FileIsSymlink(const AFilename: string): boolean;
+begin
+  Result := LazFileUtils.FileIsSymlink(AFilename);
+end;
+
+function FileIsHardLink(const AFilename: string): boolean;
+begin
+  Result := LazFileUtils.FileIsHardLink(AFilename);
+end;
+
+function GetFileDescription(const AFilename: string): string;
+begin
+  Result := LazFileUtils.GetFileDescription(AFilename);
+end;
+
+function ReadAllLinks(const Filename: string; ExceptionOnError: boolean): string;
+begin
+  Result:=LazFileUtils.ReadAllLinks(Filename,ExceptionOnError);
+end;
+
+function TryReadAllLinks(const Filename: string): string;
+begin
+  Result:=LazFileUtils.TryReadAllLinks(Filename);
+end;
+
+function TrimFilename(const AFilename: string): string;
+begin
+  Result := LazFileUtils.TrimFilename(AFileName);
+end;
+
+function DirPathExists(const FileName: String): Boolean;
+begin
+  Result := LazFileUtils.DirPathExists(FileName);
+end;
+
+function ForceDirectory(DirectoryName: string): boolean;
+begin
+  Result := LazFileUtils.ForceDirectory(DirectoryName);
+end;
+
+function DirectoryIsWritable(const DirectoryName: string): boolean;
+begin
+  Result := LazFileUtils.DirectoryIsWritable(DirectoryName);
+end;
+
+function AppendPathDelim(const Path: string): string;
+begin
+  Result := LazFileUtils.AppendPathDelim(Path);
+end;
+
+function ChompPathDelim(const Path: string): string;
+begin
+  Result := LazFileUtils.ChompPathDelim(Path);
+end;
+
+function CreateRelativePath(const Filename, BaseDirectory: string;
+                            UsePointDirectory: boolean; AlwaysRequireSharedBaseFolder: Boolean): string;
+begin
+  Result := LazFileUtils.CreateRelativePath(FileName, BaseDirectory, UsePointDirectory, AlwaysRequireSharedBaseFolder);
+end;
+
+{$IFDEF darwin}
+function GetDarwinSystemFilename(Filename: string): string;
+begin
+  Result := LazFileUtils.GetDarwinSystemFilename(Filename);
+end;
+{$ENDIF}
+
+{$ENDIF}
+
+// ToDo: For ExpandUNCFileNameUTF8
+//
+// Don't convert to and from Sys, because this RTL routines
+// simply work in simple string operations, without calling native
+// APIs which would really require Ansi
+//
+// The Ansi conversion just ruins Unicode strings
+//
+// See bug http://bugs.freepascal.org/view.php?id=20229
+// It needs fixing like we did for LazFileUtils.ExpandFileNameUtf8(Filename) on Windows
+
+function ExpandUNCFileNameUTF8(const FileName: string): string;
+begin
+  Result:=SysUtils.ExpandUNCFileName(Filename);
+end;
+
+function FileSize(const Filename: string): int64;
+begin
+  Result := LazFileUtils.FileSizeUtf8(FileName);
 end;
 
 function ComparePhysicalFilenames(const Filename1, Filename2: string): integer;
@@ -273,21 +416,6 @@ begin
   end;
 end;
 
-function FilenameIsAbsolute(const TheFilename: string):boolean;
-begin
-  Result := LazFileUtils.FilenameIsAbsolute(TheFileName);
-end;
-
-function FilenameIsWinAbsolute(const TheFilename: string): boolean;
-begin
-  Result := LazFileUtils.FilenameIsWinAbsolute(TheFileName);
-end;
-
-function FilenameIsUnixAbsolute(const TheFilename: string): boolean;
-begin
-  Result := LazFileUtils.FilenameIsUnixAbsolute(TheFileName);
-end;
-
 function FilenameIsPascalUnit(const Filename: string): boolean;
 var
   i: Integer;
@@ -296,16 +424,6 @@ begin
     if CompareFileExt(Filename,PascalFileExt[i],false)=0 then
       exit(true);
   Result:=false;
-end;
-
-function AppendPathDelim(const Path: string): string;
-begin
-  Result := LazFileUtils.AppendPathDelim(Path);
-end;
-
-function TrimFilename(const AFilename: string): string;
-begin
-  Result := LazFileUtils.TrimFilename(AFileName);
 end;
 
 function ExtractFileNameWithoutExt(const AFilename: string): string;
@@ -326,96 +444,6 @@ begin
   end;
 end;
 
-function CompareFileExt(const Filename, Ext: string; CaseSensitive: boolean): integer;
-begin
-  Result := LazFileUtils.CompareFileExt(Filename, Ext, CaseSensitive);
-end;
-
-function CompareFileExt(const Filename, Ext: string): integer;
-begin
-  Result := LazFileUtils.CompareFileExt(Filename, Ext);
-end;
-
-function ChompPathDelim(const Path: string): string;
-begin
-  Result := LazFileUtils.ChompPathDelim(Path);
-end;
-
-function FileIsText(const AFilename: string): boolean;
-begin
-  Result := LazFileUtils.FileIsText(AFilename);
-end;
-
-function FileIsText(const AFilename: string; out FileReadable: boolean): boolean;
-begin
-  Result := LazFileUtils.FileIsText(AFileName, FileReadable);
-end;
-
-function FileIsExecutable(const AFilename: string): boolean;
-begin
-  Result := LazFileUtils.FileIsExecutable(AFileName);
-end;
-
-procedure CheckIfFileIsExecutable(const AFilename: string);
-begin
-  LazFileUtils.CheckIfFileIsExecutable(AFileName);
-end;
-
-function FileIsSymlink(const AFilename: string): boolean;
-begin
-  Result := LazFileUtils.FileIsSymlink(AFilename);
-end;
-
-procedure CheckIfFileIsSymlink(const AFilename: string);
-begin
-  LazFileUtils.CheckIfFileIsSymlink(AFilename);
-end;
-
-function FileIsHardLink(const AFilename: string): boolean;
-begin
-  Result := LazFileUtils.FileIsHardLink(AFilename);
-end;
-
-function FileIsReadable(const AFilename: string): boolean;
-begin
-  Result:= LazFileUtils.FileIsReadable(AFilename);
-end;
-
-function FileIsWritable(const AFilename: string): boolean;
-begin
-  Result := LazFileUtils.FileIsWritable(AFilename);
-end;
-
-function ReadAllLinks(const Filename: string; ExceptionOnError: boolean
-  ): string;
-begin
-  Result:=LazFileUtils.ReadAllLinks(Filename,ExceptionOnError);
-end;
-
-function TryReadAllLinks(const Filename: string): string;
-begin
-  Result:=LazFileUtils.TryReadAllLinks(Filename);
-end;
-
-{------------------------------------------------------------------------------
-  function ExtractFileNameOnly(const AFilename: string): string;
- ------------------------------------------------------------------------------}
-function ExtractFileNameOnly(const AFilename: string): string;
-begin
-  Result := LazFileUtils.ExtractFileNameOnly(AFilename);
-end;
-
-{------------------------------------------------------------------------------
-  function ForceDirectory(DirectoryName: string): boolean;
- ------------------------------------------------------------------------------}
-function ForceDirectory(DirectoryName: string): boolean;
-begin
-  Result := LazFileUtils.ForceDirectory(DirectoryName);
-end;
-
-{------------------------------------------------------------------------------
-  function DeleteDirectory(const DirectoryName: string; OnlyChilds: boolean): boolean;
- ------------------------------------------------------------------------------}
 function DeleteDirectory(const DirectoryName: string; OnlyChildren: boolean): boolean;
 const
   //Don't follow symlinks on *nix, just delete them
@@ -446,9 +474,6 @@ begin
   Result:=true;
 end;
 
-{------------------------------------------------------------------------------
-  function ProgramDirectory: string;
- ------------------------------------------------------------------------------}
 function ProgramDirectory: string;
 var
   Flags: TSearchFileInPathFlags;
@@ -469,29 +494,7 @@ begin
   Result:=ExpandFileNameUTF8(ExtractFilePath(Result));
 end;
 
-function DirectoryIsWritable(const DirectoryName: string): boolean;
-begin
-  Result := LazFileUtils.DirectoryIsWritable(DirectoryName);
-end;
-
-{------------------------------------------------------------------------------
-  function CleanAndExpandFilename(const Filename: string): string;
- ------------------------------------------------------------------------------}
-function CleanAndExpandFilename(const Filename: string): string;
-begin
-  Result := LazFileutils.CleanAndExpandFilename(FileName);
-end;
-
-{------------------------------------------------------------------------------
-  function CleanAndExpandDirectory(const Filename: string): string;
- ------------------------------------------------------------------------------}
-function CleanAndExpandDirectory(const Filename: string): string;
-begin
-  Result := LazFileUtils.CleanAndExpandDirectory(FileName);
-end;
-
-function CreateAbsoluteSearchPath(const SearchPath, BaseDirectory: string
-  ): string;
+function CreateAbsoluteSearchPath(const SearchPath, BaseDirectory: string): string;
 var
   PathLen: Integer;
   EndPos: Integer;
@@ -528,12 +531,6 @@ begin
     end;
     StartPos:=EndPos;
   end;
-end;
-
-function CreateRelativePath(const Filename, BaseDirectory: string;
-                            UsePointDirectory: boolean; AlwaysRequireSharedBaseFolder: Boolean): string;
-begin
-  Result := LazFileUtils.CreateRelativePath(FileName, BaseDirectory, UsePointDirectory, AlwaysRequireSharedBaseFolder);
 end;
 
 function CreateAbsolutePath(const Filename, BaseDirectory: string): string;
@@ -717,9 +714,49 @@ begin
   end;
 end;
 
-function GetTempFilename(const Directory, Prefix: string): string;
+function GetAllFilesMask: string;
 begin
-  Result := LazFileUtils.GetTempFileNameUTF8(Directory, Prefix);
+  {$IFDEF WINDOWS}
+  Result:='*.*';
+  {$ELSE}
+  Result:='*';
+  {$ENDIF}
+end;
+
+function GetExeExt: string;
+begin
+  {$IFDEF WINDOWS}
+  Result:='.exe';
+  {$ELSE}
+  Result:='';
+  {$ENDIF}
+end;
+
+function ReadFileToString(const Filename: String): String;
+var
+  SrcHandle: THandle;
+  ReadCount: LongInt;
+  s: String;
+begin
+  Result := '';
+  s:='';
+  try
+    Setlength(s, FileSize(Filename));
+    if s='' then exit;
+    SrcHandle := FileOpenUTF8(Filename, fmOpenRead or fmShareDenyWrite);
+    if (THandle(SrcHandle)=feInvalidHandle) then
+      exit;
+    try
+      ReadCount:=FileRead(SrcHandle,s[1],length(s));
+      if ReadCount<length(s) then
+        exit;
+    finally
+      FileClose(SrcHandle);
+    end;
+    Result:=s;
+  except
+    // ignore errors, Result string will be empty
+  end;
 end;
 
 function SearchFileInPath(const Filename, BasePath, SearchPath,
@@ -1198,77 +1235,4 @@ begin
     if MaskList <> nil then MaskList.Free;
   end;
 end;
-
-function GetAllFilesMask: string;
-begin
-  {$IFDEF WINDOWS}
-  Result:='*.*';
-  {$ELSE}
-  Result:='*';
-  {$ENDIF}
-end;
-
-function GetExeExt: string;
-begin
-  {$IFDEF WINDOWS}
-  Result:='.exe';
-  {$ELSE}
-  Result:='';
-  {$ENDIF}
-end;
-
-{------------------------------------------------------------------------------
-  function ReadFileToString(const Filename: string): string;
- ------------------------------------------------------------------------------}
-function ReadFileToString(const Filename: String): String;
-var
-  SrcHandle: THandle;
-  ReadCount: LongInt;
-  s: String;
-begin
-  Result := '';
-  s:='';
-  try
-    Setlength(s, FileSize(Filename));
-    if s='' then exit;
-    SrcHandle := FileOpenUTF8(Filename, fmOpenRead or fmShareDenyWrite);
-    if (THandle(SrcHandle)=feInvalidHandle) then
-      exit;
-    try
-      ReadCount:=FileRead(SrcHandle,s[1],length(s));
-      if ReadCount<length(s) then
-        exit;
-    finally
-      FileClose(SrcHandle);
-    end;
-    Result:=s;
-  except
-    // ignore errors, Result string will be empty
-  end;
-end;
-
-{------------------------------------------------------------------------------
-  function FileSearchUTF8(const Name, DirList: String): String;
- ------------------------------------------------------------------------------}
-function FileSearchUTF8(const Name, DirList: String; ImplicitCurrentDir : Boolean = True): String;
-begin
-  Result := LazFileUtils.FileSearchUTF8(Name, DirList, ImplicitCurrentDir);
-end;
-
-{------------------------------------------------------------------------------
-  function ForceDirectoriesUTF8(const Dir: string): Boolean;
- ------------------------------------------------------------------------------}
-function ForceDirectoriesUTF8(const Dir: string): Boolean;
-begin
-  Result := LazFileUtils.ForceDirectoriesUTF8(Dir);
-end;
-
-{------------------------------------------------------------------------------
-  function ForceDirectoriesUTF8(const Dir: string): Boolean;
- ------------------------------------------------------------------------------}
-function FileIsReadOnlyUTF8(const FileName: String): Boolean;
-begin
-  Result := LazFileUtils.FileIsReadOnlyUTF8(FileName);
-end;
-
 

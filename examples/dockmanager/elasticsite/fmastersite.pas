@@ -9,8 +9,7 @@ ToDo: restore layout does not re-use existing forms?
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
-  ExtCtrls, StdCtrls,
+  Classes, Forms, Controls, StdCtrls,
   uMakeSite;
 
 type

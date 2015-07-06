@@ -50,12 +50,16 @@ function UTF8ToSys(const AFormatSettings: TFormatSettings): TFormatSettings; ove
 function SysToUTF8(const s: string): string; overload;
 function SysToUTF8(const AFormatSettings: TFormatSettings): TFormatSettings; overload;
 
-function ConsoleToUTF8(const s: string): string;// converts OEM encoded string to UTF8 (used with some Windows specific functions)
-function UTF8ToConsole(const s: string): string;// converts UTF8 string to console encoding (used by Write, WriteLn)
+// converts OEM encoded string to UTF8 (used with some Windows specific functions)
+function ConsoleToUTF8(const s: string): string;
+// converts UTF8 string to console encoding (used by Write, WriteLn)
+function UTF8ToConsole(const s: string): string;
 {$IFDEF MSWindows}
 // for all Windows supporting 8bit codepages (e.g. not WinCE)
-function WinCPToUTF8(const s: string): string;// converts string in Windows code page to UTF8 (used with some Windows specific functions)
-function UTF8ToWinCP(const s: string): string;// converts UTF8 string to Windows code page encoding (used by Write, WriteLn)
+// converts string in Windows code page to UTF8 (used with some Windows specific functions)
+function WinCPToUTF8(const s: string): string;
+// converts UTF8 string to Windows code page encoding (used by Write, WriteLn)
+function UTF8ToWinCP(const s: string): string;
 {$ENDIF}
 
 function ParamStrUTF8(Param: Integer): string;
@@ -64,7 +68,6 @@ function GetEnvironmentStringUTF8(Index: Integer): string;
 function GetEnvironmentVariableUTF8(const EnvVar: string): String;
 
 function SysErrorMessageUTF8(ErrorCode: Integer): String;
-
 
 function UTF8CharacterLength(p: PChar): integer;
 function UTF8Length(const s: string): PtrInt;
@@ -100,6 +103,7 @@ function UTF8LowerCase(const AInStr: string; ALanguage: string=''): string;
 function UTF8LowerString(const s: string): string;
 function UTF8UpperCase(const AInStr: string; ALanguage: string=''): string;
 function UTF8UpperString(const s: string): string;
+function UTF8SwapCase(const AInStr: string; ALanguage: string=''): string;
 function FindInvalidUTF8Character(p: PChar; Count: PtrInt;
                                   StopOnNonUTF8: Boolean = true): PtrInt;
 function ValidUTF8String(const s: String): String;
@@ -952,6 +956,38 @@ begin
         Srch := Copy(Srch, P, Length(Srch)-P+1);
     end;
   end;
+end;
+
+{
+  UTF8SwapCase - a "naive" implementation that uses UTF8UpperCase and UTF8LowerCase.
+    It serves its purpose and performs OK for short and resonably long strings
+    but it should be rewritten in the future if better performance and lower
+    memory consumption is needed.
+
+  AInStr - The input string.
+  ALanguage - The language. Use '' for maximum speed if one desires to ignore the language
+    (See UTF8LowerCase comment for more details on ALanguage parameter.)
+}
+function UTF8SwapCase(const AInStr: string; ALanguage: string=''): string;
+var
+  xUpperCase: string;
+  xLowerCase: string;
+  I: Integer;
+begin
+  if AInStr = '' then
+    Exit('');
+
+  xUpperCase := UTF8UpperCase(AInStr, ALanguage);
+  xLowerCase := UTF8LowerCase(AInStr, ALanguage);
+  if (Length(xUpperCase) <> Length(AInStr)) or (Length(xLowerCase) <> Length(AInStr)) then
+    Exit(AInStr);//something went wrong -> the lengths of utf8 strings changed
+
+  SetLength(Result, Length(AInStr));
+  for I := 1 to Length(AInStr) do
+    if AInStr[I] <> xUpperCase[I] then
+      Result[I] := xUpperCase[I]
+    else
+      Result[I] := xLowerCase[I];
 end;
 
 {

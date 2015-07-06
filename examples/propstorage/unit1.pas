@@ -5,8 +5,7 @@ unit Unit1;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  XMLPropStorage, IniPropStorage;
+  Forms, StdCtrls, XMLPropStorage, IniPropStorage;
 
 type
 
@@ -17,9 +16,9 @@ type
     Memo1: TMemo;
     XMLPropStorage1: TXMLPropStorage;
   private
-    { private declarations }
+
   public
-    { public declarations }
+
   end;
 
 var

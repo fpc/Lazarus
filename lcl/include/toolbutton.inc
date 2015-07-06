@@ -58,14 +58,31 @@ end;
 
 procedure TToolButton.MouseDown(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
+
+  procedure SendButtonUpMsg;
+  var
+    msg: TLMMouse;
+    pt: TPoint;
+  begin
+    FillChar({%H-}msg, SizeOf(msg), 0);
+    msg.Msg:=LM_LBUTTONUP;
+    pt := ScreenToClient(Mouse.CursorPos);
+    msg.XPos:=pt.X;
+    msg.YPos:=pt.Y;
+    WndProc(TLMessage(msg));
+  end;
 var
   NewFlags: TToolButtonFlags;
 begin
   //debugln(['TToolButton.MouseDown ',DbgSName(Self)]);
+  SetMouseInControl(True);
   NewFlags := FToolButtonFlags - [tbfPressed, tbfArrowPressed];
   if (Button = mbLeft) then
   begin
-    if Enabled then
+    //use some threshold to decide if the DropdownMenu should be opened again.
+    //  When no DropdownMenu is assigned, FLastDropDownTick is always 0
+    //  therefore the condition is always met.
+    if Enabled and not(GetTickCount64 < FLastDropDownTick + 100) then
     begin
       if (Style = tbsDropDown) and (FToolBar <> nil) and (X > ClientWidth - FToolBar.FDropDownWidth) then
         Include(NewFlags, tbfArrowPressed)
@@ -81,17 +98,33 @@ begin
 
   inherited MouseDown(Button, Shift, X, Y);
 
-  if (Style = tbsDropDown) and (Button = mbLeft) and Enabled then
+  FLastDropDownTick := 0;
+  if (Button = mbLeft) and Enabled and
+     (Style in [tbsButton, tbsDropDown]) then
   begin
-    if NewFlags * [tbfArrowPressed] = [] then
-      Down := True;
+    if ((Style = tbsButton) and (tbfPressed in NewFlags) or
+        (Style = tbsDropDown) and (tbfArrowPressed in NewFlags)) and
+       CheckMenuDropdown then
+    begin
+      FLastDropDownTick := GetTickCount64;
+
+      //because we show the DropdownMenu in MouseDown, we have to send
+      //  LM_LBUTTONUP manually to make it work in all widgetsets!
+      // Some widgetsets work without it (e.g. win32) but some don't (e.g. carbon).
+      SendButtonUpMsg;
+    end else
+    begin
+      if (Style = tbsDropDown) and 
+         (NewFlags * [tbfArrowPressed, tbfPressed] = [tbfPressed])
+      then
+        Down := True;
+    end;
   end;
 end;
 
 procedure TToolButton.MouseUp(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 var
-  DropDownMenuDropped: Boolean;
   Pressed: Boolean;
   Pt: TPoint;
 begin
@@ -114,26 +147,24 @@ begin
       if not PtInRect(Rect(0,0,Width,Height), Pt) then
         SetMouseInControl(false);
     end;
-    DropDownMenuDropped := False;
-    //DebugLn('TToolButton.MouseUp ',Name,':',ClassName,' ',Style=tbsCheck);
     if (Style in [tbsButton, tbsDropDown]) then
-    begin
-      if (FToolBar <> nil) and FMouseInControl and
-         ((Style = tbsButton) or (X > ClientWidth - FToolBar.FDropDownWidth)) then
-        DropDownMenuDropped := CheckMenuDropdown;
       Down := False;
-    end;
-
-    //debugln(['TToolButton.MouseUp ',DbgSName(Self),' FMouseInControl=',FMouseInControl,' DropDownMenuDropped=',DropDownMenuDropped]);
-    if FMouseInControl and not DropDownMenuDropped then
+    //button is pressed, but DropdownMenu was not shown
+    if FMouseInControl and (FLastDropDownTick = 0) and Pressed then
     begin
       if (Style = tbsCheck) then
         Down := not Down;
-      if Pressed then
-        Click;
+      Click;
+
+      //Mouse position can have changed after click (e.g. through a modal dialog)
+      if FMouseInControl then
+      begin
+        Pt := ScreenToClient(Mouse.CursorPos);
+        if not PtInRect(Rect(0,0,Width,Height), Pt) then
+          SetMouseInControl(false);
+      end;
     end;
   end;
-  Invalidate;
 end;
 
 procedure TToolButton.Notification(AComponent: TComponent;
@@ -498,13 +529,12 @@ procedure TToolButton.MouseLeave;
 begin
   // DebugLn('TToolButton.MouseLeave ',Name);
   inherited MouseLeave;
-  SetMouseInControl(false);
   if (not MouseCapture) and ([tbfPressed, tbfArrowPressed] * FToolButtonFlags <> []) then
   begin
     Exclude(FToolButtonFlags, tbfPressed);
     Exclude(FToolButtonFlags, tbfArrowPressed);
-    Invalidate;
   end;
+  SetMouseInControl(false);
 end;
 
 procedure TToolButton.SetDown(Value: Boolean);

@@ -4815,9 +4815,9 @@ begin
                 SeenEqual := False;
                 SeenQuotes := False;
               end;
-            ' ' :
+            ' ', '/' :
               if InQuote then
-                AddParmChar(' ')
+                AddParmChar(ch)
               else
               if InAttr then begin
                 InAttr := False;
@@ -6431,7 +6431,10 @@ begin
     ParseMAP(Parent, EndTokens);
   IpHtmlTagText :
     begin
-      TIpHtmlNodeText.Create(Parent).FEscapedText := GetTokenString;
+      if InPre > 0 then
+        TIpHtmlNodeText.Create(Parent).ANSIText := GetTokenString
+      else
+        TIpHtmlNodeText.Create(Parent).FEscapedText := GetTokenString;
       NextToken;
     end;
   IpHtmlTagINPUT,
@@ -9714,7 +9717,9 @@ begin
   SetRectEmpty(R);
   for i := 0 to Pred(AreaList.Count) do
     UnionRect(R, R, PRect(AreaList[i])^);
-  Owner.MakeVisible(R{$IFDEF IP_LAZARUS}, False{$ENDIF});
+
+  Owner.MakeVisible(R{$IFDEF IP_LAZARUS}, true {$ENDIF});
+  //Owner.MakeVisible(R{$IFDEF IP_LAZARUS}, False {$ENDIF});  // original
 end;
 
 procedure TIpHtmlNodeA.SetProps(const RenderProps: TIpHtmlProps);
@@ -13955,6 +13960,7 @@ begin
   E := FHtml.FindElement(URL);
   FCurAnchor := '';
   if E <> nil then begin
+    HyperPanel.GetPageRect;  // Make sure that layout is valid
     E.MakeVisible;
     FCurAnchor := '#'+URL;
   end else

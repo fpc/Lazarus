@@ -5,9 +5,6 @@ unit StringsUnit;
 
 interface
 
-uses
-  Classes, SysUtils;
-
 resourcestring
   rsBeer = 'Beer';
   rsWine = 'Wine';

@@ -9,7 +9,7 @@ Implementation for cupsprinter
 uses
   {%H-}udlgSelectPrinter, // used to compile it on this target
   {%H-}udlgpropertiesprinter, // used to compile it on this target
-  FileUtil;
+  FileUtil, LazFileUtils;
 
 //Return always 72 because, PostScript it's 72 only
 function TCUPSPrinter.GetXDPI: Integer;
@@ -493,7 +493,6 @@ begin
     Result:=cupsdyn.cupsPrintFile(PChar(aPrinterName),PChar(aFileName),
                                   PChar(Self.Title),
                                   fcupsNumOpts,fcupsOptions);
-
   end;
 end;
 

@@ -5,8 +5,7 @@ unit Unit1;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
-  ComCtrls, StdCtrls, LCLProc, ColorBox;
+  Classes, SysUtils, Forms, ComCtrls, StdCtrls;
 
 type
   TForm1 = class(TForm)
@@ -19,9 +18,9 @@ type
     procedure Button1Click(Sender: TObject);
     procedure swView1Click(Sender: TObject);
   private
-    { private declarations }
+
   public
-    { public declarations }
+
   end; 
 
 var

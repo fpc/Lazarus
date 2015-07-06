@@ -281,6 +281,20 @@ begin
 end;
 
 
+{$IFDEF VER3_1}
+procedure RegisterTFPHTTPWebClient;
+begin
+  RegisterComponents(fpWebTab,[TFPHTTPWebClient]);
+end;
+procedure RegisterTOAuth2Handler;
+begin
+  RegisterComponents(fpWebTab,[TOAuth2Handler]);
+end;
+procedure RegisterTFPOAuth2IniStore;
+begin
+  RegisterComponents(fpWebTab,[TFPOAuth2IniStore]);
+end;
+{$ENDIF}
 
 Procedure RegisterComponents;
 
@@ -288,7 +302,10 @@ begin
   RegisterUnit('fphtml',@RegisterHTMLComponents);
   RegisterUnit('fpdatasetform',@RegisterdatasetComponents);
   {$IFDEF VER3_1}
-  classes.RegisterComponents(fpWebTab,[TFPHTTPWebClient,TOAuth2Handler,TFPOAuth2IniStore]);
+  RegisterUnit('fphttpwebclient',@RegisterTFPHTTPWebClient);
+  RegisterUnit('fpoauth2',@RegisterTOAuth2Handler);
+  RegisterUnit('fpoauth2ini',@RegisterTFPOAuth2IniStore);
+  //classes.RegisterComponents(fpWebTab,[TFPHTTPWebClient,TOAuth2Handler,TFPOAuth2IniStore]);
   {$ENDIF}
 end;
 

@@ -5,8 +5,8 @@ unit frmgeneratedcode;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs,
-  SynHighlighterPas, SynMemo, ExtCtrls, StdCtrls, ldd_consts;
+  Classes, LazUTF8, Forms, Dialogs, ExtCtrls, StdCtrls,
+  SynHighlighterPas, SynMemo, ldd_consts;
 
 type
 

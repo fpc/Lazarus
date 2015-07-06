@@ -16,8 +16,8 @@ unit ProjectIntf;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, FileUtil, Controls, Forms, AvgLvlTree,
-  NewItemIntf, ProjPackIntf, IDEOptionsIntf, CompOptsIntf, ObjInspStrConsts;
+  Classes, SysUtils, FileUtil, LazFileUtils, Controls, Forms, AvgLvlTree,
+  NewItemIntf, ProjPackIntf, CompOptsIntf, ObjInspStrConsts;
 
 const
   FileDescGroupName = 'File';

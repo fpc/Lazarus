@@ -317,7 +317,8 @@ const
   ecCodeToolsDefinesEd      = ecFirstLazarus + 823;
 
   ecExtToolSettings         = ecFirstLazarus + 824;
-  ecManageExamples          = ecFirstLazarus + 825;
+  ecManageDesktops          = ecFirstLazarus + 825;
+  ecManageExamples          = ecFirstLazarus + 826;
   ecConfigBuildLazarus      = ecFirstLazarus + 830;
   ecBuildLazarus            = ecFirstLazarus + 831;
   ecBuildAdvancedLazarus    = ecFirstLazarus + 832;

@@ -5,8 +5,7 @@ unit shapedwindowtest;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
-  StdCtrls, LCLIntf, LCLType;
+  Forms, Graphics, StdCtrls, LCLIntf;
 
 type
 
@@ -17,9 +16,9 @@ type
     procedure btnCloseClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
   private
-    { private declarations }
+
   public
-    { public declarations }
+
   end; 
 
 var

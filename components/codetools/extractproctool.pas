@@ -1117,62 +1117,69 @@ var
     i: Integer;
     Cache: PWithVarCache;
     Params: TFindDeclarationParams;
+    CLList: THelpersList;
   begin
     Result:=false;
 
-    // check cache
-    if WithVarCache=nil then
-      WithVarCache:=TFPList.Create;
-    i:=WithVarCache.Count-1;
-    while (i>=0) and (PWithVarCache(WithVarCache[i])^.WithVarNode<>WithVarNode) do
-      dec(i);
-    if i>=0 then begin
-      Cache:=PWithVarCache(WithVarCache[i]);
-    end else begin
-      // resolve type of With variable
-      {$IFDEF CTDEBUG}
-      debugln(['IdentifierDefinedByWith NEW WithVar']);
-      {$ENDIF}
-      New(Cache);
-      WithVarCache.Add(Cache);
-      Cache^.WithVarNode:=WithVarNode;
-      Cache^.WithVarExpr:=CleanExpressionType;
-      Cache^.VarEndPos:=FindEndOfTerm(WithVarNode.StartPos,false,true);
-      Params:=TFindDeclarationParams.Create;
-      try
-        Params.ContextNode:=WithVarNode;
-        Params.Flags:=[fdfExceptionOnNotFound,fdfFunctionResult,fdfFindChildren];
-        Cache^.WithVarExpr:=FindExpressionTypeOfTerm(WithVarNode.StartPos,-1,Params,true);
-        if (Cache^.WithVarExpr.Desc<>xtContext)
-        or (Cache^.WithVarExpr.Context.Node=nil)
-        or (not (Cache^.WithVarExpr.Context.Node.Desc
-                 in (AllClasses+[ctnEnumerationType])))
-        then begin
-          MoveCursorToCleanPos(Cache^.WithVarNode.StartPos);
-          RaiseException(ctsExprTypeMustBeClassOrRecord);
-        end;
+    CLList := THelpersList.Create;
+    try
+      FindHelpersInContext(WithVarNode, CLList);
+      // check cache
+      if WithVarCache=nil then
+        WithVarCache:=TFPList.Create;
+      i:=WithVarCache.Count-1;
+      while (i>=0) and (PWithVarCache(WithVarCache[i])^.WithVarNode<>WithVarNode) do
+        dec(i);
+      if i>=0 then begin
+        Cache:=PWithVarCache(WithVarCache[i]);
+      end else begin
+        // resolve type of With variable
         {$IFDEF CTDEBUG}
-        debugln(['IdentifierDefinedByWith WithVarExpr=',ExprTypeToString(Cache^.WithVarExpr)]);
+        debugln(['IdentifierDefinedByWith NEW WithVar']);
+        {$ENDIF}
+        New(Cache);
+        WithVarCache.Add(Cache);
+        Cache^.WithVarNode:=WithVarNode;
+        Cache^.WithVarExpr:=CleanExpressionType;
+        Cache^.VarEndPos:=FindEndOfTerm(WithVarNode.StartPos,false,true);
+        Params:=TFindDeclarationParams.Create(CLList);
+        try
+          Params.ContextNode:=WithVarNode;
+          Params.Flags:=[fdfExceptionOnNotFound,fdfFunctionResult,fdfFindChildren];
+          Cache^.WithVarExpr:=FindExpressionTypeOfTerm(WithVarNode.StartPos,-1,Params,true);
+          if (Cache^.WithVarExpr.Desc<>xtContext)
+          or (Cache^.WithVarExpr.Context.Node=nil)
+          or (not (Cache^.WithVarExpr.Context.Node.Desc
+                   in (AllClasses+[ctnEnumerationType])))
+          then begin
+            MoveCursorToCleanPos(Cache^.WithVarNode.StartPos);
+            RaiseException(ctsExprTypeMustBeClassOrRecord);
+          end;
+          {$IFDEF CTDEBUG}
+          debugln(['IdentifierDefinedByWith WithVarExpr=',ExprTypeToString(Cache^.WithVarExpr)]);
+          {$ENDIF}
+        finally
+          Params.Free;
+        end;
+      end;
+
+      if CleanPos<=Cache^.VarEndPos then exit;
+
+      // search identifier in with var context
+      Params:=TFindDeclarationParams.Create(CLList);
+      try
+        Params.SetIdentifier(Self,@Src[CleanPos],nil);
+        Params.Flags:=[fdfSearchInAncestors,fdfSearchInHelpers];
+        Params.ContextNode:=Cache^.WithVarExpr.Context.Node;
+        Result:=Cache^.WithVarExpr.Context.Tool.FindIdentifierInContext(Params);
+        {$IFDEF CTDEBUG}
+        debugln(['IdentifierDefinedByWith Identifier=',GetIdentifier(@Src[CleanPos]),' FoundInWith=',Result,' WithVar="',dbgstr(Src,WithVarNode.StartPos,10),'"']);
         {$ENDIF}
       finally
         Params.Free;
       end;
-    end;
-
-    if CleanPos<=Cache^.VarEndPos then exit;
-
-    // search identifier in with var context
-    Params:=TFindDeclarationParams.Create;
-    try
-      Params.SetIdentifier(Self,@Src[CleanPos],nil);
-      Params.Flags:=[fdfSearchInAncestors];
-      Params.ContextNode:=Cache^.WithVarExpr.Context.Node;
-      Result:=Cache^.WithVarExpr.Context.Tool.FindIdentifierInContext(Params);
-      {$IFDEF CTDEBUG}
-      debugln(['IdentifierDefinedByWith Identifier=',GetIdentifier(@Src[CleanPos]),' FoundInWith=',Result,' WithVar="',dbgstr(Src,WithVarNode.StartPos,10),'"']);
-      {$ENDIF}
     finally
-      Params.Free;
+      CLList.Free;
     end;
   end;
 
@@ -1765,12 +1772,13 @@ var
     IsInSelection:=(VarStartPos>=BlockStartPos) and (VarStartPos<BlockEndPos);
     IsAfterSelection:=(VarStartPos>=BlockEndPos);
     MoveCursorToCleanPos(VarStartPos);
-    Params:=TFindDeclarationParams.Create;
+    VarNode:=FindDeepestNodeAtPos(VarStartPos,true);
+    Params:=TFindDeclarationParams.Create(Self, VarNode);
     try
       // find declaration
-      Params.ContextNode:=FindDeepestNodeAtPos(VarStartPos,true);
+      Params.ContextNode:=VarNode;
       Params.Flags:=[fdfSearchInParentNodes,fdfExceptionOnNotFound,
-                     fdfTopLvlResolving,fdfSearchInAncestors];
+                     fdfTopLvlResolving,fdfSearchInAncestors,fdfSearchInHelpers];
       Params.SetIdentifier(Self,@Src[VarStartPos],@CheckSrcIdentifier);
       {$IFDEF CTDebug}
       DebugLn('AddVariableAtCursor Searching ',GetIdentifier(Params.Identifier));

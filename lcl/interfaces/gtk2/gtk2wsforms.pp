@@ -1014,12 +1014,12 @@ begin
     with TGTK2WidgetSet(Widgetset) do
     begin
       {$note test with smaller minor versions and check where LM_CONFIGUREEVENT is needed.}
-       {$IFDEF HASX}
-       // fix for buggy compiz.
-       // see http://bugs.freepascal.org/view.php?id=17523
-       if not compositeManagerRunning then
-       {$ENDIF}
-         SetCallback(LM_CONFIGUREEVENT, PGtkObject(AWidget), AWidgetInfo^.LCLObject);
+      {$IFDEF HASX}
+      // fix for buggy compiz.
+      // see http://bugs.freepascal.org/view.php?id=17523
+      if not compositeManagerRunning then
+      {$ENDIF}
+        SetCallback(LM_CONFIGUREEVENT, PGtkObject(AWidget), AWidgetInfo^.LCLObject);
     end;
 end;
 

@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, LCLType, Forms, Controls, Graphics, ComCtrls,
-  Dialogs, Buttons, ExtCtrls, StdCtrls, FileUtil, ButtonPanel,
+  Dialogs, Buttons, ExtCtrls, StdCtrls, LazFileUtils, ButtonPanel,
   BasicCodeTools,
   IDEHelpIntf,
   IDEProcs, InputHistory, LazarusIDEStrConsts, EnvironmentOpts, TransferMacros,

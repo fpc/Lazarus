@@ -15,8 +15,8 @@ interface
 
 
 uses
-  Classes, SysUtils, FileUtil, LCLProc, Forms, PropertyStorage, XMLConf, DOM,
-  XMLRead, XMLWrite, LazConfigStorage, lazutf8classes;
+  Classes, SysUtils, LCLProc, Forms, XMLConf, DOM,
+  XMLRead, XMLWrite, LazConfigStorage, LazUTF8, lazutf8classes;
 
 type
   { TPropStorageXMLConfig }

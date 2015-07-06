@@ -57,7 +57,7 @@ unit SemaphorGrids;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, LCLProc, LCLIntf, LCLType, Forms,
+  Classes, SysUtils, LazUTF8, LResources, LCLProc, LCLIntf, LCLType, Forms,
   Controls, Graphics, Dialogs, Grids;
 
 const

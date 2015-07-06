@@ -277,6 +277,7 @@ type
     function FindSectionNodeAtPos(P: integer): TCodeTreeNode;
     function FindScanRangeNode(Range: TLinkScannerRange): TCodeTreeNode;
     function FindScanRangeNodeAtPos(P: integer): TCodeTreeNode;
+    function FindLastNode: TCodeTreeNode;
 
     function NodeHasParentOfType(ANode: TCodeTreeNode;
         NodeDesc: TCodeTreeNodeDesc): boolean;
@@ -3542,7 +3543,7 @@ begin
       SaveRaiseExceptionWithHint;
     UndoReadNextAtom;
     EndChildNode;
-  end else if (CurNode.Desc in [ctnProgram,ctnLibrary,ctnImplementation]) then
+  end else if (CurNode<>nil) and (CurNode.Desc in [ctnProgram,ctnLibrary,ctnImplementation]) then
   begin
     ReadNextAtom;
     if (CurPos.Flag<>cafPoint) then
@@ -4162,8 +4163,6 @@ begin
     end;
   end else begin
     // forward definition
-    if IntfDesc=ctnTypeHelper then
-      SaveRaiseException('forward defined type helpers are not allowed');
     CurNode.SubDesc:=CurNode.SubDesc+ctnsForwardDeclaration;
   end;
   if CurPos.Flag=cafEND then begin
@@ -4221,6 +4220,7 @@ var
   ClassDesc: TCodeTreeNodeDesc;
   ClassNode: TCodeTreeNode;
   IsHelper: Boolean;
+  HelperForNode: TCodeTreeNode;
 begin
   //debugln(['TPascalParserTool.KeyWordFuncTypeClass ',GetAtom,' ',CleanPosToStr(CurPos.StartPos)]);
   // class or 'class of' start found
@@ -4236,10 +4236,12 @@ begin
     ClassDesc:=ctnObjCCategory
   else if UpAtomIs('CPPCLASS') then
     ClassDesc:=ctnCPPClass
+  else if UpAtomIs('TYPE') then
+    ClassDesc:=ctnTypeType
   else
     SaveRaiseStringExpectedButAtomFound('class');
   ContextDesc:=CurNode.Desc;
-  if ClassDesc<>ctnRecordType then begin
+  if not(ClassDesc in [ctnRecordType, ctnTypeType]) then begin
     if not (ContextDesc in [ctnTypeDefinition,ctnGenericType])
     then
       SaveRaiseExceptionFmt(ctsAnonymDefinitionsAreNotAllowed,[GetAtom]);
@@ -4311,10 +4313,14 @@ begin
         end;
       end else if UpAtomIs('HELPER') then begin
         IsHelper:=true;
-        CreateChildNode;
-        CurNode.Desc:=ctnClassHelper;
-        CurNode.EndPos:=CurPos.EndPos;
-        EndChildNode;
+        case ClassDesc of
+          ctnClass: CurNode.Desc:=ctnClassHelper;
+          ctnRecordType: CurNode.Desc:=ctnRecordHelper;
+          ctnTypeType: CurNode.Desc:=ctnTypeHelper;
+        else
+          SaveRaiseExceptionFmt(ctsHelperIsNotAllowed,[GetAtom]);
+        end;
+        ClassDesc:=CurNode.Desc;
         ReadNextAtom;
       end;
     end;
@@ -4328,13 +4334,20 @@ begin
       if not UpAtomIs('FOR') then
         SaveRaiseStringExpectedButAtomFound('for');
       CreateChildNode;
-      CurNode.Desc:=ctnClassHelperFor;
+      CurNode.Desc:=ctnHelperFor;
+      HelperForNode:=CurNode;
+      CreateChildNode;
+      CurNode.Desc:=ctnIdentifier;
       repeat
         ReadNextAtom;
+        if CurNode.StartPos = HelperForNode.StartPos then
+          CurNode.StartPos:=CurPos.StartPos;
         AtomIsIdentifierSaveE;
         CurNode.EndPos:=CurPos.EndPos;
+        HelperForNode.EndPos:=CurPos.EndPos;
         ReadNextAtom;
       until CurPos.Flag<>cafPoint;
+      EndChildNode;
       EndChildNode;
     end;
   end;
@@ -4614,38 +4627,23 @@ end;
 
 function TPascalParserTool.KeyWordFuncTypeType: boolean;
 // 'type identifier'
+var
+  StartPos: Integer;
 begin
-  if not LastAtomIs(0,'=') then
-    SaveRaiseStringExpectedButAtomFound(ctsIdentifier);
-  CreateChildNode;
-  CurNode.Desc:=ctnTypeType;
+  StartPos := CurPos.StartPos;
   ReadNextAtom;
-  if UpAtomIs('HELPER') and (cmsTypeHelpers in Scanner.CompilerModeSwitches) then
+  if UpAtomIs('HELPER') then begin
+    UndoReadNextAtom;
+    Result := KeyWordFuncTypeClass;
+  end else
   begin
-    // type helper(inheritance) for typename
-    CurNode.Desc:=ctnTypeHelper;
-    // read inheritance
-    ReadNextAtom;
-    if (CurPos.Flag=cafRoundBracketOpen) then begin
-      // read inheritage brackets
-      ReadClassInheritance(true);
-      ReadNextAtom;
-    end;
-    // read 'FOR'
-    if not UpAtomIs('FOR') then
-      SaveRaiseStringExpectedButAtomFound('FOR');
-    // read helperfor
-    ReadNextAtom;
-    AtomIsIdentifierE;
     CreateChildNode;
-    CurNode.Desc:=ctnClassHelperFor;
-    EndChildNode;
-    // read props and procs
-    ReadClassInterfaceContent;
-  end else begin
+    CurNode.StartPos:=StartPos;
+    CurNode.Desc:=ctnTypeType;
     Result:=ParseType(CurPos.StartPos);
     CurNode.EndPos:=CurPos.EndPos;
     EndChildNode;
+    Result:=true;
   end;
 end;
 
@@ -5740,7 +5738,7 @@ begin
     exit;
   end;
   try
-    IsMethod:=ProcNode.Parent.Desc in (AllClasses+AllClassSections);
+    IsMethod:=(ProcNode.Parent<>nil) and (ProcNode.Parent.Desc in (AllClasses+AllClassSections));
     MoveCursorToNodeStart(ProcNode);
     ReadNextAtom;
     if UpAtomIs('CLASS') then
@@ -5866,6 +5864,13 @@ end;
 function TPascalParserTool.FindImplementationNode: TCodeTreeNode;
 begin
   Result:=FindRootNode(ctnImplementation);
+end;
+
+function TPascalParserTool.FindLastNode: TCodeTreeNode;
+begin
+  Result := FindRootNode(ctnEndPoint);
+  if Result=nil then
+    Result := Tree.GetLastNode;
 end;
 
 function TPascalParserTool.FindImplementationUsesNode: TCodeTreeNode;

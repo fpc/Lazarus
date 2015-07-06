@@ -39,6 +39,7 @@ type
   TW2FormatPage = class
   public
     Converter: TWiki2FormatConverter;
+    CategoryList: TStringList;
     WikiFilename: string;
     WikiErrorMsg: string;
     WikiDoc: TXMLDocument;
@@ -309,12 +310,14 @@ end;
 constructor TW2FormatPage.Create(TheConverter: TWiki2FormatConverter);
 begin
   Converter:=TheConverter;
+  CategoryList := TStringList.Create;
 end;
 
 destructor TW2FormatPage.Destroy;
 begin
   ClearPageConnections;
   ClearConversion;
+  FreeAndNil(CategoryList);
   FreeAndNil(WikiDoc);
   FreeAndNil(WikiPage);
   inherited Destroy;

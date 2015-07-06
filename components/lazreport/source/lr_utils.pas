@@ -15,12 +15,12 @@ interface
 {$I LR_Vers.inc}
 
 uses
-  SysUtils, Classes, Graphics, Controls,
+  SysUtils, Classes, strutils, Graphics, Controls,
   LR_DBRel, Forms, StdCtrls, ClipBrd, Menus, db,
   {$IFDEF WIN32}
   Windows,
   {$ENDIF}
-  LCLType, LCLIntf, LConvEncoding;
+  LCLType, LCLIntf, LConvEncoding, LazFileUtils, LazUTF8;
 
 type
   TUTF8Item=packed record
@@ -87,8 +87,7 @@ function UTF8CountWords(const str:string; out WordCount,SpcCount,SpcSize:Integer
 
 implementation
 
-uses LR_Class, LR_Const, LR_Pars, FileUtil, LazUtilsStrConsts, LR_DSet,
-  LR_DBComponent, strutils, LazUTF8;
+uses LR_Class, LR_Const, LR_Pars, LazUtilsStrConsts, LR_DSet, LR_DBComponent;
 
 var
   PreviousFormatSettings: TFormatSettings;

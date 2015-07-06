@@ -8,7 +8,7 @@ uses
   Classes, sysutils, Forms, Controls, CheckLst, ButtonPanel, StdCtrls, Buttons,
   ExtCtrls, Menus, LCLProc, LCLType, IDEImagesIntf, LazIDEIntf, IDEHelpIntf,
   SrcEditorIntf, IDEWindowIntf, SourceEditor, LazarusIDEStrConsts,
-  ListFilterEdit;
+  ListFilterEdit, IDEOptionDefs;
 
 type
 
@@ -90,6 +90,8 @@ end;
 
 procedure TEditorFileManagerForm.FormCreate(Sender: TObject);
 begin
+  Name := NonModalIDEWindowNames[nmiwEditorFileManager];
+
   SourceEditorManager.RegisterChangeEvent(semEditorCreate, @DoEditorsChanged);
   SourceEditorManager.RegisterChangeEvent(semEditorDestroy, @DoEditorsChanged);
 

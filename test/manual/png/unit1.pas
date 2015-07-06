@@ -8,8 +8,8 @@ unit Unit1;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ExtCtrls,
-  StdCtrls, fpreadgif, fpwritejpeg, fpreadpng, fpimage, fpwritebmp, LCLIntf;
+  Classes, SysUtils, Forms, ExtCtrls, StdCtrls, LCLIntf,
+  fpreadgif, fpwritejpeg, fpreadpng, fpimage, fpwritebmp;
 
 type
 

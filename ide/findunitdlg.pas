@@ -34,16 +34,15 @@ unit FindUnitDlg;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, Forms, Controls, Dialogs, ExtCtrls,
-  StdCtrls, ComCtrls, FileUtil, Laz2_XMLCfg, LazFileCache,
+  Classes, SysUtils, LCLProc, Forms, Controls, ExtCtrls,
+  StdCtrls, ComCtrls, LazFileUtils, Laz2_XMLCfg, LazFileCache,
   // codetools
   CodeToolsStrConsts, CodeCache, CodeToolManager,
   // IDEIntf
   LazIDEIntf, IDEMsgIntf, PackageIntf, IDEExternToolIntf,
   // IDE
   DialogProcs, PackageDefs, Project, IDEProcs, LazarusIDEStrConsts,
-  etFPCMsgParser,
-  PackageLinks, PackageSystem, BasePkgManager;
+  etFPCMsgParser, PackageLinks, PackageSystem, BasePkgManager;
 
 type
   TFindUnitDialog = class;

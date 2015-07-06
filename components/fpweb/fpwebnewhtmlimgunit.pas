@@ -34,7 +34,7 @@ unit fpwebNewHTMLImgUnit;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ButtonPanel,
+  Classes, SysUtils, LazFileUtils, Forms, Controls, Graphics, Dialogs, ButtonPanel,
   StdCtrls, EditBtn, ExtCtrls;
 
 type

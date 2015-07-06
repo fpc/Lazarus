@@ -33,7 +33,7 @@ interface
 
 uses
   SysUtils, Classes,
-  Graphics, FileUtil, LCLProc, LCLIntf, LCLType, Registry, IniFiles,
+  Graphics, LazUTF8, LCLProc, LCLIntf, LCLType, Registry, IniFiles,
   SynEditTypes, SynEditTextBase;
 
 type

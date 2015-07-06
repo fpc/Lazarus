@@ -5,8 +5,7 @@ unit main;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
-  Grids, Buttons, ComCtrls;
+  Classes, SysUtils, Forms, Graphics, Dialogs, Grids, ComCtrls;
 
 type
 
@@ -27,10 +26,9 @@ type
     procedure LoadButtonClick(Sender: TObject);
     procedure SaveButtonClick(Sender: TObject);
   private
-    { private declarations }
     function IndexToAlphaIndex(AIndex: Integer): string;
   public
-    { public declarations }
+
   end; 
 
 var

@@ -17,7 +17,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, LResources, Graphics, Controls, StdCtrls,
-  LCLProc, LCLType, EditBtn, CheckLst, FileUtil, LazUTF8, AvgLvlTree;
+  LCLProc, LCLType, EditBtn, CheckLst, LazFileUtils, LazUTF8, AvgLvlTree;
 
 type
 

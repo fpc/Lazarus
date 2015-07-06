@@ -5,8 +5,7 @@ unit Unit1;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LazLogger, Forms, Controls, Graphics, Dialogs,
-  ExtCtrls, StdCtrls, ComCtrls;
+  SysUtils, LazLogger, Forms, Controls, Graphics, Dialogs, StdCtrls, ComCtrls;
 
 type
 

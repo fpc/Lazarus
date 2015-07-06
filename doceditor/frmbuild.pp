@@ -27,9 +27,8 @@ unit frmBuild;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  FileUtil, Buttons, ComCtrls, EditBtn, ExtCtrls, ActnList, Grids,
-  UTF8Process;
+  Classes, SysUtils, Forms, Controls, Dialogs, StdCtrls,
+  LazFileUtils, ComCtrls, EditBtn, ExtCtrls, ActnList, Grids, UTF8Process;
 
 type
   { TBuildForm }

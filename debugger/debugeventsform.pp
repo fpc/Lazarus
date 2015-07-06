@@ -35,7 +35,7 @@ interface
 uses
   Classes, SysUtils, Controls, ComCtrls, ActnList,
   BaseDebugManager, IDEWindowIntf,
-  StdActns, ClipBrd, Menus, Dialogs, FileUtil, Debugger, DebuggerDlg,
+  StdActns, ClipBrd, Menus, Dialogs, LazFileUtils, Debugger, DebuggerDlg,
   LazarusIDEStrConsts, EnvironmentOpts, InputHistory,
   IDEImagesIntf, LazIDEIntf, DbgIntfDebuggerBase, debugger_eventlog_options;
 

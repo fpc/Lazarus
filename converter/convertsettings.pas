@@ -30,8 +30,8 @@ unit ConvertSettings;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, IDEProcs,
-  StdCtrls, Buttons, ExtCtrls, DialogProcs, ButtonPanel, ComCtrls,
+  Classes, SysUtils, Forms, Controls, Dialogs, IDEProcs, StdCtrls, Buttons,
+  ButtonPanel, ComCtrls, DialogProcs, FileUtil, LazFileUtils,
   LazarusIDEStrConsts, CodeToolsStructs, CodeToolManager, CodeCache,
   DividerBevel, BaseIDEIntf, IDEMsgIntf, IDEExternToolIntf, AVL_Tree,
   LazConfigStorage, ConverterTypes, ReplaceNamesUnit, ReplaceFuncsUnit;
@@ -730,7 +730,7 @@ function TConvertSettings.DelphiToLazFilename(const DelphiFilename, LazExt: stri
 var
   RelPath, SubPath, fn: string;
 begin
-  RelPath:=FileUtil.CreateRelativePath(DelphiFilename, MainPath);
+  RelPath:=CreateRelativePath(DelphiFilename, MainPath);
   SubPath:=ExtractFilePath(RelPath);
   if LazExt='' then                 // Include ext in filename if not defined.
     fn:=ExtractFileName(RelPath)
@@ -752,7 +752,7 @@ function TConvertSettings.RenameDelphiToLazFile(const DelphiFilename, LazExt: st
 var
   RelPath, SubPath, fn: string;
 begin
-  RelPath:=FileUtil.CreateRelativePath(DelphiFilename, MainPath);
+  RelPath:=CreateRelativePath(DelphiFilename, MainPath);
   SubPath:=ExtractFilePath(RelPath);
   if LazExt='' then                 // Include ext in filename if not defined.
     fn:=ExtractFileName(RelPath)

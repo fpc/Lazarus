@@ -5,8 +5,7 @@ unit reAboutUnit;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
-  ButtonPanel, StdCtrls, versionresource;
+  LazUTF8, Forms, ButtonPanel, StdCtrls, versionresource;
 
 type
 
@@ -41,7 +40,7 @@ const
   TargetCPU = {$I %FPCTARGETCPU%};
 
 implementation
-uses reConstsUnit, resource, resreader, LCLVersion,
+uses reConstsUnit, resource, LCLVersion,
 {$IFDEF WINDOWS}
   winpeimagereader
 {$ELSE}

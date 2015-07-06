@@ -43,7 +43,7 @@ uses
   {$IFDEF IP_LAZARUS}
   LCLType,
   LCLIntf,
-  FileUtil, LazUTF8Classes,
+  LazFileUtils, LazUTF8Classes,
   {$ELSE}
   Windows,
   {$ENDIF}

@@ -13,8 +13,7 @@ unit fClientForm;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
-  StdCtrls, ExtCtrls;
+  Classes, Forms, StdCtrls;
 
 type
   TViewWindow = class(TForm)
@@ -23,9 +22,9 @@ type
     procedure Image1MouseMove(Sender: TObject; Shift: TShiftState;
       X, Y: Integer);
   private
-    { private declarations }
+
   public
-    { public declarations }
+
   end; 
 
 //var ViewWindow: TViewWindow; //useless

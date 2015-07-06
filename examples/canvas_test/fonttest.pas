@@ -5,7 +5,7 @@ unit fonttest;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs; 
+  SysUtils, Forms, Graphics;
 
 type
 
@@ -14,9 +14,9 @@ type
   TfrmFont = class(TForm)
     procedure FormPaint(Sender: TObject);
   private
-    { private declarations }
+
   public
-    { public declarations }
+
   end; 
 
 var

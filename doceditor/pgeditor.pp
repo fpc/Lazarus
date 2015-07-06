@@ -51,8 +51,8 @@ unit pgEditor;
 
 interface
 
-uses SysUtils,Classes,dom,xmlread,xmlwrite,Forms,Controls,FileUtil,extctrls,
-     comctrls,Dialogs,menus,freditor,frpeditor,fpdeutil;
+uses SysUtils, Classes, dom, xmlread, xmlwrite, Forms, Controls, ExtCtrls,
+     ComCtrls, Dialogs, freditor, frpeditor, fpdeutil, LazFileUtils, LazUTF8;
 
 type
   TEditorPageNew = class(TFrame)

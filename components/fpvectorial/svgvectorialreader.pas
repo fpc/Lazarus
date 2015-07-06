@@ -944,7 +944,7 @@ begin
   Result := [];
   if AKey = 'fill' then
   begin
-    // Suppose for fill="url(#grad2)"
+    // Support for fill="url(#grad2)"
     lDefName := Trim(AValue);
     if Copy(lDefName, 0, 3) = 'url' then
     begin
@@ -1364,7 +1364,7 @@ begin
           else if lAttrName = 'y2' then
             y2 := lAttrValue;
         end;
-        if x2 = '0%' then lBrushEntity.Brush.Kind := bkVerticalGradient
+        if x2 = x1 then lBrushEntity.Brush.Kind := bkVerticalGradient
         else lBrushEntity.Brush.Kind := bkHorizontalGradient;
 
         // <stop offset="0%" style="stop-color:rgb(255,255,0);stop-opacity:1" />

@@ -35,10 +35,9 @@ unit CodeToolsOptions;
 interface
 
 uses
-  Classes, SysUtils, LazConf, FileUtil, Laz2_XMLCfg, lazutf8classes,
-  LazFileCache, LResources, Forms, Controls, Buttons, LclProc, LCLType,
-  ExtCtrls, Dialogs, CodeToolManager, DefineTemplates, SourceChanger, SynEdit,
-  IDEOptionsIntf, MacroIntf, IDEOptionDefs, LazarusIDEStrConsts, IDEProcs;
+  Classes, SysUtils, LazConf, LazFileUtils, Laz2_XMLCfg, LazUTF8, LazUTF8Classes,
+  LazFileCache, LclProc, LCLType, CodeToolManager, DefineTemplates, SourceChanger,
+  IDEOptionsIntf, MacroIntf, LazarusIDEStrConsts, IDEProcs;
 
 const
   DefaultIndentationFilename = 'laz_indentation.pas'; // in directory GetPrimaryConfigPath
@@ -686,8 +685,7 @@ procedure TCodeToolsOptions.SetLazarusDefaultFilename;
 var
   ConfFileName: string;
 begin
-  ConfFileName:=SetDirSeparators(
-                             GetPrimaryConfigPath+'/'+DefaultCodeToolsOptsFile);
+  ConfFileName:=SetDirSeparators(GetPrimaryConfigPath+'/'+DefaultCodeToolsOptsFile);
   CopySecondaryConfigFile(DefaultCodeToolsOptsFile);
   if (not FileExistsCached(ConfFileName)) then begin
     debugln('Looking for code tools config file:  "' + ConfFileName + '"');

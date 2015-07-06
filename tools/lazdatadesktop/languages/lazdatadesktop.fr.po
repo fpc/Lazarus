@@ -189,7 +189,9 @@ msgid "Save SQL statement to file"
 msgstr "Enregistrer du code SQL"
 
 #: lazdatadeskstr.simportdictinto
-msgid "Import datadictionary"
+#, fuzzy
+#| msgid "Import datadictionary"
+msgid "Import data dictionary"
 msgstr "Importer un dictionnaire de données"
 
 #: lazdatadeskstr.sindex
@@ -354,7 +356,9 @@ msgid "Open"
 msgstr "Ouvrir"
 
 #: lazdatadeskstr.sld_actionopenrecentdatadicth
-msgid "Open selected recent datadictionary"
+#, fuzzy
+#| msgid "Open selected recent datadictionary"
+msgid "Open selected recent data dictionary"
 msgstr "Ouvrir le dictionnaire de données sélectionné récent"
 
 #: lazdatadeskstr.sld_actionpaste
@@ -374,7 +378,9 @@ msgid "Save &as"
 msgstr "Enregistrer sous..."
 
 #: lazdatadeskstr.sld_actionsaveash
-msgid "Save datadictionary as"
+#, fuzzy
+#| msgid "Save datadictionary as"
+msgid "Save data dictionary as"
 msgstr "Enregistrer un dictionnaire de données sous"
 
 #: lazdatadeskstr.sld_actionsaveh
@@ -455,7 +461,9 @@ msgid "Host"
 msgstr "Hôte"
 
 #: lazdatadeskstr.sld_importupdatedatadictionary
-msgid "Import/Update datadictionary"
+#, fuzzy
+#| msgid "Import/Update datadictionary"
+msgid "Import/Update data dictionary"
 msgstr "Importer/Mettre à jour un dictionnaire de données"
 
 #: lazdatadeskstr.sld_indent
@@ -604,7 +612,9 @@ msgid "New connection"
 msgstr "Nouvelle connexion"
 
 #: lazdatadeskstr.snewdictionary
-msgid "New database"
+#, fuzzy
+#| msgid "New database"
+msgid "New data dictionary"
 msgstr "Nouvelle base de données "
 
 #: lazdatadeskstr.snewdomain
@@ -669,7 +679,9 @@ msgid "Database"
 msgstr "Base de données "
 
 #: lazdatadeskstr.snodedatadictionary
-msgid "Datadictionary"
+#, fuzzy
+#| msgid "Datadictionary"
+msgid "Data dictionary"
 msgstr "Dictionnaire de données"
 
 #: lazdatadeskstr.snodedomains

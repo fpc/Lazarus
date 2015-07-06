@@ -4616,6 +4616,12 @@ msgstr "Tlustě nevýchozí hodnoty"
 msgid "Border space"
 msgstr "Okrajový prostor"
 
+#: lazarusidestrconsts.lisbottom
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisbottom"
+msgid "Bottom"
+msgstr "Dolní"
+
 #: lazarusidestrconsts.lisbottomborderspacespinedithint
 msgid "Bottom borderspace. This value is added to base borderspace and used for the space below the control."
 msgstr "Dolní okrajový prostor. Tato hodnota je přidána k základnímu okraji a je použita pro místo pod prvkem."
@@ -4725,6 +4731,10 @@ msgstr ""
 #: lazarusidestrconsts.lisbuildinglazarusfailed
 msgid "Building Lazarus failed"
 msgstr "Sestavení Lazarusu selhalo"
+
+#: lazarusidestrconsts.lisbuildmode
+msgid "Build Mode: %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisbuildmodediffdifferencesbetweenbuildmodes
 msgid "Differences between build modes"
@@ -5459,6 +5469,10 @@ msgstr "Vyberte jednotku Delphi (*.pas)"
 #: lazarusidestrconsts.lischoosedirectory
 msgid "Choose directory"
 msgstr "Vyberte adresář"
+
+#: lazarusidestrconsts.lischooseexecutable
+msgid "Choose an executable"
+msgstr ""
 
 #: lazarusidestrconsts.lischoosefpcsourcedir
 msgid "Choose FPC source directory"
@@ -6465,6 +6479,10 @@ msgstr "Nastavit sestavení %s"
 msgid "Configure \"Build Lazarus\""
 msgstr "Nastavení \"Sestavení Lazarusu\""
 
+#: lazarusidestrconsts.lisconfigureeditortoolbar
+msgid "Configure Toolbar"
+msgstr ""
+
 #: lazarusidestrconsts.lisconfigurelazaruside
 msgid "Configure Lazarus IDE"
 msgstr "Nastavit Lazarus IDE"
@@ -7219,9 +7237,9 @@ msgstr ""
 msgid "Create a project first!"
 msgstr "Vytvořte nejdříve projekt!"
 
-#: lazarusidestrconsts.liscreatedebugandreleasemodes
-msgid "Create Debug and Release modes"
-msgstr "Vytvořit Ladící a Vydávací módy"
+#: lazarusidestrconsts.liscreatedebugandreleasemodesnewproj
+msgid "Create Debug and Release modes for new projects"
+msgstr ""
 
 #: lazarusidestrconsts.liscreatedirectory
 msgid "Create directory?"
@@ -7258,6 +7276,10 @@ msgstr "(Vytvořit nový balíček)"
 #: lazarusidestrconsts.liscreatenewpackagecomponent
 msgid "Create new package component"
 msgstr "(Vytvořit novou komponentu balíčku)"
+
+#: lazarusidestrconsts.liscreatenowforthisproject
+msgid "Create now for this project"
+msgstr ""
 
 #: lazarusidestrconsts.liscreateproject
 msgid "Create project"
@@ -8275,6 +8297,18 @@ msgstr "Barvy Editoru"
 #: lazarusidestrconsts.liseditormacros
 msgid "Editor macros"
 msgstr "Návrhář maker"
+
+#: lazarusidestrconsts.liseditortoolbar
+msgid "Editor ToolBar"
+msgstr ""
+
+#: lazarusidestrconsts.liseditortoolbarhint
+msgid "You may add here your favorite commands"
+msgstr ""
+
+#: lazarusidestrconsts.liseditortoolbarvisible
+msgid "EditorToolbar is &visible"
+msgstr ""
 
 #: lazarusidestrconsts.lisedoptsloadascheme
 msgid "Load a scheme"
@@ -10060,6 +10094,14 @@ msgstr "Neplatný povel"
 msgid "Invalid delete"
 msgstr "Neplatné odebrání"
 
+#: lazarusidestrconsts.lisinvalidexecutable
+msgid "Invalid Executable"
+msgstr ""
+
+#: lazarusidestrconsts.lisinvalidexecutablemessagetext
+msgid "The file \"%s\" is not executable."
+msgstr ""
+
 #: lazarusidestrconsts.lisinvalidexpression
 msgid "Invalid expression:%s%s%s%s"
 msgstr "Neplatný výraz:%s%s%s%s"
@@ -10173,6 +10215,14 @@ msgstr "Jak se to mohlo stát? Chyba v hlavním adresáři:"
 msgctxt "lazarusidestrconsts.lisjhjumphistory"
 msgid "Jump History"
 msgstr "Historie skoků"
+
+#: lazarusidestrconsts.lisjumptoerror
+msgid "Jump to error"
+msgstr ""
+
+#: lazarusidestrconsts.lisjumptoerroratidentifiercompletion
+msgid "When an error in the sources is found at identifier completion, jump to it."
+msgstr ""
 
 #: lazarusidestrconsts.lisjumptoprocedure
 msgid "Jump to procedure %s"
@@ -14596,6 +14646,10 @@ msgstr "Uložit informace o sezení"
 msgid ".lpi is the project main info file, .lps is a separate file for session data only."
 msgstr ""
 
+#: lazarusidestrconsts.lisposition
+msgid "Position"
+msgstr ""
+
 #: lazarusidestrconsts.lispositionoutsideofsource
 #, fuzzy
 #| msgid "%s (position outside of source"
@@ -17031,6 +17085,12 @@ msgstr "Hlavička Nástroje: Úspěch"
 msgid "tool stopped with exit code %s. Use context menu to get more information."
 msgstr "nástro skončil s kódem %s. Použijte kontextové menu pro více informací."
 
+#: lazarusidestrconsts.listop
+#, fuzzy
+msgctxt "lazarusidestrconsts.listop"
+msgid "Top"
+msgstr "Nahoře"
+
 #: lazarusidestrconsts.listopanchoring
 msgid "Top anchoring"
 msgstr "Přichycení nahoru"
@@ -19106,6 +19166,18 @@ msgstr "zkoumat"
 msgctxt "lazarusidestrconsts.srkmecinvertassignment"
 msgid "Invert Assignment"
 msgstr "Převrátit přiřazení"
+
+#: lazarusidestrconsts.srkmeckeymapleft
+#, fuzzy
+msgctxt "lazarusidestrconsts.srkmeckeymapleft"
+msgid "Left"
+msgstr "Vlevo"
+
+#: lazarusidestrconsts.srkmeckeymapright
+#, fuzzy
+msgctxt "lazarusidestrconsts.srkmeckeymapright"
+msgid "Right"
+msgstr "Vpravo"
 
 #: lazarusidestrconsts.srkmecleft
 msgid "Move cursor left"

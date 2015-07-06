@@ -5,7 +5,7 @@ unit dbloginform;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls;
+  Forms, StdCtrls;
 
 type
 
@@ -31,9 +31,9 @@ type
     procedure LocalMachineClick(Sender: TObject);
     procedure OSAuthenticationChange(Sender: TObject);
   private
-    { private declarations }
+
   public
-    { public declarations }
+
   end;
 
 var

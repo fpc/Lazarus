@@ -23,8 +23,8 @@ unit SVNLogForm;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Dialogs, Controls, FileUtil,
-  ComCtrls, StdCtrls, ButtonPanel, ExtCtrls, Process, Spin, XMLRead, DOM,
+  Classes, SysUtils, Forms, Dialogs, Controls, FileUtil, LazFileUtils,
+  ComCtrls, StdCtrls, ButtonPanel, ExtCtrls, Spin, DOM,
   Menus, LCLProc, LazIDEIntf, fgl;
 
 type

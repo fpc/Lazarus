@@ -30,10 +30,9 @@ unit FPDocSelectLink;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, Forms, Controls, Graphics, Dialogs,
-  ExtCtrls, StdCtrls, ButtonPanel, FileUtil, LCLType, AvgLvlTree,
-  Laz2_DOM,
-  PackageIntf, ProjectIntf,
+  Classes, SysUtils, LCLProc, Forms, Controls, Graphics,
+  ExtCtrls, StdCtrls, ButtonPanel, FileUtil, LazFileUtils, LCLType, AvgLvlTree,
+  Laz2_DOM, PackageIntf, ProjectIntf,
   CodeHelp, LazarusIDEStrConsts, PackageSystem, PackageDefs;
 
 type

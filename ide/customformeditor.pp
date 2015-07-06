@@ -40,18 +40,17 @@ uses
 {$ENDIF}
   // LCL+FCL
   Classes, SysUtils, TypInfo, Math, LCLIntf, LCLType, LResources,
-  LCLMemManager, FileUtil, LazFileCache, AvgLvlTree,
+  LCLMemManager, FileUtil, LazFileUtils, LazFileCache, AvgLvlTree,
   LCLProc, Graphics, Controls, Forms, Menus, Dialogs,
   CodeCache, CodeTree, CodeToolManager, FindDeclarationTool,
   // IDEIntf
-  PropEdits, PropEditUtils, ObjectInspector, IDECommands, FormEditingIntf,
+  PropEdits, PropEditUtils, ObjectInspector, FormEditingIntf,
   UnitResources, IDEOptionsIntf, IDEDialogs, ComponentEditors,
   // IDE
-  LazarusIDEStrConsts, KeyMapping, EditorOptions, EnvironmentOpts,
+  LazarusIDEStrConsts, EditorOptions, EnvironmentOpts,
   ControlSelection, Project, JITForms, MainIntf,
   CustomNonFormDesigner, NonControlDesigner, FrameDesigner, ComponentReg,
-  IDEProcs,
-  DesignerProcs, PackageDefs;
+  IDEProcs, DesignerProcs, PackageDefs;
 
 const
   OrdinalTypes = [tkInteger,tkChar,tkEnumeration,tkbool];

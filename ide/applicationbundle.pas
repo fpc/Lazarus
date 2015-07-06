@@ -34,7 +34,7 @@ unit ApplicationBundle;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Dialogs,
+  Classes, SysUtils, Forms, Controls, Dialogs, FileUtil, LazFileUtils,
   DialogProcs;
 
 type

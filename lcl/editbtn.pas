@@ -31,7 +31,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, LResources, LCLStrConsts, Types, LCLType, LMessages,
-  Graphics, Controls, Forms, FileUtil, Dialogs, StdCtrls, Buttons, Calendar,
+  Graphics, Controls, Forms, LazFileUtils, Dialogs, StdCtrls, Buttons, Calendar,
   ExtDlgs, CalendarPopup, MaskEdit, Menus;
 
 const

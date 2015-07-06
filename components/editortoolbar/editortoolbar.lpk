@@ -2,62 +2,29 @@
 <CONFIG>
   <Package Version="4">
     <Name Value="editortoolbar"/>
-    <Type Value="DesignTime"/>
-    <AddToProjectUsesSection Value="True"/>
-    <Author Value="Graeme Geldenhuys, Giuliano Colla"/>
+    <Type Value="RunAndDesignTime"/>
     <CompilerOptions>
       <Version Value="11"/>
       <SearchPaths>
-        <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)/$(LCLWidgetType)"/>
+        <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
-      <Parsing>
-        <SyntaxOptions>
-          <UseAnsiStrings Value="False"/>
-        </SyntaxOptions>
-      </Parsing>
     </CompilerOptions>
-    <Description Value="Provides a configurable Toolbar in the source editor window, which can be positioned at any side. The toolbar comes with a predefined Jump button, and then Jump Forward and Jump Back buttons. 
-"/>
-    <License Value="GPL
-"/>
-    <Version Minor="8" Release="2"/>
-    <Files Count="3">
+    <Files Count="1">
       <Item1>
-        <Filename Value="editortoolbar_impl.pas"/>
-        <HasRegisterProc Value="True"/>
-        <UnitName Value="editortoolbar_impl"/>
+        <Filename Value="unit1.pas"/>
+        <UnitName Value="Unit1"/>
       </Item1>
-      <Item2>
-        <Filename Value="edttbconfigfrm.pas"/>
-        <UnitName Value="EdtTbConfigFrm"/>
-      </Item2>
-      <Item3>
-        <Filename Value="editortoolbar_str.pas"/>
-        <UnitName Value="editortoolbar_str"/>
-      </Item3>
     </Files>
-    <i18n>
-      <EnableI18N Value="True"/>
-      <OutDir Value="languages"/>
-      <EnableI18NForLFM Value="True"/>
-    </i18n>
-    <RequiredPkgs Count="2">
+    <RequiredPkgs Count="1">
       <Item1>
-        <PackageName Value="IDEIntf"/>
+        <PackageName Value="FCL"/>
       </Item1>
-      <Item2>
-        <PackageName Value="CodeTools"/>
-      </Item2>
     </RequiredPkgs>
     <UsageOptions>
       <UnitPath Value="$(PkgOutDir)"/>
     </UsageOptions>
     <PublishOptions>
       <Version Value="2"/>
-      <IgnoreBinaries Value="False"/>
     </PublishOptions>
-    <CustomOptions Items="ExternHelp" Version="2">
-      <_ExternHelp Items="Count"/>
-    </CustomOptions>
   </Package>
 </CONFIG>

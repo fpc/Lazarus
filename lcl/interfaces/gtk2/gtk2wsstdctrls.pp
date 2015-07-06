@@ -690,7 +690,11 @@ begin
   if AWinControl.HandleAllocated and AWinControl.HandleObjectShouldBeVisible and
     (TCustomListBox(AWinControl).ItemIndex = -1) then
     SetItemIndex(TCustomListBox(AWinControl), TCustomListBox(AWinControl).ItemIndex);
-  inherited ShowHide(AWinControl);
+  // issue #28341
+  if AWinControl.HandleObjectShouldBeVisible then
+      SetFont(AWinControl, AWinControl.Font);
+  Gtk2WidgetSet.SetVisible(AWinControl, AWinControl.HandleObjectShouldBeVisible);
+  InvalidateLastWFPResult(AWinControl, AWinControl.BoundsRect);
 end;
 
 function gtk2ListBoxSelectionChangedAfter({%H-}Widget: PGtkWidget;

@@ -4590,6 +4590,12 @@ msgstr "Poner en negritas valores no predeterminados"
 msgid "Border space"
 msgstr "Espacio de borde"
 
+#: lazarusidestrconsts.lisbottom
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisbottom"
+msgid "Bottom"
+msgstr "Abajo"
+
 #: lazarusidestrconsts.lisbottomborderspacespinedithint
 msgid "Bottom borderspace. This value is added to base borderspace and used for the space below the control."
 msgstr "Espacio de borde inferior. Este valor se añade al valor base de espacio de borde y es usado para el espacio bajo el control."
@@ -4699,6 +4705,10 @@ msgstr "Construyendo"
 #: lazarusidestrconsts.lisbuildinglazarusfailed
 msgid "Building Lazarus failed"
 msgstr "Ha fallado la construcción de Lazarus"
+
+#: lazarusidestrconsts.lisbuildmode
+msgid "Build Mode: %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisbuildmodediffdifferencesbetweenbuildmodes
 msgid "Differences between build modes"
@@ -5425,6 +5435,10 @@ msgstr "Escoja unidad Delphi (*.pas)"
 #: lazarusidestrconsts.lischoosedirectory
 msgid "Choose directory"
 msgstr "Escoja directorio"
+
+#: lazarusidestrconsts.lischooseexecutable
+msgid "Choose an executable"
+msgstr ""
 
 #: lazarusidestrconsts.lischoosefpcsourcedir
 msgid "Choose FPC source directory"
@@ -6429,6 +6443,10 @@ msgstr "Configurar Construcción %s"
 msgid "Configure \"Build Lazarus\""
 msgstr "Configurar \"Construir Lazarus\""
 
+#: lazarusidestrconsts.lisconfigureeditortoolbar
+msgid "Configure Toolbar"
+msgstr ""
+
 #: lazarusidestrconsts.lisconfigurelazaruside
 msgid "Configure Lazarus IDE"
 msgstr "Configurar IDE Lazarus"
@@ -7183,9 +7201,9 @@ msgstr ", CPU: %s"
 msgid "Create a project first!"
 msgstr "¡Cree un proyecto primero!"
 
-#: lazarusidestrconsts.liscreatedebugandreleasemodes
-msgid "Create Debug and Release modes"
-msgstr "Crea modos Debug y Release"
+#: lazarusidestrconsts.liscreatedebugandreleasemodesnewproj
+msgid "Create Debug and Release modes for new projects"
+msgstr ""
 
 #: lazarusidestrconsts.liscreatedirectory
 msgid "Create directory?"
@@ -7222,6 +7240,10 @@ msgstr "(Crear nuevo paquete)"
 #: lazarusidestrconsts.liscreatenewpackagecomponent
 msgid "Create new package component"
 msgstr "Crear nuevo componente paquete"
+
+#: lazarusidestrconsts.liscreatenowforthisproject
+msgid "Create now for this project"
+msgstr ""
 
 #: lazarusidestrconsts.liscreateproject
 msgid "Create project"
@@ -8231,6 +8253,18 @@ msgstr "Editar colores"
 #: lazarusidestrconsts.liseditormacros
 msgid "Editor macros"
 msgstr "Editar macros"
+
+#: lazarusidestrconsts.liseditortoolbar
+msgid "Editor ToolBar"
+msgstr ""
+
+#: lazarusidestrconsts.liseditortoolbarhint
+msgid "You may add here your favorite commands"
+msgstr ""
+
+#: lazarusidestrconsts.liseditortoolbarvisible
+msgid "EditorToolbar is &visible"
+msgstr ""
 
 #: lazarusidestrconsts.lisedoptsloadascheme
 msgid "Load a scheme"
@@ -9996,6 +10030,14 @@ msgstr "comando no válido"
 msgid "Invalid delete"
 msgstr "Borrado no válido"
 
+#: lazarusidestrconsts.lisinvalidexecutable
+msgid "Invalid Executable"
+msgstr ""
+
+#: lazarusidestrconsts.lisinvalidexecutablemessagetext
+msgid "The file \"%s\" is not executable."
+msgstr ""
+
 #: lazarusidestrconsts.lisinvalidexpression
 msgid "Invalid expression:%s%s%s%s"
 msgstr "Expresión no válida:%s%s%s%s"
@@ -10108,6 +10150,14 @@ msgstr "Me pregunto como hizo eso: Error en el directorio base:"
 msgctxt "lazarusidestrconsts.lisjhjumphistory"
 msgid "Jump History"
 msgstr "Historial de Saltos"
+
+#: lazarusidestrconsts.lisjumptoerror
+msgid "Jump to error"
+msgstr ""
+
+#: lazarusidestrconsts.lisjumptoerroratidentifiercompletion
+msgid "When an error in the sources is found at identifier completion, jump to it."
+msgstr ""
 
 #: lazarusidestrconsts.lisjumptoprocedure
 msgid "Jump to procedure %s"
@@ -14512,6 +14562,10 @@ msgstr "Guardar información de la sesión en"
 msgid ".lpi is the project main info file, .lps is a separate file for session data only."
 msgstr ".lpi es el fichero principal del proyecto, .lps es un fichero separado para datos de sesión únicamente."
 
+#: lazarusidestrconsts.lisposition
+msgid "Position"
+msgstr ""
+
 #: lazarusidestrconsts.lispositionoutsideofsource
 msgid "%s (position outside of source)"
 msgstr "%s (posición fuera de la fuente)"
@@ -16904,6 +16958,12 @@ msgstr "Cabecera de utilidad: Éxito"
 msgid "tool stopped with exit code %s. Use context menu to get more information."
 msgstr "utilidad detenida con código de salida %s. Utiliza el menú contextual para obtener más información."
 
+#: lazarusidestrconsts.listop
+#, fuzzy
+msgctxt "lazarusidestrconsts.listop"
+msgid "Top"
+msgstr "Arriba"
+
 #: lazarusidestrconsts.listopanchoring
 msgid "Top anchoring"
 msgstr "Anclaje superior"
@@ -18964,6 +19024,18 @@ msgstr "inspeccionar"
 msgctxt "lazarusidestrconsts.srkmecinvertassignment"
 msgid "Invert Assignment"
 msgstr "Invertir Tarea"
+
+#: lazarusidestrconsts.srkmeckeymapleft
+#, fuzzy
+msgctxt "lazarusidestrconsts.srkmeckeymapleft"
+msgid "Left"
+msgstr "Izquierda"
+
+#: lazarusidestrconsts.srkmeckeymapright
+#, fuzzy
+msgctxt "lazarusidestrconsts.srkmeckeymapright"
+msgid "Right"
+msgstr "Derecha"
 
 #: lazarusidestrconsts.srkmecleft
 msgid "Move cursor left"

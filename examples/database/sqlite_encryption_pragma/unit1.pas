@@ -49,8 +49,7 @@ unit Unit1;
 interface
 
 uses
-  Classes, SysUtils, db, sqldb, sqlite3conn, FileUtil, Forms, Controls,
-  Graphics, Dialogs, StdCtrls, ExtCtrls, DBGrids;
+  SysUtils, db, sqldb, sqlite3conn, Forms, Dialogs, StdCtrls, ExtCtrls, DBGrids;
 
 type
 

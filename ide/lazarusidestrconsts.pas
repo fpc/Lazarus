@@ -100,8 +100,8 @@ resourcestring
   lisUp   = 'Up';
   lisRight = 'Right';
   lisLeft = 'Left';
-//  lisTop = 'Top';
-//  lisBottom = 'Bottom';
+  lisTop = 'Top';
+  lisBottom = 'Bottom';
   lisName = 'Name';
   lisKey = 'Key';
   lisValue = 'Value';
@@ -745,6 +745,8 @@ resourcestring
   lisTheDirectoryContainsNoProjectUnitsAnyMoreRemoveThi = 'The directory "%s" '
     +'contains no project units any more. Remove this directory from the '
     +'project''s unit search path?';
+  lisInvalidExecutable = 'Invalid Executable';
+  lisInvalidExecutableMessageText = 'The file "%s" is not executable.';
   lisInvalidProjectFilename = 'Invalid project filename';
   lisisAnInvalidProjectNamePleaseChooseAnotherEGProject = '"%s" is an '
     +'invalid project name.%sPlease choose another (e.g. project1.lpi)';
@@ -991,6 +993,7 @@ resourcestring
   lisChooseMakeExecutable = 'Choose "make" executable';
   lisChooseDebuggerExecutable = 'Choose debugger executable';
   lisChooseTestBuildDir = 'Choose the directory for tests';
+  lisChooseExecutable = 'Choose an executable';
 
   // dialogs
   lisProjectChanged = 'Project changed';
@@ -1229,9 +1232,9 @@ resourcestring
   lisIfOnlySessionInfoChangedThenAsk = 'If only the session info changed, ask about saving it.';
   dlgEdFiles = 'Editor Files';
   dlgIntvInSec = 'Interval in secs';
-  dlgDesktopFiles = 'Desktop Files';
-  dlgSaveDFile = 'Save desktop settings to file';
-  dlgLoadDFile = 'Load desktop settings from file';
+  dlgExportDesktop = 'Export desktop';
+  dlgImportDesktop = 'Import desktop';
+  dlgSaveCurrentDesktop = 'Save current desktop';
   dlgDesktopHints = 'Hints';
   dlgDesktopButtons = 'Buttons - ';
   dlgDesktopMenus = 'Menus - ';
@@ -1241,8 +1244,6 @@ resourcestring
   dlgPreferDoubleClickOverSingleClick = 'Prefer double-click over single-click';
   dlgCurrentlyRespectedByMessagesWindow = 'Currently respected by messages window, '
     +'jump history and search results.';
-  lisSavedSuccessfully = 'Saved successfully';
-  lisLoadedSuccessfully = 'Loaded successfully';
 
   // Window options
   dlgShowingWindows = 'Showing Windows';
@@ -1287,6 +1288,8 @@ resourcestring
   dlgProjFiles = 'Project Files';
   dlgEnvType = 'Type';
   dlgEnvNone = 'None';
+  srkmecKeyMapLeft = 'Left';
+  srkmecKeyMapRight = 'Right';
   dlgSmbFront = 'Symbol in front (.~pp)';
   lisNoBackupFiles = 'No backup files';
   dlgSmbBehind = 'Symbol behind (.pp~)';
@@ -3134,6 +3137,7 @@ resourcestring
   lisMenuCodeToolsDefinesEditor          = 'CodeTools Defines Editor ...';
   lisMenuRescanFPCSourceDirectory = 'Rescan FPC Source Directory';
   srkmecMakeResourceString        = 'Make Resource String';
+  lisDesktops                     = 'Desktops ...';
   lisKMDiffEditorFiles            = 'Diff Editor Files';
   lisKMConvertDFMFileToLFM        = 'Convert DFM File to LFM';
   lisKMConvertDelphiUnitToLazarusUnit = 'Convert Delphi Unit to Lazarus Unit';
@@ -4529,7 +4533,7 @@ resourcestring
   lisProjInspRemovedRequiredPackages = 'Removed required packages';
   lisProjInspProjectInspector = 'Project Inspector - %s';
   
-  //Coolbar
+  // IDE Coolbar
   lisCoolbarOptions = 'IDE CoolBar';
   lisCoolbarDeleteToolBar = 'Are you sure you want to delete the selected toolbar?';
   lisCoolbarSelectToolBar = 'Please select a toolbar first!';
@@ -4579,14 +4583,22 @@ resourcestring
   lisCoolbarDeleteWarning = 'There must be at least one toolbar!';
   lisCoolbarRestoreDefaults = 'Restore defaults';
 
+  // Editor Toolbar
+  lisEditorToolbar = 'Editor ToolBar';
+  lisEditorToolbarHint = 'You may add here your favorite commands';
+  lisConfigureEditorToolbar = 'Configure Toolbar';
+  lisEditorToolbarVisible = 'EditorToolbar is &visible';
+  lisPosition = 'Position';
+
   // components palette settings and list form
   lisCmpPages = 'Pages';
-  lisCmpRestoreDefaults = '&Restore defaults';
-  lisImportExport = 'Import / Export';
   lisCmpLstComponents = 'Components';
+  lisCmpPaletteVisible = 'Palette is &visible';
+  lisCmpRestoreDefaults = '&Restore defaults';
   lisCmpLstList = 'List';
   lisCmpLstPalette = 'Palette';
   lisCmpLstInheritance = 'Inheritance';
+  lisImportExport = 'Import / Export';
   lisSuccessfullyImported = 'Successfully imported from "%s".';
   lisSuccessfullyExported = 'Successfully exported to "%s".';
 

@@ -5,8 +5,8 @@ unit ExampleManager;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, lazutf8classes, ListFilterEdit, Forms, Controls,
-  Graphics, Dialogs, StdCtrls, ExtCtrls, ButtonPanel, Buttons, EditBtn, LCLProc,
+  Classes, SysUtils, lazutf8classes, ListFilterEdit, Forms, Controls, Dialogs,
+  StdCtrls, ExtCtrls, ButtonPanel, Buttons, EditBtn, LCLProc, FileUtil, LazFileUtils,
   IDEWindowIntf, LazIDEIntf, MainIntf, EnvironmentOpts, LazarusIDEStrConsts;
 
 type

@@ -28,8 +28,7 @@ unit ProcessMessagesUnit1;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, Buttons,
-  ComCtrls, FileUtil, StdCtrls;
+  Classes, SysUtils, Forms, Dialogs, ComCtrls, StdCtrls, LazUTF8;
 
 type
 

@@ -5,8 +5,8 @@ unit fConfig;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ExtCtrls,
-  ComCtrls, StdCtrls, CheckLst;
+  Classes, SysUtils, LazFileUtils, Forms, Dialogs, ExtCtrls, ComCtrls, StdCtrls,
+  CheckLst;
 
 type
 

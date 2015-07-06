@@ -228,7 +228,8 @@ const
     EnvOptionsFiles         = 100;
     EnvOptionsDesktop       = 200;
     EnvOptionsWindow        = 300;
-    EnvOptionsToolbar       = 325;
+    EnvOptionsToolbar       = 320;
+    EnvOptionsEditorToolbar = 330;
     EnvOptionsCompPalette   = 350;
     EnvOptionsFormEd        = 400;
     EnvOptionsOI            = 500;

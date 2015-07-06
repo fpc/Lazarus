@@ -6,9 +6,9 @@ unit Unit1;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LR_Class, LR_DBSet, Forms, Controls, Graphics,
-  Dialogs, DbCtrls, Buttons, ExtCtrls, StdCtrls, DBGrids,
-  db, sqldb, sqlite3conn, ibconnection, fbadmin, Grids;
+  Classes, SysUtils, db, sqldb, sqlite3conn, ibconnection, fbadmin,
+  FileUtil, Forms, Graphics, Dialogs, DbCtrls, Buttons, ExtCtrls, StdCtrls,
+  DBGrids, Grids, LR_Class, LR_DBSet;
 
 type
 
@@ -44,13 +44,11 @@ type
     procedure DBGrid1PrepareCanvas(sender: TObject; DataCol: Integer;
       Column: TColumn; AState: TGridDrawState);
     procedure DBImage1DblClick(Sender: TObject);
-    procedure DBNavigator1BeforeAction(Sender: TObject; Button: TDBNavButtonType
-      );
+    procedure DBNavigator1BeforeAction(Sender: TObject; Button: TDBNavButtonType);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure frReport1EnterRect(Memo: TStringList; View: TfrView);
   private
-    { private declarations }
     FUsingFirebird: boolean; //indicates whether we're using Firebird (true) or SQLite3 (false)
     // Updates linked image field with image named in DBEdit1.Text
     // Shows image to user
@@ -63,7 +61,7 @@ type
     // for either SQLite3 (empty) or Firebird (filled)
     function RecreateDB: boolean;
   public
-    { public declarations }
+
   end;
 
 var
@@ -115,8 +113,7 @@ begin
   ChangeImage;
 end;
 
-procedure TForm1.DBNavigator1BeforeAction(Sender: TObject;
-  Button: TDBNavButtonType);
+procedure TForm1.DBNavigator1BeforeAction(Sender: TObject; Button: TDBNavButtonType);
 begin
   if Button = nbRefresh then
   begin

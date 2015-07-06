@@ -187,7 +187,9 @@ msgid "Save SQL statement to file"
 msgstr "Uložit SQL příkaz do souboru"
 
 #: lazdatadeskstr.simportdictinto
-msgid "Import datadictionary"
+#, fuzzy
+#| msgid "Import datadictionary"
+msgid "Import data dictionary"
 msgstr "Importovat datový slovník"
 
 #: lazdatadeskstr.sindex
@@ -352,7 +354,7 @@ msgid "Open"
 msgstr "Otevřít"
 
 #: lazdatadeskstr.sld_actionopenrecentdatadicth
-msgid "Open selected recent datadictionary"
+msgid "Open selected recent data dictionary"
 msgstr ""
 
 #: lazdatadeskstr.sld_actionpaste
@@ -372,7 +374,9 @@ msgid "Save &as"
 msgstr "Uložit &jako"
 
 #: lazdatadeskstr.sld_actionsaveash
-msgid "Save datadictionary as"
+#, fuzzy
+#| msgid "Save datadictionary as"
+msgid "Save data dictionary as"
 msgstr "Uložit slovník jako"
 
 #: lazdatadeskstr.sld_actionsaveh
@@ -453,7 +457,9 @@ msgid "Host"
 msgstr "Hostitel"
 
 #: lazdatadeskstr.sld_importupdatedatadictionary
-msgid "Import/Update datadictionary"
+#, fuzzy
+#| msgid "Import/Update datadictionary"
+msgid "Import/Update data dictionary"
 msgstr "Importovat/Aktualizvoat datový slovník"
 
 #: lazdatadeskstr.sld_indent
@@ -602,7 +608,9 @@ msgid "New connection"
 msgstr "Nové připojení"
 
 #: lazdatadeskstr.snewdictionary
-msgid "New database"
+#, fuzzy
+#| msgid "New database"
+msgid "New data dictionary"
 msgstr "Nová databáze"
 
 #: lazdatadeskstr.snewdomain
@@ -667,7 +675,9 @@ msgid "Database"
 msgstr "Databáze"
 
 #: lazdatadeskstr.snodedatadictionary
-msgid "Datadictionary"
+#, fuzzy
+#| msgid "Datadictionary"
+msgid "Data dictionary"
 msgstr "Datový slovník"
 
 #: lazdatadeskstr.snodedomains
