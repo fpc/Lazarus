@@ -1217,10 +1217,6 @@ msgstr "Plocha"
 msgid "Buttons - "
 msgstr "Tlačítka - "
 
-#: lazarusidestrconsts.dlgdesktopfiles
-msgid "Desktop Files"
-msgstr "Soubory na ploše"
-
 #: lazarusidestrconsts.dlgdesktophints
 msgid "Hints"
 msgstr "Pokyny"
@@ -1520,6 +1516,10 @@ msgstr "Typ"
 #: lazarusidestrconsts.dlgeofocusmessagesaftercompilation
 msgid "Focus messages after compilation"
 msgstr "Po překladu zaměřit okno zpráv"
+
+#: lazarusidestrconsts.dlgexportdesktop
+msgid "Export desktop"
+msgstr ""
 
 #: lazarusidestrconsts.dlgextracharspacing
 msgid "Extra char spacing"
@@ -2089,6 +2089,10 @@ msgstr "Zahrnut $IFDEF uzel smíšerného stavu"
 msgid "Ignore"
 msgstr "Ignorovat"
 
+#: lazarusidestrconsts.dlgimportdesktop
+msgid "Import desktop"
+msgstr ""
+
 #: lazarusidestrconsts.dlgincludesystemvariables
 msgid "Include system variables"
 msgstr "Zahrnout systémové proměnné"
@@ -2217,10 +2221,6 @@ msgstr "Chytré spojování"
 #: lazarusidestrconsts.dlglnumsbct
 msgid "Display line numbers in run-time error backtraces"
 msgstr "Zobrazit čísla řádků v běhových chybách při zpětném sledování"
-
-#: lazarusidestrconsts.dlgloaddfile
-msgid "Load desktop settings from file"
-msgstr "Načíst nastavení plochy ze souboru"
 
 #: lazarusidestrconsts.dlgmainmenu
 msgid "Main Menu"
@@ -3126,9 +3126,9 @@ msgstr "Uživatelské předefinování"
 msgid "Run Parameters"
 msgstr "Spustit s parametry"
 
-#: lazarusidestrconsts.dlgsavedfile
-msgid "Save desktop settings to file"
-msgstr "Uložit nastavení plochy do souboru"
+#: lazarusidestrconsts.dlgsavecurrentdesktop
+msgid "Save current desktop"
+msgstr ""
 
 #: lazarusidestrconsts.dlgsavedlinecolor
 msgid "Saved line"
@@ -5699,6 +5699,10 @@ msgstr "Paleta"
 msgid "Pages"
 msgstr "Stránky"
 
+#: lazarusidestrconsts.liscmppalettevisible
+msgid "Palette is &visible"
+msgstr ""
+
 #: lazarusidestrconsts.liscmprestoredefaults
 msgid "&Restore defaults"
 msgstr "Nav&rátit výchozí"
@@ -7895,6 +7899,10 @@ msgstr ""
 #: lazarusidestrconsts.lisdesigntimepackagesaddcomponentsandmenuitemstotheid
 msgid "\"Design time\" packages add components and menu items to the IDE. They can be used by projects, but are not compiled into the project. The compiler will not find units of this package when compiling the project."
 msgstr "\"Návrhové\" balíky přidávají komponenty a položky do menu IDE. Mohou být použity projekty, ale nemohou být kompilovány do projektu. Kompiler nenajde jednotky balíku během kompilace projektu."
+
+#: lazarusidestrconsts.lisdesktops
+msgid "Desktops ..."
+msgstr ""
 
 #: lazarusidestrconsts.lisdestinationdirectory
 msgid "Destination directory"
@@ -11144,10 +11152,6 @@ msgstr "Cíl odkazu"
 #: lazarusidestrconsts.lislistofallcasevalues
 msgid "list of all case values"
 msgstr "seznam všech případných hodnot"
-
-#: lazarusidestrconsts.lisloadedsuccessfully
-msgid "Loaded successfully"
-msgstr "Úspěšně nahráno"
 
 #: lazarusidestrconsts.lisloadingfailed
 msgid "Loading %s failed."
@@ -15595,10 +15599,6 @@ msgstr "Uložit změny projektu %s?"
 #: lazarusidestrconsts.lissavecurrenteditorfile
 msgid "Save current editor file"
 msgstr "Uložit aktuální editovaný soubor"
-
-#: lazarusidestrconsts.lissavedsuccessfully
-msgid "Saved successfully"
-msgstr "Úspěšně uloženo"
 
 #: lazarusidestrconsts.lissavedwithidesettings
 msgid "Saved with IDE settings"

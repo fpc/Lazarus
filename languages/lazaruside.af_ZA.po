@@ -1213,10 +1213,6 @@ msgstr ""
 msgid "Buttons - "
 msgstr ""
 
-#: lazarusidestrconsts.dlgdesktopfiles
-msgid "Desktop Files"
-msgstr ""
-
 #: lazarusidestrconsts.dlgdesktophints
 msgid "Hints"
 msgstr ""
@@ -1515,6 +1511,10 @@ msgstr "Tipe"
 
 #: lazarusidestrconsts.dlgeofocusmessagesaftercompilation
 msgid "Focus messages after compilation"
+msgstr ""
+
+#: lazarusidestrconsts.dlgexportdesktop
+msgid "Export desktop"
 msgstr ""
 
 #: lazarusidestrconsts.dlgextracharspacing
@@ -2069,6 +2069,10 @@ msgstr ""
 msgid "Ignore"
 msgstr "Verwerp"
 
+#: lazarusidestrconsts.dlgimportdesktop
+msgid "Import desktop"
+msgstr ""
+
 #: lazarusidestrconsts.dlgincludesystemvariables
 msgid "Include system variables"
 msgstr ""
@@ -2196,10 +2200,6 @@ msgstr ""
 
 #: lazarusidestrconsts.dlglnumsbct
 msgid "Display line numbers in run-time error backtraces"
-msgstr ""
-
-#: lazarusidestrconsts.dlgloaddfile
-msgid "Load desktop settings from file"
 msgstr ""
 
 #: lazarusidestrconsts.dlgmainmenu
@@ -3093,8 +3093,8 @@ msgstr ""
 msgid "Run Parameters"
 msgstr ""
 
-#: lazarusidestrconsts.dlgsavedfile
-msgid "Save desktop settings to file"
+#: lazarusidestrconsts.dlgsavecurrentdesktop
+msgid "Save current desktop"
 msgstr ""
 
 #: lazarusidestrconsts.dlgsavedlinecolor
@@ -5650,6 +5650,10 @@ msgstr ""
 msgid "Pages"
 msgstr ""
 
+#: lazarusidestrconsts.liscmppalettevisible
+msgid "Palette is &visible"
+msgstr ""
+
 #: lazarusidestrconsts.liscmprestoredefaults
 msgid "&Restore defaults"
 msgstr ""
@@ -7836,6 +7840,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisdesigntimepackagesaddcomponentsandmenuitemstotheid
 msgid "\"Design time\" packages add components and menu items to the IDE. They can be used by projects, but are not compiled into the project. The compiler will not find units of this package when compiling the project."
+msgstr ""
+
+#: lazarusidestrconsts.lisdesktops
+msgid "Desktops ..."
 msgstr ""
 
 #: lazarusidestrconsts.lisdestinationdirectory
@@ -11049,10 +11057,6 @@ msgstr ""
 
 #: lazarusidestrconsts.lislistofallcasevalues
 msgid "list of all case values"
-msgstr ""
-
-#: lazarusidestrconsts.lisloadedsuccessfully
-msgid "Loaded successfully"
 msgstr ""
 
 #: lazarusidestrconsts.lisloadingfailed
@@ -15535,10 +15539,6 @@ msgstr ""
 
 #: lazarusidestrconsts.lissavecurrenteditorfile
 msgid "Save current editor file"
-msgstr ""
-
-#: lazarusidestrconsts.lissavedsuccessfully
-msgid "Saved successfully"
 msgstr ""
 
 #: lazarusidestrconsts.lissavedwithidesettings

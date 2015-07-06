@@ -1234,10 +1234,6 @@ msgstr "Робочий Стіл"
 msgid "Buttons - "
 msgstr "Кнопки - "
 
-#: lazarusidestrconsts.dlgdesktopfiles
-msgid "Desktop Files"
-msgstr "Файли робочого столу"
-
 #: lazarusidestrconsts.dlgdesktophints
 msgid "Hints"
 msgstr "Підказки"
@@ -1539,6 +1535,10 @@ msgstr "Тип"
 #: lazarusidestrconsts.dlgeofocusmessagesaftercompilation
 msgid "Focus messages after compilation"
 msgstr "Сфокусуватись на повідомленнях після компілювання"
+
+#: lazarusidestrconsts.dlgexportdesktop
+msgid "Export desktop"
+msgstr ""
 
 #: lazarusidestrconsts.dlgextracharspacing
 msgid "Extra char spacing"
@@ -2107,6 +2107,10 @@ msgstr ""
 msgid "Ignore"
 msgstr "Ігнорувати"
 
+#: lazarusidestrconsts.dlgimportdesktop
+msgid "Import desktop"
+msgstr ""
+
 #: lazarusidestrconsts.dlgincludesystemvariables
 msgid "Include system variables"
 msgstr "Включити системні змінні"
@@ -2247,10 +2251,6 @@ msgstr "Розумне компонування"
 #: lazarusidestrconsts.dlglnumsbct
 msgid "Display line numbers in run-time error backtraces"
 msgstr "Вивести номери рядків в помилках часу виконання"
-
-#: lazarusidestrconsts.dlgloaddfile
-msgid "Load desktop settings from file"
-msgstr "Завант. налашт. роб. столу з файлу"
 
 #: lazarusidestrconsts.dlgmainmenu
 msgid "Main Menu"
@@ -3155,9 +3155,9 @@ msgstr "Overrides користувача"
 msgid "Run Parameters"
 msgstr "Параметри Виконання"
 
-#: lazarusidestrconsts.dlgsavedfile
-msgid "Save desktop settings to file"
-msgstr "Збер. робочий стіл у файл"
+#: lazarusidestrconsts.dlgsavecurrentdesktop
+msgid "Save current desktop"
+msgstr ""
 
 #: lazarusidestrconsts.dlgsavedlinecolor
 msgid "Saved line"
@@ -5796,6 +5796,10 @@ msgstr "Палітра"
 msgid "Pages"
 msgstr ""
 
+#: lazarusidestrconsts.liscmppalettevisible
+msgid "Palette is &visible"
+msgstr ""
+
 #: lazarusidestrconsts.liscmprestoredefaults
 msgid "&Restore defaults"
 msgstr ""
@@ -8045,6 +8049,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisdesigntimepackagesaddcomponentsandmenuitemstotheid
 msgid "\"Design time\" packages add components and menu items to the IDE. They can be used by projects, but are not compiled into the project. The compiler will not find units of this package when compiling the project."
+msgstr ""
+
+#: lazarusidestrconsts.lisdesktops
+msgid "Desktops ..."
 msgstr ""
 
 #: lazarusidestrconsts.lisdestinationdirectory
@@ -11315,10 +11323,6 @@ msgstr "Ціль посилання"
 #: lazarusidestrconsts.lislistofallcasevalues
 msgid "list of all case values"
 msgstr "список всіх значень case"
-
-#: lazarusidestrconsts.lisloadedsuccessfully
-msgid "Loaded successfully"
-msgstr "Завантажено успішно"
 
 #: lazarusidestrconsts.lisloadingfailed
 msgid "Loading %s failed."
@@ -15873,10 +15877,6 @@ msgstr "Зберегти зміни в проект %s?"
 #: lazarusidestrconsts.lissavecurrenteditorfile
 msgid "Save current editor file"
 msgstr "Зберегти поточний файл редактора"
-
-#: lazarusidestrconsts.lissavedsuccessfully
-msgid "Saved successfully"
-msgstr "Збережено успішно"
 
 #: lazarusidestrconsts.lissavedwithidesettings
 msgid "Saved with IDE settings"

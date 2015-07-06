@@ -1278,12 +1278,6 @@ msgstr "שולחן עבודה"
 msgid "Buttons - "
 msgstr "לחצנים -"
 
-#: lazarusidestrconsts.dlgdesktopfiles
-#, fuzzy
-#| msgid "Desktop files"
-msgid "Desktop Files"
-msgstr "קבצי שולחן עבודה"
-
 #: lazarusidestrconsts.dlgdesktophints
 msgid "Hints"
 msgstr "טיפים"
@@ -1594,6 +1588,10 @@ msgstr "סוג"
 #: lazarusidestrconsts.dlgeofocusmessagesaftercompilation
 msgid "Focus messages after compilation"
 msgstr "מקד הודעות אחרי הידור"
+
+#: lazarusidestrconsts.dlgexportdesktop
+msgid "Export desktop"
+msgstr ""
 
 #: lazarusidestrconsts.dlgextracharspacing
 msgid "Extra char spacing"
@@ -2169,6 +2167,10 @@ msgstr ""
 msgid "Ignore"
 msgstr "התעלם"
 
+#: lazarusidestrconsts.dlgimportdesktop
+msgid "Import desktop"
+msgstr ""
+
 #: lazarusidestrconsts.dlgincludesystemvariables
 msgid "Include system variables"
 msgstr "כלול משתני מערכת"
@@ -2313,10 +2315,6 @@ msgstr "קישור חכם"
 #| msgid "Display Line Numbers in Run-time Error Backtraces"
 msgid "Display line numbers in run-time error backtraces"
 msgstr "הצג מספרי שורות בסוגריים של שגיאות בזמן ריצה"
-
-#: lazarusidestrconsts.dlgloaddfile
-msgid "Load desktop settings from file"
-msgstr "טען הגדרות שולחן עבודה מקובץ"
 
 #: lazarusidestrconsts.dlgmainmenu
 msgid "Main Menu"
@@ -3275,9 +3273,9 @@ msgstr "העמסה של משתמש"
 msgid "Run Parameters"
 msgstr "הרץ פרמטרים"
 
-#: lazarusidestrconsts.dlgsavedfile
-msgid "Save desktop settings to file"
-msgstr "שמור הגדרות שולחן עבודה לקובץ"
+#: lazarusidestrconsts.dlgsavecurrentdesktop
+msgid "Save current desktop"
+msgstr ""
 
 #: lazarusidestrconsts.dlgsavedlinecolor
 msgid "Saved line"
@@ -6021,6 +6019,10 @@ msgstr "לוח"
 msgid "Pages"
 msgstr ""
 
+#: lazarusidestrconsts.liscmppalettevisible
+msgid "Palette is &visible"
+msgstr ""
+
 #: lazarusidestrconsts.liscmprestoredefaults
 msgid "&Restore defaults"
 msgstr ""
@@ -8321,6 +8323,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisdesigntimepackagesaddcomponentsandmenuitemstotheid
 msgid "\"Design time\" packages add components and menu items to the IDE. They can be used by projects, but are not compiled into the project. The compiler will not find units of this package when compiling the project."
+msgstr ""
+
+#: lazarusidestrconsts.lisdesktops
+msgid "Desktops ..."
 msgstr ""
 
 #: lazarusidestrconsts.lisdestinationdirectory
@@ -11695,10 +11701,6 @@ msgstr "קשר יעד"
 #: lazarusidestrconsts.lislistofallcasevalues
 msgid "list of all case values"
 msgstr "רשימה של כל ערכי case"
-
-#: lazarusidestrconsts.lisloadedsuccessfully
-msgid "Loaded successfully"
-msgstr ""
 
 #: lazarusidestrconsts.lisloadingfailed
 #, fuzzy,badformat
@@ -16611,10 +16613,6 @@ msgstr "לשמור שינויים לפרויקט %s?"
 #| msgid "save current editor file"
 msgid "Save current editor file"
 msgstr "שמור את הקובץ הנוכחי שבעורך"
-
-#: lazarusidestrconsts.lissavedsuccessfully
-msgid "Saved successfully"
-msgstr ""
 
 #: lazarusidestrconsts.lissavedwithidesettings
 msgid "Saved with IDE settings"

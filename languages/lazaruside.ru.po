@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2015-06-21 20:22+0300\n"
+"PO-Revision-Date: 2015-07-07 00:46+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -1214,10 +1214,6 @@ msgstr "Рабочий стол"
 msgid "Buttons - "
 msgstr "Кнопок - "
 
-#: lazarusidestrconsts.dlgdesktopfiles
-msgid "Desktop Files"
-msgstr "Файлы рабочего стола"
-
 #: lazarusidestrconsts.dlgdesktophints
 msgid "Hints"
 msgstr "Подсказки"
@@ -1517,6 +1513,10 @@ msgstr "Тип"
 #: lazarusidestrconsts.dlgeofocusmessagesaftercompilation
 msgid "Focus messages after compilation"
 msgstr "Переводить фокус в окно сообщений после компиляции"
+
+#: lazarusidestrconsts.dlgexportdesktop
+msgid "Export desktop"
+msgstr "Экспортировать рабочий стол"
 
 #: lazarusidestrconsts.dlgextracharspacing
 msgid "Extra char spacing"
@@ -2066,6 +2066,10 @@ msgstr "Директива $IFDEF подключаемого условно ак
 msgid "Ignore"
 msgstr "Пропустить"
 
+#: lazarusidestrconsts.dlgimportdesktop
+msgid "Import desktop"
+msgstr "Импортировать рабочий стол"
+
 #: lazarusidestrconsts.dlgincludesystemvariables
 msgid "Include system variables"
 msgstr "Включить системные переменные"
@@ -2194,10 +2198,6 @@ msgstr "Умная компоновка"
 #: lazarusidestrconsts.dlglnumsbct
 msgid "Display line numbers in run-time error backtraces"
 msgstr "Выдавать номера строк в ошибках времени исполнения"
-
-#: lazarusidestrconsts.dlgloaddfile
-msgid "Load desktop settings from file"
-msgstr "Загрузить рабочий стол из файла"
 
 #: lazarusidestrconsts.dlgmainmenu
 msgid "Main Menu"
@@ -3088,9 +3088,9 @@ msgstr "Пользовательские перекрытия"
 msgid "Run Parameters"
 msgstr "Параметры запуска"
 
-#: lazarusidestrconsts.dlgsavedfile
-msgid "Save desktop settings to file"
-msgstr "Сохранить рабочий стол в файл"
+#: lazarusidestrconsts.dlgsavecurrentdesktop
+msgid "Save current desktop"
+msgstr "Сохранить текущий рабочий стол"
 
 #: lazarusidestrconsts.dlgsavedlinecolor
 msgid "Saved line"
@@ -5637,6 +5637,10 @@ msgstr "Палитра"
 msgid "Pages"
 msgstr "Вкладки"
 
+#: lazarusidestrconsts.liscmppalettevisible
+msgid "Palette is &visible"
+msgstr "&Показывать палитру"
+
 #: lazarusidestrconsts.liscmprestoredefaults
 msgid "&Restore defaults"
 msgstr "Сброс&ить"
@@ -7817,6 +7821,10 @@ msgstr "Ресурсы, совместимые с Delphi. Рекомендует
 #: lazarusidestrconsts.lisdesigntimepackagesaddcomponentsandmenuitemstotheid
 msgid "\"Design time\" packages add components and menu items to the IDE. They can be used by projects, but are not compiled into the project. The compiler will not find units of this package when compiling the project."
 msgstr "Пакеты времени разработки добавляют компоненты и элементы меню в IDE. Они могут использоваться проектами, но не собираться с ними. Компилятор не найдёт модулей такого пакета при сборке проекта."
+
+#: lazarusidestrconsts.lisdesktops
+msgid "Desktops ..."
+msgstr "Рабочие столы ..."
 
 #: lazarusidestrconsts.lisdestinationdirectory
 msgid "Destination directory"
@@ -11046,10 +11054,6 @@ msgstr "Объект ссылки"
 #: lazarusidestrconsts.lislistofallcasevalues
 msgid "list of all case values"
 msgstr "Список всех значений оператора case"
-
-#: lazarusidestrconsts.lisloadedsuccessfully
-msgid "Loaded successfully"
-msgstr "Загрузка прошла успешно"
 
 #: lazarusidestrconsts.lisloadingfailed
 msgid "Loading %s failed."
@@ -15458,10 +15462,6 @@ msgstr "Сохранить изменения в проект %s?"
 #: lazarusidestrconsts.lissavecurrenteditorfile
 msgid "Save current editor file"
 msgstr "Сохранить файл в текущем редакторе"
-
-#: lazarusidestrconsts.lissavedsuccessfully
-msgid "Saved successfully"
-msgstr "Сохранение прошло успешно"
 
 #: lazarusidestrconsts.lissavedwithidesettings
 msgid "Saved with IDE settings"

@@ -1216,10 +1216,6 @@ msgstr "Desktop"
 msgid "Buttons - "
 msgstr "Buttons -"
 
-#: lazarusidestrconsts.dlgdesktopfiles
-msgid "Desktop Files"
-msgstr "Desktopdateien"
-
 #: lazarusidestrconsts.dlgdesktophints
 msgid "Hints"
 msgstr "Hinweise"
@@ -1519,6 +1515,10 @@ msgstr "Typ"
 #: lazarusidestrconsts.dlgeofocusmessagesaftercompilation
 msgid "Focus messages after compilation"
 msgstr "Fokus nach dem Kompilieren auf die Meldungen setzen"
+
+#: lazarusidestrconsts.dlgexportdesktop
+msgid "Export desktop"
+msgstr ""
 
 #: lazarusidestrconsts.dlgextracharspacing
 msgid "Extra char spacing"
@@ -2068,6 +2068,10 @@ msgstr ""
 msgid "Ignore"
 msgstr "Übergehen"
 
+#: lazarusidestrconsts.dlgimportdesktop
+msgid "Import desktop"
+msgstr ""
+
 #: lazarusidestrconsts.dlgincludesystemvariables
 msgid "Include system variables"
 msgstr "Systemvariablen einfügen"
@@ -2196,10 +2200,6 @@ msgstr "Smart Linken"
 #: lazarusidestrconsts.dlglnumsbct
 msgid "Display line numbers in run-time error backtraces"
 msgstr "Zeilennummern in Laufzeitfehler-Backtraces anzeigen"
-
-#: lazarusidestrconsts.dlgloaddfile
-msgid "Load desktop settings from file"
-msgstr "Einstellungen des Desktops aus Datei laden"
 
 #: lazarusidestrconsts.dlgmainmenu
 msgid "Main Menu"
@@ -3091,9 +3091,9 @@ msgstr "Benutzervorgaben"
 msgid "Run Parameters"
 msgstr "Start-Parameter"
 
-#: lazarusidestrconsts.dlgsavedfile
-msgid "Save desktop settings to file"
-msgstr "Desktopeinstellungen in Datei speichern"
+#: lazarusidestrconsts.dlgsavecurrentdesktop
+msgid "Save current desktop"
+msgstr ""
 
 #: lazarusidestrconsts.dlgsavedlinecolor
 msgid "Saved line"
@@ -5640,6 +5640,10 @@ msgstr "Palette"
 msgid "Pages"
 msgstr "Seiten"
 
+#: lazarusidestrconsts.liscmppalettevisible
+msgid "Palette is &visible"
+msgstr ""
+
 #: lazarusidestrconsts.liscmprestoredefaults
 msgid "&Restore defaults"
 msgstr "Vo&rgaben wiederherst."
@@ -7823,6 +7827,10 @@ msgstr "Delphi-kompatible Ressourcen. Empfohlen."
 
 #: lazarusidestrconsts.lisdesigntimepackagesaddcomponentsandmenuitemstotheid
 msgid "\"Design time\" packages add components and menu items to the IDE. They can be used by projects, but are not compiled into the project. The compiler will not find units of this package when compiling the project."
+msgstr ""
+
+#: lazarusidestrconsts.lisdesktops
+msgid "Desktops ..."
 msgstr ""
 
 #: lazarusidestrconsts.lisdestinationdirectory
@@ -11052,10 +11060,6 @@ msgstr "Link-Ziel"
 #: lazarusidestrconsts.lislistofallcasevalues
 msgid "list of all case values"
 msgstr "Liste aller Case-Werte"
-
-#: lazarusidestrconsts.lisloadedsuccessfully
-msgid "Loaded successfully"
-msgstr "Erfolgreich geladen"
 
 #: lazarusidestrconsts.lisloadingfailed
 msgid "Loading %s failed."
@@ -15457,10 +15461,6 @@ msgstr "Änderungen in Projekt %s speichern?"
 #: lazarusidestrconsts.lissavecurrenteditorfile
 msgid "Save current editor file"
 msgstr "Aktuelle Datei im Editor speichern"
-
-#: lazarusidestrconsts.lissavedsuccessfully
-msgid "Saved successfully"
-msgstr "Erfolgreich gespeichert"
 
 #: lazarusidestrconsts.lissavedwithidesettings
 msgid "Saved with IDE settings"
@@ -20012,3 +20012,4 @@ msgstr "Schreibgeschützt"
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"
 msgstr "Versionsinformation"
+

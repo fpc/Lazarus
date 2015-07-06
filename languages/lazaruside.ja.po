@@ -1217,10 +1217,6 @@ msgstr "デスクトップ"
 msgid "Buttons - "
 msgstr "ボタン -"
 
-#: lazarusidestrconsts.dlgdesktopfiles
-msgid "Desktop Files"
-msgstr "デスクトップパッケージ"
-
 #: lazarusidestrconsts.dlgdesktophints
 msgid "Hints"
 msgstr "ヒント"
@@ -1521,6 +1517,10 @@ msgstr "タイプ"
 #: lazarusidestrconsts.dlgeofocusmessagesaftercompilation
 msgid "Focus messages after compilation"
 msgstr "コンパイラ後のメッセージにフォーカス"
+
+#: lazarusidestrconsts.dlgexportdesktop
+msgid "Export desktop"
+msgstr ""
 
 #: lazarusidestrconsts.dlgextracharspacing
 msgid "Extra char spacing"
@@ -2090,6 +2090,10 @@ msgstr "インクルードされた混合状態の$IFDEFコード"
 msgid "Ignore"
 msgstr "無視"
 
+#: lazarusidestrconsts.dlgimportdesktop
+msgid "Import desktop"
+msgstr ""
+
 #: lazarusidestrconsts.dlgincludesystemvariables
 msgid "Include system variables"
 msgstr "システム変数を含む"
@@ -2220,10 +2224,6 @@ msgstr "スマートリンク"
 #: lazarusidestrconsts.dlglnumsbct
 msgid "Display line numbers in run-time error backtraces"
 msgstr "実行時エラーの後方探索で行番号を表示"
-
-#: lazarusidestrconsts.dlgloaddfile
-msgid "Load desktop settings from file"
-msgstr "ファイルからデスクトップの設定を読み込む"
 
 #: lazarusidestrconsts.dlgmainmenu
 msgid "Main Menu"
@@ -3124,9 +3124,9 @@ msgstr "ユーザーオーバーライド"
 msgid "Run Parameters"
 msgstr "実行パラメーター"
 
-#: lazarusidestrconsts.dlgsavedfile
-msgid "Save desktop settings to file"
-msgstr "デスクトップの設定をファイル保存"
+#: lazarusidestrconsts.dlgsavecurrentdesktop
+msgid "Save current desktop"
+msgstr ""
 
 #: lazarusidestrconsts.dlgsavedlinecolor
 msgid "Saved line"
@@ -5749,6 +5749,10 @@ msgstr "パレット"
 msgid "Pages"
 msgstr "ページ"
 
+#: lazarusidestrconsts.liscmppalettevisible
+msgid "Palette is &visible"
+msgstr ""
+
 #: lazarusidestrconsts.liscmprestoredefaults
 msgid "&Restore defaults"
 msgstr "既定値に戻す"
@@ -7979,6 +7983,10 @@ msgstr ""
 #: lazarusidestrconsts.lisdesigntimepackagesaddcomponentsandmenuitemstotheid
 msgid "\"Design time\" packages add components and menu items to the IDE. They can be used by projects, but are not compiled into the project. The compiler will not find units of this package when compiling the project."
 msgstr "\"設計時\"パッケージはコンポーネントとメニューアイテムをIDEに追加します。プロジェクトはそれらを使用できますがプロジェクト内に束ねる(compiled into)ことはできません。コンパイラはプロジェクトをコンパイルする際にこのパッケージのユニットを見つけないでしょう。"
+
+#: lazarusidestrconsts.lisdesktops
+msgid "Desktops ..."
+msgstr ""
 
 #: lazarusidestrconsts.lisdestinationdirectory
 msgid "Destination directory"
@@ -11238,10 +11246,6 @@ msgstr "リンクターゲット"
 #: lazarusidestrconsts.lislistofallcasevalues
 msgid "list of all case values"
 msgstr "すべてのcase値のリスト"
-
-#: lazarusidestrconsts.lisloadedsuccessfully
-msgid "Loaded successfully"
-msgstr "読み込みに成功"
 
 #: lazarusidestrconsts.lisloadingfailed
 msgid "Loading %s failed."
@@ -15771,10 +15775,6 @@ msgstr "プロジェクト %s の変更を保存しますか?"
 #: lazarusidestrconsts.lissavecurrenteditorfile
 msgid "Save current editor file"
 msgstr "現在のエディタファイルを保存"
-
-#: lazarusidestrconsts.lissavedsuccessfully
-msgid "Saved successfully"
-msgstr "保存に成功"
 
 #: lazarusidestrconsts.lissavedwithidesettings
 msgid "Saved with IDE settings"

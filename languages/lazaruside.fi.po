@@ -1208,10 +1208,6 @@ msgstr "Työpöytä"
 msgid "Buttons - "
 msgstr "Napit - "
 
-#: lazarusidestrconsts.dlgdesktopfiles
-msgid "Desktop Files"
-msgstr "Työpöytätiedostot"
-
 #: lazarusidestrconsts.dlgdesktophints
 msgid "Hints"
 msgstr "Vihjeet"
@@ -1510,6 +1506,10 @@ msgstr "Tyyppi"
 #: lazarusidestrconsts.dlgeofocusmessagesaftercompilation
 msgid "Focus messages after compilation"
 msgstr "Siirry viesteihin käännöksen jälkeen"
+
+#: lazarusidestrconsts.dlgexportdesktop
+msgid "Export desktop"
+msgstr ""
 
 #: lazarusidestrconsts.dlgextracharspacing
 msgid "Extra char spacing"
@@ -2078,6 +2078,10 @@ msgstr ""
 msgid "Ignore"
 msgstr "Ohita"
 
+#: lazarusidestrconsts.dlgimportdesktop
+msgid "Import desktop"
+msgstr ""
+
 #: lazarusidestrconsts.dlgincludesystemvariables
 msgid "Include system variables"
 msgstr "Ota järjestelmän muuttujat mukaan"
@@ -2206,10 +2210,6 @@ msgstr "Linkitä älykkäästi"
 #: lazarusidestrconsts.dlglnumsbct
 msgid "Display line numbers in run-time error backtraces"
 msgstr "Näytä rivinumerot ajonaikaisissa virhelistauksissa"
-
-#: lazarusidestrconsts.dlgloaddfile
-msgid "Load desktop settings from file"
-msgstr "Lue asetukset tiedostosta"
 
 #: lazarusidestrconsts.dlgmainmenu
 msgid "Main Menu"
@@ -3108,9 +3108,9 @@ msgstr "Käyttäjän määrittelemät"
 msgid "Run Parameters"
 msgstr "Suoritusaikaiset parametrit"
 
-#: lazarusidestrconsts.dlgsavedfile
-msgid "Save desktop settings to file"
-msgstr "Tallenna asetukset tiedostoon"
+#: lazarusidestrconsts.dlgsavecurrentdesktop
+msgid "Save current desktop"
+msgstr ""
 
 #: lazarusidestrconsts.dlgsavedlinecolor
 msgid "Saved line"
@@ -5647,6 +5647,10 @@ msgstr "Paletti"
 msgid "Pages"
 msgstr "Sivut"
 
+#: lazarusidestrconsts.liscmppalettevisible
+msgid "Palette is &visible"
+msgstr ""
+
 #: lazarusidestrconsts.liscmprestoredefaults
 msgid "&Restore defaults"
 msgstr "&Palauta oletukset"
@@ -7828,6 +7832,10 @@ msgstr "Delphi yhteensopivat resurssit. Suositus."
 #: lazarusidestrconsts.lisdesigntimepackagesaddcomponentsandmenuitemstotheid
 msgid "\"Design time\" packages add components and menu items to the IDE. They can be used by projects, but are not compiled into the project. The compiler will not find units of this package when compiling the project."
 msgstr "\"Suunnittelupaketti\" lisää komponentteja ja valikkoja IDE:en. Projektit voivat käyttää niitä, mutta niitä ei käännetä projektin mukana. Kääntäjä ei löydä käännösyksikköjä näistä paketista kääntäessään projektia."
+
+#: lazarusidestrconsts.lisdesktops
+msgid "Desktops ..."
+msgstr ""
 
 #: lazarusidestrconsts.lisdestinationdirectory
 msgid "Destination directory"
@@ -11021,10 +11029,6 @@ msgstr "Linkityskohde"
 #: lazarusidestrconsts.lislistofallcasevalues
 msgid "list of all case values"
 msgstr "luettelo kaikista case-arvoista"
-
-#: lazarusidestrconsts.lisloadedsuccessfully
-msgid "Loaded successfully"
-msgstr "Ladattu onnistuneesti"
 
 #: lazarusidestrconsts.lisloadingfailed
 msgid "Loading %s failed."
@@ -15390,10 +15394,6 @@ msgstr "Tallennetaanko %s -projektiin tehdyt muutokset?"
 #: lazarusidestrconsts.lissavecurrenteditorfile
 msgid "Save current editor file"
 msgstr "Tallenna nykyinen editorin tiedosto"
-
-#: lazarusidestrconsts.lissavedsuccessfully
-msgid "Saved successfully"
-msgstr "Tallennus onnistui"
 
 #: lazarusidestrconsts.lissavedwithidesettings
 msgid "Saved with IDE settings"

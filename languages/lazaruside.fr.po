@@ -1215,10 +1215,6 @@ msgstr "Bureau"
 msgid "Buttons - "
 msgstr "Boutons - "
 
-#: lazarusidestrconsts.dlgdesktopfiles
-msgid "Desktop Files"
-msgstr "Fichiers du bureau"
-
 #: lazarusidestrconsts.dlgdesktophints
 msgid "Hints"
 msgstr "Conseils"
@@ -1518,6 +1514,10 @@ msgstr "Type"
 #: lazarusidestrconsts.dlgeofocusmessagesaftercompilation
 msgid "Focus messages after compilation"
 msgstr "Focus sur la fenêtre de messages après compilation"
+
+#: lazarusidestrconsts.dlgexportdesktop
+msgid "Export desktop"
+msgstr ""
 
 #: lazarusidestrconsts.dlgextracharspacing
 msgid "Extra char spacing"
@@ -2087,6 +2087,10 @@ msgstr "État \"$IFDEF\" mélangé (nœud)"
 msgid "Ignore"
 msgstr "Ignorer"
 
+#: lazarusidestrconsts.dlgimportdesktop
+msgid "Import desktop"
+msgstr ""
+
 #: lazarusidestrconsts.dlgincludesystemvariables
 msgid "Include system variables"
 msgstr "Inclure les variables système"
@@ -2215,10 +2219,6 @@ msgstr "Lier intelligemment"
 #: lazarusidestrconsts.dlglnumsbct
 msgid "Display line numbers in run-time error backtraces"
 msgstr "Afficher les numéros des lignes dans les traces d'erreurs à l'exécution"
-
-#: lazarusidestrconsts.dlgloaddfile
-msgid "Load desktop settings from file"
-msgstr "Charger les paramètres du bureau"
 
 #: lazarusidestrconsts.dlgmainmenu
 msgid "Main Menu"
@@ -3109,9 +3109,9 @@ msgstr "Redéfinitions de l'utilisateur"
 msgid "Run Parameters"
 msgstr "Paramètres d'exécution"
 
-#: lazarusidestrconsts.dlgsavedfile
-msgid "Save desktop settings to file"
-msgstr "Enregistrer les paramètres du bureau"
+#: lazarusidestrconsts.dlgsavecurrentdesktop
+msgid "Save current desktop"
+msgstr ""
 
 #: lazarusidestrconsts.dlgsavedlinecolor
 msgid "Saved line"
@@ -5659,6 +5659,10 @@ msgstr "Palette"
 msgid "Pages"
 msgstr "Pages"
 
+#: lazarusidestrconsts.liscmppalettevisible
+msgid "Palette is &visible"
+msgstr ""
+
 #: lazarusidestrconsts.liscmprestoredefaults
 msgid "&Restore defaults"
 msgstr "&Valeurs par défaut"
@@ -7842,6 +7846,10 @@ msgstr "Ressources compatibles avec Delphi. Recommandées."
 #: lazarusidestrconsts.lisdesigntimepackagesaddcomponentsandmenuitemstotheid
 msgid "\"Design time\" packages add components and menu items to the IDE. They can be used by projects, but are not compiled into the project. The compiler will not find units of this package when compiling the project."
 msgstr "Les paquets de conception ajoutent des composants et des éléments de menu à l'EDI. Ils peuvent être utilisés par les projets, mais ne sont pas compilés dans le projet. Le compilateur ne trouvera pas les unités de ce paquet lors de la compilation du projet."
+
+#: lazarusidestrconsts.lisdesktops
+msgid "Desktops ..."
+msgstr ""
 
 #: lazarusidestrconsts.lisdestinationdirectory
 msgid "Destination directory"
@@ -11073,10 +11081,6 @@ msgstr "Lier la cible"
 #: lazarusidestrconsts.lislistofallcasevalues
 msgid "list of all case values"
 msgstr "liste de toutes les valeurs de cas"
-
-#: lazarusidestrconsts.lisloadedsuccessfully
-msgid "Loaded successfully"
-msgstr "Succès du chargement"
 
 #: lazarusidestrconsts.lisloadingfailed
 msgid "Loading %s failed."
@@ -15488,10 +15492,6 @@ msgstr "Voulez-vous enregistrer les modifications du projet %s ?"
 #: lazarusidestrconsts.lissavecurrenteditorfile
 msgid "Save current editor file"
 msgstr "Enregistrer le fichier d'édition courant"
-
-#: lazarusidestrconsts.lissavedsuccessfully
-msgid "Saved successfully"
-msgstr "Enregistré avec succès"
 
 #: lazarusidestrconsts.lissavedwithidesettings
 msgid "Saved with IDE settings"

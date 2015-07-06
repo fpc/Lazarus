@@ -1236,10 +1236,6 @@ msgstr "Darbalaukis"
 msgid "Buttons - "
 msgstr "Klavišai - "
 
-#: lazarusidestrconsts.dlgdesktopfiles
-msgid "Desktop Files"
-msgstr "Darbalaukio failai"
-
 #: lazarusidestrconsts.dlgdesktophints
 msgid "Hints"
 msgstr "Užuominos"
@@ -1541,6 +1537,10 @@ msgstr "Tipas"
 #: lazarusidestrconsts.dlgeofocusmessagesaftercompilation
 msgid "Focus messages after compilation"
 msgstr "Kompiliacijai pasibaigus, rodyti pranešimų langą"
+
+#: lazarusidestrconsts.dlgexportdesktop
+msgid "Export desktop"
+msgstr ""
 
 #: lazarusidestrconsts.dlgextracharspacing
 msgid "Extra char spacing"
@@ -2109,6 +2109,10 @@ msgstr ""
 msgid "Ignore"
 msgstr "Ignoruoti"
 
+#: lazarusidestrconsts.dlgimportdesktop
+msgid "Import desktop"
+msgstr ""
+
 #: lazarusidestrconsts.dlgincludesystemvariables
 msgid "Include system variables"
 msgstr "Pridėti sistemos kintamuosius"
@@ -2249,10 +2253,6 @@ msgstr "Saistyti sumaniai"
 #: lazarusidestrconsts.dlglnumsbct
 msgid "Display line numbers in run-time error backtraces"
 msgstr "Rodyti eilučių numerius veikos metu įvykusių klaidų pėdsako pranešimuose"
-
-#: lazarusidestrconsts.dlgloaddfile
-msgid "Load desktop settings from file"
-msgstr "Įkelti darbalaukio nuostatas iš failo"
 
 #: lazarusidestrconsts.dlgmainmenu
 msgid "Main Menu"
@@ -3157,9 +3157,9 @@ msgstr "Naudotojo pakeitimai"
 msgid "Run Parameters"
 msgstr "Starto parametrai"
 
-#: lazarusidestrconsts.dlgsavedfile
-msgid "Save desktop settings to file"
-msgstr "Įrašyti darbalaukio nuostatas faile"
+#: lazarusidestrconsts.dlgsavecurrentdesktop
+msgid "Save current desktop"
+msgstr ""
 
 #: lazarusidestrconsts.dlgsavedlinecolor
 msgid "Saved line"
@@ -5804,6 +5804,10 @@ msgstr "Paletė"
 msgid "Pages"
 msgstr ""
 
+#: lazarusidestrconsts.liscmppalettevisible
+msgid "Palette is &visible"
+msgstr ""
+
 #: lazarusidestrconsts.liscmprestoredefaults
 msgid "&Restore defaults"
 msgstr ""
@@ -8051,6 +8055,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisdesigntimepackagesaddcomponentsandmenuitemstotheid
 msgid "\"Design time\" packages add components and menu items to the IDE. They can be used by projects, but are not compiled into the project. The compiler will not find units of this package when compiling the project."
+msgstr ""
+
+#: lazarusidestrconsts.lisdesktops
+msgid "Desktops ..."
 msgstr ""
 
 #: lazarusidestrconsts.lisdestinationdirectory
@@ -11327,10 +11335,6 @@ msgstr "Saito paskirtis"
 #: lazarusidestrconsts.lislistofallcasevalues
 msgid "list of all case values"
 msgstr "Visų „case“ verčių sąrašas"
-
-#: lazarusidestrconsts.lisloadedsuccessfully
-msgid "Loaded successfully"
-msgstr "Įkelta sėkmingai"
 
 #: lazarusidestrconsts.lisloadingfailed
 msgid "Loading %s failed."
@@ -15890,10 +15894,6 @@ msgstr "Įrašyti pakitusį projektą „%s“?"
 #: lazarusidestrconsts.lissavecurrenteditorfile
 msgid "Save current editor file"
 msgstr "Įrašyti dabartinį rengyklės failą"
-
-#: lazarusidestrconsts.lissavedsuccessfully
-msgid "Saved successfully"
-msgstr "Sėkmingai įrašyta"
 
 #: lazarusidestrconsts.lissavedwithidesettings
 msgid "Saved with IDE settings"

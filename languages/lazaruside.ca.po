@@ -1255,12 +1255,6 @@ msgstr "Escriptori"
 msgid "Buttons - "
 msgstr ""
 
-#: lazarusidestrconsts.dlgdesktopfiles
-#, fuzzy
-#| msgid "Desktop files"
-msgid "Desktop Files"
-msgstr "Fitxers de l'escriptori"
-
 #: lazarusidestrconsts.dlgdesktophints
 msgid "Hints"
 msgstr ""
@@ -1567,6 +1561,10 @@ msgstr "Tipus"
 
 #: lazarusidestrconsts.dlgeofocusmessagesaftercompilation
 msgid "Focus messages after compilation"
+msgstr ""
+
+#: lazarusidestrconsts.dlgexportdesktop
+msgid "Export desktop"
 msgstr ""
 
 #: lazarusidestrconsts.dlgextracharspacing
@@ -2133,6 +2131,10 @@ msgstr ""
 msgid "Ignore"
 msgstr "Ignora"
 
+#: lazarusidestrconsts.dlgimportdesktop
+msgid "Import desktop"
+msgstr ""
+
 #: lazarusidestrconsts.dlgincludesystemvariables
 msgid "Include system variables"
 msgstr "Inclou les variables del sistema"
@@ -2269,10 +2271,6 @@ msgstr "Enllaçament intel·ligent"
 #| msgid "Display Line Numbers in Run-time Error Backtraces"
 msgid "Display line numbers in run-time error backtraces"
 msgstr "Mostra els números de línia en errors en temps d'execució en seguiments inversos"
-
-#: lazarusidestrconsts.dlgloaddfile
-msgid "Load desktop settings from file"
-msgstr "Carrega els paràmetres de l'escriptori des del fitxer"
 
 #: lazarusidestrconsts.dlgmainmenu
 msgid "Main Menu"
@@ -3195,9 +3193,9 @@ msgstr "L'usuari substitueix"
 msgid "Run Parameters"
 msgstr "Executa els paràmetres"
 
-#: lazarusidestrconsts.dlgsavedfile
-msgid "Save desktop settings to file"
-msgstr "Desa els paràmetres de l'escriptori al fitxer"
+#: lazarusidestrconsts.dlgsavecurrentdesktop
+msgid "Save current desktop"
+msgstr ""
 
 #: lazarusidestrconsts.dlgsavedlinecolor
 msgid "Saved line"
@@ -5856,6 +5854,10 @@ msgstr ""
 msgid "Pages"
 msgstr ""
 
+#: lazarusidestrconsts.liscmppalettevisible
+msgid "Palette is &visible"
+msgstr ""
+
 #: lazarusidestrconsts.liscmprestoredefaults
 msgid "&Restore defaults"
 msgstr ""
@@ -8082,6 +8084,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisdesigntimepackagesaddcomponentsandmenuitemstotheid
 msgid "\"Design time\" packages add components and menu items to the IDE. They can be used by projects, but are not compiled into the project. The compiler will not find units of this package when compiling the project."
+msgstr ""
+
+#: lazarusidestrconsts.lisdesktops
+msgid "Desktops ..."
 msgstr ""
 
 #: lazarusidestrconsts.lisdestinationdirectory
@@ -11321,10 +11327,6 @@ msgstr ""
 
 #: lazarusidestrconsts.lislistofallcasevalues
 msgid "list of all case values"
-msgstr ""
-
-#: lazarusidestrconsts.lisloadedsuccessfully
-msgid "Loaded successfully"
 msgstr ""
 
 #: lazarusidestrconsts.lisloadingfailed
@@ -16090,10 +16092,6 @@ msgstr "Voleu desar els canvis del projecte %s?"
 #| msgid "save current editor file"
 msgid "Save current editor file"
 msgstr "desa el fitxer editor actual"
-
-#: lazarusidestrconsts.lissavedsuccessfully
-msgid "Saved successfully"
-msgstr ""
 
 #: lazarusidestrconsts.lissavedwithidesettings
 msgid "Saved with IDE settings"
