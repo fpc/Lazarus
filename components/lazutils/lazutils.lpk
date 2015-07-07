@@ -295,48 +295,48 @@
         <UnitName Value="laz2_xpath"/>
       </Item69>
       <Item70>
-        <Filename Value="dictionarystringlist.pas"/>
-        <UnitName Value="DictionaryStringList"/>
+        <Filename Value="unixlazutf8.inc"/>
+        <Type Value="Include"/>
       </Item70>
       <Item71>
-        <Filename Value="unixlazutf8.inc"/>
+        <Filename Value="winlazutf8.inc"/>
         <Type Value="Include"/>
       </Item71>
       <Item72>
-        <Filename Value="winlazutf8.inc"/>
-        <Type Value="Include"/>
-      </Item72>
-      <Item73>
         <Filename Value="lazloggerprofiling.pas"/>
         <UnitName Value="LazLoggerProfiling"/>
-      </Item73>
-      <Item74>
+      </Item72>
+      <Item73>
         <Filename Value="fpcadds.pas"/>
         <UnitName Value="FPCAdds"/>
-      </Item74>
-      <Item75>
+      </Item73>
+      <Item74>
         <Filename Value="lazutilities.pas"/>
         <UnitName Value="LazUtilities"/>
-      </Item75>
-      <Item76>
+      </Item74>
+      <Item75>
         <Filename Value="lazfglhash.pas"/>
         <UnitName Value="lazfglhash"/>
-      </Item76>
-      <Item77>
+      </Item75>
+      <Item76>
         <Filename Value="lcsvutils.pas"/>
         <UnitName Value="lcsvutils"/>
-      </Item77>
-      <Item78>
+      </Item76>
+      <Item77>
         <Filename Value="lazcollections.pas"/>
         <UnitName Value="lazCollections"/>
-      </Item78>
-      <Item79>
+      </Item77>
+      <Item78>
         <Filename Value="lazlistclasses.pas"/>
         <UnitName Value="LazListClasses"/>
-      </Item79>
-      <Item80>
+      </Item78>
+      <Item79>
         <Filename Value="lazfreetypefpimagedrawer.pas"/>
         <UnitName Value="LazFreeTypeFPImageDrawer"/>
+      </Item79>
+      <Item80>
+        <Filename Value="lookupstringlist.pas"/>
+        <UnitName Value="LookupStringList"/>
       </Item80>
     </Files>
     <LazDoc Paths="../../docs/xml/lazutils"/>

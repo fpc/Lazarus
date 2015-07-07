@@ -88,7 +88,7 @@ begin
     t.Dependencies.AddUnit('lazconfigstorage');
     t.Dependencies.AddUnit('utf8process');
     t.Dependencies.AddUnit('laz2_xpath');
-    t.Dependencies.AddUnit('dictionarystringlist');
+    t.Dependencies.AddUnit('lookupstringlist');
     t.Dependencies.AddUnit('lazloggerprofiling');
     t.Dependencies.AddUnit('fpcadds');
     t.Dependencies.AddUnit('lazutilities');
@@ -142,7 +142,7 @@ begin
     T:=P.Targets.AddUnit('lazconfigstorage.pas');
     T:=P.Targets.AddUnit('utf8process.pp');
     T:=P.Targets.AddUnit('laz2_xpath.pas');
-    T:=P.Targets.AddUnit('dictionarystringlist.pas');
+    T:=P.Targets.AddUnit('lookupstringlist.pas');
     T:=P.Targets.AddUnit('lazloggerprofiling.pas');
     T:=P.Targets.AddUnit('fpcadds.pas');
     T:=P.Targets.AddUnit('lazutilities.pas');
