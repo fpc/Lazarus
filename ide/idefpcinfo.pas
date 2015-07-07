@@ -30,10 +30,12 @@ unit IDEFPCInfo;
 interface
 
 uses
-  Classes, SysUtils, AVL_Tree, FileUtil, lazutf8classes, Forms, Controls,
-  Graphics, Dialogs, StdCtrls, ComCtrls, FileProcs, DefineTemplates,
-  CodeToolManager, BaseBuildManager, Project, EnvironmentOpts,
-  LazarusIDEStrConsts, AboutFrm, TransferMacros, IDEWindowIntf, LazIDEIntf;
+  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls, ComCtrls,
+  lazutf8classes, LazFileUtils, LazUTF8,
+  FileProcs, DefineTemplates, CodeToolManager,
+  IDEWindowIntf, LazIDEIntf,
+  BaseBuildManager, Project, EnvironmentOpts, LazarusIDEStrConsts,
+  AboutFrm, TransferMacros;
 
 type
 

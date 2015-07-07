@@ -43,7 +43,7 @@ uses
   MemCheck,
   {$ENDIF}
   Classes, SysUtils, FileProcs, CodeToolsStructs, BasicCodeTools,
-  AVL_Tree;
+  AVL_Tree, LazDbgLog;
 
 //-----------------------------------------------------------------------------
 

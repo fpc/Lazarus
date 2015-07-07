@@ -54,8 +54,9 @@ interface
 
 uses
   Classes, SysUtils, types, math, contnrs, InterfaceBase, Forms, ComCtrls,
-  Controls, ButtonPanel, Themes, Graphics, StdCtrls, Buttons, FileProcs,
-  LazFileUtils, AvgLvlTree, BasicCodeTools, DefineTemplates, CodeToolManager,
+  Controls, ButtonPanel, Themes, Graphics, StdCtrls, Buttons,
+  LazFileUtils, LazFileCache, AvgLvlTree,
+  BasicCodeTools, DefineTemplates, CodeToolManager, FileProcs,
   // IDEIntf
   ProjectIntf, CompOptsIntf, IDEWindowIntf, LazIDEIntf, IDEImagesIntf,
   IDEMsgIntf, IDEExternToolIntf,

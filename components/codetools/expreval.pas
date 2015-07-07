@@ -36,7 +36,7 @@ uses
   {$IFDEF MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, KeyWordFuncLists, FileProcs;
+  Classes, SysUtils, KeyWordFuncLists, FileProcs, LazDbgLog;
 
 const
   ExternalMacroStart = '#';

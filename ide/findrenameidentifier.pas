@@ -30,15 +30,14 @@ unit FindRenameIdentifier;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, Forms, Controls, Dialogs,
-  StdCtrls, ExtCtrls, ComCtrls,
-  laz2_DOM,
+  Classes, SysUtils, AVL_Tree, LCLProc, Forms, Controls, Dialogs,
+  StdCtrls, ExtCtrls, ComCtrls, ButtonPanel,
+  laz2_DOM, LazFileUtils, LazFileCache,
   // codetools
-  FileProcs, AVL_Tree, CTUnitGraph, CodeTree, CodeCache,
-  CodeToolManager, CodeToolsStructs,
+  FileProcs, CTUnitGraph, CodeTree, CodeCache, CodeToolManager, CodeToolsStructs,
   // IDE
   LazarusIDEStrConsts, IDEProcs, IDEWindowIntf, MiscOptions, DialogProcs,
-  LazIDEIntf, IDEDialogs, InputHistory, SearchResultView, CodeHelp, ButtonPanel;
+  LazIDEIntf, IDEDialogs, InputHistory, SearchResultView, CodeHelp;
 
 type
 

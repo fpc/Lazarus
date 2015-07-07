@@ -47,7 +47,7 @@ interface
 uses
   Classes, SysUtils, types, LCLProc, LResources, Forms, Controls, Graphics,
   Dialogs, Clipbrd, LCLIntf, AVL_Tree, StdCtrls, ExtCtrls, ComCtrls, Buttons,
-  Menus, HelpIntfs,
+  Menus, HelpIntfs, LazFileUtils, LazUtilities,
   // codetools
   BasicCodeTools, DefineTemplates, CodeTree, CodeCache,
   CodeToolsStructs, CodeToolManager, PascalParserTool, LinkScanner, FileProcs,

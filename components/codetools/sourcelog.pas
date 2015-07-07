@@ -36,7 +36,7 @@ uses
   {$IFDEF MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, FileProcs, LazUTF8, lazutf8classes;
+  Classes, SysUtils, LazFileUtils, LazUTF8, lazutf8classes, LazDbgLog;
 
 type
   TSourceLog = class;

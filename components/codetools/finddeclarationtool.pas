@@ -79,7 +79,8 @@ uses
   Classes, SysUtils, CodeToolsStrConsts, CodeTree, CodeAtom, CustomCodeTool,
   SourceLog, KeywordFuncLists, BasicCodeTools, LinkScanner, CodeCache,
   DirectoryCacher, AVL_Tree, PascalParserTool,
-  PascalReaderTool, FileProcs, DefineTemplates, FindDeclarationCache;
+  PascalReaderTool, FileProcs, LazFileUtils, LazUtilities,
+  DefineTemplates, FindDeclarationCache;
 
 type
   TFindDeclarationTool = class;

@@ -64,7 +64,7 @@ uses
   // FCL, RTL, LCL
   Classes, SysUtils, Math, LCLProc, Forms, Controls, Dialogs, StrUtils,
   ComCtrls, ActnList, AvgLvlTree, LazUTF8Classes, LCLType, CodeCache,
-  CodeToolManager, BasicCodeTools, FileProcs,
+  CodeToolManager, BasicCodeTools, FileProcs, LazFileUtils,
   // IDEIntf
   LazIDEIntf, IDEImagesIntf, PackageIntf, ProjectIntf,
   // IDE

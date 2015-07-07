@@ -110,7 +110,7 @@ uses
   {$IFDEF MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, FileProcs, CodeToolsStructs, BasicCodeTools,
+  Classes, SysUtils, LazFileUtils, FileProcs, CodeToolsStructs, BasicCodeTools,
   KeywordFuncLists, LinkScanner, CodeCache, AVL_Tree,
   CodeTree, NonPascalCodeTools;
 

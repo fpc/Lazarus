@@ -48,11 +48,11 @@ uses
   {$IFDEF MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, typinfo, FileProcs, CodeTree, CodeAtom, CodeCache,
-  CustomCodeTool, CodeToolsStrConsts, KeywordFuncLists, BasicCodeTools,
-  LinkScanner, AvgLvlTree, AVL_Tree, DefineTemplates, SourceChanger,
-  FindDeclarationTool, PascalReaderTool, PascalParserTool, CodeToolsStructs,
-  ExprEval;
+  Classes, SysUtils, typinfo, FileProcs, LazFileUtils, LazUtilities,
+  CodeTree, CodeAtom, CodeCache, CustomCodeTool, CodeToolsStrConsts,
+  KeywordFuncLists, BasicCodeTools, LinkScanner, AvgLvlTree, AVL_Tree,
+  SourceChanger, FindDeclarationTool, PascalReaderTool, PascalParserTool,
+  CodeToolsStructs, ExprEval, LazDbgLog;
   
 type
   TIdentCompletionTool = class;

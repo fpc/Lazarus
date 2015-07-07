@@ -41,7 +41,7 @@ interface
 
 uses
   Classes, SysUtils, AVL_Tree, SourceLog, KeywordFuncLists, FileProcs,
-  LazFileUtils;
+  LazFileUtils, LazUTF8;
 
 //----------------------------------------------------------------------------
 { These functions are used by the codetools }

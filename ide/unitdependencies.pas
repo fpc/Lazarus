@@ -35,14 +35,14 @@ unit UnitDependencies;
 interface
 
 uses
-  Classes, SysUtils, types, math, AVL_Tree, LazLogger, LazFileUtils, LazUTF8,
-  Forms, Controls, ExtCtrls, ComCtrls, StdCtrls, Buttons, Dialogs, Menus,
-  Clipbrd, LvlGraphCtrl, LazIDEIntf, ProjectIntf, IDEWindowIntf, PackageIntf,
-  SrcEditorIntf, IDEImagesIntf, IDECommands, IDEDialogs, IDEMsgIntf,
-  IDEExternToolIntf, IDEOptionDefs,
+  Classes, SysUtils, types, math, AVL_Tree,
+  Forms, Controls, ExtCtrls, ComCtrls, StdCtrls, Buttons, Dialogs, Menus, Clipbrd,
+  LazLogger, LazFileUtils, LazFileCache, LazUtilities, LazUTF8, LvlGraphCtrl,
+  LazIDEIntf, ProjectIntf, IDEWindowIntf, PackageIntf, SrcEditorIntf, IDEImagesIntf,
+  IDEMsgIntf, IDEExternToolIntf, IDECommands, IDEDialogs,
   CodeToolManager, DefineTemplates, CodeToolsStructs,
-  CTUnitGraph, CTUnitGroupGraph, FileProcs, CodeCache, LazarusIDEStrConsts,
-  UnusedUnitsDlg;
+  IDEOptionDefs, CTUnitGraph, CTUnitGroupGraph, FileProcs, CodeCache,
+  LazarusIDEStrConsts, UnusedUnitsDlg;
 
 const
   GroupPrefixProject = '-Project-';

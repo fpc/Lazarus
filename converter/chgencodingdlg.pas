@@ -21,8 +21,7 @@
   Author: Mattias Gaertner
 
   Abstract:
-    Dialog and functions to change encodings (e.g. UTF-8) of projects and
-    packages.
+    Dialog and functions to change encodings (e.g. UTF-8) of projects and packages.
 }
 unit ChgEncodingDlg;
 
@@ -31,13 +30,13 @@ unit ChgEncodingDlg;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, FileProcs, Forms, Controls, Graphics,
-  Dialogs, LConvEncoding, ExtCtrls, StdCtrls, ComCtrls, Buttons,
-  IDEWindowIntf, SynRegExpr, SrcEditorIntf, IDEHelpIntf,
-  CodeCache, CodeToolsStructs, CodeToolManager, AVL_Tree,
+  Classes, SysUtils, AVL_Tree,
+  LCLProc, Forms, Controls, ExtCtrls, StdCtrls, ComCtrls, Buttons,
+  LConvEncoding, LazFileUtils, LazFileCache,
+  IDEWindowIntf, SrcEditorIntf, IDEHelpIntf, SynRegExpr,
+  CodeCache, CodeToolsStructs, CodeToolManager, FileProcs,
   // IDE
-  IDEProcs, CodeBrowser, PackageDefs, PackageSystem, Project,
-  LazarusIDEStrConsts;
+  IDEProcs, PackageDefs, PackageSystem, Project, LazarusIDEStrConsts;
 
 type
 

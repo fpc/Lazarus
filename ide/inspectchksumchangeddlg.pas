@@ -40,13 +40,12 @@ unit InspectChksumChangedDlg;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, Forms, Controls, Graphics, Dialogs,
-  contnrs, StdCtrls, ExtCtrls, ComCtrls, ButtonPanel,
+  Classes, SysUtils, contnrs, LCLProc, Forms, Controls, StdCtrls, ExtCtrls,
+  ComCtrls, ButtonPanel, LazFileUtils, LazFileCache,
   // codetools
   CodeToolManager, FileProcs, DirectoryCacher, DefineTemplates,
   // IDEIntf
-  LazIDEIntf, TextTools, IDEMsgIntf, PackageIntf, ProjectIntf,
-  IDEExternToolIntf,
+  TextTools, IDEMsgIntf, PackageIntf, ProjectIntf, IDEExternToolIntf,
   // IDE
   LazarusIDEStrConsts;
 

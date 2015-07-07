@@ -39,7 +39,7 @@ uses
   {$ENDIF}
   Classes, SysUtils, FileProcs, CodeToolsStrConsts, CodeTree, CodeCache,
   CodeAtom, CustomCodeTool, PascalParserTool, KeywordFuncLists, BasicCodeTools,
-  LinkScanner, AVL_Tree;
+  LinkScanner, AVL_Tree, LazFileUtils, LazDbgLog;
 
 type
   TPascalHintModifier = (

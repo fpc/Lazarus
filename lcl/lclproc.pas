@@ -334,7 +334,7 @@ function UTF16Length(p: PWideChar; WordCount: PtrInt): PtrInt;
 function UTF16CharacterToUnicode(p: PWideChar; out CharLen: integer): Cardinal;
 function UnicodeToUTF16(u: cardinal): UTF16String;
 
-{$IFnDEF NoLazUTF8Wrappers}
+{$IFnDEF DisableWrapperFunctions}
 function UTF8CharacterLength(p: PChar): integer; inline; deprecated 'Use the function in LazUTF8 unit';
 function UTF8Length(const s: string): PtrInt; inline; deprecated 'Use the function in LazUTF8 unit';
 function UTF8Length(p: PChar; ByteCount: PtrInt): PtrInt; inline; deprecated 'Use the function in LazUTF8 unit';
@@ -388,7 +388,7 @@ function UTF16ToUTF8(const S: UTF16String): AnsiString; inline; deprecated 'Use 
 
 // locale
 procedure LCLGetLanguageIDs(var Lang, FallbackLang: String); inline; deprecated 'Use the function in LazUTF8 unit';
-{$ENDIF}
+{$ENDIF DisableWrapperFunctions}
 
 // identifier
 function CreateFirstIdentifier(const Identifier: string): string;
@@ -2751,7 +2751,7 @@ begin
     Result:=system.widechar($D800+((u - $10000) shr 10))+system.widechar($DC00+((u - $10000) and $3ff));
 end;
 
-{$IFnDEF NoLazUTF8Wrappers}
+{$IFnDEF DisableWrapperFunctions}
 function UTF8CharacterLength(p: PChar): integer;
 begin
   Result := LazUTF8.UTF8CharacterLength(p);
@@ -2998,7 +2998,7 @@ procedure LCLGetLanguageIDs(var Lang, FallbackLang: String);
 begin
   LazUTF8.LazGetLanguageIDs(Lang, FallbackLang);
 end;
-{$ENDIF}
+{$ENDIF DisableWrapperFunctions}
 
 function CreateFirstIdentifier(const Identifier: string): string;
 // example: Ident59 becomes Ident1

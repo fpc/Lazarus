@@ -54,7 +54,7 @@ uses
   FindDeclarationTool, IdentCompletionTool, PascalReaderTool, PascalParserTool,
   ExprEval, KeywordFuncLists, BasicCodeTools, LinkScanner,
   CodeCache, AVL_Tree, LFMTrees, SourceChanger,
-  CustomCodeTool, CodeToolsStructs, LazFileUtils;
+  CustomCodeTool, CodeToolsStructs, LazFileUtils, LazFileCache;
 
 type
   TStandardCodeTool = class;

@@ -79,10 +79,20 @@ type
   TCTFileAgeTime = longint;
   PCTFileAgeTime = ^TCTFileAgeTime;
 
+{$IFnDEF DisableWrapperFunctions}
+// *** Wrappers for LazUTF8 ***
+function UTF8ToSys(const s: string): string; inline;// as UTF8ToAnsi but more independent of widestringmanager
+function SysToUTF8(const s: string): string; inline;// as AnsiToUTF8 but more independent of widestringmanager
+function UTF8CharacterLength(p: PChar): integer; inline;
+// environment
+function ParamStrUTF8(Param: Integer): string; inline;
+function GetEnvironmentStringUTF8(Index : Integer): String; inline;
+function GetEnvironmentVariableUTF8(const EnvVar: String): String; inline;
+
+// *** Wrappers for LazFileUtils ***
 function CompareFilenames(const Filename1, Filename2: string): integer; inline;
 function CompareFilenamesIgnoreCase(const Filename1, Filename2: string): integer; inline;
-function CompareFileExt(const Filename, Ext: string;
-                        CaseSensitive: boolean): integer; inline;
+function CompareFileExt(const Filename, Ext: string; CaseSensitive: boolean): integer; inline;
 function CompareFilenameStarts(const Filename1, Filename2: string): integer; inline;
 function CompareFilenames(Filename1: PChar; Len1: integer;
   Filename2: PChar; Len2: integer): integer; inline;
@@ -111,11 +121,6 @@ function CreateRelativePath(const Filename, BaseDirectory: string;
 function FileIsInPath(const Filename, Path: string): boolean; inline;
 function AppendPathDelim(const Path: string): string; inline;
 function ChompPathDelim(const Path: string): string; inline;
-function FilenameIsMatching(const Mask, Filename: string;
-                            MatchExactly: boolean): boolean;
-function FindNextDirectoryInFilename(const Filename: string;
-                                     var Position: integer): string;
-
 // file operations
 function FileExistsUTF8(const Filename: string): boolean; inline;
 function FileAgeUTF8(const FileName: string): Longint; inline;
@@ -136,7 +141,46 @@ function SetCurrentDirUTF8(const NewDir: String): Boolean; inline;
 function CreateDirUTF8(const NewDir: String): Boolean; inline;
 function RemoveDirUTF8(const Dir: String): Boolean; inline;
 function ForceDirectoriesUTF8(const Dir: string): Boolean; inline;
+// search paths
+function CreateAbsoluteSearchPath(const SearchPath, BaseDirectory: string): string; inline;
+function CreateRelativeSearchPath(const SearchPath, BaseDirectory: string): string; inline;
+function MinimizeSearchPath(const SearchPath: string): string; inline;
+//  Can lead to "wrong number of parameters" error, LazFileUtils has more versions of the func.
+//function FindPathInSearchPath(APath: PChar; APathLen: integer;
+//                              SearchPath: PChar; SearchPathLen: integer): PChar; inline;
+// *** Wrappers for LazFileCache ***
+function FileExistsCached(const AFilename: string): boolean; inline;
+function DirPathExistsCached(const AFilename: string): boolean; inline;
+function DirectoryIsWritableCached(const ADirectoryName: string): boolean; inline;
+function FileIsExecutableCached(const AFilename: string): boolean; inline;
+function FileIsReadableCached(const AFilename: string): boolean; inline;
+function FileIsWritableCached(const AFilename: string): boolean; inline;
+function FileIsTextCached(const AFilename: string): boolean; inline;
+function FileAgeCached(const AFileName: string): Longint; inline;
+procedure InvalidateFileStateCache(const Filename: string = ''); inline;
+
+// *** Wrappers for LazUtilities ***
+function ComparePointers(p1, p2: Pointer): integer; inline;
+procedure MergeSort(List: PPointer; ListLength: PtrInt;
+                    const Compare: TListSortCompare); inline;
+function GetNextDelimitedItem(const List: string; Delimiter: char;
+                              var Position: integer): string; inline;
+function HasDelimitedItem(const List: string; Delimiter: char; FindItem: string
+                          ): boolean; inline;
+function FindNextDelimitedItem(const List: string; Delimiter: char;
+                               var Position: integer; FindItem: string): string; inline;
+
+// *** Wrappers for LazDbgLog ***
+function MemSizeString(const s: string): PtrUInt; inline;
+function MemSizeFPList(const List: TFPList): PtrUInt; inline;
+function GetStringRefCount(const s: string): PtrInt; inline;
+
+{$ENDIF DisableWrapperFunctions}
+
+// file operations
 function FileDateToDateTimeDef(aFileDate: TCTFileAgeTime; const Default: TDateTime = 0): TDateTime;
+function FilenameIsMatching(const Mask, Filename: string; MatchExactly: boolean): boolean;
+function FindNextDirectoryInFilename(const Filename: string; var Position: integer): string;
 
 function ClearFile(const Filename: string; RaiseOnError: boolean): boolean;
 function GetTempFilename(const Path, Prefix: string): string;
@@ -155,17 +199,7 @@ function TryReadAllLinks(const Filename: string): string; inline; // if a link i
 const
   CTInvalidChangeStamp = LUInvalidChangeStamp;
   CTInvalidChangeStamp64 = LUInvalidChangeStamp64; // using a value outside integer to spot wrong types early
-procedure CTIncreaseChangeStamp(var ChangeStamp: integer); inline;
-procedure CTIncreaseChangeStamp64(var ChangeStamp: int64); inline;
 
-function FileExistsCached(const AFilename: string): boolean; inline;
-function DirPathExistsCached(const AFilename: string): boolean; inline;
-function DirectoryIsWritableCached(const ADirectoryName: string): boolean; inline;
-function FileIsExecutableCached(const AFilename: string): boolean; inline;
-function FileIsReadableCached(const AFilename: string): boolean; inline;
-function FileIsWritableCached(const AFilename: string): boolean; inline;
-function FileIsTextCached(const AFilename: string): boolean; inline;
-function FileAgeCached(const AFileName: string): Longint; inline;
 function GetFilenameOnDisk(const AFilename: string): string; inline; deprecated; // use FindDiskFilename
 
 function CompareAnsiStringFilenames(Data1, Data2: Pointer): integer;
@@ -189,13 +223,6 @@ function SearchPascalFileInDir(const ShortFilename, BaseDirectory: string;
 function SearchPascalFileInPath(const ShortFilename, BasePath, SearchPath,
                       Delimiter: string; SearchCase: TCTSearchFileCase): string;
 
-// search paths
-function CreateAbsoluteSearchPath(const SearchPath, BaseDirectory: string): string; inline;
-function CreateRelativeSearchPath(const SearchPath, BaseDirectory: string): string; inline;
-function MinimizeSearchPath(const SearchPath: string): string; inline;
-function FindPathInSearchPath(APath: PChar; APathLen: integer;
-                              SearchPath: PChar; SearchPathLen: integer): PChar; inline;
-
 // FPC
 function ReadNextFPCParameter(const CmdLine: string; var Position: integer;
     out StartPos: integer): boolean;
@@ -213,27 +240,6 @@ const
 
 function FileAgeToStr(aFileAge: longint): string;
 
-function UTF8ToSys(const s: string): string; inline;// as UTF8ToAnsi but more independent of widestringmanager
-function SysToUTF8(const s: string): string; inline;// as AnsiToUTF8 but more independent of widestringmanager
-function UTF8CharacterLength(p: PChar): integer; inline;
-
-// environment
-function ParamStrUTF8(Param: Integer): string; inline;
-function GetEnvironmentStringUTF8(Index : Integer): String; inline;
-function GetEnvironmentVariableUTF8(const EnvVar: String): String; inline;
-
-procedure InvalidateFileStateCache(const Filename: string = ''); inline;
-
-// basic utility -> moved to LazUtilities
-function ComparePointers(p1, p2: Pointer): integer; inline;
-procedure MergeSort(List: PPointer; ListLength: PtrInt;
-                    const Compare: TListSortCompare); inline;
-function GetNextDelimitedItem(const List: string; Delimiter: char;
-                              var Position: integer): string; inline;
-function HasDelimitedItem(const List: string; Delimiter: char; FindItem: string
-                          ): boolean; inline;
-function FindNextDelimitedItem(const List: string; Delimiter: char;
-                               var Position: integer; FindItem: string): string; inline;
 function AVLTreeHasDoubles(Tree: TAVLTree): TAVLTreeNode;
 
 // store date locale independent, thread safe
@@ -242,6 +248,8 @@ const DateTimeAsCfgStrFormat='YYYY/MM/DD HH:NN:SS';
 function DateToCfgStr(const Date: TDateTime; const aFormat: string = DateAsCfgStrFormat): string;
 function CfgStrToDate(const s: string; out Date: TDateTime; const aFormat: string = DateAsCfgStrFormat): boolean;
 
+procedure CTIncreaseChangeStamp(var ChangeStamp: integer); inline;
+procedure CTIncreaseChangeStamp64(var ChangeStamp: int64); inline;
 function SimpleFormat(const Fmt: String; const Args: Array of const): String;
 
 // debugging
@@ -297,10 +305,6 @@ function DbgStr(const StringWithSpecialChars: string; StartPos, Len: PtrInt): st
 function DbgText(const StringWithSpecialChars: string;
                  KeepLines: boolean = true // true = add LineEnding for each line break
                  ): string; overload;
-
-function MemSizeString(const s: string): PtrUInt; inline;
-function MemSizeFPList(const List: TFPList): PtrUInt; inline;
-function GetStringRefCount(const s: string): PtrInt; inline;
 
 type
   TCTMemStat = class
@@ -358,6 +362,404 @@ uses
   {$ENDIF}
   Unix;
 {$ENDIF}
+
+{$IFnDEF DisableWrapperFunctions}
+// LazUTF8
+function UTF8ToSys(const s: string): string;
+begin
+  Result:=LazUTF8.UTF8ToSys(s);
+end;
+
+function SysToUTF8(const s: string): string;
+begin
+  Result:=LazUTF8.SysToUTF8(s);
+end;
+
+function UTF8CharacterLength(p: PChar): integer;
+begin
+  Result:=LazUTF8.UTF8CharacterLength(p);
+end;
+
+function ParamStrUTF8(Param: Integer): string;
+begin
+  Result:=LazUTF8.ParamStrUTF8(Param);
+end;
+
+function GetEnvironmentStringUTF8(Index: Integer): String;
+begin
+  Result:=LazUTF8.GetEnvironmentStringUTF8(Index);
+end;
+
+function GetEnvironmentVariableUTF8(const EnvVar: String): String;
+begin
+  Result:=LazUTF8.GetEnvironmentVariableUTF8(EnvVar);
+end;
+
+// LazFileUtils
+function CompareFilenames(const Filename1, Filename2: string): integer;
+begin
+  Result:=LazFileUtils.CompareFilenames(Filename1,Filename2);
+end;
+
+function CompareFilenamesIgnoreCase(const Filename1, Filename2: string): integer;
+begin
+  Result:=LazFileUtils.CompareFilenamesIgnoreCase(Filename1,Filename2);
+end;
+
+function CompareFileExt(const Filename, Ext: string; CaseSensitive: boolean): integer;
+begin
+  Result:=LazFileUtils.CompareFileExt(Filename,Ext,CaseSensitive);
+end;
+
+function CompareFilenameStarts(const Filename1, Filename2: string): integer;
+begin
+  Result:=LazFileUtils.CompareFilenameStarts(Filename1,Filename2);
+end;
+
+function CompareFilenames(Filename1: PChar; Len1: integer; Filename2: PChar;
+  Len2: integer): integer;
+begin
+  Result:=LazFileUtils.CompareFilenames(Filename1,Len1,Filename2,Len2);
+end;
+
+function DirPathExists(DirectoryName: string): boolean;
+begin
+  Result:=LazFileUtils.DirPathExists(DirectoryName);
+end;
+
+function DirectoryIsWritable(const DirectoryName: string): boolean;
+begin
+  Result:=LazFileUtils.DirectoryIsWritable(DirectoryName);
+end;
+
+function ExtractFileNameOnly(const AFilename: string): string;
+begin
+  Result:=LazFileUtils.ExtractFileNameOnly(AFilename);
+end;
+
+function FilenameIsAbsolute(const TheFilename: string): boolean;
+begin
+  Result:=LazFileUtils.FilenameIsAbsolute(TheFilename);
+end;
+
+function FilenameIsWinAbsolute(const TheFilename: string): boolean;
+begin
+  Result:=LazFileUtils.FilenameIsWinAbsolute(TheFilename);
+end;
+
+function FilenameIsUnixAbsolute(const TheFilename: string): boolean;
+begin
+  Result:=LazFileUtils.FilenameIsUnixAbsolute(TheFilename);
+end;
+
+function ForceDirectory(DirectoryName: string): boolean;
+begin
+  Result:=LazFileUtils.ForceDirectory(DirectoryName);
+end;
+
+procedure CheckIfFileIsExecutable(const AFilename: string);
+begin
+  LazFileUtils.CheckIfFileIsExecutable(AFilename);
+end;
+
+function FileIsExecutable(const AFilename: string): boolean;
+begin
+  Result:=LazFileUtils.FileIsExecutable(AFilename);
+end;
+
+function FileIsReadable(const AFilename: string): boolean;
+begin
+  Result:=LazFileUtils.FileIsReadable(AFilename);
+end;
+
+function FileIsWritable(const AFilename: string): boolean;
+begin
+  Result:=LazFileUtils.FileIsWritable(AFilename);
+end;
+
+function FileIsText(const AFilename: string): boolean;
+begin
+  Result:=LazFileUtils.FileIsText(AFilename);
+end;
+
+function FileIsText(const AFilename: string; out FileReadable: boolean): boolean;
+begin
+  Result:=LazFileUtils.FileIsText(AFilename,FileReadable);
+end;
+
+function FilenameIsTrimmed(const TheFilename: string): boolean;
+begin
+  Result:=LazFileUtils.FilenameIsTrimmed(TheFilename);
+end;
+
+function FilenameIsTrimmed(StartPos: PChar; NameLen: integer): boolean;
+begin
+  Result:=LazFileUtils.FilenameIsTrimmed(StartPos,NameLen);
+end;
+
+function TrimFilename(const AFilename: string): string;
+begin
+  Result:=LazFileUtils.TrimFilename(AFilename);
+end;
+
+function CleanAndExpandFilename(const Filename: string): string;
+begin
+  Result:=LazFileUtils.CleanAndExpandFilename(Filename);
+end;
+
+function CleanAndExpandDirectory(const Filename: string): string;
+begin
+  Result:=LazFileUtils.CleanAndExpandDirectory(Filename);
+end;
+
+function TrimAndExpandFilename(const Filename: string; const BaseDir: string): string;
+begin
+  Result:=LazFileUtils.TrimAndExpandFilename(Filename,BaseDir);
+end;
+
+function TrimAndExpandDirectory(const Filename: string; const BaseDir: string): string;
+begin
+  Result:=LazFileUtils.TrimAndExpandDirectory(Filename,BaseDir);
+end;
+
+function CreateRelativePath(const Filename, BaseDirectory: string;
+  UsePointDirectory: boolean): string;
+begin
+  Result:=LazFileUtils.CreateRelativePath(Filename,BaseDirectory,UsePointDirectory);
+end;
+
+function FileIsInPath(const Filename, Path: string): boolean;
+begin
+  Result:=LazFileUtils.FileIsInPath(Filename,Path);
+end;
+
+function AppendPathDelim(const Path: string): string;
+begin
+  Result:=LazFileUtils.AppendPathDelim(Path);
+end;
+
+function ChompPathDelim(const Path: string): string;
+begin
+  Result:=LazFileUtils.ChompPathDelim(Path);
+end;
+
+function FileExistsUTF8(const Filename: string): boolean;
+begin
+  Result:=LazFileUtils.FileExistsUTF8(Filename);
+end;
+
+function FileAgeUTF8(const FileName: string): Longint;
+begin
+  Result:=LazFileUtils.FileAgeUTF8(Filename);
+end;
+
+function DirectoryExistsUTF8(const Directory: string): Boolean;
+begin
+  Result:=LazFileUtils.DirectoryExistsUTF8(Directory);
+end;
+
+function ExpandFileNameUTF8(const FileName: string): string;
+begin
+  Result:=LazFileUtils.ExpandFileNameUTF8(Filename);
+end;
+
+function FindFirstUTF8(const Path: string; Attr: Longint; out Rslt: TSearchRec): Longint;
+begin
+  Result:=LazFileUtils.FindFirstUTF8(Path,Attr,Rslt);
+end;
+
+function FindNextUTF8(var Rslt: TSearchRec): Longint;
+begin
+  Result:=LazFileUtils.FindNextUTF8(Rslt);
+end;
+
+procedure FindCloseUTF8(var F: TSearchrec);
+begin
+  LazFileUtils.FindCloseUTF8(F);
+end;
+
+function FileSetDateUTF8(const FileName: String; Age: Longint): Longint;
+begin
+  Result:=LazFileUtils.FileSetDateUTF8(FileName,Age);
+end;
+
+function FileGetAttrUTF8(const FileName: String): Longint;
+begin
+  Result:=LazFileUtils.FileGetAttrUTF8(FileName);
+end;
+
+function FileSetAttrUTF8(const Filename: String; Attr: longint): Longint;
+begin
+  Result:=LazFileUtils.FileSetAttrUTF8(FileName,Attr);
+end;
+
+function DeleteFileUTF8(const FileName: String): Boolean;
+begin
+  Result:=LazFileUtils.DeleteFileUTF8(FileName);
+end;
+
+function RenameFileUTF8(const OldName, NewName: String): Boolean;
+begin
+  Result:=LazFileUtils.RenameFileUTF8(OldName,NewName);
+end;
+
+function FileSearchUTF8(const Name, DirList: String): String;
+begin
+  Result:=LazFileUtils.FileSearchUTF8(Name,DirList);
+end;
+
+function FileIsReadOnlyUTF8(const FileName: String): Boolean;
+begin
+  Result:=LazFileUtils.FileIsReadOnlyUTF8(FileName);
+end;
+
+function GetCurrentDirUTF8: String;
+begin
+  Result:=LazFileUtils.GetCurrentDirUTF8;
+end;
+
+function SetCurrentDirUTF8(const NewDir: String): Boolean;
+begin
+  Result:=LazFileUtils.SetCurrentDirUTF8(NewDir);
+end;
+
+function CreateDirUTF8(const NewDir: String): Boolean;
+begin
+  Result:=LazFileUtils.CreateDirUTF8(NewDir);
+end;
+
+function RemoveDirUTF8(const Dir: String): Boolean;
+begin
+  Result:=LazFileUtils.RemoveDirUTF8(Dir);
+end;
+
+function ForceDirectoriesUTF8(const Dir: string): Boolean;
+begin
+  Result:=LazFileUtils.ForceDirectoriesUTF8(Dir);
+end;
+
+function CreateAbsoluteSearchPath(const SearchPath, BaseDirectory: string): string;
+begin
+  Result:=LazFileUtils.CreateAbsoluteSearchPath(SearchPath,BaseDirectory);
+end;
+
+function CreateRelativeSearchPath(const SearchPath, BaseDirectory: string): string;
+begin
+  Result:=LazFileUtils.CreateRelativeSearchPath(SearchPath,BaseDirectory);
+end;
+
+function MinimizeSearchPath(const SearchPath: string): string;
+begin
+  Result:=LazFileUtils.MinimizeSearchPath(SearchPath);
+end;
+
+//function FindPathInSearchPath(APath: PChar; APathLen: integer;
+//  SearchPath: PChar; SearchPathLen: integer): PChar;
+//begin
+//  Result:=LazFileUtils.FindPathInSearchPath(APath,APathLen,SearchPath,SearchPathLen);
+//end;
+
+// LazFileCache
+function FileExistsCached(const AFilename: string): boolean;
+begin
+  Result:=LazFileCache.FileExistsCached(AFilename);
+end;
+
+function DirPathExistsCached(const AFilename: string): boolean;
+begin
+  Result:=LazFileCache.DirPathExistsCached(AFilename);
+end;
+
+function DirectoryIsWritableCached(const ADirectoryName: string): boolean;
+begin
+  Result:=LazFileCache.DirectoryIsWritableCached(ADirectoryName);
+end;
+
+function FileIsExecutableCached(const AFilename: string): boolean;
+begin
+  Result:=LazFileCache.FileIsExecutableCached(AFilename);
+end;
+
+function FileIsReadableCached(const AFilename: string): boolean;
+begin
+  Result:=LazFileCache.FileIsReadableCached(AFilename);
+end;
+
+function FileIsWritableCached(const AFilename: string): boolean;
+begin
+  Result:=LazFileCache.FileIsWritableCached(AFilename);
+end;
+
+function FileIsTextCached(const AFilename: string): boolean;
+begin
+  Result:=LazFileCache.FileIsTextCached(AFilename);
+end;
+
+function FileAgeCached(const AFileName: string): Longint;
+begin
+  Result:=LazFileCache.FileAgeCached(AFileName);
+end;
+
+procedure InvalidateFileStateCache(const Filename: string = '');
+begin
+  LazFileCache.InvalidateFileStateCache(Filename);
+end;
+
+// LazUtilities
+function ComparePointers(p1, p2: Pointer): integer;
+begin
+  Result:=LazUtilities.ComparePointers(p1,p2);
+end;
+
+procedure MergeSort(List: PPointer; ListLength: PtrInt; const Compare: TListSortCompare);
+begin
+  LazUtilities.MergeSort(List,ListLength,Compare);
+end;
+
+function GetNextDelimitedItem(const List: string; Delimiter: char;
+  var Position: integer): string;
+begin
+  Result:=LazUtilities.GetNextDelimitedItem(List,Delimiter,Position);
+end;
+
+function HasDelimitedItem(const List: string; Delimiter: char; FindItem: string): boolean;
+begin
+  Result:=LazUtilities.HasDelimitedItem(List,Delimiter,FindItem);
+end;
+
+function FindNextDelimitedItem(const List: string; Delimiter: char;
+  var Position: integer; FindItem: string): string;
+begin
+  Result:=LazUtilities.FindNextDelimitedItem(List,Delimiter,Position,FindItem);
+end;
+
+// LazDbgLog
+function MemSizeString(const s: string): PtrUInt;
+begin
+  Result:=LazDbgLog.MemSizeString(s);
+end;
+
+function MemSizeFPList(const List: TFPList): PtrUInt;
+begin
+  Result:=LazDbgLog.MemSizeFPList(List);
+end;
+
+function GetStringRefCount(const s: string): PtrInt;
+begin
+  Result:=LazDbgLog.GetStringRefCount(s);
+end;
+
+{$ENDIF DisableWrapperFunctions}
+
+procedure CTIncreaseChangeStamp(var ChangeStamp: integer);
+begin
+  LazFileCache.LUIncreaseChangeStamp(ChangeStamp);
+end;
+
+procedure CTIncreaseChangeStamp64(var ChangeStamp: int64);
+begin
+  LazFileCache.LUIncreaseChangeStamp64(ChangeStamp);
+end;
 
 function SimpleFormat(const Fmt: String; const Args: array of const): String;
 var
@@ -468,282 +870,6 @@ end;
 var
   LineInfoCache: TAVLTree = nil;
   LastTick: int64 = 0;
-
-function UTF8ToSys(const s: string): string;
-begin
-  Result:=LazUTF8.UTF8ToSys(s);
-end;
-
-function SysToUTF8(const s: string): string;
-begin
-  Result:=LazUTF8.SysToUTF8(s);
-end;
-
-function UTF8CharacterLength(p: PChar): integer;
-begin
-  Result:=LazUTF8.UTF8CharacterLength(p);
-end;
-
-function ParamStrUTF8(Param: Integer): string;
-begin
-  Result:=LazUTF8.ParamStrUTF8(Param);
-end;
-
-function GetEnvironmentStringUTF8(Index: Integer): String;
-begin
-  Result:=LazUTF8.GetEnvironmentStringUTF8(Index);
-end;
-
-function GetEnvironmentVariableUTF8(const EnvVar: String): String;
-begin
-  Result:=LazUTF8.GetEnvironmentVariableUTF8(EnvVar);
-end;
-
-function CompareFilenames(const Filename1, Filename2: string): integer;
-begin
-  Result:=LazFileUtils.CompareFilenames(Filename1,Filename2);
-end;
-
-function CompareFilenamesIgnoreCase(const Filename1, Filename2: string
-  ): integer;
-begin
-  Result:=LazFileUtils.CompareFilenamesIgnoreCase(Filename1,Filename2);
-end;
-
-function CompareFileExt(const Filename, Ext: string; CaseSensitive: boolean
-  ): integer;
-begin
-  Result:=LazFileUtils.CompareFileExt(Filename,Ext,CaseSensitive);
-end;
-
-function CompareFilenameStarts(const Filename1, Filename2: string): integer;
-begin
-  Result:=LazFileUtils.CompareFilenameStarts(Filename1,Filename2);
-end;
-
-function CompareFilenames(Filename1: PChar; Len1: integer; Filename2: PChar;
-  Len2: integer): integer;
-begin
-  Result:=LazFileUtils.CompareFilenames(Filename1,Len1,Filename2,Len2);
-end;
-
-function DirPathExists(DirectoryName: string): boolean;
-begin
-  Result:=LazFileUtils.DirPathExists(DirectoryName);
-end;
-
-function DirectoryIsWritable(const DirectoryName: string): boolean;
-begin
-  Result:=LazFileUtils.DirectoryIsWritable(DirectoryName);
-end;
-
-function ExtractFileNameOnly(const AFilename: string): string;
-begin
-  Result:=LazFileUtils.ExtractFileNameOnly(AFilename);
-end;
-
-function FilenameIsAbsolute(const TheFilename: string): boolean;
-begin
-  Result:=LazFileUtils.FilenameIsAbsolute(TheFilename);
-end;
-
-function FilenameIsWinAbsolute(const TheFilename: string): boolean;
-begin
-  Result:=LazFileUtils.FilenameIsWinAbsolute(TheFilename);
-end;
-
-function FilenameIsUnixAbsolute(const TheFilename: string): boolean;
-begin
-  Result:=LazFileUtils.FilenameIsUnixAbsolute(TheFilename);
-end;
-
-function ForceDirectory(DirectoryName: string): boolean;
-begin
-  Result:=LazFileUtils.ForceDirectory(DirectoryName);
-end;
-
-procedure CheckIfFileIsExecutable(const AFilename: string);
-begin
-  LazFileUtils.CheckIfFileIsExecutable(AFilename);
-end;
-
-function FileIsExecutable(const AFilename: string): boolean;
-begin
-  Result:=LazFileUtils.FileIsExecutable(AFilename);
-end;
-
-function FileIsReadable(const AFilename: string): boolean;
-begin
-  Result:=LazFileUtils.FileIsReadable(AFilename);
-end;
-
-function FileIsWritable(const AFilename: string): boolean;
-begin
-  Result:=LazFileUtils.FileIsWritable(AFilename);
-end;
-
-function FileIsText(const AFilename: string): boolean;
-begin
-  Result:=LazFileUtils.FileIsText(AFilename);
-end;
-
-function FileIsText(const AFilename: string; out FileReadable: boolean
-  ): boolean;
-begin
-  Result:=LazFileUtils.FileIsText(AFilename,FileReadable);
-end;
-
-function FilenameIsTrimmed(const TheFilename: string): boolean;
-begin
-  Result:=LazFileUtils.FilenameIsTrimmed(TheFilename);
-end;
-
-function FilenameIsTrimmed(StartPos: PChar; NameLen: integer): boolean;
-begin
-  Result:=LazFileUtils.FilenameIsTrimmed(StartPos,NameLen);
-end;
-
-function TrimFilename(const AFilename: string): string;
-begin
-  Result:=LazFileUtils.TrimFilename(AFilename);
-end;
-
-function CleanAndExpandFilename(const Filename: string): string;
-begin
-  Result:=LazFileUtils.CleanAndExpandFilename(Filename);
-end;
-
-function CleanAndExpandDirectory(const Filename: string): string;
-begin
-  Result:=LazFileUtils.CleanAndExpandDirectory(Filename);
-end;
-
-function TrimAndExpandFilename(const Filename: string; const BaseDir: string): string;
-begin
-  Result:=LazFileUtils.TrimAndExpandFilename(Filename,BaseDir);
-end;
-
-function TrimAndExpandDirectory(const Filename: string; const BaseDir: string): string;
-begin
-  Result:=LazFileUtils.TrimAndExpandDirectory(Filename,BaseDir);
-end;
-
-function CreateRelativePath(const Filename, BaseDirectory: string;
-  UsePointDirectory: boolean): string;
-begin
-  Result:=LazFileUtils.CreateRelativePath(Filename,BaseDirectory,UsePointDirectory);
-end;
-
-function FileIsInPath(const Filename, Path: string): boolean;
-begin
-  Result:=LazFileUtils.FileIsInPath(Filename,Path);
-end;
-
-function AppendPathDelim(const Path: string): string;
-begin
-  Result:=LazFileUtils.AppendPathDelim(Path);
-end;
-
-function ChompPathDelim(const Path: string): string;
-begin
-  Result:=LazFileUtils.ChompPathDelim(Path);
-end;
-
-function FileExistsUTF8(const Filename: string): boolean;
-begin
-  Result:=LazFileUtils.FileExistsUTF8(Filename);
-end;
-
-function FileAgeUTF8(const FileName: string): Longint;
-begin
-  Result:=LazFileUtils.FileAgeUTF8(Filename);
-end;
-
-function DirectoryExistsUTF8(const Directory: string): Boolean;
-begin
-  Result:=LazFileUtils.DirectoryExistsUTF8(Directory);
-end;
-
-function ExpandFileNameUTF8(const FileName: string): string;
-begin
-  Result:=LazFileUtils.ExpandFileNameUTF8(Filename);
-end;
-
-function FindFirstUTF8(const Path: string; Attr: Longint; out Rslt: TSearchRec
-  ): Longint;
-begin
-  Result:=LazFileUtils.FindFirstUTF8(Path,Attr,Rslt);
-end;
-
-function FindNextUTF8(var Rslt: TSearchRec): Longint;
-begin
-  Result:=LazFileUtils.FindNextUTF8(Rslt);
-end;
-
-procedure FindCloseUTF8(var F: TSearchrec);
-begin
-  LazFileUtils.FindCloseUTF8(F);
-end;
-
-function FileSetDateUTF8(const FileName: String; Age: Longint): Longint;
-begin
-  Result:=LazFileUtils.FileSetDateUTF8(FileName,Age);
-end;
-
-function FileGetAttrUTF8(const FileName: String): Longint;
-begin
-  Result:=LazFileUtils.FileGetAttrUTF8(FileName);
-end;
-
-function FileSetAttrUTF8(const Filename: String; Attr: longint): Longint;
-begin
-  Result:=LazFileUtils.FileSetAttrUTF8(FileName,Attr);
-end;
-
-function DeleteFileUTF8(const FileName: String): Boolean;
-begin
-  Result:=LazFileUtils.DeleteFileUTF8(FileName);
-end;
-
-function RenameFileUTF8(const OldName, NewName: String): Boolean;
-begin
-  Result:=LazFileUtils.RenameFileUTF8(OldName,NewName);
-end;
-
-function FileSearchUTF8(const Name, DirList: String): String;
-begin
-  Result:=LazFileUtils.FileSearchUTF8(Name,DirList);
-end;
-
-function FileIsReadOnlyUTF8(const FileName: String): Boolean;
-begin
-  Result:=LazFileUtils.FileIsReadOnlyUTF8(FileName);
-end;
-
-function GetCurrentDirUTF8: String;
-begin
-  Result:=LazFileUtils.GetCurrentDirUTF8;
-end;
-
-function SetCurrentDirUTF8(const NewDir: String): Boolean;
-begin
-  Result:=LazFileUtils.SetCurrentDirUTF8(NewDir);
-end;
-
-function CreateDirUTF8(const NewDir: String): Boolean;
-begin
-  Result:=LazFileUtils.CreateDirUTF8(NewDir);
-end;
-
-function RemoveDirUTF8(const Dir: String): Boolean;
-begin
-  Result:=LazFileUtils.RemoveDirUTF8(Dir);
-end;
-
-function ForceDirectoriesUTF8(const Dir: string): Boolean;
-begin
-  Result:=LazFileUtils.ForceDirectoriesUTF8(Dir);
-end;
 
 function FileDateToDateTimeDef(aFileDate: TCTFileAgeTime; const Default: TDateTime
   ): TDateTime;
@@ -907,56 +1033,6 @@ begin
   CFRelease(s);
 end;
 {$ENDIF}
-
-procedure CTIncreaseChangeStamp(var ChangeStamp: integer);
-begin
-  LazFileCache.LUIncreaseChangeStamp(ChangeStamp);
-end;
-
-procedure CTIncreaseChangeStamp64(var ChangeStamp: int64);
-begin
-  LazFileCache.LUIncreaseChangeStamp64(ChangeStamp);
-end;
-
-function FileExistsCached(const AFilename: string): boolean;
-begin
-  Result:=LazFileCache.FileExistsCached(AFilename);
-end;
-
-function DirPathExistsCached(const AFilename: string): boolean;
-begin
-  Result:=LazFileCache.DirPathExistsCached(AFilename);
-end;
-
-function DirectoryIsWritableCached(const ADirectoryName: string): boolean;
-begin
-  Result:=LazFileCache.DirectoryIsWritableCached(ADirectoryName);
-end;
-
-function FileIsExecutableCached(const AFilename: string): boolean;
-begin
-  Result:=LazFileCache.FileIsExecutableCached(AFilename);
-end;
-
-function FileIsReadableCached(const AFilename: string): boolean;
-begin
-  Result:=LazFileCache.FileIsReadableCached(AFilename);
-end;
-
-function FileIsWritableCached(const AFilename: string): boolean;
-begin
-  Result:=LazFileCache.FileIsWritableCached(AFilename);
-end;
-
-function FileIsTextCached(const AFilename: string): boolean;
-begin
-  Result:=LazFileCache.FileIsTextCached(AFilename);
-end;
-
-function FileAgeCached(const AFileName: string): Longint;
-begin
-  Result:=LazFileCache.FileAgeCached(AFileName);
-end;
 
 function GetFilenameOnDisk(const AFilename: string): string;
 begin
@@ -1296,29 +1372,6 @@ begin
     StartPos:=p+1;
   end;
   Result:='';
-end;
-
-function CreateAbsoluteSearchPath(const SearchPath, BaseDirectory: string
-  ): string;
-begin
-  Result:=LazFileUtils.CreateAbsoluteSearchPath(SearchPath,BaseDirectory);
-end;
-
-function CreateRelativeSearchPath(const SearchPath, BaseDirectory: string
-  ): string;
-begin
-  Result:=LazFileUtils.CreateRelativeSearchPath(SearchPath,BaseDirectory);
-end;
-
-function MinimizeSearchPath(const SearchPath: string): string;
-begin
-  Result:=LazFileUtils.MinimizeSearchPath(SearchPath);
-end;
-
-function FindPathInSearchPath(APath: PChar; APathLen: integer;
-  SearchPath: PChar; SearchPathLen: integer): PChar;
-begin
-  Result:=LazFileUtils.FindPathInSearchPath(APath,APathLen,SearchPath,SearchPathLen);
 end;
 
 function ReadNextFPCParameter(const CmdLine: string; var Position: integer; out
@@ -1816,40 +1869,6 @@ begin
   Result:=copy(Filename,StartPos,Position-StartPos);
 end;
 
-procedure InvalidateFileStateCache(const Filename: string = '');
-begin
-  LazFileCache.InvalidateFileStateCache(Filename);
-end;
-
-function ComparePointers(p1, p2: Pointer): integer;
-begin
-  Result:=LazUtilities.ComparePointers(p1,p2);
-end;
-
-procedure MergeSort(List: PPointer; ListLength: PtrInt;
-  const Compare: TListSortCompare);
-begin
-  LazUtilities.MergeSort(List,ListLength,Compare);
-end;
-
-function GetNextDelimitedItem(const List: string; Delimiter: char;
-  var Position: integer): string;
-begin
-  Result:=LazUtilities.GetNextDelimitedItem(List,Delimiter,Position);
-end;
-
-function HasDelimitedItem(const List: string; Delimiter: char; FindItem: string
-  ): boolean;
-begin
-  Result:=LazUtilities.HasDelimitedItem(List,Delimiter,FindItem);
-end;
-
-function FindNextDelimitedItem(const List: string; Delimiter: char;
-  var Position: integer; FindItem: string): string;
-begin
-  Result:=LazUtilities.FindNextDelimitedItem(List,Delimiter,Position,FindItem);
-end;
-
 function AVLTreeHasDoubles(Tree: TAVLTree): TAVLTreeNode;
 var
   Next: TAVLTreeNode;
@@ -2209,14 +2228,12 @@ begin
   end;
 end;
 
-function DbgStr(const StringWithSpecialChars: string; StartPos, Len: PtrInt
-  ): string;
+function DbgStr(const StringWithSpecialChars: string; StartPos, Len: PtrInt): string;
 begin
   Result:=dbgstr(copy(StringWithSpecialChars,StartPos,Len));
 end;
 
-function DbgText(const StringWithSpecialChars: string; KeepLines: boolean
-  ): string;
+function DbgText(const StringWithSpecialChars: string; KeepLines: boolean): string;
 var
   i: Integer;
   s: String;
@@ -2248,28 +2265,12 @@ begin
   end;
 end;
 
-function MemSizeString(const s: string): PtrUInt;
-begin
-  Result:=LazDbgLog.MemSizeString(s);
-end;
-
-function MemSizeFPList(const List: TFPList): PtrUInt;
-begin
-  Result:=LazDbgLog.MemSizeFPList(List);
-end;
-
-function GetStringRefCount(const s: string): PtrInt;
-begin
-  Result:=LazDbgLog.GetStringRefCount(s);
-end;
-
 function CompareCTMemStat(Stat1, Stat2: TCTMemStat): integer;
 begin
   Result:=SysUtils.CompareText(Stat1.Name,Stat2.Name);
 end;
 
-function CompareNameWithCTMemStat(KeyAnsiString: Pointer; Stat: TCTMemStat
-  ): integer;
+function CompareNameWithCTMemStat(KeyAnsiString: Pointer; Stat: TCTMemStat): integer;
 begin
   Result:=SysUtils.CompareText(AnsiString(KeyAnsiString),Stat.Name);
 end;

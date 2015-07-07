@@ -52,7 +52,7 @@ const
 // AnsiToUTF8 and UTF8ToAnsi need a widestring manager under Linux, BSD, MacOSX
 // but normally these OS use UTF-8 as system encoding so the widestringmanager
 // is not needed.
-{$IFnDEF NoLazUTF8Wrappers}
+{$IFnDEF DisableWrapperFunctions}
 // *** Wrappers for LazUTF8 ***
 function NeedRTLAnsi: boolean; inline; deprecated 'Use the function in LazUTF8 unit';
 procedure SetNeedRTLAnsi(NewValue: boolean); inline; deprecated 'Use the function in LazUTF8 unit';
@@ -131,7 +131,7 @@ function CreateRelativePath(const Filename, BaseDirectory: string;
 function GetDarwinSystemFilename(Filename: string): string; inline;
 {$ENDIF}
 
-{$ENDIF}
+{$ENDIF DisableWrapperFunctions}
 
 // file and directory operations
 function ComparePhysicalFilenames(const Filename1, Filename2: string): integer;

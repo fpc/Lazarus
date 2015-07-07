@@ -45,7 +45,7 @@ uses
   // codetools
   CodeAtom, CodeTree, CodeToolManager, FindDeclarationTool, BasicCodeTools,
   KeywordFuncLists, PascalParserTool, CodeCache, CacheCodeTools, CustomCodeTool,
-  FileProcs, DefineTemplates, CodeToolsStructs,
+  FileProcs, LazFileUtils, DefineTemplates, CodeToolsStructs,
   // synedit
   SynHighlighterPas,
   // IDEIntf

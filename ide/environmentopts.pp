@@ -37,12 +37,12 @@ uses
 {$ifdef Windows}
   ShlObj,
 {$endif}
-  Classes, SysUtils, TypInfo, strutils, fgl, Graphics, Controls, Forms,
-  LCLProc, FileProcs, Dialogs, LazConfigStorage, Laz2_XMLCfg, LazUTF8,
+  Classes, SysUtils, TypInfo, strutils, fgl, Graphics, Controls, Forms, Dialogs,
+  LCLProc, FileProcs, LazFileUtils, LazFileCache, LazConfigStorage,
+  Laz2_XMLCfg, LazUTF8,
   // IDEIntf
   ProjectIntf, ObjectInspector, IDEWindowIntf, IDEOptionsIntf,
-  ComponentReg, IDEExternToolIntf, MacroDefIntf,
-  DbgIntfDebuggerBase,
+  ComponentReg, IDEExternToolIntf, MacroDefIntf, DbgIntfDebuggerBase,
   // IDE
   IDEProcs, DialogProcs, LazarusIDEStrConsts, IDETranslations, LazConf,
   IDEOptionDefs, TransferMacros, ModeMatrixOpts, Debugger,

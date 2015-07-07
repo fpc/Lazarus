@@ -32,10 +32,10 @@ interface
 
 uses
   // LCL
-  Classes, SysUtils, types, LCLProc, LCLIntf, Forms, Controls,
-  Dialogs, ExtCtrls, StdCtrls, Buttons, FileProcs, FileUtil, ComCtrls,
+  Classes, SysUtils, types, LCLProc, LCLIntf, Forms, Controls, ComCtrls,
+  Dialogs, ExtCtrls, StdCtrls, Buttons, LazFileUtils, LazFileCache, FileUtil,
   // synedit, codetools
-  SynRegExpr, SourceLog, KeywordFuncLists, BasicCodeTools,
+  SynRegExpr, SourceLog, KeywordFuncLists, BasicCodeTools, FileProcs,
   // IDEIntf
   IDEWindowIntf, LazIDEIntf, SrcEditorIntf, IDEDialogs,
   // ide
@@ -845,7 +845,7 @@ var
   F: String;
 begin
   F := FileName;
-  if FileProcs.FileIsTextCached(F) then
+  if FileIsTextCached(F) then
   begin
     FParent.UpdateProgress(F);
     FParent.SearchFile(F);

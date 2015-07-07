@@ -35,7 +35,7 @@ interface
 
 uses
   Classes, SysUtils, math, process, Pipes, UTF8Process,
-  LazFileUtils,
+  LazFileUtils, LazUTF8,
   // Codetools
   FileProcs, CodeToolsStructs,
   // LCL

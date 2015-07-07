@@ -30,8 +30,8 @@ unit UnitDictionary;
 interface
 
 uses
-  Classes, SysUtils, AVL_Tree, BasicCodeTools, FileProcs, CodeToolsStructs,
-  FindDeclarationCache, CodeToolManager, CodeCache;
+  Classes, SysUtils, AVL_Tree, BasicCodeTools, FileProcs, LazFileUtils,
+  CodeToolsStructs, FindDeclarationCache, CodeToolManager, CodeCache;
 
 const
   // Version 2: added unit and group use count

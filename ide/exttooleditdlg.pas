@@ -41,11 +41,11 @@ uses
   {$IFDEF IDE_MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, FileUtil, LazUTF8, LCLType, Controls, Forms, Buttons,
+  Classes, SysUtils, contnrs, FileUtil, LazUTF8, LCLType, Controls, Forms, Buttons,
   StdCtrls, Dialogs, ExtCtrls, LCLProc, ButtonPanel, EditBtn,
   IDEExternToolIntf, IDEHelpIntf, PropEdits, IDEDialogs, IDECommands,
-  FileProcs, TransferMacros, LazarusIDEStrConsts, EnvironmentOpts, KeyMapping,
-  IDEProcs, LazConfigStorage, contnrs, IDEUtils;
+  FileProcs, LazFileUtils, TransferMacros, LazarusIDEStrConsts, EnvironmentOpts,
+  KeyMapping, IDEProcs, LazConfigStorage, IDEUtils;
 
 const
   ExternalToolOptionsVersion = 3;

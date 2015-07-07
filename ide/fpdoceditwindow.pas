@@ -43,7 +43,7 @@ uses
   CTXMLFixFragment,
   // IDEIntf
   IDEWindowIntf, ProjectIntf, LazIDEIntf, IDEHelpIntf, Menus,
-  SrcEditorIntf, IDEDialogs,
+  SrcEditorIntf, IDEDialogs, LazFileUtils,
   // IDE
   IDEOptionDefs, EnvironmentOpts, PackageSystem, IDEProcs, LazarusIDEStrConsts,
   FPDocSelectInherited, FPDocSelectLink, CodeHelp;

@@ -92,8 +92,8 @@ interface
 {$ENDIF}
 
 uses
-  Classes, SysUtils, AVL_Tree, FileProcs, KeywordFuncLists, CodeCache,
-  BasicCodeTools;
+  Classes, SysUtils, AVL_Tree, LazUtilities, FileProcs, KeywordFuncLists,
+  CodeCache, BasicCodeTools;
   
 type
   TWordPolicy = (

@@ -31,7 +31,7 @@ interface
 
 uses
   Classes, SysUtils, dynlibs, PPUParser, CodeTree, AVL_Tree, FileProcs,
-  BasicCodeTools, CodeGraph, CodeToolManager, CodeToolsStructs;
+  LazFileUtils, BasicCodeTools, CodeGraph, CodeToolManager, CodeToolsStructs;
 
 const
   FPCPPUGroupPrefix = 'fpc_';

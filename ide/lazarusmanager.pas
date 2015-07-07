@@ -167,7 +167,7 @@ begin
           Result := mrAbort;
           exit;
         end;
-      if not FileProcs.RenameFileUTF8(CurFilename, BackupFileName) then begin
+      if not RenameFileUTF8(CurFilename, BackupFileName) then begin
         MessageDlg (format('Can''t rename "%s" to "%s"'+LineEnding+'%s',
           [CurFilename, BackupFileName, SysErrorMessageUTF8(GetLastOSError)]),
           mtError, [mbOK], 0);
@@ -176,7 +176,7 @@ begin
       end;
       InvalidateFileStateCache;
     end;
-    if not FileProcs.RenameFileUTF8(NewFileName, CurFilename) then begin
+    if not RenameFileUTF8(NewFileName, CurFilename) then begin
       MessageDlg (format('Can''t rename "%s" to "%s"'+LineEnding+'%s',
         [NewFileName, CurFilename, SysErrorMessageUTF8(GetLastOSError)]),
         mtError, [mbOK], 0);

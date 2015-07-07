@@ -82,10 +82,10 @@ uses
   {$IFDEF MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, FileProcs, CodeToolsStrConsts, CodeTree, CodeAtom,
-  CodeCache, CustomCodeTool, PascalParserTool, MethodJumpTool,
+  Classes, SysUtils, LazFileUtils, FileProcs, CodeToolsStrConsts,
+  CodeTree, CodeAtom, CodeCache, CustomCodeTool, PascalParserTool, MethodJumpTool,
   FindDeclarationTool, KeywordFuncLists, CodeToolsStructs, BasicCodeTools,
-  LinkScanner, SourceChanger, CodeGraph, AVL_Tree, contnrs,
+  LinkScanner, SourceChanger, CodeGraph, AVL_Tree, contnrs, LazDbgLog,
   {$IFDEF EnableCodeCompleteTemplates}
   CodeCompletionTemplater,
   {$ENDIF}

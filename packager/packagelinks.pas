@@ -39,7 +39,8 @@ unit PackageLinks;
 interface
 
 uses
-  Classes, SysUtils, Laz2_XMLCfg, FileProcs, CodeToolManager, CodeToolsStructs,
+  Classes, SysUtils, Laz2_XMLCfg, FileProcs, LazFileCache,
+  CodeToolManager, CodeToolsStructs,
   LCLProc, Forms, FileUtil, AvgLvlTree, lazutf8classes, LazFileUtils, MacroIntf,
   PackageIntf, IDEProcs, EnvironmentOpts, PackageDefs, LazConf, IDECmdLine;
   

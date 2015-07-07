@@ -32,12 +32,12 @@ interface
 
 uses
   // LCL+FCL
-  Classes, SysUtils, FileProcs, Forms, Controls, Dialogs,
-  contnrs, strutils,
+  Classes, SysUtils, contnrs, strutils, Forms, Controls, Dialogs,
   // IDE
   LazarusIDEStrConsts, LazIDEIntf, FormEditor, IDEExternToolIntf,
+  LazFileUtils,
   // codetools
-  CodeToolManager, StdCodeTools, CodeTree, CodeAtom,
+  CodeToolManager, StdCodeTools, CodeTree, CodeAtom, FileProcs,
   FindDeclarationTool, LFMTrees,
   ExprEval, KeywordFuncLists, BasicCodeTools, LinkScanner,
   CodeCache, SourceChanger, CustomCodeTool, CodeToolsStructs,

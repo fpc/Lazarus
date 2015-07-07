@@ -34,9 +34,9 @@ unit CodeExplOpts;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
-  Buttons, ExtCtrls, FileUtil, AvgLvlTree, Laz2_XMLCfg,
-  CodeToolManager, BasicCodeTools, FileProcs,
+  Classes, SysUtils, LCLProc, Forms, Controls, Graphics, Dialogs, Buttons,
+  AvgLvlTree, Laz2_XMLCfg, LazFileUtils, LazFileCache,
+  BasicCodeTools, FileProcs,
   LazConf, IDEProcs, IDEOptionsIntf, LazarusIDEStrConsts;
 
 type
@@ -440,8 +440,7 @@ end;
 
 constructor TCodeExplorerOptions.Create;
 begin
-  FOptionsFilename:=
-                AppendPathDelim(GetPrimaryConfigPath)+'codeexploreroptions.xml';
+  FOptionsFilename:=AppendPathDelim(GetPrimaryConfigPath)+'codeexploreroptions.xml';
   FObserverIgnoreConstants:=TAvgLvlTree.Create(TListSortCompare(@CompareAtom));
   FCOIgnoreConstInFuncs:=TStringToStringTree.Create(false);
   Clear;

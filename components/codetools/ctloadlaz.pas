@@ -30,7 +30,7 @@ unit ctloadlaz;
 interface
 
 uses
-  Classes, SysUtils, FileProcs, Laz2_XMLCfg;
+  Classes, SysUtils, FileProcs, LazFileUtils, Laz2_XMLCfg;
 
 type
   TCTLParseString = record

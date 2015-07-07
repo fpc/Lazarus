@@ -50,7 +50,7 @@ interface
 
 uses
   Classes, SysUtils, Laz2_XMLCfg, Laz2_XMLRead, Laz2_XMLWrite, Laz2_DOM,
-  FileProcs, CodeCache, DefineTemplates;
+  FileProcs, LazFileUtils, LazFileCache, LazUTF8, CodeCache, DefineTemplates;
   
 type
 

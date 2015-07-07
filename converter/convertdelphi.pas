@@ -33,8 +33,8 @@ interface
 
 uses
   // LCL+FCL
-  Classes, SysUtils, LCLProc, Forms, Controls, Dialogs, LConvEncoding,
-  FileUtil, LazFileUtils, LazUTF8Classes, contnrs, IniFiles,
+  Classes, SysUtils, contnrs, IniFiles, LCLProc, Forms, Controls, Dialogs,
+  LConvEncoding, FileUtil, LazFileUtils, LazUTF8, LazUTF8Classes,
   // codetools
   CodeToolManager, DefineTemplates, CodeCache, LinkScanner, FileProcs, CodeToolsStructs,
   // IDEIntf

@@ -34,9 +34,10 @@ interface
 uses
   Classes, SysUtils, strutils, math,
   LazUTF8, LConvEncoding, LazFileUtils, FileUtil,
-  IDEExternToolIntf, PackageIntf, LazIDEIntf, ProjectIntf, IDEUtils,
+  IDEExternToolIntf, PackageIntf, LazIDEIntf, ProjectIntf,
   MacroIntf,
-  FileProcs, KeywordFuncLists, CodeToolsFPCMsgs, CodeToolsStructs, CodeCache,
+  IDEUtils, FileProcs, LazFileCache,
+  KeywordFuncLists, CodeToolsFPCMsgs, CodeToolsStructs, CodeCache,
   CodeToolManager, DirectoryCacher, BasicCodeTools, DefineTemplates, SourceLog,
   IDECmdLine, LazarusIDEStrConsts, EnvironmentOpts, LazConf, TransferMacros,
   etMakeMsgParser;
