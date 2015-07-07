@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<fpdoc-descriptions>
+<package name="lazutils">
+
+<!--
+  ====================================================================
+    LookupStringList
+  ====================================================================
+-->
+
+<module name="LookupStringList">
+<short></short>
+<descr>
+</descr>
+
+<!-- class Visibility: default -->
+<element name="TLookupStringList">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TLookupStringList.FMap">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TLookupStringList.InsertItem">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLookupStringList.InsertItem.Index">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLookupStringList.InsertItem.S">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLookupStringList.InsertItem.O">
+<short></short>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="TLookupStringList.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- destructor Visibility: public -->
+<element name="TLookupStringList.Destroy">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TLookupStringList.Assign">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLookupStringList.Assign.Source">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TLookupStringList.Clear">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TLookupStringList.Delete">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLookupStringList.Delete.Index">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TLookupStringList.Add">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TLookupStringList.Add.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLookupStringList.Add.S">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TLookupStringList.AddObject">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TLookupStringList.AddObject.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLookupStringList.AddObject.S">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLookupStringList.AddObject.AObject">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TLookupStringList.Contains">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TLookupStringList.Contains.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLookupStringList.Contains.S">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TLookupStringList.Find">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TLookupStringList.Find.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLookupStringList.Find.S">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLookupStringList.Find.Index">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TLookupStringList.IndexOf">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TLookupStringList.IndexOf.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLookupStringList.IndexOf.S">
+<short></short>
+</element>
+
+</module> <!-- LookupStringList -->
+
+</package>
+</fpdoc-descriptions>
