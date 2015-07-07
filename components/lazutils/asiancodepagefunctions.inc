@@ -92,6 +92,31 @@ begin
   Result := DBCSToUTF8(s, 932);
 end;
 
+{$if FPC_FULLVERSION >= 20701}
+function UTF8ToCP932(const s: string): RawByteString;
+begin
+  Result:=S;
+  SetCodePage(Result, 932, True);
+end;
+
+function UTF8ToCP936(const s: string): RawByteString;
+begin
+  Result:=S;
+  SetCodePage(Result, 936, True);
+end;
+
+function UTF8ToCP949(const s: string): RawByteString;
+begin
+  Result:=S;
+  SetCodePage(Result, 949, True);
+end;
+
+function UTF8ToCP950(const s: string): RawByteString;
+begin
+  Result:=S;
+  SetCodePage(Result, 950, True);
+end;
+{$ELSE}
 function UnicodeToCP936(Unicode: cardinal): integer;
 begin
   case Unicode of
@@ -128,8 +153,27 @@ begin
   end;
 end;
 
-function UTF8ToDBCS(const s: string;
-  const UTF8CharConvFunc: TUnicodeToCharID): string;
+function UTF8ToCP932(const s: string): string;
+begin
+  Result := UTF8ToDBCS(s, @UnicodeToCP932);
+end;
+
+function UTF8ToCP936(const s: string): string;
+begin
+  Result := UTF8ToDBCS(s, @UnicodeToCP936);
+end;
+
+function UTF8ToCP949(const s: string): string;
+begin
+  Result := UTF8ToDBCS(s, @UnicodeToCP949);
+end;
+
+function UTF8ToCP950(const s: string): string;
+begin
+  Result := UTF8ToDBCS(s, @UnicodeToCP950);
+end;
+
+function UTF8ToDBCS(const s: string; const UTF8CharConvFunc: TUnicodeToCharID): string;
 var
   len:  integer;
   Src:  PChar;
@@ -180,24 +224,5 @@ begin
   //SetLength(Result, Dest - PChar(Result));
   SetLength(Result, {%H-}PtrUInt(Dest) - PtrUInt(Result));
 end;
-
-function UTF8ToCP936(const s: string): string;
-begin
-  Result := UTF8ToDBCS(s, @UnicodeToCP936);
-end;
-
-function UTF8ToCP950(const s: string): string;
-begin
-  Result := UTF8ToDBCS(s, @UnicodeToCP950);
-end;
-
-function UTF8ToCP949(const s: string): string;
-begin
-  Result := UTF8ToDBCS(s, @UnicodeToCP949);
-end;
-
-function UTF8ToCP932(const s: string): string;
-begin
-  Result := UTF8ToDBCS(s, @UnicodeToCP932);
-end;
+{$ENDIF}
 
