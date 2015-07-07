@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <ProjectOptions>
     <Version Value="9"/>
@@ -37,7 +37,7 @@
       <Unit0>
         <Filename Value="testunitdirectives.lpr"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="testunitdirectives"/>
+        <UnitName Value="TestUnitDirectives"/>
       </Unit0>
       <Unit1>
         <Filename Value="scanexamples/directives1.pas"/>
@@ -56,8 +56,5 @@
         <AllowLabel Value="False"/>
       </SyntaxOptions>
     </Parsing>
-    <Other>
-      <CompilerPath Value="$(CompPath)"/>
-    </Other>
   </CompilerOptions>
 </CONFIG>

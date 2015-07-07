@@ -29,7 +29,7 @@ program TestFPCSrcUnitRules;
 
 uses
   Classes, SysUtils, CustApp, AVL_Tree, CodeToolManager, DefineTemplates,
-  CodeToolsConfig, FileProcs, CodeToolsStructs;
+  CodeToolsConfig, FileProcs, CodeToolsStructs, LazFileUtils;
 
 const
   ConfigFilename = 'codetools.config';

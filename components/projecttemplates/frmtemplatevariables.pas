@@ -5,8 +5,8 @@ unit frmTemplateVariables;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls,
-  Grids, ProjectTemplates, Buttons, StdCtrls, EditBtn, ButtonPanel;
+  Classes, Forms, ExtCtrls,
+  Grids, ProjectTemplates, StdCtrls, EditBtn, ButtonPanel;
 
 type
 
@@ -26,13 +26,11 @@ type
   private
     FSChanged: Boolean;
     FTemplates: TProjectTemplates;
-    { private declarations }
     FVariables : TStrings;
     function GetProjectDir: String;
     function GetProjectName: String;
     procedure SetVariables(const AValue: TStrings);
   public
-    { public declarations }
     Property Templates : TProjectTemplates Read FTemplates Write FTemplates;
     Property ProjectName : String Read GetProjectName;
     Property ProjectDir : String Read GetProjectDir;

@@ -28,8 +28,8 @@ program RemoveWith;
 {$mode objfpc}{$H+}
 
 uses
-  Classes, SysUtils, CodeCache, CodeToolManager, FileProcs, AVL_Tree, CodeAtom,
-  BasicCodeTools, SourceChanger, CodeTree, FindDeclarationTool, RemoveWith1;
+  SysUtils, CodeCache, CodeToolManager, LazUTF8,
+  RemoveWith1;
 
 const
   ConfigFilename = 'codetools.config';

@@ -34,6 +34,7 @@
       <Unit0>
         <Filename Value="removeemptymethods.lpr"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="RemoveEmptyMethods"/>
       </Unit0>
       <Unit1>
         <Filename Value="scanexamples/emptymethods1.pas"/>

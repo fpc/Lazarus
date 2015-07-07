@@ -23,12 +23,11 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, LCLType, LResources, Forms, Controls, Graphics,
-  Dialogs, ComCtrls, Buttons, StdCtrls, ExtCtrls, LazConfigStorage, SynEdit,
-  SynHighlighterCPP, FileProcs, IDEMsgIntf, MenuIntf, IDECommands, BaseIDEIntf,
-  IDEDialogs, LazIDEIntf, ProjectIntf, CodeToolManager, SrcEditorIntf,
-  IDETextConverter, H2PasStrConsts, H2PasConvert, IDETextConvListEdit,
-  IDEExternToolIntf,
-  CompOptsIntf;
+  Dialogs, ComCtrls, Buttons, StdCtrls, ExtCtrls,
+  LazConfigStorage, LazFileUtils, LazFileCache, SynEdit,
+  FileProcs, IDEMsgIntf, MenuIntf, IDECommands, BaseIDEIntf,
+  IDEDialogs, LazIDEIntf, SrcEditorIntf, IDEExternToolIntf, CompOptsIntf,
+  IDETextConverter, H2PasStrConsts, H2PasConvert, IDETextConvListEdit;
 
 type
 

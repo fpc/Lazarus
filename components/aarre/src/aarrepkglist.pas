@@ -34,8 +34,8 @@ unit AarrePkgList;
 interface
 
 uses
-  Classes, SysUtils, Laz2_XMLCfg, laz2_DOM, LazLogger, LazUTF8, LConvEncoding,
-  LazFileUtils, FileProcs, zstream;
+  Classes, SysUtils, zstream, Laz2_XMLCfg, LazUTF8, LConvEncoding,
+  LazFileUtils, LazUtilities;
 
 type
   TAPackageType = (

@@ -29,8 +29,8 @@ program FindDeclaration;
 {$mode objfpc}{$H+}
 
 uses
-  Classes, SysUtils, CodeCache, CodeToolManager, DefineTemplates, FileProcs,
-  CodeToolsConfig, SimpleUnit1;
+  SysUtils, CodeCache, CodeToolManager, CodeToolsConfig,
+  SimpleUnit1;
 
 const
   ConfigFilename = 'codetools.config';

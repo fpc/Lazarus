@@ -3,8 +3,7 @@ program GetContext;
 {$mode objfpc}{$H+}
 
 uses
-  Classes, SysUtils, FileProcs, CodeCache, CodeToolManager, DefineTemplates,
-  CodeToolsConfig, GetContextExample, IdentCompletionTool, FindDeclarationTool;
+  SysUtils, CodeCache, CodeToolManager, IdentCompletionTool, FindDeclarationTool;
 
 const
   ConfigFilename = 'codetools.config';

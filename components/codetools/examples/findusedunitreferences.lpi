@@ -33,7 +33,6 @@
       <Unit0>
         <Filename Value="findusedunitreferences.lpr"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="findusedunitreferences"/>
       </Unit0>
       <Unit1>
         <Filename Value="scanexamples/simpleunit1.pas"/>
@@ -57,8 +56,5 @@
     <SearchPaths>
       <OtherUnitFiles Value="scanexamples"/>
     </SearchPaths>
-    <Other>
-      <CompilerPath Value="$(CompPath)"/>
-    </Other>
   </CompilerOptions>
 </CONFIG>

@@ -81,99 +81,99 @@ type
 
 {$IFnDEF DisableWrapperFunctions}
 // *** Wrappers for LazUTF8 ***
-function UTF8ToSys(const s: string): string; inline;// as UTF8ToAnsi but more independent of widestringmanager
-function SysToUTF8(const s: string): string; inline;// as AnsiToUTF8 but more independent of widestringmanager
-function UTF8CharacterLength(p: PChar): integer; inline;
+function UTF8ToSys(const s: string): string; inline; deprecated 'Use the function in LazUTF8 unit';
+function SysToUTF8(const s: string): string; inline; deprecated 'Use the function in LazUTF8 unit';
+function UTF8CharacterLength(p: PChar): integer; inline; deprecated 'Use the function in LazUTF8 unit';
 // environment
-function ParamStrUTF8(Param: Integer): string; inline;
-function GetEnvironmentStringUTF8(Index : Integer): String; inline;
-function GetEnvironmentVariableUTF8(const EnvVar: String): String; inline;
+function ParamStrUTF8(Param: Integer): string; inline; deprecated 'Use the function in LazUTF8 unit';
+function GetEnvironmentStringUTF8(Index : Integer): String; inline; deprecated 'Use the function in LazUTF8 unit';
+function GetEnvironmentVariableUTF8(const EnvVar: String): String; inline; deprecated 'Use the function in LazUTF8 unit';
 
 // *** Wrappers for LazFileUtils ***
-function CompareFilenames(const Filename1, Filename2: string): integer; inline;
-function CompareFilenamesIgnoreCase(const Filename1, Filename2: string): integer; inline;
-function CompareFileExt(const Filename, Ext: string; CaseSensitive: boolean): integer; inline;
-function CompareFilenameStarts(const Filename1, Filename2: string): integer; inline;
+function CompareFilenames(const Filename1, Filename2: string): integer; inline; deprecated 'Use the function in LazFileUtils unit';
+function CompareFilenamesIgnoreCase(const Filename1, Filename2: string): integer; inline; deprecated 'Use the function in LazFileUtils unit';
+//function CompareFileExt(const Filename, Ext: string; CaseSensitive: boolean): integer; inline; deprecated 'Use the function in LazFileUtils unit';
+function CompareFilenameStarts(const Filename1, Filename2: string): integer; inline; deprecated 'Use the function in LazFileUtils unit';
 function CompareFilenames(Filename1: PChar; Len1: integer;
-  Filename2: PChar; Len2: integer): integer; inline;
-function DirPathExists(DirectoryName: string): boolean; inline;
-function DirectoryIsWritable(const DirectoryName: string): boolean; inline;
-function ExtractFileNameOnly(const AFilename: string): string; inline;
-function FilenameIsAbsolute(const TheFilename: string):boolean; inline;
-function FilenameIsWinAbsolute(const TheFilename: string):boolean; inline;
-function FilenameIsUnixAbsolute(const TheFilename: string):boolean; inline;
-function ForceDirectory(DirectoryName: string): boolean; inline;
-procedure CheckIfFileIsExecutable(const AFilename: string); inline;
-function FileIsExecutable(const AFilename: string): boolean; inline;
-function FileIsReadable(const AFilename: string): boolean; inline;
-function FileIsWritable(const AFilename: string): boolean; inline;
-function FileIsText(const AFilename: string): boolean; inline;
-function FileIsText(const AFilename: string; out FileReadable: boolean): boolean; inline;
-function FilenameIsTrimmed(const TheFilename: string): boolean; inline;
-function FilenameIsTrimmed(StartPos: PChar; NameLen: integer): boolean; inline;
-function TrimFilename(const AFilename: string): string; inline;
-function CleanAndExpandFilename(const Filename: string): string; inline;// empty string returns current directory
-function CleanAndExpandDirectory(const Filename: string): string; inline;// empty string returns current directory
-function TrimAndExpandFilename(const Filename: string; const BaseDir: string = ''): string; inline;// empty string returns empty string
-function TrimAndExpandDirectory(const Filename: string; const BaseDir: string = ''): string; inline;// empty string returns empty string
+  Filename2: PChar; Len2: integer): integer; inline; deprecated 'Use the function in LazFileUtils unit';
+function DirPathExists(DirectoryName: string): boolean; inline; deprecated 'Use the function in LazFileUtils unit';
+function DirectoryIsWritable(const DirectoryName: string): boolean; inline; deprecated 'Use the function in LazFileUtils unit';
+function ExtractFileNameOnly(const AFilename: string): string; inline; deprecated 'Use the function in LazFileUtils unit';
+function FilenameIsAbsolute(const TheFilename: string):boolean; inline; deprecated 'Use the function in LazFileUtils unit';
+function FilenameIsWinAbsolute(const TheFilename: string):boolean; inline; deprecated 'Use the function in LazFileUtils unit';
+function FilenameIsUnixAbsolute(const TheFilename: string):boolean; inline; deprecated 'Use the function in LazFileUtils unit';
+function ForceDirectory(DirectoryName: string): boolean; inline; deprecated 'Use the function in LazFileUtils unit';
+procedure CheckIfFileIsExecutable(const AFilename: string); inline; deprecated 'Use the function in LazFileUtils unit';
+function FileIsExecutable(const AFilename: string): boolean; inline; deprecated 'Use the function in LazFileUtils unit';
+function FileIsReadable(const AFilename: string): boolean; inline; deprecated 'Use the function in LazFileUtils unit';
+function FileIsWritable(const AFilename: string): boolean; inline; deprecated 'Use the function in LazFileUtils unit';
+function FileIsText(const AFilename: string): boolean; inline; deprecated 'Use the function in LazFileUtils unit';
+function FileIsText(const AFilename: string; out FileReadable: boolean): boolean; inline; deprecated 'Use the function in LazFileUtils unit';
+function FilenameIsTrimmed(const TheFilename: string): boolean; inline; deprecated 'Use the function in LazFileUtils unit';
+function FilenameIsTrimmed(StartPos: PChar; NameLen: integer): boolean; inline; deprecated 'Use the function in LazFileUtils unit';
+function TrimFilename(const AFilename: string): string; inline; deprecated 'Use the function in LazFileUtils unit';
+function CleanAndExpandFilename(const Filename: string): string; inline; deprecated 'Use the function in LazFileUtils unit';
+function CleanAndExpandDirectory(const Filename: string): string; inline; deprecated 'Use the function in LazFileUtils unit';
+function TrimAndExpandFilename(const Filename: string; const BaseDir: string = ''): string; inline; deprecated 'Use the function in LazFileUtils unit';
+function TrimAndExpandDirectory(const Filename: string; const BaseDir: string = ''): string; inline; deprecated 'Use the function in LazFileUtils unit';
 function CreateRelativePath(const Filename, BaseDirectory: string;
-                            UsePointDirectory: boolean = false): string; inline;
-function FileIsInPath(const Filename, Path: string): boolean; inline;
-function AppendPathDelim(const Path: string): string; inline;
-function ChompPathDelim(const Path: string): string; inline;
+  UsePointDirectory: boolean = false): string; inline; deprecated 'Use the function in LazFileUtils unit';
+function FileIsInPath(const Filename, Path: string): boolean; inline; deprecated 'Use the function in LazFileUtils unit';
+function AppendPathDelim(const Path: string): string; inline; deprecated 'Use the function in LazFileUtils unit';
+function ChompPathDelim(const Path: string): string; inline; deprecated 'Use the function in LazFileUtils unit';
 // file operations
-function FileExistsUTF8(const Filename: string): boolean; inline;
-function FileAgeUTF8(const FileName: string): Longint; inline;
-function DirectoryExistsUTF8(const Directory: string): Boolean; inline;
-function ExpandFileNameUTF8(const FileName: string): string; inline;
-function FindFirstUTF8(const Path: string; Attr: Longint; out Rslt: TSearchRec): Longint; inline;
-function FindNextUTF8(var Rslt: TSearchRec): Longint; inline;
-procedure FindCloseUTF8(var F: TSearchrec); inline;
-function FileSetDateUTF8(const FileName: String; Age: Longint): Longint; inline;
-function FileGetAttrUTF8(const FileName: String): Longint; inline;
-function FileSetAttrUTF8(const Filename: String; Attr: longint): Longint; inline;
-function DeleteFileUTF8(const FileName: String): Boolean; inline;
-function RenameFileUTF8(const OldName, NewName: String): Boolean; inline;
-function FileSearchUTF8(const Name, DirList : String): String; inline;
-function FileIsReadOnlyUTF8(const FileName: String): Boolean; inline;
-function GetCurrentDirUTF8: String; inline;
-function SetCurrentDirUTF8(const NewDir: String): Boolean; inline;
-function CreateDirUTF8(const NewDir: String): Boolean; inline;
-function RemoveDirUTF8(const Dir: String): Boolean; inline;
-function ForceDirectoriesUTF8(const Dir: string): Boolean; inline;
+function FileExistsUTF8(const Filename: string): boolean; inline; deprecated 'Use the function in LazFileUtils unit';
+function FileAgeUTF8(const FileName: string): Longint; inline; deprecated 'Use the function in LazFileUtils unit';
+function DirectoryExistsUTF8(const Directory: string): Boolean; inline; deprecated 'Use the function in LazFileUtils unit';
+function ExpandFileNameUTF8(const FileName: string): string; inline; deprecated 'Use the function in LazFileUtils unit';
+function FindFirstUTF8(const Path: string; Attr: Longint; out Rslt: TSearchRec): Longint; inline; deprecated 'Use the function in LazFileUtils unit';
+function FindNextUTF8(var Rslt: TSearchRec): Longint; inline; deprecated 'Use the function in LazFileUtils unit';
+procedure FindCloseUTF8(var F: TSearchrec); inline; deprecated 'Use the function in LazFileUtils unit';
+function FileSetDateUTF8(const FileName: String; Age: Longint): Longint; inline; deprecated 'Use the function in LazFileUtils unit';
+function FileGetAttrUTF8(const FileName: String): Longint; inline; deprecated 'Use the function in LazFileUtils unit';
+function FileSetAttrUTF8(const Filename: String; Attr: longint): Longint; inline; deprecated 'Use the function in LazFileUtils unit';
+function DeleteFileUTF8(const FileName: String): Boolean; inline; deprecated 'Use the function in LazFileUtils unit';
+function RenameFileUTF8(const OldName, NewName: String): Boolean; inline; deprecated 'Use the function in LazFileUtils unit';
+function FileSearchUTF8(const Name, DirList : String): String; inline; deprecated 'Use the function in LazFileUtils unit';
+function FileIsReadOnlyUTF8(const FileName: String): Boolean; inline; deprecated 'Use the function in LazFileUtils unit';
+function GetCurrentDirUTF8: String; inline; deprecated 'Use the function in LazFileUtils unit';
+function SetCurrentDirUTF8(const NewDir: String): Boolean; inline; deprecated 'Use the function in LazFileUtils unit';
+function CreateDirUTF8(const NewDir: String): Boolean; inline; deprecated 'Use the function in LazFileUtils unit';
+function RemoveDirUTF8(const Dir: String): Boolean; inline; deprecated 'Use the function in LazFileUtils unit';
+function ForceDirectoriesUTF8(const Dir: string): Boolean; inline; deprecated 'Use the function in LazFileUtils unit';
 // search paths
-function CreateAbsoluteSearchPath(const SearchPath, BaseDirectory: string): string; inline;
-function CreateRelativeSearchPath(const SearchPath, BaseDirectory: string): string; inline;
-function MinimizeSearchPath(const SearchPath: string): string; inline;
+function CreateAbsoluteSearchPath(const SearchPath, BaseDirectory: string): string; inline; deprecated 'Use the function in LazFileUtils unit';
+function CreateRelativeSearchPath(const SearchPath, BaseDirectory: string): string; inline; deprecated 'Use the function in LazFileUtils unit';
+function MinimizeSearchPath(const SearchPath: string): string; inline; deprecated 'Use the function in LazFileUtils unit';
 //  Can lead to "wrong number of parameters" error, LazFileUtils has more versions of the func.
 //function FindPathInSearchPath(APath: PChar; APathLen: integer;
 //                              SearchPath: PChar; SearchPathLen: integer): PChar; inline;
+
 // *** Wrappers for LazFileCache ***
-function FileExistsCached(const AFilename: string): boolean; inline;
-function DirPathExistsCached(const AFilename: string): boolean; inline;
-function DirectoryIsWritableCached(const ADirectoryName: string): boolean; inline;
-function FileIsExecutableCached(const AFilename: string): boolean; inline;
-function FileIsReadableCached(const AFilename: string): boolean; inline;
-function FileIsWritableCached(const AFilename: string): boolean; inline;
-function FileIsTextCached(const AFilename: string): boolean; inline;
-function FileAgeCached(const AFileName: string): Longint; inline;
-procedure InvalidateFileStateCache(const Filename: string = ''); inline;
+function FileExistsCached(const AFilename: string): boolean; inline; deprecated 'Use the function in LazFileCache unit';
+function DirPathExistsCached(const AFilename: string): boolean; inline; deprecated 'Use the function in LazFileCache unit';
+function DirectoryIsWritableCached(const ADirectoryName: string): boolean; inline; deprecated 'Use the function in LazFileCache unit';
+function FileIsExecutableCached(const AFilename: string): boolean; inline; deprecated 'Use the function in LazFileCache unit';
+function FileIsReadableCached(const AFilename: string): boolean; inline; deprecated 'Use the function in LazFileCache unit';
+function FileIsWritableCached(const AFilename: string): boolean; inline; deprecated 'Use the function in LazFileCache unit';
+function FileIsTextCached(const AFilename: string): boolean; inline; deprecated 'Use the function in LazFileCache unit';
+function FileAgeCached(const AFileName: string): Longint; inline; deprecated 'Use the function in LazFileCache unit';
+procedure InvalidateFileStateCache(const Filename: string = ''); inline; deprecated 'Use the function in LazFileCache unit';
 
 // *** Wrappers for LazUtilities ***
-function ComparePointers(p1, p2: Pointer): integer; inline;
+function ComparePointers(p1, p2: Pointer): integer; inline; deprecated 'Use the function in LazUtilities unit';
 procedure MergeSort(List: PPointer; ListLength: PtrInt;
-                    const Compare: TListSortCompare); inline;
+  const Compare: TListSortCompare); inline; deprecated 'Use the function in LazUtilities unit';
 function GetNextDelimitedItem(const List: string; Delimiter: char;
-                              var Position: integer): string; inline;
-function HasDelimitedItem(const List: string; Delimiter: char; FindItem: string
-                          ): boolean; inline;
+  var Position: integer): string; inline; deprecated 'Use the function in LazUtilities unit';
+function HasDelimitedItem(const List: string; Delimiter: char; FindItem: string): boolean; inline; deprecated 'Use the function in LazUtilities unit';
 function FindNextDelimitedItem(const List: string; Delimiter: char;
-                               var Position: integer; FindItem: string): string; inline;
+  var Position: integer; FindItem: string): string; inline; deprecated 'Use the function in LazUtilities unit';
 
 // *** Wrappers for LazDbgLog ***
-function MemSizeString(const s: string): PtrUInt; inline;
-function MemSizeFPList(const List: TFPList): PtrUInt; inline;
-function GetStringRefCount(const s: string): PtrInt; inline;
+function MemSizeString(const s: string): PtrUInt; inline; deprecated 'Use the function in LazDbgLog unit';
+function MemSizeFPList(const List: TFPList): PtrUInt; inline; deprecated 'Use the function in LazDbgLog unit';
+function GetStringRefCount(const s: string): PtrInt; inline; deprecated 'Use the function in LazDbgLog unit';
 
 {$ENDIF DisableWrapperFunctions}
 
@@ -406,10 +406,10 @@ begin
   Result:=LazFileUtils.CompareFilenamesIgnoreCase(Filename1,Filename2);
 end;
 
-function CompareFileExt(const Filename, Ext: string; CaseSensitive: boolean): integer;
-begin
-  Result:=LazFileUtils.CompareFileExt(Filename,Ext,CaseSensitive);
-end;
+//function CompareFileExt(const Filename, Ext: string; CaseSensitive: boolean): integer;
+//begin
+//  Result:=LazFileUtils.CompareFileExt(Filename,Ext,CaseSensitive);
+//end;
 
 function CompareFilenameStarts(const Filename1, Filename2: string): integer;
 begin

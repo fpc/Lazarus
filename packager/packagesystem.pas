@@ -47,7 +47,7 @@ uses
   // FPC + LCL
   Classes, SysUtils, strutils, Forms, Controls, Dialogs,
   FileProcs, FileUtil, LCLProc, LazFileCache,
-  Laz2_XMLCfg, LazLogger, LazFileUtils, InterfaceBase, LazUTF8, laz2_XMLRead,
+  Laz2_XMLCfg, LazLogger, LazFileUtils, LazUTF8, laz2_XMLRead,
   // codetools
   AVL_Tree, contnrs, DefineTemplates, CodeCache,
   BasicCodeTools, CodeToolsStructs, NonPascalCodeTools, SourceChanger,

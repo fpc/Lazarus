@@ -28,8 +28,7 @@ program ReduceIFDEFs;
 {$mode objfpc}{$H+}
 
 uses
-  Classes, SysUtils, CodeCache, CodeToolManager, FileProcs,
-  CodeTree, DirectivesTree;
+  SysUtils, CodeCache, CodeToolManager, DirectivesTree;
   
 var
   Filename: string;

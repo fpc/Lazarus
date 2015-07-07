@@ -28,8 +28,8 @@ program AddMethodAssign;
 {$mode objfpc}{$H+}
 
 uses
-  Classes, SysUtils, CodeCache, CodeToolManager, FileProcs, AVL_Tree, CodeAtom,
-  BasicCodeTools, SourceChanger, CodeTree, FindDeclarationTool, AssignExample1;
+  Classes, SysUtils, AVL_Tree, CodeCache, CodeToolManager, FileProcs,
+  BasicCodeTools, CodeTree, FindDeclarationTool, AssignExample1;
 
 const
   ConfigFilename = 'codetools.config';

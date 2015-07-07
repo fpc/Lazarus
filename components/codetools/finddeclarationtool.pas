@@ -813,13 +813,11 @@ type
     function FindSubDeclaration(Identifier: string; ParentNode: TCodeTreeNode
       ): TCodeTreeNode; // search for type, const, var, proc, prop
 
-    function FindInitializationSection: TCodeTreeNode; deprecated; // use FindInitializationNode
-    function FindMainUsesSection(UseContainsSection: boolean = false): TCodeTreeNode; deprecated; // use FindMainUsesNode
-    function FindImplementationUsesSection: TCodeTreeNode; deprecated; // use FindImplementationUsesNode
-    function FindNameInUsesSection(UsesNode: TCodeTreeNode;
-          const AUnitName: string): TCodeTreeNode;
-    function FindUnitInUsesSection(UsesNode: TCodeTreeNode;
-          const AnUnitName: string;
+    function FindInitializationSection: TCodeTreeNode; deprecated 'Use FindInitializationNode instead.';
+    function FindMainUsesSection(UseContainsSection: boolean = false): TCodeTreeNode; deprecated 'Use FindMainUsesNode instead.';
+    function FindImplementationUsesSection: TCodeTreeNode; deprecated 'Use FindImplementationUsesNode instead.';
+    function FindNameInUsesSection(UsesNode: TCodeTreeNode; const AUnitName: string): TCodeTreeNode;
+    function FindUnitInUsesSection(UsesNode: TCodeTreeNode; const AnUnitName: string;
           out NamePos, InPos: TAtomPosition): boolean;
     function FindUnitInAllUsesSections(const AnUnitName: string;
           out NamePos, InPos: TAtomPosition): boolean;

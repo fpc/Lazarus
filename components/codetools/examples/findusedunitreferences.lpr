@@ -35,8 +35,8 @@ program FindUsedUnitReferences;
 {$mode objfpc}{$H+}
 
 uses
-  Classes, SysUtils, CodeCache, CodeToolManager, DefineTemplates,
-  CodeToolsConfig, FileProcs, usedunitrefs1;
+  Classes, SysUtils, CodeCache, CodeToolManager,
+  usedunitrefs1;
 
 const
   ConfigFilename = 'codetools.config';

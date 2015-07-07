@@ -28,7 +28,7 @@ program PPUDependencies;
 {$mode objfpc}{$H+}
 
 uses
-  Classes, SysUtils, PPUParser, FileProcs, PPUGraph, CodeToolManager;
+  Classes, SysUtils, FileProcs, PPUGraph, CodeToolManager, LazFileUtils, LazUTF8;
 
 const
   ConfigFilename = 'codetools.config';

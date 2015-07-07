@@ -29,8 +29,8 @@ program FindUnusedUnits;
 {$mode objfpc}{$H+}
 
 uses
-  Classes, SysUtils, CodeCache, CodeToolManager, DefineTemplates,
-  CodeToolsConfig, SimpleUnit1;
+  Classes, SysUtils, CodeCache, CodeToolManager,
+  SimpleUnit1;
 
 const
   ConfigFilename = 'codetools.config';

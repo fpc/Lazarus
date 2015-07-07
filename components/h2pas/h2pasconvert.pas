@@ -23,8 +23,8 @@ unit H2PasConvert;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, LResources, LazConfigStorage, XMLPropStorage,
-  Forms, Controls, Dialogs, FileUtil, LazFileUtils, LazUTF8Classes, AVL_Tree,
+  Classes, SysUtils, AVL_Tree, LCLProc, Forms, Controls, Dialogs, LResources, XMLPropStorage,
+  LazConfigStorage, FileUtil, LazFileUtils, LazFileCache, LazUTF8Classes,
   // CodeTools
   CodeAtom, CodeTree, KeywordFuncLists, NonPascalCodeTools, BasicCodeTools,
   FileProcs, CodeCache, SourceChanger, CodeToolManager,

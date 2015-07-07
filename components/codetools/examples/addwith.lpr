@@ -28,8 +28,7 @@ program addwith;
 {$mode objfpc}{$H+}
 
 uses
-  Classes, SysUtils, CodeCache, CodeToolManager, FileProcs, AVL_Tree, CodeAtom,
-  BasicCodeTools, SourceChanger, CodeTree, FindDeclarationTool, AddWith1;
+  Classes, SysUtils, CodeCache, CodeToolManager;
 
 const
   ConfigFilename = 'codetools.config';

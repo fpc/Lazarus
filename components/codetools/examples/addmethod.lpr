@@ -28,8 +28,7 @@ program AddMethod;
 {$mode objfpc}{$H+}
 
 uses
-  Classes, SysUtils, CodeCache, CodeToolManager, SimpleUnit1, FileProcs,
-  CodeCompletionTool;
+  SysUtils, CodeCache, CodeToolManager, CodeCompletionTool, SimpleUnit1;
   
 type
   TMyMethodType = function(Sender: TObject; AValue: integer): string of object;

@@ -28,15 +28,16 @@ uses
   {$IFDEF unix}
   cthreads,
   {$ENDIF}
-  Classes, SysUtils, math,
+  Classes, SysUtils, math, CustApp,
   Interfaces, // this includes the NoGUI widgetset
-  CustApp, LCLProc, Dialogs, Forms, Controls,
-  FileUtil, Masks, InterfaceBase, LConvEncoding,
+  LCLProc, Dialogs, Forms, Controls, InterfaceBase,
   // codetools
-  CodeCache, CodeToolManager, DefineTemplates, FileProcs, Laz2_XMLCfg, LazUTF8,
+  CodeCache, CodeToolManager, DefineTemplates, FileProcs,
   // IDEIntf
   MacroIntf, PackageIntf, IDEDialogs, ProjectIntf, IDEExternToolIntf,
   CompOptsIntf, IDEOptionsIntf, LazIDEIntf,
+  // LazUtils
+  Masks, LConvEncoding, Laz2_XMLCfg, FileUtil, LazFileUtils, LazUTF8,
   // IDE
   IDEProcs, InitialSetupProc, ExtTools, CompilerOptions, ApplicationBundle,
   TransferMacros, EnvironmentOpts, IDETranslations, LazarusIDEStrConsts,
@@ -223,8 +224,8 @@ begin
       Description:=Format(lisPkgMangPackage, [TLazPackage(DepOwner).IDAsString]
         );
     end else if DepOwner is TProject then begin
-      Description:=Format(lisPkgMangProject, [ExtractFileNameOnly(TProject(
-        DepOwner).ProjectInfoFile)]);
+      Description:=Format(lisPkgMangProject,
+                          [ExtractFileNameOnly(TProject(DepOwner).ProjectInfoFile)]);
     end else begin
       Description:=dbgsName(DepOwner)
     end;
@@ -386,16 +387,16 @@ begin
   end
   else begin
     // File exists:
-    if FileUtil.CompareFileExt(Filename,'.lpk')=0 then
+    if CompareFileExt(Filename,'.lpk')=0 then
       if AddPackage then begin
         // this is handled in AddPackagesToInstallList
         Result:=true;
       end
       else
         Result:=BuildPackage(Filename)
-    else if FileUtil.CompareFileExt(Filename,'.lpi')=0 then
+    else if CompareFileExt(Filename,'.lpi')=0 then
       Result:=BuildProject(Filename)
-    else if FileUtil.CompareFileExt(Filename,'.lpr')=0 then begin
+    else if CompareFileExt(Filename,'.lpr')=0 then begin
       Filename:=ChangeFileExt(Filename,'.lpi');
       if FileExists(Filename) then
         Result:=BuildProject(Filename)
@@ -1035,7 +1036,7 @@ begin
     // Look for package name in all known packages
     PackageName:='';
     PkgFilename:='';
-    if FileUtil.CompareFileExt(PackageNamesOrFiles[i],'.lpk')=0 then
+    if CompareFileExt(PackageNamesOrFiles[i],'.lpk')=0 then
       PkgFilename:=PackageNamesOrFiles[i]
     else if IsValidIdent(PackageNamesOrFiles[i]) then begin
       PackageLink:=PkgLinks.FindLinkWithPkgName(PackageNamesOrFiles[i]);

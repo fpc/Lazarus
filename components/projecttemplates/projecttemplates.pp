@@ -5,7 +5,7 @@ unit ProjectTemplates;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LazUTF8Classes, IniFiles;
+  Classes, SysUtils, FileUtil, LazFileUtils, LazUTF8Classes, IniFiles;
 
 type
 

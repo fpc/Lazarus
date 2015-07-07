@@ -28,8 +28,8 @@ program parsefpcmsg;
 {$mode objfpc}{$H+}
 
 uses
-  Classes, SysUtils, FileProcs,
-  CodeToolManager, CodeCache, CodeToolsFPCMsgs;
+  SysUtils, FileProcs, CodeToolManager, CodeCache, CodeToolsFPCMsgs,
+  LazFileUtils, LazUTF8;
 
 var
   Code: TCodeBuffer;

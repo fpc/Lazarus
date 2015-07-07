@@ -91,8 +91,8 @@ uses
 {$IFDEF unix}
   BaseUnix,
 {$ENDIF}
-  Classes, SysUtils, Process, UTF8Process,
-  LCLProc, FileProcs, FileUtil, LazFileUtils, Forms, Controls, Dialogs,
+  Classes, SysUtils, Process, Forms, Controls, Dialogs, LCLProc,
+  UTF8Process, FileUtil, LazFileUtils, LazUTF8, FileProcs,
   IDECmdLine, LazConf, Splash, BaseIDEIntf;
   
 type

@@ -5,8 +5,7 @@ unit frmtemplatesettings;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  Buttons, EditBtn, ButtonPanel, ProjectTemplates;
+  Forms, StdCtrls, EditBtn, ButtonPanel, ProjectTemplates;
 
 type
 
@@ -19,11 +18,9 @@ type
     procedure FormCreate(Sender: TObject);
     procedure OKButtonClick(Sender: TObject);
   private
-    { private declarations }
     FTemplates : TProjectTemplates;
     procedure SetTemplates(const AValue: TProjectTemplates);
   public
-    { public declarations }
     Property Templates : TProjectTemplates Read FTemplates Write SetTemplates;
   end;
 

@@ -58,11 +58,11 @@ uses
   LazFileUtils, LazFileCache, AvgLvlTree,
   BasicCodeTools, DefineTemplates, CodeToolManager, FileProcs,
   // IDEIntf
-  ProjectIntf, CompOptsIntf, IDEWindowIntf, LazIDEIntf, IDEImagesIntf,
+  ProjectIntf, CompOptsIntf, IDEWindowIntf, LazIDEIntf,
   IDEMsgIntf, IDEExternToolIntf,
   // IDE
   CompilerOptions, EnvironmentOpts, IDEProcs, DialogProcs, LazarusIDEStrConsts,
-  TransferMacros, LazConf, IDECmdLine, PackageDefs, PackageSystem, InputHistory;
+  TransferMacros, LazConf, PackageDefs, PackageSystem;
 
 type
   TPGInterPkgOwnerInfo = class

@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <ProjectOptions>
     <Version Value="9"/>
@@ -37,7 +37,6 @@
       <Unit0>
         <Filename Value="parsefpcmsg.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="parsefpcmsg"/>
       </Unit0>
       <Unit1>
         <Filename Value="scanexamples/brokenfilenames.pas"/>
@@ -61,11 +60,5 @@
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="11"/>
-    <Other>
-      <CompilerMessages>
-        <UseMsgFile Value="True"/>
-      </CompilerMessages>
-      <CompilerPath Value="$(CompPath)"/>
-    </Other>
   </CompilerOptions>
 </CONFIG>
