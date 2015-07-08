@@ -631,12 +631,12 @@ begin
   //debugln(['TDesigner.Create Self=',dbgs(Pointer(Self)),' TheDesignerForm=',DbgSName(TheDesignerForm)]);
   FForm := TheDesignerForm;
 // DaThoX begin
-  if FForm is BaseFormEditor1.NonFormProxyDesignerForm[NON_CONTROL_PROXY_DESIGNER_FORM_ID] then begin
+  if FForm is BaseFormEditor1.NonFormProxyDesignerForm[NonControlProxyDesignerFormId] then begin
     LNonControlDesigner := FForm as INonControlDesigner;
     FLookupRoot := LNonControlDesigner.LookupRoot;
     Mediator := LNonControlDesigner.Mediator;
   end
-  else if FForm is BaseFormEditor1.NonFormProxyDesignerForm[FRAME_PROXY_DESIGNER_FORM_ID] then
+  else if FForm is BaseFormEditor1.NonFormProxyDesignerForm[FrameProxyDesignerFormId] then
     FLookupRoot := (FForm as IFrameDesigner).LookupRoot
 // DaThoX end
   else

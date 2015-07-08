@@ -1161,7 +1161,7 @@ begin
   OldCustomForm:=FForm;
   FForm:=NewCustomForm;
   // DaThoX begin
-  if FForm is FormEditingHook.NonFormProxyDesignerForm[NON_CONTROL_PROXY_DESIGNER_FORM_ID] then
+  if FForm is FormEditingHook.NonFormProxyDesignerForm[NonControlProxyDesignerFormId] then
     FMediator:=(FForm as INonControlDesigner).Mediator
   // DaThoX end
   else

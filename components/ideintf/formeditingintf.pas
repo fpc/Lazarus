@@ -25,11 +25,11 @@ const
   ComponentPaletteBtnWidth  = ComponentPaletteImageWidth + 3;
   ComponentPaletteBtnHeight = ComponentPaletteImageHeight + 3;
   // DaThoX begin
-  STD_DESIGNER_BASE_TFORM_CLASS_ID = 0;
-  STD_DESIGNER_BASE_TDATAMODULE_CLASS_ID = 1;
-  STD_DESIGNER_BASE_TFRAME_CLASS_ID = 2;
-  NON_CONTROL_PROXY_DESIGNER_FORM_ID = 0;
-  FRAME_PROXY_DESIGNER_FORM_ID = 1;
+  DesignerBaseClassId_TForm = 0;
+  DesignerBaseClassId_TDataModule = 1;
+  DesignerBaseClassId_TFrame = 2;
+  NonControlProxyDesignerFormId = 0;
+  FrameProxyDesignerFormId = 1;
   // DaThoX end
 
 type
@@ -426,8 +426,8 @@ end;
 
 constructor TAbstractFormEditor.Create;
 begin
-  FNonFormProxyDesignerFormClass[NON_CONTROL_PROXY_DESIGNER_FORM_ID] := TNonControlProxyDesignerForm;
-  FNonFormProxyDesignerFormClass[FRAME_PROXY_DESIGNER_FORM_ID] := TFrameProxyDesignerForm;
+  FNonFormProxyDesignerFormClass[NonControlProxyDesignerFormId] := TNonControlProxyDesignerForm;
+  FNonFormProxyDesignerFormClass[FrameProxyDesignerFormId] := TFrameProxyDesignerForm;
 end;
 
 function TAbstractFormEditor.NonFormProxyDesignerFormCount: integer;

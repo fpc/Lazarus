@@ -844,13 +844,13 @@ begin
     // DaThoX begin
     if LookupRoot is TCustomFrame then
     begin
-      LNonFormProxyDesignerClass := BaseFormEditor1.NonFormProxyDesignerForm[FRAME_PROXY_DESIGNER_FORM_ID];
+      LNonFormProxyDesignerClass := BaseFormEditor1.NonFormProxyDesignerForm[FrameProxyDesignerFormId];
       Result := TNonFormProxyDesignerForm(LNonFormProxyDesignerClass.NewInstance);
       Result.Create(nil, TFrameDesignerForm.Create(Result));
     end
     else
     begin
-      LNonFormProxyDesignerClass := BaseFormEditor1.NonFormProxyDesignerForm[NON_CONTROL_PROXY_DESIGNER_FORM_ID];
+      LNonFormProxyDesignerClass := BaseFormEditor1.NonFormProxyDesignerForm[NonControlProxyDesignerFormId];
       Result := TNonFormProxyDesignerForm(LNonFormProxyDesignerClass.NewInstance);
       Result.Create(nil, TNonControlDesignerForm.Create(Result));
     end;
@@ -859,7 +859,7 @@ begin
     (Result as INonFormDesigner).LookupRoot := LookupRoot;
     FNonFormForms.Add(Result);
 
-    if Result is BaseFormEditor1.NonFormProxyDesignerForm[NON_CONTROL_PROXY_DESIGNER_FORM_ID] then begin
+    if Result is BaseFormEditor1.NonFormProxyDesignerForm[NonControlProxyDesignerFormId] then begin
       // create the mediator
       MediatorClass:=GetDesignerMediatorClass(TComponentClass(LookupRoot.ClassType));
       if MediatorClass<>nil then
@@ -2502,7 +2502,7 @@ begin
   DesignerForm := GetDesignerForm(APersistent);
 
   // ask TMediator
-  if DesignerForm is BaseFormEditor1.NonFormProxyDesignerForm[NON_CONTROL_PROXY_DESIGNER_FORM_ID] then begin // DaThoX
+  if DesignerForm is BaseFormEditor1.NonFormProxyDesignerForm[NonControlProxyDesignerFormId] then begin // DaThoX
     Mediator:=(DesignerForm as INonControlDesigner).Mediator; // DaThoX
     if Mediator<>nil then
       Mediator.GetObjInspNodeImageIndex(APersistent, AImageIndex);

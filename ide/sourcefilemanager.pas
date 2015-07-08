@@ -5970,7 +5970,7 @@ begin
     end;
   end else begin
     // default is TForm
-    AComponentClass:=BaseFormEditor1.StandardDesignerBaseClasses[STD_DESIGNER_BASE_TFORM_CLASS_ID];
+    AComponentClass:=BaseFormEditor1.StandardDesignerBaseClasses[DesignerBaseClassId_TForm];
   end;
   Result:=true;
 end;
@@ -6035,7 +6035,7 @@ begin
 
   // use TForm as default ancestor
   if AncestorClass=nil then
-    AncestorClass:=BaseFormEditor1.StandardDesignerBaseClasses[STD_DESIGNER_BASE_TFORM_CLASS_ID];
+    AncestorClass:=BaseFormEditor1.StandardDesignerBaseClasses[DesignerBaseClassId_TForm];
   //DebugLn('TLazSourceFileManager.LoadAncestorDependencyHidden Filename="',AnUnitInfo.Filename,'" AncestorClassName=',AncestorClassName,' AncestorClass=',dbgsName(AncestorClass));
   Result:=mrOk;
 end;
