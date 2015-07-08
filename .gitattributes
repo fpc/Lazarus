@@ -4,6 +4,22 @@
 /COPYING.modifiedLGPL.txt -text svneol=unset#application/octet-stream
 /COPYING.txt svneol=native#text/plain
 /README.txt svneol=native#text/plain
+components/1_spartaBasic/dtx_spartabasic.lpk svneol=native#text/plain
+components/1_spartaBasic/dtx_spartabasic.pas svneol=native#text/plain
+components/1_spartaBasic/source/dtx_sparta_basicregister.pas svneol=native#text/plain
+components/1_spartaBasic/source/sparta.res -text
+components/1_spartaBasic/source/sparta_componentpalette.pas svneol=native#text/plain
+components/1_spartaBasic/source/sparta_designedform.pas svneol=native#text/plain
+components/1_spartaBasic/source/sparta_fakecustom.pas svneol=native#text/plain
+components/1_spartaBasic/source/sparta_fakeform.pas svneol=native#text/plain
+components/1_spartaBasic/source/sparta_fakeframe.pas svneol=native#text/plain
+components/1_spartaBasic/source/sparta_fakenoncontrol.pas svneol=native#text/plain
+components/1_spartaBasic/source/sparta_hashutils.pas svneol=native#text/plain
+components/1_spartaBasic/source/sparta_mainide.pas svneol=native#text/plain
+components/1_spartaBasic/source/sparta_resizer.pas svneol=native#text/plain
+components/1_spartaBasic/source/sparta_resizerframe.lfm svneol=native#text/plain
+components/1_spartaBasic/source/sparta_resizerframe.pas svneol=native#text/plain
+components/1_spartaBasic/source/spartaapi.pas svneol=native#text/plain
 components/IdeInspector/ideinspectkeygrapper.lfm svneol=native#text/plain
 components/IdeInspector/ideinspectkeygrapper.pas svneol=native#text/pascal
 components/IdeInspector/ideinspector.lpk svneol=native#text/xml
