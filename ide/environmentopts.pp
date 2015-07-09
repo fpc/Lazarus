@@ -37,7 +37,7 @@ uses
 {$ifdef Windows}
   ShlObj,
 {$endif}
-  Classes, SysUtils, TypInfo, strutils, fgl, Graphics, Controls, Forms, Dialogs,
+  Classes, SysUtils, TypInfo, contnrs, Graphics, Controls, Forms, Dialogs,
   LCLProc, FileProcs, LazFileUtils, LazFileCache, LazConfigStorage,
   Laz2_XMLCfg, LazUTF8,
   // IDEIntf
@@ -260,6 +260,8 @@ type
     FXMLCfg: TRttiXMLConfig;
     FConfigStore: TXMLOptionsStorage;
     // window layout
+    FUseIDELayouts: Boolean;
+    FIDEWindowCreatorsLayoutList: TSimpleWindowLayoutList;
     FIDEDialogLayoutList: TIDEDialogLayoutList;
     FSingleTaskBarButton: boolean;
     FHideIDEOnRun: boolean;
@@ -286,12 +288,12 @@ type
     procedure Load(Path: String);
     procedure Save(Path: String);
   public
-    constructor Create;
-    constructor Create(aName: String);
+    constructor Create(aName: String; const aUseIDELayouts: Boolean);
     destructor Destroy; override;
     procedure Assign(Source: TDesktopOpt);
 
     property Name: String read FName write FName;
+    property IDEWindowCreatorsLayoutList: TSimpleWindowLayoutList read FIDEWindowCreatorsLayoutList write FIDEWindowCreatorsLayoutList;
     property IDEDialogLayoutList: TIDEDialogLayoutList read FIDEDialogLayoutList;
     property SingleTaskBarButton: boolean read FSingleTaskBarButton write FSingleTaskBarButton;
     property HideIDEOnRun: boolean read FHideIDEOnRun write FHideIDEOnRun;
@@ -317,12 +319,12 @@ type
 
   { TDesktopOptList }
 
-  dtol = specialize TFPGObjectList<TDesktopOpt>;
-  TDesktopOptList = class (dtol)
+  TDesktopOptList = class(TObjectList)
   private
     FXMLCfg: TRttiXMLConfig;
     FConfigStore: TXMLOptionsStorage;
     FEnvOpts: TEnvironmentOptions;
+    function GetItem(Index: Integer): TDesktopOpt;
     procedure SetConfig(aXMLCfg: TRttiXMLConfig; aConfigStore: TXMLOptionsStorage);
   public
     constructor Create(aEnvOpts: TEnvironmentOptions);
@@ -330,7 +332,7 @@ type
     procedure AddFromCfg(Path: String);
     function IndexOf(aName: string): integer;
     function Find(aName: string): TDesktopOpt;
-    function Select(aName: string): Boolean;
+    property Items[Index: Integer]: TDesktopOpt read GetItem; default;
   end;
 
   { TEnvironmentOptions - class for storing environment options }
@@ -484,14 +486,17 @@ type
 
     // Desktop
     FDesktops: TDesktopOptList;
-    FDesktop: TDesktopOpt;           // Active desktop
+    FDesktop: TDesktopOpt;
+    FLastDesktopBeforeDebug: TDesktopOpt;
+
+    FDebugDesktopName: string;
 
     function GetCompilerFilename: string;
     function GetCompilerMessagesFilename: string;
+    function GetDebugDesktop: TDesktopOpt;
     function GetDebuggerEventLogColors(AIndex: TDBGEventType): TDebuggerEventLogColor;
     function GetDebuggerFilename: string;
     function GetDebuggerSearchPath: string;
-    function GetDesktop: TDesktopOpt;
     function GetFPCSourceDirectory: string;
     function GetFPDocPaths: string;
     function GetLazarusDirectory: string;
@@ -562,6 +567,11 @@ type
                               var {%H-}Abort: boolean): string;
     function MacroFuncConfDir(const {%H-}s:string; const {%H-}Data: PtrInt;
                               var {%H-}Abort: boolean): string;
+
+    procedure UseDesktop(ADesktop: TDesktopOpt);
+    procedure EnableDebugDesktop;
+    procedure DisableDebugDesktop;
+
     // auto save
     // ask even if only project session needs saving
     property AskSaveSessionOnly: boolean read FAskSaveSessionOnly write FAskSaveSessionOnly;
@@ -753,7 +763,9 @@ type
     property NewFormTemplate: string read FNewFormTemplate write FNewFormTemplate;
     // Desktop
     property Desktops: TDesktopOptList read FDesktops;
-    property Desktop: TDesktopOpt read GetDesktop;
+    property Desktop: TDesktopOpt read FDesktop;
+    property DebugDesktopName: string read FDebugDesktopName write FDebugDesktopName;
+    property DebugDesktop: TDesktopOpt read GetDebugDesktop;
   end;
 
 var
@@ -890,11 +902,16 @@ end;
 procedure TDesktopOptList.AddFromCfg(Path: String);
 var
   dsk: TDesktopOpt;
+  dskName: String;
 begin
-  dsk := TDesktopOpt.Create;
-  dsk.SetConfig(FXMLCfg, FConfigStore);
-  dsk.Load(Path);
-  Add(dsk);
+  dskName := FXMLCfg.GetValue(Path+'Name', 'default');
+  if Find(dskName)=nil then
+  begin
+    dsk := TDesktopOpt.Create(dskName, False);
+    dsk.SetConfig(FXMLCfg, FConfigStore);
+    dsk.Load(Path);
+    Add(dsk);
+  end;
 end;
 
 function TDesktopOptList.IndexOf(aName: string): integer;
@@ -916,22 +933,18 @@ begin
     Result:=nil;
 end;
 
-function TDesktopOptList.Select(aName: string): Boolean;
-var
-  dsk: TDesktopOpt;
+function TDesktopOptList.GetItem(Index: Integer): TDesktopOpt;
 begin
-  dsk := Find(aName);
-  Result := Assigned(dsk);
-  if Result then
-    FEnvOpts.FDesktop := dsk;
+  Result := TDesktopOpt(inherited Items[Index]);
 end;
-
 
 { TDesktopOpt }
 
-constructor TDesktopOpt.Create;
+constructor TDesktopOpt.Create(aName: String; const aUseIDELayouts: Boolean);
 begin
   inherited Create;
+
+  FName:=aName;
   FSingleTaskBarButton:=false;
   FHideIDEOnRun:=false;
   FAutoAdjustIDEHeight:=true;
@@ -953,25 +966,35 @@ begin
   FComponentPaletteOptions:=TCompPaletteOptions.Create;
   // Windows layout
   InitLayoutList;
-  FIDEDialogLayoutList:=TIDEDialogLayoutList.Create;
-  if IDEWindowIntf.IDEDialogLayoutList=nil then
-    IDEWindowIntf.IDEDialogLayoutList:=FIDEDialogLayoutList;
-end;
 
-constructor TDesktopOpt.Create(aName: String);
-begin
-  Create; // constructor above.
-  FName:=aName;
+  FUseIDELayouts := aUseIDELayouts;
+  if FUseIDELayouts then
+  begin
+    //default desktop - use IDE storage objects!
+    FIDEDialogLayoutList:=IDEWindowIntf.IDEDialogLayoutList;
+    FIDEWindowCreatorsLayoutList := IDEWindowIntf.IDEWindowCreators.SimpleLayoutStorage;
+  end else
+  begin
+    //saved desktops - use own layout storage objects
+    FIDEDialogLayoutList:=TIDEDialogLayoutList.Create;
+    FIDEWindowCreatorsLayoutList:=TSimpleWindowLayoutList.Create(False);
+    FIDEDialogLayoutList.Assign(IDEWindowIntf.IDEDialogLayoutList);
+    FIDEWindowCreatorsLayoutList.Assign(IDEWindowIntf.IDEWindowCreators.SimpleLayoutStorage, True, True);
+  end;
 end;
 
 destructor TDesktopOpt.Destroy;
 begin
-  if IDEWindowIntf.IDEDialogLayoutList=FIDEDialogLayoutList then
-    IDEWindowIntf.IDEDialogLayoutList:=nil;
-  FreeAndNil(FIDEDialogLayoutList);
   FreeAndNil(FComponentPaletteOptions);
   FreeAndNil(FEditorToolBarOptions);
   FreeAndNil(FIDECoolBarOptions);
+
+  if not FUseIDELayouts then
+  begin
+    FreeAndNil(FIDEDialogLayoutList);
+    FreeAndNil(FIDEWindowCreatorsLayoutList);
+  end;
+
   inherited Destroy;
 end;
 
@@ -983,6 +1006,9 @@ begin
   //FConfigStore.Assign(Source.FConfigStore);
 
   // window layout
+  if Source.FIDEWindowCreatorsLayoutList <> IDEWindowCreators.SimpleLayoutStorage then
+    Source.FIDEWindowCreatorsLayoutList.Assign(IDEWindowCreators.SimpleLayoutStorage, True, True);
+  FIDEWindowCreatorsLayoutList.Assign(Source.FIDEWindowCreatorsLayoutList, False, False);
   FIDEDialogLayoutList.Assign(Source.FIDEDialogLayoutList);
   FSingleTaskBarButton := Source.FSingleTaskBarButton;
   FHideIDEOnRun := Source.FHideIDEOnRun;
@@ -1007,9 +1033,8 @@ end;
 
 procedure TDesktopOpt.Load(Path: String);
 begin
-  FName:=FXMLCfg.GetValue(Path+'Name', 'default');
   // Windows layout
-  IDEWindowCreators.SimpleLayoutStorage.LoadFromConfig(FConfigStore,Path);
+  FIDEWindowCreatorsLayoutList.LoadFromConfig(FConfigStore, Path);
   FIDEDialogLayoutList.LoadFromConfig(FConfigStore, Path+'Dialogs/');
 
   FSingleTaskBarButton:=FXMLCfg.GetValue(Path+'SingleTaskBarButton/Value', False);
@@ -1026,7 +1051,7 @@ begin
   FCompletionWindowWidth:=FXMLCfg.GetValue(Path+'CompletionWindowWidth/Value', 320);
   FCompletionWindowHeight:=FXMLCfg.GetValue(Path+'CompletionWindowHeight/Value', 6);
 
-  if AnsiStartsStr('EnvironmentOptions', Path) then
+  if not FXMLCfg.HasPath(Path+'IDECoolBarOptions/', True) then
     Path := '';             // Toolbars and palette were at the top level in XML.
   // IDE Coolbar
   FIDECoolBarOptions.Load(FXMLCfg, Path);
@@ -1040,7 +1065,7 @@ procedure TDesktopOpt.Save(Path: String);
 begin
   // windows
   FXMLCfg.SetDeleteValue(Path+'Name', FName, '');
-  IDEWindowCreators.SimpleLayoutStorage.SaveToConfig(FConfigStore,Path);
+  FIDEWindowCreatorsLayoutList.SaveToConfig(FConfigStore, Path);
   FIDEDialogLayoutList.SaveToConfig(FConfigStore,Path+'Dialogs/');
 
   FXMLCfg.SetDeleteValue(Path+'SingleTaskBarButton/Value',FSingleTaskBarButton, False);
@@ -1231,8 +1256,10 @@ begin
   // global build options
   FBuildMatrixOptions:=TBuildMatrixOptions.Create;
 
-  // Desktop collection (FDesktop will point to the active desktop).
+  // Desktop collection
   FDesktops := TDesktopOptList.Create(Self);
+  // FDesktop points to the IDE properties
+  FDesktop := TDesktopOpt.Create('', True);
 end;
 
 destructor TEnvironmentOptions.Destroy;
@@ -1240,6 +1267,8 @@ var
   i: Integer;
 begin
   FreeAndNil(FDesktops);
+  FreeAndNil(FDesktop);
+  FreeAndNil(FLastDesktopBeforeDebug);
   FreeAndNil(FBuildMatrixOptions);
   FreeAndNil(FMsgViewFilters);
   FreeAndNil(fExternalUserTools);
@@ -1264,6 +1293,17 @@ begin
   inherited Destroy;
 end;
 
+procedure TEnvironmentOptions.DisableDebugDesktop;
+begin
+  if (FLastDesktopBeforeDebug=nil) or (FDesktop=nil) then
+    Exit;
+  try
+    UseDesktop(FLastDesktopBeforeDebug);
+  finally
+    FreeAndNil(FLastDesktopBeforeDebug);
+  end;
+end;
+
 class function TEnvironmentOptions.GetGroupCaption: string;
 begin
   Result := dlgGroupEnvironment;
@@ -1280,6 +1320,16 @@ begin
   //if not Restore then
   //  Save(False);
   inherited DoAfterWrite(Restore);
+end;
+
+procedure TEnvironmentOptions.EnableDebugDesktop;
+begin
+  if not Assigned(FLastDesktopBeforeDebug) and Assigned(DebugDesktop) then
+  begin
+    FLastDesktopBeforeDebug := TDesktopOpt.Create('', False);
+    FLastDesktopBeforeDebug.Assign(Desktop);
+    EnvironmentOptions.UseDesktop(DebugDesktop);
+  end;
 end;
 
 procedure TEnvironmentOptions.CreateConfig;
@@ -1426,7 +1476,7 @@ procedure TEnvironmentOptions.Load(OnlyDesktop: boolean);
   end;
   
 var
-  Path, CurPath, ActiveDsk: String;
+  Path, CurPath: String;
   i, j: Integer;
   Rec: PIDEOptionsGroupRec;
   NodeName: String;
@@ -1435,6 +1485,8 @@ var
 begin
   try
     InitXMLCfg(false);
+    // ToDo: Get rid of EnvironmentOptions/ path. The whole file is about
+    //  environment options. Many section are not under it any more.
     Path:='EnvironmentOptions/';
     FFileVersion:=FXMLCfg.GetValue(Path+'Version/Value',0);
     FOldLazarusVersion:=FXMLCfg.GetValue(Path+'Version/Lazarus','');
@@ -1594,14 +1646,14 @@ begin
     FObjectInspectorOptions.SaveBounds:=false;
 
     // IDEEditorGroups
-    for i := 0 to IDEEditorGroups.Count - 1 do
+    for i := 0 to IDEEditorGroups.Count-1 do
     begin
       Rec := IDEEditorGroups[i];
       NodeName := Rec^.GroupClass.ClassName;
       Rec^.Collapsed := FXMLCfg.GetValue(Path+'OptionDialog/Tree/' + NodeName + '/Value',
                                            Rec^.DefaultCollapsed);
       if Rec^.Items <> nil then begin
-        for j := 0 to Rec^.Items.Count - 1 do begin
+        for j := 0 to Rec^.Items.Count-1 do begin
           Rec^.Items[j]^.Collapsed := FXMLCfg.GetValue(Path+'OptionDialog/Tree/' + NodeName
                 + '/' + Rec^.Items[j]^.EditorClass.ClassName + '/Value',
                 Rec^.Items[j]^.DefaultCollapsed);
@@ -1612,25 +1664,20 @@ begin
     // The user can define many desktops. They are saved under path Desktops/.
     FDesktops.Clear;
     FDesktops.SetConfig(FXMLCfg, FConfigStore);
-    CurPath:='Desktops/';
+    CurPath := 'Desktops/';
     if FXMLCfg.HasPath(CurPath, True) then
     begin
       // New path under Desktops/. Default=1 forces reading default values always.
-      j := FXMLCfg.GetValue(CurPath+'Count/', 1);
+      FDebugDesktopName := FXMLCfg.GetValue(CurPath+'DebugDesktop', '');
+      j := FXMLCfg.GetValue(CurPath+'Count', 1);
       for i := 0 to j-1 do
         FDesktops.AddFromCfg(CurPath+'Desktop'+IntToStr(i+1)+'/');
-      Assert(FDesktops.Count>0, 'FDesktops.Count=0');
-      // Find active desktop
-      ActiveDsk := FXMLCfg.GetValue(CurPath+'Active','default');
-      FDesktop:=FDesktops.Find(ActiveDsk);
-      DebugLn(['TEnvironmentOptions.Load: New desktop, Count=',j,', Active=', ActiveDsk, ', Dsk name=', FDesktop.Name]);
-    end
-    else begin // Old path was under EnvironmentOptions/.
-      FDesktops.AddFromCfg(Path+'Desktop/');
-      FDesktop := nil;
     end;
-    if FDesktop=nil then
-      FDesktop:=FDesktops[0];
+    FDesktop.SetConfig(FXMLCfg, FConfigStore);
+    CurPath := 'Desktop/';               // New place: Desktop/
+    if not FXMLCfg.HasPath(CurPath, True) then
+      CurPath := Path+'Desktop/';        // Old place: EnvironmentOptions/Desktop/
+    FDesktop.Load(CurPath);
 
     FileUpdated;
   except
@@ -1747,9 +1794,12 @@ var
   Rec: PIDEOptionsGroupRec;
   mwc: TMsgWndColor;
   u: TMessageLineUrgency;
+  xSaveDesktop: TDesktopOpt;
 begin
   try
     InitXMLCfg(true);
+    // ToDo: Get rid of EnvironmentOptions/ path. The whole file is about
+    //  environment options. Many section are not under it any more.
     Path:='EnvironmentOptions/';
 
     FXMLCfg.SetValue(Path+'Version/Value',EnvOptsVersion);
@@ -1875,7 +1925,7 @@ begin
     FObjectInspectorOptions.Save;
 
     // IDEEditorGroups
-    for i := 0 to IDEEditorGroups.Count - 1 do
+    for i := 0 to IDEEditorGroups.Count-1 do
     begin
       Rec := IDEEditorGroups[i];
       NodeName := Rec^.GroupClass.ClassName;
@@ -1883,7 +1933,7 @@ begin
                                Rec^.Collapsed,
                                Rec^.DefaultCollapsed);
       if Rec^.Items <> nil then begin
-        for j := 0 to Rec^.Items.Count - 1 do begin
+        for j := 0 to Rec^.Items.Count-1 do begin
           FXMLCfg.SetDeleteValue(Path+'OptionDialog/Tree/' + NodeName
                                    + '/' + Rec^.Items[j]^.EditorClass.ClassName + '/Value',
                                    Rec^.Items[j]^.Collapsed,
@@ -1895,12 +1945,19 @@ begin
     // The user can define many desktops. They are saved under path Desktops/.
     CurPath:='Desktops/';
     FXMLCfg.SetDeleteValue(CurPath+'Count', FDesktops.Count, 0);
-    FXMLCfg.SetDeleteValue(CurPath+'Active', FDesktop.Name, '');
+    FXMLCfg.SetDeleteValue(CurPath+'DebugDesktop', FDebugDesktopName, '');
     for i := 0 to FDesktops.Count-1 do
     begin
       FDesktops[i].SetConfig(FXMLCfg, FConfigStore);
       FDesktops[i].Save(CurPath+'Desktop'+IntToStr(i+1)+'/');
     end;
+
+    if Assigned(FLastDesktopBeforeDebug) then
+      xSaveDesktop := FLastDesktopBeforeDebug
+    else
+      xSaveDesktop := FDesktop;
+    xSaveDesktop.SetConfig(FXMLCfg, FConfigStore);
+    xSaveDesktop.Save('Desktop/');
 
     FXMLCfg.Flush;
     FileUpdated;
@@ -2258,6 +2315,36 @@ begin
   SetParseValue(eopTestBuildDirectory,NewValue);
 end;
 
+procedure TEnvironmentOptions.UseDesktop(ADesktop: TDesktopOpt);
+  procedure _UpdateEditorOptions(const aAfter: Boolean);
+  var
+    i: Integer;
+    Rec: PIDEOptionsGroupRec;
+    Instance: TAbstractIDEOptions;
+  begin
+    for i := 0 to IDEEditorGroups.Count - 1 do
+    begin
+      Rec := IDEEditorGroups[i];
+      if Assigned(Rec^.Items) and Assigned(Rec^.GroupClass) then
+      begin
+        Instance := Rec^.GroupClass.GetInstance;
+        if Assigned(Instance) then
+        begin
+          if aAfter then
+            Instance.DoAfterWrite(False)
+          else
+            Instance.DoBeforeWrite(False)
+        end;
+      end;
+    end;
+  end;
+begin
+  _UpdateEditorOptions(False);
+  Desktop.Assign(ADesktop);
+  _UpdateEditorOptions(True);
+  IDEWindowCreators.RestoreSimpleLayout;
+end;
+
 procedure TEnvironmentOptions.SetLazarusDirectory(const AValue: string);
 var
   NewValue: String;
@@ -2317,17 +2404,6 @@ begin
   Result:=FParseValues[eopDebuggerSearchPath].UnparsedValue;
 end;
 
-function TEnvironmentOptions.GetDesktop: TDesktopOpt;
-begin
-  // Can be Nil if desktops are not read from config files -> create a default desktop.
-  if not Assigned(FDesktop) then
-  begin
-    FDesktop := TDesktopOpt.Create('default');
-    FDesktops.Add(FDesktop);
-  end;
-  Result := FDesktop;
-end;
-
 function TEnvironmentOptions.GetCompilerFilename: string;
 begin
   Result:=FParseValues[eopCompilerFilename].UnparsedValue;
@@ -2336,6 +2412,14 @@ end;
 function TEnvironmentOptions.GetCompilerMessagesFilename: string;
 begin
   Result:=FParseValues[eopCompilerMessagesFilename].UnparsedValue;
+end;
+
+function TEnvironmentOptions.GetDebugDesktop: TDesktopOpt;
+begin
+  if FDebugDesktopName<>'' then
+    Result := FDesktops.Find(FDebugDesktopName)
+  else
+    Result := nil;
 end;
 
 function TEnvironmentOptions.GetFPCSourceDirectory: string;

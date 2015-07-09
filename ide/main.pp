@@ -171,6 +171,8 @@ type
 
   TMainIDE = class(TMainIDEBase)
   private
+    IDEIsClosing: Boolean;
+
     // event handlers
     procedure MainIDEFormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure MainIDEFormCloseQuery(Sender: TObject; var CanClose: boolean);
@@ -409,6 +411,7 @@ type
     function HandleIDEQuestionDialog(const aCaption, aMsg: string;
                                  DlgType: TMsgDlgType; Buttons: array of const;
                                  const HelpKeyword: string): Integer;
+    procedure HandleLayoutChanged(Sender: TObject);
   public
     // Environment options dialog events
     procedure DoLoadIDEOptions(Sender: TObject; AOptions: TAbstractIDEOptions);
@@ -1541,6 +1544,7 @@ begin
   MainIDEBar.SetupHints;
   SetupIDEWindowsLayout;
   RestoreIDEWindows;
+  IDEWindowCreators.AddLayoutChangedHandler(@HandleLayoutChanged);
   // make sure the main IDE bar is always shown
   IDEWindowCreators.ShowForm(MainIDEBar,false);
   DebugBoss.UpdateButtonsAndMenuItems; // Disable Stop-button (and some others).
@@ -1957,11 +1961,10 @@ begin
 end;
 
 procedure TMainIDE.MainIDEFormCloseQuery(Sender: TObject; var CanClose: boolean);
-const IsClosing: Boolean = False;
 begin
   CanClose := True;
-  if IsClosing then Exit;
-  IsClosing := True;
+  if IDEIsClosing then Exit;
+  IDEIsClosing := True;
   CanClose := False;
   SourceFileMgr.CheckingFilesOnDisk := True;
   try
@@ -1983,7 +1986,7 @@ begin
 
     CanClose:=(DoCloseProject <> mrAbort);
   finally
-    IsClosing := False;
+    IDEIsClosing := CanClose;
     SourceFileMgr.CheckingFilesOnDisk:=false;
     if not CanClose then
       DoCheckFilesOnDisk(false);
@@ -2328,8 +2331,7 @@ end;
 procedure TMainIDE.RestoreIDEWindows;
 begin
   DoCallNotifyHandler(lihtIDERestoreWindows);
-  if IDEDockMaster=nil then
-    IDEWindowCreators.RestoreSimpleLayout;
+  IDEWindowCreators.RestoreSimpleLayout;
 end;
 
 procedure TMainIDE.FreeIDEWindows;
@@ -2665,9 +2667,6 @@ begin
 
     itmToolConfigure.OnClick := @mnuToolConfigureUserExtToolsClicked;
     itmToolManageDesktops.OnClick := @mnuToolManageDesktopsClicked;
-    {$IFnDEF EnableDesktops}
-    itmToolManageDesktops.Visible := False;
-    {$ENDIF}
     itmToolManageExamples.OnClick := @mnuToolManageExamplesClicked;
     itmToolDiff.OnClick := @mnuToolDiffClicked;
 
@@ -3556,6 +3555,14 @@ begin
   begin
     FWaitForClose := False;
     MainIDEBar.Close;
+  end;
+
+  if not IDEIsClosing then
+  begin
+    if (ToolStatus = itDebugger) then
+      EnvironmentOptions.EnableDebugDesktop
+    else if (ToolStatus <> itExiting) then
+      EnvironmentOptions.DisableDebugDesktop;
   end;
 end;
 
@@ -4474,9 +4481,6 @@ procedure TMainIDE.SaveDesktopSettings(TheEnvironmentOptions: TEnvironmentOption
 begin
   DebugLn(['* TMainIDE.SaveDesktopSettings']);
   IDEWindowCreators.SimpleLayoutStorage.StoreWindowPositions;
-  // do not auto show the search results view
-  IDEWindowCreators.SimpleLayoutStorage.ItemByFormID(
-    NonModalIDEWindowNames[nmiwSearchResultsViewName]).Visible:=false;
 
   if ObjectInspector1<>nil then
     TheEnvironmentOptions.ObjectInspectorOptions.Assign(ObjectInspector1);
@@ -6811,6 +6815,14 @@ begin
     else
       StartStarter;
   end;
+end;
+
+procedure TMainIDE.HandleLayoutChanged(Sender: TObject);
+begin
+  MainIDEBar.RefreshCoolbar;
+  MainIDEBar.DoSetViewComponentPalette(EnvironmentOptions.Desktop.ComponentPaletteOptions.Visible);
+  MainIDEBar.DoSetMainIDEHeight(MainIDEBar.WindowState = wsMaximized, 55);
+  MainIDEBar.SetMainIDEHeight;
 end;
 
 procedure TMainIDE.DoExecuteRemoteControl;

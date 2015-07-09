@@ -512,9 +512,10 @@ begin
       if ANewHeight <> Constraints.MaxHeight then
       begin
         Constraints.MaxHeight := ANewHeight;
-        Constraints.MinHeight := Constraints.MaxHeight;
-        ClientHeight := Constraints.MaxHeight;
-      end;
+        Constraints.MinHeight := ANewHeight;
+        ClientHeight := ANewHeight;
+      end else if ClientHeight <> ANewHeight then
+        ClientHeight := ANewHeight;
     end else
     if Constraints.MaxHeight <> 0 then
     begin

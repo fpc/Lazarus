@@ -2630,7 +2630,10 @@ end;
 
 class function TProjectIDEOptions.GetInstance: TAbstractIDEOptions;
 begin
-  Result := Project1.IDEOptions;
+  if Project1<>nil then
+    Result := Project1.IDEOptions
+  else
+    Result := nil;
 end;
 
 class function TProjectIDEOptions.GetGroupCaption: string;

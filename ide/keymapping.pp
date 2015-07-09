@@ -682,6 +682,7 @@ begin
     ecRescanFPCSrcDir         : Result:= lisMenuRescanFPCSourceDirectory;
     ecEditCodeTemplates       : Result:= lisMenuEditCodeTemplates;
     ecCodeToolsDefinesEd      : Result:= lisKMCodeToolsDefinesEditor;
+    ecManageDesktops          : Result:= lisDesktops;
 
     ecExtToolSettings         : Result:= srkmecExtToolSettings;
     ecManageExamples          : Result:= lisMenuExampleProjects;
@@ -3006,6 +3007,7 @@ begin
   AddDefault(C, 'Rescan FPC source directory', lisMenuRescanFPCSourceDirectory, ecRescanFPCSrcDir);
   AddDefault(C, 'Edit Code Templates', lisKMEditCodeTemplates, ecEditCodeTemplates);
   AddDefault(C, 'CodeTools defines editor', lisKMCodeToolsDefinesEditor, ecCodeToolsDefinesEd);
+  AddDefault(C, 'Manage desktops', dlgManageDesktops, ecManageDesktops);
 
   AddDefault(C, 'External Tools settings', lisKMExternalToolsSettings, ecExtToolSettings);
   AddDefault(C, 'Example Projects', lisKMExampleProjects, ecManageExamples);

@@ -2161,7 +2161,10 @@ end;
 
 class function TPackageIDEOptions.GetInstance: TAbstractIDEOptions;
 begin
-  Result := Package1.IDEOptions;
+  if Package1<>nil then
+    Result := Package1.IDEOptions
+  else
+    Result := nil;
 end;
 
 class function TPackageIDEOptions.GetGroupCaption: string;
@@ -4116,7 +4119,10 @@ end;
 
 class function TPkgCompilerOptions.GetInstance: TAbstractIDEOptions;
 begin
-  Result := Package1.CompilerOptions;
+  if Package1<>nil then
+    Result := Package1.CompilerOptions
+  else
+    Result := nil;
 end;
 
 function TPkgCompilerOptions.IsActive: boolean;

@@ -150,7 +150,7 @@ begin
     ProjectDirInIdeTitleCheckBox.Checked:=IDEProjectDirectoryInIdeTitle;
   end;
 
-  FLayouts.Assign(IDEWindowCreators.SimpleLayoutStorage);
+  FLayouts.Assign(IDEWindowCreators.SimpleLayoutStorage, False, True);
 
   if FShowSimpleLayout then begin
     // Window Positions
@@ -217,7 +217,8 @@ end;
 procedure TWindowOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
   SaveLayout;
-  IDEWindowCreators.SimpleLayoutStorage.Assign(FLayouts);
+  FLayouts.Assign(IDEWindowCreators.SimpleLayoutStorage, True, True);
+  IDEWindowCreators.SimpleLayoutStorage.Assign(FLayouts, False, False);
 
   with (AOptions as TEnvironmentOptions).Desktop do
   begin
@@ -231,6 +232,8 @@ begin
     AutoAdjustIDEHeightFullCompPal := AutoAdjustIDEHeightFullCompPalCheckBox.Checked;
     IDEProjectDirectoryInIdeTitle:=ProjectDirInIdeTitleCheckBox.Checked;
   end;
+
+  IDEWindowCreators.RestoreSimpleLayout;
 end;
 
 function TWindowOptionsFrame.GetPlacementRadioButtons(
@@ -483,7 +486,7 @@ end;
 constructor TWindowOptionsFrame.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
-  FLayouts:=TSimpleWindowLayoutList.Create;
+  FLayouts:=TSimpleWindowLayoutList.Create(False);
   FShowSimpleLayout:=(IDEDockMaster=nil) or (not IDEDockMaster.HideSimpleLayoutOptions);
 end;
 

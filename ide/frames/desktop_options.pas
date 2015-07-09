@@ -290,8 +290,7 @@ begin
           AnEnvironmentOptions.Filename := OpenDialog.Filename;
           AnEnvironmentOptions.Load(true);
           DoLoadSettings(AnEnvironmentOptions);
-          if IDEDockMaster=nil then
-            IDEWindowCreators.RestoreSimpleLayout;
+          IDEWindowCreators.RestoreSimpleLayout;
           ShowMessageFmt(lisSuccessfullyImported, [OpenDialog.Filename]);
         finally
           AnEnvironmentOptions.Free;

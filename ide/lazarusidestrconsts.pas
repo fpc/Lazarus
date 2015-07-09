@@ -1234,7 +1234,14 @@ resourcestring
   dlgIntvInSec = 'Interval in secs';
   dlgExportDesktop = 'Export desktop';
   dlgImportDesktop = 'Import desktop';
+  dlgManageDesktops = 'Manage desktops';
   dlgSaveCurrentDesktop = 'Save current desktop';
+  dlgCloseAndUseSelectedDesktop = 'Close and use selected desktop';
+  dlgDeleteSelectedDesktop = 'Delete selected desktop';
+  dlgReallyDeleteDesktop = 'Really delete desktop "%s"?';
+  dlgToggleSelectedDebugDesktop = 'Toggle selected as debug desktop';
+  dlgDesktopNameWillBeOverwritten = 'Desktop name (old entry will be overwritten):';
+  dlgDebugDesktop = 'debug desktop';
   dlgDesktopHints = 'Hints';
   dlgDesktopButtons = 'Buttons - ';
   dlgDesktopMenus = 'Menus - ';

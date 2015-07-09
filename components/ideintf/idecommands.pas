@@ -1225,7 +1225,7 @@ begin
 end;
 
 const
-  IDEEditorCommandStrs: array[0..307] of TIdentMapEntry = (
+  IDEEditorCommandStrs: array[0..308] of TIdentMapEntry = (
   // search
     (Value: ecFind;                                   Name: 'ecFind'),
     (Value: ecFindAgain;                              Name: 'ecFindAgain'),
@@ -1488,6 +1488,7 @@ const
 
   // tools menu
     (Value: ecEnvironmentOptions;                     Name: 'ecEnvironmentOptions'),
+    (Value: ecManageDesktops;                         Name: 'ecManageDesktops'),
     (Value: ecRescanFPCSrcDir;                        Name: 'ecRescanFPCSrcDir'),
     (Value: ecEditCodeTemplates;                      Name: 'ecEditCodeTemplates'),
     (Value: ecCodeToolsDefinesEd;                     Name: 'ecCodeToolsDefinesEd'),
