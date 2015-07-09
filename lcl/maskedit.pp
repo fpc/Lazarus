@@ -753,7 +753,7 @@ begin
   begin
     if FCursorPos < 0 then FCursorPos := 0
     else if FCursorPos  > FMaskLength then FCursorPos := FMaskLength;
-    if FCursorPos + 1 > FMaskLength then
+    if (FCursorPos + 1 > FMaskLength) or not Focused then
       SetSel(FCursorPos, FCursorPos)
     else
       SetSel(FCursorPos, FCursorPos + 1);
@@ -777,8 +777,11 @@ end;
 procedure TCustomMaskEdit.SelectPrevChar;
 var
   P: LongInt;
+  AStart: Integer;
+  AStop: Integer;
 begin
-  if FCursorPos = 0 then Exit;
+  GetSel(AStart, AStop);
+  if (FCursorPos = 0) and (AStop - AStart <= 1) then Exit;
   P := FCursorPos;
   Dec(FCursorPos);
   While (FCursorPos > 0) and IsLiteral(FMask[FCursorPos + 1]) do
