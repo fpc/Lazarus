@@ -835,6 +835,10 @@ msgstr ""
 msgid "Choose code template file (*.dci)"
 msgstr "Rinkitės kodo šablono failą (*.dci)"
 
+#: lazarusidestrconsts.dlgcloseanduseselecteddesktop
+msgid "Close and use selected desktop"
+msgstr ""
+
 #: lazarusidestrconsts.dlgclosebuttonsnotebook
 msgid "Show close buttons in notebook"
 msgstr "Rengyklės kortelėse rodyti „Užverti“ mygtukus"
@@ -1208,6 +1212,10 @@ msgstr "Žymeklis nepaiso tabuliavimų"
 msgid "User defined extension (.pp.xxx)"
 msgstr "Naudotojo nurodytas plėtinys (.pp.xxx)"
 
+#: lazarusidestrconsts.dlgdebugdesktop
+msgid "debug desktop"
+msgstr ""
+
 #: lazarusidestrconsts.dlgdebugoptionspatheditordlgcaption
 msgid "Path Editor"
 msgstr "Kelio rengyklė"
@@ -1223,6 +1231,10 @@ msgstr "Numatytas rengyklės šriftas"
 #: lazarusidestrconsts.dlgdefvaluecolor
 msgid "Default Value"
 msgstr "Numatyta vertė"
+
+#: lazarusidestrconsts.dlgdeleteselecteddesktop
+msgid "Delete selected desktop"
+msgstr ""
 
 #: lazarusidestrconsts.dlgdeltemplate
 msgid "Delete template "
@@ -1243,6 +1255,10 @@ msgstr "Užuominos"
 #: lazarusidestrconsts.dlgdesktopmenus
 msgid "Menus - "
 msgstr "Meniu - "
+
+#: lazarusidestrconsts.dlgdesktopnamewillbeoverwritten
+msgid "Desktop name (old entry will be overwritten):"
+msgstr ""
 
 #: lazarusidestrconsts.dlgdirection
 msgid "Direction"
@@ -2275,6 +2291,10 @@ msgstr "Rodyti projekto modulius"
 msgid "\"Make\" executable"
 msgstr ""
 
+#: lazarusidestrconsts.dlgmanagedesktops
+msgid "Manage desktops"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmargingutter
 msgid "Margin and gutter"
 msgstr "Paraštės"
@@ -3079,6 +3099,10 @@ msgstr "Rodyti tinklelį"
 msgid "Snap to grid"
 msgstr "Pritraukti prie tinklelio taškų"
 
+#: lazarusidestrconsts.dlgreallydeletedesktop
+msgid "Really delete desktop \"%s\"?"
+msgstr ""
+
 #: lazarusidestrconsts.dlgreferencecolor
 msgid "Reference"
 msgstr "Rodyklė"
@@ -3469,6 +3493,10 @@ msgstr "Aplankas testo projektų darymui"
 msgctxt "lazarusidestrconsts.dlgtexttofind"
 msgid "&Text to find"
 msgstr "Ieškomasis t&ekstas"
+
+#: lazarusidestrconsts.dlgtoggleselecteddebugdesktop
+msgid "Toggle selected as debug desktop"
+msgstr ""
 
 #: lazarusidestrconsts.dlgtopinfohint
 msgid "Current Class/Proc Hint"

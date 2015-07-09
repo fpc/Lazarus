@@ -834,6 +834,10 @@ msgstr ""
 msgid "Choose code template file (*.dci)"
 msgstr "Tria un fitxer de plantilla (*.dci)"
 
+#: lazarusidestrconsts.dlgcloseanduseselecteddesktop
+msgid "Close and use selected desktop"
+msgstr ""
+
 #: lazarusidestrconsts.dlgclosebuttonsnotebook
 msgid "Show close buttons in notebook"
 msgstr "Mostra els botons de tancar en el llibre de notes"
@@ -1227,6 +1231,10 @@ msgstr ""
 msgid "User defined extension (.pp.xxx)"
 msgstr "Extensions definides per l'usuari (.pp.xxx)"
 
+#: lazarusidestrconsts.dlgdebugdesktop
+msgid "debug desktop"
+msgstr ""
+
 #: lazarusidestrconsts.dlgdebugoptionspatheditordlgcaption
 msgid "Path Editor"
 msgstr ""
@@ -1242,6 +1250,10 @@ msgstr "Font de l'editor predeterminat"
 #: lazarusidestrconsts.dlgdefvaluecolor
 msgid "Default Value"
 msgstr "Valor per defecte"
+
+#: lazarusidestrconsts.dlgdeleteselecteddesktop
+msgid "Delete selected desktop"
+msgstr ""
 
 #: lazarusidestrconsts.dlgdeltemplate
 msgid "Delete template "
@@ -1261,6 +1273,10 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgdesktopmenus
 msgid "Menus - "
+msgstr ""
+
+#: lazarusidestrconsts.dlgdesktopnamewillbeoverwritten
+msgid "Desktop name (old entry will be overwritten):"
 msgstr ""
 
 #: lazarusidestrconsts.dlgdirection
@@ -2297,6 +2313,10 @@ msgstr "Mostra les unitats del projecte"
 msgid "\"Make\" executable"
 msgstr ""
 
+#: lazarusidestrconsts.dlgmanagedesktops
+msgid "Manage desktops"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmargingutter
 msgid "Margin and gutter"
 msgstr "Marge i canal"
@@ -3103,6 +3123,10 @@ msgstr "Mostra la graella"
 msgid "Snap to grid"
 msgstr "Ajusta a la graella"
 
+#: lazarusidestrconsts.dlgreallydeletedesktop
+msgid "Really delete desktop \"%s\"?"
+msgstr ""
+
 #: lazarusidestrconsts.dlgreferencecolor
 msgid "Reference"
 msgstr ""
@@ -3519,6 +3543,10 @@ msgstr "Directori per a muntar els projectes de prova"
 msgctxt "lazarusidestrconsts.dlgtexttofind"
 msgid "&Text to find"
 msgstr "Cerca el &text"
+
+#: lazarusidestrconsts.dlgtoggleselecteddebugdesktop
+msgid "Toggle selected as debug desktop"
+msgstr ""
 
 #: lazarusidestrconsts.dlgtopinfohint
 msgid "Current Class/Proc Hint"

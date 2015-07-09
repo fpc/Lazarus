@@ -841,6 +841,10 @@ msgstr ""
 msgid "Choose code template file (*.dci)"
 msgstr "选择代码模板文件 (*.dci)"
 
+#: lazarusidestrconsts.dlgcloseanduseselecteddesktop
+msgid "Close and use selected desktop"
+msgstr ""
+
 #: lazarusidestrconsts.dlgclosebuttonsnotebook
 msgid "Show close buttons in notebook"
 msgstr "Notebook中显示关闭按钮"
@@ -1240,6 +1244,10 @@ msgstr ""
 msgid "User defined extension (.pp.xxx)"
 msgstr "用户定义后缀 (.pp.xxx)"
 
+#: lazarusidestrconsts.dlgdebugdesktop
+msgid "debug desktop"
+msgstr ""
+
 #: lazarusidestrconsts.dlgdebugoptionspatheditordlgcaption
 msgid "Path Editor"
 msgstr "路径编辑器"
@@ -1255,6 +1263,10 @@ msgstr "默认的编辑器字体"
 #: lazarusidestrconsts.dlgdefvaluecolor
 msgid "Default Value"
 msgstr "默认值"
+
+#: lazarusidestrconsts.dlgdeleteselecteddesktop
+msgid "Delete selected desktop"
+msgstr ""
 
 #: lazarusidestrconsts.dlgdeltemplate
 msgid "Delete template "
@@ -1274,6 +1286,10 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgdesktopmenus
 msgid "Menus - "
+msgstr ""
+
+#: lazarusidestrconsts.dlgdesktopnamewillbeoverwritten
+msgid "Desktop name (old entry will be overwritten):"
 msgstr ""
 
 #: lazarusidestrconsts.dlgdirection
@@ -2329,6 +2345,10 @@ msgstr "查看工程单元"
 msgid "\"Make\" executable"
 msgstr ""
 
+#: lazarusidestrconsts.dlgmanagedesktops
+msgid "Manage desktops"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmargingutter
 msgid "Margin and gutter"
 msgstr "边界和边缝"
@@ -3152,6 +3172,10 @@ msgstr "显示网格"
 msgid "Snap to grid"
 msgstr "对齐到网格"
 
+#: lazarusidestrconsts.dlgreallydeletedesktop
+msgid "Really delete desktop \"%s\"?"
+msgstr ""
+
 #: lazarusidestrconsts.dlgreferencecolor
 msgid "Reference"
 msgstr "参考"
@@ -3576,6 +3600,10 @@ msgstr "工程构建测试目录"
 msgctxt "lazarusidestrconsts.dlgtexttofind"
 msgid "&Text to find"
 msgstr "查找文本(&T)"
+
+#: lazarusidestrconsts.dlgtoggleselecteddebugdesktop
+msgid "Toggle selected as debug desktop"
+msgstr ""
 
 #: lazarusidestrconsts.dlgtopinfohint
 msgid "Current Class/Proc Hint"

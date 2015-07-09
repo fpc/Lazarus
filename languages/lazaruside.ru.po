@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2015-07-07 00:46+0300\n"
+"PO-Revision-Date: 2015-07-10 02:08+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -825,6 +825,10 @@ msgstr "Форма может требовать пакета для корре�
 msgid "Choose code template file (*.dci)"
 msgstr "Выберите файл шаблонов кода (*.dci)"
 
+#: lazarusidestrconsts.dlgcloseanduseselecteddesktop
+msgid "Close and use selected desktop"
+msgstr "Закрыть и использовать выбранный"
+
 #: lazarusidestrconsts.dlgclosebuttonsnotebook
 msgid "Show close buttons in notebook"
 msgstr "Показывать кнопки закрытия вкладок"
@@ -1186,6 +1190,10 @@ msgstr "Курсор пропускает ТАБы"
 msgid "User defined extension (.pp.xxx)"
 msgstr "Расширение пользователя (.pp.xxx)"
 
+#: lazarusidestrconsts.dlgdebugdesktop
+msgid "debug desktop"
+msgstr "отладочный"
+
 #: lazarusidestrconsts.dlgdebugoptionspatheditordlgcaption
 msgid "Path Editor"
 msgstr "Редактор путей"
@@ -1201,6 +1209,10 @@ msgstr "Шрифт редактора по умолчанию"
 #: lazarusidestrconsts.dlgdefvaluecolor
 msgid "Default Value"
 msgstr "Значение по умолчанию"
+
+#: lazarusidestrconsts.dlgdeleteselecteddesktop
+msgid "Delete selected desktop"
+msgstr "Удалить выбранный"
 
 #: lazarusidestrconsts.dlgdeltemplate
 msgid "Delete template "
@@ -1221,6 +1233,10 @@ msgstr "Подсказки"
 #: lazarusidestrconsts.dlgdesktopmenus
 msgid "Menus - "
 msgstr "Меню - "
+
+#: lazarusidestrconsts.dlgdesktopnamewillbeoverwritten
+msgid "Desktop name (old entry will be overwritten):"
+msgstr "Имя рабочего стола (имеющийся будет перезаписан):"
 
 #: lazarusidestrconsts.dlgdirection
 msgid "Direction"
@@ -2220,6 +2236,10 @@ msgstr "Показать модули проекта"
 msgid "\"Make\" executable"
 msgstr "Исполнимый файл \"Make\""
 
+#: lazarusidestrconsts.dlgmanagedesktops
+msgid "Manage desktops"
+msgstr "Управление рабочими столами"
+
 #: lazarusidestrconsts.dlgmargingutter
 msgid "Margin and gutter"
 msgstr "Границы"
@@ -3010,6 +3030,10 @@ msgstr "Показывать сетку"
 msgid "Snap to grid"
 msgstr "Выравнивать по сетке"
 
+#: lazarusidestrconsts.dlgreallydeletedesktop
+msgid "Really delete desktop \"%s\"?"
+msgstr "Вы действительно хотите удалить рабочий стол \"%s\"?"
+
 #: lazarusidestrconsts.dlgreferencecolor
 msgid "Reference"
 msgstr "Ссылка"
@@ -3090,7 +3114,7 @@ msgstr "Параметры запуска"
 
 #: lazarusidestrconsts.dlgsavecurrentdesktop
 msgid "Save current desktop"
-msgstr "Сохранить текущий рабочий стол"
+msgstr "Сохранить текущий"
 
 #: lazarusidestrconsts.dlgsavedlinecolor
 msgid "Saved line"
@@ -3400,6 +3424,10 @@ msgstr "Каталог для сборки пробных проектов"
 msgctxt "lazarusidestrconsts.dlgtexttofind"
 msgid "&Text to find"
 msgstr "Н&айти текст"
+
+#: lazarusidestrconsts.dlgtoggleselecteddebugdesktop
+msgid "Toggle selected as debug desktop"
+msgstr "Режим отладки для выбранного"
 
 #: lazarusidestrconsts.dlgtopinfohint
 msgid "Current Class/Proc Hint"

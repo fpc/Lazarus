@@ -824,6 +824,10 @@ msgstr "A form csomagokat igényelhet a működéshez. Az ilyen csomagok automat
 msgid "Choose code template file (*.dci)"
 msgstr "Válasszon kódsablon fájlt! (*.dcl)"
 
+#: lazarusidestrconsts.dlgcloseanduseselecteddesktop
+msgid "Close and use selected desktop"
+msgstr ""
+
 #: lazarusidestrconsts.dlgclosebuttonsnotebook
 msgid "Show close buttons in notebook"
 msgstr "Bezáró gomb megjelenítése a lapfüleken"
@@ -1185,6 +1189,10 @@ msgstr "A kurzor átugrik a tab-okon"
 msgid "User defined extension (.pp.xxx)"
 msgstr "Felhasználó által megadott kiterjesztés (.pp.xxx)"
 
+#: lazarusidestrconsts.dlgdebugdesktop
+msgid "debug desktop"
+msgstr ""
+
 #: lazarusidestrconsts.dlgdebugoptionspatheditordlgcaption
 msgid "Path Editor"
 msgstr "Útvonalszerkesztő"
@@ -1200,6 +1208,10 @@ msgstr "Szerkesztő alapértelmezett betűtípusa"
 #: lazarusidestrconsts.dlgdefvaluecolor
 msgid "Default Value"
 msgstr "Alapértelmezett érték"
+
+#: lazarusidestrconsts.dlgdeleteselecteddesktop
+msgid "Delete selected desktop"
+msgstr ""
 
 #: lazarusidestrconsts.dlgdeltemplate
 msgid "Delete template "
@@ -1220,6 +1232,10 @@ msgstr "Tippek"
 #: lazarusidestrconsts.dlgdesktopmenus
 msgid "Menus - "
 msgstr "Menükben: "
+
+#: lazarusidestrconsts.dlgdesktopnamewillbeoverwritten
+msgid "Desktop name (old entry will be overwritten):"
+msgstr ""
 
 #: lazarusidestrconsts.dlgdirection
 msgid "Direction"
@@ -2219,6 +2235,10 @@ msgstr "Projekt unit-jainak megjelenítése"
 msgid "\"Make\" executable"
 msgstr "\"Make\" program"
 
+#: lazarusidestrconsts.dlgmanagedesktops
+msgid "Manage desktops"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmargingutter
 msgid "Margin and gutter"
 msgstr "Margó és hasábköz"
@@ -3009,6 +3029,10 @@ msgstr "Rács megjelenítése"
 msgid "Snap to grid"
 msgstr "Rácshoz igazítás"
 
+#: lazarusidestrconsts.dlgreallydeletedesktop
+msgid "Really delete desktop \"%s\"?"
+msgstr ""
+
 #: lazarusidestrconsts.dlgreferencecolor
 msgid "Reference"
 msgstr "Hivatkozás"
@@ -3399,6 +3423,10 @@ msgstr "Könyvtár a teszt projektek építéséhez"
 msgctxt "lazarusidestrconsts.dlgtexttofind"
 msgid "&Text to find"
 msgstr "Keresendő szöveg"
+
+#: lazarusidestrconsts.dlgtoggleselecteddebugdesktop
+msgid "Toggle selected as debug desktop"
+msgstr ""
 
 #: lazarusidestrconsts.dlgtopinfohint
 msgid "Current Class/Proc Hint"

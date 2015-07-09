@@ -826,6 +826,10 @@ msgstr "La fiche peut nécessiter l'utilisation d'un paquet. Installer automatiq
 msgid "Choose code template file (*.dci)"
 msgstr "Choisir le fichier de modèle de code (\"*.dci\")"
 
+#: lazarusidestrconsts.dlgcloseanduseselecteddesktop
+msgid "Close and use selected desktop"
+msgstr ""
+
 #: lazarusidestrconsts.dlgclosebuttonsnotebook
 msgid "Show close buttons in notebook"
 msgstr "Afficher les boutons de fermeture dans l'éditeur"
@@ -1187,6 +1191,10 @@ msgstr "Le curseur saute les tabulations"
 msgid "User defined extension (.pp.xxx)"
 msgstr "Extension utilisateur (\".pp.xxx\")"
 
+#: lazarusidestrconsts.dlgdebugdesktop
+msgid "debug desktop"
+msgstr ""
+
 #: lazarusidestrconsts.dlgdebugoptionspatheditordlgcaption
 msgid "Path Editor"
 msgstr "Éditeur de chemin"
@@ -1202,6 +1210,10 @@ msgstr "Police par défaut pour l'éditeur"
 #: lazarusidestrconsts.dlgdefvaluecolor
 msgid "Default Value"
 msgstr "Valeur par défaut"
+
+#: lazarusidestrconsts.dlgdeleteselecteddesktop
+msgid "Delete selected desktop"
+msgstr ""
 
 #: lazarusidestrconsts.dlgdeltemplate
 msgid "Delete template "
@@ -1222,6 +1234,10 @@ msgstr "Conseils"
 #: lazarusidestrconsts.dlgdesktopmenus
 msgid "Menus - "
 msgstr "Menus - "
+
+#: lazarusidestrconsts.dlgdesktopnamewillbeoverwritten
+msgid "Desktop name (old entry will be overwritten):"
+msgstr ""
 
 #: lazarusidestrconsts.dlgdirection
 msgid "Direction"
@@ -2241,6 +2257,10 @@ msgstr "Afficher les unités du projet"
 msgid "\"Make\" executable"
 msgstr "Programme \"Make\""
 
+#: lazarusidestrconsts.dlgmanagedesktops
+msgid "Manage desktops"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmargingutter
 msgid "Margin and gutter"
 msgstr "Marge et gouttière"
@@ -3031,6 +3051,10 @@ msgstr "Afficher la grille"
 msgid "Snap to grid"
 msgstr "Aligner sur la grille"
 
+#: lazarusidestrconsts.dlgreallydeletedesktop
+msgid "Really delete desktop \"%s\"?"
+msgstr ""
+
 #: lazarusidestrconsts.dlgreferencecolor
 msgid "Reference"
 msgstr "Référence"
@@ -3421,6 +3445,10 @@ msgstr "Répertoire pour la création de projets de tests"
 msgctxt "lazarusidestrconsts.dlgtexttofind"
 msgid "&Text to find"
 msgstr "&Texte à chercher"
+
+#: lazarusidestrconsts.dlgtoggleselecteddebugdesktop
+msgid "Toggle selected as debug desktop"
+msgstr ""
 
 #: lazarusidestrconsts.dlgtopinfohint
 msgid "Current Class/Proc Hint"
