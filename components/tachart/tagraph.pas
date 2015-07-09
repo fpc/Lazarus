@@ -995,7 +995,7 @@ var
   s: TBasicChartSeries;
   mn, mx: Double;
 begin
-  Result.FStart := Infinity;
+  Result.FStart := SafeInfinity;
   Result.FEnd := NegInfinity;
   for s in Series do
     if s.Active and s.GetAxisBounds(AAxis, mn, mx) then begin
