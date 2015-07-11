@@ -23,7 +23,7 @@
       <UseVersionInfo Value="True"/>
       <MajorVersionNr Value="1"/>
       <MinorVersionNr Value="4"/>
-      <RevisionNr Value="1"/>
+      <RevisionNr Value="2"/>
       <CharSet Value="04B0"/>
       <StringTable ProductName="Lazarus IDE" ProductVersion=""/>
     </VersionInfo>
@@ -1316,18 +1316,6 @@
         <Filename Value="initialsetupproc.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit239>
-      <Unit240>
-        <Filename Value="qfinitlocalvardlg.pas"/>
-        <IsPartOfProject Value="True"/>
-        <ComponentName Value="QFInitLocalVarDialog"/>
-        <HasResources Value="True"/>
-        <ResourceBaseClass Value="Form"/>
-      </Unit240>
-      <Unit241>
-        <Filename Value="../packager/interpkgconflictfiles.pas"/>
-        <IsPartOfProject Value="True"/>
-        <HasResources Value="True"/>
-      </Unit241>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
