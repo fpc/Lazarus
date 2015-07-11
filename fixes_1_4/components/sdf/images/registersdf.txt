@@ -1,2 +1,0 @@
-tfixedformatdataset.png
-tsdfdataset.png

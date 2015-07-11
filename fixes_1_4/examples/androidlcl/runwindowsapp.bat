@@ -1,2 +1,0 @@
-nonandroidtest.exe
-pause

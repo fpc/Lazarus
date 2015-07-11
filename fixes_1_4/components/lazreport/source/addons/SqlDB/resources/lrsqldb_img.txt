@@ -1,7 +1,0 @@
-tlribconnection.bmp
-tlrmssqlconnection.bmp
-tlrmysqlconnection.bmp
-tlrodbcconnection.bmp
-tlroracleconnection.bmp
-tlrpqconnection.bmp
-tlrsqlquery.bmp

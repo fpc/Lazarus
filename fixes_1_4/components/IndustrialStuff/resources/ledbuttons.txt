@@ -1,6 +1,0 @@
-black.png
-green.png
-red.png
-yellow.png
-bulboff.xpm
-bulbon.xpm

@@ -1,2 +1,0 @@
-ScrollBar1.Width = GetSystemMetrics(SM_CXVSCROLL)
-ScrollBar1.Height: 201

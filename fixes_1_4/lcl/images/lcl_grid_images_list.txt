@@ -1,2 +1,0 @@
-sortasc.png
-sortdesc.png

@@ -1,1 +1,0 @@
-for %%1 in (*.xpm) do xpm_to_png %%1 %%~pn1.png 24 24

@@ -1,3 +1,0 @@
-dbgridcheckedcb.xpm
-dbgridgrayedcb.xpm
-dbgriduncheckedcb.xpm

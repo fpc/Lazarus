@@ -1,3 +1,0 @@
-helded.xpm
-pending.xpm
-process.xpm

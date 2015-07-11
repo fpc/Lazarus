@@ -1,6 +1,0 @@
-tadvled.png
-tanalogsensor.png
-tindgnoumeter.png
-tindled.png
-tlednumber.png
-tstoplightsensor.png

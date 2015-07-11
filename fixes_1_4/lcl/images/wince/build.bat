@@ -1,1 +1,0 @@
-..\..\..\tools\lazres wincedialogs.rc wincedialog_ok.png wincedialog_cancel.png

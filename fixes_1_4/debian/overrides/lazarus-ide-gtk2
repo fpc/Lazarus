@@ -1,7 +1,0 @@
-# False spell error detections
-lazarus-ide-gtk2: spelling-error-in-binary */lazarus-gtk2 Childs Children
-
-# This package is compiled by the FPC and Lazarus. These compilers don't have
-# hardening flags yet, so ignoring these lintian warnings for now
-# Paul Gevers <elbrus@debian.org>, 22 Jun 2013
-lazarus-ide-gtk2: hardening-no-fortify-functions */lazarus-gtk2

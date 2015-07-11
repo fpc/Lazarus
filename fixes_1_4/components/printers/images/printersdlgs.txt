@@ -1,3 +1,0 @@
-tpagesetupdialog.png
-tprintdialog.png
-tprintersetupdialog.png

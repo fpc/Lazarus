@@ -1,2 +1,0 @@
-Sorted: False
-Insert succeeded.

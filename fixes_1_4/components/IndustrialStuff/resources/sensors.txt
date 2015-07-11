@@ -1,4 +1,0 @@
-stop_green.png
-stop_red.png
-stop_unknown.png
-stop_yellow.png

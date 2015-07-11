@@ -1,5 +1,0 @@
-# False spell error detectios
-lcl-utils: spelling-error-in-binary */lazbuild Childs Children
-lcl-utils: spelling-error-in-binary */tools/lazres Childs Children
-lcl-utils: spelling-error-in-binary */tools/lrstolfm Childs Children
-lcl-utils: statically-linked-binary
